@@ -17,27 +17,21 @@ class Database {
 		switch ($type) {
 			case 'rapidPHIRE_DB': 
 				$this->HOST = "localhost";
-				$this->USER = "rapidPHIRE";
-				$this->PASS = "BlowItOutTheWater";
-				$this->DB = "rapidPHIRE";
-				break; 
-			case 'email_DB':
-				$this->HOST = "localhost";
-				$this->USER = "andrew";
-				$this->PASS = "BlowItOutTheWater";
-				$this->DB = "ic";
+				$this->USER = "SQL_USER";
+				$this->PASS = "SQL_PW";
+				$this->DB   = "SQL_DB";
 				break; 
 			case 'user_DB':
 				$this->HOST = "localhost";
-				$this->USER = "rapidPHIRE";
-				$this->PASS = "BlowItOutTheWater";
-				$this->DB = "rapidPHIRE";
+				$this->USER = "SQL_USER";
+				$this->PASS = "SQL_DB";
+				$this->DB   = "SQL_DB";
 				break; 
 			default:
 				$this->HOST = "localhost";
-				$this->USER = "rapidPHIRE";
-				$this->PASS = "BlowItOutTheWater";
-				$this->DB = "rapidPHIRE";
+				$this->USER = "SQL_USER";
+				$this->PASS = "SQL_PW";
+				$this->DB   = "SQL_DB";
 				break;
 		}       
 		$this->connect();

@@ -1,3 +1,8 @@
 TBA
 Instalation
--Prerequisites
+
+cp inc/class.database.php.sample inc/class.database.php
+
+vim inc/class.database.php
+
+EDI user,password, and db fields
