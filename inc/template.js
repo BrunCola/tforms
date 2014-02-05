@@ -905,36 +905,35 @@ var dcBarGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 					resizeViz(chart, "#"+divID, aspect);
 				},10);
 			});
-		dc.events.trigger(function() {
-			var filter = barChart.filters();
-			var string = filter.join(' | ');
+			dc.events.trigger(function() {
+				var filter = barChart.filters();
+				var string = filter.join(' | ');
 				//	oTable.fnFilter(string,null,true,null);
 			});
-	});
-	};
-	
+		});
+};
 var dcPieGraph = function(divID, dim, group, colors) {
-		var width = $("#"+divID).width();
-		pieChart = dc.pieChart("#"+divID)
-		.height(width)
-		.innerRadius(width/6)
-		.width(width)	
-		.group(group)
-		.radius(width/2)
-		.colors(colors)
-		.dimension(dim)
-		.legend(dc.legend().x(width / 2 ).y(width / 2).itemHeight(13).gap(5));
-		// .on("preRender", legend)
-		//	.renderlet(function(chart) {
-		//	//$('#'+dID+' .jdash-header').height();
-		//	//chart.select("svg").attr("width", "100%").attr("height", "100%").attr("viewBox",
-		//	//"0 0 " + width + " " + width).attr("preserveAspectRatio", "xMinYMin meet");
-		//	dc.events.trigger(function() {
-		//		var filter = pieChart.filters();
-		//		var string = filter.join(' | ');
-		//		oTable.fnFilter(string,null,true,null);
-		//	});
-		// });
+	var width = $("#"+divID).width();
+	pieChart = dc.pieChart("#"+divID)
+	.height(width)
+	.innerRadius(width/6)
+	.width(width)	
+	.group(group)
+	.radius(width/2)
+	.colors(colors)
+	.dimension(dim)
+	.legend(dc.legend().x(width / 2 ).y(width / 2).itemHeight(13).gap(5));
+	// .on("preRender", legend)
+	//	.renderlet(function(chart) {
+	//	//$('#'+dID+' .jdash-header').height();
+	//	//chart.select("svg").attr("width", "100%").attr("height", "100%").attr("viewBox",
+	//	//"0 0 " + width + " " + width).attr("preserveAspectRatio", "xMinYMin meet");
+	//	dc.events.trigger(function() {
+	//		var filter = pieChart.filters();
+	//		var string = filter.join(' | ');
+	//		oTable.fnFilter(string,null,true,null);
+	//	});
+	// });
 };
 var dcWordCloud = function(divID, data) {
 	var str = ['test', 'test2', 'test3'];
@@ -979,10 +978,10 @@ var dcWordCloud = function(divID, data) {
 	.rotate(function(d) { return ~~(Math.random() * 5) * 30 - 60; })
 	.font("Impact")
 	.fontSize(function(d) { return fontSize(d.size); })
-		//.fontSize(function(d) { return d.size; })
-		.on("end", wordCloud)
-		.start();
-	};
+	//.fontSize(function(d) { return d.size; })
+	.on("end", wordCloud)
+	.start();
+};
 var dcRowGraph = function(divID, dim, group, colors) {
 	var sevCount = group.reduce(
 		function (d, v) {
@@ -1116,7 +1115,6 @@ var dcCompositeGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 	//.round(d3.time.hour.round)
 	//.xUnits(d3.time.hour);
 };
-
 ///////////////////////////////////////////////
 /////////   D3.JS GRAPH FUNCTIONS   ///////////
 ///////////////////////////////////////////////
