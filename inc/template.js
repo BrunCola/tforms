@@ -418,7 +418,7 @@ var crossfilterViz = function() {
 							
 							// GEO CHART
 							if ((val.type === 'geo') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
-								dcGeoMap(val.dID, cf_data.dimension(dimension[x]), group[g], world);
+								dcGeoMap(val.dID, cf_data, world);
 							}
 							// BAR CHART
 							if ((val.type === 'bar') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
@@ -545,6 +545,16 @@ var parseURL = function(url) {
 		segments: a.pathname.replace(/^\//,'').split('/')
 	};
 };
+function sortByKey(array, key, key2) {
+	return array.sort(function(a, b) {
+		// var x = a[key]; var y = b[key];
+		// return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+
+		if (a[key2] == b[key2])
+		return a[key] < b[key] ? -1 : 1;
+		return a[key2] < b[key2] ? 1 : -1;
+	});
+}
 // top error notification
 var no_fetch = function() { // error display if not data is return from getdata.php
 	$('#breadhome li:last').remove();
@@ -781,25 +791,46 @@ var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height
 				// dc.redrawAll();
 			});
 };
-var dcGeoMap = function (divID, dim, group, world) {
+var dcGeoMap = function (divID, data, world) {
+
+	var dimension = data.dimension(function (d) {
+		return d.remote_country;
+	});
+	var countryCount = dimension.group().reduceSum(function (d) {
+		return d.count;
+	});
+	//var arr = countryCount.top(Infinity);
+	//console.log(arr);
+	var top = countryCount.orderNatural(function (p) {return p.count;}).top(1);
+	//console.log(top[0].value);
+	var numberOfItems = top[0].value+1;
+	var rainbow = new Rainbow(); 
+	rainbow.setNumberRange(0, numberOfItems);
+	rainbow.setSpectrum("#FF0000", "#CC0000", "#990000", "#660000", "#360000");
+	var cc = [];
+	for (var i = 1; i <= numberOfItems; i++) {
+		var hexColour = rainbow.colourAt(i);
+		cc.push('#' + hexColour);
+	}
+	//console.log(cc.length);
 	var width = $("#"+divID).width();
 	var height = width/1.4;
-	var minhits = function (d) { return d.value.min; };
-	var maxhits = function (d) { return d.value.max; };
+	// var minhits = function (d) { return d.value.min; };
+	// var maxhits = function (d) { return d.value.max; };
 	geo = dc.geoChoroplethChart('#'+divID)
-	.dimension(dim)
-	.group(group)
+	.dimension(dimension)
+	.group(countryCount)
 	.projection(d3.geo.mercator().precision(0.1).scale((width + 1) / 0.3 / Math.PI).translate([width / 2, width / 2]))
 	.width(width)
 	.height(width/1.4)
-	.colors(["#ccc", "#FF0000", "#CC0000", "#990000", "#660000", "#360000"])
-	.colorDomain([minhits, maxhits])
+	.colors(cc)
+	.colorCalculator(function (d) { return d ? geo.colors()(d) : '#ccc'; })
 	.overlayGeoJson(world.features, "country", function(d) {
 		return d.properties.name;
 	})
 	.title(function (d) {
-		return "Total Connections: " + (d.value ? d.value : 0);
-	})	
+		return d.key+": "+(d.value ? d.value : 0);
+	})
 	.renderlet(function(chart) {		
 		dc.events.trigger(function() {
 			var filter = geo.filters();
@@ -824,16 +855,14 @@ var dcGeoMap = function (divID, dim, group, world) {
 				resizeViz(chart, "#"+divID, aspect);
 			},10);
 		});
-		//	var tip = d3.tip()
-		//		.attr('class', 'd3-tip')
-		//		.offset([-5, 0])
-		//		.html(function (d) { return "<span style='color: #f0027f'>Country: " + d.properties.name + "</span> : "  + "Total Flows: " + (d.value ? d.value: 0 ); } );
-		//		chart.selectAll("g").call(tip);
-		//		chart.selectAll("g").on('mouseover', tip.show)
-		//		.on('mouseout', tip.hide);				
-		//	chart.select("svg").attr("width", "200%").attr("height", "100%").attr("viewBox",
-		//	"0 0 " + width + " " + width/1.4).attr("preserveAspectRatio", "xMinYMin");
-});
+		// var tip = d3.tip(d)
+		// 	.attr('class', 'd3-tip')
+		// 	.offset([-5, 0])
+		// 	.html(function (d) { return "<span style='color: #f0027f'>Country: " + d.key + "</span> :\nTotal Flows: " + numberFormat(d.value ? d.value : 0); } );
+		// 	chart.selectAll("g").call(tip);
+		// 	chart.selectAll("g").on('mouseover', tip.show)
+		// 	.on('mouseout', tip.hide);
+	});
 };
 var dcBarGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 	var width = $("#"+divID).width();
