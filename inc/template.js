@@ -1,7 +1,6 @@
 var defaultDayRange = 1; //Set default date range for the app
 var defaultSearch = 'ioc_hits'; //Set default search for when the raw url is visited
 var defaultNotifications = 'ioc_hits'; //Set which query to run when the 'See all Notifications' dropdown is clicked
-
 ///////////////////////////////////////////////
 /////////     GENERAL FUNCTIONS     ///////////
 ///////////////////////////////////////////////
@@ -75,7 +74,6 @@ var page = function(search_val, type, start, end, clear_b) {
 				' to that site. Security administrators should access the rapidPHIRE GUI to view any listed IOC event'+
 				' records in more detail.</p>');
 		}
-		
 		// SET HEADERS
 		switch (data.page.header) {
 			case 'drilldown':
@@ -97,7 +95,8 @@ var page = function(search_val, type, start, end, clear_b) {
 		// SET SUB HEADING
 		if (data.page.subheading) {
 			$('#sub_heading').html(data.page.subheading);
-		} else {
+		} 
+		else {
 			$('#sub_heading').html('');
 		}
 		// SET ACTIVE SIDEBAR
@@ -106,18 +105,21 @@ var page = function(search_val, type, start, end, clear_b) {
 			$('.page-sidebar-menu :not(.'+data.page.sidebar+')').removeClass('start active');
 			$('.page-sidebar-menu li.'+data.page.sidebar).addClass('start active');
 			$('#heading_sub', '.page-sidebar-menu li.'+data.page.sidebar).addClass('selected');
-		} else {
+		} 
+		else {
 			$('.page-sidebar-menu li').removeClass('start active');
 		}
 		// SET BREADCRUMBS
 		if (clear_b===true) { // if true, clear breadcrumbs and set new div (for search feilds)
 			clear_div('breadhome');
 			$('#breadhome').append('<li><i class=\'fa fa-angle-right\'></i><a href="javascript:void(0);" onclick="page(\''+search_val+'\',\''+type+'\',\''+start+'\',\''+end+'\',false);$(this).parent().nextAll().remove();">'+data.page.title+' ('+search_val+')</a></li>');
-		} else if (clear_b===false) { // if false, just append new (for digging through the table/calendar)
+		} 
+		else if (clear_b===false) { // if false, just append new (for digging through the table/calendar)
 			$('#breadhome').append('<li><i class=\'fa fa-angle-right\'></i><a href="javascript:void(0);" onclick="page(\''+search_val+'\', \''+type+'\',\''+start+'\',\''+end+'\',false);$(this).parent().nextAll().remove();">'+data.page.title+' ('+search_val+')</a></li>');
-		} else if (clear_b===null) { // if false, just append new (for page loads & 'Home' button in breadcrumb)
-		clear_div('breadhome');
-	}
+		} 
+		else if (clear_b===null) { // if false, just append new (for page loads & 'Home' button in breadcrumb)
+			clear_div('breadhome');
+		}
 		// SEVERITY LEVEL INDICATORS
 		if (data.page.severity !== undefined) { 
 			$('#severity').append('<button onclick="oTable.fnFilter(\'Severity: 1\',null);severityBtn(\'alert1\');" style="min-width:120px" class="severity-btn btn mini alert1 alert"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> 0 </span></button>');
@@ -141,8 +143,6 @@ var page = function(search_val, type, start, end, clear_b) {
 				}
 			});
 		}
-
-
 		// PUSH CUSTOM HTML INTO DIVS
 		if (data.html !== null) {
 			for (var i = 0; i < data.html.length; i++) {	
@@ -204,9 +204,7 @@ var page = function(search_val, type, start, end, clear_b) {
 						'</div>\n' +
 						'</div>\n' +
 						'</div>\n'
-						);
-					
-					
+					);
 				}
 			}
 			//INSERT TABLE PAGE BREAKS INTO HTML (this has to happen after the viz divs are created above)
@@ -331,7 +329,6 @@ var page = function(search_val, type, start, end, clear_b) {
 			var vInsert = (new Function( "return([" + data.page.vDiv[h][1] + "])" ))();
 			$('#'+ data.page.vDiv[h][0]).jDashboard({ storageID: type, columns: vInsert, controls: '#jdash-controls' });
 		}
-		
 		// IOC information expand text
 		$(function() {
 			$(".description").each(function(i) {
@@ -346,11 +343,11 @@ var tableViz = function(columns, data) {
 	for(var i=0; i < columns.length; i++) {
 		getTable(data[i].dID, json, data[i], columns[i]);
 	}
-		$(".page-content").fadeTo(500, 1); // return opacity to 1 
-		//$(".dc-data-table tbody tr td .trash-row").click(function () {
-		//oTable.fnDeleteRow(this);
-		//});
-$('.page-content').activity(false);
+	$(".page-content").fadeTo(500, 1); // return opacity to 1 
+	//$(".dc-data-table tbody tr td .trash-row").click(function () {
+	//	oTable.fnDeleteRow(this);
+	//});
+	$('.page-content').activity(false);
 };
 var crossfilterViz = function() {
 	queue()
@@ -476,18 +473,18 @@ var crossfilterViz = function() {
 		.attr("height", height);
 		d3.json(json+'&getViz=true&vizType=d3stealth', function(error, graph) {
 			var force = d3.layout.force()
-			.charge(-120)
+				.charge(-120)
 				.linkDistance(50) //default is 30
 				.size([width, height])
 				.nodes(graph.nodes)
 				.links(graph.links)
 				.start();
-				var link = svg.selectAll(".link")
+			var link = svg.selectAll(".link")
 				.data(graph.links)
 				.enter().append("line")
 				.attr("class", "link")
 				.style("stroke-width", function(d) { return Math.sqrt(d.value); });
-				var node = svg.selectAll(".node")
+			var node = svg.selectAll(".node")
 				.data(graph.nodes)
 				.enter().append("circle")
 				.attr("class", "node")
@@ -496,16 +493,16 @@ var crossfilterViz = function() {
 				.call(force.drag)
 				.append("title")
 				.text(function(d) { return d.name; });
-				force.on("tick", function() {
-					link.attr("x1", function(d) { return d.source.x; })
+			force.on("tick", function() {
+				link.attr("x1", function(d) { return d.source.x; })
 					.attr("y1", function(d) { return d.source.y; })
 					.attr("x2", function(d) { return d.target.x; })
 					.attr("y2", function(d) { return d.target.y; });
-					node.attr("cx", function(d) { return d.x; })
+				node.attr("cx", function(d) { return d.x; })
 					.attr("cy", function(d) { return d.y; });
-				});
 			});
-};
+		});
+	};
 	// INITIAL COMPONENTS TO RUN
 	floating_logo();
 	$('.page-content').activity(false); //data loading spinner
@@ -516,12 +513,10 @@ var crossfilterViz = function() {
 		$('html, body').animate({scrollTop:0}, 'slow');
 	}
 };// end page() function
-
-
 var getURLParameter = function(name) {
 	return decodeURI(
 		(RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[1]
-		);
+	);
 };
 var parseURL = function(url) {
 	var a =  document.createElement('a');
@@ -628,7 +623,6 @@ var severityBtn = function(divclass) {
 		oTable.fnFilter('', null);
 	}
 };
-
 var resizeViz = function (chart, divid, aspect) {
 	var targetWidth = $(divid).width();
 	chart.select('svg')
@@ -637,7 +631,6 @@ var resizeViz = function (chart, divid, aspect) {
 	// chart.selectAll('svg g text')
 	// .attr('style', 'font-size:12px; !important');
 };
-
 var d3swimChart = function(divID, json) {
 	d3.json(json+'&getViz=true&vizType=d3swimChart&dID='+divID, function(error, dataset) {
         timeline('#'+divID)
@@ -788,7 +781,6 @@ var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height
 				// dc.redrawAll();
 			});
 };
-
 var dcGeoMap = function (divID, dim, group, world) {
 	var width = $("#"+divID).width();
 	var height = width/1.4;
@@ -963,66 +955,76 @@ var dcWordCloud = function(divID, data) {
 		.start();
 	};
 var dcRowGraph = function(divID, dim, group, colors) {
-		var sevCount = group.reduce(
-			function (d, v) {
-			//++d.count;
-			d.severity = v.ioc_severity - 1;
-			d.count += v.count;
-			return d;
-		},
-		/* callback for when data is removed from the current filter results */
+	var sevCount = group.reduce(
 		function (d, v) {
-			//--d.count;
-			d.severity = v.ioc_severity - 1;
-			d.count -= v.count;
-			return d;
-		},
-		/* initialize d */
-		function () {
-			return {count: 0, severity: 0};
-		});
-		var tops = sevCount.order(function (p) {return p.count;}).top(1);
-		var numberFormat = d3.format(",f");
-		function logFormat(d) {
-			var x = Math.log(d) / Math.log(10) + 1e-6;
-			return Math.abs(x - Math.floor(x)) < 0.3 ? numberFormat(d) : "";
-		}
-		var rowChart = dc.rowChart("#"+divID);
-		//set pixels to expand by if there are more than [hLimit] items
-		// var hLimit = 9;
-		// var barExpand = 0;
-		// if (colors.length > hLimit) {
-		//	barExpand = (colors.length - hLimit)*(width/35);
-		// }
-		var hHeight, lOffset;
-		if (colors.length < 7) {
-			lOffset = 17+(colors.length*0.2);
-			hHeight = 25+(colors.length*35);
-		} else if (colors.length >= 7) {
-			lOffset = 12.7+(colors.length*0.2);
-			hHeight = 25+(colors.length*28);	
-		}
-		var width = $("#"+divID).width();
-			rowChart
-			.width(width)
-			//.height(width/2 + barExpand)
-			.height(hHeight)
-			.margins({top: 5, left: 0, right: 0, bottom: 20})
-			.group(sevCount)
-			.dimension(dim)
-			.colors(["#377FC7","#F5D800","#F88B12","#DD122A"])
-			.valueAccessor(function(d) {
-				return d.value.count+0.1;
-			})
-			.colorAccessor(function (d){return d.value.severity;})
-			.renderlet(function(chart){
-				chart.select('svg')
-					.attr('width', width)
-					.attr('height', hHeight)
-					.attr('viewBox', '0 0 '+width+' '+hHeight)
-					.attr('perserveAspectRatio', 'xMinYMid');
-					var aspect;
-					$(window).on("resize", function() {
+		//++d.count;
+		d.severity = v.ioc_severity - 1;
+		d.count += v.count;
+		return d;
+	},
+	/* callback for when data is removed from the current filter results */
+	function (d, v) {
+		//--d.count;
+		d.severity = v.ioc_severity - 1;
+		d.count -= v.count;
+		return d;
+	},
+	/* initialize d */
+	function () {
+		return {count: 0, severity: 0};
+	});
+	var tops = sevCount.order(function (p) {return p.count;}).top(1);
+	var numberFormat = d3.format(",f");
+	function logFormat(d) {
+		var x = Math.log(d) / Math.log(10) + 1e-6;
+		return Math.abs(x - Math.floor(x)) < 0.3 ? numberFormat(d) : "";
+	}
+	var rowChart = dc.rowChart("#"+divID);
+	//set pixels to expand by if there are more than [hLimit] items
+	// var hLimit = 9;
+	// var barExpand = 0;
+	// if (colors.length > hLimit) {
+	//	barExpand = (colors.length - hLimit)*(width/35);
+	// }
+	var hHeight, lOffset;
+	if (colors.length < 7) {
+		lOffset = 17+(colors.length*0.2);
+		hHeight = 25+(colors.length*35);
+	} else if (colors.length >= 7) {
+		lOffset = 12.7+(colors.length*0.2);
+		hHeight = 25+(colors.length*28);	
+	}
+	var width = $("#"+divID).width();
+		rowChart
+		.width(width)
+		//.height(width/2 + barExpand)
+		.height(hHeight)
+		.margins({top: 5, left: 0, right: 0, bottom: 20})
+		.group(sevCount)
+		.dimension(dim)
+		.colors(["#377FC7","#F5D800","#F88B12","#DD122A"])
+		.valueAccessor(function(d) {
+			return d.value.count+0.1;
+		})
+		.colorAccessor(function (d){return d.value.severity;})
+		.renderlet(function(chart){
+			chart.select('svg')
+				.attr('width', width)
+				.attr('height', hHeight)
+				.attr('viewBox', '0 0 '+width+' '+hHeight)
+				.attr('perserveAspectRatio', 'xMinYMid');
+				var aspect;
+				$(window).on("resize", function() {
+					if (colors.length < 7) {
+						height = 25+(colors.length*35);
+					} else if (colors.length >= 7) {
+						height = 25+(colors.length*28);	
+					}
+					aspect = width / hHeight;
+					resizeViz(chart, "#"+divID, aspect);
+				});
+				$('.sidebar-toggler').on("click", function() {
+					setTimeout(function() {
 						if (colors.length < 7) {
 							height = 25+(colors.length*35);
 						} else if (colors.length >= 7) {
@@ -1030,28 +1032,18 @@ var dcRowGraph = function(divID, dim, group, colors) {
 						}
 						aspect = width / hHeight;
 						resizeViz(chart, "#"+divID, aspect);
-					});
-					$('.sidebar-toggler').on("click", function() {
-						setTimeout(function() {
-							if (colors.length < 7) {
-								height = 25+(colors.length*35);
-							} else if (colors.length >= 7) {
-								height = 25+(colors.length*28);	
-							}
-							aspect = width / hHeight;
-							resizeViz(chart, "#"+divID, aspect);
-						},10);
-					});
-			})
-			.renderLabel(true)
-			.label(function(d) { return d.key+' ('+d.value.count+')'; })
-			.labelOffsetY(lOffset)
-			.elasticX(false)
-			.x(d3.scale.log().domain([1, tops[0].value.count+0.1]).range([0,width]))
-			.xAxis()
-			.scale(rowChart.x())
-			.tickFormat(logFormat);
-	};
+					},10);
+				});
+		})
+		.renderLabel(true)
+		.label(function(d) { return d.key+' ('+d.value.count+')'; })
+		.labelOffsetY(lOffset)
+		.elasticX(false)
+		.x(d3.scale.log().domain([1, tops[0].value.count+0.1]).range([0,width]))
+		.xAxis()
+		.scale(rowChart.x())
+		.tickFormat(logFormat);
+};
 var dcCompositeGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 	var width = $("#"+divID).width();
 	var compositeChart = dc.compositeChart("#"+divID)
