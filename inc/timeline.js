@@ -22,17 +22,7 @@ function timeline(domElement, dataset) {
       return Math.exp(minv + scale*(x-minp));
     }
 
-    function sortByKey(array, key, key2) {
-        return array.sort(function(a, b) {
-            // var x = a[key]; var y = b[key];
-            // return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-
-            if (a[key2] == b[key2])
-            return a[key] < b[key] ? -1 : 1;
-            return a[key2] < b[key2] ? 1 : -1;
-
-        });
-    }
+    
     // chart geometry
     var margin = {top: 20, right: 20, bottom: 35, left: 20},
         outerWidth = $(domElement).width(),
