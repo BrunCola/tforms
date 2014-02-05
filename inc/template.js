@@ -1,9 +1,6 @@
 var defaultDayRange = 1; //Set default date range for the app
 var defaultSearch = 'ioc_hits'; //Set default search for when the raw url is visited
 var defaultNotifications = 'ioc_hits'; //Set which query to run when the 'See all Notifications' dropdown is clicked
-///////////////////////////////////////////////
-/////////     GENERAL FUNCTIONS     ///////////
-///////////////////////////////////////////////
 var page = function(search_val, type, start, end, clear_b) {
 
 	clear_div('page');
@@ -381,6 +378,16 @@ var parseURL = function(url) {
 		segments: a.pathname.replace(/^\//,'').split('/')
 	};
 };
+var sortByKey = function(array, key, key2) {
+	return array.sort(function(a, b) {
+		// var x = a[key]; var y = b[key];
+		// return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+
+		if (a[key2] == b[key2])
+		return a[key] < b[key] ? -1 : 1;
+		return a[key2] < b[key2] ? 1 : -1;
+	});
+}
 // top error notification
 var no_fetch = function() { // error display if not data is return from getdata.php
 	$('#breadhome li:last').remove();
@@ -451,12 +458,10 @@ var dPopup = function(text) {
 var severityBtn = function(divclass) {
 	if (($("."+divclass).siblings().hasClass('severity-deselect')===false) && ($("."+divclass).hasClass('severity-deselect')===false)) {
 		$("."+divclass).siblings().addClass('severity-deselect');
-	} 
-	else if ($("."+divclass).hasClass("severity-deselect") === true) {
+	} else if ($("."+divclass).hasClass("severity-deselect") === true) {
 		$("."+divclass).removeClass("severity-deselect");
 		$("."+divclass).siblings().addClass("severity-deselect");
-	} 
-	else if (($("."+divclass).hasClass("severity-deselect") === false) && ($("."+divclass).siblings().hasClass('severity-deselect')===true)) {
+	} else if (($("."+divclass).hasClass("severity-deselect") === false) && ($("."+divclass).siblings().hasClass('severity-deselect')===true)) {
 		$("."+divclass).siblings().removeClass('severity-deselect');
 		oTable.fnFilter('', null);
 	}
@@ -469,7 +474,21 @@ var resizeViz = function (chart, divid, aspect) {
 	// chart.selectAll('svg g text')
 	// .attr('style', 'font-size:12px; !important');
 };
-// DC.JS GRAPH FUNCTIONS
+var d3swimChart = function(divID, json) {
+	d3.json(json+'&getViz=true&vizType=d3swimChart&dID='+divID, function(error, dataset) {
+        timeline('#'+divID)
+            .data(dataset)
+            .band("mainBand", 0.82)
+            .band("naviBand", 0.08)
+            .xAxis("mainBand")
+            .xAxis("naviBand")
+            .labels("mainBand")
+            .labels("naviBand")
+            .brush("naviBand", ["mainBand"])
+            .redraw();
+    });
+};
+// dc.js functions
 var crossfilterViz = function(json, start, end) {
 	queue()
 	.defer(d3.json, json+'&getViz=true&vizType=crossfilter')
@@ -1030,7 +1049,7 @@ var dcCompositeGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 	//.round(d3.time.hour.round)
 	//.xUnits(d3.time.hour);
 };
-// D3.JS GRAPH FUNCTIONS
+// d3.js functions
 var d3Viz = function(json, data) {
 	for (var d in data.viz.d3) {
 		if(data.viz.d3[d].disp.type === 'pie') {
@@ -1080,20 +1099,6 @@ var d3Stealth = function(json, data) {
 				.attr("cy", function(d) { return d.y; });
 		});
 	});
-};
-var d3swimChart = function(divID, json) {
-	d3.json(json+'&getViz=true&vizType=d3swimChart&dID='+divID, function(error, dataset) {
-        timeline('#'+divID)
-        .data(dataset)
-        .band("mainBand", 0.82)
-        .band("naviBand", 0.08)
-        .xAxis("mainBand")
-        .xAxis("naviBand")
-        .labels("mainBand")
-        .labels("naviBand")
-        .brush("naviBand", ["mainBand"])
-        .redraw();
-    });
 };
 var d3PieGraph = function(divID, json) {
 	///NOTE: there is an issue with the colors not being assigned to the right data. the colution is to push the colors into the data object and access it from there
@@ -1163,7 +1168,7 @@ var d3PieGraph = function(divID, json) {
 			.text(function(d, i) { return graph.aaData[i].ioc; });
 		});
 };
-// DataTable FUNCTIONS
+// datatables functions
 var tableViz = function(json, columns, data) {
 	for(var i=0; i < columns.length; i++) {
 		getTable(data[i].dID, json, data[i], columns[i]);
@@ -1246,9 +1251,7 @@ var getTable = function(divID, json, data, columns) {
 	});
 	oTable.fnFilter('');
 };
-///////////////////////////////////////////////
-/////////    PAGE LOAD FUNCTIONS    ///////////
-///////////////////////////////////////////////
+// PAGE LOAD FUNCTIONS
 $(document).ready(function() { // execute javascript as soon as DOM is loaded
 	App.init(); // initlayout and core plugins
 	floating_logo();
