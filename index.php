@@ -184,7 +184,7 @@ if (isset($_GET['logout'])) {
 					$f = fopen('VERSION', 'r');
 					$line = fgets($f);
 					fclose($f);
-					echo '&copy; 2013 Phirelight Security Solutions - rapidPHIRE version: '.$line;
+					echo '&copy; '.date("Y").' Phirelight Security Solutions - rapidPHIRE version: '.$line;
 				?>
 			</div>
 			
@@ -235,7 +235,12 @@ if (isset($_GET['logout'])) {
 			</div>
 		</form>
 		<div class="copyright">
-			&copy; <?php echo date("Y") ?> Phirelight Security Solutions.
+			<?php
+				$f = fopen('VERSION', 'r');
+				$line = fgets($f);
+				fclose($f);
+				echo '&copy; '.date("Y").' Phirelight Security Solutions - rapidPHIRE version: '.$line;
+			?>
 		</div>
 	    <div class="create-account">
 			<p>
