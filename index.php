@@ -180,8 +180,14 @@ if (isset($_GET['logout'])) {
 		<div class="footer">
 			<div class="footer-inner">
 				<img src="assets/img/rapid.png" id="footimg" class="hidden-phone hidden-tablet">
-				&copy; 2013 Phirelight Security Solutions
+				<?php 
+					$f = fopen('VERSION', 'r');
+					$line = fgets($f);
+					fclose($f);
+					echo '&copy; '.date("Y").' Phirelight Security Solutions - rapidPHIRE version: '.$line;
+				?>
 			</div>
+			
 			<div class="footer-tools">
 				<span class="go-top">
 					<i class="fa fa-angle-up"></i>
@@ -229,7 +235,12 @@ if (isset($_GET['logout'])) {
 			</div>
 		</form>
 		<div class="copyright">
-			&copy; <?php echo date("Y") ?> Phirelight Security Solutions.
+			<?php
+				$f = fopen('VERSION', 'r');
+				$line = fgets($f);
+				fclose($f);
+				echo '&copy; '.date("Y").' Phirelight Security Solutions - rapidPHIRE version: '.$line;
+			?>
 		</div>
 	    <div class="create-account">
 			<p>
