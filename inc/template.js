@@ -549,7 +549,6 @@ var crossfilterViz = function(json, start, end) {
 						var hexColour = rainbow.colourAt(hex);
 						cc.push('#' + hexColour);
 					}
-
 					for (var key in data.viz) { // for every key in the viz array, check the graph type against the ones below
 						if (key === 'length' || !data.viz.hasOwnProperty(key)) continue;
 						var val = data.viz[key];
@@ -720,7 +719,7 @@ var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height
 		// dc.redrawAll();
 	});
 };
-var dcGeoMap = function (divID, data, world) {
+var dcGeoMap = function(divID, data, world) {
 	var dimension = data.dimension(function (d) {
 		return d.remote_country;
 	});

@@ -5,13 +5,13 @@ $group = null;
 $query = null;
 $limit = null;
 $start = null;
-$end = null;
+$end   = null;
 // Grab get parameters
 if (isset($_GET['group'])) { $group = $_GET['group']; }
 if (isset($_GET['query'])) { $query = $_GET['query']; }
 if (isset($_GET['limit'])) { $limit = $_GET['limit']; }
 if (isset($_GET['start'])) { $start = $_GET['start']; }
-if (isset($_GET['end']))   { $end = $_GET['end']; }
+if (isset($_GET['end']))   { $end   = $_GET['end']; }
 if (isset($_GET['type']))  { 
 	$type = $_GET['type'];	
 	fetch($database, $type, $query, $start, $end, $group);
@@ -417,6 +417,7 @@ function fetch($database, $type, $query, $start, $end, $group) {
 						array('count(*) AS count','IOC Hits','true'), 
 						array('ioc','IOC','true'),
 						array('ioc_type', 'IOC Type', 'true'),
+						array('remote_ip','Remote IP','true'),
 						array('remote_country','Remote Country','true'),
 						array('remote_cc',' ','true'),
 						array('sum(`in_bytes`) AS icon_in_bytes','Up / Down','true'), 
@@ -424,7 +425,9 @@ function fetch($database, $type, $query, $start, $end, $group) {
 					),
 					'from' => 'conn_ioc',
 					'where' => '`ioc_count` > 0, `trash` IS NULL',
-					'group' => 'ioc_type, ioc'
+					'group' => 'ioc_type, ioc, ioc_group',
+					'limit' => '10',
+					'order' => 'ioc_severity DESC, count DESC'
 				),
 				array(
 					'pID' => 't2',
@@ -449,7 +452,8 @@ function fetch($database, $type, $query, $start, $end, $group) {
 					),
 					'from' => 'conn_ioc',
 					'where' => '`ioc_count` > 0, `trash` IS NULL',
-					'group' => 'ioc_type, ioc, lan_ip, wan_ip'
+					'group' => 'ioc_type, ioc, lan_ip, wan_ip',
+					'order' => 'ioc_severity DESC, count DESC'
 				),
 			);	
 			break;	
@@ -2694,7 +2698,7 @@ function getTable($database, $table, $start, $end, $notime, $dID) {
 					$aColumns[] = "`".$table[$t]['select'][$m][0]."`"; // escape column name
 				}
 			};
-		    $sTable = $table[$t]['from'];
+			$sTable = $table[$t]['from'];
 			$aWhere = null;
 			if (isset($table[$t]['where'])) {
 				$aWhere = explode(',',$table[$t]['where']);
@@ -2735,11 +2739,17 @@ function getTable($database, $table, $start, $end, $notime, $dID) {
 					$sOrder = "";
 				}
 			} 
-		    $sLimit = "";
-		    if (isset($_GET['iDisplayStart']) && $_GET['iDisplayLength'] != '-1') {
-		        $sLimit = " LIMIT ".mysql_real_escape_string( $_GET['iDisplayStart'] ).", ".
-		        mysql_real_escape_string( $_GET['iDisplayLength'] );
-		    };
+			if (isset($table[$t]['order'])) {
+				$sOrder = " ORDER BY " . $table[$t]['order'];
+			}
+			$sLimit = "";
+			if (isset($_GET['iDisplayStart']) && $_GET['iDisplayLength'] != '-1') {
+				$sLimit = " LIMIT ".mysql_real_escape_string( $_GET['iDisplayStart'] ).", ".
+				mysql_real_escape_string( $_GET['iDisplayLength'] );
+			};
+			if (isset($table[$t]['limit'])) {
+				$sLimit = " LIMIT " . $table[$t]['limit'];
+			}
 			$sWhere = null;
 			if ($notime != true) { // time required
 				if (isset($_GET['sSearch'])) {
@@ -2825,22 +2835,20 @@ function getTable($database, $table, $start, $end, $notime, $dID) {
 					");	
 				}
 			}
-
-		    // Data set length after filtering 
+			// Data set length after filtering 
 			$sQuery2 = "SELECT FOUND_ROWS()";
 			$rResultFilterTotal = mysql_query( $sQuery2 ) or die (mysql_error());
 			$aResultFilterTotal = mysql_fetch_array($rResultFilterTotal);
 			$iFilteredTotal = $aResultFilterTotal[0];
-		   
-		    // Output structure
-		    $output = array(
-		       "sEcho" => intval($_GET['sEcho']),
-		       "iTotalRecords" => $iFilteredTotal,
-		       "iTotalDisplayRecords" => $iFilteredTotal,
-		       "aaData" => array(),
-		    );   
-		    $row = null;
-		    $col = null;
+			// Output structure
+			$output = array(
+				"sEcho" => intval($_GET['sEcho']),
+				"iTotalRecords" => $iFilteredTotal,
+				"iTotalDisplayRecords" => $iFilteredTotal,
+				"aaData" => array(),
+			);
+			$row = null;
+			$col = null;
 			while ($row = $database->fetchRow()) {
 				for ($i=0; $i < count($table[$t]['select']); $i++) {
 					$sel = $table[$t]['select'][$i][0];
