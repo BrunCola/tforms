@@ -6,7 +6,9 @@ var defaultNotifications = 'ioc_hits'; //Set which query to run when the 'See al
 ///////////////////////////////////////////////
 var rowChart, geoChart, sevChart, barChart, compositeChart, pieChart;
 var page = function(search_val, type, start, end, clear_b) {
-	
+	// dc.events.trigger(function() {
+	//	alert('test');
+	// });
 	clear_div('page');
 	$('#paral').hide();
 	$('#head-right').html('');
@@ -123,10 +125,13 @@ var page = function(search_val, type, start, end, clear_b) {
 		}
 		// SEVERITY LEVEL INDICATORS
 		if (data.page.severity !== undefined) { 
-			$('#severity').append('<button onclick="oTable.fnFilter(\'Severity: 1\',null);severityBtn(\'alert1\');" style="min-width:120px" class="severity-btn btn mini alert1 alert"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> 0 </span></button>');
-			$('#severity').append('<button onclick="oTable.fnFilter(\'Severity: 2\',null);severityBtn(\'alert2\');" style="min-width:120px" class="severity-btn btn mini alert2 alert"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> 0 </span></button>');
-			$('#severity').append('<button onclick="oTable.fnFilter(\'Severity: 3\',null);severityBtn(\'alert3\');" style="min-width:120px" class="severity-btn btn mini alert3 alert"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> 0 </span></button>');
-			$('#severity').append('<button onclick="oTable.fnFilter(\'Severity: 4\',null);severityBtn(\'alert4\');" style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
+			$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert1 alert"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> 0 </span></button>');
+			$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert2 alert"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> 0 </span></button>');
+			$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert3 alert"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> 0 </span></button>');
+			// $('#severity').append('<button onclick="oTable.fnFilter(\'Severity: 4\',null);severityBtn(\'alert4\');" style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
+			//$('#severity').append('<button onclick="geoChart.filter(\'Canada\');dc.redrawAll();" style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
+			//$('#severity').append('<button onclick="sevChart.filter(\'guarded\');dc.redrawAll();" style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
+			$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
 			d3.json(json+'&severity_levels=true', function(levels) {
 				for (var s in levels) {
 					if (levels[s].ioc_severity === '1') {
@@ -368,7 +373,6 @@ var crossfilterViz = function() {
 					var width;
 					var dim = data.struct[s].dim;
 					var grp = data.struct[s].grp;
-
 					for (var x in data.struct[s].dim) {
 						dimension[x] = (new Function( "return( function(d) { return d." + dim[x] + " } );" ))();
 						var mainGroup;
@@ -380,7 +384,6 @@ var crossfilterViz = function() {
 							d.hour = d3.time.hour(d.dd);
 							d.count = +d.count;
 						});
-						
 						for (var g in data.struct[s].grp) {
 							if (grp[g] !== '') {
 								group[g] = cf_data.dimension(dimension[x]).group().reduceSum((new Function( "return( function(d) { return d." + grp[g] + " } );" ))());
@@ -412,7 +415,6 @@ var crossfilterViz = function() {
 							var hexColour = rainbow.colourAt(hex);
 							cc.push('#' + hexColour);
 						}
-
 						for (var key in data.viz) { // for every key in the viz array, check the graph type against the ones below
 							if (key === 'length' || !data.viz.hasOwnProperty(key)) continue;
 							var val = data.viz[key];					
@@ -438,7 +440,6 @@ var crossfilterViz = function() {
 							}
 							// WORDCLOUD
 							if ((val.type === 'word') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
-								
 								dcWordCloud(val.dID,data);
 							}
 							// ROW CHART
@@ -630,16 +631,49 @@ var floating_logo = function() {
 var dPopup = function(text) {
 	$.colorbox({html:text, width:500});
 };
-var severityBtn = function(divclass) {
-	if (($("."+divclass).siblings().hasClass('severity-deselect')===false) && ($("."+divclass).hasClass('severity-deselect')===false)) {
-		$("."+divclass).siblings().addClass('severity-deselect');
-	} else if ($("."+divclass).hasClass("severity-deselect") === true) {
-		$("."+divclass).removeClass("severity-deselect");
-		$("."+divclass).siblings().addClass("severity-deselect");
-	} else if (($("."+divclass).hasClass("severity-deselect") === false) && ($("."+divclass).siblings().hasClass('severity-deselect')===true)) {
-		$("."+divclass).siblings().removeClass('severity-deselect');
-		oTable.fnFilter('', null);
-	}
+var severityBtn = function(dim, event, divid) {
+	var dimArray; var sevArray; var sev = [];
+	if (event === true) {
+		sev = [];
+		dimArray = dim.top(Infinity);
+		var arr = [];var uniqueArray; 
+		dimArray.forEach(function(d){
+			arr.push(d.ioc_severity);
+		});
+		uniqueArray = arr.filter(function(elem, pos) {
+			return arr.indexOf(elem) == pos;
+		});
+		$("#severity").children().addClass("severity-deselect");
+		for(var a in uniqueArray) {
+			$(".alert"+uniqueArray[a]).removeClass("severity-deselect");
+		}
+		console.log('event true fire');console.log(dimArray);
+	} else if (event === false){
+		sevArray = dim.top(Infinity);
+		sev = [];
+		//take dimension being passed, convert it to time, filter then redraw
+		console.log('event false fire');
+		sevChart.filter(null);
+		for (var d in dim.top(Infinity)) {
+			if (dim.top(Infinity)[d].ioc_severity === divid) {
+				sev.push({
+					dd: dim.top(Infinity)[d].dd,
+					ioc_severity: dim.top(Infinity)[d].ioc_severity,
+					ioc: dim.top(Infinity)[d].ioc
+				});
+			}
+		}
+		var minX = Math.min.apply(Math, sev.map(function(val) { return val.dd; }));
+		var maxX = Math.max.apply(Math, sev.map(function(val) { return val.dd; }));
+		if (minX !== Infinity) {
+			sevChart.filter([minX,maxX]);
+			//sevChart.redraw();
+			// for (var i in sev) {
+			//	rowChart.filter(sev[i].ioc);
+			// }
+			dc.redrawAll();
+		}
+	}	
 };
 var resizeViz = function (chart, divid, aspect) {
 	var targetWidth = $(divid).width();
@@ -667,31 +701,6 @@ var d3swimChart = function(divID, json) {
 ///////////////////////////////////////////////
 /////////   DC.JS GRAPH FUNCTIONS   ///////////
 ///////////////////////////////////////////////
-
-// var gFilter = function(dimension, dimName) {	
-//var arr = countryCount.top(Infinity);	
-//console.log(arr);
-
-//	////usage
-//	//	var fArr = gFilter(dimension, 'ioc');		
-//dimArray = cf_data.dimension(dimension[x]).top(Infinity);
-//	//	for (var f in fArr) {
-//	//		chart.filter(fArr[f]);
-//	//		//sevChart.filter(uniqueArray[f]);
-//	//		//console.log(uniqueArray);
-//	//	}
-//	var arr = []; var uniqueArray;
-//	dimArray.forEach(function(d){
-//	//	for (var e in d) {
-//	arr.push(d[dimName]);
-//	//	}	
-//		arr.push(d.ioc);
-//	});
-//	uniqueArray = arr.filter(function(elem, pos) {
-//		return arr.indexOf(elem) == pos;
-//	});
-//	return uniqueArray;
-// };
 
 var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height) {
 	var connVsTime = group.reduce(
@@ -813,7 +822,7 @@ var dcGeoMap = function (divID, data, world) {
 	});
 	var top = countryCount.orderNatural(function (p) {return p.count;}).top(1);
 	var numberOfItems = top[0].value+1;
-	var rainbow = new Rainbow(); 
+	var rainbow = new Rainbow();
 	rainbow.setNumberRange(0, numberOfItems);
 	rainbow.setSpectrum("#FF0000", "#CC0000", "#990000", "#660000", "#360000");
 	var cc = [];
@@ -839,7 +848,25 @@ var dcGeoMap = function (divID, data, world) {
 		.title(function (d) {
 			return d.key+": "+(d.value ? d.value : 0);
 		})
+		.on("postRender", function(chart, d){
+			$('.alert1').on("click", function() {
+				severityBtn(dimension, false, '1');
+			});
+			$('.alert2').on("click", function() {
+				severityBtn(dimension, false, '2');
+			});
+			$('.alert3').on("click", function() {
+				severityBtn(dimension, false, '3');
+			});
+			$('.alert4').on("click", function() {
+				severityBtn(dimension, false, '4');
+			});
+		})
 		.renderlet(function(chart,d) {
+			dc.events.trigger(function() {
+				severityBtn(dimension, true);
+			});
+			
 			chart.select('svg')
 				.attr('width', width)
 				.attr('height', height)
