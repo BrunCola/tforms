@@ -1158,23 +1158,20 @@ var d3force = function(divID, json) {
 };
 // DataTable FUNCTIONS
 var tableViz = function(json, data, columns) {
-	for(var i=0; i < columns.length; i++) {
+	for (var i=0; i < columns.length; i++) {
 		getTable(data[i].dID, json, data[i], columns[i]);
 	}
 	$(".page-content").fadeTo(500, 1); // return opacity to 1 
-	//$(".dc-data-table tbody tr td .trash-row").click(function () {
-	//	oTable.fnDeleteRow(this);
-	//});
 	$('.page-content').activity(false);
 };
 var getTable = function(divID, json, data, columns) {
 	var graph_type = getURLParameter('type');
 	var sort = [[ 0, "desc" ]];
 	if (data.sSort) {
-		sort = (new Function( "return([" + data.sSort + "])" ))();
+		sort = (new Function("return([" + data.sSort + "])"))();
 	}
 	var bFilter,iDisplayLength,bStateSave,bPaginate,sDom;	
-	if(/(report)/.test(window.location) === true) {
+	if (/(report)/.test(window.location) === true) {
 		bfilter = false;
 		iDisplayLength = false;
 		bStateSave = true;
