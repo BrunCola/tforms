@@ -4,6 +4,7 @@ var defaultNotifications = 'ioc_hits'; //Set which query to run when the 'See al
 ///////////////////////////////////////////////
 /////////     GENERAL FUNCTIONS     ///////////
 ///////////////////////////////////////////////
+var rowChart, geoChart, sevChart, barChart, compositeChart, pieChart;
 var page = function(search_val, type, start, end, clear_b) {
 	
 	clear_div('page');
@@ -359,15 +360,17 @@ var crossfilterViz = function() {
 				no_fetch();
 			} 
 			else {
+				var cf_data = crossfilter(data.aaData); // feed it through crossfilter
+				var all = cf_data.groupAll();
 				for (var s = 0; s < data.struct.length; s++) { // Loop for every struct param
 					var dimension = {}; // make dimension an object to count up with
 					var group = {};
 					var width;
 					var dim = data.struct[s].dim;
 					var grp = data.struct[s].grp;
+
 					for (var x in data.struct[s].dim) {
 						dimension[x] = (new Function( "return( function(d) { return d." + dim[x] + " } );" ))();
-						var cf_data;
 						var mainGroup;
 						var mainDimension;
 						// TODO // this needs to be moved out of loop and have a statement checking if it's necessary beforehand
@@ -377,8 +380,7 @@ var crossfilterViz = function() {
 							d.hour = d3.time.hour(d.dd);
 							d.count = +d.count;
 						});
-						cf_data = crossfilter(data.aaData); // feed it through crossfilter
-						var all = cf_data.groupAll();
+						
 						for (var g in data.struct[s].grp) {
 							if (grp[g] !== '') {
 								group[g] = cf_data.dimension(dimension[x]).group().reduceSum((new Function( "return( function(d) { return d." + grp[g] + " } );" ))());
@@ -387,7 +389,6 @@ var crossfilterViz = function() {
 							.dimension(cf_data) // set dimension to all data
 							.group(all);
 						}
-
 						//COLOR GENERATOR
 						var a = [], prev;
 						var arr = [];
@@ -414,34 +415,40 @@ var crossfilterViz = function() {
 
 						for (var key in data.viz) { // for every key in the viz array, check the graph type against the ones below
 							if (key === 'length' || !data.viz.hasOwnProperty(key)) continue;
-							var val = data.viz[key];
-							
+							var val = data.viz[key];					
 							// GEO CHART
 							if ((val.type === 'geo') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
+								geoChart = dc.geoChoroplethChart('#'+val.dID);
 								dcGeoMap(val.dID, cf_data, world);
 							}
 							// BAR CHART
 							if ((val.type === 'bar') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
+								barChart = dc.barChart("#"+val.dID);
 								dcBarGraph(val.dID, cf_data.dimension(dimension[x]), group[g], start, end, val.xAxis, val.yAxis);
 							}
 							// SEVERITY STACKED BAR CHART
 							if ((val.type === 'severitybar') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
+								sevChart = dc.barChart("#"+val.dID);
 								severityGraph(val.dID, cf_data.dimension(dimension[x]), cf_data.dimension(dimension[x]).group(), start, end, val.xAxis, val.yAxis, val.height);
 							}
 							////PIE Chart
 							if ((val.type === 'pie') && (dim[x] === val.dim) && (grp[g] === val.grp)) {	
+								pieChart = dc.pieChart("#"+val.dID);
 								dcPieGraph(val.dID, cf_data.dimension(dimension[x]), cf_data.dimension(dimension[x]).group(), cc);
 							}
 							// WORDCLOUD
 							if ((val.type === 'word') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
+								
 								dcWordCloud(val.dID,data);
 							}
 							// ROW CHART
 							if ((val.type === 'row') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
-								dcRowGraph(val.dID, cf_data.dimension(dimension[x]), group[g], cc);
+								rowChart = dc.rowChart("#"+val.dID);
+								dcRowGraph(val.dID, cf_data.dimension(dimension[x]), group[g], cc, val.dim);
 							}
 							// COMPOSITE CHART
 							if ((val.type === 'composite') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
+								compositeChart = dc.compositeChart("#"+val.dID);
 								dcCompositeGraph(val.dID, cf_data.dimension(dimension[x]), cf_data.dimension(dimension[x]).group(), start, end, val.xAxis, val.yAxis);
 							}				
 						}
@@ -450,6 +457,7 @@ var crossfilterViz = function() {
 				$('.page-content').activity(false);
 				$(".page-content").fadeTo(500, 1);
 				dc.renderAll();
+
 			}
 		}
 	};
@@ -659,6 +667,32 @@ var d3swimChart = function(divID, json) {
 ///////////////////////////////////////////////
 /////////   DC.JS GRAPH FUNCTIONS   ///////////
 ///////////////////////////////////////////////
+
+// var gFilter = function(dimension, dimName) {	
+//var arr = countryCount.top(Infinity);	
+//console.log(arr);
+
+//	////usage
+//	//	var fArr = gFilter(dimension, 'ioc');		
+//dimArray = cf_data.dimension(dimension[x]).top(Infinity);
+//	//	for (var f in fArr) {
+//	//		chart.filter(fArr[f]);
+//	//		//sevChart.filter(uniqueArray[f]);
+//	//		//console.log(uniqueArray);
+//	//	}
+//	var arr = []; var uniqueArray;
+//	dimArray.forEach(function(d){
+//	//	for (var e in d) {
+//	arr.push(d[dimName]);
+//	//	}	
+//		arr.push(d.ioc);
+//	});
+//	uniqueArray = arr.filter(function(elem, pos) {
+//		return arr.indexOf(elem) == pos;
+//	});
+//	return uniqueArray;
+// };
+
 var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height) {
 	var connVsTime = group.reduce(
 		function(p, v) {
@@ -714,7 +748,7 @@ var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height
 	} else {
 		hHeight = width/3.3; //4.6 as default
 	}
-	barChart = dc.barChart("#"+divID)
+	sevChart
 		.width(width) // (optional) define chart width, :default = 200
 		.height(hHeight)
 		.transitionDuration(500) // (optional) define chart transition duration, :default = 500
@@ -741,7 +775,6 @@ var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height
 		//.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
 		.title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
 		.renderTitle(true) // (optional) whether chart should render titles, :default = false
-
 		.renderlet(function(chart) {
 			chart.select('svg')
 				.attr('width', width)
@@ -760,8 +793,7 @@ var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height
 					resizeViz(chart, "#"+divID, aspect);
 				},10);
 			});
-			chart.filterAll([function(d){return d.value.elevated;}]);
-
+			//chart.filterAll([function(d){return d.value.elevated;}]);
 			//	var tip = d3.tip()
 			//		.attr('class', 'd3-tip')
 			//		.offset([-10, 0])
@@ -769,40 +801,17 @@ var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height
 			//		chart.selectAll("g").call(tip);
 			//		chart.selectAll("g").on('mouseover', tip.show)
 			//			.on('mouseout', tip.hide);
-
-			//chart.select("svg").attr("width", "100%").attr("height", "100%").attr("viewBox",
-			//	"0 0 " + width + " 170").attr("preserveAspectRatio", "xMinYMin");
-		dc.events.trigger(function() {
-			var filter = barChart.filters();
-			var string = filter.join(' | ');
-				//	oTable.fnFilter(string,null,true,null);
-			});
 	});
-	$('#filter').on('click', function(){
-				// var minDate = 1389330000;
-				// var maxDate = 1389371640;
-				// //console.log(barChart.filters());
-
-				// barChart.filter([minDate, maxDate]);
-				// barChart.x(d3.time.scale().domain([minDate,maxDate]));
-
-				// //console.log(barChart.filters());
-
-				// dc.redrawAll();
-			});
 };
 var dcGeoMap = function (divID, data, world) {
-
+	var numberFormat = d3.format(".2f");
 	var dimension = data.dimension(function (d) {
 		return d.remote_country;
 	});
 	var countryCount = dimension.group().reduceSum(function (d) {
 		return d.count;
 	});
-	//var arr = countryCount.top(Infinity);
-	//console.log(arr);
 	var top = countryCount.orderNatural(function (p) {return p.count;}).top(1);
-	//console.log(top[0].value);
 	var numberOfItems = top[0].value+1;
 	var rainbow = new Rainbow(); 
 	rainbow.setNumberRange(0, numberOfItems);
@@ -812,62 +821,54 @@ var dcGeoMap = function (divID, data, world) {
 		var hexColour = rainbow.colourAt(i);
 		cc.push('#' + hexColour);
 	}
-	//console.log(cc.length);
 	var width = $("#"+divID).width();
 	var height = width/1.4;
 	// var minhits = function (d) { return d.value.min; };
 	// var maxhits = function (d) { return d.value.max; };
-	geo = dc.geoChoroplethChart('#'+divID)
-	.dimension(dimension)
-	.group(countryCount)
-	.projection(d3.geo.mercator().precision(0.1).scale((width + 1) / 0.3 / Math.PI).translate([width / 2, width / 2]))
-	.width(width)
-	.height(width/1.4)
-	.colors(cc)
-	.colorCalculator(function (d) { return d ? geo.colors()(d) : '#ccc'; })
-	.overlayGeoJson(world.features, "country", function(d) {
-		return d.properties.name;
-	})
-	.title(function (d) {
-		return d.key+": "+(d.value ? d.value : 0);
-	})
-	.renderlet(function(chart) {		
-		dc.events.trigger(function() {
-			var filter = geo.filters();
-			var string = filter.join(' | ');
-			if(string !== "") {
-				oTable.fnFilter(string,null,true,false);
-			}
-		});
-		chart.select('svg')
-			.attr('width', width)
-			.attr('height', height)
-			.attr('viewBox', '0 0 '+width+' '+height)
-			.attr('perserveAspectRatio', 'xMinYMid');
-		var aspect;
-		$(window).on("resize", function() {
-			aspect = width / height;
-			resizeViz(chart, "#"+divID, aspect);
-		});
-		$('.sidebar-toggler').on("click", function() {
-			setTimeout(function() {
+	geoChart
+		.dimension(dimension)
+		.group(countryCount)
+		.projection(d3.geo.mercator().precision(0.1).scale((width + 1) / 0.3 / Math.PI).translate([width / 2, width / 2]))
+		.width(width)
+		.height(width/1.4)
+		.colors(cc)
+		.colorCalculator(function (d) { return d ? geoChart.colors()(d) : '#ccc'; })
+		.overlayGeoJson(world.features, "country", function(d) {
+			return d.properties.name;
+		})
+		.title(function (d) {
+			return d.key+": "+(d.value ? d.value : 0);
+		})
+		.renderlet(function(chart,d) {
+			chart.select('svg')
+				.attr('width', width)
+				.attr('height', height)
+				.attr('viewBox', '0 0 '+width+' '+height)
+				.attr('perserveAspectRatio', 'xMinYMid');
+			var aspect;
+			$(window).on("resize", function() {
 				aspect = width / height;
 				resizeViz(chart, "#"+divID, aspect);
-			},10);
+			});
+			$('.sidebar-toggler').on("click", function() {
+				setTimeout(function() {
+					aspect = width / height;
+					resizeViz(chart, "#"+divID, aspect);
+				},10);
+			});
+			// var tip = d3.tip()
+			//	.attr('class', 'd3-tip')
+			//	.offset([-10, 0])
+			//	.html( function (d) { return "<span style='color: #f0027f'>Country: " + d.count + "</span> : "  + "\nTotal Flows: " + (d.count ? d.count : 0); } );
+			//	chart.selectAll("g").call(tip);
+			//	chart.selectAll("g").on('mouseover', tip.show)
+			//		.on('mouseout', tip.hide);
 		});
-		// var tip = d3.tip(d)
-		// 	.attr('class', 'd3-tip')
-		// 	.offset([-5, 0])
-		// 	.html(function (d) { return "<span style='color: #f0027f'>Country: " + d.key + "</span> :\nTotal Flows: " + numberFormat(d.value ? d.value : 0); } );
-		// 	chart.selectAll("g").call(tip);
-		// 	chart.selectAll("g").on('mouseover', tip.show)
-		// 	.on('mouseout', tip.hide);
-	});
 };
 var dcBarGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 	var width = $("#"+divID).width();
 	hHeight = width/4.6;
-	barChart = dc.barChart("#"+divID)
+	barChart
 		.width(width) // (optional) define chart width, :default = 200
 		.height(width/4.6)
 		.transitionDuration(500) // (optional) define chart transition duration, :default = 500
@@ -905,17 +906,17 @@ var dcBarGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 					resizeViz(chart, "#"+divID, aspect);
 				},10);
 			});
-		dc.events.trigger(function() {
-			var filter = barChart.filters();
-			var string = filter.join(' | ');
-				//	oTable.fnFilter(string,null,true,null);
-			});
+		// dc.events.trigger(function() {
+		// 	var filter = barChart.filters();
+		// 	var string = filter.join(' | ');
+		// 		//	oTable.fnFilter(string,null,true,null);
+		// 	});
 	});
 	};
 	
 var dcPieGraph = function(divID, dim, group, colors) {
 		var width = $("#"+divID).width();
-		pieChart = dc.pieChart("#"+divID)
+		pieChart
 		.height(width)
 		.innerRadius(width/6)
 		.width(width)	
@@ -927,8 +928,6 @@ var dcPieGraph = function(divID, dim, group, colors) {
 		// .on("preRender", legend)
 		//	.renderlet(function(chart) {
 		//	//$('#'+dID+' .jdash-header').height();
-		//	//chart.select("svg").attr("width", "100%").attr("height", "100%").attr("viewBox",
-		//	//"0 0 " + width + " " + width).attr("preserveAspectRatio", "xMinYMin meet");
 		//	dc.events.trigger(function() {
 		//		var filter = pieChart.filters();
 		//		var string = filter.join(' | ');
@@ -983,7 +982,7 @@ var dcWordCloud = function(divID, data) {
 		.on("end", wordCloud)
 		.start();
 	};
-var dcRowGraph = function(divID, dim, group, colors) {
+var dcRowGraph = function(divID, dim, group, colors, dimName) {
 	var sevCount = group.reduce(
 		function (d, v) {
 		//++d.count;
@@ -1008,7 +1007,6 @@ var dcRowGraph = function(divID, dim, group, colors) {
 		var x = Math.log(d) / Math.log(10) + 1e-6;
 		return Math.abs(x - Math.floor(x)) < 0.3 ? numberFormat(d) : "";
 	}
-	var rowChart = dc.rowChart("#"+divID);
 	//set pixels to expand by if there are more than [hLimit] items
 	// var hLimit = 9;
 	// var barExpand = 0;
@@ -1025,23 +1023,23 @@ var dcRowGraph = function(divID, dim, group, colors) {
 	}
 	var width = $("#"+divID).width();
 		rowChart
-		.width(width)
-		//.height(width/2 + barExpand)
-		.height(hHeight)
-		.margins({top: 5, left: 0, right: 0, bottom: 20})
-		.group(sevCount)
-		.dimension(dim)
-		.colors(["#377FC7","#F5D800","#F88B12","#DD122A"])
-		.valueAccessor(function(d) {
-			return d.value.count+0.1;
-		})
-		.colorAccessor(function (d){return d.value.severity;})
-		.renderlet(function(chart){
-			chart.select('svg')
-				.attr('width', width)
-				.attr('height', hHeight)
-				.attr('viewBox', '0 0 '+width+' '+hHeight)
-				.attr('perserveAspectRatio', 'xMinYMid');
+			.width(width)
+			//.height(width/2 + barExpand)
+			.height(hHeight)
+			.margins({top: 5, left: 0, right: 0, bottom: 20})
+			.group(sevCount)
+			.dimension(dim)
+			.colors(["#377FC7","#F5D800","#F88B12","#DD122A"])
+			.valueAccessor(function(d) {
+				return d.value.count+0.1;
+			})
+			.colorAccessor(function (d){return d.value.severity;})
+			.renderlet(function(chart){
+				chart.select('svg')
+					.attr('width', width)
+					.attr('height', hHeight)
+					.attr('viewBox', '0 0 '+width+' '+hHeight)
+					.attr('perserveAspectRatio', 'xMinYMid');
 				var aspect;
 				$(window).on("resize", function() {
 					if (colors.length < 7) {
@@ -1063,19 +1061,19 @@ var dcRowGraph = function(divID, dim, group, colors) {
 						resizeViz(chart, "#"+divID, aspect);
 					},10);
 				});
-		})
-		.renderLabel(true)
-		.label(function(d) { return d.key+' ('+d.value.count+')'; })
-		.labelOffsetY(lOffset)
-		.elasticX(false)
-		.x(d3.scale.log().domain([1, tops[0].value.count+0.1]).range([0,width]))
-		.xAxis()
-		.scale(rowChart.x())
-		.tickFormat(logFormat);
+			})
+			.renderLabel(true)
+			.label(function(d) { return d.key+' ('+d.value.count+')'; })
+			.labelOffsetY(lOffset)
+			.elasticX(false)
+			.x(d3.scale.log().domain([1, tops[0].value.count+0.1]).range([0,width]))
+			.xAxis()
+			.scale(rowChart.x())
+			.tickFormat(logFormat);
 };
 var dcCompositeGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 	var width = $("#"+divID).width();
-	var compositeChart = dc.compositeChart("#"+divID)
+	compositeChart
 	.width(width)
 	.height(180)
 	.transitionDuration(1000)
