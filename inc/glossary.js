@@ -33,7 +33,6 @@ var glossary = {
 		"information from these sources with our own attack data provides a more accurate overall assessment of an IP than a single source alone.  CINS Scores are easily accessible "+
 		"from many access points on a Sentinel IPS web interface, and they are invaluable in helping our customers determine the nature and severity of the attacks they see.",
 
-
 	'Command and Control': "CnC servers are central points used for the control of botnets. Bots will usually report back in some way, often via IRC or other simple messaging protocols, "+
 		"once a new system is infected, and will then receive commands from the central server. <br /> Many forms of bot join dedicated chat sessions run on the C&C server, posting "+
 		"updates on their status and listening out for keywords which spark specific actions, such as sending out spam emails or downloading updated versions of their own code. "+

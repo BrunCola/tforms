@@ -425,7 +425,7 @@ function fetch($database, $type, $query, $start, $end, $group) {
 					),
 					'from' => 'conn_ioc',
 					'where' => '`ioc_count` > 0, `trash` IS NULL',
-					'group' => 'ioc_type, ioc, ioc_group',
+					'group' => 'ioc_type, ioc,remote_ip',
 					'limit' => '10',
 					'order' => 'ioc_severity DESC, count DESC'
 				),
@@ -1343,13 +1343,47 @@ function fetch($database, $type, $query, $start, $end, $group) {
 				'title' => 'IOC Notifications',
 				'header' => 'drilldown',
 				'vDiv' => array(
+					array('crossfilter', '100'),
 					array('tables', '100')	
 				),
 				'subheading' => '',
 				'severity' => 'true',
 				'sidebar' => 'ioc_top_remote'
 			);
-			$viz = array();
+			$viz = array(
+				'crossfilter' => array(
+					'struct' => array(
+						array(
+							'dim' => array('hour'),
+							'grp' => array('count')
+						)
+					),
+					'select' => array(
+						array('from_unixtime(time) AS time'), 
+						array('ioc_severity'),
+						array('count(*) AS count'), 
+					),
+					'from' => 'conn_ioc',
+					'where' => '`ioc_count` > 0, `trash` IS NULL',
+					'group' => 'month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), ioc_severity',
+					'disp' => array(
+						
+						array(
+							'dView' => 'true', 
+							'pID' => 'crossfilter',
+							'dID' => 'sBar', 
+							'type' => 'severitybar', 
+							'heading' => 'IOC Notifications Per Hour',
+							'xAxis' => '',
+							'yAxis' => '# IOC / Hour',
+							'dim' => 'hour',
+							'grp' => 'count'
+						)
+					)		
+				),
+
+
+				);
 			$table = array(
 				array(
 					'pID' => 'tables',
@@ -2187,7 +2221,7 @@ function fetch($database, $type, $query, $start, $end, $group) {
 					'RETURN1' => array(
 						'select' => array(
 							array('lan_ip'),
-							array('grp_local as lan_zone'), 
+							array('grp_local AS lan_zone'), 
 						),
 						'from' => '`conn-2013-12-17`',
 						'where' => "stealth = '1'",
@@ -2196,7 +2230,7 @@ function fetch($database, $type, $query, $start, $end, $group) {
 					'RETURN2' => array(
 						'select' => array(
 							array('remote_ip'),
-							array('grp_remote as lan_zone'), 
+							array('grp_remote AS lan_zone'), 
 						),
 						'from' => '`conn-2013-12-17`',
 						'where' => "stealth = '1'",
@@ -2444,7 +2478,7 @@ function getViz($database, $viz, $start, $end, $notime) {
 		    return $output;
 		}
 		if ($_GET['vizType'] == 'd3') {
-			for($d3 = 0; $d3 < count($viz[$n]); $d3++) {
+			for ($d3 = 0; $d3 < count($viz[$n]); $d3++) {
 				if ($viz[$n][$d3]['disp']['dID'] === $_GET['dID']) {
 					$aColumns = array();
 					for	($m = 0; $m < count($viz[$n][$d3]['select']); $m++) {
