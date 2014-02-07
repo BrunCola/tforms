@@ -1,13 +1,19 @@
 var defaultDayRange = 1; //Set default date range for the app
 var defaultSearch = 'ioc_hits'; //Set default search for when the raw url is visited
 var defaultNotifications = 'ioc_hits'; //Set which query to run when the 'See all Notifications' dropdown is clicked
+///////////////////////////////////////////////
+/////////     GENERAL FUNCTIONS     ///////////
+///////////////////////////////////////////////
+var rowChart, geoChart, sevChart, barChart, compositeChart, pieChart;
 var page = function(search_val, type, start, end, clear_b) {
+	
 	clear_div('page');
-	clear_div('severity');
-	clear_div('d3Div');
 	$('#paral').hide();
 	$('#head-right').html('');
 	$('#dashboard-report-range').hide();
+	clear_div('severity');
+	clear_div('d3Div');
+
 	var start_get = getURLParameter('start');
 	var end_get = getURLParameter('end');
 	if (!start && start_get != 'null') {
@@ -287,7 +293,7 @@ var page = function(search_val, type, start, end, clear_b) {
 				}
 				col[c] = columns;
 			}
-			tableViz(json, data.table, col); // FIRE OFF TABLE(S)
+			tableViz(col, data.table); // FIRE OFF TABLE(S)
 		}
 		// LOAD ALL VISUALS
 		if (data.viz !== undefined) {
@@ -304,19 +310,19 @@ var page = function(search_val, type, start, end, clear_b) {
 						}
 						$('#'+data.viz.crossfilter.disp[k].pID).append('<div " id="'+data.viz.crossfilter.disp[k].dID+'" class="jdash-widget'+hidden+'"><div class="jdash-header">'+data.viz.crossfilter.disp[k].heading+'</div></div>');
 					}
-					crossfilterViz(json, start, end);
+					crossfilterViz();
 				}
 				if (data.viz.d3 !== undefined) {
 					for (var d in data.viz.d3) {
 						//I havent made a hidden switch for this yet because we don't have a use for d3 on anything other than reports at this moment (Jan 7, 2014)
 						$('#'+data.viz.d3[d].disp.pID).append('<div " id="'+data.viz.d3[d].disp.dID+'" class="jdash-widget"><div class="jdash-header">'+data.viz.d3[d].disp.heading+'</div></div>');
 					}
-					d3Viz(json, data);
+					d3Viz(data);
 				}			
 			}
 			//stealth is what the d3Div Div is for in the index & report files, all other d3 is handled above
 			if (data.viz.d3stealth !== undefined) {
-				d3Stealth(json, data);
+				d3Stealth(data);
 			}
 		}
 		// PUSH SORTABLE VISUALS INTO DIVS
@@ -334,6 +340,177 @@ var page = function(search_val, type, start, end, clear_b) {
 			});
 		});
 	});
+var tableViz = function(columns, data) {
+	for(var i=0; i < columns.length; i++) {
+		getTable(data[i].dID, json, data[i], columns[i]);
+	}
+	$(".page-content").fadeTo(500, 1); // return opacity to 1 
+	//$(".dc-data-table tbody tr td .trash-row").click(function () {
+	//	oTable.fnDeleteRow(this);
+	//});
+	$('.page-content').activity(false);
+};
+var crossfilterViz = function() {
+	queue()
+	.defer(d3.json, json+'&getViz=true&vizType=crossfilter')
+	.defer(d3.json, "assets/json/world.json")
+	.await(ready);
+	function ready(error, data, world) {
+			if (data.iTotalDisplayRecords === '0') { // if no data return, call no_fetch to display user message 
+				no_fetch();
+			} 
+			else {
+				var cf_data = crossfilter(data.aaData); // feed it through crossfilter
+				var all = cf_data.groupAll();
+				for (var s = 0; s < data.struct.length; s++) { // Loop for every struct param
+					var dimension = {}; // make dimension an object to count up with
+					var group = {};
+					var width;
+					var dim = data.struct[s].dim;
+					var grp = data.struct[s].grp;
+
+					for (var x in data.struct[s].dim) {
+						dimension[x] = (new Function( "return( function(d) { return d." + dim[x] + " } );" ))();
+						var mainGroup;
+						var mainDimension;
+						// TODO // this needs to be moved out of loop and have a statement checking if it's necessary beforehand
+						var dateFormat = d3.time.format("%Y-%m-%d %H:%M:%S");
+						data.aaData.forEach(function(d) {
+							d.dd = dateFormat.parse(d.time);
+							d.hour = d3.time.hour(d.dd);
+							d.count = +d.count;
+						});
+						
+						for (var g in data.struct[s].grp) {
+							if (grp[g] !== '') {
+								group[g] = cf_data.dimension(dimension[x]).group().reduceSum((new Function( "return( function(d) { return d." + grp[g] + " } );" ))());
+							}
+							dc.dataCount("#data-count")
+							.dimension(cf_data) // set dimension to all data
+							.group(all);
+						}
+						//COLOR GENERATOR
+						var a = [], prev;
+						var arr = [];
+						//this counts only one of each dimension type returned so the color picker can assign the exct amount
+						for (var e in data.aaData) {
+							arr.push(data.aaData[e][dim[x]]);
+						}
+						arr.sort();
+						for (var i = 0; i < arr.length; i++ ) {
+							if ( arr[i] !== prev ) {
+								a.push(arr[i]);
+							}
+							prev = arr[i];
+						}
+						var numberOfItems = a.length;
+						var rainbow = new Rainbow(); 
+						rainbow.setNumberRange(1, a.length+1);
+						rainbow.setSpectrum('#ED5314', '#FFB92A', '#FEEB51', '#9BCA3E', '#3ABBC9', '#E6E6E6');
+						var cc = [];
+						for (var hex = 1; hex <= numberOfItems; hex++) {
+							var hexColour = rainbow.colourAt(hex);
+							cc.push('#' + hexColour);
+						}
+
+						for (var key in data.viz) { // for every key in the viz array, check the graph type against the ones below
+							if (key === 'length' || !data.viz.hasOwnProperty(key)) continue;
+							var val = data.viz[key];					
+							// GEO CHART
+							if ((val.type === 'geo') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
+								geoChart = dc.geoChoroplethChart('#'+val.dID);
+								dcGeoMap(val.dID, cf_data, world);
+							}
+							// BAR CHART
+							if ((val.type === 'bar') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
+								barChart = dc.barChart("#"+val.dID);
+								dcBarGraph(val.dID, cf_data.dimension(dimension[x]), group[g], start, end, val.xAxis, val.yAxis);
+							}
+							// SEVERITY STACKED BAR CHART
+							if ((val.type === 'severitybar') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
+								sevChart = dc.barChart("#"+val.dID);
+								severityGraph(val.dID, cf_data.dimension(dimension[x]), cf_data.dimension(dimension[x]).group(), start, end, val.xAxis, val.yAxis, val.height);
+							}
+							////PIE Chart
+							if ((val.type === 'pie') && (dim[x] === val.dim) && (grp[g] === val.grp)) {	
+								pieChart = dc.pieChart("#"+val.dID);
+								dcPieGraph(val.dID, cf_data.dimension(dimension[x]), cf_data.dimension(dimension[x]).group(), cc);
+							}
+							// WORDCLOUD
+							if ((val.type === 'word') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
+								
+								dcWordCloud(val.dID,data);
+							}
+							// ROW CHART
+							if ((val.type === 'row') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
+								rowChart = dc.rowChart("#"+val.dID);
+								dcRowGraph(val.dID, cf_data.dimension(dimension[x]), group[g], cc, val.dim);
+							}
+							// COMPOSITE CHART
+							if ((val.type === 'composite') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
+								compositeChart = dc.compositeChart("#"+val.dID);
+								dcCompositeGraph(val.dID, cf_data.dimension(dimension[x]), cf_data.dimension(dimension[x]).group(), start, end, val.xAxis, val.yAxis);
+							}				
+						}
+					}
+				}
+				$('.page-content').activity(false);
+				$(".page-content").fadeTo(500, 1);
+				dc.renderAll();
+
+			}
+		}
+	};
+	var d3Viz = function(data) {
+		for (var d in data.viz.d3) {
+			if(data.viz.d3[d].disp.type === 'pie') {
+				d3PieGraph(data.viz.d3[d].disp.dID, json);
+			}
+			if(data.viz.d3[d].disp.type === 'd3swimChart') {
+				d3swimChart(data.viz.d3[d].disp.dID, json);
+			}
+		}
+	};
+	var d3Stealth = function(data) {
+		//$('#d3Div').prepend('<ul style="list-style:vertical; font-size: 12pt; margin-left: 20%"><li><div style="float:left;width:15px;height:15px;background-color:#000"></div><span style="float:left"> test</span></li><li><div style="float:left;width:15px;height:15px;background-color:#000"></div><span style="float:left"> test</span></li></ul>');
+		var width = $("#d3Div").width(),
+		height = width/2;
+		var color = d3.scale.category20();
+		var svg = d3.select("#d3Div").append("svg")
+		.attr("width", width)
+		.attr("height", height);
+		d3.json(json+'&getViz=true&vizType=d3stealth', function(error, graph) {
+			var force = d3.layout.force()
+				.charge(-120)
+				.linkDistance(50) //default is 30
+				.size([width, height])
+				.nodes(graph.nodes)
+				.links(graph.links)
+				.start();
+			var link = svg.selectAll(".link")
+				.data(graph.links)
+				.enter().append("line")
+				.attr("class", "link")
+				.style("stroke-width", function(d) { return Math.sqrt(d.value); });
+			var node = svg.selectAll(".node")
+				.data(graph.nodes)
+				.enter().append("circle")
+				.attr("class", "node")
+				.attr("r", 10) //default is 5
+				.style("fill", function(d) { return color(d.group); })
+				.call(force.drag)
+				.append("title")
+				.text(function(d) { return d.name; });
+			force.on("tick", function() {
+				link.attr("x1", function(d) { return d.source.x; })
+					.attr("y1", function(d) { return d.source.y; })
+					.attr("x2", function(d) { return d.target.x; })
+					.attr("y2", function(d) { return d.target.y; });
+				node.attr("cx", function(d) { return d.x; })
+					.attr("cy", function(d) { return d.y; });
+			});
+		});
+	};
 	// INITIAL COMPONENTS TO RUN
 	floating_logo();
 	$('.page-content').activity(false); //data loading spinner
@@ -343,7 +520,7 @@ var page = function(search_val, type, start, end, clear_b) {
 		$('.page-content').fadeTo(500, 0.7);
 		$('html, body').animate({scrollTop:0}, 'slow');
 	}
-};
+};// end page() function
 var getURLParameter = function(name) {
 	return decodeURI(
 		(RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[1]
@@ -376,7 +553,7 @@ var parseURL = function(url) {
 		segments: a.pathname.replace(/^\//,'').split('/')
 	};
 };
-var sortByKey = function(array, key, key2) {
+function sortByKey(array, key, key2) {
 	return array.sort(function(a, b) {
 		// var x = a[key]; var y = b[key];
 		// return ((x < y) ? -1 : ((x > y) ? 1 : 0));
@@ -486,110 +663,36 @@ var d3swimChart = function(divID, json) {
             .redraw();
     });
 };
-// dc.js functions
-var crossfilterViz = function(json, start, end) {
-	queue()
-	.defer(d3.json, json+'&getViz=true&vizType=crossfilter')
-	.defer(d3.json, "assets/json/world.json")
-	.await(ready);
-	function ready(error, data, world) {
-		if (data.iTotalDisplayRecords === '0') { // if no data return, call no_fetch to display user message 
-			no_fetch();
-		} 
-		else {
-			for (var s = 0; s < data.struct.length; s++) { // Loop for every struct param
-				var dimension = {}; // make dimension an object to count up with
-				var group = {};
-				var width;
-				var dim = data.struct[s].dim;
-				var grp = data.struct[s].grp;
-				for (var x in data.struct[s].dim) {
-					dimension[x] = (new Function( "return( function(d) { return d." + dim[x] + " } );" ))();
-					var cf_data;
-					var mainGroup;
-					var mainDimension;
-					// TODO // this needs to be moved out of loop and have a statement checking if it's necessary beforehand
-					var dateFormat = d3.time.format("%Y-%m-%d %H:%M:%S");
-					data.aaData.forEach(function(d) {
-						d.dd = dateFormat.parse(d.time);
-						d.hour = d3.time.hour(d.dd);
-						d.count = +d.count;
-					});
-					cf_data = crossfilter(data.aaData); // feed it through crossfilter
-					var all = cf_data.groupAll();
-					for (var g in data.struct[s].grp) {
-						if (grp[g] !== '') {
-							group[g] = cf_data.dimension(dimension[x]).group().reduceSum((new Function( "return( function(d) { return d." + grp[g] + " } );" ))());
-						}
-						dc.dataCount("#data-count")
-						.dimension(cf_data) // set dimension to all data
-						.group(all);
-					}
 
-					//COLOR GENERATOR
-					var a = [], prev;
-					var arr = [];
-					//this counts only one of each dimension type returned so the color picker can assign the exct amount
-					for (var e in data.aaData) {
-						arr.push(data.aaData[e][dim[x]]);
-					}
-					arr.sort();
-					for (var i = 0; i < arr.length; i++ ) {
-						if ( arr[i] !== prev ) {
-							a.push(arr[i]);
-						}
-						prev = arr[i];
-					}
-					var numberOfItems = a.length;
-					var rainbow = new Rainbow(); 
-					rainbow.setNumberRange(1, a.length+1);
-					rainbow.setSpectrum('#ED5314', '#FFB92A', '#FEEB51', '#9BCA3E', '#3ABBC9', '#E6E6E6');
-					var cc = [];
-					for (var hex = 1; hex <= numberOfItems; hex++) {
-						var hexColour = rainbow.colourAt(hex);
-						cc.push('#' + hexColour);
-					}
-					for (var key in data.viz) { // for every key in the viz array, check the graph type against the ones below
-						if (key === 'length' || !data.viz.hasOwnProperty(key)) continue;
-						var val = data.viz[key];
-						
-						// GEO CHART
-						if ((val.type === 'geo') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
-							dcGeoMap(val.dID, cf_data, world);
-						}
-						// BAR CHART
-						if ((val.type === 'bar') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
-							dcBarGraph(val.dID, cf_data.dimension(dimension[x]), group[g], start, end, val.xAxis, val.yAxis);
-						}
-						// SEVERITY STACKED BAR CHART
-						if ((val.type === 'severitybar') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
-							severityGraph(val.dID, cf_data.dimension(dimension[x]), cf_data.dimension(dimension[x]).group(), start, end, val.xAxis, val.yAxis, val.height);
-						}
-						////PIE Chart
-						if ((val.type === 'pie') && (dim[x] === val.dim) && (grp[g] === val.grp)) {	
-							dcPieGraph(val.dID, cf_data.dimension(dimension[x]), cf_data.dimension(dimension[x]).group(), cc);
-						}
-						// WORDCLOUD
-						if ((val.type === 'word') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
-							dcWordCloud(val.dID,data);
-						}
-						// ROW CHART
-						if ((val.type === 'row') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
-							dcRowGraph(val.dID, cf_data.dimension(dimension[x]), group[g], cc);
-						}
-						// COMPOSITE CHART
-						if ((val.type === 'composite') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
-							dcCompositeGraph(val.dID, cf_data.dimension(dimension[x]), cf_data.dimension(dimension[x]).group(), start, end, val.xAxis, val.yAxis);
-						}				
-					}
-				}
-			}
-			$('.page-content').activity(false);
-			$(".page-content").fadeTo(500, 1);
-			dc.renderAll();
-		}
-	}
-};
+///////////////////////////////////////////////
+/////////   DC.JS GRAPH FUNCTIONS   ///////////
+///////////////////////////////////////////////
+
+// var gFilter = function(dimension, dimName) {	
+//var arr = countryCount.top(Infinity);	
+//console.log(arr);
+
+//	////usage
+//	//	var fArr = gFilter(dimension, 'ioc');		
+//dimArray = cf_data.dimension(dimension[x]).top(Infinity);
+//	//	for (var f in fArr) {
+//	//		chart.filter(fArr[f]);
+//	//		//sevChart.filter(uniqueArray[f]);
+//	//		//console.log(uniqueArray);
+//	//	}
+//	var arr = []; var uniqueArray;
+//	dimArray.forEach(function(d){
+//	//	for (var e in d) {
+//	arr.push(d[dimName]);
+//	//	}	
+//		arr.push(d.ioc);
+//	});
+//	uniqueArray = arr.filter(function(elem, pos) {
+//		return arr.indexOf(elem) == pos;
+//	});
+//	return uniqueArray;
+// };
+
 var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height) {
 	var connVsTime = group.reduce(
 		function(p, v) {
@@ -642,11 +745,10 @@ var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height
 	var hHeight;
 	if(height !== undefined) {
 		hHeight = height;
-	} 
-	else {
+	} else {
 		hHeight = width/3.3; //4.6 as default
 	}
-	var barChart = dc.barChart("#"+divID)
+	sevChart
 		.width(width) // (optional) define chart width, :default = 200
 		.height(hHeight)
 		.transitionDuration(500) // (optional) define chart transition duration, :default = 500
@@ -679,6 +781,7 @@ var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height
 				.attr('height', hHeight)
 				.attr('viewBox', '0 0 '+width+' '+hHeight)
 				.attr('perserveAspectRatio', 'xMinYMid');
+			
 			var aspect;
 			$(window).on("resize", function() {
 				aspect = width / hHeight;
@@ -690,7 +793,7 @@ var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height
 					resizeViz(chart, "#"+divID, aspect);
 				},10);
 			});
-			chart.filterAll([function(d) { return d.value.elevated; }]);
+			//chart.filterAll([function(d){return d.value.elevated;}]);
 			//	var tip = d3.tip()
 			//		.attr('class', 'd3-tip')
 			//		.offset([-10, 0])
@@ -698,38 +801,17 @@ var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height
 			//		chart.selectAll("g").call(tip);
 			//		chart.selectAll("g").on('mouseover', tip.show)
 			//			.on('mouseout', tip.hide);
-			//chart.select("svg").attr("width", "100%").attr("height", "100%").attr("viewBox",
-			//	"0 0 " + width + " 170").attr("preserveAspectRatio", "xMinYMin");
-			dc.events.trigger(function() {
-				var filter = barChart.filters();
-				var string = filter.join(' | ');
-				//	oTable.fnFilter(string,null,true,null);
-			});
-		});
-	$('#filter').on('click', function(){
-		// var minDate = 1389330000;
-		// var maxDate = 1389371640;
-		// //console.log(barChart.filters());
-
-		// barChart.filter([minDate, maxDate]);
-		// barChart.x(d3.time.scale().domain([minDate,maxDate]));
-
-		// //console.log(barChart.filters());
-
-		// dc.redrawAll();
 	});
 };
-var dcGeoMap = function(divID, data, world) {
+var dcGeoMap = function (divID, data, world) {
+	var numberFormat = d3.format(".2f");
 	var dimension = data.dimension(function (d) {
 		return d.remote_country;
 	});
 	var countryCount = dimension.group().reduceSum(function (d) {
 		return d.count;
 	});
-	//var arr = countryCount.top(Infinity);
-	//console.log(arr);
 	var top = countryCount.orderNatural(function (p) {return p.count;}).top(1);
-	//console.log(top[0].value);
 	var numberOfItems = top[0].value+1;
 	var rainbow = new Rainbow(); 
 	rainbow.setNumberRange(0, numberOfItems);
@@ -739,62 +821,54 @@ var dcGeoMap = function(divID, data, world) {
 		var hexColour = rainbow.colourAt(i);
 		cc.push('#' + hexColour);
 	}
-	//console.log(cc.length);
 	var width = $("#"+divID).width();
 	var height = width/1.4;
 	// var minhits = function (d) { return d.value.min; };
 	// var maxhits = function (d) { return d.value.max; };
-	var geo = dc.geoChoroplethChart('#'+divID)
-	.dimension(dimension)
-	.group(countryCount)
-	.projection(d3.geo.mercator().precision(0.1).scale((width + 1) / 0.3 / Math.PI).translate([width / 2, width / 2]))
-	.width(width)
-	.height(width/1.4)
-	.colors(cc)
-	.colorCalculator(function (d) { return d ? geo.colors()(d) : '#ccc'; })
-	.overlayGeoJson(world.features, "country", function(d) {
-		return d.properties.name;
-	})
-	.title(function (d) {
-		return d.key+": "+(d.value ? d.value : 0);
-	})
-	.renderlet(function(chart) {		
-		dc.events.trigger(function() {
-			var filter = geo.filters();
-			var string = filter.join(' | ');
-			if(string !== "") {
-				oTable.fnFilter(string,null,true,false);
-			}
-		});
-		chart.select('svg')
-			.attr('width', width)
-			.attr('height', height)
-			.attr('viewBox', '0 0 '+width+' '+height)
-			.attr('perserveAspectRatio', 'xMinYMid');
-		var aspect;
-		$(window).on("resize", function() {
-			aspect = width / height;
-			resizeViz(chart, "#"+divID, aspect);
-		});
-		$('.sidebar-toggler').on("click", function() {
-			setTimeout(function() {
+	geoChart
+		.dimension(dimension)
+		.group(countryCount)
+		.projection(d3.geo.mercator().precision(0.1).scale((width + 1) / 0.3 / Math.PI).translate([width / 2, width / 2]))
+		.width(width)
+		.height(width/1.4)
+		.colors(cc)
+		.colorCalculator(function (d) { return d ? geoChart.colors()(d) : '#ccc'; })
+		.overlayGeoJson(world.features, "country", function(d) {
+			return d.properties.name;
+		})
+		.title(function (d) {
+			return d.key+": "+(d.value ? d.value : 0);
+		})
+		.renderlet(function(chart,d) {
+			chart.select('svg')
+				.attr('width', width)
+				.attr('height', height)
+				.attr('viewBox', '0 0 '+width+' '+height)
+				.attr('perserveAspectRatio', 'xMinYMid');
+			var aspect;
+			$(window).on("resize", function() {
 				aspect = width / height;
 				resizeViz(chart, "#"+divID, aspect);
-			},10);
+			});
+			$('.sidebar-toggler').on("click", function() {
+				setTimeout(function() {
+					aspect = width / height;
+					resizeViz(chart, "#"+divID, aspect);
+				},10);
+			});
+			// var tip = d3.tip()
+			//	.attr('class', 'd3-tip')
+			//	.offset([-10, 0])
+			//	.html( function (d) { return "<span style='color: #f0027f'>Country: " + d.count + "</span> : "  + "\nTotal Flows: " + (d.count ? d.count : 0); } );
+			//	chart.selectAll("g").call(tip);
+			//	chart.selectAll("g").on('mouseover', tip.show)
+			//		.on('mouseout', tip.hide);
 		});
-		// var tip = d3.tip(d)
-		// 	.attr('class', 'd3-tip')
-		// 	.offset([-5, 0])
-		// 	.html(function (d) { return "<span style='color: #f0027f'>Country: " + d.key + "</span> :\nTotal Flows: " + numberFormat(d.value ? d.value : 0); } );
-		// 	chart.selectAll("g").call(tip);
-		// 	chart.selectAll("g").on('mouseover', tip.show)
-		// 	.on('mouseout', tip.hide);
-	});
 };
 var dcBarGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 	var width = $("#"+divID).width();
-	var hHeight = width/4.6;
-	var barChart = dc.barChart("#"+divID)
+	hHeight = width/4.6;
+	barChart
 		.width(width) // (optional) define chart width, :default = 200
 		.height(width/4.6)
 		.transitionDuration(500) // (optional) define chart transition duration, :default = 500
@@ -832,35 +906,34 @@ var dcBarGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 					resizeViz(chart, "#"+divID, aspect);
 				},10);
 			});
-			dc.events.trigger(function() {
-				var filter = barChart.filters();
-				var string = filter.join(' | ');
-				//	oTable.fnFilter(string,null,true,null);
-			});
-		});
-};
+		// dc.events.trigger(function() {
+		// 	var filter = barChart.filters();
+		// 	var string = filter.join(' | ');
+		// 		//	oTable.fnFilter(string,null,true,null);
+		// 	});
+	});
+	};
+	
 var dcPieGraph = function(divID, dim, group, colors) {
-	var width = $("#"+divID).width();
-	var pieChart = dc.pieChart("#"+divID)
-	.height(width)
-	.innerRadius(width/6)
-	.width(width)	
-	.group(group)
-	.radius(width/2)
-	.colors(colors)
-	.dimension(dim)
-	.legend(dc.legend().x(width / 2 ).y(width / 2).itemHeight(13).gap(5));
-	// .on("preRender", legend)
-	//	.renderlet(function(chart) {
-	//	//$('#'+dID+' .jdash-header').height();
-	//	//chart.select("svg").attr("width", "100%").attr("height", "100%").attr("viewBox",
-	//	//"0 0 " + width + " " + width).attr("preserveAspectRatio", "xMinYMin meet");
-	//	dc.events.trigger(function() {
-	//		var filter = pieChart.filters();
-	//		var string = filter.join(' | ');
-	//		oTable.fnFilter(string,null,true,null);
-	//	});
-	// });
+		var width = $("#"+divID).width();
+		pieChart
+		.height(width)
+		.innerRadius(width/6)
+		.width(width)	
+		.group(group)
+		.radius(width/2)
+		.colors(colors)
+		.dimension(dim)
+		.legend(dc.legend().x(width / 2 ).y(width / 2).itemHeight(13).gap(5));
+		// .on("preRender", legend)
+		//	.renderlet(function(chart) {
+		//	//$('#'+dID+' .jdash-header').height();
+		//	dc.events.trigger(function() {
+		//		var filter = pieChart.filters();
+		//		var string = filter.join(' | ');
+		//		oTable.fnFilter(string,null,true,null);
+		//	});
+		// });
 };
 var dcWordCloud = function(divID, data) {
 	var str = ['test', 'test2', 'test3'];
@@ -905,11 +978,11 @@ var dcWordCloud = function(divID, data) {
 	.rotate(function(d) { return ~~(Math.random() * 5) * 30 - 60; })
 	.font("Impact")
 	.fontSize(function(d) { return fontSize(d.size); })
-	//.fontSize(function(d) { return d.size; })
-	.on("end", wordCloud)
-	.start();
-};
-var dcRowGraph = function (divID, dim, group, colors) {
+		//.fontSize(function(d) { return d.size; })
+		.on("end", wordCloud)
+		.start();
+	};
+var dcRowGraph = function(divID, dim, group, colors, dimName) {
 	var sevCount = group.reduce(
 		function (d, v) {
 		//++d.count;
@@ -944,31 +1017,29 @@ var dcRowGraph = function (divID, dim, group, colors) {
 	if (colors.length < 7) {
 		lOffset = 17+(colors.length*0.2);
 		hHeight = 25+(colors.length*35);
-	} 
-	else if (colors.length >= 7) {
+	} else if (colors.length >= 7) {
 		lOffset = 12.7+(colors.length*0.2);
 		hHeight = 25+(colors.length*28);	
 	}
 	var width = $("#"+divID).width();
-	var rowChart = dc.rowChart("#"+divID);
 		rowChart
-		.width(width)
-		//.height(width/2 + barExpand)
-		.height(hHeight)
-		.margins({top: 5, left: 0, right: 0, bottom: 20})
-		.group(sevCount)
-		.dimension(dim)
-		.colors(["#377FC7","#F5D800","#F88B12","#DD122A"])
-		.valueAccessor(function(d) {
-			return d.value.count+0.1;
-		})
-		.colorAccessor(function (d){return d.value.severity;})
-		.renderlet(function(chart){
-			chart.select('svg')
-				.attr('width', width)
-				.attr('height', hHeight)
-				.attr('viewBox', '0 0 '+width+' '+hHeight)
-				.attr('perserveAspectRatio', 'xMinYMid');
+			.width(width)
+			//.height(width/2 + barExpand)
+			.height(hHeight)
+			.margins({top: 5, left: 0, right: 0, bottom: 20})
+			.group(sevCount)
+			.dimension(dim)
+			.colors(["#377FC7","#F5D800","#F88B12","#DD122A"])
+			.valueAccessor(function(d) {
+				return d.value.count+0.1;
+			})
+			.colorAccessor(function (d){return d.value.severity;})
+			.renderlet(function(chart){
+				chart.select('svg')
+					.attr('width', width)
+					.attr('height', hHeight)
+					.attr('viewBox', '0 0 '+width+' '+hHeight)
+					.attr('perserveAspectRatio', 'xMinYMid');
 				var aspect;
 				$(window).on("resize", function() {
 					if (colors.length < 7) {
@@ -990,25 +1061,25 @@ var dcRowGraph = function (divID, dim, group, colors) {
 						resizeViz(chart, "#"+divID, aspect);
 					},10);
 				});
-		})
-		.renderLabel(true)
-		.label(function(d) { return d.key+' ('+d.value.count+')'; })
-		.labelOffsetY(lOffset)
-		.elasticX(false)
-		.x(d3.scale.log().domain([1, tops[0].value.count+0.1]).range([0,width]))
-		.xAxis()
-		.scale(rowChart.x())
-		.tickFormat(logFormat);
+			})
+			.renderLabel(true)
+			.label(function(d) { return d.key+' ('+d.value.count+')'; })
+			.labelOffsetY(lOffset)
+			.elasticX(false)
+			.x(d3.scale.log().domain([1, tops[0].value.count+0.1]).range([0,width]))
+			.xAxis()
+			.scale(rowChart.x())
+			.tickFormat(logFormat);
 };
 var dcCompositeGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 	var width = $("#"+divID).width();
-	var compositeChart = dc.compositeChart("#"+divID)
-		.width(width)
-		.height(180)
-		.transitionDuration(1000)
-		.margins({top: 10, right: 50, bottom: 40, left: 60})
-		.dimension(dim)
-		.group(group)
+	compositeChart
+	.width(width)
+	.height(180)
+	.transitionDuration(1000)
+	.margins({top: 10, right: 50, bottom: 40, left: 60})
+	.dimension(dim)
+	.group(group)
 		//.valueAccessor(function (d) {
 			//return d.destination;
 		//})
@@ -1024,76 +1095,29 @@ var dcCompositeGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 		.rangeChart(barChart)
 		.compose([
 			dc.lineChart(compositeChart).group(group)
-				//.valueAccessor(function (d) {
-					//return d.count;
-				//})
-				.renderArea(true)
-				//.stack(group, function (d) { return d.count; })
+			//.valueAccessor(function (d) {
+				//return d.count;
+			//})
+		.renderArea(true)
+			//.stack(group, function (d) { return d.count; })
 			])
 		.xAxis();
-		//barChart = dc.barChart("#"+value.dID+'bar')
-		//.width(990)
-		//.height(40)
-		//.margins({top: 0, right: 50, bottom: 20, left: 40})
-		//.dimension(cf_data.dimension(dimension[x]))
-		//.group(group[g])
-		//.centerBar(true)
-		//.gap(1)
-		//.x(d3.time.scale().domain([moment.unix(start), moment.unix(end)]))
-		//.round(d3.time.hour.round)
-		//.xUnits(d3.time.hour);
+	//barChart = dc.barChart("#"+value.dID+'bar')
+	//.width(990)
+	//.height(40)
+	//.margins({top: 0, right: 50, bottom: 20, left: 40})
+	//.dimension(cf_data.dimension(dimension[x]))
+	//.group(group[g])
+	//.centerBar(true)
+	//.gap(1)
+	//.x(d3.time.scale().domain([moment.unix(start), moment.unix(end)]))
+	//.round(d3.time.hour.round)
+	//.xUnits(d3.time.hour);
 };
-// d3.js functions
-var d3Viz = function(json, data) {
-	for (var d in data.viz.d3) {
-		if(data.viz.d3[d].disp.type === 'pie') {
-			d3PieGraph(data.viz.d3[d].disp.dID, json);
-		}
-		if(data.viz.d3[d].disp.type === 'd3swimChart') {
-			d3swimChart(data.viz.d3[d].disp.dID, json);
-		}
-	}
-};
-var d3Stealth = function(json, data) {
-	//$('#d3Div').prepend('<ul style="list-style:vertical; font-size: 12pt; margin-left: 20%"><li><div style="float:left;width:15px;height:15px;background-color:#000"></div><span style="float:left"> test</span></li><li><div style="float:left;width:15px;height:15px;background-color:#000"></div><span style="float:left"> test</span></li></ul>');
-	var width = $("#d3Div").width();
-	var height = width/2;
-	var color = d3.scale.category20();
-	var svg = d3.select("#d3Div").append("svg")
-		.attr("width", width)
-		.attr("height", height);
-	d3.json(json+'&getViz=true&vizType=d3stealth', function(error, graph) {
-		var force = d3.layout.force()
-			.charge(-120)
-			.linkDistance(50) //default is 30
-			.size([width, height])
-			.nodes(graph.nodes)
-			.links(graph.links)
-			.start();
-		var link = svg.selectAll(".link")
-			.data(graph.links)
-			.enter().append("line")
-			.attr("class", "link")
-			.style("stroke-width", function(d) { return Math.sqrt(d.value); });
-		var node = svg.selectAll(".node")
-			.data(graph.nodes)
-			.enter().append("circle")
-			.attr("class", "node")
-			.attr("r", 10) //default is 5
-			.style("fill", function(d) { return color(d.group); })
-			.call(force.drag)
-			.append("title")
-			.text(function(d) { return d.name; });
-		force.on("tick", function() {
-			link.attr("x1", function(d) { return d.source.x; })
-				.attr("y1", function(d) { return d.source.y; })
-				.attr("x2", function(d) { return d.target.x; })
-				.attr("y2", function(d) { return d.target.y; });
-			node.attr("cx", function(d) { return d.x; })
-				.attr("cy", function(d) { return d.y; });
-		});
-	});
-};
+
+///////////////////////////////////////////////
+/////////   D3.JS GRAPH FUNCTIONS   ///////////
+///////////////////////////////////////////////
 var d3PieGraph = function(divID, json) {
 	///NOTE: there is an issue with the colors not being assigned to the right data. the colution is to push the colors into the data object and access it from there
 	d3.json(json+'&getViz=true&vizType=d3&dID='+divID, function(error, graph) {
@@ -1110,31 +1134,37 @@ var d3PieGraph = function(divID, json) {
 		//var color = d3.scale.ordinal().range(cc);
 		//begin pie chart render
 		var width = $("#"+divID).width();
-		var w = width/2; //width
-		var h = width/2; //height
-		var r = width/4; //radius
-		var color = d3.scale.ordinal().range(cc); //builtin range of colors
-		//color.domain(d3.keys(graph.aaData.ioc).filter(function(key) { return key !== "count"; }));
-		var vis = d3.select("#"+divID)
+		var w = width/2, //width
+		h = width/2, //height
+		r = width/4, //radius
+		color = d3.scale.ordinal().range(cc); //builtin range of colors
+			//color.domain(d3.keys(graph.aaData.ioc).filter(function(key) { return key !== "count"; }));
+
+			var vis = d3.select("#"+divID)
 			.append("svg:svg") //create the SVG element inside the <body>
 			.data([graph.aaData]) //associate our data with the document
 			.attr("width", w) //set the width and height of our visualization (these will be attributes of the <svg> tag
-			.attr("height", h)
+				.attr("height", h)
 			.append("svg:g") //make a group to hold our pie chart
 			.attr("transform", "translate(" + r + "," + r + ")"); //move the center of the pie chart from 0, 0 to radius, radius
+
 		var arc = d3.svg.arc() //this will create <path> elements for us using arc data
-			.outerRadius(r);
+		.outerRadius(r);
+
 		var pie = d3.layout.pie() //this will create arc data for us given a list of values
 			.value(function(d) { return d.count; }); //we must tell it out to access the value of each element in our data array
+
 		var arcs = vis.selectAll("g.slice") //this selects all <g> elements with class slice (there aren't any yet)
 			.data(pie) //associate the generated pie data (an array of arcs, each having startAngle, endAngle and value properties)
 			.enter() //this will create <g> elements for every "extra" data element that should be associated with a selection. The result is creating a <g> for every object in the data array
-			.append("svg:g") //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
-			.attr("class", "slice"); //allow us to style things in the slices (like text)
-		arcs.append("svg:path")
+				.append("svg:g") //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
+					.attr("class", "slice"); //allow us to style things in the slices (like text)
+
+					arcs.append("svg:path")
 			.attr("fill", function(d, i) { return color(i); } ) //set the color for each slice to be chosen from the color function defined above
 			.attr("d", arc); //this creates the actual SVG path using the associated data (pie) with the arc drawing function
-		var legend = d3.select("#"+divID).append("svg")
+
+			var legend = d3.select("#"+divID).append("svg")
 			.attr("class", "legend")
 			.attr("class", "pie_legend")
 			//.attr("width", r * 1.7)
@@ -1143,29 +1173,24 @@ var d3PieGraph = function(divID, json) {
 			.data(color.domain().reverse())
 			.enter().append("g")
 			.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-		legend.append("rect")
+
+			legend.append("rect")
 			.attr("width", 18)
 			.attr("height", 18)
 			.style("fill", color);
-		legend.append("text")
+
+			legend.append("text")
 			.attr("x", 24)
 			.attr("y", 9)
 			.attr("dy", ".35em")
 			.text(function(d, i) { return graph.aaData[i].ioc; });
-	});
+		});
 };
-// datatables functions
-var tableViz = function(json, data, columns) {
-	for(var i=0; i < columns.length; i++) {
-		getTable(data[i].dID, json, data[i], columns[i]);
-	}
-	$(".page-content").fadeTo(500, 1); // return opacity to 1 
-	//$(".dc-data-table tbody tr td .trash-row").click(function () {
-	//	oTable.fnDeleteRow(this);
-	//});
-	$('.page-content').activity(false);
-};
+///////////////////////////////////////////////
+/////////    DataTable FUNCTIONS    ///////////
+///////////////////////////////////////////////
 var getTable = function(divID, json, data, columns) {
+
 	var graph_type = getURLParameter('type');
 	var sort = [[ 0, "desc" ]];
 	if (data.sSort) {
@@ -1178,8 +1203,7 @@ var getTable = function(divID, json, data, columns) {
 		bStateSave = true;
 		bPaginate = false;
 		sDom = 'r<t>';
-	} 
-	else {
+	} else {
 		if (data.sDom !== 'false') {
 			sDom = '<"clear"C>T<"clear">lfr<"table_overflow"t>ip';
 		} 
@@ -1201,8 +1225,10 @@ var getTable = function(divID, json, data, columns) {
 		"bPaginate": bPaginate,
 		"sAjaxSource": json+'&getTable=true&dID='+divID,
 		"aoColumns": columns,
+
 		"iDisplayLength": iDisplayLength,
 		"bStateSave": true,
+		
 		"sType": "html",
 		"sDom": sDom,
 		"fnStateSave": function (oSettings, oData) {
@@ -1214,17 +1240,16 @@ var getTable = function(divID, json, data, columns) {
 		"oTableTools": {
 			"sSwfPath": "assets/swf/copy_csv_xls_pdf.swf",
 			"aButtons": [
-				"copy",	{
-					"sExtends": "collection",
-					"sButtonText": "Export",
-					"aButtons": [ 
-						"csv", "xls", {
-							"sExtends": "pdf",
-							"sPdfOrientation": "landscape",
-							"sPdfMessage": "rapidPHIRE Data Export"
-						} 
-					]
-				}
+			"copy",
+			{
+				"sExtends": "collection",
+				"sButtonText": "Export",
+				"aButtons": [ "csv", "xls", {
+					"sExtends": "pdf",
+					"sPdfOrientation": "landscape",
+					"sPdfMessage": "Your custom message would go here."
+				} ]
+			}
 			]
 		},
 		//this hides any tables on the ioc_event page that come up empty
@@ -1235,10 +1260,14 @@ var getTable = function(divID, json, data, columns) {
 			}
 		}
 	});
-	oTable.fnFilter('');
+oTable.fnFilter('');
 };
-// PAGE LOAD FUNCTIONS
+
+///////////////////////////////////////////////
+/////////    PAGE LOAD FUNCTIONS    ///////////
+///////////////////////////////////////////////
 $(document).ready(function() { // execute javascript as soon as DOM is loaded
+
 	App.init(); // initlayout and core plugins
 	floating_logo();
 	// window.onpopstate = function(event) {
@@ -1378,15 +1407,15 @@ $(document).ready(function() { // execute javascript as soon as DOM is loaded
 						$('.badge').html(counter);
 					}
 				});
-			}
-		});
-	});
+}
+});
+});
 	setTimeout(function() { // update ioc alert dropdown
-		(function notifications() {
-			$.get("inc/getdata.php?&checkpoint=true", function(check) {
+		(function notifications(){
+			$.get("inc/getdata.php?&checkpoint=true", function(check){
 				checkpoint = check;
 				$.getJSON('inc/getdata.php?type=blacklist&where=null&start='+checkpoint+'&end=null', function(jsn) {
-					if(jsn) { // only run if return is not NULL
+					if(jsn){ // only run if return is not NULL
 						$.each(jsn, function() {
 							if(checkpoint < this.added) { // Math.checkpoint
 								newflags++;
@@ -1399,7 +1428,7 @@ $(document).ready(function() { // execute javascript as soon as DOM is loaded
 								if(all_n.children('li').size() >= 5) { // remove bottom notifications if total is more than 5
 									$('#notifications li:last').remove();
 								}
-								$('.dropdown-toggle').on("click", function(event) {
+								$('.dropdown-toggle').on("click", function( event ) {
 									counter = 0;
 									localStorage.setItem('counter', 0);
 									$('.badge').html('');
@@ -1412,9 +1441,9 @@ $(document).ready(function() { // execute javascript as soon as DOM is loaded
 								}
 							}
 						});
-					}
-				});
-			});
+}
+});
+});
 			setTimeout(notifications, 50000); //check for new updates every 5 seconds
 		})();
 	}, 5000);
