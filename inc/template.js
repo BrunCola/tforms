@@ -708,24 +708,39 @@ var severityBtn = function(dim, event, divid) {
 		//console.log('severity button onfiltered fire')
 		//console.log('event true fire');
 	} else if (event === false){
-		sevArray = dim.top(Infinity);
-		sev = []; var uniqueIoc;
-		//console.log('event false fire');
-		rowChart.filter(null);
-		for (var d in dim.top(Infinity)) {
-			if (dim.top(Infinity)[d].ioc_severity === divid) {
-				sev.push(dim.top(Infinity)[d].ioc);
+		if (divid === null) {
+			var tFilter = []; var uniqueArray;
+			rowChart.filter(null);
+			dim.forEach(function(d){
+				tFilter.push(d._aData.ioc);
+			})
+			uniqueArray = tFilter.filter(function(elem, pos) {
+				return tFilter.indexOf(elem) == pos;
+			});
+			for (var i in uniqueArray) {
+				rowChart.filter(uniqueArray[i]);
 			}
+			dc.redrawAll();
+		} else {
+			oTable.fnFilter('Severity: '+divid);
+			sevArray = dim.top(Infinity);
+			sev = []; var uniqueIoc;
+			//console.log('event false fire');
+			rowChart.filter(null);
+			for (var d in dim.top(Infinity)) {
+				if (dim.top(Infinity)[d].ioc_severity === divid) {
+					sev.push(dim.top(Infinity)[d].ioc);
+				}
+			}
+			uniqueIoc = sev.filter(function(elem, pos) {
+				return sev.indexOf(elem) == pos;
+			});
+			for (var i in uniqueIoc) {
+				rowChart.filter(uniqueIoc[i]);
+				//oTable.fnFilter(uniqueIoc[i]);
+			}
+			dc.redrawAll();
 		}
-		uniqueIoc = sev.filter(function(elem, pos) {
-			return sev.indexOf(elem) == pos;
-		});
-		for (var i in uniqueIoc) {
-			rowChart.filter(uniqueIoc[i]);
-			//oTable.fnFilter(uniqueIoc[i]);
-		}
-		oTable.fnFilter('Severity: '+divid);
-		dc.redrawAll();
 	}
 };
 var resizeViz = function (chart, divid, aspect) {
@@ -1101,20 +1116,18 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 			})
 			.colorAccessor(function (d){return d.value.severity;})
 			.on("postRender", function(chart, d){
-				$(document).ready(function(){
-					$('.alert1').on("click", function() {
-						severityBtn(dim, false, '1');
-					});
-					$('.alert2').on("click", function() {
-						severityBtn(dim, false, '2');
-					});
-					$('.alert3').on("click", function() {
-						severityBtn(dim, false, '3');
-					});
-					$('.alert4').on("click", function() {
-						severityBtn(dim, false, '4');
-					});
-				})
+				$('.alert1').on("click", function() {
+					severityBtn(dim, false, '1');
+				});
+				$('.alert2').on("click", function() {
+					severityBtn(dim, false, '2');
+				});
+				$('.alert3').on("click", function() {
+					severityBtn(dim, false, '3');
+				});
+				$('.alert4').on("click", function() {
+					severityBtn(dim, false, '4');
+				});
 			})
 			.on("filtered", function(chart, filter){
 				severityBtn(dim, true);
@@ -1276,6 +1289,7 @@ var d3PieGraph = function(divID, json) {
 /////////    DataTable FUNCTIONS    ///////////
 ///////////////////////////////////////////////
 var getTable = function(divID, json, data, columns) {
+	var fFire = false;
 	var graph_type = getURLParameter('type');
 	var sort = [[ 0, "desc" ]];
 	if (data.sSort) {
@@ -1339,16 +1353,16 @@ var getTable = function(divID, json, data, columns) {
 		},
 		//this hides any tables on the ioc_event page that come up empty
 		"fnDrawCallback": function(oSettings) {
-			console.log(oSettings);
-			if (oSettings.oPreviousSearch.sSearch !== "") {
-				tableToVizFilter(oSettings.aoData, true);
-			} else {
-				setTimeout(function(){
+			//console.log(oSettings);
+			if ((oSettings.oPreviousSearch.sSearch !== "") && (!(oSettings.oPreviousSearch.sSearch.match(/Severity: {0,4}/))))  {
+				severityBtn(oSettings.aoData, false, null);
+			} else if (oSettings.oPreviousSearch.sSearch === ""){
+				if (fFire !== false) { 
 					rowChart.filter(null);
 					dc.redrawAll();
-				},500)
+				}
 			}
-			//console.log(oSettings.aoData);
+			fFire = true;
 			var iTotalRecords = oSettings.fnRecordsTotal();
 			if ((iTotalRecords === 0) && (getURLParameter('type') === 'ioc_event')) {
 				$(this).parents('.jdash-widget').remove();
