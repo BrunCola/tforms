@@ -341,11 +341,9 @@ var page = function(search_val, type, start, end, clear_b) {
 		});
 	});
 var tableViz = function(columns, data) {
-	$(document).ready(function(){
-		for(var i=0; i < columns.length; i++) {
+	for(var i=0; i < columns.length; i++) {
 		getTable(data[i].dID, json, data[i], columns[i]);
-		}
-	});
+	}
 	$(".page-content").fadeTo(500, 1); // return opacity to 1
 	//$(".dc-data-table tbody tr td .trash-row").click(function () {
 	//	oTable.fnDeleteRow(this);
@@ -455,6 +453,7 @@ var crossfilterViz = function() {
 				$('.page-content').activity(false);
 				$(".page-content").fadeTo(500, 1);
 				dc.renderAll();
+
 			}
 		}
 	};
@@ -685,6 +684,7 @@ var tableToVizFilter = function(arr, event) {
 		for (var i in uniqueArray) {
 			rowChart.filter(uniqueArray[i]);
 		}
+		dc.redrawAll();
 		//console.log('table filter fire');
 		//console.log(uniqueArray);
 	}
@@ -724,13 +724,8 @@ var severityBtn = function(dim, event, divid) {
 			rowChart.filter(uniqueIoc[i]);
 			//oTable.fnFilter(uniqueIoc[i]);
 		}
-		rowCHart.filter(null);
-		severityBTN(function(d) {
-			ioc.forEach(function (d) {
-				return d.ioc_severity;
-			})
-		})
 		oTable.fnFilter('Severity: '+divid);
+		dc.redrawAll();
 	}
 };
 var resizeViz = function (chart, divid, aspect) {
@@ -1122,7 +1117,6 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 				})
 			})
 			.on("filtered", function(chart, filter){
-				dc.redrawAll();
 				severityBtn(dim, true);
 			})
 			.renderlet(function(chart){
@@ -1351,8 +1345,7 @@ var getTable = function(divID, json, data, columns) {
 			} else {
 				setTimeout(function(){
 					rowChart.filter(null);
-					// dc.redrawAll();
-					flowCHart(ioc);
+					dc.redrawAll();
 				},500)
 			}
 			//console.log(oSettings.aoData);
