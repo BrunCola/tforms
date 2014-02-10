@@ -627,7 +627,7 @@ var dPopup = function(text) {
 	$.colorbox({html:text, width:500});
 };
 //previous function for sorting bar graph (keep this for now becuase i may use some stuff for table sorting)
-// var severityBtn = function(dim, event, divid) {
+// var AwesomeFilterYo = function(dim, event, divid) {
 // 	var dimArray; var sevArray; var sev = [];
 // 	if (event === true) {
 // 		sev = [];
@@ -671,27 +671,10 @@ var dPopup = function(text) {
 // 		}
 // 	}
 //});
-var tableToVizFilter = function(arr, event) {
-	var tFilter = []; var uniqueArray;
-	if (event === true) {
-		rowChart.filter(null);
-		arr.forEach(function(d){
-			tFilter.push(d._aData.ioc);
-		})
-		uniqueArray = tFilter.filter(function(elem, pos) {
-			return tFilter.indexOf(elem) == pos;
-		});
-		for (var i in uniqueArray) {
-			rowChart.filter(uniqueArray[i]);
-		}
-		dc.redrawAll();
-		//console.log('table filter fire');
-		//console.log(uniqueArray);
-	}
-}
-var severityBtn = function(dim, event, divid) {
+var AwesomeFilterYo = function(dim, event, divid) {
 	var dimArray; var sevArray; var sev = [];
 	if (event === true) {
+	//// BUTTON HIGHLIGHT CHECK
 		sev = [];
 		dimArray = dim.top(Infinity);
 		var arr = [];var uniqueFilter;
@@ -707,8 +690,9 @@ var severityBtn = function(dim, event, divid) {
 		}
 		//console.log('severity button onfiltered fire')
 		//console.log('event true fire');
-	} else if (event === false){
-		if (divid === null) {
+	} else if (event === false){ 
+		if (divid === null) { 
+		//// TABLE SEARCH
 			var tFilter = []; var uniqueArray;
 			rowChart.filter(null);
 			dim.forEach(function(d){
@@ -722,6 +706,7 @@ var severityBtn = function(dim, event, divid) {
 			}
 			dc.redrawAll();
 		} else {
+		//// TOP BUTTON CLICK
 			oTable.fnFilter('Severity: '+divid);
 			sevArray = dim.top(Infinity);
 			sev = []; var uniqueIoc;
@@ -852,10 +837,10 @@ var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height
 		.title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
 		.renderTitle(true) // (optional) whether chart should render titles, :default = false
 		.on("filtered", function(chart, d){
-			severityBtn(dim, true);
+			AwesomeFilterYo(dim, true);
 		})
 		.on("postRender", function(chart, d){
-			severityBtn(dim, true);
+			AwesomeFilterYo(dim, true);
 		})
 		.renderlet(function(chart) {
 			chart.select('svg')
@@ -920,6 +905,12 @@ var dcGeoMap = function (divID, data, world) {
 		})
 		.title(function (d) {
 			return d.key+": "+(d.value ? d.value : 0);
+		})
+		.on("filtered", function(chart, d){
+			AwesomeFilterYo(dimension, true);
+		})
+		.on("postRender", function(chart, d){
+			AwesomeFilterYo(dimension, true);
 		})
 		.renderlet(function(chart,d) {
 			chart.select('svg')
@@ -1117,20 +1108,22 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 			.colorAccessor(function (d){return d.value.severity;})
 			.on("postRender", function(chart, d){
 				$('.alert1').on("click", function() {
-					severityBtn(dim, false, '1');
+					AwesomeFilterYo(dim, false, '1');
 				});
 				$('.alert2').on("click", function() {
-					severityBtn(dim, false, '2');
+					AwesomeFilterYo(dim, false, '2');
 				});
 				$('.alert3').on("click", function() {
-					severityBtn(dim, false, '3');
+					AwesomeFilterYo(dim, false, '3');
 				});
 				$('.alert4').on("click", function() {
-					severityBtn(dim, false, '4');
+					AwesomeFilterYo(dim, false, '4');
 				});
 			})
 			.on("filtered", function(chart, filter){
-				severityBtn(dim, true);
+				AwesomeFilterYo(dim, true);
+				//oTable.fnFilter(filter);
+				console.log(filter);
 			})
 			.renderlet(function(chart){
 				chart.select('svg')
@@ -1354,8 +1347,8 @@ var getTable = function(divID, json, data, columns) {
 		//this hides any tables on the ioc_event page that come up empty
 		"fnDrawCallback": function(oSettings) {
 			//console.log(oSettings);
-			if ((oSettings.oPreviousSearch.sSearch !== "") && (!(oSettings.oPreviousSearch.sSearch.match(/Severity: {0,4}/))))  {
-				severityBtn(oSettings.aoData, false, null);
+			if ((oSettings.oPreviousSearch.sSearch !== "") && (!(oSettings.oPreviousSearch.sSearch.match(/Severity:*/))))  {
+				AwesomeFilterYo(oSettings.aoData, false, null);
 			} else if (oSettings.oPreviousSearch.sSearch === ""){
 				if (fFire !== false) { 
 					rowChart.filter(null);
