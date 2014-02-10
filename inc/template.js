@@ -1,14 +1,12 @@
 var defaultDayRange = 1; //Set default date range for the app
 var defaultSearch = 'ioc_hits'; //Set default search for when the raw url is visited
 var defaultNotifications = 'ioc_hits'; //Set which query to run when the 'See all Notifications' dropdown is clicked
+
 ///////////////////////////////////////////////
 /////////     GENERAL FUNCTIONS     ///////////
 ///////////////////////////////////////////////
 var rowChart, geoChart, sevChart, barChart, compositeChart, pieChart;
 var page = function(search_val, type, start, end, clear_b) {
-	// dc.events.trigger(function() {
-	//	alert('test');
-	// });
 	clear_div('page');
 	$('#paral').hide();
 	$('#head-right').html('');
@@ -21,7 +19,7 @@ var page = function(search_val, type, start, end, clear_b) {
 	if (!start && start_get != 'null') {
 		start = start_get;
 		end = end_get;
-	} 
+	}
 	else if (!start) {
 		end = moment().unix();
 		start = moment().subtract('days', defaultDayRange).unix();
@@ -44,7 +42,7 @@ var page = function(search_val, type, start, end, clear_b) {
 		///////////////////////////////////
 		////// Custom REPORT SETTINGS /////
 		///////////////////////////////////
-		//glossary append 
+		//glossary append
 		if(type === 'ioc_hits_report') {
 			d3.json(json+'&getTable=true&dID=table2', function (data) {
 				if (data !== undefined) {
@@ -52,7 +50,7 @@ var page = function(search_val, type, start, end, clear_b) {
 				}
 				var g = []; var a = []; var prev;
 				for (var d in data.aaData) {
-					g.push(data.aaData[d].ioc);	
+					g.push(data.aaData[d].ioc);
 				}
 				g.sort();
 				for (var f = 0; f < g.length; f++) {
@@ -62,7 +60,7 @@ var page = function(search_val, type, start, end, clear_b) {
 					}
 					prev = g[f];
 				}
-			});	
+			});
 			$('#page').prepend('<p>This report summarizes rapidPHIRE\'s detection of Indicators of Compromise - IOC - (i.e.'+
 				' network communications between users and known malicious hosts, files or entities). These events have'+
 				' occurred within one or more data network zones within your organization. It should be noted that some'+
@@ -98,7 +96,7 @@ var page = function(search_val, type, start, end, clear_b) {
 		// SET SUB HEADING
 		if (data.page.subheading) {
 			$('#sub_heading').html(data.page.subheading);
-		} 
+		}
 		else {
 			$('#sub_heading').html('');
 		}
@@ -108,7 +106,7 @@ var page = function(search_val, type, start, end, clear_b) {
 			$('.page-sidebar-menu :not(.'+data.page.sidebar+')').removeClass('start active');
 			$('.page-sidebar-menu li.'+data.page.sidebar).addClass('start active');
 			$('#heading_sub', '.page-sidebar-menu li.'+data.page.sidebar).addClass('selected');
-		} 
+		}
 		else {
 			$('.page-sidebar-menu li').removeClass('start active');
 		}
@@ -116,21 +114,18 @@ var page = function(search_val, type, start, end, clear_b) {
 		if (clear_b===true) { // if true, clear breadcrumbs and set new div (for search feilds)
 			clear_div('breadhome');
 			$('#breadhome').append('<li><i class=\'fa fa-angle-right\'></i><a href="javascript:void(0);" onclick="page(\''+search_val+'\',\''+type+'\',\''+start+'\',\''+end+'\',false);$(this).parent().nextAll().remove();">'+data.page.title+' ('+search_val+')</a></li>');
-		} 
+		}
 		else if (clear_b===false) { // if false, just append new (for digging through the table/calendar)
 			$('#breadhome').append('<li><i class=\'fa fa-angle-right\'></i><a href="javascript:void(0);" onclick="page(\''+search_val+'\', \''+type+'\',\''+start+'\',\''+end+'\',false);$(this).parent().nextAll().remove();">'+data.page.title+' ('+search_val+')</a></li>');
-		} 
+		}
 		else if (clear_b===null) { // if false, just append new (for page loads & 'Home' button in breadcrumb)
 			clear_div('breadhome');
 		}
 		// SEVERITY LEVEL INDICATORS
-		if (data.page.severity !== undefined) { 
+		if (data.page.severity !== undefined) {
 			$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert1 alert"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> 0 </span></button>');
 			$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert2 alert"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> 0 </span></button>');
 			$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert3 alert"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> 0 </span></button>');
-			// $('#severity').append('<button onclick="oTable.fnFilter(\'Severity: 4\',null);severityBtn(\'alert4\');" style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
-			//$('#severity').append('<button onclick="geoChart.filter(\'Canada\');dc.redrawAll();" style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
-			//$('#severity').append('<button onclick="sevChart.filter(\'guarded\');dc.redrawAll();" style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
 			$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
 			d3.json(json+'&severity_levels=true', function(levels) {
 				for (var s in levels) {
@@ -151,13 +146,13 @@ var page = function(search_val, type, start, end, clear_b) {
 		}
 		// PUSH CUSTOM HTML INTO DIVS
 		if (data.html !== null) {
-			for (var i = 0; i < data.html.length; i++) {	
+			for (var i = 0; i < data.html.length; i++) {
 				if (data.html[i].heading !== '') {
 					$('#'+data.html[i].pID).prepend(
 						'<div id="'+data.html[i].dID+'" class="jdash-widget">\n' +
 						'<div class="jdash-header">'+data.html[i].heading+'</div>\n' +
 						'<div class="row-fluid">\n' +
-						'<div class="span12">\n' +						
+						'<div class="span12">\n' +
 						'<div class="box-content">\n' +
 						'<div style="padding:3px !important;">'+data.html[i].data+'</div>\n' +
 						'</div>\n' +
@@ -171,7 +166,7 @@ var page = function(search_val, type, start, end, clear_b) {
 				}
 			}
 		}
-		// LAUNCH ALL TABLES 
+		// LAUNCH ALL TABLES
 		if (data.table !== undefined) {
 			// DIF TABLE FOR REPORT VS WEB
 			var j;
@@ -194,7 +189,7 @@ var page = function(search_val, type, start, end, clear_b) {
 						'</div>\n'
 						);
 				}
-			} 
+			}
 			else {
 				for (j = 0; j < data.table.length; j++) {
 					$('#'+data.table[j].pID).prepend(
@@ -223,7 +218,7 @@ var page = function(search_val, type, start, end, clear_b) {
 				}
 			}
 			// TABLE COLUMN GENERATOR
-			$('thead').empty();		
+			$('thead').empty();
 			var col = [];
 			for (var c = 0; c < data.columns.length; c++) {
 				var columns = [];
@@ -235,7 +230,7 @@ var page = function(search_val, type, start, end, clear_b) {
 					if (data.columns[c][dc][1]) { // check for titles
 						if (data.columns[c][dc]) { // check for html types
 							columns.push({"sTitle": data.columns[c][dc][1], "mData": data.columns[c][dc][0], "sType": "html", "bVisible": dCol });
-						} 
+						}
 						else {
 							columns.push({"sTitle": data.columns[c][dc][1], "mData": data.columns[c][dc][0], "sType": 'string-case', "bVisible": dCol });
 						}
@@ -309,7 +304,7 @@ var page = function(search_val, type, start, end, clear_b) {
 						var hidden;
 						if (data.viz.crossfilter.disp[k].dView == 'false') {
 							hidden = ' jdash_hidden';
-						} 
+						}
 						else {
 							hidden = '';
 						}
@@ -323,7 +318,7 @@ var page = function(search_val, type, start, end, clear_b) {
 						$('#'+data.viz.d3[d].disp.pID).append('<div " id="'+data.viz.d3[d].disp.dID+'" class="jdash-widget"><div class="jdash-header">'+data.viz.d3[d].disp.heading+'</div></div>');
 					}
 					d3Viz(data);
-				}			
+				}
 			}
 			//stealth is what the d3Div Div is for in the index & report files, all other d3 is handled above
 			if (data.viz.d3stealth !== undefined) {
@@ -349,7 +344,7 @@ var tableViz = function(columns, data) {
 	for(var i=0; i < columns.length; i++) {
 		getTable(data[i].dID, json, data[i], columns[i]);
 	}
-	$(".page-content").fadeTo(500, 1); // return opacity to 1 
+	$(".page-content").fadeTo(500, 1); // return opacity to 1
 	//$(".dc-data-table tbody tr td .trash-row").click(function () {
 	//	oTable.fnDeleteRow(this);
 	//});
@@ -361,9 +356,9 @@ var crossfilterViz = function() {
 	.defer(d3.json, "assets/json/world.json")
 	.await(ready);
 	function ready(error, data, world) {
-			if (data.iTotalDisplayRecords === '0') { // if no data return, call no_fetch to display user message 
+			if (data.iTotalDisplayRecords === '0') { // if no data return, call no_fetch to display user message
 				no_fetch();
-			} 
+			}
 			else {
 				var cf_data = crossfilter(data.aaData); // feed it through crossfilter
 				var all = cf_data.groupAll();
@@ -407,7 +402,7 @@ var crossfilterViz = function() {
 							prev = arr[i];
 						}
 						var numberOfItems = a.length;
-						var rainbow = new Rainbow(); 
+						var rainbow = new Rainbow();
 						rainbow.setNumberRange(1, a.length+1);
 						rainbow.setSpectrum('#ED5314', '#FFB92A', '#FEEB51', '#9BCA3E', '#3ABBC9', '#E6E6E6');
 						var cc = [];
@@ -417,7 +412,7 @@ var crossfilterViz = function() {
 						}
 						for (var key in data.viz) { // for every key in the viz array, check the graph type against the ones below
 							if (key === 'length' || !data.viz.hasOwnProperty(key)) continue;
-							var val = data.viz[key];					
+							var val = data.viz[key];
 							// GEO CHART
 							if ((val.type === 'geo') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
 								geoChart = dc.geoChoroplethChart('#'+val.dID);
@@ -434,7 +429,7 @@ var crossfilterViz = function() {
 								severityGraph(val.dID, cf_data.dimension(dimension[x]), cf_data.dimension(dimension[x]).group(), start, end, val.xAxis, val.yAxis, val.height);
 							}
 							////PIE Chart
-							if ((val.type === 'pie') && (dim[x] === val.dim) && (grp[g] === val.grp)) {	
+							if ((val.type === 'pie') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
 								pieChart = dc.pieChart("#"+val.dID);
 								dcPieGraph(val.dID, cf_data.dimension(dimension[x]), cf_data.dimension(dimension[x]).group(), cc);
 							}
@@ -451,7 +446,7 @@ var crossfilterViz = function() {
 							if ((val.type === 'composite') && (dim[x] === val.dim) && (grp[g] === val.grp)) {
 								compositeChart = dc.compositeChart("#"+val.dID);
 								dcCompositeGraph(val.dID, cf_data.dimension(dimension[x]), cf_data.dimension(dimension[x]).group(), start, end, val.xAxis, val.yAxis);
-							}				
+							}
 						}
 					}
 				}
@@ -631,49 +626,107 @@ var floating_logo = function() {
 var dPopup = function(text) {
 	$.colorbox({html:text, width:500});
 };
+//previous function for sorting bar graph (keep this for now becuase i may use some stuff for table sorting)
+// var severityBtn = function(dim, event, divid) {
+// 	var dimArray; var sevArray; var sev = [];
+// 	if (event === true) {
+// 		sev = [];
+// 		dimArray = dim.top(Infinity);
+// 		var arr = [];var uniqueArray;
+// 		dimArray.forEach(function(d){
+// 			arr.push(d.ioc_severity);
+// 		});
+// 		uniqueArray = arr.filter(function(elem, pos) {
+// 			return arr.indexOf(elem) == pos;
+// 		});
+// 		$("#severity").children().addClass("severity-deselect");
+// 		for(var a in uniqueArray) {
+// 			$(".alert"+uniqueArray[a]).removeClass("severity-deselect");
+// 		}
+// 		console.log('event true fire');
+// 	} else if (event === false){
+// 		sevArray = dim.top(Infinity);
+// 		sev = [];
+// 		//take dimension being passed, convert it to time, filter then redraw
+// 		console.log('event false fire');
+// 		sevChart.filter(null);
+// 		for (var d in dim.top(Infinity)) {
+// 			if (dim.top(Infinity)[d].ioc_severity === divid) {
+// 				sev.push({
+// 					dd: dim.top(Infinity)[d].dd,
+// 					ioc_severity: dim.top(Infinity)[d].ioc_severity,
+// 					ioc: dim.top(Infinity)[d].ioc
+// 				});
+// 			}
+// 		}
+// 		var minX = Math.min.apply(Math, sev.map(function(val) { return val.dd; }));
+// 		var maxX = Math.max.apply(Math, sev.map(function(val) { return val.dd; }));
+// 		if (minX !== Infinity) {
+// 			sevChart.filter([minX,maxX]);
+// 			//sevChart.redraw();
+// 			// for (var i in sev) {
+// 			//	rowChart.filter(sev[i].ioc);
+// 			// }
+// 			dc.redrawAll();
+// 		}
+// 	}
+//});
+var tableToVizFilter = function(arr, event) {
+	var tFilter = []; var uniqueArray;
+	if (event === true) {
+		rowChart.filter(null);
+		arr.forEach(function(d){
+			tFilter.push(d._aData.ioc);
+		})
+		uniqueArray = tFilter.filter(function(elem, pos) {
+			return tFilter.indexOf(elem) == pos;
+		});
+		for (var i in uniqueArray) {
+			rowChart.filter(uniqueArray[i]);
+		}
+		dc.redrawAll();
+		//console.log('table filter fire');
+		//console.log(uniqueArray);
+	}
+}
 var severityBtn = function(dim, event, divid) {
 	var dimArray; var sevArray; var sev = [];
 	if (event === true) {
 		sev = [];
 		dimArray = dim.top(Infinity);
-		var arr = [];var uniqueArray; 
+		var arr = [];var uniqueFilter;
 		dimArray.forEach(function(d){
 			arr.push(d.ioc_severity);
 		});
-		uniqueArray = arr.filter(function(elem, pos) {
+		uniqueFilter = arr.filter(function(elem, pos) {
 			return arr.indexOf(elem) == pos;
 		});
 		$("#severity").children().addClass("severity-deselect");
-		for(var a in uniqueArray) {
-			$(".alert"+uniqueArray[a]).removeClass("severity-deselect");
+		for(var a in uniqueFilter) {
+			$(".alert"+uniqueFilter[a]).removeClass("severity-deselect");
 		}
-		console.log('event true fire');console.log(dimArray);
+		//console.log('severity button onfiltered fire')
+		//console.log('event true fire');
 	} else if (event === false){
 		sevArray = dim.top(Infinity);
-		sev = [];
-		//take dimension being passed, convert it to time, filter then redraw
-		console.log('event false fire');
-		sevChart.filter(null);
+		sev = []; var uniqueIoc;
+		//console.log('event false fire');
+		rowChart.filter(null);
 		for (var d in dim.top(Infinity)) {
 			if (dim.top(Infinity)[d].ioc_severity === divid) {
-				sev.push({
-					dd: dim.top(Infinity)[d].dd,
-					ioc_severity: dim.top(Infinity)[d].ioc_severity,
-					ioc: dim.top(Infinity)[d].ioc
-				});
+				sev.push(dim.top(Infinity)[d].ioc);
 			}
 		}
-		var minX = Math.min.apply(Math, sev.map(function(val) { return val.dd; }));
-		var maxX = Math.max.apply(Math, sev.map(function(val) { return val.dd; }));
-		if (minX !== Infinity) {
-			sevChart.filter([minX,maxX]);
-			//sevChart.redraw();
-			// for (var i in sev) {
-			//	rowChart.filter(sev[i].ioc);
-			// }
-			dc.redrawAll();
+		uniqueIoc = sev.filter(function(elem, pos) {
+			return sev.indexOf(elem) == pos;
+		});
+		for (var i in uniqueIoc) {
+			rowChart.filter(uniqueIoc[i]);
+			//oTable.fnFilter(uniqueIoc[i]);
 		}
-	}	
+		oTable.fnFilter('Severity: '+divid);
+		dc.redrawAll();
+	}
 };
 var resizeViz = function (chart, divid, aspect) {
 	var targetWidth = $(divid).width();
@@ -701,7 +754,6 @@ var d3swimChart = function(divID, json) {
 ///////////////////////////////////////////////
 /////////   DC.JS GRAPH FUNCTIONS   ///////////
 ///////////////////////////////////////////////
-
 var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height) {
 	var connVsTime = group.reduce(
 		function(p, v) {
@@ -784,13 +836,19 @@ var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height
 		//.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
 		.title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
 		.renderTitle(true) // (optional) whether chart should render titles, :default = false
+		.on("filtered", function(chart, d){
+			severityBtn(dim, true);
+		})
+		.on("postRender", function(chart, d){
+			severityBtn(dim, true);
+		})
 		.renderlet(function(chart) {
 			chart.select('svg')
 				.attr('width', width)
 				.attr('height', hHeight)
 				.attr('viewBox', '0 0 '+width+' '+hHeight)
 				.attr('perserveAspectRatio', 'xMinYMid');
-			
+
 			var aspect;
 			$(window).on("resize", function() {
 				aspect = width / hHeight;
@@ -848,25 +906,7 @@ var dcGeoMap = function (divID, data, world) {
 		.title(function (d) {
 			return d.key+": "+(d.value ? d.value : 0);
 		})
-		.on("postRender", function(chart, d){
-			$('.alert1').on("click", function() {
-				severityBtn(dimension, false, '1');
-			});
-			$('.alert2').on("click", function() {
-				severityBtn(dimension, false, '2');
-			});
-			$('.alert3').on("click", function() {
-				severityBtn(dimension, false, '3');
-			});
-			$('.alert4').on("click", function() {
-				severityBtn(dimension, false, '4');
-			});
-		})
 		.renderlet(function(chart,d) {
-			dc.events.trigger(function() {
-				severityBtn(dimension, true);
-			});
-			
 			chart.select('svg')
 				.attr('width', width)
 				.attr('height', height)
@@ -890,7 +930,7 @@ var dcGeoMap = function (divID, data, world) {
 			//	chart.selectAll("g").call(tip);
 			//	chart.selectAll("g").on('mouseover', tip.show)
 			//		.on('mouseout', tip.hide);
-		});
+	});
 };
 var dcBarGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 	var width = $("#"+divID).width();
@@ -914,7 +954,7 @@ var dcBarGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 		.renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
 		.title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
 		//.title(function (d) { return ""; })
-		//.legend(dc.legend().x(250).y(10))							
+		//.legend(dc.legend().x(250).y(10))
 		.renderTitle(true) // (optional) whether chart should render titles, :default = false
 		.renderlet(function(chart) {
 			chart.select('svg')
@@ -939,14 +979,13 @@ var dcBarGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 		// 		//	oTable.fnFilter(string,null,true,null);
 		// 	});
 	});
-	};
-	
+};
 var dcPieGraph = function(divID, dim, group, colors) {
 		var width = $("#"+divID).width();
 		pieChart
 		.height(width)
 		.innerRadius(width/6)
-		.width(width)	
+		.width(width)
 		.group(group)
 		.radius(width/2)
 		.colors(colors)
@@ -992,8 +1031,8 @@ var dcWordCloud = function(divID, data) {
 		.text(function(d) { return d.text; });
 	}
 	data.aaData.forEach(function(d) { return { text: d.remote_country, size: d.count }; }); // parse data json obj to set name and font size
-	
-	var fontSize = d3.scale.log().range([4, 20]);  
+
+	var fontSize = d3.scale.log().range([4, 20]);
 	var fill = d3.scale.category20b();
 	var w = width;
 	var h = width/2;
@@ -1008,7 +1047,7 @@ var dcWordCloud = function(divID, data) {
 		//.fontSize(function(d) { return d.size; })
 		.on("end", wordCloud)
 		.start();
-	};
+};
 var dcRowGraph = function(divID, dim, group, colors, dimName) {
 	var sevCount = group.reduce(
 		function (d, v) {
@@ -1046,7 +1085,7 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 		hHeight = 25+(colors.length*35);
 	} else if (colors.length >= 7) {
 		lOffset = 12.7+(colors.length*0.2);
-		hHeight = 25+(colors.length*28);	
+		hHeight = 25+(colors.length*28);
 	}
 	var width = $("#"+divID).width();
 		rowChart
@@ -1061,6 +1100,25 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 				return d.value.count+0.1;
 			})
 			.colorAccessor(function (d){return d.value.severity;})
+			.on("postRender", function(chart, d){
+				$(document).ready(function(){
+					$('.alert1').on("click", function() {
+						severityBtn(dim, false, '1');
+					});
+					$('.alert2').on("click", function() {
+						severityBtn(dim, false, '2');
+					});
+					$('.alert3').on("click", function() {
+						severityBtn(dim, false, '3');
+					});
+					$('.alert4').on("click", function() {
+						severityBtn(dim, false, '4');
+					});
+				})
+			})
+			.on("filtered", function(chart, filter){
+				severityBtn(dim, true);
+			})
 			.renderlet(function(chart){
 				chart.select('svg')
 					.attr('width', width)
@@ -1072,7 +1130,7 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 					if (colors.length < 7) {
 						height = 25+(colors.length*35);
 					} else if (colors.length >= 7) {
-						height = 25+(colors.length*28);	
+						height = 25+(colors.length*28);
 					}
 					aspect = width / hHeight;
 					resizeViz(chart, "#"+divID, aspect);
@@ -1082,7 +1140,7 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 						if (colors.length < 7) {
 							height = 25+(colors.length*35);
 						} else if (colors.length >= 7) {
-							height = 25+(colors.length*28);	
+							height = 25+(colors.length*28);
 						}
 						aspect = width / hHeight;
 						resizeViz(chart, "#"+divID, aspect);
@@ -1150,7 +1208,7 @@ var d3PieGraph = function(divID, json) {
 	d3.json(json+'&getViz=true&vizType=d3&dID='+divID, function(error, graph) {
 		//color picker function
 		var numberOfItems = graph.aaData.length;
-		var rainbow = new Rainbow(); 
+		var rainbow = new Rainbow();
 		rainbow.setNumberRange(1, graph.aaData.length+1);
 		rainbow.setSpectrum('#ED5314', '#FFB92A', '#FEEB51', '#9BCA3E', '#3ABBC9', '#E6E6E6');
 		var cc = [];
@@ -1213,17 +1271,17 @@ var d3PieGraph = function(divID, json) {
 			.text(function(d, i) { return graph.aaData[i].ioc; });
 		});
 };
+
 ///////////////////////////////////////////////
 /////////    DataTable FUNCTIONS    ///////////
 ///////////////////////////////////////////////
 var getTable = function(divID, json, data, columns) {
-
 	var graph_type = getURLParameter('type');
 	var sort = [[ 0, "desc" ]];
 	if (data.sSort) {
 		sort = (new Function( "return([" + data.sSort + "])" ))();
 	}
-	var bFilter,iDisplayLength,bStateSave,bPaginate,sDom;	
+	var bFilter,iDisplayLength,bStateSave,bPaginate,sDom;
 	if(/(report)/.test(window.location) === true) {
 		bfilter = false;
 		iDisplayLength = false;
@@ -1233,7 +1291,7 @@ var getTable = function(divID, json, data, columns) {
 	} else {
 		if (data.sDom !== 'false') {
 			sDom = '<"clear"C>T<"clear">lfr<"table_overflow"t>ip';
-		} 
+		}
 		else {
 			sDom = '<"clear"><"clear">r<"table_overflow"t>';
 		}
@@ -1246,7 +1304,7 @@ var getTable = function(divID, json, data, columns) {
 		"bDestroy": true,
 		"bProcessing": true,
 		"bRebuild": true,
-		"bServerSide": true,			
+		"bServerSide": true,
 		"aaSorting": sort,
 		"bFilter": bfilter,
 		"bPaginate": bPaginate,
@@ -1255,7 +1313,7 @@ var getTable = function(divID, json, data, columns) {
 
 		"iDisplayLength": iDisplayLength,
 		"bStateSave": true,
-		
+
 		"sType": "html",
 		"sDom": sDom,
 		"fnStateSave": function (oSettings, oData) {
@@ -1281,32 +1339,41 @@ var getTable = function(divID, json, data, columns) {
 		},
 		//this hides any tables on the ioc_event page that come up empty
 		"fnDrawCallback": function(oSettings) {
+			console.log(oSettings);
+			if (oSettings.oPreviousSearch.sSearch !== "") {
+				tableToVizFilter(oSettings.aoData, true);
+			} else {
+				setTimeout(function(){
+					rowChart.filter(null);
+					dc.redrawAll();
+				},500)
+			}
+			//console.log(oSettings.aoData);
 			var iTotalRecords = oSettings.fnRecordsTotal();
 			if ((iTotalRecords === 0) && (getURLParameter('type') === 'ioc_event')) {
 				$(this).parents('.jdash-widget').remove();
 			}
 		}
 	});
-oTable.fnFilter('');
+	oTable.fnFilter('');
 };
 
 ///////////////////////////////////////////////
 /////////    PAGE LOAD FUNCTIONS    ///////////
 ///////////////////////////////////////////////
 $(document).ready(function() { // execute javascript as soon as DOM is loaded
-
 	App.init(); // initlayout and core plugins
 	floating_logo();
 	// window.onpopstate = function(event) {
 	//	var url;
 	//	url = parseURL(document.location);
-	//	page(url.params['query'], url.params.type, url.params['start'], url.params['end'], null);		
-	// };	
+	//	page(url.params['query'], url.params.type, url.params['start'], url.params['end'], null);
+	// };
 	//
 	// http://stackoverflow.com/questions/10416026/what-is-the-ideal-way-to-handle-window-onpopstate-for-all-browsers
 	//
-	// A slightly more elegant way is to add a 1ms timeout before adding the popstate listener. 
-	// Since the initial popstate will fire before any async code gets executed, your popstate 
+	// A slightly more elegant way is to add a 1ms timeout before adding the popstate listener.
+	// Since the initial popstate will fire before any async code gets executed, your popstate
 	// function will work properly (only on forward/back actions):
 	//
 	window.setTimeout(function() {
@@ -1390,7 +1457,7 @@ $(document).ready(function() { // execute javascript as soon as DOM is loaded
 			if (body.hasClass('page-sidebar-fixed')) {
 				sidebar.css('width', '');
 			}
-		} 
+		}
 		else {
 			body.addClass("page-sidebar-closed");
 		}
@@ -1410,7 +1477,7 @@ $(document).ready(function() { // execute javascript as soon as DOM is loaded
 						$('.badge').html(++counter);
 						newNotification(this.ioc);
 						$('.notification span.more').html('<p>You have '+newflags+' new notifications</p>');
-					} 
+					}
 					else {
 						$('#notifications').append('<li><a href="javascript:page(\''+this.ioc+'\',\''+defaultNotifications+'\');"><span class="label label-important"><i class="fa fa-bolt"></i></span>'+this.ioc+'<span style="float:right" class="time" data-livestamp="'+this.added+'"></span></a></li>');
 					}
@@ -1434,9 +1501,9 @@ $(document).ready(function() { // execute javascript as soon as DOM is loaded
 						$('.badge').html(counter);
 					}
 				});
-}
-});
-});
+			}
+		});
+	});
 	setTimeout(function() { // update ioc alert dropdown
 		(function notifications(){
 			$.get("inc/getdata.php?&checkpoint=true", function(check){
@@ -1468,9 +1535,9 @@ $(document).ready(function() { // execute javascript as soon as DOM is loaded
 								}
 							}
 						});
-}
-});
-});
+					}
+				});
+			});
 			setTimeout(notifications, 50000); //check for new updates every 5 seconds
 		})();
 	}, 5000);
