@@ -14,7 +14,7 @@ var page = function(search_val, type, start, end, clear_b) {
 	if (!start && start_get != 'null') {
 		start = start_get;
 		end = end_get;
-	} 
+	}
 	else if (!start) {
 		end = moment().unix();
 		start = moment().subtract('days', defaultDayRange).unix();
@@ -26,7 +26,7 @@ var page = function(search_val, type, start, end, clear_b) {
 	else {
 		where = '';
 	}
-	var json = "inc/getdata.php?type="+type+where+"&start="+start+"&end="+end;
+	var json = 'inc/getdata.php?type='+type+where+'&start='+start+'&end='+end;
 	var lStore = localStorage.getItem(getURLParameter('type')+'_dDiv');
 	d3.json(json+'&getInfo=true', function(data) {
 		// CLEAR DIVS/HEADERS BEFORE SETTING CONTENT
@@ -42,7 +42,7 @@ var page = function(search_val, type, start, end, clear_b) {
 				}
 				var g = []; var a = []; var prev;
 				for (var d in data.aaData) {
-					g.push(data.aaData[d].ioc);	
+					g.push(data.aaData[d].ioc);
 				}
 				g.sort();
 				for (var f = 0; f < g.length; f++) {
@@ -88,7 +88,7 @@ var page = function(search_val, type, start, end, clear_b) {
 		// SET SUB HEADING
 		if (data.page.subheading) {
 			$('#sub_heading').html(data.page.subheading);
-		} 
+		}
 		else {
 			$('#sub_heading').html('');
 		}
@@ -98,7 +98,7 @@ var page = function(search_val, type, start, end, clear_b) {
 			$('.page-sidebar-menu :not(.'+data.page.sidebar+')').removeClass('start active');
 			$('.page-sidebar-menu li.'+data.page.sidebar).addClass('start active');
 			$('#heading_sub', '.page-sidebar-menu li.'+data.page.sidebar).addClass('selected');
-		} 
+		}
 		else {
 			$('.page-sidebar-menu li').removeClass('start active');
 		}
@@ -106,15 +106,15 @@ var page = function(search_val, type, start, end, clear_b) {
 		if (clear_b===true) { // if true, clear breadcrumbs and set new div (for search feilds)
 			clear_div('breadhome');
 			$('#breadhome').append('<li><i class=\'fa fa-angle-right\'></i><a href="javascript:void(0);" onclick="page(\''+search_val+'\',\''+type+'\',\''+start+'\',\''+end+'\',false);$(this).parent().nextAll().remove();">'+data.page.title+' ('+search_val+')</a></li>');
-		} 
+		}
 		else if (clear_b===false) { // if false, just append new (for digging through the table/calendar)
 			$('#breadhome').append('<li><i class=\'fa fa-angle-right\'></i><a href="javascript:void(0);" onclick="page(\''+search_val+'\', \''+type+'\',\''+start+'\',\''+end+'\',false);$(this).parent().nextAll().remove();">'+data.page.title+' ('+search_val+')</a></li>');
-		} 
+		}
 		else if (clear_b===null) { // if false, just append new (for page loads & 'Home' button in breadcrumb)
 			clear_div('breadhome');
 		}
 		// SEVERITY LEVEL INDICATORS
-		if (data.page.severity !== undefined) { 
+		if (data.page.severity !== undefined) {
 			$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert1 alert"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> 0 </span></button>');
 			$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert2 alert"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> 0 </span></button>');
 			$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert3 alert"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> 0 </span></button>');
@@ -141,13 +141,13 @@ var page = function(search_val, type, start, end, clear_b) {
 		}
 		// PUSH CUSTOM HTML INTO DIVS
 		if (data.html !== null) {
-			for (var i = 0; i < data.html.length; i++) {	
+			for (var i = 0; i < data.html.length; i++) {
 				if (data.html[i].heading !== '') {
 					$('#'+data.html[i].pID).prepend(
 						'<div id="'+data.html[i].dID+'" class="jdash-widget">\n' +
 						'<div class="jdash-header">'+data.html[i].heading+'</div>\n' +
 						'<div class="row-fluid">\n' +
-						'<div class="span12">\n' +						
+						'<div class="span12">\n' +
 						'<div class="box-content">\n' +
 						'<div style="padding:3px !important;">'+data.html[i].data+'</div>\n' +
 						'</div>\n' +
@@ -184,7 +184,7 @@ var page = function(search_val, type, start, end, clear_b) {
 						'</div>\n'
 						);
 				}
-			} 
+			}
 			else {
 				for (j = 0; j < data.table.length; j++) {
 					$('#'+data.table[j].pID).prepend(
@@ -213,7 +213,7 @@ var page = function(search_val, type, start, end, clear_b) {
 				}
 			}
 			// TABLE COLUMN GENERATOR
-			$('thead').empty();		
+			$('thead').empty();
 			var col = [];
 			for (var c = 0; c < data.columns.length; c++) {
 				var columns = [];
@@ -224,10 +224,10 @@ var page = function(search_val, type, start, end, clear_b) {
 					}
 					if (data.columns[c][dc][1]) { // check for titles
 						if (data.columns[c][dc]) { // check for html types
-							columns.push({"sTitle": data.columns[c][dc][1], "mData": data.columns[c][dc][0], "sType": "html", "bVisible": dCol });
-						} 
+							columns.push({'sTitle': data.columns[c][dc][1], 'mData': data.columns[c][dc][0], 'sType': 'html', 'bVisible': dCol });
+						}
 						else {
-							columns.push({"sTitle": data.columns[c][dc][1], "mData": data.columns[c][dc][0], "sType": 'string-case', "bVisible": dCol });
+							columns.push({'sTitle': data.columns[c][dc][1], 'mData': data.columns[c][dc][0], 'sType': 'string-case', 'bVisible': dCol });
 						}
 					}
 				}
@@ -236,9 +236,9 @@ var page = function(search_val, type, start, end, clear_b) {
 					switch(type) {
 						case 'ioc_hits':
 						columns.push({
-							"bSortable": false,
-							"sWidth": "75px",
-							"mData": function(d) {
+							'bSortable': false,
+							'sWidth': '75px',
+							'mData': function(d) {
 								var del = "$.get('inc/getdata.php?&archive=true&query="+d.lan_ip+","+d.wan_ip+","+d.remote_ip+","+d.ioc+"', function() {oTable.fnDraw();});";
 								return '<button onclick="'+del+'" class="btn mini grey"> Archive</button>';
 							}
@@ -299,7 +299,7 @@ var page = function(search_val, type, start, end, clear_b) {
 						var hidden;
 						if (data.viz.crossfilter.disp[k].dView == 'false') {
 							hidden = ' jdash_hidden';
-						} 
+						}
 						else {
 							hidden = '';
 						}
@@ -315,7 +315,6 @@ var page = function(search_val, type, start, end, clear_b) {
 					}
 				}			
 			}
-
 		}
 		// PUSH SORTABLE VISUALS INTO DIVS
 		for (var h in data.page.vDiv) {
@@ -324,7 +323,7 @@ var page = function(search_val, type, start, end, clear_b) {
 		}
 		// IOC information expand text
 		$(function() {
-			$(".description").each(function(i) {
+			$('.description').each(function(i) {
 				len = $(this).text().length;
 				if (len > 200) {
 					$(this).html($(this).text().substr(0,200)+'... <a href="javascript:void(0);" onclick="dPopup(\''+$(this).text()+'\');" style="text-decoration:none">Read More</a>');
@@ -468,7 +467,8 @@ var severityBtn = function(dim, event, divid) {
 			$(".alert"+uniqueArray[a]).removeClass("severity-deselect");
 		}
 		console.log('event true fire');console.log(dimArray);
-	} else if (event === false){
+	} 
+	else if (event === false){
 		sevArray = dim.top(Infinity);
 		sev = [];
 		//take dimension being passed, convert it to time, filter then redraw
@@ -874,25 +874,25 @@ var dcBarGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 	});
 };	
 var dcPieGraph = function(divID, dim, group, colors) {
-		var width = $("#"+divID).width();
-		pieChart
-		.height(width)
-		.innerRadius(width/6)
-		.width(width)	
-		.group(group)
-		.radius(width/2)
-		.colors(colors)
-		.dimension(dim)
-		.legend(dc.legend().x(width / 2 ).y(width / 2).itemHeight(13).gap(5));
-		// .on("preRender", legend)
-		//	.renderlet(function(chart) {
-		//	//$('#'+dID+' .jdash-header').height();
-		//	dc.events.trigger(function() {
-		//		var filter = pieChart.filters();
-		//		var string = filter.join(' | ');
-		//		oTable.fnFilter(string,null,true,null);
-		//	});
-		// });
+	var width = $("#"+divID).width();
+	pieChart
+	.height(width)
+	.innerRadius(width/6)
+	.width(width)	
+	.group(group)
+	.radius(width/2)
+	.colors(colors)
+	.dimension(dim)
+	.legend(dc.legend().x(width / 2 ).y(width / 2).itemHeight(13).gap(5));
+	// .on("preRender", legend)
+	//	.renderlet(function(chart) {
+	//	//$('#'+dID+' .jdash-header').height();
+	//	dc.events.trigger(function() {
+	//		var filter = pieChart.filters();
+	//		var string = filter.join(' | ');
+	//		oTable.fnFilter(string,null,true,null);
+	//	});
+	// });
 };
 var dcWordCloud = function(divID, data) {
 	var str = ['test', 'test2', 'test3'];
