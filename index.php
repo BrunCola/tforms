@@ -43,53 +43,43 @@ if (isset($_GET['logout'])) {
 		<!-- <link rel="stylesheet" type="text/css" href="assets/css/parallel.css"/> -->
 		<link href="assets/css/TableTools.css" rel="stylesheet" type="text/css"/>
 		<link href="assets/css/colorbox.css" rel="stylesheet" type="text/css"/>
-		<script type="text/javascript" src="assets/lib/jquery-1.10.2.min.js"/>
-		<script type="text/javascript" src="assets/lib/noty/jquery.noty.js"/>
-		<script type="text/javascript" src="assets/lib/noty/layouts/top.js"/>
-		<script type="text/javascript" src="assets/lib/noty/themes/default.js"/>
-		<script type="text/javascript" src="assets/lib/noty/layouts/bottomLeft.js"/>
-		<script type="text/javascript" src="assets/lib/jquery-ui/jquery-ui-1.10.1.custom.min.js"/>
-		<script type="text/javascript" src="assets/lib/moment.js"/>
-		<script type="text/javascript" src="assets/lib/queue.min.js"/>
-		<script type="text/javascript" src="assets/lib/d3.v3.min.js"/>
-		<script type="text/javascript" src="assets/lib/dc.js"/>
-		<script type="text/javascript" src="assets/lib/crossfilter.js"/>
-		<!-- <script type="text/javascript" src="assets/lib/underscore.js"/> USED FOR EMAIL-->
-		<script type="text/javascript" src="assets/lib/cloud.dc.js"/>
-		<script type="text/javascript" src="assets/lib/tip.d3.min.js"/>
-		<script type="text/javascript" src="assets/lib/bootstrap/js/bootstrap.min.js"/>
-		<script type="text/javascript" src="assets/lib/jdashboard.js"/>
-		<script type="text/javascript" src="assets/lib/jquery.activity-indicator-1.0.0.min.js"/>
-		<script type="text/javascript" src="assets/lib/jquery-slimscroll/jquery.slimscroll.min.js"/>
-		<script type="text/javascript" src="assets/lib/jquery.blockui.min.js"/>
-		<script type="text/javascript" src="assets/lib/jquery.cookie.min.js"/>
-		<script type="text/javascript" src="assets/lib/jquery.dataTables.js"/>
-		<script type="text/javascript" src="assets/lib/ColVis.js"/>
-		<script type="text/javascript" src="assets/lib/TableTools.min.js"/>
-		<script type="text/javascript" src="assets/lib/jquery.colorbox.js"/>
-		<script type="text/javascript" src="assets/lib/livestamp.min.js"/>
-		<script type="text/javascript" src="assets/lib/uniform/jquery.uniform.min.js"/>
-		<script type="text/javascript" src="assets/lib/bootstrap-daterangepicker/date.js"/>
-		<script type="text/javascript" src="assets/lib/bootstrap-daterangepicker/daterangepicker.js"/>
-		<script type="text/javascript" src="assets/lib/rainbowvis.js"/>
-		<script type="text/javascript" src="inc/timeline.js"/>
+		<script type="text/javascript" src="assets/lib/jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="assets/lib/noty/jquery.noty.js"></script>
+		<script type="text/javascript" src="assets/lib/noty/layouts/top.js"></script>
+		<script type="text/javascript" src="assets/lib/noty/themes/default.js"></script>
+		<script type="text/javascript" src="assets/lib/noty/layouts/bottomLeft.js"></script>
+		<script type="text/javascript" src="assets/lib/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
+		<script type="text/javascript" src="assets/lib/moment.js"></script>
+		<script type="text/javascript" src="assets/lib/queue.min.js"></script>
+		<script type="text/javascript" src="assets/lib/d3.v3.min.js"></script>
+		<script type="text/javascript" src="assets/lib/dc.js"></script>
+		<script type="text/javascript" src="assets/lib/crossfilter.js"></script>
+		<!-- <script type="text/javascript" src="assets/lib/underscore.js"></script> USED FOR EMAIL-->
+		<script type="text/javascript" src="assets/lib/cloud.dc.js"></script>
+		<script type="text/javascript" src="assets/lib/tip.d3.min.js"></script>
+		<script type="text/javascript" src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="assets/lib/jdashboard.js"></script>
+		<script type="text/javascript" src="assets/lib/jquery.activity-indicator-1.0.0.min.js"></script>
+		<script type="text/javascript" src="assets/lib/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+		<script type="text/javascript" src="assets/lib/jquery.blockui.min.js"></script>
+		<script type="text/javascript" src="assets/lib/jquery.cookie.min.js"></script>
+		<script type="text/javascript" src="assets/lib/jquery.dataTables.js"></script>
+		<script type="text/javascript" src="assets/lib/ColVis.js"></script>
+		<script type="text/javascript" src="assets/lib/TableTools.min.js"></script>
+		<script type="text/javascript" src="assets/lib/jquery.colorbox.js"></script>
+		<script type="text/javascript" src="assets/lib/livestamp.min.js"></script>
+		<script type="text/javascript" src="assets/lib/uniform/jquery.uniform.min.js"></script>
+		<script type="text/javascript" src="assets/lib/bootstrap-daterangepicker/date.js"></script>
+		<script type="text/javascript" src="assets/lib/bootstrap-daterangepicker/daterangepicker.js"></script>
+		<script type="text/javascript" src="assets/lib/rainbowvis.js"></script>
+		<script type="text/javascript" src="inc/timeline.js"></script>
 		<!-- <script type="text/javascript" src="assets/lib/d3.layout.cloud.js"/> REPLACED BY cloud.dc.js-->
-		<!-- <script type="text/javascript" src="inc/email.js"/> -->
-		<script type="text/javascript" src="assets/scripts/app.js"/>
-		<!-- <style>
-			.sort { margin: 0 1em 1em 0; }
-			.portlet-minimized { height: auto !important; }
-			.portlet-header { margin: 0.3em; padding-bottom: 4px; padding-left: 0.2em; }
-			.portlet-header .ui-icon { float: right; }
-			.portlet-content { padding: 0.4em; }
-			.portlet-minimized .portlet-content { display: none !important; }
-			.ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 200px !important; }
-			.ui-sortable-placeholder * { visibility: hidden; }
-		</style> -->
+		<!-- <script type="text/javascript" src="inc/email.js"> -->
+		<script type="text/javascript" src="assets/scripts/app.js"></script>
 
 <?php if ($session['id']) { ?>
 
-		<script type="text/javascript" src="inc/template.js"/>
+		<script type="text/javascript" src="inc/template.js"></script>
 	</head>
 	<body class="page-header-fixed">
 		<!-- HEADER -->
