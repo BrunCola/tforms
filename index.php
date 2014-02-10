@@ -193,49 +193,50 @@ if (isset($_GET['logout'])) {
 	<body class="login">
 		<!-- LOGO -->
 		<div class="logo">
-			<img src="assets/img/rapid.png" alt="" /> 
+			<img src="assets/img/rapid.png" alt=""/> 
 		</div>
 		<div class="content">
 			<!-- LOGIN FORM -->
 			<h1>Login</h1>
 			<div id="login_form_body">
 				<form action="?login" method="post">
-				<div class="control-group">
-					<label class="control-label visible-ie8 visible-ie9">Username</label>
-					<div class="controls">
-						<div class="input-icon left">
-							<i class="fa fa-user"></i>
-							<input type="text" name="username" id="username" class="m-wrap placeholder-no-fix"/>
+					<div class="control-group">
+						<label class="control-label visible-ie8 visible-ie9">Username</label>
+						<div class="controls">
+							<div class="input-icon left">
+								<i class="fa fa-user"></i>
+								<input type="text" name="username" id="username" class="m-wrap placeholder-no-fix"/>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label visible-ie8 visible-ie9">Password</label>
-					<div class="controls">
-						<div class="input-icon left">
-							<i class="fa fa-lock"></i>
-							<input type="password" name="password" id="text_password" class="m-wrap placeholder-no-fix"/>
+					<div class="control-group">
+						<label class="control-label visible-ie8 visible-ie9">Password</label>
+						<div class="controls">
+							<div class="input-icon left">
+								<i class="fa fa-lock"></i>
+								<input type="password" name="password" id="text_password" class="m-wrap placeholder-no-fix"/>
+							</div>
 						</div>
 					</div>
-				</div>
-				<?php /*?> <input type="checkbox" name="remember" /><?php */ ?>
-				<div class="form-actions">
-					<input class="btn red pull-right" type="submit" name="action" value="Login" id="login_button" />
-				</div>
+					<?php /*?> <input type="checkbox" name="remember" /><?php */ ?>
+					<div class="form-actions">
+						<input class="btn red pull-right" type="submit" name="action" value="Login" id="login_button" />
+					</div>
+				</form>
 			</div>
-		</form>
-		<div class="copyright">
-			<?php
-				$f = fopen('VERSION', 'r');
-				$line = fgets($f);
-				fclose($f);
-				echo '&copy; '.date("Y").' Phirelight Security Solutions - rapidPHIRE version: '.$line;
-			?>
-		</div>
-		<div class="create-account">
-			<p>
-				<span class="small"><a href="register.php">Register</a> | <a href="resetpassword.php">Forgot your password?</a></span>
-			</p>
+			<div class="copyright">
+				<?php
+					$f = fopen('VERSION', 'r');
+					$line = fgets($f);
+					fclose($f);
+					echo '&copy; '.date("Y").' Phirelight Security Solutions - rapidPHIRE version: '.$line;
+				?>
+			</div>
+			<div class="create-account">
+				<p>
+					<span class="small"><a href="register.php">Register</a> | <a href="resetpassword.php">Forgot your password?</a></span>
+				</p>
+			</div>
 		</div>
 	</body>
 </html>
