@@ -18,12 +18,12 @@
 		<link href="assets/lib/uniform/css/uniform.default.css" rel="stylesheet" type="text/css">
 		<link href="assets/lib/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" type="text/css">
 		<link href="assets/css/jquery.dataTables.css" rel="stylesheet" type="text/css">
-	    <link href="assets/css/jdashboard.css" rel="stylesheet" type="text/css">
-	    <link href="assets/css/ColVis.css" rel="stylesheet" type="text/css">
-	    <!-- <link href="assets/css/flags16.css" rel="stylesheet" type="text/css"> currently not being used -->
-	    <link href="assets/css/flags32.css" rel="stylesheet" type="text/css">
-	    <!-- <link rel="stylesheet" type="text/css" href="assets/css/parallel.css"> -->
-	    <link href="assets/css/TableTools.css" rel="stylesheet" type="text/css">
+		<link href="assets/css/jdashboard.css" rel="stylesheet" type="text/css">
+		<link href="assets/css/ColVis.css" rel="stylesheet" type="text/css">
+		<!-- <link href="assets/css/flags16.css" rel="stylesheet" type="text/css"> currently not being used -->
+		<link href="assets/css/flags32.css" rel="stylesheet" type="text/css">
+		<!-- <link rel="stylesheet" type="text/css" href="assets/css/parallel.css"> -->
+		<link href="assets/css/TableTools.css" rel="stylesheet" type="text/css">
 		<link href="assets/css/colorbox.css" rel="stylesheet" type="text/css">
 		<script type="text/javascript" src="assets/lib/jquery-1.10.2.min.js"></script>
 		<script type="text/javascript" src="assets/lib/noty/jquery.noty.js"></script>
@@ -40,14 +40,14 @@
 		<script type="text/javascript" src="assets/lib/cloud.dc.js"></script>
 		<script type="text/javascript" src="assets/lib/tip.d3.min.js"></script>
 		<script type="text/javascript" src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
-	    <script type="text/javascript" src="assets/lib/jdashboard.js"></script>
+		<script type="text/javascript" src="assets/lib/jdashboard.js"></script>
 		<script type="text/javascript" src="assets/lib/jquery.activity-indicator-1.0.0.min.js"></script>
 		<script type="text/javascript" src="assets/lib/jquery-slimscroll/jquery.slimscroll.min.js"></script>
 		<script type="text/javascript" src="assets/lib/jquery.blockui.min.js"></script>
 		<script type="text/javascript" src="assets/lib/jquery.cookie.min.js"></script>
 		<script type="text/javascript" src="assets/lib/jquery.dataTables.js"></script>
-	    <script type="text/javascript" src="assets/lib/ColVis.js"></script>
-	   	<script type="text/javascript" src="assets/lib/TableTools.min.js"></script>
+		<script type="text/javascript" src="assets/lib/ColVis.js"></script>
+		<script type="text/javascript" src="assets/lib/TableTools.min.js"></script>
 		<script type="text/javascript" src="assets/lib/jquery.colorbox.js"></script>
 		<script type="text/javascript" src="assets/lib/livestamp.min.js"></script>
 		<script type="text/javascript" src="assets/lib/uniform/jquery.uniform.min.js"></script>
@@ -56,18 +56,18 @@
 		<script type="text/javascript" src="assets/lib/rainbowvis.js"></script>
 		<!-- <script type="text/javascript" src="assets/lib/d3.layout.cloud.js"></script> REPLACED BY cloud.dc.js-->
 		<script type="text/javascript" src="assets/scripts/app.js"></script>
-		<script type="text/javascript" src="inc/email.js"></script>
+		<!-- <script type="text/javascript" src="inc/email.js"></script> -->
 		<script type="text/javascript" src="inc/template.js"></script>
 		<script type="text/javascript" src="inc/glossary.js"></script>
 	</head>
 	<style>
 		@media print {
-		#table1 {
-			 page-break-before: always !important;
-		}
-		table tr td, table.print-friendly tr th {
-		        page-break-inside: avoid;
-		    }
+			#table1 {
+				page-break-before: always !important;
+			}
+			table tr td, table.print-friendly tr th {
+				page-break-inside: avoid;
+			}
 		}
 	</style>
 	<body style="background-color:#ebeaeb;width:1056px !important;" class="page-header">  		
@@ -94,20 +94,15 @@
 					<div style="display:none" class="breadcrumb">	
 						<span id="breadhome"></span>
 					</div>
-					<div style="font-size:12px">
-					  </div>
-
+					<div style="font-size:12px"></div>
 					<div style="margin-top:10px" id="severity"></div>
 					<div id="page"></div>  
 					<div id="d3Div"></div>  
-
 					<div style="page-break-before: always;" id="glossary"></div>
-
-		 		</div>
+				</div>
 			</div>
 		</div>
 		<!-- FOOTER -->
-		<div class="footer">
-		</div>
+		<div class="footer"></div>
 	</body>
 </html>
