@@ -490,10 +490,10 @@ var tableToViz = function(arr) {
 	dc.redrawAll();
 };
 var sevButtonClick = function(dim, divid) {
-	oTable.fnFilter('Severity: '+divid);
+	//oTable.fnFilter('Severity: '+divid);
 	sevArray = dim.top(Infinity);
 	sev = []; var uniqueIoc;
-	rowChart.filter(null);
+	rowChart.filter(null);oTable.fnFilter('');
 	for (var d in dim.top(Infinity)) {
 		if (dim.top(Infinity)[d].ioc_severity === divid) {
 			sev.push(dim.top(Infinity)[d].ioc);
@@ -503,11 +503,33 @@ var sevButtonClick = function(dim, divid) {
 		return sev.indexOf(elem) == pos;
 	});
 	for (var i in uniqueIoc) {
-		rowChart.filter(uniqueIoc[i]);
-		//oTable.fnFilter(uniqueIoc[i]);
+		//rowChart.filter(uniqueIoc[i]);
+		chartToTable(uniqueIoc[i]);
 	}
+	//chartToTable(uniqueIoc);
 	dc.redrawAll();
 };
+var chartToTable = function(filter) {
+	var searchString = $('#table1 input').val();
+	var newString = '';
+	var sInsert = function(value) {
+		if (searchString.search(value) > -1) {
+			newString = searchString.replace(value+' ', "");
+		} else {
+			newString = searchString+value+' ';
+		}
+		oTable.fnFilter(newString);
+	};
+	var f;
+	if ((filter instanceof Array)) {
+		for (f in filter) {
+			sInsert(filter[f]);
+		}
+	} else if (filter !== undefined) {
+		sInsert(filter);
+	}
+};
+
 // DC.JS GRAPH FUNCTIONS
 var crossfilterViz = function(json, start, end) {
 	queue()
@@ -768,7 +790,9 @@ var dcGeoMap = function (divID, data, world) {
 		.title(function (d) {
 			return d.key+": "+(d.value ? d.value : 0);
 		})
-		.on("filtered", function(chart, d){
+		.on("filtered", function(chart, filter){
+			chartToTable(filter);
+			console.log(filter);
 			sevButtonCheck(dimension);
 		})
 		.on("postRender", function(chart, d){
@@ -983,9 +1007,9 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 				});
 			})
 			.on("filtered", function(chart, filter){
+				//console.log(filter);
+				//chartToTable(filter);
 				sevButtonCheck(dim);
-				//oTable.fnFilter(filter);
-				console.log(filter);
 			})
 			.renderlet(function(chart){
 				chart.select('svg')
@@ -994,6 +1018,13 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 					.attr('viewBox', '0 0 '+width+' '+hHeight)
 					.attr('perserveAspectRatio', 'xMinYMid');
 				var aspect;
+// 				var text = chart.select('svg').selectAll('g').text();
+				chart.selectAll('g').on("click", function(d){
+					// dc.events.trigger(function(chart, filter){
+					// 	console.log(chart.filter())
+					chartToTable('RBN');
+					// });
+				});
 				$(window).on("resize", function() {
 					if (colors.length < 7) {
 						height = 25+(colors.length*35);
@@ -1279,7 +1310,7 @@ var getTable = function(divID, json, data, columns) {
 			//console.log(oSettings);
 			if ((oSettings.oPreviousSearch.sSearch !== "") && (!(oSettings.oPreviousSearch.sSearch.match(/Severity:*/))))  {
 				tableToViz(oSettings.aoData);
-			} else if (oSettings.oPreviousSearch.sSearch === ""){
+			} else if (oSettings.oPreviousSearch.sSearch === ""){ //ignore first load
 				if (fFire !== false) {
 					rowChart.filter(null);
 					dc.redrawAll();

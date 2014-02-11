@@ -10,8 +10,8 @@ if (isset($_GET['query'])) { $query = $_GET['query']; }
 if (isset($_GET['limit'])) { $limit = $_GET['limit']; }
 if (isset($_GET['start'])) { $start = $_GET['start']; }
 if (isset($_GET['end']))   { $end   = $_GET['end']; }
-if (isset($_GET['type']))  { 
-	$type = $_GET['type'];	
+if (isset($_GET['type']))  {
+	$type = $_GET['type'];
 	fetch($database, $type, $query, $start, $end);
 }
 // Checkpoint function (notifications)
@@ -29,7 +29,7 @@ if (isset($_GET['checkpoint'])) {
 		}
 		$u_time = time();
 		$database->query("UPDATE `user` SET `checkpoint`= $u_time WHERE `id` = '$id'");
-	} 
+	}
 }
 // Trash & delete functions switch
 if (isset($_GET['archive'])) {
@@ -111,7 +111,7 @@ if (isset($_GET['severity_levels'])) {
 // Report management functions
 if (isset($_GET['cron_gen'])) {
 	if($_GET['cron_gen']=='true') {
-		$string = $_GET['string'];  
+		$string = $_GET['string'];
 		session_start();
 			include("class.user.php");
 			$system = new System();
@@ -125,7 +125,7 @@ if (isset($_GET['cron_gen'])) {
 }
 if (isset($_GET['delete_cron'])) {
 	if($_GET['delete_cron']=='true') {
-		$database = new Database("user_DB"); 
+		$database = new Database("user_DB");
 	    $id = $_GET['id'];
 	    $database->query("DELETE FROM `user_cron` WHERE `id` = '$id'");
 	}
@@ -139,7 +139,7 @@ $database->disconnect();
  * @query string
  * @start int
  * @end int
- * @group 
+ * @group
  */
 function fetch($database, $type, $query, $start, $end) {
 	$html = null;
@@ -160,7 +160,7 @@ function fetch($database, $type, $query, $start, $end) {
 					$sql_limit = "ORDER BY alert.added";
 					break;
 			}
-			$remote_result = mysql_query("$sql_select $sql_where $sql_limit") or die(mysql_error());  
+			$remote_result = mysql_query("$sql_select $sql_where $sql_limit") or die(mysql_error());
 			$return = null;
 			while ($row = mysql_fetch_assoc($remote_result)) {
 				foreach($row as $out=>$in) {
@@ -170,7 +170,7 @@ function fetch($database, $type, $query, $start, $end) {
 			}
 			echo json_encode($return);
 			die;
-			break;	
+			break;
 		case 'ioc_hits_report':
 			$page = array(
 				'title' => '&nbsp;',
@@ -181,19 +181,19 @@ function fetch($database, $type, $query, $start, $end) {
 
 					array('head', '60,20,20'),
 					array('crossfilter', '30,70'),
-					array('t1', '100'),	
-					array('t2', '100')	
+					array('t1', '100'),
+					array('t2', '100')
 				),
 				'sidebar' => 'notifications'
 			);
 			if (isset($_GET['getInfo'])) {
 				// CUSTOM QUERIES
 				$sev = mysql_query
-				("	SELECT count(*) AS count, ioc_severity 
+				("	SELECT count(*) AS count, ioc_severity
 					FROM conn_ioc
-					WHERE (time between '$start' AND '$end') 
-					AND ioc_count > 0 
-					AND trash is null 
+					WHERE (time between '$start' AND '$end')
+					AND ioc_count > 0
+					AND trash is null
 					GROUP BY ioc_severity
 				") or die (mysql_error());
 				$rows = array();
@@ -299,8 +299,8 @@ function fetch($database, $type, $query, $start, $end) {
 						'bgColor' => '#F88B12',
 						'heading' => '',
 						'data' => '<span style="position:absolute;margin-top:-7px;margin-left:-2px;color:#383E4B !important;font-size:12px">HIGH</span><div style="font-size:37px;color:#383E4B !important;text-align:center;font-weight:bold"><i style="margin-right:10px; color:#383E4B !important;" class="fa fa-bell"></i>'.$sev3.'</div>'
-					),			
-					array(	
+					),
+					array(
 						'pID' => 'html',
 						'dID' => 'col4',
 						'bgColor' => '#DD122A',
@@ -318,7 +318,7 @@ function fetch($database, $type, $query, $start, $end) {
 								<span style="font-weight:bold !important;">Remote IPs:</span> '.$rIP.'<br />
 								<span style="font-weight:bold !important;">Remote Countries:</span> '.$RC.'<br />
 								<span style="font-weight:bold !important;">IOC Notifications:</span> '.$IOCh.'<br />
-								<span style="font-weight:bold !important;">IOC Groups:</span> '.$IOCg.'<br /> 
+								<span style="font-weight:bold !important;">IOC Groups:</span> '.$IOCg.'<br />
 								<span style="font-weight:bold !important;">IOC File Names:</span> '.$aIOCfile.'<br />
 								<span style="font-weight:bold !important;">IOC DNS queries:</span> '.$aIOCdns.'<br />
 								<span style="font-weight:bold !important;">IOC HTTP Hosts:</span> '.$aIOChttp.'<br />
@@ -348,15 +348,15 @@ function fetch($database, $type, $query, $start, $end) {
 						// <span style="text-decoration:underline !important;font-size:23px !important; line-height: 35px !important; font-weight:bold">Network</span><br />
 					)
 				);
-			}	
+			}
 			$viz = array(
 				'crossfilter' => array(
 					'select' => array(
-						array('from_unixtime(time) as time'), 
+						array('from_unixtime(time) as time'),
 						array('ioc_severity'),
 						array('remote_country'),
 						array('ioc'),
-						array('count(*) AS count'), 
+						array('count(*) AS count'),
 					),
 					'from' => 'conn_ioc',
 					'where' => '`ioc_count` > 0, `trash` IS NULL',
@@ -377,10 +377,10 @@ function fetch($database, $type, $query, $start, $end) {
 					),
 					'disp' => array(
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'crossfilter',
-							'dID' => 'bar', 
-							'type' => 'severitybar', 
+							'dID' => 'bar',
+							'type' => 'severitybar',
 							'height' => '240',
 							'heading' => 'IOC Notifications Per Hour',
 							'xAxis' => '',
@@ -389,26 +389,26 @@ function fetch($database, $type, $query, $start, $end) {
 							'grp' => 'count'
 						),
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'head',
-							'dID' => 'row', 
-							'type' => 'row', 
+							'dID' => 'row',
+							'type' => 'row',
 							'heading' => 'IOC Classes (Quantity of IOC Hits)',
 							'dim' => 'ioc',
 							'grp' => 'count'
 						),
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'crossfilter',
-							'dID' => 'geo', 
-							'type' => 'geo', 
+							'dID' => 'geo',
+							'type' => 'geo',
 							'heading' => 'IOC Source Countries',
 							'dim' => 'remote_country',
 							'grp' => 'count'
-						)					
-					)		
+						)
+					)
 				),
-			);	
+			);
 			$table = array(
 				array(
 					'pID' => 't1',
@@ -418,15 +418,15 @@ function fetch($database, $type, $query, $start, $end) {
 					'sSort' => '[ 1, "desc" ],[ 2, "desc" ]', // Default column to sort on
 					'select' => array(
 						//array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, row query value, breadcrumb clear(boolean)
-						array('max(from_unixtime(time)) AS time','Last Seen','true'), 
+						array('max(from_unixtime(time)) AS time','Last Seen','true'),
 						array('ioc_severity', ' ', 'true'),
-						array('count(*) AS count','IOC Hits','true'), 
+						array('count(*) AS count','IOC Hits','true'),
 						array('ioc','IOC','true'),
 						array('ioc_type', 'IOC Type', 'true'),
 						array('remote_ip','Remote IP','true'),
 						array('remote_country','Remote Country','true'),
 						array('remote_cc',' ','true'),
-						array('sum(`in_bytes`) AS icon_in_bytes','Up / Down','true'), 
+						array('sum(`in_bytes`) AS icon_in_bytes','Up / Down','true'),
 						array('sum(`out_bytes`) AS icon_out_bytes')
 					),
 					'from' => 'conn_ioc',
@@ -444,16 +444,16 @@ function fetch($database, $type, $query, $start, $end) {
 					'heading' => 'Local End Point IP Addresses Triggering IOC Notifications',
 					'select' => array(
 						//array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, row query value, breadcrumb clear(boolean)
-						array('max(from_unixtime(time)) as time','Last Seen','true'), 				
+						array('max(from_unixtime(time)) as time','Last Seen','true'),
 						array('ioc_severity',' ','true'),
-						array('count(*) AS count','IOC Hits','true'), 					
+						array('count(*) AS count','IOC Hits','true'),
 						array('ioc','IOC','true'),
 						array('ioc_type', 'IOC Type', 'true'),
 						array('lan_zone','Lan Zone','true'),
 						array('lan_ip','LAN IP','true'),
 						array('machine','Machine Name','true'),
 						array('wan_ip','WAN IP','false'),
-						array('sum(`in_bytes`) as icon_in_bytes','Up / Down','true'), 
+						array('sum(`in_bytes`) as icon_in_bytes','Up / Down','true'),
 						array('sum(`out_bytes`) as icon_out_bytes')
 					),
 					'from' => 'conn_ioc',
@@ -461,8 +461,8 @@ function fetch($database, $type, $query, $start, $end) {
 					'group' => 'ioc_type, ioc, lan_ip, wan_ip',
 					'order' => 'ioc_severity DESC, count DESC'
 				),
-			);	
-			break;	
+			);
+			break;
 		case 'ioc_hits':
 			$page = array(
 				'title' => 'IOC Notifications',
@@ -470,7 +470,7 @@ function fetch($database, $type, $query, $start, $end) {
 				'vDiv' => array(
 					array('head', '50,25,25'),
 					array('crossfilter', '30,70'),
-					array('tables', '100')	
+					array('tables', '100')
 				),
 				'sidebar' => 'notifications',
 				'severity' => 'true'
@@ -478,11 +478,11 @@ function fetch($database, $type, $query, $start, $end) {
 			if (isset($_GET['getInfo'])) {
 				// CUSTOM QUERIES
 				$sev = mysql_query
-				("	SELECT count(*) AS count, ioc_severity 
+				("	SELECT count(*) AS count, ioc_severity
 					FROM conn_ioc
-					WHERE (time between '$start' AND '$end') 
-					AND ioc_count > 0 
-					AND trash is null 
+					WHERE (time between '$start' AND '$end')
+					AND ioc_count > 0
+					AND trash is null
 					GROUP BY ioc_severity
 				") or die (mysql_error());
 				$rows = array();
@@ -579,7 +579,7 @@ function fetch($database, $type, $query, $start, $end) {
 								<span style="font-weight:bold !important;">Remote IPs:</span> '.$rIP.'<br />
 								<span style="font-weight:bold !important;">Remote Countries:</span> '.$RC.'<br />
 								<span style="font-weight:bold !important;">IOC Notifications:</span> '.$IOCh.'<br />
-								<span style="font-weight:bold !important;">IOC Groups:</span> '.$IOCg.'<br /> 								
+								<span style="font-weight:bold !important;">IOC Groups:</span> '.$IOCg.'<br />
 								<span style="font-weight:bold !important;">IOC File Names:</span> '.$aIOCfile.'<br />
 								<span style="font-weight:bold !important;">IOC DNS queries:</span> '.$aIOCdns.'<br />
 								<span style="font-weight:bold !important;">IOC HTTP Hosts:</span> '.$aIOChttp.'<br />
@@ -609,7 +609,7 @@ function fetch($database, $type, $query, $start, $end) {
 						// <span style="text-decoration:underline !important;font-size:23px !important; line-height: 35px !important; font-weight:bold">Network</span><br />
 					)
 				);
-			}	
+			}
 			$viz = array(
 
 				'crossfilter' => array(
@@ -628,30 +628,30 @@ function fetch($database, $type, $query, $start, $end) {
 						),
 					),
 					'select' => array(
-						array('from_unixtime(time) AS time'), 
+						array('from_unixtime(time) AS time'),
 						array('remote_country'),
 						array('ioc_severity'),
-						array('count(*) AS count'), 
-						array('ioc') 
+						array('count(*) AS count'),
+						array('ioc')
 					),
 					'from' => 'conn_ioc',
 					'where' => '`ioc_count` > 0, `trash` IS NULL',
 					'group' => 'month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country, ioc_severity',
 					'disp' => array(
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'head',
-							'dID' => 'row', 
-							'type' => 'row', 
+							'dID' => 'row',
+							'type' => 'row',
 							'heading' => 'IOC Classes (Quantity of IOC Notifications)',
 							'dim' => 'ioc',
 							'grp' => 'count'
 						),
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'crossfilter',
-							'dID' => 'sBar', 
-							'type' => 'severitybar', 
+							'dID' => 'sBar',
+							'type' => 'severitybar',
 							'heading' => 'IOC Notifications Per Hour',
 							'xAxis' => '',
 							'yAxis' => '# IOC / Hour',
@@ -659,17 +659,17 @@ function fetch($database, $type, $query, $start, $end) {
 							'grp' => 'count'
 						),
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'crossfilter',
-							'dID' => 'geo', 
-							'type' => 'geo', 
+							'dID' => 'geo',
+							'type' => 'geo',
 							'heading' => 'IOC Source Countries',
 							'dim' => 'remote_country',
 							'grp' => 'count'
 						)
-					)		
+					)
 				),
-			);	
+			);
 			$table = array(
 				array(
 					'pID' => 'tables',
@@ -677,9 +677,9 @@ function fetch($database, $type, $query, $start, $end) {
 					'heading' => 'Indicators of Compromise (IOC) Notifications',
 					'select' => array(
 						// array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, rowsquery value, breadcrumb clear(boolean)
-						array('max(from_unixtime(time)) AS time','Last Seen','true','ioc_drill','lan_ip,wan_ip,remote_ip,ioc','false'), 
-						array('ioc_severity','Severity','true'), 
-						array('count(*) AS count','IOC Hits','true'), 
+						array('max(from_unixtime(time)) AS time','Last Seen','true','ioc_drill','lan_ip,wan_ip,remote_ip,ioc','false'),
+						array('ioc_severity','Severity','true'),
+						array('count(*) AS count','IOC Hits','true'),
 						array('ioc','IOC','true'),
 						array('ioc_type', 'IOC Type', 'true'),
 						array('lan_zone','LAN Zone','true'),
@@ -691,63 +691,63 @@ function fetch($database, $type, $query, $start, $end) {
 						array('remote_asn_name','Remote ASN Name','true'),
 						array('remote_country','Remote Country','true'),
 						array('remote_cc',' ','true'),
-						array('sum(in_packets) AS in_packets','Packets to Remote','true'), 
-						array('sum(out_packets) AS out_packets','Packets from Remote','true'), 
-						array('sum(`in_bytes`) AS in_bytes','Bytes to Remote','false'), 
-						array('sum(`out_bytes`) AS out_bytes','Bytes from Remote','false'), 
+						array('sum(in_packets) AS in_packets','Packets to Remote','true'),
+						array('sum(out_packets) AS out_packets','Packets from Remote','true'),
+						array('sum(`in_bytes`) AS in_bytes','Bytes to Remote','false'),
+						array('sum(`out_bytes`) AS out_bytes','Bytes from Remote','false'),
 					),
 					'from' => 'conn_ioc',
 					'where' => '`ioc_count` > 0, `trash` IS NULL',
 					'group' => 'lan_ip, wan_ip, remote_ip, ioc'
 				),
-			);	
-			break;	
+			);
+			break;
 		case 'ioc_drill':
 			list($lan_ip, $wan_ip, $remote_ip, $ioc) = split(',', $query);
 			//set mysql query parameters
 			$page = array(
 				'title' => 'IOC Notifications',
 				'header' => 'drilldown',
-				'vDiv' => array(			
-					array('info', '33.33,33.33,33.33'),			
+				'vDiv' => array(
+					array('info', '33.33,33.33,33.33'),
 					array('crossfilter', '100'),
 					array('tables', '100')
 				),
 				'sidebar' => 'notifications'
-			);		
+			);
 			if (isset($_GET['getInfo'])) {
-				$info = mysql_query ("	
-					SELECT 
-						max(from_unixtime(time)) as last, 
-						min(from_unixtime(time)) as first, 
-						sum(in_packets) as in_packets, 
-						sum(out_packets) as out_packets, 
-						sum(in_bytes) as in_bytes, 
-						sum(out_bytes) as out_bytes, 
+				$info = mysql_query ("
+					SELECT
+						max(from_unixtime(time)) as last,
+						min(from_unixtime(time)) as first,
+						sum(in_packets) as in_packets,
+						sum(out_packets) as out_packets,
+						sum(in_bytes) as in_bytes,
+						sum(out_bytes) as out_bytes,
 						machine,
-						lan_zone, 
-						lan_port, 
-						wan_port, 
-						remote_port, 
-						remote_cc, 
+						lan_zone,
+						lan_port,
+						wan_port,
+						remote_port,
+						remote_cc,
 						remote_country,
 						remote_asn,
-						remote_asn_name, 
-						l7_proto, 
+						remote_asn_name,
+						l7_proto,
 						ioc_type
-					FROM `conn_ioc` 
-					WHERE 
+					FROM `conn_ioc`
+					WHERE
 						lan_ip = '$lan_ip' AND
 						wan_ip = '$wan_ip' AND
 						remote_ip = '$remote_ip' AND
-						ioc = '$ioc' 
+						ioc = '$ioc'
 					LIMIT 1
 				") or die (mysql_error());
-				$info2 = mysql_query ("	
-					SELECT 
+				$info2 = mysql_query ("
+					SELECT
 						description
-					FROM `ioc_group` 
-					WHERE 
+					FROM `ioc_group`
+					WHERE
 						ioc_group = '$ioc'
 					LIMIT 1
 				") or die (mysql_error());
@@ -759,14 +759,14 @@ function fetch($database, $type, $query, $start, $end) {
 						'heading' => 'Local IP',
 						'data' =>
 							'<ul class="feeds f32">
-								<li> 
-									<div style="float:left;width:50%">						
+								<li>
+									<div style="float:left;width:50%">
 										<div style="float:left;"><strong>Country: </strong>Canada</div>
 										<div style="float:left;margin-left: 10px;">
 											<div style="position:absolute;margin-top:-7px;"><span class="flag ca"></span></div>
 										</div>
 									</div>
-									<div style="float:left;width:50%">	
+									<div style="float:left;width:50%">
 										<div style="float:left;"><img style="position:absolute" src="assets/img/userplaceholder.jpg"></img><div>
 									</div>
 								</li>
@@ -796,13 +796,13 @@ function fetch($database, $type, $query, $start, $end) {
 						'heading' => 'Remote IP',
 						'data' =>
 							'<ul class="feeds f32">
-								<li> 
+								<li>
 									<div style="float:left;"><strong>Country:</strong> '.mysql_result($info, 0, 'remote_country').'</div>
 									<div style="float:left; margin-left: 10px;"><div style="position:absolute;margin-top:-7px;"><span class="flag '.strtolower(mysql_result($info, 0, 'remote_cc')).'"></span></div></div>
 								</li>
 								<li>
 									<strong>Remote IP:</strong> <a href="javascript:void(0);" onclick="javascript:page(\''.$remote_ip.'\',\'ioc_remote\',null,null,true);">'.$remote_ip.'</a>
-								</li>						
+								</li>
 								<li>
 									<div style="float:left;width:50%"><strong>Remote Port:</strong> '.mysql_result($info, 0, 'remote_port').'</div>
 									<div style="float:right;width:50%"><strong>Layer 7 Protocol:</strong> '.mysql_result($info, 0, 'l7_proto').'</div>
@@ -831,7 +831,7 @@ function fetch($database, $type, $query, $start, $end) {
 								<li><strong>IOC Type:</strong> '.mysql_result($info, 0, 'ioc_type').'</li>
 								<li><strong>IOC Info:</strong><span class="description"> '.mysql_result($info2, 0, 'description').'</span></li>
 							</ul>'
-					)					
+					)
 				);
 			};
 			$viz = array(
@@ -843,29 +843,29 @@ function fetch($database, $type, $query, $start, $end) {
 						),
 					),
 					'select' => array(
-						array('from_unixtime(time) as time'), 
-						array('count(*) AS count'), 
+						array('from_unixtime(time) as time'),
+						array('count(*) AS count'),
 						array('ioc_severity'),
-						array('ioc'), 
+						array('ioc'),
 					),
 					'from' => 'conn_ioc',
 					'where' => "`lan_ip` = '$lan_ip', `wan_ip` = '$wan_ip', `remote_ip` = '$remote_ip', `ioc` = '$ioc'",
 					'group' => 'month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), ioc_severity',
 					'disp' => array(
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'crossfilter',
-							'dID' => 'bar', 
-							'type' => 'severitybar', 
+							'dID' => 'bar',
+							'type' => 'severitybar',
 							'heading' => 'IOC Notifications Per Hour',
 							'xAxis' => '',
 							'yAxis' => '# IOC / Hour',
 							'dim' => 'hour',
 							'grp' => 'count'
 						)
-					)		
+					)
 				)
-			);				
+			);
 			$table = array(
 				array(
 					'pID' => 'tables',
@@ -873,25 +873,25 @@ function fetch($database, $type, $query, $start, $end) {
 					'heading' => 'Indicators of Compromise (IOC) Notifications',
 					'select' => array(
 						//array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, row query value, breadcrumb clear(boolean)
-						array('from_unixtime(`time`) AS time','Time','true','ioc_event','conn_uids','false'), 
+						array('from_unixtime(`time`) AS time','Time','true','ioc_event','conn_uids','false'),
 						array('lan_port','LAN Port','true'),
 						array('wan_port','WAN Port','true'),
 						array('remote_port','Remote Port','true'),
-						array('in_packets','Packets to Remote','true'), 
-						array('out_packets','Packets from Remote','true'), 
-						array('in_bytes','Bytes to Remote','true'), 
-						array('out_bytes','Bytes from Remote','true'), 
-						array('file','Files Extracted','true'), 
-						array('http','HTTP Links','true'), 
-						array('dns','DNS Query','true'), 
-						array('ssl','SSL Query','true'), 
-						array('conn_uids','ID','false') 
+						array('in_packets','Packets to Remote','true'),
+						array('out_packets','Packets from Remote','true'),
+						array('in_bytes','Bytes to Remote','true'),
+						array('out_bytes','Bytes from Remote','true'),
+						array('file','Files Extracted','true'),
+						array('http','HTTP Links','true'),
+						array('dns','DNS Query','true'),
+						array('ssl','SSL Query','true'),
+						array('conn_uids','ID','false')
 					),
 					'from' => 'conn_ioc',
 					'where' => "`lan_ip`='$lan_ip', `wan_ip`='$wan_ip', `remote_ip`='$remote_ip', `ioc`='$ioc'",
 				)
-			);	
-			break;	
+			);
+			break;
 		case 'ioc_event':
 			//set mysql query parameters
 			$page = array(
@@ -901,63 +901,63 @@ function fetch($database, $type, $query, $start, $end) {
 				'vDiv' => array(
 					array('info', '33.33,33.33,33.33'),
 					array('crossfilter', '100'),
-					array('tables', '100')	
+					array('tables', '100')
 				)
-			);		
+			);
 			if (isset($_GET['getInfo'])) {
-				$info1 = mysql_query	("	
-					SELECT 
+				$info1 = mysql_query	("
+					SELECT
 						from_unixtime(time) as time,
-						sum(in_packets) as in_packets, 
-						sum(out_packets) as out_packets, 
-						sum(in_bytes) as in_bytes, 
-						sum(out_bytes) as out_bytes, 
+						sum(in_packets) as in_packets,
+						sum(out_packets) as out_packets,
+						sum(in_bytes) as in_bytes,
+						sum(out_bytes) as out_bytes,
 						machine,
-						lan_zone, 
-						lan_ip, 
-						lan_port, 
-						wan_ip, 
-						wan_port, 
-						remote_port, 
-						l7_proto, 
-						remote_ip, 
-						remote_country, 
+						lan_zone,
+						lan_ip,
+						lan_port,
+						wan_ip,
+						wan_port,
+						remote_port,
+						l7_proto,
+						remote_ip,
+						remote_country,
 						remote_cc,
 						remote_asn,
-						remote_asn_name, 
-						ioc_type, 
+						remote_asn_name,
+						ioc_type,
 						ioc
-					FROM `conn_ioc` 
-					WHERE conn_uids = '$query' 
+					FROM `conn_ioc`
+					WHERE conn_uids = '$query'
 					LIMIT 1
 				") or die (mysql_error());
-				$info2 = mysql_query ("	
-					SELECT 
+				$info2 = mysql_query ("
+					SELECT
 						i.description
 					FROM ioc_group i JOIN conn_ioc c ON (i.ioc_group=c.ioc)
-					WHERE 
-						c.conn_uids = '$query' 
+					WHERE
+						c.conn_uids = '$query'
 					LIMIT 1
 				") or die (mysql_error());
 
-				$html = array(				
+				$html = array(
 					array(
 						'pID' => 'info',
 						'dID' => 'col1',
 						'heading' => 'Local IP',
 						'data' =>
 						'<ul class="feeds f32">
-							<li> 
-									<div style="float:left;width:50%">						
+							<li>
+									<div style="float:left;width:50%">
 										<div style="float:left;"><strong>Country: </strong>Canada</div>
 										<div style="float:left;margin-left: 10px;">
 											<div style="position:absolute;margin-top:-7px;"><span class="flag ca"></span></div>
 										</div>
 									</div>
-									<div style="float:left;width:50%">	
+									<div style="float:left;width:50%">
 										<div style="float:left;"><img style="position:absolute" src="assets/img/userplaceholder.jpg"></img><div>
-									</div>								
-				
+									</div>
+
 							</li>
 							<li>
 								<div style="float:left;"><strong>Lan Zone:</strong> '.mysql_result($info1, 0, 'lan_zone').'
@@ -985,7 +985,7 @@ function fetch($database, $type, $query, $start, $end) {
 						'heading' => 'Remote IP',
 						'data' =>
 						'<ul class="feeds f32">
-							<li> 								
+							<li>
 								<div style="float:left;"><strong>Country:</strong> '.mysql_result($info1, 0, 'remote_country').'</div>
 								<div style="float:left; margin-left: 10px;"><div style="position:absolute;margin-top:-7px;"><span class="flag '.strtolower(mysql_result($info1, 0, 'remote_cc')).'"></span></div></div>
 							</li>
@@ -1091,8 +1091,8 @@ function fetch($database, $type, $query, $start, $end) {
 					'from' => 'file_ioc',
 					'where' => "`conn_uids`='$query'",
 				)
-			);	
-			break;			
+			);
+			break;
 		case 'ioc_local':
 			list($lan_ip, $wan_ip) = split(',', $query);
 			//set mysql query parameters
@@ -1101,7 +1101,7 @@ function fetch($database, $type, $query, $start, $end) {
 				'header' => 'drilldown',
 				'vDiv' => array(
 					array('crossfilter', '100'),
-					array('tables', '100')	
+					array('tables', '100')
 				),
 				'sidebar' => 'notifications'
 			);
@@ -1122,10 +1122,10 @@ function fetch($database, $type, $query, $start, $end) {
 						)
 					),
 					'select' => array(
-						array('from_unixtime(time) AS time'), 
+						array('from_unixtime(time) AS time'),
 						array('remote_country'),
-						array('count(*) AS count'), 
-						array('ioc'), 
+						array('count(*) AS count'),
+						array('ioc'),
 						array('ioc_severity'),
 					),
 					'from' => 'conn_ioc',
@@ -1133,19 +1133,19 @@ function fetch($database, $type, $query, $start, $end) {
 					'group' => 'month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country, ioc_severity',
 					'disp' => array(
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'crossfilter',
-							'dID' => 'bar', 
-							'type' => 'severitybar', 
+							'dID' => 'bar',
+							'type' => 'severitybar',
 							'heading' => 'IOC Notifications Per Hour',
 							'xAxis' => '',
 							'yAxis' => '# IOC / Hour',
 							'dim' => 'hour',
 							'grp' => 'count'
 						)
-					)		
+					)
 				)
-			);	
+			);
 			$table = array(
 				array(
 					'pID' => 'tables',
@@ -1153,9 +1153,9 @@ function fetch($database, $type, $query, $start, $end) {
 					'heading' => 'Indicators of Compromise (IOC) Notifications',
 					'select' => array(
 						//array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, row query value, breadcrumb clear(boolean)
-						array('max(from_unixtime(time)) as time','Last Seen','true','ioc_drill','lan_ip,wan_ip,remote_ip,ioc','false'), 
-						array('ioc_severity','Severity','true'), 
-						array('count(*) AS count','IOC Hits','true'), 
+						array('max(from_unixtime(time)) as time','Last Seen','true','ioc_drill','lan_ip,wan_ip,remote_ip,ioc','false'),
+						array('ioc_severity','Severity','true'),
+						array('count(*) AS count','IOC Hits','true'),
 						array('ioc','IOC','true'),
 						array('ioc_type', 'IOC Type', 'true'),
 						array('lan_zone','LAN Zone','true'),
@@ -1167,17 +1167,17 @@ function fetch($database, $type, $query, $start, $end) {
 						array('remote_asn_name','Remote ASN Name','true'),
 						array('remote_country','Remote Country','true'),
 						array('remote_cc',' ','true'),
-						array('sum(in_packets) as in_packets','Packets to Remote','true'), 
-						array('sum(out_packets) as out_packets','Packets from Remote','true'), 
-						array('sum(`in_bytes`) as in_bytes','Bytes to Remote','false'), 
-						array('sum(`out_bytes`) as out_bytes','Bytes from Remote','false'), 
+						array('sum(in_packets) as in_packets','Packets to Remote','true'),
+						array('sum(out_packets) as out_packets','Packets from Remote','true'),
+						array('sum(`in_bytes`) as in_bytes','Bytes to Remote','false'),
+						array('sum(`out_bytes`) as out_bytes','Bytes from Remote','false'),
 					),
 					'from' => 'conn_ioc',
 					'where' => "`ioc_count` > 0,`trash` IS NULL,`lan_ip` = '$lan_ip',`wan_ip` = '$wan_ip'",
 					'group' => 'lan_ip, wan_ip, remote_ip, ioc'
 				),
-			);	
-			break;	
+			);
+			break;
 		case 'ioc_remote':
 			//set mysql query parameters
 			$page = array(
@@ -1186,7 +1186,7 @@ function fetch($database, $type, $query, $start, $end) {
 				'sidebar' => 'notifications',
 				'vDiv' => array(
 					array('crossfilter', '100'),
-					array('tables', '100')	
+					array('tables', '100')
 				),
 			);
 			$viz = array(
@@ -1206,30 +1206,30 @@ function fetch($database, $type, $query, $start, $end) {
 						)
 					),
 					'select' => array(
-						array('from_unixtime(time) as time'), 
+						array('from_unixtime(time) as time'),
 						array('remote_country'),
-						array('count(*) AS count'), 
-						array('ioc'), 
-						array('ioc_severity'), 
+						array('count(*) AS count'),
+						array('ioc'),
+						array('ioc_severity'),
 					),
 					'from' => 'conn_ioc',
 					'where' => "`ioc_count` > 0, `trash` IS NULL, `remote_ip` = '$query'",
 					'group' => 'month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country, ioc_severity',
 					'disp' => array(
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'crossfilter',
-							'dID' => 'bar', 
-							'type' => 'severitybar', 
+							'dID' => 'bar',
+							'type' => 'severitybar',
 							'heading' => 'IOC Hits Per Hour',
 							'xAxis' => '',
 							'yAxis' => '# IOC Hits / Hour',
 							'dim' => 'hour',
 							'grp' => 'count'
 						)
-					)		
+					)
 				)
-			);	
+			);
 			$table = array(
 				array(
 					'pID' => 'tables',
@@ -1237,9 +1237,9 @@ function fetch($database, $type, $query, $start, $end) {
 					'heading' => 'Indicators of Compromise (IOC) Notifications',
 					'select' => array(
 						//array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, row query value, breadcrumb clear(boolean)
-						array('max(from_unixtime(time)) as time','Last Seen','true','ioc_drill','lan_ip,wan_ip,remote_ip,ioc','false'), 
+						array('max(from_unixtime(time)) as time','Last Seen','true','ioc_drill','lan_ip,wan_ip,remote_ip,ioc','false'),
 						array('ioc_severity','Severity','true'),
-						array('count(*) AS count','IOC Hits','true'), 
+						array('count(*) AS count','IOC Hits','true'),
 						array('ioc','IOC','true'),
 						array('ioc_type', 'IOC Type', 'true'),
 						array('lan_zone','LAN Zone','true'),
@@ -1251,17 +1251,17 @@ function fetch($database, $type, $query, $start, $end) {
 						array('remote_asn_name','Remote ASN Name', 'true'),
 						array('remote_country','Remote Country','true'),
 						array('remote_cc',' ','true'),
-						array('sum(in_packets) as in_packets','Packets to Remote','true'), 
-						array('sum(out_packets) as out_packets','Packets from Remote','true'), 
-						array('sum(`in_bytes`) as in_bytes','Bytes to Remote','false'), 
-						array('sum(`out_bytes`) as out_bytes','Bytes from Remote','false'), 
+						array('sum(in_packets) as in_packets','Packets to Remote','true'),
+						array('sum(out_packets) as out_packets','Packets from Remote','true'),
+						array('sum(`in_bytes`) as in_bytes','Bytes to Remote','false'),
+						array('sum(`out_bytes`) as out_bytes','Bytes from Remote','false'),
 					),
 					'from' => 'conn_ioc',
 					'where' => "`ioc_count` > 0, `trash` IS NULL, `remote_ip` = '$query'",
 					'group' => 'lan_ip, wan_ip, remote_ip, ioc'
 				),
-			);	
-			break;	
+			);
+			break;
 		case 'ioc_impact':
 			//set mysql query parameters
 			$page = array(
@@ -1269,7 +1269,7 @@ function fetch($database, $type, $query, $start, $end) {
 				'header' => 'drilldown',
 				'vDiv' => array(
 					array('crossfilter', '100'),
-					array('tables', '100')	
+					array('tables', '100')
 				),
 				'subheading' => '',
 				// 'severity' => 'true',
@@ -1288,29 +1288,29 @@ function fetch($database, $type, $query, $start, $end) {
 						)
 					),
 					'select' => array(
-						array('from_unixtime(time) as time'), 
+						array('from_unixtime(time) as time'),
 						array('remote_country'),
 						array('count(*) AS count'),
-						array('ioc_severity') 
+						array('ioc_severity')
 					),
 					'from' => 'conn_ioc',
 					'where' => "`ioc_count` > 0, `trash` IS NULL, `ioc` = '$query'",
 					'group' => 'month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country, ioc_severity',
 					'disp' => array(
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'crossfilter',
-							'dID' => 'bar', 
-							'type' => 'severitybar', 
+							'dID' => 'bar',
+							'type' => 'severitybar',
 							'heading' => 'IOC Notifications Per Hour',
 							'xAxis' => '',
 							'yAxis' => '# IOC / Hour',
 							'dim' => 'hour',
 							'grp' => 'count'
 						)
-					)		
+					)
 				)
-			);	
+			);
 			$table = array(
 				array(
 					'pID' => 'tables',
@@ -1318,9 +1318,9 @@ function fetch($database, $type, $query, $start, $end) {
 					'heading' => 'Indicators of Compromise (IOC) Hits',
 					'select' => array(
 						//array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, row query value, breadcrumb clear(boolean)
-						array('max(from_unixtime(time)) as time','Last Seen','true','ioc_drill','lan_ip,wan_ip,remote_ip,ioc','false'), 
+						array('max(from_unixtime(time)) as time','Last Seen','true','ioc_drill','lan_ip,wan_ip,remote_ip,ioc','false'),
 						array('ioc_severity','Severity','true'),
-						array('count(*) AS count','IOC Hits','true'), 
+						array('count(*) AS count','IOC Hits','true'),
 						array('ioc','IOC','true'),
 						array('ioc_type', 'IOC Type', 'true'),
 						array('lan_zone','LAN Zone','true'),
@@ -1332,17 +1332,17 @@ function fetch($database, $type, $query, $start, $end) {
 						array('remote_asn_name','Remote ASN Name','true'),
 						array('remote_country','Remote Country','true'),
 						array('remote_cc',' ','true'),
-						array('sum(in_packets) as in_packets','Packets to Remote','true'), 
-						array('sum(out_packets) as out_packets','Packets from Remote','true'), 
-						array('sum(`in_bytes`) as in_bytes','Bytes to Remote','false'), 
-						array('sum(`out_bytes`) as out_bytes','Bytes from Remote','false'), 
+						array('sum(in_packets) as in_packets','Packets to Remote','true'),
+						array('sum(out_packets) as out_packets','Packets from Remote','true'),
+						array('sum(`in_bytes`) as in_bytes','Bytes to Remote','false'),
+						array('sum(`out_bytes`) as out_bytes','Bytes from Remote','false'),
 					),
 					'from' => 'conn_ioc',
 					'where' => "`ioc_count` > 0, `trash` IS NULL, `ioc` = '$query'",
 					'group' => 'lan_ip, wan_ip, remote_ip, ioc'
 				),
-			);	
-			break;	
+			);
+			break;
 		case 'ioc_top_remote':
 			//set mysql query parameters
 			$page = array(
@@ -1350,7 +1350,7 @@ function fetch($database, $type, $query, $start, $end) {
 				'header' => 'drilldown',
 				'vDiv' => array(
 					array('crossfilter', '100'),
-					array('tables', '100')	
+					array('tables', '100')
 				),
 				'subheading' => '',
 				'severity' => 'true',
@@ -1365,27 +1365,27 @@ function fetch($database, $type, $query, $start, $end) {
 						)
 					),
 					'select' => array(
-						array('from_unixtime(time) AS time'), 
+						array('from_unixtime(time) AS time'),
 						array('ioc_severity'),
-						array('count(*) AS count'), 
+						array('count(*) AS count'),
 					),
 					'from' => 'conn_ioc',
 					'where' => '`ioc_count` > 0, `trash` IS NULL',
 					'group' => 'month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), ioc_severity',
 					'disp' => array(
-						
+
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'crossfilter',
-							'dID' => 'sBar', 
-							'type' => 'severitybar', 
+							'dID' => 'sBar',
+							'type' => 'severitybar',
 							'heading' => 'IOC Notifications Per Hour',
 							'xAxis' => '',
 							'yAxis' => '# IOC / Hour',
 							'dim' => 'hour',
 							'grp' => 'count'
 						)
-					)		
+					)
 				),
 
 
@@ -1398,9 +1398,9 @@ function fetch($database, $type, $query, $start, $end) {
 					'sSort' => '[ 2, "desc" ]',
 					'select' => array(
 						// array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, rowsquery value, breadcrumb clear(boolean)
-						array('max(from_unixtime(time)) AS time','Last Seen','true','ioc_top_remote2local','remote_ip,ioc','false'), 
-						array('ioc_severity','Severity','true'), 
-						array('count(*) AS count','IOC Hits','true'), 
+						array('max(from_unixtime(time)) AS time','Last Seen','true','ioc_top_remote2local','remote_ip,ioc','false'),
+						array('ioc_severity','Severity','true'),
+						array('count(*) AS count','IOC Hits','true'),
 						array('ioc','IOC','true'),
 						array('ioc_type', 'IOC Type', 'true'),
 						array('remote_ip','Remote IP','true'),
@@ -1408,17 +1408,17 @@ function fetch($database, $type, $query, $start, $end) {
 						array('remote_asn_name','Remote ASN Name','true'),
 						array('remote_country','Remote Country','true'),
 						array('remote_cc',' ','true'),
-						array('sum(in_packets) AS in_packets','Packets to Remote','true'), 
-						array('sum(out_packets) AS out_packets','Packets from Remote','true'), 
-						array('sum(`in_bytes`) AS in_bytes','Bytes to Remote','false'), 
-						array('sum(`out_bytes`) AS out_bytes','Bytes from Remote','false'), 
+						array('sum(in_packets) AS in_packets','Packets to Remote','true'),
+						array('sum(out_packets) AS out_packets','Packets from Remote','true'),
+						array('sum(`in_bytes`) AS in_bytes','Bytes to Remote','false'),
+						array('sum(`out_bytes`) AS out_bytes','Bytes from Remote','false'),
 					),
 					'from' => 'conn_ioc',
 					'where' => '`ioc_count` > 0, `trash` IS NULL',
 					'group' => 'remote_ip, ioc'
 				),
-			);	
-			break;	
+			);
+			break;
 		case 'ioc_top_remote2local':
 			list($remote_ip, $ioc) = split(',', $query);
 			//set mysql query parameters
@@ -1426,7 +1426,7 @@ function fetch($database, $type, $query, $start, $end) {
 				'title' => 'IOC Notifications',
 				'header' => 'drilldown',
 				'vDiv' => array(
-					array('tables', '100')	
+					array('tables', '100')
 				),
 				'subheading' => '',
 				'sidebar' => 'ioc_top_remote'
@@ -1439,9 +1439,9 @@ function fetch($database, $type, $query, $start, $end) {
 					'heading' => 'Indicators of Compromise (IOC) Notifications',
 					'select' => array(
 						// array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, rowsquery value, breadcrumb clear(boolean)
-						array('max(from_unixtime(time)) AS time','Last Seen','true','ioc_drill','lan_ip,wan_ip,remote_ip,ioc','false'), 
-						array('ioc_severity','Severity','true'), 
-						array('count(*) AS count','IOC Hits','true'), 
+						array('max(from_unixtime(time)) AS time','Last Seen','true','ioc_drill','lan_ip,wan_ip,remote_ip,ioc','false'),
+						array('ioc_severity','Severity','true'),
+						array('count(*) AS count','IOC Hits','true'),
 						array('ioc','IOC','true'),
 						array('ioc_type', 'IOC Type', 'true'),
 						array('lan_zone','LAN Zone','true'),
@@ -1453,17 +1453,17 @@ function fetch($database, $type, $query, $start, $end) {
 						array('remote_asn_name','Remote ASN Name','true'),
 						array('remote_country','Remote Country','true'),
 						array('remote_cc',' ','true'),
-						array('sum(in_packets) AS in_packets','Packets to Remote','true'), 
-						array('sum(out_packets) AS out_packets','Packets from Remote','true'), 
-						array('sum(`in_bytes`) AS in_bytes','Bytes to Remote','false'), 
-						array('sum(`out_bytes`) AS out_bytes','Bytes from Remote','false'), 
+						array('sum(in_packets) AS in_packets','Packets to Remote','true'),
+						array('sum(out_packets) AS out_packets','Packets from Remote','true'),
+						array('sum(`in_bytes`) AS in_bytes','Bytes to Remote','false'),
+						array('sum(`out_bytes`) AS out_bytes','Bytes from Remote','false'),
 					),
 					'from' => 'conn_ioc',
 					'where' => "remote_ip='$remote_ip', ioc='$ioc', `ioc_count` > 0, `trash` IS NULL",
 					'group' => 'remote_ip, ioc'
 				),
-			);	
-			break;	
+			);
+			break;
 		case 'new_remote_ip':
 			//set mysql query parameters
 			$page = array(
@@ -1471,7 +1471,7 @@ function fetch($database, $type, $query, $start, $end) {
 				'header' => 'drilldown',
 				'vDiv' => array(
 					array('crossfilter', '100'),
-					array('tables', '100')	
+					array('tables', '100')
 				),
 				'sidebar' => 'new_remote_ip'
 			);
@@ -1484,27 +1484,27 @@ function fetch($database, $type, $query, $start, $end) {
 						)
 					),
 					'select' => array(
-						array('from_unixtime(time) AS time'), 
+						array('from_unixtime(time) AS time'),
 						array('remote_ip'),
-						array('count(*) AS count'), 
+						array('count(*) AS count'),
 					),
 					'from' => 'conn_remote_ip',
 					'group' => 'month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time))',
 					'disp' => array(
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'crossfilter',
-							'dID' => 'bar', 
-							'type' => 'bar', 
+							'dID' => 'bar',
+							'type' => 'bar',
 							'heading' => 'New Remote IP Addresses Detected Per Hour',
 							'xAxis' => '',
 							'yAxis' => '# New IP / Hour',
 							'dim' => 'hour',
 							'grp' => 'count'
 						)
-					)		
+					)
 				)
-			);		
+			);
 			$table = array(
 				array(
 					'pID' => 'tables',
@@ -1512,22 +1512,22 @@ function fetch($database, $type, $query, $start, $end) {
 					'heading' => 'New Remote IP Addresses Detected',
 					'select' => array(
 						//array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, row query value, breadcrumb clear(boolean)
-						array('from_unixtime(time) AS time','First Seen','true'), 
-						array('remote_ip','Remote IP','true'), 
-						array('remote_asn','Remote ASN','true'),  
+						array('from_unixtime(time) AS time','First Seen','true'),
+						array('remote_ip','Remote IP','true'),
+						array('remote_asn','Remote ASN','true'),
 						array('remote_asn_name','Remote ASN Name','true'),
-						array('remote_country','Remote Country','true'), 
+						array('remote_country','Remote Country','true'),
 						array('remote_cc','Flag','true'),
-						array('lan_zone','LAN Zone','true'), 
-						array('lan_ip','LAN IP','true'), 
+						array('lan_zone','LAN Zone','true'),
+						array('lan_ip','LAN IP','true'),
 						array('machine','Machine Name','true'),
-						array('wan_ip','WAN IP','false') 
+						array('wan_ip','WAN IP','false')
 					),
 					'from' => 'conn_remote_ip',
 					'group' => 'remote_ip'
 				),
-			);	
-			break;	
+			);
+			break;
 		case 'new_dns_query':
 			//set mysql query parameters
 			$page = array(
@@ -1535,7 +1535,7 @@ function fetch($database, $type, $query, $start, $end) {
 				'header' => 'drilldown',
 				'vDiv' => array(
 					array('crossfilter', '100'),
-					array('tables', '100')	
+					array('tables', '100')
 				),
 				'subheading' => '',
 				'sidebar' => 'new_dns_query'
@@ -1550,27 +1550,27 @@ function fetch($database, $type, $query, $start, $end) {
 						)
 					),
 					'select' => array(
-						array('from_unixtime(time) as time'), 
+						array('from_unixtime(time) as time'),
 						array('query'),
-						array('count(*) AS count'), 
+						array('count(*) AS count'),
 					),
 					'from' => 'dns_query',
 					'group' => 'month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time))',
 					'disp' => array(
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'crossfilter',
-							'dID' => 'bar', 
-							'type' => 'bar', 
+							'dID' => 'bar',
+							'type' => 'bar',
 							'heading' => 'New DNS Queries Detected Per Hour',
 							'xAxis' => '',
 							'yAxis' => '# New Query / Hour',
 							'dim' => 'hour',
 							'grp' => 'count'
 						)
-					)		
+					)
 				)
-			);		
+			);
 			$table = array(
 				array(
 					'pID' => 'tables',
@@ -1578,27 +1578,27 @@ function fetch($database, $type, $query, $start, $end) {
 					'heading' => 'New DNS Queries Detected',
 					'select' => array(
 						//array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, row query value, breadcrumb clear(boolean)
-						array('from_unixtime(time) AS time','First Seen','true'), 
-						array('remote_ip','Remote IP','true'), 
-						array('remote_port','Remote Port','true'), 
-						array('proto','Protocol','true'), 						
-						array('remote_asn_name','Remote ASN','true'), 
-						array('remote_country','Remote Country','true'), 
+						array('from_unixtime(time) AS time','First Seen','true'),
+						array('remote_ip','Remote IP','true'),
+						array('remote_port','Remote Port','true'),
+						array('proto','Protocol','true'),
+						array('remote_asn_name','Remote ASN','true'),
+						array('remote_country','Remote Country','true'),
 						array('remote_cc','Flag','true'),
-						array('lan_zone','LAN ZONE','true'), 
+						array('lan_zone','LAN ZONE','true'),
 						array('lan_ip','LAN IP','true'),
-						array('machine','Machine Name','true'), 
-						array('wan_ip','WAN IP','false'), 
-						array('qtype','Query Type','true'), 
-						array('qclass','Query Class','false'), 
+						array('machine','Machine Name','true'),
+						array('wan_ip','WAN IP','false'),
+						array('qtype','Query Type','true'),
+						array('qclass','Query Class','false'),
 						array('rcode','Response Code','false'),
 						array('query','DNS Query','true')
 					),
 					'from' => 'dns_query',
 					'group' => 'query'
 				),
-			);	
-			break;	
+			);
+			break;
 		case 'new_http_host':
 			//set mysql query parameters
 			$page = array(
@@ -1606,7 +1606,7 @@ function fetch($database, $type, $query, $start, $end) {
 				'header' => 'drilldown',
 				'vDiv' => array(
 					array('crossfilter', '100'),
-					array('tables', '100')	
+					array('tables', '100')
 				),
 				'subheading' => '',
 				'sidebar' => 'new_http_host'
@@ -1621,27 +1621,27 @@ function fetch($database, $type, $query, $start, $end) {
 						)
 					),
 					'select' => array(
-						array('from_unixtime(time) as time'), 
+						array('from_unixtime(time) as time'),
 						array('host'),
-						array('count(*) AS count'), 
+						array('count(*) AS count'),
 					),
 					'from' => 'http_host',
 					'group' => 'month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time))',
 					'disp' => array(
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'crossfilter',
-							'dID' => 'bar', 
-							'type' => 'bar', 
+							'dID' => 'bar',
+							'type' => 'bar',
 							'heading' => 'New HTTP Domains Detected Per Hour',
 							'xAxis' => '',
 							'yAxis' => '# New Domains / Hour',
 							'dim' => 'hour',
 							'grp' => 'count'
 						)
-					)		
+					)
 				)
-			);		
+			);
 			$table = array(
 				array(
 					'pID' => 'tables',
@@ -1649,14 +1649,14 @@ function fetch($database, $type, $query, $start, $end) {
 					'heading' => 'New HTTP Domains Detected',
 					'select' => array(
 						//array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, row query value, breadcrumb clear(boolean)
-						array('from_unixtime(time) AS time','First Seen','true'), 
+						array('from_unixtime(time) AS time','First Seen','true'),
 						array('host','HTTP Domains','true'),
-						array('remote_ip','Remote IP','true'), 
-						array('remote_asn','Remote ASN','true'),  
+						array('remote_ip','Remote IP','true'),
+						array('remote_asn','Remote ASN','true'),
 						array('remote_asn_name','Remote ASN Name','true'),
-						array('remote_country','Remote Country','true'), 
+						array('remote_country','Remote Country','true'),
 						array('remote_cc','Flag','true'),
-						array('lan_zone','LAN Zone','true'), 
+						array('lan_zone','LAN Zone','true'),
 						array('lan_ip','LAN IP','true'),
 						array('machine','Machine Name','true'),
 						array('wan_ip','WAN IP','false')
@@ -1664,8 +1664,8 @@ function fetch($database, $type, $query, $start, $end) {
 					'from' => 'http_host',
 					'group' => 'host'
 				),
-			);	
-			break;	
+			);
+			break;
 		case 'new_ssl_host':
 			//set mysql query parameters
 			$page = array(
@@ -1673,7 +1673,7 @@ function fetch($database, $type, $query, $start, $end) {
 				'header' => 'drilldown',
 				'vDiv' => array(
 					array('crossfilter', '100'),
-					array('tables', '100')	
+					array('tables', '100')
 				),
 				'subheading' => '',
 				'sidebar' => 'new_ssl_host'
@@ -1688,27 +1688,27 @@ function fetch($database, $type, $query, $start, $end) {
 						)
 					),
 					'select' => array(
-						array('from_unixtime(time) as time'), 
+						array('from_unixtime(time) as time'),
 						array('remote_ip'),
-						array('count(*) AS count'), 
+						array('count(*) AS count'),
 					),
 					'from' => 'ssl_remote_ip',
 					'group' => 'month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time))',
 					'disp' => array(
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'crossfilter',
-							'dID' => 'bar', 
-							'type' => 'bar', 
+							'dID' => 'bar',
+							'type' => 'bar',
 							'heading' => 'New SSL Remote IP Detected Per Hour',
 							'xAxis' => '',
 							'yAxis' => '# New IP / Hour',
 							'dim' => 'hour',
 							'grp' => 'count'
 						)
-					)		
+					)
 				)
-			);		
+			);
 			$table = array(
 				array(
 					'pID' => 'tables',
@@ -1716,23 +1716,23 @@ function fetch($database, $type, $query, $start, $end) {
 					'heading' => 'New SSL Remote IP Addresses Detected',
 					'select' => array(
 						//array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, row query value, breadcrumb clear(boolean)
-						array('from_unixtime(time) AS time','First Seen','true'), 
+						array('from_unixtime(time) AS time','First Seen','true'),
 						array('server_name','Server Name','true'),
-						array('remote_ip','Remote IP','true'), 
-						array('remote_asn','Remote ASN','true'),  
+						array('remote_ip','Remote IP','true'),
+						array('remote_asn','Remote ASN','true'),
 						array('remote_asn_name','Remote ASN Name','true'),
-						array('remote_country','Remote Country','true'), 
+						array('remote_country','Remote Country','true'),
 						array('remote_cc','Flag','true'),
-						array('lan_zone','LAN Zone','true'), 
+						array('lan_zone','LAN Zone','true'),
 						array('lan_ip','LAN IP','true'),
-						array('machine','Machine Name','true'), 
-						array('wan_ip','WAN IP','false'), 
+						array('machine','Machine Name','true'),
+						array('wan_ip','WAN IP','false'),
 					),
 					'from' => 'ssl_remote_ip',
 					'group' => 'remote_ip'
 				),
-			);	
-			break;	
+			);
+			break;
 		case 'l7':
 			//set mysql query parameters
 			$page = array(
@@ -1740,7 +1740,7 @@ function fetch($database, $type, $query, $start, $end) {
 				'header' => 'drilldown',
 				'vDiv' => array(
 					array('crossfilter', '100'),
-					array('tables', '100')	
+					array('tables', '100')
 				),
 				'subheading' => '',
 				'sidebar' => 'l7'
@@ -1754,26 +1754,26 @@ function fetch($database, $type, $query, $start, $end) {
 						)
 					),
 					'select' => array(
-						array('from_unixtime(time) as time'), 
+						array('from_unixtime(time) as time'),
 						array('(sum(in_bytes + out_bytes) / 1048576) as bandwidth'), // 1073741824 -> convert bytes to GB
 					),
 					'from' => 'conn_l7',
 					'group' => 'month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time))',
 					'disp' => array(
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'crossfilter',
-							'dID' => 'bar', 
-							'type' => 'bar', 
+							'dID' => 'bar',
+							'type' => 'bar',
 							'heading' => 'Bandwidth per Hour',
 							'xAxis' => '',
 							'yAxis' => 'MB / Hour',
 							'dim' => 'hour',
 							'grp' => 'bandwidth'
 						)
-					)		
+					)
 				)
-			);		
+			);
 			$table = array(
 				array(
 					'pID' => 'tables',
@@ -1781,7 +1781,7 @@ function fetch($database, $type, $query, $start, $end) {
 					'heading' => 'Layer 7 Protocol Bandwidth Usage',
 					'select' => array(
 						//array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, row query value, breadcrumb clear(boolean)
-						array('max(from_unixtime(time)) AS time','Last Seen','true','l7_drill','l7_proto','true'), 
+						array('max(from_unixtime(time)) AS time','Last Seen','true','l7_drill','l7_proto','true'),
 						array('l7_proto','Layer 7 Protocol','true'),
 						array('(sum(in_bytes) / 1048576) AS in_bytes','MB to Remote','true'),
 						array('(sum(out_bytes) / 1048576) AS out_bytes','MB from Remote','true'),
@@ -1792,8 +1792,8 @@ function fetch($database, $type, $query, $start, $end) {
 					'where' => "l7_proto !='-'",
 					'group' => 'l7_proto'
 				),
-			);	
-			break;	
+			);
+			break;
 		case 'l7_drill':
 			//set mysql query parameters
 			$page = array(
@@ -1801,7 +1801,7 @@ function fetch($database, $type, $query, $start, $end) {
 				'header' => 'drilldown',
 				'vDiv' => array(
 					array('crossfilter', '100'),
-					array('tables', '100')	
+					array('tables', '100')
 				),
 				'subheading' => '',
 				'sidebar' => 'l7'
@@ -1815,27 +1815,27 @@ function fetch($database, $type, $query, $start, $end) {
 						)
 					),
 					'select' => array(
-						array('from_unixtime(time) as time'), 
-						array('(sum(in_bytes + out_bytes) / 1048576) as bandwidth'), 
+						array('from_unixtime(time) as time'),
+						array('(sum(in_bytes + out_bytes) / 1048576) as bandwidth'),
 					),
 					'from' => 'conn_l7',
 					'where' => "`l7_proto` = '$query'",
 					'group' => 'month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time))',
 					'disp' => array(
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'crossfilter',
-							'dID' => 'bar', 
-							'type' => 'bar', 
+							'dID' => 'bar',
+							'type' => 'bar',
 							'heading' => 'Bandwidth Per Hour',
 							'xAxis' => '',
 							'yAxis' => 'MB / Hour',
 							'dim' => 'hour',
 							'grp' => 'bandwidth'
 						)
-					)		
+					)
 				)
-			);		
+			);
 			$table = array(
 				array(
 					'pID' => 'tables',
@@ -1843,7 +1843,7 @@ function fetch($database, $type, $query, $start, $end) {
 					'heading' => 'Layer 7 Protocol Bandwidth Usage',
 					'select' => array(
 						//array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, row query value, breadcrumb clear(boolean)
-						array('max(from_unixtime(time)) AS time','Last Seen','true','l7_local','lan_ip,wan_ip','false'), 
+						array('max(from_unixtime(time)) AS time','Last Seen','true','l7_local','lan_ip,wan_ip','false'),
 						array('l7_proto','Layer 7 Protocol','true'),
 						array('lan_zone','Lan Zone','true'),
 						array('lan_ip','Lan IP','true'),
@@ -1858,8 +1858,8 @@ function fetch($database, $type, $query, $start, $end) {
 					'where' => "l7_proto='$query'",
 					'group' => 'lan_ip, wan_ip'
 				),
-			);	
-			break;	
+			);
+			break;
 		case 'l7_local':
 			list($lan_ip, $wan_ip) = split(',', $query);
 			//set mysql query parameters
@@ -1868,7 +1868,7 @@ function fetch($database, $type, $query, $start, $end) {
 				'header' => 'drilldown',
 				'vDiv' => array(
 					array('crossfilter', '100'),
-					array('tables', '100')	
+					array('tables', '100')
 				),
 				'subheading' => '',
 				'sidebar' => 'l7'
@@ -1882,27 +1882,27 @@ function fetch($database, $type, $query, $start, $end) {
 						)
 					),
 					'select' => array(
-						array('from_unixtime(time) as time'), 
-						array('(sum(in_bytes + out_bytes) / 1048576) as bandwidth'), 
+						array('from_unixtime(time) as time'),
+						array('(sum(in_bytes + out_bytes) / 1048576) as bandwidth'),
 					),
 					'from' => 'conn_l7',
 					'where' => "`lan_ip` = '$lan_ip', `wan_ip` = '$wan_ip'",
 					'group' => 'month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time))',
 					'disp' => array(
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'crossfilter',
-							'dID' => 'bar', 
-							'type' => 'bar', 
+							'dID' => 'bar',
+							'type' => 'bar',
 							'heading' => 'Bandwidth Per Hour',
 							'xAxis' => '',
 							'yAxis' => 'MB / Hour',
 							'dim' => 'hour',
 							'grp' => 'bandwidth'
 						)
-					)		
+					)
 				)
-			);		
+			);
 			$table = array(
 				array(
 					'pID' => 'tables',
@@ -1910,7 +1910,7 @@ function fetch($database, $type, $query, $start, $end) {
 					'heading' => 'Layer 7 Protocol Bandwidth Usage',
 					'select' => array(
 						//array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, row query value, breadcrumb clear(boolean)
-						array('max(from_unixtime(time)) AS time','Last Seen','true','l7_drill','l7_proto','true'), 
+						array('max(from_unixtime(time)) AS time','Last Seen','true','l7_drill','l7_proto','true'),
 						array('l7_proto','Layer 7 Protocol','true'),
 						array('lan_zone','Lan Zone','true'),
 						array('lan_ip','Lan IP','true'),
@@ -1925,8 +1925,8 @@ function fetch($database, $type, $query, $start, $end) {
 					'where' => "lan_ip='$lan_ip', wan_ip='$wan_ip', l7_proto !='-'",
 					'group' => 'l7_proto'
 				),
-			);	
-			break;		
+			);
+			break;
 		case 'top_local':
 			//set mysql query parameters
 			$page = array(
@@ -1934,7 +1934,7 @@ function fetch($database, $type, $query, $start, $end) {
 				'header' => 'drilldown',
 				'vDiv' => array(
 					array('crossfilter', '100'),
-					array('tables', '100')	
+					array('tables', '100')
 				),
 				'subheading' => '',
 				'sidebar' => 'top_local'
@@ -1949,27 +1949,27 @@ function fetch($database, $type, $query, $start, $end) {
 						)
 					),
 					'select' => array(
-						array('from_unixtime(time) as time'), 
+						array('from_unixtime(time) as time'),
 						array('remote_country'),
-						array('(sum(in_bytes + out_bytes) / 1048576) as bandwidth'), 
+						array('(sum(in_bytes + out_bytes) / 1048576) as bandwidth'),
 					),
 					'from' => 'conn_meta',
 					'group' => 'month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country',
 					'disp' => array(
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'crossfilter',
-							'dID' => 'bar', 
-							'type' => 'bar', 
+							'dID' => 'bar',
+							'type' => 'bar',
 							'heading' => 'Bandwidth Per Hour',
 							'xAxis' => '',
 							'yAxis' => 'MB / Hour',
 							'dim' => 'hour',
 							'grp' => 'bandwidth'
 						)
-					)		
+					)
 				)
-			);	
+			);
 			$table = array(
 				array(
 					'pID' => 'tables',
@@ -1977,21 +1977,21 @@ function fetch($database, $type, $query, $start, $end) {
 					'heading' => 'Local IP Traffic',
 					'select' => array(
 						//array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, row query value, breadcrumb clear(boolean)
-						array('max(from_unixtime(time)) AS time','Last Seen','true','top_local2remote','lan_ip,wan_ip','false'), 
+						array('max(from_unixtime(time)) AS time','Last Seen','true','top_local2remote','lan_ip,wan_ip','false'),
 						array('lan_zone','LAN Zone','true'),
 						array('lan_ip','LAN IP','true'),
 						array('machine','Machine Name','true'),
 						array('wan_ip','WAN IP','false'),
-						array('(sum(`in_bytes`) / 1048576) AS in_bytes','MB to Remote','true'), 
-						array('(sum(`out_bytes`) / 1048576) AS out_bytes','MB from Remote','true'), 
-						array('sum(in_packets) AS in_packets','Packets to Remote','false'), 
+						array('(sum(`in_bytes`) / 1048576) AS in_bytes','MB to Remote','true'),
+						array('(sum(`out_bytes`) / 1048576) AS out_bytes','MB from Remote','true'),
+						array('sum(in_packets) AS in_packets','Packets to Remote','false'),
 						array('sum(out_packets) AS out_packets','Packets from Remote','false')
 					),
 					'from' => 'conn_meta',
 					'group' => 'lan_ip, wan_ip'
 				),
-			);	
-			break;	
+			);
+			break;
 		case 'top_local2remote':
 			list($lan_ip, $wan_ip) = split(',', $query);
 			//set mysql query parameters
@@ -2000,7 +2000,7 @@ function fetch($database, $type, $query, $start, $end) {
 				'header' => 'drilldown',
 				'vDiv' => array(
 					array('crossfilter', '100'),
-					array('tables', '100')	
+					array('tables', '100')
 				),
 				'subheading' => '',
 				'sidebar' => 'top_local'
@@ -2014,27 +2014,27 @@ function fetch($database, $type, $query, $start, $end) {
 						)
 					),
 					'select' => array(
-						array('from_unixtime(time) as time'), 
-						array('(sum(in_bytes + out_bytes) / 1048576) as bandwidth'), 
+						array('from_unixtime(time) as time'),
+						array('(sum(in_bytes + out_bytes) / 1048576) as bandwidth'),
 					),
 					'from' => 'conn_meta',
 					'where' => "`lan_ip` = '$lan_ip', `wan_ip` = '$wan_ip'",
 					'group' => 'month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time))',
 					'disp' => array(
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'crossfilter',
-							'dID' => 'bar', 
-							'type' => 'bar', 
+							'dID' => 'bar',
+							'type' => 'bar',
 							'heading' => 'Bandwidth Per Hour',
 							'xAxis' => '',
 							'yAxis' => 'MB / Hour',
 							'dim' => 'hour',
 							'grp' => 'bandwidth'
 						)
-					)		
+					)
 				)
-			);	
+			);
 			$table = array(
 				array(
 					'pID' => 'tables',
@@ -2042,27 +2042,27 @@ function fetch($database, $type, $query, $start, $end) {
 					'heading' => 'Local IP Traffic',
 					'select' => array(
 						//array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, row query value, breadcrumb clear(boolean)
-						array('max(from_unixtime(time)) AS time','Last Seen','true'), 
+						array('max(from_unixtime(time)) AS time','Last Seen','true'),
 						array('lan_zone','LAN Zone','true'),
 						array('lan_ip','LAN IP','true'),
 						array('machine','Machine Name','true'),
 						array('wan_ip','WAN IP','false'),
-						array('remote_ip','Remote IP','true'), 
-						array('remote_asn','Remote ASN','true'),  
-						array('remote_asn_name','Remote ASN Name','true'),						
-						array('remote_country','Remote Country','true'), 
+						array('remote_ip','Remote IP','true'),
+						array('remote_asn','Remote ASN','true'),
+						array('remote_asn_name','Remote ASN Name','true'),
+						array('remote_country','Remote Country','true'),
 						array('remote_cc','Flag','true'),
-						array('(sum(`in_bytes`) / 1048576) AS in_bytes','MB to Remote','true'), 
-						array('(sum(`out_bytes`) / 1048576) AS out_bytes','MB from Remote','true'), 
-						array('sum(in_packets) AS in_packets','Packets to Remote','false'), 
+						array('(sum(`in_bytes`) / 1048576) AS in_bytes','MB to Remote','true'),
+						array('(sum(`out_bytes`) / 1048576) AS out_bytes','MB from Remote','true'),
+						array('sum(in_packets) AS in_packets','Packets to Remote','false'),
 						array('sum(out_packets) AS out_packets','Packets from Remote','false')
 					),
 					'from' => 'conn_meta',
 					'where' => "`lan_ip`='$lan_ip', `wan_ip`='$wan_ip'",
 					'group' => 'remote_ip'
 				),
-			);	
-			break;				
+			);
+			break;
 		case 'top_remote':
 			//set mysql query parameters
 			$page = array(
@@ -2070,7 +2070,7 @@ function fetch($database, $type, $query, $start, $end) {
 				'header' => 'drilldown',
 				'vDiv' => array(
 					array('crossfilter', '100'),
-					array('tables', '100')	
+					array('tables', '100')
 				),
 				'subheading' => '',
 				'sidebar' => 'top_remote'
@@ -2088,36 +2088,36 @@ function fetch($database, $type, $query, $start, $end) {
 						)
 					),
 					'select' => array(
-						array('from_unixtime(time) as time'), 
+						array('from_unixtime(time) as time'),
 						array('remote_country'),
-						array('(sum(in_bytes + out_bytes) / 1048576) as bandwidth'), 
+						array('(sum(in_bytes + out_bytes) / 1048576) as bandwidth'),
 					),
 					'from' => 'conn_meta',
 					'group' => 'month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country',
 					'disp' => array(
 						// array(
-						// 	'dView' => 'false', 
+						// 	'dView' => 'false',
 						// 	'pID' => 'crossfilter',
-						// 	'dID' => 'geo', 
-						// 	'type' => 'geo', 
+						// 	'dID' => 'geo',
+						// 	'type' => 'geo',
 						// 	'heading' => 'Remote Country Origin of IOC Hits',
 						// 	'dim' => 'remote_country',
 						// 	'grp' => 'bandwidth'
 						// ),
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'crossfilter',
-							'dID' => 'bar', 
-							'type' => 'bar', 
+							'dID' => 'bar',
+							'type' => 'bar',
 							'heading' => 'Bandwidth Per Hour',
 							'xAxis' => '',
 							'yAxis' => 'MB / Hour',
 							'dim' => 'hour',
 							'grp' => 'bandwidth'
 						)
-					)		
+					)
 				)
-			);	
+			);
 			$table = array(
 				array(
 					'pID' => 'tables',
@@ -2125,22 +2125,22 @@ function fetch($database, $type, $query, $start, $end) {
 					'heading' => 'Remote IP Traffic',
 					'select' => array(
 						//array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, row query value, breadcrumb clear(boolean)
-						array('max(from_unixtime(time)) AS time','Last Seen','true','top_remote2local','remote_ip','false'), 
-						array('remote_ip','Remote IP','true'), 
-						array('remote_asn','Remote ASN','true'),  
-						array('remote_asn_name','Remote ASN Name','true'),		
-						array('remote_country','Remote Country','true'), 
+						array('max(from_unixtime(time)) AS time','Last Seen','true','top_remote2local','remote_ip','false'),
+						array('remote_ip','Remote IP','true'),
+						array('remote_asn','Remote ASN','true'),
+						array('remote_asn_name','Remote ASN Name','true'),
+						array('remote_country','Remote Country','true'),
 						array('remote_cc','Flag','true'),
-						array('(sum(`in_bytes`) / 1048576) AS in_bytes','MB to Remote','true'), 
-						array('(sum(`out_bytes`) / 1048576) AS out_bytes','MB from Remote','true'), 
-						array('sum(in_packets) AS in_packets','Packets to Remote','false'), 
+						array('(sum(`in_bytes`) / 1048576) AS in_bytes','MB to Remote','true'),
+						array('(sum(`out_bytes`) / 1048576) AS out_bytes','MB from Remote','true'),
+						array('sum(in_packets) AS in_packets','Packets to Remote','false'),
 						array('sum(out_packets) AS out_packets','Packets from Remote','false')
 					),
 					'from' => 'conn_meta',
 					'group' => 'remote_ip'
 				),
-			);	
-			break;	
+			);
+			break;
 		case 'top_remote2local':
 			//set mysql query parameters
 			$page = array(
@@ -2148,7 +2148,7 @@ function fetch($database, $type, $query, $start, $end) {
 				'header' => 'drilldown',
 				'vDiv' => array(
 					array('crossfilter', '100'),
-					array('tables', '100')	
+					array('tables', '100')
 				),
 				'subheading' => '',
 				'sidebar' => 'top_remote'
@@ -2162,27 +2162,27 @@ function fetch($database, $type, $query, $start, $end) {
 						)
 					),
 					'select' => array(
-						array('from_unixtime(time) as time'), 
-						array('(sum(in_bytes + out_bytes) / 1048576) as bandwidth'), 
+						array('from_unixtime(time) as time'),
+						array('(sum(in_bytes + out_bytes) / 1048576) as bandwidth'),
 					),
 					'from' => 'conn_meta',
 					'where' => "`remote_ip` = '$query'",
 					'group' => 'month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time))',
 					'disp' => array(
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'crossfilter',
-							'dID' => 'bar', 
-							'type' => 'bar', 
+							'dID' => 'bar',
+							'type' => 'bar',
 							'heading' => 'Bandwidth Per Hour',
 							'xAxis' => '',
 							'yAxis' => 'MB / Hour',
 							'dim' => 'hour',
 							'grp' => 'bandwidth'
 						)
-					)		
+					)
 				)
-			);	
+			);
 			$table = array(
 				array(
 					'pID' => 'tables',
@@ -2190,27 +2190,27 @@ function fetch($database, $type, $query, $start, $end) {
 					'heading' => 'Local IP Traffic',
 					'select' => array(
 						//array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, row query value, breadcrumb clear(boolean)
-						array('max(from_unixtime(time)) AS time','Last Seen','true'), 
+						array('max(from_unixtime(time)) AS time','Last Seen','true'),
 						array('lan_zone','LAN Zone','true'),
 						array('lan_ip','LAN IP','true'),
 						array('machine','Machine Name','true'),
 						array('wan_ip','WAN IP','false'),
-						array('remote_ip','Remote IP','true'), 
-						array('remote_asn','Remote ASN','true'),  
-						array('remote_asn_name','Remote ASN Name','true'),				
-						array('remote_country','Remote Country','true'), 
+						array('remote_ip','Remote IP','true'),
+						array('remote_asn','Remote ASN','true'),
+						array('remote_asn_name','Remote ASN Name','true'),
+						array('remote_country','Remote Country','true'),
 						array('remote_cc','Flag','true'),
-						array('(sum(`in_bytes`) / 1048576) AS in_bytes','MB to Remote','true'), 
-						array('(sum(`out_bytes`) / 1048576) AS out_bytes','MB from Remote','true'), 
-						array('sum(in_packets) AS in_packets','Packets to Remote','false'), 
+						array('(sum(`in_bytes`) / 1048576) AS in_bytes','MB to Remote','true'),
+						array('(sum(`out_bytes`) / 1048576) AS out_bytes','MB from Remote','true'),
+						array('sum(in_packets) AS in_packets','Packets to Remote','false'),
 						array('sum(out_packets) AS out_packets','Packets from Remote','false')
 					),
 					'from' => 'conn_meta',
 					'where' => "`remote_ip` = '$query'",
 					'group' => 'lan_ip, wan_ip'
 				),
-			);	
-			break;	
+			);
+			break;
 		case 'stealth':
 			//set mysql query parameters
 			$page = array(
@@ -2227,7 +2227,7 @@ function fetch($database, $type, $query, $start, $end) {
 					'RETURN1' => array(
 						'select' => array(
 							array('lan_ip'),
-							array('grp_local AS lan_zone'), 
+							array('grp_local AS lan_zone'),
 						),
 						'from' => '`conn-2013-12-17`',
 						'where' => "stealth = '1'",
@@ -2236,7 +2236,7 @@ function fetch($database, $type, $query, $start, $end) {
 					'RETURN2' => array(
 						'select' => array(
 							array('remote_ip'),
-							array('grp_remote AS lan_zone'), 
+							array('grp_remote AS lan_zone'),
 						),
 						'from' => '`conn-2013-12-17`',
 						'where' => "stealth = '1'",
@@ -2245,7 +2245,7 @@ function fetch($database, $type, $query, $start, $end) {
 				)
 			);
 			$table = array();
-			break;	
+			break;
 		case 'archive':
 			//set mysql query parameters
 			$page = array(
@@ -2253,7 +2253,7 @@ function fetch($database, $type, $query, $start, $end) {
 				'header' => 'drilldown',
 				'vDiv' => array(
 					array('crossfilter', '100'),
-					array('tables', '100')	
+					array('tables', '100')
 				),
 				'subheading' => '',
 				'sidebar' => 'archive'
@@ -2275,39 +2275,39 @@ function fetch($database, $type, $query, $start, $end) {
 						),
 					),
 					'select' => array(
-						array('from_unixtime(time) as time'), 
+						array('from_unixtime(time) as time'),
 						array('remote_country'),
-						array('count(*) AS count'), 
-						array('ioc'), 
-						array('ioc_severity'), 
+						array('count(*) AS count'),
+						array('ioc'),
+						array('ioc_severity'),
 					),
 					'from' => 'conn_ioc',
 					'where' => '`ioc_count` > 0, `trash` IS NOT NULL',
 					'group' => 'month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country, ioc_severity',
 					'disp' => array(
 						array(
-							'dView' => 'false', 
+							'dView' => 'false',
 							'pID' => 'crossfilter',
-							'dID' => 'geo', 
-							'type' => 'geo', 
+							'dID' => 'geo',
+							'type' => 'geo',
 							'heading' => 'Remote Source Countries of IOC Notifications',
 							'dim' => 'remote_country',
 							'grp' => 'count'
 						),
 						array(
-							'dView' => 'true', 
+							'dView' => 'true',
 							'pID' => 'crossfilter',
-							'dID' => 'bar', 
-							'type' => 'severitybar', 
+							'dID' => 'bar',
+							'type' => 'severitybar',
 							'heading' => 'IOC Notifications Per Hour',
 							'xAxis' => '',
 							'yAxis' => '# IOC / Hour',
 							'dim' => 'hour',
 							'grp' => 'count'
 						)
-					)		
+					)
 				)
-			);	
+			);
 			$table = array(
 				array(
 					'pID' => 'tables',
@@ -2315,8 +2315,8 @@ function fetch($database, $type, $query, $start, $end) {
 					'heading' => 'Indicators of Compromise (IOC) Notifications',
 					'select' => array(
 						//array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, row query value, breadcrumb clear(boolean)
-						array('max(from_unixtime(time)) AS time','Last Seen','true','ioc_drill','lan_ip,wan_ip,remote_ip,ioc','false'), 
-						array('count(*) AS count','IOC Hits','true'), 
+						array('max(from_unixtime(time)) AS time','Last Seen','true','ioc_drill','lan_ip,wan_ip,remote_ip,ioc','false'),
+						array('count(*) AS count','IOC Hits','true'),
 						array('ioc','IOC','true'),
 						array('ioc_type', 'IOC Type', 'true'),
 						array('lan_zone','LAN Zone','true'),
@@ -2328,25 +2328,25 @@ function fetch($database, $type, $query, $start, $end) {
 						array('remote_asn_name','Remote ASN Name','true'),
 						array('remote_country','Remote Country','true'),
 						array('remote_cc','Flag','true'),
-						array('sum(in_packets) AS in_packets','Packets to Remote','true'), 
-						array('sum(out_packets) AS out_packets','Packets from Remote','true'), 
-						array('sum(`in_bytes`) AS in_bytes','Bytes to Remote','false'), 
-						array('sum(`out_bytes`) AS out_bytes','Bytes from Remote','false'), 
+						array('sum(in_packets) AS in_packets','Packets to Remote','true'),
+						array('sum(out_packets) AS out_packets','Packets from Remote','true'),
+						array('sum(`in_bytes`) AS in_bytes','Bytes to Remote','false'),
+						array('sum(`out_bytes`) AS out_bytes','Bytes from Remote','false'),
 					),
 					'from' => 'conn_ioc',
 					'where' => '`ioc_count` > 0, `trash` IS NOT NULL',
 					'group' => 'lan_ip, wan_ip, remote_ip, ioc'
 				),
-			);	
-			break;	
+			);
+			break;
 		case 'manage_users':
-			//$database = new Database("user_DB");   
+			//$database = new Database("user_DB");
 			$page = array(
 				'title' => 'User Mangement',
 				'header' => 'users',
 				'vDiv' => array(
 					array('crossfilter', '100'),
-					array('tables', '100')	
+					array('tables', '100')
 				),
 				'subheading' => '',
 				'sidebar' => ''
@@ -2361,19 +2361,19 @@ function fetch($database, $type, $query, $start, $end) {
 					'heading' => 'rapidPHIRE users',
 					'select' => array(
 						//array(select, column title, default view(boolean), [OPTIONAL HYPERLINKING =>] row query type, row query value, breadcrumb clear(boolean)
-						array('username','User Name','true'), 
+						array('username','User Name','true'),
 						array('id','User ID','true')
 					),
 					'from' => 'user',
 				)
-			);	
+			);
 			$notime = true;
-			break;	
+			break;
 	}
 	if (isset($_GET['getInfo'])) {
 		$return = getInfo($page, $viz, $table, $html);
 		echo json_encode($return);
-	} 
+	}
 	elseif (isset($_GET['getViz'])) {
 		$return = getViz($database, $viz, $start, $end, $notime);
 		echo json_encode($return);
@@ -2381,7 +2381,7 @@ function fetch($database, $type, $query, $start, $end) {
 	elseif (isset($_GET['getTable'])) {
 		$return = getTable($database, $table, $start, $end, $notime, $_GET['dID']);
 		echo json_encode($return);
-	} 
+	}
 }
 function getInfo($page, $viz, $table, $html) {
 	$output = array(
@@ -2390,12 +2390,12 @@ function getInfo($page, $viz, $table, $html) {
 		"table" => $table,
 		"html" => $html,
 		"viz" => $viz,
-	);  
-    for ($j = 0; $j < count($table); $j++) { 
+	);
+    for ($j = 0; $j < count($table); $j++) {
 		for ($i = 0; $i < count($table[$j]['select']); $i++) {
 			if (preg_match('/^.*as (.*)/i', $table[$j]['select'][$i][0], $match)) { // check if using a SQL alias in the select statement
 				$out = $match[1];
-			} 
+			}
 			else {
 				$out = $table[$j]['select'][$i][0];
 			}
@@ -2409,15 +2409,15 @@ function getViz($database, $viz, $start, $end, $notime) {
  		if ($_GET['vizType'] == 'crossfilter') {
 			$aColumns = array();
 			for	($m = 0; $m < count($viz[$n]['select']); $m++) {
-				if (preg_match('/^(.*)\) AS (.*)/i', $viz[$n]['select'][$m][0], $match)) { // if using a SQL function ( eg sum() ) don't do anything. 
-					$aColumns[] = $viz[$n]['select'][$m][0]; 
+				if (preg_match('/^(.*)\) AS (.*)/i', $viz[$n]['select'][$m][0], $match)) { // if using a SQL function ( eg sum() ) don't do anything.
+					$aColumns[] = $viz[$n]['select'][$m][0];
 				}
-				elseif (preg_match('/^(.*) AS (.*)/i', $viz[$n]['select'][$m][0], $match)) { // escape column names and rebuild alias statement 
-					$aColumns[] = "`".$match[1]."` AS " . $match[2]; 
+				elseif (preg_match('/^(.*) AS (.*)/i', $viz[$n]['select'][$m][0], $match)) { // escape column names and rebuild alias statement
+					$aColumns[] = "`".$match[1]."` AS " . $match[2];
 				}
 				else {
 					$aColumns[] = "`".$viz[$n]['select'][$m][0]."`"; // escape column name
-				}	
+				}
 			};
 		    $sTable = $viz[$n]['from'];
 			$sWhere = null;
@@ -2431,12 +2431,12 @@ function getViz($database, $viz, $start, $end, $notime) {
 				$aGroup = explode(',',$sGroup);
 				$eGroup = array();
 				for ($i = 0; $i < count($aGroup); $i++) {
-					if (preg_match('/^.*\)/i', $aGroup[$i])) { // if using a SQL function ( eg day() ) don't do anything. 
-						$eGroup[] = $aGroup[$i]; 
+					if (preg_match('/^.*\)/i', $aGroup[$i])) { // if using a SQL function ( eg day() ) don't do anything.
+						$eGroup[] = $aGroup[$i];
 					}
 					else {
 						$eGroup[] = "`".$aGroup[$i]."`"; // escape column name
-					}	
+					}
 				}
 				$sGroup = " GROUP BY ".implode(',',$eGroup);
 			}
@@ -2445,26 +2445,26 @@ function getViz($database, $viz, $start, $end, $notime) {
 		        $sLimit = "LIMIT ".mysql_real_escape_string( $_GET['iDisplayStart'] ).", ".
 		        mysql_real_escape_string( $_GET['iDisplayLength'] );
 		    }
-			if ($notime != true) { 
+			if ($notime != true) {
 				$database->query("
 					SELECT SQL_CALC_FOUND_ROWS ".implode(", ", $aColumns)."
 					FROM $sTable
-					WHERE time BETWEEN ".$start." AND ".$end." ".$sWhere."  
-					$sGroup  
+					WHERE time BETWEEN ".$start." AND ".$end." ".$sWhere."
+					$sGroup
 					$sLimit
 				");
-			} 
+			}
 			else {
 				$sWhere = substr_replace($sWhere, "", 4);
 				$database->query ("
 					SELECT SQL_CALC_FOUND_ROWS ".implode(", ", $aColumns)."
 					FROM $sTable
-					$sWhere 
+					$sWhere
 					$sGroup
 					$sLimit
-				");						
-			}   
-			// Data set length after filtering 
+				");
+			}
+			// Data set length after filtering
 			$sQuery2 = "SELECT FOUND_ROWS()";
 			$rResultFilterTotal = mysql_query($sQuery2) or die (mysql_error());
 			$aResultFilterTotal = mysql_fetch_array($rResultFilterTotal);
@@ -2475,10 +2475,10 @@ function getViz($database, $viz, $start, $end, $notime) {
 				"struct" => $viz[$n]['struct'],
 				"viz" => $viz[$n]['disp'],
 				"iTotalDisplayRecords" => $iFilteredTotal,
-		    );   
+		    );
 			while ($row = $database->fetchrow()) {
 				$output['aaData'][] = $row;
-			}   
+			}
 		    return $output;
 		}
 		if ($_GET['vizType'] == 'd3') {
@@ -2486,15 +2486,15 @@ function getViz($database, $viz, $start, $end, $notime) {
 				if ($viz[$n][$d3]['disp']['dID'] === $_GET['dID']) {
 					$aColumns = array();
 					for	($m = 0; $m < count($viz[$n][$d3]['select']); $m++) {
-						if (preg_match('/^(.*)\) AS (.*)/i', $viz[$n][$d3]['select'][$m][0], $match)) { // if using a SQL function ( eg sum() ) don't do anything. 
-							$aColumns[] = $viz[$n][$d3]['select'][$m][0]; 
+						if (preg_match('/^(.*)\) AS (.*)/i', $viz[$n][$d3]['select'][$m][0], $match)) { // if using a SQL function ( eg sum() ) don't do anything.
+							$aColumns[] = $viz[$n][$d3]['select'][$m][0];
 						}
-						elseif (preg_match('/^(.*) AS (.*)/i', $viz[$n][$d3]['select'][$m][0], $match)) { // escape column names and rebuild alias statement 
-							$aColumns[] = "`".$match[1]."` AS " . $match[2]; 
+						elseif (preg_match('/^(.*) AS (.*)/i', $viz[$n][$d3]['select'][$m][0], $match)) { // escape column names and rebuild alias statement
+							$aColumns[] = "`".$match[1]."` AS " . $match[2];
 						}
 						else {
 							$aColumns[] = "`".$viz[$n][$d3]['select'][$m][0]."`"; // escape column name
-						}	
+						}
 					};
 				    $sTable = $viz[$n][$d3]['from'];
 					$sWhere = null;
@@ -2504,23 +2504,23 @@ function getViz($database, $viz, $start, $end, $notime) {
 					}
 					$sGroup = null;
 					if (isset($viz[$n][$d3]['group'])) {
-						$sGroup = "GROUP BY ".$viz[$n][$d3]['group']." "; 
-					}					
+						$sGroup = "GROUP BY ".$viz[$n][$d3]['group']." ";
+					}
 				    $sLimit = null;
 				    if (isset($_GET['iDisplayStart'] ) && $_GET['iDisplayLength'] != '-1') {
 				        $sLimit = "LIMIT ".mysql_real_escape_string( $_GET['iDisplayStart'] ).", ".
 				        mysql_real_escape_string( $_GET['iDisplayLength'] );
 			    	}
-					if ($notime != true) { 
+					if ($notime != true) {
 						$database->query("
 							SELECT SQL_CALC_FOUND_ROWS ".implode(", ", $aColumns)."
 							FROM $sTable
-							WHERE time BETWEEN ".$start." AND ".$end." ".$sWhere." 
+							WHERE time BETWEEN ".$start." AND ".$end." ".$sWhere."
 							$sGroup
 							$sOrder
 							$sLimit
 						");
-					} 
+					}
 					else {
 						$sWhere = substr_replace($sWhere, "", 4);
 						$database->query ("
@@ -2530,8 +2530,8 @@ function getViz($database, $viz, $start, $end, $notime) {
 							$sGroup
 							$sOrder
 							$sLimit
-						");						
-					}   
+						");
+					}
 					/* Data set length after filtering */
 					$sQuery2 = "
 						SELECT FOUND_ROWS()
@@ -2544,31 +2544,31 @@ function getViz($database, $viz, $start, $end, $notime) {
 				        "aaData" => array(),
 						"viz" => $viz[$n][$d3],
 						"iTotalDisplayRecords" => $iFilteredTotal,
-				    );   
+				    );
 					while ($row = $database->fetchrow()) {
 						$output['aaData'][] = $row;
-					}   
+					}
 				    return  $output;
 				}
 			}
 		}
 		if ($_GET['vizType'] == 'd3swimChart') {
 			for($d3 = 0; $d3 < count($viz[$n]); $d3++) {
-				if ($viz[$n][$d3]['disp']['dID'] === $_GET['dID']) {	
+				if ($viz[$n][$d3]['disp']['dID'] === $_GET['dID']) {
 					$swimArray = array();
 					$count = 0;
 					for ($sw = 0; $sw < count($viz[$n][$d3]['query']); $sw++) {
 						$aColumns = array();
 						for	($m = 0; $m < count($viz[$n][$d3]['query'][$sw]['select']); $m++) {
-							if (preg_match('/^(.*)\) AS (.*)/i', $viz[$n][$d3]['query'][$sw]['select'][$m][0], $match)) { // if using a SQL function ( eg sum() ) don't do anything. 
-								$aColumns[] = $viz[$n][$d3]['query'][$sw]['select'][$m][0]; 
+							if (preg_match('/^(.*)\) AS (.*)/i', $viz[$n][$d3]['query'][$sw]['select'][$m][0], $match)) { // if using a SQL function ( eg sum() ) don't do anything.
+								$aColumns[] = $viz[$n][$d3]['query'][$sw]['select'][$m][0];
 							}
-							elseif (preg_match('/^(.*) AS (.*)/i', $viz[$n][$d3]['query'][$sw]['select'][$m][0], $match)) { // escape column names and rebuild alias statement 
-								$aColumns[] = "`".$match[1]."` AS " . $match[2]; 
+							elseif (preg_match('/^(.*) AS (.*)/i', $viz[$n][$d3]['query'][$sw]['select'][$m][0], $match)) { // escape column names and rebuild alias statement
+								$aColumns[] = "`".$match[1]."` AS " . $match[2];
 							}
 							else {
 								$aColumns[] = "`".$viz[$n][$d3]['query'][$sw]['select'][$m][0]."`"; // escape column name
-							}	
+							}
 						};
 					    $sTable = $viz[$n][$d3]['query'][$sw]['from'];
 						$sWhere = null;
@@ -2578,23 +2578,23 @@ function getViz($database, $viz, $start, $end, $notime) {
 						}
 						$sGroup = null;
 						if (isset($viz[$n][$d3]['query'][$sw]['group'])) {
-							$sGroup = "GROUP BY ".$viz[$n][$d3]['query'][$sw]['group']." "; 
-						}					
+							$sGroup = "GROUP BY ".$viz[$n][$d3]['query'][$sw]['group']." ";
+						}
 					    $sLimit = null;
 					    if (isset($_GET['iDisplayStart'] ) && $_GET['iDisplayLength'] != '-1') {
 					        $sLimit = "LIMIT ".mysql_real_escape_string( $_GET['iDisplayStart'] ).", ".
 					        mysql_real_escape_string( $_GET['iDisplayLength'] );
 				    	}
-						if ($notime != true) { 
+						if ($notime != true) {
 							$database->query("
 								SELECT SQL_CALC_FOUND_ROWS ".implode(", ", $aColumns)."
 								FROM $sTable
-								WHERE time BETWEEN ".$start." AND ".$end." ".$sWhere." 
+								WHERE time BETWEEN ".$start." AND ".$end." ".$sWhere."
 								$sGroup
 								$sOrder
 								$sLimit
 							");
-						} 
+						}
 						else {
 							$sWhere = substr_replace($sWhere, "", 4);
 							$database->query ("
@@ -2604,8 +2604,8 @@ function getViz($database, $viz, $start, $end, $notime) {
 								$sGroup
 								$sOrder
 								$sLimit
-							");						
-						}   
+							");
+						}
 						/* Data set length after filtering */
 						$sQuery2 = "
 							SELECT FOUND_ROWS()
@@ -2637,7 +2637,7 @@ function getViz($database, $viz, $start, $end, $notime) {
 						// }
 						// if(array_key_exists('id', $swimArray['lanes']) != true) {
 						// 	$roo['id'] = $viz[$n][$d3]['query'][$sw]['lane'];
-						// 	$roo['label'] = $viz[$n][$d3]['query'][$sw]['label'];							
+						// 	$roo['label'] = $viz[$n][$d3]['query'][$sw]['label'];
 						// 	$swimArray['lanes'][] = $roo;
 						// }
 
@@ -2674,17 +2674,17 @@ function getViz($database, $viz, $start, $end, $notime) {
 				}
 				$sGroup = null;
 				if (isset($viz[$n]['group'])) {
-					$sGroup = "GROUP BY ".$viz[$n]['group']." "; 
-				}			
+					$sGroup = "GROUP BY ".$viz[$n]['group']." ";
+				}
 				$database->query("
 					SELECT ".implode(", ", $aColumns)."
 					FROM $sTable
-					$sWhere WHERE time BETWEEN ".$start." AND ".$end." ".$sWhere." 
+					$sWhere WHERE time BETWEEN ".$start." AND ".$end." ".$sWhere."
 					$sGroup
 					$sOrder
-				");	
-				/* Data set length after filtering */	   	
-				while ($row = $database->fetchRow()) {	
+				");
+				/* Data set length after filtering */
+				while ($row = $database->fetchRow()) {
 					if ($row['remote_ip']) {
 						$ip = $row['remote_ip'];
 					}
@@ -2694,21 +2694,21 @@ function getViz($database, $viz, $start, $end, $notime) {
 					$response['name'] = $ip;
 					$response['group'] = $row['lan_zone'];
 					$output[] = $response;
-				}	   
-			} 
+				}
+			}
 			for ($ip = 0; $ip < count($output); $ip++) {
 				$nodereturn['name'] = $output[$ip]['name'];
 				$nodereturn['group'] = $output[$ip]['group'];
 				$nReturn['node'][] = $nodereturn;
 				$position[$output[$ip]['name']] = $ip;
-			}			
+			}
 			$database->query("
 				SELECT lan_ip,remote_ip,sum(in_bytes + out_bytes) as bandwidth
 				FROM $sTable
-				$sWhere WHERE time BETWEEN ".$start." AND ".$end." AND stealth = '1' GROUP BY lan_ip, remote_ip 
+				$sWhere WHERE time BETWEEN ".$start." AND ".$end." AND stealth = '1' GROUP BY lan_ip, remote_ip
 				$sOrder
 			");
-			while ($row = $database->fetchRow()) {	
+			while ($row = $database->fetchRow()) {
 				$src = $position[$row['lan_ip']];
 				$des = $position[$row['remote_ip']];
 				$linkreturn['source'] = $src;
@@ -2725,11 +2725,11 @@ function getTable($database, $table, $start, $end, $notime, $dID) {
 		if ($table[$t]['dID'] === $dID) {
 			$aColumns = array();
 			for	($m = 0; $m < count($table[$t]['select']); $m++) {
-				if (preg_match('/^(.*)\) AS (.*)/i', $table[$t]['select'][$m][0], $match)) { // if using a SQL function ( eg sum() ) don't do anything. 
-					$aColumns[] = $table[$t]['select'][$m][0]; 
+				if (preg_match('/^(.*)\) AS (.*)/i', $table[$t]['select'][$m][0], $match)) { // if using a SQL function ( eg sum() ) don't do anything.
+					$aColumns[] = $table[$t]['select'][$m][0];
 				}
-				elseif (preg_match('/^(.*) AS (.*)/i', $table[$t]['select'][$m][0], $match)) { // escape column names and rebuild alias statement 
-					$aColumns[] = "`".$match[1]."` AS " . $match[2]; 
+				elseif (preg_match('/^(.*) AS (.*)/i', $table[$t]['select'][$m][0], $match)) { // escape column names and rebuild alias statement
+					$aColumns[] = "`".$match[1]."` AS " . $match[2];
 				}
 				else {
 					$aColumns[] = "`".$table[$t]['select'][$m][0]."`"; // escape column name
@@ -2747,12 +2747,12 @@ function getTable($database, $table, $start, $end, $notime, $dID) {
 				$aGroup = explode(',',$sGroup);
 				$eGroup = array();
 				for ($i = 0; $i < count($aGroup); $i++) {
-					if (preg_match('/^.*\)/i', $aGroup[$i])) { // if using a SQL function ( eg day() ) don't do anything. 
-						$eGroup[] = $aGroup[$i]; 
+					if (preg_match('/^.*\)/i', $aGroup[$i])) { // if using a SQL function ( eg day() ) don't do anything.
+						$eGroup[] = $aGroup[$i];
 					}
 					else {
 						$eGroup[] = "`".$aGroup[$i]."`"; // escape column name
-					}	
+					}
 				}
 				$sGroup = " GROUP BY ".implode(',',$eGroup);
 			}
@@ -2764,7 +2764,7 @@ function getTable($database, $table, $start, $end, $notime, $dID) {
 						if (preg_match('/^.* AS (.*)/i', $aColumns[ intval( $_GET['iSortCol_'.$i] ) ], $match)) {
 							$sOrder .= $match[1]." ".
 							($_GET['sSortDir_'.$i]==='asc' ? 'asc' : 'desc') .", ";
-						} 
+						}
 						else {
 							$sOrder .= $aColumns[ intval( $_GET['iSortCol_'.$i] ) ]." ".
 							($_GET['sSortDir_'.$i]==='asc' ? 'asc' : 'desc') .", ";
@@ -2775,7 +2775,7 @@ function getTable($database, $table, $start, $end, $notime, $dID) {
 				if ($sOrder == " ORDER BY ") {
 					$sOrder = "";
 				}
-			} 
+			}
 			if (isset($table[$t]['order'])) {
 				$sOrder = " ORDER BY " . $table[$t]['order'];
 			}
@@ -2789,60 +2789,65 @@ function getTable($database, $table, $start, $end, $notime, $dID) {
 			}
 			$sWhere = null;
 			if ($notime != true) { // time required
-				if (isset($_GET['sSearch'])) {
-					if (preg_match('/^.*severity:(.*)/i', strtolower($_GET['sSearch']), $search)) {
-						$database->query("
-							SELECT SQL_CALC_FOUND_ROWS ".implode(", ", $aColumns)."
-							FROM $sTable
-							$sWhere WHERE time BETWEEN ".$start." AND ".$end." AND ioc_severity = '".trim($search[1])."' ".$aWhere."
-							$sGroup
-							$sOrder
-							$sLimit
-						");
-					} 
-					else {
-						$sWhere = "WHERE (";
-						for ($i=0 ; $i<count($aColumns) ; $i++) {	
-							if ($aColumns[$i]!=('count(*) AS count')) {
-								if (preg_match('/^.* AS (.*)/i', $aColumns[$i], $match)) {
-									$sWhere .= $match[1]." LIKE '%".mysql_real_escape_string($_GET['sSearch'])."%' OR ";
-								} 
-								else {
-									$sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string($_GET['sSearch'])."%' OR ";
+				if ($_GET['sSearch'] != '') {
+					$aWords = preg_split('/\s+/', $_GET['sSearch']);
+					$sWhere = "WHERE (";
+						for ( $j=0 ; $j<count($aWords) ; $j++ ) {
+							if ( $aWords[$j] != "" ) {
+								$sWhere .= "(";
+								for ($i=0 ; $i<count($aColumns) ; $i++) {
+									if ($aColumns[$i]!=('count(*) AS count')) {
+										if (preg_match('/^.* AS (.*)/i', $aColumns[$i], $match)) {
+											$sWhere .= $match[1]." LIKE '%".mysql_real_escape_string($aWords[$j])."%' OR ";
+										}
+										else {
+											$sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string($aWords[$j])."%' OR ";
+										}
+									}
 								}
+								$sWhere = substr_replace( $sWhere, "", -3 );
+								$sWhere .= ") OR ";
 							}
-						}
-						$sWhere = substr_replace($sWhere, "", -3); // strip trailing ' OR'
-						$sWhere .= ') AND time BETWEEN '.$start.' AND '.$end.' '.$aWhere;
-						$database->query ("
-							SELECT SQL_CALC_FOUND_ROWS ".implode(", ", $aColumns)."
-							FROM $sTable
-							$sWhere
-							$sGroup
-							$sOrder
-							$sLimit
-						");
 					}
+					$sWhere = substr_replace( $sWhere, "", -4 );
+					$sWhere .= ') AND time BETWEEN '.$start.' AND '.$end.' '.$aWhere;
+					$database->query ("
+						SELECT SQL_CALC_FOUND_ROWS ".implode(", ", $aColumns)."
+						FROM $sTable
+						$sWhere
+						$sGroup
+						$sOrder
+						$sLimit
+					");
+				// 	if (preg_match('/^.*severity:(.*)/i', strtolower($_GET['sSearch']), $search)) {
+				// 		$database->query("
+				// 			SELECT SQL_CALC_FOUND_ROWS ".implode(", ", $aColumns)."
+				// 			FROM $sTable
+				// 			$sWhere WHERE time BETWEEN ".$start." AND ".$end." AND ioc_severity = '".trim($search[1])."' ".$aWhere."
+				// 			$sGroup
+				// 			$sOrder
+				// 			$sLimit
+				// 		");
 				}
 				else {
 					$database->query ("
 						SELECT SQL_CALC_FOUND_ROWS ".implode(", ", $aColumns)."
 						FROM $sTable
 						WHERE time BETWEEN ".$start." AND ".$end." ".$aWhere."
-						$sGroup  
+						$sGroup
 						$sOrder
 						$sLimit
 					");
-				}		
-			} 
+				}
+			}
 			else { // time restriction not required
 				if (isset($_GET['sSearch'])) { // for the notification default display
 					$sWhere = "WHERE (";
-					for ($i=0 ; $i<count($aColumns) ; $i++) {	
+					for ($i=0 ; $i<count($aColumns) ; $i++) {
 						if ($aColumns[$i]!=('count(*) AS count')) {
 							if (preg_match('/^.* AS (.*)/i', $aColumns[$i], $match)) {
 								$sWhere .= $match[1]." LIKE '%".mysql_real_escape_string($_GET['sSearch'])."%' OR ";
-							} 
+							}
 							else {
 								$sWhere .= $aColumns[$i]." LIKE '%".mysql_real_escape_string($_GET['sSearch'])."%' OR ";
 							}
@@ -2869,10 +2874,10 @@ function getTable($database, $table, $start, $end, $notime, $dID) {
 						$sGroup
 						$sOrder
 						$sLimit
-					");	
+					");
 				}
 			}
-			// Data set length after filtering 
+			// Data set length after filtering
 			$sQuery2 = "SELECT FOUND_ROWS()";
 			$rResultFilterTotal = mysql_query( $sQuery2 ) or die (mysql_error());
 			$aResultFilterTotal = mysql_fetch_array($rResultFilterTotal);
@@ -2900,27 +2905,27 @@ function getTable($database, $table, $start, $end, $notime, $dID) {
 					if ($sel == 'remote_cc') {
 						if ($row[$sel] == 'LOCAL_IP_RETURN') { /// REPLACE LOCAL_IP_RETURN with a flag *******
 							$response[$sel] = '<div class="f32"><img src="assets/img/localip.png" /></span></div>';
-						} 
+						}
 						else {
 							$response[$sel] = '<div class="f32"><span class="flag '.strtolower($row[$sel]).'"></span></div>';
 						}
 					}
-					elseif ($sel == 'stealth') { 
+					elseif ($sel == 'stealth') {
 						if ($row[$sel] == '1') {
 							$response[$sel] = '<span class=" fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-shield fa-stack-1x fa-inverse"></i></span>';
-						} 
+						}
 						else {
 							$response[$sel] = '';
 						}
-					} 
-					elseif ($reduced[1] == 'icon_in_bytes') { 	
-						if (($row['icon_in_bytes'] != '0') && ($row['icon_out_bytes'] != '0')) { 	
+					}
+					elseif ($reduced[1] == 'icon_in_bytes') {
+						if (($row['icon_in_bytes'] != '0') && ($row['icon_out_bytes'] != '0')) {
 							$response[$reduced[1]] = '<i style="font-size:16px !important" class="fa fa-arrow-up"></i><i style="font-size:16px !important" class="fa fa-arrow-down"></i>';
-						} elseif (($row['icon_in_bytes'] == '0') && ($row['icon_out_bytes'] != '0')) { 	
+						} elseif (($row['icon_in_bytes'] == '0') && ($row['icon_out_bytes'] != '0')) {
 							$response[$reduced[1]] = '<i style="opacity:0.25 !important;font-size:16px !important" class="fa fa-arrow-up"></i><i style="font-size:16px !important" class="fa fa-arrow-down"></i>';
-						} elseif (($row['icon_in_bytes'] != '0') && ($row['icon_out_bytes'] == '0')) { 	
+						} elseif (($row['icon_in_bytes'] != '0') && ($row['icon_out_bytes'] == '0')) {
 							$response[$reduced[1]] = '<i style="font-size:16px !important" class="fa fa-arrow-up"></i><i style="opacity:0.25 !important;font-size:16px !important" class="fa fa-arrow-down"></i>';
-						} else { 	
+						} else {
 							$response[$reduced[1]] = '<i style="opacity:0.25 !important;font-size:16px !important" class="fa fa-arrow-up"></i><i style="opacity:0.25 !important;font-size:16px !important" class="fa fa-arrow-down"></i>';
 						}
 					}
@@ -2942,17 +2947,17 @@ function getTable($database, $table, $start, $end, $notime, $dID) {
 								$response[$sel] = null;
 								break;
 						}
-					} 
+					}
 					else {
 						if (isset($table[$t]['select'][$i][3]) && $reduced[1]) { // begin link generating functions
 							$response[$reduced[1]] = '<a href="javascript:void(0);" onclick="javascript:page(\''.rtrim($cQuery, ',').'\', \''.$table[$t]['select'][$i][3].'\', null, null, '.$table[$t]['select'][$i][5].');">'.$row[$reduced[1]].'</a>';
-						} 
+						}
 						elseif (isset($table[$t]['select'][$i][3])) {
 							$response[$sel] = '<a href="javascript:void(0);" onclick="javascript:page(\''.rtrim($cQuery, ',').'\', \''.$table[$t]['select'][$i][3].'\', null, null, '.$table[$t]['select'][$i][5].');">'.$row[$sel].'</a>';
-						} 
-						elseif ($reduced[1]) { 
+						}
+						elseif ($reduced[1]) {
 							$response[$reduced[1]] = $row[$reduced[1]];
-						} 
+						}
 						else {
 							$response[$sel] = $row[$sel];
 						}
