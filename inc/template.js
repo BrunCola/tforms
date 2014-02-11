@@ -52,7 +52,7 @@ var page = function(search_val, type, start, end, clear_b) {
 					}
 					prev = g[f];
 				}
-			});	
+			});
 			$('#page').prepend('<p>This report summarizes rapidPHIRE\'s detection of Indicators of Compromise - IOC - (i.e.'+
 				' network communications between users and known malicious hosts, files or entities). These events have'+
 				' occurred within one or more data network zones within your organization. It should be noted that some'+
@@ -118,9 +118,6 @@ var page = function(search_val, type, start, end, clear_b) {
 			$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert1 alert"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> 0 </span></button>');
 			$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert2 alert"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> 0 </span></button>');
 			$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert3 alert"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> 0 </span></button>');
-			// $('#severity').append('<button onclick="oTable.fnFilter(\'Severity: 4\',null);severityBtn(\'alert4\');" style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
-			//$('#severity').append('<button onclick="geoChart.filter(\'Canada\');dc.redrawAll();" style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
-			//$('#severity').append('<button onclick="sevChart.filter(\'guarded\');dc.redrawAll();" style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
 			$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
 			d3.json(json+'&severity_levels=true', function(levels) {
 				for (var s in levels) {
@@ -161,7 +158,7 @@ var page = function(search_val, type, start, end, clear_b) {
 				}
 			}
 		}
-		// LAUNCH ALL TABLES 
+		// LAUNCH ALL TABLES
 		if (data.table !== undefined) {
 			// DIF TABLE FOR REPORT VS WEB
 			var j;
@@ -265,6 +262,8 @@ var page = function(search_val, type, start, end, clear_b) {
 								return "<button onclick=\"$.colorbox({href:'assets/modals/user.params.php?id="+d.id+"'});\" class=\"btn mini grey\"><i class=\"fa fa-trash\"></i> Edit</button>";
 							}
 						},
+						
+						
 						{
 							"bSortable": false,
 							"sWidth": "75px",
@@ -450,50 +449,107 @@ var floating_logo = function() {
 var dPopup = function(text) {
 	$.colorbox({html:text, width:500});
 };
-var severityBtn = function(dim, event, divid) {
+//previous function for sorting bar graph (keep this for now becuase i may use some stuff for table sorting)
+// var AwesomeFilterYo = function(dim, event, divid) {
+// 	var dimArray; var sevArray; var sev = [];
+// 	if (event === true) {
+// 		sev = [];
+// 		dimArray = dim.top(Infinity);
+// 		var arr = [];var uniqueArray;
+// 		dimArray.forEach(function(d){
+// 			arr.push(d.ioc_severity);
+// 		});
+// 		uniqueArray = arr.filter(function(elem, pos) {
+// 			return arr.indexOf(elem) == pos;
+// 		});
+// 		$("#severity").children().addClass("severity-deselect");
+// 		for(var a in uniqueArray) {
+// 			$(".alert"+uniqueArray[a]).removeClass("severity-deselect");
+// 		}
+// 		console.log('event true fire');
+// 	} else if (event === false){
+// 		sevArray = dim.top(Infinity);
+// 		sev = [];
+// 		//take dimension being passed, convert it to time, filter then redraw
+// 		console.log('event false fire');
+// 		sevChart.filter(null);
+// 		for (var d in dim.top(Infinity)) {
+// 			if (dim.top(Infinity)[d].ioc_severity === divid) {
+// 				sev.push({
+// 					dd: dim.top(Infinity)[d].dd,
+// 					ioc_severity: dim.top(Infinity)[d].ioc_severity,
+// 					ioc: dim.top(Infinity)[d].ioc
+// 				});
+// 			}
+// 		}
+// 		var minX = Math.min.apply(Math, sev.map(function(val) { return val.dd; }));
+// 		var maxX = Math.max.apply(Math, sev.map(function(val) { return val.dd; }));
+// 		if (minX !== Infinity) {
+// 			sevChart.filter([minX,maxX]);
+// 			//sevChart.redraw();
+// 			// for (var i in sev) {
+// 			//	rowChart.filter(sev[i].ioc);
+// 			// }
+// 			dc.redrawAll();
+// 		}
+// 	}
+//});
+var AwesomeFilterYo = function(dim, event, divid) {
 	var dimArray; var sevArray; var sev = [];
 	if (event === true) {
+	//// BUTTON HIGHLIGHT CHECK
 		sev = [];
 		dimArray = dim.top(Infinity);
-		var arr = [];var uniqueArray; 
+		var arr = [];var uniqueFilter;
 		dimArray.forEach(function(d){
 			arr.push(d.ioc_severity);
 		});
-		uniqueArray = arr.filter(function(elem, pos) {
+		uniqueFilter = arr.filter(function(elem, pos) {
 			return arr.indexOf(elem) == pos;
 		});
 		$("#severity").children().addClass("severity-deselect");
-		for(var a in uniqueArray) {
-			$(".alert"+uniqueArray[a]).removeClass("severity-deselect");
+		for(var a in uniqueFilter) {
+			$(".alert"+uniqueFilter[a]).removeClass("severity-deselect");
 		}
-		console.log('event true fire');console.log(dimArray);
-	} 
-	else if (event === false){
-		sevArray = dim.top(Infinity);
-		sev = [];
-		//take dimension being passed, convert it to time, filter then redraw
-		console.log('event false fire');
-		sevChart.filter(null);
-		for (var d in dim.top(Infinity)) {
-			if (dim.top(Infinity)[d].ioc_severity === divid) {
-				sev.push({
-					dd: dim.top(Infinity)[d].dd,
-					ioc_severity: dim.top(Infinity)[d].ioc_severity,
-					ioc: dim.top(Infinity)[d].ioc
-				});
+		//console.log('severity button onfiltered fire')
+		//console.log('event true fire');
+	} else if (event === false){ 
+		if (divid === null) { 
+		//// TABLE SEARCH
+			var tFilter = []; var uniqueArray;
+			rowChart.filter(null);
+			dim.forEach(function(d){
+				tFilter.push(d._aData.ioc);
+			})
+			uniqueArray = tFilter.filter(function(elem, pos) {
+				return tFilter.indexOf(elem) == pos;
+			});
+			for (var i in uniqueArray) {
+				rowChart.filter(uniqueArray[i]);
 			}
-		}
-		var minX = Math.min.apply(Math, sev.map(function(val) { return val.dd; }));
-		var maxX = Math.max.apply(Math, sev.map(function(val) { return val.dd; }));
-		if (minX !== Infinity) {
-			sevChart.filter([minX,maxX]);
-			//sevChart.redraw();
-			// for (var i in sev) {
-			//	rowChart.filter(sev[i].ioc);
-			// }
+			dc.redrawAll();
+		} else {
+		//// TOP BUTTON CLICK
+			oTable.fnFilter('Severity: '+divid);
+			sevArray = dim.top(Infinity);
+			sev = []; var uniqueIoc;
+			//console.log('event false fire');
+			rowChart.filter(null);
+			for (var d in dim.top(Infinity)) {
+				if (dim.top(Infinity)[d].ioc_severity === divid) {
+					sev.push(dim.top(Infinity)[d].ioc);
+				}
+			}
+			uniqueIoc = sev.filter(function(elem, pos) {
+				return sev.indexOf(elem) == pos;
+			});
+			for (var i in uniqueIoc) {
+				rowChart.filter(uniqueIoc[i]);
+				//oTable.fnFilter(uniqueIoc[i]);
+			}
 			dc.redrawAll();
 		}
-	}	
+	}
 };
 var resizeViz = function (chart, divid, aspect) {
 	var targetWidth = $(divid).width();
@@ -718,13 +774,19 @@ var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height
 		//.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
 		.title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
 		.renderTitle(true) // (optional) whether chart should render titles, :default = false
+		.on("filtered", function(chart, d){
+			AwesomeFilterYo(dim, true);
+		})
+		.on("postRender", function(chart, d){
+			AwesomeFilterYo(dim, true);
+		})
 		.renderlet(function(chart) {
 			chart.select('svg')
 				.attr('width', width)
 				.attr('height', hHeight)
 				.attr('viewBox', '0 0 '+width+' '+hHeight)
 				.attr('perserveAspectRatio', 'xMinYMid');
-			
+
 			var aspect;
 			$(window).on("resize", function() {
 				aspect = width / hHeight;
@@ -782,24 +844,13 @@ var dcGeoMap = function (divID, data, world) {
 		.title(function (d) {
 			return d.key+": "+(d.value ? d.value : 0);
 		})
+		.on("filtered", function(chart, d){
+			AwesomeFilterYo(dimension, true);
+		})
 		.on("postRender", function(chart, d){
-			$('.alert1').on("click", function() {
-				severityBtn(dimension, false, '1');
-			});
-			$('.alert2').on("click", function() {
-				severityBtn(dimension, false, '2');
-			});
-			$('.alert3').on("click", function() {
-				severityBtn(dimension, false, '3');
-			});
-			$('.alert4').on("click", function() {
-				severityBtn(dimension, false, '4');
-			});
+			AwesomeFilterYo(dimension, true);
 		})
 		.renderlet(function(chart,d) {
-			dc.events.trigger(function() {
-				severityBtn(dimension, true);
-			});
 			chart.select('svg')
 				.attr('width', width)
 				.attr('height', height)
@@ -823,7 +874,7 @@ var dcGeoMap = function (divID, data, world) {
 			//	chart.selectAll("g").call(tip);
 			//	chart.selectAll("g").on('mouseover', tip.show)
 			//		.on('mouseout', tip.hide);
-		});
+	});
 };
 var dcBarGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 	var width = $("#"+divID).width();
@@ -847,7 +898,7 @@ var dcBarGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 		.renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
 		.title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
 		//.title(function (d) { return ""; })
-		//.legend(dc.legend().x(250).y(10))							
+		//.legend(dc.legend().x(250).y(10))
 		.renderTitle(true) // (optional) whether chart should render titles, :default = false
 		.renderlet(function(chart) {
 			chart.select('svg')
@@ -924,8 +975,8 @@ var dcWordCloud = function(divID, data) {
 		.text(function(d) { return d.text; });
 	}
 	data.aaData.forEach(function(d) { return { text: d.remote_country, size: d.count }; }); // parse data json obj to set name and font size
-	
-	var fontSize = d3.scale.log().range([4, 20]);  
+
+	var fontSize = d3.scale.log().range([4, 20]);
 	var fill = d3.scale.category20b();
 	var w = width;
 	var h = width/2;
@@ -978,7 +1029,7 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 		hHeight = 25+(colors.length*35);
 	} else if (colors.length >= 7) {
 		lOffset = 12.7+(colors.length*0.2);
-		hHeight = 25+(colors.length*28);	
+		hHeight = 25+(colors.length*28);
 	}
 	var width = $("#"+divID).width();
 		rowChart
@@ -993,6 +1044,25 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 				return d.value.count+0.1;
 			})
 			.colorAccessor(function (d){return d.value.severity;})
+			.on("postRender", function(chart, d){
+				$('.alert1').on("click", function() {
+					AwesomeFilterYo(dim, false, '1');
+				});
+				$('.alert2').on("click", function() {
+					AwesomeFilterYo(dim, false, '2');
+				});
+				$('.alert3').on("click", function() {
+					AwesomeFilterYo(dim, false, '3');
+				});
+				$('.alert4').on("click", function() {
+					AwesomeFilterYo(dim, false, '4');
+				});
+			})
+			.on("filtered", function(chart, filter){
+				AwesomeFilterYo(dim, true);
+				//oTable.fnFilter(filter);
+				console.log(filter);
+			})
 			.renderlet(function(chart){
 				chart.select('svg')
 					.attr('width', width)
@@ -1004,7 +1074,7 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 					if (colors.length < 7) {
 						height = 25+(colors.length*35);
 					} else if (colors.length >= 7) {
-						height = 25+(colors.length*28);	
+						height = 25+(colors.length*28);
 					}
 					aspect = width / hHeight;
 					resizeViz(chart, "#"+divID, aspect);
@@ -1014,7 +1084,7 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 						if (colors.length < 7) {
 							height = 25+(colors.length*35);
 						} else if (colors.length >= 7) {
-							height = 25+(colors.length*28);	
+							height = 25+(colors.length*28);
 						}
 						aspect = width / hHeight;
 						resizeViz(chart, "#"+divID, aspect);
@@ -1092,7 +1162,7 @@ var d3PieGraph = function(divID, json) {
 	d3.json(json+'&getViz=true&vizType=d3&dID='+divID, function(error, graph) {
 		//color picker function
 		var numberOfItems = graph.aaData.length;
-		var rainbow = new Rainbow(); 
+		var rainbow = new Rainbow();
 		rainbow.setNumberRange(1, graph.aaData.length+1);
 		rainbow.setSpectrum('#ED5314', '#FFB92A', '#FEEB51', '#9BCA3E', '#3ABBC9', '#E6E6E6');
 		var cc = [];
@@ -1218,6 +1288,7 @@ var tableViz = function(json, data, columns) {
 	$('.page-content').activity(false);
 };
 var getTable = function(divID, json, data, columns) {
+	var fFire = false;
 	var graph_type = getURLParameter('type');
 	var sort = [[ 0, "desc" ]];
 	if (data.sSort) {
@@ -1233,7 +1304,7 @@ var getTable = function(divID, json, data, columns) {
 	} else {
 		if (data.sDom !== 'false') {
 			sDom = '<"clear"C>T<"clear">lfr<"table_overflow"t>ip';
-		} 
+		}
 		else {
 			sDom = '<"clear"><"clear">r<"table_overflow"t>';
 		}
@@ -1246,7 +1317,7 @@ var getTable = function(divID, json, data, columns) {
 		"bDestroy": true,
 		"bProcessing": true,
 		"bRebuild": true,
-		"bServerSide": true,			
+		"bServerSide": true,
 		"aaSorting": sort,
 		"bFilter": bfilter,
 		"bPaginate": bPaginate,
@@ -1255,7 +1326,7 @@ var getTable = function(divID, json, data, columns) {
 
 		"iDisplayLength": iDisplayLength,
 		"bStateSave": true,
-		
+
 		"sType": "html",
 		"sDom": sDom,
 		"fnStateSave": function (oSettings, oData) {
@@ -1281,6 +1352,16 @@ var getTable = function(divID, json, data, columns) {
 		},
 		//this hides any tables on the ioc_event page that come up empty
 		"fnDrawCallback": function(oSettings) {
+			//console.log(oSettings);
+			if ((oSettings.oPreviousSearch.sSearch !== "") && (!(oSettings.oPreviousSearch.sSearch.match(/Severity:*/))))  {
+				AwesomeFilterYo(oSettings.aoData, false, null);
+			} else if (oSettings.oPreviousSearch.sSearch === ""){
+				if (fFire !== false) { 
+					rowChart.filter(null);
+					dc.redrawAll();
+				}
+			}
+			fFire = true;
 			var iTotalRecords = oSettings.fnRecordsTotal();
 			if ((iTotalRecords === 0) && (getURLParameter('type') === 'ioc_event')) {
 				$(this).parents('.jdash-widget').remove();
@@ -1296,13 +1377,13 @@ $(document).ready(function() { // execute javascript as soon as DOM is loaded
 	// window.onpopstate = function(event) {
 	//	var url;
 	//	url = parseURL(document.location);
-	//	page(url.params['query'], url.params.type, url.params['start'], url.params['end'], null);		
-	// };	
+	//	page(url.params['query'], url.params.type, url.params['start'], url.params['end'], null);
+	// };
 	//
 	// http://stackoverflow.com/questions/10416026/what-is-the-ideal-way-to-handle-window-onpopstate-for-all-browsers
 	//
-	// A slightly more elegant way is to add a 1ms timeout before adding the popstate listener. 
-	// Since the initial popstate will fire before any async code gets executed, your popstate 
+	// A slightly more elegant way is to add a 1ms timeout before adding the popstate listener.
+	// Since the initial popstate will fire before any async code gets executed, your popstate
 	// function will work properly (only on forward/back actions):
 	//
 	window.setTimeout(function() {
@@ -1386,7 +1467,7 @@ $(document).ready(function() { // execute javascript as soon as DOM is loaded
 			if (body.hasClass('page-sidebar-fixed')) {
 				sidebar.css('width', '');
 			}
-		} 
+		}
 		else {
 			body.addClass("page-sidebar-closed");
 		}
@@ -1406,7 +1487,7 @@ $(document).ready(function() { // execute javascript as soon as DOM is loaded
 						$('.badge').html(++counter);
 						newNotification(this.ioc);
 						$('.notification span.more').html('<p>You have '+newflags+' new notifications</p>');
-					} 
+					}
 					else {
 						$('#notifications').append('<li><a href="javascript:page(\''+this.ioc+'\',\''+defaultNotifications+'\');"><span class="label label-important"><i class="fa fa-bolt"></i></span>'+this.ioc+'<span style="float:right" class="time" data-livestamp="'+this.added+'"></span></a></li>');
 					}
