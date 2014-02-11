@@ -1,20 +1,18 @@
 <?php
 include "class.database.php";
 $database = new Database("rapidPHIRE_DB");
-$group = null;
 $query = null;
 $limit = null;
 $start = null;
-$end = null;
+$end   = null;
 // Grab get parameters
-if (isset($_GET['group'])) { $group = $_GET['group']; }
 if (isset($_GET['query'])) { $query = $_GET['query']; }
 if (isset($_GET['limit'])) { $limit = $_GET['limit']; }
 if (isset($_GET['start'])) { $start = $_GET['start']; }
-if (isset($_GET['end']))   { $end = $_GET['end']; }
+if (isset($_GET['end']))   { $end   = $_GET['end']; }
 if (isset($_GET['type']))  { 
 	$type = $_GET['type'];	
-	fetch($database, $type, $query, $start, $end, $group);
+	fetch($database, $type, $query, $start, $end);
 }
 // Checkpoint function (notifications)
 if (isset($_GET['checkpoint'])) {
@@ -134,8 +132,16 @@ if (isset($_GET['delete_cron'])) {
 }
 $database->disconnect();
 
-// Graphing functions (from switch)
-function fetch($database, $type, $query, $start, $end, $group) {
+/**
+ * main function setting content for page types
+ * @database string
+ * @type string
+ * @query string
+ * @start int
+ * @end int
+ * @group 
+ */
+function fetch($database, $type, $query, $start, $end) {
 	$html = null;
 	$notime = null;
 	switch ($type) {
@@ -417,6 +423,7 @@ function fetch($database, $type, $query, $start, $end, $group) {
 						array('count(*) AS count','IOC Hits','true'), 
 						array('ioc','IOC','true'),
 						array('ioc_type', 'IOC Type', 'true'),
+						array('remote_ip','Remote IP','true'),
 						array('remote_country','Remote Country','true'),
 						array('remote_cc',' ','true'),
 						array('sum(`in_bytes`) AS icon_in_bytes','Up / Down','true'), 
@@ -424,7 +431,9 @@ function fetch($database, $type, $query, $start, $end, $group) {
 					),
 					'from' => 'conn_ioc',
 					'where' => '`ioc_count` > 0, `trash` IS NULL',
-					'group' => 'ioc_type, ioc'
+					'group' => 'ioc_type, ioc,remote_ip',
+					'limit' => '10',
+					'order' => 'ioc_severity DESC, count DESC'
 				),
 				array(
 					'pID' => 't2',
@@ -449,7 +458,8 @@ function fetch($database, $type, $query, $start, $end, $group) {
 					),
 					'from' => 'conn_ioc',
 					'where' => '`ioc_count` > 0, `trash` IS NULL',
-					'group' => 'ioc_type, ioc, lan_ip, wan_ip'
+					'group' => 'ioc_type, ioc, lan_ip, wan_ip',
+					'order' => 'ioc_severity DESC, count DESC'
 				),
 			);	
 			break;	
@@ -1339,13 +1349,47 @@ function fetch($database, $type, $query, $start, $end, $group) {
 				'title' => 'IOC Notifications',
 				'header' => 'drilldown',
 				'vDiv' => array(
+					array('crossfilter', '100'),
 					array('tables', '100')	
 				),
 				'subheading' => '',
 				'severity' => 'true',
 				'sidebar' => 'ioc_top_remote'
 			);
-			$viz = array();
+			$viz = array(
+				'crossfilter' => array(
+					'struct' => array(
+						array(
+							'dim' => array('hour'),
+							'grp' => array('count')
+						)
+					),
+					'select' => array(
+						array('from_unixtime(time) AS time'), 
+						array('ioc_severity'),
+						array('count(*) AS count'), 
+					),
+					'from' => 'conn_ioc',
+					'where' => '`ioc_count` > 0, `trash` IS NULL',
+					'group' => 'month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), ioc_severity',
+					'disp' => array(
+						
+						array(
+							'dView' => 'true', 
+							'pID' => 'crossfilter',
+							'dID' => 'sBar', 
+							'type' => 'severitybar', 
+							'heading' => 'IOC Notifications Per Hour',
+							'xAxis' => '',
+							'yAxis' => '# IOC / Hour',
+							'dim' => 'hour',
+							'grp' => 'count'
+						)
+					)		
+				),
+
+
+				);
 			$table = array(
 				array(
 					'pID' => 'tables',
@@ -2183,7 +2227,7 @@ function fetch($database, $type, $query, $start, $end, $group) {
 					'RETURN1' => array(
 						'select' => array(
 							array('lan_ip'),
-							array('grp_local as lan_zone'), 
+							array('grp_local AS lan_zone'), 
 						),
 						'from' => '`conn-2013-12-17`',
 						'where' => "stealth = '1'",
@@ -2192,7 +2236,7 @@ function fetch($database, $type, $query, $start, $end, $group) {
 					'RETURN2' => array(
 						'select' => array(
 							array('remote_ip'),
-							array('grp_remote as lan_zone'), 
+							array('grp_remote AS lan_zone'), 
 						),
 						'from' => '`conn-2013-12-17`',
 						'where' => "stealth = '1'",
@@ -2339,7 +2383,6 @@ function fetch($database, $type, $query, $start, $end, $group) {
 		echo json_encode($return);
 	} 
 }
-
 function getInfo($page, $viz, $table, $html) {
 	$output = array(
 		"columns" => array(),
@@ -2361,7 +2404,6 @@ function getInfo($page, $viz, $table, $html) {
 	}
     return $output;
 }
-
 function getViz($database, $viz, $start, $end, $notime) {
  	foreach ($viz as $n => $value) {
  		if ($_GET['vizType'] == 'crossfilter') {
@@ -2440,7 +2482,7 @@ function getViz($database, $viz, $start, $end, $notime) {
 		    return $output;
 		}
 		if ($_GET['vizType'] == 'd3') {
-			for($d3 = 0; $d3 < count($viz[$n]); $d3++) {
+			for ($d3 = 0; $d3 < count($viz[$n]); $d3++) {
 				if ($viz[$n][$d3]['disp']['dID'] === $_GET['dID']) {
 					$aColumns = array();
 					for	($m = 0; $m < count($viz[$n][$d3]['select']); $m++) {
@@ -2678,7 +2720,6 @@ function getViz($database, $viz, $start, $end, $notime) {
 		}
 	}
 }
-
 function getTable($database, $table, $start, $end, $notime, $dID) {
 	for ($t = 0; $t < count($table); $t++) {
 		if ($table[$t]['dID'] === $dID) {
@@ -2694,7 +2735,7 @@ function getTable($database, $table, $start, $end, $notime, $dID) {
 					$aColumns[] = "`".$table[$t]['select'][$m][0]."`"; // escape column name
 				}
 			};
-		    $sTable = $table[$t]['from'];
+			$sTable = $table[$t]['from'];
 			$aWhere = null;
 			if (isset($table[$t]['where'])) {
 				$aWhere = explode(',',$table[$t]['where']);
@@ -2735,11 +2776,17 @@ function getTable($database, $table, $start, $end, $notime, $dID) {
 					$sOrder = "";
 				}
 			} 
-		    $sLimit = "";
-		    if (isset($_GET['iDisplayStart']) && $_GET['iDisplayLength'] != '-1') {
-		        $sLimit = " LIMIT ".mysql_real_escape_string( $_GET['iDisplayStart'] ).", ".
-		        mysql_real_escape_string( $_GET['iDisplayLength'] );
-		    };
+			if (isset($table[$t]['order'])) {
+				$sOrder = " ORDER BY " . $table[$t]['order'];
+			}
+			$sLimit = "";
+			if (isset($_GET['iDisplayStart']) && $_GET['iDisplayLength'] != '-1') {
+				$sLimit = " LIMIT ".mysql_real_escape_string( $_GET['iDisplayStart'] ).", ".
+				mysql_real_escape_string( $_GET['iDisplayLength'] );
+			};
+			if (isset($table[$t]['limit'])) {
+				$sLimit = " LIMIT " . $table[$t]['limit'];
+			}
 			$sWhere = null;
 			if ($notime != true) { // time required
 				if (isset($_GET['sSearch'])) {
@@ -2825,22 +2872,20 @@ function getTable($database, $table, $start, $end, $notime, $dID) {
 					");	
 				}
 			}
-
-		    // Data set length after filtering 
+			// Data set length after filtering 
 			$sQuery2 = "SELECT FOUND_ROWS()";
 			$rResultFilterTotal = mysql_query( $sQuery2 ) or die (mysql_error());
 			$aResultFilterTotal = mysql_fetch_array($rResultFilterTotal);
 			$iFilteredTotal = $aResultFilterTotal[0];
-		   
-		    // Output structure
-		    $output = array(
-		       "sEcho" => intval($_GET['sEcho']),
-		       "iTotalRecords" => $iFilteredTotal,
-		       "iTotalDisplayRecords" => $iFilteredTotal,
-		       "aaData" => array(),
-		    );   
-		    $row = null;
-		    $col = null;
+			// Output structure
+			$output = array(
+				"sEcho" => intval($_GET['sEcho']),
+				"iTotalRecords" => $iFilteredTotal,
+				"iTotalDisplayRecords" => $iFilteredTotal,
+				"aaData" => array(),
+			);
+			$row = null;
+			$col = null;
 			while ($row = $database->fetchRow()) {
 				for ($i=0; $i < count($table[$t]['select']); $i++) {
 					$sel = $table[$t]['select'][$i][0];
