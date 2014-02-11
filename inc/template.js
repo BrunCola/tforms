@@ -626,6 +626,7 @@ var floating_logo = function() {
 var dPopup = function(text) {
 	$.colorbox({html:text, width:500});
 };
+
 //previous function for sorting bar graph (keep this for now becuase i may use some stuff for table sorting)
 // var AwesomeFilterYo = function(dim, event, divid) {
 // 	var dimArray; var sevArray; var sev = [];
@@ -671,63 +672,7 @@ var dPopup = function(text) {
 // 		}
 // 	}
 //});
-var AwesomeFilterYo = function(dim, event, divid) {
-	var dimArray; var sevArray; var sev = [];
-	if (event === true) {
-	//// BUTTON HIGHLIGHT CHECK
-		sev = [];
-		dimArray = dim.top(Infinity);
-		var arr = [];var uniqueFilter;
-		dimArray.forEach(function(d){
-			arr.push(d.ioc_severity);
-		});
-		uniqueFilter = arr.filter(function(elem, pos) {
-			return arr.indexOf(elem) == pos;
-		});
-		$("#severity").children().addClass("severity-deselect");
-		for(var a in uniqueFilter) {
-			$(".alert"+uniqueFilter[a]).removeClass("severity-deselect");
-		}
-		//console.log('severity button onfiltered fire')
-		//console.log('event true fire');
-	} else if (event === false){ 
-		if (divid === null) { 
-		//// TABLE SEARCH
-			var tFilter = []; var uniqueArray;
-			rowChart.filter(null);
-			dim.forEach(function(d){
-				tFilter.push(d._aData.ioc);
-			})
-			uniqueArray = tFilter.filter(function(elem, pos) {
-				return tFilter.indexOf(elem) == pos;
-			});
-			for (var i in uniqueArray) {
-				rowChart.filter(uniqueArray[i]);
-			}
-			dc.redrawAll();
-		} else {
-		//// TOP BUTTON CLICK
-			oTable.fnFilter('Severity: '+divid);
-			sevArray = dim.top(Infinity);
-			sev = []; var uniqueIoc;
-			//console.log('event false fire');
-			rowChart.filter(null);
-			for (var d in dim.top(Infinity)) {
-				if (dim.top(Infinity)[d].ioc_severity === divid) {
-					sev.push(dim.top(Infinity)[d].ioc);
-				}
-			}
-			uniqueIoc = sev.filter(function(elem, pos) {
-				return sev.indexOf(elem) == pos;
-			});
-			for (var i in uniqueIoc) {
-				rowChart.filter(uniqueIoc[i]);
-				//oTable.fnFilter(uniqueIoc[i]);
-			}
-			dc.redrawAll();
-		}
-	}
-};
+
 var resizeViz = function (chart, divid, aspect) {
 	var targetWidth = $(divid).width();
 	chart.select('svg')
@@ -749,6 +694,59 @@ var d3swimChart = function(divID, json) {
             .brush("naviBand", ["mainBand"])
             .redraw();
     });
+};
+
+///////////////////////////////////////////////
+/////////    CROSSFILTER HELPERS    ///////////
+///////////////////////////////////////////////
+var sevButtonCheck = function(dim) {
+	var dimArray; var sevArray; var sev = [];
+	sev = [];
+	dimArray = dim.top(Infinity);
+	var arr = [];var uniqueFilter;
+	dimArray.forEach(function(d){
+		arr.push(d.ioc_severity);
+	});
+	uniqueFilter = arr.filter(function(elem, pos) {
+		return arr.indexOf(elem) == pos;
+	});
+	$("#severity").children().addClass("severity-deselect");
+	for(var a in uniqueFilter) {
+		$(".alert"+uniqueFilter[a]).removeClass("severity-deselect");
+	}
+};
+var tableToViz = function(arr) {
+	var tFilter = []; var uniqueArray;
+	rowChart.filter(null);
+	arr.forEach(function(d){
+		tFilter.push(d._aData.ioc);
+	})
+	uniqueArray = tFilter.filter(function(elem, pos) {
+		return tFilter.indexOf(elem) == pos;
+	});
+	for (var i in uniqueArray) {
+		rowChart.filter(uniqueArray[i]);
+	}
+	dc.redrawAll();
+};
+var sevButtonClick = function(dim, divid) {
+	oTable.fnFilter('Severity: '+divid);
+	sevArray = dim.top(Infinity);
+	sev = []; var uniqueIoc;
+	rowChart.filter(null);
+	for (var d in dim.top(Infinity)) {
+		if (dim.top(Infinity)[d].ioc_severity === divid) {
+			sev.push(dim.top(Infinity)[d].ioc);
+		}
+	}
+	uniqueIoc = sev.filter(function(elem, pos) {
+		return sev.indexOf(elem) == pos;
+	});
+	for (var i in uniqueIoc) {
+		rowChart.filter(uniqueIoc[i]);
+		//oTable.fnFilter(uniqueIoc[i]);
+	}
+	dc.redrawAll();
 };
 
 ///////////////////////////////////////////////
@@ -837,10 +835,10 @@ var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height
 		.title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
 		.renderTitle(true) // (optional) whether chart should render titles, :default = false
 		.on("filtered", function(chart, d){
-			AwesomeFilterYo(dim, true);
+			sevButtonCheck(dim);
 		})
 		.on("postRender", function(chart, d){
-			AwesomeFilterYo(dim, true);
+			sevButtonCheck(dim);
 		})
 		.renderlet(function(chart) {
 			chart.select('svg')
@@ -907,10 +905,10 @@ var dcGeoMap = function (divID, data, world) {
 			return d.key+": "+(d.value ? d.value : 0);
 		})
 		.on("filtered", function(chart, d){
-			AwesomeFilterYo(dimension, true);
+			sevButtonCheck(dimension);
 		})
 		.on("postRender", function(chart, d){
-			AwesomeFilterYo(dimension, true);
+			sevButtonCheck(dimension);
 		})
 		.renderlet(function(chart,d) {
 			chart.select('svg')
@@ -1108,20 +1106,20 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 			.colorAccessor(function (d){return d.value.severity;})
 			.on("postRender", function(chart, d){
 				$('.alert1').on("click", function() {
-					AwesomeFilterYo(dim, false, '1');
+					sevButtonClick(dim, '1');
 				});
 				$('.alert2').on("click", function() {
-					AwesomeFilterYo(dim, false, '2');
+					sevButtonClick(dim, '2');
 				});
 				$('.alert3').on("click", function() {
-					AwesomeFilterYo(dim, false, '3');
+					sevButtonClick(dim, '3');
 				});
 				$('.alert4').on("click", function() {
-					AwesomeFilterYo(dim, false, '4');
+					sevButtonClick(dim, '4');
 				});
 			})
 			.on("filtered", function(chart, filter){
-				AwesomeFilterYo(dim, true);
+				sevButtonCheck(dim);
 				//oTable.fnFilter(filter);
 				console.log(filter);
 			})
@@ -1348,9 +1346,9 @@ var getTable = function(divID, json, data, columns) {
 		"fnDrawCallback": function(oSettings) {
 			//console.log(oSettings);
 			if ((oSettings.oPreviousSearch.sSearch !== "") && (!(oSettings.oPreviousSearch.sSearch.match(/Severity:*/))))  {
-				AwesomeFilterYo(oSettings.aoData, false, null);
+				tableToViz(oSettings.aoData);
 			} else if (oSettings.oPreviousSearch.sSearch === ""){
-				if (fFire !== false) { 
+				if (fFire !== false) {
 					rowChart.filter(null);
 					dc.redrawAll();
 				}
