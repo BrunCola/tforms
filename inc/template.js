@@ -265,8 +265,6 @@ var page = function(search_val, type, start, end, clear_b) {
 								return "<button onclick=\"$.colorbox({href:'assets/modals/user.params.php?id="+d.id+"'});\" class=\"btn mini grey\"><i class=\"fa fa-trash\"></i> Edit</button>";
 							}
 						},
-						
-						
 						{
 							"bSortable": false,
 							"sWidth": "75px",
@@ -849,26 +847,27 @@ var dcBarGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 		// 		//	oTable.fnFilter(string,null,true,null);
 		// 	});
 	});
+};
 var dcPieGraph = function(divID, dim, group, colors) {
-	var width = $("#"+divID).width();
-	pieChart
-	.height(width)
-	.innerRadius(width/6)
-	.width(width)	
-	.group(group)
-	.radius(width/2)
-	.colors(colors)
-	.dimension(dim)
-	.legend(dc.legend().x(width / 2 ).y(width / 2).itemHeight(13).gap(5));
-	// .on("preRender", legend)
-	//	.renderlet(function(chart) {
-	//	//$('#'+dID+' .jdash-header').height();
-	//	dc.events.trigger(function() {
-	//		var filter = pieChart.filters();
-	//		var string = filter.join(' | ');
-	//		oTable.fnFilter(string,null,true,null);
-	//	});
-	// });
+		var width = $("#"+divID).width();
+		pieChart
+		.height(width)
+		.innerRadius(width/6)
+		.width(width)
+		.group(group)
+		.radius(width/2)
+		.colors(colors)
+		.dimension(dim)
+		.legend(dc.legend().x(width / 2 ).y(width / 2).itemHeight(13).gap(5));
+		// .on("preRender", legend)
+		//	.renderlet(function(chart) {
+		//	//$('#'+dID+' .jdash-header').height();
+		//	dc.events.trigger(function() {
+		//		var filter = pieChart.filters();
+		//		var string = filter.join(' | ');
+		//		oTable.fnFilter(string,null,true,null);
+		//	});
+		// });
 };
 var dcWordCloud = function(divID, data) {
 	var str = ['test', 'test2', 'test3'];
@@ -913,9 +912,9 @@ var dcWordCloud = function(divID, data) {
 	.rotate(function(d) { return ~~(Math.random() * 5) * 30 - 60; })
 	.font("Impact")
 	.fontSize(function(d) { return fontSize(d.size); })
-	//.fontSize(function(d) { return d.size; })
-	.on("end", wordCloud)
-	.start();
+		//.fontSize(function(d) { return d.size; })
+		.on("end", wordCloud)
+		.start();
 };
 var dcRowGraph = function(divID, dim, group, colors, dimName) {
 	var sevCount = group.reduce(
