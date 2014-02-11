@@ -1,8 +1,20 @@
+1.4.207
+-getdata.php
+-removed group variable
+-index.php
+--clean up
+-report.php
+--clean up
+-generate.js
+--clean up
+-app.js
+--clean up
+--sidebar_close 
 1.4.206
-linked crossfilter viz
+-linked crossfilter viz
 1.4.205
-version number added to GUI
+-version number added to GUI
 1.4.204
-geo heatmap fixed to actually match record counts for each country
+-geo heatmap fixed to actually match record counts for each country
 1.4.203
-GitLab instance setup
+-GitLab instance setup

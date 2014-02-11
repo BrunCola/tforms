@@ -1,20 +1,18 @@
 <?php
 include "class.database.php";
 $database = new Database("rapidPHIRE_DB");
-$group = null;
 $query = null;
 $limit = null;
 $start = null;
 $end   = null;
 // Grab get parameters
-if (isset($_GET['group'])) { $group = $_GET['group']; }
 if (isset($_GET['query'])) { $query = $_GET['query']; }
 if (isset($_GET['limit'])) { $limit = $_GET['limit']; }
 if (isset($_GET['start'])) { $start = $_GET['start']; }
 if (isset($_GET['end']))   { $end   = $_GET['end']; }
 if (isset($_GET['type']))  { 
 	$type = $_GET['type'];	
-	fetch($database, $type, $query, $start, $end, $group);
+	fetch($database, $type, $query, $start, $end);
 }
 // Checkpoint function (notifications)
 if (isset($_GET['checkpoint'])) {
@@ -134,8 +132,16 @@ if (isset($_GET['delete_cron'])) {
 }
 $database->disconnect();
 
-// Graphing functions (from switch)
-function fetch($database, $type, $query, $start, $end, $group) {
+/**
+ * main function setting content for page types
+ * @database string
+ * @type string
+ * @query string
+ * @start int
+ * @end int
+ * @group 
+ */
+function fetch($database, $type, $query, $start, $end) {
 	$html = null;
 	$notime = null;
 	switch ($type) {
@@ -2377,7 +2383,6 @@ function fetch($database, $type, $query, $start, $end, $group) {
 		echo json_encode($return);
 	} 
 }
-
 function getInfo($page, $viz, $table, $html) {
 	$output = array(
 		"columns" => array(),
@@ -2399,7 +2404,6 @@ function getInfo($page, $viz, $table, $html) {
 	}
     return $output;
 }
-
 function getViz($database, $viz, $start, $end, $notime) {
  	foreach ($viz as $n => $value) {
  		if ($_GET['vizType'] == 'crossfilter') {
@@ -2716,7 +2720,6 @@ function getViz($database, $viz, $start, $end, $notime) {
 		}
 	}
 }
-
 function getTable($database, $table, $start, $end, $notime, $dID) {
 	for ($t = 0; $t < count($table); $t++) {
 		if ($table[$t]['dID'] === $dID) {

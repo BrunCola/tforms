@@ -1,7 +1,6 @@
 <?php
 
 class Database {
-
 	private $HOST = "";
 	private $DB = ""; 
 	private $USER = "";
@@ -19,12 +18,6 @@ class Database {
 				$this->HOST = "localhost";
 				$this->USER = "SQL_USER";
 				$this->PASS = "SQL_PW";
-				$this->DB   = "SQL_DB";
-				break; 
-			case 'user_DB':
-				$this->HOST = "localhost";
-				$this->USER = "SQL_USER";
-				$this->PASS = "SQL_DB";
 				$this->DB   = "SQL_DB";
 				break; 
 			default:

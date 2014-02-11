@@ -1,8 +1,11 @@
+._*
 .DS_Store
 .DS_Store?
-._*
 .Spotlight-V100
 .Trashes
+.fuse*
+*.sublime-project
+*.sublime-workspace
 ehthumbs.db
 Thumbs.db
 class.database.php

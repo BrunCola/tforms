@@ -14,7 +14,7 @@ var page = function(search_val, type, start, end, clear_b) {
 	if (!start && start_get != 'null') {
 		start = start_get;
 		end = end_get;
-	} 
+	}
 	else if (!start) {
 		end = moment().unix();
 		start = moment().subtract('days', defaultDayRange).unix();
@@ -26,7 +26,7 @@ var page = function(search_val, type, start, end, clear_b) {
 	else {
 		where = '';
 	}
-	var json = "inc/getdata.php?type="+type+where+"&start="+start+"&end="+end;
+	var json = 'inc/getdata.php?type='+type+where+'&start='+start+'&end='+end;
 	var lStore = localStorage.getItem(getURLParameter('type')+'_dDiv');
 	d3.json(json+'&getInfo=true', function(data) {
 		// CLEAR DIVS/HEADERS BEFORE SETTING CONTENT
@@ -42,7 +42,7 @@ var page = function(search_val, type, start, end, clear_b) {
 				}
 				var g = []; var a = []; var prev;
 				for (var d in data.aaData) {
-					g.push(data.aaData[d].ioc);	
+					g.push(data.aaData[d].ioc);
 				}
 				g.sort();
 				for (var f = 0; f < g.length; f++) {
@@ -88,7 +88,7 @@ var page = function(search_val, type, start, end, clear_b) {
 		// SET SUB HEADING
 		if (data.page.subheading) {
 			$('#sub_heading').html(data.page.subheading);
-		} 
+		}
 		else {
 			$('#sub_heading').html('');
 		}
@@ -98,7 +98,7 @@ var page = function(search_val, type, start, end, clear_b) {
 			$('.page-sidebar-menu :not(.'+data.page.sidebar+')').removeClass('start active');
 			$('.page-sidebar-menu li.'+data.page.sidebar).addClass('start active');
 			$('#heading_sub', '.page-sidebar-menu li.'+data.page.sidebar).addClass('selected');
-		} 
+		}
 		else {
 			$('.page-sidebar-menu li').removeClass('start active');
 		}
@@ -106,19 +106,22 @@ var page = function(search_val, type, start, end, clear_b) {
 		if (clear_b===true) { // if true, clear breadcrumbs and set new div (for search feilds)
 			clear_div('breadhome');
 			$('#breadhome').append('<li><i class=\'fa fa-angle-right\'></i><a href="javascript:void(0);" onclick="page(\''+search_val+'\',\''+type+'\',\''+start+'\',\''+end+'\',false);$(this).parent().nextAll().remove();">'+data.page.title+' ('+search_val+')</a></li>');
-		} 
+		}
 		else if (clear_b===false) { // if false, just append new (for digging through the table/calendar)
 			$('#breadhome').append('<li><i class=\'fa fa-angle-right\'></i><a href="javascript:void(0);" onclick="page(\''+search_val+'\', \''+type+'\',\''+start+'\',\''+end+'\',false);$(this).parent().nextAll().remove();">'+data.page.title+' ('+search_val+')</a></li>');
-		} 
+		}
 		else if (clear_b===null) { // if false, just append new (for page loads & 'Home' button in breadcrumb)
 			clear_div('breadhome');
 		}
 		// SEVERITY LEVEL INDICATORS
-		if (data.page.severity !== undefined) { 
-			$('#severity').append('<button onclick="oTable.fnFilter(\'Severity: 1\',null);severityBtn(\'alert1\');" style="min-width:120px" class="severity-btn btn mini alert1 alert"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> 0 </span></button>');
-			$('#severity').append('<button onclick="oTable.fnFilter(\'Severity: 2\',null);severityBtn(\'alert2\');" style="min-width:120px" class="severity-btn btn mini alert2 alert"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> 0 </span></button>');
-			$('#severity').append('<button onclick="oTable.fnFilter(\'Severity: 3\',null);severityBtn(\'alert3\');" style="min-width:120px" class="severity-btn btn mini alert3 alert"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> 0 </span></button>');
-			$('#severity').append('<button onclick="oTable.fnFilter(\'Severity: 4\',null);severityBtn(\'alert4\');" style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
+		if (data.page.severity !== undefined) {
+			$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert1 alert"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> 0 </span></button>');
+			$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert2 alert"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> 0 </span></button>');
+			$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert3 alert"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> 0 </span></button>');
+			// $('#severity').append('<button onclick="oTable.fnFilter(\'Severity: 4\',null);severityBtn(\'alert4\');" style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
+			//$('#severity').append('<button onclick="geoChart.filter(\'Canada\');dc.redrawAll();" style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
+			//$('#severity').append('<button onclick="sevChart.filter(\'guarded\');dc.redrawAll();" style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
+			$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
 			d3.json(json+'&severity_levels=true', function(levels) {
 				for (var s in levels) {
 					if (levels[s].ioc_severity === '1') {
@@ -138,13 +141,13 @@ var page = function(search_val, type, start, end, clear_b) {
 		}
 		// PUSH CUSTOM HTML INTO DIVS
 		if (data.html !== null) {
-			for (var i = 0; i < data.html.length; i++) {	
+			for (var i = 0; i < data.html.length; i++) {
 				if (data.html[i].heading !== '') {
 					$('#'+data.html[i].pID).prepend(
 						'<div id="'+data.html[i].dID+'" class="jdash-widget">\n' +
 						'<div class="jdash-header">'+data.html[i].heading+'</div>\n' +
 						'<div class="row-fluid">\n' +
-						'<div class="span12">\n' +						
+						'<div class="span12">\n' +
 						'<div class="box-content">\n' +
 						'<div style="padding:3px !important;">'+data.html[i].data+'</div>\n' +
 						'</div>\n' +
@@ -181,7 +184,7 @@ var page = function(search_val, type, start, end, clear_b) {
 						'</div>\n'
 						);
 				}
-			} 
+			}
 			else {
 				for (j = 0; j < data.table.length; j++) {
 					$('#'+data.table[j].pID).prepend(
@@ -210,7 +213,7 @@ var page = function(search_val, type, start, end, clear_b) {
 				}
 			}
 			// TABLE COLUMN GENERATOR
-			$('thead').empty();		
+			$('thead').empty();
 			var col = [];
 			for (var c = 0; c < data.columns.length; c++) {
 				var columns = [];
@@ -221,10 +224,10 @@ var page = function(search_val, type, start, end, clear_b) {
 					}
 					if (data.columns[c][dc][1]) { // check for titles
 						if (data.columns[c][dc]) { // check for html types
-							columns.push({"sTitle": data.columns[c][dc][1], "mData": data.columns[c][dc][0], "sType": "html", "bVisible": dCol });
-						} 
+							columns.push({'sTitle': data.columns[c][dc][1], 'mData': data.columns[c][dc][0], 'sType': 'html', 'bVisible': dCol });
+						}
 						else {
-							columns.push({"sTitle": data.columns[c][dc][1], "mData": data.columns[c][dc][0], "sType": 'string-case', "bVisible": dCol });
+							columns.push({'sTitle': data.columns[c][dc][1], 'mData': data.columns[c][dc][0], 'sType': 'string-case', 'bVisible': dCol });
 						}
 					}
 				}
@@ -233,9 +236,9 @@ var page = function(search_val, type, start, end, clear_b) {
 					switch(type) {
 						case 'ioc_hits':
 						columns.push({
-							"bSortable": false,
-							"sWidth": "75px",
-							"mData": function(d) {
+							'bSortable': false,
+							'sWidth': '75px',
+							'mData': function(d) {
 								var del = "$.get('inc/getdata.php?&archive=true&query="+d.lan_ip+","+d.wan_ip+","+d.remote_ip+","+d.ioc+"', function() {oTable.fnDraw();});";
 								return '<button onclick="'+del+'" class="btn mini grey"> Archive</button>';
 							}
@@ -296,7 +299,7 @@ var page = function(search_val, type, start, end, clear_b) {
 						var hidden;
 						if (data.viz.crossfilter.disp[k].dView == 'false') {
 							hidden = ' jdash_hidden';
-						} 
+						}
 						else {
 							hidden = '';
 						}
@@ -312,7 +315,6 @@ var page = function(search_val, type, start, end, clear_b) {
 					}
 				}			
 			}
-
 		}
 		// PUSH SORTABLE VISUALS INTO DIVS
 		for (var h in data.page.vDiv) {
@@ -321,7 +323,7 @@ var page = function(search_val, type, start, end, clear_b) {
 		}
 		// IOC information expand text
 		$(function() {
-			$(".description").each(function(i) {
+			$('.description').each(function(i) {
 				len = $(this).text().length;
 				if (len > 200) {
 					$(this).html($(this).text().substr(0,200)+'... <a href="javascript:void(0);" onclick="dPopup(\''+$(this).text()+'\');" style="text-decoration:none">Read More</a>');
@@ -448,16 +450,50 @@ var floating_logo = function() {
 var dPopup = function(text) {
 	$.colorbox({html:text, width:500});
 };
-var severityBtn = function(divclass) {
-	if (($("."+divclass).siblings().hasClass('severity-deselect')===false) && ($("."+divclass).hasClass('severity-deselect')===false)) {
-		$("."+divclass).siblings().addClass('severity-deselect');
-	} else if ($("."+divclass).hasClass("severity-deselect") === true) {
-		$("."+divclass).removeClass("severity-deselect");
-		$("."+divclass).siblings().addClass("severity-deselect");
-	} else if (($("."+divclass).hasClass("severity-deselect") === false) && ($("."+divclass).siblings().hasClass('severity-deselect')===true)) {
-		$("."+divclass).siblings().removeClass('severity-deselect');
-		oTable.fnFilter('', null);
-	}
+var severityBtn = function(dim, event, divid) {
+	var dimArray; var sevArray; var sev = [];
+	if (event === true) {
+		sev = [];
+		dimArray = dim.top(Infinity);
+		var arr = [];var uniqueArray; 
+		dimArray.forEach(function(d){
+			arr.push(d.ioc_severity);
+		});
+		uniqueArray = arr.filter(function(elem, pos) {
+			return arr.indexOf(elem) == pos;
+		});
+		$("#severity").children().addClass("severity-deselect");
+		for(var a in uniqueArray) {
+			$(".alert"+uniqueArray[a]).removeClass("severity-deselect");
+		}
+		console.log('event true fire');console.log(dimArray);
+	} 
+	else if (event === false){
+		sevArray = dim.top(Infinity);
+		sev = [];
+		//take dimension being passed, convert it to time, filter then redraw
+		console.log('event false fire');
+		sevChart.filter(null);
+		for (var d in dim.top(Infinity)) {
+			if (dim.top(Infinity)[d].ioc_severity === divid) {
+				sev.push({
+					dd: dim.top(Infinity)[d].dd,
+					ioc_severity: dim.top(Infinity)[d].ioc_severity,
+					ioc: dim.top(Infinity)[d].ioc
+				});
+			}
+		}
+		var minX = Math.min.apply(Math, sev.map(function(val) { return val.dd; }));
+		var maxX = Math.max.apply(Math, sev.map(function(val) { return val.dd; }));
+		if (minX !== Infinity) {
+			sevChart.filter([minX,maxX]);
+			//sevChart.redraw();
+			// for (var i in sev) {
+			//	rowChart.filter(sev[i].ioc);
+			// }
+			dc.redrawAll();
+		}
+	}	
 };
 var resizeViz = function (chart, divid, aspect) {
 	var targetWidth = $(divid).width();
@@ -472,7 +508,6 @@ var resizeViz = function (chart, divid, aspect) {
 // var gFilter = function(dimension, dimName) {	
 //var arr = countryCount.top(Infinity);	
 //console.log(arr);
-
 //	////usage
 //	//	var fArr = gFilter(dimension, 'ioc');		
 //dimArray = cf_data.dimension(dimension[x]).top(Infinity);
@@ -493,6 +528,7 @@ var resizeViz = function (chart, divid, aspect) {
 //	});
 //	return uniqueArray;
 // };
+
 var crossfilterViz = function(json, start, end) {
 	queue()
 	.defer(d3.json, json+'&getViz=true&vizType=crossfilter')
@@ -647,7 +683,7 @@ var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height
 				other:0
 			};
 		}
-		);
+	);
 	var width = $("#"+divID).width();
 	var hHeight;
 	if(height !== undefined) {
@@ -720,7 +756,7 @@ var dcGeoMap = function (divID, data, world) {
 	});
 	var top = countryCount.orderNatural(function (p) {return p.count;}).top(1);
 	var numberOfItems = top[0].value+1;
-	var rainbow = new Rainbow(); 
+	var rainbow = new Rainbow();
 	rainbow.setNumberRange(0, numberOfItems);
 	rainbow.setSpectrum("#FF0000", "#CC0000", "#990000", "#660000", "#360000");
 	var cc = [];
@@ -746,7 +782,24 @@ var dcGeoMap = function (divID, data, world) {
 		.title(function (d) {
 			return d.key+": "+(d.value ? d.value : 0);
 		})
+		.on("postRender", function(chart, d){
+			$('.alert1').on("click", function() {
+				severityBtn(dimension, false, '1');
+			});
+			$('.alert2').on("click", function() {
+				severityBtn(dimension, false, '2');
+			});
+			$('.alert3').on("click", function() {
+				severityBtn(dimension, false, '3');
+			});
+			$('.alert4').on("click", function() {
+				severityBtn(dimension, false, '4');
+			});
+		})
 		.renderlet(function(chart,d) {
+			dc.events.trigger(function() {
+				severityBtn(dimension, true);
+			});
 			chart.select('svg')
 				.attr('width', width)
 				.attr('height', height)
@@ -821,25 +874,25 @@ var dcBarGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 	});
 };	
 var dcPieGraph = function(divID, dim, group, colors) {
-		var width = $("#"+divID).width();
-		pieChart
-		.height(width)
-		.innerRadius(width/6)
-		.width(width)	
-		.group(group)
-		.radius(width/2)
-		.colors(colors)
-		.dimension(dim)
-		.legend(dc.legend().x(width / 2 ).y(width / 2).itemHeight(13).gap(5));
-		// .on("preRender", legend)
-		//	.renderlet(function(chart) {
-		//	//$('#'+dID+' .jdash-header').height();
-		//	dc.events.trigger(function() {
-		//		var filter = pieChart.filters();
-		//		var string = filter.join(' | ');
-		//		oTable.fnFilter(string,null,true,null);
-		//	});
-		// });
+	var width = $("#"+divID).width();
+	pieChart
+	.height(width)
+	.innerRadius(width/6)
+	.width(width)	
+	.group(group)
+	.radius(width/2)
+	.colors(colors)
+	.dimension(dim)
+	.legend(dc.legend().x(width / 2 ).y(width / 2).itemHeight(13).gap(5));
+	// .on("preRender", legend)
+	//	.renderlet(function(chart) {
+	//	//$('#'+dID+' .jdash-header').height();
+	//	dc.events.trigger(function() {
+	//		var filter = pieChart.filters();
+	//		var string = filter.join(' | ');
+	//		oTable.fnFilter(string,null,true,null);
+	//	});
+	// });
 };
 var dcWordCloud = function(divID, data) {
 	var str = ['test', 'test2', 'test3'];
@@ -1100,7 +1153,7 @@ var d3PieGraph = function(divID, json) {
 			.attr("y", 9)
 			.attr("dy", ".35em")
 			.text(function(d, i) { return graph.aaData[i].ioc; });
-		});
+	});
 };
 var d3swimChart = function(divID, json) {
 	d3.json(json+'&getViz=true&vizType=d3swimChart&dID='+divID, function(error, dataset) {
@@ -1158,23 +1211,20 @@ var d3force = function(divID, json) {
 };
 // DataTable FUNCTIONS
 var tableViz = function(json, data, columns) {
-	for(var i=0; i < columns.length; i++) {
+	for (var i=0; i < columns.length; i++) {
 		getTable(data[i].dID, json, data[i], columns[i]);
 	}
 	$(".page-content").fadeTo(500, 1); // return opacity to 1 
-	//$(".dc-data-table tbody tr td .trash-row").click(function () {
-	//	oTable.fnDeleteRow(this);
-	//});
 	$('.page-content').activity(false);
 };
 var getTable = function(divID, json, data, columns) {
 	var graph_type = getURLParameter('type');
 	var sort = [[ 0, "desc" ]];
 	if (data.sSort) {
-		sort = (new Function( "return([" + data.sSort + "])" ))();
+		sort = (new Function("return([" + data.sSort + "])"))();
 	}
 	var bFilter,iDisplayLength,bStateSave,bPaginate,sDom;	
-	if(/(report)/.test(window.location) === true) {
+	if (/(report)/.test(window.location) === true) {
 		bfilter = false;
 		iDisplayLength = false;
 		bStateSave = true;

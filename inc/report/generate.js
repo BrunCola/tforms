@@ -8,49 +8,45 @@ if (system.args.length < 3 || system.args.length > 10) {
     phantom.exit(1);
 } 
 else {
-
 	size = 'A4';
 	var dir = system.args[1];
-
 	var type = system.args[2].split(',');
-	//var eType = system.args[2];
+	// var eType = system.args[2];
 	var eType = type[0]; // I have to change this, but emails aren't really listing the types right now anyway
-
     var output = system.args[3].split(',');
     var eOutput  = system.args[3];
-
 	var email = system.args[4].split(',');
 	var start = system.args[5];
 	var end = system.args[6];
 	var timespan = system.args[7];
 	var client = system.args[8];
-
 	var waitFor = function(testFx, onReady, timeOutMillis) {
 		var maxtimeOutMillis = timeOutMillis ? timeOutMillis : 3000, //< Default Max Timout is 3s
 		start = new Date().getTime(),
 		condition = false,
 		interval = setInterval(function() {
-		if ( (new Date().getTime() - start < maxtimeOutMillis) && !condition ) {
-			// If not time-out yet and condition not yet fulfilled
-			condition = (typeof(testFx) === "string" ? eval(testFx) : testFx()); //< defensive code
-		} else {
-			if(!condition) {
-				// If condition still not fulfilled (timeout but condition is 'false')
-				console.log("'waitFor()' timeout/finished");
-				for (var e = 0; e < email.length; e++) {
-					MailNow(eType, eOutput, email[e]);
+			if ((new Date().getTime() - start < maxtimeOutMillis) && !condition) {
+				// If not time-out yet and condition not yet fulfilled
+				condition = (typeof(testFx) === "string" ? eval(testFx) : testFx()); //< defensive code
+			} 
+			else {
+				if (!condition) {
+					// If condition still not fulfilled (timeout but condition is 'false')
+					console.log("'waitFor()' timeout/finished");
+					for (var e = 0; e < email.length; e++) {
+						MailNow(eType, eOutput, email[e]);
+					}
+					phantom.exit(1);
+				} 
+				else {
+					// Condition fulfilled (timeout and/or condition is 'true')
+					console.log("'waitFor()' finished in " + (new Date().getTime() - start) + "ms.");
+					typeof(onReady) === "string" ? eval(onReady) : onReady(); //< Do what it's supposed to do once the condition is fulfilled
+					clearInterval(interval); //< Stop this interval
 				}
-				phantom.exit(1);
-			} else {
-				// Condition fulfilled (timeout and/or condition is 'true')
-				console.log("'waitFor()' finished in " + (new Date().getTime() - start) + "ms.");
-				typeof(onReady) === "string" ? eval(onReady) : onReady(); //< Do what it's supposed to do once the condition is fulfilled
-				clearInterval(interval); //< Stop this interval
 			}
-		}
 		}, 250); //< repeat check every 250ms
 	};
-
 	var render = function (type, output, callback) {
 		address = dir+'report.php?&type='+type+'&query=summary&start='+start+'&end='+end;	
 		page.viewportSize = { 
@@ -91,10 +87,11 @@ else {
 			}
 		});
 	};
-	var next_page = function(){
-		if(!output){
+	var next_page = function() {
+		if(!output) {
 			page.close();
-		} else {
+		} 
+		else {
 			init();
 		}
 	};
