@@ -475,7 +475,6 @@ var sevButtonCheck = function(dim) {
 		$(".alert"+uniqueFilter[a]).removeClass("severity-deselect");
 	}
 };
-
 var sevButtonClick = function(dim, divid) {
 	//oTable.fnFilter('Severity: '+divid);
 	sevArray = dim.top(Infinity);
@@ -491,10 +490,10 @@ var sevButtonClick = function(dim, divid) {
 		return sev.indexOf(elem) == pos;
 	});
 	for (var i in uniqueIoc) {
-		//rowChart.filter(uniqueIoc[i]);
+		rowChart.filter(uniqueIoc[i]);
 		chartToTable(uniqueIoc[i]);
 	}
-	// dc.redrawAll();
+	dc.redrawAll();
 	//chartToTable(uniqueIoc);
 };
 var tableToViz = function(arr, event) {
@@ -1259,6 +1258,7 @@ var getTable = function(divID, json, data, columns) {
 	if (data.sSort) {
 		sort = (new Function( "return([" + data.sSort + "])" ))();
 	}
+	var fFire;
 	var bFilter,iDisplayLength,bStateSave,bPaginate,sDom;
 	if(/(report)/.test(window.location) === true) {
 		bfilter = false;
