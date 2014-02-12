@@ -476,6 +476,7 @@ var sevButtonCheck = function(dim) {
 	}
 };
 var tableToViz = function(arr) {
+	console.log('tableToViz')
 	var tFilter = []; var uniqueArray;
 	rowChart.filter(null);
 	arr.forEach(function(d){
@@ -493,7 +494,8 @@ var sevButtonClick = function(dim, divid) {
 	//oTable.fnFilter('Severity: '+divid);
 	sevArray = dim.top(Infinity);
 	sev = []; var uniqueIoc;
-	rowChart.filter(null);oTable.fnFilter('');
+	rowChart.filter(null);
+	oTable.fnFilter('');
 	for (var d in dim.top(Infinity)) {
 		if (dim.top(Infinity)[d].ioc_severity === divid) {
 			sev.push(dim.top(Infinity)[d].ioc);
@@ -507,9 +509,9 @@ var sevButtonClick = function(dim, divid) {
 		chartToTable(uniqueIoc[i]);
 	}
 	//chartToTable(uniqueIoc);
-	dc.redrawAll();
 };
 var chartToTable = function(filter) {
+	console.log('chartToTable');
 	var searchString = $('#table1 input').val();
 	var newString = '';
 	var sInsert = function(value) {
@@ -979,6 +981,7 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 		lOffset = 12.7+(colors.length*0.2);
 		hHeight = 25+(colors.length*28);
 	}
+	var filterArray =[]; var filterPermission = true;
 	var width = $("#"+divID).width();
 		rowChart
 			.width(width)
@@ -1007,9 +1010,17 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 				});
 			})
 			.on("filtered", function(chart, filter){
-				//console.log(filter);
-				//chartToTable(filter);
+				setTimeout(function(){
+					if (filterPermission === true) {
+						filterArray.push(filter);
+					}
+				},10);
 				sevButtonCheck(dim);
+			})
+			.on("postRedraw", function(chart, filter){
+				chartToTable(filterArray);
+				filterArray = [];
+				filterPermission = false;
 			})
 			.renderlet(function(chart){
 				chart.select('svg')
@@ -1018,12 +1029,8 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 					.attr('viewBox', '0 0 '+width+' '+hHeight)
 					.attr('perserveAspectRatio', 'xMinYMid');
 				var aspect;
-// 				var text = chart.select('svg').selectAll('g').text();
-				chart.selectAll('g').on("click", function(d){
-					// dc.events.trigger(function(chart, filter){
-					// 	console.log(chart.filter())
-					chartToTable('RBN');
-					// });
+				chart.selectAll('g').on('click', function(){
+					filterPermission = true;
 				});
 				$(window).on("resize", function() {
 					if (colors.length < 7) {
@@ -1308,7 +1315,7 @@ var getTable = function(divID, json, data, columns) {
 		//this hides any tables on the ioc_event page that come up empty
 		"fnDrawCallback": function(oSettings) {
 			//console.log(oSettings);
-			if ((oSettings.oPreviousSearch.sSearch !== "") && (!(oSettings.oPreviousSearch.sSearch.match(/Severity:*/))))  {
+			if ((oSettings.oPreviousSearch.sSearch !== ""))  {
 				tableToViz(oSettings.aoData);
 			} else if (oSettings.oPreviousSearch.sSearch === ""){ //ignore first load
 				if (fFire !== false) {
