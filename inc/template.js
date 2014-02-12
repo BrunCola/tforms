@@ -496,18 +496,18 @@ var sevButtonClick = function(dim, divid) {
 	dc.redrawAll();
 	//chartToTable(uniqueIoc);
 };
-var tableToViz = function(arr, event) {
+var tableToViz = function(arr) {
 	var tFilter = []; var uniqueArray;
-		console.log('tableToViz');
-		rowChart.filter(null);
-		arr.forEach(function(d){
-			tFilter.push(d._aData.ioc);
-		});
-		uniqueArray = tFilter.filter(function(elem, pos) {
-			return tFilter.indexOf(elem) == pos;
-		});
-		for (var i in uniqueArray) {
-			rowChart.filter(uniqueArray[i]);
+	console.log('tableToViz');
+	rowChart.filter(null);
+	arr.forEach(function(d){
+		tFilter.push(d._aData.ioc);
+	});
+	uniqueArray = tFilter.filter(function(elem, pos) {
+		return tFilter.indexOf(elem) == pos;
+	});
+	for (var i in uniqueArray) {
+		rowChart.filter(uniqueArray[i]);
 	}
 	dc.redrawAll();
 };
@@ -726,6 +726,9 @@ var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height
 		.renderTitle(true) // (optional) whether chart should render titles, :default = false
 		.on("filtered", function(chart, d){
 			sevButtonCheck(dim);
+		})
+		.on("filtered", function(chart, filter){
+			console.log(filter);
 		})
 		.on("postRender", function(chart, d){
 			sevButtonCheck(dim);
