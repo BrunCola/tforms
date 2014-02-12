@@ -475,21 +475,7 @@ var sevButtonCheck = function(dim) {
 		$(".alert"+uniqueFilter[a]).removeClass("severity-deselect");
 	}
 };
-var tableToViz = function(arr) {
-	console.log('tableToViz')
-	var tFilter = []; var uniqueArray;
-	rowChart.filter(null);
-	arr.forEach(function(d){
-		tFilter.push(d._aData.ioc);
-	});
-	uniqueArray = tFilter.filter(function(elem, pos) {
-		return tFilter.indexOf(elem) == pos;
-	});
-	for (var i in uniqueArray) {
-		rowChart.filter(uniqueArray[i]);
-	}
-	dc.redrawAll();
-};
+
 var sevButtonClick = function(dim, divid) {
 	//oTable.fnFilter('Severity: '+divid);
 	sevArray = dim.top(Infinity);
@@ -508,30 +494,47 @@ var sevButtonClick = function(dim, divid) {
 		//rowChart.filter(uniqueIoc[i]);
 		chartToTable(uniqueIoc[i]);
 	}
+	// dc.redrawAll();
 	//chartToTable(uniqueIoc);
 };
-var chartToTable = function(filter) {
+var tableToViz = function(arr, event) {
+	var tFilter = []; var uniqueArray;
+		console.log('tableToViz');
+		rowChart.filter(null);
+		arr.forEach(function(d){
+			tFilter.push(d._aData.ioc);
+		});
+		uniqueArray = tFilter.filter(function(elem, pos) {
+			return tFilter.indexOf(elem) == pos;
+		});
+		for (var i in uniqueArray) {
+			rowChart.filter(uniqueArray[i]);
+	}
+	dc.redrawAll();
+};
+var chartToTable = function(filter, event) {
 	console.log('chartToTable');
 	var searchString = $('#table1 input').val();
 	var newString = '';
-	var sInsert = function(value) {
+	var sInsert = function(value, event) {
+		if (searchString.search(value) === -1){
+			newString = searchString+value+' ';
+			oTable.fnFilter(newString);
+		}
 		if (searchString.search(value) > -1) {
 			newString = searchString.replace(value+' ', "");
-		} else {
-			newString = searchString+value+' ';
+			oTable.fnFilter(newString);
 		}
-		oTable.fnFilter(newString);
 	};
 	var f;
 	if ((filter instanceof Array)) {
 		for (f in filter) {
-			sInsert(filter[f]);
+			sInsert(filter[f], event);
 		}
 	} else if (filter !== undefined) {
-		sInsert(filter);
+		sInsert(filter, event);
 	}
 };
-
 // DC.JS GRAPH FUNCTIONS
 var crossfilterViz = function(json, start, end) {
 	queue()
@@ -794,7 +797,7 @@ var dcGeoMap = function (divID, data, world) {
 		})
 		.on("filtered", function(chart, filter){
 			chartToTable(filter);
-			console.log(filter);
+			//console.log(filter);
 			sevButtonCheck(dimension);
 		})
 		.on("postRender", function(chart, d){
@@ -981,7 +984,7 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 		lOffset = 12.7+(colors.length*0.2);
 		hHeight = 25+(colors.length*28);
 	}
-	var filterArray =[]; var filterPermission = true;
+	var fill;
 	var width = $("#"+divID).width();
 		rowChart
 			.width(width)
@@ -1008,30 +1011,31 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 				$('.alert4').on("click", function() {
 					sevButtonClick(dim, '4');
 				});
+				$('#table1 input').keyup(function(){
+					if (!$('#table1 input').val()) {
+						rowChart.filter(null);
+						dc.redrawAll();
+					} else {
+						tableToViz($('.table1').dataTable().fnSettings().aoData);
+					}
+				});
+				sevButtonCheck(dim);
+				chart.select('g').on('click', function(){
+					chartToTable(fill);
+				});
 			})
 			.on("filtered", function(chart, filter){
-				setTimeout(function(){
-					if (filterPermission === true) {
-						filterArray.push(filter);
-					}
-				},10);
+				fill = filter;
 				sevButtonCheck(dim);
 			})
-			.on("postRedraw", function(chart, filter){
-				chartToTable(filterArray);
-				filterArray = [];
-				filterPermission = false;
-			})
-			.renderlet(function(chart){
+			.renderlet(function(chart, filter){
 				chart.select('svg')
 					.attr('width', width)
 					.attr('height', hHeight)
 					.attr('viewBox', '0 0 '+width+' '+hHeight)
 					.attr('perserveAspectRatio', 'xMinYMid');
 				var aspect;
-				chart.selectAll('g').on('click', function(){
-					filterPermission = true;
-				});
+
 				$(window).on("resize", function() {
 					if (colors.length < 7) {
 						height = 25+(colors.length*35);
@@ -1250,7 +1254,6 @@ var tableViz = function(json, data, columns) {
 	$('.page-content').activity(false);
 };
 var getTable = function(divID, json, data, columns) {
-	var fFire = false;
 	var graph_type = getURLParameter('type');
 	var sort = [[ 0, "desc" ]];
 	if (data.sSort) {
@@ -1314,16 +1317,6 @@ var getTable = function(divID, json, data, columns) {
 		},
 		//this hides any tables on the ioc_event page that come up empty
 		"fnDrawCallback": function(oSettings) {
-			//console.log(oSettings);
-			if ((oSettings.oPreviousSearch.sSearch !== ""))  {
-				tableToViz(oSettings.aoData);
-			} else if (oSettings.oPreviousSearch.sSearch === ""){ //ignore first load
-				if (fFire !== false) {
-					rowChart.filter(null);
-					dc.redrawAll();
-				}
-			}
-			fFire = true;
 			var iTotalRecords = oSettings.fnRecordsTotal();
 			if ((iTotalRecords === 0) && (getURLParameter('type') === 'ioc_event')) {
 				$(this).parents('.jdash-widget').remove();
@@ -1332,6 +1325,7 @@ var getTable = function(divID, json, data, columns) {
 	});
 	oTable.fnFilter('');
 };
+
 // PAGE LOAD FUNCTIONS
 $(document).ready(function() { // execute javascript as soon as DOM is loaded
 	App.init(); // initlayout and core plugins
