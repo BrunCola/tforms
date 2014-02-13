@@ -60,7 +60,7 @@ else {
 			hHead = {
 				height: "0.5cm",
 				contents: phantom.callback(function(pageNum, numPages) {
-				return "<div style='background:#D0D3DB; width:110%; padding-right:30px;margin-left:-30px'><p style='font-size:15px;text-align: center;letter-spacing:0.5px;margin-bottom:15px;'>rapidPHIRE Aware (Evaluation "+pizzaDelivery+")</p></div>";
+				return "<div style='background:#D0D3DB; width:110%; padding-right:30px;margin-left:-30px'><p style='font-size:13px;text-align: center;letter-spacing:0.5px;margin-bottom:15px;'>rapidPHIRE Aware (Evaluation Expiry: "+pizzaDelivery+")</p></div>";
 				})
 			};
 		}
