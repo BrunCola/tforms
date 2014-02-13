@@ -1,12 +1,13 @@
 var page = require('webpage').create(),
 	system = require('system'),
-	address, size;
+	address, size, hHead;
+var pizza = 1;
 
 if (system.args.length < 3 || system.args.length > 10) {
     console.log('Usage: generate.js dir filename [paperwidth*paperheight|paperformat] [zoom]');
     console.log(' paper (pdf output) examples: "5in*7.5in", "10cm*20cm", "A4", "Letter"');
     phantom.exit(1);
-} 
+}
 else {
 	size = 'A4';
 	var dir = system.args[1];
@@ -28,7 +29,7 @@ else {
 			if ((new Date().getTime() - start < maxtimeOutMillis) && !condition) {
 				// If not time-out yet and condition not yet fulfilled
 				condition = (typeof(testFx) === "string" ? eval(testFx) : testFx()); //< defensive code
-			} 
+			}
 			else {
 				if (!condition) {
 					// If condition still not fulfilled (timeout but condition is 'false')
@@ -37,7 +38,7 @@ else {
 						MailNow(eType, eOutput, email[e]);
 					}
 					phantom.exit(1);
-				} 
+				}
 				else {
 					// Condition fulfilled (timeout and/or condition is 'true')
 					console.log("'waitFor()' finished in " + (new Date().getTime() - start) + "ms.");
@@ -48,14 +49,24 @@ else {
 		}, 250); //< repeat check every 250ms
 	};
 	var render = function (type, output, callback) {
-		address = dir+'report.php?&type='+type+'&query=summary&start='+start+'&end='+end;	
-		page.viewportSize = { 
-			width: 1056, 
-			height: 600 
+		address = dir+'report.php?&type='+type+'&query=summary&start='+start+'&end='+end;
+		page.viewportSize = {
+			width: 1056,
+			height: 600
 		};
+
+		if (pizza === 1) {
+			hHead = {
+				height: "0.5cm",
+				contents: phantom.callback(function(pageNum, numPages) {
+				return "<div style='background:#D0D3DB; width:110%; padding-right:30px;margin-left:-30px'><p style='font-size:15px;text-align: center;letter-spacing:0.5px;margin-bottom:15px;'>This is currently a trial version of rapidPHIRE</p></div>";
+				})
+			};
+		}
 		page.paperSize = {
 			format: 'A4',
 			margin: '0.4cm',
+			header: hHead,
 			footer: {
 				height: "0.5cm",
 				contents: phantom.callback(function(pageNum, numPages) {
@@ -70,7 +81,7 @@ else {
 			// Check for page load success
 			if (status !== "success") {
 				console.log("Unable to access network");
-			} 
+			}
 			else {
 				waitFor(
 					function() {
@@ -90,7 +101,7 @@ else {
 	var next_page = function() {
 		if(!output) {
 			page.close();
-		} 
+		}
 		else {
 			init();
 		}
@@ -114,7 +125,7 @@ else {
 			phantom.exit();
 		});
 	};
-	init();	
+	init();
 }
 
 // phantomjs generate.js http://localhost/rapidPHIRE_dev/ "ioc_hits_report,X,XYZ" "snap.pdf,XX.pdf,XYZ.pdf" andrewdillion6@gmail.com 1390487340 1391005740 "7 days" "Oshawa Clinic"

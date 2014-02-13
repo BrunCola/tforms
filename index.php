@@ -76,9 +76,7 @@ if (isset($_GET['logout'])) {
 		<!-- <script type="text/javascript" src="assets/lib/d3.layout.cloud.js"/> REPLACED BY cloud.dc.js-->
 		<!-- <script type="text/javascript" src="inc/email.js"> -->
 		<script type="text/javascript" src="assets/scripts/app.js"></script>
-
 <?php if ($session['id']) { ?>
-
 		<script type="text/javascript" src="inc/template.js"></script>
 	</head>
 	<body class="page-header-fixed">
@@ -92,7 +90,7 @@ if (isset($_GET['logout'])) {
 					</a>
 					<a href="javascript:;" class="btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
 						<img src="assets/img/menu-toggler.png" alt=""/>
-					</a>         
+					</a>
 					<ul class="nav pull-right">
 						<!-- NOTIFICATION DROPDOWN -->
 						<li class="dropdown" id="header_notification_bar">
@@ -109,7 +107,7 @@ if (isset($_GET['logout'])) {
 									<a href="javascript:void(0);" onclick="javascript:page('null','ioc_hits', null, null, null);">See all notifications<i class="m-icon-swapright"></i></a>
 								</li>
 							</ul>
-						</li>   
+						</li>
 						<li class="dropdown"><a href="#" id="welcome" class="dropdown-toggle" data-toggle="dropdown">Welcome, <?php echo($session['username']); ?> <b class="caret"></b></a>
 							<ul class="dropdown-menu">
 								<li><a href="javascript:void(0);" onclick="$.colorbox({href:'assets/modals/user.params.php?id=<?php echo($session['id']); ?>'});"><i class="fa fa-cog"></i> My Preferences</a></li>
@@ -131,10 +129,10 @@ if (isset($_GET['logout'])) {
 			</div>
 			<!-- CONTENT -->
 			<div class="page-content">
-				<div class="container-fluid"> 
+				<div class="container-fluid">
 					<!-- PAGE HEADER -->
 					<div class="row-fluid">
-						<div class="span12"> 
+						<div class="span12">
 							<div style="margin-top:30px"  class="btn-group pull-right">
 								<div id="head-right"></div>
 							</div>
@@ -145,8 +143,8 @@ if (isset($_GET['logout'])) {
 								<div id="severity"></div>
 							</h3>
 							<div class="breadcrumb">
-								<div class="pull-right no-text-shadow"> 
-									<div id="dashboard-report-range" class="dashboard-date-range tooltips no-tooltip-on-touch-device responsive" data-tablet="" data-desktop="tooltips" data-placement="top" data-original-title="Change dashboard date range"> 
+								<div class="pull-right no-text-shadow">
+									<div id="dashboard-report-range" class="dashboard-date-range tooltips no-tooltip-on-touch-device responsive" data-tablet="" data-desktop="tooltips" data-placement="top" data-original-title="Change dashboard date range">
 										<i style="color:#fff" class="fa fa-calendar"></i>
 										<span></span>
 										<i style="color:#fff" class="fa fa-angle-down"></i>
@@ -160,23 +158,23 @@ if (isset($_GET['logout'])) {
 							</div>
 						</div>
 					</div>
-					<div id="page"><!-- SORTABLE DIVs--></div>  
+					<div id="page"><!-- SORTABLE DIVs--></div>
 					<div id="d3Div"></div>
 				</div>
 			</div>
 		</div>
 		<!-- FOOTER -->
-		<div class="footer">
-			<div class="footer-inner">
-				<img src="assets/img/rapid.png" id="footimg" class="hidden-phone hidden-tablet">
-				<?php 
+		<div class='footer'>
+			<div class='footer-inner'>
+				<img src='assets/img/rapid.png' id='footimg' class='hidden-phone hidden-tablet' alt=''/>
+				<?php
 					$f = fopen('VERSION', 'r');
 					$line = fgets($f);
 					fclose($f);
 					echo '&copy; '.date("Y").' Phirelight Security Solutions - rapidPHIRE version: '.$line;
 				?>
 			</div>
-			
+
 			<div class="footer-tools">
 				<span class="go-top">
 					<i class="fa fa-angle-up"></i>
@@ -185,15 +183,13 @@ if (isset($_GET['logout'])) {
 		</div>
 	</body>
 </html>
-
 <?php } else { ?>
-
 		<link href="assets/css/pages/login.css" rel="stylesheet" type="text/css"/>
 	</head>
 	<body class="login">
 		<!-- LOGO -->
 		<div class="logo">
-			<img src="assets/img/rapid.png" alt=""/> 
+			<img src="assets/img/rapid.png" alt=""/>
 		</div>
 		<div class="content">
 			<!-- LOGIN FORM -->
