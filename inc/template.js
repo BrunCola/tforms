@@ -1100,9 +1100,9 @@ var d3PieGraph = function(divID, json) {
 		//begin pie chart render
 		var width = $("#"+divID).width();
 		var w = width/2, //width
-		var h = width/2, //height
-		var r = width/4, //radius
-		var color = d3.scale.ordinal().range(cc); //builtin range of colors
+		h = width/2, //height
+		r = width/4, //radius
+		color = d3.scale.ordinal().range(cc); //builtin range of colors
 		//color.domain(d3.keys(graph.aaData.ioc).filter(function(key) { return key !== "count"; }));
 
 		var vis = d3.select("#"+divID)
