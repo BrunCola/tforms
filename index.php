@@ -166,9 +166,9 @@ if (isset($_GET['logout'])) {
 			</div>
 		</div>
 		<!-- FOOTER -->
-		<div class="footer">
-			<div class="footer-inner">
-				<img src="assets/img/rapid.png" id="footimg" class="hidden-phone hidden-tablet">
+		<div class='footer'>
+			<div class='footer-inner'>
+				<img src='assets/img/rapid.png' id='footimg' class='hidden-phone hidden-tablet' alt=''/>
 				<?php 
 					$f = fopen('VERSION', 'r');
 					$line = fgets($f);

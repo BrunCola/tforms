@@ -987,7 +987,7 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 	.on("filtered", function(chart, filter){
 		sevButtonCheck(dim);
 		//oTable.fnFilter(filter);
-		console.log(filter);
+		//console.log(filter);
 	})
 	.renderlet(function(chart){
 		chart.select('svg')
@@ -1270,7 +1270,7 @@ var getTable = function(divID, json, data, columns) {
 				"aButtons": [ "csv", "xls", {
 					"sExtends": "pdf",
 					"sPdfOrientation": "landscape",
-					"sPdfMessage": "Your custom message would go here."
+					"sPdfMessage": "rapidPHIRE data export"
 				} ]
 			}
 			]
