@@ -841,11 +841,11 @@ var dcBarGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 					resizeViz(chart, "#"+divID, aspect);
 				},10);
 			});
-		// dc.events.trigger(function() {
-		// 	var filter = barChart.filters();
-		// 	var string = filter.join(' | ');
-		// 		//	oTable.fnFilter(string,null,true,null);
-		// 	});
+			// dc.events.trigger(function() {
+			// 	var filter = barChart.filters();
+			// 	var string = filter.join(' | ');
+			// 		oTable.fnFilter(string,null,true,null);
+			// });
 		});
 };
 var dcPieGraph = function(divID, dim, group, colors) {
@@ -959,54 +959,44 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 	}
 	var width = $("#"+divID).width();
 	rowChart
-	.width(width)
-	//.height(width/2 + barExpand)
-	.height(hHeight)
-	.margins({top: 5, left: 0, right: 0, bottom: 20})
-	.group(sevCount)
-	.dimension(dim)
-	.colors(["#377FC7","#F5D800","#F88B12","#DD122A"])
-	.valueAccessor(function(d) {
-		return d.value.count+0.1;
-	})
-	.colorAccessor(function (d){return d.value.severity;})
-	.on("postRender", function(chart, d){
-		$('.alert1').on("click", function() {
-			sevButtonClick(dim, '1');
-		});
-		$('.alert2').on("click", function() {
-			sevButtonClick(dim, '2');
-		});
-		$('.alert3').on("click", function() {
-			sevButtonClick(dim, '3');
-		});
-		$('.alert4').on("click", function() {
-			sevButtonClick(dim, '4');
-		});
-	})
-	.on("filtered", function(chart, filter){
-		sevButtonCheck(dim);
-		//oTable.fnFilter(filter);
-		//console.log(filter);
-	})
-	.renderlet(function(chart){
-		chart.select('svg')
-			.attr('width', width)
-			.attr('height', hHeight)
-			.attr('viewBox', '0 0 '+width+' '+hHeight)
-			.attr('perserveAspectRatio', 'xMinYMid');
-		var aspect;
-		$(window).on("resize", function() {
-			if (colors.length < 7) {
-				height = 25+(colors.length*35);
-			} else if (colors.length >= 7) {
-				height = 25+(colors.length*28);
-			}
-			aspect = width / hHeight;
-			resizeViz(chart, "#"+divID, aspect);
-		});
-		$('.sidebar-toggler').on("click", function() {
-			setTimeout(function() {
+		.width(width)
+		//.height(width/2 + barExpand)
+		.height(hHeight)
+		.margins({top: 5, left: 0, right: 0, bottom: 20})
+		.group(sevCount)
+		.dimension(dim)
+		.colors(["#377FC7","#F5D800","#F88B12","#DD122A"])
+		.valueAccessor(function(d) {
+			return d.value.count+0.1;
+		})
+		.colorAccessor(function (d){return d.value.severity;})
+		.on("postRender", function(chart, d){
+			$('.alert1').on("click", function() {
+				sevButtonClick(dim, '1');
+			});
+			$('.alert2').on("click", function() {
+				sevButtonClick(dim, '2');
+			});
+			$('.alert3').on("click", function() {
+				sevButtonClick(dim, '3');
+			});
+			$('.alert4').on("click", function() {
+				sevButtonClick(dim, '4');
+			});
+		})
+		.on("filtered", function(chart, filter){
+			sevButtonCheck(dim);
+			//oTable.fnFilter(filter);
+			//console.log(filter);
+		})
+		.renderlet(function(chart){
+			chart.select('svg')
+				.attr('width', width)
+				.attr('height', hHeight)
+				.attr('viewBox', '0 0 '+width+' '+hHeight)
+				.attr('perserveAspectRatio', 'xMinYMid');
+			var aspect;
+			$(window).on("resize", function() {
 				if (colors.length < 7) {
 					height = 25+(colors.length*35);
 				} else if (colors.length >= 7) {
@@ -1014,60 +1004,70 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 				}
 				aspect = width / hHeight;
 				resizeViz(chart, "#"+divID, aspect);
-			},10);
-		});
-	})
-	.renderLabel(true)
-	.label(function(d) { return d.key+' ('+d.value.count+')'; })
-	.labelOffsetY(lOffset)
-	.elasticX(false)
-	.x(d3.scale.log().domain([1, tops[0].value.count+0.1]).range([0,width]))
-	.xAxis()
-	.scale(rowChart.x())
-	.tickFormat(logFormat);
+			});
+			$('.sidebar-toggler').on("click", function() {
+				setTimeout(function() {
+					if (colors.length < 7) {
+						height = 25+(colors.length*35);
+					} else if (colors.length >= 7) {
+						height = 25+(colors.length*28);
+					}
+					aspect = width / hHeight;
+					resizeViz(chart, "#"+divID, aspect);
+				},10);
+			});
+		})
+		.renderLabel(true)
+		.label(function(d) { return d.key+' ('+d.value.count+')'; })
+		.labelOffsetY(lOffset)
+		.elasticX(false)
+		.x(d3.scale.log().domain([1, tops[0].value.count+0.1]).range([0,width]))
+		.xAxis()
+		.scale(rowChart.x())
+		.tickFormat(logFormat);
 };
 var dcCompositeGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 	var width = $("#"+divID).width();
 	compositeChart
-	.width(width)
-	.height(180)
-	.transitionDuration(1000)
-	.margins({top: 10, right: 50, bottom: 40, left: 60})
-	.dimension(dim)
-	.group(group)
-	//.valueAccessor(function (d) {
-		//return d.destination;
-	//})
-	.xAxisLabel(xAxis) // (optional) render an axis label below the x axis
-	.yAxisLabel(yAxis) // (optional) render a vertical axis lable left of the y axis
-	.mouseZoomable(true)
-	.x(d3.time.scale().domain([moment.unix(start), moment.unix(end)]))
-	//.round(d3.time.hour)
-	.xUnits(d3.time.hours)
-	.elasticY(true)
-	.renderHorizontalGridLines(true)
-	.brushOn(false)
-	.rangeChart(barChart)
-	.compose([
-		dc.lineChart(compositeChart).group(group)
+		.width(width)
+		.height(180)
+		.transitionDuration(1000)
+		.margins({top: 10, right: 50, bottom: 40, left: 60})
+		.dimension(dim)
+		.group(group)
 		//.valueAccessor(function (d) {
-			//return d.count;
+			//return d.destination;
 		//})
-	.renderArea(true)
-		//.stack(group, function (d) { return d.count; })
+		.xAxisLabel(xAxis) // (optional) render an axis label below the x axis
+		.yAxisLabel(yAxis) // (optional) render a vertical axis lable left of the y axis
+		.mouseZoomable(true)
+		.x(d3.time.scale().domain([moment.unix(start), moment.unix(end)]))
+		//.round(d3.time.hour)
+		.xUnits(d3.time.hours)
+		.elasticY(true)
+		.renderHorizontalGridLines(true)
+		.brushOn(false)
+		.rangeChart(barChart)
+		.compose([
+			dc.lineChart(compositeChart).group(group)
+			//.valueAccessor(function (d) {
+				//return d.count;
+			//})
+			.renderArea(true)
+			//.stack(group, function (d) { return d.count; })
 		])
-	.xAxis();
-	//barChart = dc.barChart("#"+value.dID+'bar')
-	//.width(990)
-	//.height(40)
-	//.margins({top: 0, right: 50, bottom: 20, left: 40})
-	//.dimension(cf_data.dimension(dimension[x]))
-	//.group(group[g])
-	//.centerBar(true)
-	//.gap(1)
-	//.x(d3.time.scale().domain([moment.unix(start), moment.unix(end)]))
-	//.round(d3.time.hour.round)
-	//.xUnits(d3.time.hour);
+		.xAxis();
+		//barChart = dc.barChart("#"+value.dID+'bar')
+		//.width(990)
+		//.height(40)
+		//.margins({top: 0, right: 50, bottom: 20, left: 40})
+		//.dimension(cf_data.dimension(dimension[x]))
+		//.group(group[g])
+		//.centerBar(true)
+		//.gap(1)
+		//.x(d3.time.scale().domain([moment.unix(start), moment.unix(end)]))
+		//.round(d3.time.hour.round)
+		//.xUnits(d3.time.hour);
 };
 // D3.JS GRAPH FUNCTIONS
 var d3Viz = function(json, data) {
@@ -1100,16 +1100,16 @@ var d3PieGraph = function(divID, json) {
 		//begin pie chart render
 		var width = $("#"+divID).width();
 		var w = width/2, //width
-		h = width/2, //height
-		r = width/4, //radius
-		color = d3.scale.ordinal().range(cc); //builtin range of colors
+		var h = width/2, //height
+		var r = width/4, //radius
+		var color = d3.scale.ordinal().range(cc); //builtin range of colors
 		//color.domain(d3.keys(graph.aaData.ioc).filter(function(key) { return key !== "count"; }));
 
 		var vis = d3.select("#"+divID)
 			.append("svg:svg") //create the SVG element inside the <body>
 			.data([graph.aaData]) //associate our data with the document
 			.attr("width", w) //set the width and height of our visualization (these will be attributes of the <svg> tag
-				.attr("height", h)
+			.attr("height", h)
 			.append("svg:g") //make a group to hold our pie chart
 			.attr("transform", "translate(" + r + "," + r + ")"); //move the center of the pie chart from 0, 0 to radius, radius
 
@@ -1122,8 +1122,8 @@ var d3PieGraph = function(divID, json) {
 		var arcs = vis.selectAll("g.slice") //this selects all <g> elements with class slice (there aren't any yet)
 			.data(pie) //associate the generated pie data (an array of arcs, each having startAngle, endAngle and value properties)
 			.enter() //this will create <g> elements for every "extra" data element that should be associated with a selection. The result is creating a <g> for every object in the data array
-				.append("svg:g") //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
-				.attr("class", "slice"); //allow us to style things in the slices (like text)
+			.append("svg:g") //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
+			.attr("class", "slice"); //allow us to style things in the slices (like text)
 
 		arcs.append("svg:path")
 			.attr("fill", function(d, i) { return color(i); } ) //set the color for each slice to be chosen from the color function defined above
@@ -1163,7 +1163,7 @@ var d3swimChart = function(divID, json) {
 			.labels("naviBand")
 			.brush("naviBand", ["mainBand"])
 			.redraw();
-    });
+	});
 };
 var d3force = function(divID, json) {
 	//$('#d3Div').prepend('<ul style="list-style:vertical; font-size: 12pt; margin-left: 20%"><li><div style="float:left;width:15px;height:15px;background-color:#000"></div><span style="float:left"> test</span></li><li><div style="float:left;width:15px;height:15px;background-color:#000"></div><span style="float:left"> test</span></li></ul>');
