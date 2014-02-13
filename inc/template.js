@@ -2,7 +2,7 @@ var defaultDayRange = 1; // Set default date range for the app
 var defaultSearch = 'ioc_hits'; // Set default search for when the raw url is visited
 var defaultNotifications = 'ioc_hits'; // Set which query to run when the 'See all Notifications' dropdown is clicked
 var pizza = 1;
-var pizzaDelivery = "Feb 17, 2014";
+var pizzaDelivery = "Feb 21, 2014";
 var rowChart, geoChart, sevChart, barChart, compositeChart, pieChart;
 var page = function(search_val, type, start, end, clear_b) {
 	clear_div('page');
@@ -1371,7 +1371,8 @@ $(document).ready(function() { // execute javascript as soon as DOM is loaded
 	// function will work properly (only on forward/back actions):
 	//
 	if (pizza === 1) {
-		$('.footer').append('<div class="trial-footer"><div class="trial-caption">This is currently a trial version of rapidPHIRE (<span id="countdown"></span> remaining).</div></div>');
+		// $('.footer').append('<div class="trial-footer"><div class="trial-caption">rapidPHIRE Aware (Evaluation Expiry: <span id="countdown"></span> - 21 Feb, 2014).</div></div>');
+		$('.footer').append('<div class="trial-footer"><div class="trial-caption">rapidPHIRE Aware (Evaluation Expiry: '+pizzaDelivery+').</div></div>');
 		$('.footer').css('margin-bottom','50px');
 		// set the date we're counting down to
 		var target_date = new Date(pizzaDelivery).getTime();

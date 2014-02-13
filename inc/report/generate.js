@@ -2,6 +2,7 @@ var page = require('webpage').create(),
 	system = require('system'),
 	address, size, hHead;
 var pizza = 1;
+var pizzaDelivery = "Feb 21, 2014";
 
 if (system.args.length < 3 || system.args.length > 10) {
     console.log('Usage: generate.js dir filename [paperwidth*paperheight|paperformat] [zoom]');
@@ -59,7 +60,7 @@ else {
 			hHead = {
 				height: "0.5cm",
 				contents: phantom.callback(function(pageNum, numPages) {
-				return "<div style='background:#D0D3DB; width:110%; padding-right:30px;margin-left:-30px'><p style='font-size:15px;text-align: center;letter-spacing:0.5px;margin-bottom:15px;'>This is currently a trial version of rapidPHIRE</p></div>";
+				return "<div style='background:#D0D3DB; width:110%; padding-right:30px;margin-left:-30px'><p style='font-size:15px;text-align: center;letter-spacing:0.5px;margin-bottom:15px;'>rapidPHIRE Aware (Evaluation "+pizzaDelivery+")</p></div>";
 				})
 			};
 		}

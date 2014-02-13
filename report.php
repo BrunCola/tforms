@@ -70,7 +70,7 @@
 			}
 		</style>
 	</head>
-	<body style="background-color:#ebeaeb;width:1056px !important;" class="page-header">  		
+	<body style="background-color:#ebeaeb;width:1056px !important;" class="page-header">
 		<!-- HEADER -->
 		<div class="header navbar navbar-inverse navbar-top">
 			<div class="navbar-inner">
