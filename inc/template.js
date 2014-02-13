@@ -512,7 +512,7 @@ var tableToViz = function(arr) {
 		rowChart.filter(uniqueArray[i]);
 	}
 	dc.redrawAll();
-};
+}; 
 var chartToTable = function(filter) {
 	console.log('chartToTable');
 	var searchString = $('#table1 input').val();
