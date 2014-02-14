@@ -516,29 +516,38 @@ var tableToViz = function(arr) {
 var chartToTable = function(filter) {
 	console.log('chartToTable');
 	var searchString = $('#table1 input').val();
-	var newString = '';
+	var newString = ''; var range, tRange;
 	var sInsert = function(value) {
 		if (searchString.search('time:') > -1) {
-			if (searchString.search('time:null') > -1) {
-				if(sevChart.hasFilter()===true) {
-					newString = searchString.replace('time:null ', ""); //replace any istance of time:XXX with null
-					//filter
-				} else if(sevChart.hasFilter===false) {
-					//do nothing
-				}
+			range = searchString.match(/^(.*)time:(.*)/i);
+			tRange = range[2].split(' ');
+			console.log(tRange);
+			if (range[0] === 'time:null') {
+				// if(sevChart.hasFilter()===true) {
+				// 	newString = searchString.replace('time:null ', ""); //replace any istance of time:XXX with null
+				// 	//filter
+				// } else if(sevChart.hasFilter===false) {
+				// 	//do nothing
+				// }
 			} else {
-				if(sevChart.hasFilter()===true) {
-					//replace instance of time and append new time
-				} else if(sevChart.hasFilter===false) {
-					//append time onto string;
+				if(sevChart.hasFilter===false) {
+					newString = searchString+'time:'+tRange[0]+' ';
+					//alert('test');
+					oTable.fnFilter(newString);
+				} else {
+					//newString = searchString+value;
+					newString = searchString.replace(+'time:'+tRange[0]+' ', "");
+					oTable.fnFilter(newString);
 				}
 			}
-		} else {
+		} else if (searchString.search('time:') === -1) {
 			if (searchString.search(value) === -1){
 				newString = searchString+value+' ';
+				//alert('test');
 				oTable.fnFilter(newString);
 			}
 			if (searchString.search(value) > -1) {
+				//alert('test2');
 				newString = searchString.replace(value+' ', "");
 				oTable.fnFilter(newString);
 			}
@@ -753,8 +762,8 @@ var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height
 				end = Date.parse(filter[1]).getTime()/1000;
 				chartToTable('time:'+start+','+end);
 			} //else {
-			//	chartToTable('time:null');
-			//}
+				// chartToTable('time:null');
+			// }
 		})
 		.on("postRender", function(chart, d){
 			sevButtonCheck(dim);
@@ -1375,26 +1384,26 @@ $(document).ready(function() { // execute javascript as soon as DOM is loaded
 		$('.footer').append('<div class="trial-footer"><div class="trial-caption">rapidPHIRE Aware (Evaluation Expiry: '+pizzaDelivery+').</div></div>');
 		$('.footer').css('margin-bottom','50px');
 		// set the date we're counting down to
-		var target_date = new Date(pizzaDelivery).getTime();
-		// variables for time units
-		var days, hours, minutes, seconds;
-		// get tag element
-		var countdown = document.getElementById("countdown");
-		// update the tag with id "countdown" every 1 second
-		setInterval(function () {
-			// find the amount of "seconds" between now and target
-			var current_date = new Date().getTime();
-			var seconds_left = (target_date - current_date) / 1000;
-			// do some time calculations
-			days = parseInt(seconds_left / 86400);
-			seconds_left = seconds_left % 86400;
-			hours = parseInt(seconds_left / 3600);
-			seconds_left = seconds_left % 3600;
-			minutes = parseInt(seconds_left / 60);
-			seconds = parseInt(seconds_left % 60);
-			// format countdown string + set tag value
-			countdown.innerHTML = days + "d, " + hours + "h";
-		}, 1000);
+		// var target_date = new Date(pizzaDelivery).getTime();
+		// // variables for time units
+		// var days, hours, minutes, seconds;
+		// // get tag element
+		// var countdown = document.getElementById("countdown");
+		// // update the tag with id "countdown" every 1 second
+		// setInterval(function () {
+		// 	// find the amount of "seconds" between now and target
+		// 	var current_date = new Date().getTime();
+		// 	var seconds_left = (target_date - current_date) / 1000;
+		// 	// do some time calculations
+		// 	days = parseInt(seconds_left / 86400);
+		// 	seconds_left = seconds_left % 86400;
+		// 	hours = parseInt(seconds_left / 3600);
+		// 	seconds_left = seconds_left % 3600;
+		// 	minutes = parseInt(seconds_left / 60);
+		// 	seconds = parseInt(seconds_left % 60);
+		// 	// format countdown string + set tag value
+		// 	countdown.innerHTML = days + "d, " + hours + "h";
+		// }, 1000);
 	}
 
 	window.setTimeout(function() {
