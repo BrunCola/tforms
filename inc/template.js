@@ -379,7 +379,6 @@ function sortByKey(array, key, key2) {
 	return array.sort(function(a, b) {
 		// var x = a[key]; var y = b[key];
 		// return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-
 		if (a[key2] == b[key2])
 		return a[key] < b[key] ? -1 : 1;
 		return a[key2] < b[key2] ? 1 : -1;
@@ -523,18 +522,22 @@ var chartToTable = function(filter) {
 				if(sevChart.hasFilter()===true) {
 					newString = searchString.replace('time:null ', ""); //replace any istance of time:XXX with null
 					//filter
-				} else if(sevChart.hasFilter===false) {
+				} 
+				else if(sevChart.hasFilter===false) {
 					//do nothing
 				}
-			} else {
+			} 
+			else {
 				if(sevChart.hasFilter()===true) {
 					//replace instance of time and append new time
-				} else if(sevChart.hasFilter===false) {
+				} 
+				else if(sevChart.hasFilter===false) {
 					//append time onto string;
 				}
 			}
-		} else {
-			if (searchString.search(value) === -1){
+		} 
+		else {
+			if (searchString.search(value) === -1) {
 				newString = searchString+value+' ';
 				oTable.fnFilter(newString);
 			}
@@ -549,7 +552,8 @@ var chartToTable = function(filter) {
 		for (f in filter) {
 			sInsert(filter[f]);
 		}
-	} else if (filter !== undefined) {
+	} 
+	else if (filter !== undefined) {
 		sInsert(filter);
 	}
 };
@@ -708,7 +712,7 @@ var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height
 				other:0
 			};
 		}
-		);
+	);
 	var width = $("#"+divID).width();
 	var hHeight;
 	if(height !== undefined) {
@@ -743,10 +747,10 @@ var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height
 		//.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
 		.title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
 		.renderTitle(true) // (optional) whether chart should render titles, :default = false
-		.on("filtered", function(chart, d){
+		.on("filtered", function(chart, d) {
 			sevButtonCheck(dim);
 		})
-		.on("filtered", function(chart, filter){
+		.on("filtered", function(chart, filter) {
 			if (filter !== null) {
 				console.log(filter);
 				start = Date.parse(filter[0]).getTime()/1000;
@@ -756,7 +760,7 @@ var severityGraph = function(divID, dim, group, start, end, xAxis, yAxis, height
 			//	chartToTable('time:null');
 			//}
 		})
-		.on("postRender", function(chart, d){
+		.on("postRender", function(chart, d) {
 			sevButtonCheck(dim);
 		})
 		.renderlet(function(chart) {
@@ -855,7 +859,7 @@ var dcGeoMap = function (divID, data, world) {
 			//	chart.selectAll("g").call(tip);
 			//	chart.selectAll("g").on('mouseover', tip.show)
 			//		.on('mouseout', tip.hide);
-	});
+		});
 };
 var dcBarGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 	var width = $("#"+divID).width();
@@ -898,16 +902,16 @@ var dcBarGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 					resizeViz(chart, "#"+divID, aspect);
 				},10);
 			});
-		// dc.events.trigger(function() {
-		// 	var filter = barChart.filters();
-		// 	var string = filter.join(' | ');
-		// 		//	oTable.fnFilter(string,null,true,null);
-		// 	});
-	});
+			// dc.events.trigger(function() {
+			// 	var filter = barChart.filters();
+			// 	var string = filter.join(' | ');
+			// 		//	oTable.fnFilter(string,null,true,null);
+			// 	});
+		});
 };
 var dcPieGraph = function(divID, dim, group, colors) {
-		var width = $("#"+divID).width();
-		pieChart
+	var width = $("#"+divID).width();
+	pieChart
 		.height(width)
 		.innerRadius(width/6)
 		.width(width)
@@ -963,12 +967,12 @@ var dcWordCloud = function(divID, data) {
 	var h = width/2;
 
 	d3.layout.cloud()
-	.size([w,h])
-	.words(data.aaData.map(function(d) { return { text: d.remote_country, size: d.count }; }))
-	.padding(5)
-	.rotate(function(d) { return ~~(Math.random() * 5) * 30 - 60; })
-	.font("Impact")
-	.fontSize(function(d) { return fontSize(d.size); })
+		.size([w,h])
+		.words(data.aaData.map(function(d) { return { text: d.remote_country, size: d.count }; }))
+		.padding(5)
+		.rotate(function(d) { return ~~(Math.random() * 5) * 30 - 60; })
+		.font("Impact")
+		.fontSize(function(d) { return fontSize(d.size); })
 		//.fontSize(function(d) { return d.size; })
 		.on("end", wordCloud)
 		.start();
@@ -1008,101 +1012,104 @@ var dcRowGraph = function(divID, dim, group, colors, dimName) {
 	if (colors.length < 7) {
 		lOffset = 17+(colors.length*0.2);
 		hHeight = 25+(colors.length*35);
-	} else if (colors.length >= 7) {
+	} 
+	else if (colors.length >= 7) {
 		lOffset = 12.7+(colors.length*0.2);
 		hHeight = 25+(colors.length*28);
 	}
 	var fill;
 	var width = $("#"+divID).width();
-		rowChart
-			.width(width)
-			//.height(width/2 + barExpand)
-			.height(hHeight)
-			.margins({top: 5, left: 0, right: 0, bottom: 20})
-			.group(sevCount)
-			.dimension(dim)
-			.colors(["#377FC7","#F5D800","#F88B12","#DD122A"])
-			.valueAccessor(function(d) {
-				return d.value.count+0.1;
-			})
-			.colorAccessor(function (d){return d.value.severity;})
-			.on("postRender", function(chart, d){
-				$('.alert1').on("click", function() {
-					sevButtonClick(dim, '1');
-				});
-				$('.alert2').on("click", function() {
-					sevButtonClick(dim, '2');
-				});
-				$('.alert3').on("click", function() {
-					sevButtonClick(dim, '3');
-				});
-				$('.alert4').on("click", function() {
-					sevButtonClick(dim, '4');
-				});
-				$('#table1 input').keyup(function(){
-					if (!$('#table1 input').val()) {
-						rowChart.filter(null);
-						dc.redrawAll();
-					} else {
-						tableToViz($('.table1').dataTable().fnSettings().aoData);
-					}
-				});
-				sevButtonCheck(dim);
-				chart.select('g').on('click', function(){
-					chartToTable(fill);
-				});
-			})
-			.on("filtered", function(chart, filter){
-				fill = filter;
-				sevButtonCheck(dim);
-			})
-			.renderlet(function(chart, filter){
-				chart.select('svg')
-					.attr('width', width)
-					.attr('height', hHeight)
-					.attr('viewBox', '0 0 '+width+' '+hHeight)
-					.attr('perserveAspectRatio', 'xMinYMid');
-				var aspect;
-
-				$(window).on("resize", function() {
+	rowChart
+		.width(width)
+		//.height(width/2 + barExpand)
+		.height(hHeight)
+		.margins({top: 5, left: 0, right: 0, bottom: 20})
+		.group(sevCount)
+		.dimension(dim)
+		.colors(["#377FC7","#F5D800","#F88B12","#DD122A"])
+		.valueAccessor(function(d) {
+			return d.value.count+0.1;
+		})
+		.colorAccessor(function (d){return d.value.severity;})
+		.on("postRender", function(chart, d) {
+			$('.alert1').on("click", function() {
+				sevButtonClick(dim, '1');
+			});
+			$('.alert2').on("click", function() {
+				sevButtonClick(dim, '2');
+			});
+			$('.alert3').on("click", function() {
+				sevButtonClick(dim, '3');
+			});
+			$('.alert4').on("click", function() {
+				sevButtonClick(dim, '4');
+			});
+			$('#table1 input').keyup(function(){
+				if (!$('#table1 input').val()) {
+					rowChart.filter(null);
+					dc.redrawAll();
+				} 
+				else {
+					tableToViz($('.table1').dataTable().fnSettings().aoData);
+				}
+			});
+			sevButtonCheck(dim);
+			chart.select('g').on('click', function(){
+				chartToTable(fill);
+			});
+		})
+		.on("filtered", function(chart, filter){
+			fill = filter;
+			sevButtonCheck(dim);
+		})
+		.renderlet(function(chart, filter){
+			chart.select('svg')
+				.attr('width', width)
+				.attr('height', hHeight)
+				.attr('viewBox', '0 0 '+width+' '+hHeight)
+				.attr('perserveAspectRatio', 'xMinYMid');
+			var aspect;
+			$(window).on("resize", function() {
+				if (colors.length < 7) {
+					height = 25+(colors.length*35);
+				} 
+				else if (colors.length >= 7) {
+					height = 25+(colors.length*28);
+				}
+				aspect = width / hHeight;
+				resizeViz(chart, "#"+divID, aspect);
+			});
+			$('.sidebar-toggler').on("click", function() {
+				setTimeout(function() {
 					if (colors.length < 7) {
 						height = 25+(colors.length*35);
-					} else if (colors.length >= 7) {
+					} 
+					else if (colors.length >= 7) {
 						height = 25+(colors.length*28);
 					}
 					aspect = width / hHeight;
 					resizeViz(chart, "#"+divID, aspect);
-				});
-				$('.sidebar-toggler').on("click", function() {
-					setTimeout(function() {
-						if (colors.length < 7) {
-							height = 25+(colors.length*35);
-						} else if (colors.length >= 7) {
-							height = 25+(colors.length*28);
-						}
-						aspect = width / hHeight;
-						resizeViz(chart, "#"+divID, aspect);
-					},10);
-				});
-			})
-			.renderLabel(true)
-			.label(function(d) { return d.key+' ('+d.value.count+')'; })
-			.labelOffsetY(lOffset)
-			.elasticX(false)
-			.x(d3.scale.log().domain([1, tops[0].value.count+0.1]).range([0,width]))
-			.xAxis()
-			.scale(rowChart.x())
-			.tickFormat(logFormat);
+				},10);
+			});
+		})
+		.renderLabel(true)
+		.label(function(d) { return d.key+' ('+d.value.count+')'; })
+		.labelOffsetY(lOffset)
+		.elasticX(false)
+		.x(d3.scale.log().domain([1, tops[0].value.count+0.1]).range([0,width]))
+		.xAxis()
+		.scale(rowChart.x())
+		.tickFormat(logFormat);
 };
 var dcCompositeGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 	var width = $("#"+divID).width();
 	compositeChart
-	.width(width)
-	.height(180)
-	.transitionDuration(1000)
-	.margins({top: 10, right: 50, bottom: 40, left: 60})
-	.dimension(dim)
-	.group(group)
+		.width(width)
+		.height(180)
+		.transitionDuration(1000)
+		.margins({top: 10, right: 50, bottom: 40, left: 60})
+		.dimension(dim)
+		.group(group)
 		//.valueAccessor(function (d) {
 			//return d.destination;
 		//})
@@ -1125,17 +1132,17 @@ var dcCompositeGraph = function(divID, dim, group, start, end, xAxis, yAxis) {
 			//.stack(group, function (d) { return d.count; })
 			])
 		.xAxis();
-	//barChart = dc.barChart("#"+value.dID+'bar')
-	//.width(990)
-	//.height(40)
-	//.margins({top: 0, right: 50, bottom: 20, left: 40})
-	//.dimension(cf_data.dimension(dimension[x]))
-	//.group(group[g])
-	//.centerBar(true)
-	//.gap(1)
-	//.x(d3.time.scale().domain([moment.unix(start), moment.unix(end)]))
-	//.round(d3.time.hour.round)
-	//.xUnits(d3.time.hour);
+		//barChart = dc.barChart("#"+value.dID+'bar')
+		//.width(990)
+		//.height(40)
+		//.margins({top: 0, right: 50, bottom: 20, left: 40})
+		//.dimension(cf_data.dimension(dimension[x]))
+		//.group(group[g])
+		//.centerBar(true)
+		//.gap(1)
+		//.x(d3.time.scale().domain([moment.unix(start), moment.unix(end)]))
+		//.round(d3.time.hour.round)
+		//.xUnits(d3.time.hour);
 };
 // D3.JS GRAPH FUNCTIONS
 var d3Viz = function(json, data) {
@@ -1295,7 +1302,8 @@ var getTable = function(divID, json, data, columns) {
 		bStateSave = true;
 		bPaginate = false;
 		sDom = 'r<t>';
-	} else {
+	} 
+	else {
 		if (data.sDom !== 'false') {
 			sDom = '<"clear"C>T<"clear">lfr<"table_overflow"t>ip';
 		}
@@ -1317,10 +1325,8 @@ var getTable = function(divID, json, data, columns) {
 		"bPaginate": bPaginate,
 		"sAjaxSource": json+'&getTable=true&dID='+divID,
 		"aoColumns": columns,
-
 		"iDisplayLength": iDisplayLength,
 		"bStateSave": true,
-
 		"sType": "html",
 		"sDom": sDom,
 		"fnStateSave": function (oSettings, oData) {
@@ -1332,15 +1338,16 @@ var getTable = function(divID, json, data, columns) {
 		"oTableTools": {
 			"sSwfPath": "assets/swf/copy_csv_xls_pdf.swf",
 			"aButtons": [
-			"copy",
-			{
+			"copy",	{
 				"sExtends": "collection",
 				"sButtonText": "Export",
-				"aButtons": [ "csv", "xls", {
-					"sExtends": "pdf",
-					"sPdfOrientation": "landscape",
-					"sPdfMessage": "Your custom message would go here."
-				} ]
+				"aButtons": [ 
+					"csv", "xls", {
+						"sExtends": "pdf",
+						"sPdfOrientation": "landscape",
+						"sPdfMessage": "rapidPHIRE Data Export"
+					} 
+				]
 			}
 			]
 		},
@@ -1396,7 +1403,6 @@ $(document).ready(function() { // execute javascript as soon as DOM is loaded
 			countdown.innerHTML = days + "d, " + hours + "h";
 		}, 1000);
 	}
-
 	window.setTimeout(function() {
 		$(window).on('popstate', function(event) {
 			var url;
