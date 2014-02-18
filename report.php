@@ -5,6 +5,7 @@
 		<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 		<meta content="" name="rapidPHIRE"/>
 		<meta content="" name="Phirelight Security Solutions"/>
+		<meta content="" name="version 1.0"/>
 		<title>rapidPHIRE | fight fire with PHIRE |</title>
 		<link rel="shortcut icon" href="assets/favicon.ico"/>
 		<link href="assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
