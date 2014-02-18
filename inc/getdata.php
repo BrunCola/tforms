@@ -2792,14 +2792,11 @@ function getTable($database, $table, $start, $end, $notime, $dID) {
 				preg_match('/^.*time:(.*)/i', $_GET['sSearch'], $tMatch);
 				$tTime = explode(' ',trim($tMatch[1])); // returns everything after 'time:'
 				$time = explode(',', $tTime[0]);
-				if ($tMatch) {
+				if ($tMatch[1]!=null) {
 				 	$start = '"'.$time[0].'"';
 				 	$end = '"'.$time[1].'"';
-				 	// echo 'start: '.$start.' ';
-				 	// echo 'end: '.$end.' ';
-				 	// echo 'what search sees: '.trim($_GET['sSearch'], 'time:'.$tTime[0]);
 				}
-				if (trim($_GET['sSearch'], 'time:'.$tTime[0]) != '') {
+				if (trim($_GET['sSearch'], 'time:'.$tTime[0].' ') != '') {
 					$aWords = preg_split('/\s+/', $_GET['sSearch']);
 					$sWhere = "WHERE (";
 					for ( $j=0 ; $j<count($aWords) ; $j++ ) {
