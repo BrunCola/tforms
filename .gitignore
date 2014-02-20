@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .DS_Store
 .nodemonignore
 .sass-cache/
@@ -6,3 +7,16 @@
 node_modules/
 public/lib
 test/coverage/
+=======
+._*
+.DS_Store
+.DS_Store?
+.Spotlight-V100
+.Trashes
+.fuse*
+*.sublime-project
+*.sublime-workspace
+ehthumbs.db
+Thumbs.db
+class.database.php
+>>>>>>> e17a0e13ba98edb4952494af7ad5bc6ef16a1b0a
