@@ -12,7 +12,7 @@ exports.render = function(req, res) {
     var info = [];
     var table1SQL = 'SELECT '+
         // SELECTS
-        'max(from_unixtime(time)) as time, '+ // Last Seen
+        'max(date_format(from_unixtime(time), "%Y-%m-%d %l:%i:%s")) as time, '+ // Last Seen
         '`ioc_severity`, '+
         'count(*) as count, '+
         '`ioc`, '+
@@ -68,7 +68,7 @@ exports.render = function(req, res) {
 
     var crossfilterSQL = 'SELECT '+
         // SELECTS
-        'from_unixtime(time) as time, '+ // Last Seen
+        'date_format(from_unixtime(time), "%Y-%m-%d %l:%i:%s") as time, '+ // Last Seen
         '`remote_country`, '+
         'ioc_severity, '+
         'count(*) as count, '+
@@ -77,7 +77,7 @@ exports.render = function(req, res) {
         'FROM conn_ioc '+
         'WHERE time BETWEEN 1388552400 AND 1391230740 '+
         'AND `ioc_count` > 0 AND `trash` IS NULL '+
-        'GROUP BY month(from_unixtime(`time`)), day(from_unixtime(`time`)), hour(from_unixtime(`time`)), `remote_country`, `ioc_severity`';
+        'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country, ioc_severity';
 
 
     async.parallel([
@@ -136,7 +136,7 @@ exports.render = function(req, res) {
             crossfilter: crossfilter
         };
         //console.log(results);
-        res.json(results);
+        res.jsonp(results);
     });
 
     // } else {
