@@ -19,9 +19,9 @@ module.exports = function (sql, params, callback) {
 				if (params[d].dView === undefined) {
 					params[d].dView = true;
 				}
-				if (params[d].dType === undefined) {
-					params[d].dType = 'string-case';
-				}
+				// if (params[d].dType === undefined) {
+				// 	params[d].dType = 'string-case';
+				// }
 				//	if ((this.params[d].title === null) && (this.params[d].select==='remote_cc')) {
 				//	//do something
 				//	//replace type with html

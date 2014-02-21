@@ -10,17 +10,90 @@ angular.module('mean.iochits').directive('makeTable', ['$timeout', function ($ti
 					$('#example').dataTable({
 						"aaData": $scope.data.tables[0].aaData,
 						"aoColumns": $scope.data.tables[0].params,
-						"bDeferRender": true
+						"bDeferRender": true,
 						//"bDestroy": true,
 						//"bProcessing": true,
 						//"bRebuild": true,
 						//"aaSorting": true,
 						//"bFilter": true,
 						//"bPaginate": true,
-						//"iDisplayLength": 50
+						//"iDisplayLength": 50,
+						"fnDrawCallback": function( oSettings ) {
+							var arr = [];
+							console.log(oSettings)
+							for (var d in oSettings.aiDisplay) {
+								arr.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData);
+							}
+							console.log(arr);
+						}
 					});
+					//console.log(dataTable);
 				}, 0, false);
 			})
+		}
+	};
+}]);
+
+angular.module('mean.iochits').directive('universalSearch', ['$timeout', function ($timeout) {
+	return {
+		link: function ($scope, element, attrs) {
+			// 	element.val($scope.universalSearch);
+			// 	element.data('old-value', $scope.universalSearch);
+
+			// 	// detect outside changes and update our input
+			// 	$scope.$watch('universalSearch', function (val) {
+			// 		element.val($scope.universalSearch);
+			// 	});
+
+			// 	// on blur, update the value in $scope
+			// 	element.bind('propertychange keyup paste', function (blurEvent) {
+			// 		if (!$scope.filterDim) {
+			// 			$scope.filterDim = $scope.cf_data.dimension(function(d){ return d});
+			// 		}
+			// 		$timeout(function () {
+			// 			if (element.data('old-value') != element.val()) {
+			// 				console.log('value changed, new value is: ' + element.val());
+			// 				console.log($scope.filterDim.top(Infinity));
+			// 				//var $scope.filterDim = $scope.filterDim;
+			// 				if (element.val() == '' || element.val() == null) {
+			// 					crossfilter($scope.data).dimension(function(d){ return d}).filterAll(function(d){return d});
+			// 				} else {
+			// 					//$scope.filterDim.filterAll();
+			// 					$scope.filterDim.filter(function(d) {
+			// 						for (var i in d) {
+			// 							if (d[i] === element.val()) { //convert to regex
+			// 								return d;
+			// 							}
+			// 						}
+			// 					});
+			// 					//console.log($scope.cf_data.dimension(function(d){ return d}).top());
+			// 				}
+			// 				dc.redrawAll();
+			// 				$scope.filterDim = $scope.cf_data.dimension(function(d){ return d});
+
+
+			// 				$scope.$apply(function () {
+			// 					$scope.universalSearch = element.val();
+			// 					element.data('old-value', element.val());
+			// 				});
+			// 			}
+
+
+
+
+
+			// 		}, 500, false);
+			// 	});
+
+			// // 		// var dim = $scope.cf_data.dimension(function(d){ return d});
+			// 		// var sort = dim.top(Infinity).filter(function(d) {
+			// 		// 	for (var i in d) {
+			// 		// 		if (d[i] === "RBN") { //convert to regex
+			// 		// 			return d;
+			// 		// 		}
+			// 		// 	}
+			// 		// });
+			// 		// 
 		}
 	};
 }]);
@@ -227,7 +300,6 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', function ($
 					});
 				}
 			}
-			
 }]);
 
 angular.module('mean.system').directive('makeGeoChart', ['$timeout', function ($timeout) {
