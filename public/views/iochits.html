@@ -1,34 +1,35 @@
 <section data-ng-controller="IochitsController" data-ng-init="onPageLoad()">
-	 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-         <!--  <h1 class="page-header">Dashboard</h1> -->
-          <div class="row placeholders">
+	<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+		<!--  <h1 class="page-header">Dashboard</h1> -->
+		<div class="row placeholders">
+			<div class="col-xs-6 col-sm-3 col-md-6 placeholder">
+				<div id="rowchart" make-row-chart></div>
+			</div>
+			<div class="col-xs-6 col-sm-3 col-md-3 placeholder">
+				<!-- <img data-src="holder.js/200x200/auto/sky/index.html" class="img-responsive" alt="Generic placeholder thumbnail"> -->
+				<h4>Label</h4>
+				<span class="text-muted">Something else</span>
+			</div>
+			<div class="col-xs-6 col-sm-3 col-md-3 placeholder">
+				<!-- <img data-src="holder.js/200x200/auto/vine/index.html" class="img-responsive" alt="Generic placeholder thumbnail"> -->
+				<h4>Label</h4>
+				<span class="text-muted">Something else</span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-6 col-sm-3 col-md-4 placeholder">
+				<div id="geochart" make-geo-chart></div>
+			</div>
+			<div class="col-xs-6 col-sm-3 col-md-8 placeholder">
+				<div id="sevchart" make-sev-chart></div>
+			</div>
 
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/sky/index.html" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/vine/index.html" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/sky/index.html" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/vine/index.html" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-            </div>
+		</div>
+		<div class="row">
+			<div id="ioctable" class="col-xs-6 col-sm-3 col-md-12" make-table></div>
+		</div>
+	</div>
 
-          <div id="geochart" make-geo-chart></div>
-          <div id="rowchart" make-row-chart></div>
-          <div id="barchart" make-bar-chart></div>
-          <div id="sevchart" make-sev-chart></div>
-          <div id="ioctable" make-table></div>
-          </div>
-          <!-- <h2 class="sub-header">Section title</h2> -->
+	<!-- <div id="barchart" make-bar-chart></div> -->
+	<!-- <h2 class="sub-header">Section title</h2> -->
 </section>
