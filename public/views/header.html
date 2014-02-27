@@ -1,0 +1,45 @@
+<div class="navbar-inner" data-ng-controller="HeaderController">
+	<div style="background-color: #000;" class="container-fluid">
+		<a href="/">
+			<img class="logo" src="../img/logo.png" alt=""/>
+		</a>
+		<a href="javascript:;" class="btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
+			<img src="../img/menu-toggler.png" alt=""/>
+		</a>
+		<ul class="nav pull-right">
+			<!-- NOTIFICATION DROPDOWN -->
+			<li ng-app="mean.system" style="margin-top:6px;margin-bottom:-8px" class="dropdown" id="header_notification_bar">
+				<input class="span3" name="search" ng-model="search" type="text" placeholder="Search" universal-search>
+			</li>
+
+			<li class="dropdown" id="header_notification_bar">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+					<i class="fa fa-warning"></i>
+					<span class="badge"></span>
+				</a>
+				<ul class="dropdown-menu extended notification">
+					<li>
+						<span class="more"></span>
+					</li>
+					<div id="notifications"></div>
+					<li class="external">
+						<a href="javascript:void(0);" onclick="javascript:page('null','ioc_hits', null, null, null);">See all notifications<i class="m-icon-swapright"></i></a>
+					</li>
+				</ul>
+			</li>
+			<li class="navbar-nav nav pull-right"><a href="#" id="welcome" class="dropdown-toggle" data-toggle="dropdown">Welcome, {{global.user.username}} <b class="caret"></b></a>
+				<ul class="dropdown-menu">
+					<li><a href="javascript:void(0);" onclick="#"><i class="fa fa-cog"></i> My Preferences</a></li>
+					<!-- <li><a href="javascript:void(0);" onclick="javascript:page('null','get_cron', null, null, null);"><i class="icon-envelope"></i> Manage Reports</a></li> -->
+					<li><a href="javascript:void(0);" onclick="#"><i class="fa fa-user"></i> Manage Users</a></li>
+					<li class="divider"></li>
+					<li><a href="/signout"><i class="fa fa-power-off"></i> Logout</a></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+</div>
+
+
+
+

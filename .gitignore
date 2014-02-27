@@ -8,4 +8,10 @@
 *.sublime-workspace
 ehthumbs.db
 Thumbs.db
-class.database.php
+.nodemonignore
+.sass-cache/
+.bower-*/
+.idea/
+node_modules/
+public/lib
+test/coverage/
