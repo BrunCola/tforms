@@ -1,12 +1,148 @@
 'use strict';
 
-angular.module('mean.iochits').directive('makeTable', ['$timeout', function ($timeout) {
+angular.module('mean.system').directive('pageHead', function() {
+	return {
+		restrict: 'A',
+		scope : {
+		title : '@'
+	},
+		templateUrl : '/views/pagehead.html',
+		transclude : true
+	};
+});
+
+
+
+angular.module('mean.system').directive('sidebar', function() {
 	return {
 		link: function ($scope, element, attrs) {
-			$scope.$on('tableLoad', function () {
+			var floating_logo = function() {
+				var viewPort = $(window).height();
+				var sidebarHeight = $('.page-sidebar').height() + 180;
+				if (viewPort < sidebarHeight) {
+					$('#footimg').css({ display: 'none' });
+				}
+				else {
+					$('#footimg').css({ position: 'fixed', bottom: 30, display: '' });
+				}
+			};
+			floating_logo();
+			$(window).scroll(function() {
+				$('.page-sidebar').css({ position: 'fixed' });
+			});
+			// BOTTOM LEFT LOGO VISIBILITY
+			$('.page-sidebar li a').click(function() {
+				setTimeout(function() {
+					floating_logo();
+				}, 150);
+			});
+			$(window).bind("resize", function() {
+				floating_logo();
+			});
+			// sidebar memory
+			if (!localStorage.getItem('sidebar')) {
+				localStorage.setItem('sidebar', 0);
+			}
+			if (localStorage.getItem('sidebar') === '0') { // keep sidebar consistent between pages
+				var body = $('body');
+				var sidebar = $('.page-sidebar');
+				$(".sidebar-search", sidebar).removeClass("open");
+				if (body.hasClass("page-sidebar-closed")) {
+					body.removeClass("page-sidebar-closed");
+					if (body.hasClass('page-sidebar-fixed')) {
+						sidebar.css('width', '');
+					}
+				}
+				else {
+					body.addClass("page-sidebar-closed");
+				}
+			}
+			App.init();
+		}
+	};
+});
+
+angular.module('mean.system').directive('severityLevels', ['$timeout', function ($timeout) {
+	return {
+		link: function ($scope, element, attrs) {
+			function updateSevCounts(sevcounts) {
+				for (var s in sevcounts) {
+					if (sevcounts[s].key === 1) {
+						$('#al1').html(' '+sevcounts[s].value+' ');
+					}
+					if (sevcounts[s].key === 2) {
+						$('#al2').html(' '+sevcounts[s].value+' ');
+					}
+					if (sevcounts[s].key === 3) {
+						$('#al3').html(' '+sevcounts[s].value+' ');
+					}
+					if (sevcounts[s].key === 4) {
+						$('#al4').html(' '+sevcounts[s].value+' ');
+					}
+				}
+			}
+			$scope.$on('severityLoad', function () {
+				//$scope.$watch('sevcounts', updateSevCounts(), true);
+				$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert1 alert"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> 0 </span></button>');
+				$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert2 alert"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> 0 </span></button>');
+				$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert3 alert"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> 0 </span></button>');
+				$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
+				var sevcounts = $scope.crossfilterData.dimension(function(d){return d.ioc_severity;}).group().reduceSum(function(d) {return d.count;}).top(Infinity);
+				updateSevCounts(sevcounts);
+			})
+			$scope.$on('severityUpdate', function () {
+				var sevcounts = $scope.crossfilterData.dimension(function(d){return d.ioc_severity;}).group().reduceSum(function(d) {return d.count;}).top(Infinity);
+				updateSevCounts(sevcounts);
+			})
+		}
+	};
+}]);
+
+angular.module('mean.system').directive('datePicker', ['$timeout', '$location', '$rootScope', function ($timeout, $location, $rootScope) {
+	return {
+		link: function ($scope, element, attrs) {
+			$timeout(function () {
+				$('#reportrange').daterangepicker(
+					{
+					ranges: {
+						'Today': [moment().startOf('day'), moment()],
+						'Yesterday': [moment().subtract('days', 1).startOf('day'), moment().subtract('days', 1).endOf('day')],
+						'Last 7 Days': [moment().subtract('days', 6), moment()],
+						'Last 30 Days': [moment().subtract('days', 29), moment()],
+						'This Month': [moment().startOf('month'), moment().endOf('month')],
+						'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+					},
+						startDate: moment().subtract('days', 29),
+						endDate: moment()
+					},
+					function(start, end) {
+						$scope.global.startTime = start;
+						$scope.global.endTime = end;
+						// $rootScope.start = $scope.global.startTime;
+						// console.log(start);
+						// console.log($rootScope.start);
+						$('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+					}
+				);
+				$('#reportrange').on('apply', function(ev, picker) {
+					// some kind of clear option is needed here
+					$scope.$apply($location.search({'start': moment(picker.startDate.format('YYYY-MM-DD')).unix(), 'end':moment(picker.endDate.format('YYYY-MM-DD')).unix()}));
+				});
+			}, 0, false);
+		}
+	};
+}]);
+
+angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '$routeParams', '$rootScope', function ($timeout, $location, $routeParams, $rootScope) {
+	return {
+		link: function ($scope, element, attrs) {
+
+			$scope.$on('tableLoad', function (event) {
+				// var sevDim = crossfilterData.dimension(function(d){ return d.ioc_severity});
+				// var countryDim = crossfilterData.dimension(function(d){ return d.remote_country;});
+				// var rowDim = crossfilterData.dimension(function(d){ return d.ioc});
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
-					var arr = $scope.data.tables[0].aaData;
-					$(element).html('<table  cellpadding="0" cellspacing="0" border="0" class="col-xs-6 col-sm-3 col-md-12 display" id="example" ></table>');
+					$(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="example" ></table>');
 					$('#example').dataTable({
 						"aaData": $scope.data.tables[0].aaData,
 						"aoColumns": $scope.data.tables[0].params,
@@ -17,103 +153,99 @@ angular.module('mean.iochits').directive('makeTable', ['$timeout', function ($ti
 						//"aaSorting": true,
 						//"bFilter": true,
 						//"bPaginate": true,
-						//"iDisplayLength": 50,
-						"fnDrawCallback": function( oSettings ) {
-							var arr = [];
-							console.log(oSettings)
-							for (var d in oSettings.aiDisplay) {
-								arr.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData);
+						"sDom": '<"clear"C>T<"clear">lr<"table_overflow"t>ip',
+						"iDisplayLength": 50,
+						 "fnPreDrawCallback": function( oSettings ) {
+						 	//console.log(oSettings.aoColumns);
+							$scope.r = [], $scope.e = [];
+							for (var a in oSettings.aoColumns) {
+								// find the index of column rows so they can me modified below
+								if (oSettings.aoColumns[a].bVisible === true) {
+									$scope.r.push(oSettings.aoColumns[a].mData);
+								}
+								// push unique to link builder
+								if (oSettings.aoColumns[a].link) {
+									$scope.e.push(oSettings.aoColumns[a]);
+								}
 							}
-							console.log(arr);
+						},
+						"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+							if (aData.remote_cc) {
+								$('td:eq('+$scope.r.indexOf("remote_cc")+')', nRow).html('<div class="f32"><span class="flag '+aData.remote_cc.toLowerCase()+'"></span></div>');
+							}
+							if (aData.ioc_severity) {
+								var rIndex = $scope.r.indexOf("ioc_severity");
+								switch(aData.ioc_severity) {
+									case 1:
+										$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-flag fa-stack-1x fa-inverse"></i></span>');
+										break;
+									case 2:
+										$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bullhorn fa-stack-1x fa-inverse"></i></span>');
+										break;
+									case 3:
+										$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bell fa-stack-1x fa-inverse"></i></span>');
+										break;
+									case 4:
+										$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-exclamation-circle fa-stack-1x fa-inverse"></i></span>');
+										break;
+								}
+							}
+							// url builder
+							for (var c in $scope.e) {
+								var links = function() {
+									// var arr = [];
+									var type = $scope.e[c].link.type;
+									var obj = new Object();
+									for (var l in $scope.e[c].link.val) {
+										obj[$scope.e[c].link.val[l]] = aData[$scope.e[c].link.val[l]];
+									}
+									return JSON.stringify({
+										type: $scope.e[c].link.type,
+										objlink: obj
+									});
+								}
+								$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='btn btn-link' type='button' value='"+links()+"' href=''>"+aData[$scope.e[c].mData]+"</button>");
+							}
+						},
+						"fnDrawCallback": function( oSettings ) {
+							$('table button').click(function(){
+								var link = JSON.parse(this.value);
+								if ($routeParams.start && $routeParams.end) {
+									link.objlink.start = $routeParams.start;
+									link.objlink.end = $routeParams.end;
+								}
+								$scope.$apply($location.path(link.type).search(link.objlink));
+							});
+							$scope.country = [];
+							$scope.ioc = [];
+							$scope.severity = [];
+							for (var d in oSettings.aiDisplay) {
+								$scope.country.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.remote_country);
+								$scope.ioc.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc);
+								$scope.severity.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc_severity);
+							}
+							$scope.$broadcast('severityUpdate');
+							// dc.redrawAll();
 						}
 					});
-					//console.log(dataTable);
+					$rootScope.$watch('search', function(){
+						$('#example').dataTable().fnFilter($rootScope.search);
+					});
 				}, 0, false);
 			})
 		}
 	};
 }]);
 
-angular.module('mean.iochits').directive('universalSearch', ['$timeout', function ($timeout) {
-	return {
-		link: function ($scope, element, attrs) {
-			// 	element.val($scope.universalSearch);
-			// 	element.data('old-value', $scope.universalSearch);
-
-			// 	// detect outside changes and update our input
-			// 	$scope.$watch('universalSearch', function (val) {
-			// 		element.val($scope.universalSearch);
-			// 	});
-
-			// 	// on blur, update the value in $scope
-			// 	element.bind('propertychange keyup paste', function (blurEvent) {
-			// 		if (!$scope.filterDim) {
-			// 			$scope.filterDim = $scope.cf_data.dimension(function(d){ return d});
-			// 		}
-			// 		$timeout(function () {
-			// 			if (element.data('old-value') != element.val()) {
-			// 				console.log('value changed, new value is: ' + element.val());
-			// 				console.log($scope.filterDim.top(Infinity));
-			// 				//var $scope.filterDim = $scope.filterDim;
-			// 				if (element.val() == '' || element.val() == null) {
-			// 					crossfilter($scope.data).dimension(function(d){ return d}).filterAll(function(d){return d});
-			// 				} else {
-			// 					//$scope.filterDim.filterAll();
-			// 					$scope.filterDim.filter(function(d) {
-			// 						for (var i in d) {
-			// 							if (d[i] === element.val()) { //convert to regex
-			// 								return d;
-			// 							}
-			// 						}
-			// 					});
-			// 					//console.log($scope.cf_data.dimension(function(d){ return d}).top());
-			// 				}
-			// 				dc.redrawAll();
-			// 				$scope.filterDim = $scope.cf_data.dimension(function(d){ return d});
-
-
-			// 				$scope.$apply(function () {
-			// 					$scope.universalSearch = element.val();
-			// 					element.data('old-value', element.val());
-			// 				});
-			// 			}
-
-
-
-
-
-			// 		}, 500, false);
-			// 	});
-
-			// // 		// var dim = $scope.cf_data.dimension(function(d){ return d});
-			// 		// var sort = dim.top(Infinity).filter(function(d) {
-			// 		// 	for (var i in d) {
-			// 		// 		if (d[i] === "RBN") { //convert to regex
-			// 		// 			return d;
-			// 		// 		}
-			// 		// 	}
-			// 		// });
-			// 		// 
-		}
-	};
-}]);
-
-//sevChart function
-angular.module('mean.system').directive('makeSevChart', ['$timeout', function ($timeout) {
+angular.module('mean.system').directive('makeSevChart', ['$timeout', '$window', '$rootScope', function ($timeout, $window, $rootScope) {
 	return {
 		link: function ($scope, element, attrs) {
 			$scope.$on('sevChart', function () {
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
 					//var arr = $scope.data.tables[0].aaData;
-					console.log('sevchart broadcast recieved');
-					console.log($scope.data.crossfilter);
-
-					var dimension = $scope.cf_data.dimension(function(d) { return d.hour });
-					//var group = dimension.group(function(d) { return d.count });
-					//console.log(dimension);
+					var dimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
 					var group = dimension.group();
-					var sevChart = dc.barChart('#sevchart');
-
+					$scope.sevChart = dc.barChart('#sevchart');
 					var connVsTime = group.reduce(
 						function(p, v) {
 							if (v.ioc_severity === 1) {
@@ -160,19 +292,22 @@ angular.module('mean.system').directive('makeSevChart', ['$timeout', function ($
 								other:0
 							};
 						}
-					);
-					// var start = 1375070400;
-					// var end = 1391230740;
+						);
+					//var start = 1375070400;
+					//var end = 1391230740;
 					//var width = $("#"+divID).width();
 					//var hHeight;
-					// if(height !== undefined) {
-					// 	hHeight = height;
-					// } else {
-					// 	hHeight = width/3.3; //4.6 as default
-					// }
-					sevChart
-						.width(600) // (optional) define chart width, :default = 200
-						.height(300)
+					//if(height !== undefined) {
+					//	hHeight = height;
+					//} else {
+					//	hHeight = width/3.3; //4.6 as default
+					//}
+					//console.log($(element).width());
+					var width = $('#sevchart').parent().width();
+					var height = width/3.5;
+					$scope.sevChart
+						.width(width) // (optional) define chart width, :default = 200
+						.height(height)
 						.transitionDuration(500) // (optional) define chart transition duration, :default = 500
 						.margins({top: 10, right: 30, bottom: 25, left: 43}) // (optional) define margins
 						.dimension(dimension) // set dimension
@@ -190,54 +325,79 @@ angular.module('mean.system').directive('makeSevChart', ['$timeout', function ($
 						.yAxisLabel('teest') // (optional) render a vertical axis lable left of the y axis
 						.elasticY(true) // (optional) whether chart should rescale y axis to fit data, :default = false
 						.elasticX(true) // (optional) whether chart should rescale x axis to fit data, :default = false
-						.x(d3.time.scale().domain([moment.unix(1388552400), moment.unix(1391230740)])) // define x scale
+						.x(d3.time.scale().domain([moment.unix($scope.global.startTime-100000), moment.unix($scope.global.endTime+100000)])) // define x scale
 						.xUnits(d3.time.hours) // define x axis units
 						.renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
 						.renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
 						//.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
 						.title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
 						.renderTitle(true); // (optional) whether chart should render titles, :default = fal
-					sevChart.render();
+						$scope.sevChart.render();
 
+						$scope.sevWidth = function() {
+						return $('#sevchart').parent().width();
+						}
+						var waitForFinalEvent = (function () {
+							var timers = {};
+							return function (callback, ms, uniqueId) {
+								if (!uniqueId) {
+									uniqueId = "sevchartWait"; //Don't call this twice without a uniqueId
+								}
+								if (timers[uniqueId]) {
+									clearTimeout (timers[uniqueId]);
+								}
+							timers[uniqueId] = setTimeout(callback, ms);
+							};
+						})();
+						var setNewSize = function(width) {
+							$scope.sevChart
+								.width(width)
+								.height(width/3.5)
+								.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+							$(element).height(width/3.5);
+							d3.select('#sevchart svg').attr('width', width).attr('height', width/3.5);
+							$scope.sevChart.redraw();
+						}
+						$(window).resize(function () {
+							waitForFinalEvent(function(){
+								$scope.sevChart.render();
+							}, 200, "sevchartresize");
+						});
+						$(window).bind('resize', function() {
+							setTimeout(function(){
+								setNewSize($scope.sevWidth())
+							}, 150);
+						});
+						$rootScope.$watch('search', function(){
+							$scope.sevChart.redraw();
+						});
 				}, 0, false);
 			})
 		}
 	};
 }]);
 
-angular.module('mean.system').directive('makeRowChart', ['$timeout', function ($timeout) {
+angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
 	return {
 		link: function ($scope, element, attrs) {
 			$scope.$on('rowChart', function () {
-
-				var hHeight, lOffset;
-				var colors = 19; ///CHANGE THIS to count return rows
-				// if (colors.length < 7) {
-				// 	lOffset = 17+(colors.length*0.2);
-				// 	hHeight = 25+(colors.length*35);
-				// }
-				// else if (colors.length >= 7) {
-				// 	lOffset = 12.7+(colors.length*0.2);
-				// 	hHeight = 25+(colors.length*28);
-				// }
-				if (colors.length < 7) {
-					lOffset = 17+(colors*0.2);
-					hHeight = 25+(colors*35);
-				}
-				else if (colors >= 7) {
-					lOffset = 12.7+(colors*0.2);
-					hHeight = 25+(colors*28);
-				}
-				var fill;
-				var width = (window.innerWidth-50)*(0.375);
-				//console.log('rowchart broadcast recieved');
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
-					console.log($scope.data);
-
-					var rowChart = dc.rowChart('#rowchart');
-					var dimension = $scope.cf_data.dimension(function(d) { return d.ioc });
+					var dimension = $scope.crossfilterData.dimension(function(d) { return d.ioc });
 					var group = dimension.group().reduceSum(function(d) { return d.count });
-
+					var rowcount = dimension.group().reduceSum(function(d) {return d.count;}).top(Infinity);
+					var hHeight, lOffset;
+					var count = rowcount.length; ///CHANGE THIS to count return rows
+					if (count < 7) {
+						lOffset = 17+(count*0.2);
+						hHeight = 25+(count*35);
+					}
+					else if (count >= 7) {
+						lOffset = 12.7+(count*0.2);
+						hHeight = 25+(count*28);
+					}
+					var fill;
+					var width = $('#rowchart').width();
+					$scope.rowChart = dc.rowChart('#rowchart');
 					var sevCount = group.reduce(
 						function (d, v) {
 						//++d.count;
@@ -262,19 +422,8 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', function ($
 						var x = Math.log(d) / Math.log(10) + 1e-6;
 						return Math.abs(x - Math.floor(x)) < 0.3 ? numberFormat(d) : "";
 					}
-					// var hHeight, lOffset;
-					// if (colors.length < 7) {
-					// 	lOffset = 17+(colors.length*0.2);
-					// 	hHeight = 25+(colors.length*35);
-					// } 
-					// else if (colors.length >= 7) {
-					// 	lOffset = 12.7+(colors.length*0.2);
-					// 	hHeight = 25+(colors.length*28);
-					// }
-					// var fill;
-					// var width = $("#"+divID).width();
-					rowChart
-						.width(width)
+					$scope.rowChart
+					.width(width)
 						//.height(width/2 + barExpand)
 						.height(hHeight)
 						.margins({top: 5, left: 0, right: 0, bottom: 20})
@@ -291,34 +440,40 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', function ($
 						.elasticX(false)
 						.x(d3.scale.log().domain([1, tops[0].value.count+0.1]).range([0,500])) //500 ->width
 						.xAxis()
-						.scale(rowChart.x())
+						.scale($scope.rowChart.x())
 						.tickFormat(logFormat);
 
-						rowChart.render();
-						}, 0, false);
-
-					});
-				}
-			}
+						$scope.rowChart.render();
+						$rootScope.$watch('search', function(){
+							dimension.filterAll();
+							if ($scope.crossfilterData.dimension(function(d){ return d.remote_country;}).top(Infinity).length > 1) {
+								var newDim = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
+							}
+							if ($scope.country.length > 1) {
+								newDim.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
+							}
+							dimension = newDim;
+							$scope.rowChart.redraw();
+						});
+				}, 0, false);
+			});
+		}
+	}
 }]);
 
-angular.module('mean.system').directive('makeGeoChart', ['$timeout', function ($timeout) {
+angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
 	return {
 		link: function ($scope, element, attrs) {
-			$scope.$on('geoChart', function () {
-				console.log('geochart broadcast recieved');
+			$scope.$on('geoChart', function (event) {
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
-					var geoChart = dc.geoChoroplethChart('#geochart');
-					//var world = d3.json('../../../lib/dc.js/world.json');
-					//console.log(world);
+					$scope.geoChart = dc.geoChoroplethChart('#geochart');
 					var numberFormat = d3.format(".2f");
-					var dimension = $scope.cf_data.dimension(function (d) {
-						return d.remote_country;
-					});
-					var countryCount = dimension.group().reduceSum(function (d) {
+					//var dimension = crossfilterData.dimension(function(d){ return d.remote_country;});
+					var dimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
+					var group = dimension.group().reduceSum(function (d) {
 						return d.count;
 					});
-					var top = countryCount.orderNatural(function (p) {return p.count;}).top(1);
+					var top = group.orderNatural(function (p) {return p.count;}).top(1);
 					var numberOfItems = top[0].value+1;
 					var rainbow = new Rainbow();
 					rainbow.setNumberRange(0, numberOfItems);
@@ -328,35 +483,63 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', function ($
 						var hexColour = rainbow.colourAt(i);
 						cc.push('#' + hexColour);
 					}
-					// var minhits = function (d) { return d.value.min; };
-					// var maxhits = function (d) { return d.value.max; };
+					//var minhits = function (d) { return d.value.min; };
+					//var maxhits = function (d) { return d.value.max; };
 					function MapCallbackFunction(context)
 					{
-					  var cb = function(error, world) {
-					  	var width = (window.innerWidth)*(0.30);
-						var height = width/1.4;
-						geoChart
+						var cb = function(error, world) {
+							var width = $('#geochart').parent().width();
+							var height = width/1.4;
+							$scope.geoChart
 							.dimension(dimension)
-							.group(countryCount)
+							.group(group)
 							.projection(d3.geo.mercator().precision(0.1).scale((width + 1) / 2 / Math.PI).translate([width / 2, width / 2]))
 							.width(width)
 							.height(height)
 							.colors(["#377FC7","#F5D800","#F88B12","#DD122A","#000"])
 							.colors(cc)
-							.colorCalculator(function (d) { return d ? geoChart.colors()(d) : '#ccc'; })
+							.colorCalculator(function (d) { return d ? $scope.geoChart.colors()(d) : '#ccc'; })
 							.overlayGeoJson(world.features, "country", function(d) {
 								return d.properties.name;
 							});
-							// .title(function (d) {
-							// 	return d.key+": "+(d.value ? d.value : 0);
-							// });
-							// dc.renderAll();
-							geoChart.render();
-					  }
-					  return cb;
+							//.title(function (d) {
+							//	return d.key+": "+(d.value ? d.value : 0);
+							//});
+							//dc.renderAll();
+							$scope.geoChart.render();
+						}
+						return cb;
 					}
 					d3.json("../../../lib/dc.js/world.json", MapCallbackFunction(this));
 
+					$scope.geoWidth = function() {
+						return $('#geochart').parent().width();
+					}
+					var setNewSize = function(width) {
+						$scope.geoChart
+							.width(width)
+							.height(width/3.3)
+							.projection(d3.geo.mercator().precision(0.1).scale((width + 1) / 2 / Math.PI).translate([width / 2, width / 2]));
+							$(element).height(width/1.4);
+							d3.select('#geochart svg').attr('width', width).attr('height', width/1.4);
+							$scope.geoChart.redraw();
+					}
+					$(window).bind('resize', function() {
+						setTimeout(function(){
+							setNewSize($scope.geoWidth());
+						}, 150);
+					});
+					$rootScope.$watch('search', function(){
+						dimension.filterAll();
+						if ($scope.crossfilterData.dimension(function(d){ return d.remote_country;}).top(Infinity).length > 1) {
+							var newDim = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
+						}
+						if ($scope.country.length > 1) {
+							newDim.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
+						}
+						dimension = newDim;
+						$scope.geoChart.redraw();
+					});
 				}, 0, false);
 			})
 		}
@@ -366,12 +549,9 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', function ($
 angular.module('mean.system').directive('makeBarChart', ['$timeout', function ($timeout) {
 	return {
 		link: function ($scope, element, attrs) {
-			$scope.$on('barChart', function () {
-
+			$scope.$on('barChart', function (event, start, end) {
 				var dimension = $scope.cf_data.dimension(function(d) { return d.hour });
 				var group = dimension.group().reduceSum(function(d) { return d.count });
-
-				console.log('geochart broadcast recieved');
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
 					var barChart = dc.barChart('#barchart');
 					barChart
@@ -387,7 +567,7 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout', function ($
 						.yAxisLabel('test') // (optional) render a vertical axis lable left of the y axis
 						.elasticY(true) // (optional) whether chart should rescale y axis to fit data, :default = false
 						.elasticX(false) // (optional) whether chart should rescale x axis to fit data, :default = false
-						.x(d3.time.scale().domain([moment.unix(1375070400), moment.unix(1391230740)])) // define x scale
+						.x(d3.time.scale().domain([moment.unix(start), moment.unix(end)])) // define x scale
 						.xUnits(d3.time.hours) // define x axis units
 						.renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
 						.renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
@@ -395,10 +575,9 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout', function ($
 						//.title(function (d) { return ""; })
 						//.legend(dc.legend().x(250).y(10))
 						.renderTitle(true); // (optional) whether chart should render titles, :default = false
-						
-						barChart.render();
 
-				}, 0, false);
+						barChart.render();
+					}, 0, false);
 			})
 		}
 	};

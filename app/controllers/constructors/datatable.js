@@ -20,7 +20,7 @@ module.exports = function (sql, params, callback) {
 					params[d].dView = true;
 				}
 				// if (params[d].dType === undefined) {
-				// 	params[d].dType = 'string-case';
+				//	params[d].dType = 'string-case';
 				// }
 				//	if ((this.params[d].title === null) && (this.params[d].select==='remote_cc')) {
 				//	//do something
@@ -31,7 +31,8 @@ module.exports = function (sql, params, callback) {
 					'sTitle': params[d].title,
 					'mData': params[d].select,
 					'sType': params[d].dType,
-					'bVisible': params[d].dView
+					'bVisible': params[d].dView,
+					'link': params[d].link
 				});
 			}
 			var table = {
