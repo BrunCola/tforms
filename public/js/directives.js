@@ -11,7 +11,32 @@ angular.module('mean.system').directive('pageHead', function() {
 	};
 });
 
-
+angular.module('mean.system').directive('loadingSpinner', function() {
+	return {
+		link: function(scope, element, attrs) {
+			var opts = {
+				lines: 13, // The number of lines to draw
+				length: 21, // The length of each line
+				width: 12, // The line thickness
+				radius: 30, // The radius of the inner circle
+				corners: 1, // Corner roundness (0..1)
+				rotate: 90, // The rotation offset
+				direction: 1, // 1: clockwise, -1: counterclockwise
+				color: '#000', // #rgb or #rrggbb or array of colors
+				speed: 1.2, // Rounds per second
+				trail: 60, // Afterglow percentage
+				shadow: false, // Whether to render a shadow
+				hwaccel: false, // Whether to use hardware acceleration
+				className: 'spinner', // The CSS class to assign to the spinner
+				zIndex: 2e9, // The z-index (defaults to 2000000000)
+				top: 'auto', // Top position relative to parent in px
+				left: 'auto' // Left position relative to parent in px
+			};
+			var target = document.getElementById('foo');
+			var spinner = new Spinner(opts).spin(element);
+		}
+	};
+});
 
 angular.module('mean.system').directive('sidebar', function() {
 	return {
@@ -510,7 +535,7 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 						}
 						return cb;
 					}
-					d3.json("../../../lib/dc.js/world.json", MapCallbackFunction(this));
+					d3.json("../../../js/staticlib/world.json", MapCallbackFunction(this));
 
 					$scope.geoWidth = function() {
 						return $('#geochart').parent().width();
