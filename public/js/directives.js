@@ -535,7 +535,7 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 						}
 						return cb;
 					}
-					d3.json("../../../js/staticlib/world.json", MapCallbackFunction(this));
+					d3.json("../../../world.json", MapCallbackFunction(this));
 
 					$scope.geoWidth = function() {
 						return $('#geochart').parent().width();
