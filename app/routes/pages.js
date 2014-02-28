@@ -7,6 +7,6 @@ var iochits = require('../controllers/iochits'),
 module.exports = function(app) {
     // Home route
     //app.get('/iochits', authorization.requiresLogin, iochits.render);
-    app.get('/iochits', authorization.requiresLogin, iochits.render);
-    app.get('/ioc_drill', authorization.requiresLogin, ioc_drill.render);
+    app.get('/iochits', iochits.render);
+    app.get('/ioc_drill', ioc_drill.render);
 };

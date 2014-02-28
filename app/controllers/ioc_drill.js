@@ -6,6 +6,8 @@ var dataTable = require('./constructors/datatable'),
 	async = require('async');
 
 exports.render = function(req, res) {
+	// var database = req.user.database;
+	var database = null;
 	var end = config.end;
 	var start = config.start;
 	if (req.query.start && req.query.end) {
@@ -81,14 +83,14 @@ exports.render = function(req, res) {
 		async.parallel([
 			// Table function(s)
 			function(callback) {
-				new dataTable(table1SQL, table1Params, function(err,data){
+				new dataTable(table1SQL, table1Params, database, function(err,data){
 					tables.push(data);
 					callback();
 				});
 			},
 			// Crossfilter function
 			function(callback) {
-				new query(crossfilterSQL, function(err,data){
+				new query(crossfilterSQL, database, function(err,data){
 					crossfilter = data;
 					callback();
 				});

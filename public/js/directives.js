@@ -11,32 +11,32 @@ angular.module('mean.system').directive('pageHead', function() {
 	};
 });
 
-angular.module('mean.system').directive('loadingSpinner', function() {
-	return {
-		link: function(scope, element, attrs) {
-			var opts = {
-				lines: 13, // The number of lines to draw
-				length: 21, // The length of each line
-				width: 12, // The line thickness
-				radius: 30, // The radius of the inner circle
-				corners: 1, // Corner roundness (0..1)
-				rotate: 90, // The rotation offset
-				direction: 1, // 1: clockwise, -1: counterclockwise
-				color: '#000', // #rgb or #rrggbb or array of colors
-				speed: 1.2, // Rounds per second
-				trail: 60, // Afterglow percentage
-				shadow: false, // Whether to render a shadow
-				hwaccel: false, // Whether to use hardware acceleration
-				className: 'spinner', // The CSS class to assign to the spinner
-				zIndex: 2e9, // The z-index (defaults to 2000000000)
-				top: 'auto', // Top position relative to parent in px
-				left: 'auto' // Left position relative to parent in px
-			};
-			var target = document.getElementById('foo');
-			var spinner = new Spinner(opts).spin(element);
-		}
-	};
-});
+// angular.module('mean.system').directive('loadingSpinner', function() {
+// 	return {
+// 		link: function(scope, element, attrs) {
+// 			var opts = {
+// 				lines: 13, // The number of lines to draw
+// 				length: 21, // The length of each line
+// 				width: 12, // The line thickness
+// 				radius: 30, // The radius of the inner circle
+// 				corners: 1, // Corner roundness (0..1)
+// 				rotate: 90, // The rotation offset
+// 				direction: 1, // 1: clockwise, -1: counterclockwise
+// 				color: '#000', // #rgb or #rrggbb or array of colors
+// 				speed: 1.2, // Rounds per second
+// 				trail: 60, // Afterglow percentage
+// 				shadow: false, // Whether to render a shadow
+// 				hwaccel: false, // Whether to use hardware acceleration
+// 				className: 'spinner', // The CSS class to assign to the spinner
+// 				zIndex: 2e9, // The z-index (defaults to 2000000000)
+// 				top: 'auto', // Top position relative to parent in px
+// 				left: 'auto' // Left position relative to parent in px
+// 			};
+// 			var target = document.getElementById('foo');
+// 			var spinner = new Spinner(opts).spin(element);
+// 		}
+// 	};
+// });
 
 angular.module('mean.system').directive('sidebar', function() {
 	return {
@@ -168,8 +168,10 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 				// var rowDim = crossfilterData.dimension(function(d){ return d.ioc});
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
 					$(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="example" ></table>');
+					$scope.tableInfo = $scope.data.tables[0].aaData;
+					console.log($scope.data.tables[0].aaData);
 					$('#example').dataTable({
-						"aaData": $scope.data.tables[0].aaData,
+						"aaData": $scope.tableInfo,
 						"aoColumns": $scope.data.tables[0].params,
 						"bDeferRender": true,
 						//"bDestroy": true,
@@ -252,6 +254,30 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 							$scope.$broadcast('severityUpdate');
 							// dc.redrawAll();
 						}
+					});
+					$scope.$on('crossfilterToTable', function (event, crossfilterData) {
+						console.log('this is when the table re-filters');
+						var crossfilterReturn = crossfilterData.dimension(function(d){ return d}).top(Infinity);
+						// for (var i in crossfilterReturn) {
+						// 	if (crossfilterReturn[i].remote_country === indexOf($scope.data.tables[0].aaData)) {
+
+						// 	}
+						// }
+						// console.log(crossfilterReturn);
+
+						var arr = [];
+						$scope.data.tables[0].aaData.forEach(function(d){
+							for (var i in crossfilterReturn) {
+								if (d.time === crossfilterReturn[i].time) {
+									arr.push(d);
+								}
+							}
+						});
+						$('#example').dataTable().fnClearTable();
+						$('#example').dataTable().fnAddData(arr);
+						//$scope.tableInfo = arr;
+						console.log($scope.tableInfo);
+						$('#example').dataTable().fnDraw();
 					});
 					$rootScope.$watch('search', function(){
 						$('#example').dataTable().fnFilter($rootScope.search);
@@ -354,6 +380,11 @@ angular.module('mean.system').directive('makeSevChart', ['$timeout', '$window', 
 						.xUnits(d3.time.hours) // define x axis units
 						.renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
 						.renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
+						.on("filtered", function(chart, filter){
+							setTimeout(function() {
+								$scope.$broadcast('crossfilterToTable', $scope.crossfilterData);
+							}, 0);
+						})
 						//.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
 						.title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
 						.renderTitle(true); // (optional) whether chart should render titles, :default = fal
@@ -526,6 +557,13 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 							.colorCalculator(function (d) { return d ? $scope.geoChart.colors()(d) : '#ccc'; })
 							.overlayGeoJson(world.features, "country", function(d) {
 								return d.properties.name;
+							})
+							.on("filtered", function(chart, filter){
+								setTimeout(function() {
+									$scope.$broadcast('crossfilterToTable', $scope.crossfilterData);
+									console.log('geochart filtered');
+									console.log(filter);
+								}, 0);
 							});
 							//.title(function (d) {
 							//	return d.key+": "+(d.value ? d.value : 0);

@@ -6,6 +6,8 @@ var dataTable = require('./constructors/datatable'),
 	async = require('async');
 
 exports.render = function(req, res) {
+	// var database = req.user.database;
+	var database = null;
 	var end = config.end;
 	var start = config.start;
 	if (req.query.start && req.query.end) {
@@ -26,21 +28,20 @@ exports.render = function(req, res) {
 		'`lan_zone`, '+
 		'`lan_ip`, '+
 		'`machine`, '+
-		'`wan_ip`, '+
 		'`remote_ip`, '+
 		'`remote_asn`, '+
 		'`remote_asn_name`, '+
 		'`remote_country`, '+
 		'`remote_cc`, '+
-		'sum(in_packets) as in_packets, '+
-		'sum(out_packets) as out_packets, '+
+		'sum(`in_packets`) as in_packets, '+
+		'sum(`out_packets`) as out_packets, '+
 		'sum(`in_bytes`) as in_bytes, '+
 		'sum(`out_bytes`) as out_bytes '+
 		// !SELECTS
 		'FROM conn_ioc '+
 		'WHERE time BETWEEN '+start+' AND '+end+' '+
 		'AND `ioc_count` > 0 AND `trash` IS NULL '+
-		'GROUP BY `lan_ip`,`wan_ip`,`remote_ip`,`ioc`';
+		'GROUP BY `lan_ip`,`remote_ip`,`ioc`';
 
 	var table1Params = [
 		{
@@ -90,14 +91,14 @@ exports.render = function(req, res) {
 	async.parallel([
 		// Table function(s)
 		function(callback) {
-			new dataTable(table1SQL, table1Params, function(err,data){
+			new dataTable(table1SQL, table1Params, database, function(err,data){
 				tables.push(data);
 				callback();
 			});
 		},
 		// Crossfilter function
 		function(callback) {
-			new query(crossfilterSQL, function(err,data){
+			new query(crossfilterSQL, database, function(err,data){
 				crossfilter = data;
 				callback();
 			});

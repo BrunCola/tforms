@@ -3,9 +3,10 @@
 var config = require('../../../config/config'),
 	mysql = require('mysql');
 
-var connection = mysql.createConnection(config.db);
+module.exports = function (sql, params, database, callback) {
+	// config.db.database = database;
+	var connection = mysql.createConnection(config.db);
 
-module.exports = function (sql, params, callback) {
 	this.sql = sql;
 	this.params = params;
 	this.callback = callback;
