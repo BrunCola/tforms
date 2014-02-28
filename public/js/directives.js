@@ -112,12 +112,11 @@ angular.module('mean.system').directive('severityLevels', ['$timeout', function 
 				$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert2 alert"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> 0 </span></button>');
 				$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert3 alert"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> 0 </span></button>');
 				$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
-				var sevcounts = $scope.crossfilterData.dimension(function(d){return d.ioc_severity;}).group().reduceSum(function(d) {return d.count;}).top(Infinity);
-				updateSevCounts(sevcounts);
+				$scope.sevcounts = $scope.crossfilterData.dimension(function(d){return d.ioc_severity;}).group().reduceSum(function(d) {return d.count;}).top(Infinity);
+				updateSevCounts($scope.sevcounts);
 			})
 			$scope.$on('severityUpdate', function () {
-				var sevcounts = $scope.crossfilterData.dimension(function(d){return d.ioc_severity;}).group().reduceSum(function(d) {return d.count;}).top(Infinity);
-				updateSevCounts(sevcounts);
+				updateSevCounts($scope.sevcounts);
 			})
 		}
 	};
@@ -163,15 +162,10 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 		link: function ($scope, element, attrs) {
 
 			$scope.$on('tableLoad', function (event) {
-				// var sevDim = crossfilterData.dimension(function(d){ return d.ioc_severity});
-				// var countryDim = crossfilterData.dimension(function(d){ return d.remote_country;});
-				// var rowDim = crossfilterData.dimension(function(d){ return d.ioc});
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
-					$(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="example" ></table>');
-					$scope.tableInfo = $scope.data.tables[0].aaData;
-					console.log($scope.data.tables[0].aaData);
-					$('#example').dataTable({
-						"aaData": $scope.tableInfo,
+					$(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table" ></table>');
+					$('#table').dataTable({
+						"aaData": $scope.data.tables[0].aaData,
 						"aoColumns": $scope.data.tables[0].params,
 						"bDeferRender": true,
 						//"bDestroy": true,
@@ -255,32 +249,25 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 							// dc.redrawAll();
 						}
 					});
-					$scope.$on('crossfilterToTable', function (event, crossfilterData) {
-						console.log('this is when the table re-filters');
-						var crossfilterReturn = crossfilterData.dimension(function(d){ return d}).top(Infinity);
-						// for (var i in crossfilterReturn) {
-						// 	if (crossfilterReturn[i].remote_country === indexOf($scope.data.tables[0].aaData)) {
 
-						// 	}
-						// }
-						// console.log(crossfilterReturn);
-
+					var cfFilterDim = $scope.crossfilterData.dimension(function(d){ return d});
+					$scope.$on('crossfilterToTable', function () {
+						cfFilterDim.filterAll();
 						var arr = [];
 						$scope.data.tables[0].aaData.forEach(function(d){
-							for (var i in crossfilterReturn) {
-								if (d.time === crossfilterReturn[i].time) {
+							for (var i in cfFilterDim.top(Infinity)) {
+								if (d.time === cfFilterDim.top(Infinity)[i].time) {
 									arr.push(d);
 								}
 							}
 						});
-						$('#example').dataTable().fnClearTable();
-						$('#example').dataTable().fnAddData(arr);
-						//$scope.tableInfo = arr;
-						console.log($scope.tableInfo);
-						$('#example').dataTable().fnDraw();
+						$('#table').dataTable().fnClearTable();
+						$('#table').dataTable().fnAddData(arr);
+						$('#table').dataTable().fnDraw();
 					});
+
 					$rootScope.$watch('search', function(){
-						$('#example').dataTable().fnFilter($rootScope.search);
+						$('#table').dataTable().fnFilter($rootScope.search);
 					});
 				}, 0, false);
 			})
@@ -381,9 +368,7 @@ angular.module('mean.system').directive('makeSevChart', ['$timeout', '$window', 
 						.renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
 						.renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
 						.on("filtered", function(chart, filter){
-							setTimeout(function() {
-								$scope.$broadcast('crossfilterToTable', $scope.crossfilterData);
-							}, 0);
+							$scope.$broadcast('crossfilterToTable');
 						})
 						//.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
 						.title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
@@ -491,6 +476,9 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope
 						})
 						.colorAccessor(function (d){return d.value.severity;})
 						.renderLabel(true)
+						.on("filtered", function(chart, filter){
+							$scope.$broadcast('crossfilterToTable');
+						})
 						.label(function(d) { return d.key+' ('+d.value.count+')'; })
 						.labelOffsetY(lOffset) //lOffset
 						.elasticX(false)
@@ -500,17 +488,16 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope
 						.tickFormat(logFormat);
 
 						$scope.rowChart.render();
+
+						var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
 						$rootScope.$watch('search', function(){
-							dimension.filterAll();
-							if ($scope.crossfilterData.dimension(function(d){ return d.remote_country;}).top(Infinity).length > 1) {
-								var newDim = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
+							geoFilterDimension.filterAll();
+							if ($scope.country.length > 0) {
+								geoFilterDimension.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
 							}
-							if ($scope.country.length > 1) {
-								newDim.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
-							}
-							dimension = newDim;
 							$scope.rowChart.redraw();
 						});
+
 				}, 0, false);
 			});
 		}
@@ -559,11 +546,7 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 								return d.properties.name;
 							})
 							.on("filtered", function(chart, filter){
-								setTimeout(function() {
-									$scope.$broadcast('crossfilterToTable', $scope.crossfilterData);
-									console.log('geochart filtered');
-									console.log(filter);
-								}, 0);
+								$scope.$broadcast('crossfilterToTable');
 							});
 							//.title(function (d) {
 							//	return d.key+": "+(d.value ? d.value : 0);
@@ -578,6 +561,7 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 					$scope.geoWidth = function() {
 						return $('#geochart').parent().width();
 					}
+
 					var setNewSize = function(width) {
 						$scope.geoChart
 							.width(width)
@@ -587,22 +571,22 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 							d3.select('#geochart svg').attr('width', width).attr('height', width/1.4);
 							$scope.geoChart.redraw();
 					}
+
 					$(window).bind('resize', function() {
 						setTimeout(function(){
 							setNewSize($scope.geoWidth());
 						}, 150);
 					});
+
+					var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
 					$rootScope.$watch('search', function(){
-						dimension.filterAll();
-						if ($scope.crossfilterData.dimension(function(d){ return d.remote_country;}).top(Infinity).length > 1) {
-							var newDim = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
+						geoFilterDimension.filterAll();
+						if ($scope.country.length > 0) {
+							geoFilterDimension.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
 						}
-						if ($scope.country.length > 1) {
-							newDim.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
-						}
-						dimension = newDim;
 						$scope.geoChart.redraw();
 					});
+
 				}, 0, false);
 			})
 		}
