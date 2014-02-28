@@ -122,26 +122,27 @@ angular.module('mean.system').directive('datePicker', ['$timeout', '$location', 
 	return {
 		link: function ($scope, element, attrs) {
 			$timeout(function () {
-				//$('#reportrange span').html(moment.unix($rootScope.start).format('MMMM D, YYYY') + ' - ' + moment.unix($rootScope.end).format('MMMM D, YYYY'));
-				$('#reportrange').daterangepicker({
+				$('#reportrange').daterangepicker(
+					{
 					ranges: {
-						'Today': [moment(), moment()],
-						'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+						'Today': [moment().startOf('day'), moment()],
+						'Yesterday': [moment().subtract('days', 1).startOf('day'), moment().subtract('days', 1).endOf('day')],
 						'Last 7 Days': [moment().subtract('days', 6), moment()],
 						'Last 30 Days': [moment().subtract('days', 29), moment()],
 						'This Month': [moment().startOf('month'), moment().endOf('month')],
 						'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
 					},
-						format: 'YYYY-MM-DD',
-						startDate: moment.unix($scope.start).format('MMMM D, YYYY'),
-						endDate: moment.unix($scope.end).format('MMMM D, YYYY')
+						startDate: $scope.start,
+						endDate: $scope.end
 					},
 					function(start, end) {
-						$('#reportrange span').html(start + ' - ' + end);
+						// $rootScope.start = $scope.global.startTime;
+						// console.log(start);
+						// console.log($rootScope.start);
+						$('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
 					}
 				);
 				$('#reportrange').on('apply', function(ev, picker) {
-					// console.log(moment.unix($rootScope.start).format('MMMM D, YYYY'));
 					// some kind of clear option is needed here
 					$scope.$apply($location.search({'start': moment(picker.startDate.format('YYYY-MM-DD')).unix(), 'end':moment(picker.endDate.format('YYYY-MM-DD')).unix()}));
 				});

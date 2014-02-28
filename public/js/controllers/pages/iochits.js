@@ -34,7 +34,7 @@ angular.module('mean.iochits').controller('IochitsController', ['$scope', 'Globa
 
 			$scope.$broadcast('tableLoad');
 			$scope.$broadcast('sevChart');
-			$scope.$broadcast('rowChart');
+			//$scope.$broadcast('rowChart');
 			$scope.$broadcast('severityLoad');
 			$scope.$broadcast('geoChart');
 		});

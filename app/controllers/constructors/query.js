@@ -12,8 +12,10 @@ module.exports = function (sql, database, callback) {
 	connection.query(this.sql, function(err, result) {
 		if (err) {
 			callback(err, null);
+			connection.destroy();
 		} else {
 			callback(null, result);
+			connection.destroy();
 		}
 	});
 };

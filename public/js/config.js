@@ -36,11 +36,11 @@ angular.module('mean').config(['$routeProvider',
         //     templateUrl: 'views/articles/view.html'
         // }).
 
-        when('/', {
-            templateUrl: 'views/pages/index.html'
-        }).
+        // when('/', {
+        //     templateUrl: 'views/pages/index.html'
+        // }).
         otherwise({
-            redirectTo: '/'
+            redirectTo: '/iochits'
         });
     }
 ]);

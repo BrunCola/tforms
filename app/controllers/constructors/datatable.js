@@ -14,6 +14,7 @@ module.exports = function (sql, params, database, callback) {
 	connection.query(this.sql, function(err, result) {
 		if (err) {
 			callback(err, null);
+			connection.destroy();
 		} else {
 			//var arr = this.arr;
 			for (var d in params) {
@@ -41,6 +42,7 @@ module.exports = function (sql, params, database, callback) {
 				params: arr
 			};
 			callback(null, table);
+			connection.destroy();
 		}
 	});
 };

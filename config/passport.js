@@ -61,8 +61,10 @@ module.exports = function(passport, connection) {
                     console.log(JSON.stringify(results));
                     console.log(res.id);
                     //console.log(results[0]['member_id']);
+                    connection.destroy();
                     return done(null, res);
                 }else{
+                    connection.destroy();
                     return done(null, false);
                 }
             });
