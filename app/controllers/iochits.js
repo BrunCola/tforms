@@ -62,7 +62,6 @@ exports.render = function(req, res) {
 		{ title: 'LAN Zone', select: 'lan_zone' },
 		{ title: 'LAN IP', select: 'lan_ip' },
 		{ title: 'Machine Name', select: 'machine' },
-		{ title: 'WAN IP', select: 'wan_ip', dView: false },
 		{ title: 'Remote IP', select: 'remote_ip' },
 		{ title: 'Remote ASN', select: 'remote_asn' },
 		{ title: 'Remote ASN Name', select: 'remote_asn_name' },
