@@ -91,18 +91,14 @@ angular.module('mean.system').directive('severityLevels', ['$timeout', function 
 	return {
 		link: function ($scope, element, attrs) {
 			function updateSevCounts(sevcounts) {
+				$("#severity").children().addClass("severity-deselect");
 				for (var s in sevcounts) {
-					if (sevcounts[s].key === 1) {
-						$('#al1').html(' '+sevcounts[s].value+' ');
-					}
-					if (sevcounts[s].key === 2) {
-						$('#al2').html(' '+sevcounts[s].value+' ');
-					}
-					if (sevcounts[s].key === 3) {
-						$('#al3').html(' '+sevcounts[s].value+' ');
-					}
-					if (sevcounts[s].key === 4) {
-						$('#al4').html(' '+sevcounts[s].value+' ');
+					if (sevcounts[s].value === 0) {
+						$('#al'+sevcounts[s].key).html(' '+sevcounts[s].value+' ');
+						$('.alert'+sevcounts[s].key).addClass("severity-deselect");
+					} else {
+						$('#al'+sevcounts[s].key).html(' '+sevcounts[s].value+' ');
+						$('.alert'+sevcounts[s].key).removeClass("severity-deselect");
 					}
 				}
 			}
@@ -126,29 +122,26 @@ angular.module('mean.system').directive('datePicker', ['$timeout', '$location', 
 	return {
 		link: function ($scope, element, attrs) {
 			$timeout(function () {
-				$('#reportrange').daterangepicker(
-					{
+				//$('#reportrange span').html(moment.unix($rootScope.start).format('MMMM D, YYYY') + ' - ' + moment.unix($rootScope.end).format('MMMM D, YYYY'));
+				$('#reportrange').daterangepicker({
 					ranges: {
-						'Today': [moment().startOf('day'), moment()],
-						'Yesterday': [moment().subtract('days', 1).startOf('day'), moment().subtract('days', 1).endOf('day')],
+						'Today': [moment(), moment()],
+						'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
 						'Last 7 Days': [moment().subtract('days', 6), moment()],
 						'Last 30 Days': [moment().subtract('days', 29), moment()],
 						'This Month': [moment().startOf('month'), moment().endOf('month')],
 						'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
 					},
-						startDate: moment().subtract('days', 29),
-						endDate: moment()
+						format: 'YYYY-MM-DD',
+						startDate: moment.unix($scope.start).format('MMMM D, YYYY'),
+						endDate: moment.unix($scope.end).format('MMMM D, YYYY')
 					},
 					function(start, end) {
-						$scope.global.startTime = start;
-						$scope.global.endTime = end;
-						// $rootScope.start = $scope.global.startTime;
-						// console.log(start);
-						// console.log($rootScope.start);
-						$('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+						$('#reportrange span').html(start + ' - ' + end);
 					}
 				);
 				$('#reportrange').on('apply', function(ev, picker) {
+					// console.log(moment.unix($rootScope.start).format('MMMM D, YYYY'));
 					// some kind of clear option is needed here
 					$scope.$apply($location.search({'start': moment(picker.startDate.format('YYYY-MM-DD')).unix(), 'end':moment(picker.endDate.format('YYYY-MM-DD')).unix()}));
 				});
@@ -489,11 +482,15 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope
 
 						$scope.rowChart.render();
 
-						var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
+						var rowFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
 						$rootScope.$watch('search', function(){
-							geoFilterDimension.filterAll();
-							if ($scope.country.length > 0) {
-								geoFilterDimension.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
+							if($rootScope.search === '') {
+								rowFilterDimension.filterAll();
+							} else {
+								rowFilterDimension.filterAll();
+								if ($scope.country.length > 0) {
+									rowFilterDimension.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
+								}
 							}
 							$scope.rowChart.redraw();
 						});
@@ -580,10 +577,14 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 
 					var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
 					$rootScope.$watch('search', function(){
-						geoFilterDimension.filterAll();
-						if ($scope.country.length > 0) {
-							geoFilterDimension.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
-						}
+						if($rootScope.search === '') {
+								geoFilterDimension.filterAll();
+							} else {
+								geoFilterDimension.filterAll();
+								if ($scope.country.length > 0) {
+									geoFilterDimension.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
+								}
+							}
 						$scope.geoChart.redraw();
 					});
 

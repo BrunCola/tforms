@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.system').controller('IndexController', ['$scope', 'Global', '$routeParams', function ($scope, Global, $routeParams) {
+angular.module('mean.system').controller('IndexController', ['$scope', 'Global', '$routeParams', '$rootScope', function ($scope, Global, $routeParams, $rootScope) {
 	$scope.global = Global;
 	//this can be used for date selector
 	$scope.onHeadLoad = function() {
