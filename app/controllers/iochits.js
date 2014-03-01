@@ -8,8 +8,8 @@ var dataTable = require('./constructors/datatable'),
 exports.render = function(req, res) {
 	// var database = req.user.database;
 	var database = null;
-	var end = config.end;
-	var start = config.start;
+	var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
+	var end = Math.round(new Date().getTime() / 1000);
 	if (req.query.start && req.query.end) {
 		start = req.query.start;
 		end = req.query.end;

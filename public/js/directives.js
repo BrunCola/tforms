@@ -132,19 +132,19 @@ angular.module('mean.system').directive('datePicker', ['$timeout', '$location', 
 						'This Month': [moment().startOf('month'), moment().endOf('month')],
 						'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
 					},
+						format: 'MMMM D, YYYY h:mm A',
+						timePicker: true,
+						timePickerIncrement: 5,
 						startDate: $scope.start,
 						endDate: $scope.end
 					},
 					function(start, end) {
-						// $rootScope.start = $scope.global.startTime;
-						// console.log(start);
-						// console.log($rootScope.start);
-						$('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+						$('#reportrange span').html(start.format('MMMM D, YYYY h:mm A') + ' - ' + end.format('MMMM D, YYYY h:mm A'));
 					}
 				);
 				$('#reportrange').on('apply', function(ev, picker) {
 					// some kind of clear option is needed here
-					$scope.$apply($location.search({'start': moment(picker.startDate.format('YYYY-MM-DD')).unix(), 'end':moment(picker.endDate.format('YYYY-MM-DD')).unix()}));
+					$scope.$apply($location.search({'start': moment(picker.startDate.format('MMMM D, YYYY h:mm A')).unix(), 'end':moment(picker.endDate.format('MMMM D, YYYY h:mm A')).unix()}));
 				});
 			}, 0, false);
 		}
