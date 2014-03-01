@@ -3,14 +3,8 @@
 var path = require('path');
 var rootPath = path.normalize(__dirname + '/../..');
 
-var defaultDateRange = 1;
-var start = Math.round(new Date().getTime() / 1000)-((3600*24)*defaultDateRange);
-var end = Math.round(new Date().getTime() / 1000);
-
 module.exports = {
 	defaultDateRange: 1,
-	start: start,
-	end: end,
 	root: rootPath,
 	port: process.env.PORT || 3000,
 	db: {
