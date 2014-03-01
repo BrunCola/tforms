@@ -160,6 +160,7 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 				$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
 				$scope.tableCountries = $scope.tableCrossfitler.dimension(function(d){return d.remote_country;});
 				$scope.tableIocs = $scope.tableCrossfitler.dimension(function(d){return d.ioc;});
+				$scope.tableTime = $scope.tableCrossfitler.dimension(function(d){return d.time;});
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
 					$(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table" ></table>');
 					$('#table').dataTable({
@@ -245,7 +246,6 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 							$scope.$broadcast('severityUpdate');
 						}
 					});
-
 					$scope.$on('crossfilterToTable', function () {
 						$('#table').dataTable().fnClearTable();
 						$('#table').dataTable().fnAddData($scope.tableData.top(Infinity));
@@ -316,6 +316,18 @@ angular.module('mean.system').directive('makeSevChart', ['$timeout', '$window', 
 							};
 						}
 					);
+					var waitForFinalEvent = (function () {
+						var timers = {};
+						return function (callback, ms, uniqueId) {
+							if (!uniqueId) {
+								uniqueId = "sevchartWait"; //Don't call this twice without a uniqueId
+							}
+							if (timers[uniqueId]) {
+								clearTimeout (timers[uniqueId]);
+							}
+						timers[uniqueId] = setTimeout(callback, ms);
+						};
+					})();
 					var width = $('#sevchart').parent().width();
 					var height = width/3.5;
 					$scope.sevChart
@@ -338,32 +350,28 @@ angular.module('mean.system').directive('makeSevChart', ['$timeout', '$window', 
 						.yAxisLabel('teest') // (optional) render a vertical axis lable left of the y axis
 						.elasticY(true) // (optional) whether chart should rescale y axis to fit data, :default = false
 						.elasticX(true) // (optional) whether chart should rescale x axis to fit data, :default = false
-						.x(d3.time.scale().domain([moment.unix($scope.global.startTime-100000), moment.unix($scope.global.endTime+100000)])) // define x scale
+						.x(d3.time.scale().domain([moment.unix($scope.start-100000), moment.unix($scope.end+100000)])) // define x scale
 						.xUnits(d3.time.hours) // define x axis units
 						.renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
 						.renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
 						.on("filtered", function(chart, filter){
-							$scope.$broadcast('crossfilterToTable');
+							waitForFinalEvent(function(){
+								$scope.tableTime.filterAll();
+								var arr = [];
+								for(var i in dimension.top(Infinity)) {
+									arr.push(dimension.top(Infinity)[i].time);
+								}
+								$scope.tableTime.filter(function(d) { return arr.indexOf(d) >= 0; });
+								$scope.$broadcast('crossfilterToTable');
+							}, 400, "filterWait");
 						})
 						//.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
 						.title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
 						.renderTitle(true); // (optional) whether chart should render titles, :default = fal
 						$scope.sevChart.render();
 						$scope.sevWidth = function() {
-						return $('#sevchart').parent().width();
+							return $('#sevchart').parent().width();
 						}
-						var waitForFinalEvent = (function () {
-							var timers = {};
-							return function (callback, ms, uniqueId) {
-								if (!uniqueId) {
-									uniqueId = "sevchartWait"; //Don't call this twice without a uniqueId
-								}
-								if (timers[uniqueId]) {
-									clearTimeout (timers[uniqueId]);
-								}
-							timers[uniqueId] = setTimeout(callback, ms);
-							};
-						})();
 						var setNewSize = function(width) {
 							$scope.sevChart
 								.width(width)
