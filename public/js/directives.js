@@ -4,8 +4,8 @@ angular.module('mean.system').directive('pageHead', function() {
 	return {
 		restrict: 'A',
 		scope : {
-		title : '@'
-	},
+			title : '@'
+		},
 		templateUrl : '/views/pagehead.html',
 		transclude : true
 	};
@@ -71,15 +71,15 @@ angular.module('mean.system').directive('sidebar', function() {
 			if (localStorage.getItem('sidebar') === '0') { // keep sidebar consistent between pages
 				var body = $('body');
 				var sidebar = $('.page-sidebar');
-				$(".sidebar-search", sidebar).removeClass("open");
-				if (body.hasClass("page-sidebar-closed")) {
-					body.removeClass("page-sidebar-closed");
+				$('.sidebar-search', sidebar).removeClass('open');
+				if (body.hasClass('page-sidebar-closed')) {
+					body.removeClass('page-sidebar-closed');
 					if (body.hasClass('page-sidebar-fixed')) {
 						sidebar.css('width', '');
 					}
 				}
 				else {
-					body.addClass("page-sidebar-closed");
+					body.addClass('page-sidebar-closed');
 				}
 			}
 			App.init();
@@ -91,14 +91,14 @@ angular.module('mean.system').directive('severityLevels', ['$timeout', function 
 	return {
 		link: function ($scope, element, attrs) {
 			function updateSevCounts(sevcounts) {
-				$("#severity").children().addClass("severity-deselect");
+				$('#severity').children().addClass('severity-deselect');
 				for (var s in sevcounts) {
 					if (sevcounts[s].value === 0) {
 						$('#al'+sevcounts[s].key).html(' '+sevcounts[s].value+' ');
-						$('.alert'+sevcounts[s].key).addClass("severity-deselect");
+						$('.alert'+sevcounts[s].key).addClass('severity-deselect');
 					} else {
 						$('#al'+sevcounts[s].key).html(' '+sevcounts[s].value+' ');
-						$('.alert'+sevcounts[s].key).removeClass("severity-deselect");
+						$('.alert'+sevcounts[s].key).removeClass('severity-deselect');
 					}
 				}
 			}
@@ -110,10 +110,10 @@ angular.module('mean.system').directive('severityLevels', ['$timeout', function 
 				$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
 				$scope.sevcounts = $scope.crossfilterData.dimension(function(d){return d.ioc_severity;}).group().reduceSum(function(d) {return d.count;}).top(Infinity);
 				updateSevCounts($scope.sevcounts);
-			})
+			});
 			$scope.$on('severityUpdate', function () {
 				updateSevCounts($scope.sevcounts);
-			})
+			});
 		}
 	};
 }]);
@@ -156,21 +156,25 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 		link: function ($scope, element, attrs) {
 
 			$scope.$on('tableLoad', function (event) {
+				$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+				$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+				$scope.tableCountries = $scope.tableCrossfitler.dimension(function(d){return d.remote_country;});
+				$scope.tableIocs = $scope.tableCrossfitler.dimension(function(d){return d.ioc;});
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
 					$(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table" ></table>');
 					$('#table').dataTable({
-						"aaData": $scope.data.tables[0].aaData,
-						"aoColumns": $scope.data.tables[0].params,
-						"bDeferRender": true,
-						//"bDestroy": true,
-						//"bProcessing": true,
-						//"bRebuild": true,
-						//"aaSorting": true,
-						//"bFilter": true,
-						//"bPaginate": true,
-						"sDom": '<"clear"C>T<"clear">lr<"table_overflow"t>ip',
-						"iDisplayLength": 50,
-						 "fnPreDrawCallback": function( oSettings ) {
+						'aaData': $scope.tableData.top(Infinity),
+						'aoColumns': $scope.data.tables[0].params,
+						'bDeferRender': true,
+						//'bDestroy': true,
+						//'bProcessing': true,
+						//'bRebuild': true,
+						//'aaSorting': true,
+						//'bFilter': true,
+						//'bPaginate': true,
+						'sDom': '<"clear"C>T<"clear">lr<"table_overflow"t>ip',
+						'iDisplayLength': 50,
+						 'fnPreDrawCallback': function( oSettings ) {
 						 	//console.log(oSettings.aoColumns);
 							$scope.r = [], $scope.e = [];
 							for (var a in oSettings.aoColumns) {
@@ -184,7 +188,7 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 								}
 							}
 						},
-						"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+						'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 							if (aData.remote_cc) {
 								$('td:eq('+$scope.r.indexOf("remote_cc")+')', nRow).html('<div class="f32"><span class="flag '+aData.remote_cc.toLowerCase()+'"></span></div>');
 							}
@@ -208,7 +212,6 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 							// url builder
 							for (var c in $scope.e) {
 								var links = function() {
-									// var arr = [];
 									var type = $scope.e[c].link.type;
 									var obj = new Object();
 									for (var l in $scope.e[c].link.val) {
@@ -222,7 +225,7 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 								$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='btn btn-link' type='button' value='"+links()+"' href=''>"+aData[$scope.e[c].mData]+"</button>");
 							}
 						},
-						"fnDrawCallback": function( oSettings ) {
+						'fnDrawCallback': function( oSettings ) {
 							$('table button').click(function(){
 								var link = JSON.parse(this.value);
 								if ($routeParams.start && $routeParams.end) {
@@ -240,26 +243,14 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 								$scope.severity.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc_severity);
 							}
 							$scope.$broadcast('severityUpdate');
-							// dc.redrawAll();
 						}
 					});
 
-					var cfFilterDim = $scope.crossfilterData.dimension(function(d){ return d});
 					$scope.$on('crossfilterToTable', function () {
-						cfFilterDim.filterAll();
-						var arr = [];
-						$scope.data.tables[0].aaData.forEach(function(d){
-							for (var i in cfFilterDim.top(Infinity)) {
-								if (d.time === cfFilterDim.top(Infinity)[i].time) {
-									arr.push(d);
-								}
-							}
-						});
 						$('#table').dataTable().fnClearTable();
-						$('#table').dataTable().fnAddData(arr);
+						$('#table').dataTable().fnAddData($scope.tableData.top(Infinity));
 						$('#table').dataTable().fnDraw();
 					});
-
 					$rootScope.$watch('search', function(){
 						$('#table').dataTable().fnFilter($rootScope.search);
 					});
@@ -324,17 +315,7 @@ angular.module('mean.system').directive('makeSevChart', ['$timeout', '$window', 
 								other:0
 							};
 						}
-						);
-					//var start = 1375070400;
-					//var end = 1391230740;
-					//var width = $("#"+divID).width();
-					//var hHeight;
-					//if(height !== undefined) {
-					//	hHeight = height;
-					//} else {
-					//	hHeight = width/3.3; //4.6 as default
-					//}
-					//console.log($(element).width());
+					);
 					var width = $('#sevchart').parent().width();
 					var height = width/3.5;
 					$scope.sevChart
@@ -368,7 +349,6 @@ angular.module('mean.system').directive('makeSevChart', ['$timeout', '$window', 
 						.title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
 						.renderTitle(true); // (optional) whether chart should render titles, :default = fal
 						$scope.sevChart.render();
-
 						$scope.sevWidth = function() {
 						return $('#sevchart').parent().width();
 						}
@@ -400,8 +380,14 @@ angular.module('mean.system').directive('makeSevChart', ['$timeout', '$window', 
 						});
 						$(window).bind('resize', function() {
 							setTimeout(function(){
-								setNewSize($scope.sevWidth())
+								setNewSize($scope.sevWidth());
 							}, 150);
+						});
+						$('.sidebar-toggler').on("click", function() {
+							setTimeout(function() {
+								setNewSize($scope.sevWidth());
+								$scope.sevChart.render();
+							},10);
 						});
 						$rootScope.$watch('search', function(){
 							$scope.sevChart.redraw();
@@ -419,9 +405,8 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
 					var dimension = $scope.crossfilterData.dimension(function(d) { return d.ioc });
 					var group = dimension.group().reduceSum(function(d) { return d.count });
-					var rowcount = dimension.group().reduceSum(function(d) {return d.count;}).top(Infinity);
 					var hHeight, lOffset;
-					var count = rowcount.length; ///CHANGE THIS to count return rows
+					var count = group.top(Infinity).length; ///CHANGE THIS to count return rows
 					if (count < 7) {
 						lOffset = 17+(count*0.2);
 						hHeight = 25+(count*35);
@@ -451,7 +436,12 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope
 					function () {
 						return {count: 0, severity: 0};
 					});
-					var tops = sevCount.order(function (p) {return p.count;}).top(1);
+					if (count > 0) {
+						var tops = sevCount.order(function (p) {return p.count;}).top(1);
+						$scope.rowDomain = tops[0].value.count+0.1;
+					} else {
+						$scope.rowDomain = 50;
+					}
 					var numberFormat = d3.format(",f");
 					function logFormat(d) {
 						var x = Math.log(d) / Math.log(10) + 1e-6;
@@ -471,21 +461,49 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope
 						.colorAccessor(function (d){return d.value.severity;})
 						.renderLabel(true)
 						.on("filtered", function(chart, filter){
+							$scope.tableIocs.filterAll();
+							var arr = [];
+							for(var i in dimension.top(Infinity)) {
+								arr.push(dimension.top(Infinity)[i].ioc);
+							}
+							$scope.tableIocs.filter(function(d) { return arr.indexOf(d) >= 0; });
 							$scope.$broadcast('crossfilterToTable');
 						})
 						.label(function(d) { return d.key+' ('+d.value.count+')'; })
 						.labelOffsetY(lOffset) //lOffset
 						.elasticX(false)
-						.x(d3.scale.log().domain([1, tops[0].value.count+0.1]).range([0,500])) //500 ->width
+						.x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width])) //500 ->width
 						.xAxis()
 						.scale($scope.rowChart.x())
 						.tickFormat(logFormat);
 
 						$scope.rowChart.render();
 
+						$scope.rowWidth = function() {
+							return $('#rowchart').parent().width();
+						}
+						var setNewSize = function(width) {
+							$scope.rowChart
+								.width(width)
+								//.height(width/3.3)
+								.x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width]));
+								$(element).height(hHeight);
+								d3.select('#rowchart svg').attr('width', width).attr('height', hHeight);
+								$scope.rowChart.redraw();
+						};
+						$(window).bind('resize', function() {
+							setTimeout(function(){
+								setNewSize($scope.rowWidth());
+							}, 150);
+						});
+						$('.sidebar-toggler').on("click", function() {
+							setTimeout(function() {
+								setNewSize($scope.rowWidth());
+							},10);
+						});
 						var rowFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
 						$rootScope.$watch('search', function(){
-							if($rootScope.search === '') {
+							if($rootScope.search === null) {
 								rowFilterDimension.filterAll();
 							} else {
 								rowFilterDimension.filterAll();
@@ -495,7 +513,6 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope
 							}
 							$scope.rowChart.redraw();
 						});
-
 				}, 0, false);
 			});
 		}
@@ -514,8 +531,13 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 					var group = dimension.group().reduceSum(function (d) {
 						return d.count;
 					});
-					var top = group.orderNatural(function (p) {return p.count;}).top(1);
-					var numberOfItems = top[0].value+1;
+					var count = group.top(Infinity).length;
+					if (count > 0) {
+						var top = group.orderNatural(function (p) {return p.count;}).top(1);
+						var numberOfItems = top[0].value+1;
+					} else {
+						var numberOfItems = 1;
+					};
 					var rainbow = new Rainbow();
 					rainbow.setNumberRange(0, numberOfItems);
 					rainbow.setSpectrum("#FF0000", "#CC0000", "#990000", "#660000", "#360000");
@@ -524,8 +546,6 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 						var hexColour = rainbow.colourAt(i);
 						cc.push('#' + hexColour);
 					}
-					//var minhits = function (d) { return d.value.min; };
-					//var maxhits = function (d) { return d.value.max; };
 					function MapCallbackFunction(context)
 					{
 						var cb = function(error, world) {
@@ -544,12 +564,14 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 								return d.properties.name;
 							})
 							.on("filtered", function(chart, filter){
+								$scope.tableCountries.filterAll();
+								var arr = [];
+								for(var c in dimension.top(Infinity)) {
+									arr.push(dimension.top(Infinity)[c].remote_country);
+								}
+								$scope.tableCountries.filter(function(d) { return arr.indexOf(d) >= 0; });
 								$scope.$broadcast('crossfilterToTable');
 							});
-							//.title(function (d) {
-							//	return d.key+": "+(d.value ? d.value : 0);
-							//});
-							//dc.renderAll();
 							$scope.geoChart.render();
 						}
 						return cb;
@@ -559,7 +581,6 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 					$scope.geoWidth = function() {
 						return $('#geochart').parent().width();
 					}
-
 					var setNewSize = function(width) {
 						$scope.geoChart
 							.width(width)
@@ -569,16 +590,19 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 							d3.select('#geochart svg').attr('width', width).attr('height', width/1.4);
 							$scope.geoChart.redraw();
 					}
-
 					$(window).bind('resize', function() {
 						setTimeout(function(){
 							setNewSize($scope.geoWidth());
 						}, 150);
 					});
-
+					$('.sidebar-toggler').on("click", function() {
+						setTimeout(function() {
+							setNewSize($scope.geoWidth());
+						},10);
+					});
 					var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
 					$rootScope.$watch('search', function(){
-						if($rootScope.search === '') {
+						if($rootScope.search === null) {
 								geoFilterDimension.filterAll();
 							} else {
 								geoFilterDimension.filterAll();
@@ -588,7 +612,6 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 							}
 						$scope.geoChart.redraw();
 					});
-
 				}, 0, false);
 			})
 		}
