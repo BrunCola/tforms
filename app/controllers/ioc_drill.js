@@ -40,7 +40,6 @@ exports.render = function(req, res) {
 			'WHERE time BETWEEN '+start+' AND '+end+' '+
 			'AND `lan_ip`=\''+req.query.lan_ip+'\' AND `remote_ip`=\''+req.query.remote_ip+'\' AND `ioc`=\''+req.query.ioc+'\'';
 
-
 		var table1Params = [
 			{
 				title: 'Time',

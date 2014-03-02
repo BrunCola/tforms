@@ -11,32 +11,62 @@ angular.module('mean.system').directive('pageHead', function() {
 	};
 });
 
-// angular.module('mean.system').directive('loadingSpinner', function() {
-// 	return {
-// 		link: function(scope, element, attrs) {
-// 			var opts = {
-// 				lines: 13, // The number of lines to draw
-// 				length: 21, // The length of each line
-// 				width: 12, // The line thickness
-// 				radius: 30, // The radius of the inner circle
-// 				corners: 1, // Corner roundness (0..1)
-// 				rotate: 90, // The rotation offset
-// 				direction: 1, // 1: clockwise, -1: counterclockwise
-// 				color: '#000', // #rgb or #rrggbb or array of colors
-// 				speed: 1.2, // Rounds per second
-// 				trail: 60, // Afterglow percentage
-// 				shadow: false, // Whether to render a shadow
-// 				hwaccel: false, // Whether to use hardware acceleration
-// 				className: 'spinner', // The CSS class to assign to the spinner
-// 				zIndex: 2e9, // The z-index (defaults to 2000000000)
-// 				top: 'auto', // Top position relative to parent in px
-// 				left: 'auto' // Left position relative to parent in px
-// 			};
-// 			var target = document.getElementById('foo');
-// 			var spinner = new Spinner(opts).spin(element);
-// 		}
-// 	};
-// });
+angular.module('mean.system').directive('loadingError', function() {
+	return {
+		link: function($scope, element, attrs) {
+			$scope.$on('loadError', function (event) {
+				noty({
+					layout: 'top',
+					theme: 'defaultTheme',
+					type: 'error',
+					text: 'Sorry, no results were returned.',
+					dismissQueue: false, // If you want to use queue feature set this true
+					animation: {
+						open: { height: 'toggle' },
+						close: { height: 'toggle' },
+						easing: 'swing',
+						speed: 500 // opening & closing animation speed
+					},
+					timeout: 1000 // delay for closing event. Set false for sticky notifications
+				});
+			});
+		}
+	};
+});
+
+angular.module('mean.system').directive('loadingSpinner', function() {
+	return {
+		link: function($scope, element, attrs) {
+			$('.page-content').fadeTo(500, 0.7);
+			var opts = {
+				lines: 13, // The number of lines to draw
+				length: 21, // The length of each line
+				width: 12, // The line thickness
+				radius: 30, // The radius of the inner circle
+				corners: 1, // Corner roundness (0..1)
+				rotate: 90, // The rotation offset
+				direction: 1, // 1: clockwise, -1: counterclockwise
+				color: '#000', // #rgb or #rrggbb or array of colors
+				speed: 1.2, // Rounds per second
+				trail: 60, // Afterglow percentage
+				shadow: false, // Whether to render a shadow
+				hwaccel: false, // Whether to use hardware acceleration
+				className: 'spinner', // The CSS class to assign to the spinner
+				zIndex: 2e9, // The z-index (defaults to 2000000000)
+				top: 'auto', // Top position relative to parent in px
+				left: 'auto' // Left position relative to parent in px
+			};
+			var target = document.getElementById('loading-spinner');
+			var spinner = new Spinner(opts).spin(target);
+			$(target).data('spinner', spinner);
+			$scope.$on('spinnerHide', function (event) {
+				$('#loading-spinner').data('spinner').stop();
+				$('html, body').animate({scrollTop:0}, 'slow');
+				$(".page-content").fadeTo(500, 1);
+			});
+		}
+	};
+});
 
 angular.module('mean.system').directive('sidebar', function() {
 	return {
@@ -90,6 +120,9 @@ angular.module('mean.system').directive('sidebar', function() {
 angular.module('mean.system').directive('severityLevels', ['$timeout', function ($timeout) {
 	return {
 		link: function ($scope, element, attrs) {
+			$('.alert').on('click',function(){
+				alert('test');
+			});
 			function updateSevCounts(sevcounts) {
 				$('#severity').children().addClass('severity-deselect');
 				for (var s in sevcounts) {
@@ -102,14 +135,87 @@ angular.module('mean.system').directive('severityLevels', ['$timeout', function 
 					}
 				}
 			}
+
 			$scope.$on('severityLoad', function () {
-				//$scope.$watch('sevcounts', updateSevCounts(), true);
 				$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert1 alert"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> 0 </span></button>');
 				$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert2 alert"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> 0 </span></button>');
 				$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert3 alert"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> 0 </span></button>');
 				$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
-				$scope.sevcounts = $scope.crossfilterData.dimension(function(d){return d.ioc_severity;}).group().reduceSum(function(d) {return d.count;}).top(Infinity);
+				$scope.severityDim = $scope.crossfilterData.dimension(function(d){return d.ioc_severity;});
+				$scope.sevcounts = $scope.severityDim.group().reduceSum(function(d) {return d.count;}).top(Infinity);
 				updateSevCounts($scope.sevcounts);
+				$('.alert1').on('click',function(){
+					$scope.severityDim.filterAll();
+					var arr = [];
+					if ($('.alert1').hasClass('selected')) {
+						$('.alert1').removeClass('selected');
+					} else {
+						for(var i in $scope.severityDim.top(Infinity)) {
+							if ($scope.severityDim.top(Infinity)[i].ioc_severity === 1) {
+								arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
+							}
+						}
+						$scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
+						$('.alert1').addClass('selected');
+					}
+					$scope.$broadcast('crossfilterToTable');
+					dc.redrawAll();
+					updateSevCounts($scope.sevcounts);
+				});
+				$('.alert2').on('click',function(){
+					$scope.severityDim.filterAll();
+					var arr = [];
+					if ($('.alert2').hasClass('selected')) {
+						$('.alert2').removeClass('selected');
+					} else {
+						for(var i in $scope.severityDim.top(Infinity)) {
+							if ($scope.severityDim.top(Infinity)[i].ioc_severity === 2) {
+								arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
+							}
+						}
+						$scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
+						$('.alert2').addClass('selected');
+					}
+					$scope.$broadcast('crossfilterToTable');
+					dc.redrawAll();
+					updateSevCounts($scope.sevcounts);
+				});
+				$('.alert3').on('click',function(){
+					$scope.severityDim.filterAll();
+					var arr = [];
+					if ($('.alert3').hasClass('selected')) {
+						$('.alert3').removeClass('selected');
+					} else {
+						for(var i in $scope.severityDim.top(Infinity)) {
+							if ($scope.severityDim.top(Infinity)[i].ioc_severity === 3) {
+								arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
+							}
+						}
+						$scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
+						$('.alert3').addClass('selected');
+					}
+					$scope.$broadcast('crossfilterToTable');
+					dc.redrawAll();
+					updateSevCounts($scope.sevcounts);
+				});
+				$('.alert4').on('click',function(){
+					$scope.severityDim.filterAll();
+					var arr = [];
+					if ($('.alert4').hasClass('selected')) {
+						$('.alert4').removeClass('selected');
+					} else {
+						for(var i in $scope.severityDim.top(Infinity)) {
+							if ($scope.severityDim.top(Infinity)[i].ioc_severity === 4) {
+								arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
+							}
+						}
+						$scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
+						$('.alert4').addClass('selected');
+					}
+					$scope.$broadcast('crossfilterToTable');
+					dc.redrawAll();
+					updateSevCounts($scope.sevcounts);
+				});
 			});
 			$scope.$on('severityUpdate', function () {
 				updateSevCounts($scope.sevcounts);
@@ -170,7 +276,7 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 						//'bDestroy': true,
 						//'bProcessing': true,
 						//'bRebuild': true,
-						//'aaSorting': true,
+						'aaSorting': $scope.data.tables[0].sort,
 						//'bFilter': true,
 						//'bPaginate': true,
 						'sDom': '<"clear"C>T<"clear">lr<"table_overflow"t>ip',
@@ -223,7 +329,11 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 										objlink: obj
 									});
 								}
-								$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='btn btn-link' type='button' value='"+links()+"' href=''>"+aData[$scope.e[c].mData]+"</button>");
+								if ($scope.e[c].mData === 'time') {
+									$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='button-secondary pure-button xsmall' value='"+links()+"'>"+aData[$scope.e[c].mData]+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span>");
+								} else {
+									$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='btn btn-link' type='button' value='"+links()+"' href=''>"+aData[$scope.e[c].mData]+"</button>");
+								}
 							}
 						},
 						'fnDrawCallback': function( oSettings ) {
@@ -254,7 +364,7 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 					$rootScope.$watch('search', function(){
 						$('#table').dataTable().fnFilter($rootScope.search);
 					});
-				}, 0, false);
+				}, 200, false);
 			})
 		}
 	};
@@ -267,6 +377,7 @@ angular.module('mean.system').directive('makeSevChart', ['$timeout', '$window', 
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
 					//var arr = $scope.data.tables[0].aaData;
 					var dimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
+					var timeDimension = $scope.crossfilterData.dimension(function(d) { return d.time });
 					var group = dimension.group();
 					$scope.sevChart = dc.barChart('#sevchart');
 					var connVsTime = group.reduce(
@@ -358,11 +469,13 @@ angular.module('mean.system').directive('makeSevChart', ['$timeout', '$window', 
 							waitForFinalEvent(function(){
 								$scope.tableTime.filterAll();
 								var arr = [];
-								for(var i in dimension.top(Infinity)) {
-									arr.push(dimension.top(Infinity)[i].time);
+								for(var i in timeDimension.top(Infinity)) {
+									arr.push(timeDimension.top(Infinity)[i].time);
 								}
 								$scope.tableTime.filter(function(d) { return arr.indexOf(d) >= 0; });
 								$scope.$broadcast('crossfilterToTable');
+								console.log($scope.tableTime.top(Infinity));
+								console.log(timeDimension.top(Infinity))
 							}, 400, "filterWait");
 						})
 						//.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
@@ -521,7 +634,7 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope
 							}
 							$scope.rowChart.redraw();
 						});
-				}, 0, false);
+				}, 200, false);
 			});
 		}
 	}
@@ -620,7 +733,8 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 							}
 						$scope.geoChart.redraw();
 					});
-				}, 0, false);
+					$scope.$broadcast('spinnerHide');
+				}, 200, false);
 			})
 		}
 	};

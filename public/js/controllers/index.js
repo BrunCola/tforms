@@ -1,7 +1,9 @@
 'use strict';
 
-angular.module('mean.system').controller('IndexController', ['$scope', 'Global', '$routeParams', '$rootScope', function ($scope, Global, $routeParams, $rootScope) {
+angular.module('mean.system').controller('IndexController', ['$scope', 'Global', '$routeParams', '$rootScope', 'breadcrumbs', function ($scope, Global, $routeParams, $rootScope, breadcrumbs) {
 	$scope.global = Global;
+	$scope.breadcrumbs = breadcrumbs;
+
 	//this can be used for date selector
 	$scope.onHeadLoad = function() {
 		//console.log('test');

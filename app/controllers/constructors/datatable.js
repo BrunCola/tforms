@@ -3,7 +3,7 @@
 var config = require('../../../config/config'),
 	mysql = require('mysql');
 
-module.exports = function (sql, params, database, callback) {
+module.exports = function (sql, params, buttons, sort, database, callback) {
 	// config.db.database = database;
 	var connection = mysql.createConnection(config.db);
 
@@ -20,6 +20,9 @@ module.exports = function (sql, params, database, callback) {
 			for (var d in params) {
 				if (params[d].dView === undefined) {
 					params[d].dView = true;
+				}
+				if (params[d].select === 'Archive') {
+					params[d].select = null;
 				}
 				// if (params[d].dType === undefined) {
 				//	params[d].dType = 'string-case';
@@ -39,7 +42,9 @@ module.exports = function (sql, params, database, callback) {
 			}
 			var table = {
 				aaData: result,
-				params: arr
+				params: arr,
+				buttons: buttons,
+				sort: sort
 			};
 			callback(null, table);
 			connection.destroy();

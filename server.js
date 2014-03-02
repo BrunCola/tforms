@@ -50,7 +50,10 @@ walk(models_path);
 // Bootstrap passport config
 require('./config/passport')(passport, connection);
 
-var app = express();
+var app = express()
+    , http = require('http')
+    , server = http.createServer(app)
+    , io = require('socket.io').listen(server);
 
 // Express settings
 require('./config/express')(app, passport, connection);
@@ -63,7 +66,7 @@ var walk = function(path) {
         var stat = fs.statSync(newPath);
         if (stat.isFile()) {
             if (/(.*)\.(js$|coffee$)/.test(file)) {
-                require(newPath)(app, passport, connection);
+                require(newPath)(app, passport, connection, io);
             }
         // We skip the app/routes/middlewares directory as it is meant to be
         // used and shared by routes as further middlewares and is not a
@@ -78,11 +81,11 @@ walk(routes_path);
 
 // Start the app by listening on <port>
 var port = process.env.PORT || config.port;
-app.listen(port);
+server.listen(port);
 console.log('rapidPHIRE app started on port ' + port);
 
 // Initializing logger
 // logger.init(app, passport, mongoose);
 
 // Expose app
-exports = module.exports = app;
+exports = module.exports = server;

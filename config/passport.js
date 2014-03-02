@@ -4,39 +4,6 @@ crypto = require('crypto');
 
 module.exports = function(passport, connection) {
 
-//    app.get('/home', function(reg, res){
-//     //check user session value, is logged in 
-//     if(req.user)
-//         res.render('dash',{
-//             username: req.user['member_id']//req.user array contains serializeUser data
-//         });
-//     else
-//         res.render('index');
-
-// });
-
-// app.get('/logout', function(req, res){
-
-//     req.logout();
-//     res.redirect('/home');
-// });
-
-// //login form submit as post
-
-// app.post('/login',
-//     passport.authenticate('local', {
-//         successRedirect: '/dashboard',
-//         failureRedirect: '/home'
-//     })
-//     );
-// //to project dashboard
-// app.get('/dash',routes.dash);
-// //to project dashboard
-// app.get('/signup',routes.signup);
-// //to project dashboard
-
-// app.get('*', routes.index);
-
     passport.use(new LocalStrategy(
         function(username, password, done) {
             var hash = crypto.createHash('md5').update(password).digest('hex');
