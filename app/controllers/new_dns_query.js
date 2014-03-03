@@ -20,59 +20,43 @@ exports.render = function(req, res) {
 	var info = [];
 	var table1SQL = 'SELECT '+
 		// SELECTS
-		'max(date_format(from_unixtime(time), "%Y-%m-%d %l:%i:%s")) as time, '+ // Last Seen
-		'`ioc_severity`, '+
-		'count(*) as count, '+
-		'`ioc`, '+
-		'`ioc_type`, '+
+		'date_format(from_unixtime(time), "%Y-%m-%d %l:%i:%s") as time, '+ // Last Seen
 		'`lan_zone`, '+
 		'`lan_ip`, '+
 		'`machine`, '+
 		'`remote_ip`, '+
+		'`remote_port`, '+
 		'`remote_asn`, '+
 		'`remote_asn_name`, '+
 		'`remote_country`, '+
 		'`remote_cc`, '+
-		'sum(`in_packets`) as in_packets, '+
-		'sum(`out_packets`) as out_packets, '+
-		'sum(`in_bytes`) as in_bytes, '+
-		'sum(`out_bytes`) as out_bytes '+
+		'`proto`, '+
+		'`qtype`, '+
+		'`qclass`, '+
+		'`rcode`, '+
+		'`query` '+
 		// !SELECTS
-		'FROM conn_ioc '+
-		'WHERE time BETWEEN '+start+' AND '+end+' '+
-		'AND `ioc_count` > 0 AND `trash` IS NULL '+
-		'GROUP BY `lan_ip`,`remote_ip`,`ioc`';
+		'FROM dns_query '+
+		'WHERE time BETWEEN '+start+' AND '+end;
 
-	var table1Params = [
-		{
-			title: 'Last Seen',
-			select: 'time',
-			dView: true,
-			link: {
-				type: 'ioc_drill',
-				// val: the pre-evaluated values from the query above
-				val: ['lan_ip','remote_ip','ioc'],
-				crumb: false
-			},
-		},
-		{ title: 'Severity', select: 'ioc_severity' },
-		{ title: 'IOC Hits', select: 'count' },
-		{ title: 'IOC', select: 'ioc' },
-		{ title: 'IOC Type', select: 'ioc_type' },
-		{ title: 'LAN Zone', select: 'lan_zone' },
-		{ title: 'LAN IP', select: 'lan_ip' },
-		{ title: 'Machine Name', select: 'machine' },
-		{ title: 'Remote IP', select: 'remote_ip' },
+	 var table1Params = [
+		{ title: 'First Seen', select: 'time' },
+		{ title: 'Query Type', select: 'qtype' },
+		{ title: 'Query Class', select: 'qclass', dView: false },
+		{ title: 'Response Code', select: 'rcode', dView: false },
+		{ title: 'DNS Query', select: 'query' },
+		{ title: 'Remote Port', select: 'remote_port' },
+		{ title: 'Protocol', select: 'proto' },
+		{ title: 'DNS Server', select: 'remote_ip' },
+		{ title: 'Remote Port', select: 'remote_port' },
 		{ title: 'Remote ASN', select: 'remote_asn' },
 		{ title: 'Remote ASN Name', select: 'remote_asn_name' },
 		{ title: 'Remote Country', select: 'remote_country' },
 		{ title: 'Flag', select: 'remote_cc', },
-		{ title: 'Packets to Remote', select: 'in_packets' },
-		{ title: 'Packets from Remote', select: 'out_packets' },
-		{ title: 'Bytes to Remote', select: 'in_bytes', dView: false },
-		{ title: 'Bytes from Remote', select: 'out_bytes', dView: false },
-		{ title: '', select: 'Archive'}
-	];
+		{ title: 'LAN Zone', select: 'lan_zone' },
+		{ title: 'LAN IP', select: 'lan_ip' },
+		{ title: 'Machine Name', select: 'machine' }
+		];
 	var table1Sort = [[0, 'desc']];
 	var table1Div = 'table';
 
@@ -80,15 +64,11 @@ exports.render = function(req, res) {
 		// SELECTS
 		'date_format(from_unixtime(time), "%Y-%m-%d %l:%i:%s") as time, '+ // Last Seen
 		'`remote_country`, '+
-		'ioc_severity, '+
-		'count(*) as count, '+
-		'`ioc` '+
+		'count(*) as count '+
 		// !SELECTS
-		'FROM conn_ioc '+
+		'FROM dns_query '+
 		'WHERE time BETWEEN '+start+' AND '+end+' '+
-		'AND `ioc_count` > 0 AND `trash` IS NULL '+
-		'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country, ioc_severity, ioc';
-
+		'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country';
 
 	async.parallel([
 		// Table function(s)

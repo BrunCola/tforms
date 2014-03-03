@@ -22,26 +22,24 @@ exports.render = function(req, res) {
 		// SELECTS
 		'max(date_format(from_unixtime(time), "%Y-%m-%d %l:%i:%s")) as time, '+ // Last Seen
 		'`ioc_severity`, '+
-		'count(*) as count, '+
+		'count(*) AS count, '+
 		'`ioc`, '+
 		'`ioc_type`, '+
 		'`lan_zone`, '+
-		'`lan_ip`, '+
-		'`machine`, '+
 		'`remote_ip`, '+
 		'`remote_asn`, '+
 		'`remote_asn_name`, '+
 		'`remote_country`, '+
 		'`remote_cc`, '+
-		'sum(`in_packets`) as in_packets, '+
-		'sum(`out_packets`) as out_packets, '+
+		'sum(in_packets) as in_packets, '+
+		'sum(out_packets) as out_packets, '+
 		'sum(`in_bytes`) as in_bytes, '+
 		'sum(`out_bytes`) as out_bytes '+
 		// !SELECTS
 		'FROM conn_ioc '+
 		'WHERE time BETWEEN '+start+' AND '+end+' '+
 		'AND `ioc_count` > 0 AND `trash` IS NULL '+
-		'GROUP BY `lan_ip`,`remote_ip`,`ioc`';
+		'GROUP BY `remote_ip`,`ioc`';
 
 	var table1Params = [
 		{
@@ -49,9 +47,9 @@ exports.render = function(req, res) {
 			select: 'time',
 			dView: true,
 			link: {
-				type: 'ioc_drill',
+				type: 'ioc_top_remote2local',
 				// val: the pre-evaluated values from the query above
-				val: ['lan_ip','remote_ip','ioc'],
+				val: ['remote_ip','ioc'],
 				crumb: false
 			},
 		},
@@ -60,8 +58,6 @@ exports.render = function(req, res) {
 		{ title: 'IOC', select: 'ioc' },
 		{ title: 'IOC Type', select: 'ioc_type' },
 		{ title: 'LAN Zone', select: 'lan_zone' },
-		{ title: 'LAN IP', select: 'lan_ip' },
-		{ title: 'Machine Name', select: 'machine' },
 		{ title: 'Remote IP', select: 'remote_ip' },
 		{ title: 'Remote ASN', select: 'remote_asn' },
 		{ title: 'Remote ASN Name', select: 'remote_asn_name' },
@@ -70,13 +66,12 @@ exports.render = function(req, res) {
 		{ title: 'Packets to Remote', select: 'in_packets' },
 		{ title: 'Packets from Remote', select: 'out_packets' },
 		{ title: 'Bytes to Remote', select: 'in_bytes', dView: false },
-		{ title: 'Bytes from Remote', select: 'out_bytes', dView: false },
-		{ title: '', select: 'Archive'}
+		{ title: 'Bytes from Remote', select: 'out_bytes', dView: false }
 	];
 	var table1Sort = [[0, 'desc']];
 	var table1Div = 'table';
 
-	var crossfilterSQL = 'SELECT '+
+	 var crossfilterSQL = 'SELECT '+
 		// SELECTS
 		'date_format(from_unixtime(time), "%Y-%m-%d %l:%i:%s") as time, '+ // Last Seen
 		'`remote_country`, '+

@@ -10,7 +10,7 @@ module.exports = {
 	db: {
 		socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock',
 		// I had to use a socket instead of a port because of the application I run my server in.
-		//port: 9999,
+		// port: 3306,
 		host: 'localhost',
 		user: 'root',
 		password: 'duffman',
@@ -24,9 +24,9 @@ module.exports = {
 	sessionCollection: 'sessions'
 };
 
+
 // module.exports = {
-// 	start: start,
-// 	end: end,
+// 	defaultDateRange: 1,
 // 	root: rootPath,
 // 	port: process.env.PORT || 3000,
 // 	db: {

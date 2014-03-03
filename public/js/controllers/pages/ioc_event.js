@@ -7,29 +7,16 @@ angular.module('mean.iochits').controller('TitleController', ['$scope', 'Global'
 	$scope.subheading = '';
 }]);
 
-angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
+angular.module('mean.iochits').controller('IocEventController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
 	$scope.global = Global;
 	$scope.onPageLoad = function() {
-		var query;
-		if ($routeParams.start && $routeParams.end) {
-			query = '/ioc_drill?start='+$routeParams.start+'&end='+$routeParams.end+'&lan_ip='+$routeParams.lan_ip+'&remote_ip='+$routeParams.remote_ip+'&ioc='+$routeParams.ioc;
-		} else {
-			query = '/ioc_drill?lan_ip='+$routeParams.lan_ip+'&remote_ip='+$routeParams.remote_ip+'&ioc='+$routeParams.ioc;
-		}
+		var query = '/ioc_event?conn_uids='+$routeParams.conn_uids;
 		$http({method: 'GET', url: query}).
 		//success(function(data, status, headers, config) {
 		success(function(data) {
-			var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
-			data.crossfilter.forEach(function(d) {
-				d.dd = dateFormat.parse(d.time);
-				d.hour = d3.time.hour(d.dd);
-				d.count = +d.count;
-			});
-			$scope.crossfilterData = crossfilter(data.crossfilter);
 			$scope.data = data;
 
 			$scope.$broadcast('tableLoad');
-			$scope.$broadcast('sevChart');
 
 			$scope.lan_zone = data.info.main[0].lan_zone;
 			$scope.lan_ip = $routeParams.lan_ip;
@@ -44,19 +31,18 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 			$scope.remote_port = data.info.main[0].remote_port;
 			$scope.in_packets = data.info.main[0].in_packets;
 			$scope.in_bytes = data.info.main[0].in_bytes;
-			$scope.first = data.info.main[0].first;
+			$scope.time = data.info.main[0].time;
 			$scope.l7_proto = data.info.main[0].l7_proto;
 			$scope.remote_asn = data.info.main[0].remote_asn;
 			$scope.remote_asn_name = data.info.main[0].remote_asn_name;
-			$scope.last = data.info.main[0].last;
 
-			$scope.ioc = $routeParams.ioc;
+			$scope.ioc = data.info.main[0].ioc;
 			$scope.ioc_type = data.info.main[0].ioc_type;
 			// $scope.desc = data.info.desc[0].description;
 
-			if (data.crossfilter.length === 0) {
-				$scope.$broadcast('loadError');
-			}
+			// if (data.crossfilter.length === 0) {
+			// 	$scope.$broadcast('loadError');
+			// }
 		});
 	};
 	$rootScope.rootpage = true;

@@ -3,7 +3,7 @@
 var config = require('../../../config/config'),
 	mysql = require('mysql');
 
-module.exports = function (sql, params, buttons, sort, database, callback) {
+module.exports = function (sql, params, sort, div, database, callback) {
 	// config.db.database = database;
 	var connection = mysql.createConnection(config.db);
 
@@ -43,8 +43,8 @@ module.exports = function (sql, params, buttons, sort, database, callback) {
 			var table = {
 				aaData: result,
 				params: arr,
-				buttons: buttons,
-				sort: sort
+				sort: sort,
+				div: div
 			};
 			callback(null, table);
 			connection.destroy();

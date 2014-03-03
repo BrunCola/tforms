@@ -9,31 +9,31 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		'icon': 'fa-warning',
 	},{
 		'title': 'IOC Top Remote IP',
-		'url': '/',
+		'url': '/#!/ioc_top_remote',
 		'icon': 'fa-warning',
 	},{
 		'title': 'New Remote IPs',
-		'url': '/',
+		'url': '/#!/new_remote_ip',
 		'icon': 'fa-exchange',
 	},{
 		'title': 'New DNS Queries',
-		'url': '/',
+		'url': '/#!/new_dns_query',
 		'icon': 'fa-info-circle',
 	},{
 		'title': 'New HTTP Domains',
-		'url': '/',
+		'url': '/#!/new_http_hosts',
 		'icon': 'fa-globe',
 	},{
 		'title': 'New SSL Hosts',
-		'url': '/',
+		'url': '/#!/new_ssl_hosts',
 		'icon': 'fa-lock',
 	},{
 		'title': 'Layer 7',
-		'url': '/',
+		'url': '/#!/l7',
 		'icon': 'fa-bars',
 	},{
 		'title': 'Top Local IP',
-		'url': '/',
+		'url': '/#!/top_local',
 		'icon': 'fa-cloud-download',
 	},{
 		'title': 'Top Remote IP',

@@ -1,7 +1,7 @@
 <section page-head></section>
-<div data-ng-controller="IocDrillController" data-ng-init="onPageLoad()">
-	<section id="loading-error" loading-error></section>
-	<section id="loading-spinner" loading-spinner></section>
+<div data-ng-controller="IocEventController" data-ng-init="onPageLoad()">
+	<!-- <section id="loading-error" loading-error></section> -->
+	<!-- <section id="loading-spinner" loading-spinner></section> -->
 	<div class="row-fluid">
 		<div class="span4">
 			<div class="jdash-header">Local IP</div>
@@ -32,13 +32,12 @@
 						<strong>Premote Port: </strong>{{remote_port}}<br />
 						<strong>Packets received: </strong>{{in_packets}}<br />
 						<strong>Bytes received: </strong>{{in_bytes}}<br />
-						<strong>First IOC Hit: </strong>{{first}}<br />
 					</div>
 					<div class="span6">
+						<strong>Time: </strong>{{time}}<br />
 						<strong>Layer 7 Protocol: </strong>{{l7_proto}}<br />
 						<strong>Remote ASN: </strong>{{remote_asn}}<br />
 						<strong>Remote ASN Name: </strong>{{remote_asn_name}}<br />
-						<strong>Last IOC Hit: </strong>{{last}}<br />
 					</div>
 				</div>
 			</div>
@@ -54,24 +53,50 @@
 			</div>
 		</div>
 	</div>
+
 	<br />
 	<div class="row-fluid">
 		<div class="span12">
 			<div class="jdash-header">Title</div>
 			<div  style="background-color:#FFF;" class="box">
 				<div class="box-content">
-					<div id="sevchart" make-sev-chart></div>
+					<div id="sevchart" multi-table1></div>
 				</div>
 			</div>
 		</div>
 	</div>
 	<br />
 	<div class="row-fluid">
-		<div class="jdash-header">Table Title</div>
-		<div  style="background-color:#FFF;" class="box">
-			<div class="box-content">
-				<div id="ioctable" make-table></div>
+		<div class="span12">
+			<div class="jdash-header">Title</div>
+			<div  style="background-color:#FFF;" class="box">
+				<div class="box-content">
+					<div id="sevchart" multi-table2></div>
+				</div>
 			</div>
 		</div>
 	</div>
+	<br />
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="jdash-header">Title</div>
+			<div  style="background-color:#FFF;" class="box">
+				<div class="box-content">
+					<div id="sevchart" multi-table3></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<br />
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="jdash-header">Title</div>
+			<div  style="background-color:#FFF;" class="box">
+				<div class="box-content">
+					<div id="sevchart" multi-table4></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 </div>
