@@ -10,6 +10,8 @@ var iochits = require('../controllers/iochits'),
 	new_ssl_hosts = require('../controllers/new_ssl_hosts'),
 	l7 = require('../controllers/l7'),
 	top_local = require('../controllers/top_local'),
+	top_remote = require('../controllers/top_remote'),
+	archive = require('../controllers/archive'),
 
 	authorization = require('./middlewares/authorization.js');
 
@@ -26,4 +28,6 @@ module.exports = function(app) {
     app.get('/new_ssl_hosts', new_ssl_hosts.render);
     app.get('/l7', l7.render);
     app.get('/top_local', top_local.render);
+    app.get('/top_remote', top_remote.render);
+    app.get('/archive', archive.render);
 };

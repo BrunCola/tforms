@@ -3,18 +3,19 @@
 angular.module('mean.iochits').controller('TitleController', ['$scope', 'Global', function ($scope, Global) {
 	$scope.global = Global;
 
-	$scope.title = 'L7 Proto';
+	$scope.title = 'Archive';
 	$scope.subheading = '';
+
 }]);
 
-angular.module('mean.iochits').controller('l7Controller', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
+angular.module('mean.iochits').controller('archiveController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
 	$scope.global = Global;
 	$scope.onPageLoad = function() {
 		var query;
 		if ($routeParams.start && $routeParams.end) {
-			query = '/l7?start='+$routeParams.start+'&end='+$routeParams.end;
+			query = '/top_remote?start='+$routeParams.start+'&end='+$routeParams.end;
 		} else {
-			query = '/l7'
+			query = '/top_remote'
 		}
 		$http({method: 'GET', url: query}).
 		//success(function(data, status, headers, config) {
@@ -29,7 +30,7 @@ angular.module('mean.iochits').controller('l7Controller', ['$scope', 'Global', '
 			$scope.data = data;
 
 			$scope.$broadcast('tableLoad');
-			$scope.$broadcast('barChart');
+			$scope.$broadcast('sevChart');
 			if (data.crossfilter.length === 0) {
 				$scope.$broadcast('loadError');
 			}

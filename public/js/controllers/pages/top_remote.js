@@ -5,16 +5,17 @@ angular.module('mean.iochits').controller('TitleController', ['$scope', 'Global'
 
 	$scope.title = 'L7 Proto';
 	$scope.subheading = '';
+
 }]);
 
-angular.module('mean.iochits').controller('l7Controller', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
+angular.module('mean.iochits').controller('topRemoteController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
 	$scope.global = Global;
 	$scope.onPageLoad = function() {
 		var query;
 		if ($routeParams.start && $routeParams.end) {
-			query = '/l7?start='+$routeParams.start+'&end='+$routeParams.end;
+			query = '/top_remote?start='+$routeParams.start+'&end='+$routeParams.end;
 		} else {
-			query = '/l7'
+			query = '/top_remote'
 		}
 		$http({method: 'GET', url: query}).
 		//success(function(data, status, headers, config) {

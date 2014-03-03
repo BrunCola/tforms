@@ -73,12 +73,26 @@ angular.module('mean').config(['$routeProvider',
 		when('/l7?:start&:end', {
 			templateUrl: 'views/pages/l7.html'
 		}).
-		//L7
+		//top local
 		when('/top_local', {
 			templateUrl: 'views/pages/top_local.html'
 		}).
 		when('/top_local?:start&:end', {
 			templateUrl: 'views/pages/top_local.html'
+		}).
+		//top remote
+		when('/top_remote', {
+			templateUrl: 'views/pages/top_remote.html'
+		}).
+		when('/top_remote?:start&:end', {
+			templateUrl: 'views/pages/top_remote.html'
+		}).
+		//archive
+		when('/archive', {
+			templateUrl: 'views/pages/archive.html'
+		}).
+		when('/archive?:start&:end', {
+			templateUrl: 'views/pages/archive.html'
 		}).
 
 		// Other Pages

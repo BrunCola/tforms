@@ -261,12 +261,9 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 	return {
 		link: function ($scope, element, attrs) {
 			$scope.$on('tableLoad', function (event) {
-				//if ($scope.data.tables[0] !== null) {
+				if ($scope.data.tables[0] !== null) {
 					$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
 					$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
-					$scope.tableCountries = $scope.tableCrossfitler.dimension(function(d){return d.remote_country;});
-					$scope.tableIocs = $scope.tableCrossfitler.dimension(function(d){return d.ioc;});
-					$scope.tableTime = $scope.tableCrossfitler.dimension(function(d){return d.time;});
 					$timeout(function () { // You might need this timeout to be sure its run after DOM render
 						$(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table" ></table>');
 						$('#table').dataTable({
@@ -365,7 +362,7 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 							$('#table').dataTable().fnFilter($rootScope.search);
 						});
 					}, 200, false);
-				//}
+				}
 			})
 		}
 	};
@@ -518,7 +515,6 @@ angular.module('mean.system').directive('makeSevChart', ['$timeout', '$window', 
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
 					//var arr = $scope.data.tables[0].aaData;
 					var dimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
-					var timeDimension = $scope.crossfilterData.dimension(function(d) { return d.time });
 					var group = dimension.group();
 					$scope.sevChart = dc.barChart('#sevchart');
 					var connVsTime = group.reduce(
@@ -608,14 +604,14 @@ angular.module('mean.system').directive('makeSevChart', ['$timeout', '$window', 
 						.renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
 						.on("filtered", function(chart, filter){
 							waitForFinalEvent(function(){
-								$scope.tableTime.filterAll();
+								$scope.tableData.filterAll();
 								var arr = [];
-								for(var i in timeDimension.top(Infinity)) {
-									arr.push(timeDimension.top(Infinity)[i].time);
+								for(var i in dimension.top(Infinity)) {
+									arr.push(dimension.top(Infinity)[i].time);
 								}
-								$scope.tableTime.filter(function(d) { return arr.indexOf(d) >= 0; });
+								$scope.tableData.filter(function(d) { return arr.indexOf(d.time) >= 0; });
 								$scope.$broadcast('crossfilterToTable');
-								// console.log($scope.tableTime.top(Infinity));
+								// console.log($scope.tableData.top(Infinity));
 								// console.log(timeDimension.top(Infinity))
 							}, 400, "filterWait");
 						})
@@ -726,12 +722,12 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope
 						.colorAccessor(function (d){return d.value.severity;})
 						.renderLabel(true)
 						.on("filtered", function(chart, filter){
-							$scope.tableIocs.filterAll();
+							$scope.tableData.filterAll();
 							var arr = [];
 							for(var i in dimension.top(Infinity)) {
 								arr.push(dimension.top(Infinity)[i].ioc);
 							}
-							$scope.tableIocs.filter(function(d) { return arr.indexOf(d) >= 0; });
+							$scope.tableData.filter(function(d) { return arr.indexOf(d.ioc) >= 0; });
 							$scope.$broadcast('crossfilterToTable');
 						})
 						.label(function(d) { return d.key+' ('+d.value.count+')'; })
@@ -831,12 +827,12 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 								return d.properties.name;
 							})
 							.on("filtered", function(chart, filter){
-								$scope.tableCountries.filterAll();
+								$scope.tableData.filterAll();
 								var arr = [];
 								for(var c in dimension.top(Infinity)) {
 									arr.push(dimension.top(Infinity)[c].remote_country);
 								}
-								$scope.tableCountries.filter(function(d) { return arr.indexOf(d) >= 0; });
+								$scope.tableData.filter(function(d) { return arr.indexOf(d.remote_country) >= 0; });
 								$scope.$broadcast('crossfilterToTable');
 							});
 							$scope.geoChart.render();
@@ -893,7 +889,6 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout','$rootScope'
 		link: function ($scope, element, attrs) {
 			$scope.$on('barChart', function (event) {
 				var dimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
-				var timeDimension = $scope.crossfilterData.dimension(function(d) { return d.time });
 				var group = dimension.group().reduceSum(function(d) { return d.count });
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
 					$scope.barChart = dc.barChart('#barchart');
@@ -926,14 +921,14 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout','$rootScope'
 						.elasticX(true) // (optional) whether chart should rescale x axis to fit data, :default = false
 						.on("filtered", function(chart, filter){
 							waitForFinalEvent(function(){
-								$scope.tableTime.filterAll();
+								$scope.tableData.filterAll();
 								var arr = [];
-								for(var i in timeDimension.top(Infinity)) {
-									arr.push(timeDimension.top(Infinity)[i].time);
+								for(var i in dimension.top(Infinity)) {
+									arr.push(dimension.top(Infinity)[i].time);
 								}
-								$scope.tableTime.filter(function(d) { return arr.indexOf(d) >= 0; });
+								$scope.tableData.filter(function(d) { return arr.indexOf(d.time) >= 0; });
 								$scope.$broadcast('crossfilterToTable');
-								// console.log($scope.tableTime.top(Infinity));
+								// console.log($scope.tableData.top(Infinity));
 								// console.log(timeDimension.top(Infinity))
 							}, 400, "barfilterWait");
 						})
