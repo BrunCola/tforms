@@ -1,9 +1,9 @@
 'use strict';
 
 var dataTable = require('./constructors/datatable'),
-query = require('./constructors/query'),
-config = require('../../config/config'),
-async = require('async');
+	query = require('./constructors/query'),
+	config = require('../../config/config'),
+	async = require('async');
 
 exports.render = function(req, res) {
 	// var database = req.user.database;
@@ -14,39 +14,38 @@ exports.render = function(req, res) {
 		start = req.query.start;
 		end = req.query.end;
 	}
-	//var results = [];
-	var tables = [];
-	var crossfilter = [];
-	var info = [];
-	var table1SQL = 'SELECT '+
-        // SELECTS
-        'max(date_format(from_unixtime(time), "%Y-%m-%d %l:%i:%s")) as time, '+ // Last Seen
-        '`remote_ip`, '+
-        '`remote_asn`, '+
-        '`remote_asn_name`, '+
-        '`remote_country`, '+
-        '`remote_cc`, '+
-        'sum(in_packets) as in_packets, '+
-        'sum(out_packets) as out_packets, '+
-        '(sum(in_bytes) / 1048576) as in_bytes, '+
-        '(sum(out_bytes) / 1048576) as out_bytes '+
-        // !SELECTS
-        'FROM conn_meta '+
-        'WHERE time BETWEEN '+start+' AND '+end+' '+
-        'GROUP BY remote_ip';
+	if (req.query.remote_ip) {
+		//var results = [];
+		var tables = [];
+		var crossfilter = [];
+		var info = [];
+		var table1SQL = 'SELECT '+
+            // SELECTS
+            'max(date_format(from_unixtime(time), "%Y-%m-%d %l:%i:%s")) as time, '+ // Last Seen
+            '`lan_zone`, '+
+            '`lan_ip`, '+
+            '`machine`, '+
+            '`remote_ip`, '+
+            '`remote_asn`, '+
+            '`remote_asn_name`, '+
+            '`remote_country`, '+
+            '`remote_cc`, '+
+            '(sum(in_bytes) / 1048576) as in_bytes, '+
+            '(sum(out_bytes) / 1048576) as out_bytes, '+
+            'sum(in_packets) as in_packets, '+
+            'sum(out_packets) as out_packets '+
+            // !SELECTS
+            'FROM conn_meta '+
+            'WHERE time BETWEEN '+start+' AND '+end+' '+
+            'AND remote_ip = \''+req.query.remote_ip+'\' '+
+            'GROUP BY lan_ip';
 
 		var table1Params = [
-            {
-                title: 'Last Seen',
-                select: 'time',
-                dView: true,
-                link: {
-                    type: 'top_remote2local',
-                    // val: the pre-evaluated values from the query above
-                    val: ['remote_ip'],
-                    crumb: false
-                },
-            },
+            { title: 'Last Seen', select: 'time' },
+            { title: 'LAN Zone', select: 'lan_zone' },
+            { title: 'LAN IP', select: 'lan_ip' },
+            { title: 'Machine Name', select: 'machine' },
+            { title: 'Machine Name', select: 'machine' },
             { title: 'Remote IP', select: 'remote_ip' },
             { title: 'Remote ASN', select: 'remote_asn' },
             { title: 'Remote ASN Name', select: 'remote_asn_name' },
@@ -63,11 +62,12 @@ exports.render = function(req, res) {
 		var crossfilterSQL = 'SELECT '+
             // SELECTS
             'date_format(from_unixtime(time), "%Y-%m-%d %l:%i:%s") as time, '+ // Last Seen
-            'count(*) as count '+
+            'count(*) as count, '+
+            '`remote_country` '+
             // !SELECTS
             'FROM conn_meta '+
             'WHERE time BETWEEN '+start+' AND '+end+' '+
-            'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time))';
+            'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country';
 
 		async.parallel([
 		// Table function(s)
@@ -93,6 +93,9 @@ exports.render = function(req, res) {
 		};
 		//console.log(results);
 		res.jsonp(results);
-	});
+		});
+	} else {
+        res.redirect('/');
+    }
 
 };

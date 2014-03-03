@@ -272,7 +272,7 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 							'bDeferRender': true,
 							'bDestroy': true,
 							//'bProcessing': true,
-							//'bRebuild': true,
+							'bRebuild': true,
 							'aaSorting': $scope.data.tables[0].sort,
 							//'bFilter': true,
 							//'bPaginate': true,
@@ -361,7 +361,7 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 						$rootScope.$watch('search', function(){
 							$('#table').dataTable().fnFilter($rootScope.search);
 						});
-					}, 200, false);
+					}, 500, false);
 				}
 			})
 		}
@@ -609,6 +609,7 @@ angular.module('mean.system').directive('makeSevChart', ['$timeout', '$window', 
 								for(var i in dimension.top(Infinity)) {
 									arr.push(dimension.top(Infinity)[i].time);
 								}
+								//console.log(dimension.group().top(Infinity));
 								$scope.tableData.filter(function(d) { return arr.indexOf(d.time) >= 0; });
 								$scope.$broadcast('crossfilterToTable');
 								// console.log($scope.tableData.top(Infinity));
@@ -813,11 +814,11 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 					{
 						var cb = function(error, world) {
 							var width = $('#geochart').parent().width();
-							var height = width/1.4;
+							var height = width/1.628;
 							$scope.geoChart
 							.dimension(dimension)
 							.group(group)
-							.projection(d3.geo.mercator().precision(0.1).scale((width + 1) / 2 / Math.PI).translate([width / 2, width / 2]))
+							.projection(d3.geo.mercator().precision(0.1).scale((width + 1) / 2 / Math.PI).translate([width / 2.1, width / 2.4]))
 							.width(width)
 							.height(height)
 							.colors(["#377FC7","#F5D800","#F88B12","#DD122A","#000"])
@@ -849,9 +850,9 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 							$scope.geoChart
 								.width(width)
 								.height(width/3.3)
-								.projection(d3.geo.mercator().precision(0.1).scale((width + 1) / 2 / Math.PI).translate([width / 2, width / 2]));
-								$(element).height(width/1.4);
-								d3.select('#geochart svg').attr('width', width).attr('height', width/1.4);
+								.projection(d3.geo.mercator().precision(0.1).scale((width + 1) / 2 / Math.PI).translate([width / 2.1, width / 2.4]))
+								$(element).height(width/1.628);
+								d3.select('#geochart svg').attr('width', width).attr('height', width/1.628);
 							$scope.geoChart.redraw();
 						}
 					}
@@ -979,7 +980,7 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout','$rootScope'
 							$scope.barChart.redraw();
 						});
 						$scope.$broadcast('spinnerHide');
-					}, 200, false);
+					}, 0, false);
 			})
 		}
 	};

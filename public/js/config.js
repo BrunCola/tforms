@@ -73,6 +73,26 @@ angular.module('mean').config(['$routeProvider',
 		when('/l7?:start&:end', {
 			templateUrl: 'views/pages/l7.html'
 		}).
+		//l7 drill Page
+		when('/l7_drill', {
+			templateUrl: 'views/pages/l7_drill.html'
+		}).
+		when('/l7_drill?:l7_proto', {
+			templateUrl: 'views/pages/l7_drill.html'
+		}).
+		when('/l7_drill?:start&:end&:l7_proto', {
+			templateUrl: 'views/pages/l7_drill.html'
+		}).
+		//l7 local Page
+		when('/l7_local', {
+			templateUrl: 'views/pages/l7_local.html'
+		}).
+		when('/l7_local?:lan_ip&:l7_proto', {
+			templateUrl: 'views/pages/l7_local.html'
+		}).
+		when('/l7_local?:start&:end&:lan_ip&:l7_proto', {
+			templateUrl: 'views/pages/l7_local.html'
+		}).
 		//top local
 		when('/top_local', {
 			templateUrl: 'views/pages/top_local.html'
@@ -86,6 +106,26 @@ angular.module('mean').config(['$routeProvider',
 		}).
 		when('/top_remote?:start&:end', {
 			templateUrl: 'views/pages/top_remote.html'
+		}).
+		//top remote2local
+		when('/top_remote2local', {
+			templateUrl: 'views/pages/top_remote2local.html'
+		}).
+		when('/top_remote2local?:remote_ip', {
+			templateUrl: 'views/pages/top_remote2local.html'
+		}).
+		when('/top_remote2local?:start&:end&:remote_ip', {
+			templateUrl: 'views/pages/top_remote2local.html'
+		}).
+		//ioc top remote2local
+		when('/ioc_top_remote2local', {
+			templateUrl: 'views/pages/ioc_top_remote2local.html'
+		}).
+		when('/ioc_top_remote2local?:remote_ip&:ioc', {
+			templateUrl: 'views/pages/ioc_top_remote2local.html'
+		}).
+		when('/ioc_top_remote2local?:start&:end&:remote_ip:ioc', {
+			templateUrl: 'views/pages/ioc_top_remote2local.html'
 		}).
 		//archive
 		when('/archive', {

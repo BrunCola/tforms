@@ -2,10 +2,11 @@
 
 angular.module('mean.system').controller('sidebarController', ['$scope', 'Global', '$routeParams', function ($scope, Global, $routeParams) {
 	$scope.global = Global;
+
 	var urlTime = '';
-	if($routeParams.start && $routeParams.end) {
-		urlTime = '?start='+$routeParams.start+'&end='+$routeParams.end
-	}
+	if ($routeParams.start && $routeParams.end) {
+		var urlTime = '?start='+$routeParams.start+'&end='+$routeParams.end
+	};
 	$scope.sidebaritems = [{
 		'title': 'IOC Notifications',
 		'url': '/#!/iochits'+urlTime,
@@ -42,9 +43,5 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		'title': 'Top Remote IP',
 		'url': '/#!/top_remote'+urlTime,
 		'icon': 'fa-cloud-upload',
-	},{
-		'title': 'IOC Archive',
-		'url': '/#!/archive'+urlTime,
-		'icon': 'fa-trash',
 	}];
 }]);
