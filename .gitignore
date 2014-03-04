@@ -19,4 +19,5 @@ test/coverage/
 ehthumbs.db
 Thumbs.db
 class.database.php
+.sublime-grunt.cache
 >>>>>>> e17a0e13ba98edb4952494af7ad5bc6ef16a1b0a

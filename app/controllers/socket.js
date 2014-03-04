@@ -78,14 +78,14 @@ exports.init = function(req, res) {
 
 		socket.on('report_generate', function(data){
 			var mailOptions = {
-				from: "Andrew Billion ✔ <andrewdillion6@gmail.com>", // sender address
-				to: "andrewdillion6@gmail.com", // list of receivers
-				subject: "Hello ✔", // Subject line
-				text: "Hello world ✔", // plaintext body
-				html: "<b>Hello world ✔</b>", // html body
+				from: "rapidPHIRE <notice@rapidphire.com>", // sender address
+				to: "andrewdillion6@gmail.com, stefan.amyotte@gmail.com", // list of receivers
+				subject: "Test", // Subject line
+				text: "Hello world", // plaintext body
+				html: "<b>BALLS</b>", // html body
 				attachments: [{
-					fileName: "github.pdf",
-					filePath: "./temp/github.pdf"
+					fileName: "rp.pdf",
+					filePath: "./temp/rp.pdf"
 				}]
 			};
 			// phantom.create(function(err,ph) {
@@ -93,7 +93,7 @@ exports.init = function(req, res) {
 			// 		return page.open("http://localhost:3000/report#!/iochits", function(err,status) {
 			// 			console.log("opened site? ", status);
 			// 			setTimeout(function() {
-			// 				page.render('./temp/github.png');
+			// 				page.render('./temp/rp.png');
 		 // 					ph.exit();
 		 // 					smtpTransport.sendMail(mailOptions, function(error, response){
 			// 					if(error){
@@ -109,33 +109,24 @@ exports.init = function(req, res) {
 
 
 
-phantom.create(function(err,ph) {
-  return ph.createPage(function(err,page) {
-    return page.open("http://localhost:3000/report#!/iochits", function(err,status) {
-      console.log("opened site? ", status);
-		
-		//page.includeJs('http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js', function(err) {
-        //jQuery Loaded.
-        //Wait for a bit for AJAX content to load on the page. Here, we are waiting 5 seconds.
-        setTimeout(function() {
-          return page.render('./temp/github.pdf').paperSize = {
-			format: 'A4',
-			margin: '0.4cm'
-		}
-          }, function(err,result) {
-            smtpTransport.sendMail(mailOptions, function(error, response){
-				if(error){
-					console.log(error);
-				}else{
-					console.log("Message sent: " + response.message);
-				}
-            ph.exit();
-          });
-        }, 5000);
-      //});
-    });
-  });
-});
+			phantom.create(function(err,ph) {
+				return ph.createPage(function(err,page) {
+					return page.open("http://localhost:3000/report#!/iochits", function(err,status) {
+						console.log("opened site? ", status);
+						setTimeout(function() {
+							page.render('./temp/rp.pdf');
+		 					ph.exit();
+		 					smtpTransport.sendMail(mailOptions, function(error, response){
+								if(error){
+									console.log(error);
+								}else{
+									console.log("Message sent: " + response.message);
+								}
+							})
+		 				}, 5000);
+					});
+				});
+			});
 
 			// New note added, push to all sockets and insert into db
 			// notes.push(data)
