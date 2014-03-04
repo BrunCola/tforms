@@ -11,6 +11,14 @@ angular.module('mean.system').directive('pageHead', function() {
 	};
 });
 
+angular.module('mean.system').directive('pageTitle', ['$rootScope', function ($rootScope) {
+	return {
+		link: function($scope, element, attrs) {
+			$(element).html($rootScope.pageTitle);
+		}
+	};
+}]);
+
 angular.module('mean.system').directive('loadingError', function() {
 	return {
 		link: function($scope, element, attrs) {
@@ -39,16 +47,16 @@ angular.module('mean.system').directive('loadingSpinner', function() {
 		link: function($scope, element, attrs) {
 			$('.page-content').fadeTo(500, 0.7);
 			var opts = {
-				lines: 13, // The number of lines to draw
+				lines: 11, // The number of lines to draw
 				length: 21, // The length of each line
-				width: 12, // The line thickness
-				radius: 30, // The radius of the inner circle
+				width: 8, // The line thickness
+				radius: 14, // The radius of the inner circle
 				corners: 1, // Corner roundness (0..1)
-				rotate: 90, // The rotation offset
+				rotate: 0, // The rotation offset
 				direction: 1, // 1: clockwise, -1: counterclockwise
 				color: '#000', // #rgb or #rrggbb or array of colors
 				speed: 1.2, // Rounds per second
-				trail: 60, // Afterglow percentage
+				trail: 57, // Afterglow percentage
 				shadow: false, // Whether to render a shadow
 				hwaccel: false, // Whether to use hardware acceleration
 				className: 'spinner', // The CSS class to assign to the spinner
@@ -359,7 +367,9 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 							$('#table').dataTable().fnDraw();
 						});
 						$rootScope.$watch('search', function(){
-							$('#table').dataTable().fnFilter($rootScope.search);
+							if ($rootScope.search !== null) {
+								$('#table').dataTable().fnFilter($rootScope.search);
+							}
 						});
 					}, 500, false);
 				}
@@ -594,11 +604,11 @@ angular.module('mean.system').directive('makeSevChart', ['$timeout', '$window', 
 						.stack(connVsTime, "(4) Severe", function(d){return d.value.severe;})
 						//.stack(connVsTime, "0 - Other", function(d){return d.value.other;})
 						.colors(["#377FC7","#F5D800","#F88B12","#DD122A","#000"])
-						.xAxisLabel('tejest') // (optional) render an axis label below the x axis
-						.yAxisLabel('teest') // (optional) render a vertical axis lable left of the y axis
+						.xAxisLabel($scope.sevChartxAxis) // (optional) render an axis label below the x axis
+						.yAxisLabel($scope.sevChartyAxis) // (optional) render a vertical axis lable left of the y axis
 						.elasticY(true) // (optional) whether chart should rescale y axis to fit data, :default = false
-						.elasticX(true) // (optional) whether chart should rescale x axis to fit data, :default = false
-						.x(d3.time.scale().domain([moment.unix($scope.start-100000), moment.unix($scope.end+100000)])) // define x scale
+						.elasticX(false) // (optional) whether chart should rescale x axis to fit data, :default = false
+						.x(d3.time.scale().domain([moment($scope.start), moment($scope.end)])) // define x scale
 						.xUnits(d3.time.hours) // define x axis units
 						.renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
 						.renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
@@ -771,7 +781,7 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope
 								rowFilterDimension.filterAll();
 							} else {
 								rowFilterDimension.filterAll();
-								if ($scope.country.length > 0) {
+								if ($scope.country) {
 									rowFilterDimension.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
 								}
 							}
@@ -872,7 +882,7 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 								geoFilterDimension.filterAll();
 							} else {
 								geoFilterDimension.filterAll();
-								if ($scope.country.length > 0) {
+								if ($scope.country) {
 									geoFilterDimension.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
 								}
 							}
@@ -916,10 +926,10 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout','$rootScope'
 						//.group(group) // set group
 						.group(group)
 						.colors(["#193459"])
-						.xAxisLabel('test') // (optional) render an axis label below the x axis
-						.yAxisLabel('test') // (optional) render a vertical axis lable left of the y axis
+						.xAxisLabel($scope.barChartxAxis) // (optional) render an axis label below the x axis
+						.yAxisLabel($scope.barChartyAxis) // (optional) render a vertical axis lable left of the y axis
 						.elasticY(true) // (optional) whether chart should rescale y axis to fit data, :default = false
-						.elasticX(true) // (optional) whether chart should rescale x axis to fit data, :default = false
+						.elasticX(false) // (optional) whether chart should rescale x axis to fit data, :default = false
 						.on("filtered", function(chart, filter){
 							waitForFinalEvent(function(){
 								$scope.tableData.filterAll();
@@ -933,7 +943,8 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout','$rootScope'
 								// console.log(timeDimension.top(Infinity))
 							}, 400, "barfilterWait");
 						})
-						.x(d3.time.scale().domain([moment.unix($scope.start-100000), moment.unix($scope.end+100000)])) // define x scale
+						.x(d3.time.scale().domain([moment($scope.start), moment($scope.end)])) // define x scale
+						// .x(d3.time.scale().domain([moment.unix(moment($scope.start).unix()), moment.unix(moment($scope.end).unix())])) // define x scale
 						.xUnits(d3.time.hours) // define x axis units
 						.renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
 						.renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false

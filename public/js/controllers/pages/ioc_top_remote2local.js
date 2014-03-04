@@ -1,13 +1,5 @@
 'use strict';
 
-angular.module('mean.iochits').controller('TitleController', ['$scope', 'Global', function ($scope, Global) {
-	$scope.global = Global;
-
-	$scope.title = 'IOC Hits';
-	$scope.subheading = '';
-
-}]);
-
 angular.module('mean.iochits').controller('IOCremote2LocalController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
 	$scope.global = Global;
 	$scope.onPageLoad = function() {
@@ -25,6 +17,7 @@ angular.module('mean.iochits').controller('IOCremote2LocalController', ['$scope'
 			$scope.$broadcast('tableLoad');
 			$scope.$broadcast('spinnerHide');
 		});
+		$rootScope.pageTitle = 'IOC Notifications';
 	};
 	$rootScope.rootpage = true;
 }]);

@@ -1,12 +1,5 @@
 'use strict';
 
-angular.module('mean.iochits').controller('TitleController', ['$scope', 'Global', function ($scope, Global) {
-	$scope.global = Global;
-
-	$scope.title = 'IOC Drilldown';
-	$scope.subheading = '';
-}]);
-
 angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
 	$scope.global = Global;
 	$scope.onPageLoad = function() {
@@ -30,6 +23,8 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 
 			$scope.$broadcast('tableLoad');
 			$scope.$broadcast('sevChart');
+				$scope.sevChartxAxis = '';
+				$scope.sevChartyAxis = '# IOC / Hour';
 
 			$scope.lan_zone = data.info.main[0].lan_zone;
 			$scope.lan_ip = $routeParams.lan_ip;
@@ -58,6 +53,7 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 				$scope.$broadcast('loadError');
 			}
 		});
+		$rootScope.pageTitle = 'IOC Notifications';
 	};
 	$rootScope.rootpage = true;
 }]);

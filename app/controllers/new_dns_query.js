@@ -20,7 +20,7 @@ exports.render = function(req, res) {
 	var info = [];
 	var table1SQL = 'SELECT '+
 		// SELECTS
-		'date_format(from_unixtime(time), "%Y-%m-%d %l:%i:%s") as time, '+ // Last Seen
+		'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 		'`lan_zone`, '+
 		'`lan_ip`, '+
 		'`machine`, '+
@@ -62,7 +62,7 @@ exports.render = function(req, res) {
 
 	var crossfilterSQL = 'SELECT '+
 		// SELECTS
-		'date_format(from_unixtime(time), "%Y-%m-%d %l:%i:%s") as time, '+ // Last Seen
+		'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 		'`remote_country`, '+
 		'count(*) as count '+
 		// !SELECTS

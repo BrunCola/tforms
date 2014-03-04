@@ -12,6 +12,7 @@ var iochits = require('../controllers/iochits'),
 	l7_drill = require('../controllers/l7_drill'),
 	l7_local = require('../controllers/l7_local'),
 	top_local = require('../controllers/top_local'),
+	top_local2remote = require('../controllers/top_local2remote'),
 	top_remote = require('../controllers/top_remote'),
 	ioc_top_remote2local = require('../controllers/ioc_top_remote2local'),
 	top_remote2local = require('../controllers/top_remote2local'),
@@ -34,6 +35,7 @@ module.exports = function(app) {
     app.get('/l7_drill', l7_drill.render);
     app.get('/l7_local', l7_local.render);
     app.get('/top_local', top_local.render);
+    app.get('/top_local2remote', top_local2remote.render);
     app.get('/top_remote', top_remote.render);
     app.get('/ioc_top_remote2local', ioc_top_remote2local.render);
     app.get('/top_remote2local', top_remote2local.render);

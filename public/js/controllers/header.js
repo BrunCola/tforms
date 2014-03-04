@@ -17,4 +17,8 @@ angular.module('mean.system').controller('HeaderController', ['$scope', 'Global'
 		$scope.$apply();
 	});
 
+	$scope.report = function($event) {
+		socket.emit('report_generate', {email: 'andrewdillion6@gmail.com'});
+	}
+
 }]);

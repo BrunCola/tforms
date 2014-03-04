@@ -1,13 +1,5 @@
 'use strict';
 
-angular.module('mean.iochits').controller('TitleController', ['$scope', 'Global', function ($scope, Global) {
-	$scope.global = Global;
-
-	$scope.title = 'IOC Hits';
-	$scope.subheading = '';
-
-}]);
-
 angular.module('mean.iochits').controller('NewRemoteIpController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
 	$scope.global = Global;
 	$scope.onPageLoad = function() {
@@ -31,10 +23,13 @@ angular.module('mean.iochits').controller('NewRemoteIpController', ['$scope', 'G
 
 			$scope.$broadcast('tableLoad');
 			$scope.$broadcast('barChart');
+				$scope.barChartxAxis = '';
+				$scope.barChartyAxis = '# New IP / Hour';
 			if (data.crossfilter.length === 0) {
 				$scope.$broadcast('loadError');
 			}
 		});
+		$rootScope.pageTitle = 'New Remote IPs';
 	};
 	$rootScope.rootpage = true;
 }]);

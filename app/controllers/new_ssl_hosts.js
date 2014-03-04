@@ -19,55 +19,55 @@ exports.render = function(req, res) {
 	var crossfilter = [];
 	var info = [];
 	 var table1SQL = 'SELECT '+
-        // SELECTS
-        'date_format(from_unixtime(time), "%Y-%m-%d %l:%i:%s") as time, '+ // Last Seen
-        '`server_name`, '+
-        '`lan_zone`, '+
-        '`lan_ip`, '+
-        '`machine`, '+
-        '`remote_ip`, '+
-        '`remote_asn`, '+
-        '`remote_asn_name`, '+
-        '`remote_country`, '+
-        '`remote_cc` '+
-        // !SELECTS
-        'FROM ssl_remote_ip '+
-        'WHERE time BETWEEN '+start+' AND '+end;
+		// SELECTS
+		'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+		'`server_name`, '+
+		'`lan_zone`, '+
+		'`lan_ip`, '+
+		'`machine`, '+
+		'`remote_ip`, '+
+		'`remote_asn`, '+
+		'`remote_asn_name`, '+
+		'`remote_country`, '+
+		'`remote_cc` '+
+		// !SELECTS
+		'FROM ssl_remote_ip '+
+		'WHERE time BETWEEN '+start+' AND '+end;
 
 		var table1Params = [
-            {
-                title: 'Last Seen',
-                select: 'time',
-                dView: true,
-                link: {
-                    type: 'top_remote2local',
-                    // val: the pre-evaluated values from the query above
-                    val: ['remote_ip'],
-                    crumb: false
-                },
-            },
-            { title: 'Server Name', select: 'server_name' },
-            { title: 'Remote IP', select: 'remote_ip' },
-            { title: 'Remote ASN', select: 'remote_asn' },
-            { title: 'Remote ASN Name', select: 'remote_asn_name' },
-            { title: 'Remote Country', select: 'remote_country' },
-            { title: 'Flag', select: 'remote_cc', },
-            { title: 'LAN Zone', select: 'lan_zone' },
-            { title: 'LAN IP', select: 'lan_ip' },
-            { title: 'Machine Name', select: 'machine' }
-        ];
+			{
+				title: 'Last Seen',
+				select: 'time',
+				dView: true,
+				link: {
+					type: 'top_remote2local',
+					// val: the pre-evaluated values from the query above
+					val: ['remote_ip'],
+					crumb: false
+				},
+			},
+			{ title: 'Server Name', select: 'server_name' },
+			{ title: 'Remote IP', select: 'remote_ip' },
+			{ title: 'Remote ASN', select: 'remote_asn' },
+			{ title: 'Remote ASN Name', select: 'remote_asn_name' },
+			{ title: 'Remote Country', select: 'remote_country' },
+			{ title: 'Flag', select: 'remote_cc', },
+			{ title: 'LAN Zone', select: 'lan_zone' },
+			{ title: 'LAN IP', select: 'lan_ip' },
+			{ title: 'Machine Name', select: 'machine' }
+		];
 		var table1Sort = [[0, 'desc']];
 		var table1Div = 'table';
 
 		var crossfilterSQL = 'SELECT '+
-            // SELECTS
-            'date_format(from_unixtime(time), "%Y-%m-%d %l:%i:%s") as time, '+ // Last Seen
-            '`remote_country`, '+
-            'count(*) as count '+
-            // !SELECTS
-            'FROM ssl_remote_ip '+
-            'WHERE time BETWEEN '+start+' AND '+end+' '+
-            'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country';
+			// SELECTS
+			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'`remote_country`, '+
+			'count(*) as count '+
+			// !SELECTS
+			'FROM ssl_remote_ip '+
+			'WHERE time BETWEEN '+start+' AND '+end+' '+
+			'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country';
 
 		async.parallel([
 		// Table function(s)

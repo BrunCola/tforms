@@ -3,8 +3,10 @@
 angular.module('mean.iochits').controller('TitleController', ['$scope', 'Global', function ($scope, Global) {
 	$scope.global = Global;
 
-	$scope.title = 'L7 Proto';
-	$scope.subheading = '';
+	$scope.onHeadLoad = function() {
+		$scope.title = 'Archive';
+		$scope.subheading = '';
+	}
 
 }]);
 

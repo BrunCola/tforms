@@ -10,14 +10,14 @@ angular.module('mean.iochits').controller('TitleController', ['$scope', 'Global'
 
 }]);
 
-angular.module('mean.iochits').controller('NewDnsQueryController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
+angular.module('mean.iochits').controller('local2remoteController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
 	$scope.global = Global;
 	$scope.onPageLoad = function() {
 		var query;
 		if ($routeParams.start && $routeParams.end) {
-			query = '/new_dns_query?start='+$routeParams.start+'&end='+$routeParams.end;
+			query = '/top_local2remote?start='+$routeParams.start+'&end='+$routeParams.end+'&lan_zone='+$routeParams.lan_zone+'&lan_ip='+$routeParams.lan_ip;
 		} else {
-			query = '/new_dns_query'
+			query = '/top_local2remote?lan_zone='+$routeParams.lan_zone+'&lan_ip='+$routeParams.lan_ip;
 		}
 		$http({method: 'GET', url: query}).
 		//success(function(data, status, headers, config) {
@@ -31,8 +31,8 @@ angular.module('mean.iochits').controller('NewDnsQueryController', ['$scope', 'G
 			$scope.crossfilterData = crossfilter(data.crossfilter);
 			$scope.data = data;
 
-			$scope.$broadcast('tableLoad');
 			$scope.$broadcast('barChart');
+			$scope.$broadcast('tableLoad');
 			if (data.crossfilter.length === 0) {
 				$scope.$broadcast('loadError');
 			}

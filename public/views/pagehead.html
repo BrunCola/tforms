@@ -1,12 +1,11 @@
-
 <div class="row-fluid">
 	<div style="margin-top:30px"  class="pull-right">
 		<div id="head-right"></div>
 	</div>
 	<!-- PAGE TITLE & BREADCRUMB-->
-	<div data-ng-controller="TitleController" class="page-title">
-		<h3>{{title}}</h3>
-		<small id="sub_heading">{{subheading}}</small>
+	<div class="page-title">
+		<h3 page-title></h3>
+		<small id="sub_heading" page-subheading></small>
 		<div id="severity"></div>
 	</div>
 	<div data-ng-controller="IndexController" data-ng-init="onHeadLoad()" class="breadcrumb">

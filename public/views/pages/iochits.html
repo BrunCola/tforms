@@ -1,5 +1,5 @@
-<div style="margin-top:30px"  class="pull-right">
-	<button class="pure-button pure-button-primary small">
+<div style="margin-top:30px" class="pull-right">
+	<button data-ng-controller="HeaderController" ng-click="report($event)" class="pure-button pure-button-primary small">
 		<i class="fa fa-file-text-o"></i>
 		Generate Report
 	</button>
@@ -15,7 +15,7 @@
 	<section severity-levels></section>
 	<div class="row-fluid">
 		<div class="span6">
-			<div class="jdash-header">Title</div>
+			<div class="jdash-header">IOC Classes (Quantity of IOC Notifications)</div>
 			<div  style="background-color:#FFF;" class="box">
 				<div class="box-content">
 					<div id="rowchart" make-row-chart></div>
@@ -23,7 +23,7 @@
 			</div>
 		</div>
 		<div class="span6">
-			<div class="jdash-header">Title</div>
+			<div class="jdash-header">IOC Source Countries</div>
 			<div  style="background-color:#FFF;" class="box">
 				<div class="box-content">
 					<div id="geochart" make-geo-chart></div>
@@ -34,7 +34,7 @@
 	<br />
 	<div class="row-fluid">
 		<div class="span12">
-			<div class="jdash-header">Title</div>
+			<div class="jdash-header">IOC Notifications Per Hour</div>
 			<div  style="background-color:#FFF;" class="box">
 				<div class="box-content">
 					<div id="sevchart" make-sev-chart></div>
@@ -44,7 +44,7 @@
 	</div>
 	<br />
 	<div class="row-fluid">
-		<div class="jdash-header">Table Title</div>
+		<div class="jdash-header">Indicators of Compromise (IOC) Notifications</div>
 		<div  style="background-color:#FFF;" class="box">
 			<div class="box-content">
 				<div id="ioctable" make-table></div>

@@ -4,7 +4,7 @@
 		<br />
 	</li>
 	<li data-ng-repeat="sidebar in sidebaritems" id="heading">
-		<a href="{{sidebar.url}}">
+		<a ng-click="select(sidebar.url)" href="">
 			<i class="fa {{sidebar.icon}}"></i> 
 			<span class="title">{{sidebar.title}}</span>
 			<span id="heading_sub"></span>

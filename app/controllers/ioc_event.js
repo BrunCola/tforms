@@ -22,7 +22,7 @@ exports.render = function(req, res) {
 
 		var table1SQL = 'SELECT '+
 			// SELECTS
-			'max(date_format(from_unixtime(time), "%Y-%m-%d %l:%i:%s")) as time, '+ // Last Seen
+			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
 				'version, '+
 				'cipher, '+
 				'server_name, '+
@@ -49,7 +49,7 @@ exports.render = function(req, res) {
 
 		var table2SQL = 'SELECT '+
 			// SELECTS
-			'max(date_format(from_unixtime(time), "%Y-%m-%d %l:%i:%s")) as time, '+ // Last Seen
+			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
 			// 'from_unixtime(`time`) as time1, '+
 				'qclass_name, '+
 				'qtype_name, '+
@@ -73,7 +73,7 @@ exports.render = function(req, res) {
 
 		var table3SQL = 'SELECT '+
 			// SELECTS
-			'max(date_format(from_unixtime(time), "%Y-%m-%d %l:%i:%s")) as time, '+ // Last Seen
+			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
 			'host, '+
 			'uri, '+
 			'referrer, '+
@@ -98,7 +98,7 @@ exports.render = function(req, res) {
 
 		var table4SQL = 'SELECT '+
 			// SELECTS
-			'max(date_format(from_unixtime(time), "%Y-%m-%d %l:%i:%s")) as time, '+ // Last Seen
+			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
 			'mime, '+
 			'name, '+
 			'size, '+
