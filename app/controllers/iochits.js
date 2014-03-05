@@ -24,8 +24,8 @@ exports.render = function(req, res) {
 		'`ioc_severity`, '+
 		'count(*) as count, '+
 		'`ioc`, '+
-		'`ioc_typeIndicator`, '+
-		'`ioc_typeInfection`, '+
+		// '`ioc_typeIndicator`, '+
+		// '`ioc_typeInfection`, '+
 		'`lan_zone`, '+
 		'`lan_ip`, '+
 		'`machine`, '+
@@ -59,8 +59,8 @@ exports.render = function(req, res) {
 		{ title: 'Severity', select: 'ioc_severity' },
 		{ title: 'IOC Hits', select: 'count' },
 		{ title: 'IOC', select: 'ioc' },
-		{ title: 'IOC Type', select: 'ioc_typeIndicator' },
-		{ title: 'IOC Stage', select: 'ioc_typeInfection' },
+		// { title: 'IOC Type', select: 'ioc_typeIndicator' },
+		// { title: 'IOC Stage', select: 'ioc_typeInfection' },
 		{ title: 'LAN Zone', select: 'lan_zone' },
 		{ title: 'LAN IP', select: 'lan_ip' },
 		{ title: 'Machine Name', select: 'machine' },

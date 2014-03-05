@@ -350,8 +350,7 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 									var type = $scope.e[c].link.type;
 									switch(type) {
 										case 'Archive':
-
-											$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive btn btn-link' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
+											$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
 										break;
 										default:
 											var obj = new Object();
@@ -367,7 +366,7 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 												objlink: obj
 											});
 											if ($scope.e[c].mData === 'time') {
-												$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage button-secondary pure-button xsmall' value='"+links+"'>"+aData[$scope.e[c].mData]+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span>");
+												$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage button-secondary pure-button' value='"+links+"'>"+aData[$scope.e[c].mData]+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span>");
 											} else {
 												$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+aData[$scope.e[c].mData]+"</button>");
 											}
@@ -388,10 +387,6 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 									$('#table').dataTable().fnClearTable();
 									$('#table').dataTable().fnAddData($scope.tableData.top(Infinity));
 									$('#table').dataTable().fnDraw();
-									if($scope.tableToRowChart()) {
-										$scope.tableToRowChart();
-									}
-									dc.redrawAll();
 								});
 								$scope.country = [];
 								$scope.ioc = [];

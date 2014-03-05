@@ -24,8 +24,8 @@ exports.render = function(req, res) {
 			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time,'+ // Last Seen
 			'`ioc_severity`,'+
 			'`ioc`,'+
-			'`ioc_typeIndicator`,'+
-			'`ioc_typeInfection`,'+
+			// '`ioc_typeIndicator`,'+
+			// '`ioc_typeInfection`,'+
 			'`lan_zone`,'+
 			'`remote_ip`,'+
 			'`remote_asn`,'+
@@ -60,8 +60,8 @@ exports.render = function(req, res) {
 		{ title: 'Severity', select: 'ioc_severity' },
 		{ title: 'IOC Hits', select: 'count' },
 		{ title: 'IOC', select: 'ioc' },
-		{ title: 'IOC Type', select: 'ioc_typeIndicator' },
-		{ title: 'IOC Stage', select: 'ioc_typeInfection' },
+		// { title: 'IOC Type', select: 'ioc_typeIndicator' },
+		// { title: 'IOC Stage', select: 'ioc_typeInfection' },
 		{ title: 'Remote IP', select: 'remote_ip' },
 		{ title: 'Remote ASN', select: 'remote_asn' },
 		{ title: 'Remote ASN Name', select: 'remote_asn_name' },
