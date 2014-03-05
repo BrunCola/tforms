@@ -24,39 +24,6 @@ exports.init = function(req, res) {
 
 	io.sockets.on('connection', function(socket){
 
-		//PHANTOM FUNCITONS
-		// phantom.create(function(err,ph) {
-		// 	return ph.createPage(function(err,page) {
-		// 		return page.open("http://github.com/", function(err,status) {
-		// 			console.log("opened site? ", status);
-		// 			page.includeJs('http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js', function(err) {
-		// 				//jQuery Loaded.
-		// 				//Wait for a bit for AJAX content to load on the page. Here, we are waiting 5 seconds.
-		// 				setTimeout(function() {
-		// 					return page.evaluate(function() {
-		// 						//Get what you want from the page using jQuery. A good way is to populate an object with all the jQuery commands that you need and then return the object.
-		// 						var h2Arr = [],
-		// 						pArr = [];
-		// 						$('h2').each(function() {
-		// 							h2Arr.push($(this).html());
-		// 						});
-		// 						$('p').each(function() {
-		// 							pArr.push($(this).html());
-		// 						});
-		// 						return {
-		// 							h2: h2Arr,
-		// 							p: pArr
-		// 						};
-		// 					}, function(err,result) {
-		// 					console.log(result);
-		// 					ph.exit();
-		// 			 	});
-		// 			}, 5000);
-		// 			});
-		// 		});
-		// 	});
-		// });
-
 		// Socket has connected, increase socket count
 		socketCount++
 		// Let all sockets know how many are connected
@@ -88,27 +55,6 @@ exports.init = function(req, res) {
 					filePath: "./temp/rp.pdf"
 				}]
 			};
-			// phantom.create(function(err,ph) {
-			// 	return ph.createPage(function(err,page) {
-			// 		return page.open("http://localhost:3000/report#!/iochits", function(err,status) {
-			// 			console.log("opened site? ", status);
-			// 			setTimeout(function() {
-			// 				page.render('./temp/rp.png');
-		 // 					ph.exit();
-		 // 					smtpTransport.sendMail(mailOptions, function(error, response){
-			// 					if(error){
-			// 						console.log(error);
-			// 					}else{
-			// 						console.log("Message sent: " + response.message);
-			// 					}
-			// 				})
-		 // 				}, 5000);
-			// 		});
-			// 	});
-			// });
-
-
-
 			phantom.create(function(err,ph) {
 				return ph.createPage(function(err,page) {
 
@@ -141,19 +87,25 @@ exports.init = function(req, res) {
 			console.log(data.email);
 		})
 
+
+		var timestamp = 1394035200;
 		// Check to see if initial query/notes are set
 		if (! isInitIoc) {
 			// Initial app start, run connection query
-			connection.query("SELECT alert.added, conn_ioc.ioc FROM alert, conn_ioc WHERE alert.conn_uids = conn_ioc.conn_uids AND alert.username = 'rapidPHIRE' AND alert.trash is null ORDER BY alert.added DESC LIMIT 5")
+			connection.query("SELECT alert.added, conn_ioc.ioc FROM alert, conn_ioc WHERE alert.conn_uids = conn_ioc.conn_uids AND alert.username = 'rapidPHIRE' AND alert.added >= "+timestamp+" ORDER BY alert.added")
+			// connection.query("SELECT alert.added, conn_ioc.ioc FROM alert, conn_ioc WHERE alert.conn_uids = conn_ioc.conn_uids AND alert.username = 'rapidPHIRE' AND alert.trash is null ORDER BY alert.added DESC LIMIT 10")
 				.on('result', function(data){
 					// Push results onto the notes array
-					alerts.push(data)
+					// console.log(data);
+					if (data.added > timestamp) {
+						data.newIOC = true;
+					}
+					alerts.push(data);
 				})
 				.on('end', function(){
 					// Only emit notes after query has been completed
-					socket.emit('initial iocs', alerts)
+					socket.emit('initial iocs', alerts);
 				})
-
 			isInitIoc = true
 		} else {
 			// Initial iocs already exist, send out
