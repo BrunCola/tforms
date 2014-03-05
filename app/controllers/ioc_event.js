@@ -22,14 +22,14 @@ exports.render = function(req, res) {
 
 		var table1SQL = 'SELECT '+
 			// SELECTS
-			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-				'version, '+
-				'cipher, '+
-				'server_name, '+
-				'subject, '+
-				'issuer_subject, '+
-				'from_unixtime(not_valid_before) AS not_valid_before, '+
-				'from_unixtime(not_valid_after) AS not_valid_after '
+			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'version, '+
+			'cipher, '+
+			'server_name, '+
+			'subject, '+
+			'issuer_subject, '+
+			'from_unixtime(not_valid_before) AS not_valid_before, '+
+			'from_unixtime(not_valid_after) AS not_valid_after '+
 			// !SELECTS
 			'FROM ssl_ioc '+
 			'WHERE `conn_uids`=\''+req.query.conn_uids+'\'';
@@ -46,40 +46,52 @@ exports.render = function(req, res) {
 		var table1Sort = [[0, 'desc']];
 		var table1Div = 'table1';
 
-
 		var table2SQL = 'SELECT '+
 			// SELECTS
-			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-			// 'from_unixtime(`time`) as time1, '+
-				'qclass_name, '+
-				'qtype_name, '+
-				'query, '+
-				'answers, '+
-				'TTL '+
+			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'proto, '+
+			'qclass_name, '+
+			'qtype_name, '+
+			'query, '+
+			'answers, '+
+			'TTL, '+
+			'ioc, '+
+			'ioc_typeIndicator, '+
+			'ioc_typeInfection '+
 			// !SELECTS
 			'FROM dns_ioc '+
 			'WHERE `conn_uids`=\''+req.query.conn_uids+'\'';
 		var table2Params = [
 			{ select: 'time', title: 'Time' },
+			{ select: 'proto', title: 'Protocol' },
 			{ select: 'qclass_name', title: 'Query Class' },
 			{ select: 'qtype_name', title: 'Query Type' },
 			{ select: 'query', title: 'Query' },
 			{ select: 'answers', title: 'Answers' },
-			{ select: 'TTLs', title: 'TTLs' }
+			{ select: 'TTLs', title: 'TTLs' },
+			{ select: 'ioc', title: 'IOC' },
+			{ select: 'ioc_typeIndicator', title: 'IOC Type' },
+			{ select: 'ioc_typeInfection', title: 'IOC Stage' }
 		];
 		var table2Sort = [[0, 'desc']];
 		var table2Div = 'table2';
 
-
 		var table3SQL = 'SELECT '+
 			// SELECTS
-			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-			'host, '+
-			'uri, '+
-			'referrer, '+
-			'user_agent, '+
-			'ioc, '+
-			'ioc_type '+
+			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'host,'+
+			'uri,'+
+			'referrer,'+
+			'user_agent,'+
+			'request_body_len,'+
+			'response_body_len,'+
+			'status_code,'+
+			'status_msg,'+
+			'info_code,'+
+			'info_msg,'+
+			'ioc,'+
+			'ioc_typeIndicator,'+
+			'ioc_typeInfection '+
 			// !SELECTS
 			'FROM http_ioc '+
 			'WHERE `conn_uids`=\''+req.query.conn_uids+'\'';
@@ -89,23 +101,30 @@ exports.render = function(req, res) {
 			{ select: 'uri', title: 'URI' },
 			{ select: 'referrer', title: 'Referrer' },
 			{ select: 'user_agent', title: 'User Agent' },
+			{ select: 'request_body_len', title: 'Request Body Length' },
+			{ select: 'response_body_len', title: 'Response Body Length' },
+			{ select: 'status_code', title: 'Status Code' },
+			{ select: 'status_msg', title: 'Status Message' },
+			{ select: 'info_code', title: 'Info Code' },
+			{ select: 'info_msg', title: 'Info Message' },
 			{ select: 'ioc', title: 'IOC' },
-			{ select: 'ioc_type', title: 'IOC Type' }
+			{ select: 'ioc_typeIndicator', title: 'IOC Type' },
+			{ select: 'ioc_typeInfection', title: 'IOC Stage' }
 		];
 		var table3Sort = [[0, 'desc']];
 		var table3Div = 'table3';
 
-
 		var table4SQL = 'SELECT '+
 			// SELECTS
-			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 			'mime, '+
 			'name, '+
 			'size, '+
 			'md5, '+
 			'sha1, '+
 			'ioc, '+
-			'ioc_type '+
+			'ioc_typeIndicator '+
+			'ioc_typeInfection '+
 			// !SELECTS
 			'FROM file_ioc '+
 			'WHERE `conn_uids`=\''+req.query.conn_uids+'\'';
@@ -117,32 +136,32 @@ exports.render = function(req, res) {
 			{ select: 'md5', title: 'MD5' },
 			{ select: 'sha1', title: 'SHA1' },
 			{ select: 'ioc', title: 'IOC' },
-			{ select: 'ioc_type', title: 'IOC Type' }
+			{ select: 'ioc_typeIndicator', title: 'IOC Type' },
+			{ select: 'ioc_typeInfection', title: 'IOC Stage' }
 		];
 		var table4Sort = [[0, 'desc']];
 		var table4Div = 'table4';
 
 		var InfoSQL = 'SELECT '+
 				'from_unixtime(time) as time, '+
-				'sum(in_packets) as in_packets, '+
-				'sum(out_packets) as out_packets, '+
-				'sum(in_bytes) as in_bytes, '+
-				'sum(out_bytes) as out_bytes, '+
 				'machine, '+
 				'lan_zone, '+
 				'lan_ip, '+
 				'lan_port, '+
-				'wan_ip, '+
-				'wan_port, '+
-				'remote_port, '+
-				'l7_proto, '+
 				'remote_ip, '+
+				'remote_port, '+
 				'remote_country, '+
 				'remote_cc, '+
 				'remote_asn, '+
 				'remote_asn_name, '+
-				'ioc_type, '+
-				'ioc '+
+				'l7_proto, '+
+				'in_packets, '+
+				'out_packets, '+
+				'in_bytes, '+
+				'out_bytes, '+
+				'ioc, '+
+				'ioc_typeIndicator, '+
+				'ioc_typeInfection '+
 			'FROM `conn_ioc` '+
 			'WHERE conn_uids = \''+req.query.conn_uids+'\' '+
 			'LIMIT 1';
@@ -153,7 +172,6 @@ exports.render = function(req, res) {
 				'WHERE, '+
 					'c.conn_uids = \''+req.query.conn_uids+'\', '+
 				'LIMIT 1';
-
 
 		async.parallel([
 			// Table function(s)

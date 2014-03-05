@@ -21,25 +21,27 @@ exports.render = function(req, res) {
 		var info = [];
 
 		var table1SQL = 'SELECT '+
-			// SELECTS
-			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-			'`l7_proto`, '+
-			'`lan_zone`, '+
-			'`lan_ip`, '+
-			'`remote_ip`, '+
-			'`remote_asn`, '+
-			'`remote_asn_name`, '+
-			'`remote_country`, '+
-			'`remote_cc`, '+
-			'sum(in_packets) as in_packets, '+
-			'sum(out_packets) as out_packets, '+
-			'(sum(in_bytes) / 1048576) as in_bytes, '+
-			'(sum(out_bytes) / 1048576) as out_bytes '+
-			// !SELECTS
+				// SELECTS
+				'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time, '+ // Last Seen
+				'`l7_proto`, '+
+				'`lan_zone`, '+
+				'`lan_ip`, '+
+				'`machine`, '+
+				'`remote_ip`, '+
+				'`remote_asn`, '+
+				'`remote_asn_name`, '+
+				'`remote_country`, '+
+				'`remote_cc`, '+
+				'sum(`in_packets`) AS in_packets, '+
+				'sum(`out_packets`) AS out_packets, '+
+				'(sum(`in_bytes`) / 1048576) AS in_bytes, '+
+				'(sum(`out_bytes`) / 1048576) AS out_bytes '+
+				// !SELECTS
 			'FROM conn_l7 '+
-			'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-			'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
-			'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
+			'WHERE '+
+				'`time` BETWEEN '+start+' AND '+end+' '+
+				'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
+				'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
 			'GROUP BY `remote_ip`';
 
 			var table1Params = [
@@ -47,6 +49,7 @@ exports.render = function(req, res) {
 				{ title: 'Layer 7 Protocol', select: 'l7_proto' },
 				{ title: 'LAN Zone', select: 'lan_zone' },
 				{ title: 'LAN IP', select: 'lan_ip' },
+				{ title: 'Machine Name', select: 'machine' },
 				{ title: 'Remote IP', select: 'remote_ip' },
 				{ title: 'Remote ASN', select: 'remote_asn' },
 				{ title: 'Remote ASN Name', select: 'remote_asn_name' },
@@ -61,15 +64,15 @@ exports.render = function(req, res) {
 			var table1Div = 'table';
 
 			var crossfilterSQL = 'SELECT '+
-				// SELECTS
-				'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-				'count(*) as count, '+
-				'remote_country '+
-				// !SELECTS
-				'FROM conn_l7 '+
+					// SELECTS
+					'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+					'count(*) as count, '+
+					'`remote_country` '+
+					// !SELECTS
+				'FROM `conn_l7` '+
 				'WHERE time BETWEEN '+start+' AND '+end+' '+
-				'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
-				'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
+					'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
+					'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
 				'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country';
 
 			async.parallel([

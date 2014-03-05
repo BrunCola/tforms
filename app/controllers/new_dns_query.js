@@ -39,7 +39,7 @@ exports.render = function(req, res) {
 		'FROM dns_query '+
 		'WHERE time BETWEEN '+start+' AND '+end;
 
-	 var table1Params = [
+	var table1Params = [
 		{ title: 'First Seen', select: 'time' },
 		{ title: 'Query Type', select: 'qtype' },
 		{ title: 'Query Class', select: 'qclass', dView: false },
@@ -56,19 +56,18 @@ exports.render = function(req, res) {
 		{ title: 'LAN Zone', select: 'lan_zone' },
 		{ title: 'LAN IP', select: 'lan_ip' },
 		{ title: 'Machine Name', select: 'machine' }
-		];
+	];
 	var table1Sort = [[0, 'desc']];
 	var table1Div = 'table';
 
 	var crossfilterSQL = 'SELECT '+
 		// SELECTS
 		'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-		'`remote_country`, '+
 		'count(*) as count '+
 		// !SELECTS
 		'FROM dns_query '+
 		'WHERE time BETWEEN '+start+' AND '+end+' '+
-		'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country';
+		'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time))';
 
 	async.parallel([
 		// Table function(s)

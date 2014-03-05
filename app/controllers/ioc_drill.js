@@ -21,10 +21,9 @@ exports.render = function(req, res) {
 		var info = {};
 		var table1SQL = 'SELECT '+
 			// SELECTS
-			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 			// 'from_unixtime(`time`) as time1, '+
 			'`lan_port`, '+
-			'`wan_port`, '+
 			'`remote_port`, '+
 			'`in_packets`, '+
 			'`out_packets`, '+
@@ -53,7 +52,6 @@ exports.render = function(req, res) {
 				},
 			},
 			{ title: 'LAN Port', select: 'lan_port' },
-			{ title: 'WAN Port', select: 'wan_port' },
 			{ title: 'Remote Port', select: 'remote_port' },
 			{ title: 'Packets to Remote', select: 'in_packets' },
 			{ title: 'Packets from Remote', select: 'out_packets' },
@@ -90,14 +88,13 @@ exports.render = function(req, res) {
 				'machine, '+
 				'lan_zone, '+
 				'lan_port, '+
-				'wan_port, '+
 				'remote_port, '+
 				'remote_cc, '+
 				'remote_country, '+
 				'remote_asn, '+
 				'remote_asn_name, '+
 				'l7_proto, '+
-				'ioc_type '+
+				'ioc_typeIndicator '+
 			'FROM `conn_ioc` '+
 			'WHERE '+
 				'lan_ip = \''+req.query.lan_ip+'\' AND '+
@@ -111,7 +108,6 @@ exports.render = function(req, res) {
 			'WHERE '+
 				'ioc_group = \''+req.query.ioc+'\' '+
 			'LIMIT 1';
-
 
 		async.parallel([
 			// Table function(s)

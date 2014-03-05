@@ -20,18 +20,18 @@ exports.render = function(req, res) {
 		var crossfilter = [];
 		var info = [];
 		var table1SQL = 'SELECT '+
-			// SELECTS
-			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-			'`l7_proto`, '+
-			'sum(in_packets) as in_packets, '+
-			'sum(out_packets) as out_packets, '+
-			'(sum(in_bytes) / 1048576) as in_bytes, '+
-			'(sum(out_bytes) / 1048576) as out_bytes, '+
-			'`lan_zone`, '+
-			'`lan_ip`, '+
-			'`machine` '+
-			// !SELECTS
-			'FROM conn_l7 '+
+				// SELECTS
+				'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time, '+ // Last Seen
+				'`l7_proto`, '+
+				'sum(`in_packets`) AS in_packets, '+
+				'sum(`out_packets`) AS out_packets, '+
+				'(sum(`in_bytes`) / 1048576) AS in_bytes, '+
+				'(sum(`out_bytes`) / 1048576) AS out_bytes, '+
+				'`lan_zone`, '+
+				'`lan_ip`, '+
+				'`machine` '+
+				// !SELECTS
+			'FROM `conn_l7` '+
 			'WHERE `time` BETWEEN '+start+' AND '+end+' '+
 			'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
 			'GROUP BY `lan_ip`';
@@ -65,10 +65,13 @@ exports.render = function(req, res) {
 				'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 				'count(*) as count '+
 				// !SELECTS
-				'FROM conn_l7 '+
-				'WHERE time BETWEEN '+start+' AND '+end+' '+
+				'FROM `conn_l7` '+
+				'WHERE `time` BETWEEN '+start+' AND '+end+' '+
 				'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
-				'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time))';
+				'GROUP BY '+
+					'month(from_unixtime(time)),'+
+					'day(from_unixtime(time)),'+
+					'hour(from_unixtime(time))';
 
 			async.parallel([
 			// Table function(s)
