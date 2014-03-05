@@ -4,27 +4,59 @@ angular.module('mean.system').directive('pageHead', function() {
 	return {
 		restrict: 'A',
 		scope : {
-		title : '@'
-	},
+			title : '@'
+		},
 		templateUrl : '/views/pagehead.html',
 		transclude : true
 	};
 });
 
+angular.module('mean.system').directive('pageTitle', ['$rootScope', function ($rootScope) {
+	return {
+		link: function($scope, element, attrs) {
+			$(element).html($rootScope.pageTitle);
+		}
+	};
+}]);
+
+angular.module('mean.system').directive('loadingError', function() {
+	return {
+		link: function($scope, element, attrs) {
+			$scope.$on('loadError', function (event) {
+				noty({
+					layout: 'top',
+					theme: 'defaultTheme',
+					type: 'error',
+					text: 'Sorry, no results were returned.',
+					dismissQueue: false, // If you want to use queue feature set this true
+					animation: {
+						open: { height: 'toggle' },
+						close: { height: 'toggle' },
+						easing: 'swing',
+						speed: 500 // opening & closing animation speed
+					},
+					timeout: 1000 // delay for closing event. Set false for sticky notifications
+				});
+			});
+		}
+	};
+});
+
 angular.module('mean.system').directive('loadingSpinner', function() {
 	return {
-		link: function(scope, element, attrs) {
+		link: function($scope, element, attrs) {
+			$('.page-content').fadeTo(500, 0.7);
 			var opts = {
-				lines: 13, // The number of lines to draw
+				lines: 11, // The number of lines to draw
 				length: 21, // The length of each line
-				width: 12, // The line thickness
-				radius: 30, // The radius of the inner circle
+				width: 8, // The line thickness
+				radius: 14, // The radius of the inner circle
 				corners: 1, // Corner roundness (0..1)
-				rotate: 90, // The rotation offset
+				rotate: 0, // The rotation offset
 				direction: 1, // 1: clockwise, -1: counterclockwise
 				color: '#000', // #rgb or #rrggbb or array of colors
 				speed: 1.2, // Rounds per second
-				trail: 60, // Afterglow percentage
+				trail: 57, // Afterglow percentage
 				shadow: false, // Whether to render a shadow
 				hwaccel: false, // Whether to use hardware acceleration
 				className: 'spinner', // The CSS class to assign to the spinner
@@ -32,8 +64,14 @@ angular.module('mean.system').directive('loadingSpinner', function() {
 				top: 'auto', // Top position relative to parent in px
 				left: 'auto' // Left position relative to parent in px
 			};
-			var target = document.getElementById('foo');
-			var spinner = new Spinner(opts).spin(element);
+			var target = document.getElementById('loading-spinner');
+			var spinner = new Spinner(opts).spin(target);
+			$(target).data('spinner', spinner);
+			$scope.$on('spinnerHide', function (event) {
+				$('#loading-spinner').data('spinner').stop();
+				$('html, body').animate({scrollTop:0}, 'slow');
+				$(".page-content").fadeTo(500, 1);
+			});
 		}
 	};
 });
@@ -71,15 +109,15 @@ angular.module('mean.system').directive('sidebar', function() {
 			if (localStorage.getItem('sidebar') === '0') { // keep sidebar consistent between pages
 				var body = $('body');
 				var sidebar = $('.page-sidebar');
-				$(".sidebar-search", sidebar).removeClass("open");
-				if (body.hasClass("page-sidebar-closed")) {
-					body.removeClass("page-sidebar-closed");
+				$('.sidebar-search', sidebar).removeClass('open');
+				if (body.hasClass('page-sidebar-closed')) {
+					body.removeClass('page-sidebar-closed');
 					if (body.hasClass('page-sidebar-fixed')) {
 						sidebar.css('width', '');
 					}
 				}
 				else {
-					body.addClass("page-sidebar-closed");
+					body.addClass('page-sidebar-closed');
 				}
 			}
 			App.init();
@@ -90,35 +128,106 @@ angular.module('mean.system').directive('sidebar', function() {
 angular.module('mean.system').directive('severityLevels', ['$timeout', function ($timeout) {
 	return {
 		link: function ($scope, element, attrs) {
+			$('.alert').on('click',function(){
+				alert('test');
+			});
 			function updateSevCounts(sevcounts) {
+				$('#severity').children().addClass('severity-deselect');
 				for (var s in sevcounts) {
-					if (sevcounts[s].key === 1) {
-						$('#al1').html(' '+sevcounts[s].value+' ');
-					}
-					if (sevcounts[s].key === 2) {
-						$('#al2').html(' '+sevcounts[s].value+' ');
-					}
-					if (sevcounts[s].key === 3) {
-						$('#al3').html(' '+sevcounts[s].value+' ');
-					}
-					if (sevcounts[s].key === 4) {
-						$('#al4').html(' '+sevcounts[s].value+' ');
+					if (sevcounts[s].value === 0) {
+						$('#al'+sevcounts[s].key).html(' '+sevcounts[s].value+' ');
+						$('.alert'+sevcounts[s].key).addClass('severity-deselect');
+					} else {
+						$('#al'+sevcounts[s].key).html(' '+sevcounts[s].value+' ');
+						$('.alert'+sevcounts[s].key).removeClass('severity-deselect');
 					}
 				}
 			}
+
 			$scope.$on('severityLoad', function () {
-				//$scope.$watch('sevcounts', updateSevCounts(), true);
 				$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert1 alert"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> 0 </span></button>');
 				$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert2 alert"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> 0 </span></button>');
 				$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert3 alert"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> 0 </span></button>');
 				$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
-				var sevcounts = $scope.crossfilterData.dimension(function(d){return d.ioc_severity;}).group().reduceSum(function(d) {return d.count;}).top(Infinity);
-				updateSevCounts(sevcounts);
-			})
+				$scope.severityDim = $scope.crossfilterData.dimension(function(d){return d.ioc_severity;});
+				$scope.sevcounts = $scope.severityDim.group().reduceSum(function(d) {return d.count;}).top(Infinity);
+				updateSevCounts($scope.sevcounts);
+				$('.alert1').on('click',function(){
+					$scope.severityDim.filterAll();
+					var arr = [];
+					if ($('.alert1').hasClass('selected')) {
+						$('.alert1').removeClass('selected');
+					} else {
+						for(var i in $scope.severityDim.top(Infinity)) {
+							if ($scope.severityDim.top(Infinity)[i].ioc_severity === 1) {
+								arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
+							}
+						}
+						$scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
+						$('.alert1').addClass('selected');
+					}
+					$scope.$broadcast('crossfilterToTable');
+					dc.redrawAll();
+					updateSevCounts($scope.sevcounts);
+				});
+				$('.alert2').on('click',function(){
+					$scope.severityDim.filterAll();
+					var arr = [];
+					if ($('.alert2').hasClass('selected')) {
+						$('.alert2').removeClass('selected');
+					} else {
+						for(var i in $scope.severityDim.top(Infinity)) {
+							if ($scope.severityDim.top(Infinity)[i].ioc_severity === 2) {
+								arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
+							}
+						}
+						$scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
+						$('.alert2').addClass('selected');
+					}
+					$scope.$broadcast('crossfilterToTable');
+					dc.redrawAll();
+					updateSevCounts($scope.sevcounts);
+				});
+				$('.alert3').on('click',function(){
+					$scope.severityDim.filterAll();
+					var arr = [];
+					if ($('.alert3').hasClass('selected')) {
+						$('.alert3').removeClass('selected');
+					} else {
+						for(var i in $scope.severityDim.top(Infinity)) {
+							if ($scope.severityDim.top(Infinity)[i].ioc_severity === 3) {
+								arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
+							}
+						}
+						$scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
+						$('.alert3').addClass('selected');
+					}
+					$scope.$broadcast('crossfilterToTable');
+					dc.redrawAll();
+					updateSevCounts($scope.sevcounts);
+				});
+				$('.alert4').on('click',function(){
+					$scope.severityDim.filterAll();
+					var arr = [];
+					if ($('.alert4').hasClass('selected')) {
+						$('.alert4').removeClass('selected');
+					} else {
+						for(var i in $scope.severityDim.top(Infinity)) {
+							if ($scope.severityDim.top(Infinity)[i].ioc_severity === 4) {
+								arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
+							}
+						}
+						$scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
+						$('.alert4').addClass('selected');
+					}
+					$scope.$broadcast('crossfilterToTable');
+					dc.redrawAll();
+					updateSevCounts($scope.sevcounts);
+				});
+			});
 			$scope.$on('severityUpdate', function () {
-				var sevcounts = $scope.crossfilterData.dimension(function(d){return d.ioc_severity;}).group().reduceSum(function(d) {return d.count;}).top(Infinity);
-				updateSevCounts(sevcounts);
-			})
+				updateSevCounts($scope.sevcounts);
+			});
 		}
 	};
 }]);
@@ -137,21 +246,19 @@ angular.module('mean.system').directive('datePicker', ['$timeout', '$location', 
 						'This Month': [moment().startOf('month'), moment().endOf('month')],
 						'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
 					},
-						startDate: moment().subtract('days', 29),
-						endDate: moment()
+						format: 'MMMM D, YYYY h:mm A',
+						timePicker: true,
+						timePickerIncrement: 5,
+						startDate: $scope.start,
+						endDate: $scope.end
 					},
 					function(start, end) {
-						$scope.global.startTime = start;
-						$scope.global.endTime = end;
-						// $rootScope.start = $scope.global.startTime;
-						// console.log(start);
-						// console.log($rootScope.start);
-						$('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+						$('#reportrange span').html(start.format('MMMM D, YYYY h:mm A') + ' - ' + end.format('MMMM D, YYYY h:mm A'));
 					}
 				);
 				$('#reportrange').on('apply', function(ev, picker) {
 					// some kind of clear option is needed here
-					$scope.$apply($location.search({'start': moment(picker.startDate.format('YYYY-MM-DD')).unix(), 'end':moment(picker.endDate.format('YYYY-MM-DD')).unix()}));
+					$scope.$apply($location.search({'start': moment(picker.startDate.format('MMMM D, YYYY h:mm A')).unix(), 'end':moment(picker.endDate.format('MMMM D, YYYY h:mm A')).unix()}));
 				});
 			}, 0, false);
 		}
@@ -161,106 +268,255 @@ angular.module('mean.system').directive('datePicker', ['$timeout', '$location', 
 angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '$routeParams', '$rootScope', function ($timeout, $location, $routeParams, $rootScope) {
 	return {
 		link: function ($scope, element, attrs) {
-
 			$scope.$on('tableLoad', function (event) {
-				// var sevDim = crossfilterData.dimension(function(d){ return d.ioc_severity});
-				// var countryDim = crossfilterData.dimension(function(d){ return d.remote_country;});
-				// var rowDim = crossfilterData.dimension(function(d){ return d.ioc});
-				$timeout(function () { // You might need this timeout to be sure its run after DOM render
-					$(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="example" ></table>');
-					$('#example').dataTable({
-						"aaData": $scope.data.tables[0].aaData,
-						"aoColumns": $scope.data.tables[0].params,
-						"bDeferRender": true,
-						//"bDestroy": true,
-						//"bProcessing": true,
-						//"bRebuild": true,
-						//"aaSorting": true,
-						//"bFilter": true,
-						//"bPaginate": true,
-						"sDom": '<"clear"C>T<"clear">lr<"table_overflow"t>ip',
-						"iDisplayLength": 50,
-						 "fnPreDrawCallback": function( oSettings ) {
-						 	//console.log(oSettings.aoColumns);
-							$scope.r = [], $scope.e = [];
-							for (var a in oSettings.aoColumns) {
-								// find the index of column rows so they can me modified below
-								if (oSettings.aoColumns[a].bVisible === true) {
-									$scope.r.push(oSettings.aoColumns[a].mData);
-								}
-								// push unique to link builder
-								if (oSettings.aoColumns[a].link) {
-									$scope.e.push(oSettings.aoColumns[a]);
-								}
-							}
-						},
-						"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-							if (aData.remote_cc) {
-								$('td:eq('+$scope.r.indexOf("remote_cc")+')', nRow).html('<div class="f32"><span class="flag '+aData.remote_cc.toLowerCase()+'"></span></div>');
-							}
-							if (aData.ioc_severity) {
-								var rIndex = $scope.r.indexOf("ioc_severity");
-								switch(aData.ioc_severity) {
-									case 1:
-										$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-flag fa-stack-1x fa-inverse"></i></span>');
-										break;
-									case 2:
-										$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bullhorn fa-stack-1x fa-inverse"></i></span>');
-										break;
-									case 3:
-										$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bell fa-stack-1x fa-inverse"></i></span>');
-										break;
-									case 4:
-										$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-exclamation-circle fa-stack-1x fa-inverse"></i></span>');
-										break;
-								}
-							}
-							// url builder
-							for (var c in $scope.e) {
-								var links = function() {
-									// var arr = [];
-									var type = $scope.e[c].link.type;
-									var obj = new Object();
-									for (var l in $scope.e[c].link.val) {
-										obj[$scope.e[c].link.val[l]] = aData[$scope.e[c].link.val[l]];
+				if ($scope.data.tables[0] !== null) {
+					$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+					$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+					$timeout(function () { // You might need this timeout to be sure its run after DOM render
+						$(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table" ></table>');
+						$('#table').dataTable({
+							'aaData': $scope.tableData.top(Infinity),
+							'aoColumns': $scope.data.tables[0].params,
+							'bDeferRender': true,
+							'bDestroy': true,
+							//'bProcessing': true,
+							'bRebuild': true,
+							'aaSorting': $scope.data.tables[0].sort,
+							//'bFilter': true,
+							//'bPaginate': true,
+							'sDom': '<"clear"C>T<"clear">lr<"table_overflow"t>ip',
+							'iDisplayLength': 50,
+							 'fnPreDrawCallback': function( oSettings ) {
+							 	//console.log(oSettings.aoColumns);
+								$scope.r = [], $scope.e = [];
+								for (var a in oSettings.aoColumns) {
+									// find the index of column rows so they can me modified below
+									if (oSettings.aoColumns[a].bVisible === true) {
+										$scope.r.push(oSettings.aoColumns[a].mData);
 									}
-									return JSON.stringify({
-										type: $scope.e[c].link.type,
-										objlink: obj
-									});
+									// push unique to link builder
+									if (oSettings.aoColumns[a].link) {
+										$scope.e.push(oSettings.aoColumns[a]);
+									}
 								}
-								$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='btn btn-link' type='button' value='"+links()+"' href=''>"+aData[$scope.e[c].mData]+"</button>");
-							}
-						},
-						"fnDrawCallback": function( oSettings ) {
-							$('table button').click(function(){
-								var link = JSON.parse(this.value);
-								if ($routeParams.start && $routeParams.end) {
-									link.objlink.start = $routeParams.start;
-									link.objlink.end = $routeParams.end;
+							},
+							'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+								if (aData.remote_cc) {
+									$('td:eq('+$scope.r.indexOf("remote_cc")+')', nRow).html('<div class="f32"><span class="flag '+aData.remote_cc.toLowerCase()+'"></span></div>');
 								}
-								$scope.$apply($location.path(link.type).search(link.objlink));
-							});
-							$scope.country = [];
-							$scope.ioc = [];
-							$scope.severity = [];
-							for (var d in oSettings.aiDisplay) {
-								$scope.country.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.remote_country);
-								$scope.ioc.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc);
-								$scope.severity.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc_severity);
+								if (aData.ioc_severity) {
+									var rIndex = $scope.r.indexOf("ioc_severity");
+									switch(aData.ioc_severity) {
+										case 1:
+											$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-flag fa-stack-1x fa-inverse"></i></span>');
+											break;
+										case 2:
+											$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bullhorn fa-stack-1x fa-inverse"></i></span>');
+											break;
+										case 3:
+											$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bell fa-stack-1x fa-inverse"></i></span>');
+											break;
+										case 4:
+											$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-exclamation-circle fa-stack-1x fa-inverse"></i></span>');
+											break;
+									}
+								}
+								// url builder
+								for (var c in $scope.e) {
+									var links = function() {
+										var type = $scope.e[c].link.type;
+										var obj = new Object();
+										if ($routeParams.start && $routeParams.end) {
+											obj.start = $routeParams.start;
+											obj.end = $routeParams.end;
+										}
+										for (var l in $scope.e[c].link.val) {
+											obj[$scope.e[c].link.val[l]] = aData[$scope.e[c].link.val[l]];
+										}
+										return JSON.stringify({
+											type: $scope.e[c].link.type,
+											objlink: obj
+										});
+									}
+									if ($scope.e[c].mData === 'time') {
+										$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='button-secondary pure-button xsmall' value='"+links()+"'>"+aData[$scope.e[c].mData]+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span>");
+									} else {
+										$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='btn btn-link' type='button' value='"+links()+"' href=''>"+aData[$scope.e[c].mData]+"</button>");
+									}
+								}
+							},
+							'fnDrawCallback': function( oSettings ) {
+								$('table button').click(function(){
+									var link = JSON.parse(this.value);
+									$scope.$apply($location.path(link.type).search(link.objlink));
+								});
+								$scope.country = [];
+								$scope.ioc = [];
+								$scope.severity = [];
+								for (var d in oSettings.aiDisplay) {
+									$scope.country.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.remote_country);
+									$scope.ioc.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc);
+									$scope.severity.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc_severity);
+								}
+								$scope.$broadcast('severityUpdate');
 							}
-							$scope.$broadcast('severityUpdate');
-							// dc.redrawAll();
-						}
-					});
-					$rootScope.$watch('search', function(){
-						$('#example').dataTable().fnFilter($rootScope.search);
-					});
-				}, 0, false);
+						});
+						$scope.$on('crossfilterToTable', function () {
+							$('#table').dataTable().fnClearTable();
+							$('#table').dataTable().fnAddData($scope.tableData.top(Infinity));
+							$('#table').dataTable().fnDraw();
+						});
+						$rootScope.$watch('search', function(){
+							if ($rootScope.search !== null) {
+								$('#table').dataTable().fnFilter($rootScope.search);
+							}
+						});
+					}, 500, false);
+				}
 			})
 		}
 	};
 }]);
+
+
+/// MULTI TABLE WORK-AROUND.. have to throw these into a div at some point
+angular.module('mean.system').directive('multiTable1', ['$timeout', '$location', '$routeParams', '$rootScope', function ($timeout, $location, $routeParams, $rootScope) {
+	return {
+		link: function ($scope, element, attrs) {
+			$scope.$on('tableLoad', function (event) {
+				if ($scope.data.tables[0] !== null) {
+					$timeout(function () { // You might need this timeout to be sure its run after DOM render
+						$(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table1" ></table>');
+						$('#table1').dataTable({
+							'aaData': $scope.data.tables[0].aaData,
+							'aoColumns': $scope.data.tables[0].params,
+							'bDeferRender': true,
+							'bDestroy': true,
+							//'bProcessing': true,
+							//'bRebuild': true,
+							'aaSorting': $scope.data.tables[0].sort,
+							//'bFilter': true,
+							//'bPaginate': true,
+							'sDom': '<"clear"><"clear">r<"table_overflow"t>',
+							'iDisplayLength': 50,
+							'fnPreDrawCallback': function( oSettings ) {
+							},
+							'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+							},
+							'fnDrawCallback': function( oSettings ) {
+							}
+						});
+					}, 200, false);
+				} else {
+					$(element).parent().parent().parent().remove();
+				}
+			})
+		}
+	};
+}]);
+angular.module('mean.system').directive('multiTable2', ['$timeout', '$location', '$routeParams', '$rootScope', function ($timeout, $location, $routeParams, $rootScope) {
+	return {
+		link: function ($scope, element, attrs) {
+			$scope.$on('tableLoad', function (event) {
+				if ($scope.data.tables[1] !== null) {
+					$timeout(function () { // You might need this timeout to be sure its run after DOM render
+						$(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table2" ></table>');
+						$('#table2').dataTable({
+							'aaData': $scope.data.tables[1].aaData,
+							'aoColumns': $scope.data.tables[1].params,
+							'bDeferRender': true,
+							'bDestroy': true,
+							//'bProcessing': true,
+							//'bRebuild': true,
+							'aaSorting': $scope.data.tables[1].sort,
+							//'bFilter': true,
+							//'bPaginate': true,
+							'sDom': '<"clear"><"clear">r<"table_overflow"t>',
+							'iDisplayLength': 50,
+							'fnPreDrawCallback': function( oSettings ) {
+							},
+							'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+							},
+							'fnDrawCallback': function( oSettings ) {
+							}
+						});
+					}, 200, false);
+				} else {
+					$(element).parent().parent().parent().remove();
+				}
+			})
+		}
+	};
+}]);
+angular.module('mean.system').directive('multiTable3', ['$timeout', '$location', '$routeParams', '$rootScope', function ($timeout, $location, $routeParams, $rootScope) {
+	return {
+		link: function ($scope, element, attrs) {
+			$scope.$on('tableLoad', function (event) {
+				if ($scope.data.tables[2] !== null) {
+					$timeout(function () { // You might need this timeout to be sure its run after DOM render
+						$(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table3" ></table>');
+						$('#table3').dataTable({
+							'aaData': $scope.data.tables[2].aaData,
+							'aoColumns': $scope.data.tables[2].params,
+							'bDeferRender': true,
+							'bDestroy': true,
+							//'bProcessing': true,
+							//'bRebuild': true,
+							'aaSorting': $scope.data.tables[2].sort,
+							//'bFilter': true,
+							//'bPaginate': true,
+							'sDom': '<"clear"><"clear">r<"table_overflow"t>',
+							'iDisplayLength': 50,
+							'fnPreDrawCallback': function( oSettings ) {
+							},
+							'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+							},
+							'fnDrawCallback': function( oSettings ) {
+							}
+						});
+					}, 200, false);
+				} else {
+					$(element).parent().parent().parent().remove();
+				}
+			})
+		}
+	};
+}]);
+angular.module('mean.system').directive('multiTable4', ['$timeout', '$location', '$routeParams', '$rootScope', function ($timeout, $location, $routeParams, $rootScope) {
+	return {
+		link: function ($scope, element, attrs) {
+			$scope.$on('tableLoad', function (event) {
+				if ($scope.data.tables[3] !== null) {
+					$timeout(function () { // You might need this timeout to be sure its run after DOM render
+						$(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table4" ></table>');
+						$('#table4').dataTable({
+							'aaData': $scope.data.tables[3].aaData,
+							'aoColumns': $scope.data.tables[3].params,
+							'bDeferRender': true,
+							'bDestroy': true,
+							//'bProcessing': true,
+							//'bRebuild': true,
+							'aaSorting': $scope.data.tables[3].sort,
+							//'bFilter': true,
+							//'bPaginate': true,
+							'sDom': '<"clear"><"clear">r<"table_overflow"t>',
+							'iDisplayLength': 50,
+							'fnPreDrawCallback': function( oSettings ) {
+							},
+							'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+							},
+							'fnDrawCallback': function( oSettings ) {
+							}
+						});
+					}, 200, false);
+				} else {
+					$(element).parent().parent().parent().remove();
+				}
+			})
+		}
+	};
+}]);
+// ! WORKAROUND
 
 angular.module('mean.system').directive('makeSevChart', ['$timeout', '$window', '$rootScope', function ($timeout, $window, $rootScope) {
 	return {
@@ -317,17 +573,19 @@ angular.module('mean.system').directive('makeSevChart', ['$timeout', '$window', 
 								other:0
 							};
 						}
-						);
-					//var start = 1375070400;
-					//var end = 1391230740;
-					//var width = $("#"+divID).width();
-					//var hHeight;
-					//if(height !== undefined) {
-					//	hHeight = height;
-					//} else {
-					//	hHeight = width/3.3; //4.6 as default
-					//}
-					//console.log($(element).width());
+					);
+					var waitForFinalEvent = (function () {
+						var timers = {};
+						return function (callback, ms, uniqueId) {
+							if (!uniqueId) {
+								uniqueId = "sevchartWait"; //Don't call this twice without a uniqueId
+							}
+							if (timers[uniqueId]) {
+								clearTimeout (timers[uniqueId]);
+							}
+						timers[uniqueId] = setTimeout(callback, ms);
+						};
+					})();
 					var width = $('#sevchart').parent().width();
 					var height = width/3.5;
 					$scope.sevChart
@@ -346,42 +604,46 @@ angular.module('mean.system').directive('makeSevChart', ['$timeout', '$window', 
 						.stack(connVsTime, "(4) Severe", function(d){return d.value.severe;})
 						//.stack(connVsTime, "0 - Other", function(d){return d.value.other;})
 						.colors(["#377FC7","#F5D800","#F88B12","#DD122A","#000"])
-						.xAxisLabel('tejest') // (optional) render an axis label below the x axis
-						.yAxisLabel('teest') // (optional) render a vertical axis lable left of the y axis
+						.xAxisLabel($scope.sevChartxAxis) // (optional) render an axis label below the x axis
+						.yAxisLabel($scope.sevChartyAxis) // (optional) render a vertical axis lable left of the y axis
 						.elasticY(true) // (optional) whether chart should rescale y axis to fit data, :default = false
-						.elasticX(true) // (optional) whether chart should rescale x axis to fit data, :default = false
-						.x(d3.time.scale().domain([moment.unix($scope.global.startTime-100000), moment.unix($scope.global.endTime+100000)])) // define x scale
+						.elasticX(false) // (optional) whether chart should rescale x axis to fit data, :default = false
+						.x(d3.time.scale().domain([moment($scope.start), moment($scope.end)])) // define x scale
 						.xUnits(d3.time.hours) // define x axis units
 						.renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
 						.renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
+						.on("filtered", function(chart, filter){
+							waitForFinalEvent(function(){
+								$scope.tableData.filterAll();
+								var arr = [];
+								for(var i in dimension.top(Infinity)) {
+									arr.push(dimension.top(Infinity)[i].time);
+								}
+								//console.log(dimension.group().top(Infinity));
+								$scope.tableData.filter(function(d) { return arr.indexOf(d.time) >= 0; });
+								$scope.$broadcast('crossfilterToTable');
+								// console.log($scope.tableData.top(Infinity));
+								// console.log(timeDimension.top(Infinity))
+							}, 400, "filterWait");
+						})
 						//.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
 						.title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
 						.renderTitle(true); // (optional) whether chart should render titles, :default = fal
 						$scope.sevChart.render();
-
+						$scope.$broadcast('spinnerHide');
 						$scope.sevWidth = function() {
-						return $('#sevchart').parent().width();
+							return $('#sevchart').parent().width();
 						}
-						var waitForFinalEvent = (function () {
-							var timers = {};
-							return function (callback, ms, uniqueId) {
-								if (!uniqueId) {
-									uniqueId = "sevchartWait"; //Don't call this twice without a uniqueId
-								}
-								if (timers[uniqueId]) {
-									clearTimeout (timers[uniqueId]);
-								}
-							timers[uniqueId] = setTimeout(callback, ms);
-							};
-						})();
 						var setNewSize = function(width) {
-							$scope.sevChart
-								.width(width)
-								.height(width/3.5)
-								.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
-							$(element).height(width/3.5);
-							d3.select('#sevchart svg').attr('width', width).attr('height', width/3.5);
-							$scope.sevChart.redraw();
+							if (width > 0) {
+								$scope.sevChart
+									.width(width)
+									.height(width/3.5)
+									.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+								$(element).height(width/3.5);
+								d3.select('#sevchart svg').attr('width', width).attr('height', width/3.5);
+								$scope.sevChart.redraw();
+							}
 						}
 						$(window).resize(function () {
 							waitForFinalEvent(function(){
@@ -390,8 +652,14 @@ angular.module('mean.system').directive('makeSevChart', ['$timeout', '$window', 
 						});
 						$(window).bind('resize', function() {
 							setTimeout(function(){
-								setNewSize($scope.sevWidth())
+								setNewSize($scope.sevWidth());
 							}, 150);
+						});
+						$('.sidebar-toggler').on("click", function() {
+							setTimeout(function() {
+								setNewSize($scope.sevWidth());
+								$scope.sevChart.render();
+							},10);
 						});
 						$rootScope.$watch('search', function(){
 							$scope.sevChart.redraw();
@@ -409,9 +677,8 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
 					var dimension = $scope.crossfilterData.dimension(function(d) { return d.ioc });
 					var group = dimension.group().reduceSum(function(d) { return d.count });
-					var rowcount = dimension.group().reduceSum(function(d) {return d.count;}).top(Infinity);
 					var hHeight, lOffset;
-					var count = rowcount.length; ///CHANGE THIS to count return rows
+					var count = group.top(Infinity).length; ///CHANGE THIS to count return rows
 					if (count < 7) {
 						lOffset = 17+(count*0.2);
 						hHeight = 25+(count*35);
@@ -441,7 +708,12 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope
 					function () {
 						return {count: 0, severity: 0};
 					});
-					var tops = sevCount.order(function (p) {return p.count;}).top(1);
+					if (count > 0) {
+						var tops = sevCount.order(function (p) {return p.count;}).top(1);
+						$scope.rowDomain = tops[0].value.count+0.1;
+					} else {
+						$scope.rowDomain = 50;
+					}
 					var numberFormat = d3.format(",f");
 					function logFormat(d) {
 						var x = Math.log(d) / Math.log(10) + 1e-6;
@@ -460,27 +732,62 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope
 						})
 						.colorAccessor(function (d){return d.value.severity;})
 						.renderLabel(true)
+						.on("filtered", function(chart, filter){
+							$scope.tableData.filterAll();
+							var arr = [];
+							for(var i in dimension.top(Infinity)) {
+								arr.push(dimension.top(Infinity)[i].ioc);
+							}
+							$scope.tableData.filter(function(d) { return arr.indexOf(d.ioc) >= 0; });
+							$scope.$broadcast('crossfilterToTable');
+						})
 						.label(function(d) { return d.key+' ('+d.value.count+')'; })
 						.labelOffsetY(lOffset) //lOffset
 						.elasticX(false)
-						.x(d3.scale.log().domain([1, tops[0].value.count+0.1]).range([0,500])) //500 ->width
+						.x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width])) //500 ->width
 						.xAxis()
 						.scale($scope.rowChart.x())
 						.tickFormat(logFormat);
 
 						$scope.rowChart.render();
+
+						$scope.rowWidth = function() {
+							return $('#rowchart').parent().width();
+						}
+						var setNewSize = function(width) {
+							if (width > 0) {
+								$scope.rowChart
+									.width(width)
+									//.height(width/3.3)
+									.x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width]));
+									$(element).height(hHeight);
+									d3.select('#rowchart svg').attr('width', width).attr('height', hHeight);
+								$scope.rowChart.redraw();
+							}
+						};
+						$(window).bind('resize', function() {
+							setTimeout(function(){
+								setNewSize($scope.rowWidth());
+							}, 150);
+						});
+						$('.sidebar-toggler').on("click", function() {
+							setTimeout(function() {
+								setNewSize($scope.rowWidth());
+							},10);
+						});
+						var rowFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
 						$rootScope.$watch('search', function(){
-							dimension.filterAll();
-							if ($scope.crossfilterData.dimension(function(d){ return d.remote_country;}).top(Infinity).length > 1) {
-								var newDim = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
+							if($rootScope.search === null) {
+								rowFilterDimension.filterAll();
+							} else {
+								rowFilterDimension.filterAll();
+								if ($scope.country) {
+									rowFilterDimension.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
+								}
 							}
-							if ($scope.country.length > 1) {
-								newDim.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
-							}
-							dimension = newDim;
 							$scope.rowChart.redraw();
 						});
-				}, 0, false);
+				}, 50, false);
 			});
 		}
 	}
@@ -498,8 +805,13 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 					var group = dimension.group().reduceSum(function (d) {
 						return d.count;
 					});
-					var top = group.orderNatural(function (p) {return p.count;}).top(1);
-					var numberOfItems = top[0].value+1;
+					var count = group.top(Infinity).length;
+					if (count > 0) {
+						var top = group.orderNatural(function (p) {return p.count;}).top(1);
+						var numberOfItems = top[0].value+1;
+					} else {
+						var numberOfItems = 1;
+					};
 					var rainbow = new Rainbow();
 					rainbow.setNumberRange(0, numberOfItems);
 					rainbow.setSpectrum("#FF0000", "#CC0000", "#990000", "#660000", "#360000");
@@ -508,17 +820,15 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 						var hexColour = rainbow.colourAt(i);
 						cc.push('#' + hexColour);
 					}
-					//var minhits = function (d) { return d.value.min; };
-					//var maxhits = function (d) { return d.value.max; };
 					function MapCallbackFunction(context)
 					{
 						var cb = function(error, world) {
 							var width = $('#geochart').parent().width();
-							var height = width/1.4;
+							var height = width/1.628;
 							$scope.geoChart
 							.dimension(dimension)
 							.group(group)
-							.projection(d3.geo.mercator().precision(0.1).scale((width + 1) / 2 / Math.PI).translate([width / 2, width / 2]))
+							.projection(d3.geo.mercator().precision(0.1).scale((width + 1) / 2 / Math.PI).translate([width / 2.1, width / 2.4]))
 							.width(width)
 							.height(height)
 							.colors(["#377FC7","#F5D800","#F88B12","#DD122A","#000"])
@@ -526,11 +836,16 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 							.colorCalculator(function (d) { return d ? $scope.geoChart.colors()(d) : '#ccc'; })
 							.overlayGeoJson(world.features, "country", function(d) {
 								return d.properties.name;
+							})
+							.on("filtered", function(chart, filter){
+								$scope.tableData.filterAll();
+								var arr = [];
+								for(var c in dimension.top(Infinity)) {
+									arr.push(dimension.top(Infinity)[c].remote_country);
+								}
+								$scope.tableData.filter(function(d) { return arr.indexOf(d.remote_country) >= 0; });
+								$scope.$broadcast('crossfilterToTable');
 							});
-							//.title(function (d) {
-							//	return d.key+": "+(d.value ? d.value : 0);
-							//});
-							//dc.renderAll();
 							$scope.geoChart.render();
 						}
 						return cb;
@@ -541,58 +856,95 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 						return $('#geochart').parent().width();
 					}
 					var setNewSize = function(width) {
-						$scope.geoChart
-							.width(width)
-							.height(width/3.3)
-							.projection(d3.geo.mercator().precision(0.1).scale((width + 1) / 2 / Math.PI).translate([width / 2, width / 2]));
-							$(element).height(width/1.4);
-							d3.select('#geochart svg').attr('width', width).attr('height', width/1.4);
+						if (width > 0) {
+							$scope.geoChart
+								.width(width)
+								.height(width/3.3)
+								.projection(d3.geo.mercator().precision(0.1).scale((width + 1) / 2 / Math.PI).translate([width / 2.1, width / 2.4]))
+								$(element).height(width/1.628);
+								d3.select('#geochart svg').attr('width', width).attr('height', width/1.628);
 							$scope.geoChart.redraw();
+						}
 					}
 					$(window).bind('resize', function() {
 						setTimeout(function(){
 							setNewSize($scope.geoWidth());
 						}, 150);
 					});
+					$('.sidebar-toggler').on("click", function() {
+						setTimeout(function() {
+							setNewSize($scope.geoWidth());
+						},10);
+					});
+					var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
 					$rootScope.$watch('search', function(){
-						dimension.filterAll();
-						if ($scope.crossfilterData.dimension(function(d){ return d.remote_country;}).top(Infinity).length > 1) {
-							var newDim = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
-						}
-						if ($scope.country.length > 1) {
-							newDim.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
-						}
-						dimension = newDim;
+						if($rootScope.search === null) {
+								geoFilterDimension.filterAll();
+							} else {
+								geoFilterDimension.filterAll();
+								if ($scope.country) {
+									geoFilterDimension.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
+								}
+							}
 						$scope.geoChart.redraw();
 					});
-				}, 0, false);
+					$scope.$broadcast('spinnerHide');
+				}, 200, false);
 			})
 		}
 	};
 }]);
 
-angular.module('mean.system').directive('makeBarChart', ['$timeout', function ($timeout) {
+angular.module('mean.system').directive('makeBarChart', ['$timeout','$rootScope', function ($timeout, $rootScope) {
 	return {
 		link: function ($scope, element, attrs) {
-			$scope.$on('barChart', function (event, start, end) {
-				var dimension = $scope.cf_data.dimension(function(d) { return d.hour });
+			$scope.$on('barChart', function (event) {
+				var dimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
 				var group = dimension.group().reduceSum(function(d) { return d.count });
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
-					var barChart = dc.barChart('#barchart');
-					barChart
-						.width(500) // (optional) define chart width, :default = 200
-						.height(200)
+					$scope.barChart = dc.barChart('#barchart');
+					var waitForFinalEvent = (function () {
+						var timers = {};
+						return function (callback, ms, uniqueId) {
+							if (!uniqueId) {
+								uniqueId = "barchartWait"; //Don't call this twice without a uniqueId
+							}
+							if (timers[uniqueId]) {
+								clearTimeout (timers[uniqueId]);
+							}
+						timers[uniqueId] = setTimeout(callback, ms);
+						};
+					})();
+					var width = $('#barchart').parent().width();
+					var height = width/3.5;
+					$scope.barChart
+						.width(width) // (optional) define chart width, :default = 200
+						.height(height)
 						.transitionDuration(500) // (optional) define chart transition duration, :default = 500
-						.margins({top: 10, right: 50, bottom: 40, left: 60}) // (optional) define margins
+						.margins({top: 10, right: 30, bottom: 25, left: 43}) // (optional) define margins
 						.dimension(dimension) // set dimension
 						//.group(group) // set group
 						.group(group)
 						.colors(["#193459"])
-						.xAxisLabel('test') // (optional) render an axis label below the x axis
-						.yAxisLabel('test') // (optional) render a vertical axis lable left of the y axis
+						.xAxisLabel($scope.barChartxAxis) // (optional) render an axis label below the x axis
+						.yAxisLabel($scope.barChartyAxis) // (optional) render a vertical axis lable left of the y axis
 						.elasticY(true) // (optional) whether chart should rescale y axis to fit data, :default = false
 						.elasticX(false) // (optional) whether chart should rescale x axis to fit data, :default = false
-						.x(d3.time.scale().domain([moment.unix(start), moment.unix(end)])) // define x scale
+						.on("filtered", function(chart, filter){
+							waitForFinalEvent(function(){
+								$scope.tableData.filterAll();
+								var arr = [];
+								for(var i in dimension.top(Infinity)) {
+									arr.push(dimension.top(Infinity)[i].time);
+								}
+								$scope.tableData.filter(function(d) { return arr.indexOf(d.time) >= 0; });
+								$scope.$broadcast('crossfilterToTable');
+								// console.log($scope.tableData.top(Infinity));
+								// console.log(timeDimension.top(Infinity))
+							}, 400, "barfilterWait");
+						})
+						.x(d3.time.scale().domain([moment($scope.start), moment($scope.end)])) // define x scale
+						// .x(d3.time.scale().domain([moment.unix(moment($scope.start).unix()), moment.unix(moment($scope.end).unix())])) // define x scale
 						.xUnits(d3.time.hours) // define x axis units
 						.renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
 						.renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
@@ -601,7 +953,44 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout', function ($
 						//.legend(dc.legend().x(250).y(10))
 						.renderTitle(true); // (optional) whether chart should render titles, :default = false
 
-						barChart.render();
+						$scope.barChart.render();
+
+						$scope.barWidth = function() {
+							if($('#barchart').parent()) {
+								return $('#barchart').parent().width();
+							}
+						}
+						var setNewSize = function(width) {
+							if (width > 0) {
+								$scope.barChart
+									.width(width)
+									.height(width/3.5)
+									.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+								//$(element).height(width/3.5);
+								d3.select('#barchart svg').attr('width', width).attr('height', width/3.5);
+								$scope.barChart.redraw();
+							}
+						}
+						$(window).resize(function () {
+							waitForFinalEvent(function(){
+								$scope.barChart.render();
+							}, 200, "barchartresize");
+						});
+						$(window).bind('resize', function() {
+							setTimeout(function(){
+								setNewSize($scope.barWidth());
+							}, 150);
+						});
+						$('.sidebar-toggler').on("click", function() {
+							setTimeout(function() {
+								setNewSize($scope.barWidth());
+								$scope.barChart.render();
+							},10);
+						});
+						$rootScope.$watch('search', function(){
+							$scope.barChart.redraw();
+						});
+						$scope.$broadcast('spinnerHide');
 					}, 0, false);
 			})
 		}

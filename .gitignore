@@ -1,13 +1,11 @@
+ehthumbs.db
+Thumbs.db
 ._*
 .DS_Store
 .DS_Store?
 .Spotlight-V100
 .Trashes
 .fuse*
-*.sublime-project
-*.sublime-workspace
-ehthumbs.db
-Thumbs.db
 .nodemonignore
 .sass-cache/
 .bower-*/
@@ -15,3 +13,6 @@ Thumbs.db
 node_modules/
 public/lib
 test/coverage/
+.sublime-grunt.cache
+*.sublime-project
+*.sublime-workspace

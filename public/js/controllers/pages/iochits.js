@@ -1,13 +1,6 @@
 'use strict';
 
-angular.module('mean.iochits').controller('TitleController', ['$scope', 'Global', function ($scope, Global) {
-	$scope.global = Global;
-
-	$scope.title = 'IOC Hits';
-	$scope.subheading = '';
-}]);
-
-angular.module('mean.iochits').controller('IochitsController', ['$scope', 'Global', '$http', '$routeParams', function ($scope, Global, $http, $routeParams) {
+angular.module('mean.iochits').controller('IochitsController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
 	$scope.global = Global;
 	$scope.onPageLoad = function() {
 		var query;
@@ -28,15 +21,19 @@ angular.module('mean.iochits').controller('IochitsController', ['$scope', 'Globa
 			$scope.crossfilterData = crossfilter(data.crossfilter);
 			$scope.data = data;
 
-			// var dateAccessor = function (d){return d.date;};
-			// var dateExtent = [];
-			// var date = d3.extent(data, dateAccessor);
-
 			$scope.$broadcast('tableLoad');
-			$scope.$broadcast('sevChart');
 			$scope.$broadcast('rowChart');
-			$scope.$broadcast('severityLoad');
 			$scope.$broadcast('geoChart');
+			$scope.$broadcast('sevChart');
+				$scope.sevChartxAxis = '';
+				$scope.sevChartyAxis = '# IOC / Hour';
+			$scope.$broadcast('severityLoad');
+			if (data.crossfilter.length === 0) {
+				$scope.$broadcast('loadError');
+			}
 		});
+		$rootScope.pageTitle = 'IOC Notifications';
 	};
+
+	$rootScope.rootpage = true;
 }]);

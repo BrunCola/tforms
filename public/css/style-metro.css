@@ -102,16 +102,17 @@ div, input, select, textarea, span, img, table, td, th, p, a, button, ul, li {
     overflow: hidden !important;
     min-height: 30px !important;
     margin: 0 !important;
+    padding: 0 0 0 10px !important;
     color: #555 !important;
     text-shadow: 0 1px 0 #fff !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     
-    cursor: move !important;
+    /*cursor: move !important;
     cursor: url(/cursors/grab.cur), url(/jdashboard/cursors/grab.cur), default !important;
     cursor: -webkit-grab !important;
     cursor: -moz-grab !important;
-    cursor: grab !important;
+    cursor: grab !important;*/
     
     background: #eee;
     background: -webkit-gradient(linear, 0 0, 0 100%, from(#fafafa), to(#eee));
@@ -132,13 +133,13 @@ div, input, select, textarea, span, img, table, td, th, p, a, button, ul, li {
             border-radius: 2px 2px 0 0;
   }
   
-  .jdash-widget.jdash_dragging, .jdash-widget.jdash_dragging .jdash-header {
+  /*.jdash-widget.jdash_dragging, .jdash-widget.jdash_dragging .jdash-header {
     cursor: move;
     cursor: url(/cursors/grabbing.cur), url(/jdashboard/cursors/grabbing.cur), default;
     cursor: -webkit-grabbing;
     cursor: -moz-grabbing;
     cursor: grabbing;
-  }
+  }*/
   
   .jdash-header:hover { color: #000; }
   .jdash-header-inner {
