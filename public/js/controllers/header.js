@@ -9,11 +9,20 @@ angular.module('mean.system').controller('HeaderController', ['$scope', 'Global'
 
 	$scope.go = function ( path ) {
 		$location.path( path );
-	};
-
+	}
 	var socket = io.connect('http://localhost:3000');
 	socket.on('initial iocs', function(data){
-		$scope.iocalerts = data;
+		$scope.iocCount = 0;
+		for (var n in data) {
+			if (data[n].newIOC) {
+				$scope.iocCount++;
+			}
+		}
+		if (data.length >= 11) {
+			$scope.iocalerts = data.reverse().splice(0,10);
+		} else {
+			$scope.iocalerts = data;
+		}
 		$scope.$apply();
 	});
 
