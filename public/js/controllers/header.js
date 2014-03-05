@@ -18,7 +18,8 @@ angular.module('mean.system').controller('HeaderController', ['$scope', 'Global'
 	});
 
 	$scope.report = function($event) {
-		socket.emit('report_generate', {email: 'andrewdillion6@gmail.com'});
+		//socket.emit('report_generate', {email: 'andrewdillion6@gmail.com'});
+		$rootScope.$broadcast('newNoty', 'Test');
 	}
 
 }]);

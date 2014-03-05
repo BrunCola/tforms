@@ -42,6 +42,30 @@ angular.module('mean.system').directive('loadingError', function() {
 	};
 });
 
+angular.module('mean.system').directive('newNotification', function() {
+	return {
+		link: function($scope, element, attrs) {
+			$scope.$on('newNoty', function (event, ioc) {
+				noty({
+					layout: 'bottomLeft',
+					theme: 'defaultTheme',
+					type: 'information',
+					text: 'Incoming flagged host: '+ioc,
+					maxVisible: 1,
+					dismissQueue: true, // If you want to use queue feature set this true
+					animation: {
+						open: { height: 'toggle' },
+						close: { height: 'toggle' },
+						easing: 'swing',
+						speed: 500 // opening & closing animation speed
+					},
+					timeout: 5000 // delay for closing event. Set false for sticky notifications
+				});
+			});
+		}
+	};
+});
+
 angular.module('mean.system').directive('loadingSpinner', function() {
 	return {
 		link: function($scope, element, attrs) {

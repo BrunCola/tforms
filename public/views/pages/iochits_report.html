@@ -1,21 +1,7 @@
-<div style="margin-top:30px" class="pull-right">
-	<button data-ng-controller="HeaderController" ng-click="report($event)" class="pure-button pure-button-primary small">
-		<i class="fa fa-file-text-o"></i>
-		Generate Report
-	</button>
-	<button class="pure-button small">
-		<i class="fa fa-trash-o"></i>
-		Archive All
-	</button>
-</div>
 <section page-head></section>
 <div data-ng-controller="IochitsController" data-ng-init="onPageLoad()">
-	<section id="new-notification" new-notification></section>
-	<section id="loading-error" loading-error></section>
-	<section id="loading-spinner" loading-spinner></section>
-	<section severity-levels></section>
-	<div class="row-fluid">
-		<div class="span6">
+	<div style="width:1056px !important" class="row-fluid">
+		<div style="float:left !important; position:relative !important;" class="span6">
 			<div class="jdash-header">IOC Classes (Quantity of IOC Notifications)</div>
 			<div  style="background-color:#FFF;" class="box">
 				<div class="box-content">
@@ -23,7 +9,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="span6">
+		<div style="float:left !important; position:relative !important;" class="span6">
 			<div class="jdash-header">IOC Source Countries</div>
 			<div  style="background-color:#FFF;" class="box">
 				<div class="box-content">

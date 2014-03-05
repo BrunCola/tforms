@@ -11,12 +11,12 @@ angular.module('mean').config(['$routeProvider',
 		when('/iochits?:start&:end', {
 			templateUrl: 'views/pages/iochits.html'
 		}).
-		// when('/iochits/report', {
-		// 	templateUrl: 'views/pages/iochits.html'
-		// }).
-		// when('/iochits/report?:start&:end', {
-		// 	templateUrl: 'views/pages/iochits.html'
-		// }).
+		when('/iochits_report', {
+			templateUrl: 'views/pages/iochits_report.html'
+		}).
+		when('/iochits_report?:start&:end', {
+			templateUrl: 'views/pages/iochits_report.html'
+		}).
 		//IOC Drill Page
 		when('/ioc_drill', {
 			templateUrl: 'views/pages/ioc_drill.html'

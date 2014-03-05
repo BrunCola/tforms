@@ -79,7 +79,7 @@ exports.init = function(req, res) {
 		socket.on('report_generate', function(data){
 			var mailOptions = {
 				from: "rapidPHIRE <notice@rapidphire.com>", // sender address
-				to: "andrewdillion6@gmail.com, stefan.amyotte@gmail.com", // list of receivers
+				to: "andrewdillion6@gmail.com", // list of receivers
 				subject: "Test", // Subject line
 				text: "Hello world", // plaintext body
 				html: "<b>BALLS</b>", // html body
@@ -111,9 +111,14 @@ exports.init = function(req, res) {
 
 			phantom.create(function(err,ph) {
 				return ph.createPage(function(err,page) {
-					return page.open("http://localhost:3000/report#!/iochits", function(err,status) {
+
+					return page.open("http://localhost:3000/report#!/iochits_report", function(err,status) {
 						console.log("opened site? ", status);
 						setTimeout(function() {
+							page.paperSize = {
+								format: 'A4',
+								margin: '0.4cm',
+							};
 							page.render('./temp/rp.pdf');
 		 					ph.exit();
 		 					smtpTransport.sendMail(mailOptions, function(error, response){
