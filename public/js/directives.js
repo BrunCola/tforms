@@ -42,6 +42,30 @@ angular.module('mean.system').directive('loadingError', function() {
 	};
 });
 
+angular.module('mean.system').directive('newNotification', function() {
+	return {
+		link: function($scope, element, attrs) {
+			$scope.$on('newNoty', function (event, ioc) {
+				noty({
+					layout: 'bottomLeft',
+					theme: 'defaultTheme',
+					type: 'information',
+					text: 'Incoming flagged host: '+ioc,
+					maxVisible: 1,
+					dismissQueue: true, // If you want to use queue feature set this true
+					animation: {
+						open: { height: 'toggle' },
+						close: { height: 'toggle' },
+						easing: 'swing',
+						speed: 500 // opening & closing animation speed
+					},
+					timeout: 5000 // delay for closing event. Set false for sticky notifications
+				});
+			});
+		}
+	};
+});
+
 angular.module('mean.system').directive('loadingSpinner', function() {
 	return {
 		link: function($scope, element, attrs) {
@@ -323,32 +347,47 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 								}
 								// url builder
 								for (var c in $scope.e) {
-									var links = function() {
-										var type = $scope.e[c].link.type;
-										var obj = new Object();
-										if ($routeParams.start && $routeParams.end) {
-											obj.start = $routeParams.start;
-											obj.end = $routeParams.end;
-										}
-										for (var l in $scope.e[c].link.val) {
-											obj[$scope.e[c].link.val[l]] = aData[$scope.e[c].link.val[l]];
-										}
-										return JSON.stringify({
-											type: $scope.e[c].link.type,
-											objlink: obj
-										});
-									}
-									if ($scope.e[c].mData === 'time') {
-										$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='button-secondary pure-button xsmall' value='"+links()+"'>"+aData[$scope.e[c].mData]+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span>");
-									} else {
-										$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='btn btn-link' type='button' value='"+links()+"' href=''>"+aData[$scope.e[c].mData]+"</button>");
+									var type = $scope.e[c].link.type;
+									switch(type) {
+										case 'Archive':
+											$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
+										break;
+										default:
+											var obj = new Object();
+											if ($routeParams.start && $routeParams.end) {
+												obj.start = $routeParams.start;
+												obj.end = $routeParams.end;
+											}
+											for (var l in $scope.e[c].link.val) {
+												obj[$scope.e[c].link.val[l]] = aData[$scope.e[c].link.val[l]];
+											}
+											var links = JSON.stringify({
+												type: $scope.e[c].link.type,
+												objlink: obj
+											});
+											if ($scope.e[c].mData === 'time') {
+												$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+aData[$scope.e[c].mData]+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
+											} else {
+												$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+aData[$scope.e[c].mData]+"</button>");
+											}
+										break;
 									}
 								}
 							},
 							'fnDrawCallback': function( oSettings ) {
-								$('table button').click(function(){
+								$('table .bPage').click(function(){
 									var link = JSON.parse(this.value);
 									$scope.$apply($location.path(link.type).search(link.objlink));
+								});
+								$('table .bArchive').on('click',function(){
+									var rowData = JSON.parse(this.value);
+									// $scope.socket.emit('test', {email: 'andrewdillion6@gmail.com'});
+									var fil = $scope.tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
+									$scope.tableCrossfitler.remove(fil);
+									$scope.tableData.filterAll();
+									$('#table').dataTable().fnClearTable();
+									$('#table').dataTable().fnAddData($scope.tableData.top(Infinity));
+									$('#table').dataTable().fnDraw();
 								});
 								$scope.country = [];
 								$scope.ioc = [];
@@ -619,6 +658,7 @@ angular.module('mean.system').directive('makeSevChart', ['$timeout', '$window', 
 								for(var i in dimension.top(Infinity)) {
 									arr.push(dimension.top(Infinity)[i].time);
 								}
+								console.log(dimension.group().top(Infinity))
 								//console.log(dimension.group().top(Infinity));
 								$scope.tableData.filter(function(d) { return arr.indexOf(d.time) >= 0; });
 								$scope.$broadcast('crossfilterToTable');
@@ -777,14 +817,17 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope
 						});
 						var rowFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
 						$rootScope.$watch('search', function(){
-							if($rootScope.search === null) {
-								rowFilterDimension.filterAll();
-							} else {
-								rowFilterDimension.filterAll();
-								if ($scope.country) {
-									rowFilterDimension.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
+							$scope.tableToRowChart = function () {
+								if($rootScope.search === null) {
+									rowFilterDimension.filterAll();
+								} else {
+									rowFilterDimension.filterAll();
+									if ($scope.country) {
+										rowFilterDimension.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
+									}
 								}
 							}
+							$scope.tableToRowChart();
 							$scope.rowChart.redraw();
 						});
 				}, 50, false);

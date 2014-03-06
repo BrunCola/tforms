@@ -23,21 +23,21 @@ var iochits = require('../controllers/iochits'),
 module.exports = function(app) {
     // Home route
     //app.get('/iochits', authorization.requiresLogin, iochits.render);
-    app.get('/iochits', iochits.render);
-    app.get('/ioc_drill', ioc_drill.render);
-    app.get('/ioc_event', ioc_event.render);
-    app.get('/ioc_top_remote', ioc_top_remote.render);
-    app.get('/new_remote_ip', new_remote_ip.render);
-    app.get('/new_dns_query', new_dns_query.render);
-    app.get('/new_http_hosts', new_http_hosts.render);
-    app.get('/new_ssl_hosts', new_ssl_hosts.render);
-    app.get('/l7', l7.render);
-    app.get('/l7_drill', l7_drill.render);
-    app.get('/l7_local', l7_local.render);
-    app.get('/top_local', top_local.render);
-    app.get('/top_local2remote', top_local2remote.render);
-    app.get('/top_remote', top_remote.render);
-    app.get('/ioc_top_remote2local', ioc_top_remote2local.render);
-    app.get('/top_remote2local', top_remote2local.render);
-    app.get('/archive', archive.render);
+    app.get('/iochits', authorization.requiresLogin, iochits.render);
+    app.get('/ioc_drill', authorization.requiresLogin, ioc_drill.render);
+    app.get('/ioc_event', authorization.requiresLogin, ioc_event.render);
+    app.get('/ioc_top_remote', authorization.requiresLogin, ioc_top_remote.render);
+    app.get('/new_remote_ip', authorization.requiresLogin, new_remote_ip.render);
+    app.get('/new_dns_query', authorization.requiresLogin, new_dns_query.render);
+    app.get('/new_http_hosts', authorization.requiresLogin, new_http_hosts.render);
+    app.get('/new_ssl_hosts', authorization.requiresLogin, new_ssl_hosts.render);
+    app.get('/l7', authorization.requiresLogin, l7.render);
+    app.get('/l7_drill', authorization.requiresLogin, l7_drill.render);
+    app.get('/l7_local', authorization.requiresLogin, l7_local.render);
+    app.get('/top_local', authorization.requiresLogin, top_local.render);
+    app.get('/top_local2remote', authorization.requiresLogin, top_local2remote.render);
+    app.get('/top_remote', authorization.requiresLogin, top_remote.render);
+    app.get('/ioc_top_remote2local', authorization.requiresLogin, ioc_top_remote2local.render);
+    app.get('/top_remote2local', authorization.requiresLogin, top_remote2local.render);
+    app.get('/archive', authorization.requiresLogin, archive.render);
 };

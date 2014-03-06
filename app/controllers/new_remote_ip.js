@@ -6,8 +6,8 @@ var dataTable = require('./constructors/datatable'),
 	async = require('async');
 
 exports.render = function(req, res) {
-	// var database = req.user.database;
-	var database = null;
+	var database = req.user.database;
+	// var database = null;
 	var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 	var end = Math.round(new Date().getTime() / 1000);
 	if (req.query.start && req.query.end) {
@@ -21,7 +21,7 @@ exports.render = function(req, res) {
 	var table1SQL = 'SELECT '+
 		// SELECTS
 		'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-		 '`lan_zone`, '+
+		'`lan_zone`, '+
 		'`lan_ip`, '+
 		'`machine`, '+
 		'`remote_ip`, '+
@@ -66,9 +66,6 @@ exports.render = function(req, res) {
 		'FROM conn_remote_ip '+
 		'WHERE time BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country';
-
-
-
 
 	async.parallel([
 		// Table function(s)

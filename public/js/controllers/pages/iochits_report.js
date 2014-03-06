@@ -1,9 +1,7 @@
 'use strict';
 
-angular.module('mean.iochits').controller('IochitsController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', 'socket', function ($scope, Global, $http, $routeParams, $rootScope, socket) {
+angular.module('mean.iochits').controller('IochitsController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
 	$scope.global = Global;
-	$scope.socket = socket;
-
 	$scope.onPageLoad = function() {
 		var query;
 		if ($routeParams.start && $routeParams.end) {
@@ -29,12 +27,9 @@ angular.module('mean.iochits').controller('IochitsController', ['$scope', 'Globa
 			$scope.$broadcast('sevChart');
 				$scope.sevChartxAxis = '';
 				$scope.sevChartyAxis = '# IOC / Hour';
-			$scope.$broadcast('severityLoad');
-			if (data.crossfilter.length === 0) {
-				$scope.$broadcast('loadError');
-			}
 		});
 		$rootScope.pageTitle = 'IOC Notifications';
 	};
+
 	$rootScope.rootpage = true;
 }]);

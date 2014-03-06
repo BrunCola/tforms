@@ -6,8 +6,8 @@ var dataTable = require('./constructors/datatable'),
 	async = require('async');
 
 exports.render = function(req, res) {
-	// var database = req.user.database;
-	var database = null;
+	var database = req.user.database;
+	// var database = null;
 	var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 	var end = Math.round(new Date().getTime() / 1000);
 	if (req.query.start && req.query.end) {
@@ -70,29 +70,29 @@ exports.render = function(req, res) {
             'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country';
 
 		async.parallel([
-		// Table function(s)
-		function(callback) {
-			new dataTable(table1SQL, table1Params, table1Sort, table1Div, database, function(err,data){
-				tables.push(data);
-				callback();
-			});
-		},
-		// Crossfilter function
-		function(callback) {
-			new query(crossfilterSQL, database, function(err,data){
-				crossfilter = data;
-				callback();
-			});
-		}
-	], function(err) { //This function gets called after the two tasks have called their "task callbacks"
-		if (err) throw console.log(err);
-		var results = {
-			info: info,
-			tables: tables,
-			crossfilter: crossfilter
-		};
-		//console.log(results);
-		res.jsonp(results);
+			// Table function(s)
+			function(callback) {
+				new dataTable(table1SQL, table1Params, table1Sort, table1Div, database, function(err,data){
+					tables.push(data);
+					callback();
+				});
+			},
+			// Crossfilter function
+			function(callback) {
+				new query(crossfilterSQL, database, function(err,data){
+					crossfilter = data;
+					callback();
+				});
+			}
+		], function(err) { //This function gets called after the two tasks have called their "task callbacks"
+			if (err) throw console.log(err);
+			var results = {
+				info: info,
+				tables: tables,
+				crossfilter: crossfilter
+			};
+			//console.log(results);
+			res.jsonp(results);
 		});
 	} else {
         res.redirect('/');

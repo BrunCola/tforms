@@ -13,9 +13,9 @@
 			</li>
 
 			<li class="dropdown" id="header_notification_bar">
-				<a style="width:25px" href="#" class="dropdown-toggle" data-toggle="dropdown">
+				<a ng-click="checkpoint()" style="width:25px" href="#" class="dropdown-toggle" data-toggle="dropdown">
 					<i style="margin-left:5px" class="fa fa-warning"></i>
-					<span class="badge">4</span>
+					<span class="badge">{{iocCount}}</span>
 				</a>
 				<ul class="dropdown-menu extended notification">
 					<li>
