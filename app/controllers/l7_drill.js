@@ -6,8 +6,8 @@ config = require('../../config/config'),
 async = require('async');
 
 exports.render = function(req, res) {
-	// var database = req.user.database;
-	var database = null;
+	var database = req.user.database;
+	// var database = null;
 	var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 	var end = Math.round(new Date().getTime() / 1000);
 	if (req.query.start && req.query.end) {

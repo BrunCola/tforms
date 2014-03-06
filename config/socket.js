@@ -1,12 +1,16 @@
 'use strict';
 var mysql = require('mysql'),
+	config = require('./config'),
 	nodemailer = require("nodemailer"),
 	phantom = require('node-phantom');
 
-module.exports = function(app, passport, connection, io) {
+module.exports = function(app, passport, io) {
 
-	// var io = req.app.get('io');
-	// var connection = req.app.get('connection');
+	// grab config file
+	var connection = mysql.createConnection(config.db);
+	// change database get to user's
+	// establish new connection
+
 	var alerts = [];
 	var isInitIoc = false;
 	var socketCount = 0;
@@ -41,6 +45,7 @@ module.exports = function(app, passport, connection, io) {
 		//  // Use node's db injection format to filter incoming data
 		//  connection.query('INSERT INTO notes (note) VALUES (?)', data.note)
 		// })
+
 
 		socket.on('report_generate', function(data){
 			var mailOptions = {
@@ -84,31 +89,36 @@ module.exports = function(app, passport, connection, io) {
 			// // Use node's db injection format to filter incoming data
 			// connection.query('INSERT INTO notes (note) VALUES (?)', data.note)
 			console.log(data.email);
-		})
+		});
 
-		var timestamp = 1394035200;
-		// Check to see if initial query/notes are set
-		if (! isInitIoc) {
-			// Initial app start, run connection query
-			connection.query("SELECT alert.added, conn_ioc.ioc FROM alert, conn_ioc WHERE alert.conn_uids = conn_ioc.conn_uids AND alert.username = 'rapidPHIRE' AND alert.added >= "+timestamp+" ORDER BY alert.added")
-			// connection.query("SELECT alert.added, conn_ioc.ioc FROM alert, conn_ioc WHERE alert.conn_uids = conn_ioc.conn_uids AND alert.username = 'rapidPHIRE' AND alert.trash is null ORDER BY alert.added DESC LIMIT 10")
-				.on('result', function(data){
-					// Push results onto the notes array
-					// console.log(data);
-					if (data.added > timestamp) {
-						data.newIOC = true;
-					}
-					alerts.push(data);
-				})
-				.on('end', function(){
-					// Only emit notes after query has been completed
-					socket.emit('initial iocs', alerts);
-				})
-			isInitIoc = true
-		} else {
-			// Initial iocs already exist, send out
-			socket.emit('initial iocs', alerts)
-		}
+		socket.on('checkpoint', function(userData){
+			function newCP() {
+				var newCheckpoint = Math.round(new Date().getTime() / 1000);
+				//io.sockets.emit('checkpointSet', newCheckpoint);
+				connection.query("UPDATE `user` SET `checkpoint`= "+newCheckpoint+" WHERE `id` = '"+userData.id+"'");
+			}
+			newCP();
+		});
+
+		socket.on('init', function(userData) {
+			function init() {
+				console.log(userData)
+				var alerts = [];
+				var checkpoint = userData.checkpoint;
+				// select user checkpoint here
+				connection.query("SELECT alert.added, conn_ioc.ioc FROM alert, conn_ioc WHERE alert.conn_uids = conn_ioc.conn_uids AND alert.username = '"+userData.username+"' AND alert.added >= '"+checkpoint+"' ORDER BY alert.added")
+					.on('result', function(data){
+						if (data.added > userData.checkpoint) {
+							data.newIOC = true;
+						}
+						alerts.push(data);
+					})
+					.on('end', function(){
+						socket.emit('initial iocs', alerts);
+					})
+			}
+			init();
+		});
 	})
 
 };

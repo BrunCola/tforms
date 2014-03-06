@@ -6,8 +6,8 @@ var dataTable = require('./constructors/datatable'),
 	async = require('async');
 
 exports.render = function(req, res) {
-	// var database = req.user.database;
-	var database = null;
+	var database = req.user.database;
+	// var database = null;
 	var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 	var end = Math.round(new Date().getTime() / 1000);
 	if (req.query.start && req.query.end) {
@@ -25,8 +25,8 @@ exports.render = function(req, res) {
 			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time,'+ // Last Seen
 			'`ioc_severity`,'+
 			'`ioc`,'+
-			// '`ioc_typeIndicator`,'+
-			// '`ioc_typeInfection`,'+
+			'`ioc_typeIndicator`,'+
+			'`ioc_typeInfection`,'+
 			'`lan_zone`,'+
 			'`lan_ip`,'+
 			'`machine`,'+
@@ -64,8 +64,8 @@ exports.render = function(req, res) {
 			{ title: 'Severity', select: 'ioc_severity' },
 			{ title: 'IOC Hits', select: 'count' },
 			{ title: 'IOC', select: 'ioc' },
-			// { title: 'IOC Type', select: 'ioc_typeIndicator' },
-			// { title: 'IOC Stage', select: 'ioc_typeInfection' },
+			{ title: 'IOC Type', select: 'ioc_typeIndicator' },
+			{ title: 'IOC Stage', select: 'ioc_typeInfection' },
 			{ title: 'LAN Zone', select: 'lan_zone' },
 			{ title: 'LAN IP', select: 'lan_ip' },
 			{ title: 'Machine Name', select: 'machine' },

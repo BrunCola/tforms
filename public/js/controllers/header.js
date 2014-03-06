@@ -11,7 +11,10 @@ angular.module('mean.system').controller('HeaderController', ['$scope', 'Global'
 	$scope.go = function ( path ) {
 		$location.path( path );
 	}
-	//var socket = io.connect('http://localhost:3000');
+
+
+	$scope.socket.emit('init', {username: window.user.username, checkpoint: window.user.checkpoint});
+	//$scope.socket.emit('init', {username: 'rapidPHIRE', database: 'rapidPHIRE'});
 	$scope.socket.on('initial iocs', function(data){
 		$scope.iocCount = 0;
 		for (var n in data) {
@@ -27,10 +30,22 @@ angular.module('mean.system').controller('HeaderController', ['$scope', 'Global'
 		}
 		$scope.$apply();
 	});
+	// $scope.socket.on('checkpointSet', function(data){
+	// 	window.user.checkpoint = data;
+	// 	console.log(window.user);
+	// });
 
-	$scope.report = function($event) {
-		socket.emit('test', {email: 'andrewdillion6@gmail.com'});
-		$rootScope.$broadcast('newNoty', 'Test');
+	// $scope.socket.on('newIOC', function(data){
+	// 	// window.user.checkpoint = data;
+	// 	console.log(data);
+	// 	console.log('NEW IOC');
+	// 	// console.log(window.user);
+	// });
+
+	$scope.checkpoint = function() {
+		//socket.emit('checkpoint', JSON.stringify(window.user));
+		$scope.socket.emit('checkpoint', {username: window.user.username, id: window.user.id});
+		//$rootScope.$broadcast('newNoty', 'Test');
 	}
 
 }]);
