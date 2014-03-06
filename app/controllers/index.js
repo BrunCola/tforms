@@ -10,7 +10,6 @@ exports.render = function(req, res, next) {
 			start: start,
 			end: end
 		});
-		next();
 	// } else {
 	// 	res.redirect('/signin');
 	// }

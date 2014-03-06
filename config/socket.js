@@ -1,13 +1,12 @@
 'use strict';
-
-var config = require('../../config/config'),
-	mysql = require('mysql'),
+var mysql = require('mysql'),
 	nodemailer = require("nodemailer"),
 	phantom = require('node-phantom');
 
-exports.init = function(req, res) {
-	var io = req.app.get('io');
-	var connection = req.app.get('connection');
+module.exports = function(app, passport, connection, io) {
+
+	// var io = req.app.get('io');
+	// var connection = req.app.get('connection');
 	var alerts = [];
 	var isInitIoc = false;
 	var socketCount = 0;
@@ -36,11 +35,11 @@ exports.init = function(req, res) {
 		})
 
 		// socket.on('new note', function(data){
-		// 	// New note added, push to all sockets and insert into db
-		// 	notes.push(data)
-		// 	io.sockets.emit('new note', data)
-		// 	// Use node's db injection format to filter incoming data
-		// 	connection.query('INSERT INTO notes (note) VALUES (?)', data.note)
+		//  // New note added, push to all sockets and insert into db
+		//  notes.push(data)
+		//  io.sockets.emit('new note', data)
+		//  // Use node's db injection format to filter incoming data
+		//  connection.query('INSERT INTO notes (note) VALUES (?)', data.note)
 		// })
 
 		socket.on('report_generate', function(data){
@@ -66,15 +65,15 @@ exports.init = function(req, res) {
 								margin: '0.4cm',
 							};
 							page.render('./temp/rp.pdf');
-		 					ph.exit();
-		 					smtpTransport.sendMail(mailOptions, function(error, response){
+							ph.exit();
+							smtpTransport.sendMail(mailOptions, function(error, response){
 								if(error){
 									console.log(error);
 								}else{
 									console.log("Message sent: " + response.message);
 								}
 							})
-		 				}, 5000);
+						}, 5000);
 					});
 				});
 			});
@@ -86,7 +85,6 @@ exports.init = function(req, res) {
 			// connection.query('INSERT INTO notes (note) VALUES (?)', data.note)
 			console.log(data.email);
 		})
-
 
 		var timestamp = 1394035200;
 		// Check to see if initial query/notes are set
@@ -112,4 +110,5 @@ exports.init = function(req, res) {
 			socket.emit('initial iocs', alerts)
 		}
 	})
+
 };

@@ -366,7 +366,7 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 												objlink: obj
 											});
 											if ($scope.e[c].mData === 'time') {
-												$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage button-secondary pure-button' value='"+links+"'>"+aData[$scope.e[c].mData]+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span>");
+												$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+aData[$scope.e[c].mData]+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
 											} else {
 												$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+aData[$scope.e[c].mData]+"</button>");
 											}
@@ -379,8 +379,9 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 									var link = JSON.parse(this.value);
 									$scope.$apply($location.path(link.type).search(link.objlink));
 								});
-								$('table .bArchive').click(function(){
+								$('table .bArchive').on('click',function(){
 									var rowData = JSON.parse(this.value);
+									// $scope.socket.emit('test', {email: 'andrewdillion6@gmail.com'});
 									var fil = $scope.tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
 									$scope.tableCrossfitler.remove(fil);
 									$scope.tableData.filterAll();

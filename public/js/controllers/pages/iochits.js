@@ -1,7 +1,9 @@
 'use strict';
 
-angular.module('mean.iochits').controller('IochitsController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
+angular.module('mean.iochits').controller('IochitsController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', 'socket', function ($scope, Global, $http, $routeParams, $rootScope, socket) {
 	$scope.global = Global;
+	$scope.socket = socket;
+
 	$scope.onPageLoad = function() {
 		var query;
 		if ($routeParams.start && $routeParams.end) {
@@ -34,6 +36,5 @@ angular.module('mean.iochits').controller('IochitsController', ['$scope', 'Globa
 		});
 		$rootScope.pageTitle = 'IOC Notifications';
 	};
-
 	$rootScope.rootpage = true;
 }]);
