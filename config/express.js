@@ -50,7 +50,7 @@ module.exports = function(app, passport, connection) {
 
     app.configure(function() {
         // The cookieParser should be above session
-        app.use(express.cookieParser());
+        app.use(express.cookieParser("secret"));
 
         // Request body parsing middleware should be above methodOverride
         app.use(express.urlencoded());
@@ -59,7 +59,7 @@ module.exports = function(app, passport, connection) {
 
         app.use(express.session({
             secret: config.sessionSecret,
-            store: new MySQLStore(connection),
+            // store: new MySQLStore(connection),
             cookie: { maxAge : 36000000 }
         }));
 
