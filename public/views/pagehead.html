@@ -19,14 +19,14 @@
 
 		<div class="pull-left no-text-shadow">
 			<i class="fa fa-home"></i>
-			<span id="home"></span>
-			<li ng-repeat="breadcrumb in breadcrumbs.getAll()">
+			<span id="home"><a href="/">Home</a></span>
+			<!-- <li ng-repeat="breadcrumb in breadcrumbs.getAll()">
 				<span class="divider">/</span>
 				<ng-switch on="$last">
 				<span ng-switch-when="true">{{breadcrumb.name}}</span>
 				<span ng-switch-default><a href="{{breadcrumb.path}}">{{breadcrumb.name}}</a></span>
 				</ng-switch>
-			</li>
+			</li> -->
 		</div>
 	</div>
 </div>
