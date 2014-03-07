@@ -22,6 +22,7 @@ exports.render = function(req, res) {
 
 		var table1SQL = 'SELECT '+
 				// SELECTS
+				'count(*) as count, '+
 				'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
 				'`lan_zone`, '+
 				'`lan_ip`, '+
@@ -63,15 +64,19 @@ exports.render = function(req, res) {
 		var crossfilterSQL = 'SELECT '+
 				// SELECTS
 				'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-				'count(*) as count, '+
+				'(sum(in_bytes + out_bytes) / 1048576) AS count,'+
 				'`remote_country` '+
 				// !SELECTS
-			'FROM conn_meta '+
+			'FROM `conn_meta` '+
 			'WHERE '+
 				'time BETWEEN '+start+' AND '+end+' '+
 				'AND `lan_zone` = \''+req.query.lan_zone+'\' '+
 				'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
-			'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country';
+			'GROUP BY '+
+				'month(from_unixtime(time)),'+
+				'day(from_unixtime(time)),'+
+				'hour(from_unixtime(time)),'+
+				'remote_country';
 
 		async.parallel([
 			// Table function(s)
