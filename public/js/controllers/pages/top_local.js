@@ -31,6 +31,7 @@ angular.module('mean.iochits').controller('topLocalController', ['$scope', 'Glob
 			$scope.crossfilterData = crossfilter(data.crossfilter);
 			$scope.data = data;
 
+			$scope.$broadcast('geoChart');
 			$scope.$broadcast('tableLoad');
 			$scope.$broadcast('barChart');
 			if (data.crossfilter.length === 0) {
