@@ -58,7 +58,9 @@ exports.render = function(req, res) {
 			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+ // Last Seen
 			'(sum(in_bytes + out_bytes) / 1048576) AS count '+
 		'FROM `conn_l7` '+
-		'WHERE time BETWEEN '+start+' AND '+end+' '+
+		'WHERE '+
+			'time BETWEEN '+start+' AND '+end+' '+
+			'AND `l7_proto` !=\'-\' '+
 		'GROUP BY '+
 			'month(from_unixtime(time)),'+
 			'day(from_unixtime(time)),'+
