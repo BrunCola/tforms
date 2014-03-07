@@ -45,7 +45,6 @@ exports.render = function(req, res) {
 		{ title: 'Query Class', select: 'qclass', dView: false },
 		{ title: 'Response Code', select: 'rcode', dView: false },
 		{ title: 'DNS Query', select: 'query' },
-		{ title: 'Remote Port', select: 'remote_port' },
 		{ title: 'Protocol', select: 'proto' },
 		{ title: 'DNS Server', select: 'remote_ip' },
 		{ title: 'Remote Port', select: 'remote_port' },
