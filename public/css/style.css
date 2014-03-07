@@ -101,7 +101,11 @@ th {
 .button-xlarge {
     font-size: 125% !important;
 }
-
+.dc-chart g.row text {
+    fill: black !important;
+    font-size: 12px;
+    cursor: pointer;
+}
 /*previous sim chart css*/
 /*.chart {
   shape-rendering: crispEdges;

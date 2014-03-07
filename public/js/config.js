@@ -8,7 +8,10 @@ angular.module('mean').config(['$routeProvider',
 		when('/iochits', {
 			templateUrl: 'views/pages/iochits.html'
 		}).
-		when('/iochits?:start&:end', {
+		when('/iochits&:type', {
+			templateUrl: 'views/pages/iochits.html'
+		}).
+		when('/iochits?:start&:end&:type', {
 			templateUrl: 'views/pages/iochits.html'
 		}).
 		when('/iochits_report', {
