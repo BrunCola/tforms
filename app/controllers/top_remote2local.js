@@ -45,7 +45,6 @@ exports.render = function(req, res) {
             { title: 'LAN Zone', select: 'lan_zone' },
             { title: 'LAN IP', select: 'lan_ip' },
             { title: 'Machine Name', select: 'machine' },
-            { title: 'Machine Name', select: 'machine' },
             { title: 'Remote IP', select: 'remote_ip' },
             { title: 'Remote ASN', select: 'remote_asn' },
             { title: 'Remote ASN Name', select: 'remote_asn_name' },
@@ -60,14 +59,20 @@ exports.render = function(req, res) {
 		var table1Div = 'table';
 
 		var crossfilterSQL = 'SELECT '+
-            // SELECTS
-            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-            'count(*) as count, '+
-            '`remote_country` '+
-            // !SELECTS
-            'FROM conn_meta '+
-            'WHERE time BETWEEN '+start+' AND '+end+' '+
-            'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country';
+	            // SELECTS
+	            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+	            'count(*) as count, '+
+	            '`remote_country` '+
+	            // !SELECTS
+            'FROM `conn_meta` '+
+            'WHERE '+
+            	'time BETWEEN '+start+' AND '+end+' '+
+            	'AND remote_ip = \''+req.query.remote_ip+'\' '+
+            'GROUP BY '+
+	            'month(from_unixtime(time)),'+
+	            'day(from_unixtime(time)),'+
+	            'hour(from_unixtime(time)),'+
+	            'remote_country';
 
 		async.parallel([
 			// Table function(s)

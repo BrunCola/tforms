@@ -54,7 +54,7 @@ exports.render = function(req, res) {
 			'qtype_name, '+
 			'query, '+
 			'answers, '+
-			'TTL, '+
+			'TTLs, '+
 			'ioc, '+
 			'ioc_typeIndicator, '+
 			'ioc_typeInfection '+
@@ -123,7 +123,7 @@ exports.render = function(req, res) {
 			'md5, '+
 			'sha1, '+
 			'ioc, '+
-			'ioc_typeIndicator '+
+			'ioc_typeIndicator, '+
 			'ioc_typeInfection '+
 			// !SELECTS
 			'FROM file_ioc '+
