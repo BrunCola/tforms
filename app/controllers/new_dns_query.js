@@ -61,13 +61,16 @@ exports.render = function(req, res) {
 	var table1Div = 'table';
 
 	var crossfilterSQL = 'SELECT '+
-		// SELECTS
-		'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-		'count(*) as count '+
-		// !SELECTS
-		'FROM dns_query '+
-		'WHERE time BETWEEN '+start+' AND '+end+' '+
-		'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time))';
+			'count(*) AS count, '+
+			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+			'`remote_country` '+
+		'FROM `dns_query` '+
+		'WHERE `time` BETWEEN '+start+' AND '+end+' '+
+		'GROUP BY '+
+			'month(from_unixtime(time)),'+
+			'day(from_unixtime(time)),'+
+			'hour(from_unixtime(time)),'+
+			'remote_country';
 
 	async.parallel([
 		// Table function(s)

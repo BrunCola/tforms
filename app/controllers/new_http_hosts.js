@@ -50,11 +50,9 @@ exports.render = function(req, res) {
 		var table1Div = 'table';
 
 		var crossfilterSQL = 'SELECT '+
-		// SELECTS
-		'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-		'`remote_country`, '+
-		'count(*) as count '+
-		// !SELECTS
+			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'`remote_country`, '+
+			'count(*) as count '+
 		'FROM http_host '+
 		'WHERE time BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country';
