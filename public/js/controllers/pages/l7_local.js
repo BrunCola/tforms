@@ -37,6 +37,7 @@ angular.module('mean.iochits').controller('l7LocalController', ['$scope', 'Globa
 				$scope.$broadcast('loadError');
 			}
 		});
+		$rootScope.pageTitle = 'Bandwidth Usage of Layer 7 Protocols'
 	};
 	$rootScope.rootpage = true;
 }]);

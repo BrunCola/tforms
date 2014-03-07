@@ -651,21 +651,21 @@ angular.module('mean.system').directive('makeSevChart', ['$timeout', '$window', 
 						.xUnits(d3.time.hours) // define x axis units
 						.renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
 						.renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
-						.on("filtered", function(chart, filter){
-							waitForFinalEvent(function(){
-								$scope.tableData.filterAll();
-								var arr = [];
-								for(var i in dimension.top(Infinity)) {
-									arr.push(dimension.top(Infinity)[i].time);
-								}
-								console.log(dimension.group().top(Infinity))
-								//console.log(dimension.group().top(Infinity));
-								$scope.tableData.filter(function(d) { return arr.indexOf(d.time) >= 0; });
-								$scope.$broadcast('crossfilterToTable');
-								// console.log($scope.tableData.top(Infinity));
-								// console.log(timeDimension.top(Infinity))
-							}, 400, "filterWait");
-						})
+						// .on("filtered", function(chart, filter){
+						// 	waitForFinalEvent(function(){
+						// 		$scope.tableData.filterAll();
+						// 		var arr = [];
+						// 		for(var i in dimension.top(Infinity)) {
+						// 			arr.push(dimension.top(Infinity)[i].time);
+						// 		}
+						// 		console.log(dimension.group().top(Infinity))
+						// 		//console.log(dimension.group().top(Infinity));
+						// 		$scope.tableData.filter(function(d) { return arr.indexOf(d.time) >= 0; });
+						// 		$scope.$broadcast('crossfilterToTable');
+						// 		// console.log($scope.tableData.top(Infinity));
+						// 		// console.log(timeDimension.top(Infinity))
+						// 	}, 400, "filterWait");
+						// })
 						//.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
 						.title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
 						.renderTitle(true); // (optional) whether chart should render titles, :default = fal

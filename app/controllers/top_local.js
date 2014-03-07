@@ -19,7 +19,6 @@ exports.render = function(req, res) {
 	var crossfilter = [];
 	var info = [];
 	var table1SQL = 'SELECT '+
-			// SELECTS
 			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time, '+ // LASt Seen
 			'`lan_zone`, '+
 			'`lan_ip`, '+
@@ -28,10 +27,10 @@ exports.render = function(req, res) {
 			'sum(`out_packets`) AS out_packets, '+
 			'(sum(`in_bytes`) / 1048576) AS in_bytes, '+
 			'(sum(`out_bytes`) / 1048576) AS out_bytes '+
-			// !SELECTS
 		'FROM `conn_meta` '+
 		'WHERE time BETWEEN '+start+' AND '+end+' '+
-		'GROUP BY `lan_ip`';
+		'GROUP BY '+
+			'`lan_ip`';
 
 	var table1Params = [
 		{
@@ -57,11 +56,9 @@ exports.render = function(req, res) {
 	var table1Div = 'table';
 
 	var crossfilterSQL = 'SELECT '+
-			// SELECTS
 			'count(*) as count,'+
 			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time,'+ // Last Seen
 			'`remote_country` '
-			// !SELECTS
 		'FROM `conn_meta` '+
 		'WHERE '+
 			'time BETWEEN '+start+' AND '+end+' '+
