@@ -59,20 +59,20 @@ exports.render = function(req, res) {
 		var table1Div = 'table';
 
 		var crossfilterSQL = 'SELECT '+
-	            // SELECTS
-	            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-	            'count(*) as count, '+
-	            '`remote_country` '+
-	            // !SELECTS
+				// SELECTS
+				'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'count(*) as count, '+
+				'`remote_country` '+
+				// !SELECTS
             'FROM `conn_meta` '+
             'WHERE '+
-            	'time BETWEEN '+start+' AND '+end+' '+
-            	'AND remote_ip = \''+req.query.remote_ip+'\' '+
+				'time BETWEEN '+start+' AND '+end+' '+
+				'AND remote_ip = \''+req.query.remote_ip+'\' '+
             'GROUP BY '+
-	            'month(from_unixtime(time)),'+
-	            'day(from_unixtime(time)),'+
-	            'hour(from_unixtime(time)),'+
-	            'remote_country';
+				'month(from_unixtime(time)),'+
+				'day(from_unixtime(time)),'+
+				'hour(from_unixtime(time)),'+
+				'remote_country';
 
 		async.parallel([
 			// Table function(s)
