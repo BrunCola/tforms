@@ -24,7 +24,6 @@ var rootPath = path.normalize(__dirname + '/../..');
 // 	sessionCollection: 'sessions'
 // };
 
-
 module.exports = {
 	defaultDateRange: 1,
 	root: rootPath,
