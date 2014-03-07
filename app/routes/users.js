@@ -7,12 +7,13 @@ module.exports = function(app, passport) {
     app.get('/signin', users.signin);
     // app.get('/signup', users.signup);
     app.get('/signout', users.signout);
-    //app.get('/changepass', users.changepass);
+    app.get('/changepass', users.changepass);
 
     // app.get('/users/me', users.me);
 
     // Setting up the users api
     // app.post('/users', users.create);
+    app.post('/users', users.change);
 
     // Setting up the userId param
     // app.param('userId', users.user);

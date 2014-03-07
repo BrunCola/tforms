@@ -32,8 +32,13 @@ exports.signin = function(req, res) {
  */
 exports.signup = function(req, res) {
     res.render('users/signup', {
-        title: 'Sign up',
-        user: new User()
+        title: 'Sign up'
+    });
+};
+
+exports.changepass = function(req, res) {
+    res.render('users/changepass', {
+        title: 'Change Password'
     });
 };
 
@@ -91,34 +96,43 @@ exports.create = function(req, res) {
     );
 };
 
-exports.changepass = function(req, res) {
+exports.change = function(req, res) {
     var message;
     //add crypto
     //console.log(req.connection);
-    var sql = 'SELECT * FROM user WHERE username ="'+req.body.username+'" OR email ="'+req.body.email+'"';
+    var hash = crypto.createHash('md5').update(req.body.password).digest('hex');
+    var sql="SELECT * FROM user WHERE username = '"+req.body.username+"' and password = '"+hash+"' limit 1";
     connection.query(sql,
         function(err,result){
             if (err) {
-                message = 'Please fill all the required fields';
-                return res.render('users/signup', {
+                message = 'Unable to verify user';
+                return res.render('users/changepass', {
                     message: message,
                     user: req.body
                 });
             }
-            if (result.length === 0) {
-                var hash = crypto.createHash('md5').update(req.body.password).digest('hex');
-                connection.query('INSERT INTO user (name, username, password, email) VALUES (\''+req.body.name+'\', \''+req.body.username+'\', \''+hash+'\', \''+req.body.email+'\')', req.body,
-                    function () {
-                        res.render('users/signin', {
-                            title: 'Signin',
-                            message: 'User create success'
-                        });
-                    }
-                );
-            } else if (result.length > 0){
+            if (result.length === 1) {
+                var newpass1 = crypto.createHash('md5').update(req.body.newpassword1).digest('hex');
+                var newpass2 = crypto.createHash('md5').update(req.body.newpassword2).digest('hex');
+                if ((newpass1 === newpass2) && (req.body.newpassword1.length > 6)) {
+                        connection.query("UPDATE `user` SET `password`='"+newpass1+"' WHERE `username`='"+req.body.username+"' AND `password`='"+hash+"'", req.body,
+                        function () {
+                            res.render('users/signin', {
+                                title: 'Signin',
+                                message: 'Password change success'
+                            });
+                        }
+                    );
+                } else {
+                    res.render('users/changepass', {
+                        title: 'Signin',
+                        message: 'New passwords don\'t match or are shorter than 6 characters'
+                    });
+                }
+            } else {
                 //message = 'Username or email already exists';
-                message = 'Username or email already exists';
-                return res.render('users/signup', {
+                message = 'Unable to verify user';
+                return res.render('users/changepass', {
                     message: message,
                     user: req.body
                 });

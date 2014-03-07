@@ -31,10 +31,11 @@ angular.module('mean.iochits').controller('l7LocalController', ['$scope', 'Globa
 			$scope.crossfilterData = crossfilter(data.crossfilter);
 			$scope.data = data;
 
+			$scope.$broadcast('geoChart');
 			$scope.$broadcast('tableLoad');
 			$scope.$broadcast('barChart');
 			$scope.barChartxAxis = '';
-			$scope.barChartyAxis = '# MB / Hour';			
+			$scope.barChartyAxis = '# MB / Hour';
 			if (data.crossfilter.length === 0) {
 				$scope.$broadcast('loadError');
 			}
