@@ -32,10 +32,10 @@ module.exports = {
 		//socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock',
 		// I had to use a socket instead of a port because of the application I run my server in.
 		port: 3306,
-		host: '192.168.0.133',
-		user: 'rapidPHIRE',
+		host: '69.196.159.69',
+		user: 'andrew',
 		password: 'BlowItOutTheWater',
-		database: 'rapidPHIRE'
+		database: 'rp_users'
 	},
 	templateEngine: 'swig',
 	// The secret should be set to a non-guessable string that

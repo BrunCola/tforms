@@ -9,7 +9,7 @@ angular.module('mean.iochits').controller('IochitsController', ['$scope', 'Globa
 		if ($routeParams.start && $routeParams.end) {
 			query = '/iochits?start='+$routeParams.start+'&end='+$routeParams.end;
 		} else {
-			query = '/iochits'
+			query = '/iochits?'
 		}
 		$http({method: 'GET', url: query}).
 		//success(function(data, status, headers, config) {
@@ -35,6 +35,89 @@ angular.module('mean.iochits').controller('IochitsController', ['$scope', 'Globa
 			}
 		});
 		$rootScope.pageTitle = 'IOC Notifications';
+
+		$http({method: 'GET', url: query+'&type=ioc_notifications'}).
+		success(function(data) {
+			$scope.ioc_notifications = data[0].count;
+		});
+		$http({method: 'GET', url: query+'&type=ioc_groups'}).
+		success(function(data) {
+			$scope.ioc_groups = data;
+		});
+		$http({method: 'GET', url: query+'&type=local_ips'}).
+		success(function(data) {
+			$scope.local_ips = data;
+		});
+		$http({method: 'GET', url: query+'&type=remote_ip'}).
+		success(function(data) {
+			$scope.remote_ip = data;
+		});
+		$http({method: 'GET', url: query+'&type=query'}).
+		success(function(data) {
+			$scope.query = data;
+		});
+		$http({method: 'GET', url: query+'&type=host'}).
+		success(function(data) {
+			$scope.hostt = data;
+		});
+		$http({method: 'GET', url: query+'&type=remote_ip_ssl'}).
+		success(function(data) {
+			$scope.remote_ip_ssl = data;
+		});
+		$http({method: 'GET', url: query+'&type=name'}).
+		success(function(data) {
+			$scope.file_name = data;
+		});
+		$http({method: 'GET', url: query+'&type=l7_proto'}).
+		success(function(data) {
+			$scope.l7_proto = data;
+		});
+		$http({method: 'GET', url: query+'&type=remote_country'}).
+		success(function(data) {
+			$scope.remote_country = data;
+		});
+		//////////////////////////////////
+		//////////////////////////////////
+		$http({method: 'GET', url: query+'&type=bandwidth_in'}).
+		success(function(data) {
+			$scope.bandwidth_in = data.count;
+		});
+		$http({method: 'GET', url: query+'&type=bandwidth_out'}).
+		success(function(data) {
+			$scope.bandwidth_out = data;
+		});
+		$http({method: 'GET', url: query+'&type=new_ip'}).
+		success(function(data) {
+			$scope.new_ip = data;
+		});
+		$http({method: 'GET', url: query+'&type=new_dns'}).
+		success(function(data) {
+			$scope.new_dns = data;
+		});
+		$http({method: 'GET', url: query+'&type=new_http'}).
+		success(function(data) {
+			$scope.new_http = data;
+		});
+		$http({method: 'GET', url: query+'&type=new_ssl'}).
+		success(function(data) {
+			$scope.new_ssl = data;
+		});
+		$http({method: 'GET', url: query+'&type=new_layer7'}).
+		success(function(data) {
+			$scope.new_layer7 = data;
+		});
+		$http({method: 'GET', url: query+'&type=conn_meta'}).
+		success(function(data) {
+			$scope.conn_meta = data;
+		});
+		$http({method: 'GET', url: query+'&type=remote_ip_conn_meta'}).
+		success(function(data) {
+			$scope.remote_ip_conn_meta = data;
+		});
+		$http({method: 'GET', url: query+'&type=remote_country_conn_meta'}).
+		success(function(data) {
+			$scope.remote_country_conn_meta = data;
+		});
 	};
 	$rootScope.rootpage = true;
 }]);
