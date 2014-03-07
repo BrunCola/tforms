@@ -19,6 +19,19 @@ angular.module('mean.system').directive('pageTitle', ['$rootScope', function ($r
 	};
 }]);
 
+angular.module('mean.system').directive('iocDesc', function() {
+	return {
+		link: function($scope, element, attrs) {
+			$scope.$on('iocDesc', function (event, description) {
+				$(element).html('... <a href="javascript:void(0);"><strong>Read More</strong></a>');
+				$(element).on('click', function(){
+					$.colorbox({html: '<span style="margin: 20px">'+description+'</span>', width:500});
+				})
+			});
+		}
+	};
+});
+
 angular.module('mean.system').directive('loadingError', function() {
 	return {
 		link: function($scope, element, attrs) {

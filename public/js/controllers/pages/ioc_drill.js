@@ -34,7 +34,9 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 			$scope.bytes_received = data.info.main[0].out_bytes;
 
 			$scope.countryy = data.info.main[0].remote_country;
-			$scope.flag = data.info.main[0].remote_cc.toLowerCase();
+			if (data.info.main[0].remote_cc){
+				$scope.flag = data.info.main[0].remote_cc.toLowerCase();
+			}
 			$scope.remote_ip = $routeParams.remote_ip;
 			$scope.remote_port = data.info.main[0].remote_port;
 			$scope.in_packets = data.info.main[0].in_packets;
@@ -47,7 +49,17 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 
 			$scope.iocc = $routeParams.ioc;
 			$scope.ioc_type = data.info.main[0].ioc_typeIndicator;
-			$scope.desc = data.info.desc[0].description;
+
+			if (data.info.desc[0].description) {
+				var description = data.info.desc[0].description;
+				var len = description.length;
+				if (len > 200) {
+					$scope.desc = description.substr(0,200);
+					$scope.$broadcast('iocDesc', description);
+				} else {
+					$scope.desc = description;
+				}
+			}
 
 			if (data.crossfilter.length === 0) {
 				$scope.$broadcast('loadError');

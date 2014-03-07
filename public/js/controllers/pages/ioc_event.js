@@ -12,15 +12,17 @@ angular.module('mean.iochits').controller('IocEventController', ['$scope', 'Glob
 			$scope.$broadcast('tableLoad');
 
 			$scope.lan_zone = data.info.main[0].lan_zone;
-			$scope.lan_ip = $routeParams.lan_ip;
+			$scope.lan_ip = data.info.main[0].lan_ip;
 			$scope.lan_port = data.info.main[0].lan_port;
 			$scope.machine_name = data.info.main[0].machine;
 			$scope.packets_recieved = data.info.main[0].out_packets;
 			$scope.bytes_received = data.info.main[0].out_bytes;
 
-			$scope.country = data.info.main[0].remote_country;
-			$scope.flag = data.info.main[0].remote_cc;
-			$scope.remote_ip = $routeParams.remote_ip;
+			$scope.rCountry = data.info.main[0].remote_country;
+			if (data.info.main[0].remote_cc){
+				$scope.flag = data.info.main[0].remote_cc.toLowerCase();
+			}
+			$scope.remote_ip = data.info.main[0].remote_ip;
 			$scope.remote_port = data.info.main[0].remote_port;
 			$scope.in_packets = data.info.main[0].in_packets;
 			$scope.in_bytes = data.info.main[0].in_bytes;
@@ -30,9 +32,23 @@ angular.module('mean.iochits').controller('IocEventController', ['$scope', 'Glob
 			$scope.remote_asn_name = data.info.main[0].remote_asn_name;
 
 			$scope.ioc = data.info.main[0].ioc;
-			$scope.ioc_type = data.info.main[0].ioc_type;
-			// $scope.desc = data.info.desc[0].description;
+			$scope.ioc_type = data.info.main[0].ioc_typeIndicator;
 
+			//run description query now
+			var query = '/ioc_event?ioc='+data.info.main[0].ioc;
+			$http({method: 'GET', url: query}).
+			success(function(data) {
+				if (data[0].description) {
+					var description = data[0].description;
+					var len = description.length;
+					if (len > 200) {
+						$scope.desc = description.substr(0,200);
+						$scope.$broadcast('iocDesc', description);
+					} else {
+						$scope.desc = description;
+					}
+				}
+			});
 			// if (data.crossfilter.length === 0) {
 			// 	$scope.$broadcast('loadError');
 			// }
