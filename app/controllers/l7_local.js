@@ -64,11 +64,9 @@ exports.render = function(req, res) {
 			var table1Div = 'table';
 
 			var crossfilterSQL = 'SELECT '+
-					// SELECTS
-					'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+					'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+ // Last Seen
 					'(sum(in_bytes + out_bytes) / 1048576) AS count, '+
 					'`remote_country` '+
-					// !SELECTS
 				'FROM `conn_l7` '+
 				'WHERE '+
 					'time BETWEEN '+start+' AND '+end+' '+
