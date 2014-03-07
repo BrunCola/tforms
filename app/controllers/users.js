@@ -32,7 +32,8 @@ exports.signin = function(req, res) {
  */
 exports.signup = function(req, res) {
     res.render('users/signup', {
-        title: 'Sign up'
+        title: 'Sign up',
+        user: new User()
     });
 };
 
@@ -54,6 +55,7 @@ exports.signout = function(req, res) {
  * Session
  */
 exports.session = function(req, res) {
+    console.log(req.user);
     res.redirect('/');
 };
 
