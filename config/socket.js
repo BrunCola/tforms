@@ -7,7 +7,7 @@ var mysql = require('mysql'),
 module.exports = function(app, passport, io) {
 
 	// grab config file
-	var connection = mysql.createConnection(config.db);
+	//var connection = mysql.createConnection(config.db);
 	// change database get to user's
 	// establish new connection
 
@@ -39,7 +39,9 @@ module.exports = function(app, passport, io) {
 		})
 
 		socket.on('archiveIOC', function(data){
-			console.log(data);
+			config.db.database = data.database;
+			var connection = mysql.createConnection(config.db);
+			connection.query("UPDATE `conn_ioc` SET `trash` = UNIX_TIMESTAMP(NOW()) WHERE `lan_ip`='"+data.lan_ip+"' AND `remote_ip`='"+data.remote_ip+"' AND ioc='"+data.ioc+"'");
 		})
 
 	// 	// socket.on('new note', function(data){
