@@ -30,6 +30,7 @@ angular.module('mean.iochits').controller('archiveController', ['$scope', 'Globa
 			$scope.crossfilterData = crossfilter(data.crossfilter);
 			$scope.data = data;
 
+			$scope.$broadcast('geoChart');
 			$scope.$broadcast('tableLoad');
 			$scope.$broadcast('sevChart');
 			if (data.crossfilter.length === 0) {

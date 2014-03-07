@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('mean.iochits').controller('IndexController', ['$scope', 'Global', '$routeParams', '$rootScope', 'breadcrumbs', function ($scope, Global, $routeParams, $rootScope, breadcrumbs) {
+angular.module('mean.iochits').controller('IndexController', ['$scope', 'Global', '$routeParams', '$rootScope', function ($scope, Global, $routeParams, $rootScope) {
 	$scope.global = Global;
-	$scope.breadcrumbs = breadcrumbs;
+	//$scope.breadcrumbs = breadcrumbs;
 
 	//this can be used for date selector
 	$scope.onHeadLoad = function() {
