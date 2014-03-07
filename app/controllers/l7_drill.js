@@ -32,9 +32,11 @@ exports.render = function(req, res) {
 				'`machine` '+
 				// !SELECTS
 			'FROM `conn_l7` '+
-			'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-			'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
-			'GROUP BY `lan_ip`';
+			'WHERE '+
+				'`time` BETWEEN '+start+' AND '+end+' '+
+				'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
+			'GROUP '+
+				'BY `lan_ip`';
 
 			var table1Params = [
 				{
@@ -61,10 +63,8 @@ exports.render = function(req, res) {
 			var table1Div = 'table';
 
 			var crossfilterSQL = 'SELECT '+
-				// SELECTS
-				'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-				'count(*) as count '+
-				// !SELECTS
+					'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+ // Last Seen
+					'(sum(in_bytes + out_bytes) / 1048576) AS count '+
 				'FROM `conn_l7` '+
 				'WHERE `time` BETWEEN '+start+' AND '+end+' '+
 				'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
