@@ -12,6 +12,9 @@ angular.module('mean.system').controller('HeaderController', ['$scope', 'Global'
 		$location.path( path );
 	}
 
+	// $scope.socket.on('disconnected', function(){
+	// 	console.log('disconnected');
+	// });
 
 	$scope.socket.emit('init', {username: window.user.username, checkpoint: window.user.checkpoint});
 	//$scope.socket.emit('init', {username: 'rapidPHIRE', database: 'rapidPHIRE'});

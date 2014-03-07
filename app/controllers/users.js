@@ -91,6 +91,43 @@ exports.create = function(req, res) {
     );
 };
 
+exports.changepass = function(req, res) {
+    var message;
+    //add crypto
+    //console.log(req.connection);
+    var sql = 'SELECT * FROM user WHERE username ="'+req.body.username+'" OR email ="'+req.body.email+'"';
+    connection.query(sql,
+        function(err,result){
+            if (err) {
+                message = 'Please fill all the required fields';
+                return res.render('users/signup', {
+                    message: message,
+                    user: req.body
+                });
+            }
+            if (result.length === 0) {
+                var hash = crypto.createHash('md5').update(req.body.password).digest('hex');
+                connection.query('INSERT INTO user (name, username, password, email) VALUES (\''+req.body.name+'\', \''+req.body.username+'\', \''+hash+'\', \''+req.body.email+'\')', req.body,
+                    function () {
+                        res.render('users/signin', {
+                            title: 'Signin',
+                            message: 'User create success'
+                        });
+                    }
+                );
+            } else if (result.length > 0){
+                //message = 'Username or email already exists';
+                message = 'Username or email already exists';
+                return res.render('users/signup', {
+                    message: message,
+                    user: req.body
+                });
+            }
+        }
+    );
+};
+
+
 /**
  * Send User
  */
