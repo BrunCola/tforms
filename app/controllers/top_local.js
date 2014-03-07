@@ -60,7 +60,7 @@ exports.render = function(req, res) {
 			// SELECTS
 			'count(*) as count,'+
 			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time,'+ // Last Seen
-			'`remote_country` '
+			'`remote_country` '+
 			// !SELECTS
 		'FROM `conn_meta` '+
 		'WHERE '+

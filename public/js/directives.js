@@ -348,23 +348,24 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 								// url builder
 								for (var c in $scope.e) {
 									var type = $scope.e[c].link.type;
+									var obj = new Object();
+									//var all = new Object();
+									if ($routeParams.start && $routeParams.end) {
+										obj.start = $routeParams.start;
+										obj.end = $routeParams.end;
+									}
+									for (var l in $scope.e[c].link.val) {
+										obj[$scope.e[c].link.val[l]] = aData[$scope.e[c].link.val[l]];
+									}
+									var links = JSON.stringify({
+										type: $scope.e[c].link.type,
+										objlink: obj
+									});
 									switch(type) {
 										case 'Archive':
 											$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
 										break;
 										default:
-											var obj = new Object();
-											if ($routeParams.start && $routeParams.end) {
-												obj.start = $routeParams.start;
-												obj.end = $routeParams.end;
-											}
-											for (var l in $scope.e[c].link.val) {
-												obj[$scope.e[c].link.val[l]] = aData[$scope.e[c].link.val[l]];
-											}
-											var links = JSON.stringify({
-												type: $scope.e[c].link.type,
-												objlink: obj
-											});
 											if ($scope.e[c].mData === 'time') {
 												$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+aData[$scope.e[c].mData]+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
 											} else {
@@ -381,7 +382,8 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 								});
 								$('table .bArchive').on('click',function(){
 									var rowData = JSON.parse(this.value);
-									// $scope.socket.emit('test', {email: 'andrewdillion6@gmail.com'});
+									// console.log(rowData)
+									// $scope.socket.emit('archiveIOC', {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, database: window.user.database});
 									var fil = $scope.tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
 									$scope.tableCrossfitler.remove(fil);
 									$scope.tableData.filterAll();
