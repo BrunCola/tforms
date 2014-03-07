@@ -34,6 +34,8 @@ angular.module('mean.iochits').controller('NewDnsQueryController', ['$scope', 'G
 			$scope.$broadcast('geoChart');
 			$scope.$broadcast('tableLoad');
 			$scope.$broadcast('barChart');
+			$scope.barChartxAxis = '';
+			$scope.barChartyAxis = '# New DNS Queries / Hour';
 			if (data.crossfilter.length === 0) {
 				$scope.$broadcast('loadError');
 			}

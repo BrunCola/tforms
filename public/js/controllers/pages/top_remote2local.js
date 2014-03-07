@@ -33,6 +33,8 @@ angular.module('mean.iochits').controller('remote2LocalController', ['$scope', '
 
 			$scope.$broadcast('barChart');
 			$scope.$broadcast('tableLoad');
+			$scope.barChartxAxis = '';
+			$scope.barChartyAxis = '# MB / Hour';			
 			if (data.crossfilter.length === 0) {
 				$scope.$broadcast('loadError');
 			}

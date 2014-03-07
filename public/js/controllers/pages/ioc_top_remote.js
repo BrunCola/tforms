@@ -24,8 +24,8 @@ angular.module('mean.iochits').controller('IocTopRemoteController', ['$scope', '
 			$scope.$broadcast('tableLoad');
 			$scope.$broadcast('geoChart');
 			$scope.$broadcast('sevChart');
-				$scope.sevChartxAxis = '';
-				$scope.sevChartyAxis = '# IOC / Hour';
+			$scope.sevChartxAxis = '';
+			$scope.sevChartyAxis = '# IOC / Hour';
 			$scope.$broadcast('severityLoad');
 			if (data.crossfilter.length === 0) {
 				$scope.$broadcast('loadError');

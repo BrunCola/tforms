@@ -32,6 +32,8 @@ angular.module('mean.iochits').controller('archiveController', ['$scope', 'Globa
 
 			$scope.$broadcast('tableLoad');
 			$scope.$broadcast('sevChart');
+			$scope.sevChartxAxis = '';
+			$scope.sevChartyAxis = '# IOC / Hour';			
 			if (data.crossfilter.length === 0) {
 				$scope.$broadcast('loadError');
 			}

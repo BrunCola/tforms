@@ -23,8 +23,8 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 
 			$scope.$broadcast('tableLoad');
 			$scope.$broadcast('sevChart');
-				$scope.sevChartxAxis = '';
-				$scope.sevChartyAxis = '# IOC / Hour';
+			$scope.sevChartxAxis = '';
+			$scope.sevChartyAxis = '# IOC / Hour';
 
 			$scope.lan_zone = data.info.main[0].lan_zone;
 			$scope.lan_ip = $routeParams.lan_ip;

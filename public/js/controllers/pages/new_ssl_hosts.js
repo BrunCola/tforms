@@ -34,6 +34,8 @@ angular.module('mean.iochits').controller('NewSslHostController', ['$scope', 'Gl
 			$scope.$broadcast('geoChart');
 			$scope.$broadcast('tableLoad');
 			$scope.$broadcast('barChart');
+			$scope.barChartxAxis = '';
+			$scope.barChartyAxis = '# New IP / Hour';
 			if (data.crossfilter.length === 0) {
 				$scope.$broadcast('loadError');
 			}

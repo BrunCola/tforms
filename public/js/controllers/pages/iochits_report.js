@@ -25,8 +25,8 @@ angular.module('mean.iochits').controller('IochitsController', ['$scope', 'Globa
 			$scope.$broadcast('rowChart');
 			$scope.$broadcast('geoChart');
 			$scope.$broadcast('sevChart');
-				$scope.sevChartxAxis = '';
-				$scope.sevChartyAxis = '# IOC / Hour';
+			$scope.sevChartxAxis = '';
+			$scope.sevChartyAxis = '# IOC / Hour';
 		});
 		$rootScope.pageTitle = 'IOC Notifications';
 	};
