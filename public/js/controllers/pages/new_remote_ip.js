@@ -30,7 +30,7 @@ angular.module('mean.iochits').controller('NewRemoteIpController', ['$scope', 'G
 				$scope.$broadcast('loadError');
 			}
 		});
-		$rootScope.pageTitle = 'New Remote IPs';
+		$rootScope.pageTitle = 'New Remote IPs Detected';
 	};
 	$rootScope.rootpage = true;
 }]);

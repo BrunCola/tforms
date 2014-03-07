@@ -37,6 +37,7 @@ angular.module('mean.iochits').controller('local2remoteController', ['$scope', '
 				$scope.$broadcast('loadError');
 			}
 		});
+		$rootScope.pageTitle = 'Bandwidth Usage Between Local and Remote IP Addresses'
 	};
 	$rootScope.rootpage = true;
 }]);

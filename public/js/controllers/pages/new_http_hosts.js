@@ -38,6 +38,7 @@ angular.module('mean.iochits').controller('NewHttpHostController', ['$scope', 'G
 				$scope.$broadcast('loadError');
 			}
 		});
+		$rootScope.pageTitle = 'New HTTP Domains Detected';
 	};
 	$rootScope.rootpage = true;
 }]);

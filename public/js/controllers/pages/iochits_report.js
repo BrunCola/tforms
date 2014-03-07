@@ -30,6 +30,5 @@ angular.module('mean.iochits').controller('IochitsController', ['$scope', 'Globa
 		});
 		$rootScope.pageTitle = 'IOC Notifications';
 	};
-
 	$rootScope.rootpage = true;
 }]);

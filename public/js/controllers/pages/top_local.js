@@ -38,6 +38,7 @@ angular.module('mean.iochits').controller('topLocalController', ['$scope', 'Glob
 				$scope.$broadcast('loadError');
 			}
 		});
+		$rootScope.pageTitle = 'Bandwidth Usage of Local IP Addresses'
 	};
 	$rootScope.rootpage = true;
 }]);

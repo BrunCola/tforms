@@ -38,6 +38,7 @@ angular.module('mean.iochits').controller('NewDnsQueryController', ['$scope', 'G
 				$scope.$broadcast('loadError');
 			}
 		});
+		$rootScope.pageTitle = 'New DNS Queries Detected';
 	};
 	$rootScope.rootpage = true;
 }]);

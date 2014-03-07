@@ -38,6 +38,7 @@ angular.module('mean.iochits').controller('NewSslHostController', ['$scope', 'Gl
 				$scope.$broadcast('loadError');
 			}
 		});
+		$rootScope.pageTitle = 'New Remote IP Detected Serving SSL Traffic'
 	};
 	$rootScope.rootpage = true;
 }]);

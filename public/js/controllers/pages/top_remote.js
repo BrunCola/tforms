@@ -38,6 +38,7 @@ angular.module('mean.iochits').controller('topRemoteController', ['$scope', 'Glo
 				$scope.$broadcast('loadError');
 			}
 		});
+		$rootScope.pageTitle = 'Bandwidth Usage of Remote IP Addresses'
 	};
 	$rootScope.rootpage = true;
 }]);

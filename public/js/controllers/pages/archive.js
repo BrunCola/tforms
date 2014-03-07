@@ -36,6 +36,7 @@ angular.module('mean.iochits').controller('archiveController', ['$scope', 'Globa
 				$scope.$broadcast('loadError');
 			}
 		});
+		$rootScope.pageTitle = 'Archived IOC Notifications';
 	};
 	$rootScope.rootpage = true;
 }]);
