@@ -93,7 +93,7 @@ exports.render = function(req, res) {
 			break;
 		// Info function(s) --- Network
 		case 'conn_meta':
-			new query('SELECT lan FROM conn_meta WHERE (time between '+start+' AND '+end+') GROUP BY lan_ip', database, function(err,data){
+			new query('SELECT lan_ip FROM conn_meta WHERE (time between '+start+' AND '+end+') GROUP BY lan_ip', database, function(err,data){
 				if (data) {
 					res.json(data.length);
 				}

@@ -25,18 +25,22 @@ module.exports = function(app, passport, io) {
 		}
 	});
 
-	// io.sockets.on('connection', function(socket){
+	io.sockets.on('connection', function(socket){
 
-	// 	// Socket has connected, increase socket count
-	// 	socketCount++
-	// 	// Let all sockets know how many are connected
-	// 	io.sockets.emit('users connected', socketCount)
+		// Socket has connected, increase socket count
+		socketCount++
+		// Let all sockets know how many are connected
+		io.sockets.emit('users connected', socketCount)
 
-	// 	socket.on('disconnect', function() {
-	// 		// Decrease the socket count on a disconnect, emit
-	// 		socketCount--
-	// 		io.sockets.emit('users connected', socketCount)
-	// 	})
+		socket.on('disconnect', function() {
+			// Decrease the socket count on a disconnect, emit
+			socketCount--
+			io.sockets.emit('users connected', socketCount)
+		})
+
+		socket.on('archiveIOC', function(data){
+			console.log(data);
+		})
 
 	// 	// socket.on('new note', function(data){
 	// 	//  // New note added, push to all sockets and insert into db
@@ -119,6 +123,6 @@ module.exports = function(app, passport, io) {
 	// 		}
 	// 		init();
 	// 	});
-	// })
+	})
 
 };
