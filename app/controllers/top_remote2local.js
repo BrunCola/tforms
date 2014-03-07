@@ -60,8 +60,8 @@ exports.render = function(req, res) {
 
 		var crossfilterSQL = 'SELECT '+
 				// SELECTS
-				'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-				'count(*) as count, '+
+				'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+ // Last Seen
+				'(sum(in_bytes + out_bytes) / 1048576) AS count,'+
 				'`remote_country` '+
 				// !SELECTS
             'FROM `conn_meta` '+

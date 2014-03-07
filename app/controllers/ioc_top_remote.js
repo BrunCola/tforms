@@ -38,9 +38,10 @@ exports.render = function(req, res) {
 			'sum(`out_bytes`) AS out_bytes '+
 			// !SELECTS
 		'FROM `conn_ioc` '+
-		'WHERE time BETWEEN '+start+' AND '+end+' '+
-		'AND `ioc_count` > 0 '+
-		'AND `trash` IS NULL '+
+		'WHERE '+
+			'time BETWEEN '+start+' AND '+end+' '+
+			'AND `ioc_count` > 0 '+
+			'AND `trash` IS NULL '+
 		'GROUP BY '+
 			'`remote_ip`,'+
 			'`ioc`';
@@ -84,9 +85,10 @@ exports.render = function(req, res) {
 		'`ioc` '+
 		// !SELECTS
 		'FROM `conn_ioc` '+
-		'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-		'AND `ioc_count` > 0 '+
-		'AND `trash` IS NULL '+
+		'WHERE '+
+			'`time` BETWEEN '+start+' AND '+end+' '+
+			'AND `ioc_count` > 0 '+
+			'AND `trash` IS NULL '+
 		'GROUP BY '+
 			'month(from_unixtime(time)),'+
 			'day(from_unixtime(time)),'+
