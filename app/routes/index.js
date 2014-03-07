@@ -4,5 +4,5 @@
 
 module.exports = function(app, passport) {
     app.get('/', index.render);
-    app.get('/report', report.render);
+    // app.get('/report', report.render);
 };

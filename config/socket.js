@@ -35,7 +35,8 @@ module.exports = function(app, passport, io) {
 		socket.on('disconnect', function() {
 			// Decrease the socket count on a disconnect, emit
 			socketCount--
-			io.sockets.emit('users connected', socketCount)
+			io.sockets.emit('users connected', socketCount);
+			// socket.emit('disconnected');
 		})
 
 		socket.on('archiveIOC', function(data){
