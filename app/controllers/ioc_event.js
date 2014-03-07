@@ -14,7 +14,19 @@ exports.render = function(req, res) {
 	// 	start = req.query.start;
 	// 	end = req.query.end;
 	// }
-	if (req.query.conn_uids) {
+	if (req.query.ioc) {
+		console.log(req.query.ioc)
+		new query('SELECT '+
+				'description '+
+			'FROM `ioc_parent` '+
+			'WHERE '+
+				'ioc_parent = \''+req.query.ioc+'\' '+
+			'LIMIT 1', 'rp_ioc_intel', function(err,data){
+			if (data) {
+				res.jsonp(data);
+			}
+		});
+	} else if (req.query.conn_uids) {
 		//var results = [];
 		var tables = [];
 		var crossfilter = [];
@@ -168,7 +180,7 @@ exports.render = function(req, res) {
 
 			var Info2SQL = 'SELECT, '+
 					'i.description, '+
-				'FROM ioc_group i JOIN conn_ioc c ON (i.ioc_group=c.ioc), '+
+				'FROM ioc_parent i JOIN conn_ioc c ON (i.ioc_parent=c.ioc), '+
 				'WHERE, '+
 					'c.conn_uids = \''+req.query.conn_uids+'\', '+
 				'LIMIT 1';
