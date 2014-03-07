@@ -59,7 +59,8 @@ module.exports = function(app, passport, connection) {
 
         app.use(express.session({
             secret: config.sessionSecret,
-            store: new MySQLStore(connection)
+            store: new MySQLStore(connection),
+            cookie: { maxAge : 36000000 }
         }));
 
         // Dynamic helpers

@@ -22,6 +22,7 @@ angular.module('mean.iochits').controller('NewRemoteIpController', ['$scope', 'G
 			$scope.data = data;
 
 			$scope.$broadcast('tableLoad');
+			$scope.$broadcast('geoChart');
 			$scope.$broadcast('barChart');
 				$scope.barChartxAxis = '';
 				$scope.barChartyAxis = '# New IP / Hour';
