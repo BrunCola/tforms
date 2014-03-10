@@ -27,7 +27,8 @@ var rootPath = path.normalize(__dirname + '/../..');
 module.exports = {
 	defaultDateRange: 1,
 	root: rootPath,
-	port: process.env.PORT || 3000,
+	SSLport: process.env.sslPORT || 3000,
+	HTTPport: process.env.httpPORT || 3001,
 	db: {
 		//socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock',
 		// I had to use a socket instead of a port because of the application I run my server in.
