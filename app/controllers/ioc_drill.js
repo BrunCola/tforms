@@ -104,9 +104,9 @@ exports.render = function(req, res) {
 
 			var Info2SQL = 'SELECT '+
 				'description '+
-			'FROM `ioc_group` '+
+			'FROM `ioc_parent` '+
 			'WHERE '+
-				'ioc_group = \''+req.query.ioc+'\' '+
+				'ioc_parent = \''+req.query.ioc+'\' '+
 			'LIMIT 1';
 
 		async.parallel([
@@ -131,7 +131,7 @@ exports.render = function(req, res) {
 				});
 			},
 			function(callback) {
-				new query(Info2SQL, database, function(err,data){
+				new query(Info2SQL, 'rp_ioc_intel', function(err,data){
 					info.desc = data;
 					callback();
 				});

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.system').controller('sidebarController', ['$scope', 'Global', '$routeParams', '$location', '$rootScope', function ($scope, Global, $routeParams, $location, $rootScope) {
+angular.module('mean.system').controller('sidebarController', ['$scope', 'Global', '$routeParams', '$location', function ($scope, Global, $routeParams, $location) {
 	$scope.global = Global;
 
 	$scope.select = function(url){

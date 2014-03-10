@@ -8,14 +8,17 @@
 			<div  style="background-color:#FFF;" class="box">
 				<div class="box-content">
 					<div class="span6">
-						<strong>Country: </strong>Canada CA<br />
+						<div class="row-fluid">
+							<strong style="float:left" >Country: </strong><div style="float:left; margin-top:-8px;padding-left:10px;" class="f32"><span class="flag ca"></span></div><span style="float:left"></span>
+						</div>
+						Canada<br />
 						<strong>Lan Zone: </strong>{{lan_zone}}<br />
 						<strong>Lan IP: </strong>{{lan_ip}}<br />
 						<strong>Machine name: </strong>{{machine_name}}<br />
 						<strong>Packets recieved: </strong>{{packets_recieved}}<br />
 					</div>
 					<div class="span6">
-						Image PPlaceholder <br/>
+						<img class="logo" src="../img/userplaceholder.jpg" alt=""/> <br/>
 						<strong>Lan Port: </strong>{{lan_port}}<br />
 						<strong>Bytes received: </strong>{{bytes_received}}<br />
 					</div>
@@ -27,7 +30,10 @@
 			<div  style="background-color:#FFF;" class="box">
 				<div class="box-content">
 					<div class="span6">
-						<strong>Country: </strong>{{country}} {{flag}}<br />
+						<div class="row-fluid">
+							<strong style="float:left">Country: </strong><div style="float:left; margin-top:-8px;padding-left:10px;" class="f32"><span class="flag {{flag}}"></span></div><span style="float:left"></span>
+						</div>
+						{{rCountry}}<br />
 						<strong>Remote IP: </strong>{{remote_ip}}<br />
 						<strong>Premote Port: </strong>{{remote_port}}<br />
 						<strong>Packets received: </strong>{{in_packets}}<br />
@@ -48,7 +54,7 @@
 				<div class="box-content">
 					<strong>IOC: </strong>{{ioc}}<br />
 					<strong>IOC Type: </strong>{{ioc_type}}<br />
-					<strong>IOC Info: </strong>{{desc}}<br />
+					<strong>IOC Info: </strong>{{desc}}<span ioc-desc> <<br />
 				</div>
 			</div>
 		</div>
