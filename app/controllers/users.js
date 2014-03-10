@@ -55,7 +55,6 @@ exports.signout = function(req, res) {
  * Session
  */
 exports.session = function(req, res) {
-    console.log(req.user);
     res.redirect('/');
 };
 
@@ -149,6 +148,7 @@ exports.change = function(req, res) {
  */
 exports.me = function(req, res) {
     res.jsonp(req.user || null);
+    //console.log('EXPORTS.ME '+req.user);
 };
 
 /**
