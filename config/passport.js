@@ -1,12 +1,12 @@
 'use strict';
-var LocalStrategy = require('passport-local').Strategy,
-crypto = require('crypto');
+
+var LocalStrategy = require('passport-local').Strategy;
 
 module.exports = function(passport, connection) {
-
 	passport.use(new LocalStrategy(
 		function(username, password, done) {
-			 var hash = crypto.createHash('md5').update(password).digest('hex');
+			var crypto = require('crypto');
+			var hash = crypto.createHash('md5').update(password).digest('hex');
 			return check_auth_user(username,hash,done);
 		}
 	));
@@ -30,8 +30,6 @@ module.exports = function(passport, connection) {
 						done(null,res);
 
 					});
-					//console.log(JSON.stringify(results));
-					//console.log(results[0]['member_id']);
 					return done(null, res);
 				}else{
 					return done(null, false);

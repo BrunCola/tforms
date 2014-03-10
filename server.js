@@ -50,10 +50,16 @@ walk(models_path);
 // Bootstrap passport config
 require('./config/passport')(passport, connection);
 
+var options = {
+    key: fs.readFileSync('./ssl/server.key'),
+    cert: fs.readFileSync('./ssl/server.crt'),
+};
+
 var app = express()
-    , http = require('http')
-    , server = http.createServer(app)
+    , https = require('https')
+    , server = https.createServer(options, app)
     , io = require('socket.io').listen(server);
+
 
 // Express settings
 require('./config/express')(app, passport, connection);
