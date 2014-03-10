@@ -50,9 +50,17 @@ walk(models_path);
 // Bootstrap passport config
 require('./config/passport')(passport, connection);
 
+var options = {
+    key: fs.readFileSync('./ssl/server.key'),
+    cert: fs.readFileSync('./ssl/server.crt'),
+    requestCert: true
+};
+
 var app = express()
-    , http = require('http')
-    , server = http.createServer(app)
+    , httpapp = express()
+    , http = require('http').createServer(httpapp)
+    , https = require('https')
+    , server = https.createServer(options, app)
     , io = require('socket.io').listen(server);
 
 // Express settings
@@ -81,9 +89,14 @@ walk(routes_path);
 
 
 // Start the app by listening on <port>
-var port = process.env.PORT || config.port;
-server.listen(port);
-console.log('rapidPHIRE app started on port ' + port);
+var SSLport = process.env.sslPORT || config.SSLport;
+var HTTPport = process.env.httpPORT || config.HTTPport;
+httpapp.get('*',function(req, res){
+    res.redirect('https://localhost:'+SSLport+req.url)
+})
+server.listen(SSLport),
+http.listen(HTTPport);
+console.log('rapidPHIRE app started on port ' + SSLport);
 
 // Initializing logger
 // logger.init(app, passport, mongoose);
