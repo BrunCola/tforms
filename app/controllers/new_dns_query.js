@@ -20,20 +20,20 @@ exports.render = function(req, res) {
 	var info = [];
 	var table1SQL = 'SELECT '+
 		// SELECTS
-		'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-		'`lan_zone`, '+
-		'`lan_ip`, '+
-		'`machine`, '+
-		'`remote_ip`, '+
-		'`remote_port`, '+
-		'`remote_asn`, '+
-		'`remote_asn_name`, '+
-		'`remote_country`, '+
-		'`remote_cc`, '+
-		'`proto`, '+
-		'`qtype_name AS qtype`, '+
-		'`qclass_name AS qclass`, '+
-		'`rcode_name AS rcode`, '+
+		'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time,'+
+		'`lan_zone`,'+
+		'`lan_ip`,'+
+		'`machine`,'+
+		'`remote_ip`,'+
+		'`remote_port`,'+
+		'`remote_asn`,'+
+		'`remote_asn_name`,'+
+		'`remote_country`,'+
+		'`remote_cc`,'+
+		'`proto`,'+
+		'`qtype_name` AS qtype, '+
+		'`qclass_name` AS qclass, '+
+		'`rcode_name` AS rcode, '+
 		'`query` '+
 		// !SELECTS
 		'FROM dns_query '+
