@@ -32,7 +32,8 @@ exports.signin = function(req, res) {
  */
 exports.signup = function(req, res) {
     res.render('users/signup', {
-        title: 'Sign up'
+        title: 'Sign up',
+        user: new User()
     });
 };
 
@@ -147,6 +148,7 @@ exports.change = function(req, res) {
  */
 exports.me = function(req, res) {
     res.jsonp(req.user || null);
+    //console.log('EXPORTS.ME '+req.user);
 };
 
 /**
