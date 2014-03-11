@@ -52,8 +52,8 @@ require('./config/passport')(passport, connection);
 
 var options = {
     key: fs.readFileSync('./ssl/server.key'),
-    cert: fs.readFileSync('./ssl/server.crt'),
-    requestCert: true
+    cert: fs.readFileSync('./ssl/server.crt')
+    //requestCert: true
 };
 
 var app = express()
