@@ -20,6 +20,10 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		'url': 'ioc_top_remote',
 		'icon': 'fa-warning',
 	},{
+		'title': 'Test',
+		'url': 'local_drill',
+		'icon': 'fa-warning',
+	},{
 		'title': 'New Remote IPs',
 		'url': 'new_remote_ip',
 		'icon': 'fa-exchange',

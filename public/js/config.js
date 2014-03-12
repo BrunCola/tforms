@@ -47,6 +47,10 @@ angular.module('mean').config(['$routeProvider',
 		when('/ioc_top_remote?:start&:end', {
 			templateUrl: 'views/pages/ioc_top_remote.html'
 		}).
+		//Local Drill
+		when('/local_drill', {
+			templateUrl: 'views/pages/local_drill.html'
+		}).
 		//New Remote IPs
 		when('/new_remote_ip', {
 			templateUrl: 'views/pages/new_remote_ip.html'

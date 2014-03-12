@@ -40,8 +40,14 @@ module.exports = function(app, passport, io) {
 		})
 
 		socket.on('archiveIOC', function(data){
-			config.db.database = data.database;
-			var connection = mysql.createConnection(config.db);
+			var db = {
+				port: config.db.port,
+				host: config.db.host,
+				user: config.db.user,
+				password: config.db.password,
+				database: data.database
+			};
+			var connection = mysql.createConnection(db);
 			connection.query("UPDATE `conn_ioc` SET `trash` = UNIX_TIMESTAMP(NOW()) WHERE `lan_ip`='"+data.lan_ip+"' AND `remote_ip`='"+data.remote_ip+"' AND ioc='"+data.ioc+"'");
 		})
 
@@ -98,34 +104,92 @@ module.exports = function(app, passport, io) {
 	// 		console.log(data.email);
 	// 	});
 
-	// 	socket.on('checkpoint', function(userData){
-	// 		function newCP() {
-	// 			var newCheckpoint = Math.round(new Date().getTime() / 1000);
-	// 			//io.sockets.emit('checkpointSet', newCheckpoint);
-	// 			connection.query("UPDATE `user` SET `checkpoint`= "+newCheckpoint+" WHERE `id` = '"+userData.id+"'");
-	// 		}
-	// 		newCP();
-	// 	});
 
-	// 	socket.on('init', function(userData) {
-	// 		function init() {
-	// 			console.log(userData)
-	// 			var alerts = [];
-	// 			var checkpoint = userData.checkpoint;
-	// 			// select user checkpoint here
-	// 			connection.query("SELECT alert.added, conn_ioc.ioc FROM alert, conn_ioc WHERE alert.conn_uids = conn_ioc.conn_uids AND alert.username = '"+userData.username+"' AND alert.added >= '"+checkpoint+"' ORDER BY alert.added")
-	// 				.on('result', function(data){
-	// 					if (data.added > userData.checkpoint) {
-	// 						data.newIOC = true;
-	// 					}
-	// 					alerts.push(data);
-	// 				})
-	// 				.on('end', function(){
-	// 					socket.emit('initial iocs', alerts);
-	// 				})
-	// 		}
-	// 		init();
-	// 	});
+
+
+
+
+
+		// var POLLCheckpoint;
+		// socket.on('init', function(userData) {
+		// 	function init() {
+		// 		console.log(userData)
+		// 		var alerts = [];
+		// 		var cdb = {
+		// 			port: config.db.port,
+		// 			host: config.db.host,
+		// 			user: config.db.user,
+		// 			password: config.db.password,
+		// 			database: 'rp_users'
+		// 		};
+		// 		var checkConnection = mysql.createConnection(cdb);
+		// 		// get user's checkpoint from session data (to avoid caching)
+		// 		checkConnection.query("SELECT checkpoint FROM user WHERE username = '"+userData.username +"'", function(err, results){
+		// 			if (err) throw err;
+		// 			if (results.length > 0) {
+		// 				// if result is returned, run query checking for new alerts
+		// 				var checkpoint = results[0].checkpoint;
+		// 				//POLLCheckpoint = checkpoint;
+		// 				var db = {
+		// 					port: config.db.port,
+		// 					host: config.db.host,
+		// 					user: config.db.user,
+		// 					password: config.db.password,
+		// 					database: userData.database
+		// 				};
+		// 				var connection = mysql.createConnection(db);
+		// 				connection.query("SELECT alert.added, conn_ioc.ioc FROM alert, conn_ioc WHERE alert.conn_uids = conn_ioc.conn_uids AND alert.username = '"+userData.username+"' AND alert.added >= '"+checkpoint+"' ORDER BY alert.added")
+		// 					.on('result', function(data){
+		// 						if (data.added > checkpoint) {
+		// 							data.newIOC = true;
+		// 						}
+		// 						alerts.push(data);
+		// 					})
+		// 					.on('end', function(){
+		// 						socket.emit('initial iocs', alerts);
+		// 						POLLCheckpoint = Math.round(new Date().getTime() / 1000);
+		// 						// start polling function (send it polling checkpoint)
+		// 						setInterval(function(){
+		// 							console.log('CHECKING for alert');
+		// 							var connection = mysql.createConnection(db);
+		// 							connection.query("SELECT alert.added, conn_ioc.ioc FROM alert, conn_ioc WHERE alert.conn_uids = conn_ioc.conn_uids AND alert.username = '"+userData.username+"' AND alert.added >= '"+POLLCheckpoint+"' ORDER BY alert.added",function (err, results) {
+		// 								if (results) {
+		// 									console.log(results);
+		// 								}
+		// 							})
+		// 							connection.destroy();
+		// 							// POLLCheckpoint = Math.round(new Date().getTime() / 1000);
+		// 								// .on('result', function(data){
+		// 								// 	data.newIOC = true;
+		// 								// 	alerts.push(data);
+		// 								// })
+		// 								// .on('end', function(){
+		// 								// 	socket.emit('newIOC', alerts);
+		// 								// 	POLLCheckpoint = Math.round(new Date().getTime() / 1000);
+		// 								// })
+		// 						}, 3000)
+		// 					})
+		// 			}
+		// 		})
+		// 	}
+		// 	init();
+		// });
+
+		// socket.on('checkpoint', function(userData){
+		// 	function newCP() {
+		// 		var newCheckpoint = Math.round(new Date().getTime() / 1000);
+		// 		// console.log(passport)
+		// 		// socket.emit('checkpointSet', newCheckpoint);
+		// 		POLLCheckpoint = newCheckpoint;
+		// 		console.log('checkpoint now set to: '+newCheckpoint)
+		// 		var config = require('./config');
+		// 		config.db.database = 'rp_users';
+		// 		var connection = mysql.createConnection(config.db);
+		// 		connection.query("UPDATE `user` SET `checkpoint`= "+newCheckpoint+" WHERE `id` = '"+userData.id+"'");
+		// 	}
+		// 	newCP();
+		// });
+
 	})
 
 };
