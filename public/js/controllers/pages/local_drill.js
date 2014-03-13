@@ -1,7 +1,9 @@
 'use strict';
 
-angular.module('mean.iochits').controller('localDrillController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
+angular.module('mean.iochits').controller('localDrillController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', 'socket', function ($scope, Global, $http, $routeParams, $rootScope, socket) {
 	$scope.global = Global;
+	$scope.socket = socket;
+
 	$scope.onPageLoad = function() {
 		var query;
 		if ($routeParams.start && $routeParams.end) {
@@ -9,6 +11,7 @@ angular.module('mean.iochits').controller('localDrillController', ['$scope', 'Gl
 		} else {
 			query = '/local_drill'
 		}
+		$scope.socket.emit('test', {});
 		$http({method: 'GET', url: query}).
 		//success(function(data, status, headers, config) {
 		success(function(data) {
@@ -28,6 +31,10 @@ angular.module('mean.iochits').controller('localDrillController', ['$scope', 'Gl
 			// 	$scope.$broadcast('loadError');
 			// }
 		});
+
+		//Broadcast swimchart and have it setup the inital socket connection
+
+		// $scope.$broadcast('swimChart');
 		$rootScope.pageTitle = 'SET TITLE';
 	};
 	$rootScope.rootpage = true;

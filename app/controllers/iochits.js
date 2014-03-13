@@ -117,14 +117,14 @@ exports.render = function(req, res) {
 		case 'bandwidth_in':
 			new query('SELECT ROUND(((sum(in_bytes) / 1048576) / ('+end+' - '+start+')) * 8000,2)  as bandwidth FROM conn_meta WHERE time between '+start+' AND '+end, database, function(err,data){
 				if (data) {
-					res.json(data.length);
+					res.json(data);
 				}
 			});
 			break;
 		case 'bandwidth_out':
 			new query('SELECT ROUND(((sum(out_bytes) / 1048576) / ('+end+' - '+start+')) * 8000,2) as bandwidth FROM conn_meta WHERE time between '+start+' AND '+end, database, function(err,data){
 				if (data) {
-					res.json(data.length);
+					res.json(data);
 				}
 			});
 			break;

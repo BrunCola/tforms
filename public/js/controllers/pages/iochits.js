@@ -80,11 +80,11 @@ angular.module('mean.iochits').controller('IochitsController', ['$scope', 'Globa
 		//////////////////////////////////
 		$http({method: 'GET', url: query+'&type=bandwidth_in'}).
 		success(function(data) {
-			$scope.bandwidth_in = data.count;
+			$scope.bandwidth_in = data[0].bandwidth+' Kb/s';
 		});
 		$http({method: 'GET', url: query+'&type=bandwidth_out'}).
 		success(function(data) {
-			$scope.bandwidth_out = data;
+			$scope.bandwidth_out = data[0].bandwidth+' Kb/s';
 		});
 		$http({method: 'GET', url: query+'&type=new_ip'}).
 		success(function(data) {

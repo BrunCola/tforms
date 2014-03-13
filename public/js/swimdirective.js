@@ -162,7 +162,7 @@ angular.module('mean.system').directive('swimGraph', ['$timeout', '$location', '
 
 						data.items.forEach(function (item){
 							//round all the time params
-							item.time = Math.ceil(item.start/17160)*17160;
+							item.time = Math.ceil(item.start/17000)*17000;
 							item.start = parseDate(item.start);
 						});
 						var a = [], pTime;

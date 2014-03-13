@@ -25,7 +25,7 @@ module.exports = function (sql, database, sClass, callback) {
 			data.id = count++;
 			data.start = data.time;
 			data.end = '';
-			console.log(data);
+			//console.log(data);
 			dat.push(data);
 		})
 		.on('end', function(){
