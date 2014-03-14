@@ -24,6 +24,9 @@ module.exports = function (sql, params, sort, div, database, callback) {
 				if (params[d].select === 'Archive') {
 					params[d].select = null;
 				}
+				if (!params[d].sClass) {
+					params[d].sClass = null;
+				}
 				// if (params[d].dType === undefined) {
 				//	params[d].dType = 'string-case';
 				// }
@@ -37,7 +40,8 @@ module.exports = function (sql, params, sort, div, database, callback) {
 					'mData': params[d].select,
 					'sType': params[d].dType,
 					'bVisible': params[d].dView,
-					'link': params[d].link
+					'link': params[d].link,
+					'sClass': params[d].sClass
 				});
 			}
 			var table = {

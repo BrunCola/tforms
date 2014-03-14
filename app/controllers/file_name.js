@@ -45,7 +45,7 @@ exports.render = function(req, res) {
 				},
 				{ title: 'Total Extracted Files', select: 'count' },
 				{ title: 'Mime Type', select: 'mime' },
-				{ title: 'File Name', select: 'name' },
+				{ title: 'File Name', select: 'name', sClass:'file' },
 				{ title: 'Total Size', select: 'size' },
 				{ title: 'Total IOC Hits', select: 'ioc_count' }
 			];

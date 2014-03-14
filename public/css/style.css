@@ -39,6 +39,11 @@ th {
   font-weight: 400;
 }
 **/
+
+td.file {
+  word-wrap: break-word;
+  max-width: 200px;
+}
 .severity-deselect {
    opacity: .4 !important;
    transition: opacity .25s ease-in-out;
