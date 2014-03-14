@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.system').directive('swimGraph', ['$timeout', '$location', '$routeParams', '$rootScope', function ($timeout, $location, $routeParams, $rootScope) {
+angular.module('mean.system').directive('swimGraph', ['$timeout', '$location', '$routeParams', '$rootScope', '$http', function ($timeout, $location, $routeParams, $rootScope, $http) {
 	return {
 		link: function ($scope, element, attrs) {
 			$scope.$on('swimChart', function (event, dataset) {
@@ -44,6 +44,7 @@ angular.module('mean.system').directive('swimGraph', ['$timeout', '$location', '
 					// global timeline variables
 					var timeline = {},   // The timeline
 						data = {},       // Container for the data
+						dDrill = {},
 						components = [], // All the components of the timeline for redrawing
 						bandGap = 25,    // Arbitray gap between to consecutive bands
 						bands = {},      // Registry for all the bands in the timeline
@@ -219,7 +220,6 @@ angular.module('mean.system').directive('swimGraph', ['$timeout', '$location', '
 						// data.maxDate = d3.max(data.items, function (d) { return d.end; });
 						data.minDate = parseDate($routeParams.start);
 						data.maxDate = parseDate($routeParams.end);
-
 						return timeline;
 					};
 
@@ -262,7 +262,7 @@ angular.module('mean.system').directive('swimGraph', ['$timeout', '$location', '
 							.attr("height", band.h);
 
 						// Items
-						var items = band.g.selectAll("g")
+						band.items = band.g.selectAll("g")
 							.data(data.items)
 							.enter().append("svg")
 							.attr("y", function (d) { return band.yScale(d.track); })
@@ -327,15 +327,13 @@ angular.module('mean.system').directive('swimGraph', ['$timeout', '$location', '
 								items.on(action[0], action[1]);
 							});
 						};
-
 						band.redraw = function () {
-							items
+							band.items
 								.attr("x", function (d) { return band.xScale(d.start);})
 								.attr("width", function (d) {
 									return band.xScale(d.end) - band.xScale(d.start); });
 							band.parts.forEach(function(part) { part.redraw(); });
 						};
-
 						bands[bandName] = band;
 						components.push(band);
 						// Adjust values for next band
@@ -379,9 +377,12 @@ angular.module('mean.system').directive('swimGraph', ['$timeout', '$location', '
 							.attr("text-anchor", function(d) { return d[0];});
 
 						labels.redraw = function () {
+							// // waitForFinalEvent(function(){
+							// 	dDrill.min = Math.round(band.xScale.domain()[0] /1000);
+							// 	dDrill.max = Math.round(band.xScale.domain()[1] /1000);
+							// // }, 5, "timeWait");
 							var min = band.xScale.domain()[0],
-								max = band.xScale.domain()[1];
-
+							max = band.xScale.domain()[1];
 							labels.text(function (d) { return d[4](min, max); });
 						};
 
@@ -418,13 +419,28 @@ angular.module('mean.system').directive('swimGraph', ['$timeout', '$location', '
 						var brush = d3.svg.brush()
 							.x(band.xScale.range([0, band.w]))
 							.on("brush", function() {
-								var domain = brush.empty()
-									? band.xScale.domain()
-									: brush.extent();
-								targetNames.forEach(function(d) {
-									bands[d].xScale.domain(domain);
-									bands[d].redraw();
-								});
+								waitForFinalEvent(function(){
+									var min = Math.round(brush.extent()[0] /1000);
+									var max = Math.round(brush.extent()[1] /1000);
+									if (max === min) {
+										min = Math.round(band.xScale.domain()[0] /1000);
+										max = Math.round(band.xScale.domain()[1] /1000);
+									}
+									$http({method: 'GET', url: '/local_drill?start='+min+'&end='+max}).
+										success(function(dat) {
+											var domain = brush.empty()
+												? band.xScale.domain()
+												: brush.extent();
+
+											targetNames.forEach(function(d) {
+												bands[d].xScale.domain(domain);
+												bands[d].redraw();
+											});
+											timeline.data(dat.swimchart);
+											band.items.data(data.items);
+											timeline.redraw();
+										});
+								}, 100, "drillWait");
 							});
 
 						var xBrush = band.g.append("svg")
@@ -455,7 +471,18 @@ angular.module('mean.system').directive('swimGraph', ['$timeout', '$location', '
 					function toYear(date) {
 						return date.toDateString();
 					}
-
+					var waitForFinalEvent = (function () {
+						var timers = {};
+						return function (callback, ms, uniqueId) {
+							if (!uniqueId) {
+								uniqueId = "swimchartWait"; //Don't call this twice without a uniqueId
+							}
+							if (timers[uniqueId]) {
+								clearTimeout (timers[uniqueId]);
+							}
+						timers[uniqueId] = setTimeout(callback, ms);
+						};
+					})();
 					return timeline;
 				}
 				timeline('#swimchart')

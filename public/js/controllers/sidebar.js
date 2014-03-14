@@ -19,11 +19,18 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		'title': 'IOC Top Remote IP',
 		'url': 'ioc_top_remote',
 		'icon': 'fa-warning',
-	},{
-		'title': 'Test',
-		'url': 'local_drill',
-		'icon': 'fa-warning',
-	},{
+	},
+	// {
+	// 	'title': 'Test',
+	// 	'url': 'local_drill',
+	// 	'icon': 'fa-warning',
+	// },
+	{
+		'title': 'Extracted Files',
+		'url': 'file_mime',
+		'icon': 'fa-folder-open',
+	},
+	{
 		'title': 'New Remote IPs',
 		'url': 'new_remote_ip',
 		'icon': 'fa-exchange',

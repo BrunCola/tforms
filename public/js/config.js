@@ -79,6 +79,33 @@ angular.module('mean').config(['$routeProvider',
 		when('/new_ssl_hosts?:start&:end', {
 			templateUrl: 'views/pages/new_ssl_hosts.html'
 		}).
+		// File Mime
+		when('/file_mime', {
+			templateUrl: 'views/pages/file_mime.html'
+		}).
+		when('/file_mime?:start&:end', {
+			templateUrl: 'views/pages/file_mime.html'
+		}).
+		// File Name
+		when('/file_name', {
+			templateUrl: 'views/pages/file_name.html'
+		}).
+		when('/file_name?:mime', {
+			templateUrl: 'views/pages/file_name.html'
+		}).
+		when('/file_name?:start&:end&:mime', {
+			templateUrl: 'views/pages/file_name.html'
+		}).
+		// File Local
+		when('/file_local', {
+			templateUrl: 'views/pages/file_local.html'
+		}).
+		when('/file_local?:name&:mime', {
+			templateUrl: 'views/pages/file_local.html'
+		}).
+		when('/file_local?:start&:end&:name&:mime', {
+			templateUrl: 'views/pages/file_local.html'
+		}).
 		//L7
 		when('/l7', {
 			templateUrl: 'views/pages/l7.html'

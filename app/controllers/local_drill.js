@@ -9,13 +9,6 @@ var swimchart = require('./constructors/swimchart'),
 module.exports = function(io) {
 	return {
 		render: function(req, res) {
-			console.log(io);
-			io.sockets.on('connection', function(socket){
-			//	console.log('connected.. again8')
-				socket.on('test', function() {
-					console.log('BOOM')
-				})
-			});
 			var database = req.session.passport.user.database;
 			var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 			var end = Math.round(new Date().getTime() / 1000);

@@ -29,7 +29,8 @@ module.exports = function (sql, database, sClass, callback) {
 			dat.push(data);
 		})
 		.on('end', function(){
-			callback(null, dat)
+			console.log(dat.length);
+			callback(null, dat);
 			connection.destroy();
 			console.log('DONE');
 		})

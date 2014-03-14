@@ -39,6 +39,7 @@ module.exports = function(app, passport, io) {
 			// socket.emit('disconnected');
 		})
 
+		// Archive functions
 		socket.on('archiveIOC', function(data){
 			var db = {
 				port: config.db.port,
@@ -49,6 +50,11 @@ module.exports = function(app, passport, io) {
 			};
 			var connection = mysql.createConnection(db);
 			connection.query("UPDATE `conn_ioc` SET `trash` = UNIX_TIMESTAMP(NOW()) WHERE `lan_ip`='"+data.lan_ip+"' AND `remote_ip`='"+data.remote_ip+"' AND ioc='"+data.ioc+"'");
+		})
+
+		// Swimchart drilldown
+		socket.on('test', function() {
+			console.log('BOOM');
 		})
 
 	// 	// socket.on('new note', function(data){

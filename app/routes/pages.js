@@ -5,6 +5,9 @@ var iochits = require('../controllers/iochits'),
 	ioc_event = require('../controllers/ioc_event'),
 	ioc_top_remote = require('../controllers/ioc_top_remote'),
 	new_remote_ip = require('../controllers/new_remote_ip'),
+	file_mime = require('../controllers/file_mime'),
+	file_name = require('../controllers/file_name'),
+	file_local = require('../controllers/file_local'),
 	new_dns_query = require('../controllers/new_dns_query'),
 	new_http_hosts = require('../controllers/new_http_hosts'),
 	new_ssl_hosts = require('../controllers/new_ssl_hosts'),
@@ -31,6 +34,9 @@ module.exports = function(app, passport, connection, io) {
 	app.get('/ioc_top_remote', authorization.requiresLogin, ioc_top_remote.render);
 	app.get('/local_drill', authorization.requiresLogin, local_drill.render);
 	app.get('/new_remote_ip', authorization.requiresLogin, new_remote_ip.render);
+	app.get('/file_mime', authorization.requiresLogin, file_mime.render);
+	app.get('/file_name', authorization.requiresLogin, file_name.render);
+	app.get('/file_local', authorization.requiresLogin, file_local.render);
 	app.get('/new_dns_query', authorization.requiresLogin, new_dns_query.render);
 	app.get('/new_http_hosts', authorization.requiresLogin, new_http_hosts.render);
 	app.get('/new_ssl_hosts', authorization.requiresLogin, new_ssl_hosts.render);
