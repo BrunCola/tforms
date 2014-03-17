@@ -44,13 +44,17 @@ module.exports = function (sql, params, settings, database, callback) {
 					'sClass': params[d].sClass
 				});
 			}
-			var table = {
-				aaData: result,
-				params: arr,
-				sort: settings.sort,
-				div: settings.div,
-				title: settings.title
-			};
+			if (result.length === 0) {
+				var table = null;
+			} else {
+				var table = {
+					aaData: result,
+					params: arr,
+					sort: settings.sort,
+					div: settings.div,
+					title: settings.title
+				};
+			}
 			callback(null, table);
 			connection.destroy();
 		}

@@ -308,7 +308,7 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 			$scope.$on('tableLoad', function (event, tableData, params, tableType) {
 				for (var t in params) {
 					if (params[t] != null) {
-						$(element).prepend('<br /><div class="row-fluid"> '+
+						$(element).prepend('<div class="row-fluid"> '+
 						'<div class="span12"> '+
 								'<div class="jdash-header">'+params[t].title+'</div> '+
 								'<div  style="background-color:#FFF;" class="box"> '+
@@ -317,7 +317,7 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 									'</div> '+
 								'</div> '+
 							'</div> '+
-						'</div>');
+						'</div><br />');
 					}
 				}
 				switch(tableType) {
