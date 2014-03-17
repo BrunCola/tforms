@@ -21,7 +21,9 @@ angular.module('mean.iochits').controller('archiveController', ['$scope', 'Globa
 			$scope.data = data;
 
 			$scope.$broadcast('geoChart');
-			$scope.$broadcast('tableLoad');
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 			var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
 			var barGroupPre = barDimension.group();
 			var barGroup = barGroupPre.reduce(
@@ -98,7 +100,9 @@ angular.module('mean.iochits').controller('fileLocalController', ['$scope', 'Glo
 		success(function(data) {
 			$scope.data = data;
 
-			$scope.$broadcast('tableLoad');
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 			$scope.$broadcast('spinnerHide');
 		});
 		$rootScope.pageTitle = 'Extracted Files';
@@ -121,7 +125,9 @@ angular.module('mean.iochits').controller('fileMimeController', ['$scope', 'Glob
 		success(function(data) {
 			$scope.data = data;
 
-			$scope.$broadcast('tableLoad');
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 			$scope.$broadcast('spinnerHide');
 		});
 		$rootScope.pageTitle = 'Extracted Files';
@@ -144,7 +150,9 @@ angular.module('mean.iochits').controller('fileNameController', ['$scope', 'Glob
 		success(function(data) {
 			$scope.data = data;
 
-			$scope.$broadcast('tableLoad');
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 			$scope.$broadcast('spinnerHide');
 		});
 		$rootScope.pageTitle = 'Extracted Files';
@@ -174,7 +182,10 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 			$scope.crossfilterData = crossfilter(data.crossfilter);
 			$scope.data = data;
 
-			$scope.$broadcast('tableLoad');
+			// $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			// $scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			// $scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables[0], null);
+			$scope.$broadcast('tableLoad', null, $scope.data.tables, 'drill');
 			var sevDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
 			var sevGroupPre = sevDimension.group();
 			var sevGroup = sevGroupPre.reduce(
@@ -224,7 +235,7 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 					};
 				}
 			);
-			$scope.$broadcast('sevDrillChart', sevDimension, sevGroup, 'drill');
+			$scope.$broadcast('barChart', sevDimension, sevGroup, 'drill');
 				$scope.sevDrillChartxAxis = '';
 				$scope.sevDrillChartyAxis = '# IOC / Hour';
 
@@ -316,7 +327,9 @@ angular.module('mean.iochits').controller('IocDrillOLDController', ['$scope', 'G
 			$scope.crossfilterData = crossfilter(data.crossfilter);
 			$scope.data = data;
 
-			$scope.$broadcast('tableLoad');
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 			var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
 			var barGroupPre = barDimension.group();
 			var barGroup = barGroupPre.reduce(
@@ -424,7 +437,9 @@ angular.module('mean.iochits').controller('IocEventController', ['$scope', 'Glob
 		success(function(data) {
 			$scope.data = data;
 
-			$scope.$broadcast('tableLoad');
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 
 			$scope.lan_zone = data.info.main[0].lan_zone;
 			$scope.lan_ip = data.info.main[0].lan_ip;
@@ -495,7 +510,9 @@ angular.module('mean.iochits').controller('IocTopRemoteController', ['$scope', '
 			$scope.crossfilterData = crossfilter(data.crossfilter);
 			$scope.data = data;
 
-			$scope.$broadcast('tableLoad');
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 			$scope.$broadcast('geoChart');
 			var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
 			var barGroupPre = barDimension.group();
@@ -574,7 +591,9 @@ angular.module('mean.iochits').controller('IOCremote2LocalController', ['$scope'
 		success(function(data) {
 			$scope.data = data;
 
-			$scope.$broadcast('tableLoad');
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 			$scope.$broadcast('spinnerHide');
 		});
 		$rootScope.pageTitle = 'IOC Notifications';
@@ -606,7 +625,9 @@ angular.module('mean.iochits').controller('IochitsController', ['$scope', 'Globa
 			$scope.crossfilterData = crossfilter(data.crossfilter);
 			$scope.data = data;
 
-			$scope.$broadcast('tableLoad');
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 
 			var rowDimension = $scope.crossfilterData.dimension(function(d) { return d.ioc });
 			var rowGroupPre = rowDimension.group().reduceSum(function(d) { return d.count });
@@ -799,7 +820,9 @@ angular.module('mean.iochits').controller('IochitsREPORTController', ['$scope', 
 			$scope.crossfilterData = crossfilter(data.crossfilter);
 			$scope.data = data;
 
-			$scope.$broadcast('tableLoad');
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 			var rowDimension = $scope.crossfilterData.dimension(function(d) { return d.ioc });
 			var rowGroupPre = rowDimension.group().reduceSum(function(d) { return d.count });
 			var rowGroup = rowGroupPre.reduce(
@@ -903,7 +926,9 @@ angular.module('mean.iochits').controller('l7Controller', ['$scope', 'Global', '
 			$scope.crossfilterData = crossfilter(data.crossfilter);
 			$scope.data = data;
 
-			$scope.$broadcast('tableLoad');
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 
 			var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
 			var barGroup = barDimension.group().reduceSum(function(d) { return d.count });
@@ -942,7 +967,9 @@ angular.module('mean.iochits').controller('l7DrillController', ['$scope', 'Globa
 			$scope.crossfilterData = crossfilter(data.crossfilter);
 			$scope.data = data;
 
-			$scope.$broadcast('tableLoad');
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 
 			var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
 			var barGroup = barDimension.group().reduceSum(function(d) { return d.count });
@@ -982,7 +1009,9 @@ angular.module('mean.iochits').controller('l7LocalController', ['$scope', 'Globa
 			$scope.data = data;
 
 			$scope.$broadcast('geoChart');
-			$scope.$broadcast('tableLoad');
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 
 			var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
 			var barGroup = barDimension.group().reduceSum(function(d) { return d.count });
@@ -1063,7 +1092,9 @@ angular.module('mean.iochits').controller('NewDnsQueryController', ['$scope', 'G
 			$scope.data = data;
 
 			$scope.$broadcast('geoChart');
-			$scope.$broadcast('tableLoad');
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 
 			var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
 			var barGroup = barDimension.group().reduceSum(function(d) { return d.count });
@@ -1102,7 +1133,9 @@ angular.module('mean.iochits').controller('NewHttpHostController', ['$scope', 'G
 			$scope.data = data;
 
 			$scope.$broadcast('geoChart');
-			$scope.$broadcast('tableLoad');
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 			var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
 			var barGroup = barDimension.group().reduceSum(function(d) { return d.count });
 			$scope.$broadcast('barChart', barDimension, barGroup, 'bar');
@@ -1139,7 +1172,9 @@ angular.module('mean.iochits').controller('NewRemoteIpController', ['$scope', 'G
 			$scope.crossfilterData = crossfilter(data.crossfilter);
 			$scope.data = data;
 
-			$scope.$broadcast('tableLoad');
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 			$scope.$broadcast('geoChart');
 			var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
 			var barGroup = barDimension.group().reduceSum(function(d) { return d.count });
@@ -1178,7 +1213,9 @@ angular.module('mean.iochits').controller('NewSslHostController', ['$scope', 'Gl
 			$scope.data = data;
 
 			$scope.$broadcast('geoChart');
-			$scope.$broadcast('tableLoad');
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 			var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
 			var barGroup = barDimension.group().reduceSum(function(d) { return d.count });
 			$scope.$broadcast('barChart', barDimension, barGroup, 'bar');
@@ -1216,7 +1253,9 @@ angular.module('mean.iochits').controller('topLocalController', ['$scope', 'Glob
 			$scope.data = data;
 
 			$scope.$broadcast('geoChart');
-			$scope.$broadcast('tableLoad');
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 			var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
 			var barGroup = barDimension.group().reduceSum(function(d) { return d.count });
 			$scope.$broadcast('barChart', barDimension, barGroup, 'bar');
@@ -1254,7 +1293,9 @@ angular.module('mean.iochits').controller('topRemoteController', ['$scope', 'Glo
 			$scope.data = data;
 
 			$scope.$broadcast('geoChart');
-			$scope.$broadcast('tableLoad');
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 			var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
 			var barGroup = barDimension.group().reduceSum(function(d) { return d.count });
 			$scope.$broadcast('barChart', barDimension, barGroup, 'bar');
@@ -1295,7 +1336,9 @@ angular.module('mean.iochits').controller('remote2LocalController', ['$scope', '
 			var barGroup = barDimension.group().reduceSum(function(d) { return d.count });
 			$scope.$broadcast('barChart', barDimension, barGroup, 'bar');
 
-			$scope.$broadcast('tableLoad');
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 			$scope.barChartxAxis = '';
 			$scope.barChartyAxis = '# MB / Hour';
 			if (data.crossfilter.length === 0) {

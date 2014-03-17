@@ -73,8 +73,11 @@ exports.render = function(req, res) {
 		{ title: 'Bytes to Remote', select: 'in_bytes', dView: false },
 		{ title: 'Bytes from Remote', select: 'out_bytes', dView: false }
 	];
-	var table1Sort = [[0, 'desc']];
-	var table1Div = 'table';
+	var table1Settings = {
+		sort: [[0, 'desc']],
+		div: 'table',
+		title: 'Indicators of Compromise (IOC) Notifications'
+	}
 
 	var crossfilterSQL = 'SELECT '+
 		// SELECTS
@@ -100,7 +103,7 @@ exports.render = function(req, res) {
 	async.parallel([
 		// Table function(s)
 		function(callback) {
-			new dataTable(table1SQL, table1Params, table1Sort, table1Div, database, function(err,data){
+			new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
 				tables.push(data);
 				callback();
 			});

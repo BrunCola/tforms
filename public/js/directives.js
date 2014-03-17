@@ -305,121 +305,161 @@ angular.module('mean.system').directive('datePicker', ['$timeout', '$location', 
 angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '$routeParams', '$rootScope', function ($timeout, $location, $routeParams, $rootScope) {
 	return {
 		link: function ($scope, element, attrs) {
-			$scope.$on('tableLoad', function (event) {
-				if ($scope.data.tables[0] !== null) {
-					$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
-					$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
-					$timeout(function () { // You might need this timeout to be sure its run after DOM render
-						$(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table" ></table>');
-						$('#table').dataTable({
-							'aaData': $scope.tableData.top(Infinity),
-							'aoColumns': $scope.data.tables[0].params,
-							'bDeferRender': true,
-							// 'bDestroy': true,
-							//'bProcessing': true,
-							// 'bRebuild': true,
-							'aaSorting': $scope.data.tables[0].sort,
-							//'bFilter': true,
-							//'bPaginate': true,
-							'sDom': '<"clear"C>T<"clear">lr<"table_overflow"t>ip',
-							'iDisplayLength': 50,
-							 'fnPreDrawCallback': function( oSettings ) {
-								//console.log(oSettings.aoColumns);
-								$scope.r = [], $scope.e = [];
-								for (var a in oSettings.aoColumns) {
-									// find the index of column rows so they can me modified below
-									if (oSettings.aoColumns[a].bVisible === true) {
-										$scope.r.push(oSettings.aoColumns[a].mData);
+			$scope.$on('tableLoad', function (event, tableData, params, tableType) {
+				for (var t in params) {
+					if (params[t] != null) {
+						$(element).prepend('<br /><div class="row-fluid"> '+
+						'<div class="span12"> '+
+								'<div class="jdash-header">'+params[t].title+'</div> '+
+								'<div  style="background-color:#FFF;" class="box"> '+
+									'<div class="box-content"> '+
+										'<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="'+params[t].div+'" ></table>'+
+									'</div> '+
+								'</div> '+
+							'</div> '+
+						'</div>');
+					}
+				}
+				switch(tableType) {
+					case 'drill':
+						for (var t in params) {
+							if (params[t] != null) {
+							// $('#'+params[t].div).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table-'+params[t].div+'" ></table>');
+								$('#'+params[t].div).dataTable({
+									'aaData': params[t].aaData,
+									'aoColumns': params[t].params,
+									'bDeferRender': true,
+									'bDestroy': true,
+									//'bProcessing': true,
+									//'bRebuild': true,
+									'aaSorting': params[t].sort,
+									//'bFilter': true,
+									//'bPaginate': true,
+									'sDom': '<"clear"><"clear">r<"table_overflow"t>',
+									'iDisplayLength': 50,
+									'fnPreDrawCallback': function( oSettings ) {
+									},
+									'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+									},
+									'fnDrawCallback': function( oSettings ) {
 									}
-									// push unique to link builder
-									if (oSettings.aoColumns[a].link) {
-										$scope.e.push(oSettings.aoColumns[a]);
-									}
-								}
-							},
-							'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-								if (aData.remote_cc) {
-									$('td:eq('+$scope.r.indexOf("remote_cc")+')', nRow).html('<div class="f32"><span class="flag '+aData.remote_cc.toLowerCase()+'"></span></div>');
-								}
-								if (aData.ioc_severity) {
-									var rIndex = $scope.r.indexOf("ioc_severity");
-									switch(aData.ioc_severity) {
-										case 1:
-											$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-flag fa-stack-1x fa-inverse"></i></span>');
-											break;
-										case 2:
-											$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bullhorn fa-stack-1x fa-inverse"></i></span>');
-											break;
-										case 3:
-											$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bell fa-stack-1x fa-inverse"></i></span>');
-											break;
-										case 4:
-											$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-exclamation-circle fa-stack-1x fa-inverse"></i></span>');
-											break;
-									}
-								}
-								// url builder
-								for (var c in $scope.e) {
-									var type = $scope.e[c].link.type;
-									switch(type) {
-										case 'Archive':
-											$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
-										break;
-										default:
-											var obj = new Object();
-											//var all = new Object();
-											if ($routeParams.start && $routeParams.end) {
-												obj.start = $routeParams.start;
-												obj.end = $routeParams.end;
-											}
-											for (var l in $scope.e[c].link.val) {
-												obj[$scope.e[c].link.val[l]] = aData[$scope.e[c].link.val[l]];
-											}
-											var links = JSON.stringify({
-												type: $scope.e[c].link.type,
-												objlink: obj
-											});
-											if ($scope.e[c].mData === 'time') {
-												$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+aData[$scope.e[c].mData]+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
-											} else {
-												$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+aData[$scope.e[c].mData]+"</button>");
-											}
-										break;
-									}
-								}
-							},
-							'fnDrawCallback': function( oSettings ) {
-								$('table .bPage').click(function(){
-									var link = JSON.parse(this.value);
-									$scope.$apply($location.path(link.type).search(link.objlink));
 								});
-								$('table .bArchive').on('click',function(){
-									var rowData = JSON.parse(this.value);
-									$scope.socket.emit('archiveIOC', {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc, database: window.user.database});
-									var fil = $scope.tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
-									$scope.tableCrossfitler.remove(fil);
-									$scope.tableData.filterAll();
-									$('#table').dataTable().fnClearTable();
-									$('#table').dataTable().fnAddData($scope.tableData.top(Infinity));
-									$('#table').dataTable().fnDraw();
-								});
-								$scope.country = [];
-								$scope.ioc = [];
-								$scope.severity = [];
-								for (var d in oSettings.aiDisplay) {
-									$scope.country.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.remote_country);
-									$scope.ioc.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc);
-									$scope.severity.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc_severity);
-								}
-								$scope.$broadcast('severityUpdate');
 							}
-						});
-						$scope.$on('crossfilterToTable', function () {
-							$('#table').dataTable().fnClearTable();
-							$('#table').dataTable().fnAddData($scope.tableData.top(Infinity));
-							$('#table').dataTable().fnDraw();
-						});
-					}, 500, false);
+						}
+						break;
+					default:
+						// $(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table" ></table>');
+						for (var t in params) {
+							$('#'+params[t].div).dataTable({
+								'aaData': tableData.top(Infinity),
+								'aoColumns': params[t].params,
+								'bDeferRender': true,
+								// 'bDestroy': true,
+								//'bProcessing': true,
+								// 'bRebuild': true,
+								'aaSorting': params[t].sort,
+								//'bFilter': true,
+								//'bPaginate': true,
+								'sDom': '<"clear"C>T<"clear">lr<"table_overflow"t>ip',
+								'iDisplayLength': 50,
+								 'fnPreDrawCallback': function( oSettings ) {
+									//console.log(oSettings.aoColumns);
+									$scope.r = [], $scope.e = [];
+									for (var a in oSettings.aoColumns) {
+										// find the index of column rows so they can me modified below
+										if (oSettings.aoColumns[a].bVisible === true) {
+											$scope.r.push(oSettings.aoColumns[a].mData);
+										}
+										// push unique to link builder
+										if (oSettings.aoColumns[a].link) {
+											$scope.e.push(oSettings.aoColumns[a]);
+										}
+									}
+								},
+								'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+									if (aData.remote_cc) {
+										$('td:eq('+$scope.r.indexOf("remote_cc")+')', nRow).html('<div class="f32"><span class="flag '+aData.remote_cc.toLowerCase()+'"></span></div>');
+									}
+									if (aData.ioc_severity) {
+										var rIndex = $scope.r.indexOf("ioc_severity");
+										switch(aData.ioc_severity) {
+											case 1:
+												$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-flag fa-stack-1x fa-inverse"></i></span>');
+												break;
+											case 2:
+												$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bullhorn fa-stack-1x fa-inverse"></i></span>');
+												break;
+											case 3:
+												$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bell fa-stack-1x fa-inverse"></i></span>');
+												break;
+											case 4:
+												$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-exclamation-circle fa-stack-1x fa-inverse"></i></span>');
+												break;
+										}
+									}
+									// url builder
+									for (var c in $scope.e) {
+										var type = $scope.e[c].link.type;
+										switch(type) {
+											case 'Archive':
+												$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
+											break;
+											default:
+												var obj = new Object();
+												//var all = new Object();
+												if ($routeParams.start && $routeParams.end) {
+													obj.start = $routeParams.start;
+													obj.end = $routeParams.end;
+												}
+												for (var l in $scope.e[c].link.val) {
+													obj[$scope.e[c].link.val[l]] = aData[$scope.e[c].link.val[l]];
+												}
+												var links = JSON.stringify({
+													type: $scope.e[c].link.type,
+													objlink: obj
+												});
+												if ($scope.e[c].mData === 'time') {
+													$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+aData[$scope.e[c].mData]+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
+												} else {
+													$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+aData[$scope.e[c].mData]+"</button>");
+												}
+											break;
+										}
+									}
+								},
+								'fnDrawCallback': function( oSettings ) {
+									$('table .bPage').click(function(){
+										var link = JSON.parse(this.value);
+										$scope.$apply($location.path(link.type).search(link.objlink));
+									});
+									$('table .bArchive').on('click',function(){
+										var rowData = JSON.parse(this.value);
+										$scope.socket.emit('archiveIOC', {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc, database: window.user.database});
+										var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
+										$scope.tableCrossfitler.remove(fil);
+										tableData.filterAll();
+										$('#table').dataTable().fnClearTable();
+										$('#table').dataTable().fnAddData(tableData.top(Infinity));
+										$('#table').dataTable().fnDraw();
+									});
+									$scope.country = [];
+									$scope.ioc = [];
+									$scope.severity = [];
+									for (var d in oSettings.aiDisplay) {
+										$scope.country.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.remote_country);
+										$scope.ioc.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc);
+										$scope.severity.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc_severity);
+									}
+									$scope.$broadcast('severityUpdate');
+								}
+							});
+							$scope.$on('crossfilterToTable', function () {
+								$('#table').dataTable().fnClearTable();
+								$('#table').dataTable().fnAddData(tableData.top(Infinity));
+								$('#table').dataTable().fnDraw();
+							});
+						}
+					break;
 				}
 			})
 		}
@@ -436,145 +476,6 @@ angular.module('mean.system').directive('universalSearch', function() {
 		}
 	};
 });
-
-/// MULTI TABLE WORK-AROUND.. have to throw these into a div at some point
-angular.module('mean.system').directive('multiTable1', ['$timeout', '$location', '$routeParams', '$rootScope', function ($timeout, $location, $routeParams, $rootScope) {
-	return {
-		link: function ($scope, element, attrs) {
-			$scope.$on('tableLoad', function (event) {
-				if ($scope.data.tables[0] !== null) {
-					$timeout(function () { // You might need this timeout to be sure its run after DOM render
-						$(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table1" ></table>');
-						$('#table1').dataTable({
-							'aaData': $scope.data.tables[0].aaData,
-							'aoColumns': $scope.data.tables[0].params,
-							'bDeferRender': true,
-							'bDestroy': true,
-							//'bProcessing': true,
-							//'bRebuild': true,
-							'aaSorting': $scope.data.tables[0].sort,
-							//'bFilter': true,
-							//'bPaginate': true,
-							'sDom': '<"clear"><"clear">r<"table_overflow"t>',
-							'iDisplayLength': 50,
-							'fnPreDrawCallback': function( oSettings ) {
-							},
-							'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-							},
-							'fnDrawCallback': function( oSettings ) {
-							}
-						});
-					}, 200, false);
-				} else {
-					$(element).parent().parent().parent().remove();
-				}
-			})
-		}
-	};
-}]);
-angular.module('mean.system').directive('multiTable2', ['$timeout', '$location', '$routeParams', '$rootScope', function ($timeout, $location, $routeParams, $rootScope) {
-	return {
-		link: function ($scope, element, attrs) {
-			$scope.$on('tableLoad', function (event) {
-				if ($scope.data.tables[1] !== null) {
-					$timeout(function () { // You might need this timeout to be sure its run after DOM render
-						$(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table2" ></table>');
-						$('#table2').dataTable({
-							'aaData': $scope.data.tables[1].aaData,
-							'aoColumns': $scope.data.tables[1].params,
-							'bDeferRender': true,
-							'bDestroy': true,
-							//'bProcessing': true,
-							//'bRebuild': true,
-							'aaSorting': $scope.data.tables[1].sort,
-							//'bFilter': true,
-							//'bPaginate': true,
-							'sDom': '<"clear"><"clear">r<"table_overflow"t>',
-							'iDisplayLength': 50,
-							'fnPreDrawCallback': function( oSettings ) {
-							},
-							'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-							},
-							'fnDrawCallback': function( oSettings ) {
-							}
-						});
-					}, 200, false);
-				} else {
-					$(element).parent().parent().parent().remove();
-				}
-			})
-		}
-	};
-}]);
-angular.module('mean.system').directive('multiTable3', ['$timeout', '$location', '$routeParams', '$rootScope', function ($timeout, $location, $routeParams, $rootScope) {
-	return {
-		link: function ($scope, element, attrs) {
-			$scope.$on('tableLoad', function (event) {
-				if ($scope.data.tables[2] !== null) {
-					$timeout(function () { // You might need this timeout to be sure its run after DOM render
-						$(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table3" ></table>');
-						$('#table3').dataTable({
-							'aaData': $scope.data.tables[2].aaData,
-							'aoColumns': $scope.data.tables[2].params,
-							'bDeferRender': true,
-							'bDestroy': true,
-							//'bProcessing': true,
-							//'bRebuild': true,
-							'aaSorting': $scope.data.tables[2].sort,
-							//'bFilter': true,
-							//'bPaginate': true,
-							'sDom': '<"clear"><"clear">r<"table_overflow"t>',
-							'iDisplayLength': 50,
-							'fnPreDrawCallback': function( oSettings ) {
-							},
-							'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-							},
-							'fnDrawCallback': function( oSettings ) {
-							}
-						});
-					}, 200, false);
-				} else {
-					$(element).parent().parent().parent().remove();
-				}
-			})
-		}
-	};
-}]);
-angular.module('mean.system').directive('multiTable4', ['$timeout', '$location', '$routeParams', '$rootScope', function ($timeout, $location, $routeParams, $rootScope) {
-	return {
-		link: function ($scope, element, attrs) {
-			$scope.$on('tableLoad', function (event) {
-				if ($scope.data.tables[3] !== null) {
-					$timeout(function () { // You might need this timeout to be sure its run after DOM render
-						$(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table4" ></table>');
-						$('#table4').dataTable({
-							'aaData': $scope.data.tables[3].aaData,
-							'aoColumns': $scope.data.tables[3].params,
-							'bDeferRender': true,
-							'bDestroy': true,
-							//'bProcessing': true,
-							//'bRebuild': true,
-							'aaSorting': $scope.data.tables[3].sort,
-							//'bFilter': true,
-							//'bPaginate': true,
-							'sDom': '<"clear"><"clear">r<"table_overflow"t>',
-							'iDisplayLength': 50,
-							'fnPreDrawCallback': function( oSettings ) {
-							},
-							'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-							},
-							'fnDrawCallback': function( oSettings ) {
-							}
-						});
-					}, 200, false);
-				} else {
-					$(element).parent().parent().parent().remove();
-				}
-			})
-		}
-	};
-}]);
-// ! WORKAROUND
 
 angular.module('mean.system').directive('makeBarChart', ['$timeout', '$window', '$rootScope', function ($timeout, $window, $rootScope) {
 	return {
@@ -619,8 +520,8 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout', '$window', 
 								.stack(group, "(3) SSL", function(d){return d.value.ssl;})
 								.stack(group, "(4) File", function(d){return d.value.file;})
 								.stack(group, "(5) Total Connections", function(d){return d.value.connections;})
-								.colors(["#732C3F","#342A59","#413473","#68788C","#D9BEA7"])
-							filter = true;
+								.colors(["#732C3F","#342A59","#413473","#68788C","#D9BEA7"]);
+							filter = false;
 							break;
 						case 'bar':
 							$scope.barChart
@@ -629,7 +530,7 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout', '$window', 
 							filter = false;
 							break;
 					}
-					if(filter == true) {
+					if (filter == true) {
 						$scope.barChart
 							.on("filtered", function(chart, filter){
 								waitForFinalEvent(function(){
@@ -831,7 +732,7 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope
 							$scope.tableToRowChart();
 							$scope.rowChart.redraw();
 						});
-				}, 50, false);
+				}, 0, false);
 			});
 		}
 	}
