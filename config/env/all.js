@@ -3,40 +3,19 @@
 var path = require('path');
 var rootPath = path.normalize(__dirname + '/../..');
 
-// module.exports = {
-// 	defaultDateRange: 1,
-// 	root: rootPath,
-// 	port: process.env.PORT || 3000,
-// 	db: {
-// 		socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock',
-// 		// I had to use a socket instead of a port because of the application I run my server in.
-// 		// port: 3306,
-// 		host: 'localhost',
-// 		user: 'root',
-// 		password: 'duffman',
-// 		database: 'rapidPHIRE'
-// 	},
-// 	templateEngine: 'swig',
-// 	// The secret should be set to a non-guessable string that
-// 	// is used to compute a session hash
-// 	sessionSecret: 'MEAN',
-// 	// The name of the MongoDB collection to store sessions in
-// 	sessionCollection: 'sessions'
-// };
-
 module.exports = {
 	defaultDateRange: 1,
 	root: rootPath,
 	SSLport: process.env.sslPORT || 3000,
 	HTTPport: process.env.httpPORT || 3001,
 	db: {
-		//socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock',
+		socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock',
 		// I had to use a socket instead of a port because of the application I run my server in.
-		port: 3306,
-		host: '69.196.159.69',
-		user: 'andrew',
-		password: 'BlowItOutTheWater',
-		database: 'rp_users'
+		// port: 3306,
+		host: 'localhost',
+		user: 'root',
+		password: 'duffman',
+		database: 'rapidphire'
 	},
 	templateEngine: 'swig',
 	// The secret should be set to a non-guessable string that
@@ -45,3 +24,26 @@ module.exports = {
 	// The name of the MongoDB collection to store sessions in
 	sessionCollection: 'sessions'
 };
+
+
+// module.exports = {
+// 	defaultDateRange: 1,
+// 	root: rootPath,
+// 	SSLport: process.env.sslPORT || 3000,
+// 	HTTPport: process.env.httpPORT || 3001,
+// 	db: {
+// 		//socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock',
+// 		// I had to use a socket instead of a port because of the application I run my server in.
+// 		port: 3306,
+// 		host: '69.196.159.69',
+// 		user: 'andrew',
+// 		password: 'BlowItOutTheWater',
+// 		database: 'rp_users'
+// 	},
+// 	templateEngine: 'swig',
+// 	// The secret should be set to a non-guessable string that
+// 	// is used to compute a session hash
+// 	sessionSecret: 'har4aC6Mix3Vot7',
+// 	// The name of the MongoDB collection to store sessions in
+// 	sessionCollection: 'sessions'
+// };

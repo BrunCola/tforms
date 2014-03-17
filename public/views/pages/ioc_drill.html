@@ -2,81 +2,20 @@
 <div data-ng-controller="IocDrillController" data-ng-init="onPageLoad()">
 	<section id="loading-error" loading-error></section>
 	<section id="loading-spinner" loading-spinner></section>
-	<div class="row-fluid">
-		<div class="span4">
-			<div class="jdash-header">Local IP</div>
-			<div  style="background-color:#FFF;" class="box">
-				<div class="box-content">
-					<div class="span6">
-						<div class="row-fluid">
-							<strong style="float:left" >Country: </strong><div style="float:left; margin-top:-8px;padding-left:10px;" class="f32"><span class="flag ca"></span></div><span style="float:left"></span>
-						</div>
-						Canada<br />
-						<strong>Lan Zone: </strong>{{lan_zone}}<br />
-						<strong>Lan IP: </strong>{{lan_ip}}<br />
-						<strong>Machine name: </strong>{{machine_name}}<br />
-						<strong>Packets recieved: </strong>{{packets_recieved}}<br />
-					</div>
-					<div class="span6">
-						<img class="logo" src="../img/userplaceholder.jpg" alt=""/> <br/>
-						<strong>Lan Port: </strong>{{lan_port}}<br />
-						<strong>Bytes received: </strong>{{bytes_received}}<br />
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="span4">
-			<div class="jdash-header">Remote IP</div>
-			<div  style="background-color:#FFF;" class="box">
-				<div class="box-content">
-					<div class="span6">
-						<div class="row-fluid">
-						<strong style="float:left" >Country: </strong><div style="float:left; margin-top:-8px;padding-left:10px;" class="f32"><span class="flag {{flag}}"></span></div><span style="float:left"></span>
-						</div>
-						{{countryy}}<br />
-						<strong>Remote IP: </strong>{{remote_ip}}<br />
-						<strong>Premote Port: </strong>{{remote_port}}<br />
-						<strong>Packets received: </strong>{{in_packets}}<br />
-						<strong>Bytes received: </strong>{{in_bytes}}<br />
-						<strong>First IOC Hit: </strong>{{first}}<br />
-					</div>
-					<div class="span6">
-						<strong>Layer 7 Protocol: </strong>{{l7_proto}}<br />
-						<strong>Remote ASN: </strong>{{remote_asn}}<br />
-						<strong>Remote ASN Name: </strong>{{remote_asn_name}}<br />
-						<strong>Last IOC Hit: </strong>{{last}}<br />
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="span4">
-			<div class="jdash-header">IOC Information</div>
-			<div  style="background-color:#FFF;" class="box">
-				<div class="box-content">
-					<strong>IOC: </strong>{{iocc}}<br />
-					<strong>IOC Type: </strong>{{ioc_type}}<br />
-					<strong>IOC Info: </strong>{{desc}}<span ioc-desc><<br />
-				</div>
-			</div>
-		</div>
-	</div>
 	<br />
 	<div class="row-fluid">
 		<div class="span12">
 			<div class="jdash-header">IOC Notifications Per Hour</div>
 			<div  style="background-color:#FFF;" class="box">
 				<div class="box-content">
-					<div id="sevchart" make-sev-chart></div>
+					<div id="barchart" make-bar-chart></div>
 				</div>
 			</div>
-		</div>
-	</div>
-	<br />
-	<div class="row-fluid">
-		<div class="jdash-header">Indicators of Compromise (IOC) Notifications</div>
-		<div  style="background-color:#FFF;" class="box">
-			<div class="box-content">
-				<div id="ioctable" make-table></div>
+			<div class="jdash-header">IOC Notifications Per Hour</div>
+			<div  style="background-color:#FFF;" class="box">
+				<div class="box-content">
+					<div id="rowchart" make-row-chart></div>
+				</div>
 			</div>
 		</div>
 	</div>
