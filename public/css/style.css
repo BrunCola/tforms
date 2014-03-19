@@ -29,9 +29,46 @@ th {
   font-size: 12px !important;
   /*word-break:break-all; */
 }
+/*force diagram*/
+/*.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+.node text{
+  fill: #000;
+}
 
+.link {
+  stroke: #999;
+  fill: #ccc;
+  stroke-opacity: .6;
+}
 .report-table td {
   font-size: 12px;
+}*/
+/*tree chart*/
+.conn circle {
+  /*fill: #fff;*/
+ /* stroke: steelblue;
+  stroke-width: 1.5px;*/
+}
+
+.conn {
+  font: 10px sans-serif;
+  fill: #000;
+}
+
+
+.conn_link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+.conn_link_src text {
+  fill: #000;
+  font-weight: 900;
+  /*stroke: #ccc;*/
+  /*stroke-width: 1.5px;*/
 }
 
 /**.report-table thead tr.table_header {

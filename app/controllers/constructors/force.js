@@ -3,36 +3,50 @@
 var config = require('../../../config/config'),
 	mysql = require('mysql');
 
-module.exports = function (sql, database, sClass, callback) {
+module.exports = function (sql, database, lanIP, callback) {
 	config.db.database = database;
 	var connection = mysql.createConnection(config.db);
 
 	this.sql = sql;
-	// connection.query(this.sql, function(err, result) {
-	// 	if (err) {
-	// 		callback(err, null);
-	// 		connection.destroy();
-	// 	} else {
-	// 		callback(null, result);
-	// 		connection.destroy();
-	// 	}
-	// });
-	var dat = [];
-	var count = 0;
+	console.log(sql);
+
+	var node = [];
+	var link = [];
+	var count = 1;
+
+	node.push({
+		name: lanIP,
+		group: 1
+	});
 	connection.query(this.sql)
 		.on('result', function(data){
-			data.class = sClass;
-			data.id = count++;
-			data.start = data.time;
-			data.end = '';
-			//console.log(data);
-			dat.push(data);
+			if (data.remote_ip.match(/(^192\.168|^10|^172\.16)\.(\d+)/g) == true) {
+				node.push({
+					name: data.remote_ip,
+					group: 3,
+					width: data.count
+				});
+			} else {
+				node.push({
+					name: data.remote_ip,
+					group: 2,
+					width: data.count
+				});
+			}
+			link.push({
+				target: 0,
+				source: count++,
+				value: data.count
+			});
 		})
 		.on('end', function(){
-			console.log(dat.length);
-			callback(null, dat);
+			var results = {
+				links: link,
+				nodes: node
+			}
+			callback(null, results);
 			connection.destroy();
-			console.log('DONE');
+			console.log(results);
 		})
 		//group by type and push a main and sub-group for each time slice
 };

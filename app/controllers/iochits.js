@@ -172,6 +172,7 @@ exports.render = function(req, res) {
 				'`ioc`, '+
 				'`ioc_typeIndicator`, '+
 				'`ioc_typeInfection`, '+
+				'`ioc_attrID`, '+
 				'`lan_zone`, '+
 				'`lan_ip`, '+
 				'`machine`, '+
@@ -198,7 +199,7 @@ exports.render = function(req, res) {
 					link: {
 						type: 'ioc_drill',
 						// val: the pre-evaluated values from the query above
-						val: ['lan_ip','remote_ip','ioc'],
+						val: ['lan_ip','remote_ip','ioc','ioc_attrID'],
 						crumb: false
 					},
 				},

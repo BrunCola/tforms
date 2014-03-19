@@ -480,7 +480,7 @@ angular.module('mean.system').directive('universalSearch', function() {
 angular.module('mean.system').directive('makeBarChart', ['$timeout', '$window', '$rootScope', function ($timeout, $window, $rootScope) {
 	return {
 		link: function ($scope, element, attrs) {
-			$scope.$on('barChart', function (event, dimension, group, chartType) {
+			$scope.$on('barChart', function (event, dimension, group, chartType, params) {
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
 					//var arr = $scope.data.tables[0].aaData;
 					$scope.barChart = dc.barChart('#barchart');
@@ -519,6 +519,7 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout', '$window', 
 								.stack(group, "(2) HTTP", function(d){return d.value.http;})
 								.stack(group, "(3) SSL", function(d){return d.value.ssl;})
 								.stack(group, "(4) File", function(d){return d.value.file;})
+								.stack(group, "(4) OSSEC", function(d){return d.value.ossec;})
 								.stack(group, "(5) Total Connections", function(d){return d.value.connections;})
 								.colors(["#732C3F","#342A59","#413473","#68788C","#D9BEA7"]);
 							filter = false;
@@ -549,7 +550,11 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout', '$window', 
 							})
 					}
 					var width = $('#barchart').parent().width();
-					var height = width/3.5;
+					if (params) {
+						var height = params["height"];
+					} else {
+						var height = width/3.5;
+					}
 					$scope.barChart
 						.width(width) // (optional) define chart width, :default = 200
 						.height(height)
@@ -575,14 +580,26 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout', '$window', 
 							return $('#barchart').parent().width();
 						}
 						var setNewSize = function(width) {
-							if (width > 0) {
-								$scope.barChart
-									.width(width)
-									.height(width/3.5)
-									.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
-								$(element).height(width/3.5);
-								d3.select('#barchart svg').attr('width', width).attr('height', width/3.5);
-								$scope.barChart.redraw();
+							if (params) {
+								if (width > 0) {
+									$scope.barChart
+										.width(width)
+										.height(params["height"])
+										.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+									$(element).height(params["height"]);
+									d3.select('#barchart svg').attr('width', width).attr('height', params["height"]);
+									$scope.barChart.redraw();
+								}
+							} else {
+								if (width > 0) {
+									$scope.barChart
+										.width(width)
+										.height(width/3.5)
+										.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+									$(element).height(width/3.5);
+									d3.select('#barchart svg').attr('width', width).attr('height', width/3.5);
+									$scope.barChart.redraw();
+								}
 							}
 						}
 						$(window).resize(function () {
@@ -638,7 +655,7 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope
 							break;
 						case 'drill':
 							$scope.rowChart
-								.colors(["#732C3F","#342A59","#413473","#68788C","#D9BEA7"])
+								.colors(["#732C3F","#342A59","#413473","#68788C","#D9BEA7","#161A27"])
 								.colorAccessor(function (d){return d.value.cColor;});
 							filter = false;
 							break;
@@ -835,6 +852,309 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 					});
 					$scope.$broadcast('spinnerHide');
 				}, 200, false);
+			})
+		}
+	};
+}]);
+
+angular.module('mean.system').directive('makeForceChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
+	return {
+		link: function ($scope, element, attrs) {
+			$scope.$on('forceChart', function (event, data) {
+				$timeout(function () { // You might need this timeout to be sure its run after DOM render
+					var width = $("#forcechart").parent().width(),
+						height = width/1.5;
+
+					// var color = d3.scale.category20();
+					var palette = {
+						"lightgray": "#819090",
+						"gray": "#708284",
+						"mediumgray": "#536870",
+						"darkgray": "#475B62",
+
+						"darkblue": "#0A2933",
+						"darkerblue": "#042029",
+
+						"paleryellow": "#FCF4DC",
+						"paleyellow": "#EAE3CB",
+						"yellow": "#A57706",
+						"orange": "#BD3613",
+						"red": "#D11C24",
+						"pink": "#C61C6F",
+						"purple": "#595AB7",
+						"blue": "#2176C7",
+						"green": "#259286",
+						"yellowgreen": "#738A05"
+					}
+					var radius = function(size) {
+						if (size === undefined) {
+							size = 1;
+						}
+						return size*8;
+					}
+					var count = function(size) {
+						if (size === undefined) {
+							size = 1;
+						}
+						return size;
+					}
+					var color = function(group) {
+						if (group === 1) {
+							return palette.pink
+						} else if (group === 2) {
+							return palette.pink
+						} else if (group === 3) {
+							return palette.orange
+						} else {
+
+						}
+					}
+
+					// var force = d3.layout.force()
+					// 	.charge(-350)
+					// 	.gravity(0.1)
+					// 	.linkDistance(150)
+					// 	.size([width, height]);
+
+					// var svg = d3.select("#forcechart").append("svg")
+					// 	.attr("width", width)
+					// 	.attr("height", height);
+
+					// var drawGraph = function(graph) {
+					// 	force
+					// 		.nodes(graph.nodes)
+					// 		.links(graph.links)
+					// 		.start();
+
+					// 	var link = svg.selectAll(".link")
+					// 		.data(graph.links)
+					// 		.enter().append("line")
+					// 		.attr("class", "link")
+					// 		.style("stroke-width", function(d) { return Math.sqrt(d.value); });
+
+					// 	var gnodes = svg.selectAll('g.gnode')
+					// 		.data(graph.nodes)
+					// 		.enter()
+					// 		.append('g')
+					// 		.classed('gnode', true);
+
+					// 	var node = gnodes.append("circle")
+					// 		.attr("class", "node")
+					// 		.attr("r", function(d) { return radius(d["width"]); })
+					// 		.style("fill", function(d) { return color(d.group); })
+					// 		.call(force.drag);
+
+					// 	var labels = gnodes.append("text")
+					// 		.text(function(d) { return d.name+'('+count(d.width)+')'; });
+
+					// 	force.on("tick", function() {
+					// 		link.attr("x1", function(d) { return d.source.x; })
+					// 			.attr("y1", function(d) { return d.source.y; })
+					// 			.attr("x2", function(d) { return d.target.x; })
+					// 			.attr("y2", function(d) { return d.target.y; });
+
+					// 		gnodes.attr("transform", function(d) {
+					// 			return 'translate(' + [d.x, d.y] + ')';
+					// 		});
+					// 	});
+					// };
+					// drawGraph(data);
+
+					var circleWidth = 5;
+					var vis = d3.select("#forcechart")
+						.append("svg:svg")
+						.attr("class", "stage")
+						.attr("width", width)
+						.attr("height", height);
+					var force = d3.layout.force()
+						.nodes(data.nodes)
+						.links(data.links)
+						.gravity(0.1)
+						.linkDistance(150)
+						.charge(-500)
+						.size([width, height]);
+
+					var link = vis.selectAll(".link")
+						.data(data.links)
+						.enter().append("line")
+						.attr("class", "link")
+						.attr("stroke", "#CCC")
+						.attr("fill", "#000");
+
+					var node = vis.selectAll("circle.node")
+						.data(data.nodes)
+						.enter().append("g")
+						.attr("class", "node")
+
+					//MOUSEOVER
+					.on("mouseover", function(d,i) {
+						if (i>0) {
+							//CIRCLE
+							d3.select(this).selectAll("circle")
+								.transition()
+								.duration(250)
+								.style("cursor", "none")
+								.attr("r", function(d) { return radius(d["width"])+4; })
+								.attr("fill",function(d){ return color(d.group); });
+
+							//TEXT
+							d3.select(this).select("text")
+								.transition()
+								.style("cursor", "none")
+								.duration(250)
+								.style("cursor", "none")
+								.attr("font-size","1.5em")
+								.attr("x", 15 )
+								.attr("y", 5 )
+						} else {
+						//CIRCLE
+							d3.select(this).selectAll("circle")
+								.style("cursor", "none")
+
+							//TEXT
+							d3.select(this).select("text")
+								.style("cursor", "none")
+						}
+					})
+
+					//MOUSEOUT
+					.on("mouseout", function(d,i) {
+						if (i>0) {
+						//CIRCLE
+						d3.select(this).selectAll("circle")
+							.transition()
+							.duration(250)
+							.attr("r", function(d) { return radius(d["width"]); })
+							.attr("fill",function(d){ return color(d.group); } );
+
+						//TEXT
+						d3.select(this).select("text")
+							.transition()
+							.duration(250)
+							.attr("font-size","1em")
+							.attr("x", 8 )
+							.attr("y", 4 )
+						}
+					})
+
+					.call(force.drag);
+
+
+					//CIRCLE
+					node.append("svg:circle")
+						.attr("cx", function(d) { return d.x; })
+						.attr("cy", function(d) { return d.y; })
+						.attr("r", function(d) { return radius(d["width"]); })
+						.attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.paleryellow } } )
+						.style("stroke-width", "1.5px")
+						.style("stroke", "#fff")
+
+					//TEXT
+					node.append("text")
+						.text(function(d, i) { return d.name+'('+count(d.width)+')'; })
+						.attr("x",    function(d, i) { return circleWidth + 5; })
+						.attr("y",            function(d, i) { if (i>0) { return circleWidth + 0 }    else { return 8 } })
+						// .attr("font-family",  "Bree Serif")
+						// .attr("fill",         function(d, i) {  return  palette.paleryellow;  })
+						.attr("font-size",    function(d, i) {  return  "1em"; })
+						.attr("text-anchor",  function(d, i) { if (i>0) { return  "beginning"; }      else { return "end" } })
+
+					force.on("tick", function(e) {
+						node.attr("transform", function(d, i) {
+							return "translate(" + d.x + "," + d.y + ")";
+						});
+
+						link.attr("x1", function(d)   { return d.source.x; })
+							.attr("y1", function(d)   { return d.source.y; })
+							.attr("x2", function(d)   { return d.target.x; })
+							.attr("y2", function(d)   { return d.target.y; })
+					});
+
+					force
+						.start();
+
+
+
+
+
+				}, 0, false);
+			})
+		}
+	};
+}]);
+
+angular.module('mean.system').directive('makeTreeChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
+	return {
+		link: function ($scope, element, attrs) {
+			$scope.$on('treeChart', function (event, root) {
+				$timeout(function () { // You might need this timeout to be sure its run after DOM render
+					var width = $("#treechart").parent().width(),
+						height = root.childCount*12;
+
+					var cluster = d3.layout.cluster()
+						.size([height, width - 200]);
+
+					var nodeColor = function(severity) {
+						switch(severity) {
+							case 1:
+								return "#377FC7";
+								break;
+							case 2:
+								return "#F5D800";
+								break;
+							case 3:
+								return "#F88B12";
+								break;
+							case 4:
+								return "#DD122A";
+								break;
+							default:
+							return "#377FC7";
+						}
+					}
+
+					var diagonal = d3.svg.diagonal()
+						.projection(function(d) { return [d.y, d.x]; });
+
+					var svg = d3.select("#treechart").append("svg")
+						.attr("width", width)
+						.attr("height", height)
+						.append("g")
+						.attr("transform", "translate(40,0)");
+
+						var nodes = cluster.nodes(root),
+						links = cluster.links(nodes);
+
+						var link = svg.selectAll(".link")
+							.data(links)
+							.enter().append("path")
+							.attr("d", diagonal)
+							.data(nodes)
+							.attr("stroke-width", function(d) { return d.idRoute ? "1px" : "0"; })
+							.attr("class", "conn_link");
+
+						var node = svg.selectAll(".conn")
+							.data(nodes)
+							.enter().append("g")
+							.attr("class", "conn")
+							.attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+						node.append("circle")
+							.attr("fill",function(d){ return nodeColor(d.severity); } )
+							.attr("stroke", "#000")
+							.attr("stroke-width", "0.7px")
+							.attr("r", 4.5);
+
+						node.append("text")
+							.attr("dx", function(d) { return d.children ? -8 : 8; })
+							.attr("dy", 3)
+							.attr("font-weight", function(d) { return d.idRoute ? "bold" : 400; })
+							// .attr("class", function(d){return aRoute(d.idRoute)})
+							.style("text-anchor", function(d) { return d.children ? "end" : "start"; })
+							.text(function(d) { return d.name; });
+					d3.select(self.frameElement).style("height", height + "px");
+
+				}, 0, false);
 			})
 		}
 	};

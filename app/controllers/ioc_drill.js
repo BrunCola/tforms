@@ -3,6 +3,7 @@
 var dataTable = require('./constructors/datatable'),
 	query = require('./constructors/query'),
 	force = require('./constructors/force'),
+	treechart = require('./constructors/treechart'),
 	config = require('../../config/config'),
 	async = require('async');
 
@@ -15,13 +16,22 @@ exports.render = function(req, res) {
 		start = req.query.start;
 		end = req.query.end;
 	}
-	if (req.query.lan_ip) {
+	if (req.query.lan_ip && req.query.remote_ip && req.query.ioc && req.query.ioc_attrID) {
+		var forcereturn = [];
+		var forceSQL = 'SELECT '+
+			// SELECTS
+			'`remote_ip`, '+
+			'count(*) as count '+
+			// !SELECTS
+			'FROM conn_ioc '+
+			'WHERE time BETWEEN '+start+' AND '+end+' '+
+			'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
+			'GROUP BY remote_ip';
 		var tables = [];
 		var table0SQL = 'SELECT '+
 			// SELECTS
-			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 			'`ioc_severity`, '+
-			'count(*) as count, '+
 			'`ioc`, '+
 			'`ioc_typeIndicator`, '+
 			'`ioc_typeInfection`, '+
@@ -33,10 +43,10 @@ exports.render = function(req, res) {
 			'`remote_asn_name`, '+
 			'`remote_country`, '+
 			'`remote_cc`, '+
-			'sum(`in_packets`) as in_packets, '+
-			'sum(`out_packets`) as out_packets, '+
-			'sum(`in_bytes`) as in_bytes, '+
-			'sum(`out_bytes`) as out_bytes '+
+			'in_packets, '+
+			'`out_packets`, '+
+			'`in_bytes`, '+
+			'`out_bytes` '+
 			// !SELECTS
 			'FROM conn_ioc '+
 			'WHERE time BETWEEN '+start+' AND '+end+' '+
@@ -45,7 +55,6 @@ exports.render = function(req, res) {
 		var table0Params = [
 			{ title: 'Last Seen', select: 'time' },
 			{ title: 'Severity', select: 'ioc_severity' },
-			{ title: 'IOC Hits', select: 'count' },
 			{ title: 'IOC', select: 'ioc' },
 			{ title: 'IOC Type', select: 'ioc_typeIndicator' },
 			{ title: 'IOC Stage', select: 'ioc_typeInfection' },
@@ -205,8 +214,73 @@ exports.render = function(req, res) {
 			div: 'table4',
 			title: 'File'
 		}
+		var ossecTableCF = [];
+		var ossecTableSQL = 'SELECT '+
+			// SELECTS
+			'date_format(from_unixtime(timestamp), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'src_ip, '+
+			'dst_ip, '+
+			'alert_info '+
+			// !SELECTS
+			'FROM ossec '+
+			'WHERE timestamp BETWEEN '+start+' AND '+end+' '+
+			'AND `src_ip`=\''+req.query.lan_ip+'\' OR `dst_ip`=\''+req.query.lan_ip+'\' ';
+		var ossecTableParams = [
+			{ select: 'time', title: 'Time' },
+			{ select: 'src_ip', title: 'LAN IP' },
+			{ select: 'dst_ip', title: 'Remote IP' },
+			{ select: 'alert_info', title: 'Endpoint Notification' }
+		];
+		var ossecTableSettings = {
+			sort: [[0, 'desc']],
+			div: 'ossec',
+			title: 'Endpoint Alerts'
+		}
+		var treereturn = [];
+		var treeSQL = 'SELECT '+
+			// SELECTS
+			'ioc_attrID, '+
+			'ioc_childID, '+
+			'ioc_parentID, '+
+			'ioc_typeIndicator, '+
+			'ioc_severity, '+
+			'ioc '+
+			// !SELECTS
+			'FROM conn_ioc '+
+			'WHERE time BETWEEN '+start+' AND '+end+' '+
+			'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
+			'GROUP BY ioc_attrID, ioc_childID, ioc_parentID';
+		var info = {};
+		var InfoSQL = 'SELECT '+
+			'max(from_unixtime(time)) as last, '+
+			'min(from_unixtime(time)) as first, '+
+			'sum(in_packets) as in_packets, '+
+			'sum(out_packets) as out_packets, '+
+			'sum(in_bytes) as in_bytes, '+
+			'sum(out_bytes) as out_bytes, '+
+			'machine, '+
+			'lan_zone, '+
+			'lan_port, '+
+			'remote_port, '+
+			'remote_cc, '+
+			'remote_country, '+
+			'remote_asn, '+
+			'remote_asn_name, '+
+			'l7_proto, '+
+			'ioc_typeIndicator '+
+		'FROM `conn_ioc` '+
+		'WHERE '+
+			'lan_ip = \''+req.query.lan_ip+'\' AND '+
+			'remote_ip = \''+req.query.remote_ip+'\' AND '+
+			'ioc = \''+req.query.ioc+'\' '+
+		'LIMIT 1';
 
-		var forceSQL = '';
+		var Info2SQL = 'SELECT '+
+				'description '+
+			'FROM `ioc_parent` '+
+			'WHERE '+
+				'ioc_parent = \''+req.query.ioc+'\' '+
+			'LIMIT 1';
 
 		switch (req.query.type) {
 			case 'ioc_notifications':
@@ -232,7 +306,8 @@ exports.render = function(req, res) {
 					'FROM conn_ioc '+
 					'WHERE time BETWEEN '+start+' AND '+end+' '+
 					'AND `lan_ip`=\''+req.query.lan_ip+'\' ';
-
+				var lanIP = req.query.lan_ip;
+				var attrID = req.query.ioc_attrID;
 				async.parallel([
 					function(callback) {
 						new dataTable(table0SQL, table0Params, table0Settings, database, function(err,data){
@@ -264,10 +339,46 @@ exports.render = function(req, res) {
 							callback();
 						});
 					},
+					function(callback) {
+						new dataTable(ossecTableSQL, ossecTableParams, ossecTableSettings, database, function(err,data){
+							tables[5] = data;
+							callback();
+						});
+					},
+					function(callback) {
+						new query(ossecTableSQL, database, function(err,data){
+							ossecTableCF = data;
+							callback();
+						});
+					},
 					// Crossfilter function
+					function(callback) {
+						new force(forceSQL, database, lanIP, function(err,data){
+							forcereturn = data;
+							callback();
+						});
+					},
+					function(callback) {
+						new treechart(treeSQL, database, lanIP, attrID, function(err,data){
+							treereturn = data;
+							callback();
+						});
+					},
 					function(callback) {
 						new query(crossfilterSQL, database, function(err,data){
 							crossfilter = data;
+							callback();
+						});
+					},
+					function(callback) {
+						new query(InfoSQL, database, function(err,data){
+							info.main = data;
+							callback();
+						});
+					},
+					function(callback) {
+						new query(Info2SQL, 'rp_ioc_intel', function(err,data){
+							info.desc = data;
 							callback();
 						});
 					}
@@ -277,50 +388,42 @@ exports.render = function(req, res) {
 					crossfilter.forEach(function(d){
 						// Push a total connections object so we can count all that have no values associated
 						// push records with values
-						//if (d.dns > 0) {
-							arr.push({
-								'type': 'DNS',
-								'count': d.dns,
-								'time': d.time,
-								'remote_ip': d.remote_ip,
-								'remote_cc': d.remote_cc,
-								'remote_country': d.remote_country,
-								'ioc': d.ioc
-							})
-						//}
-						//if (d.http > 0) {
-							arr.push({
-								'type': 'HTTP',
-								'count': d.http,
-								'time': d.time,
-								'remote_ip': d.remote_ip,
-								'remote_cc': d.remote_cc,
-								'remote_country': d.remote_country,
-								'ioc': d.ioc
-							})
-						//}
-						//if (d.ssl > 0) {
-							arr.push({
-								'type': 'SSL',
-								'count': d.ssl,
-								'time': d.time,
-								'remote_ip': d.remote_ip,
-								'remote_cc': d.remote_cc,
-								'remote_country': d.remote_country,
-								'ioc': d.ioc
-							})
-						//}
-						//if (d.file > 0) {
-							arr.push({
-								'type': 'File',
-								'count': d.file,
-								'time': d.time,
-								'remote_ip': d.remote_ip,
-								'remote_cc': d.remote_cc,
-								'remote_country': d.remote_country,
-								'ioc': d.ioc
-							})
-					//	}
+						arr.push({
+							'type': 'DNS',
+							'count': d.dns,
+							'time': d.time,
+							'remote_ip': d.remote_ip,
+							'remote_cc': d.remote_cc,
+							'remote_country': d.remote_country,
+							'ioc': d.ioc
+						})
+						arr.push({
+							'type': 'HTTP',
+							'count': d.http,
+							'time': d.time,
+							'remote_ip': d.remote_ip,
+							'remote_cc': d.remote_cc,
+							'remote_country': d.remote_country,
+							'ioc': d.ioc
+						})
+						arr.push({
+							'type': 'SSL',
+							'count': d.ssl,
+							'time': d.time,
+							'remote_ip': d.remote_ip,
+							'remote_cc': d.remote_cc,
+							'remote_country': d.remote_country,
+							'ioc': d.ioc
+						})
+						arr.push({
+							'type': 'File',
+							'count': d.file,
+							'time': d.time,
+							'remote_ip': d.remote_ip,
+							'remote_cc': d.remote_cc,
+							'remote_country': d.remote_country,
+							'ioc': d.ioc
+						})
 						arr.push({
 							'type': 'Total Connections',
 							'count': 1,
@@ -331,9 +434,19 @@ exports.render = function(req, res) {
 							'ioc': d.ioc
 						})
 					});
+					ossecTableCF.forEach(function(d){
+						arr.push({
+							'type': 'OSSEC',
+							'count': 1,
+							'time': d.time
+						})
+					});
 					// console.log(arr);
 					// console.log(crossfilter);
 					var results = {
+						info: info,
+						tree: treereturn,
+						force: forcereturn,
 						crossfilter: arr,
 						tables: tables
 					};

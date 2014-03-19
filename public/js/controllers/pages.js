@@ -166,9 +166,9 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 	$scope.onPageLoad = function() {
 		var query;
 		if ($routeParams.start && $routeParams.end) {
-			query = '/ioc_drill?start='+$routeParams.start+'&end='+$routeParams.end+'&lan_ip='+$routeParams.lan_ip+'&remote_ip='+$routeParams.remote_ip+'&ioc='+$routeParams.ioc;
+			query = '/ioc_drill?start='+$routeParams.start+'&end='+$routeParams.end+'&lan_ip='+$routeParams.lan_ip+'&remote_ip='+$routeParams.remote_ip+'&ioc='+$routeParams.ioc+'&ioc_attrID='+$routeParams.ioc_attrID;
 		} else {
-			query = '/ioc_drill?lan_ip='+$routeParams.lan_ip+'&remote_ip='+$routeParams.remote_ip+'&ioc='+$routeParams.ioc;
+			query = '/ioc_drill?lan_ip='+$routeParams.lan_ip+'&remote_ip='+$routeParams.remote_ip+'&ioc='+$routeParams.ioc+'&ioc_attrID='+$routeParams.ioc_attrID;
 		}
 		$http({method: 'GET', url: query}).
 		//success(function(data, status, headers, config) {
@@ -182,9 +182,6 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 			$scope.crossfilterData = crossfilter(data.crossfilter);
 			$scope.data = data;
 
-			// $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
-			// $scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
-			// $scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables[0], null);
 			$scope.$broadcast('tableLoad', null, $scope.data.tables, 'drill');
 			var sevDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
 			var sevGroupPre = sevDimension.group();
@@ -201,6 +198,9 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 					}
 					if (v.type === 'File') {
 						p.file += v.count;
+					}
+					if (v.type === 'OSSEC') {
+						p.ossec += v.count;
 					}
 					if (v.type === 'Total Connections') {
 						p.connections += v.count;
@@ -220,6 +220,9 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 					if (v.type === 'File') {
 						p.file -= v.count;
 					}
+					if (v.type === 'OSSEC') {
+						p.ossec -= v.count;
+					}
 					if (v.type === 'Total Connections') {
 						p.connections -= v.count;
 					}
@@ -231,13 +234,18 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 						http:0,
 						ssl:0,
 						file:0,
+						ossec:0,
 						connections:0
 					};
 				}
 			);
-			$scope.$broadcast('barChart', sevDimension, sevGroup, 'drill');
+			$scope.$broadcast('barChart', sevDimension, sevGroup, 'drill', {height: 200});
 				$scope.sevDrillChartxAxis = '';
 				$scope.sevDrillChartyAxis = '# IOC / Hour';
+
+			$scope.$broadcast('forceChart', $scope.data.force)
+			$scope.$broadcast('treeChart', $scope.data.tree)
+			console.log($scope.data.tree)
 
 			var rowDimension = $scope.crossfilterData.dimension(function(d) { return d.type; });
 			var rowGroupPre = rowDimension.group().reduceSum(function(d) { return d.count });
@@ -259,8 +267,12 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 						d.cColor = 3;
 						d.count += v.count;
 					}
-					if (v.type == "Total Connections"){
+					if (v.type == "OSSEC"){
 						d.cColor = 4;
+						d.count += v.count;
+					}
+					if (v.type == "Total Connections"){
+						d.cColor = 5;
 						d.count += v.count;
 					}
 					return d;
@@ -283,8 +295,12 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 						d.cColor = 3;
 						d.count -= v.count;
 					}
-					if (v.type == "Total Connections"){
+					if (v.type == "OSSEC"){
 						d.cColor = 4;
+						d.count -= v.count;
+					}
+					if (v.type == "Total Connections"){
+						d.cColor = 5;
 						d.count -= v.count;
 					}
 					return d;
@@ -295,6 +311,42 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 				}
 			);
 			$scope.$broadcast('rowChart', rowDimension, rowGroup, 'drill');
+
+			$scope.lan_zone = data.info.main[0].lan_zone;
+			$scope.lan_ip = $routeParams.lan_ip;
+			$scope.lan_port = data.info.main[0].lan_port;
+			$scope.machine_name = data.info.main[0].machine;
+			$scope.packets_recieved = data.info.main[0].out_packets;
+			$scope.bytes_received = data.info.main[0].out_bytes;
+
+			$scope.countryy = data.info.main[0].remote_country;
+			if (data.info.main[0].remote_cc){
+				$scope.flag = data.info.main[0].remote_cc.toLowerCase();
+			}
+			$scope.remote_ip = $routeParams.remote_ip;
+			$scope.remote_port = data.info.main[0].remote_port;
+			$scope.in_packets = data.info.main[0].in_packets;
+			$scope.in_bytes = data.info.main[0].in_bytes;
+			$scope.first = data.info.main[0].first;
+			$scope.l7_proto = data.info.main[0].l7_proto;
+			$scope.remote_asn = data.info.main[0].remote_asn;
+			$scope.remote_asn_name = data.info.main[0].remote_asn_name;
+			$scope.last = data.info.main[0].last;
+
+			$scope.iocc = $routeParams.ioc;
+			$scope.ioc_type = data.info.main[0].ioc_typeIndicator;
+
+			if (data.info.desc[0].description) {
+				var description = data.info.desc[0].description;
+				var len = description.length;
+				if (len > 440) {
+					$scope.desc = description.substr(0,440);
+					$scope.$broadcast('iocDesc', description);
+				} else {
+					$scope.desc = description;
+				}
+			}
+
 
 			if (data.crossfilter.length === 0) {
 				$scope.$broadcast('loadError');
@@ -410,8 +462,8 @@ angular.module('mean.iochits').controller('IocDrillOLDController', ['$scope', 'G
 			if (data.info.desc[0].description) {
 				var description = data.info.desc[0].description;
 				var len = description.length;
-				if (len > 200) {
-					$scope.desc = description.substr(0,200);
+				if (len > 400) {
+					$scope.desc = description.substr(0,400);
 					$scope.$broadcast('iocDesc', description);
 				} else {
 					$scope.desc = description;
