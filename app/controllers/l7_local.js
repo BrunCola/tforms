@@ -81,7 +81,7 @@ exports.render = function(req, res) {
 			async.parallel([
 			// Table function(s)
 			function(callback) {
-				new dataTable(table1SQL, table1Params, table1Sort, table1Div, database, function(err,data){
+				new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
 					tables.push(data);
 					callback();
 				});

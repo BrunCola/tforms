@@ -14,7 +14,7 @@ exports.render = function(req, res) {
 		start = req.query.start;
 		end = req.query.end;
 	}
-	if (req.query.name && req.query.mime) {
+	if (req.query.lan_ip && req.query.mime) {
 		var tables = [];
 		var table1SQL = 'SELECT '+
 			// SELECTS
@@ -41,7 +41,7 @@ exports.render = function(req, res) {
 			// !SELECTS
 			'FROM `file` '+
 			'WHERE time BETWEEN '+start+' AND '+end+' '+
-			'AND mime = \''+req.query.mime+'\' AND name = \''+req.query.name+'\' ';
+			'AND mime = \''+req.query.mime+'\' AND lan_ip = \''+req.query.lan_ip+'\' ';
 
 			var table1Params = [
 				{ title: 'Last Seen', select: 'time' },
@@ -60,7 +60,7 @@ exports.render = function(req, res) {
 				{ title: 'IOC', select: 'ioc' },
 				{ title: 'IOC Type', select: 'ioc_typeIndicator' },
 				{ title: 'IOC Stage', select: 'ioc_typeInfection' },
-				{ title: 'Name', select: 'name' },
+				{ title: 'Name', select: 'name', sClass:'file'},
 				{ title: 'Size', select: 'size' },
 				{ title: 'MIME', select: 'mime' },
 				{ title: 'MD5', select: 'md5' }

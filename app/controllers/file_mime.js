@@ -20,13 +20,13 @@ exports.render = function(req, res) {
 		// SELECTS
 		'date_format(max(from_unixtime(time)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 		'count(*) as count, '+
-		'`mime`, '+
+		'`lan_ip`, '+
 		'(sum(size) / 1048576) as size, '+
 		'sum(ioc_count) as ioc_count '+
 		// !SELECTS
 		'FROM `file` '+
 		'WHERE time BETWEEN '+start+' AND '+end+' '+
-		'GROUP BY mime';
+		'GROUP BY lan_ip';
 
 		var table1Params = [
 			{
@@ -36,19 +36,19 @@ exports.render = function(req, res) {
 				link: {
 					type: 'file_name',
 					// val: the pre-evaluated values from the query above
-					val: ['mime'],
+					val: ['lan_ip'],
 					crumb: false
 				},
 			},
 			{ title: 'Total Extracted Files', select: 'count' },
-			{ title: 'Mime Type', select: 'mime' },
-			{ title: 'Total Size (Mb)', select: 'size' },
+			{ title: 'LAN IP', select: 'lan_ip' },
+			{ title: 'Total Size (MB)', select: 'size' },
 			{ title: 'Total IOC Hits', select: 'ioc_count' }
 		];
 		var table1Settings = {
 			sort: [[1, 'desc']],
 			div: 'table',
-			title: 'Extracted File MIME Types'
+			title: 'Local User Extracted Files'
 		}
 
 		async.parallel([

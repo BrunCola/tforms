@@ -208,7 +208,7 @@ var App = function () {
 		 $('.page-sidebar').on('click', '.sidebar-toggler', function (e) {
 			if (localStorage.getItem('sidebar') === 0) {
 				localStorage.setItem('sidebar', 1);
-				sidebar_close(e);
+				// sidebar_close(e);
 			}
 			else {
 				localStorage.setItem('sidebar', 0);

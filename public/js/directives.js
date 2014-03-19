@@ -519,7 +519,7 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout', '$window', 
 								.stack(group, "(2) HTTP", function(d){return d.value.http;})
 								.stack(group, "(3) SSL", function(d){return d.value.ssl;})
 								.stack(group, "(4) File", function(d){return d.value.file;})
-								.stack(group, "(5) OSSEC", function(d){return d.value.ossec;})
+								.stack(group, "(5) Endpoint", function(d){return d.value.ossec;})
 								.stack(group, "(6) Total Connections", function(d){return d.value.connections;})
 								.colors(["#cb2815","#e29e23","#a3c0ce","#5c5e7d","#e3cdc9","#524A4F"]);
 							filter = false;

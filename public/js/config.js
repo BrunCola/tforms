@@ -90,20 +90,20 @@ angular.module('mean').config(['$routeProvider',
 		when('/file_name', {
 			templateUrl: 'views/pages/file_name.html'
 		}).
-		when('/file_name?:mime', {
+		when('/file_name?:lan_ip', {
 			templateUrl: 'views/pages/file_name.html'
 		}).
-		when('/file_name?:start&:end&:mime', {
+		when('/file_name?:start&:end&:lan_ip', {
 			templateUrl: 'views/pages/file_name.html'
 		}).
 		// File Local
 		when('/file_local', {
 			templateUrl: 'views/pages/file_local.html'
 		}).
-		when('/file_local?:name&:mime', {
+		when('/file_local?:lan_ip&:mime', {
 			templateUrl: 'views/pages/file_local.html'
 		}).
-		when('/file_local?:start&:end&:name&:mime', {
+		when('/file_local?:start&:end&:lan_ip&:mime', {
 			templateUrl: 'views/pages/file_local.html'
 		}).
 		//L7

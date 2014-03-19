@@ -91,9 +91,9 @@ angular.module('mean.iochits').controller('fileLocalController', ['$scope', 'Glo
 	$scope.onPageLoad = function() {
 		var query;
 		if ($routeParams.start && $routeParams.end) {
-			query = '/file_local?start='+$routeParams.start+'&end='+$routeParams.end+'&name='+$routeParams.name+'&mime='+$routeParams.mime;
+			query = '/file_local?start='+$routeParams.start+'&end='+$routeParams.end+'&lan_ip='+$routeParams.lan_ip+'&mime='+$routeParams.mime;
 		} else {
-			query = '/file_local?name='+$routeParams.name+'&mime='+$routeParams.mime;
+			query = '/file_local?lan_ip='+$routeParams.lan_ip+'&mime='+$routeParams.mime;
 		}
 		$http({method: 'GET', url: query}).
 		//success(function(data, status, headers, config) {
@@ -141,9 +141,9 @@ angular.module('mean.iochits').controller('fileNameController', ['$scope', 'Glob
 	$scope.onPageLoad = function() {
 		var query;
 		if ($routeParams.start && $routeParams.end) {
-			query = '/file_name?start='+$routeParams.start+'&end='+$routeParams.end+'&mime='+$routeParams.mime;
+			query = '/file_name?start='+$routeParams.start+'&end='+$routeParams.end+'&lan_ip='+$routeParams.lan_ip;
 		} else {
-			query = '/file_name?mime='+$routeParams.mime;
+			query = '/file_name?lan_ip='+$routeParams.lan_ip;
 		}
 		$http({method: 'GET', url: query}).
 		//success(function(data, status, headers, config) {
@@ -199,7 +199,7 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 					if (v.type === 'File') {
 						p.file += v.count;
 					}
-					if (v.type === 'OSSEC') {
+					if (v.type === 'Endpoint') {
 						p.ossec += v.count;
 					}
 					if (v.type === 'Total Connections') {
@@ -220,7 +220,7 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 					if (v.type === 'File') {
 						p.file -= v.count;
 					}
-					if (v.type === 'OSSEC') {
+					if (v.type === 'Endpoint') {
 						p.ossec -= v.count;
 					}
 					if (v.type === 'Total Connections') {
@@ -270,7 +270,7 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 						d.cColor = 3;
 						d.count += v.count;
 					}
-					if (v.type == "OSSEC"){
+					if (v.type == "Endpoint"){
 						d.cColor = 4;
 						d.count += v.count;
 					}
@@ -298,7 +298,7 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 						d.cColor = 3;
 						d.count -= v.count;
 					}
-					if (v.type == "OSSEC"){
+					if (v.type == "Endpoint"){
 						d.cColor = 4;
 						d.count -= v.count;
 					}
@@ -1308,9 +1308,11 @@ angular.module('mean.iochits').controller('topLocalController', ['$scope', 'Glob
 			$scope.data = data;
 
 			$scope.$broadcast('geoChart');
+
 			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
 			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
 			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
+
 			var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
 			var barGroup = barDimension.group().reduceSum(function(d) { return d.count });
 			$scope.$broadcast('barChart', barDimension, barGroup, 'bar');
@@ -1374,6 +1376,46 @@ angular.module('mean.iochits').controller('remote2LocalController', ['$scope', '
 			query = '/top_remote2local?start='+$routeParams.start+'&end='+$routeParams.end+'&remote_ip='+$routeParams.remote_ip;
 		} else {
 			query = '/top_remote2local?remote_ip='+$routeParams.remote_ip;
+		}
+		$http({method: 'GET', url: query}).
+		//success(function(data, status, headers, config) {
+		success(function(data) {
+			var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
+			data.crossfilter.forEach(function(d) {
+				d.dd = dateFormat.parse(d.time);
+				d.hour = d3.time.hour(d.dd);
+				d.count = +d.count;
+			});
+			$scope.crossfilterData = crossfilter(data.crossfilter);
+			$scope.data = data;
+
+			var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
+			var barGroup = barDimension.group().reduceSum(function(d) { return d.count });
+			$scope.$broadcast('barChart', barDimension, barGroup, 'bar');
+
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
+			$scope.barChartxAxis = '';
+			$scope.barChartyAxis = '# MB / Hour';
+			if (data.crossfilter.length === 0) {
+				$scope.$broadcast('loadError');
+			}
+		});
+		$rootScope.pageTitle = 'Bandwidth Usage Between Local and Remote IP Addresses'
+	};
+	$rootScope.rootpage = true;
+}]);
+
+// TOP LOCAL TO REMOTE
+angular.module('mean.iochits').controller('local2remoteController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
+	$scope.global = Global;
+	$scope.onPageLoad = function() {
+		var query;
+		if ($routeParams.start && $routeParams.end) {
+			query = '/top_local2remote?start='+$routeParams.start+'&end='+$routeParams.end+'&lan_zone='+$routeParams.lan_zone+'&lan_ip='+$routeParams.lan_ip;
+		} else {
+			query = '/top_local2remote?lan_zone='+$routeParams.lan_zone+'&lan_ip='+$routeParams.lan_ip;
 		}
 		$http({method: 'GET', url: query}).
 		//success(function(data, status, headers, config) {

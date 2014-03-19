@@ -233,7 +233,7 @@ exports.render = function(req, res) {
 		];
 		var ossecTableSettings = {
 			sort: [[0, 'desc']],
-			div: 'ossec',
+			div: 'endpoint',
 			title: 'Endpoint Alerts'
 		}
 		var treereturn = [];
@@ -436,7 +436,7 @@ exports.render = function(req, res) {
 					});
 					ossecTableCF.forEach(function(d){
 						arr.push({
-							'type': 'OSSEC',
+							'type': 'Endpoint',
 							'count': 1,
 							'time': d.time
 						})
