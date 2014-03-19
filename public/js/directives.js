@@ -141,21 +141,18 @@ angular.module('mean.system').directive('sidebar', function() {
 			});
 			// sidebar memory
 			if (!localStorage.getItem('sidebar')) {
-				localStorage.setItem('sidebar', 0);
+				localStorage.setItem('sidebar', 1);
 			}
-			if (localStorage.getItem('sidebar') === '0') { // keep sidebar consistent between pages
+			if (localStorage.getItem('sidebar') == 0) { // keep sidebar consistent between pages
 				var body = $('body');
 				var sidebar = $('.page-sidebar');
 				$('.sidebar-search', sidebar).removeClass('open');
-				if (body.hasClass('page-sidebar-closed')) {
-					body.removeClass('page-sidebar-closed');
-					if (body.hasClass('page-sidebar-fixed')) {
-						sidebar.css('width', '');
-					}
-				}
-				else {
-					body.addClass('page-sidebar-closed');
-				}
+				body.addClass('page-sidebar-closed');
+			} else {
+				var body = $('body');
+				var sidebar = $('.page-sidebar');
+				body.removeClass('page-sidebar-closed');
+				sidebar.css('width', '');
 			}
 			App.init();
 		}
