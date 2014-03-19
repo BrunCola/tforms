@@ -335,8 +335,8 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 									'aaSorting': params[t].sort,
 									//'bFilter': true,
 									//'bPaginate': true,
-									'sDom': '<"clear"><"clear">r<"table_overflow"t>',
-									'iDisplayLength': 50,
+									'sDom': '<"clear"><"clear">r<"table_overflow"t>ip',
+									'iDisplayLength': 5,
 									'fnPreDrawCallback': function( oSettings ) {
 									},
 									'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
@@ -519,9 +519,9 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout', '$window', 
 								.stack(group, "(2) HTTP", function(d){return d.value.http;})
 								.stack(group, "(3) SSL", function(d){return d.value.ssl;})
 								.stack(group, "(4) File", function(d){return d.value.file;})
-								.stack(group, "(4) OSSEC", function(d){return d.value.ossec;})
-								.stack(group, "(5) Total Connections", function(d){return d.value.connections;})
-								.colors(["#732C3F","#342A59","#413473","#68788C","#D9BEA7"]);
+								.stack(group, "(5) OSSEC", function(d){return d.value.ossec;})
+								.stack(group, "(6) Total Connections", function(d){return d.value.connections;})
+								.colors(["#cb2815","#e29e23","#a3c0ce","#5c5e7d","#e3cdc9","#524A4F"]);
 							filter = false;
 							break;
 						case 'bar':
@@ -549,6 +549,11 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout', '$window', 
 								}, 400, "filterWait");
 							})
 					}
+					if (($scope.barChartxAxis == null) && ($scope.barChartyAxis == null)) {
+						var margin = {top: 10, right: 20, bottom: 10, left: 20};
+					} else {
+						var margin = {top: 10, right: 30, bottom: 25, left: 43};
+					}
 					var width = $('#barchart').parent().width();
 					if (params) {
 						var height = params["height"];
@@ -559,7 +564,7 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout', '$window', 
 						.width(width) // (optional) define chart width, :default = 200
 						.height(height)
 						.transitionDuration(500) // (optional) define chart transition duration, :default = 500
-						.margins({top: 10, right: 30, bottom: 25, left: 43}) // (optional) define margins
+						.margins(margin) // (optional) define margins
 						.dimension(dimension) // set dimension
 						//.group(group[g]) // set group
 						//.stack(group, "0 - Other", function(d){return d.value.other;})
@@ -655,7 +660,7 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope
 							break;
 						case 'drill':
 							$scope.rowChart
-								.colors(["#732C3F","#342A59","#413473","#68788C","#D9BEA7","#161A27"])
+								.colors(["#cb2815","#e29e23","#a3c0ce","#5c5e7d","#e3cdc9","#524A4F"])
 								.colorAccessor(function (d){return d.value.cColor;});
 							filter = false;
 							break;
@@ -860,10 +865,10 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 angular.module('mean.system').directive('makeForceChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
 	return {
 		link: function ($scope, element, attrs) {
-			$scope.$on('forceChart', function (event, data) {
+			$scope.$on('forceChart', function (event, data, params) {
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
 					var width = $("#forcechart").parent().width(),
-						height = width/1.5;
+						height = params["height"];
 
 					// var color = d3.scale.category20();
 					var palette = {
@@ -886,12 +891,6 @@ angular.module('mean.system').directive('makeForceChart', ['$timeout', '$rootSco
 						"green": "#259286",
 						"yellowgreen": "#738A05"
 					}
-					var radius = function(size) {
-						if (size === undefined) {
-							size = 1;
-						}
-						return size*8;
-					}
 					var count = function(size) {
 						if (size === undefined) {
 							size = 1;
@@ -909,56 +908,23 @@ angular.module('mean.system').directive('makeForceChart', ['$timeout', '$rootSco
 
 						}
 					}
-
-					// var force = d3.layout.force()
-					// 	.charge(-350)
-					// 	.gravity(0.1)
-					// 	.linkDistance(150)
-					// 	.size([width, height]);
-
-					// var svg = d3.select("#forcechart").append("svg")
-					// 	.attr("width", width)
-					// 	.attr("height", height);
-
-					// var drawGraph = function(graph) {
-					// 	force
-					// 		.nodes(graph.nodes)
-					// 		.links(graph.links)
-					// 		.start();
-
-					// 	var link = svg.selectAll(".link")
-					// 		.data(graph.links)
-					// 		.enter().append("line")
-					// 		.attr("class", "link")
-					// 		.style("stroke-width", function(d) { return Math.sqrt(d.value); });
-
-					// 	var gnodes = svg.selectAll('g.gnode')
-					// 		.data(graph.nodes)
-					// 		.enter()
-					// 		.append('g')
-					// 		.classed('gnode', true);
-
-					// 	var node = gnodes.append("circle")
-					// 		.attr("class", "node")
-					// 		.attr("r", function(d) { return radius(d["width"]); })
-					// 		.style("fill", function(d) { return color(d.group); })
-					// 		.call(force.drag);
-
-					// 	var labels = gnodes.append("text")
-					// 		.text(function(d) { return d.name+'('+count(d.width)+')'; });
-
-					// 	force.on("tick", function() {
-					// 		link.attr("x1", function(d) { return d.source.x; })
-					// 			.attr("y1", function(d) { return d.source.y; })
-					// 			.attr("x2", function(d) { return d.target.x; })
-					// 			.attr("y2", function(d) { return d.target.y; });
-
-					// 		gnodes.attr("transform", function(d) {
-					// 			return 'translate(' + [d.x, d.y] + ')';
-					// 		});
-					// 	});
-					// };
-					// drawGraph(data);
+					function logslider(x) {
+						if (x === undefined) {
+							x = 30;
+						}
+						// position will be between 0 and 100
+						if(x > 50) {
+							x = 50;
+						}
+						var minp = 1;
+						var maxp = 70;
+						// The result should be between 100 an 10000000
+						var minv = Math.log(5);
+						var maxv = Math.log(30);
+						// calculate adjustment factor
+						var scale = (maxv-minv) / (maxp-minp);
+						return Math.exp(minv + scale*(x-minp));
+					}
 
 					var circleWidth = 5;
 					var vis = d3.select("#forcechart")
@@ -970,9 +936,9 @@ angular.module('mean.system').directive('makeForceChart', ['$timeout', '$rootSco
 						.nodes(data.nodes)
 						.links(data.links)
 						.gravity(0.1)
-						.linkDistance(150)
+						.linkDistance(width/6)
 						.charge(-500)
-						.size([width, height]);
+						.size([width-50, height]);
 
 					var link = vis.selectAll(".link")
 						.data(data.links)
@@ -994,7 +960,7 @@ angular.module('mean.system').directive('makeForceChart', ['$timeout', '$rootSco
 								.transition()
 								.duration(250)
 								.style("cursor", "none")
-								.attr("r", function(d) { return radius(d["width"])+4; })
+								.attr("r", function (d) {return logslider(d["width"])+4; })
 								.attr("fill",function(d){ return color(d.group); });
 
 							//TEXT
@@ -1024,7 +990,7 @@ angular.module('mean.system').directive('makeForceChart', ['$timeout', '$rootSco
 						d3.select(this).selectAll("circle")
 							.transition()
 							.duration(250)
-							.attr("r", function(d) { return radius(d["width"]); })
+							.attr("r", function (d) {return logslider(d["width"]); })
 							.attr("fill",function(d){ return color(d.group); } );
 
 						//TEXT
@@ -1044,8 +1010,8 @@ angular.module('mean.system').directive('makeForceChart', ['$timeout', '$rootSco
 					node.append("svg:circle")
 						.attr("cx", function(d) { return d.x; })
 						.attr("cy", function(d) { return d.y; })
-						.attr("r", function(d) { return radius(d["width"]); })
-						.attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.paleryellow } } )
+						.attr("r", function (d) {return logslider(d["width"]); })
+						.attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.gray } } )
 						.style("stroke-width", "1.5px")
 						.style("stroke", "#fff")
 
@@ -1070,13 +1036,7 @@ angular.module('mean.system').directive('makeForceChart', ['$timeout', '$rootSco
 							.attr("y2", function(d)   { return d.target.y; })
 					});
 
-					force
-						.start();
-
-
-
-
-
+					force.start();
 				}, 0, false);
 			})
 		}
@@ -1086,13 +1046,13 @@ angular.module('mean.system').directive('makeForceChart', ['$timeout', '$rootSco
 angular.module('mean.system').directive('makeTreeChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
 	return {
 		link: function ($scope, element, attrs) {
-			$scope.$on('treeChart', function (event, root) {
+			$scope.$on('treeChart', function (event, root, params) {
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
 					var width = $("#treechart").parent().width(),
-						height = root.childCount*12;
+						height = params["height"];
 
 					var cluster = d3.layout.cluster()
-						.size([height, width - 200]);
+						.size([height, width - 230]);
 
 					var nodeColor = function(severity) {
 						switch(severity) {
@@ -1120,7 +1080,7 @@ angular.module('mean.system').directive('makeTreeChart', ['$timeout', '$rootScop
 						.attr("width", width)
 						.attr("height", height)
 						.append("g")
-						.attr("transform", "translate(40,0)");
+						.attr("transform", "translate(90,0)");
 
 						var nodes = cluster.nodes(root),
 						links = cluster.links(nodes);

@@ -74,7 +74,7 @@ exports.render = function(req, res) {
 		{ title: 'Bytes from Remote', select: 'out_bytes', dView: false }
 	];
 	var table1Settings = {
-		sort: [[0, 'desc']],
+		sort: [[2, 'desc']],
 		div: 'table',
 		title: 'Indicators of Compromise (IOC) Notifications'
 	}

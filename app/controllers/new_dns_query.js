@@ -66,7 +66,8 @@ exports.render = function(req, res) {
 	var crossfilterSQL = 'SELECT '+
 		// SELECTS
 		'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-		'count(*) as count '+
+		'count(*) as count, '+
+		'remote_country '+
 		// !SELECTS
 		'FROM dns_query '+
 		'WHERE time BETWEEN '+start+' AND '+end+' '+

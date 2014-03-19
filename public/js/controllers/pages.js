@@ -240,12 +240,15 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 				}
 			);
 			$scope.$broadcast('barChart', sevDimension, sevGroup, 'drill', {height: 200});
-				$scope.sevDrillChartxAxis = '';
-				$scope.sevDrillChartyAxis = '# IOC / Hour';
-
-			$scope.$broadcast('forceChart', $scope.data.force)
-			$scope.$broadcast('treeChart', $scope.data.tree)
-			console.log($scope.data.tree)
+				$scope.barChartxAxis = null;
+				$scope.barChartyAxis = null;
+			if ($scope.data.tree.childCount >= 35) {
+				var divHeight = $scope.data.tree.childCount*12;
+			} else {
+				var divHeight = 420;
+			}
+			$scope.$broadcast('forceChart', $scope.data.force, {height: divHeight})
+			$scope.$broadcast('treeChart', $scope.data.tree, {height: divHeight})
 
 			var rowDimension = $scope.crossfilterData.dimension(function(d) { return d.type; });
 			var rowGroupPre = rowDimension.group().reduceSum(function(d) { return d.count });
@@ -339,8 +342,8 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 			if (data.info.desc[0].description) {
 				var description = data.info.desc[0].description;
 				var len = description.length;
-				if (len > 440) {
-					$scope.desc = description.substr(0,440);
+				if (len > 300) {
+					$scope.desc = description.substr(0,300);
 					$scope.$broadcast('iocDesc', description);
 				} else {
 					$scope.desc = description;

@@ -42,7 +42,7 @@ exports.render = function(req, res) {
 			},
 			{ title: 'Total Extracted Files', select: 'count' },
 			{ title: 'Mime Type', select: 'mime' },
-			{ title: 'Total Size', select: 'size' },
+			{ title: 'Total Size (Mb)', select: 'size' },
 			{ title: 'Total IOC Hits', select: 'ioc_count' }
 		];
 		var table1Settings = {

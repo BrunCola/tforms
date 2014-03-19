@@ -59,7 +59,7 @@ module.exports = function (sql, database, lanIP, attrID, callback) {
 								newarr[n].idRoute = true;
 								result.idRoute = true;
 								cn.push({
-									"name": tree[t].ioc_attrID+' '+tree[t].ioc_typeIndicator,
+									"name": tree[t].ioc_attrID+' '+tree[t].ioc_typeIndicator+' *',
 									"severity": tree[t].ioc_severity,
 									"idRoute": true
 								})

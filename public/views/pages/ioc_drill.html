@@ -3,8 +3,73 @@
 	<section id="loading-error" loading-error></section>
 	<section id="loading-spinner" loading-spinner></section>
 	<div class="row-fluid">
+		<div class="span12">
+			<!-- <div class="jdash-header">Link IOC Information</div> -->
+			<div style="background-color:#FFF;" class="box">
+				<!-- <div class="box-content"  style="min-height:195px !important"> -->
+				<div class="box-content">
+
+					<div class="span4">
+						<h4 style="margin-top:-5px">Local IP</h4>
+						<div class="row-fluid">
+							<div class="span6">
+								<div class="row-fluid">
+									<strong style="float:left" >Country: </strong><div style="float:left; margin-top:-8px;padding-left:10px;" class="f32"><span class="flag ca"></span></div><span style="float:left"></span>
+								</div>
+								Canada<br />
+								<strong>Lan Zone: </strong>{{lan_zone}}<br />
+								<strong>Lan IP: </strong>{{lan_ip}}<br />
+								<strong>Machine name: </strong>{{machine_name}}<br />
+								<strong>Packets recieved: </strong>{{packets_recieved}}<br />
+							</div>
+							<div class="span6">
+								<img class="logo" src="../img/userplaceholder.jpg" alt=""/> <br/>
+								<strong>Lan Port: </strong>{{lan_port}}<br />
+								<strong>Bytes received: </strong>{{bytes_received}}<br />
+							</div>
+						</div>
+					</div>
+
+					<div class="span4">
+						<h4 style="margin-top:-5px">Remote IP</h4>
+						<div class="row-fluid">
+							<div class="span6">
+								<div class="row-fluid">
+									<strong style="float:left" >Country: </strong><div style="float:left; margin-top:-8px;padding-left:10px;" class="f32"><span class="flag {{flag}}"></span></div><span style="float:left"></span>
+								</div>
+								{{countryy}}<br />
+								<strong>Remote IP: </strong>{{remote_ip}}<br />
+								<strong>Premote Port: </strong>{{remote_port}}<br />
+								<strong>Packets received: </strong>{{in_packets}}<br />
+								<strong>Bytes received: </strong>{{in_bytes}}<br />
+								<strong>First IOC Hit: </strong>{{first}}<br />
+							</div>
+							<div class="span6">
+								<strong>Layer 7 Protocol: </strong>{{l7_proto}}<br />
+								<strong>Remote ASN: </strong>{{remote_asn}}<br />
+								<strong>Remote ASN Name: </strong>{{remote_asn_name}}<br />
+								<strong>Last IOC Hit: </strong>{{last}}<br />
+							</div>
+						</div>
+					</div>
+
+					<div class="span4">
+						<h4 style="margin-top:-5px">IOC Information</h4>
+						<div class="row-fluid">
+							<strong>IOC: </strong>{{iocc}}<br />
+							<strong>IOC Type: </strong>{{ioc_type}}<br />
+							<strong>IOC Info: </strong>{{desc}}<span ioc-desc><br />
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<br />
+	<div class="row-fluid">
 		<div class="span6">
-			<div class="jdash-header">IOC Notifications Per Hour</div>
+			<div class="jdash-header">Remote IP Fanout</div>
 			<div  style="background-color:#FFF;" class="box">
 				<div class="box-content">
 					<div id="forcechart" make-force-chart></div>
@@ -12,7 +77,7 @@
 			</div>
 		</div>
 		<div class="span6">
-			<div class="jdash-header">IOC Notifications Per Hour</div>
+			<div class="jdash-header">IOC Lineages</div>
 			<div  style="background-color:#FFF;" class="box">
 				<div class="box-content">
 					<div id="treechart" make-tree-chart></div>
@@ -34,15 +99,6 @@
 	<br />
 	<div class="row-fluid">
 		<div class="span9">
-			<div  style="background-color:#FFF;" class="box">
-				<div class="box-content">
-					<!-- <h4>IOC Information</h4> -->
-					<strong>IOC: </strong>{{iocc}}<br />
-					<strong>IOC Type: </strong>{{ioc_type}}<br />
-					<strong>IOC Info: </strong>{{desc}}<span ioc-desc><br />
-				</div>
-			</div>
-			<br />
 			<div make-table></div>
 		</div>
 		<div class="span3">
@@ -52,59 +108,6 @@
 					<div id="rowchart" make-row-chart></div>
 				</div>
 			</div>
-
-			<br />
-			<div  style="background-color:#FFF;" class="box">
-				<div class="box-content">
-					<h4>Local IP</h4>
-					<div class="row-fluid">
-						<div class="span6">
-							<div class="row-fluid">
-								<strong style="float:left" >Country: </strong><div style="float:left; margin-top:-8px;padding-left:10px;" class="f32"><span class="flag ca"></span></div><span style="float:left"></span>
-							</div>
-							Canada<br />
-							<strong>Lan Zone: </strong>{{lan_zone}}<br />
-							<strong>Lan IP: </strong>{{lan_ip}}<br />
-							<strong>Machine name: </strong>{{machine_name}}<br />
-							<strong>Packets recieved: </strong>{{packets_recieved}}<br />
-						</div>
-						<div class="span6">
-							<img class="logo" src="../img/userplaceholder.jpg" alt=""/> <br/>
-							<strong>Lan Port: </strong>{{lan_port}}<br />
-							<strong>Bytes received: </strong>{{bytes_received}}<br />
-						</div>
-					</div>
-					<hr color="#ccc">
-					<h4>Remote IP</h4>
-					<div class="row-fluid">
-						<div class="span6">
-							<div class="row-fluid">
-							<strong style="float:left" >Country: </strong><div style="float:left; margin-top:-8px;padding-left:10px;" class="f32"><span class="flag {{flag}}"></span></div><span style="float:left"></span>
-							</div>
-							{{countryy}}<br />
-							<strong>Remote IP: </strong>{{remote_ip}}<br />
-							<strong>Premote Port: </strong>{{remote_port}}<br />
-							<strong>Packets received: </strong>{{in_packets}}<br />
-							<strong>Bytes received: </strong>{{in_bytes}}<br />
-							<strong>First IOC Hit: </strong>{{first}}<br />
-						</div>
-						<div class="span6">
-							<strong>Layer 7 Protocol: </strong>{{l7_proto}}<br />
-							<strong>Remote ASN: </strong>{{remote_asn}}<br />
-							<strong>Remote ASN Name: </strong>{{remote_asn_name}}<br />
-							<strong>Last IOC Hit: </strong>{{last}}<br />
-						</div>
-					</div>
-					<!-- <hr color="#ccc">
-					<h4>IOC Information</h4>
-					<div class="row-fluid">
-						<strong>IOC: </strong>{{iocc}}<br />
-						<strong>IOC Type: </strong>{{ioc_type}}<br />
-						<strong>IOC Info: </strong>{{desc}}<span ioc-desc><br />
-					</div> -->
-				</div>
-			</div>
-
 
 		</div>
 	</div>
