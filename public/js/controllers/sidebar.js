@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.system').controller('sidebarController', ['$scope', 'Global', '$routeParams', '$location', function ($scope, Global, $routeParams, $location) {
+angular.module('mean.system').controller('sidebarController', ['$scope', 'Global', '$routeParams', '$location', '$rootScope', function ($scope, Global, $routeParams, $location, $rootScope) {
 	$scope.global = Global;
 
 	$scope.select = function(url){
@@ -9,6 +9,20 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		} else {
 			$location.path(url);
 		}
+	};
+
+	$scope.navClass = function (page) {
+		var currentRoute = $location.path().substring(1) || 'home';
+		return page === currentRoute ? 'start active' : '';
+	};
+
+	$scope.navClassSelected = function (page) {
+		var currentRoute = $location.path().substring(1) || 'home';
+		return page === currentRoute ? 'selected' : '';
+		// if (page === currentRoute) {
+		// 	return 'selected'
+		// } else if ($rootscope.activeLink[0] === page) {
+		// }
 	};
 
 	$scope.sidebaritems = [{
@@ -20,11 +34,6 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		'url': 'ioc_top_remote',
 		'icon': 'fa-warning',
 	},
-	// {
-	// 	'title': 'Test',
-	// 	'url': 'local_drill',
-	// 	'icon': 'fa-warning',
-	// },
 	{
 		'title': 'Extracted Files',
 		'url': 'file_mime',

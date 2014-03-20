@@ -54,3 +54,11 @@ angular.module('mean.system').factory('socket', ['$location',
 		return socket;
 	}
 ]);
+
+// angular.module('mean.system').factory('active', ['$location',
+// 	function($location) {
+// 		var active = function(link) {
+// 			if ()
+// 		}
+// 	}
+// ]);

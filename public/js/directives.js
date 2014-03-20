@@ -493,9 +493,23 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout', '$window', 
 						timers[uniqueId] = setTimeout(callback, ms);
 						};
 					})();
-					var filter;
+					var filter, height;
+					var width = $('#barchart').parent().width();
+					height = width/3.5;
+					$scope.sevWidth = function() {
+						return $('#barchart').parent().width();
+					}
 					switch (chartType){
 						case 'severity':
+							var setNewSize = function(width) {
+								$scope.barChart
+									.width(width)
+									.height(width/3.5)
+									.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+								// $('#barchart').parent().height(width/3.5);
+								d3.select('#barchart svg').attr('width', width).attr('height', width/3.5);
+								$scope.barChart.redraw();
+							}
 							$scope.barChart
 								.group(group, "(1) Guarded")
 								.valueAccessor(function(d) {
@@ -508,6 +522,15 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout', '$window', 
 							filter = true;
 							break;
 						case 'drill':
+							var setNewSize = function(width) {
+								$scope.barChart
+									.width(width)
+									.height(width/1.63)
+									.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+								$('#barchart').parent().height(width/1.63);
+								d3.select('#barchart svg').attr('width', width).attr('height', width/1.63);
+								$scope.barChart.redraw();
+							}
 							$scope.barChart
 								.group(group, "(1) DNS")
 								.valueAccessor(function(d) {
@@ -520,8 +543,18 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout', '$window', 
 								.stack(group, "(6) Total Connections", function(d){return d.value.connections;})
 								.colors(["#cb2815","#e29e23","#a3c0ce","#5c5e7d","#e3cdc9","#524A4F"]);
 							filter = false;
+							height = width/1.63;
 							break;
 						case 'bar':
+							var setNewSize = function(width) {
+								$scope.barChart
+									.width(width)
+									.height(width/3.5)
+									.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+								// $(element).height(width/3.5);
+								d3.select('#barchart svg').attr('width', width).attr('height', width/3.5);
+								$scope.barChart.redraw();
+							}
 							$scope.barChart
 								.group(group)
 								.colors(["#193459"]);
@@ -551,12 +584,6 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout', '$window', 
 					} else {
 						var margin = {top: 10, right: 30, bottom: 25, left: 43};
 					}
-					var width = $('#barchart').parent().width();
-					if (params) {
-						var height = params["height"];
-					} else {
-						var height = width/3.5;
-					}
 					$scope.barChart
 						.width(width) // (optional) define chart width, :default = 200
 						.height(height)
@@ -578,32 +605,6 @@ angular.module('mean.system').directive('makeBarChart', ['$timeout', '$window', 
 						.renderTitle(true); // (optional) whether chart should render titles, :default = fal
 						$scope.barChart.render();
 						$scope.$broadcast('spinnerHide');
-						$scope.sevWidth = function() {
-							return $('#barchart').parent().width();
-						}
-						var setNewSize = function(width) {
-							if (params) {
-								if (width > 0) {
-									$scope.barChart
-										.width(width)
-										.height(params["height"])
-										.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
-									$(element).height(params["height"]);
-									d3.select('#barchart svg').attr('width', width).attr('height', params["height"]);
-									$scope.barChart.redraw();
-								}
-							} else {
-								if (width > 0) {
-									$scope.barChart
-										.width(width)
-										.height(width/3.5)
-										.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
-									$(element).height(width/3.5);
-									d3.select('#barchart svg').attr('width', width).attr('height', width/3.5);
-									$scope.barChart.redraw();
-								}
-							}
-						}
 						$(window).resize(function () {
 							waitForFinalEvent(function(){
 								$scope.barChart.render();
@@ -634,6 +635,18 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope
 		link: function ($scope, element, attrs) {
 			$scope.$on('rowChart', function (event, dimension, group, chartType) {
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
+					var waitForFinalEvent = (function () {
+						var timers = {};
+						return function (callback, ms, uniqueId) {
+							if (!uniqueId) {
+								uniqueId = "rowchartWait"; //Don't call this twice without a uniqueId
+							}
+							if (timers[uniqueId]) {
+								clearTimeout (timers[uniqueId]);
+							}
+						timers[uniqueId] = setTimeout(callback, ms);
+						};
+					})();
 					var hHeight, lOffset;
 					var count = group.top(Infinity).length; ///CHANGE THIS to count return rows
 					if (count < 7) {
@@ -647,18 +660,47 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope
 					var fill;
 					var width = $('#rowchart').width();
 					$scope.rowChart = dc.rowChart('#rowchart');
+					$scope.rowWidth = function() {
+						return $('#rowchart').parent().width();
+					}
 					var filter;
 					switch (chartType) {
 						case 'severity':
+							var setNewSize = function(width) {
+								if (width > 0) {
+									$scope.rowChart
+										.width(width)
+										//.height(width/3.3)
+										.x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width]));
+										$(element).height(hHeight);
+										d3.select('#rowchart svg').attr('width', width).attr('height', hHeight);
+									$scope.rowChart.redraw();
+								}
+							};
 							$scope.rowChart
 								.colors(["#377FC7","#F5D800","#F88B12","#DD122A"])
 								.colorAccessor(function (d){return d.value.severity;});
 							filter = true;
 							break;
 						case 'drill':
+							var setNewSize = function(width) {
+								hHeight = width*0.613;
+								if (width > 0) {
+									lOffset = 12+(count*0.7);
+									$scope.rowChart
+										.width(width)
+										.height(width*0.613)
+										.x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width]));
+										//$(element).height(hHeight);
+										d3.select('#rowchart svg').attr('width', width).attr('height', hHeight);
+									$scope.rowChart.redraw();
+								}
+							};
 							$scope.rowChart
 								.colors(["#cb2815","#e29e23","#a3c0ce","#5c5e7d","#e3cdc9","#524A4F"])
 								.colorAccessor(function (d){return d.value.cColor;});
+								hHeight = width*0.613;
+								lOffset = 12+(count*0.7);
 							filter = false;
 							break;
 					}
@@ -709,31 +751,21 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope
 						.xAxis()
 						.scale($scope.rowChart.x())
 						.tickFormat(logFormat);
-
 						$scope.rowChart.render();
-
-						$scope.rowWidth = function() {
-							return $('#rowchart').parent().width();
-						}
-						var setNewSize = function(width) {
-							if (width > 0) {
-								$scope.rowChart
-									.width(width)
-									//.height(width/3.3)
-									.x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width]));
-									$(element).height(hHeight);
-									d3.select('#rowchart svg').attr('width', width).attr('height', hHeight);
-								$scope.rowChart.redraw();
-							}
-						};
 						$(window).bind('resize', function() {
 							setTimeout(function(){
 								setNewSize($scope.rowWidth());
 							}, 150);
 						});
+						$(window).resize(function () {
+							waitForFinalEvent(function(){
+								$scope.rowChart.render();
+							}, 200, "rowchartresize");
+						});
 						$('.sidebar-toggler').on("click", function() {
 							setTimeout(function() {
 								setNewSize($scope.rowWidth());
+								$scope.rowChart.render();
 							},10);
 						});
 						var rowFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
@@ -760,15 +792,32 @@ angular.module('mean.system').directive('makeRowChart', ['$timeout', '$rootScope
 angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
 	return {
 		link: function ($scope, element, attrs) {
-			$scope.$on('geoChart', function (event) {
+			$scope.$on('geoChart', function (event, dimension, group, chartType) {
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
 					$scope.geoChart = dc.geoChoroplethChart('#geochart');
+					var filter;
+					switch (chartType) {
+						case 'drill':
+							filter = false;
+							break;
+						default:
+							filter = true;
+							break;
+					}
+					if (filter == true) {
+						$scope.geoChart
+							.on("filtered", function(chart, filter){
+								$scope.tableData.filterAll();
+								var arr = [];
+								for(var c in dimension.top(Infinity)) {
+									arr.push(dimension.top(Infinity)[c].remote_country);
+								}
+								$scope.tableData.filter(function(d) { return arr.indexOf(d.remote_country) >= 0; });
+								$scope.$broadcast('crossfilterToTable');
+							});
+					}
 					var numberFormat = d3.format(".2f");
 					//var dimension = crossfilterData.dimension(function(d){ return d.remote_country;});
-					var dimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
-					var group = dimension.group().reduceSum(function (d) {
-						return d.count;
-					});
 					var count = group.top(Infinity).length;
 					if (count > 0) {
 						var top = group.orderNatural(function (p) {return p.count;}).top(1);
@@ -789,10 +838,11 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 						var cb = function(error, world) {
 							var width = $('#geochart').parent().width();
 							var height = width/1.628;
+							var projection = d3.geo.mercator().precision(0.1).scale((width + 1) / 2 / Math.PI).translate([width / 2.1, width / 2.4]);
 							$scope.geoChart
 							.dimension(dimension)
 							.group(group)
-							.projection(d3.geo.mercator().precision(0.1).scale((width + 1) / 2 / Math.PI).translate([width / 2.1, width / 2.4]))
+							.projection(projection)
 							.width(width)
 							.height(height)
 							.colors(["#377FC7","#F5D800","#F88B12","#DD122A","#000"])
@@ -801,15 +851,6 @@ angular.module('mean.system').directive('makeGeoChart', ['$timeout', '$rootScope
 							.overlayGeoJson(world.features, "country", function(d) {
 								return d.properties.name;
 							})
-							.on("filtered", function(chart, filter){
-								$scope.tableData.filterAll();
-								var arr = [];
-								for(var c in dimension.top(Infinity)) {
-									arr.push(dimension.top(Infinity)[c].remote_country);
-								}
-								$scope.tableData.filter(function(d) { return arr.indexOf(d.remote_country) >= 0; });
-								$scope.$broadcast('crossfilterToTable');
-							});
 							$scope.geoChart.render();
 						}
 						return cb;
@@ -866,6 +907,10 @@ angular.module('mean.system').directive('makeForceChart', ['$timeout', '$rootSco
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
 					var width = $("#forcechart").parent().width(),
 						height = params["height"];
+					var tCount = [];
+					data.links.forEach(function(d) {
+						tCount.push(d.value);
+					});
 
 					// var color = d3.scale.category20();
 					var palette = {
@@ -907,17 +952,17 @@ angular.module('mean.system').directive('makeForceChart', ['$timeout', '$rootSco
 					}
 					function logslider(x) {
 						if (x === undefined) {
-							x = 30;
+							return 18;
 						}
 						// position will be between 0 and 100
-						if(x > 50) {
-							x = 50;
-						}
+						// if(x > 50) {
+						// 	x = 50;
+						// }
 						var minp = 1;
-						var maxp = 70;
+						var maxp = Math.max.apply(Math, tCount);
 						// The result should be between 100 an 10000000
 						var minv = Math.log(5);
-						var maxv = Math.log(30);
+						var maxv = Math.log(50);
 						// calculate adjustment factor
 						var scale = (maxv-minv) / (maxp-minp);
 						return Math.exp(minv + scale*(x-minp));
