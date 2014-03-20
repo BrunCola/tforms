@@ -335,8 +335,35 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 									'sDom': '<"clear"><"clear">r<"table_overflow"t>ip',
 									'iDisplayLength': 5,
 									'fnPreDrawCallback': function( oSettings ) {
+										$scope.r = [];
+										for (var a in oSettings.aoColumns) {
+											// find the index of column rows so they can me modified below
+											if (oSettings.aoColumns[a].bVisible === true) {
+												$scope.r.push(oSettings.aoColumns[a].mData);
+											}
+										}
 									},
 									'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+										if (aData.remote_cc) {
+											$('td:eq('+$scope.r.indexOf("remote_cc")+')', nRow).html('<div class="f32"><span class="flag '+aData.remote_cc.toLowerCase()+'"></span></div>');
+										}
+										if (aData.ioc_severity) {
+											var rIndex = $scope.r.indexOf("ioc_severity");
+											switch(aData.ioc_severity) {
+												case 1:
+													$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-flag fa-stack-1x fa-inverse"></i></span>');
+													break;
+												case 2:
+													$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bullhorn fa-stack-1x fa-inverse"></i></span>');
+													break;
+												case 3:
+													$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bell fa-stack-1x fa-inverse"></i></span>');
+													break;
+												case 4:
+													$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-exclamation-circle fa-stack-1x fa-inverse"></i></span>');
+													break;
+											}
+										}
 									},
 									'fnDrawCallback': function( oSettings ) {
 									}
