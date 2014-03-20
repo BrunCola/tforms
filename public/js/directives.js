@@ -938,6 +938,7 @@ angular.module('mean.system').directive('makeForceChart', ['$timeout', '$rootSco
 					data.links.forEach(function(d) {
 						tCount.push(d.value);
 					});
+					var maxNum = Math.max.apply(Math, tCount);
 
 					// var color = d3.scale.category20();
 					var palette = {
@@ -985,8 +986,8 @@ angular.module('mean.system').directive('makeForceChart', ['$timeout', '$rootSco
 						// if(x > 50) {
 						// 	x = 50;
 						// }
-						var minp = 1;
-						var maxp = Math.max.apply(Math, tCount);
+						var minp = 0;
+						var maxp = maxNum;
 						// The result should be between 100 an 10000000
 						var minv = Math.log(5);
 						var maxv = Math.log(50);
