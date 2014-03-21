@@ -48,8 +48,9 @@ angular.module('mean.system').directive('loadingError', function() {
 						easing: 'swing',
 						speed: 500 // opening & closing animation speed
 					},
-					timeout: 1000 // delay for closing event. Set false for sticky notifications
+					timeout: 2300 // delay for closing event. Set false for sticky notifications
 				});
+				$scope.$broadcast('spinnerHide');
 			});
 		}
 	};

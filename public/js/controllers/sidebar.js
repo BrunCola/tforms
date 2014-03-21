@@ -9,6 +9,21 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		} else {
 			$location.path(url);
 		}
+		$.noty.closeAll();
+	};
+
+	$scope.navClass = function (page) {
+		var currentRoute = $location.path().substring(1) || 'home';
+		return page === currentRoute ? 'start active' : '';
+	};
+
+	$scope.navClassSelected = function (page) {
+		var currentRoute = $location.path().substring(1) || 'home';
+		return page === currentRoute ? 'selected' : '';
+		// if (page === currentRoute) {
+		// 	return 'selected'
+		// } else if ($rootscope.activeLink[0] === page) {
+		// }
 	};
 
 	$scope.navClass = function (page) {
