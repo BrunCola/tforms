@@ -21,15 +21,14 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 var config = require('./config/config'),
     mysql = require('mysql');
 
-var connection = mysql.createConnection(config.db);
-connection.connect(function(err) {
+var pool = mysql.createPool(config.db, function(err) {
     if (err) {
-        console.log('Error establishing database connection. '+err);
+        console.log('Error establishing database pool. '+err);
     } else {
         console.log('Connected to database!');
     }
 });
-// console.log(connection);
+// console.log(pool);
 // Bootstrap models
 var models_path = __dirname + '/app/models';
 var walk = function(path) {
@@ -48,7 +47,7 @@ var walk = function(path) {
 walk(models_path);
 
 // Bootstrap passport config
-require('./config/passport')(passport, connection);
+require('./config/passport')(passport, pool);
 
 var options = {
     key: fs.readFileSync('./ssl/server.key'),
@@ -64,7 +63,7 @@ var app = express()
     , io = require('socket.io').listen(server);
 
 // Express settings
-require('./config/express')(app, passport, connection);
+require('./config/express')(app, passport, pool);
 require('./config/socket')(app, passport, io);
 
 // Bootstrap routes
@@ -75,7 +74,7 @@ var walk = function(path) {
         var stat = fs.statSync(newPath);
         if (stat.isFile()) {
             if (/(.*)\.(js$|coffee$)/.test(file)) {
-                require(newPath)(app, passport, connection, io);
+                require(newPath)(app, passport, pool, io);
             }
         // We skip the app/routes/middlewares directory as it is meant to be
         // used and shared by routes as further middlewares and is not a

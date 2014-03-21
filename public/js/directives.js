@@ -271,6 +271,7 @@ angular.module('mean.system').directive('datePicker', ['$timeout', '$location', 
 	return {
 		link: function ($scope, element, attrs) {
 			$timeout(function () {
+				var searchObj;
 				$('#reportrange').daterangepicker(
 					{
 					ranges: {
@@ -289,11 +290,14 @@ angular.module('mean.system').directive('datePicker', ['$timeout', '$location', 
 					},
 					function(start, end) {
 						$('#reportrange span').html(start.format('MMMM D, YYYY h:mm A') + ' - ' + end.format('MMMM D, YYYY h:mm A'));
+						searchObj = $location.$$search;
+						searchObj.start = moment(start.format('MMMM D, YYYY h:mm A')).unix();
+						searchObj.end = moment(end.format('MMMM D, YYYY h:mm A')).unix();
 					}
 				);
 				$('#reportrange').on('apply', function(ev, picker) {
 					// some kind of clear option is needed here
-					$scope.$apply($location.search({'start': moment(picker.startDate.format('MMMM D, YYYY h:mm A')).unix(), 'end':moment(picker.endDate.format('MMMM D, YYYY h:mm A')).unix()}));
+					$scope.$apply($location.search(searchObj));
 				});
 			}, 0, false);
 		}
