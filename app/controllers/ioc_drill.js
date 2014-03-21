@@ -35,10 +35,8 @@ exports.render = function(req, res) {
 			'`ioc`, '+
 			'`ioc_typeIndicator`, '+
 			'`ioc_typeInfection`, '+
-			'`lan_zone`, '+
-			'`lan_ip`, '+
-			'`machine`, '+
 			'`remote_ip`, '+
+			'`remote_port`, '+
 			'`remote_asn`, '+
 			'`remote_asn_name`, '+
 			'`remote_country`, '+
@@ -59,10 +57,8 @@ exports.render = function(req, res) {
 			{ title: 'IOC', select: 'ioc' },
 			{ title: 'IOC Type', select: 'ioc_typeIndicator' },
 			{ title: 'IOC Stage', select: 'ioc_typeInfection' },
-			{ title: 'LAN Zone', select: 'lan_zone' },
-			{ title: 'LAN IP', select: 'lan_ip' },
-			{ title: 'Machine Name', select: 'machine' },
 			{ title: 'Remote IP', select: 'remote_ip' },
+			{ title: 'Remote Port', select: 'remote_port' },
 			{ title: 'Remote ASN', select: 'remote_asn' },
 			{ title: 'Remote ASN Name', select: 'remote_asn_name' },
 			{ title: 'Remote Country', select: 'remote_country' },
@@ -153,8 +149,6 @@ exports.render = function(req, res) {
 			'response_body_len,'+
 			'status_code,'+
 			'status_msg,'+
-			'info_code,'+
-			'info_msg,'+
 			'ioc,'+
 			'ioc_typeIndicator,'+
 			'ioc_typeInfection '+
@@ -172,8 +166,6 @@ exports.render = function(req, res) {
 			{ select: 'response_body_len', title: 'Response Body Length' },
 			{ select: 'status_code', title: 'Status Code' },
 			{ select: 'status_msg', title: 'Status Message' },
-			{ select: 'info_code', title: 'Info Code' },
-			{ select: 'info_msg', title: 'Info Message' },
 			{ select: 'ioc', title: 'IOC' },
 			{ select: 'ioc_typeIndicator', title: 'IOC Type' },
 			{ select: 'ioc_typeInfection', title: 'IOC Stage' }
