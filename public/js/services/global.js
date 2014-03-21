@@ -48,10 +48,29 @@ angular.module('mean.system').factory('Global', [
 // }]);
 
 
-angular.module('mean.system').factory('socket', ['$location',
-	function($location) {
+angular.module('mean.system').factory('socket', ['$location', '$rootScope',
+	function($location, $rootScope) {
 		var socket = io.connect('https://'+$location.$$host+':'+$location.$$port, {secure: true});
-		return socket;
+			return {
+				on: function (eventName, callback) {
+					socket.on(eventName, function () {
+						var args = arguments;
+						$rootScope.$apply(function () {
+							callback.apply(socket, args);
+						});
+					});
+				},
+				emit: function (eventName, data, callback) {
+					socket.emit(eventName, data, function () {
+					var args = arguments;
+					$rootScope.$apply(function () {
+						if (callback) {
+							callback.apply(socket, args);
+						}
+					});
+				})
+			}
+		};
 	}
 ]);
 

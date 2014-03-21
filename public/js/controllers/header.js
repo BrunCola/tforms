@@ -12,9 +12,10 @@ angular.module('mean.system').controller('HeaderController', ['$scope', 'Global'
 		$location.path( path );
 	}
 
-	// $scope.socket.on('disconnected', function(){
-	// 	console.log('disconnected');
-	// });
+	$scope.socket.on('disconnect', function(){
+		// window.location = '/signout';
+		alert('AWW SNAP!');
+	});
 	// console.log(window.user)
 
 
