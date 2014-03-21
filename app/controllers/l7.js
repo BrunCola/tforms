@@ -51,8 +51,11 @@ exports.render = function(req, res) {
 		{ title: 'Packets to Remote', select: 'in_packets' },
 		{ title: 'Packets from Remote', select: 'out_packets' }
 	];
-	var table1Sort = [[0, 'desc']];
-	var table1Div = 'table';
+	var table1Settings = {
+		sort: [[0, 'desc']],
+		div: 'table',
+		title: 'Layer 7 Protocol Bandwidth Usage'
+	}
 
 	var crossfilterSQL = 'SELECT '+
 			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+ // Last Seen
@@ -69,7 +72,7 @@ exports.render = function(req, res) {
 	async.parallel([
 		// Table function(s)
 		function(callback) {
-			new dataTable(table1SQL, table1Params, table1Sort, table1Div, database, function(err,data){
+			new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
 				tables.push(data);
 				callback();
 			});

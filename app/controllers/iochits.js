@@ -171,6 +171,7 @@ exports.render = function(req, res) {
 				'`ioc`, '+
 				'`ioc_typeIndicator`, '+
 				'`ioc_typeInfection`, '+
+				'`ioc_attrID`, '+
 				'`lan_zone`, '+
 				'`lan_ip`, '+
 				'`machine`, '+
@@ -197,7 +198,7 @@ exports.render = function(req, res) {
 					link: {
 						type: 'ioc_drill',
 						// val: the pre-evaluated values from the query above
-						val: ['lan_ip','remote_ip','ioc'],
+						val: ['lan_ip','remote_ip','ioc','ioc_attrID'],
 						crumb: false
 					},
 				},
@@ -227,8 +228,11 @@ exports.render = function(req, res) {
 					},
 				},
 			];
-			var table1Sort = [[0, 'desc']];
-			var table1Div = 'table';
+			var table1Settings = {
+				sort: [[0, 'desc']],
+				div: 'table',
+				title: 'Indicators of Compromise (IOC) Notifications'
+			}
 
 			var crossfilterSQL = 'SELECT '+
 					// SELECTS
@@ -253,7 +257,7 @@ exports.render = function(req, res) {
 			async.parallel([
 				// Table function(s)
 				function(callback) {
-					new dataTable(table1SQL, table1Params, table1Sort, table1Div, database, function(err,data){
+					new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
 						tables.push(data);
 						callback();
 					});

@@ -56,25 +56,26 @@ exports.render = function(req, res) {
 		{ title: 'LAN IP', select: 'lan_ip' },
 		{ title: 'Machine Name', select: 'machine' }
 	];
-	var table1Sort = [[0, 'desc']];
-	var table1Div = 'table';
+	var table1Settings = {
+		sort: [[0, 'desc']],
+		div: 'table',
+		title: 'New Remote IP Addresses Detected'
+	}
 
 	var crossfilterSQL = 'SELECT '+
-			'count(*) AS count, '+
-			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-			'`remote_country` '+
-		'FROM `dns_query` '+
-		'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-		'GROUP BY '+
-			'month(from_unixtime(time)),'+
-			'day(from_unixtime(time)),'+
-			'hour(from_unixtime(time)),'+
-			'remote_country';
+		// SELECTS
+		'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+		'count(*) as count, '+
+		'remote_country '+
+		// !SELECTS
+		'FROM dns_query '+
+		'WHERE time BETWEEN '+start+' AND '+end+' '+
+		'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time))';
 
 	async.parallel([
 		// Table function(s)
 		function(callback) {
-			new dataTable(table1SQL, table1Params, table1Sort, table1Div, database, function(err,data){
+			new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
 				tables.push(data);
 				callback();
 			});

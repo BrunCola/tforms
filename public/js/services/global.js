@@ -47,9 +47,18 @@ angular.module('mean.system').factory('Global', [
 // 	return breadcrumbsService;
 // }]);
 
-angular.module('mean.system').factory('socket', [
-	function() {
-		var socket = io.connect();
+
+angular.module('mean.system').factory('socket', ['$location',
+	function($location) {
+		var socket = io.connect('https://'+$location.$$host+':'+$location.$$port, {secure: true});
 		return socket;
 	}
 ]);
+
+// angular.module('mean.system').factory('active', ['$location',
+// 	function($location) {
+// 		var active = function(link) {
+// 			if ()
+// 		}
+// 	}
+// ]);

@@ -80,13 +80,16 @@ exports.render = function(req, res) {
 			{ title: 'Packets from Remote', select: 'out_packets', dView: false }
 
 		];
-		var table1Sort = [[0, 'desc']];
-		var table1Div = 'table';
+		var table1Settings = {
+			sort: [[0, 'desc']],
+			div: 'table',
+			title: 'Indicators of Compromise (IOC) Notifications'
+		}
 
 		async.parallel([
 			// Table function(s)
 			function(callback) {
-				new dataTable(table1SQL, table1Params, table1Sort, table1Div, database, function(err,data){
+				new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
 					tables.push(data);
 					callback();
 				});

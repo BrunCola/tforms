@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.system').controller('sidebarController', ['$scope', 'Global', '$routeParams', '$location', function ($scope, Global, $routeParams, $location) {
+angular.module('mean.system').controller('sidebarController', ['$scope', 'Global', '$routeParams', '$location', '$rootScope', function ($scope, Global, $routeParams, $location, $rootScope) {
 	$scope.global = Global;
 
 	$scope.select = function(url){
@@ -11,6 +11,20 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		}
 	};
 
+	$scope.navClass = function (page) {
+		var currentRoute = $location.path().substring(1) || 'home';
+		return page === currentRoute ? 'start active' : '';
+	};
+
+	$scope.navClassSelected = function (page) {
+		var currentRoute = $location.path().substring(1) || 'home';
+		return page === currentRoute ? 'selected' : '';
+		// if (page === currentRoute) {
+		// 	return 'selected'
+		// } else if ($rootscope.activeLink[0] === page) {
+		// }
+	};
+
 	$scope.sidebaritems = [{
 		'title': 'IOC Notifications',
 		'url': 'iochits',
@@ -19,7 +33,13 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		'title': 'IOC Top Remote IP',
 		'url': 'ioc_top_remote',
 		'icon': 'fa-warning',
-	},{
+	},
+	{
+		'title': 'Extracted Files',
+		'url': 'file_mime',
+		'icon': 'fa-folder-open',
+	},
+	{
 		'title': 'New Remote IPs',
 		'url': 'new_remote_ip',
 		'icon': 'fa-exchange',

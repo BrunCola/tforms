@@ -3,7 +3,7 @@
 var config = require('../../../config/config'),
 	mysql = require('mysql');
 
-module.exports = function (sql, params, sort, div, database, callback) {
+module.exports = function (sql, params, settings, database, callback) {
 	config.db.database = database;
 	var connection = mysql.createConnection(config.db);
 
@@ -24,6 +24,9 @@ module.exports = function (sql, params, sort, div, database, callback) {
 				if (params[d].select === 'Archive') {
 					params[d].select = null;
 				}
+				if (!params[d].sClass) {
+					params[d].sClass = null;
+				}
 				// if (params[d].dType === undefined) {
 				//	params[d].dType = 'string-case';
 				// }
@@ -37,15 +40,21 @@ module.exports = function (sql, params, sort, div, database, callback) {
 					'mData': params[d].select,
 					'sType': params[d].dType,
 					'bVisible': params[d].dView,
-					'link': params[d].link
+					'link': params[d].link,
+					'sClass': params[d].sClass
 				});
 			}
-			var table = {
-				aaData: result,
-				params: arr,
-				sort: sort,
-				div: div
-			};
+			if (result.length === 0) {
+				var table = null;
+			} else {
+				var table = {
+					aaData: result,
+					params: arr,
+					sort: settings.sort,
+					div: settings.div,
+					title: settings.title
+				};
+			}
 			callback(null, table);
 			connection.destroy();
 		}

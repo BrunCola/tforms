@@ -47,6 +47,10 @@ angular.module('mean').config(['$routeProvider',
 		when('/ioc_top_remote?:start&:end', {
 			templateUrl: 'views/pages/ioc_top_remote.html'
 		}).
+		//Local Drill
+		when('/local_drill', {
+			templateUrl: 'views/pages/local_drill.html'
+		}).
 		//New Remote IPs
 		when('/new_remote_ip', {
 			templateUrl: 'views/pages/new_remote_ip.html'
@@ -74,6 +78,33 @@ angular.module('mean').config(['$routeProvider',
 		}).
 		when('/new_ssl_hosts?:start&:end', {
 			templateUrl: 'views/pages/new_ssl_hosts.html'
+		}).
+		// File Mime
+		when('/file_mime', {
+			templateUrl: 'views/pages/file_mime.html'
+		}).
+		when('/file_mime?:start&:end', {
+			templateUrl: 'views/pages/file_mime.html'
+		}).
+		// File Name
+		when('/file_name', {
+			templateUrl: 'views/pages/file_name.html'
+		}).
+		when('/file_name?:lan_ip', {
+			templateUrl: 'views/pages/file_name.html'
+		}).
+		when('/file_name?:start&:end&:lan_ip', {
+			templateUrl: 'views/pages/file_name.html'
+		}).
+		// File Local
+		when('/file_local', {
+			templateUrl: 'views/pages/file_local.html'
+		}).
+		when('/file_local?:lan_ip&:mime', {
+			templateUrl: 'views/pages/file_local.html'
+		}).
+		when('/file_local?:start&:end&:lan_ip&:mime', {
+			templateUrl: 'views/pages/file_local.html'
 		}).
 		//L7
 		when('/l7', {

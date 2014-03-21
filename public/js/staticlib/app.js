@@ -192,25 +192,22 @@ var App = function () {
 		var body = $('body');
 		var sidebar = $('.page-sidebar');
 		$('.sidebar-search', sidebar).removeClass('open');
-		if (body.hasClass('page-sidebar-closed')) {
-			body.removeClass('page-sidebar-closed');
-			if (body.hasClass('page-sidebar-fixed')) {
-				sidebar.css('width', '');
-			}
-		}
-		else {
-			body.addClass('page-sidebar-closed');
-		}
+		body.addClass('page-sidebar-closed');
+		runResponsiveHandlers();
+	};
+	var sidebar_open = function (e) {
+		var body = $('body');
+		var sidebar = $('.page-sidebar');
+		body.removeClass('page-sidebar-closed');
+		sidebar.css('width', '');
 		runResponsiveHandlers();
 	};
 	var handleSidebarToggler = function () {
-		// handle sidebar show/hide
 		 $('.page-sidebar').on('click', '.sidebar-toggler', function (e) {
-			if (localStorage.getItem('sidebar') === 0) {
+			if (localStorage.getItem('sidebar') == 0) {
 				localStorage.setItem('sidebar', 1);
-				sidebar_close(e);
-			}
-			else {
+				sidebar_open(e);
+			} else {
 				localStorage.setItem('sidebar', 0);
 				sidebar_close(e);
 			}

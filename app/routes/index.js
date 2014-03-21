@@ -3,7 +3,7 @@
 	// 	report = require('../controllers/report');
 
 var config = require('../../config/config');
-module.exports = function(app, passport) {
+module.exports = function(app, passport, connection, io) {
 	app.get('/', function(req, res, next) {
 		console.log(req.session.passport.user);
 		if (req.session.passport.user) {
