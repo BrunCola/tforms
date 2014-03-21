@@ -202,20 +202,7 @@ var App = function () {
 		sidebar.css('width', '');
 		runResponsiveHandlers();
 	};
-	// var sidebar_open = function (e) {
-	// 	var body = $('body');
-	// 	var sidebar = $('.page-sidebar');
-	// 	$('.sidebar-search', sidebar).addClass('open');
-	// 	if (body.hasClass('page-sidebar-closed')) {
-	// 		body.removeClass('page-sidebar-closed');
-	// 		if (body.hasClass('page-sidebar-fixed')) {
-	// 			sidebar.css('width', '');
-	// 		}
-	// 	}
-	// 	runResponsiveHandlers();
-	// };
 	var handleSidebarToggler = function () {
-		// handle sidebar show/hide
 		 $('.page-sidebar').on('click', '.sidebar-toggler', function (e) {
 			if (localStorage.getItem('sidebar') == 0) {
 				localStorage.setItem('sidebar', 1);

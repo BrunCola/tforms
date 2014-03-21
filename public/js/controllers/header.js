@@ -15,7 +15,7 @@ angular.module('mean.system').controller('HeaderController', ['$scope', 'Global'
 	// $scope.socket.on('disconnected', function(){
 	// 	console.log('disconnected');
 	// });
-	console.log(window.user)
+	// console.log(window.user)
 
 
 

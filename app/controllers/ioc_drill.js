@@ -50,6 +50,7 @@ exports.render = function(req, res) {
 			// !SELECTS
 			'FROM conn_ioc '+
 			'WHERE time BETWEEN '+start+' AND '+end+' '+
+			'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
 			'AND `ioc_count` > 0 AND `trash` IS NULL';
 
 		var table0Params = [
@@ -74,7 +75,7 @@ exports.render = function(req, res) {
 		var table0Settings = {
 			sort: [[0, 'desc']],
 			div: 'table0',
-			title: 'Connections'
+			title: 'Total Connections Made By Local System Related to IOC Events'
 		}
 
 		var table1SQL = 'SELECT '+
@@ -104,7 +105,7 @@ exports.render = function(req, res) {
 		var table1Settings = {
 			sort: [[0, 'desc']],
 			div: 'table1',
-			title: 'SSL'
+			title: 'Visits to SSL-enabled Sites Made By Local System Related to IOC Events'
 		}
 
 		var table2SQL = 'SELECT '+
@@ -138,7 +139,7 @@ exports.render = function(req, res) {
 		var table2Settings = {
 			sort: [[0, 'desc']],
 			div: 'table2',
-			title: 'DNS'
+			title: 'DNS Queries Made By Local System Related to IOC Events'
 		}
 
 		var table3SQL = 'SELECT '+
@@ -180,7 +181,7 @@ exports.render = function(req, res) {
 		var table3Settings = {
 			sort: [[0, 'desc']],
 			div: 'table3',
-			title: 'HTTP'
+			title: 'HTTP Requests Made By Local System Related to IOC Events'
 		}
 
 		var table4SQL = 'SELECT '+
@@ -212,7 +213,7 @@ exports.render = function(req, res) {
 		var table4Settings = {
 			sort: [[0, 'desc']],
 			div: 'table4',
-			title: 'File'
+			title: 'Files Extracted By Local System Related to IOC Events'
 		}
 		var ossecTableCF = [];
 		var ossecTableSQL = 'SELECT '+
@@ -434,12 +435,17 @@ exports.render = function(req, res) {
 							'ioc': d.ioc
 						})
 					});
+					// tCount += d.dns;
+					// tCount += d.http;
+					// tCount += d.ssl;
+					// tCount++;
 					ossecTableCF.forEach(function(d){
 						arr.push({
 							'type': 'Endpoint',
 							'count': 1,
 							'time': d.time
 						})
+						// tCount++;
 					});
 					// console.log(arr);
 					// console.log(crossfilter);
