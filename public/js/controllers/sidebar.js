@@ -26,6 +26,20 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		// }
 	};
 
+	$scope.navClass = function (page) {
+		var currentRoute = $location.path().substring(1) || 'home';
+		return page === currentRoute ? 'start active' : '';
+	};
+
+	$scope.navClassSelected = function (page) {
+		var currentRoute = $location.path().substring(1) || 'home';
+		return page === currentRoute ? 'selected' : '';
+		// if (page === currentRoute) {
+		// 	return 'selected'
+		// } else if ($rootscope.activeLink[0] === page) {
+		// }
+	};
+
 	$scope.sidebaritems = [{
 		'title': 'IOC Notifications',
 		'url': 'iochits',

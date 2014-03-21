@@ -700,7 +700,6 @@ angular.module('mean.iochits').controller('IochitsController', ['$scope', 'Globa
 		$http({method: 'GET', url: query}).
 		//success(function(data, status, headers, config) {
 		success(function(data) {
-			console.log(data)
 			if (data.tables[0] === null) {
 				$scope.$broadcast('loadError');
 			} else {
