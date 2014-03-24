@@ -8,7 +8,6 @@ module.exports = function (sql, database, lanIP, callback) {
 	var connection = mysql.createConnection(config.db);
 
 	this.sql = sql;
-	console.log(sql);
 
 	var node = [];
 	var link = [];
@@ -46,7 +45,6 @@ module.exports = function (sql, database, lanIP, callback) {
 			}
 			callback(null, results);
 			connection.destroy();
-			console.log(results);
 		})
 		//group by type and push a main and sub-group for each time slice
 };

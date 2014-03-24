@@ -29,10 +29,9 @@ module.exports = function (sql, database, sClass, callback) {
 			dat.push(data);
 		})
 		.on('end', function(){
-			console.log(dat.length);
+			// console.log(dat.length);
 			callback(null, dat);
 			connection.destroy();
-			console.log('DONE');
 		})
 		//group by type and push a main and sub-group for each time slice
 };

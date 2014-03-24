@@ -669,7 +669,7 @@ angular.module('mean.iochits').controller('IOCremote2LocalController', ['$scope'
 		$http({method: 'GET', url: query}).
 		//success(function(data, status, headers, config) {
 		success(function(data) {
-			if (data.crossfilter.length === 0) {
+			if (data.tables[0] === null) {
 				$scope.$broadcast('loadError');
 			} else {
 				$scope.data = data;

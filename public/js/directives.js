@@ -272,7 +272,7 @@ angular.module('mean.system').directive('datePicker', ['$timeout', '$location', 
 		link: function ($scope, element, attrs) {
 			$timeout(function () {
 				var searchObj;
-				$('#reportrange').daterangepicker(
+				$(element).daterangepicker(
 					{
 					ranges: {
 						'Today': [moment().startOf('day'), moment()],

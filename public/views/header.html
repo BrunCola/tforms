@@ -6,6 +6,19 @@
 		<a href="javascript:;" class="btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
 			<img src="../img/menu-toggler.png" alt=""/>
 		</a>
+
+		<script type="text/ng-template" id="sessionModal.html">
+			<div class="modal-header">
+				<h3>Your session has expired</h3>
+			</div>
+			<div class="modal-body">
+				<span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-sign-in fa-stack-1x fa-inverse"></i></span> Your session has expired. Please click the button below to sign in again.
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-primary" ng-click="ok()">Sign In</button>
+			</div>
+		</script>
+
 		<ul class="nav pull-right">
 			<!-- NOTIFICATION DROPDOWN -->
 			<li ng-app="mean.system" style="margin-top:6px;margin-bottom:-8px" class="dropdown" id="header_notification_bar">
