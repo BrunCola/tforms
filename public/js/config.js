@@ -66,7 +66,7 @@ angular.module('mean').config(['$routeProvider',
 		//l7 local Page
 		when('/l7_local', {
 			templateUrl: 'views/pages/l7_local.html'
-		}).
+		}). 
 		//L7
 		when('/l7_toplocal', {
 			templateUrl: 'views/pages/l7_toplocal.html'

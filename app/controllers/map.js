@@ -50,7 +50,7 @@ exports.render = function(req, res) {
 					"properties":{
 						"date_filed":d.time,
 						"severity":d.ioc_severity,
-						"units":10,
+						"units":d.ioc_count,
 						// "units":d.ioc_count*10,
 						"address_1":"2019 Lake Street"
 					},

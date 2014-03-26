@@ -19,7 +19,8 @@ angular.module('mean.system').directive('makeMap', ['$timeout', '$location', '$r
 					minZoom: 2,
 					zoom: 0
 				})
-				.addLayer(new L.TileLayer("https://ssl_tiles.cloudmade.com/8ee2a50541944fb9bcedded5165f09d9/59870/256/{z}/{x}/{y}.png"));
+				.addLayer(new L.TileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png"));
+				// .addLayer(new L.TileLayer("https://ssl_tiles.cloudmade.com/8ee2a50541944fb9bcedded5165f09d9/59870/256/{z}/{x}/{y}.png"));
 				// .addLayer(new L.TileLayer("http://{s}.tiles.mapbox.com/v3/examples.map-vyofok3q/{z}/{x}/{y}.png"));
 
 				/* Initialize the SVG layer */
@@ -127,19 +128,22 @@ angular.module('mean.system').directive('makeMap', ['$timeout', '$location', '$r
 					// console.log(JSON.stringify(filtered[0]));
 					// updateCounter(filtered[0].length-1);
 					filtered.filter(function(d) {
-						return Date.parse(d.properties.date_filed) > counterTime-step})
-							.append("circle")
-							.attr("r", 40)
-							.style("fill","red")
-							.style("fill-opacity", 0.8)
-							.transition()
+							// console.log(d.geometry.coordinates[1],d.geometry.coordinates[0]);
+							// new L.marker([d.geometry.coordinates[1],d.geometry.coordinates[0]]).addTo(map);
+							return
+							Date.parse(d.properties.date_filed) > counterTime-step})
+								.append("circle")
+								.attr("r", 100)
+								.style("fill","red")
+								.style("fill-opacity", 0.8)
 
-							.duration(800)
-							.ease(Math.sqrt)
-							.attr("r", function(d) { return d.properties.units*100;})
-							.style("fill","#f40")
-							.style("fill-opacity", 1e-6)
-							.remove();
+								.transition()
+								.duration(800)
+								.ease(Math.sqrt)
+								.attr("r", function(d) { return 1000})
+								.style("fill","#f40")
+								.style("fill-opacity", 1e-6)
+								.remove();
 							updateCounter(filtered[0].length-1);
 					}
 
