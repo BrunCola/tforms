@@ -75,6 +75,10 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		'url': 'l7',
 		'icon': 'fa-bars',
 	},{
+		'title': 'Layer 7',
+		'url': 'l7_toplocal',
+		'icon': 'fa-bars',
+	},{
 		'title': 'Top Local IP',
 		'url': 'top_local',
 		'icon': 'fa-cloud-download',

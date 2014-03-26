@@ -14,6 +14,9 @@ var iochits = require('../controllers/iochits'),
 	l7 = require('../controllers/l7'),
 	l7_drill = require('../controllers/l7_drill'),
 	l7_local = require('../controllers/l7_local'),
+	l7_toplocal = require('../controllers/l7_toplocal'),
+	l7_toplocal_app = require('../controllers/l7_toplocal_app'),
+	l7_toplocal_drill = require('../controllers/l7_toplocal_drill'),
 	top_local = require('../controllers/top_local'),
 	top_local2remote = require('../controllers/top_local2remote'),
 	top_remote = require('../controllers/top_remote'),
@@ -44,6 +47,9 @@ module.exports = function(app, passport, connection, io) {
 	app.get('/l7', authorization.requiresLogin, l7.render);
 	app.get('/l7_drill', authorization.requiresLogin, l7_drill.render);
 	app.get('/l7_local', authorization.requiresLogin, l7_local.render);
+	app.get('/l7_toplocal', authorization.requiresLogin, l7_toplocal.render);
+	app.get('/l7_toplocal_app', authorization.requiresLogin, l7_toplocal_app.render);
+	app.get('/l7_toplocal_drill', authorization.requiresLogin, l7_toplocal_drill.render);
 	app.get('/top_local', authorization.requiresLogin, top_local.render);
 	app.get('/top_local2remote', authorization.requiresLogin, top_local2remote.render);
 	app.get('/top_remote', authorization.requiresLogin, top_remote.render);
