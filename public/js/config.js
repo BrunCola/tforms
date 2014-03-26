@@ -97,6 +97,11 @@ angular.module('mean').config(['$routeProvider',
 			templateUrl: 'views/pages/archive.html'
 		}).
 
+		//map
+		when('/map', {
+			templateUrl: 'views/pages/map.html'
+		}).
+
 		otherwise({
 			redirectTo: '/iochits'
 		});

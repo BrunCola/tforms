@@ -20,6 +20,7 @@ var iochits = require('../controllers/iochits'),
 	ioc_top_remote2local = require('../controllers/ioc_top_remote2local'),
 	top_remote2local = require('../controllers/top_remote2local'),
 	archive = require('../controllers/archive'),
+	map = require('../controllers/map'),
 
 	authorization = require('./middlewares/authorization.js');
 
@@ -49,4 +50,5 @@ module.exports = function(app, passport, connection, io) {
 	app.get('/ioc_top_remote2local', authorization.requiresLogin, ioc_top_remote2local.render);
 	app.get('/top_remote2local', authorization.requiresLogin, top_remote2local.render);
 	app.get('/archive', authorization.requiresLogin, archive.render);
+	app.get('/map', authorization.requiresLogin, map.render);
 };
