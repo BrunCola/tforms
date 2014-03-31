@@ -14,7 +14,7 @@ exports.render = function(req, res) {
 		start = req.query.start;
 		end = req.query.end;
 	}
-	if (req.query.l7_proto) {
+	if (req.query.l7_proto && req.query.lan_ip) {
 		//var results = [];
 		var tables = [];
 		var crossfilter = [];
@@ -23,20 +23,18 @@ exports.render = function(req, res) {
 				// SELECTS
 				'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time, '+ // Last Seen
 				'`l7_proto`, '+
+				'`lan_ip`, '+
 				'sum(`in_packets`) AS in_packets, '+
 				'sum(`out_packets`) AS out_packets, '+
 				'(sum(`in_bytes`) / 1048576) AS in_bytes, '+
-				'(sum(`out_bytes`) / 1048576) AS out_bytes, '+
-				'`lan_zone`, '+
-				'`lan_ip`, '+
-				'`machine` '+
+				'(sum(`out_bytes`) / 1048576) AS out_bytes '+
 				// !SELECTS
 			'FROM `conn_l7` '+
 			'WHERE '+
 				'`time` BETWEEN '+start+' AND '+end+' '+
-				'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
+				'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
 			'GROUP '+
-				'BY `lan_ip`';
+				'BY `l7_proto`';
 
 			var table1Params = [
 				{
@@ -44,16 +42,13 @@ exports.render = function(req, res) {
 					select: 'time',
 					dView: true,
 					link: {
-						type: 'l7_local',
+						type: 'l7_toplocal_drill',
 						// val: the pre-evaluated values from the query above
 						val: ['lan_ip','l7_proto'],
 						crumb: false
 					},
 				},
 				{ title: 'Layer 7 Protocol', select: 'l7_proto' },
-				{ title: 'LAN Zone', select: 'lan_zone' },
-				{ title: 'LAN IP', select: 'lan_ip' },
-				{ title: 'Machine Name', select: 'machine' },
 				{ title: 'MB to Remote', select: 'in_bytes' },
 				{ title: 'MB from Remote', select: 'out_bytes'},
 				{ title: 'Packets to Remote', select: 'in_packets', dView:false },
@@ -63,7 +58,7 @@ exports.render = function(req, res) {
 				sort: [[0, 'desc']],
 				div: 'table',
 				title: 'Local IP Bandwidth Usage'
-			}
+			};
 
 			var crossfilterSQL = 'SELECT '+
 					'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+ // Last Seen

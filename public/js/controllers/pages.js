@@ -128,9 +128,9 @@ angular.module('mean.iochits').controller('mapController', ['$scope', 'Global', 
 		success(function(data) {
 			$scope.$broadcast('map', data.map);
 		});
-		$rootScope.pageTitle = 'Extracted Files';
+		$rootScope.pageTitle = 'Live Connections';
 	};
-	$rootScope.rootpage = true;
+	$rootScope.rootpage = false;
 }]);
 
 // FILE MIME
@@ -1169,7 +1169,6 @@ angular.module('mean.iochits').controller('l7toplocalController', ['$scope', 'Gl
 				});
 				$scope.crossfilterData = crossfilter(data.crossfilter);
 				$scope.data = data;
-
 				$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
 				$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
 				$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
@@ -1193,9 +1192,9 @@ angular.module('mean.iochits').controller('l7toplocalAppController', ['$scope', 
 	$scope.onPageLoad = function() {
 		var query;
 		if ($routeParams.start && $routeParams.end) {
-			query = '/l7_toplocal_app?start='+$routeParams.start+'&end='+$routeParams.end+'&l7_proto='+$routeParams.l7_proto;
+			query = '/l7_toplocal_app?start='+$routeParams.start+'&end='+$routeParams.end+'&l7_proto='+$routeParams.l7_proto+'&lan_ip='+$routeParams.lan_ip;
 		} else {
-			query = '/l7_toplocal_app?l7_proto='+$routeParams.l7_proto;
+			query = '/l7_toplocal_app?l7_proto='+$routeParams.l7_proto+'&lan_ip='+$routeParams.lan_ip;
 		}
 		$http({method: 'GET', url: query}).
 		//success(function(data, status, headers, config) {

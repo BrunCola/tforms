@@ -48,32 +48,37 @@ angular.module('mean.system').factory('Global', [
 // }]);
 
 
-angular.module('mean.system').factory('socket', ['$location', '$rootScope',
-	function($location, $rootScope) {
+// angular.module('mean.system').factory('socket', ['$location', '$rootScope',
+// 	function($location, $rootScope) {
+// 		var socket = io.connect('https://'+$location.$$host+':'+$location.$$port, {secure: true});
+// 			return {
+// 				on: function (eventName, callback) {
+// 					socket.on(eventName, function () {
+// 						var args = arguments;
+// 						$rootScope.$apply(function () {
+// 							callback.apply(socket, args);
+// 						});
+// 					});
+// 				},
+// 				emit: function (eventName, data, callback) {
+// 					socket.emit(eventName, data, function () {
+// 					var args = arguments;
+// 					$rootScope.$apply(function () {
+// 						if (callback) {
+// 							callback.apply(socket, args);
+// 						}
+// 					});
+// 				})
+// 			}
+// 		};
+// 	}
+// ]);
+angular.module('mean.system').factory('socket', ['$location',
+	function($location) {
 		var socket = io.connect('https://'+$location.$$host+':'+$location.$$port, {secure: true});
-			return {
-				on: function (eventName, callback) {
-					socket.on(eventName, function () {
-						var args = arguments;
-						$rootScope.$apply(function () {
-							callback.apply(socket, args);
-						});
-					});
-				},
-				emit: function (eventName, data, callback) {
-					socket.emit(eventName, data, function () {
-					var args = arguments;
-					$rootScope.$apply(function () {
-						if (callback) {
-							callback.apply(socket, args);
-						}
-					});
-				})
-			}
-		};
+		return socket;
 	}
 ]);
-
 // angular.module('mean.system').factory('active', ['$location',
 // 	function($location) {
 // 		var active = function(link) {

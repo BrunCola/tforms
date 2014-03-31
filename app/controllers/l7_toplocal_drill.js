@@ -64,7 +64,7 @@ exports.render = function(req, res) {
 				sort: [[0, 'desc']],
 				div: 'table',
 				title: 'Local IP/Remote IP Bandwidth Usage'
-			}
+			};
 
 			var crossfilterSQL = 'SELECT '+
 					// SELECTS

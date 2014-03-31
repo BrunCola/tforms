@@ -8,7 +8,7 @@
 		<small id="sub_heading" page-subheading></small>
 		<div id="severity"></div>
 	</div>
-	<div data-ng-controller="IndexController" data-ng-init="onHeadLoad()" class="breadcrumb">
+	<div ng-show="rootpage" data-ng-controller="IndexController" data-ng-init="onHeadLoad()" class="breadcrumb">
 		<div class="no-text-shadow">
 			<div id="reportrange" class="pull-right dashboard-date-range tooltips no-tooltip-on-touch-device responsive" data-tablet="" data-desktop="tooltips" data-placement="top" data-original-title="Change dashboard date range" date-picker>
 					<i style="color:#fff" class="fa fa-calendar"></i>

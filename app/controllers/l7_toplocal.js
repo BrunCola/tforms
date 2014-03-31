@@ -22,7 +22,10 @@ exports.render = function(req, res) {
 			// SELECTS
 			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
 			'count(*) AS count, '+
+			'`lan_zone`, '+
 			'`lan_ip`, '+
+			'`machine`, '+
+			'`l7_proto`, '+
 			'sum(`in_packets`) as in_packets, '+
 			'sum(`out_packets`) as out_packets, '+
 			'(sum(`in_bytes`) / 1048576) as in_bytes, '+
@@ -40,13 +43,16 @@ exports.render = function(req, res) {
 			select: 'time',
 			dView: true,
 			link: {
-				type: 'l7_drill',
+				type: 'l7_toplocal_app',
 				// val: the pre-evaluated values from the query above
-				val: ['l7_proto'],
+				val: ['l7_proto', 'lan_ip'],
 				crumb: false
 			},
 		},
-		{ title: 'Layer 7 Protocol', select: 'l7_proto' },
+		{ title: 'Connections', select: 'count' },
+		{ title: 'LAN Zone', select: 'lan_zone' },
+		{ title: 'LAN IP', select: 'lan_ip' },
+		{ title: 'Machine Name', select: 'machine' },
 		{ title: 'MB to Remote', select: 'in_bytes' },
 		{ title: 'MB from Remote', select: 'out_bytes' },
 		{ title: 'Packets to Remote', select: 'in_packets' },
@@ -55,8 +61,8 @@ exports.render = function(req, res) {
 	var table1Settings = {
 		sort: [[0, 'desc']],
 		div: 'table',
-		title: 'Layer 7 Protocol Bandwidth Usage'
-	}
+		title: 'Local IP Layer 7 Protocol Bandwidth Usage'
+	};
 
 	var crossfilterSQL = 'SELECT '+
 			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+ // Last Seen
