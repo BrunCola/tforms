@@ -250,7 +250,7 @@ exports.render = function(req, res) {
 			'FROM conn_ioc '+
 			'WHERE time BETWEEN '+start+' AND '+end+' '+
 			'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
-			'GROUP BY ioc_attrID, ioc_childID, ioc_parentID';
+			'GROUP BY  ioc_parentID, ioc_childID, ioc_attrID';
 		var info = {};
 		var InfoSQL = 'SELECT '+
 			'max(from_unixtime(time)) as last, '+

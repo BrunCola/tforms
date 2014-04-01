@@ -31,9 +31,7 @@ angular.module('mean.system').directive('makeMap', ['$timeout', '$location', '$r
 				g = svg.append("g");
 
 				/*Animation Timing Variables*/
-				// var startingTime = 86166720000;
 				var startingTime;
-				// var step = 1500000000; // 17 days
 				var step = 1000; // 1 second
 				var maxTime;
 				var timer;
@@ -58,20 +56,14 @@ angular.module('mean.system').directive('makeMap', ['$timeout', '$location', '$r
 						var parentt = d3.select(this);
 						// d.properties.severity = 1;
 						if (d.properties.severity === 0){
-							// console.log('test')
 							parentt.append("circle")
 							.attr("r", 25)
 							.attr("class",  "center")
 							.style("stroke", function(d) {
-								// if (d.properties.type == "OMI"){
-								// return "#606";
-								// } else if(d.properties.type == "DEMO"){
-								// return "#066";
-								// }
 								return "#f30";
 							});
 						} else if ('properties' in d){
-							parentt.append("g").attr('transform', 'scale(0.4)')
+							parentt.append("g").attr('transform', 'scale(0.25)')
 								.append('g')
 								.attr("transform", "translate(15,-200)")
 								.append('svg:path')
@@ -185,8 +177,8 @@ angular.module('mean.system').directive('makeMap', ['$timeout', '$location', '$r
 						point
 							.transition()
 							.duration(function(d){
-								if (d.properties.severity >= 1) {return 50000 }
-								else { return 5000};
+								if (d.properties.severity >= 1) {return 120000 }
+								else { return 60000};
 							})
 							.ease(Math.sqrt)
 							.style("opacity", 0)
@@ -242,13 +234,11 @@ angular.module('mean.system').directive('makeMap', ['$timeout', '$location', '$r
 						}
 						// stepUp();
 						timer = window.setInterval(stepUp, 1000);
-
 						/*Scale dots when map size or zoom is changed*/
 						function update() {
 							var up = map.getZoom()/13;
 							node.attr("transform", function(d) {return "translate(" +  map.latLngToLayerPoint(d.LatLng).x + "," + map.latLngToLayerPoint(d.LatLng).y + ") scale("+up+")"});
 						}
-
 						/*Show info about on mouseover*/
 						$( ".popup" ).hide();
 						$( ".triggerPopup" ).mouseover(function(e) {
@@ -263,7 +253,6 @@ angular.module('mean.system').directive('makeMap', ['$timeout', '$location', '$r
 							}
 							$('.popup').css("top", e.pageY+20);
 						});
-
 						$( ".triggerPopup" ).on("mouseout", function(){ $( ".popup" ).hide();});
 				}
 				function checkData(data) {

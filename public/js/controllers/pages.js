@@ -192,7 +192,7 @@ angular.module('mean.iochits').controller('fileNameController', ['$scope', 'Glob
 }]);
 
 // IOC DRILL
-angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
+angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', '$modal', '$log', function ($scope, Global, $http, $routeParams, $rootScope, $modal, $log) {
 	$scope.global = Global;
 	$scope.onPageLoad = function() {
 		var query;
@@ -220,7 +220,6 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 					return d.count;
 				});
 				$scope.$broadcast('geoChart', geoDimension, geoGroup, 'drill');
-
 				$scope.$broadcast('tableLoad', null, $scope.data.tables, 'drill');
 				var sevDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
 				var sevGroupPre = sevDimension.group();
@@ -377,7 +376,6 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 
 				$scope.iocc = $routeParams.ioc;
 				$scope.ioc_type = data.info.main[0].ioc_typeIndicator;
-
 				if (data.info.desc[0].description) {
 					var description = data.info.desc[0].description;
 					var len = description.length;
@@ -388,6 +386,19 @@ angular.module('mean.iochits').controller('IocDrillController', ['$scope', 'Glob
 						$scope.desc = description;
 					}
 				}
+				$scope.open = function () {
+					var modalInstance = $modal.open({
+						templateUrl: 'descModal.html',
+						controller: ModalInstanceCtrl,
+					});
+				};
+				var ModalInstanceCtrl = function ($scope, $modalInstance) {
+					$scope.ok = function () {
+						$modalInstance.close();
+					};
+					$scope.iocc = $routeParams.ioc;
+					$scope.fullDesc = description;
+				};
 			}
 		});
 		$rootScope.pageTitle = 'IOC Notifications';

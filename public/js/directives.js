@@ -19,13 +19,13 @@ angular.module('mean.system').directive('pageTitle', ['$rootScope', function ($r
 	};
 }]);
 
-angular.module('mean.system').directive('iocDesc', function() {
+angular.module('mean.iochits').directive('iocDesc', function() {
 	return {
 		link: function($scope, element, attrs) {
 			$scope.$on('iocDesc', function (event, description) {
-				$(element).html('... <a href="javascript:void(0);"><strong>Read More</strong></a>');
+				$(element).html('... <a href="javascript:void(0);"><strong ng-click="open">Read More</strong></a>');
 				$(element).on('click', function(){
-					$.colorbox({html: '<span style="margin: 20px">'+description+'</span>', width:500});
+					$scope.open();
 				})
 			});
 		}
@@ -110,6 +110,9 @@ angular.module('mean.system').directive('loadingSpinner', ['$rootScope', functio
 					$('#loading-spinner').data('spinner').stop();
 				}
 				$('html, body').animate({scrollTop:0}, 'slow');
+				window.onscroll = function (event) {
+					$('html, body').stop( true, true ).animate();
+				}
 				$(".page-content").fadeTo(500, 1);
 			});
 		}

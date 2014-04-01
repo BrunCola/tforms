@@ -110,34 +110,10 @@ module.exports = function(app, passport, io) {
 	// 		console.log(data.email);
 	// 	});
 
-
-
-		// function polling(userData.username, POLLCheckpoint) {
-		// 	setInterval(function(){
-		// 			console.log('CHECKING for alert');
-		// 			var connection = mysql.createConnection(db);
-		// 			connection.query("SELECT alert.added, conn_ioc.ioc FROM alert, conn_ioc WHERE alert.conn_uids = conn_ioc.conn_uids AND alert.username = '"+userData.username+"' AND alert.added >= '"+POLLCheckpoint+"' ORDER BY alert.added",function (err, results) {
-		// 				if (results) {
-		// 					console.log(results);
-		// 				}
-		// 			})
-		// 			connection.destroy();
-		// 			// POLLCheckpoint = Math.round(new Date().getTime() / 1000);
-		// 				// .on('result', function(data){
-		// 				// 	data.newIOC = true;
-		// 				// 	alerts.push(data);
-		// 				// })
-		// 				// .on('end', function(){
-		// 				// 	socket.emit('newIOC', alerts);
-		// 				// 	POLLCheckpoint = Math.round(new Date().getTime() / 1000);
-		// 				// })
-		// 		}, 3000)
-		// }
-
-		var POLLCheckpoint;
+		var POLLCheckpoint, timer;
 		socket.on('init', function(userData) {
-			console.log(userData)
-			var alerts = [];
+			// console.log(userData)
+			var alerts = [], newIOCcount = 0;
 			var cdb = {
 				port: config.db.port,
 				host: config.db.host,
@@ -152,7 +128,6 @@ module.exports = function(app, passport, io) {
 				if (results.length > 0) {
 					// if result is returned, run query checking for new alerts
 					var checkpoint = results[0].checkpoint;
-					//POLLCheckpoint = checkpoint;
 					var db = {
 						port: config.db.port,
 						host: config.db.host,
@@ -161,37 +136,84 @@ module.exports = function(app, passport, io) {
 						database: userData.database
 					};
 					var connection = mysql.createConnection(db);
-					connection.query("SELECT alert.added, conn_ioc.ioc FROM alert, conn_ioc WHERE alert.conn_uids = conn_ioc.conn_uids AND alert.username = '"+userData.username+"' AND alert.added >= '"+checkpoint+"' ORDER BY alert.added")
-					.on('result', function(data){
-						if (data.added > checkpoint) {
+					connection.query("SELECT alert.added, conn_ioc.ioc FROM alert, conn_ioc WHERE alert.conn_uids = conn_ioc.conn_uids AND alert.username = '"+userData.username+"' AND alert.added >= '"+checkpoint+"' ORDER BY alert.added",function (err, results) {
+						if (results) {
+							newIOCcount = results.length;
+						}
+					});
+					connection.query("SELECT alert.added, conn_ioc.ioc FROM alert, conn_ioc WHERE alert.conn_uids = conn_ioc.conn_uids AND alert.username = '"+userData.username+"' AND alert.trash is null ORDER BY alert.added DESC LIMIT 10")
+					.on('result', function(data) {
+						if (data.added >= checkpoint) {
 							data.newIOC = true;
 						}
 						alerts.push(data);
 					})
 					.on('end', function(){
-						socket.emit('initial iocs', alerts);
+							// var newarr = [];
+						// // for (var d = 1; d < 11; d++){
+						// 	newarr.push(alerts);
+						// }
+						socket.emit('initial iocs', alerts, newIOCcount);
 						POLLCheckpoint = Math.round(new Date().getTime() / 1000);
-						// polling(userData.username, POLLCheckpoint);
+						timer = setInterval(function(){polling(userData.username, POLLCheckpoint, connection)}, 5000);
 					})
 				}
 			})
 		});
-
 		socket.on('checkpoint', function(userData){
 			function newCP() {
 				var newCheckpoint = Math.round(new Date().getTime() / 1000);
-				// console.log(passport)
-				// socket.emit('checkpointSet', newCheckpoint);
 				POLLCheckpoint = newCheckpoint;
-				console.log('checkpoint now set to: '+newCheckpoint)
+				console.log('checkpoint now set to: '+newCheckpoint);
 				var config = require('./config');
 				config.db.database = 'rp_users';
 				var connection = mysql.createConnection(config.db);
+				clearInterval(timer);
+				timer = setInterval(function(){polling(userData.username, POLLCheckpoint, connection)}, 5000);
 				connection.query("UPDATE `user` SET `checkpoint`= "+newCheckpoint+" WHERE `id` = '"+userData.id+"'");
 			}
 			newCP();
 		});
+		socket.on('disconnect', function () {
+			clearInterval(timer);
+		});
+		function polling(username, POLLCheckpoint, connection) {
+			connection.query("SELECT alert.added, conn_ioc.ioc FROM alert, conn_ioc WHERE alert.conn_uids = conn_ioc.conn_uids AND alert.username = '"+username+"' AND alert.added >= '"+POLLCheckpoint+"' ORDER BY alert.added",function (err, results) {
+				if (results) {
+					if (results.length <= 10) {
+						console.log(results);
+						var topAdded = results[0].added;
+						for (var i in results){
+							if (results[i].added > topAdded) {
+								topAdded = results[i].added;
+							}
+						}
+						topAdded += 1;
+						clearInterval(timer); // add a second to the timer
+						socket.emit('newIOC', results, results.length);
+						timer = setInterval(function(){polling(username, topAdded, connection)}, 300000); //change to 5 minutes on result
+					} else {
+						var newarr = [];
+						var IOCcount = results.length;
+						for (var d = 1; d < 11; d++){
+							newarr.push(results[results.length-d]);
+						}
+						console.log(results);
+						var topAdded = results[0].added;
+						for (var i in results){
+							if (results[i].added > topAdded) {
+								topAdded = results[i].added;
+							}
+						}
+						topAdded += 1;
+						clearInterval(timer); // add a second to the timer
+						socket.emit('newIOC', newarr, IOCcount);
+						timer = setInterval(function(){polling(username, topAdded, connection)}, 300000); //change to 5 minutes on result
+					}
+				}
+				console.log('CHECKING for alert > '+POLLCheckpoint);
+			})
+		}
 
 	})
-
 };

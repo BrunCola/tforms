@@ -30,41 +30,35 @@ angular.module('mean.system').controller('HeaderController', ['$scope', 'Global'
 		$scope.open();
 	});
 
+	$scope.iocalerts = [];
 	$scope.socket.emit('init', {username: window.user.username, checkpoint: window.user.checkpoint, database: window.user.database});
-	$scope.socket.on('initial iocs', function(data){
+	$scope.socket.on('initial iocs', function(data, count){
 		$scope.iocCount = 0;
-		for (var n in data) {
-			if (data[n].newIOC) {
-				$scope.iocCount++;
-			}
+		if (count > 0) {
+			$scope.iocCount = count;
 		}
-		if (data.length >= 11) {
-			$scope.iocalerts = data.reverse().splice(0,10);
-		} else {
-			$scope.iocalerts = data;
-			//emit for more data (send difference and append it to current list)
-		}
+		console.log(data.length);
+		$scope.iocalerts = data;
 		$scope.$apply();
 	});
-	// $scope.socket.on('checkpointSet', function(data){
-	// 	window.user.checkpoint = data;
-	// 	console.log('new checkpoint recieved from server: '+data);
-	// });
-
-	// $scope.socket.on('newIOC', function(data){
-	// 	// window.user.checkpoint = data;
-	// 	console.log(data);
-	// 	console.log('NEW IOC');
-	// 	// console.log(window.user);
-	// });
+	$scope.socket.on('newIOC', function(data, iCount){
+		$scope.iocCount += iCount;
+		$scope.iocalerts.splice(0, data.length);
+		for (var i in data) {
+			$scope.iocalerts.splice(0, 0, data[i]);
+		}
+		// $(".flagged_drop").effect("highlight", {}, 5500);
+		$scope.$apply();
+		console.log(data);
+		console.log('NEW IOC');
+		$rootScope.$broadcast('newNoty', 'New IOC');
+		// console.log(window.user);
+	});
 
 	$scope.checkpoint = function() {
-		//socket.emit('checkpoint', JSON.stringify(window.user));
+		// $(".flagged_drop").effect("highlight", {}, 5500);
+		$scope.iocCount = 0;
 		$scope.socket.emit('checkpoint', {username: window.user.username, id: window.user.id});
-		//$rootScope.$broadcast('newNoty', 'Test');
 	}
-	// 
-	// 
-	// 
 
 }]);

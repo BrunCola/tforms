@@ -81,6 +81,7 @@ td.file {
   word-wrap: break-word;
   max-width: 200px;
 }
+
 .severity-deselect {
    opacity: .4 !important;
    transition: opacity .25s ease-in-out;
@@ -1407,30 +1408,36 @@ padding: 0px 10px;
   box-shadow: none;
   padding-right: 0px;
   padding-left: 8px;
-  height: 10px;
- padding-bottom: 18px;
-  margin-bottom: 25px;
+  /*height: 10px;*/
+/* padding-bottom: 18px;
+  margin-bottom: 25px;*/
+
   position: relative;
-  border:0px !important;
-  background-color: #eee;
+ /* border:0px !important;
+  background-color: #eee;*/
+}
+
+.breadcrumb h3 {
+ margin-top:-8px;
+ /*padding-top: 0px;*/
 }
 
 .page-content .breadcrumb a,
 .page-content .breadcrumb i,
 .page-content .breadcrumb span {
-  color: #333;
-  font-size: 14px;
+  /*color: #333;*/
+  /*font-size: 14px;*/
   text-shadow:none;
 }
 
 .page-content .breadcrumb i {
-  color: #666;
+  /*color: #666;*/
 }
 
 #breadhome a,
 #breadhome i/**,
 #breadhome span**/ {
-  color: #333;
+  /*color: #333;*/
   font-size: 12px;
   text-shadow:none;
   text-decoration:none;

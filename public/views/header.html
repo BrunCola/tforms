@@ -20,14 +20,21 @@
 		</script>
 
 		<ul class="nav pull-right">
+			<!-- <li class="no-text-shadow">
+				<div id="reportrange" class="pull-right dashboard-date-range tooltips no-tooltip-on-touch-device responsive" data-tablet="" data-desktop="tooltips" data-placement="top" data-original-title="Change dashboard date range" date-picker>
+						<i style="color:#fff" class="fa fa-calendar"></i>
+						<span>{{start}} - {{end}}</span>
+						<i style="color:#fff" class="fa fa-angle-down"></i>
+				</div>
+			</li> -->
 			<!-- NOTIFICATION DROPDOWN -->
 			<li ng-app="mean.system" style="margin-top:6px;margin-bottom:-8px" class="dropdown" id="header_notification_bar">
-				<input class="span3" name="search" ng-model="search" type="text" placeholder="Search" universal-search>
+				<input class="span3" name="search" ng-model="search" type="text" placeholder="Search this page..." universal-search>
 			</li>
 			<li class="dropdown" id="header_notification_bar">
 				<a ng-click="checkpoint()" style="width:25px" href="#" class="dropdown-toggle" data-toggle="dropdown">
 					<i style="margin-left:5px" class="fa fa-warning"></i>
-					<span class="badge">{{iocCount}}</span>
+					<span ng-hide="iocCount == 0" class="badge">{{iocCount}}</span>
 				</a>
 				<ul class="dropdown-menu extended notification">
 					<li>
@@ -40,7 +47,7 @@
 						<a>See all notifications<i class="fa m-icon-swapright"></i></a>
 					</li>
 				</ul>
-			</li> 
+			</li>
 			<li class="dropdown" id="header_notification_bar">
 				<a style="width:25px" ng-click="go('/archive')" href="/#archive" class="dropdown-toggle" data-toggle="dropdown">
 					<i style="margin-left:5px" class="fa fa-trash-o"></i>
