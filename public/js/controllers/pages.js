@@ -117,6 +117,22 @@ angular.module('mean.iochits').controller('fileLocalController', ['$scope', 'Glo
 	$rootScope.rootpage = true;
 }]);
 
+// MAP
+angular.module('mean.iochits').controller('mapController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
+	$scope.global = Global;
+	$scope.onPageLoad = function() {
+		var query;
+		query = '/map';
+		$http({method: 'GET', url: query}).
+		//success(function(data, status, headers, config) {
+		success(function(data) {
+			$scope.$broadcast('map', data.map);
+		});
+		$rootScope.pageTitle = 'Live Connections';
+	};
+	$rootScope.rootpage = false;
+}]);
+
 // FILE MIME
 angular.module('mean.iochits').controller('fileMimeController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
 	$scope.global = Global;
@@ -669,7 +685,7 @@ angular.module('mean.iochits').controller('IOCremote2LocalController', ['$scope'
 		$http({method: 'GET', url: query}).
 		//success(function(data, status, headers, config) {
 		success(function(data) {
-			if (data.crossfilter.length === 0) {
+			if (data.tables[0] === null) {
 				$scope.$broadcast('loadError');
 			} else {
 				$scope.data = data;
@@ -1127,6 +1143,138 @@ angular.module('mean.iochits').controller('l7LocalController', ['$scope', 'Globa
 	};
 	$rootScope.rootpage = true;
 }]);
+
+
+// LAYER 7 Top Local
+angular.module('mean.iochits').controller('l7toplocalController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
+	$scope.global = Global;
+	$scope.onPageLoad = function() {
+		var query;
+		if ($routeParams.start && $routeParams.end) {
+			query = '/l7_toplocal?start='+$routeParams.start+'&end='+$routeParams.end;
+		} else {
+			query = '/l7_toplocal'
+		}
+		$http({method: 'GET', url: query}).
+		//success(function(data, status, headers, config) {
+		success(function(data) {
+			if (data.tables[0] === null) {
+				$scope.$broadcast('loadError');
+			} else {
+				var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
+				data.crossfilter.forEach(function(d) {
+					d.dd = dateFormat.parse(d.time);
+					d.hour = d3.time.hour(d.dd);
+					d.count = +d.count;
+				});
+				$scope.crossfilterData = crossfilter(data.crossfilter);
+				$scope.data = data;
+				$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+				$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+				$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
+
+				var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
+				var barGroup = barDimension.group().reduceSum(function(d) { return d.count });
+				$scope.$broadcast('barChart', barDimension, barGroup, 'bar');
+
+				$scope.barChartxAxis = '';
+				$scope.barChartyAxis = '# MB / Hour';
+			}
+		});
+		$rootScope.pageTitle = 'Bandwidth Usage of Layer 7 Protocols'
+	};
+	$rootScope.rootpage = true;
+}]);
+
+// LAYER 7 Top Local App
+angular.module('mean.iochits').controller('l7toplocalAppController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
+	$scope.global = Global;
+	$scope.onPageLoad = function() {
+		var query;
+		if ($routeParams.start && $routeParams.end) {
+			query = '/l7_toplocal_app?start='+$routeParams.start+'&end='+$routeParams.end+'&l7_proto='+$routeParams.l7_proto+'&lan_ip='+$routeParams.lan_ip;
+		} else {
+			query = '/l7_toplocal_app?l7_proto='+$routeParams.l7_proto+'&lan_ip='+$routeParams.lan_ip;
+		}
+		$http({method: 'GET', url: query}).
+		//success(function(data, status, headers, config) {
+		success(function(data) {
+			if (data.tables[0] === null) {
+				$scope.$broadcast('loadError');
+			} else {
+				var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
+				data.crossfilter.forEach(function(d) {
+					d.dd = dateFormat.parse(d.time);
+					d.hour = d3.time.hour(d.dd);
+					d.count = +d.count;
+				});
+				$scope.crossfilterData = crossfilter(data.crossfilter);
+				$scope.data = data;
+
+				$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+				$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+				$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
+
+				var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
+				var barGroup = barDimension.group().reduceSum(function(d) { return d.count });
+				$scope.$broadcast('barChart', barDimension, barGroup, 'bar');
+
+				$scope.barChartxAxis = '';
+				$scope.barChartyAxis = '# MB / Hour';
+			}
+		});
+		$rootScope.pageTitle = 'Bandwidth Usage of Layer 7 Protocols'
+	};
+	$rootScope.rootpage = true;
+}]);
+
+// LAYER 7 top Local Drill
+angular.module('mean.iochits').controller('l7toplocalDrillController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', function ($scope, Global, $http, $routeParams, $rootScope) {
+	$scope.global = Global;
+	$scope.onPageLoad = function() {
+		var query;
+		if ($routeParams.start && $routeParams.end) {
+			query = '/l7_toplocal_drill?start='+$routeParams.start+'&end='+$routeParams.end+'&lan_ip='+$routeParams.lan_ip+'&l7_proto='+$routeParams.l7_proto;
+		} else {
+			query = '/l7_toplocal_drill?lan_ip='+$routeParams.lan_ip+'&l7_proto='+$routeParams.l7_proto;
+		}
+		$http({method: 'GET', url: query}).
+		//success(function(data, status, headers, config) {
+		success(function(data) {
+			if (data.tables[0] === null) {
+				$scope.$broadcast('loadError');
+			} else {
+				var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
+				data.crossfilter.forEach(function(d) {
+					d.dd = dateFormat.parse(d.time);
+					d.hour = d3.time.hour(d.dd);
+					d.count = +d.count;
+				});
+				$scope.crossfilterData = crossfilter(data.crossfilter);
+				$scope.data = data;
+
+				var geoDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
+				var geoGroup = geoDimension.group().reduceSum(function (d) {
+					return d.count;
+				});
+				$scope.$broadcast('geoChart', geoDimension, geoGroup);
+				$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+				$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+				$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
+
+				var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
+				var barGroup = barDimension.group().reduceSum(function(d) { return d.count });
+				$scope.$broadcast('barChart', barDimension, barGroup, 'bar');
+
+				$scope.barChartxAxis = '';
+				$scope.barChartyAxis = '# MB / Hour';
+			}
+		});
+		$rootScope.pageTitle = 'Bandwidth Usage of Layer 7 Protocols'
+	};
+	$rootScope.rootpage = true;
+}]);
+
 
 // LOCAL DRILL
 angular.module('mean.iochits').controller('localDrillController', ['$scope', 'Global', '$http', '$routeParams', '$rootScope', 'socket', function ($scope, Global, $http, $routeParams, $rootScope, socket) {

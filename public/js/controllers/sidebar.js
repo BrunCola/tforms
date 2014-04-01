@@ -40,7 +40,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		// }
 	};
 
-	$scope.sidebaritems = [{
+	$scope.sidebaritems = [
+	{
+		'title': 'Live Connections',
+		'url': 'map',
+		'icon': 'fa-map-marker',
+	},{
 		'title': 'IOC Notifications',
 		'url': 'iochits',
 		'icon': 'fa-warning',
@@ -71,8 +76,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		'url': 'new_ssl_hosts',
 		'icon': 'fa-lock',
 	},{
-		'title': 'Layer 7',
+		'title': 'Applications',
 		'url': 'l7',
+		'icon': 'fa-bars',
+	},{
+		'title': 'Applications Top Local',
+		'url': 'l7_toplocal',
 		'icon': 'fa-bars',
 	},{
 		'title': 'Top Local IP',

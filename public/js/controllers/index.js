@@ -18,5 +18,9 @@ angular.module('mean.iochits').controller('IndexController', ['$scope', 'Global'
 			$rootScope.start = moment.unix($scope.global.startTime).format('MMMM D, YYYY h:mm A');
 			$rootScope.end = moment.unix($scope.global.endTime).format('MMMM D, YYYY h:mm A');
 		}
+		// $scope = $rootScope;
+		$rootScope.$watch('rootpage', function(){
+			$scope.rootpage = $rootScope.rootpage;
+		})
 	};
 }]);
