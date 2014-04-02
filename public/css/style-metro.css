@@ -590,6 +590,42 @@ select:focus {
   color: #F4F4F4 !important;
 }
 
+
+
+
+.aDrop4 .fa-square {
+  color: #DD122A !important;
+}
+
+.aDrop4 .fa-exclamation-circle{
+  color: #F4F4F4 !important;
+}
+
+.aDrop3 .fa-square {
+  color: #F88B12 !important;
+}
+
+.aDrop3 .fa-bell{
+  color: #383E4B !important;
+}
+
+.aDrop2 .fa-square {
+  color: #F5D800 !important;
+}
+
+.aDrop2 .fa-bullhorn {
+  color: #383E4B !important; 
+}
+
+.aDrop1 .fa-square
+{
+ color: #377FC7 !important;
+}
+
+.aDrop1 .fa-flag {
+  color: #F4F4F4 !important;
+}
+
 /**.btn.red-stripe
 {
   border-left: 3px solid #d84a38;

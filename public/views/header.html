@@ -41,10 +41,27 @@
 						<span class="more"></span>
 					</li>
 					<div data-ng-repeat="ioc in iocalerts">
-						<li><a class="flagged_drop" href=""><span class="label label-important"><i class="fa fa-bolt"></i></span>{{ioc.ioc}}<span style="float:right" class="time" data-livestamp="{{ioc.added}}"></span></a></li>
+						<li>
+							<a class="{{ioc.class}}" href="" newNotification>
+								<div class="row-fluid">
+									<div class="span2">
+										 <span ng-show="ioc.ioc_severity == 1"><span class="aDrop1 fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-flag fa-stack-1x fa-inverse"></i></span></span>
+										 <span ng-show="ioc.ioc_severity == 2"><span class="aDrop2 fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-bullhorn fa-stack-1x fa-inverse"></i></span></span>
+										 <span ng-show="ioc.ioc_severity == 3"><span class="aDrop3 fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-bell fa-stack-1x fa-inverse"></i></span></span>
+										 <span ng-show="ioc.ioc_severity == 4"><span class="aDrop4 fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-exclamation-circle fa-stack-1x fa-inverse"></i></span></span>
+									</div>
+									<div class="span10">
+										<div class="row-fluid">
+											{{ioc.ioc}}
+										</div>
+										<span class="time pull-right" data-livestamp="{{ioc.added}}"></span>
+									</div>
+								</div>
+							</a>
+						</li>
 					</div>
 					<li class="external">
-						<a>See all notifications<i class="fa m-icon-swapright"></i></a>
+						<a>See all notifications</a>
 					</li>
 				</ul>
 			</li>

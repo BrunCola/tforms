@@ -76,6 +76,10 @@ angular.module('mean.system').directive('newNotification', function() {
 					timeout: 5000 // delay for closing event. Set false for sticky notifications
 				});
 			});
+			$scope.$on('killNoty', function (event) {
+				$.noty.closeAll();
+				$(".flagged_drop").effect("highlight", {}, 5500);
+			});
 		}
 	};
 });

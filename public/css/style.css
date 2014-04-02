@@ -718,7 +718,7 @@ Header and header elements.
 }
 
 .header.navbar-fixed-top {
-  z-index: 9995 !important;
+  z-index: 999 !important;
 
 }
 
@@ -903,7 +903,7 @@ ul.page-sidebar-menu > li > a {
   font-weight: 300;
 }
 .page-sidebar {
-  z-index: 9999;
+  z-index: 999;
 }
 /**.page-sidebar-fixed ul.page-sidebar-menu > li > a {
   -webkit-transition: all 0.2s ease;
@@ -2370,7 +2370,7 @@ Custom icon buttons
 
 .dropdown-menu.extended li a{
    font-size: 13px;
-   padding: 10px !important;
+   /*padding: 10px !important;*/
    background-color: #ffffff;
 }
 
