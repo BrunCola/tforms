@@ -315,7 +315,7 @@ angular.module('mean.system').directive('datePicker', ['$timeout', '$location', 
 	};
 }]);
 
-angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '$routeParams', '$rootScope', function ($timeout, $location, $routeParams, $rootScope) {
+angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '$routeParams', '$rootScope', 'iocIcon', function ($timeout, $location, $routeParams, $rootScope, iocIcon) {
 	return {
 		link: function ($scope, element, attrs) {
 			$scope.$on('tableLoad', function (event, tableData, params, tableType) {
@@ -365,20 +365,7 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 										}
 										if (aData.ioc_severity) {
 											var rIndex = $scope.r.indexOf("ioc_severity");
-											switch(aData.ioc_severity) {
-												case 1:
-													$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-flag fa-stack-1x fa-inverse"></i></span>');
-													break;
-												case 2:
-													$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bullhorn fa-stack-1x fa-inverse"></i></span>');
-													break;
-												case 3:
-													$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bell fa-stack-1x fa-inverse"></i></span>');
-													break;
-												case 4:
-													$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-exclamation-circle fa-stack-1x fa-inverse"></i></span>');
-													break;
-											}
+											$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa '+iocIcon(aData.ioc_severity)+' fa-stack-1x fa-inverse"></i></span>');
 										}
 									},
 									'fnDrawCallback': function( oSettings ) {
@@ -422,20 +409,7 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 									}
 									if (aData.ioc_severity) {
 										var rIndex = $scope.r.indexOf("ioc_severity");
-										switch(aData.ioc_severity) {
-											case 1:
-												$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-flag fa-stack-1x fa-inverse"></i></span>');
-												break;
-											case 2:
-												$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bullhorn fa-stack-1x fa-inverse"></i></span>');
-												break;
-											case 3:
-												$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bell fa-stack-1x fa-inverse"></i></span>');
-												break;
-											case 4:
-												$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-exclamation-circle fa-stack-1x fa-inverse"></i></span>');
-												break;
-										}
+										$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa '+iocIcon(aData.ioc_severity)+' fa-stack-1x fa-inverse"></i></span>');
 									}
 									// url builder
 									for (var c in $scope.e) {

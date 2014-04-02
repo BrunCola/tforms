@@ -45,10 +45,7 @@
 							<a class="{{ioc.class}}" href="" newNotification>
 								<div class="row-fluid">
 									<div class="span2">
-										 <span ng-show="ioc.ioc_severity == 1"><span class="aDrop1 fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-flag fa-stack-1x fa-inverse"></i></span></span>
-										 <span ng-show="ioc.ioc_severity == 2"><span class="aDrop2 fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-bullhorn fa-stack-1x fa-inverse"></i></span></span>
-										 <span ng-show="ioc.ioc_severity == 3"><span class="aDrop3 fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-bell fa-stack-1x fa-inverse"></i></span></span>
-										 <span ng-show="ioc.ioc_severity == 4"><span class="aDrop4 fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-exclamation-circle fa-stack-1x fa-inverse"></i></span></span>
+										<span class="aDrop{{ioc.ioc_severity}} fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa {{ioc.icon}} fa-stack-1x fa-inverse"></i></span>
 									</div>
 									<div class="span10">
 										<div class="row-fluid">

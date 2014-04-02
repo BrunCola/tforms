@@ -79,6 +79,31 @@ angular.module('mean.system').factory('socket', ['$location',
 		return socket;
 	}
 ]);
+
+angular.module('mean.system').factory('iocIcon',
+	function() {
+		var iocIcon = function(severity) {
+			switch(severity){
+				case 1:
+					return 'fa-flag';
+					break;
+				case 2:
+					return 'fa-bullhorn';
+					break;
+				case 3:
+					return 'fa-bell';
+					break;
+				case 4:
+					return 'fa-exclamation-circle';
+					break;
+				default:
+					return 'fa-question';
+			}
+		}
+		return iocIcon;
+	}
+);
+
 // angular.module('mean.system').factory('active', ['$location',
 // 	function($location) {
 // 		var active = function(link) {

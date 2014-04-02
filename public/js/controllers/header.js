@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.system').controller('HeaderController', ['$scope', 'Global', '$rootScope', '$location', 'socket', '$modal', '$log', function ($scope, Global, $rootScope, $location, socket, $modal, $log) {
+angular.module('mean.system').controller('HeaderController', ['$scope', 'Global', '$rootScope', '$location', 'socket', '$modal', 'iocIcon', function ($scope, Global, $rootScope, $location, socket, $modal, iocIcon) {
 	$scope.global = Global;
 	$scope.socket = socket;
 	$scope.$watch('search', function(){
@@ -35,22 +35,22 @@ angular.module('mean.system').controller('HeaderController', ['$scope', 'Global'
 			if (d.newIOC == true) {
 				d.class = 'flagged_drop';
 			}
+			d.icon = iocIcon(d.ioc_severity);
 		})
 		$scope.iocalerts = data;
 		$scope.$apply();
 	});
 	$scope.socket.on('newIOC', function(data, iCount){
 		$scope.iocCount += iCount;
+		$scope.iocalerts.splice(0, data.length);
 		data.forEach(function(d){
 			$rootScope.$broadcast('newNoty', d.ioc);
 			if (d.newIOC == true) {
 				d.class = 'flagged_drop'
 			}
+			d.icon = iocIcon(d.ioc_severity);
+			$scope.iocalerts.splice(0, 0, d);
 		})
-		$scope.iocalerts.splice(0, data.length);
-		for (var i in data) {
-			$scope.iocalerts.splice(0, 0, data[i]);
-		}
 		$scope.$apply();
 	});
 	$scope.checkpoint = function() {

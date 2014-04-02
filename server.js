@@ -64,7 +64,7 @@ var app = express()
 
 // Express settings
 require('./config/express')(app, passport, pool);
-require('./config/socket')(app, passport, io, pool);
+require('./config/socket')(app, passport, io);
 
 // Bootstrap routes
 var routes_path = __dirname + '/app/routes';

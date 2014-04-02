@@ -4,7 +4,7 @@ var mysql = require('mysql'),
 	nodemailer = require("nodemailer"),
 	phantom = require('node-phantom');
 
-module.exports = function(app, passport, io, pool) {
+module.exports = function(app, passport, io) {
 
 	// grab config file
 	//var connection = mysql.createConnection(config.db);
@@ -154,8 +154,6 @@ module.exports = function(app, passport, io, pool) {
 					.on('result', function(data) {
 						if (data.added >= checkpoint) {
 							data.newIOC = true;
-						} else {
-							data.newIOC = false;
 						}
 						alerts.push(data);
 					})
@@ -186,7 +184,15 @@ module.exports = function(app, passport, io, pool) {
 		});
 		function polling(username, POLLCheckpoint, connection) {
 			var newarr = []; var arr = []; var topAdded = 0;
-			connection.query("SELECT alert.added, conn_ioc.ioc FROM alert, conn_ioc WHERE alert.conn_uids = conn_ioc.conn_uids AND alert.username = '"+username+"' AND alert.added >= '"+POLLCheckpoint+"' ORDER BY alert.added")
+			connection.query("SELECT "+
+						"alert.added, "+
+						"conn_ioc.ioc, "+
+						"conn_ioc.ioc_severity "+
+						"FROM alert, conn_ioc "+
+						"WHERE alert.conn_uids = conn_ioc.conn_uids "+
+						"AND alert.username = '"+username+"' "+
+						"AND alert.added >= '"+POLLCheckpoint+"' "+
+						"ORDER BY alert.added")
 				.on('result', function(data) {
 					data.newIOC = true;
 					arr.push(data);
@@ -210,7 +216,16 @@ module.exports = function(app, passport, io, pool) {
 				console.log('CHECKING for alert > '+POLLCheckpoint);
 
 			//FOR TESTING
-			// connection.query("SELECT alert.added, conn_ioc.ioc FROM alert, conn_ioc WHERE alert.conn_uids = conn_ioc.conn_uids AND alert.username = '"+username+"' AND alert.trash is null ORDER BY alert.added DESC LIMIT 10",function (err, results) {
+			// connection.query("SELECT "+
+			// 			"alert.added, "+
+			// 			"conn_ioc.ioc, "+
+			// 			"conn_ioc.ioc_severity "+
+			// 			"FROM alert, conn_ioc "+
+			// 			"WHERE alert.conn_uids = conn_ioc.conn_uids "+
+			// 			"AND alert.username = '"+username+"' "+
+			// 			"AND alert.trash is null "+
+			// 			"ORDER BY alert.added DESC "+
+			// 			"LIMIT 10",function (err, results) {
 			// 	if (results) {
 			// 		if (results.length > 0) {
 			// 			var newarr = [];
