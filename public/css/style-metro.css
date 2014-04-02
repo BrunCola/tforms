@@ -10,24 +10,6 @@ div, input, select, textarea, span, img, table, td, th, p, a, button, ul, li {
 }
  */
 
-
-/*!
- * jDashboard v2.1
- * http://codecanyon.net/item/jdashboard/135111
- *
- * Copyright (c) 2010-2012 Sarathi Hansen
- * http://www.codecanyon.net/user/sarthemaker
- *
- * Date: December 1st, 2012
- *
- *
- * NOTES
- *
- * This file should be used for development of jDashboard.
- * For production, please use the compressed "jdashboard.min.css"
- * as its file size is much smaller.
- */
-
 .jdash { position: relative; }
 
 .jdash-column {

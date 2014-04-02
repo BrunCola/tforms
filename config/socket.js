@@ -213,40 +213,7 @@ module.exports = function(app, passport, io) {
 						timer = setInterval(function(){polling(username, topAdded, connection)}, 300000); //change to 5 minutes on result
 					}
 				})
-				console.log('CHECKING for alert > '+POLLCheckpoint);
-
-			//FOR TESTING
-			// connection.query("SELECT "+
-			// 			"alert.added, "+
-			// 			"conn_ioc.ioc, "+
-			// 			"conn_ioc.ioc_severity "+
-			// 			"FROM alert, conn_ioc "+
-			// 			"WHERE alert.conn_uids = conn_ioc.conn_uids "+
-			// 			"AND alert.username = '"+username+"' "+
-			// 			"AND alert.trash is null "+
-			// 			"ORDER BY alert.added DESC "+
-			// 			"LIMIT 10",function (err, results) {
-			// 	if (results) {
-			// 		if (results.length > 0) {
-			// 			var newarr = [];
-			// 			console.log(results);
-			// 			for (var d = 1; d < 11; d++){
-			// 				newarr.push(results[results.length-d]);
-			// 			}
-			// 			var topAdded = results[0].added;
-			// 			for (var i in newarr){
-			// 				if (newarr[i].added > topAdded) {
-			// 					topAdded = newarr[i].added;
-			// 				}
-			// 			}
-			// 			topAdded += 1;
-			// 			clearInterval(timer); // add a second to the timer
-			// 			socket.emit('newIOC', newarr, results.length);
-			// 			timer = setInterval(function(){polling(username, topAdded, connection)}, 300000); //change to 5 minutes on result
-			// 		}
-			// 	}
-			// 	console.log('CHECKING for alert > '+POLLCheckpoint);
-			// })
+			console.log('CHECKING for alert > '+POLLCheckpoint);
 		}
 
 	})
