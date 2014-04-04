@@ -2,7 +2,8 @@
 var mysql = require('mysql'),
 	config = require('./config'),
 	nodemailer = require("nodemailer"),
-	phantom = require('node-phantom');
+	phantom = require('node-phantom'),
+	crypto = require('crypto');
 
 module.exports = function(app, passport, io) {
 
@@ -25,12 +26,12 @@ module.exports = function(app, passport, io) {
 		}
 	});
 
-	io.sockets.on('connection', function(socket){
 
-		// Socket has connected, increase socket count
-		socketCount++
+
+	io.sockets.on('connection', function(socket){
+		socketCount++;
 		// Let all sockets know how many are connected
-		io.sockets.emit('users connected', socketCount)
+		io.sockets.emit('users connected', socketCount);
 
 		socket.on('disconnect', function() {
 			// Decrease the socket count on a disconnect, emit
@@ -41,21 +42,69 @@ module.exports = function(app, passport, io) {
 
 		// Archive functions
 		socket.on('archiveIOC', function(data){
-			var db = {
-				port: config.db.port,
-				host: config.db.host,
-				user: config.db.user,
-				password: config.db.password,
-				database: data.database
-			};
+			var db = config.db;
+			db.database = data.database;
 			var connection = mysql.createConnection(db);
 			connection.query("UPDATE `conn_ioc` SET `trash` = UNIX_TIMESTAMP(NOW()) WHERE `lan_ip`='"+data.lan_ip+"' AND `remote_ip`='"+data.remote_ip+"' AND ioc='"+data.ioc+"'");
-		})
-
-		// Swimchart drilldown
-		socket.on('test', function() {
-			console.log('BOOM');
-		})
+		});
+		socket.on('restoreIOC', function(data){
+			var db = config.db;
+			db.database = data.database;
+			var connection = mysql.createConnection(db);
+			connection.query("UPDATE `conn_ioc` SET `trash` = null WHERE `lan_ip`='"+data.lan_ip+"' AND `remote_ip`='"+data.remote_ip+"' AND ioc='"+data.ioc+"'");
+		});
+		socket.on('emptyArchive', function(data){
+			var db = config.db;
+			db.database = data.database;
+			var connection = mysql.createConnection(db);
+			connection.query("DELETE FROM `conn_ioc` WHERE `trash` IS NOT NULL", function (err, response){
+				if (response) {
+					socket.emit('emptyArchiveConfirm');
+				}
+			});
+		});
+		socket.on('emptyArchive', function(data){
+			var db = config.db;
+			db.database = data.database;
+			var connection = mysql.createConnection(db);
+			connection.query("DELETE FROM `conn_ioc` WHERE `trash` IS NOT NULL", function (err, response){
+				if (response) {
+					socket.emit('emptyArchiveConfirm');
+				}
+			});
+		});
+		socket.on('checkPass', function(data){
+			var db = config.db;
+			db.database = 'rp_users';
+			var connection = mysql.createConnection(db);
+			if (data.password) {
+				var pass = crypto.createHash('md5').update(data.password).digest('hex');
+				var sql="SELECT * FROM user WHERE id = '"+ data.id +"' and password = '"+ pass +"' limit 1";
+				console.log(sql);
+				connection.query(sql,
+					function (err,results) {
+						if (err) throw err;
+						if(results.length > 0){
+							socket.emit('passGood');
+						}else{
+							socket.emit('passBad');
+						}
+					}
+				);
+			}
+		});
+		socket.on('updateUser', function(data){
+			var db = config.db;
+			db.database = 'rp_users';
+			var connection = mysql.createConnection(db);
+			var pass = crypto.createHash('md5').update(data.password).digest('hex');
+			if (data.newPass) {
+				var newpass = crypto.createHash('md5').update(data.newPass).digest('hex');
+				connection.query("UPDATE `user` SET `email`='"+data.email+"', `username`='"+data.username+"', `password`='"+newpass+"' WHERE `id` = '"+data.id+"' AND `password` = '"+pass+"'");
+			} else {
+				connection.query("UPDATE `user` SET `email`='"+data.email+"', `username`='"+data.username+"' WHERE `id` = '"+data.id+"' AND `password` = '"+pass+"'");
+			}
+		});
 
 	// 	// socket.on('new note', function(data){
 	// 	//  // New note added, push to all sockets and insert into db

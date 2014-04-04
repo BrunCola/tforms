@@ -13,12 +13,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			$.noty.closeAll();
 		}
 	};
-
-	// $scope.navClass = function (page) {
-	// 	var currentRoute = $location.path().substring(1) || 'home';
-	// 	return page === currentRoute ? 'start active' : '';
-	// };
-	$scope.navClass = function (link) {
+	$scope.parentClass = function (link) {
 		var currentRoute = $location.path().substring(1) || 'home';
 		// return page === currentRoute ? 'start active' : '';
 		var linkClass = '';
@@ -41,11 +36,10 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		}
 		return linkClass;
 	};
-	$scope.navClassSelected = function (page) {
+	$scope.parentClassSelected = function (page) {
 		var currentRoute = $location.path().substring(1) || 'home';
 		return page === currentRoute ? 'selected' : '';
 	};
-
 	$scope.childClass = function (link) {
 		var currentRoute = $location.path().substring(1) || 'home';
 		var linkClass = '';
@@ -62,77 +56,24 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		return linkClass;
 	};
 
-	// $scope.sidebaritems = [
-	// {
-	// 	'title': 'Live Connections',
-	// 	'url': 'map',
-	// 	'icon': 'fa-map-marker',
-	// },{
-	// 	'title': 'IOC Notifications',
-	// 	'url': 'iochits',
-	// 	'icon': 'fa-warning',
-	// },{
-	// 	'title': 'IOC Top Remote IP',
-	// 	'url': 'ioc_top_remote',
-	// 	'icon': 'fa-warning',
-	// },
-	// {
-	// 	'title': 'Extracted Files',
-	// 	'url': 'file_mime',
-	// 	'icon': 'fa-folder-open',
-	// },
-	// {
-	// 	'title': 'New Remote IPs',
-	// 	'url': 'new_remote_ip',
-	// 	'icon': 'fa-exchange',
-	// },{
-	// 	'title': 'New DNS Queries',
-	// 	'url': 'new_dns_query',
-	// 	'icon': 'fa-info-circle',
-	// },{
-	// 	'title': 'New HTTP Domains',
-	// 	'url': 'new_http_hosts',
-	// 	'icon': 'fa-globe',
-	// },{
-	// 	'title': 'New SSL Hosts',
-	// 	'url': 'new_ssl_hosts',
-	// 	'icon': 'fa-lock',
-	// },{
-	// 	'title': 'Applications',
-	// 	'url': 'l7',
-	// 	'icon': 'fa-bars',
-	// },{
-	// 	'title': 'Applications Top Local',
-	// 	'url': 'l7_toplocal',
-	// 	'icon': 'fa-bars',
-	// },{
-	// 	'title': 'Top Local IP',
-	// 	'url': 'top_local',
-	// 	'icon': 'fa-cloud-download',
-	// },{
-	// 	'title': 'Top Remote IP',
-	// 	'url': 'top_remote',
-	// 	'icon': 'fa-cloud-upload',
-	// }];
-// -Live Connections
-// -IOC Notifications
-// ----By Local IP ?
-// ----By Remote IP
-// -Extracted Files
-// ----By Mime Type
-// ----By Local IP ?
-// -First Seen
-// ----Remote IPs
-// ----DNS Queries
-// ----HTTP Domains
-// ----SSL Remote IPs
-// -Applications
-// ----By Application
-// ----By Local IP
-// -General Network
-// ----Top Local IP
-// ----Top Remote IP
-
+	// -Live Connections
+	// -IOC Notifications
+	// ----By Local IP ?
+	// ----By Remote IP
+	// -Extracted Files
+	// ----By Mime Type
+	// ----By Local IP ?
+	// -First Seen
+	// ----Remote IPs
+	// ----DNS Queries
+	// ----HTTP Domains
+	// ----SSL Remote IPs
+	// -Applications
+	// ----By Application
+	// ----By Local IP
+	// -General Network
+	// ----Top Local IP
+	// ----Top Remote IP
 	$scope.sidebaritems = [
 	{
 		'title': 'Live Connections',

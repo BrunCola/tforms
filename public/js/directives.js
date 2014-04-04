@@ -418,6 +418,9 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 											case 'Archive':
 												$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
 											break;
+											case 'Restore':
+												$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bRestore button-success pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Restore</button>");
+											break;
 											default:
 												var obj = new Object();
 												//var all = new Object();
@@ -446,15 +449,26 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 										var link = JSON.parse(this.value);
 										$scope.$apply($location.path(link.type).search(link.objlink));
 									});
+									function redrawTable() {
+										$('#table').dataTable().fnClearTable();
+										$('#table').dataTable().fnAddData(tableData.top(Infinity));
+										$('#table').dataTable().fnDraw();
+									}
 									$('table .bArchive').on('click',function(){
 										var rowData = JSON.parse(this.value);
 										$scope.socket.emit('archiveIOC', {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc, database: window.user.database});
 										var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
 										$scope.tableCrossfitler.remove(fil);
 										tableData.filterAll();
-										$('#table').dataTable().fnClearTable();
-										$('#table').dataTable().fnAddData(tableData.top(Infinity));
-										$('#table').dataTable().fnDraw();
+										redrawTable();
+									});
+									$('table .bRestore').on('click',function(){
+										var rowData = JSON.parse(this.value);
+										$scope.socket.emit('restoreIOC', {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc, database: window.user.database});
+										var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
+										$scope.tableCrossfitler.remove(fil);
+										tableData.filterAll();
+										redrawTable();
 									});
 									$scope.country = [];
 									$scope.ioc = [];
@@ -483,8 +497,10 @@ angular.module('mean.system').directive('universalSearch', function() {
 	return {
 		link: function($scope, element, attrs) {
 			$scope.$watch('search', function(){
-				if (($scope.search !== null) || ($scope.search !== '')) {
-					$('#table').dataTable().fnFilter($scope.search);
+				if ($scope.search) {
+					if (($scope.search !== null) || ($scope.search !== '')) {
+						$('#table').dataTable().fnFilter($scope.search);
+					}
 				}
 			});
 		}

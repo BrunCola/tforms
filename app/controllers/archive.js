@@ -72,7 +72,15 @@ exports.render = function(req, res) {
 		{ title: 'Packets to Remote', select: 'in_packets' },
 		{ title: 'Packets from Remote', select: 'out_packets' },
 		{ title: 'Bytes to Remote', select: 'in_bytes', dView: false },
-		{ title: 'Bytes from Remote', select: 'out_bytes', dView: false }
+		{ title: 'Bytes from Remote', select: 'out_bytes', dView: false },
+		{
+			title: '',
+			select: null,
+			dView: true,
+			link: {
+				type: 'Restore',
+			},
+		}
 	];
 	var table1Settings = {
 		sort: [[0, 'desc']],

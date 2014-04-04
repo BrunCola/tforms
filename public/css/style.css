@@ -718,7 +718,7 @@ Header and header elements.
 }
 
 .header.navbar-fixed-top {
-  z-index: 999 !important;
+  /*z-index: 999 !important;*/
 
 }
 
@@ -862,12 +862,10 @@ Page container
 Page sidebar
 ***/
 
-/* ie8 fixes */
-/**.ie8 .page-sidebar {
+.ie8 .page-sidebar {
   position: absolute;
   width: 225px;
 }
-**/
 ul.page-sidebar-menu {
   list-style: none;
   margin: 0;
@@ -948,6 +946,9 @@ ul.page-sidebar-menu > li.active > a .selected {
    content: "\f104";
    font-weight: 300;
    text-shadow:none;
+}
+.page-sidebar ul > li > a:hover {
+   cursor: pointer;
 }
 ul.page-sidebar-menu > li > a > .arrow.open:before {
    float: right;

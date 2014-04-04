@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.system').controller('HeaderController', ['$scope', 'Global', '$rootScope', '$location', 'socket', '$modal', 'iocIcon', function ($scope, Global, $rootScope, $location, socket, $modal, iocIcon) {
+angular.module('mean.system').controller('HeaderController', ['$scope', 'Global', '$rootScope', '$location', 'socket', '$modal', 'iocIcon', '$http', '$route', function ($scope, Global, $rootScope, $location, socket, $modal, iocIcon, $http, $route) {
 	$scope.global = Global;
 	$scope.socket = socket;
 	$scope.$watch('search', function(){
@@ -9,6 +9,7 @@ angular.module('mean.system').controller('HeaderController', ['$scope', 'Global'
 	$scope.go = function ( path ) {
 		$location.path( path );
 	}
+	// Session Timeout Modal
 	$scope.open = function () {
 		var modalInstance = $modal.open({
 			templateUrl: 'sessionModal.html',
@@ -19,6 +20,75 @@ angular.module('mean.system').controller('HeaderController', ['$scope', 'Global'
 	var ModalInstanceCtrl = function ($scope, $modalInstance) {
 		$scope.ok = function () {
 			$modalInstance.close(window.location.href = "/signout");
+		};
+	};
+	// User Settings Modal
+	$scope.userSettings = function () {
+		var modalInstance = $modal.open({
+			templateUrl: 'userModal.html',
+			controller: settingsCtrl
+		});
+	};
+	console.log(window.user);
+	var settingsCtrl = function ($scope, $modalInstance) {
+		$scope.ok = function () {
+			// $modalInstance.close(window.location.href = "/signout");
+			$modalInstance.close();
+		};
+		$scope.passBad = false;
+		$scope.user = {
+			email: window.user.email,
+			username: window.user.username,
+			upassword: null,
+			password: null
+		}
+		$scope.showpass = function() {
+			console.log($scope.user.password)
+			if (window.user.email !== $scope.user.email) {
+				return true;
+			} else if (window.user.username !== $scope.user.username) {
+				return true;
+			} else if ($scope.user.password !== null) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		$scope.submitForm = function(form) {
+			// check to make sure the form is completely valid
+			// console.log($scope.user)
+			if (form.$valid) {
+				console.log($scope.user)
+				socket.emit('checkPass', {password: $scope.user.upassword, id: window.user.id});
+				socket.on('passGood', function() {
+					if ($scope.user.password) {
+						socket.emit('updateUser', {id: window.user.id, email: $scope.user.email, password: $scope.user.upassword, username: $scope.user.username, newPass: $scope.user.password});
+						window.user.email = $scope.user.email;
+						window.user.username = $scope.user.username;
+						$http.get('/signout')
+						.success(function() {
+							$http.post('/users/session', {username: window.user.username, password:$scope.user.password}).success($route.reload())
+							.success(function(){
+								$modalInstance.close();
+							})
+						});
+					} else if (($scope.user.email !== window.user.email) || ($scope.user.username !== window.username)) {
+						socket.emit('updateUser', {id: window.user.id, email: $scope.user.email, password: $scope.user.upassword, username: $scope.user.username});
+						window.user.email = $scope.user.email;
+						window.user.username = $scope.user.username;
+						$http.get('/signout')
+						.success(function() {
+							$http.post('/users/session', {username: window.user.username, password:$scope.user.upassword}).success($route.reload())
+							.success(function(){
+								$modalInstance.close();
+							})
+						});
+					}
+				});
+				socket.on('passBad', function() {
+					$scope.passBad = true;
+				});
+			}
 		};
 	};
 	$scope.socket.on('disconnect', function(){
