@@ -10,24 +10,6 @@ div, input, select, textarea, span, img, table, td, th, p, a, button, ul, li {
 }
  */
 
-
-/*!
- * jDashboard v2.1
- * http://codecanyon.net/item/jdashboard/135111
- *
- * Copyright (c) 2010-2012 Sarathi Hansen
- * http://www.codecanyon.net/user/sarthemaker
- *
- * Date: December 1st, 2012
- *
- *
- * NOTES
- *
- * This file should be used for development of jDashboard.
- * For production, please use the compressed "jdashboard.min.css"
- * as its file size is much smaller.
- */
-
 .jdash { position: relative; }
 
 .jdash-column {
@@ -587,6 +569,42 @@ select:focus {
 }
 
 .aTable1 .fa-flag {
+  color: #F4F4F4 !important;
+}
+
+
+
+
+.aDrop4 .fa-square {
+  color: #DD122A !important;
+}
+
+.aDrop4 .fa-exclamation-circle{
+  color: #F4F4F4 !important;
+}
+
+.aDrop3 .fa-square {
+  color: #F88B12 !important;
+}
+
+.aDrop3 .fa-bell{
+  color: #383E4B !important;
+}
+
+.aDrop2 .fa-square {
+  color: #F5D800 !important;
+}
+
+.aDrop2 .fa-bullhorn {
+  color: #383E4B !important; 
+}
+
+.aDrop1 .fa-square
+{
+ color: #377FC7 !important;
+}
+
+.aDrop1 .fa-flag {
   color: #F4F4F4 !important;
 }
 

@@ -4,29 +4,25 @@
 	</div>
 	<!-- PAGE TITLE & BREADCRUMB-->
 	<div class="page-title">
-		<h3 page-title></h3>
 		<small id="sub_heading" page-subheading></small>
-		<div id="severity"></div>
 	</div>
-	<div ng-show="rootpage" data-ng-controller="IndexController" data-ng-init="onHeadLoad()" class="breadcrumb">
-		<div class="no-text-shadow">
-			<div id="reportrange" class="pull-right dashboard-date-range tooltips no-tooltip-on-touch-device responsive" data-tablet="" data-desktop="tooltips" data-placement="top" data-original-title="Change dashboard date range" date-picker>
-					<i style="color:#fff" class="fa fa-calendar"></i>
-					<span>{{start}} - {{end}}</span>
-					<i style="color:#fff" class="fa fa-angle-down"></i>
+	<div data-ng-controller="IndexController" data-ng-init="onHeadLoad()" class="breadcrumb">
+		<div class="row-fluid">
+			<div class="span7">
+				<div class="row-fluid">
+					<h3 class="pull-left" page-title></h3>
+				</div>
+				<div class="row-fluid">
+					<div id="severity"></div>
+				</div>
 			</div>
-		</div>
-
-		<div class="pull-left no-text-shadow">
-			<i class="fa fa-home"></i>
-			<span id="home"><a href="/">Home</a></span>
-			<!-- <li ng-repeat="breadcrumb in breadcrumbs.getAll()">
-				<span class="divider">/</span>
-				<ng-switch on="$last">
-				<span ng-switch-when="true">{{breadcrumb.name}}</span>
-				<span ng-switch-default><a href="{{breadcrumb.path}}">{{breadcrumb.name}}</a></span>
-				</ng-switch>
-			</li> -->
+			<div class="span5">
+				<div  ng-show="rootpage" id="reportrange" class="pull-right dashboard-date-range tooltips no-tooltip-on-touch-device responsive" data-tablet="" data-desktop="tooltips" data-placement="top" data-original-title="Change dashboard date range" date-picker>
+						<i style="color:#fff" class="fa fa-calendar"></i>
+						<span>{{start}} - {{end}}</span>
+						<i style="color:#fff" class="fa fa-angle-down"></i>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

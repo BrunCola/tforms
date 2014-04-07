@@ -19,13 +19,13 @@ angular.module('mean.system').directive('pageTitle', ['$rootScope', function ($r
 	};
 }]);
 
-angular.module('mean.system').directive('iocDesc', function() {
+angular.module('mean.iochits').directive('iocDesc', function() {
 	return {
 		link: function($scope, element, attrs) {
 			$scope.$on('iocDesc', function (event, description) {
-				$(element).html('... <a href="javascript:void(0);"><strong>Read More</strong></a>');
+				$(element).html('... <a href="javascript:void(0);"><strong ng-click="open">Read More</strong></a>');
 				$(element).on('click', function(){
-					$.colorbox({html: '<span style="margin: 20px">'+description+'</span>', width:500});
+					$scope.open();
 				})
 			});
 		}
@@ -76,6 +76,10 @@ angular.module('mean.system').directive('newNotification', function() {
 					timeout: 5000 // delay for closing event. Set false for sticky notifications
 				});
 			});
+			$scope.$on('killNoty', function (event) {
+				$.noty.closeAll();
+				$(".flagged_drop").effect("highlight", {}, 5500);
+			});
 		}
 	};
 });
@@ -110,6 +114,9 @@ angular.module('mean.system').directive('loadingSpinner', ['$rootScope', functio
 					$('#loading-spinner').data('spinner').stop();
 				}
 				$('html, body').animate({scrollTop:0}, 'slow');
+				window.onscroll = function (event) {
+					$('html, body').stop( true, true ).animate();
+				}
 				$(".page-content").fadeTo(500, 1);
 			});
 		}
@@ -308,7 +315,7 @@ angular.module('mean.system').directive('datePicker', ['$timeout', '$location', 
 	};
 }]);
 
-angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '$routeParams', '$rootScope', function ($timeout, $location, $routeParams, $rootScope) {
+angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '$routeParams', '$rootScope', 'iocIcon', function ($timeout, $location, $routeParams, $rootScope, iocIcon) {
 	return {
 		link: function ($scope, element, attrs) {
 			$scope.$on('tableLoad', function (event, tableData, params, tableType) {
@@ -358,20 +365,7 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 										}
 										if (aData.ioc_severity) {
 											var rIndex = $scope.r.indexOf("ioc_severity");
-											switch(aData.ioc_severity) {
-												case 1:
-													$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-flag fa-stack-1x fa-inverse"></i></span>');
-													break;
-												case 2:
-													$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bullhorn fa-stack-1x fa-inverse"></i></span>');
-													break;
-												case 3:
-													$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bell fa-stack-1x fa-inverse"></i></span>');
-													break;
-												case 4:
-													$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-exclamation-circle fa-stack-1x fa-inverse"></i></span>');
-													break;
-											}
+											$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa '+iocIcon(aData.ioc_severity)+' fa-stack-1x fa-inverse"></i></span>');
 										}
 									},
 									'fnDrawCallback': function( oSettings ) {
@@ -415,20 +409,7 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 									}
 									if (aData.ioc_severity) {
 										var rIndex = $scope.r.indexOf("ioc_severity");
-										switch(aData.ioc_severity) {
-											case 1:
-												$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-flag fa-stack-1x fa-inverse"></i></span>');
-												break;
-											case 2:
-												$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bullhorn fa-stack-1x fa-inverse"></i></span>');
-												break;
-											case 3:
-												$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bell fa-stack-1x fa-inverse"></i></span>');
-												break;
-											case 4:
-												$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-exclamation-circle fa-stack-1x fa-inverse"></i></span>');
-												break;
-										}
+										$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa '+iocIcon(aData.ioc_severity)+' fa-stack-1x fa-inverse"></i></span>');
 									}
 									// url builder
 									for (var c in $scope.e) {
@@ -436,6 +417,9 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 										switch(type) {
 											case 'Archive':
 												$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
+											break;
+											case 'Restore':
+												$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bRestore button-success pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Restore</button>");
 											break;
 											default:
 												var obj = new Object();
@@ -465,15 +449,26 @@ angular.module('mean.system').directive('makeTable', ['$timeout', '$location', '
 										var link = JSON.parse(this.value);
 										$scope.$apply($location.path(link.type).search(link.objlink));
 									});
+									function redrawTable() {
+										$('#table').dataTable().fnClearTable();
+										$('#table').dataTable().fnAddData(tableData.top(Infinity));
+										$('#table').dataTable().fnDraw();
+									}
 									$('table .bArchive').on('click',function(){
 										var rowData = JSON.parse(this.value);
 										$scope.socket.emit('archiveIOC', {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc, database: window.user.database});
 										var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
 										$scope.tableCrossfitler.remove(fil);
 										tableData.filterAll();
-										$('#table').dataTable().fnClearTable();
-										$('#table').dataTable().fnAddData(tableData.top(Infinity));
-										$('#table').dataTable().fnDraw();
+										redrawTable();
+									});
+									$('table .bRestore').on('click',function(){
+										var rowData = JSON.parse(this.value);
+										$scope.socket.emit('restoreIOC', {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc, database: window.user.database});
+										var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
+										$scope.tableCrossfitler.remove(fil);
+										tableData.filterAll();
+										redrawTable();
 									});
 									$scope.country = [];
 									$scope.ioc = [];
@@ -502,8 +497,10 @@ angular.module('mean.system').directive('universalSearch', function() {
 	return {
 		link: function($scope, element, attrs) {
 			$scope.$watch('search', function(){
-				if (($scope.search !== null) || ($scope.search !== '')) {
-					$('#table').dataTable().fnFilter($scope.search);
+				if ($scope.search) {
+					if (($scope.search !== null) || ($scope.search !== '')) {
+						$('#table').dataTable().fnFilter($scope.search);
+					}
 				}
 			});
 		}
