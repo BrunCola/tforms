@@ -17,3 +17,4 @@ test/coverage/
 *.sublime-project
 *.sublime-workspace
 ssl/
+npm-dedug.log
