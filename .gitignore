@@ -11,7 +11,7 @@ Thumbs.db
 .bower-*/
 .idea/
 node_modules/
-public/lib
+public/system/lib
 test/coverage/
 .sublime-grunt.cache
 *.sublime-project
