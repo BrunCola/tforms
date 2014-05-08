@@ -1,4 +1,4 @@
-  'use strict';
+'use strict';
 
 angular.module('mean.system').controller('sidebarController', ['$scope', 'Global', '$location', function ($scope, Global, $location) {
 	$scope.global = Global;
@@ -90,7 +90,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 	{
 		'title': 'Extracted Files',
 		'url': '',
-		'icon': 'fa-folder-open',
+		'icon': 'fa-folder',
 		'children':
 		[{
 			'title': 'By Local IP',
@@ -108,7 +108,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 	{
 		'title': 'First Seen',
 		'url': '',
-		'icon': 'fa-folder-open',
+		'icon': 'fa-asterisk',
 		'children':
 		[{
 			'title': 'New Remote IPs',
@@ -150,7 +150,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 	{
 		'title': 'Applications',
 		'url': '',
-		'icon': 'fa-folder-open',
+		'icon': 'fa-bars',
 		'children':
 		[{
 			'title': 'By Application',
@@ -168,7 +168,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 	{
 		'title': 'General Network',
 		'url': '',
-		'icon': 'fa-folder-open',
+		'icon': 'fa-sitemap',
 		'children':
 		[{
 			'title': 'Top Local IP',
@@ -185,7 +185,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		{
 			'title': 'Top Endpoint Events',
 			'url': 'top_endpoint_events',
-			'icon': 'fa-cloud-upload',
+			'icon': 'fa-desktop',
 			'orphans': []
 		}]
 	}];
