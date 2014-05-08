@@ -38,7 +38,7 @@ exports.render = function(req, res) {
 			select: 'time'
 		},
 		{ title: 'Count', select: 'count' },
-		{ title: 'Alert Info', select: 'alert_info' }
+		{ title: 'Alert Info', select: 'alert_info' },
 		{ title: 'Alert Source', select: 'alert_source'},
 		{ title: 'Program Source', select: 'program_source' },
 	];
