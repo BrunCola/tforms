@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" itemscope="itemscope">
+	{% include '../includes/head.html' %}
+	{% if user == 'null' %}
+    <link rel="stylesheet" href="public/system/assets/css/font-awesome/css/font-awesome.css">
+    </head>
+    <body class="login">
+        <!-- <div class="header navbar navbar-inverse navbar-fixed-top" data-ng-include="'views/header.html'" data-role="navigation"></div> -->
+        <!-- LOGO -->
+        <div class="logo">
+            <img src="public/system/assets/img/rapid.png" alt=""/>
+        </div>
+        <div class="content">
+            <!-- LOGIN FORM -->
+            <div id="login_form_body">
+                {% block content %}{% endblock %}
+            </div>
+           <div class="copyright">
+                {% if version %}
+                    &copy; {{ version }}
+                {% endif %}
+            </div>
+            <div class="create-account">
+                <p>
+                    <!-- <span class="small"><a href="/signup">Register</a> | <a href="#">Change Password</a></span> -->
+                </p>
+            </div>
+        </div>
+        {% include '../includes/foot.html' %}
+    </body>
+    {% else %}
+	<!-- <style>
+		@media print {
+			#table1 {
+				page-break-before: always !important;
+			}
+			table tr td, table.print-friendly tr th {
+				page-break-inside: avoid !important;
+			}
+		}
+	</style> -->
+	<link rel="stylesheet" href="public/system/assets/css/font-awesome/css/font-awesome-report.css">
+	</head>
+	<body style="width:1056px !important; background-color:#ebeaeb !important;" class="page-header-fixed">
+		<div class="page-container">
+			<!-- SIDEBAR -->
+			<!-- <div class="page-sidebar nav-collapse collapse">
+				<div data-ng-include="'views/sidebar.html'"></div>
+			</div> -->
+			<!-- CONTENT -->
+			<!-- <div class="page-content"> -->
+				<!-- <div class="page-content">
+					<div class="container-fluid">  -->
+					<div style="min-height: 1500px !important" class="page-content-report">
+					<div class="container-report"> 
+						{% block content %}{% endblock %}
+					</div>
+				</div>
+			<!-- </div> -->
+		</div>
+		{% include '../includes/foot.html' %}
+	</body>
+	{% endif %}
+</html>

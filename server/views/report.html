@@ -1,0 +1,10 @@
+{% extends 'layouts/reports.html' %}
+{% block content %}
+    <section data-ui-view />
+    <script type="text/javascript">
+       	window.user = {{user|safe}}
+        window.modules = {{modules|safe}}
+        window.startTime = {{start|safe}}
+        window.endTime = {{end|safe}}
+    </script>
+{% endblock %}

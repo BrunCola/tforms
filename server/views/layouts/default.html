@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="https://www.facebook.com/2008/fbml" itemscope="itemscope" itemtype="http://schema.org/Product">
+    {% include '../includes/head.html' %}
+    {% if user == 'null' %}
+    <link rel="stylesheet" href="public/system/assets/css/font-awesome/css/font-awesome.css">
+    </head>
+    <body class="login">
+        <!-- <div class="header navbar navbar-inverse navbar-fixed-top" data-ng-include="'views/header.html'" data-role="navigation"></div> -->
+        <!-- LOGO -->
+        <div class="logo">
+            <img src="public/system/assets/img/rapid.png" alt=""/>
+        </div>
+        <div class="content">
+            <!-- LOGIN FORM -->
+            <div id="login_form_body">
+                {% block content %}{% endblock %}
+            </div>
+           <div class="copyright">
+                {% if version %}
+                    &copy; {{ version }}
+                {% endif %}
+            </div>
+            <div class="create-account">
+                <p>
+                    <!-- <span class="small"><a href="/signup">Register</a> | <a href="#">Change Password</a></span> -->
+                </p>
+            </div>
+        </div>
+        {% include '../includes/foot.html' %}
+    </body>
+    {% else %}
+    <link rel="stylesheet" href="public/system/assets/css/font-awesome/css/font-awesome.css">
+    </head>
+    <body class="page-header-fixed">
+        <div class="header navbar navbar-inverse navbar-fixed-top" data-ng-include="'public/system/views/header.html'" data-role="navigation"></div>
+        <div class="page-container">
+            <!-- SIDEBAR -->
+            <div class="page-sidebar nav-collapse collapse">
+                <div data-ng-include="'public/system/views/sidebar.html'"></div>
+            </div>
+            <!-- CONTENT -->
+            <div class="page-content">
+                <div class="container-fluid">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+        <div class='footer'>
+            <div class='footer-inner'>
+                <img src='public/system/assets/img/rapid.png' id='footimg' class='hidden-phone hidden-tablet' alt=''/>
+                {% if version %}
+                    &copy; {{ version }}
+                {% endif %}
+            </div>
+            <div class="footer-tools">
+                <span class="go-top">
+                    <i class="fa fa-angle-up"></i>
+                </span>
+            </div>
+        </div>
+        {% include '../includes/foot.html' %}
+        <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
+        <style type="text/css" media="screen, projection">
+            @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
+        </style>
+        <script type="text/javascript">
+            if (typeof(Zenbox) !== "undefined") {
+                Zenbox.init({
+                    dropboxID:   "20142564",
+                    url:         "https://phirelight.zendesk.com",
+                    tabTooltip:  "Support",
+                    tabImageURL: "https://assets.zendesk.com/external/zenbox/images/tab_support_right.png",
+                    tabColor:    "black",
+                    tabPosition: "Right"
+                });
+            }
+        </script>
+    </body>
+    {% endif %}
+</html>

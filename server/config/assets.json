@@ -1,0 +1,56 @@
+{
+	"css": {
+		"public/build/css/dist.min.css": [
+			"public/system/assets/css/bootstrap.min.css",
+		    "public/system/assets/css/bootstrap-responsive.min.css",
+		    "public/system/assets/css/style-metro.css",
+		    "public/system/assets/css/style.css",
+		    "public/system/assets/css/default.css",
+		    "public/system/assets/css/style-responsive.css",
+		    "public/system/assets/css/views/login.css",
+		    "public/system/assets/css/buttons.css",
+		    "public/system/assets/css/views/articles.css",
+		    "public/system/lib/dcjs/dc.css",
+		    "public/system/lib/datatables/media/css/jquery.dataTables.css",
+		    "public/system/assets/css/flags32.css",
+		    "public/system/lib/bootstrap-daterangepicker/daterangepicker-bs2.css",
+		    "public/**/assets/css/*.css"
+			]
+	},
+	"js": {
+		"public/build/js/dist.min.js": [
+			"public/system/lib/angular/angular.js",
+			"public/system/lib/angular-cookies/angular-cookies.js",
+			"public/system/lib/angular-resource/angular-resource.js",
+			"public/system/lib/angular-ui-router/release/angular-ui-router.js",
+			"public/system/lib/angular-bootstrap/ui-bootstrap.js",
+			"public/system/lib/angular-bootstrap/ui-bootstrap-tpls.js",
+			"public/system/lib/jquery/jquery.js",
+			"public/system/lib/jquery-ui/ui/jquery.ui.core.js",
+			"public/system/lib/jquery-ui/ui/jquery.ui.widget.js",
+			"public/system/lib/jquery-ui/ui/jquery.ui.mouse.js",
+			"public/system/lib/jquery-ui/ui/jquery.ui.effect.js",
+			"public/system/lib/jquery-ui/ui/jquery.ui.effect-highlight.js",
+			"public/system/lib/jquery-ui/ui/jquery.ui.slider.js",
+			"public/system/lib/datatables/media/js/jquery.dataTables.js",
+			"public/system/assets/js/dataTables.fixedHeader.min.js",
+			"public/system/lib/d3/d3.min.js",
+			"public/system/lib/d3-tip/index.js",
+			"public/system/lib/dcjs/dc.min.js",
+			"public/system/lib/crossfilter/crossfilter.min.js",
+			"public/system/lib/moment/min/moment.min.js",
+			"public/system/lib/livestampjs/livestamp.min.js",
+			"public/system/lib/bootstrap-daterangepicker/daterangepicker.js",
+			"public/system/lib/noty/js/noty/packaged/jquery.noty.packaged.min.js",
+			"public/system/lib/spin.js/spin.js",
+			"public/system/lib/topojson/topojson.js",
+			"public/system/assets/js/app.js",
+			"public/system/assets/js/rainbowvis.js",
+			"public/init.js",
+			"public/*/*.js",
+			"public/*/*/*.js",
+			"public/pages/*/*/*.js",
+			"!public/build/**"
+		]
+	}
+}
