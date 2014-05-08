@@ -129,12 +129,14 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 			})();
 			// !D3 FISHEYE PLUGIN
 			$scope.$on('buildFishChart', function (event, data){
-				var margin = {top: 5.5, right: 19.5, bottom: 12.5, left: 39.5};
+				var margin = {top: 5.5, right: 19.5, bottom: 20.5, left: 39.5};
 				// width = 1560,
 				// height = 1000 - margin.top - margin.bottom;
 
 				var width = document.getElementById('fishchart').offsetWidth-60;
 				var height = (width / 1.5) - margin.top - margin.bottom;
+
+				$('#fishchart').parent().height(height);
 
 				// Various scales and distortions.
 				// d3.time.scale().domain([moment($scope.start), moment($scope.end)])
@@ -149,7 +151,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					var maxp = data.yAxis;
 
 					// The result should be between 100 an 10000000
-					var minv = Math.log(7);
+					var minv = Math.log(15);
 					var maxv = Math.log(70);
 
 					// calculate adjustment factor
@@ -203,6 +205,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				$scope.tip = d3.tip()
 					.attr('class', 't-tip')
 					.offset([-10, 0])
+					.attr("transform", "translate(30,30)")
 					.html(function(d) {
 						return "<strong>Connection Type: </strong> <span style='color:"+$scope.colorScale(d.class)+"'>" + d.class.toUpperCase() + "</span><br />"+
 							"<strong>Connection Count: </strong> <span style='color:"+$scope.colorScale(d.class)+"'>" + d.data.length + "</span><br />"+
@@ -298,22 +301,22 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				}
 				$scope.svg.on("mousemove", function() {
 					$scope.mouse = d3.mouse(this);
-					// $scope.xScale.distortion($scope.maxnum*0.007).focus($scope.mouse[0]); log scale here
-					// $scope.yScale.distortion($scope.maxnum*0.007).focus($scope.mouse[1]);
-					$scope.xScale.distortion(7.5).focus($scope.mouse[0]);
-					$scope.yScale.distortion(7.5).focus($scope.mouse[1]);
+					$scope.xScale.distortion($scope.maxnum*0.007).focus($scope.mouse[0]);
+					$scope.yScale.distortion($scope.maxnum*0.007).focus($scope.mouse[1]);
+					// $scope.xScale.distortion(4.5).focus($scope.mouse[0]);
+					// $scope.yScale.distortion(4.5).focus($scope.mouse[1]);
 
 					$scope.dot.call(position);
 					$scope.svg.select(".x.axis").call($scope.xAxis);
 					$scope.svg.select(".y.axis").call($scope.yAxis);
 				});
-				setTimeout(function() {
+				// setTimeout(function() {
 					$scope.legend
 						.style("font-size","17px")
 						.attr("data-style-padding",10)
 						.call(d3.legend)
 						.style('fill', 'none')
-				},1000)
+				// },1000)
 				// button1.on("click", function() {
 				// 	gType = 'default';
 				// 	$scope.dot.transition()

@@ -22,7 +22,7 @@ module.exports = function (sql, options, callback) {
 			dat.forEach(function (item){
 				var time = moment(item.time).unix();
 				item.time = time;
-				item.rTime = Math.round(time/1000)*1000;
+				item.rTime = Math.round(time/3000)*3000;
 			});
 			var a = [], b = [], newarr = dat;
 			// SORT ITEMS BY TIME THEN CLASS
