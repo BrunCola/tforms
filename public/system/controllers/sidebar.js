@@ -181,6 +181,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'url': 'top_remote_ips',
 			'icon': 'fa-cloud-upload',
 			'orphans': ['top_remote2local']
+		},
+		{
+			'title': 'Top Endpoint Events',
+			'url': 'top_endpoint_events',
+			'icon': 'fa-cloud-upload',
+			'orphans': []
 		}]
 	}];
 }]);

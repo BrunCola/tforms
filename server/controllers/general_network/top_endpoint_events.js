@@ -1,7 +1,6 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-query = require('../constructors/query'),
 config = require('../../config/config'),
 async = require('async');
 
@@ -18,7 +17,7 @@ exports.render = function(req, res) {
 	var tables = [];
 	var info = [];
 	var table1SQL = 'SELECT '+
-		'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time, '+
+		'date_format(max(from_unixtime(timestamp)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 		'`server_id`, '+
 		'`src_user`, '+
 		'`src_ip`, '+
@@ -35,14 +34,7 @@ exports.render = function(req, res) {
 	var table1Params = [
 		{
 			title: 'Last Seen',
-			select: 'time',
-			dView: true,
-			link: {
-				type: 'top_local2remote',
-				// val: the pre-evaluated values from the query above
-				val: ['lan_zone','lan_ip'],
-				crumb: false
-			},
+			select: 'time'
 		},
 		{ title: 'Server ID', select: 'server_id' },
 		{ title: 'User', select: 'src_user' },
@@ -71,8 +63,7 @@ exports.render = function(req, res) {
 		if (err) throw console.log(err);
 		var results = {
 			info: info,
-			tables: tables,
-			crossfilter: crossfilter
+			tables: tables
 		};
 		//console.log(results);
 		res.jsonp(results);

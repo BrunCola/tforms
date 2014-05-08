@@ -348,6 +348,18 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+				// TOP ENPOINT EVENTS
+				.state('top_endpoint_events', {
+					url: '/top_endpoint_events?start&end',
+					templateUrl: 'public/pages/views/general_network/top_endpoint_events.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'New Remote IPs Detected',
+						daterange: true
+					}
+				})
 
 
 	}
