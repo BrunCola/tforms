@@ -12,18 +12,17 @@ angular.module('mean.pages').config(['$stateProvider',
 			$http.get('/loggedin').success(function(user) {
 				// Authenticated
 				if (user !== '0') $timeout(deferred.resolve);
-
 				// Not Authenticated
 				else {
 					$timeout(deferred.reject);
 					$location.url('/login');
 				}
 			});
-
 			return deferred.promise;
 		};
 
 		$stateProvider
+
 			// LIVE CONNECTIONS
 			.state('live_connections', {
 				url: '/live_connections',
@@ -50,8 +49,8 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// IOC EVENTS DRILLDOWN
-					.state('ioc_events_drilldown', {
+	    			// IOC EVENTS DRILLDOWN
+    				.state('ioc_events_drilldown', {
 						url: '/ioc_events_drilldown?start&end&lan_ip&remote_ip&ioc',
 						templateUrl: 'public/pages/views/ioc_notifications/ioc_events_drilldown.html',
 						resolve: {
@@ -75,7 +74,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})		
-				// IOC TOP LCOAL IPS
+				// IOC TOP LOCAL IPS
 				.state('ioc_top_local_ips', {
 					url: '/ioc_top_local_ips?start&end',
 					templateUrl: 'public/pages/views/ioc_notifications/ioc_top_local_ips.html',
@@ -298,7 +297,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							}
 						})
 
-			// GENERAL NETWORK
+			    // GENERAL NETWORK
 				// TOP LOCAL IPS
 				.state('top_local_ips', {
 					url: '/top_local_ips?start&end',
@@ -307,7 +306,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						loggedin: checkLoggedin
 					},
 					data: {
-						title: 'Top Local IPs',
+						title: 'Top Local IP Bandwidth Use',
 						daterange: true
 					}
 				})
@@ -319,7 +318,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							loggedin: checkLoggedin
 						},
 						data: {
-							title: 'New Remote IPs Detected',
+							title: 'Local / Remote Bandwidth Use',
 							daterange: true
 						}
 					})
@@ -332,7 +331,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						loggedin: checkLoggedin
 					},
 					data: {
-						title: 'Top Remote IPs',
+						title: 'Top Remote IP Bandwidth Use',
 						daterange: true
 					}
 				})
@@ -356,11 +355,9 @@ angular.module('mean.pages').config(['$stateProvider',
 						loggedin: checkLoggedin
 					},
 					data: {
-						title: 'New Remote IPs Detected',
+						title: 'Top Endpoint Events',
 						daterange: true
 					}
 				})
-
-
 	}
 ]);
