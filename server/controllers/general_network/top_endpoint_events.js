@@ -17,6 +17,7 @@ exports.render = function(req, res) {
 	var tables = [];
 	var info = [];
 	var table1SQL = 'SELECT '+
+		'count(*) AS count,' +
 		'date_format(max(from_unixtime(timestamp)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 		'`server_id`, '+
 		'`src_user`, '+
@@ -36,6 +37,7 @@ exports.render = function(req, res) {
 			title: 'Last Seen',
 			select: 'time'
 		},
+		{ title: 'Count', select: 'count' },
 		{ title: 'Server ID', select: 'server_id' },
 		{ title: 'User', select: 'src_user' },
 		{ title: 'Local IP', select: 'src_ip' },
@@ -43,8 +45,7 @@ exports.render = function(req, res) {
 		{ title: 'Alert Source', select: 'alert_source'},
 		{ title: 'Program Source', select: 'program_source' },
 		{ title: 'Alert IP', select: 'alert_id' },
-		{ title: 'Alert Info', select: 'alert_info' },
-		{ title: 'Full Log', select: 'full_log' }
+		{ title: 'Alert Info', select: 'alert_info' }
 	];
 	var table1Settings = {
 		sort: [[0, 'desc']],
