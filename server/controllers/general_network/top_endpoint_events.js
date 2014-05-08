@@ -43,7 +43,7 @@ exports.render = function(req, res) {
 		{ title: 'Program Source', select: 'program_source' },
 	];
 	var table1Settings = {
-		sort: [[0, 'desc']],
+		sort: [[1, 'desc']],
 		div: 'table',
 		title: 'Local IP Traffic'
 	}
