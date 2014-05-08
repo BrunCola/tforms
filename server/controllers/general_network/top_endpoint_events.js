@@ -38,14 +38,9 @@ exports.render = function(req, res) {
 			select: 'time'
 		},
 		{ title: 'Count', select: 'count' },
-		{ title: 'Server ID', select: 'server_id' },
-		{ title: 'User', select: 'src_user' },
-		{ title: 'Local IP', select: 'src_ip' },
-		{ title: 'Remote IP', select: 'dst_ip' },
+		{ title: 'Alert Info', select: 'alert_info' }
 		{ title: 'Alert Source', select: 'alert_source'},
 		{ title: 'Program Source', select: 'program_source' },
-		{ title: 'Alert IP', select: 'alert_id' },
-		{ title: 'Alert Info', select: 'alert_info' }
 	];
 	var table1Settings = {
 		sort: [[0, 'desc']],
