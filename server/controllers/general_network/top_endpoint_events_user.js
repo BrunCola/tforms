@@ -33,7 +33,6 @@ exports.render = function(req, res) {
 			'WHERE alert_info = \''+req.query.alert_info+'\' '+
 			'GROUP BY '+
 			'`src_user`';
-
 		var table1Params = [
 			{
 				title: 'Last Seen',
@@ -45,10 +44,13 @@ exports.render = function(req, res) {
 					crumb: false
 				},
 			},
-			{ title: 'Count', select: 'count' },
+			{ title: 'Count', select: 'count'},
+			{ title: 'User', select: 'src_user'},
+			{ title: 'Source IP', select: 'src_ip'},
+			{ title: 'Destination IP', select: 'dst_ip'},
 			{ title: 'Alert Info', select: 'alert_info' },
 			{ title: 'Alert Source', select: 'alert_source'},
-			{ title: 'Program Source', select: 'program_source' },
+			{ title: 'Program Source', select: 'program_source'},
 		];
 		var table1Settings = {
 			sort: [[1, 'desc']],
