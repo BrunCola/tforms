@@ -396,7 +396,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 						var urltime = Math.round(maxTime /1000);
 						var endtime = maxTime+300000;
 						var urltime2 = Math.round(endtime /1000);
-						var url = '/map?start='+urltime+'&end='+urltime2;
+						var url = '/live_connections/live_connections?start='+urltime+'&end='+urltime2;
 						console.log(url);
 						$http({method: 'GET', url: url}).
 							success(function(data) {
