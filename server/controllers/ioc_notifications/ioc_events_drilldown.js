@@ -214,8 +214,8 @@ exports.render = function(req, res) {
 			'`alert_info` '+
 			// !SELECTS
 			'FROM `ossec` '+
-			'WHERE time BETWEEN '+start+' AND '+end+' '+
-			'AND `src_ip`=\''+req.query.lan_ip+'\' ';
+			'WHERE `timestamp` BETWEEN '+start+' AND '+end+' '+
+			'AND `src_ip`=\''+req.query.lan_ip+'\'';
 		var endpointParams = [
 			{"sTitle": "Time", "mData": "time"},
 			{"sTitle": "Source IP", "mData": "src_ip"},
