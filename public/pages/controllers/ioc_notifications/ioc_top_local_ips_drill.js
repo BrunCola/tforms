@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('iocTopLocalIpsDrillController', ['$scop
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-	 query = '/ioc_notifications/ioc_top_local_ips_drill?start='+$location.$$search.start+'&end='+$location.$$search.end;
+	 query = '/ioc_notifications/ioc_top_local_ips_drill?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip;
 	} else {
-		query = '/ioc_notifications/ioc_top_local_ips_drill?';
+		query = '/ioc_notifications/ioc_top_local_ips_drill?&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip;
 	}
 	$http({method: 'GET', url: query}).
 		//success(function(data, status, headers, config) {
