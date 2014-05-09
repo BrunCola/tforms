@@ -37,7 +37,14 @@ exports.render = function(req, res) {
 		var table1Params = [
 			{
 				title: 'Last Seen',
-				select: 'time'
+				select: 'time',
+				link: {
+					type: 'top_endpoint_events_user_drill',
+					// val: the pre-evaluated values from the query above
+					val: ['alert_info,src_user'],
+					crumb: false
+				}
+			},
 			},
 			{ title: 'Count', select: 'count'},
 			{ title: 'User', select: 'src_user'},
@@ -46,7 +53,6 @@ exports.render = function(req, res) {
 			{ title: 'Alert Info', select: 'alert_info' },
 			{ title: 'Alert Source', select: 'alert_source'},
 			{ title: 'Program Source', select: 'program_source'},
-
 		];
 		var table1Settings = {
 			sort: [[1, 'desc']],
