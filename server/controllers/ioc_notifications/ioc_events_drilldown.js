@@ -203,6 +203,23 @@ exports.render = function(req, res) {
 			{"sTitle": "Name", "mData": "name"},
 			{"sTitle": "Size", "mData": "size"},
 		];
+		var endpointSQL = 'SELECT '+
+			// SELECTS
+			'date_format(from_unixtime(`timestamp`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'`src_ip`, '+
+			'`dst_ip`, '+
+			'`src_user`, '+
+			'`alert_source`, '+
+			'`program_source`, '+
+			'`alert_info` '+
+			// !SELECTS
+			'FROM `ossec` '+
+			'WHERE time BETWEEN '+start+' AND '+end+' '+
+			'AND `src_ip`=\''+req.query.lan_ip+'\' ';
+		var endpointParams = [
+			{"sTitle": "Time", "mData": "time"},
+			{"sTitle": "Source IP", "mData": "src_ip"},
+		];
 		var info = {};
 		var InfoSQL = 'SELECT '+
 			'max(from_unixtime(time)) as last, '+
@@ -303,6 +320,15 @@ exports.render = function(req, res) {
 			},
 			function(callback) {
 				new fisheye(ioc_fileSQL, { database: database, sClass: 'ioc_file', start: start, end: end, columns: ioc_fileParams }, function(err, data, max){
+					result.push(data);
+					if (max >= largestGroup) {
+						largestGroup = max;
+					}
+					callback();
+				});
+			},
+			function(callback) {
+				new fisheye(endpointSQL, { database: database, sClass: 'endpoint', start: start, end: end, columns: endpointParams }, function(err, data, max){
 					result.push(data);
 					if (max >= largestGroup) {
 						largestGroup = max;
