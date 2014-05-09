@@ -100,7 +100,7 @@ angular.module('mean.pages').config(['$stateProvider',
 				})
 					// IOC TOP LOCAL IPS DRILL
 					.state('ioc_top_local_ips_drill', {
-						url: '/ioc_top_local_ips?start&end&lan_zone&lan_ip',
+						url: '/ioc_top_local_ips_drill?start&end&lan_zone&lan_ip',
 						templateUrl: 'public/pages/views/ioc_notifications/ioc_top_local_ips_drill.html',
 						resolve: {
 							loggedin: checkLoggedin

@@ -308,6 +308,9 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					.call(position)
 					.sort(function(a, b) { return radius(b) - radius(a); })
 					.on('mouseover', $scope.tip.show)
+					.on('mouseover', function(){
+						$scope.dot.style('cursor', 'pointer');
+					})
 					.on('mouseout', $scope.tip.hide)
 					.attr("data-legend", function(d) { return d.class})
 					.on("click", function (d){

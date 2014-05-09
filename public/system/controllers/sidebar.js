@@ -84,7 +84,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'IOC Top Local IPs',
 			'url': 'ioc_top_local_ips',
 			'icon': 'fa-warning',
-			'orphans': []
+			'orphans': ['ioc_top_local_ips_drill']
 		}]
 	},
 	{
