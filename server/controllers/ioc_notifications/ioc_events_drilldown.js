@@ -61,7 +61,7 @@ exports.render = function(req, res) {
 			{"sTitle": "Subject", "mData": "subject"},
 			{"sTitle": "Issuer Subject", "mData": "issuer_subject"},
 		];
-		var iocdnsSQL = 'SELECT '+
+		var ioc_dnsSQL = 'SELECT '+
 			// SELECTS
 			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 			'proto, '+
@@ -79,11 +79,11 @@ exports.render = function(req, res) {
 			'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
 			'AND `remote_ip`=\''+req.query.remote_ip+'\' '
 			'AND `ioc`=\''+req.query.ioc+'\' ';			
-		var iocdnsParams = [
+		var ioc_dnsParams = [
 			{"sTitle": "Time", "mData": "time"},
 			{"sTitle": "Protocall", "mData": "proto"},
 			{"sTitle": "Query", "mData": "query"}
-		];		
+		];
 		var dnsSQL = 'SELECT '+
 			// SELECTS
 			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
@@ -105,7 +105,7 @@ exports.render = function(req, res) {
 			{"sTitle": "Protocall", "mData": "proto"},
 			{"sTitle": "Query", "mData": "query"}
 		];
-		var iochttpSQL = 'SELECT '+
+		var ioc_httpSQL = 'SELECT '+
 			// SELECTS
 			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 			'host,'+
@@ -127,12 +127,12 @@ exports.render = function(req, res) {
 			'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
 			'AND `remote_ip`=\''+req.query.remote_ip+'\' '
 			'AND `ioc`=\''+req.query.ioc+'\' ';	
-		var iochttpParams = [
+		var ioc_httpParams = [
 			{"sTitle": "Time", "mData": "time"},
 			{"sTitle": "Host", "mData": "host"},
 			{"sTitle": "Referrer", "mData": "referrer"},
 			{"sTitle": "User Agent", "mData": "user_agent"},
-		];		
+		];
 		var httpSQL = 'SELECT '+
 			// SELECTS
 			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
@@ -159,7 +159,7 @@ exports.render = function(req, res) {
 			{"sTitle": "Referrer", "mData": "referrer"},
 			{"sTitle": "User Agent", "mData": "user_agent"},
 		];
-		var iocfileSQL = 'SELECT '+
+		var ioc_fileSQL = 'SELECT '+
 			// SELECTS
 			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 			'mime, '+
@@ -176,12 +176,12 @@ exports.render = function(req, res) {
 			'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
 			'AND `remote_ip`=\''+req.query.remote_ip+'\' '
 			'AND `ioc`=\''+req.query.ioc+'\' ';				
-		var iocfileParams = [
+		var ioc_fileParams = [
 			{"sTitle": "Time", "mData": "time"},
 			{"sTitle": "MIME", "mData": "mime"},
 			{"sTitle": "Name", "mData": "name"},
 			{"sTitle": "Size", "mData": "size"},
-		];		
+		];
 		var fileSQL = 'SELECT '+
 			// SELECTS
 			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
@@ -248,7 +248,25 @@ exports.render = function(req, res) {
 				});
 			},
 			function(callback) {
+				new fisheye(ioc_sslSQL, { database: database, sClass: 'ioc_ssl', start: start, end: end, columns: ioc_sslParams }, function(err, data, max){
+					result.push(data);
+					if (max >= largestGroup) {
+						largestGroup = max;
+					}
+					callback();
+				});
+			},
+			function(callback) {
 				new fisheye(dnsSQL, { database: database, sClass: 'dns', start: start, end: end, columns: dnsParams }, function(err,data, max){
+					result.push(data);
+					if (max >= largestGroup) {
+						largestGroup = max;
+					}
+					callback();
+				});
+			},
+			function(callback) {
+				new fisheye(ioc_dnsSQL, { database: database, sClass: 'ioc_dns', start: start, end: end, columns: ioc_dnsParams }, function(err,data, max){
 					result.push(data);
 					if (max >= largestGroup) {
 						largestGroup = max;
@@ -266,7 +284,25 @@ exports.render = function(req, res) {
 				});
 			},
 			function(callback) {
+				new fisheye(ioc_httpSQL, { database: database, sClass: 'ioc_http', start: start, end: end, columns: ioc_httpParams }, function(err, data, max){
+					result.push(data);
+					if (max >= largestGroup) {
+						largestGroup = max;
+					}
+					callback();
+				});
+			},
+			function(callback) {
 				new fisheye(fileSQL, { database: database, sClass: 'file', start: start, end: end, columns: fileParams }, function(err, data, max){
+					result.push(data);
+					if (max >= largestGroup) {
+						largestGroup = max;
+					}
+					callback();
+				});
+			},
+			function(callback) {
+				new fisheye(ioc_fileSQL, { database: database, sClass: 'ioc_file', start: start, end: end, columns: ioc_fileParams }, function(err, data, max){
 					result.push(data);
 					if (max >= largestGroup) {
 						largestGroup = max;

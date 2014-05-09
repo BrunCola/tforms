@@ -302,25 +302,31 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					.attr("class", "dots")
 					.selectAll(".dot")
 					.data(dataset)
-					.enter().append("circle")
-					.attr("class", "dot")
-					.style("fill", function(d) { return $scope.colorScale(d.class); })
-					.call(position)
-					.sort(function(a, b) { return radius(b) - radius(a); })
-					.on('mouseover', $scope.tip.show)
-					.on('mouseover', function(){
-						$scope.dot.style('cursor', 'pointer');
-					})
-					.on('mouseout', $scope.tip.hide)
-					.attr("data-legend", function(d) { return d.class})
-					.on("click", function (d){
-						// $scope.infoAppend(d);
-						$scope.open(d);
+					.enter().append('g')
+					.each(function(d){
+						var elm = d3.select(this)
+						// if (d.class === 'ioc_file') {
+							elm.append("circle")
+							.attr("class", "dot")
+							.style("fill", function(d) { return $scope.colorScale(d.class); })
+							.call(position)
+							.sort(function(a, b) { return radius(b) - radius(a); })
+							.on('mouseover', $scope.tip.show)
+							// .on('mouseover', function(){
+							// 	$scope.dot.style('cursor', 'pointer')
+							// })
+							.on('mouseout', $scope.tip.hide)
+							.attr("data-legend", function(d) { return d.class})
+							.on("click", function (d){
+								// $scope.infoAppend(d);
+								$scope.open(d);
+							});
+						// }
 					});
 
-				// Add a title.
-				$scope.dot.append("title")
-					.text(function(d) { return d.name; });
+				// // Add a title.
+				// $scope.dot.append("title")
+				// 	.text(function(d) { return d.name; });
 
 				// Positions the dots based on data.
 				function position(dot) {
@@ -335,7 +341,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					// $scope.xScale.distortion(4.5).focus($scope.mouse[0]);
 					// $scope.yScale.distortion(4.5).focus($scope.mouse[1]);
 
-					$scope.dot.call(position);
+					$scope.dot.selectAll('circle').call(position);
 					$scope.svg.select(".x.axis").call($scope.xAxis);
 					$scope.svg.select(".y.axis").call($scope.yAxis);
 				});
