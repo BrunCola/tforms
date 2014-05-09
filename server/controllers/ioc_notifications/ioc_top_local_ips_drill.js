@@ -50,6 +50,13 @@ exports.render = function(req, res) {
 			{
 				title: 'Last Seen',
 				select: 'time',
+				dView: true,
+				link: {
+					type: 'ioc_events_drilldown',
+					// val: the pre-evaluated values from the query above
+					val: ['lan_ip','remote_ip','ioc','ioc_attrID'],
+					crumb: false
+				},
 			},
 			{ title: 'Severity', select: 'ioc_severity' },
 			{ title: 'IOC Hits', select: 'count' },
