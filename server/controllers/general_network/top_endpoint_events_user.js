@@ -45,7 +45,6 @@ exports.render = function(req, res) {
 					crumb: false
 				}
 			},
-			},
 			{ title: 'Count', select: 'count'},
 			{ title: 'User', select: 'src_user'},
 			{ title: 'Source IP', select: 'src_ip'},
