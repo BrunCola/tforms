@@ -15,6 +15,30 @@ exports.render = function(req, res) {
 	}
 	if (req.query.lan_ip && req.query.remote_ip && req.query.ioc) {
 		var crossfilter;
+		var ioc_sslSQL = 'SELECT '+
+			// SELECTS
+			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'version, '+
+			'cipher, '+
+			'server_name, '+
+			'subject, '+
+			'issuer_subject, '+
+			'from_unixtime(not_valid_before) AS not_valid_before, '+
+			'from_unixtime(not_valid_after) AS not_valid_after '+
+			// !SELECTS
+			'FROM ssl_ioc '+
+			'WHERE time BETWEEN '+start+' AND '+end+' '+
+			'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
+			'AND `remote_ip`=\''+req.query.remote_ip+'\' '
+			'AND `ioc`=\''+req.query.ioc+'\' ';
+		var ioc_sslParams = [
+			{"sTitle": "Time", "mData": "time"},
+			{"sTitle": "Version", "mData": "version"},
+			{"sTitle": "cipher", "mData": "cipher"},
+			{"sTitle": "Server Name", "mData": "server_name"},
+			{"sTitle": "Subject", "mData": "subject"},
+			{"sTitle": "Issuer Subject", "mData": "issuer_subject"},
+		];
 		var sslSQL = 'SELECT '+
 			// SELECTS
 			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
@@ -37,6 +61,29 @@ exports.render = function(req, res) {
 			{"sTitle": "Subject", "mData": "subject"},
 			{"sTitle": "Issuer Subject", "mData": "issuer_subject"},
 		];
+		var iocdnsSQL = 'SELECT '+
+			// SELECTS
+			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'proto, '+
+			'qclass_name, '+
+			'qtype_name, '+
+			'query, '+
+			'answers, '+
+			'TTLs, '+
+			'ioc, '+
+			'ioc_typeIndicator, '+
+			'ioc_typeInfection '+
+			// !SELECTS
+			'FROM dns_ioc '+
+			'WHERE time BETWEEN '+start+' AND '+end+' '+
+			'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
+			'AND `remote_ip`=\''+req.query.remote_ip+'\' '
+			'AND `ioc`=\''+req.query.ioc+'\' ';			
+		var iocdnsParams = [
+			{"sTitle": "Time", "mData": "time"},
+			{"sTitle": "Protocall", "mData": "proto"},
+			{"sTitle": "Query", "mData": "query"}
+		];		
 		var dnsSQL = 'SELECT '+
 			// SELECTS
 			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
@@ -58,6 +105,34 @@ exports.render = function(req, res) {
 			{"sTitle": "Protocall", "mData": "proto"},
 			{"sTitle": "Query", "mData": "query"}
 		];
+		var iochttpSQL = 'SELECT '+
+			// SELECTS
+			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'host,'+
+			'uri,'+
+			'referrer,'+
+			'user_agent,'+
+			'request_body_len,'+
+			'response_body_len,'+
+			'status_code,'+
+			'status_msg,'+
+			'info_code,'+
+			'info_msg,'+
+			'ioc,'+
+			'ioc_typeIndicator,'+
+			'ioc_typeInfection '+
+			// !SELECTS
+			'FROM http_ioc '+
+			'WHERE time BETWEEN '+start+' AND '+end+' '+
+			'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
+			'AND `remote_ip`=\''+req.query.remote_ip+'\' '
+			'AND `ioc`=\''+req.query.ioc+'\' ';	
+		var iochttpParams = [
+			{"sTitle": "Time", "mData": "time"},
+			{"sTitle": "Host", "mData": "host"},
+			{"sTitle": "Referrer", "mData": "referrer"},
+			{"sTitle": "User Agent", "mData": "user_agent"},
+		];		
 		var httpSQL = 'SELECT '+
 			// SELECTS
 			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
@@ -84,6 +159,29 @@ exports.render = function(req, res) {
 			{"sTitle": "Referrer", "mData": "referrer"},
 			{"sTitle": "User Agent", "mData": "user_agent"},
 		];
+		var iocfileSQL = 'SELECT '+
+			// SELECTS
+			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'mime, '+
+			'name, '+
+			'size, '+
+			'md5, '+
+			'sha1, '+
+			'ioc, '+
+			'ioc_typeIndicator, '+
+			'ioc_typeInfection '+
+			// !SELECTS
+			'FROM file_ioc '+
+			'WHERE time BETWEEN '+start+' AND '+end+' '+
+			'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
+			'AND `remote_ip`=\''+req.query.remote_ip+'\' '
+			'AND `ioc`=\''+req.query.ioc+'\' ';				
+		var iocfileParams = [
+			{"sTitle": "Time", "mData": "time"},
+			{"sTitle": "MIME", "mData": "mime"},
+			{"sTitle": "Name", "mData": "name"},
+			{"sTitle": "Size", "mData": "size"},
+		];		
 		var fileSQL = 'SELECT '+
 			// SELECTS
 			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
@@ -123,18 +221,17 @@ exports.render = function(req, res) {
 			'remote_asn_name, '+
 			'l7_proto, '+
 			'ioc_typeIndicator '+
-		'FROM `conn_ioc` '+
-		'WHERE '+
+			'FROM `conn_ioc` '+
+			'WHERE '+
 			'lan_ip = \''+req.query.lan_ip+'\' AND '+
 			'remote_ip = \''+req.query.remote_ip+'\' AND '+
 			'ioc = \''+req.query.ioc+'\' '+
-		'LIMIT 1';
-
+			'LIMIT 1';
 		var Info2SQL = 'SELECT '+
-				'description '+
+			'description '+
 			'FROM `ioc_parent` '+
 			'WHERE '+
-				'ioc_parent = \''+req.query.ioc+'\' '+
+			'ioc_parent = \''+req.query.ioc+'\' '+
 			'LIMIT 1';
 
 		var result = [];
