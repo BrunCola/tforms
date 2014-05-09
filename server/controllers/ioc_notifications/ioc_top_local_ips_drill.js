@@ -78,7 +78,9 @@ exports.render = function(req, res) {
 			// !SELECTS
 			'FROM `conn_ioc` '+
 			'WHERE '+
-				'`time` BETWEEN '+start+' AND '+end+' '+
+				'time BETWEEN '+start+' AND '+end+' '+
+				'AND `lan_zone` = \''+req.query.lan_zone+'\' '+
+				'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
 				'AND `ioc_count` > 0 '+
 				'AND `trash` IS NULL '+
 			'GROUP BY '+
