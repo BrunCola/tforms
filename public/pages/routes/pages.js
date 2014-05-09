@@ -383,5 +383,17 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+						// TOP ENPOINT EVENTS USER DRILL
+						.state('top_endpoint_events_user_drill', {
+							url: '/top_endpoint_events_user_drill?start&end&alert_info&src_user',
+							templateUrl: 'public/pages/views/general_network/top_endpoint_events_user_drill.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'Top Endpoint Events',
+								daterange: true
+							}
+						})
 	}
 ]);

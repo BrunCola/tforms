@@ -14,7 +14,7 @@ exports.render = function(req, res) {
 		end = req.query.end;
 	}
 	//var results = [];
-	if (req.query.alert_info) {
+	if (req.query.alert_info && req.query.src_user) {
 		var tables = [];
 		var info = [];
 		var table1SQL = 'SELECT '+
@@ -38,12 +38,6 @@ exports.render = function(req, res) {
 			{
 				title: 'Last Seen',
 				select: 'time',
-				link: {
-					type: 'top_endpoint_events_user_drill',
-					// val: the pre-evaluated values from the query above
-					val: ['alert_info', 'src_user'],
-					crumb: false
-				},
 			},
 			{ title: 'Count', select: 'count' },
 			{ title: 'Alert Info', select: 'alert_info' },
