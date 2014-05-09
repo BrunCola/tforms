@@ -103,7 +103,7 @@ exports.render = function(req, res) {
 			{"sTitle": "Time", "mData": "time"},
 			{"sTitle": "MIME", "mData": "mime"},
 			{"sTitle": "Name", "mData": "name"},
-			{"sTitle": "Size", "mData": "Size"},
+			{"sTitle": "Size", "mData": "size"},
 		];
 		var info = {};
 		var InfoSQL = 'SELECT '+

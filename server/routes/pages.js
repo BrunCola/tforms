@@ -17,6 +17,8 @@ var live_connections = require('../controllers/live_connections/live_connections
 		var ioc_top_remote2local = require('../controllers/ioc_notifications/ioc_top_remote2local');
 	// IOC TOP LOCAL IPs
 	var ioc_top_local_ips = require('../controllers/ioc_notifications/ioc_top_local_ips');
+		// IOC TOP LOCAL IPs DRILL
+		var ioc_top_local_ips_drill = require('../controllers/ioc_notifications/ioc_top_local_ips_drill');
 
 // EXTRACTED FILES
 	// BY LOCAL IP
@@ -97,6 +99,9 @@ module.exports = function(app) {
 		// IOC TOP LOCAL IPs
 		app.route('/ioc_notifications/ioc_top_local_ips')
 		.get(authorization.requiresLogin, ioc_top_local_ips.render);
+			// IOC TOP LOCAL IPs DRILL
+			app.route('/ioc_notifications/ioc_top_local_ips_drill')
+			.get(authorization.requiresLogin, ioc_top_local_ips_drill.render);
 
 	// EXTRACTED FILES
 		// BY LOCAL IP

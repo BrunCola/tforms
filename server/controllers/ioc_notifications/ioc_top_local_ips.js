@@ -48,9 +48,9 @@ exports.render = function(req, res) {
 			select: 'time',
 			dView: true,
 			link: {
-				type: 'ioc_top_remote2local',
+				type: 'ioc_top_local_ips_drill',
 				// val: the pre-evaluated values from the query above
-				val: ['remote_ip','ioc'],
+				val: ['lan_zone','lan_ip'],
 				crumb: false
 			},
 		},

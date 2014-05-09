@@ -73,7 +73,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						title: 'IOC Top Remote IPs',
 						daterange: true
 					}
-				})		
+				})
 					// IOC TOP REMOTE2LOCAL
 					.state('ioc_top_remote2local', {
 						url: '/ioc_top_remote2local?start&end&remote_ip&ioc',
@@ -85,7 +85,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							title: 'IOC Top Remote IPs',
 							daterange: true
 						}
-					})		
+					})
 				// IOC TOP LOCAL IPS
 				.state('ioc_top_local_ips', {
 					url: '/ioc_top_local_ips?start&end',
@@ -97,7 +97,19 @@ angular.module('mean.pages').config(['$stateProvider',
 						title: 'IOC Top Local IPs',
 						daterange: true
 					}
-				})		
+				})
+					// IOC TOP LOCAL IPS DRILL
+					.state('ioc_top_local_ips_drill', {
+						url: '/ioc_top_local_ips?start&end&lan_zone&lan_ip',
+						templateUrl: 'public/pages/views/ioc_notifications/ioc_top_local_ips_drill.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'IOC Top Local IPs',
+							daterange: true
+						}
+					})
 
 			// EXTRACTED FILES
 				// BY LOCAL IP
@@ -348,9 +360,9 @@ angular.module('mean.pages').config(['$stateProvider',
 					}
 				})
 					// TOP REMOTE2LOCAL
-					.state('top_remote2local', {
+					.state('top_remote2Local', {
 						url: '/top_remote2local?start&end&remote_ip',
-						templateUrl: 'public/pages/views/general_network/top_remote2local.html',
+						templateUrl: 'public/pages/views/general_network/top_remote2Local.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
