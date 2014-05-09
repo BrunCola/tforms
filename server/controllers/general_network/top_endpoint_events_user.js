@@ -33,6 +33,7 @@ exports.render = function(req, res) {
 			'WHERE alert_info = \''+req.query.alert_info+'\' '+
 			'GROUP BY '+
 			'`src_user`';
+
 		var table1Params = [
 			{
 				title: 'Last Seen',
@@ -40,9 +41,9 @@ exports.render = function(req, res) {
 				link: {
 					type: 'top_endpoint_events_user_drill',
 					// val: the pre-evaluated values from the query above
-					val: ['alert_info', 'src_user'],
+					val: ['alert_info','src_user'],
 					crumb: false
-				},
+				}
 			},
 			{ title: 'Count', select: 'count'},
 			{ title: 'User', select: 'src_user'},
