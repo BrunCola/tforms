@@ -18,7 +18,7 @@ exports.render = function(req, res) {
 		var tables = [];
 		var info = [];
 		var table1SQL = 'SELECT '+
-			'date_format(max(from_unixtime(timestamp)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'date_format(from_unixtime(timestamp), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 			'`server_id`, '+
 			'`src_user`, '+
 			'`src_ip`, '+
@@ -34,12 +34,11 @@ exports.render = function(req, res) {
 			'AND `src_user` = \''+req.query.src_user+'\'';
 		var table1Params = [
 			{
-				title: 'Last Seen',
+				title: 'Time',
 				select: 'time',
 			},
-			{ title: 'Alert Info', select: 'alert_info' },
-			{ title: 'Alert Source', select: 'alert_source'},
-			{ title: 'Program Source', select: 'program_source' },
+			{ title: 'Full Log', select: 'full_log' },
+
 		];
 		var table1Settings = {
 			sort: [[1, 'desc']],
