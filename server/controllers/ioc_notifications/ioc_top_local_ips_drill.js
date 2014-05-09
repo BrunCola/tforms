@@ -22,13 +22,14 @@ exports.render = function(req, res) {
 		var table1SQL = 'SELECT '+
 				// SELECTS
 				'count(*) AS count,'+
-				'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time,'+ // Last Seen
+				'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time,'+ // Last Seen
 				'`ioc_severity`,'+
 				'`ioc`,'+
 				'`ioc_typeIndicator`,'+
 				'`ioc_typeInfection`,'+
 				'`lan_zone`,'+
 				'`lan_ip`,'+
+				'`remote_ip`,'+
 				'sum(`in_packets`) AS in_packets,'+
 				'sum(`out_packets`) AS out_packets,'+
 				'sum(`in_bytes`) AS in_bytes,'+
@@ -37,10 +38,12 @@ exports.render = function(req, res) {
 			'FROM `conn_ioc` '+
 			'WHERE '+
 				'time BETWEEN '+start+' AND '+end+' '+
+				'AND `lan_zone` = \''+req.query.lan_zone+'\' '+
+				'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
 				'AND `ioc_count` > 0 '+
 				'AND `trash` IS NULL '+
 			'GROUP BY '+
-				'`lan_ip`,'+
+				'`remote_ip`,'+
 				'`ioc`';
 
 		var table1Params = [
@@ -53,7 +56,8 @@ exports.render = function(req, res) {
 			{ title: 'IOC', select: 'ioc' },
 			{ title: 'IOC Type', select: 'ioc_typeIndicator' },
 			{ title: 'IOC Stage', select: 'ioc_typeInfection' },
-			{ title: 'Remote IP', select: 'lan_ip' },
+			{ title: 'Lan IP', select: 'lan_ip' },
+			{ title: 'Remote IP', select: 'remote_ip' },
 			{ title: 'Packets to Remote', select: 'in_packets' },
 			{ title: 'Packets from Remote', select: 'out_packets' },
 			{ title: 'Bytes to Remote', select: 'in_bytes', dView: false },
