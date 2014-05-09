@@ -18,7 +18,6 @@ exports.render = function(req, res) {
 		var tables = [];
 		var info = [];
 		var table1SQL = 'SELECT '+
-			'count(*) AS count,' +
 			'date_format(max(from_unixtime(timestamp)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 			'`server_id`, '+
 			'`src_user`, '+
@@ -30,16 +29,14 @@ exports.render = function(req, res) {
 			'`alert_info`, '+
 			'`full_log` '+
 			'FROM `ossec` '+
-			'WHERE alert_info = \''+req.query.alert_info+'\' '+
-			'GROUP BY '+
-			'`src_user`';
-
+			'WHERE '+
+			'`alert_info` = \''+req.query.alert_info+'\' '+
+			'AND `src_user` = \''+req.query.src_user+'\'';
 		var table1Params = [
 			{
 				title: 'Last Seen',
 				select: 'time',
 			},
-			{ title: 'Count', select: 'count' },
 			{ title: 'Alert Info', select: 'alert_info' },
 			{ title: 'Alert Source', select: 'alert_source'},
 			{ title: 'Program Source', select: 'program_source' },
