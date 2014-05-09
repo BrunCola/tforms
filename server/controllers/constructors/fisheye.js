@@ -4,16 +4,16 @@ var config = require('../../config/config'),
 	mysql = require('mysql'),
 	moment = require('moment');
 
-module.exports = function (sql, options, callback) {
-	config.db.database = options.database;
+module.exports = function (params, callback) {
+	config.db.database = params.database;
 	var connection = mysql.createConnection(config.db);
-	this.sql = sql;
+	this.query = params.query;
 	var dat = [];
 	var count = 0;
 	var max = 0;
-	connection.query(this.sql)
+	connection.query(this.query)
 		.on('result', function(data){
-			data.class = options.sClass;
+			data.class = params.sClass;
 			data.id = count++;
 			dat.push(data);
 		})
@@ -46,7 +46,7 @@ module.exports = function (sql, options, callback) {
 					}
 				}
 				item.data = d;
-				item.columns = options.columns;
+				item.columns = params.columns;
 				if (d.length >= max) {
 					max = d.length;
 				}
