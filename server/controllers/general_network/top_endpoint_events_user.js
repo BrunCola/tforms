@@ -41,7 +41,7 @@ exports.render = function(req, res) {
 				link: {
 					type: 'top_endpoint_events_user_drill',
 					// val: the pre-evaluated values from the query above
-					val: ['alert_info,src_user'],
+					val: ['alert_info','src_user'],
 					crumb: false
 				}
 			},

@@ -38,10 +38,9 @@ exports.render = function(req, res) {
 				select: 'time',
 			},
 			{ title: 'Full Log', select: 'full_log' },
-
 		];
 		var table1Settings = {
-			sort: [[1, 'desc']],
+			sort: [[0, 'desc']],
 			div: 'table',
 			title: 'Local IP Traffic'
 		}
