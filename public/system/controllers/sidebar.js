@@ -186,7 +186,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'Top Endpoint Events',
 			'url': 'top_endpoint_events',
 			'icon': 'fa-desktop',
-			'orphans': []
+			'orphans': ['top_endpoint_events_user']
 		}]
 	}];
 }]);

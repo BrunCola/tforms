@@ -129,7 +129,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 			})();
 			// !D3 FISHEYE PLUGIN
 			$scope.$on('buildFishChart', function (event, data){
-				var margin = {top: 5.5, right: 19.5, bottom: 20.5, left: 39.5};
+				var margin = {top: 5.5, right: 19.5, bottom: 30.5, left: 50.5};
 				// width = 1560,
 				// height = 1000 - margin.top - margin.bottom;
 
@@ -204,8 +204,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				// Add tooltip
 				$scope.tip = d3.tip()
 					.attr('class', 't-tip')
-					.offset([-10, 0])
-					.attr("transform", "translate(30,30)")
+					.offset([-50, 0])
 					.html(function(d) {
 						return "<strong>Connection Type: </strong> <span style='color:"+$scope.colorScale(d.class)+"'>" + d.class.toUpperCase() + "</span><br />"+
 							"<strong>Connection Count: </strong> <span style='color:"+$scope.colorScale(d.class)+"'>" + d.data.length + "</span><br />"+
@@ -213,13 +212,6 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					});
 
 				$scope.svg.call($scope.tip);
-
-				// Add legend
-				$scope.legend = $scope.svg.append("g")
-					.attr("class","legend")
-					.attr("transform","translate(50,30)")
-					.style("font-size","12px")
-					.call(d3.legend);
 
 				// Add an x-axis label.
 				$scope.svg.append("text")
@@ -238,6 +230,40 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					.attr("dy", ".75em")
 					.attr("transform", "rotate(-90)")
 					.text("Number of connections.");
+
+				// $scope.fisheyeWidth = function() {
+				// 	return $('#fishchart').parent().width();
+				// }
+				// var setNewSize = function(width) {
+				// 	// if (width > 0) {
+				// 	var elm = d3.select("#fishchart");
+				// 	elm.select('svg')
+				// 		.attr('width', width)
+				// 		.attr('height', width / 1.5);
+				// 	elm.select('rect')
+				// 		.attr('width', width)
+				// 		.attr('height', width / 1.5);
+				// 	elm.select('g')
+				// 		.attr("transform", "translate(0," + width/1.5 + ")")
+				// 		.call($scope.xAxis);
+				// 	elm.select('g')
+				// 		.call($scope.yAxis);
+
+				// 			// $(element).height(width/1.628);
+				// 			// d3.select('#geochart svg').attr('width', width).attr('height', width/1.628);
+				// 		// $scope.geoChart.redraw();
+				// 	// }
+				// }
+				// $(window).bind('resize', function() {
+				// 	setTimeout(function(){
+				// 		setNewSize($scope.fisheyeWidth());
+				// 	}, 150);
+				// });
+				// $('.sidebar-toggler').on("click", function() {
+				// 	setTimeout(function() {
+				// 		setNewSize($scope.geoWidth());
+				// 	},10);
+				// });
 
 				// dataset.forEach(function(d){
 				// 	d.dd = new Date(moment.unix(d.time).format());
@@ -310,12 +336,19 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					$scope.svg.select(".x.axis").call($scope.xAxis);
 					$scope.svg.select(".y.axis").call($scope.yAxis);
 				});
-				// setTimeout(function() {
-					$scope.legend
-						.style("font-size","17px")
-						.attr("data-style-padding",10)
-						.call(d3.legend)
-						.style('fill', 'none')
+
+				// Add legend
+				$scope.legend = $scope.svg.append("g")
+					.attr("class","legend")
+					.attr("transform","translate(50,30)")
+					.style("font-size","12px")
+					.call(d3.legend);
+				$scope.legend
+					.style("font-size","17px")
+					.attr("data-style-padding",10)
+					.call(d3.legend)
+					.style('fill', 'none')
+
 				// },1000)
 				// button1.on("click", function() {
 				// 	gType = 'default';

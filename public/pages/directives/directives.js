@@ -36,7 +36,7 @@ angular.module('mean.pages').directive('modalWindow', function() {
 				"bFilter": true,
 				"bRebuild": true,
 				"aoColumns": $scope.data.columns,
-				"iDisplayLength": 10
+				"iDisplayLength": 5
 			});
 		}
 	}

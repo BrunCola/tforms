@@ -13,6 +13,8 @@ var live_connections = require('../controllers/live_connections/live_connections
 		var ioc_events_drilldown = require('../controllers/ioc_notifications/ioc_events_drilldown');
 	// IOC TOP REMOTE IPs
 	var ioc_top_remote_ips = require('../controllers/ioc_notifications/ioc_top_remote_ips');
+		// IOC TOP REMOTE2LOCAL
+		var ioc_top_remote2local = require('../controllers/ioc_notifications/ioc_top_remote2local');
 	// IOC TOP LOCAL IPs
 	var ioc_top_local_ips = require('../controllers/ioc_notifications/ioc_top_local_ips');
 
@@ -67,6 +69,8 @@ var live_connections = require('../controllers/live_connections/live_connections
 		var top_remote2local = require('../controllers/general_network/top_remote2local');
 	// TOP ENDPOINT EVENTS
 	var top_endpoint_events = require('../controllers/general_network/top_endpoint_events');
+		// TOP ENDPOINT EVENTS USER
+		var top_endpoint_events_user = require('../controllers/general_network/top_endpoint_events_user');
 
 
 
@@ -85,10 +89,13 @@ module.exports = function(app) {
 		// IOC TOP REMOTE IPs
 		app.route('/ioc_notifications/ioc_top_remote_ips')
 		.get(authorization.requiresLogin, ioc_top_remote_ips.render);
+			// IOC TOP REMOTE2LOCAL
+			app.route('/ioc_notifications/ioc_top_remote2local')
+			.get(authorization.requiresLogin, ioc_top_remote2local.render);
 		// IOC TOP LOCAL IPs
 		app.route('/ioc_notifications/ioc_top_local_ips')
 		.get(authorization.requiresLogin, ioc_top_local_ips.render);
-	
+
 	// EXTRACTED FILES
 		// BY LOCAL IP
 		app.route('/extracted_files/by_local_ip')
@@ -126,7 +133,7 @@ module.exports = function(app) {
 		// NEW FTP REMOTE IPS
 		app.route('/first_seen/new_ftp_remote_ips')
 		.get(authorization.requiresLogin, new_ftp_remote_ips.render);
-	
+
 	// APPLICATIONS
 		// BY APPLICATION
 		app.route('/applications/app_by_application')
@@ -163,5 +170,8 @@ module.exports = function(app) {
 		// TOP ENDPOINT EVENTS
 		app.route('/general_network/top_endpoint_events')
 		.get(authorization.requiresLogin, top_endpoint_events.render);
+			// TOP ENDPOINT EVENTS
+			app.route('/general_network/top_endpoint_events_user')
+			.get(authorization.requiresLogin, top_endpoint_events_user.render);
 
 };

@@ -35,7 +35,13 @@ exports.render = function(req, res) {
 	var table1Params = [
 		{
 			title: 'Last Seen',
-			select: 'time'
+			select: 'time',
+			link: {
+				type: 'top_endpoint_events_user',
+				// val: the pre-evaluated values from the query above
+				val: ['alert_info'],
+				crumb: false
+			},
 		},
 		{ title: 'Count', select: 'count' },
 		{ title: 'Alert Info', select: 'alert_info' },

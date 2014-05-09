@@ -74,6 +74,18 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})		
+					// IOC TOP REMOTE2LOCAL
+					.state('ioc_top_remote2local', {
+						url: '/ioc_top_remote2local?start&end&remote_ip&ioc',
+						templateUrl: 'public/pages/views/ioc_notifications/ioc_top_remote2local.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'IOC Top Remote IPs',
+							daterange: true
+						}
+					})		
 				// IOC TOP LOCAL IPS
 				.state('ioc_top_local_ips', {
 					url: '/ioc_top_local_ips?start&end',
@@ -359,5 +371,17 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
+					// TOP ENPOINT EVENTS USER
+					.state('top_endpoint_events_user', {
+						url: '/top_endpoint_events_user?start&end&alert_info',
+						templateUrl: 'public/pages/views/general_network/top_endpoint_events_user.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Top Endpoint Events',
+							daterange: true
+						}
+					})
 	}
 ]);
