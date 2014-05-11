@@ -42,10 +42,10 @@ exports.render = function(req, res) {
 				'`remote_asn_name`,'+
 				'`in_bytes`,'+
 				'`out_bytes`,'+
-				'`l7_proto`,'
-				'`ioc`, '+
-				'`ioc_severity`, '+
-				'`ioc_typeIndicator`, '+
+				'`l7_proto`,'+
+				'`ioc`,'+
+				'`ioc_severity`,'+
+				'`ioc_typeIndicator`,'+
 				'`ioc_typeInfection` '+			
 				'FROM `conn_ioc` '+
 				'WHERE time BETWEEN '+start+' AND '+end+' '+
