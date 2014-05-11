@@ -231,7 +231,7 @@ exports.render = function(req, res) {
 			end: end,
 			sClass: 'http'
 		}
-		var ssl_ssl = {
+		var ssl_ioc = {
 			query: 'SELECT '+
 				// SELECTS
 				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
