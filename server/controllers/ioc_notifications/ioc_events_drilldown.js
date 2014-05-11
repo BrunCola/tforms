@@ -4,6 +4,20 @@ var fisheye = require('../constructors/fisheye'),
 	config = require('../../config/config'),
 	query = require('../constructors/query'),
 	async = require('async');
+var result = [];
+var largestGroup = 0;
+
+function handleReturn(data, max, callback) {
+	if (data) {
+		result.push(data);
+		if (max >= largestGroup) {
+			largestGroup = max;
+		}
+		return callback();
+	} else {
+		return callback();
+	}
+}
 
 exports.render = function(req, res) {
 	var database = req.user.database;
@@ -15,301 +29,358 @@ exports.render = function(req, res) {
 	}
 	if (req.query.lan_ip && req.query.remote_ip && req.query.ioc) {
 		var crossfilter;
-		var ioc_connSQL = 'SELECT '+
-			// SELECTS
-			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'`lan_zone`,'+
-			'`machine`,'+
-			'`lan_ip`,'+
-			'`lan_port`,'+
-			'`remote_ip`,'+
-			'`remote_port`,'+
-			'`remote_country`,'+
-			'`remote_asn_name`,'+
-			'`in_bytes`,'+
-			'`out_bytes`,'+
-			'`l7_proto`,'
-			'`ioc_severity`, '+
-			'`ioc`, '+
-			'`ioc_typeIndicator`, '+
-			'`ioc_typeInfection` '+			
-			// !SELECTS
-			'FROM `conn_ioc` '+
-			'WHERE time BETWEEN '+start+' AND '+end+' '+
-			'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
-			'AND `remote_ip`=\''+req.query.remote_ip+'\' '
-			'AND `ioc`=\''+req.query.ioc+'\' ';
-		var ioc_connParams = [
-			{"sTitle": "Time", "mData": "time"},
-			{"sTitle": "Zone", "mData": "lan_zone"},
-			{"sTitle": "Machine", "mData": "machine"},
-			{"sTitle": "Lan IP", "mData": "lan_ip"},
-			{"sTitle": "Lan Port", "mData": "lan_port"},
-			{"sTitle": "Remote IP", "mData": "remote_ip"},
-			{"sTitle": "Remote Port", "mData": "remote_port"},
-			{"sTitle": "Remote Country", "mData": "remote_country"},
-			{"sTitle": "Remote ASN", "mData": "remote_asn_name"},
-			{"sTitle": "Application", "mData": "l7_proto"},
-			{"sTitle": "IOC", "mData": "ioc"},
-			{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
-			{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"}
-		];
-		var connSQL = 'SELECT '+
-			// SELECTS
-			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'`lan_zone`,'+
-			'`machine`,'+
-			'`lan_ip`,'+
-			'`lan_port`,'+
-			'`remote_ip`,'+
-			'`remote_port`,'+
-			'`remote_country`,'+
-			'`remote_asn_name`,'+
-			'`in_bytes`,'+
-			'`out_bytes`,'+
-			'`l7_proto`,'
-			'`ioc_severity`, '+
-			'`ioc`, '+
-			'`ioc_typeIndicator`, '+
-			'`ioc_typeInfection` '+			
-			// !SELECTS
-			'FROM `conn_ioc` '+
-			'WHERE time BETWEEN '+start+' AND '+end+' '+
-			'AND `lan_ip`=\''+req.query.lan_ip+'\'';
-		var connParams = [
-			{"sTitle": "Time", "mData": "time"},
-			{"sTitle": "Zone", "mData": "lan_zone"},
-			{"sTitle": "Machine", "mData": "machine"},
-			{"sTitle": "Lan IP", "mData": "lan_ip"},
-			{"sTitle": "Lan Port", "mData": "lan_port"},
-			{"sTitle": "Remote IP", "mData": "remote_ip"},
-			{"sTitle": "Remote Port", "mData": "remote_port"},
-			{"sTitle": "Remote Country", "mData": "remote_country"},
-			{"sTitle": "Remote ASN", "mData": "remote_asn_name"},
-			{"sTitle": "Application", "mData": "l7_proto"},
-			{"sTitle": "IOC", "mData": "ioc"},
-			{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
-			{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"}
-		];		
-		var ioc_sslSQL = 'SELECT '+
-			// SELECTS
-			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'`version`, '+
-			'`cipher`, '+
-			'`server_name`, '+
-			'`subject`, '+
-			'`issuer_subject`, '+
-			'from_unixtime(`not_valid_before`) AS not_valid_before, '+
-			'from_unixtime(`not_valid_after`) AS not_valid_after, '+
-			'`ioc_severity`, '+
-			'`ioc`, '+
-			'`ioc_typeIndicator`, '+
-			'`ioc_typeInfection` '+	
-			// !SELECTS
-			'FROM `ssl_ioc` '+
-			'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-			'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
-			'AND `remote_ip`=\''+req.query.remote_ip+'\' '
-			'AND `ioc`=\''+req.query.ioc+'\' ';
-		var ioc_sslParams = [
-			{"sTitle": "Time", "mData": "time"},
-			{"sTitle": "Version", "mData": "version"},
-			{"sTitle": "cipher", "mData": "cipher"},
-			{"sTitle": "Server Name", "mData": "server_name"},
-			{"sTitle": "Subject", "mData": "subject"},
-			{"sTitle": "Issuer Subject", "mData": "issuer_subject"},
-		];
-		var sslSQL = 'SELECT '+
-			// SELECTS
-			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'`version`, '+
-			'`cipher`, '+
-			'`server_name`, '+
-			'`subject`, '+
-			'`issuer_subject`, '+
-			'from_unixtime(`not_valid_before`) AS not_valid_before, '+
-			'from_unixtime(`not_valid_after`) AS not_valid_after, '+
-			'`ioc_severity`, '+
-			'`ioc`, '+
-			'`ioc_typeIndicator`, '+
-			'`ioc_typeInfection` '+	
-			// !SELECTS
-			'FROM ssl_ioc '+
-			'WHERE time BETWEEN '+start+' AND '+end+' '+
-			'AND `lan_ip`=\''+req.query.lan_ip+'\' ';
-		var sslParams = [
-			{"sTitle": "Time", "mData": "time"},
-			{"sTitle": "Version", "mData": "version"},
-			{"sTitle": "cipher", "mData": "cipher"},
-			{"sTitle": "Server Name", "mData": "server_name"},
-			{"sTitle": "Subject", "mData": "subject"},
-			{"sTitle": "Issuer Subject", "mData": "issuer_subject"},
-		];
-		var ioc_dnsSQL = 'SELECT '+
-			// SELECTS
-			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'`proto`, '+
-			'`qclass_name`, '+
-			'`qtype_name`, '+
-			'`query`, '+
-			'`answers`, '+
-			'`TTLs`, '+
-			'`ioc`, '+
-			'`ioc_severity`, '+
-			'`ioc_typeIndicator`, '+
-			'`ioc_typeInfection` '+
-			// !SELECTS
-			'FROM `dns_ioc` '+
-			'WHERE time BETWEEN '+start+' AND '+end+' '+
-			'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
-			'AND `remote_ip`=\''+req.query.remote_ip+'\' '
-			'AND `ioc`=\''+req.query.ioc+'\' ';			
-		var ioc_dnsParams = [
-			{"sTitle": "Time", "mData": "time"},
-			{"sTitle": "Protocall", "mData": "proto"},
-			{"sTitle": "Query", "mData": "query"}
-		];
-		var dnsSQL = 'SELECT '+
-			// SELECTS
-			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'`proto`, '+
-			'`qclass_name`, '+
-			'`qtype_name`, '+
-			'`query`, '+
-			'`answers`, '+
-			'`TTLs`, '+
-			'`ioc`, '+
-			'`ioc_severity`, '+
-			'`ioc_typeIndicator`, '+
-			'`ioc_typeInfection` '+
-			// !SELECTS
-			'FROM `dns_ioc` '+
-			'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-			'AND `lan_ip`=\''+req.query.lan_ip+'\' ';
-		var dnsParams = [
-			{"sTitle": "Time", "mData": "time"},
-			{"sTitle": "Protocall", "mData": "proto"},
-			{"sTitle": "Query", "mData": "query"}
-		];
-		var ioc_httpSQL = 'SELECT '+
-			// SELECTS
-			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'`host`,'+
-			'`uri`,'+
-			'`referrer`,'+
-			'`user_agent`,'+
-			'`request_body_len`,'+
-			'`response_body_len`,'+
-			'`status_code`,'+
-			'`status_msg`,'+
-			'`info_code`,'+
-			'`info_msg`,'+
-			'`ioc`, '+
-			'`ioc_severity`, '+
-			'`ioc_typeIndicator`, '+
-			'`ioc_typeInfection` '+
-			// !SELECTS
-			'FROM `http_ioc` '+
-			'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-			'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
-			'AND `remote_ip`=\''+req.query.remote_ip+'\' '
-			'AND `ioc`=\''+req.query.ioc+'\' ';	
-		var ioc_httpParams = [
-			{"sTitle": "Time", "mData": "time"},
-			{"sTitle": "Host", "mData": "host"},
-			{"sTitle": "Referrer", "mData": "referrer"},
-			{"sTitle": "User Agent", "mData": "user_agent"},
-		];
-		var httpSQL = 'SELECT '+
-			// SELECTS
-			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'`host`,'+
-			'`uri`,'+
-			'`referrer`,'+
-			'`user_agent`,'+
-			'`request_body_len`,'+
-			'`response_body_len`,'+
-			'`status_code`,'+
-			'`status_msg`,'+
-			'`info_code`,'+
-			'`info_msg`,'+
-			'`ioc`, '+
-			'`ioc_severity`, '+
-			'`ioc_typeIndicator`, '+
-			'`ioc_typeInfection` '+
-			// !SELECTS
-			'FROM `http_ioc` '+
-			'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-			'AND `lan_ip`=\''+req.query.lan_ip+'\' ';
-		var httpParams = [
-			{"sTitle": "Time", "mData": "time"},
-			{"sTitle": "Host", "mData": "host"},
-			{"sTitle": "Referrer", "mData": "referrer"},
-			{"sTitle": "User Agent", "mData": "user_agent"},
-		];
-		var ioc_fileSQL = 'SELECT '+
-			// SELECTS
-			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'`mime`, '+
-			'`name`, '+
-			'`size`, '+
-			'`md5`, '+
-			'`sha1`, '+
-			'`ioc`, '+
-			'`ioc_severity`, '+
-			'`ioc_typeIndicator`, '+
-			'`ioc_typeInfection` '+
-			// !SELECTS
-			'FROM `file_ioc` '+
-			'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-			'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
-			'AND `remote_ip`=\''+req.query.remote_ip+'\' '
-			'AND `ioc`=\''+req.query.ioc+'\' ';				
-		var ioc_fileParams = [
-			{"sTitle": "Time", "mData": "time"},
-			{"sTitle": "MIME", "mData": "mime"},
-			{"sTitle": "Name", "mData": "name"},
-			{"sTitle": "Size", "mData": "size"},
-		];
-		var fileSQL = 'SELECT '+
-			// SELECTS
-			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'mime, '+
-			'name, '+
-			'size, '+
-			'md5, '+
-			'sha1, '+
-			'`ioc`, '+
-			'`ioc_severity`, '+
-			'`ioc_typeIndicator`, '+
-			'`ioc_typeInfection` '+
-			// !SELECTS
-			'FROM `file_ioc` '+
-			'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-			'AND `lan_ip`=\''+req.query.lan_ip+'\' ';
-		var fileParams = [
-			{"sTitle": "Time", "mData": "time"},
-			{"sTitle": "MIME", "mData": "mime"},
-			{"sTitle": "Name", "mData": "name"},
-			{"sTitle": "Size", "mData": "size"},
-		];
-		var endpointSQL = 'SELECT '+
-			// SELECTS
-			'date_format(from_unixtime(`timestamp`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'`src_ip`, '+
-			'`dst_ip`, '+
-			'`src_user`, '+
-			'`alert_source`, '+
-			'`program_source`, '+
-			'`alert_info` '+
-			// !SELECTS
-			'FROM `ossec` '+
-			'WHERE `timestamp` BETWEEN '+start+' AND '+end+' '+
-			'AND `src_ip`=\''+req.query.lan_ip+'\'';
-		var endpointParams = [
-			{"sTitle": "Time", "mData": "time"},
-			{"sTitle": "Source IP", "mData": "src_ip"},
-		];
+		var conn_ioc = {
+			query: 'SELECT '+
+				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`lan_zone`,'+
+				'`machine`,'+
+				'`lan_ip`,'+
+				'`lan_port`,'+
+				'`remote_ip`,'+
+				'`remote_port`,'+
+				'`remote_country`,'+
+				'`remote_asn_name`,'+
+				'`in_bytes`,'+
+				'`out_bytes`,'+
+				'`l7_proto`,'
+				'`ioc`, '+
+				'`ioc_severity`, '+
+				'`ioc_typeIndicator`, '+
+				'`ioc_typeInfection` '+			
+				'FROM `conn_ioc` '+
+				'WHERE time BETWEEN '+start+' AND '+end+' '+
+				'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
+				'AND `remote_ip`=\''+req.query.remote_ip+'\' '
+				'AND `ioc`=\''+req.query.ioc+'\' ';
+			columns: [
+				{"sTitle": "Time", "mData": "time"},
+				{"sTitle": "Zone", "mData": "lan_zone"},
+				{"sTitle": "Machine", "mData": "machine"},
+				{"sTitle": "Lan IP", "mData": "lan_ip"},
+				{"sTitle": "Lan Port", "mData": "lan_port"},
+				{"sTitle": "Remote IP", "mData": "remote_ip"},
+				{"sTitle": "Remote Port", "mData": "remote_port"},
+				{"sTitle": "Remote Country", "mData": "remote_country"},
+				{"sTitle": "Remote ASN", "mData": "remote_asn_name"},
+				{"sTitle": "Application", "mData": "l7_proto"},
+				{"sTitle": "IOC", "mData": "ioc"},
+				{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
+				{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"}
+			],
+			database: database,
+			start: start,
+			end: end,
+			sClass: 'conn_ioc'
+		}
+		var conn = {
+			query: 'SELECT '+
+				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`lan_zone`,'+
+				'`machine`,'+
+				'`lan_ip`,'+
+				'`lan_port`,'+
+				'`remote_ip`,'+
+				'`remote_port`,'+
+				'`remote_country`,'+
+				'`remote_asn_name`,'+
+				'`in_bytes`,'+
+				'`out_bytes`,'+
+				'`l7_proto`,'
+				'`ioc`, '+
+				'`ioc_severity`, '+
+				'`ioc_typeIndicator`, '+
+				'`ioc_typeInfection` '+			
+				'FROM `conn_ioc` '+
+				'WHERE time BETWEEN '+start+' AND '+end+' '+
+				'AND `lan_ip`=\''+req.query.lan_ip+'\' ';
+			columns: [
+				{"sTitle": "Time", "mData": "time"},
+				{"sTitle": "Zone", "mData": "lan_zone"},
+				{"sTitle": "Machine", "mData": "machine"},
+				{"sTitle": "Lan IP", "mData": "lan_ip"},
+				{"sTitle": "Lan Port", "mData": "lan_port"},
+				{"sTitle": "Remote IP", "mData": "remote_ip"},
+				{"sTitle": "Remote Port", "mData": "remote_port"},
+				{"sTitle": "Remote Country", "mData": "remote_country"},
+				{"sTitle": "Remote ASN", "mData": "remote_asn_name"},
+				{"sTitle": "Application", "mData": "l7_proto"},
+				{"sTitle": "IOC", "mData": "ioc"},
+				{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
+				{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"}
+			],
+			database: database,
+			start: start,
+			end: end,
+			sClass: 'conn'
+		}	
+		var dns_ioc = {
+			query: 'SELECT '+
+				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`proto`, '+
+				'`qclass_name`, '+
+				'`qtype_name`, '+
+				'`query`, '+
+				'`answers`, '+
+				'`TTLs`, '+
+				'`ioc`, '+
+				'`ioc_severity`, '+
+				'`ioc_typeIndicator`, '+
+				'`ioc_typeInfection` '+
+				'FROM dns_ioc '+
+				'WHERE time BETWEEN '+start+' AND '+end+' '+
+				'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
+				'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
+				'AND `ioc`=\''+req.query.ioc+'\'',
+			columns: [
+				{"sTitle": "Time", "mData": "time"},
+				{"sTitle": "Protocall", "mData": "proto"},
+				{"sTitle": "Query", "mData": "query"}
+			],
+			database: database,
+			start: start,
+			end: end,
+			sClass: 'dns_ioc'
+		}
+		var dns = {
+			query: 'SELECT '+
+				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`proto`, '+
+				'`qclass_name`, '+
+				'`qtype_name`, '+
+				'`query`, '+
+				'`answers`, '+
+				'`TTLs`, '+
+				'`ioc`, '+
+				'`ioc_severity`, '+
+				'`ioc_typeIndicator`, '+
+				'`ioc_typeInfection` '+
+				'FROM dns_ioc '+
+				'WHERE time BETWEEN '+start+' AND '+end+' '+
+				'AND `lan_ip`=\''+req.query.lan_ip+'\'',
+			columns: [
+				{"sTitle": "Time", "mData": "time"},
+				{"sTitle": "Protocall", "mData": "proto"},
+				{"sTitle": "Query", "mData": "query"}
+			],
+			database: database,
+			start: start,
+			end: end,
+			sClass: 'dns'
+		}
+		var http_ioc = {
+			query: 'SELECT '+
+				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`host`,'+
+				'`uri`,'+
+				'`referrer`,'+
+				'`user_agent`,'+
+				'`request_body_len`,'+
+				'`response_body_len`,'+
+				'`status_code`,'+
+				'`status_msg`,'+
+				'`info_code`,'+
+				'`info_msg`,'+
+				'`ioc`, '+
+				'`ioc_severity`, '+
+				'`ioc_typeIndicator`, '+
+				'`ioc_typeInfection` '+
+				'FROM `http_ioc` '+
+				'WHERE time BETWEEN '+start+' AND '+end+' '+
+				'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
+				'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
+				'AND `ioc`=\''+req.query.ioc+'\'',
+			columns: [
+				{"sTitle": "Time", "mData": "time"},
+				{"sTitle": "Host", "mData": "host"},
+				{"sTitle": "Referrer", "mData": "referrer"},
+				{"sTitle": "User Agent", "mData": "user_agent"},
+			],
+			database: database,
+			start: start,
+			end: end,
+			sClass: 'http_ioc'
+		}
+		var http = {
+			query: 'SELECT '+
+				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`host`,'+
+				'`uri`,'+
+				'`referrer`,'+
+				'`user_agent`,'+
+				'`request_body_len`,'+
+				'`response_body_len`,'+
+				'`status_code`,'+
+				'`status_msg`,'+
+				'`info_code`,'+
+				'`info_msg`,'+
+				'`ioc`, '+
+				'`ioc_severity`, '+
+				'`ioc_typeIndicator`, '+
+				'`ioc_typeInfection` '+
+				'FROM `http_ioc` '+
+				'WHERE `time` BETWEEN '+start+' AND '+end+' '+
+				'AND `lan_ip`=\''+req.query.lan_ip+'\'',
+			columns: [
+				{"sTitle": "Time", "mData": "time"},
+				{"sTitle": "Host", "mData": "host"},
+				{"sTitle": "Referrer", "mData": "referrer"},
+				{"sTitle": "User Agent", "mData": "user_agent"},
+			],
+			database: database,
+			start: start,
+			end: end,
+			sClass: 'http'
+		}
+		var ssl_ssl = {
+			query: 'SELECT '+
+				// SELECTS
+				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`version`, '+
+				'`cipher`, '+
+				'`server_name`, '+
+				'`subject`, '+
+				'`issuer_subject`, '+
+				'from_unixtime(`not_valid_before`) AS not_valid_before, '+
+				'from_unixtime(`not_valid_after`) AS not_valid_after, '+
+				'`ioc`, '+
+				'`ioc_severity`, '+
+				'`ioc_typeIndicator`, '+
+				'`ioc_typeInfection` '+	
+				// !SELECTS
+				'FROM ssl_ioc '+
+				'WHERE time BETWEEN '+start+' AND '+end+' '+
+				'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
+				'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
+				'AND `ioc`=\''+req.query.ioc+'\'',
+			columns: [
+				{"sTitle": "Time", "mData": "time"},
+				{"sTitle": "Version", "mData": "version"},
+				{"sTitle": "cipher", "mData": "cipher"},
+				{"sTitle": "Server Name", "mData": "server_name"},
+				{"sTitle": "Subject", "mData": "subject"},
+				{"sTitle": "Issuer Subject", "mData": "issuer_subject"},
+				{"sTitle": "IOC", "mData": "ioc"},
+				{"sTitle": "IOC Severity", "mData": "ioc_severity"},
+				{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
+				{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+			],
+			database: database,
+			start: start,
+			end: end,
+			sClass: 'ssl_ioc'
+		}
+		var ssl = {
+			query: 'SELECT '+
+				// SELECTS
+				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`version`, '+
+				'`cipher`, '+
+				'`server_name`, '+
+				'`subject`, '+
+				'`issuer_subject`, '+
+				'from_unixtime(`not_valid_before`) AS not_valid_before, '+
+				'from_unixtime(`not_valid_after`) AS not_valid_after, '+
+				'`ioc`, '+
+				'`ioc_severity`, '+
+				'`ioc_typeIndicator`, '+
+				'`ioc_typeInfection` '+	
+				// !SELECTS
+				'FROM ssl_ioc '+
+				'WHERE time BETWEEN '+start+' AND '+end+' '+
+				'AND `lan_ip`=\''+req.query.lan_ip+'\'',
+			columns: [
+				{"sTitle": "Time", "mData": "time"},
+				{"sTitle": "Version", "mData": "version"},
+				{"sTitle": "cipher", "mData": "cipher"},
+				{"sTitle": "Server Name", "mData": "server_name"},
+				{"sTitle": "Subject", "mData": "subject"},
+				{"sTitle": "Issuer Subject", "mData": "issuer_subject"},
+				{"sTitle": "IOC", "mData": "ioc"},
+				{"sTitle": "IOC Severity", "mData": "ioc_severity"},
+				{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
+				{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+			],
+			database: database,
+			start: start,
+			end: end,
+			sClass: 'ssl'
+		}
+		var file_ioc = {
+			query: 'SELECT '+
+				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`mime`, '+
+				'`name`, '+
+				'`size`, '+
+				'`md5`, '+
+				'`sha1`, '+
+				'`ioc`, '+
+				'`ioc_severity`, '+
+				'`ioc_typeIndicator`, '+
+				'`ioc_typeInfection` '+
+				'FROM `file_ioc` '+
+				'WHERE `time` BETWEEN '+start+' AND '+end+' '+
+				'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
+				'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
+				'AND `ioc`=\''+req.query.ioc+'\'',
+			columns: [
+				{"sTitle": "Time", "mData": "time"},
+				{"sTitle": "MIME", "mData": "mime"},
+				{"sTitle": "Name", "mData": "name"},
+				{"sTitle": "Size", "mData": "size"},
+			],
+			database: database,
+			start: start,
+			end: end,
+			sClass: 'file_ioc'
+		}
+		var file = {
+			query: 'SELECT '+
+				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`mime`, '+
+				'`name`, '+
+				'`size`, '+
+				'`md5`, '+
+				'`sha1`, '+
+				'`ioc`, '+
+				'`ioc_severity`, '+
+				'`ioc_typeIndicator`, '+
+				'`ioc_typeInfection` '+
+				'FROM `file_ioc` '+
+				'WHERE time BETWEEN '+start+' AND '+end+' '+
+				'AND `lan_ip`=\''+req.query.lan_ip+'\'',
+			columns: [
+				{"sTitle": "Time", "mData": "time"},
+				{"sTitle": "MIME", "mData": "mime"},
+				{"sTitle": "Name", "mData": "name"},
+				{"sTitle": "Size", "mData": "size"},
+			],
+			database: database,
+			start: start,
+			end: end,
+			sClass: 'file'
+		}
+		var endpoint = {
+			query: 'SELECT '+
+				// SELECTS
+				'date_format(from_unixtime(`timestamp`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`src_ip`, '+
+				'`dst_ip`, '+
+				'`src_user`, '+
+				'`alert_source`, '+
+				'`program_source`, '+
+				'`alert_info` '+
+				// !SELECTS
+				'FROM `ossec` '+
+				'WHERE time BETWEEN '+start+' AND '+end+' '+
+				'AND `src_ip`=\''+req.query.lan_ip+'\' ',
+			columns: [
+				{"sTitle": "Source IP", "mData": "src_ip"},
+			],
+			database: database,
+			start: start,
+			end: end,
+			sClass: 'endpoint'
+		}
 		var info = {};
 		var InfoSQL = 'SELECT '+
 			'max(from_unixtime(`time`)) as last, '+
@@ -340,116 +411,70 @@ exports.render = function(req, res) {
 			'WHERE '+
 			'`ioc_parent` = \''+req.query.ioc+'\' '+
 			'LIMIT 1';
-		var result = [];
-		var largestGroup = 0;
 		async.parallel([
 			// Table function(s)
-			function(callback) {
-				new fisheye(ioc_connSQL, { database: database, sClass: 'ioc_conn', start: start, end: end, columns: ioc_connParams }, function(err, data, max){
-					result.push(data);
-					if (max >= largestGroup) {
-						largestGroup = max;
-					}
-					callback();
+			function(callback) { // conn_ioc
+				new fisheye(conn_ioc, function(err,data, max){
+					handleReturn(data, max, callback);
 				});
 			},
-			function(callback) {
-				new fisheye(connSQL, { database: database, sClass: 'conn', start: start, end: end, columns: connParams }, function(err, data, max){
-					result.push(data);
-					if (max >= largestGroup) {
-						largestGroup = max;
-					}
-					callback();
+			function(callback) { // conn
+				new fisheye(conn, function(err,data, max){
+					handleReturn(data, max, callback);
+				});
+			},
+			function(callback) { // dns_ioc
+				new fisheye(dns_ioc, function(err,data, max){
+					handleReturn(data, max, callback);
+				});
+			},
+			function(callback) { // dns
+				new fisheye(dns, function(err,data, max){
+					handleReturn(data, max, callback);
+				});
+			},
+			function(callback) { // http_ioc
+				new fisheye(http_ioc, function(err, data, max){
+					handleReturn(data, max, callback);
+				});
+			},
+			function(callback) { // http
+				new fisheye(http, function(err, data, max){
+					handleReturn(data, max, callback);
+				});
+			},
+			function(callback) { // ssl_ioc
+				new fisheye(ssl_ioc, function(err, data, max){
+					handleReturn(data, max, callback);
+				});
+			},
+			function(callback) { // ssl
+				new fisheye(ssl, function(err, data, max){
+					handleReturn(data, max, callback);
 				});
 			},			
-			function(callback) {
-				new fisheye(sslSQL, { database: database, sClass: 'ssl', start: start, end: end, columns: sslParams }, function(err, data, max){
-					result.push(data);
-					if (max >= largestGroup) {
-						largestGroup = max;
-					}
-					callback();
+			function(callback) { // file_ioc
+				new fisheye(file_ioc, function(err, data, max){
+					handleReturn(data, max, callback);
 				});
 			},
-			function(callback) {
-				new fisheye(ioc_sslSQL, { database: database, sClass: 'ioc_ssl', start: start, end: end, columns: ioc_sslParams }, function(err, data, max){
-					result.push(data);
-					if (max >= largestGroup) {
-						largestGroup = max;
-					}
-					callback();
+			function(callback) { // file
+				new fisheye(file, function(err, data, max){
+					handleReturn(data, max, callback);
 				});
 			},
-			function(callback) {
-				new fisheye(dnsSQL, { database: database, sClass: 'dns', start: start, end: end, columns: dnsParams }, function(err,data, max){
-					result.push(data);
-					if (max >= largestGroup) {
-						largestGroup = max;
-					}
-					callback();
+			function(callback) { // endpoint
+				new fisheye(endpoint, function(err, data, max){
+					handleReturn(data, max, callback);
 				});
 			},
-			function(callback) {
-				new fisheye(ioc_dnsSQL, { database: database, sClass: 'ioc_dns', start: start, end: end, columns: ioc_dnsParams }, function(err,data, max){
-					result.push(data);
-					if (max >= largestGroup) {
-						largestGroup = max;
-					}
-					callback();
-				});
-			},
-			function(callback) {
-				new fisheye(httpSQL, { database: database, sClass: 'http', start: start, end: end, columns: httpParams }, function(err, data, max){
-					result.push(data);
-					if (max >= largestGroup) {
-						largestGroup = max;
-					}
-					callback();
-				});
-			},
-			function(callback) {
-				new fisheye(ioc_httpSQL, { database: database, sClass: 'ioc_http', start: start, end: end, columns: ioc_httpParams }, function(err, data, max){
-					result.push(data);
-					if (max >= largestGroup) {
-						largestGroup = max;
-					}
-					callback();
-				});
-			},
-			function(callback) {
-				new fisheye(fileSQL, { database: database, sClass: 'file', start: start, end: end, columns: fileParams }, function(err, data, max){
-					result.push(data);
-					if (max >= largestGroup) {
-						largestGroup = max;
-					}
-					callback();
-				});
-			},
-			function(callback) {
-				new fisheye(ioc_fileSQL, { database: database, sClass: 'ioc_file', start: start, end: end, columns: ioc_fileParams }, function(err, data, max){
-					result.push(data);
-					if (max >= largestGroup) {
-						largestGroup = max;
-					}
-					callback();
-				});
-			},
-			function(callback) {
-				new fisheye(endpointSQL, { database: database, sClass: 'endpoint', start: start, end: end, columns: endpointParams }, function(err, data, max){
-					result.push(data);
-					if (max >= largestGroup) {
-						largestGroup = max;
-					}
-					callback();
-				});
-			},
-			function(callback) {
+			function(callback) { // InfoSQL
 				new query(InfoSQL, database, function(err,data){
 					info.main = data;
 					callback();
 				});
 			},
-			function(callback) {
+			function(callback) { // Info2SQL
 				new query(Info2SQL, 'rp_ioc_intel', function(err,data){
 					info.desc = data;
 					callback();
