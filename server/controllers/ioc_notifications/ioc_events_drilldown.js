@@ -15,19 +15,99 @@ exports.render = function(req, res) {
 	}
 	if (req.query.lan_ip && req.query.remote_ip && req.query.ioc) {
 		var crossfilter;
+		var ioc_connSQL = 'SELECT '+
+			// SELECTS
+			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'`lan_zone`,'+
+			'`machine`,'+
+			'`lan_ip`,'+
+			'`lan_port`,'+
+			'`remote_ip`,'+
+			'`remote_port`,'+
+			'`remote_country`,'+
+			'`remote_asn_name`,'+
+			'`in_bytes`,'+
+			'`out_bytes`,'+
+			'`l7_proto`,'
+			'`ioc_severity`, '+
+			'`ioc`, '+
+			'`ioc_typeIndicator`, '+
+			'`ioc_typeInfection` '+			
+			// !SELECTS
+			'FROM `conn_ioc` '+
+			'WHERE time BETWEEN '+start+' AND '+end+' '+
+			'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
+			'AND `remote_ip`=\''+req.query.remote_ip+'\' '
+			'AND `ioc`=\''+req.query.ioc+'\' ';
+		var ioc_connParams = [
+			{"sTitle": "Time", "mData": "time"},
+			{"sTitle": "Zone", "mData": "lan_zone"},
+			{"sTitle": "Machine", "mData": "machine"},
+			{"sTitle": "Lan IP", "mData": "lan_ip"},
+			{"sTitle": "Lan Port", "mData": "lan_port"},
+			{"sTitle": "Remote IP", "mData": "remote_ip"},
+			{"sTitle": "Remote Port", "mData": "remote_port"},
+			{"sTitle": "Remote Country", "mData": "remote_country"},
+			{"sTitle": "Remote ASN", "mData": "remote_asn_name"},
+			{"sTitle": "Application", "mData": "l7_proto"},
+			{"sTitle": "IOC", "mData": "ioc"},
+			{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
+			{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"}
+		];
+		var connSQL = 'SELECT '+
+			// SELECTS
+			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'`lan_zone`,'+
+			'`machine`,'+
+			'`lan_ip`,'+
+			'`lan_port`,'+
+			'`remote_ip`,'+
+			'`remote_port`,'+
+			'`remote_country`,'+
+			'`remote_asn_name`,'+
+			'`in_bytes`,'+
+			'`out_bytes`,'+
+			'`l7_proto`,'
+			'`ioc_severity`, '+
+			'`ioc`, '+
+			'`ioc_typeIndicator`, '+
+			'`ioc_typeInfection` '+			
+			// !SELECTS
+			'FROM `conn_ioc` '+
+			'WHERE time BETWEEN '+start+' AND '+end+' '+
+			'AND `lan_ip`=\''+req.query.lan_ip+'\'';
+		var connParams = [
+			{"sTitle": "Time", "mData": "time"},
+			{"sTitle": "Zone", "mData": "lan_zone"},
+			{"sTitle": "Machine", "mData": "machine"},
+			{"sTitle": "Lan IP", "mData": "lan_ip"},
+			{"sTitle": "Lan Port", "mData": "lan_port"},
+			{"sTitle": "Remote IP", "mData": "remote_ip"},
+			{"sTitle": "Remote Port", "mData": "remote_port"},
+			{"sTitle": "Remote Country", "mData": "remote_country"},
+			{"sTitle": "Remote ASN", "mData": "remote_asn_name"},
+			{"sTitle": "Application", "mData": "l7_proto"},
+			{"sTitle": "IOC", "mData": "ioc"},
+			{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
+			{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"}
+		];		
 		var ioc_sslSQL = 'SELECT '+
 			// SELECTS
-			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'version, '+
-			'cipher, '+
-			'server_name, '+
-			'subject, '+
-			'issuer_subject, '+
-			'from_unixtime(not_valid_before) AS not_valid_before, '+
-			'from_unixtime(not_valid_after) AS not_valid_after '+
+			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'`version`, '+
+			'`cipher`, '+
+			'`server_name`, '+
+			'`subject`, '+
+			'`issuer_subject`, '+
+			'from_unixtime(`not_valid_before`) AS not_valid_before, '+
+			'from_unixtime(`not_valid_after`) AS not_valid_after, '+
+			'`ioc_severity`, '+
+			'`ioc`, '+
+			'`ioc_typeIndicator`, '+
+			'`ioc_typeInfection` '+	
 			// !SELECTS
-			'FROM ssl_ioc '+
-			'WHERE time BETWEEN '+start+' AND '+end+' '+
+			'FROM `ssl_ioc` '+
+			'WHERE `time` BETWEEN '+start+' AND '+end+' '+
 			'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
 			'AND `remote_ip`=\''+req.query.remote_ip+'\' '
 			'AND `ioc`=\''+req.query.ioc+'\' ';
@@ -41,14 +121,18 @@ exports.render = function(req, res) {
 		];
 		var sslSQL = 'SELECT '+
 			// SELECTS
-			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'version, '+
-			'cipher, '+
-			'server_name, '+
-			'subject, '+
-			'issuer_subject, '+
-			'from_unixtime(not_valid_before) AS not_valid_before, '+
-			'from_unixtime(not_valid_after) AS not_valid_after '+
+			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'`version`, '+
+			'`cipher`, '+
+			'`server_name`, '+
+			'`subject`, '+
+			'`issuer_subject`, '+
+			'from_unixtime(`not_valid_before`) AS not_valid_before, '+
+			'from_unixtime(`not_valid_after`) AS not_valid_after, '+
+			'`ioc_severity`, '+
+			'`ioc`, '+
+			'`ioc_typeIndicator`, '+
+			'`ioc_typeInfection` '+	
 			// !SELECTS
 			'FROM ssl_ioc '+
 			'WHERE time BETWEEN '+start+' AND '+end+' '+
@@ -63,18 +147,19 @@ exports.render = function(req, res) {
 		];
 		var ioc_dnsSQL = 'SELECT '+
 			// SELECTS
-			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'proto, '+
-			'qclass_name, '+
-			'qtype_name, '+
-			'query, '+
-			'answers, '+
-			'TTLs, '+
-			'ioc, '+
-			'ioc_typeIndicator, '+
-			'ioc_typeInfection '+
+			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'`proto`, '+
+			'`qclass_name`, '+
+			'`qtype_name`, '+
+			'`query`, '+
+			'`answers`, '+
+			'`TTLs`, '+
+			'`ioc`, '+
+			'`ioc_severity`, '+
+			'`ioc_typeIndicator`, '+
+			'`ioc_typeInfection` '+
 			// !SELECTS
-			'FROM dns_ioc '+
+			'FROM `dns_ioc` '+
 			'WHERE time BETWEEN '+start+' AND '+end+' '+
 			'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
 			'AND `remote_ip`=\''+req.query.remote_ip+'\' '
@@ -86,19 +171,20 @@ exports.render = function(req, res) {
 		];
 		var dnsSQL = 'SELECT '+
 			// SELECTS
-			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'proto, '+
-			'qclass_name, '+
-			'qtype_name, '+
-			'query, '+
-			'answers, '+
-			'TTLs, '+
-			'ioc, '+
-			'ioc_typeIndicator, '+
-			'ioc_typeInfection '+
+			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'`proto`, '+
+			'`qclass_name`, '+
+			'`qtype_name`, '+
+			'`query`, '+
+			'`answers`, '+
+			'`TTLs`, '+
+			'`ioc`, '+
+			'`ioc_severity`, '+
+			'`ioc_typeIndicator`, '+
+			'`ioc_typeInfection` '+
 			// !SELECTS
-			'FROM dns_ioc '+
-			'WHERE time BETWEEN '+start+' AND '+end+' '+
+			'FROM `dns_ioc` '+
+			'WHERE `time` BETWEEN '+start+' AND '+end+' '+
 			'AND `lan_ip`=\''+req.query.lan_ip+'\' ';
 		var dnsParams = [
 			{"sTitle": "Time", "mData": "time"},
@@ -107,23 +193,24 @@ exports.render = function(req, res) {
 		];
 		var ioc_httpSQL = 'SELECT '+
 			// SELECTS
-			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'host,'+
-			'uri,'+
-			'referrer,'+
-			'user_agent,'+
-			'request_body_len,'+
-			'response_body_len,'+
-			'status_code,'+
-			'status_msg,'+
-			'info_code,'+
-			'info_msg,'+
-			'ioc,'+
-			'ioc_typeIndicator,'+
-			'ioc_typeInfection '+
+			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'`host`,'+
+			'`uri`,'+
+			'`referrer`,'+
+			'`user_agent`,'+
+			'`request_body_len`,'+
+			'`response_body_len`,'+
+			'`status_code`,'+
+			'`status_msg`,'+
+			'`info_code`,'+
+			'`info_msg`,'+
+			'`ioc`, '+
+			'`ioc_severity`, '+
+			'`ioc_typeIndicator`, '+
+			'`ioc_typeInfection` '+
 			// !SELECTS
-			'FROM http_ioc '+
-			'WHERE time BETWEEN '+start+' AND '+end+' '+
+			'FROM `http_ioc` '+
+			'WHERE `time` BETWEEN '+start+' AND '+end+' '+
 			'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
 			'AND `remote_ip`=\''+req.query.remote_ip+'\' '
 			'AND `ioc`=\''+req.query.ioc+'\' ';	
@@ -135,23 +222,24 @@ exports.render = function(req, res) {
 		];
 		var httpSQL = 'SELECT '+
 			// SELECTS
-			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'host,'+
-			'uri,'+
-			'referrer,'+
-			'user_agent,'+
-			'request_body_len,'+
-			'response_body_len,'+
-			'status_code,'+
-			'status_msg,'+
-			'info_code,'+
-			'info_msg,'+
-			'ioc,'+
-			'ioc_typeIndicator,'+
-			'ioc_typeInfection '+
+			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'`host`,'+
+			'`uri`,'+
+			'`referrer`,'+
+			'`user_agent`,'+
+			'`request_body_len`,'+
+			'`response_body_len`,'+
+			'`status_code`,'+
+			'`status_msg`,'+
+			'`info_code`,'+
+			'`info_msg`,'+
+			'`ioc`, '+
+			'`ioc_severity`, '+
+			'`ioc_typeIndicator`, '+
+			'`ioc_typeInfection` '+
 			// !SELECTS
-			'FROM http_ioc '+
-			'WHERE time BETWEEN '+start+' AND '+end+' '+
+			'FROM `http_ioc` '+
+			'WHERE `time` BETWEEN '+start+' AND '+end+' '+
 			'AND `lan_ip`=\''+req.query.lan_ip+'\' ';
 		var httpParams = [
 			{"sTitle": "Time", "mData": "time"},
@@ -161,18 +249,19 @@ exports.render = function(req, res) {
 		];
 		var ioc_fileSQL = 'SELECT '+
 			// SELECTS
-			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'mime, '+
-			'name, '+
-			'size, '+
-			'md5, '+
-			'sha1, '+
-			'ioc, '+
-			'ioc_typeIndicator, '+
-			'ioc_typeInfection '+
+			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'`mime`, '+
+			'`name`, '+
+			'`size`, '+
+			'`md5`, '+
+			'`sha1`, '+
+			'`ioc`, '+
+			'`ioc_severity`, '+
+			'`ioc_typeIndicator`, '+
+			'`ioc_typeInfection` '+
 			// !SELECTS
-			'FROM file_ioc '+
-			'WHERE time BETWEEN '+start+' AND '+end+' '+
+			'FROM `file_ioc` '+
+			'WHERE `time` BETWEEN '+start+' AND '+end+' '+
 			'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
 			'AND `remote_ip`=\''+req.query.remote_ip+'\' '
 			'AND `ioc`=\''+req.query.ioc+'\' ';				
@@ -190,12 +279,13 @@ exports.render = function(req, res) {
 			'size, '+
 			'md5, '+
 			'sha1, '+
-			'ioc, '+
-			'ioc_typeIndicator, '+
-			'ioc_typeInfection '+
+			'`ioc`, '+
+			'`ioc_severity`, '+
+			'`ioc_typeIndicator`, '+
+			'`ioc_typeInfection` '+
 			// !SELECTS
-			'FROM file_ioc '+
-			'WHERE time BETWEEN '+start+' AND '+end+' '+
+			'FROM `file_ioc` '+
+			'WHERE `time` BETWEEN '+start+' AND '+end+' '+
 			'AND `lan_ip`=\''+req.query.lan_ip+'\' ';
 		var fileParams = [
 			{"sTitle": "Time", "mData": "time"},
@@ -222,39 +312,56 @@ exports.render = function(req, res) {
 		];
 		var info = {};
 		var InfoSQL = 'SELECT '+
-			'max(from_unixtime(time)) as last, '+
-			'min(from_unixtime(time)) as first, '+
-			'sum(in_packets) as in_packets, '+
-			'sum(out_packets) as out_packets, '+
-			'sum(in_bytes) as in_bytes, '+
-			'sum(out_bytes) as out_bytes, '+
-			'machine, '+
-			'lan_zone, '+
-			'lan_port, '+
-			'remote_port, '+
-			'remote_cc, '+
-			'remote_country, '+
-			'remote_asn, '+
-			'remote_asn_name, '+
-			'l7_proto, '+
-			'ioc_typeIndicator '+
+			'max(from_unixtime(`time`)) as last, '+
+			'min(from_unixtime(`time`)) as first, '+
+			'sum(`in_packets`) as in_packets, '+
+			'sum(`out_packets`) as out_packets, '+
+			'sum(`in_bytes`) as in_bytes, '+
+			'sum(`out_bytes`) as out_bytes, '+
+			'`machine`, '+
+			'`lan_zone`, '+
+			'`lan_port`, '+
+			'`remote_port`, '+
+			'`remote_cc`, '+
+			'`remote_country`, '+
+			'`remote_asn`, '+
+			'`remote_asn_name`, '+
+			'`l7_proto`, '+
+			'`ioc_typeIndicator` '+
 			'FROM `conn_ioc` '+
 			'WHERE '+
-			'lan_ip = \''+req.query.lan_ip+'\' AND '+
-			'remote_ip = \''+req.query.remote_ip+'\' AND '+
-			'ioc = \''+req.query.ioc+'\' '+
+			'`lan_ip` = \''+req.query.lan_ip+'\' AND '+
+			'`remote_ip` = \''+req.query.remote_ip+'\' AND '+
+			'`ioc` = \''+req.query.ioc+'\' '+
 			'LIMIT 1';
 		var Info2SQL = 'SELECT '+
-			'description '+
+			'`description` '+
 			'FROM `ioc_parent` '+
 			'WHERE '+
-			'ioc_parent = \''+req.query.ioc+'\' '+
+			'`ioc_parent` = \''+req.query.ioc+'\' '+
 			'LIMIT 1';
-
 		var result = [];
 		var largestGroup = 0;
 		async.parallel([
 			// Table function(s)
+			function(callback) {
+				new fisheye(ioc_connSQL, { database: database, sClass: 'ioc_conn', start: start, end: end, columns: ioc_connParams }, function(err, data, max){
+					result.push(data);
+					if (max >= largestGroup) {
+						largestGroup = max;
+					}
+					callback();
+				});
+			},
+			function(callback) {
+				new fisheye(connSQL, { database: database, sClass: 'conn', start: start, end: end, columns: connParams }, function(err, data, max){
+					result.push(data);
+					if (max >= largestGroup) {
+						largestGroup = max;
+					}
+					callback();
+				});
+			},			
 			function(callback) {
 				new fisheye(sslSQL, { database: database, sClass: 'ssl', start: start, end: end, columns: sslParams }, function(err, data, max){
 					result.push(data);
