@@ -383,8 +383,8 @@ exports.render = function(req, res) {
 		}
 		var info = {};
 		var InfoSQL = 'SELECT '+
-			'max(from_unixtime(`time`)) as last, '+
-			'min(from_unixtime(`time`)) as first, '+
+			'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as last, '+
+			'date_format(min(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as first, '+
 			'sum(`in_packets`) as in_packets, '+
 			'sum(`out_packets`) as out_packets, '+
 			'sum(`in_bytes`) as in_bytes, '+
