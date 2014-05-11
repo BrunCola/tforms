@@ -50,8 +50,8 @@ exports.render = function(req, res) {
 				'FROM `conn_ioc` '+
 				'WHERE time BETWEEN '+start+' AND '+end+' '+
 				'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
-				'AND `remote_ip`=\''+req.query.remote_ip+'\' '
-				'AND `ioc`=\''+req.query.ioc+'\' ';
+				'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
+				'AND `ioc`=\''+req.query.ioc+'\' ',
 			columns: [
 				{"sTitle": "Time", "mData": "time"},
 				{"sTitle": "Zone", "mData": "lan_zone"},
@@ -85,14 +85,14 @@ exports.render = function(req, res) {
 				'`remote_asn_name`,'+
 				'`in_bytes`,'+
 				'`out_bytes`,'+
-				'`l7_proto`,'
+				'`l7_proto`,'+
 				'`ioc`, '+
 				'`ioc_severity`, '+
 				'`ioc_typeIndicator`, '+
 				'`ioc_typeInfection` '+			
 				'FROM `conn_ioc` '+
 				'WHERE time BETWEEN '+start+' AND '+end+' '+
-				'AND `lan_ip`=\''+req.query.lan_ip+'\' ';
+				'AND `lan_ip`=\''+req.query.lan_ip+'\' ',
 			columns: [
 				{"sTitle": "Time", "mData": "time"},
 				{"sTitle": "Zone", "mData": "lan_zone"},
