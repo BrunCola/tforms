@@ -1,5 +1,11 @@
 ehthumbs.db
 Thumbs.db
+node_modules/
+bower_components/
+public/system/lib
+test/coverage/
+ssl/
+npm-dedug.log
 ._*
 .DS_Store
 .DS_Store?
@@ -10,12 +16,6 @@ Thumbs.db
 .sass-cache/
 .bower-*/
 .idea/
-node_modules/
-bower_components/
-public/system/lib
-test/coverage/
 .sublime-grunt.cache
 *.sublime-project
 *.sublime-workspace
-ssl/
-npm-dedug.log
