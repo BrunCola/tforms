@@ -1,5 +1,5 @@
 {
-    "name": "mean",
+    "name": "rapidPHIRE",
     "version": "0.3.0",
     "dependencies": {
         "angular": "latest",
