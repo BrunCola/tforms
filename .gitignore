@@ -5,6 +5,7 @@ bower_components/
 public/system/lib
 test/coverage/
 ssl/
+temp/*.pdf
 npm-dedug.log
 ._*
 .DS_Store

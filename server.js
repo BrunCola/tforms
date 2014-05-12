@@ -39,6 +39,7 @@ var httpapp = express(),
     io = require('socket.io').listen(server);
 
 require('./server/config/socket.js')(app, passport, io);
+require('./server/config/report.js')(db);
 
 var SSLport = process.env.sslPORT || config.SSLport;
 var HTTPport = process.env.httpPORT || config.HTTPport;

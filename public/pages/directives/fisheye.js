@@ -129,12 +129,12 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 			})();
 			// !D3 FISHEYE PLUGIN
 			$scope.$on('buildFishChart', function (event, data){
-				var margin = {top: 5.5, right: 19.5, bottom: 30.5, left: 50.5};
+				var margin = {top: 5.5, right: 19.5, bottom: 30.5, left: 55.5};
 				// width = 1560,
 				// height = 1000 - margin.top - margin.bottom;
 
 				var width = document.getElementById('fishchart').offsetWidth-60;
-				var height = (width / 1.5) - margin.top - margin.bottom;
+				var height = (width / 2.25) - margin.top - margin.bottom;
 
 				$('#fishchart').parent().height(height);
 
@@ -151,8 +151,8 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					var maxp = data.maxIOC;
 
 					// The result should be between 100 an 10000000
-					var minv = Math.log(20);
-					var maxv = Math.log(50);
+					var minv = Math.log(15);
+					var maxv = Math.log(40);
 
 					// calculate adjustment factor
 					var scale = (maxv-minv) / (maxp-minp);
@@ -176,6 +176,16 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 							return "#a3c0ce";
 						case 'dns':
 							return "#5c5e7d";
+						case 'http_ioc':
+							return "#590209";
+						case 'ssl_ioc':
+							return "#732D5A";
+						case 'file_ioc':
+							return "#F2F2F2";
+						case 'dns_ioc':
+							return "#BFB8A3";
+						case 'conn_ioc':
+							return "#F25C05";
 						default:
 							return "#e3cdc9";
 					}
@@ -302,9 +312,21 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					switch(gType) {
 						case 'default':
 							if (d.ioc_hits === 0) {
-								return 10;
+								return 7;
 							} else {
 								return $scope.iocSlider(d.ioc_hits);
+							}
+						case 'other':
+							return 20;
+					}
+				}
+				function width(d) {
+					switch(gType) {
+						case 'default':
+							if (d.ioc_hits === 0) {
+								return 14;
+							} else {
+								return $scope.iocSlider(d.ioc_hits)*2;
 							}
 						case 'other':
 							return 20;
@@ -317,23 +339,34 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					.enter().append('g')
 					.each(function(d){
 						var elm = d3.select(this)
-						// if (d.class === 'ioc_file') {
+						if ((d.class === 'file_ioc') || (d.class === 'conn_ioc') || (d.class === 'dns_ioc') || (d.class === 'http_ioc')) {
+							elm.append("rect")
+								.attr("class", "dot")
+								.style("fill", function(d) { return $scope.colorScale(d.class); })
+								.call(rPosition)
+								.sort(function(a, b) { return width(b) - width(a); })
+								.on('mouseover', $scope.tip.show)
+								.on('mouseout', $scope.tip.hide)
+								.attr("data-legend", function(d) { return d.class})
+								.on("click", function (d){
+									$scope.open(d);
+								});
+						} else {
 							elm.append("circle")
-							.attr("class", "dot")
-							.style("fill", function(d) { return $scope.colorScale(d.class); })
-							.call(position)
-							.sort(function(a, b) { return radius(b) - radius(a); })
-							.on('mouseover', $scope.tip.show)
-							// .on('mouseover', function(){
-							// 	$scope.dot.style('cursor', 'pointer')
-							// })
-							.on('mouseout', $scope.tip.hide)
-							.attr("data-legend", function(d) { return d.class})
-							.on("click", function (d){
-								// $scope.infoAppend(d);
-								$scope.open(d);
-							});
-						// }
+								.attr("class", "dot")
+								.style("fill", function(d) { return $scope.colorScale(d.class); })
+								.call(cPosition)
+								.sort(function(a, b) { return radius(b) - radius(a); })
+								.on('mouseover', $scope.tip.show)
+								// .on('mouseover', function(){
+								// 	$scope.dot.style('cursor', 'pointer')
+								// })
+								.on('mouseout', $scope.tip.hide)
+								.attr("data-legend", function(d) { return d.class})
+								.on("click", function (d){
+									$scope.open(d);
+								});
+						}
 					});
 
 				// // Add a title.
@@ -341,10 +374,16 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				// 	.text(function(d) { return d.name; });
 
 				// Positions the dots based on data.
-				function position(dot) {
+				function cPosition(dot) {
 					dot.attr("cx", function(d) { return $scope.xScale(x(d)); })
 						.attr("cy", function(d) { return $scope.yScale(y(d)); })
 						.attr("r", function(d) { return radius(d); });
+				}
+				function rPosition(dot) {
+					dot.attr("x", function(d) { return $scope.xScale(x(d)) - (width(d)/2); })
+						.attr("y", function(d) { return $scope.yScale(y(d)) - (width(d)/2); })
+						.attr("width", function(d) { return width(d); })
+						.attr("height", function(d) { return width(d); });
 				}
 				$scope.svg.on("mousemove", function() {
 					$scope.mouse = d3.mouse(this);
@@ -353,7 +392,8 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					// $scope.xScale.distortion(4.5).focus($scope.mouse[0]);
 					// $scope.yScale.distortion(4.5).focus($scope.mouse[1]);
 
-					$scope.dot.selectAll('circle').call(position);
+					$scope.dot.selectAll('circle').call(cPosition);
+					$scope.dot.selectAll('rect').call(rPosition);
 					$scope.svg.select(".x.axis").call($scope.xAxis);
 					$scope.svg.select(".y.axis").call($scope.yAxis);
 				});

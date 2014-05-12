@@ -2,29 +2,17 @@
 
 var express = require('express'),
     fs = require('fs'),
-    appPath = process.cwd();
+    appPath = process.cwd(),
+    pjson = require('../../../package.json');
 
 var mean = require('../meanio');
 mean.app('Mean Demo App', {});
 
 module.exports = function(passport, db) {
 
-    // Get version number
-    function get_line(filename, line_no, callback) {
-        var data = fs.readFileSync(filename, 'utf8');
-        var lines = data.split("\n");
-        if(+line_no > lines.length){
-          throw new Error('File end reached without finding line');
-        }
-        callback(null, lines[+line_no]);
-    }
-    var versionNum;
-    get_line('VERSION', 0, function(err, line){
-        versionNum = line.toString();
-    });
     var d = new Date();
     var n = d.getFullYear();
-    var version = n +' Phirelight Security Solutions - rapidPHIRE version: '+versionNum;
+    var version = n +' Phirelight Security Solutions - rapidPHIRE version: '+pjson.version;
 
     function bootstrapModels() {
         // Bootstrap models
