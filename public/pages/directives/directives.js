@@ -29,14 +29,15 @@ angular.module('mean.pages').directive('modalWindow', function() {
 		// restrict: 'EA',
 		link: function($scope, element) {
 			var elm = $(element).find('div#mTable');
-			elm.html('<div style="padding:10px;padding-bottom:20px;"><table style="width:100%" cellpadding="0" cellspacing="0" border="0" class="display" id="tTable"></table></div>');
+			elm.html('<div><table style="width:100%; height:100%; overflow:scroll !important;" cellpadding="0" cellspacing="0" border="0" class="display" id="tTable"></table></div>');
 			elm.find('#tTable').dataTable({
 				"aaData": $scope.data.data,
+				"sDom": '<"clear"C>T<"clear">r<"table_overflow"t>ip',
 				"bDestroy": true,
 				"bFilter": true,
 				"bRebuild": true,
 				"aoColumns": $scope.data.columns,
-				"iDisplayLength": 5
+				"iDisplayLength": 4
 			});
 		}
 	}
