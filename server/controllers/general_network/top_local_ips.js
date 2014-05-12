@@ -60,7 +60,7 @@ exports.render = function(req, res) {
 
 	var crossfilterSQL = 'SELECT '+
 			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time,'+
-			'(sum(`in_bytes` + `out_bytes`) / 1048576) AS count,'+
+			'(sum(`in_bytes` + `out_bytes`) / 1048576) AS count '+
 		'FROM `conn_meta` '+
 		'WHERE '+
 			'`time` BETWEEN '+start+' AND '+end+' '+
