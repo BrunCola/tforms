@@ -321,7 +321,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							}
 						})
 
-			    // GENERAL NETWORK
+		    // GENERAL NETWORK
 				// TOP LOCAL IPS
 				.state('top_local_ips', {
 					url: '/top_local_ips?start&end',
@@ -391,7 +391,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							loggedin: checkLoggedin
 						},
 						data: {
-							title: 'Top Endpoint Events',
+							title: 'Endpoints Triggering Event',
 							daterange: true
 						}
 					})
@@ -403,7 +403,7 @@ angular.module('mean.pages').config(['$stateProvider',
 								loggedin: checkLoggedin
 							},
 							data: {
-								title: 'Top Endpoint Events',
+								title: 'Endpoint Event Full Logs',
 								daterange: true
 							}
 						})
