@@ -32,7 +32,7 @@ exports.render = function(req, res) {
 			'FROM `ossec` '+
 			'WHERE '+
 			'`timestamp` BETWEEN '+start+' AND '+end+' '+
-			'alert_info = \''+req.query.alert_info+'\' '+
+			'AND alert_info = \''+req.query.alert_info+'\' '+
 			'GROUP BY '+
 			'`src_user`';
 		var table1Params = [

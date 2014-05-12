@@ -31,7 +31,7 @@ exports.render = function(req, res) {
 			'FROM `ossec` '+
 			'WHERE '+
 			'`timestamp` BETWEEN '+start+' AND '+end+' '+
-			'`alert_info` = \''+req.query.alert_info+'\' '+
+			'AND `alert_info` = \''+req.query.alert_info+'\' '+
 			'AND `src_user` = \''+req.query.src_user+'\'';
 		var table1Params = [
 			{ title: 'Full Log', select: 'full_log' },
