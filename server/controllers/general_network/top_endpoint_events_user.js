@@ -30,10 +30,11 @@ exports.render = function(req, res) {
 			'`alert_info`, '+
 			'`full_log` '+
 			'FROM `ossec` '+
-			'WHERE alert_info = \''+req.query.alert_info+'\' '+
+			'WHERE '+
+			'`timestamp` BETWEEN '+start+' AND '+end+' '+
+			'alert_info = \''+req.query.alert_info+'\' '+
 			'GROUP BY '+
 			'`src_user`';
-
 		var table1Params = [
 			{
 				title: 'Last Seen',
@@ -56,7 +57,7 @@ exports.render = function(req, res) {
 		var table1Settings = {
 			sort: [[1, 'desc']],
 			div: 'table',
-			title: 'Local IP Traffic'
+			title: 'Local Endpoints Triggering Event'
 		}
 		async.parallel([
 			// Table function(s)

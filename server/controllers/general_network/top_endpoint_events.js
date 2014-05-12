@@ -29,9 +29,10 @@ exports.render = function(req, res) {
 		'`alert_info`, '+
 		'`full_log` '+
 		'FROM `ossec` '+
+		'WHERE '+
+		'`timestamp` BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+
 		'`alert_info`';
-
 	var table1Params = [
 		{
 			title: 'Last Seen',
@@ -51,7 +52,7 @@ exports.render = function(req, res) {
 	var table1Settings = {
 		sort: [[1, 'desc']],
 		div: 'table',
-		title: 'Local IP Traffic'
+		title: 'Local Enpoint Events'
 	}
 	async.parallel([
 		// Table function(s)

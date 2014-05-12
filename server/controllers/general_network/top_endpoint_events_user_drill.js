@@ -30,6 +30,7 @@ exports.render = function(req, res) {
 			'`full_log` '+
 			'FROM `ossec` '+
 			'WHERE '+
+			'`timestamp` BETWEEN '+start+' AND '+end+' '+
 			'`alert_info` = \''+req.query.alert_info+'\' '+
 			'AND `src_user` = \''+req.query.src_user+'\'';
 		var table1Params = [
@@ -38,7 +39,7 @@ exports.render = function(req, res) {
 		var table1Settings = {
 			sort: [[0, 'desc']],
 			div: 'table',
-			title: 'Local IP Traffic'
+			title: 'Full Endpoint Event Logs'
 		}
 		async.parallel([
 			// Table function(s)
