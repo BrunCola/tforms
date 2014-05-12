@@ -6,12 +6,16 @@ var fisheye = require('../constructors/fisheye'),
 	async = require('async');
 var result = [];
 var largestGroup = 0;
+var largestIOC = 0;
 
-function handleReturn(data, max, callback) {
+function handleReturn(data, maxConn, maxIOC, callback) {
 	if (data) {
 		result.push(data);
-		if (max >= largestGroup) {
-			largestGroup = max;
+		if (maxConn >= largestGroup) {
+			largestGroup = maxConn;
+		}
+		if (maxIOC >= largestIOC) {
+			largestIOC = maxIOC;
 		}
 		return callback();
 	} else {
@@ -32,6 +36,7 @@ exports.render = function(req, res) {
 		var conn_ioc = {
 			query: 'SELECT '+
 				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`ioc_count`,'+
 				'`lan_zone`,'+
 				'`machine`,'+
 				'`lan_ip`,'+
@@ -78,6 +83,7 @@ exports.render = function(req, res) {
 		var conn = {
 			query: 'SELECT '+
 				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`ioc_count`,'+
 				'`lan_zone`,'+
 				'`machine`,'+
 				'`lan_ip`,'+
@@ -122,6 +128,7 @@ exports.render = function(req, res) {
 		var dns_ioc = {
 			query: 'SELECT '+
 				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`ioc_count`,'+
 				'`proto`, '+
 				'`qclass_name`, '+
 				'`qtype_name`, '+
@@ -158,6 +165,7 @@ exports.render = function(req, res) {
 		var dns = {
 			query: 'SELECT '+
 				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`ioc_count`,'+
 				'`proto`, '+
 				'`qclass_name`, '+
 				'`qtype_name`, '+
@@ -192,6 +200,7 @@ exports.render = function(req, res) {
 		var http_ioc = {
 			query: 'SELECT '+
 				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`ioc_count`,'+
 				'`host`,'+
 				'`uri`,'+
 				'`referrer`,'+
@@ -230,6 +239,7 @@ exports.render = function(req, res) {
 		var http = {
 			query: 'SELECT '+
 				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`ioc_count`,'+
 				'`host`,'+
 				'`uri`,'+
 				'`referrer`,'+
@@ -267,6 +277,7 @@ exports.render = function(req, res) {
 			query: 'SELECT '+
 				// SELECTS
 				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`ioc_count`,'+
 				'`version`, '+
 				'`cipher`, '+
 				'`server_name`, '+
@@ -307,6 +318,7 @@ exports.render = function(req, res) {
 			query: 'SELECT '+
 				// SELECTS
 				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`ioc_count`,'+
 				'`version`, '+
 				'`cipher`, '+
 				'`server_name`, '+
@@ -344,6 +356,7 @@ exports.render = function(req, res) {
 		var file_ioc = {
 			query: 'SELECT '+
 				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`ioc_count`,'+
 				'`mime`, '+
 				'`name`, '+
 				'`size`, '+
@@ -378,6 +391,7 @@ exports.render = function(req, res) {
 		var file = {
 			query: 'SELECT '+
 				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`ioc_count`,'+
 				'`mime`, '+
 				'`name`, '+
 				'`size`, '+
@@ -468,58 +482,58 @@ exports.render = function(req, res) {
 		async.parallel([
 			// Table function(s)
 			function(callback) { // conn_ioc
-				new fisheye(conn_ioc, function(err,data, max){
-					handleReturn(data, max, callback);
+				new fisheye(conn_ioc, function(err,data, maxConn, maxIOC){
+					handleReturn(data, maxConn, maxIOC, callback);
 				});
 			},
 			function(callback) { // conn
-				new fisheye(conn, function(err,data, max){
-					handleReturn(data, max, callback);
+				new fisheye(conn, function(err,data, maxConn, maxIOC){
+					handleReturn(data, maxConn, maxIOC, callback);
 				});
 			},
 			function(callback) { // dns_ioc
-				new fisheye(dns_ioc, function(err,data, max){
-					handleReturn(data, max, callback);
+				new fisheye(dns_ioc, function(err,data, maxConn, maxIOC){
+					handleReturn(data, maxConn, maxIOC, callback);
 				});
 			},
 			function(callback) { // dns
-				new fisheye(dns, function(err,data, max){
-					handleReturn(data, max, callback);
+				new fisheye(dns, function(err,data, maxConn, maxIOC){
+					handleReturn(data, maxConn, maxIOC, callback);
 				});
 			},
 			function(callback) { // http_ioc
-				new fisheye(http_ioc, function(err, data, max){
-					handleReturn(data, max, callback);
+				new fisheye(http_ioc, function(err, data, maxConn, maxIOC){
+					handleReturn(data, maxConn, maxIOC, callback);
 				});
 			},
 			function(callback) { // http
-				new fisheye(http, function(err, data, max){
-					handleReturn(data, max, callback);
+				new fisheye(http, function(err, data, maxConn, maxIOC){
+					handleReturn(data, maxConn, maxIOC, callback);
 				});
 			},
 			function(callback) { // ssl_ioc
-				new fisheye(ssl_ioc, function(err, data, max){
-					handleReturn(data, max, callback);
+				new fisheye(ssl_ioc, function(err, data, maxConn, maxIOC){
+					handleReturn(data, maxConn, maxIOC, callback);
 				});
 			},
 			function(callback) { // ssl
-				new fisheye(ssl, function(err, data, max){
-					handleReturn(data, max, callback);
+				new fisheye(ssl, function(err, data, maxConn, maxIOC){
+					handleReturn(data, maxConn, maxIOC, callback);
 				});
-			},			
+			},
 			function(callback) { // file_ioc
-				new fisheye(file_ioc, function(err, data, max){
-					handleReturn(data, max, callback);
+				new fisheye(file_ioc, function(err, data, maxConn, maxIOC){
+					handleReturn(data, maxConn, maxIOC, callback);
 				});
 			},
 			function(callback) { // file
-				new fisheye(file, function(err, data, max){
-					handleReturn(data, max, callback);
+				new fisheye(file, function(err, data, maxConn, maxIOC){
+					handleReturn(data, maxConn, maxIOC, callback);
 				});
 			},
 			function(callback) { // endpoint
-				new fisheye(endpoint, function(err, data, max){
-					handleReturn(data, max, callback);
+				new fisheye(endpoint, function(err, data, maxConn, maxIOC){
+					handleReturn(data, maxConn, maxIOC, callback);
 				});
 			},
 			function(callback) { // InfoSQL
@@ -544,7 +558,8 @@ exports.render = function(req, res) {
 			res.jsonp({
 				info: info,
 				result: result,
-				max: largestGroup,
+				maxConn: largestGroup,
+				maxIOC: largestIOC,
 				start: start,
 				end: end
 			});

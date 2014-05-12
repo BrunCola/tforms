@@ -62,7 +62,8 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 		$scope.ioc_type = data.info.main[0].ioc_typeIndicator;
 		// if (data.length > 0) {
 		$scope.$broadcast('buildFishChart', {
-			yAxis: data.max,
+			maxIOC: data.maxIOC,
+			yAxis: data.maxConn,
 			xAxis: [data.start, data.end]
 		})
 		for (var n in data.result) {

@@ -10,7 +10,8 @@ module.exports = function (params, callback) {
 	this.query = params.query;
 	var dat = [];
 	var count = 0;
-	var max = 0;
+	var maxConn = 0;
+	var maxIOC = 0;
 	connection.query(this.query)
 		.on('result', function(data){
 			data.class = params.sClass;
@@ -39,20 +40,28 @@ module.exports = function (params, callback) {
 			}
 			// FOR EVERY UNIQUE MATCH IN A PUSH
 			b.forEach(function (item){
+				var f = 0;
 				var d = [];
 				for (var o in newarr) {
 					if ((newarr[o].rTime === item.time) && (newarr[o].class === item.class)) {
 						d.push(newarr[o]);
+						if (newarr[o].ioc_count !== undefined) {
+							f += newarr[o].ioc_count;
+						}
 					}
 				}
+				item.ioc_hits = f;
 				item.data = d;
 				item.columns = params.columns;
-				if (d.length >= max) {
-					max = d.length;
+				if (d.length >= maxConn) {
+					maxConn = d.length;
+				}
+				if (f >= maxIOC) {
+					maxIOC = f;
 				}
 				// PUSH FINISHED PRODUCT BACK TO ORIGINAL ARRAY (dat)
 			});
-			callback(null, b, max);
+			callback(null, b, maxConn, maxIOC);
 			connection.destroy();
 		});
 		//group by type and push a main and sub-group for each time slice

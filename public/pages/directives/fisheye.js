@@ -147,12 +147,12 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				$scope.maxnum = data.yAxis;
 				$scope.logslider = function(position) {
 					// position will be between 0 and 100
-					var minp = 0;
-					var maxp = data.yAxis;
+					var minp = 1;
+					var maxp = data.maxIOC;
 
 					// The result should be between 100 an 10000000
-					var minv = Math.log(15);
-					var maxv = Math.log(70);
+					var minv = Math.log(20);
+					var maxv = Math.log(50);
 
 					// calculate adjustment factor
 					var scale = (maxv-minv) / (maxp-minp);
@@ -208,6 +208,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					.html(function(d) {
 						return "<strong>Connection Type: </strong> <span style='color:"+$scope.colorScale(d.class)+"'>" + d.class.toUpperCase() + "</span><br />"+
 							"<strong>Connection Count: </strong> <span style='color:"+$scope.colorScale(d.class)+"'>" + d.data.length + "</span><br />"+
+							"<strong>IOC Hits </strong> <span style='color:"+$scope.colorScale(d.class)+"'>" + d.ioc_hits + "</span><br />"+
 							"<strong>Date: </strong> <span style='color:"+$scope.colorScale(d.class)+"'>" + moment(d.time).format('MMMM Do YYYY, h:mm:ss a') + "</span>";
 					});
 
@@ -293,7 +294,11 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				function radius(d) {
 					switch(gType) {
 						case 'default':
-							return $scope.logslider(d.data.length);
+							if (d.ioc_hits === 0) {
+								return 10;
+							} else {
+								return $scope.logslider(d.ioc_hits);
+							}
 						case 'other':
 							return 20;
 					}
