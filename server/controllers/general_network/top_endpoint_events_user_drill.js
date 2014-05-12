@@ -18,7 +18,7 @@ exports.render = function(req, res) {
 		var tables = [];
 		var info = [];
 		var table1SQL = 'SELECT '+
-			'date_format(from_unixtime(timestamp), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 			'`server_id`, '+
 			'`src_user`, '+
 			'`src_ip`, '+
@@ -30,7 +30,7 @@ exports.render = function(req, res) {
 			'`full_log` '+
 			'FROM `ossec` '+
 			'WHERE '+
-			'`timestamp` BETWEEN '+start+' AND '+end+' '+
+			'`time` BETWEEN '+start+' AND '+end+' '+
 			'AND `alert_info` = \''+req.query.alert_info+'\' '+
 			'AND `src_user` = \''+req.query.src_user+'\'';
 		var table1Params = [
