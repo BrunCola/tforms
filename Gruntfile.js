@@ -123,6 +123,7 @@ module.exports = function(grunt) {
 
     //Load NPM tasks
     require('load-grunt-tasks')(grunt);
+    grunt.loadNpmTasks('grunt-bump');
 
     //Default task(s).
     if (process.env.NODE_ENV === 'production') {
