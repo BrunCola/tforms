@@ -4,26 +4,26 @@ var fisheye = require('../constructors/fisheye'),
 	config = require('../../config/config'),
 	query = require('../constructors/query'),
 	async = require('async');
-var result = [];
-var largestGroup = 0;
-var largestIOC = 0;
-
-function handleReturn(data, maxConn, maxIOC, callback) {
-	if (data) {
-		result.push(data);
-		if (maxConn >= largestGroup) {
-			largestGroup = maxConn;
-		}
-		if (maxIOC >= largestIOC) {
-			largestIOC = maxIOC;
-		}
-		return callback();
-	} else {
-		return callback();
-	}
-}
 
 exports.render = function(req, res) {
+	var result = [];
+	var largestGroup = 0;
+	var largestIOC = 0;
+
+	function handleReturn(data, maxConn, maxIOC, callback) {
+		if (data) {
+			result.push(data);
+			if (maxConn >= largestGroup) {
+				largestGroup = maxConn;
+			}
+			if (maxIOC >= largestIOC) {
+				largestIOC = maxIOC;
+			}
+			return callback();
+		} else {
+			return callback();
+		}
+	}
 	var database = req.user.database;
 	var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 	var end = Math.round(new Date().getTime() / 1000);
@@ -51,9 +51,9 @@ exports.render = function(req, res) {
 				'`ioc`,'+
 				'`ioc_severity`,'+
 				'`ioc_typeIndicator`,'+
-				'`ioc_typeInfection` '+			
+				'`ioc_typeInfection` '+
 				'FROM `conn_ioc` '+
-				'WHERE time BETWEEN '+start+' AND '+end+' '+
+				'WHERE `time` BETWEEN '+start+' AND '+end+' '+
 				'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
 				'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
 				'AND `ioc`=\''+req.query.ioc+'\' ',
@@ -98,9 +98,9 @@ exports.render = function(req, res) {
 				'`ioc`, '+
 				'`ioc_severity`, '+
 				'`ioc_typeIndicator`, '+
-				'`ioc_typeInfection` '+			
+				'`ioc_typeInfection` '+
 				'FROM `conn_ioc` '+
-				'WHERE time BETWEEN '+start+' AND '+end+' '+
+				'WHERE `time` BETWEEN '+start+' AND '+end+' '+
 				'AND `lan_ip`=\''+req.query.lan_ip+'\' ',
 			columns: [
 				{"sTitle": "Time", "mData": "time"},
@@ -140,7 +140,7 @@ exports.render = function(req, res) {
 				'`ioc_typeIndicator`, '+
 				'`ioc_typeInfection` '+
 				'FROM dns_ioc '+
-				'WHERE time BETWEEN '+start+' AND '+end+' '+
+				'WHERE `time` BETWEEN '+start+' AND '+end+' '+
 				'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
 				'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
 				'AND `ioc`=\''+req.query.ioc+'\'',
@@ -177,7 +177,7 @@ exports.render = function(req, res) {
 				'`ioc_typeIndicator`, '+
 				'`ioc_typeInfection` '+
 				'FROM dns_ioc '+
-				'WHERE time BETWEEN '+start+' AND '+end+' '+
+				'WHERE `time` BETWEEN '+start+' AND '+end+' '+
 				'AND `lan_ip`=\''+req.query.lan_ip+'\'',
 			columns: [
 				{"sTitle": "Time", "mData": "time"},
@@ -216,7 +216,7 @@ exports.render = function(req, res) {
 				'`ioc_typeIndicator`, '+
 				'`ioc_typeInfection` '+
 				'FROM `http_ioc` '+
-				'WHERE time BETWEEN '+start+' AND '+end+' '+
+				'WHERE `time` BETWEEN '+start+' AND '+end+' '+
 				'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
 				'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
 				'AND `ioc`=\''+req.query.ioc+'\'',
@@ -291,7 +291,7 @@ exports.render = function(req, res) {
 				'`ioc_typeInfection` '+	
 				// !SELECTS
 				'FROM ssl_ioc '+
-				'WHERE time BETWEEN '+start+' AND '+end+' '+
+				'WHERE `time` BETWEEN '+start+' AND '+end+' '+
 				'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
 				'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
 				'AND `ioc`=\''+req.query.ioc+'\'',
@@ -332,7 +332,7 @@ exports.render = function(req, res) {
 				'`ioc_typeInfection` '+	
 				// !SELECTS
 				'FROM ssl_ioc '+
-				'WHERE time BETWEEN '+start+' AND '+end+' '+
+				'WHERE `time` BETWEEN '+start+' AND '+end+' '+
 				'AND `lan_ip`=\''+req.query.lan_ip+'\'',
 			columns: [
 				{"sTitle": "Time", "mData": "time"},
@@ -402,7 +402,7 @@ exports.render = function(req, res) {
 				'`ioc_typeIndicator`, '+
 				'`ioc_typeInfection` '+
 				'FROM `file_ioc` '+
-				'WHERE time BETWEEN '+start+' AND '+end+' '+
+				'WHERE `time` BETWEEN '+start+' AND '+end+' '+
 				'AND `lan_ip`=\''+req.query.lan_ip+'\'',
 			columns: [
 				{"sTitle": "Time", "mData": "time"},

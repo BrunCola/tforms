@@ -145,7 +145,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				$scope.yScale = d3.fisheye.scale(d3.scale.linear).domain([0-(data.yAxis*0.07), data.yAxis+(data.yAxis*0.07)]).range([height, 0]);
 				$scope.radiusScale = d3.scale.sqrt().domain([0, 5e8]).range([0, 40]);
 				$scope.maxnum = data.yAxis;
-				$scope.logslider = function(position) {
+				$scope.iocSlider = function(position) {
 					// position will be between 0 and 100
 					var minp = 1;
 					var maxp = data.maxIOC;
@@ -158,6 +158,13 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					var scale = (maxv-minv) / (maxp-minp);
 
 					return Math.exp(minv + scale*(position-minp));
+				}
+				$scope.zoomSlider = function(count) {
+					if (count < 1000){
+						return count*0.007;
+					} else {
+						return 0.30;
+					}
 				}
 				$scope.colorScale = function(cClass) {
 					switch (cClass) {
@@ -297,7 +304,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 							if (d.ioc_hits === 0) {
 								return 10;
 							} else {
-								return $scope.logslider(d.ioc_hits);
+								return $scope.iocSlider(d.ioc_hits);
 							}
 						case 'other':
 							return 20;
@@ -341,8 +348,8 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				}
 				$scope.svg.on("mousemove", function() {
 					$scope.mouse = d3.mouse(this);
-					$scope.xScale.distortion($scope.maxnum*0.007).focus($scope.mouse[0]);
-					$scope.yScale.distortion($scope.maxnum*0.007).focus($scope.mouse[1]);
+					$scope.xScale.distortion($scope.zoomSlider($scope.maxnum)).focus($scope.mouse[0]);
+					$scope.yScale.distortion($scope.zoomSlider($scope.maxnum)).focus($scope.mouse[1]);
 					// $scope.xScale.distortion(4.5).focus($scope.mouse[0]);
 					// $scope.yScale.distortion(4.5).focus($scope.mouse[1]);
 
