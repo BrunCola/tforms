@@ -72,7 +72,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'IOC Events',
 			'url': 'ioc_events',
 			'icon': 'fa-warning',
-			'orphans': ['ioc_drill']
+			'orphans': ['ioc_drill', 'ioc_events_drilldown']
 		},
 		{
 			'title': 'IOC Top Remote IPs',
