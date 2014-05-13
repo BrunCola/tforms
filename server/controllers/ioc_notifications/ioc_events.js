@@ -218,8 +218,8 @@ exports.render = function(req, res) {
 				{ title: 'Flag', select: 'remote_cc', },
 				{ title: 'Packets to Remote', select: 'in_packets' },
 				{ title: 'Packets from Remote', select: 'out_packets' },
-				{ title: 'Bytes to Remote', select: 'in_bytes', dView: false },
-				{ title: 'Bytes from Remote', select: 'out_bytes', dView: false },
+				{ title: 'Bytes From LAN', select: 'in_bytes', dView: false },
+				{ title: 'Bytes To LAN', select: 'out_bytes', dView: false },
 				{
 					title: '',
 					select: null,

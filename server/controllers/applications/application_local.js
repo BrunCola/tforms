@@ -55,10 +55,10 @@ exports.render = function(req, res) {
 				{ title: 'Remote ASN Name', select: 'remote_asn_name' },
 				{ title: 'Remote Country', select: 'remote_country' },
 				{ title: 'Flag', select: 'remote_cc', },
-				{ title: 'MB to Remote', select: 'in_bytes' },
-				{ title: 'MB from Remote', select: 'out_bytes'},
-				{ title: 'Packets to Remote', select: 'in_packets', dView:false },
-				{ title: 'Packets from Remote', select: 'out_packets', dView:false }
+				{ title: 'MB From LAN', select: 'in_bytes' },
+				{ title: 'MB To LAN', select: 'out_bytes'},
+				{ title: 'Packets From LAN', select: 'in_packets', dView:false },
+				{ title: 'Packets To LAN', select: 'out_packets', dView:false }
 			];
 			var table1Settings = {
 				sort: [[0, 'desc']],
