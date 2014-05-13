@@ -211,29 +211,29 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				$scope.colorScale = function(cClass) {
 					switch (cClass) {
 						case 'http':
-							return "#FFFB0D";
+							return "#A70101";
 						case 'ssl':
-							return "#E8C500";
+							return "#FFFFFF";
 						case 'file':
-							return "#FFB600";
+							return "#74BAE6";
 						case 'dns':
-							return "#E88600";
+							return "#CF1125";
 						case 'conn':
-							return "#E825E3";
+							return "#BEDB39";
 						case 'conn_ioc':
-							return "#C04AFF";
+							return "#004358";
 						case 'http_ioc':
-							return "#FF6200";
+							return "#1F8A70";
 						case 'ssl_ioc':
-							return "#FF4D03";
+							return "#FF85AA";
 						case 'file_ioc':
-							return "#E81700";
+							return "#FF5347";
 						case 'dns_ioc':
-							return "#BFB8A3";
+							return "#FD7400";
 						case 'conn_ioc':
-							return "#E81750";
+							return "#3F0000";
 						default:
-							return "#E82550";
+							return "#0E0E0D";
 					}
 				}
 				// The x & y axes.
