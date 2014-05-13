@@ -394,7 +394,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 					$scope.fetchMore = function(maxTime) {
 						clearInterval(timer);
 						var urltime = Math.round(maxTime /1000);
-						var endtime = maxTime+300000;
+						var endtime = maxTime+60000;
 						var urltime2 = Math.round(endtime /1000);
 						var url = '/live_connections/live_connections?start='+urltime+'&end='+urltime2;
 						console.log(url);
@@ -410,7 +410,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 							setTimeout(function(data){
 								var startTime = new Date().getTime();
 								$scope.fetchMore(startTime);
-							}, 300000); // wait 5 minutes
+							}, 60000); // wait 5 minutes
 						} else {
 							$scope.loadData(data);
 						}

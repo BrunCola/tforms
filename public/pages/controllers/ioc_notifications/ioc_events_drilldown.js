@@ -71,6 +71,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 				all.push(d);
 			})
 		}
+		$scope.all = all;
 		$scope.$broadcast('fishChart', all);
 		if (data.info.desc !== null) {
 			var description = data.info.desc[0].description;

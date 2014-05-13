@@ -584,6 +584,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 								$('#table').dataTable().fnDraw();
 							});
 							// new $.fn.dataTable.FixedHeader( params[t].div );
+							$.fn.dataTableExt.sErrMode = 'throw';
 						}
 					break;
 				}

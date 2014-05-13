@@ -26,6 +26,18 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 
 				items = d3.entries(items).sort(function(a,b) { return a.value.pos-b.value.pos})
 
+				var hidden = [];
+				function isHidden(key){
+					var index = hidden.indexOf(key);
+					if (index !== -1 ) {
+						hidden.splice(index, 1);
+						return false;
+					} else {
+						hidden.push(key);
+						return true;
+					}
+				}
+
 				li.selectAll("text")
 					.data(items,function(d) { return d.key})
 					.call(function(d) { d.enter().append("text")})
@@ -42,7 +54,37 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					.attr("cy",function(d,i) { return i-0.25+"em"})
 					.attr("cx",0)
 					.attr("r","0.4em")
-					.style("fill",function(d) { console.log(d.value.color);return d.value.color})
+					.on('mouseover', function(d){
+						d3.select(this).style('cursor', 'pointer');
+					})
+					.attr('stroke', 'black')
+					.style('stroke-width', 1)
+					.style("fill",function(d) { return d.value.color })
+					.on("click", function (d){
+						var button = d3.select(this);
+						var elm = $scope.dot.selectAll('.'+d.key);
+						if (isHidden(d.key)) {
+							button
+								.transition()
+								.style("opacity", 0.5)
+								.style('stroke-width', 0)
+								.duration(300);
+							elm
+								.transition()
+								.style('visibility', 'hidden')
+								.duration(300);
+						} else {
+							button
+								.transition()
+								.style("opacity", 1)
+								.style('stroke-width', 1)
+								.duration(300);
+							elm
+								.transition()
+								.style('visibility', 'visible')
+								.duration(300);
+						}
+					});
 
 				// Reposition and resize the box
 				var lbbox = li[0][0].getBBox()
@@ -161,7 +203,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				}
 				$scope.zoomSlider = function(count) {
 					if (count < 1000){
-						return count*0.007;
+						return count*0.0000002*((data.xAxis[1]-data.xAxis[0]));
 					} else {
 						return 0.30;
 					}
@@ -345,7 +387,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 						var elm = d3.select(this)
 						if ((d.class === 'file_ioc') || (d.class === 'conn_ioc') || (d.class === 'dns_ioc') || (d.class === 'http_ioc')) {
 							elm.append("rect")
-								.attr("class", "dot")
+								.attr("class", "dot "+d.class)
 								.style("fill", function(d) { return $scope.colorScale(d.class); })
 								.call(rPosition)
 								.sort(function(a, b) { return width(b) - width(a); })
@@ -357,7 +399,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 								});
 						} else {
 							elm.append("circle")
-								.attr("class", "dot")
+								.attr("class", "dot "+d.class)
 								.style("fill", function(d) { return $scope.colorScale(d.class); })
 								.call(cPosition)
 								.sort(function(a, b) { return radius(b) - radius(a); })

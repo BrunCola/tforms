@@ -24,7 +24,7 @@ module.exports = function (params, callback) {
 			dat.forEach(function (item){
 				var time = Math.round(item.time);
 				item.time = time;
-				item.rTime = (time/1000)*1000;
+				item.rTime = (time/60)*60;
 			});
 			var a = [], b = [], newarr = dat;
 			// SORT ITEMS BY TIME THEN CLASS
