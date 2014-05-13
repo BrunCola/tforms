@@ -1,4 +1,4 @@
-'use strict';
+ 'use strict';
 
 var dataTable = require('../constructors/datatable'),
 	query = require('../constructors/query'),
@@ -216,10 +216,10 @@ exports.render = function(req, res) {
 				{ title: 'Remote ASN Name', select: 'remote_asn_name' },
 				{ title: 'Remote Country', select: 'remote_country' },
 				{ title: 'Flag', select: 'remote_cc', },
-				{ title: 'Packets to Remote', select: 'in_packets' },
-				{ title: 'Packets from Remote', select: 'out_packets' },
-				{ title: 'Bytes From LAN', select: 'in_bytes', dView: false },
-				{ title: 'Bytes To LAN', select: 'out_bytes', dView: false },
+				{ title: 'Bytes From LAN', select: 'in_bytes'},
+				{ title: 'Bytes To LAN', select: 'out_bytes'},
+				{ title: 'Packets From LAN', select: 'in_packets', dView: false },
+				{ title: 'Packets To LAN', select: 'out_packets', dView: false },
 				{
 					title: '',
 					select: null,
