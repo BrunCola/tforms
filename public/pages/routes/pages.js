@@ -362,7 +362,7 @@ angular.module('mean.pages').config(['$stateProvider',
 					// TOP REMOTE2LOCAL
 					.state('top_remote2Local', {
 						url: '/top_remote2local?start&end&remote_ip',
-						templateUrl: 'public/pages/views/general_network/top_remote2Local.html',
+						templateUrl: 'public/pages/views/general_network/top_remote2local.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
