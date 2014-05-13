@@ -12,6 +12,7 @@ module.exports = function (params, callback) {
 	var count = 0;
 	var maxConn = 0;
 	var maxIOC = 0;
+	var tArr = [];
 	connection.query(this.query)
 		.on('result', function(data){
 			data.class = params.sClass;
@@ -21,9 +22,9 @@ module.exports = function (params, callback) {
 		.on('end', function(){
 			// convert time to unix and add a rounded value
 			dat.forEach(function (item){
-				var time = moment(item.time).unix();
+				var time = Math.round(item.time);
 				item.time = time;
-				item.rTime = Math.round(time/3000)*3000;
+				item.rTime = (time/1000)*1000;
 			});
 			var a = [], b = [], newarr = dat;
 			// SORT ITEMS BY TIME THEN CLASS
@@ -51,6 +52,11 @@ module.exports = function (params, callback) {
 					}
 				}
 				item.ioc_hits = f;
+				// convert table times to human readable
+				d.forEach(function(e){
+					var time = moment.unix(e.time).format('MMMM Do YYYY, h:mm:ss a');
+					e.time = time;
+				});
 				item.data = d;
 				item.columns = params.columns;
 				if (d.length >= maxConn) {
@@ -61,6 +67,24 @@ module.exports = function (params, callback) {
 				}
 				// PUSH FINISHED PRODUCT BACK TO ORIGINAL ARRAY (dat)
 			});
+
+			// spread items on top of each other
+			// for (var n in b) {
+			// 	var time = Math.round(b[n].time/1000)*1000;
+			// 	if (tArr.indexOf(JSON.stringify({time: time, count: b[n].data.length})) === -1) {
+			// 		b[n].time = time;
+			// 		tArr.push(JSON.stringify({time: time, count: b[n].data.length}));
+			// 	} else {
+			// 		do {
+			// 			time += 3000;
+			// 			b[n].time = time;
+			// 			tArr.push(JSON.stringify({time: time, count: b[n].data.length}));
+			// 		}
+			// 		while (tArr.indexOf(JSON.stringify({time: time, count: b[n].data.length})) !== -1);
+			// 	}
+			// }
+
+			console.log(tArr)
 			callback(null, b, maxConn, maxIOC);
 			connection.destroy();
 		});

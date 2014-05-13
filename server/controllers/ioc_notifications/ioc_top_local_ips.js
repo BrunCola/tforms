@@ -60,10 +60,10 @@ exports.render = function(req, res) {
 		{ title: 'IOC Type', select: 'ioc_typeIndicator' },
 		{ title: 'IOC Stage', select: 'ioc_typeInfection' },
 		{ title: 'Remote IP', select: 'lan_ip' },
-		{ title: 'Packets From LAN', select: 'in_packets' },
-		{ title: 'Packets To LAN', select: 'out_packets' },
-		{ title: 'Bytes From LAN', select: 'in_bytes', dView: false },
-		{ title: 'Bytes To LAN', select: 'out_bytes', dView: false }
+		{ title: 'Packets to Remote', select: 'in_packets' },
+		{ title: 'Packets from Remote', select: 'out_packets' },
+		{ title: 'Bytes to Remote', select: 'in_bytes', dView: false },
+		{ title: 'Bytes from Remote', select: 'out_bytes', dView: false }
 	];
 	var table1Settings = {
 		sort: [[2, 'desc']],

@@ -147,7 +147,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				$scope.maxnum = data.yAxis;
 				$scope.iocSlider = function(position) {
 					// position will be between 0 and 100
-					var minp = 1;
+					var minp = 0;
 					var maxp = data.maxIOC;
 
 					// The result should be between 100 an 10000000
@@ -169,25 +169,29 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				$scope.colorScale = function(cClass) {
 					switch (cClass) {
 						case 'http':
-							return "#cb2815";
+							return "#FFFB0D";
 						case 'ssl':
-							return "#e29e23";
+							return "#E8C500";
 						case 'file':
-							return "#a3c0ce";
+							return "#FFB600";
 						case 'dns':
-							return "#5c5e7d";
+							return "#E88600";
+						case 'conn':
+							return "#E825E3";
+						case 'conn_ioc':
+							return "#C04AFF";
 						case 'http_ioc':
-							return "#590209";
+							return "#FF6200";
 						case 'ssl_ioc':
-							return "#732D5A";
+							return "#FF4D03";
 						case 'file_ioc':
-							return "#F2F2F2";
+							return "#E81700";
 						case 'dns_ioc':
 							return "#BFB8A3";
 						case 'conn_ioc':
-							return "#F25C05";
+							return "#E81750";
 						default:
-							return "#e3cdc9";
+							return "#E82550";
 					}
 				}
 				// The x & y axes.

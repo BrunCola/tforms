@@ -28,6 +28,10 @@ angular.module('mean.pages').directive('modalWindow', function() {
 	return {
 		// restrict: 'EA',
 		link: function($scope, element) {
+			// d.data.forEach(function(e){
+			// 	var time = moment.unix(e.time).format('MMMM Do YYYY, h:mm:ss a');
+			// 	e.time = time;
+			// })
 			var elm = $(element).find('div#mTable');
 			elm.html('<div><table style="width:100%; height:100%; overflow:scroll !important;" cellpadding="0" cellspacing="0" border="0" class="display" id="tTable"></table></div>');
 			elm.find('#tTable').dataTable({
@@ -37,7 +41,28 @@ angular.module('mean.pages').directive('modalWindow', function() {
 				"bFilter": true,
 				"bRebuild": true,
 				"aoColumns": $scope.data.columns,
-				"iDisplayLength": 4
+				"iDisplayLength": 4,
+				// 'fnPreDrawCallback': function( oSettings ) {
+				// 	//console.log(oSettings.aoColumns);
+				// 	$scope.r = [], $scope.e = [];
+				// 	for (var a in oSettings.aoColumns) {
+				// 		// find the index of column rows so they can me modified below
+				// 		if (oSettings.aoColumns[a].bVisible === true) {
+				// 			$scope.r.push(oSettings.aoColumns[a].mData);
+				// 		}
+				// 		// push unique to link builder
+				// 		if (oSettings.aoColumns[a].link) {
+				// 			$scope.e.push(oSettings.aoColumns[a]);
+				// 		}
+				// 	}
+				// },
+				// 'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+				// 	for (var c in $scope.e) {
+				// 		if ($scope.e[c].mData === 'time') {
+				// 			$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html(moment.unix(aData[$scope.e[c].mData]).format('MMMM Do YYYY, h:mm:ss a'));
+				// 		}
+				// 	}
+				// },
 			});
 		}
 	}

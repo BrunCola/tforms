@@ -35,7 +35,7 @@ exports.render = function(req, res) {
 		var crossfilter;
 		var conn_ioc = {
 			query: 'SELECT '+
-				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`time`, '+ // Last Seen
 				'`ioc_count`,'+
 				'`lan_zone`,'+
 				'`machine`,'+
@@ -68,8 +68,8 @@ exports.render = function(req, res) {
 				{"sTitle": "Remote Country", "mData": "remote_country"},
 				{"sTitle": "Remote ASN", "mData": "remote_asn_name"},
 				{"sTitle": "Application", "mData": "l7_proto"},
-				{"sTitle": "Bytes From LAN", "mData": "in_bytes"},
-				{"sTitle": "Bytes To LAN", "mData": "out_bytes"},
+				{"sTitle": "Incoming Bytes", "mData": "in_bytes"},
+				{"sTitle": "Outgoing Bytes", "mData": "out_bytes"},
 				{"sTitle": "IOC", "mData": "ioc"},
 				{"sTitle": "IOC Severity", "mData": "ioc_severity"},
 				{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
@@ -82,7 +82,7 @@ exports.render = function(req, res) {
 		}
 		var conn = {
 			query: 'SELECT '+
-				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`time`, '+ // Last Seen
 				'`ioc_count`,'+
 				'`lan_zone`,'+
 				'`machine`,'+
@@ -113,8 +113,8 @@ exports.render = function(req, res) {
 				{"sTitle": "Remote Country", "mData": "remote_country"},
 				{"sTitle": "Remote ASN", "mData": "remote_asn_name"},
 				{"sTitle": "Application", "mData": "l7_proto"},
-				{"sTitle": "Bytes From LAN", "mData": "in_bytes"},
-				{"sTitle": "Bytes To LAN", "mData": "out_bytes"},
+				{"sTitle": "Incoming Bytes", "mData": "in_bytes"},
+				{"sTitle": "Outgoing Bytes", "mData": "out_bytes"},
 				{"sTitle": "IOC", "mData": "ioc"},
 				{"sTitle": "IOC Severity", "mData": "ioc_severity"},
 				{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
@@ -127,7 +127,7 @@ exports.render = function(req, res) {
 		}	
 		var dns_ioc = {
 			query: 'SELECT '+
-				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`time`, '+ // Last Seen
 				'`ioc_count`,'+
 				'`proto`, '+
 				'`qclass_name`, '+
@@ -164,7 +164,7 @@ exports.render = function(req, res) {
 		}
 		var dns = {
 			query: 'SELECT '+
-				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`time`, '+ // Last Seen
 				'`ioc_count`,'+
 				'`proto`, '+
 				'`qclass_name`, '+
@@ -199,7 +199,7 @@ exports.render = function(req, res) {
 		}
 		var http_ioc = {
 			query: 'SELECT '+
-				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`time`, '+ // Last Seen
 				'`ioc_count`,'+
 				'`host`,'+
 				'`uri`,'+
@@ -238,7 +238,7 @@ exports.render = function(req, res) {
 		}
 		var http = {
 			query: 'SELECT '+
-				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`time`, '+ // Last Seen
 				'`ioc_count`,'+
 				'`host`,'+
 				'`uri`,'+
@@ -276,7 +276,7 @@ exports.render = function(req, res) {
 		var ssl_ioc = {
 			query: 'SELECT '+
 				// SELECTS
-				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`time`, '+ // Last Seen
 				'`ioc_count`,'+
 				'`version`, '+
 				'`cipher`, '+
@@ -317,7 +317,7 @@ exports.render = function(req, res) {
 		var ssl = {
 			query: 'SELECT '+
 				// SELECTS
-				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`time`, '+ // Last Seen
 				'`ioc_count`,'+
 				'`version`, '+
 				'`cipher`, '+
@@ -355,7 +355,7 @@ exports.render = function(req, res) {
 		}
 		var file_ioc = {
 			query: 'SELECT '+
-				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`time`, '+ // Last Seen
 				'`ioc_count`,'+
 				'`mime`, '+
 				'`name`, '+
@@ -390,7 +390,7 @@ exports.render = function(req, res) {
 		}
 		var file = {
 			query: 'SELECT '+
-				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`time`, '+ // Last Seen
 				'`ioc_count`,'+
 				'`mime`, '+
 				'`name`, '+
@@ -424,7 +424,7 @@ exports.render = function(req, res) {
 		var endpoint = {
 			query: 'SELECT '+
 				// SELECTS
-				'date_format(from_unixtime(`timestamp`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`time`, '+ // Last Seen
 				'`src_ip`, '+
 				'`dst_ip`, '+
 				'`src_user`, '+
@@ -453,12 +453,19 @@ exports.render = function(req, res) {
 		var InfoSQL = 'SELECT '+
 			'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as last, '+
 			'date_format(min(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as first, '+
+			'sum(`in_packets`) as in_packets, '+
+			'sum(`out_packets`) as out_packets, '+
+			'sum(`in_bytes`) as in_bytes, '+
+			'sum(`out_bytes`) as out_bytes, '+
 			'`machine`, '+
 			'`lan_zone`, '+
+			'`lan_port`, '+
+			'`remote_port`, '+
 			'`remote_cc`, '+
 			'`remote_country`, '+
 			'`remote_asn`, '+
 			'`remote_asn_name`, '+
+			'`l7_proto`, '+
 			'`ioc_typeIndicator` '+
 			'FROM `conn_ioc` '+
 			'WHERE '+
