@@ -9,8 +9,9 @@ exports.render = function(req, res) {
 	// var database = null;
 	// var startTime = new Date().getTime()-1800000; // 30 minutes
 	// var endTime = new Date().getTime()-1500000; // 25 minutes
-	var startTime = new Date().getTime()-5000000; // 30 minutes
-	var endTime = new Date().getTime()-4940000; // 25 minutes
+	// remember 1200ms is one minute
+	var startTime = new Date().getTime()-1260000; // 21 minutes
+	var endTime = new Date().getTime()-1200000; // 20 minutes
 	// var start = 1398700800; // 30 minutes
 	// var end = 1398701100; // 25 minutes
 	var start = Math.round(startTime / 1000);

@@ -105,12 +105,12 @@ function sendReport(user) {
 			];
 			interval = setInterval(function() {
 				if (!loadInProgress && typeof steps[testindex] == "function") {
-					console.log("step " + (testindex + 1));
+					console.log("step " + (testindex + 1)+' '+user.email);
 					steps[testindex]();
 					testindex++;
 				}
 				if (typeof steps[testindex] != "function") {
-					console.log("Report complete!");
+					console.log("Report complete for "+user.email);
 					ph.exit();
 					clearInterval(interval);
 				}
@@ -130,6 +130,7 @@ module.exports = function(db) {
 			for (var n in users) {
 				sendReport(users[n]);
 			}
+			connection.destroy();
 		});
 	}, null, true, null);
 };
