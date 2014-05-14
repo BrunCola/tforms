@@ -3,7 +3,8 @@
 	nodemailer = require("nodemailer"),
 	config = require('./config'),
 	phantom = require('phantom'),
-	mysql = require('mysql');
+	mysql = require('mysql'),
+	fs = require('fs');
 
 var smtpTransport = nodemailer.createTransport("SMTP", {
 	host: "smtp.emailsrvr.com", // hostname
@@ -16,14 +17,15 @@ var smtpTransport = nodemailer.createTransport("SMTP", {
 });
 
 module.exports = function(db) {
-	// // var now = Math.round(new Date().getTime() / 1000);
-	// // get users and send reports
+	// var now = Math.round(new Date().getTime() / 1000);
+	// get users and send reports
 	// var connection = mysql.createConnection(db);
 	// var sql="SELECT * FROM user WHERE email = 'samyotte@phirelight.com'";
 	// db.query(sql, function(err, users, fields) {
 	// 	if (err) throw err;
 	// 		for (var n in users) {
-	// 		// new CronJob('* * * * * *', function(){
+	// 		new CronJob('0,15,30,45 * * * *', function(){
+	// 			var fileName = users[n].email+'_rapidphire_'+Math.round(new Date().getTime() / 1000)+'.pdf';
 	// 			var mailOptions = {
 	// 				from: "rapidPHIRE <notice@rapidphire.com>", // sender address
 	// 				// to: users[n].email, // list of receivers
@@ -32,8 +34,8 @@ module.exports = function(db) {
 	// 				text: 'some body', // plaintext body
 	// 				// html: "<b>Testing</b>", // html body
 	// 				attachments: [{
-	// 					fileName: users[n].username+'_'+Math.round(new Date().getTime() / 1000)+".pdf",
-	// 					filePath: "./temp/"+users[n].username+'_'+Math.round(new Date().getTime() / 1000)+".pdf"
+	// 					fileName: fileName,
+	// 					filePath: './temp/'+fileName
 	// 				}]
 	// 			};
 	// 			phantom.create('--ignore-ssl-errors=yes', function(ph) {
@@ -74,27 +76,23 @@ module.exports = function(db) {
 	// 							page.open("https://localhost:3000/#!/login");
 	// 						},
 	// 						function() {
-								
-	// 								page.evaluate(function() {
-
-	// 									setTimeout(function() {
-	// 									document.getElementById("email").value = "samyotte@phirelight.com";
-	// 									document.getElementById("password").value = "mainstreet";
-	// 									document.getElementById("login_button").click();
-	// 									console.log("Login submitted!");
-	// 									// console.log(result)
-	// 									}, 10000);
-	// 								});
-							
+	// 							page.open('https://localhost:3000/login', 'post', 'email=samyotte@phirelight.com&password=mainstreet', function (status) {
+	// 								if (status !== 'success') {
+	// 									console.log('Unable to post!');
+	// 								} else {
+	// 									console.log(page.content);
+	// 								}
+	// 								// phantom.exit();
+	// 							});
 	// 						},
 	// 						function() {
 	// 							//Load Login Page
 	// 							var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 	// 							var end = Math.round(new Date().getTime() / 1000);
-	// 							page.open("https://localhost:3000/report#!/ioc_events?start="+start+"&end="+end);
+	// 							page.open("https://localhost:3000/report#!/ioc_events_report?start="+start+"&end="+end);
 	// 						},
 	// 						function() {
-	// 							page.render('./temp/'+users[n].username+'_'+Math.round(new Date().getTime() / 1000)+'.pdf');
+	// 							page.render('./temp/'+fileName);
 	// 						},
 	// 						function() {
 	// 							setTimeout(function(){
@@ -103,9 +101,10 @@ module.exports = function(db) {
 	// 										console.log(error);
 	// 									} else {
 	// 										console.log("Message sent: " + response.message);
+	// 										fs.unlinkSync('./temp/'+fileName);
 	// 									}
 	// 								})
-	// 							}, 5000)
+	// 							}, 30000)
 	// 						},
 	// 						function() {
 	// 							//sign out of session
@@ -126,7 +125,7 @@ module.exports = function(db) {
 	// 					}, 5000);
 	// 				});
 	// 			});
-	// 		// }, null, true, null);
+	// 		}, null, true, null);
 	// 	}
 	// });
 };

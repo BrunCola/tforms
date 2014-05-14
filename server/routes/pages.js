@@ -76,6 +76,9 @@ var live_connections = require('../controllers/live_connections/live_connections
 			// TOP ENDPOINT EVENTS USER DRILL
 			var top_endpoint_events_user_drill = require('../controllers/general_network/top_endpoint_events_user_drill');
 
+// REPORTS
+	// IOC EVENTS REPORT
+	var ioc_events_report = require('../controllers/reports/ioc_events');
 
 
 module.exports = function(app) {
@@ -183,5 +186,11 @@ module.exports = function(app) {
 				// TOP ENDPOINT EVENTS USER DRILL
 				app.route('/general_network/top_endpoint_events_user_drill')
 				.get(authorization.requiresLogin, top_endpoint_events_user_drill.render);
+
+	// REPORTS
+		// IOC EVENTS
+		app.route('/reports/ioc_events')
+		.get(authorization.requiresLogin, ioc_events_report.render);
+
 
 };

@@ -925,6 +925,7 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
 	return {
 		link: function ($scope, element, attrs) {
 			$scope.$on('geoChart', function (event, dimension, group, chartType) {
+				// console.log(chartType)
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
 					$scope.geoChart = dc.geoChoroplethChart('#geochart');
 					var filter;

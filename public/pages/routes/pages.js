@@ -407,5 +407,20 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
+
+			// REPORTS
+				// IOC EVENTS
+				.state('ioc_events_report', {
+					url: '/ioc_events_report?start&end',
+					templateUrl: 'public/pages/views/reports/ioc_events.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'IOC Events Report',
+						daterange: false
+					}
+				})
+
 	}
 ]);

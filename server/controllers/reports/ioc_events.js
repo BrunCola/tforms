@@ -20,6 +20,18 @@ exports.render = function(req, res) {
 	var info = [];
 
 	switch (req.query.type) {
+		case 'glossary':
+			var iocType = req.query.iocType;
+			new query('SELECT description FROM ioc_parent WHERE ioc_parent =\''+iocType+'\'', 'rp_ioc_intel', function(err,data){
+				console.log('SELECT description FROM ioc_parent WHERE ioc_parent = '+iocType);
+				if (data) {
+					res.json({
+						title: iocType,
+						desc: data
+					});
+				}
+			});
+			break;
 		case 'ioc_notifications':
 		// Info function(s) --- IOC
 			new query('SELECT count(*) as count FROM conn_ioc WHERE (time between '+start+' AND '+end+') AND ioc_count > 0 AND trash IS NULL', database, function(err,data){
@@ -167,73 +179,102 @@ exports.render = function(req, res) {
 			var table1SQL = 'SELECT '+
 				// SELECTS
 				'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-				'`ioc_severity`, '+
+				'ioc_severity, '+
 				'count(*) as count, '+
-				'`ioc`, '+
-				'`ioc_typeIndicator`, '+
-				'`ioc_typeInfection`, '+
-				'`ioc_attrID`, '+
-				'`lan_zone`, '+
-				'`lan_ip`, '+
-				'`machine`, '+
-				'`remote_ip`, '+
-				'`remote_asn`, '+
-				'`remote_asn_name`, '+
-				'`remote_country`, '+
-				'`remote_cc`, '+
-				'sum(`in_packets`) as in_packets, '+
-				'sum(`out_packets`) as out_packets, '+
-				'sum(`in_bytes`) as in_bytes, '+
-				'sum(`out_bytes`) as out_bytes '+
+				'ioc, '+
+				'ioc_typeIndicator, '+
+				'remote_ip, '+
+				'remote_country, '+
+				'remote_cc, '+
+				'sum(`in_bytes`) as icon_in_bytes, '+
+				'sum(`out_bytes`) as icon_out_bytes '+
 				// !SELECTS
 				'FROM conn_ioc '+
 				'WHERE time BETWEEN '+start+' AND '+end+' '+
 				'AND `ioc_count` > 0 AND `trash` IS NULL '+
-				'GROUP BY `lan_ip`,`remote_ip`,`ioc`';
-
+				'GROUP BY `ioc_typeIndicator`,`remote_ip`,`ioc` '+
+				'ORDER BY ioc_severity DESC, count DESC '+
+				'LIMIT 10';
 			var table1Params = [
-				{
-					title: 'Last Seen',
-					select: 'time',
-					dView: true,
-					link: {
-						type: 'ioc_events_drilldown',
-						// val: the pre-evaluated values from the query above
-						val: ['lan_ip','remote_ip','ioc','ioc_attrID'],
-						crumb: false
-					},
-				},
+				{ title: 'Last Seen', select: 'time' },
 				{ title: 'Severity', select: 'ioc_severity' },
 				{ title: 'IOC Hits', select: 'count' },
 				{ title: 'IOC', select: 'ioc' },
 				{ title: 'IOC Type', select: 'ioc_typeIndicator' },
-				{ title: 'IOC Stage', select: 'ioc_typeInfection' },
-				{ title: 'LAN Zone', select: 'lan_zone' },
-				{ title: 'LAN IP', select: 'lan_ip' },
-				{ title: 'Machine Name', select: 'machine' },
 				{ title: 'Remote IP', select: 'remote_ip' },
-				{ title: 'Remote ASN', select: 'remote_asn' },
-				{ title: 'Remote ASN Name', select: 'remote_asn_name' },
 				{ title: 'Remote Country', select: 'remote_country' },
-				{ title: 'Flag', select: 'remote_cc', },
-				{ title: 'Packets to Remote', select: 'in_packets' },
-				{ title: 'Packets from Remote', select: 'out_packets' },
-				{ title: 'Bytes to Remote', select: 'in_bytes', dView: false },
-				{ title: 'Bytes from Remote', select: 'out_bytes', dView: false },
-				{
-					title: '',
-					select: null,
-					dView: true,
-					link: {
-						type: 'Archive',
-					},
-				},
+				{ title: 'Flag', select: 'remote_cc' },
+				{ title: 'Traffic In/Out', select: 'icon_in_bytes' }
 			];
 			var table1Settings = {
-				sort: [[0, 'desc']],
+				sort: [[ 1, "desc" ],[ 2, "desc" ]],
 				div: 'table',
-				title: 'Indicators of Compromise (IOC) Notifications'
-			};
+				title: 'Top 10 Highest Severity IOC Notifications',
+				pagebreakBefore: false
+			}
+
+			var table2SQL = 'SELECT '+
+				// SELECTS
+				'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+				'ioc_severity, '+
+				'count(*) as count, '+
+				'ioc, '+
+				'ioc_typeIndicator, '+
+				'lan_zone, '+
+				'lan_ip, '+
+				'machine, '+
+				'sum(`in_bytes`) as icon_in_bytes, '+
+				'sum(`out_bytes`) as icon_out_bytes '+
+				// !SELECTS
+				'FROM conn_ioc '+
+				'WHERE time BETWEEN '+start+' AND '+end+' '+
+				'AND `ioc_count` > 0 AND `trash` IS NULL '+
+				'GROUP BY `ioc_typeIndicator`,`lan_ip`,`ioc` '+
+				'ORDER BY ioc_severity DESC, count DESC';
+			var table2Params = [
+				{ title: 'Last Seen', select: 'time' },
+				{ title: 'Severity', select: 'ioc_severity' },
+				{ title: 'IOC Hits', select: 'count' },
+				{ title: 'IOC', select: 'ioc' },
+				{ title: 'IOC Type', select: 'ioc_typeIndicator' },
+				{ title: 'Lan Zone', select: 'lan_zone' },
+				{ title: 'LAN IP', select: 'lan_ip' },
+				{ title: 'Machine Name', select: 'machine' },
+				{ title: 'Traffic In/Out', select: 'icon_in_bytes' }
+			];
+			var table2Settings = {
+				sort: [[ 1, "desc" ],[ 2, "desc" ]],
+				div: 'table2',
+				title: 'Local End Point IP Addresses Triggering IOC Notifications',
+				pagebreakBefore: true
+			}
+
+			var table3SQL = 'SELECT '+
+				// SELECTS
+				'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+				'count(*) as count, '+
+				'l7_proto, '+
+				'(sum(`in_bytes`) / 1048576) as in_bytes, '+
+				'(sum(`out_bytes`) / 1048576) as out_bytes '+
+				// !SELECTS
+				'FROM conn_l7 '+
+				'WHERE time BETWEEN '+start+' AND '+end+' '+
+				'AND l7_proto !=\'-\' '+
+				'GROUP BY `l7_proto` '+
+				'ORDER BY out_bytes DESC';
+			var table3Params = [
+				{ title: 'Last Seen', select: 'time' },
+				{ title: 'Connections', select: 'count' },
+				{ title: 'Layer 7 protocol', select: 'l7_proto' },
+				{ title: 'MB to Remote', select: 'in_bytes' },
+				{ title: 'MB from Remote', select: 'out_bytes' }
+			];
+			var table3Settings = {
+				sort: [[ 3, "desc" ],[ 4, "desc" ]],
+				div: 'table3',
+				title: 'Layer 7 Protocol Bandwidth',
+				pagebreakBefore: true
+			}
 
 			var crossfilterSQL = 'SELECT '+
 					// SELECTS
@@ -255,11 +296,45 @@ exports.render = function(req, res) {
 					'remote_country,'+
 					'ioc_severity,'+
 					'ioc';
+
+
+			var glossarySQL = 'SELECT '+
+				// SELECTS
+				'count(*) as count, '+
+				'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`remote_country`,'+
+				'`ioc_severity`,'+
+				'`ioc` '+
+				// !SELECTS
+			'FROM conn_ioc '+
+			'WHERE '+
+				'time BETWEEN '+start+' AND '+end+' '+
+				'AND `ioc_count` > 0 '+
+				'AND `trash` IS NULL '+
+			'GROUP BY '+
+				'month(from_unixtime(time)),'+
+				'day(from_unixtime(time)),'+
+				'hour(from_unixtime(time)),'+
+				'remote_country,'+
+				'ioc_severity,'+
+				'ioc';
 			async.parallel([
 				// Table function(s)
 				function(callback) {
 					new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
-						tables.push(data);
+						tables[2] = data;
+						callback();
+					});
+				},
+				function(callback) {
+					new dataTable(table2SQL, table2Params, table2Settings, database, function(err,data){
+						tables[1] = data;
+						callback();
+					});
+				},
+				function(callback) {
+					new dataTable(table3SQL, table3Params, table3Settings, database, function(err,data){
+						tables[0] = data;
 						callback();
 					});
 				},

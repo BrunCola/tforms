@@ -5,7 +5,7 @@ var map = require('../constructors/map'),
 	async = require('async');
 
 exports.render = function(req, res) {
-	var database = req.user.database;
+	var database = req.session.passport.user.database;
 	// var database = null;
 	// var startTime = new Date().getTime()-1800000; // 30 minutes
 	// var endTime = new Date().getTime()-1500000; // 25 minutes
@@ -45,6 +45,6 @@ exports.render = function(req, res) {
 			map: queryResult
 		};
 		//console.log(results);
-		res.jsonp(results);
+		res.json(results);
 	});
 };

@@ -21,13 +21,13 @@ module.exports = function(version) {
 			var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 			var end = Math.round(new Date().getTime() / 1000);
 			res.render('index', {
-				user: req.user ? JSON.stringify({
-					email: req.user.email,
-					checkpoint: req.user.checkpoint,
-					_id: req.user._id,
-					username: req.user.username,
-					database: req.user.database,
-					roles: (req.user ? req.user.roles : ['anonymous'])
+				user: req.session.passport.user ? JSON.stringify({
+					email: req.session.passport.user.email,
+					checkpoint: req.session.passport.user.checkpoint,
+					_id: req.session.passport.user._id,
+					username: req.session.passport.user.username,
+					database: req.session.passport.user.database,
+					roles: (req.session.passport.user ? req.session.passport.user.roles : ['anonymous'])
 				}) : 'null',
 				modules: JSON.stringify(modules),
 				version: version,

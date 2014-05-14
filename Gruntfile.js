@@ -10,6 +10,7 @@ module.exports = function(grunt) {
 
     if (process.env.NODE_ENV !== 'production') {
         require('time-grunt')(grunt);
+        grunt.loadNpmTasks('grunt-bump');
     }
 
     // Project Configuration
@@ -123,13 +124,12 @@ module.exports = function(grunt) {
 
     //Load NPM tasks
     require('load-grunt-tasks')(grunt);
-    grunt.loadNpmTasks('grunt-bump');
 
     //Default task(s).
     if (process.env.NODE_ENV === 'production') {
         grunt.registerTask('default', ['cssmin', 'uglify', 'concurrent']);
     } else {
-        grunt.registerTask('default', ['jshint', 'csslint', 'concurrent', 'grunt-bump']);
+        grunt.registerTask('default', ['jshint', 'csslint', 'concurrent']);
     }
 
     //Test task.
@@ -137,5 +137,5 @@ module.exports = function(grunt) {
 
     // For Heroku users only.
     // Docs: https://github.com/linnovate/mean/wiki/Deploying-on-Heroku
-    grunt.registerTask('heroku:production', ['cssmin', 'uglify']);
+    // grunt.registerTask('heroku:production', ['cssmin', 'uglify']);
 };
