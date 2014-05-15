@@ -199,6 +199,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 			})();
 			// !D3 FISHEYE PLUGIN
 			$scope.$on('buildFishChart', function (event, data){
+				console.log(data)
 				var margin = {top: 5.5, right: 19.5, bottom: 30.5, left: 55.5};
 				var width = document.getElementById('fishchart').offsetWidth-60;
 				var height = (width / 2.25) - margin.top - margin.bottom;
@@ -292,18 +293,31 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 			})
 
 			$scope.$on('fishChart', function (event, dataset) {
+				var transitions = [];
 				dataset.forEach(function(d){
 					d.time = new Date(moment.unix(d.time));
+					var trans = d.data.length +","+ d.time;
+					function checkDup(vals) {
+						if (transitions.indexOf(vals) !== -1) {
+							// change value and check again
+							var tr = vals.split(',');
+							var oldtime = new Date(tr[1]);
+							var newtime = new Date(oldtime.getTime() + 5*60000);
+							tr[1] = newtime.toString();
+							trans = tr[0]+','+tr[1];
+							checkDup(trans);
+						} else {
+							var tr = trans.split(',');
+							d.time = new Date(tr[1]);
+							transitions.push(trans);
+						}
+					}
+					checkDup(trans);
 				})
 				var gType = 'default';
 				function x(d) { return d.time; }
 				function y(d) {
-					switch(gType) {
-						case 'default':
-							return d.data.length;
-						case 'other':
-							return (d.data.length)+50;
-					}
+					return d.data.length;
 				}
 				function scale(d) {
 					if (d.ioc_hits === 0){
@@ -312,12 +326,13 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 						return $scope.scale(d.ioc_hits);
 					}
 				}
+				var transitions = [];
 				function rPosition(dot) {
 					dot.attr("transform", function(d) {return "translate(" + $scope.xScale(x(d)) +","+ $scope.yScale(y(d)) + ")scale("+scale(d)+")";})
 				}
 				$scope.colorScale = function(cClass) {
 					switch (cClass) {
-						case 'http': 
+						case 'http':
 							return "#A70101";
 						case 'ssl':
 							return "#FFFFFF";
@@ -351,6 +366,8 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					.sort(function(a, b) { return scale(b) - scale(a); })
 					.each(function(d){
 						var elm = d3.select(this)
+						// console.log(elm[0][0].__data__)
+
 						if ((d.class === 'file_ioc') || (d.class === 'conn_ioc') || (d.class === 'dns_ioc') || (d.class === 'http_ioc') || (d.class === 'ssl_ioc')) {
 							elm
 								.append('svg:path')
@@ -496,6 +513,11 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 								});
 						}
 					})
+				// $scope.dot.selectAll("path").each( function(d, i){
+				// 	// if(d.someId == targetId){
+				// 		console.log( d3.select(this).attr("d") );
+				// 	// }
+				// })
 				$scope.svg.on("mousemove", function() {
 					$scope.mouse = d3.mouse(this);
 					$scope.xScale.distortion($scope.zoomSlider($scope.maxnum)).focus($scope.mouse[0]);

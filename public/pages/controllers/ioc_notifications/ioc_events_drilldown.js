@@ -64,7 +64,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 		$scope.$broadcast('buildFishChart', {
 			maxIOC: data.maxIOC,
 			yAxis: data.maxConn,
-			xAxis: [data.start, data.end]
+			xAxis: [parseInt(data.start), parseInt(data.end)]
 		})
 		for (var n in data.result) {
 			data.result[n].forEach(function(d){
