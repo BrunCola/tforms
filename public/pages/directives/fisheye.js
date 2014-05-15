@@ -307,7 +307,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				}
 				function scale(d) {
 					if (d.ioc_hits === 0){
-						return 0.5;
+						return 1;
 					} else {
 						return $scope.scale(d.ioc_hits);
 					}
