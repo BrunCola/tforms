@@ -4,98 +4,34 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 	return {
 		link: function ($scope, element, attrs) {
 			// D3 FISHEYE PLUGIN
-			(function() {
-			d3.legend = function(g) {
-			  g.each(function() {
-				var g= d3.select(this),
-					items = {},
-					svg = d3.select(g.property("nearestViewportElement")),
-					legendPadding = g.attr("data-style-padding") || 5,
-					lb = g.selectAll(".legend-box").data([true]),
-					li = g.selectAll(".legend-items").data([true])
-				lb.enter().append("rect").classed("legend-box",true)
-				li.enter().append("g").classed("legend-items",true)
-
-				svg.selectAll("[data-legend]").each(function() {
-					var self = d3.select(this)
-					items[self.attr("data-legend")] = {
-					  pos : self.attr("data-legend-pos") || this.getBBox().y,
-					  color : self.attr("data-legend-color") != undefined ? self.attr("data-legend-color") : self.style("fill") != 'none' ? self.style("fill") : self.style("stroke") 
-					}
-				  })
-
-				items = d3.entries(items).sort(function(a,b) { return a.value.pos-b.value.pos})
-
-				var hidden = [];
-				function isHidden(key){
-					var index = hidden.indexOf(key);
-					if (index !== -1 ) {
-						hidden.splice(index, 1);
-						return false;
-					} else {
-						hidden.push(key);
-						return true;
-					}
+			function titles(title) {
+				switch(title){
+					case 'http':
+						return "HTTP";
+					case 'ssl':
+						return "SSL";
+					case 'file': // extracted files
+						return "File";
+					case 'dns': // new dns
+						return "DNS";
+					case 'conn': //first seen
+						return "Connections";
+					case 'conn_ioc':
+						return "Connection IOC";
+					case 'http_ioc':
+						return "HTTP IOC";
+					case 'ssl_ioc':
+						return "SSL IOC";
+					case 'file_ioc':
+						return "File IOC";
+					case 'dns_ioc':
+						return "DNS IOC";
+					case 'endpoint':
+						return "Endpoint";
+					default: //endpoint events
+						return "IOC Hits";
 				}
-
-				li.selectAll("text")
-					.data(items,function(d) { return d.key})
-					.call(function(d) { d.enter().append("text")})
-					.call(function(d) { d.exit().remove()})
-					.attr("y",function(d,i) { return i+"em"})
-					.attr("x","1em")
-					.style('fill', '#000')
-					.text(function(d) { ;return d.key})
-
-				li.selectAll("circle")
-					.data(items,function(d) { return d.key})
-					.call(function(d) { d.enter().append("circle")})
-					.call(function(d) { d.exit().remove()})
-					.attr("cy",function(d,i) { return i-0.25+"em"})
-					.attr("cx",0)
-					.attr("r","0.4em")
-					.on('mouseover', function(d){
-						d3.select(this).style('cursor', 'pointer');
-					})
-					.attr('stroke', 'black')
-					.style('stroke-width', 1)
-					.style("fill",function(d) { return d.value.color })
-					.on("click", function (d){
-						var button = d3.select(this);
-						var elm = $scope.dot.selectAll('.'+d.key);
-						if (isHidden(d.key)) {
-							button
-								.transition()
-								.style("opacity", 0.5)
-								.style('stroke-width', 0)
-								.duration(300);
-							elm
-								.transition()
-								.style('visibility', 'hidden')
-								.duration(300);
-						} else {
-							button
-								.transition()
-								.style("opacity", 1)
-								.style('stroke-width', 1)
-								.duration(300);
-							elm
-								.transition()
-								.style('visibility', 'visible')
-								.duration(300);
-						}
-					});
-
-				// Reposition and resize the box
-				var lbbox = li[0][0].getBBox()
-				lb.attr("x",(lbbox.x-legendPadding))
-					.attr("y",(lbbox.y-legendPadding))
-					.attr("height",(lbbox.height+2*legendPadding))
-					.attr("width",(lbbox.width+2*legendPadding))
-			  })
-			  return g
 			}
-			})();
 			(function() {
 				d3.fisheye = {
 					scale: function(scaleType) {
@@ -169,32 +105,168 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					return d3.rebind(fisheye, scale, "domain", "range");
 				}
 			})();
+			$scope.point = function(element, nickname, title, dType) {
+				element.attr('class', nickname);
+				switch(nickname){
+					case 'file':
+						element.append('svg:path')
+							.attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
+							.attr('fill', '#B572AB');
+						element.append('svg:path')
+							.attr('d', 'M13.702,12.807h13.189c-0.436-0.655-1.223-1.104-2.066-1.104c0,0-7.713,0-8.361,0'+
+								'c-0.386-0.796-1.278-1.361-2.216-1.361H7.562c-1.625,0-1.968,0.938-1.839,2.025l2.104,11.42c0.146,0.797,0.791,1.461,1.594,1.735'+
+								'c0,0,2.237-10.702,2.378-11.308C12.005,13.334,12.403,12.807,13.702,12.807z')
+							.attr('fill', '#595A5C');
+						element.append('svg:path')
+							.attr('d', 'M29.697,13.898c0,0-14.47-0.037-14.68-0.037c-1.021,0-1.435,0.647-1.562,1.289l-2.414,10.508h16.716'+
+								'c1.146,0,2.19-0.821,2.383-1.871l1.399-7.859C31.778,14.706,31.227,13.848,29.697,13.898z')
+							.attr('fill', '#595A5C');
+						if(dType === 'legend') {
+							element.append('text')
+								.text(title)
+								.attr('fill', '#7f7f7f')
+								.attr('transform', 'translate(7,50)');
+						}
+						return;
+					case 'conn':
+						element.append('svg:path')
+							.attr('d', 'M18,0C8.059,0,0,8.059,0,18c0,9.94,8.059,18,18,18s18-8.06,18-18C36,8.059,27.94,0,18,0z')
+							.attr('fill', '#6FBF9B');
+						element.append('svg:polygon')
+							.attr('points', '24.585,6.299 24.585,9.064 11.195,9.064 11.195,14.221 24.585,14.221 24.585,16.986 31.658,11.643 ')
+							.attr('fill', '#595A5C');
+						element.append('svg:polygon')
+							.attr('points', '10.99,17.822 3.916,23.166 10.99,28.51 10.99,25.744 24.287,25.744 24.287,20.59 10.99,20.59 ')
+							.attr('fill', '#595A5C');
+						if(dType === 'legend') {
+							element.append('text')
+								.text(title)
+								.attr('fill', '#7f7f7f')
+								.attr('transform', 'translate(-13,50)');
+						}
+						return;
+					case 'dns':
+						element.append('svg:path')
+							.attr('d', 'M18,0C8.059,0,0,8.059,0,18s8.059,18,18,18s18-8.059,18-18S27.941,0,18,0z')
+							.attr('fill', '#708EBC');
+						element.append('svg:path')
+							.attr('d', 'M20.909,13.115c0-0.07,0-0.106-0.071-0.106c-0.283,0-6.022,0.813-7.935,0.956'+
+								'c-0.036,0.955-0.071,2.053-0.071,3.009l2.267,0.106v8.707c0,0.071-0.035,0.143-0.142,0.178l-1.877,0.07'+
+								'c-0.035,0.92-0.035,1.982-0.035,2.938c1.452,0,3.33-0.036,4.818-0.036h4.888V26l-1.949-0.07'+
+								'C20.801,22.39,20.874,16.938,20.909,13.115z')
+							.attr('fill', '#595A5C');
+						element.append('svg:path')
+							.attr('d', 'M17.473,10.921c1.771,0,3.329-1.274,3.329-3.187c0-1.486-1.098-2.867-3.152-2.867'+
+								'c-1.948,0-3.259,1.451-3.259,2.938C14.391,9.611,15.949,10.921,17.473,10.921z')
+							.attr('fill', '#595A5C');
+						if(dType === 'legend') {
+							element.append('text')
+								.text(title)
+								.attr('fill', '#7f7f7f')
+								.attr('transform', 'translate(5,50)');
+						}
+						return;
+					case 'http':
+						element.append('svg:path')
+							.attr('d', 'M18,0C8.059,0,0,8.06,0,18.001C0,27.941,8.059,36,18,36c9.94,0,18-8.059,18-17.999C36,8.06,27.94,0,18,0z')
+							.attr('fill', '#67AAB5');
+						element.append('svg:path')
+							.attr('d', 'M24.715,19.976l-2.057-1.122l-1.384-0.479l-1.051,0.857l-1.613-0.857l0.076-0.867l-1.062-0.325l0.31-1.146'+
+								'l-1.692,0.593l-0.724-1.616l0.896-1.049l1.108,0.082l0.918-0.511l0.806,1.629l0.447,0.087l-0.326-1.965l0.855-0.556l0.496-1.458'+
+								'l1.395-1.011l1.412-0.155l-0.729-0.7L22.06,9.039l1.984-0.283l0.727-0.568L22.871,6.41l-0.912,0.226L21.63,6.109l-1.406-0.352'+
+								'l-0.406,0.596l0.436,0.957l-0.485,1.201L18.636,7.33l-2.203-0.934l1.97-1.563L17.16,3.705l-2.325,0.627L8.91,3.678L6.39,6.285'+
+								'l2.064,1.242l1.479,1.567l0.307,2.399l1.009,1.316l1.694,2.576l0.223,0.177l-0.69-1.864l1.58,2.279l0.869,1.03'+
+								'c0,0,1.737,0.646,1.767,0.569c0.027-0.07,1.964,1.598,1.964,1.598l1.084,0.52L19.456,21.1l-0.307,1.775l1.17,1.996l0.997,1.242'+
+								'l-0.151,2.002L20.294,32.5l0.025,2.111l1.312-0.626c0,0,2.245-3.793,2.368-3.554c0.122,0.238,2.129-2.76,2.129-2.76l1.666-1.26'+
+								'l0.959-3.195l-2.882-1.775L24.715,19.976z')
+							.attr('fill', '#595A5C');
+						if(dType === 'legend') {
+							element.append('text')
+								.text(title)
+								.attr('fill', '#7f7f7f')
+								.attr('transform', 'translate(2,50)');
+						}
+						return;
+					case 'ssl':
+						element.append('svg:path')
+							.attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
+							.attr('fill', '#A0BB71');
+						element.append('svg:path')
+							.attr('d', 'M25.518,13.467h-0.002c0-0.003,0.002-0.006,0.002-0.008c0-4.064-3.297-7.359-7.359-7.359'+
+								'c-4.064,0-7.359,3.295-7.359,7.359c0,0.002,0,0.005,0,0.008v2.674H9.291V27.9h17.785v-11.76h-1.559V13.467z')
+							.attr('fill', '#595A5C');
+						element.append('svg:path')
+							.attr('d', 'M18.184,8.754c-3.191,0-4.661,2.372-4.661,4.967'+
+								'c0,0.004,0,0.006,0,0.008v2.412h9.397v-2.412c0-0.002,0-0.004,0-0.008C22.92,11.126,21.315,8.754,18.184,8.754z')
+							.attr('fill', '#A0BB71');
+						if(dType === 'legend') {
+							element.append('text')
+								.text(title)
+								.attr('fill', '#7f7f7f')
+								.attr('transform', 'translate(7.5,50)');
+						}
+						return;
+					case 'endpoint':
+						element.append('svg:path')
+							.attr('d', 'M18,0C8.059,0,0,8.06,0,18c0,9.941,8.059,18,18,18c9.94,0,18-8.059,18-18C36,8.06,27.94,0,18,0z')
+							.attr('fill', '#7E9E7B');
+						element.append('svg:path')
+							.attr('d', 'M28.649,8.6H7.351c-0.684,0-1.238,0.554-1.238,1.238v14.363c0,0.684,0.554,1.238,1.238,1.238h7.529'+
+								'l-1.09,3.468v0.495h8.419v-0.495l-1.09-3.468h7.529c0.684,0,1.237-0.555,1.237-1.238V9.838C29.887,9.153,29.333,8.6,28.649,8.6z'+
+								'M28.477,22.072H7.635V10.074h20.842V22.072z')
+							.attr('fill', '#595A5C');
+						if(dType === 'legend') {
+							element.append('text')
+								.text(title)
+								.attr('fill', '#7f7f7f')
+								.attr('transform', 'translate(-6,50)');
+						}
+						return;
+					default:
+						element.append('svg:path')
+							.attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
+							.attr('fill', '#D8464A');
+						element.append('svg:polygon')
+							.attr('points', '18.155,3.067 5.133,26.932 31.178,26.932 ')
+							.attr('fill', '#595A5C');
+						element.append('svg:polygon')
+							.attr('points', '19.037,21.038 19.626,12.029 15.888,12.029 16.477,21.038 ')
+							.attr('fill', '#D8464A');
+						element.append('rect')
+							.attr('x', 16.376)
+							.attr('y', 22.045)
+							.attr('fill', '#D8464A')
+							.attr('width', 2.838)
+							.attr('height', 2.448);
+						if(dType === 'legend') {
+							element.append('text')
+								.text(title)
+								.attr('fill', '#7f7f7f')
+								.attr('transform', 'translate(-5,50)');
+						}
+						return;
+				}
+			}
 			// !D3 FISHEYE PLUGIN
 			$scope.$on('buildFishChart', function (event, data){
 				var margin = {top: 5.5, right: 19.5, bottom: 30.5, left: 55.5};
-				// width = 1560,
-				// height = 1000 - margin.top - margin.bottom;
-
 				var width = document.getElementById('fishchart').offsetWidth-60;
 				var height = (width / 2.25) - margin.top - margin.bottom;
 
-				$('#fishchart').parent().height(height);
+				$('#fishchart').parent().height(height+110);
 
-				// Various scales and distortions.
-				// d3.time.scale().domain([moment($scope.start), moment($scope.end)])
-				// var $scope.xScale = d3.fisheye.scale(d3.time.scale).domain([new Date($scope.start), new Date($scope.end)]).range([0, width]),
-				$scope.xScale = d3.fisheye.scale(d3.time.scale).domain([new Date(moment.unix(data.xAxis[0])), new Date(moment.unix(data.xAxis[1]))]).range([0, width]);
-				$scope.yScale = d3.fisheye.scale(d3.scale.linear).domain([0-(data.yAxis*0.07), data.yAxis+(data.yAxis*0.07)]).range([height, 0]);
+				$scope.xScale = d3.fisheye.scale(d3.time.scale).domain([new Date(moment.unix(data.xAxis[0])), new Date(moment.unix(data.xAxis[1]+3600))]).range([0, width]);
+				$scope.yScale = d3.fisheye.scale(d3.scale.linear).domain([0-(data.yAxis*0.17), data.yAxis+(data.yAxis*0.17)]).range([height, 0]);
 				$scope.radiusScale = d3.scale.sqrt().domain([0, 5e8]).range([0, 40]);
 				$scope.maxnum = data.yAxis;
-				$scope.iocSlider = function(position) {
+				$scope.scale = function(position) {
 					// position will be between 0 and 100
 					var minp = 0;
 					var maxp = data.maxIOC;
 
 					// The result should be between 100 an 10000000
-					var minv = Math.log(15);
-					var maxv = Math.log(40);
+					var minv = Math.log(1);
+					var maxv = Math.log(1);
 
 					// calculate adjustment factor
 					var scale = (maxv-minv) / (maxp-minp);
@@ -208,34 +280,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 						return 0.30;
 					}
 				}
-				$scope.colorScale = function(cClass) {
-					switch (cClass) {
-						case 'http':
-							return "#A70101";
-						case 'ssl':
-							return "#FFFFFF";
-						case 'file':
-							return "#74BAE6";
-						case 'dns':
-							return "#CF1125";
-						case 'conn':
-							return "#BEDB39";
-						case 'conn_ioc':
-							return "#004358";
-						case 'http_ioc':
-							return "#1F8A70";
-						case 'ssl_ioc':
-							return "#FF85AA";
-						case 'file_ioc':
-							return "#FF5347";
-						case 'dns_ioc':
-							return "#FD7400";
-						case 'conn_ioc':
-							return "#3F0000";
-						default:
-							return "#0E0E0D";
-					}
-				}
+
 				// The x & y axes.
 				// var $scope.xAxis = d3.svg.axis().orient("bottom").scale($scope.xScale).tickFormat(d3.format(",d")).tickSize(-height),
 				$scope.xAxis = d3.svg.axis().orient("bottom").scale($scope.xScale).tickSize(-height);
@@ -244,14 +289,77 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				// Create the SVG container and set the origin.
 				$scope.svg = d3.select("#fishchart").append("svg")
 					.attr("width", width + margin.left + margin.right)
-					.attr("height", height + margin.top + margin.bottom)
+					.attr("height", height + margin.top + margin.bottom + 100)
 					.append("g")
 					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 				// Add a background rect for mousemove.
 				$scope.svg.append("rect")
 					.attr("class", "background")
 					.attr("width", width)
-					.attr("height", height);
+					.attr("height", height+100);
+
+				$scope.legendHolder = $scope.svg.append('g').attr('class', 'legend');
+				var pIoc = $scope.legendHolder.append('g');
+				var pFile = $scope.legendHolder.append('g');
+				var pConn = $scope.legendHolder.append('g');
+				var pDns = $scope.legendHolder.append('g');
+				var pHttp = $scope.legendHolder.append('g');
+				var pSsl = $scope.legendHolder.append('g');
+				var pEndpoint = $scope.legendHolder.append('g');
+				var legendPoints = [
+					{
+						element: pEndpoint,
+						nickname: 'endpoint',
+						title: titles('endpoint')
+					},
+					{
+						element: pIoc,
+						nickname: 'ioc',
+						title: titles('ioc')
+					},
+					{
+						element: pFile,
+						nickname: 'file',
+						title: titles('file')
+					},
+					{
+						element: pConn,
+						nickname: 'conn',
+						title: titles('conn')
+					},
+					{
+						element: pDns,
+						nickname: 'dns',
+						title: titles('dns')
+					},
+					{
+						element: pHttp,
+						nickname: 'http',
+						title: titles('http')
+					},
+					{
+						element: pSsl,
+						nickname: 'ssl',
+						title: titles('ssl')
+					}
+				];
+				for (var i in legendPoints) {
+					$scope.point(legendPoints[i].element, legendPoints[i].nickname, legendPoints[i].title, 'legend');
+				}
+
+				var margin = 70;
+				var totalItems = legendPoints.length;
+				var center = (width/2) - ((totalItems*margin)/2); //width of legend holder which is margins*items
+				var pointCount = 0;
+				var y = height + 25;
+				var x = center - margin; //move group to center, countering the original margin far left
+				$scope.legendHolder.selectAll('g').each(function(d){
+					var elm = d3.select(this);
+					pointCount++;
+					var x = margin*pointCount;
+					elm.attr('transform', 'translate('+x+',0)')
+				});
+				$scope.legendHolder.attr('transform', 'translate('+x+','+y+')')
 
 				// Add the x-axis.
 				$scope.svg.append("g")
@@ -294,181 +402,184 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					.attr("dy", ".75em")
 					.attr("transform", "rotate(-90)")
 					.text("Number of connections.");
-
-				// $scope.fisheyeWidth = function() {
-				// 	return $('#fishchart').parent().width();
-				// }
-				// var setNewSize = function(width) {
-				// 	// if (width > 0) {
-				// 	var elm = d3.select("#fishchart");
-				// 	elm.select('svg')
-				// 		.attr('width', width)
-				// 		.attr('height', width / 1.5);
-				// 	elm.select('rect')
-				// 		.attr('width', width)
-				// 		.attr('height', width / 1.5);
-				// 	elm.select('g')
-				// 		.attr("transform", "translate(0," + width/1.5 + ")")
-				// 		.call($scope.xAxis);
-				// 	elm.select('g')
-				// 		.call($scope.yAxis);
-
-				// 			// $(element).height(width/1.628);
-				// 			// d3.select('#geochart svg').attr('width', width).attr('height', width/1.628);
-				// 		// $scope.geoChart.redraw();
-				// 	// }
-				// }
-				// $(window).bind('resize', function() {
-				// 	setTimeout(function(){
-				// 		setNewSize($scope.fisheyeWidth());
-				// 	}, 150);
-				// });
-				// $('.sidebar-toggler').on("click", function() {
-				// 	setTimeout(function() {
-				// 		setNewSize($scope.geoWidth());
-				// 	},10);
-				// });
-
-				// dataset.forEach(function(d){
-				// 	d.dd = new Date(moment.unix(d.time).format());
-				// });
 			})
 
-			// Chart dimensions.
-			// var button1 = d3.select("#buttons").append("button")
-			// 	.html('Test');
-			// var button2 = d3.select("#buttons").append("button")
-			// 	.html('Test');
-			////////////////////////////////////////////////////
 			$scope.$on('fishChart', function (event, dataset) {
+				var transitions = [];
+				$scope.pTypes = [];
 				dataset.forEach(function(d){
+					if ($scope.pTypes.indexOf(d.class) === -1) {
+						$scope.pTypes.push(d.class);
+					}
 					d.time = new Date(moment.unix(d.time));
+					d.duplicate = false;
+					var trans = d.data.length +","+ d.time;
+					d.id = trans; // duplicates should now share the same original trans value
+					function checkDup(vals) {
+						if (transitions.indexOf(vals) !== -1) {
+							// change value and check again
+							var tr = vals.split(',');
+							var oldtime = new Date(tr[1]);
+							var newtime = new Date(oldtime.getTime() + 5*60000);
+							tr[1] = newtime.toString();
+							trans = tr[0]+','+tr[1];
+							d.duplicate = true;
+							checkDup(trans);
+						} else {
+							var tr = trans.split(',');
+							d.time = new Date(tr[1]);
+							transitions.push(trans);
+						}
+					}
+					checkDup(trans);
 				})
 				var gType = 'default';
 				function x(d) { return d.time; }
 				function y(d) {
-					switch(gType) {
-						case 'default':
-							return d.data.length;
-						case 'other':
-							return (d.data.length)+50;
+					return d.data.length;
+				}
+				function scale(d) {
+					if (d.ioc_hits === 0){
+						return 1;
+					} else {
+						return $scope.scale(d.ioc_hits);
 					}
 				}
-				function radius(d) {
-					switch(gType) {
-						case 'default':
-							if (d.ioc_hits === 0) {
-								return 7;
-							} else {
-								return $scope.iocSlider(d.ioc_hits);
-							}
-						case 'other':
-							return 20;
-					}
+				var transitions = [];
+				function rPosition(dot) {
+					dot.attr("transform", function(d) {return "translate(" + $scope.xScale(x(d)) +","+ $scope.yScale(y(d)) + ")scale("+scale(d)+")";})
 				}
-				function width(d) {
-					switch(gType) {
-						case 'default':
-							if (d.ioc_hits === 0) {
-								return 14;
-							} else {
-								return $scope.iocSlider(d.ioc_hits)*2;
-							}
-						case 'other':
-							return 20;
+				$scope.colorScale = function(cClass) {
+					switch (cClass) {
+						case 'http':
+							return "#A70101";
+						case 'ssl':
+							return "#FFFFFF";
+						case 'file': // extracted files
+							return "#74BAE6";
+						case 'dns': // new dns
+							return "#CF1125";
+						case 'conn': //first seen
+							return "#BEDB39";
+						case 'conn_ioc':
+							return "#004358";
+						case 'http_ioc':
+							return "#1F8A70";
+						case 'ssl_ioc':
+							return "#FF85AA";
+						case 'file_ioc':
+							return "#FF5347";
+						case 'dns_ioc':
+							return "#FD7400";
+						case 'endpoint':
+							return "#0E0E0D";
+						default: //endpoint events
+							return "#0E0E0D";
 					}
 				}
 				$scope.dot = $scope.svg.append("g")
 					.attr("class", "dots")
 					.selectAll(".dot")
 					.data(dataset)
-					.enter().append('g')
+					.enter().insert('g')
+					.sort(function(a, b) { return scale(b) - scale(a); })
 					.each(function(d){
-						var elm = d3.select(this)
-						if ((d.class === 'file_ioc') || (d.class === 'conn_ioc') || (d.class === 'dns_ioc') || (d.class === 'http_ioc')) {
-							elm.append("rect")
-								.attr("class", "dot "+d.class)
-								.style("fill", function(d) { return $scope.colorScale(d.class); })
-								.call(rPosition)
-								.sort(function(a, b) { return width(b) - width(a); })
-								.on('mouseover', $scope.tip.show)
-								.on('mouseout', $scope.tip.hide)
-								.attr("data-legend", function(d) { return d.class})
-								.on("click", function (d){
-									$scope.open(d);
-								});
+						var elm = d3.select(this).append('g').attr('class','point').call(rPosition);
+						if ((d.class === 'file_ioc') || (d.class === 'conn_ioc') || (d.class === 'dns_ioc') || (d.class === 'http_ioc') || (d.class === 'ssl_ioc')) {
+							$scope.point(elm, 'ioc');
 						} else {
-							elm.append("circle")
-								.attr("class", "dot "+d.class)
-								.style("fill", function(d) { return $scope.colorScale(d.class); })
-								.call(cPosition)
-								.sort(function(a, b) { return radius(b) - radius(a); })
-								.on('mouseover', $scope.tip.show)
-								// .on('mouseover', function(){
-								// 	$scope.dot.style('cursor', 'pointer')
-								// })
-								.on('mouseout', $scope.tip.hide)
-								.attr("data-legend", function(d) { return d.class})
-								.on("click", function (d){
-									$scope.open(d);
-								});
+							$scope.point(elm, d.class);
 						}
-					});
-
-				// // Add a title.
-				// $scope.dot.append("title")
-				// 	.text(function(d) { return d.name; });
-
-				// Positions the dots based on data.
-				function cPosition(dot) {
-					dot.attr("cx", function(d) { return $scope.xScale(x(d)); })
-						.attr("cy", function(d) { return $scope.yScale(y(d)); })
-						.attr("r", function(d) { return radius(d); });
+						elm.attr("class", d.class)
+							.style("fill", function(d) { return $scope.colorScale(d.class); })
+							.on('mouseover', $scope.tip.show)
+							.on('mouseout', $scope.tip.hide)
+							.attr("data-legend", function(d) { return d.class})
+							.on("click", function (d){
+								$scope.open(d);
+							});
+					})
+				var hidden = [];
+				function isHidden(key){
+					var index = hidden.indexOf(key);
+					if (index !== -1 ) {
+						hidden.splice(index, 1);
+						return false;
+					} else {
+						hidden.push(key);
+						return true;
+					}
 				}
-				function rPosition(dot) {
-					dot.attr("x", function(d) { return $scope.xScale(x(d)) - (width(d)/2); })
-						.attr("y", function(d) { return $scope.yScale(y(d)) - (width(d)/2); })
-						.attr("width", function(d) { return width(d); })
-						.attr("height", function(d) { return width(d); });
-				}
+				$scope.legendHolder.selectAll('g').each(function(d){
+					var elm = d3.select(this);
+					var pclass = elm.attr('class');
+					var countArr = $.grep(dataset, function(e){ return e.class == pclass; });
+					var tcount = 0;
+					for(var c in countArr) {
+						tcount += countArr[c].data.length;
+					}
+					if ($scope.pTypes.indexOf(pclass) === -1){
+						elm.style("opacity", 0.3);
+					} else {
+						elm
+							.append('circle')
+							.attr('cx', 0)
+							.attr('cy', 0)
+							.attr('r', 3)
+							.attr('fill', '#72be9b')
+							.style("opacity", 0.5);
+						elm
+							.append('text')
+							.text(tcount)
+							.attr('transform', 'translate(15,60)')
+							.attr('fill', '#72be9b')
+							.style("opacity", 0.5);
+						elm
+							.style('cursor', 'pointer')
+							.on("click", function (d){
+							var button = d3.select(this);
+							var elm = $scope.dot.selectAll('.'+pclass);
+							if (isHidden(pclass)) {
+								button
+									.transition()
+									.style("opacity", 0.5)
+									.style('stroke-width', 0)
+									.duration(150);
+								elm
+									.transition()
+									.style('visibility', 'hidden')
+									.duration(150);
+							} else {
+								button
+									.transition()
+									.style("opacity", 1)
+									.style('stroke-width', 1)
+									.duration(150);
+								elm
+									.transition()
+									.style('visibility', 'visible')
+									.duration(150);
+							}
+						})
+					}
+				});
+				// $scope.dot.selectAll("path").each( function(d, i){
+				// 	var elm = d3.select(this);
+				// 	if(d.duplicate === true){
+				// 		// elm.attr('id', function(d){ return d.id });
+				// 		elm.on('mouseover', function(d){
+				// 		})
+				// 	}
+				// })
 				$scope.svg.on("mousemove", function() {
 					$scope.mouse = d3.mouse(this);
 					$scope.xScale.distortion($scope.zoomSlider($scope.maxnum)).focus($scope.mouse[0]);
 					$scope.yScale.distortion($scope.zoomSlider($scope.maxnum)).focus($scope.mouse[1]);
-					// $scope.xScale.distortion(4.5).focus($scope.mouse[0]);
-					// $scope.yScale.distortion(4.5).focus($scope.mouse[1]);
 
-					$scope.dot.selectAll('circle').call(cPosition);
-					$scope.dot.selectAll('rect').call(rPosition);
+					$scope.dot.selectAll('g').call(rPosition);
 					$scope.svg.select(".x.axis").call($scope.xAxis);
 					$scope.svg.select(".y.axis").call($scope.yAxis);
 				});
-
-				// Add legend
-				$scope.legend = $scope.svg.append("g")
-					.attr("class","legend")
-					.attr("transform","translate(50,30)")
-					.style("font-size","12px")
-					.call(d3.legend);
-				$scope.legend
-					.style("font-size","17px")
-					.attr("data-style-padding",10)
-					.call(d3.legend)
-					.style('fill', 'none')
-
-				// },1000)
-				// button1.on("click", function() {
-				// 	gType = 'default';
-				// 	$scope.dot.transition()
-				// 		.attr("r", function(d){ return radius(d); })
-				// 		.attr("cy", function(d) { return $scope.yScale(y(d)) });
-				// })
-				// button2.on("click", function() {
-				// 	gType = 'other';
-				// 	$scope.dot.transition()
-				// 		.attr("r", function(d){ return radius(d); })
-				// 		.attr("cy", function(d) { return $scope.yScale(y(d)) });
-				// })
 			})
 		}
 	};
