@@ -28,6 +28,7 @@ exports.render = function(req, res) {
 				'`ioc_typeIndicator`,'+
 				'`ioc_typeInfection`,'+
 				'`lan_zone`,'+
+				'`machine`,'+
 				'`lan_ip`,'+
 				'`remote_ip`,'+
 				'sum(`in_packets`) AS in_packets,'+
@@ -63,6 +64,8 @@ exports.render = function(req, res) {
 			{ title: 'IOC', select: 'ioc' },
 			{ title: 'IOC Type', select: 'ioc_typeIndicator' },
 			{ title: 'IOC Stage', select: 'ioc_typeInfection' },
+			{ title: 'Zone', select: 'lan_zone' },
+			{ title: 'Machine', select: 'machine' },
 			{ title: 'Lan IP', select: 'lan_ip' },
 			{ title: 'Remote IP', select: 'remote_ip' },
 			{ title: 'Bytes to Remote', select: 'in_bytes'},

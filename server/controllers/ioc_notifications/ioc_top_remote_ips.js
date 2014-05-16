@@ -26,7 +26,6 @@ exports.render = function(req, res) {
 			'`ioc`,'+
 			'`ioc_typeIndicator`,'+
 			'`ioc_typeInfection`,'+
-			'`lan_zone`,'+
 			'`remote_ip`,'+
 			'`remote_asn`,'+
 			'`remote_asn_name`,'+
@@ -67,12 +66,11 @@ exports.render = function(req, res) {
 		{ title: 'Remote ASN', select: 'remote_asn' },
 		{ title: 'Remote ASN Name', select: 'remote_asn_name' },
 		{ title: 'Remote Country', select: 'remote_country' },
-		{ title: 'Flag', select: 'remote_cc', },
-		{ title: 'Packets to Remote', select: 'in_packets' },
-		{ title: 'Packets from Remote', select: 'out_packets'},		
-		{ title: 'Bytes to Remote', select: 'in_bytes', dView: false },
-		{ title: 'Bytes from Remote', select: 'out_bytes', dView: false },
-
+		{ title: 'Flag', select: 'remote_cc' },
+		{ title: 'Bytes to Remote', select: 'in_bytes' },
+		{ title: 'Bytes from Remote', select: 'out_bytes' },
+		{ title: 'Packets to Remote', select: 'in_packets', dView: false },
+		{ title: 'Packets from Remote', select: 'out_packets', dView: false },		
 	];
 	var table1Settings = {
 		sort: [[2, 'desc']],
