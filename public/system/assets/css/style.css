@@ -58,16 +58,21 @@ th {
 }
 
 #fishchart .background {
-  fill: #DADFE1;
+  fill: #58595B;
 }
 
-#fishchart .dot {
+/*#fishchart .dot {
   stroke: #000;
-}
+}*/
 
-#fishchart .axis path, .axis line {
+#fishchart .axis path {
   fill: none;
-  stroke: #fff;
+  stroke: #666666;
+  shape-rendering: crispEdges;
+}
+#fishchart .axis line {
+  fill: none;
+  stroke: #666666;
   shape-rendering: crispEdges;
 }
 
