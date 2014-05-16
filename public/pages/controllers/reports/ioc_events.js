@@ -1,20 +1,28 @@
 'use strict';
 
-angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
+angular.module('mean.pages').controller('iocEventsReportController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-	 query = '/ioc_notifications/ioc_events?start='+$location.$$search.start+'&end='+$location.$$search.end;
+	 query = '/reports/ioc_events?start='+$location.$$search.start+'&end='+$location.$$search.end;
 	} else {
-		query = '/ioc_notifications/ioc_events?';
+		query = '/reports/ioc_events?';
 	}
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {
-	// console.log($location.$$search);
 	success(function(data) {
-		if (data.tables[0] === null) {
-			$scope.$broadcast('loadError');
+		if (data.tables[2] === null) {
+			$scope.nodata = true;
+			$scope.data = data;
+			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			$scope.tempArr = [];
+			$scope.data.tables[0].pagebreakBefore = false;
+			$scope.tempArr.push($scope.data.tables[0]);
+			$scope.$broadcast('tableLoad', $scope.tableData, $scope.tempArr, null);
+			// $scope.$broadcast('tableLoad', $scope.data.tables[0], $scope.data.tables[0], null);
 		} else {
+			$scope.somedata = true;
 			var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
 			data.crossfilter.forEach(function(d) {
 				d.dd = dateFormat.parse(d.time);
@@ -24,12 +32,12 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
 			$scope.crossfilterData = crossfilter(data.crossfilter);
 			$scope.data = data;
 
-			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
-			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
-			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
-
-			var rowDimension = $scope.crossfilterData.dimension(function(d) { return d.ioc; });
-			var rowGroupPre = rowDimension.group().reduceSum(function(d) { return d.count; });
+			// $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+			// $scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+			// $scope.$broadcast('tableLoad', $scope.data.tables, $scope.data.tables, null);
+			$scope.$broadcast('tableLoad', null, $scope.data.tables, 'drill');
+			var rowDimension = $scope.crossfilterData.dimension(function(d) { return d.ioc });
+			var rowGroupPre = rowDimension.group().reduceSum(function(d) { return d.count });
 			var rowGroup = rowGroupPre.reduce(
 				function (d, v) {
 					//++d.count;
@@ -49,6 +57,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
 					return {count: 0, severity: 0};
 				}
 			);
+			// console.log(rowGroup.top(Infinity))
 			$scope.$broadcast('rowChart', rowDimension, rowGroup, 'severity');
 
 			var geoDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
@@ -56,7 +65,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
 				return d.count;
 			});
 			$scope.$broadcast('geoChart', geoDimension, geoGroup);
-			var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour; });
+			var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
 			var barGroupPre = barDimension.group();
 			var barGroup = barGroupPre.reduce(
 				function(p, v) {
@@ -108,7 +117,37 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
 			$scope.$broadcast('barChart', barDimension, barGroup, 'severity');
 			$scope.barChartxAxis = '';
 			$scope.barChartyAxis = '# IOC / Hour';
-			$scope.$broadcast('severityLoad');
+			$scope.severityDim = $scope.crossfilterData.dimension(function(d){return d.ioc_severity;});
+			$scope.sevcounts = $scope.severityDim.group().reduceSum(function(d) {return d.count;}).top(Infinity);
+			for (var n in $scope.sevcounts) {
+				if ($scope.sevcounts[n].key === 1) {
+					$scope.sev1 = $scope.sevcounts[n].value;
+				}
+				if ($scope.sevcounts[n].key === 2) {
+					$scope.sev2 = $scope.sevcounts[n].value;
+				}
+				if ($scope.sevcounts[n].key === 3) {
+					$scope.sev3 = $scope.sevcounts[n].value;
+				}
+				if ($scope.sevcounts[n].key === 4) {
+					$scope.sev4 = $scope.sevcounts[n].value;
+				}
+			}
+			// var glossary = [];
+			// var glossArr = rowGroup.top(Infinity);
+			// for (var n in glossArr) {
+			// 	// $scope.test = glossArr[n].key;
+			// 	$http({method: 'GET', url: query+'&type=glossary&iocType='+glossArr[n].key}).
+			// 	success(function(data) {
+			// 		if (data.desc[0] !== undefined) {
+			// 			glossary.push({
+			// 				title: data.title,
+			// 				description: data.desc[0].description
+			// 			});
+			// 			$scope.glossary = glossary;
+			// 		}
+			// 	});
+			// }
 		}
 	});
 

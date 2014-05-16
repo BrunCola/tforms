@@ -21,12 +21,12 @@ module.exports = function(app, passport) {
     app.route('/loggedin')
         .get(function(req, res) {
             res.send(req.isAuthenticated() ? {
-                email: req.user.email,
-                checkpoint: req.user.checkpoint,
-                _id: req.user._id,
-                username: req.user.username,
-                database: req.user.database,
-                roles: (req.user ? req.user.roles : ['anonymous'])
+                email: req.session.passport.user.email,
+                checkpoint: req.session.passport.user.checkpoint,
+                _id: req.session.passport.user._id,
+                username: req.session.passport.user.username,
+                database: req.session.passport.user.database,
+                roles: (req.session.passport.user ? req.session.passport.user.roles : ['anonymous'])
             } : '0');
         });
 
@@ -36,12 +36,12 @@ module.exports = function(app, passport) {
             failureFlash: true
         }), function (req,res) {
             res.send({
-                email: req.user.email,
-                checkpoint: req.user.checkpoint,
-                _id: req.user._id,
-                username: req.user.username,
-                database: req.user.database,
-                roles: (req.user ? req.user.roles : ['anonymous'])
+                email: req.session.passport.user.email,
+                checkpoint: req.session.passport.user.checkpoint,
+                _id: req.session.passport.user._id,
+                username: req.session.passport.user.username,
+                database: req.session.passport.user.database,
+                roles: (req.session.passport.user ? req.session.passport.user.roles : ['anonymous'])
             });
         });
 

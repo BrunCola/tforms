@@ -16,6 +16,7 @@ module.exports = function (params, callback) {
 	connection.query(this.query)
 		.on('result', function(data){
 			data.class = params.sClass;
+			data.title = params.title;
 			data.id = count++;
 			dat.push(data);
 		})
@@ -35,6 +36,7 @@ module.exports = function (params, callback) {
 					// b becomes the higher level of the result
 					b.push({
 						time: dat[d].rTime,
+						title: dat[d].title,
 						class: dat[d].class //set to unique identifier based on group returned
 					});
 				}
