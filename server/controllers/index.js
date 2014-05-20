@@ -26,6 +26,7 @@ module.exports = function(version) {
 					checkpoint: req.session.passport.user.checkpoint,
 					_id: req.session.passport.user._id,
 					username: req.session.passport.user.username,
+					id: req.session.passport.user.id,
 					database: req.session.passport.user.database,
 					roles: (req.session.passport.user ? req.session.passport.user.roles : ['anonymous'])
 				}) : 'null',

@@ -473,8 +473,12 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				})
 				var gType = 'default';
 				function x(d) { return d.time; }
-				function y(d) {
-					return d.data.length;
+				function y(d, multiple) {
+					if (multiple === undefined) {
+						return d.data.length;
+					} else {
+						return d.data.length*multiple;
+					}
 				}
 				function scale(d) {
 					if (d.ioc_hits === 0){
@@ -504,6 +508,17 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 							.on("click", function (d){
 								$scope.open(d);
 							});
+
+						// elm.append('circle')
+						// 	.attr('r', 10)
+						// 	.on('mouseover', function(d) {
+						// 		d3.select(this).transition().duration(50)
+						// 			.attr('transform', function(d){ return 'translate(0,10)scale('+scale(d)+')'})
+						// 	})
+							// .on('mouseout', function(d) {
+							// 	d3.select(this).transition().duration(50)
+							// 		.attr('transform', function(d){ return 'translate(0,0)scale('+scale(d)+')'})
+							// })
 					})
 				var hidden = [];
 				function isHidden(key){
@@ -516,6 +531,8 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 						return true;
 					}
 				}
+
+				// LEGEND STUFF
 				$scope.legendHolder.selectAll('g').each(function(d){
 					var elm = d3.select(this);
 					var pclass = elm.attr('class');

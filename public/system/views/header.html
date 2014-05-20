@@ -62,15 +62,6 @@
       </div>
       <div class="modal-body">
          <form name="userForm" class="form-horizontal" ng-submit="submitForm(userForm)" novalidate>
-          <!-- USERNAME -->
-          <div class="control-group" ng-class="{ 'has-error' : userForm.username.$invalid && !userForm.username.$pristine }">
-            <label class="control-label">Username *</label>
-            <div class="controls">
-              <input type="text" name="username" class="form-control" ng-model="user.username" ng-minlength="3" ng-maxlength="15">
-              <p ng-show="userForm.username.$error.minlength" class="help-block">Username is too short.</p>
-              <p ng-show="userForm.username.$error.maxlength" class="help-block">Username is too long.</p>
-            </div>
-          </div>
           <!-- EMAIL -->
           <div class="control-group" ng-class="{ 'has-error' : userForm.email.$invalid && !userForm.email.$pristine }">
             <label class="control-label">Email *</label>

@@ -76,7 +76,7 @@ module.exports = function(app, passport, io) {
 			var connection = mysql.createConnection(db);
 			if (data.password) {
 				var pass = crypto.createHash('md5').update(data.password).digest('hex');
-				var sql="SELECT * FROM user WHERE id = '"+ data.id +"' and password = '"+ pass +"' limit 1";
+				var sql="SELECT * FROM user WHERE email = '"+ data.email +"' and password = '"+ pass +"' limit 1";
 				console.log(sql);
 				connection.query(sql,
 					function (err,results) {
@@ -97,9 +97,9 @@ module.exports = function(app, passport, io) {
 			var pass = crypto.createHash('md5').update(data.password).digest('hex');
 			if (data.newPass) {
 				var newpass = crypto.createHash('md5').update(data.newPass).digest('hex');
-				connection.query("UPDATE `user` SET `email`='"+data.email+"', `username`='"+data.username+"', `password`='"+newpass+"' WHERE `id` = '"+data.id+"' AND `password` = '"+pass+"'");
+				connection.query("UPDATE `user` SET `email`='"+data.newemail+"', `password`='"+newpass+"' WHERE `email` = '"+data.oldemail+"' AND `password` = '"+pass+"'");
 			} else {
-				connection.query("UPDATE `user` SET `email`='"+data.email+"', `username`='"+data.username+"' WHERE `id` = '"+data.id+"' AND `password` = '"+pass+"'");
+				connection.query("UPDATE `user` SET `email`='"+data.newemail+"' WHERE `email` = '"+data.oldemail+"' AND `password` = '"+pass+"'");
 			}
 		});
 	// 	// socket.on('new note', function(data){
