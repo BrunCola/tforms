@@ -61,13 +61,11 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
             };
             $scope.submitForm = function(form) {
              // check to make sure the form is completely valid
-             // console.log($scope.user)
              if (form.$valid) {
                  socket.emit('checkPass', {password: $scope.user.upassword, email: user.email});
                  socket.on('passGood', function() {
                      if ($scope.user.password) {
                          socket.emit('updateUser', { oldemail: user.email, newemail: $scope.user.email, password: $scope.user.upassword, newPass: $scope.user.password });
-                         // user.email = $scope.user.email;
                          $http.get('/logout')
                          .success(function() {
                             window.location.href = '/';
@@ -76,7 +74,6 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
                          });
                      } else if (($scope.user.email !== user.email)) {
                          socket.emit('updateUser', { oldemail: user.email, newemail: $scope.user.email, password: $scope.user.upassword });
-                         // user.email = $scope.user.email;
                          $http.get('/logout')
                          .success(function() {
                             window.location.href = '/';
@@ -94,8 +91,6 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
              }
             };
         };
-
-
 
 
         $scope.reportSettings = function () {
