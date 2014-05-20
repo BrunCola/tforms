@@ -8,7 +8,7 @@ var mysql = require('mysql'),
 module.exports = function(app, passport, io) {
 
 	// grab config file
-	//var connection = mysql.createConnection(config.db);
+	// var connection = mysql.createConnection(config.db);
 	// change database get to user's
 	// establish new connection
 

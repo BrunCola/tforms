@@ -532,6 +532,12 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					if ($scope.pTypes.indexOf(pclass) === -1){
 						elm.style("opacity", 0.3);
 					} else {
+						//center counts
+						var textElement = elm.select('text');
+						var translatePre = textElement.attr('transform').match(/(-?\d*,-?\d*)\w+/g);
+						var translateArr = translatePre[0].split(',');
+						var textWidth = parseInt(textElement.style('width').match(/(\d+)/g));
+						var textHeight = parseInt(textElement.style('height').match(/(\d+)/g));
 						elm
 							.append('circle')
 							.attr('cx', 0)
@@ -541,10 +547,18 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 							.style("opacity", 0.5);
 						elm
 							.append('text')
+							.attr('class', 'count')
 							.text(tcount)
-							.attr('transform', 'translate(15,60)')
+						// centering text n shit
+						var countWidth = parseInt(elm.select('.count').style('width').match(/(\d+)/g));
+						var marginleft = (textWidth/2) - (countWidth/2) + parseInt(translateArr[0]);
+						var margintop = parseInt(translateArr[1]) + textHeight-3;
+						elm
+							.select('.count')
+							.attr('transform', 'translate('+marginleft+','+margintop+')')
 							.attr('fill', '#72be9b')
 							.style("opacity", 0.5);
+
 						elm
 							.style('cursor', 'pointer')
 							.on("click", function (d){
