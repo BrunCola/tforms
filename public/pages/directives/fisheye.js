@@ -307,7 +307,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				$('#fishchart').parent().height(height+110);
 
 				$scope.xScale = d3.fisheye.scale(d3.time.scale).domain([new Date(moment.unix(data.xAxis[0])), new Date(moment.unix(data.xAxis[1]+3600))]).range([0, width]);
-				$scope.yScale = d3.fisheye.scale(d3.scale.linear).domain([0-(data.yAxis*0.07), data.yAxis+(data.yAxis*0.07)]).range([height, 0]);
+				$scope.yScale = d3.fisheye.scale(d3.scale.linear).domain([0-(data.yAxis*0.07), data.yAxis+1+(data.yAxis*0.07)]).range([height, 0]);
 				$scope.radiusScale = d3.scale.sqrt().domain([0, 5e8]).range([0, 40]);
 				$scope.maxnum = data.yAxis;
 				$scope.scale = function(position) {
@@ -518,9 +518,9 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					});
 				}
 				var hoverOver = [], hoverCount = 0;
-				// function pointTranslate(count, total) {
+				function pointTranslate(count, total) {
 
-				// }
+				}
 				$scope.dot = $scope.svg.append("g")
 					.attr("class", "dots")
 					.selectAll(".dot")
@@ -556,8 +556,8 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 								// continue with .each statement
 								elm.each(function(d){
 									var elm = d3.select(this);
-										// hoverCount++;
-										// pointTranslate(hoverCount, elmCount);
+										hoverCount++;
+										pointTranslate(hoverCount, elmCount.length);
 										elm
 											.transition().duration(50)
 											.attr('transform', function(d) { return "translate(" + $scope.xScale(x(d)) +","+ $scope.yScale(y(d,'max')) + ")scale("+scale(d)+")";})
