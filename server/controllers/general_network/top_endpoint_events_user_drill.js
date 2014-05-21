@@ -34,6 +34,7 @@ exports.render = function(req, res) {
 			'AND `alert_info` = \''+req.query.alert_info+'\' '+
 			'AND `src_user` = \''+req.query.src_user+'\'';
 		var table1Params = [
+			{ title: 'Time', select: 'time' },
 			{ title: 'Full Log', select: 'full_log' },
 		];
 		var table1Settings = {

@@ -26,8 +26,6 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
             };
         };
 
-
-
         // User Settings Modal
         $scope.userSettings = function () {
             $scope.modalInstance = $modal.open({
@@ -91,7 +89,6 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
              }
             };
         };
-
 
         $scope.reportSettings = function () {
             $scope.modalInstance = $modal.open({

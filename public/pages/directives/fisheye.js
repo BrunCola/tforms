@@ -494,12 +494,8 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					checkDup(trans);
 				})
 				function x(d) { return d.time; }
-				function y(d, multiple) {
-					if (multiple !== 'max' ) {
-						return d.data.length;
-					} else {
-						return d.data.length+($scope.maxnum*0.02);
-					}
+				function y(d) {
+					return d.data.length;
 				}
 				function scale(d) {
 					if (d.ioc_hits === 0){
@@ -517,10 +513,76 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 						}
 					});
 				}
-				var hoverOver = [], hoverCount = 0;
-				function pointTranslate(count, total) {
 
+				// hover-over spread function
+				var hoverOver = [], hoverCount = 1;
+				function pointTranslate(count, total) {
+					// set the left or right translation
+					// var x = 18;
+					// if the hovered over group is greater than one item
+					// if (total > 1) {
+						// figure out what fraction each point falls into
+						// var fraction = 180 / (total*2);
+						// fraction *= hoverCount;
+						// console.log(fraction)
+						// // margin left or right
+						// var adjacent = x;
+						// if (fraction > 90) {
+						// 	// if greater than 90 degrees, translate left (via negative value)
+						// 	fraction = 90 - (fraction-90);
+						// 	adjacent *= -1;
+						// // if 90 degrees, make margin 0
+						// } else if (fraction === 90) {
+						// 	adjacent = 0;
+						// }
+						// // our Tan() method to find the translation value up
+						// var opposite = Math.tan(fraction)*x;
+						// console.log(opposite)
+						// if (opposite < 0) {
+						// 	// make positive if negative
+						// 	opposite *= -1;
+						// }
+						// // increase the fraction counter
+						// hoverCount += 2;
+						// // return as object
+						// return {
+						// 	x: adjacent,
+						// 	y: opposite
+						// }
+
+
+						var h = 10;
+						var fraction = 180 / (total*2);
+						fraction *= hoverCount;
+						if (fraction > 90){
+							h = Math.sqrt(h^2 + h^2)
+						}
+						var y = Math.sin(fraction)*h;
+						var x = Math.cos(fraction)*h;
+						if (fraction === 90) {
+							x = 0;
+						}
+
+						// if (fraction > 90) {
+						// 	// if greater than 90 degrees, translate left (via negative value)
+						// 	// fraction = 90 - (fraction-90);
+						// 	x *= -1;
+						// } else if (fraction === 90) {
+						// 	x = 0;
+						// }
+						// if (y < 0) {
+						// 	// make positive if negative
+						// 	y *= -1;
+						// }
+						hoverCount += 2;
+						// console.log(fraction+','+x+','+y)
+						// return {
+						// 	x: x,
+						// 	y: y
+						// }
+					// }
 				}
+
 				$scope.dot = $scope.svg.append("g")
 					.attr("class", "dots")
 					.selectAll(".dot")
@@ -556,17 +618,18 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 								// continue with .each statement
 								elm.each(function(d){
 									var elm = d3.select(this);
-										hoverCount++;
-										pointTranslate(hoverCount, elmCount.length);
+										var trans = pointTranslate(hoverCount, elmCount.length);
+										console.log(trans)
 										elm
 											.transition().duration(50)
-											.attr('transform', function(d) { return "translate(" + $scope.xScale(x(d)) +","+ $scope.yScale(y(d,'max')) + ")scale("+scale(d)+")";})
+											.attr('transform', function(d) { return "translate(" + $scope.xScale(x(d)) +","+ $scope.yScale(y(d)) + ")scale("+scale(d)+")";})
 									})
 							})
 							.on('mouseout', function(d){
 								// remove values from mouseover array on mouseOut
 								mouseover[0] = null;
 								mouseover[1] = null;
+								hoverCount = 1;
 							})
 						})
 				var hidden = [];
