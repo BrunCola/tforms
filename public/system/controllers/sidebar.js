@@ -75,16 +75,16 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'orphans': ['ioc_drill', 'ioc_events_drilldown']
 		},
 		{
-			'title': 'IOC Top Remote IPs',
-			'url': 'ioc_top_remote_ips',
-			'icon': 'fa-warning',
-			'orphans': ['ioc_top_remote2local']
-		},
-		{
 			'title': 'IOC Top Local IPs',
 			'url': 'ioc_top_local_ips',
 			'icon': 'fa-warning',
 			'orphans': ['ioc_top_local_ips_drill']
+		},
+		{
+			'title': 'IOC Top Remote IPs',
+			'url': 'ioc_top_remote_ips',
+			'icon': 'fa-warning',
+			'orphans': ['ioc_top_remote2local']
 		}]
 	},
 	{
@@ -93,6 +93,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		'icon': 'fa-folder',
 		'children':
 		[{
+			'title': 'By MIME Type',
+			'url': 'by_mime_type',
+			'icon': 'fa-folder-open',
+			'orphans': ['file_mime_local', 'file_local']
+		},
+		{
 			'title': 'By Local IP',
 			'url': 'by_local_ip',
 			'icon': 'fa-folder-open',
@@ -103,12 +109,6 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'url': 'by_remote_ip',
 			'icon': 'fa-folder-open',
 			'orphans': ['by_file_name_remote','file_remote']
-		},
-		{
-			'title': 'By MIME Type',
-			'url': 'by_mime_type',
-			'icon': 'fa-folder-open',
-			'orphans': ['file_mime_local', 'file_local']
 		}]
 	},
 	{
