@@ -148,6 +148,44 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
+
+				// BY REMOTE IP
+				.state('by_remote_ip', {
+					url: '/by_remote_ip?start&end',
+					templateUrl: 'public/pages/views/extracted_files/by_remote_ip.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Extracted Files by Remote IP',
+						daterange: true
+					}
+				})
+					// BY FILE NAME
+					.state('by_file_name_remote', {
+						url: '/by_file_name_remote?start&end&remote_ip',
+						templateUrl: 'public/pages/views/extracted_files/by_file_name_remote.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'File Name',
+							daterange: true
+						}
+					})
+						// FILE REMOTE
+						.state('file_remote', {
+							url: '/file_remote?start&end&remote_ip&mime',
+							templateUrl: 'public/pages/views/extracted_files/file_remote.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'File Remote',
+								daterange: true
+							}
+						})
+
 				// BY MIME TYPE
 				.state('by_mime_type', {
 					url: '/by_mime_type?start&end',
@@ -484,6 +522,18 @@ angular.module('mean.pages').config(['$stateProvider',
 				.state('top_local_irc', {
 					url: '/top_local_irc?start&end',
 					templateUrl: 'public/pages/views/general_network/top_local_irc.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Top Local IRC',
+						daterange: true
+					}
+				})
+				// TOP LOCAL SMTP
+				.state('top_local_smtp', {
+					url: '/top_local_smtp?start&end',
+					templateUrl: 'public/pages/views/general_network/top_local_smtp.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},

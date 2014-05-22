@@ -27,6 +27,12 @@ var live_connections = require('../controllers/live_connections/live_connections
 		var by_file_name = require('../controllers/extracted_files/by_file_name');
 			// FILE LOCAL
 			var file_local = require('../controllers/extracted_files/file_local');
+	// BY REMOTE IP
+	var by_remote_ip = require('../controllers/extracted_files/by_remote_ip');
+		// BY FILE NAME REMOTE
+		var by_file_name_remote = require('../controllers/extracted_files/by_file_name_remote');
+			// FILE REMOTE
+			var file_remote = require('../controllers/extracted_files/file_remote');
 	// BY MIME TYPE
 	var by_mime_type = require('../controllers/extracted_files/by_mime_type');
 		// FILE MIME LOCAL
@@ -87,8 +93,10 @@ var live_connections = require('../controllers/live_connections/live_connections
 	var top_remote2local_ssh = require('../controllers/general_network/top_remote2local_ssh');
 		// TOP SSH REMOTE
 		var top_remote2local_ssh_local = require('../controllers/general_network/top_remote2local_ssh_local');
-	// TOP SSH
+	// TOP LOCAL IRC
 	var top_local_irc = require('../controllers/general_network/top_local_irc');	
+	// TOP LOCAL SMTP
+	var top_local_smtp = require('../controllers/general_network/top_local_smtp');	
 
 
 // REPORTS
@@ -131,7 +139,15 @@ module.exports = function(app) {
 				// FILE LOCAL
 				app.route('/extracted_files/file_local')
 				.get(authorization.requiresLogin, file_local.render);
-
+		// BY REMOTE IP
+		app.route('/extracted_files/by_remote_ip')
+		.get(authorization.requiresLogin, by_remote_ip.render);
+			// BY FILE NAME REMOTE
+			app.route('/extracted_files/by_file_name_remote')
+			.get(authorization.requiresLogin, by_file_name_remote.render);
+				// FILE REMOTE
+				app.route('/extracted_files/file_remote')
+				.get(authorization.requiresLogin, file_remote.render);
 		// BY MIME TYPE
 		app.route('/extracted_files/by_mime_type')
 		.get(authorization.requiresLogin, by_mime_type.render);
@@ -222,6 +238,9 @@ module.exports = function(app) {
 		// TOP LOCAL IRC
 		app.route('/general_network/top_local_irc')
 		.get(authorization.requiresLogin, top_local_irc.render);
+		// TOP LOCAL STMP
+		app.route('/general_network/top_local_smtp')
+		.get(authorization.requiresLogin, top_local_smtp.render);
 
 	// REPORTS
 		// IOC EVENTS

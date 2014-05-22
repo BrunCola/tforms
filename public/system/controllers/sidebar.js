@@ -99,6 +99,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'orphans': ['by_file_name','file_local']
 		},
 		{
+			'title': 'By Remote IP',
+			'url': 'by_remote_ip',
+			'icon': 'fa-folder-open',
+			'orphans': ['by_file_name_remote','file_remote']
+		},
+		{
 			'title': 'By MIME Type',
 			'url': 'by_mime_type',
 			'icon': 'fa-folder-open',
@@ -203,6 +209,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		{
 			'title': 'Top Local IRC',
 			'url': 'top_local_irc',
+			'icon': 'fa-desktop',
+			'orphans': []
+		},
+		{
+			'title': 'Top Local SMTP',
+			'url': 'top_local_smtp',
 			'icon': 'fa-desktop',
 			'orphans': []
 		}]
