@@ -75,6 +75,17 @@ var live_connections = require('../controllers/live_connections/live_connections
 		var top_endpoint_events_user = require('../controllers/general_network/top_endpoint_events_user');
 			// TOP ENDPOINT EVENTS USER DRILL
 			var top_endpoint_events_user_drill = require('../controllers/general_network/top_endpoint_events_user_drill');
+	// TOP SSH
+	var top_ssh = require('../controllers/general_network/top_ssh');
+		// TOP SSH REMOTE
+		var top_ssh_remote = require('../controllers/general_network/top_ssh_remote');
+			// TOP SSH REMOTE SHARED
+			var top_ssh_remote_shared = require('../controllers/general_network/top_ssh_remote_shared');
+	// TOP REMOTE2LOCAL SSH
+	var top_remote2local_ssh = require('../controllers/general_network/top_remote2local_ssh');
+		// TOP SSH REMOTE
+		var top_remote2local_ssh_local = require('../controllers/general_network/top_remote2local_ssh_local');
+
 
 // REPORTS
 	// IOC EVENTS REPORT
@@ -186,6 +197,22 @@ module.exports = function(app) {
 				// TOP ENDPOINT EVENTS USER DRILL
 				app.route('/general_network/top_endpoint_events_user_drill')
 				.get(authorization.requiresLogin, top_endpoint_events_user_drill.render);
+		// TOP SSH
+		app.route('/general_network/top_ssh')
+		.get(authorization.requiresLogin, top_ssh.render);
+			// TOP SSH REMOTE
+			app.route('/general_network/top_ssh_remote')
+			.get(authorization.requiresLogin, top_ssh_remote.render);
+				// TOP SSH REMOTE SHARED
+				app.route('/general_network/top_ssh_remote_shared')
+				.get(authorization.requiresLogin, top_ssh_remote_shared.render);
+		// TOP REMOTE2LOCAL SSH
+		app.route('/general_network/top_remote2local_ssh')
+		.get(authorization.requiresLogin, top_remote2local_ssh.render);
+			// TOP REMOTE2LOCAL SSH LOCAL
+			app.route('/general_network/top_remote2local_ssh_local')
+			.get(authorization.requiresLogin, top_remote2local_ssh_local.render);
+
 
 	// REPORTS
 		// IOC EVENTS

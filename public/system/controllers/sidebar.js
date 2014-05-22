@@ -187,6 +187,18 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'url': 'top_endpoint_events',
 			'icon': 'fa-desktop',
 			'orphans': ['top_endpoint_events_user','top_endpoint_events_user_drill']
+		},
+		{
+			'title': 'Top Local SSH',
+			'url': 'top_ssh',
+			'icon': 'fa-desktop',
+			'orphans': ['top_ssh_remote', 'top_ssh_remote_shared']
+		},
+		{
+			'title': 'Top Remote SSH',
+			'url': 'top_remote2local_ssh',
+			'icon': 'fa-desktop',
+			'orphans': ['top_remote2local_ssh_local', 'top_ssh_remote_shared']
 		}]
 	}];
 }]);

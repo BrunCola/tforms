@@ -407,7 +407,66 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
-
+				// TOP SSH
+				.state('top_ssh', {
+					url: '/top_ssh?start&end',
+					templateUrl: 'public/pages/views/general_network/top_ssh.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Top Local SSH',
+						daterange: true
+					}
+				})
+					// TOP SSH REMOTE
+					.state('top_ssh_remote', {
+						url: '/top_ssh_remote?start&end&lan_ip',
+						templateUrl: 'public/pages/views/general_network/top_ssh_remote.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'SSH Local to Remote',
+							daterange: true
+						}
+					})
+						// TOP SSH REMOTE SHARED
+						.state('top_ssh_remote_shared', {
+							url: '/top_ssh_remote_shared?start&end&lan_ip&remote_ip',
+							templateUrl: 'public/pages/views/general_network/top_ssh_remote_shared.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'SSH Local/Remote Shared',
+								daterange: true
+							}
+						})
+				// TOP REMOTE2LOCAL SSH
+				.state('top_remote2local_ssh', {
+					url: '/top_remote2local_ssh?start&end',
+					templateUrl: 'public/pages/views/general_network/top_remote2local_ssh.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Top Remote SSH',
+						daterange: true
+					}
+				})
+					// TOP REMOTE2LOCAL SSH LOCAL
+					.state('top_remote2local_ssh_local', {
+						url: '/top_remote2local_ssh_local?start&end&remote_ip',
+						templateUrl: 'public/pages/views/general_network/top_remote2local_ssh_local.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'SSH Remote to Local',
+							daterange: true
+						}
+					})
 			// REPORTS
 				// IOC EVENTS
 				.state('ioc_events_report', {
