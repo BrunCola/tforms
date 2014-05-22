@@ -53,7 +53,7 @@ exports.render = function(req, res) {
 					val: ['lan_ip','lan_zone','remote_ip'],
 					crumb: false
 				}
-			},,
+			},
 			{ title: 'LAN Zone', select: 'lan_zone' },
 			{ title: 'LAN IP', select: 'lan_ip' },
 			{ title: 'Machine Name', select: 'machine' },
