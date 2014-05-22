@@ -174,13 +174,13 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'Top Local IP',
 			'url': 'top_local_ips',
 			'icon': 'fa-cloud-download',
-			'orphans': ['top_local2remote']
+			'orphans': ['top_local2remote', 'top_ips_shared']
 		},
 		{
 			'title': 'Top Remote IP',
 			'url': 'top_remote_ips',
 			'icon': 'fa-cloud-upload',
-			'orphans': ['top_remote2local']
+			'orphans': ['top_remote2local', 'top_ips_shared']
 		},
 		{
 			'title': 'Top Endpoint Events',
@@ -199,6 +199,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'url': 'top_remote2local_ssh',
 			'icon': 'fa-desktop',
 			'orphans': ['top_remote2local_ssh_local', 'top_ssh_remote_shared']
+		},
+		{
+			'title': 'Top Local IRC',
+			'url': 'top_local_irc',
+			'icon': 'fa-desktop',
+			'orphans': []
 		}]
 	}];
 }]);

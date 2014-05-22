@@ -346,6 +346,18 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+						// TOP IPS SHARED
+						.state('top_ips_shared', {
+							url: '/top_ips_shared?start&end&lan_ip&lan_zone&remote_ip',
+							templateUrl: 'public/pages/views/general_network/top_ips_shared.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'Conn Local/Remote Shared',
+								daterange: true
+							}
+						})
 
 				// TOP REMOTE IPS
 				.state('top_remote_ips', {
@@ -467,6 +479,19 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+
+				// TOP LOCAL IRC
+				.state('top_local_irc', {
+					url: '/top_local_irc?start&end',
+					templateUrl: 'public/pages/views/general_network/top_local_irc.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Top Local IRC',
+						daterange: true
+					}
+				})
 			// REPORTS
 				// IOC EVENTS
 				.state('ioc_events_report', {

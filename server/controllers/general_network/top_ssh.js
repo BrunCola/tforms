@@ -46,6 +46,7 @@ exports.render = function(req, res) {
 		'`ioc_typeIndicator`, ' +
 		'`ioc_count` ' +
 		'FROM `ssh` '+
+		'WHERE time BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+
 		'`lan_ip`';
 	var table1Params = [

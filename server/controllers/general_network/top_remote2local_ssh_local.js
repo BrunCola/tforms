@@ -48,8 +48,8 @@ exports.render = function(req, res) {
 			'`ioc_typeIndicator`, ' +
 			'`ioc_count` ' +
 			'FROM `ssh` '+
-			'WHERE '+
-			'`remote_ip` = \''+req.query.remote_ip+'\' '+
+			'WHERE time BETWEEN '+start+' AND '+end+' '+
+			'AND `remote_ip` = \''+req.query.remote_ip+'\' '+
 			'GROUP BY '+
 			'`lan_ip`';
 		var table1Params = [

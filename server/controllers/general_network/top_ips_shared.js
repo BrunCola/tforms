@@ -14,11 +14,11 @@ exports.render = function(req, res) {
 		end = req.query.end;
 	}
 	//var results = [];
-	if (req.query.lan_ip && req.query.remote_ip) {
+	if (req.query.lan_ip && req.query.lan_zone && req.query.remote_ip) {
 		var tables = [];
 		var info = [];
-		var table1SQL = 'SELECT '+
-			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+		var table1SQL = 'SELECT ' +
+			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time, ' +
 			'`machine`, ' +
 			'`lan_zone`, ' +
 			'`lan_ip`, ' +
@@ -33,10 +33,6 @@ exports.render = function(req, res) {
 			'`remote_lat`, ' +
 			'`remote_asn`, ' +
 			'`remote_asn_name`, ' +
-			'`status_code`, ' +
-			'`direction`, ' +
-			'`lan_client`, ' +
-			'`remote_server`, ' +
 			'`ioc`, ' +
 			'`ioc_attrID`, ' +
 			'`ioc_childID`, ' +
@@ -45,10 +41,11 @@ exports.render = function(req, res) {
 			'`ioc_typeInfection`, ' +
 			'`ioc_typeIndicator`, ' +
 			'`ioc_count` ' +
-			'FROM `ssh` '+
-			'WHERE time BETWEEN '+start+' AND '+end+' '+
-			'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
-			'AND `remote_ip` = \''+req.query.remote_ip+'\'';
+			'FROM `conn` ' +
+			'WHERE time BETWEEN '+start+' AND '+end+' ' +
+			'AND `lan_ip` = \''+req.query.lan_ip+'\' ' +
+			'AND `remote_ip` = \''+req.query.remote_ip+'\' ' +
+			'AND `lan_zone` = \''+req.query.lan_zone+'\'';
 		var table1Params = [
 			{
 				title: 'Time',
@@ -68,10 +65,6 @@ exports.render = function(req, res) {
 			{ title: 'Remote Latitude', select: 'remote_lat' },
 			{ title: 'Remote ASN', select: 'remote_asn' },
 			{ title: 'Remote ASN Name', select: 'remote_asn_name' },
-			{ title: 'Status Code', select: 'status_code' },
-			{ title: 'Direction', select: 'direction' },
-			{ title: 'LAN client', select: 'lan_client' },
-			{ title: 'Remote Server', select: 'remote_server' },
 			{ title: 'IOC', select: 'ioc' },
 			{ title: 'IOC Attribute ID', select: 'ioc_attrID' },
 			{ title: 'IOC Child ID', select: 'ioc_childID' },
@@ -82,9 +75,9 @@ exports.render = function(req, res) {
 			{ title: 'IOC Count', select: 'ioc_count' }
 		];
 		var table1Settings = {
-			sort: [[1, 'desc']],
+			sort: [[0, 'desc']],
 			div: 'table',
-			title: 'Common SSH Connections between Remote and Local Host'
+			title: 'Common IP Connections between Remote and Local Host'
 		}
 		async.parallel([
 			// Table function(s)

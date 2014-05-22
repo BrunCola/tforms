@@ -69,6 +69,8 @@ var live_connections = require('../controllers/live_connections/live_connections
 	var top_remote_ips = require('../controllers/general_network/top_remote_ips');
 		// TOP REMOTE2LOCAL
 		var top_remote2local = require('../controllers/general_network/top_remote2local');
+			// TOP IPS SHARED
+			var top_ips_shared = require('../controllers/general_network/top_ips_shared');
 	// TOP ENDPOINT EVENTS
 	var top_endpoint_events = require('../controllers/general_network/top_endpoint_events');
 		// TOP ENDPOINT EVENTS USER
@@ -85,6 +87,8 @@ var live_connections = require('../controllers/live_connections/live_connections
 	var top_remote2local_ssh = require('../controllers/general_network/top_remote2local_ssh');
 		// TOP SSH REMOTE
 		var top_remote2local_ssh_local = require('../controllers/general_network/top_remote2local_ssh_local');
+	// TOP SSH
+	var top_local_irc = require('../controllers/general_network/top_local_irc');	
 
 
 // REPORTS
@@ -182,6 +186,9 @@ module.exports = function(app) {
 			// TOP LOCAL2REMOTE
 			app.route('/general_network/top_local2remote')
 			.get(authorization.requiresLogin, top_local2remote.render);
+				// TOP IPS SHARED
+				app.route('/general_network/top_ips_shared')
+				.get(authorization.requiresLogin, top_ips_shared.render);
 		// TOP REMOTE IPS
 		app.route('/general_network/top_remote_ips')
 		.get(authorization.requiresLogin, top_remote_ips.render);
@@ -212,7 +219,9 @@ module.exports = function(app) {
 			// TOP REMOTE2LOCAL SSH LOCAL
 			app.route('/general_network/top_remote2local_ssh_local')
 			.get(authorization.requiresLogin, top_remote2local_ssh_local.render);
-
+		// TOP LOCAL IRC
+		app.route('/general_network/top_local_irc')
+		.get(authorization.requiresLogin, top_local_irc.render);
 
 	// REPORTS
 		// IOC EVENTS
