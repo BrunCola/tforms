@@ -3,7 +3,30 @@
 angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$rootScope', '$http', '$modal', function ($timeout, $location, $rootScope, $http, $modal) {
 	return {
 		link: function ($scope, element, attrs) {
-			// D3 FISHEYE PLUGIN
+			$(function() {
+				// var select = $( "#grouping" );
+				$( "#grouping" ).slider({
+					min: 0,
+					step: 5,
+					max: $scope.number,
+					range: "min",
+					value: $scope.minslider,
+					slide: function( event, ui ) {
+						if (ui.value < 1){
+							ui.value = 1;
+						}
+						$( "#count" ).text(ui.value);
+					},
+					change: function(event,ui){
+						$('#fishchart').empty();
+						if (ui.value < 1){
+							ui.value = 1;
+						}
+						$scope.$broadcast('grouping', ui.value);
+					}
+				});
+				$( "#count" ).text('1');
+			});
 			function titles(title) {
 				switch(title){
 					case 'http':
@@ -60,6 +83,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 						return "#D8464A";
 				}
 			}
+			// fisheye function
 			(function() {
 				d3.fisheye = {
 					scale: function(scaleType) {
@@ -304,7 +328,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				var width = document.getElementById('fishchart').offsetWidth-60;
 				var height = (width / 3) - margin.top - margin.bottom;
 
-				$('#fishchart').parent().height(height+110);
+				$('#fishchart').parent().height(height+210);
 
 				$scope.xScale = d3.fisheye.scale(d3.time.scale).domain([new Date(moment.unix(data.xAxis[0])), new Date(moment.unix(data.xAxis[1]+3600))]).range([0, width]);
 				$scope.yScale = d3.fisheye.scale(d3.scale.linear).domain([0-(data.yAxis*0.07), data.yAxis+1+(data.yAxis*0.07)]).range([height, 0]);
@@ -456,6 +480,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					.attr("dy", ".75em")
 					.attr("transform", "rotate(-90)")
 					.text("Number of connections.");
+
 			})
 
 			$scope.$on('fishChart', function (event, dataset) {
@@ -498,11 +523,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					return d.data.length;
 				}
 				function scale(d) {
-					if (d.ioc_hits === 0){
-						return 1;
-					} else {
-						return $scope.scale(d.ioc_hits);
-					}
+					return 0.8;
 				}
 				function rPosition(dot) {
 					dot.each(function(d){
@@ -515,72 +536,33 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				}
 
 				// hover-over spread function
-				var hoverOver = [], hoverCount = 1;
+				var hoverCount = 1;
 				function pointTranslate(count, total) {
-					// set the left or right translation
-					// var x = 18;
-					// if the hovered over group is greater than one item
-					// if (total > 1) {
-						// figure out what fraction each point falls into
-						// var fraction = 180 / (total*2);
-						// fraction *= hoverCount;
-						// console.log(fraction)
-						// // margin left or right
-						// var adjacent = x;
-						// if (fraction > 90) {
-						// 	// if greater than 90 degrees, translate left (via negative value)
-						// 	fraction = 90 - (fraction-90);
-						// 	adjacent *= -1;
-						// // if 90 degrees, make margin 0
-						// } else if (fraction === 90) {
-						// 	adjacent = 0;
-						// }
-						// // our Tan() method to find the translation value up
-						// var opposite = Math.tan(fraction)*x;
-						// console.log(opposite)
-						// if (opposite < 0) {
-						// 	// make positive if negative
-						// 	opposite *= -1;
-						// }
-						// // increase the fraction counter
-						// hoverCount += 2;
-						// // return as object
-						// return {
-						// 	x: adjacent,
-						// 	y: opposite
-						// }
-
-
-						var h = 10;
+					if (total > 1) {
+						var h = 10, x, y;
 						var fraction = 180 / (total*2);
 						fraction *= hoverCount;
-						if (fraction > 90){
-							h = Math.sqrt(h^2 + h^2)
-						}
-						var y = Math.sin(fraction)*h;
-						var x = Math.cos(fraction)*h;
 						if (fraction === 90) {
+							y = h;
 							x = 0;
+						} else if (fraction < 90) {
+							y = Math.sin(fraction)*h;
+							x = Math.cos(fraction)*h;
+						} else {
+							fraction = 180 - fraction;
+							y = Math.sin(fraction)*h;
+							x = Math.cos(fraction)*h;
+							x *= -1;
 						}
-
-						// if (fraction > 90) {
-						// 	// if greater than 90 degrees, translate left (via negative value)
-						// 	// fraction = 90 - (fraction-90);
-						// 	x *= -1;
-						// } else if (fraction === 90) {
-						// 	x = 0;
-						// }
-						// if (y < 0) {
-						// 	// make positive if negative
-						// 	y *= -1;
-						// }
+						if (y < 0){
+							y *= -1;
+						}
 						hoverCount += 2;
-						// console.log(fraction+','+x+','+y)
-						// return {
-						// 	x: x,
-						// 	y: y
-						// }
-					// }
+						return {
+							x: x,
+							y: y
+						}
+					}
 				}
 
 				$scope.dot = $scope.svg.append("g")
@@ -618,11 +600,13 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 								// continue with .each statement
 								elm.each(function(d){
 									var elm = d3.select(this);
-										var trans = pointTranslate(hoverCount, elmCount.length);
-										console.log(trans)
-										elm
-											.transition().duration(50)
-											.attr('transform', function(d) { return "translate(" + $scope.xScale(x(d)) +","+ $scope.yScale(y(d)) + ")scale("+scale(d)+")";})
+										if (elmCount.length > 1) {
+											var trans = pointTranslate(hoverCount, elmCount.length);
+											console.log(trans)
+											elm
+												.transition().duration(50)
+												.attr('transform', function(d) { return "translate(" + $scope.xScale(x(d)) +","+ $scope.yScale(y(d)) + ")scale("+scale(d)+")";})
+										}
 									})
 							})
 							.on('mouseout', function(d){

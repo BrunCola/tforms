@@ -75,7 +75,16 @@ th {
   stroke: #666666;
   shape-rendering: crispEdges;
 }
-
+/*#slider{
+    float: left;
+    height: 14px;
+    width: 200px;
+    top: 35px;
+    background-color: rgba(102, 102, 102, 0.90);
+    padding : 10px;
+    z-index: 2;
+}
+*/
 
 
 /*tree chart*/

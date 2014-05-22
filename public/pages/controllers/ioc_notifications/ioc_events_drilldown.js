@@ -8,12 +8,21 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 	} else {
 		query = '/ioc_notifications/ioc_events_drilldown?&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc;
 	}
-	// $scope.$broadcast('buildFishChart');
-	var all = [];
-
+	$scope.$on('grouping', function (event, grouping){
+		var get = query + '&group='+grouping;
+		$http({method: 'GET', url: get}).
+			success(function(data) {
+				fishchart(data);
+			});
+	})
+	// max time grouping by minute
+	$scope.minslider = 1;
+	$scope.number = 60;
+	$scope.getNumber = function(num) {
+		return new Array(num);
+	};
 	$http({method: 'GET', url: query}).
 	success(function(data) {
-
 		$scope.open = function (d) {
 			$scope.mData = d;
 			// $scope.$broadcast('moodal', d);
@@ -36,9 +45,9 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 			$scope.data = data;
 		};
 
-		console.log(data)
 		$scope.lan_zone = data.info.main[0].lan_zone;
 		$scope.lan_ip = $location.$$search.lan_ip;
+
 		$scope.lan_port = data.info.main[0].lan_port;
 		$scope.machine_name = data.info.main[0].machine;
 		$scope.packets_recieved = data.info.main[0].out_packets;
@@ -60,7 +69,24 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 
 		$scope.iocc = $location.$$search.ioc;
 		$scope.ioc_type = data.info.main[0].ioc_typeIndicator;
-		// if (data.length > 0) {
+
+		// draw chart
+		fishchart(data);
+
+		// get user image
+		if ($scope.lan_ip !== '-') {
+			$http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?lan_zone='+$scope.lan_zone+'&lan_ip='+$scope.lan_ip+'&type=assets'}).
+			success(function(data) {
+				if (data) {
+					console.log(data);
+					$scope.userImage = 'public/pages/assets/img/staff/'+data[0].file;
+				}
+			});
+		}
+	});
+
+	function fishchart(data) {
+		var all = [];
 		$scope.$broadcast('buildFishChart', {
 			maxIOC: data.maxIOC,
 			yAxis: data.maxConn,
@@ -83,6 +109,5 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 				$scope.desc = description;
 			}
 		}
-		// }
-	});
+	}
 }]);
