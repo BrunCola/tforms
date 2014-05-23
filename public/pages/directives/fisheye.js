@@ -15,7 +15,11 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 						if (ui.value < 1){
 							ui.value = 1;
 						}
-						$( "#count" ).html('Group by: <strong>'+ui.value+'</strong> minutes. (Slide bar to change value.)');
+						if (ui.value === 1) {
+							$( "#count" ).html('Group by: <strong>'+ui.value+'</strong> minute. (Slide bar to change value.)');
+						} else {
+							$( "#count" ).html('Group by: <strong>'+ui.value+'</strong> minutes. (Slide bar to change value.)');
+						}
 					},
 					change: function(event,ui){
 
@@ -32,7 +36,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 						$scope.$broadcast('grouping', ui.value);
 					}
 				});
-				$( "#count" ).html('Group by: <strong>1</strong> minutes. (Slide bar to change value.)');
+				$( "#count" ).html('Group by: <strong>1</strong> minute. (Slide bar to change value.)');
 			});
 			function titles(title) {
 				switch(title){
