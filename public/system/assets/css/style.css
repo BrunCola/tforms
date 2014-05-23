@@ -8,6 +8,15 @@ font-family: 'Open Sans';
 src: url('OpenSans-Regular.ttf');
 }
 
+@font-face
+{
+    font-family: "ITCAvantGardeStd-Bk";
+    src: url('fonts/itcavantgardestd-bk-webfont.eot');
+    src: url('fonts/itcavantgardestd-bk-webfont.woff') format('woff'),
+       url('fonts/itcavantgardestd-bk-webfont.ttf') format('truetype'),
+       url('fonts/itcavantgardestd-bk-webfont.svg#webfontg8dbVmxj') format('svg');
+}
+
 /***
 Reset and overrides
 ***/
