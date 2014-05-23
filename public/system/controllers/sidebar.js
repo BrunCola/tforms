@@ -75,16 +75,16 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'orphans': ['ioc_drill', 'ioc_events_drilldown']
 		},
 		{
-			'title': 'IOC Top Remote IPs',
-			'url': 'ioc_top_remote_ips',
-			'icon': 'fa-warning',
-			'orphans': ['ioc_top_remote2local']
-		},
-		{
 			'title': 'IOC Top Local IPs',
 			'url': 'ioc_top_local_ips',
 			'icon': 'fa-warning',
 			'orphans': ['ioc_top_local_ips_drill']
+		},
+		{
+			'title': 'IOC Top Remote IPs',
+			'url': 'ioc_top_remote_ips',
+			'icon': 'fa-warning',
+			'orphans': ['ioc_top_remote2local']
 		}]
 	},
 	{
@@ -93,16 +93,22 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		'icon': 'fa-folder',
 		'children':
 		[{
+			'title': 'By MIME Type',
+			'url': 'by_mime_type',
+			'icon': 'fa-folder-open',
+			'orphans': ['file_mime_local', 'file_local']
+		},
+		{
 			'title': 'By Local IP',
 			'url': 'by_local_ip',
 			'icon': 'fa-folder-open',
 			'orphans': ['by_file_name','file_local']
 		},
 		{
-			'title': 'By MIME Type',
-			'url': 'by_mime_type',
+			'title': 'By Remote IP',
+			'url': 'by_remote_ip',
 			'icon': 'fa-folder-open',
-			'orphans': ['file_mime_local', 'file_local']
+			'orphans': ['by_file_name_remote','file_remote']
 		}]
 	},
 	{
@@ -174,19 +180,43 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'Top Local IP',
 			'url': 'top_local_ips',
 			'icon': 'fa-cloud-download',
-			'orphans': ['top_local2remote']
+			'orphans': ['top_local2remote', 'top_ips_shared']
 		},
 		{
 			'title': 'Top Remote IP',
 			'url': 'top_remote_ips',
 			'icon': 'fa-cloud-upload',
-			'orphans': ['top_remote2local']
+			'orphans': ['top_remote2local', 'top_ips_shared']
 		},
 		{
 			'title': 'Top Endpoint Events',
 			'url': 'top_endpoint_events',
 			'icon': 'fa-desktop',
 			'orphans': ['top_endpoint_events_user','top_endpoint_events_user_drill']
+		},
+		{
+			'title': 'Top Local SSH',
+			'url': 'top_ssh',
+			'icon': 'fa-desktop',
+			'orphans': ['top_ssh_remote', 'top_ssh_remote_shared']
+		},
+		{
+			'title': 'Top Remote SSH',
+			'url': 'top_remote2local_ssh',
+			'icon': 'fa-desktop',
+			'orphans': ['top_remote2local_ssh_local', 'top_ssh_remote_shared']
+		},
+		{
+			'title': 'Top Local IRC',
+			'url': 'top_local_irc',
+			'icon': 'fa-desktop',
+			'orphans': []
+		},
+		{
+			'title': 'Top Local SMTP',
+			'url': 'top_local_smtp',
+			'icon': 'fa-desktop',
+			'orphans': []
 		}]
 	}];
 }]);

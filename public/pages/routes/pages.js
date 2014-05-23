@@ -148,6 +148,44 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
+
+				// BY REMOTE IP
+				.state('by_remote_ip', {
+					url: '/by_remote_ip?start&end',
+					templateUrl: 'public/pages/views/extracted_files/by_remote_ip.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Extracted Files by Remote IP',
+						daterange: true
+					}
+				})
+					// BY FILE NAME
+					.state('by_file_name_remote', {
+						url: '/by_file_name_remote?start&end&remote_ip',
+						templateUrl: 'public/pages/views/extracted_files/by_file_name_remote.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'File Name',
+							daterange: true
+						}
+					})
+						// FILE REMOTE
+						.state('file_remote', {
+							url: '/file_remote?start&end&remote_ip&mime',
+							templateUrl: 'public/pages/views/extracted_files/file_remote.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'File Remote',
+								daterange: true
+							}
+						})
+
 				// BY MIME TYPE
 				.state('by_mime_type', {
 					url: '/by_mime_type?start&end',
@@ -346,6 +384,18 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+						// TOP IPS SHARED
+						.state('top_ips_shared', {
+							url: '/top_ips_shared?start&end&lan_ip&lan_zone&remote_ip',
+							templateUrl: 'public/pages/views/general_network/top_ips_shared.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'Conn Local/Remote Shared',
+								daterange: true
+							}
+						})
 
 				// TOP REMOTE IPS
 				.state('top_remote_ips', {
@@ -407,7 +457,91 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
+				// TOP SSH
+				.state('top_ssh', {
+					url: '/top_ssh?start&end',
+					templateUrl: 'public/pages/views/general_network/top_ssh.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Top Local SSH',
+						daterange: true
+					}
+				})
+					// TOP SSH REMOTE
+					.state('top_ssh_remote', {
+						url: '/top_ssh_remote?start&end&lan_ip',
+						templateUrl: 'public/pages/views/general_network/top_ssh_remote.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'SSH Local to Remote',
+							daterange: true
+						}
+					})
+						// TOP SSH REMOTE SHARED
+						.state('top_ssh_remote_shared', {
+							url: '/top_ssh_remote_shared?start&end&lan_ip&remote_ip',
+							templateUrl: 'public/pages/views/general_network/top_ssh_remote_shared.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'SSH Local/Remote Shared',
+								daterange: true
+							}
+						})
+				// TOP REMOTE2LOCAL SSH
+				.state('top_remote2local_ssh', {
+					url: '/top_remote2local_ssh?start&end',
+					templateUrl: 'public/pages/views/general_network/top_remote2local_ssh.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Top Remote SSH',
+						daterange: true
+					}
+				})
+					// TOP REMOTE2LOCAL SSH LOCAL
+					.state('top_remote2local_ssh_local', {
+						url: '/top_remote2local_ssh_local?start&end&remote_ip',
+						templateUrl: 'public/pages/views/general_network/top_remote2local_ssh_local.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'SSH Remote to Local',
+							daterange: true
+						}
+					})
 
+				// TOP LOCAL IRC
+				.state('top_local_irc', {
+					url: '/top_local_irc?start&end',
+					templateUrl: 'public/pages/views/general_network/top_local_irc.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Top Local IRC',
+						daterange: true
+					}
+				})
+				// TOP LOCAL SMTP
+				.state('top_local_smtp', {
+					url: '/top_local_smtp?start&end',
+					templateUrl: 'public/pages/views/general_network/top_local_smtp.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Top Local IRC',
+						daterange: true
+					}
+				})
 			// REPORTS
 				// IOC EVENTS
 				.state('ioc_events_report', {

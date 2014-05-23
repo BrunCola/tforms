@@ -27,6 +27,12 @@ var live_connections = require('../controllers/live_connections/live_connections
 		var by_file_name = require('../controllers/extracted_files/by_file_name');
 			// FILE LOCAL
 			var file_local = require('../controllers/extracted_files/file_local');
+	// BY REMOTE IP
+	var by_remote_ip = require('../controllers/extracted_files/by_remote_ip');
+		// BY FILE NAME REMOTE
+		var by_file_name_remote = require('../controllers/extracted_files/by_file_name_remote');
+			// FILE REMOTE
+			var file_remote = require('../controllers/extracted_files/file_remote');
 	// BY MIME TYPE
 	var by_mime_type = require('../controllers/extracted_files/by_mime_type');
 		// FILE MIME LOCAL
@@ -69,12 +75,29 @@ var live_connections = require('../controllers/live_connections/live_connections
 	var top_remote_ips = require('../controllers/general_network/top_remote_ips');
 		// TOP REMOTE2LOCAL
 		var top_remote2local = require('../controllers/general_network/top_remote2local');
+			// TOP IPS SHARED
+			var top_ips_shared = require('../controllers/general_network/top_ips_shared');
 	// TOP ENDPOINT EVENTS
 	var top_endpoint_events = require('../controllers/general_network/top_endpoint_events');
 		// TOP ENDPOINT EVENTS USER
 		var top_endpoint_events_user = require('../controllers/general_network/top_endpoint_events_user');
 			// TOP ENDPOINT EVENTS USER DRILL
 			var top_endpoint_events_user_drill = require('../controllers/general_network/top_endpoint_events_user_drill');
+	// TOP SSH
+	var top_ssh = require('../controllers/general_network/top_ssh');
+		// TOP SSH REMOTE
+		var top_ssh_remote = require('../controllers/general_network/top_ssh_remote');
+			// TOP SSH REMOTE SHARED
+			var top_ssh_remote_shared = require('../controllers/general_network/top_ssh_remote_shared');
+	// TOP REMOTE2LOCAL SSH
+	var top_remote2local_ssh = require('../controllers/general_network/top_remote2local_ssh');
+		// TOP SSH REMOTE
+		var top_remote2local_ssh_local = require('../controllers/general_network/top_remote2local_ssh_local');
+	// TOP LOCAL IRC
+	var top_local_irc = require('../controllers/general_network/top_local_irc');	
+	// TOP LOCAL SMTP
+	var top_local_smtp = require('../controllers/general_network/top_local_smtp');	
+
 
 // REPORTS
 	// IOC EVENTS REPORT
@@ -116,7 +139,15 @@ module.exports = function(app) {
 				// FILE LOCAL
 				app.route('/extracted_files/file_local')
 				.get(authorization.requiresLogin, file_local.render);
-
+		// BY REMOTE IP
+		app.route('/extracted_files/by_remote_ip')
+		.get(authorization.requiresLogin, by_remote_ip.render);
+			// BY FILE NAME REMOTE
+			app.route('/extracted_files/by_file_name_remote')
+			.get(authorization.requiresLogin, by_file_name_remote.render);
+				// FILE REMOTE
+				app.route('/extracted_files/file_remote')
+				.get(authorization.requiresLogin, file_remote.render);
 		// BY MIME TYPE
 		app.route('/extracted_files/by_mime_type')
 		.get(authorization.requiresLogin, by_mime_type.render);
@@ -171,6 +202,9 @@ module.exports = function(app) {
 			// TOP LOCAL2REMOTE
 			app.route('/general_network/top_local2remote')
 			.get(authorization.requiresLogin, top_local2remote.render);
+				// TOP IPS SHARED
+				app.route('/general_network/top_ips_shared')
+				.get(authorization.requiresLogin, top_ips_shared.render);
 		// TOP REMOTE IPS
 		app.route('/general_network/top_remote_ips')
 		.get(authorization.requiresLogin, top_remote_ips.render);
@@ -186,6 +220,27 @@ module.exports = function(app) {
 				// TOP ENDPOINT EVENTS USER DRILL
 				app.route('/general_network/top_endpoint_events_user_drill')
 				.get(authorization.requiresLogin, top_endpoint_events_user_drill.render);
+		// TOP SSH
+		app.route('/general_network/top_ssh')
+		.get(authorization.requiresLogin, top_ssh.render);
+			// TOP SSH REMOTE
+			app.route('/general_network/top_ssh_remote')
+			.get(authorization.requiresLogin, top_ssh_remote.render);
+				// TOP SSH REMOTE SHARED
+				app.route('/general_network/top_ssh_remote_shared')
+				.get(authorization.requiresLogin, top_ssh_remote_shared.render);
+		// TOP REMOTE2LOCAL SSH
+		app.route('/general_network/top_remote2local_ssh')
+		.get(authorization.requiresLogin, top_remote2local_ssh.render);
+			// TOP REMOTE2LOCAL SSH LOCAL
+			app.route('/general_network/top_remote2local_ssh_local')
+			.get(authorization.requiresLogin, top_remote2local_ssh_local.render);
+		// TOP LOCAL IRC
+		app.route('/general_network/top_local_irc')
+		.get(authorization.requiresLogin, top_local_irc.render);
+		// TOP LOCAL STMP
+		app.route('/general_network/top_local_smtp')
+		.get(authorization.requiresLogin, top_local_smtp.render);
 
 	// REPORTS
 		// IOC EVENTS
