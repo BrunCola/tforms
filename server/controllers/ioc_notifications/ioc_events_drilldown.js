@@ -589,7 +589,9 @@ exports.render = function(req, res) {
 						maxConn: largestGroup,
 						maxIOC: largestIOC,
 						start: start,
-						end: end
+						end: end,
+						tree: treereturn,
+						force: forcereturn
 					});
 				});
 			} else {
