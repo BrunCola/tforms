@@ -328,7 +328,7 @@ angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '
 	};
 }]);
 
-angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$rootScope', 'iocIcon', 'appIcon', function ($timeout, $location, $rootScope, iocIcon, appIcon) {
+angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$rootScope', 'iocIcon', 'appIcon', 'mimeIcon', function ($timeout, $location, $rootScope, iocIcon, appIcon, mimeIcon) {
 	return {
 		link: function ($scope, element, attrs) {
 			$scope.$on('tableLoad', function (event, tableData, params, tableType) {
@@ -410,12 +410,18 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 										}
 									},
 									'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-										if (aData.remote_cc) {
-											$('td:eq('+$scope.r.indexOf("remote_cc")+')', nRow).html('<div class="f32"><span class="flag '+aData.remote_cc.toLowerCase()+'"></span></div>');
-										}
-										if (aData.ioc_severity) {
+										if (aData.ioc_severity && $scope.r.indexOf('ioc_severity') !== -1) {
 											var rIndex = $scope.r.indexOf("ioc_severity");
 											$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa '+iocIcon(aData.ioc_severity)+' fa-stack-1x fa-inverse"></i></span>');
+										}
+										if (aData.remote_cc && $scope.r.indexOf('remote_cc') !== -1) {
+											$('td:eq('+$scope.r.indexOf("remote_cc")+')', nRow).html('<div class="f32"><span class="flag '+aData.remote_cc.toLowerCase()+'"></span></div>');
+										}
+										if (aData.l7_proto && $scope.r.indexOf('l7_proto') !== -1) {
+											$('td:eq('+$scope.r.indexOf("l7_proto")+')', nRow).html(appIcon(aData.l7_proto));
+										}
+										if (aData.mime && $scope.r.indexOf('mime') !== -1) {
+											$('td:eq('+$scope.r.indexOf("mime")+')', nRow).html(mimeIcon(aData.mime));
 										}
 										if (!notReport) {
 											if (aData.icon_in_bytes !== undefined){
@@ -479,15 +485,18 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 									}
 								},
 								'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-									if (aData.ioc_severity) {
+									if (aData.ioc_severity && $scope.r.indexOf('ioc_severity') !== -1) {
 										var rIndex = $scope.r.indexOf("ioc_severity");
 										$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa '+iocIcon(aData.ioc_severity)+' fa-stack-1x fa-inverse"></i></span>');
 									}
-									if (aData.remote_cc) {
+									if (aData.remote_cc && $scope.r.indexOf('remote_cc') !== -1) {
 										$('td:eq('+$scope.r.indexOf("remote_cc")+')', nRow).html('<div class="f32"><span class="flag '+aData.remote_cc.toLowerCase()+'"></span></div>');
 									}
-									if (aData.l7_proto) {
+									if (aData.l7_proto && $scope.r.indexOf('l7_proto') !== -1) {
 										$('td:eq('+$scope.r.indexOf("l7_proto")+')', nRow).html(appIcon(aData.l7_proto));
+									}
+									if (aData.mime && $scope.r.indexOf('mime') !== -1) {
+										$('td:eq('+$scope.r.indexOf("mime")+')', nRow).html(mimeIcon(aData.mime));
 									}
 									if (notReport) {
 										// url builder

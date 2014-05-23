@@ -14,7 +14,15 @@ src: url('OpenSans-Regular.ttf');
     src: url('fonts/itcavantgardestd-bk-webfont.eot');
     src: url('fonts/itcavantgardestd-bk-webfont.woff') format('woff'),
        url('fonts/itcavantgardestd-bk-webfont.ttf') format('truetype'),
-       url('fonts/itcavantgardestd-bk-webfont.svg#webfontg8dbVmxj') format('svg');
+       url('fonts/itcavantgardestd-bk-webfont.svg') format('svg');
+}
+@font-face
+{
+    font-family: "ITCAvantGardeStd-Bold";
+    src: url('fonts/itcavantgardestd-bold-webfont.eot');
+    src: url('fonts/itcavantgardestd-bold-webfont.woff') format('woff'),
+       url('fonts/itcavantgardestd-bold-webfont.ttf') format('truetype'),
+       url('fonts/itcavantgardestd-bold-webfont.svg') format('svg');
 }
 
 /***
