@@ -608,7 +608,12 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 						var elm = d3.select(this).append('g').attr('class','point').call(rPosition);
 						$scope.point(elm, d.class);
 						// although the function above assignes a class, re-assign each item with time and count
-						elm.attr('class', d.class+' time-'+d.roundedtime.toString()+'count-'+d.data.length)
+						// also if class contains 'ioc', replace the class so it can be toggled in legend
+						if (d.class.search('ioc') !== -1) {
+							elm.attr('class', 'ioc time-'+d.roundedtime.toString()+'count-'+d.data.length)
+						} else {
+							elm.attr('class', d.class+' time-'+d.roundedtime.toString()+'count-'+d.data.length)
+						}
 						elm
 							.style("fill", function(d) { return colors(d.class); })
 							.on('mouseover', $scope.tip.show)
