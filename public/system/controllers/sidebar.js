@@ -203,25 +203,25 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		{
 			'title': 'Top Local SSH',
 			'url': 'top_ssh',
-			'icon': 'fa-desktop',
+			'icon': 'fa-chevron-right',
 			'orphans': ['top_ssh_remote', 'top_ssh_remote_shared']
 		},
 		{
 			'title': 'Top Remote SSH',
 			'url': 'top_remote2local_ssh',
-			'icon': 'fa-desktop',
+			'icon': 'fa-chevron-right',
 			'orphans': ['top_remote2local_ssh_local', 'top_ssh_remote_shared']
 		},
 		{
 			'title': 'Top Local IRC',
 			'url': 'top_local_irc',
-			'icon': 'fa-desktop',
+			'icon': 'fa-comment',
 			'orphans': []
 		},
 		{
 			'title': 'Top Local SMTP',
 			'url': 'top_local_smtp',
-			'icon': 'fa-desktop',
+			'icon': 'fa-envelope',
 			'orphans': []
 		}]
 	}];
