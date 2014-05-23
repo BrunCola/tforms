@@ -461,7 +461,7 @@ exports.render = function(req, res) {
 						'`alert_info` '+
 						// !SELECTS
 						'FROM `ossec` '+
-						'WHERE `timestamp` BETWEEN '+start+' AND '+end+' '+
+						'WHERE `time` BETWEEN '+start+' AND '+end+' '+
 						'AND `src_ip`=\''+req.query.lan_ip+'\' ',
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
