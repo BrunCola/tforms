@@ -3,6 +3,8 @@
 var fisheye = require('../constructors/fisheye'),
 	config = require('../../config/config'),
 	query = require('../constructors/query'),
+	force = require('../constructors/force'),
+	treechart = require('../constructors/treechart'),
 	async = require('async');
 
 exports.render = function(req, res) {
@@ -47,8 +49,7 @@ exports.render = function(req, res) {
 			}
 		break;
 		default:
-		console.log('test')
-			if (req.query.lan_ip && req.query.remote_ip && req.query.ioc) {
+			if (req.query.lan_ip && req.query.remote_ip && req.query.ioc && req.query.ioc_attrID) {
 				var crossfilter;
 				var conn_ioc = {
 					query: 'SELECT '+
@@ -507,6 +508,32 @@ exports.render = function(req, res) {
 					'WHERE '+
 					'`ioc_parent` = \''+req.query.ioc+'\' '+
 					'LIMIT 1';
+				var treereturn = [];
+				var treeSQL = 'SELECT '+
+					// SELECTS
+					'ioc_attrID, '+
+					'ioc_childID, '+
+					'ioc_parentID, '+
+					'ioc_typeIndicator, '+
+					'ioc_severity, '+
+					'ioc '+
+					// !SELECTS
+					'FROM conn_ioc '+
+					'WHERE time BETWEEN '+start+' AND '+end+' '+
+					'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
+					'GROUP BY  ioc_parentID, ioc_childID, ioc_attrID';
+				var forcereturn = [];
+				var forceSQL = 'SELECT '+
+					// SELECTS
+					'`remote_ip`, '+
+					'count(*) as count '+
+					// !SELECTS
+					'FROM conn_ioc '+
+					'WHERE time BETWEEN '+start+' AND '+end+' '+
+					'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
+					'GROUP BY remote_ip';
+				var lanIP = req.query.lan_ip;
+				var attrID = req.query.ioc_attrID;
 				async.parallel([
 					// Table function(s)
 					function(callback) { // conn_ioc
@@ -573,6 +600,18 @@ exports.render = function(req, res) {
 					function(callback) { // Info2SQL
 						new query(Info2SQL, 'rp_ioc_intel', function(err,data){
 							info.desc = data;
+							callback();
+						});
+					},
+					function(callback) {
+						new force(forceSQL, database, lanIP, function(err,data){
+							forcereturn = data;
+							callback();
+						});
+					},
+					function(callback) {
+						new treechart(treeSQL, database, lanIP, attrID, function(err,data){
+							treereturn = data;
 							callback();
 						});
 					}

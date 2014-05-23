@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/ioc_notifications/ioc_events_drilldown?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc;
+		query = '/ioc_notifications/ioc_events_drilldown?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc+'&ioc_attrID='+$location.$$search.ioc_attrID;
 	} else {
-		query = '/ioc_notifications/ioc_events_drilldown?&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc;
+		query = '/ioc_notifications/ioc_events_drilldown?&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc+'&ioc_attrID='+$location.$$search.ioc_attrID;
 	}
 	$scope.$on('grouping', function (event, grouping){
 		var get = query + '&group='+grouping;
@@ -44,6 +44,14 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 			};
 			$scope.data = data;
 		};
+
+		if (data.tree.childCount >= 35) {
+			var divHeight = data.tree.childCount*12;
+		} else {
+			var divHeight = 420;
+		}
+		$scope.$broadcast('forceChart', data.force, {height: divHeight});
+		$scope.$broadcast('treeChart', data.tree, {height: divHeight});
 
 		$scope.lan_zone = data.info.main[0].lan_zone;
 		$scope.lan_ip = $location.$$search.lan_ip;
