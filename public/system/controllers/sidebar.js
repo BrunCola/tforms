@@ -169,6 +169,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'url': 'app_by_local_ip',
 			'icon': 'fa-bars',
 			'orphans': ['l7_toplocal_app', 'l7_toplocal_drill']
+		},
+		{
+			'title': 'By Remote IP',
+			'url': 'app_by_remote_ip',
+			'icon': 'fa-bars',
+			'orphans': ['l7_topremote_app', 'l7_topremote_drill']
 		}]
 	},
 	{
