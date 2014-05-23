@@ -19,6 +19,7 @@
 	},
 	"js": {
 		"public/build/js/dist.min.js": [
+			"public/system/assets/js/modernizr.custom.11601.js",
 			"public/system/lib/jquery/jquery.js",
 			"public/system/lib/jquery-ui/ui/jquery.ui.core.js",
 			"public/system/lib/jquery-ui/ui/jquery.ui.widget.js",
