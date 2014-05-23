@@ -1,7 +1,7 @@
 <section head></section>
 <div data-ng-controller="iocEventsDrilldownController">
-	<!-- <section id="loading-error" loading-error></section> -->
-	<!-- <section id="loading-spinner" loading-spinner></section> -->
+	<section id="loading-error" loading-error></section>
+	<section id="loading-spinner" loading-spinner></section>
 	<script type="text/ng-template" id="tableModal.html">
       <div class="modal-header">
         <h3>{{data.class.toUpperCase()}}</h3>
@@ -85,9 +85,9 @@
 			<div class="span12">
 				<div style="background-color:#FFF;" class="box" id="box">
 					<div class="box-content">
+						<div id="count"></div>
 						<div id='grouping'></div>
 						<div id="fishchart" fish-graph></div>
-						<div id="count"></div>
 					</div>
 				</div>
 			</div>

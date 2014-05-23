@@ -18,6 +18,7 @@ angular.module('mean.pages').controller('headController', ['$scope', 'Global', '
 			$rootScope.end = moment.unix($scope.global.endTime).format('MMMM D, YYYY h:mm A');
 		}
 	};
+
 	$scope.title = $state.current.data.title;
 	$scope.daterange = $state.current.data.daterange;
 	if ($location.$$absUrl.search('/report#!/') === -1) {

@@ -107,14 +107,16 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 		}
 		$scope.all = all;
 		$scope.$broadcast('fishChart', all);
-		if (data.info.desc !== null) {
-			var description = data.info.desc[0].description;
-			var len = description.length;
-			if (len > 300) {
-				$scope.desc = description.substr(0,300);
-				$scope.$broadcast('iocDesc', description);
-			} else {
-				$scope.desc = description;
+		if(data.info.desc[0]) {
+			if (data.info.desc[0].description !== undefined) {
+				var description = data.info.desc[0].description;
+				var len = description.length;
+				if (len > 300) {
+					$scope.desc = description.substr(0,300);
+					$scope.$broadcast('iocDesc', description);
+				} else {
+					$scope.desc = description;
+				}
 			}
 		}
 	}

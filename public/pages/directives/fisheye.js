@@ -15,9 +15,16 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 						if (ui.value < 1){
 							ui.value = 1;
 						}
-						$( "#count" ).text(ui.value);
+						$( "#count" ).html('Group by: <strong>'+ui.value+'</strong> minutes. (Slide bar to change value.)');
 					},
 					change: function(event,ui){
+
+						// REDUNDANT SO MAKE GLOBAL !!!!
+						$('.page-content').fadeTo(500, 0.7);
+						var target = document.getElementById('loading-spinner');
+						var spinner = new Spinner().spin(target);
+						$(target).data('spinner', spinner);
+
 						$('#fishchart').empty();
 						if (ui.value < 1){
 							ui.value = 1;
@@ -25,7 +32,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 						$scope.$broadcast('grouping', ui.value);
 					}
 				});
-				$( "#count" ).text('1');
+				$( "#count" ).html('Group by: <strong>1</strong> minutes. (Slide bar to change value.)');
 			});
 			function titles(title) {
 				switch(title){
@@ -330,7 +337,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				var width = document.getElementById('fishchart').offsetWidth-60;
 				var height = (width / 3) - margin.top - margin.bottom;
 
-				$('#fishchart').parent().height(height+210);
+				$('#fishchart').parent().height(height+150);
 
 				$scope.xScale = d3.fisheye.scale(d3.time.scale).domain([new Date(moment.unix(data.xAxis[0])), new Date(moment.unix(data.xAxis[1]+3600))]).range([0, width]);
 				$scope.yScale = d3.fisheye.scale(d3.scale.linear).domain([0-(data.yAxis*0.07), data.yAxis+1+(data.yAxis*0.07)]).range([height, 0]);
@@ -486,6 +493,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 			})
 
 			$scope.$on('fishChart', function (event, dataset) {
+				$scope.$broadcast('spinnerHide');
 				var mouseover = [null, null];
 				var transitions = [];
 				$scope.pTypes = [];
@@ -579,8 +587,6 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 							y *= -1;
 						}
 						hoverCount ++;
-						console.log(x+','+y)
-						console.log(fraction+','+total);
 						return {
 							x: x,
 							y: y
@@ -601,8 +607,8 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 						elm.attr('class', d.class+' time-'+d.roundedtime.toString()+'count-'+d.data.length)
 						elm
 							.style("fill", function(d) { return colors(d.class); })
-							// .on('mouseover', $scope.tip.show)
-							// .on('mouseout', $scope.tip.hide)
+							.on('mouseover', $scope.tip.show)
+							.on('mouseout', $scope.tip.hide)
 							.attr("data-legend", function(d) { return d.class})
 							.on("click", function (d){
 								$scope.open(d);
@@ -625,9 +631,9 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 								var elm = d3.select(this.parentNode);
 									if (elmCount.length > 1) {
 										var trans = pointTranslate(hoverCount, elmCount.length);
-										elm
-											.transition().duration(100)
-											.attr('transform', function(d) { return 'translate('+trans.x+','+(-1*trans.y)+')';})
+										// elm
+										// 	.transition().duration(100)
+										// 	.attr('transform', function(d) { return 'translate('+trans.x+','+(-1*trans.y)+')';})
 									}
 								})
 							})
@@ -664,7 +670,6 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				}
 
 				// LEGEND STUFF
-				console.log($scope.legendHolder)
 				$scope.legendHolder.selectAll('g').each(function(d){
 					var par = d3.select(this);
 					var pclass = par.attr('class');
