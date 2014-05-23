@@ -358,6 +358,42 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
+				// BY REMOTE IP
+				.state('app_by_remote_ip', {
+					url: '/app_by_remote_ip?start&end',
+					templateUrl: 'public/pages/views/applications/app_by_remote_ip.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Applications',
+						daterange: true
+					}
+				})
+					// L7 TOPREMOTE APP
+					.state('l7_topremote_app', {
+						url: '/l7_topremote_app?start&end&l7_proto&remote_ip',
+						templateUrl: 'public/pages/views/applications/l7_topremote_app.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Applications',
+							daterange: true
+						}
+					})
+						// L7 TOPREMOTE DRILL
+						.state('l7_topremote_drill', {
+							url: '/l7_topremote_drill?start&end&remote_ip&l7_proto',
+							templateUrl: 'public/pages/views/applications/l7_topremote_drill.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'Applications',
+								daterange: true
+							}
+						})
 
 		    // GENERAL NETWORK
 				// TOP LOCAL IPS

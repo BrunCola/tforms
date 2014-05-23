@@ -65,6 +65,12 @@ var live_connections = require('../controllers/live_connections/live_connections
 		var l7_toplocal_app = require('../controllers/applications/l7_toplocal_app');
 			// l7 TOPLOCAL DRILL
 			var l7_toplocal_drill = require('../controllers/applications/l7_toplocal_drill');
+	// BY REMOTE IP
+	var app_by_remote_ip = require('../controllers/applications/app_by_remote_ip');
+		// L7 TOPREMOTE APP
+		var l7_topremote_app = require('../controllers/applications/l7_topremote_app');
+			// l7 TOPREMOTE DRILL
+			var l7_topremote_drill = require('../controllers/applications/l7_topremote_drill');
 
 // GENERAL NETWORK
 	// TOP LOCAL IPS
@@ -194,6 +200,15 @@ module.exports = function(app) {
 				// L7 TOPLOCAL DRILL
 				app.route('/applications/l7_toplocal_drill')
 				.get(authorization.requiresLogin, l7_toplocal_drill.render);
+		// BY REMOTE IP
+		app.route('/applications/app_by_remote_ip')
+		.get(authorization.requiresLogin, app_by_remote_ip.render);
+			// L7 TOPREMOTE APP
+			app.route('/applications/l7_topremote_app')
+			.get(authorization.requiresLogin, l7_topremote_app.render);
+				// L7 TOPREMOTE DRILL
+				app.route('/applications/l7_topremote_drill')
+				.get(authorization.requiresLogin, l7_topremote_drill.render);
 
 	// GENERAL NETWORK
 		// TOP LOCAL IPS
