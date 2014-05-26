@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 'use strict';
 
 angular.module('mean.pages').directive('head', function() {
@@ -2574,4 +2573,3 @@ angular.module('mean.pages').directive('makeTreeChart', ['$timeout', '$rootScope
 		}
 	};
 }]);
->>>>>>> 2eb663c448b8219bf534c7064b3f7eab7767694d
