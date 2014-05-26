@@ -328,9 +328,10 @@ angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '
 	};
 }]);
 
-angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$rootScope', 'iocIcon', 'appIcon', 'mimeIcon', function ($timeout, $location, $rootScope, iocIcon, appIcon, mimeIcon) {
+angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$rootScope', 'iocIcon', 'appIcon', 'mimeIcon', 'socket', function ($timeout, $location, $rootScope, iocIcon, appIcon, mimeIcon, socket) {
 	return {
 		link: function ($scope, element, attrs) {
+		    $scope.socket = socket;
 			$scope.$on('tableLoad', function (event, tableData, params, tableType) {
 				function redrawTable() {
 					$('#table').dataTable().fnClearTable();
