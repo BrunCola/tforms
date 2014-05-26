@@ -162,19 +162,19 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'By Application',
 			'url': 'app_by_application',
 			'icon': 'fa-bars',
-			'orphans': ['application_drill', 'application_local']
+			'orphans': ['application_drill', 'application_local', 'l7_top_shared']
 		},
 		{
 			'title': 'By Local IP',
 			'url': 'app_by_local_ip',
 			'icon': 'fa-bars',
-			'orphans': ['l7_toplocal_app', 'l7_toplocal_drill']
+			'orphans': ['l7_toplocal_app', 'l7_toplocal_drill', 'l7_top_shared']
 		},
 		{
 			'title': 'By Remote IP',
 			'url': 'app_by_remote_ip',
 			'icon': 'fa-bars',
-			'orphans': ['l7_topremote_app', 'l7_topremote_drill']
+			'orphans': ['l7_topremote_app', 'l7_topremote_drill', 'l7_top_shared']
 		}]
 	},
 	{
@@ -222,7 +222,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'Top Local SMTP',
 			'url': 'top_local_smtp',
 			'icon': 'fa-envelope',
-			'orphans': []
+			'orphans': ['top_smtp_from_sender']
 		}]
 	}];
 }]);

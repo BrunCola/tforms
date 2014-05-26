@@ -18,45 +18,22 @@ exports.render = function(req, res) {
 	var info = [];
 	var table1SQL = 'SELECT '+
 		'count(*) AS count,' +
-		'time, ' +
-		//'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+		'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 		'`machine`, ' +
-		'`lan_zone`, ' +
-		'`lan_ip`, ' +
 		'`lan_port`, ' +
-		'`remote_ip`, ' +
 		'`remote_port`, '  +
 		'`remote_cc`, ' +
 		'`remote_country`, ' +
-		'`remote_region`, ' +
-		'`remote_city`, ' +
-		'`remote_long`, ' +
-		'`remote_lat`, ' +
 		'`remote_asn`, ' +
 		'`remote_asn_name`, ' +
-		'`trans_depth`, ' +
-		'`helo`, ' +
-		'`mailfrom`, ' +
-		'`receiptto`, ' +
-		'`date`, ' +
 		'`from`, ' +
 		'`to`, ' +
-		//'`relpy_to`, ' +
-		'`msg_id`, ' +
+		'`reply_to`, ' +
 		'`in_reply_to`, ' +
 		'`subject`, ' +
-		'`orig_ip`, ' +
-		'`first_rcvd`, ' +
-		'`second_rcvd`, ' +
-		'`last_reply`, ' +
-		'`path`, ' +
 		'`user_agent`, ' +
 		'`fuids`, ' +
-		'`is_webmail`, ' +
 		'`ioc`, ' +
-		'`ioc_attrID`, ' +
-		'`ioc_childID`, ' +
-		'`ioc_parentID`, ' +
 		'`ioc_severity`, ' +
 		'`ioc_typeInfection`, ' +
 		'`ioc_typeIndicator`, ' +
@@ -64,65 +41,43 @@ exports.render = function(req, res) {
 		'FROM `smtp` '+
 		'WHERE time BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+
-		'`receiptto`, `mailfrom`';
+		'`from`';
 	var table1Params = [
 		{
 			title: 'Last Seen',
 			select: 'time',
 			 link: {
-			 	type: 'top_ssh_remote', 
+			 	type: 'top_smtp_from_sender', 
 			 	// val: the pre-evaluated values from the query above
-			 	val: ['lan_ip'],
+			 	val: ['from'],
 			 	crumb: false
 			},
 		},
 		{ title: 'Count', select: 'count' },
 		{ title: 'Machine', select: 'machine' },
-		{ title: 'LAN Zone', select: 'lan_zone' },
-		{ title: 'LAN IP', select: 'lan_ip' },
 		{ title: 'LAN port', select: 'lan_port' },
-		{ title: 'Remote IP', select: 'remote_ip'},
 		{ title: 'Remote port', select: 'remote_port' },
-		{ title: 'Remote CC', select: 'remote_cc' },
+		{ title: 'Flag', select: 'remote_cc' },
 		{ title: 'Remote Country', select: 'remote_country' },
-		{ title: 'Remote Region', select: 'remote_region' },
-		{ title: 'Remote City', select: 'remote_city' },
-		{ title: 'Remote Longitude', select: 'remote_long' },
-		{ title: 'Remote Latitude', select: 'remote_lat' },
 		{ title: 'Remote ASN', select: 'remote_asn' },
 		{ title: 'Remote ASN Name', select: 'remote_asn_name' },
-		{ title: 'Trans Depth', select: 'trans_depth' },
-		{ title: 'HELO', select: 'helo' },
-		{ title: 'Mail From', select: 'mailfrom' },
-		{ title: 'Receipt To', select: 'receiptto' },
-		{ title: 'Date', select: 'date' },
 		{ title: 'From', select: 'from' },
 		{ title: 'To', select: 'to' },
-		//{ title: 'Reply To', select: 'relpy_to' },
-		{ title: 'Message ID', select: 'msg_id' },
+		{ title: 'Reply To', select: 'reply_to' },
 		{ title: 'In Reply To', select: 'in_reply_to' },
 		{ title: 'Subject', select: 'subject' },
-		{ title: 'Original IP', select: 'orig_ip' },
-		{ title: 'First Received', select: 'first_rcvd' },
-		{ title: 'Second Received', select: 'second_rcvd' },
-		{ title: 'Last Reply', select: 'last_reply' },
-		{ title: 'Path', select: 'path' },
 		{ title: 'User Agent', select: 'user_agent' },
 		{ title: 'FUIDS', select: 'fuids' },
-		{ title: 'Is Webmail', select: 'is_webmail' },
 		{ title: 'IOC', select: 'ioc' },
-		{ title: 'IOC Attribute ID', select: 'ioc_attrID' },
-		{ title: 'IOC Child ID', select: 'ioc_childID' },
-		{ title: 'IOC Parent ID', select: 'ioc_parentID' },
 		{ title: 'IOC Severity', select: 'ioc_severity' },
-		{ title: 'IOC Type Infection', select: 'ioc_typeInfection' },
-		{ title: 'IOC Type Indicator', select: 'ioc_typeIndicator' },
+		{ title: 'Infection Stage', select: 'ioc_typeInfection' },
+		{ title: 'Indicator Type', select: 'ioc_typeIndicator' },
 		{ title: 'IOC Count', select: 'ioc_count' }
 	];
 	var table1Settings = {
 		sort: [[1, 'desc']],
 		div: 'table',
-		title: 'Local SMTP'
+		title: 'Top Email Senders'
 	}
 	async.parallel([
 		// Table function(s)

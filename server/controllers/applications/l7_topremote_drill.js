@@ -45,7 +45,17 @@ exports.render = function(req, res) {
 			'GROUP BY `remote_ip`';
 
 			var table1Params = [
-				{ title: 'Last Seen', select: 'time' },
+				{
+					title: 'Last Seen',
+					select: 'time',
+					dView: true,
+					link: {
+						type: 'l7_top_shared',
+						// val: the pre-evaluated values from the query above
+						val: ['lan_ip', 'l7_proto', 'remote_ip','lan_zone'],
+						crumb: false
+					},
+				},
 				{ title: 'Applications', select: 'l7_proto' },
 				{ title: 'LAN Zone', select: 'lan_zone' },
 				{ title: 'LAN IP', select: 'lan_ip' },

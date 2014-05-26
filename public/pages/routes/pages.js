@@ -362,6 +362,18 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
+							// L7 TOP SHARED
+							.state('l7_top_shared', {
+								url: '/l7_top_shared?start&end&lan_ip&l7_proto&remote_ip&lan_zone',
+								templateUrl: 'public/pages/views/applications/l7_top_shared.html',
+								resolve: {
+									loggedin: checkLoggedin
+								},
+								data: {
+									title: 'Applications Shared',
+									daterange: true
+								}
+							})
 				// BY REMOTE IP
 				.state('app_by_remote_ip', {
 					url: '/app_by_remote_ip?start&end',
@@ -570,7 +582,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-				// TOP LOCAL SMTP
+				// TOP LOCAL SMTP 
 				.state('top_local_smtp', {
 					url: '/top_local_smtp?start&end',
 					templateUrl: 'public/pages/views/general_network/top_local_smtp.html',
@@ -578,10 +590,22 @@ angular.module('mean.pages').config(['$stateProvider',
 						loggedin: checkLoggedin
 					},
 					data: {
-						title: 'Top Local IRC',
+						title: 'Top Email Senders',
 						daterange: true
 					}
 				})
+					// TOP SMTP FROM SENDER 
+					.state('top_smtp_from_sender', {
+						url: '/top_smtp_from_sender?start&end&from',
+						templateUrl: 'public/pages/views/general_network/top_smtp_from_sender.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Emails From Sender',
+							daterange: true
+						}
+					})
 			// REPORTS
 				// IOC EVENTS
 				.state('ioc_events_report', {
