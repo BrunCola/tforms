@@ -17,7 +17,7 @@ exports.render = function(req, res) {
 	var tables = [];
 	var info = [];
 	var table1SQL = 'SELECT '+
-		'count(*) AS count,' +
+		'count(*) AS count, ' +
 		'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 		'`machine`, ' +
 		'`lan_zone`, ' +
@@ -27,7 +27,6 @@ exports.render = function(req, res) {
 		'`remote_port`, '  +
 		'`remote_cc`, ' +
 		'`remote_country`, ' +
-		'`remote_asn`, ' +
 		'`remote_asn_name`, ' +
 		'`nick`, ' +
 		'`user`, ' +
@@ -38,7 +37,7 @@ exports.render = function(req, res) {
 		'`dcc_file_size`, ' +
 		'`dcc_mime_type`, ' +
 		'`fuid` ' +
-		'FROM `ssh` '+
+		'FROM `irc` '+
 		'WHERE time BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+
 		'`lan_ip`';
@@ -62,17 +61,17 @@ exports.render = function(req, res) {
 		{ title: 'Remote port', select: 'remote_port' },
 		{ title: 'Flag', select: 'remote_cc' },
 		{ title: 'Remote Country', select: 'remote_country' },
-		{ title: 'Remote ASN', select: 'remote_asn' },
 		{ title: 'Remote ASN Name', select: 'remote_asn_name' },
-		{ title: 'NICK', select: 'nick' },
+		{ title: 'Nick', select: 'nick' },
 		{ title: 'User', select: 'user' },
 		{ title: 'Command', select: 'command' },
-		{ title: 'Value', select: 'value' },
-		{ title: 'ADDL', select: 'addl' },
+		{ title: 'Value', select: 'value'},
+		{ title: 'Addl', select: 'addl' },
 		{ title: 'DCC File Name', select: 'dcc_file_name' },
 		{ title: 'DCC File Size', select: 'dcc_file_size' },
-		{ title: 'DCC Mime Type', select: 'dcc_mime_type' },
+		{ title: 'DCC MIME Type', select: 'dcc_mime_type' },
 		{ title: 'FUID', select: 'fuid' }
+
 	];
 	var table1Settings = {
 		sort: [[1, 'desc']],
