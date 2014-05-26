@@ -51,7 +51,7 @@ exports.render = function(req, res) {
 				{ title: 'LAN Port', select: 'lan_port' },
 				{ title: 'Remote IP', select: 'remote_ip' },
 				{ title: 'Remote Port', select: 'remote_port' },
-				{ title: 'Protocal', select: 'proto' },
+				{ title: 'Protocol', select: 'proto' },
 				{ title: 'ASN', select: 'remote_asn' },
 				{ title: 'ASN Name', select: 'remote_asn_name' },
 				{ title: 'Remote Country', select: 'remote_country' },

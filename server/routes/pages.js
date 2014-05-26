@@ -65,6 +65,8 @@ var live_connections = require('../controllers/live_connections/live_connections
 		var l7_toplocal_app = require('../controllers/applications/l7_toplocal_app');
 			// l7 TOPLOCAL DRILL
 			var l7_toplocal_drill = require('../controllers/applications/l7_toplocal_drill');
+				// l7 TOP SHARED
+				var l7_top_shared = require('../controllers/applications/l7_top_shared');
 	// BY REMOTE IP
 	var app_by_remote_ip = require('../controllers/applications/app_by_remote_ip');
 		// L7 TOPREMOTE APP
@@ -200,6 +202,9 @@ module.exports = function(app) {
 				// L7 TOPLOCAL DRILL
 				app.route('/applications/l7_toplocal_drill')
 				.get(authorization.requiresLogin, l7_toplocal_drill.render);
+					// L7 TOP SHARED
+					app.route('/applications/l7_top_shared')
+					.get(authorization.requiresLogin, l7_top_shared.render);
 		// BY REMOTE IP
 		app.route('/applications/app_by_remote_ip')
 		.get(authorization.requiresLogin, app_by_remote_ip.render);
