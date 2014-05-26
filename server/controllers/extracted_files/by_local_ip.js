@@ -20,13 +20,15 @@ exports.render = function(req, res) {
 		// SELECTS
 		'date_format(max(from_unixtime(time)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 		'count(*) as count, '+
+		'`lan_zone`, '+
 		'`lan_ip`, '+
 		'(sum(size) / 1048576) as size, '+
 		'sum(ioc_count) as ioc_count '+
 		// !SELECTS
 		'FROM `file` '+
 		'WHERE time BETWEEN '+start+' AND '+end+' '+
-		'GROUP BY lan_ip';
+		'GROUP BY `lan_ip`, ' +
+		'`lan_zone`';
 
 		var table1Params = [
 			{
@@ -41,6 +43,7 @@ exports.render = function(req, res) {
 				},
 			},
 			{ title: 'Total Extracted Files', select: 'count' },
+			{ title: 'LAN Zone', select: 'lan_zone' },
 			{ title: 'LAN IP', select: 'lan_ip' },
 			{ title: 'Total Size (MB)', select: 'size' },
 			{ title: 'Total IOC Hits', select: 'ioc_count' }

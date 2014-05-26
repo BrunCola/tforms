@@ -136,7 +136,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							loggedin: checkLoggedin
 						},
 						data: {
-							title: 'File Name',
+							title: 'File Mime Types',
 							daterange: true
 						}
 					})
@@ -148,7 +148,7 @@ angular.module('mean.pages').config(['$stateProvider',
 								loggedin: checkLoggedin
 							},
 							data: {
-								title: 'File Local',
+								title: 'Extracted Files for Local IP',
 								daterange: true
 							}
 						})
@@ -173,7 +173,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							loggedin: checkLoggedin
 						},
 						data: {
-							title: 'File Name',
+							title: 'File Mime Types',
 							daterange: true
 						}
 					})
@@ -185,7 +185,7 @@ angular.module('mean.pages').config(['$stateProvider',
 								loggedin: checkLoggedin
 							},
 							data: {
-								title: 'File Remote',
+								title: 'Extracted Files for Remote IP',
 								daterange: true
 							}
 						})
