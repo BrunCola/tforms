@@ -27,10 +27,6 @@ exports.render = function(req, res) {
 		'`remote_port`, '  +
 		'`remote_cc`, ' +
 		'`remote_country`, ' +
-		'`remote_region`, ' +
-		'`remote_city`, ' +
-		'`remote_long`, ' +
-		'`remote_lat`, ' +
 		'`remote_asn`, ' +
 		'`remote_asn_name`, ' +
 		'`nick`, ' +
@@ -64,12 +60,8 @@ exports.render = function(req, res) {
 		{ title: 'LAN port', select: 'lan_port' },
 		{ title: 'Remote IP', select: 'remote_ip'},
 		{ title: 'Remote port', select: 'remote_port' },
-		{ title: 'Remote CC', select: 'remote_cc' },
+		{ title: 'Flag', select: 'remote_cc' },
 		{ title: 'Remote Country', select: 'remote_country' },
-		{ title: 'Remote Region', select: 'remote_region' },
-		{ title: 'Remote City', select: 'remote_city' },
-		{ title: 'Remote Longitude', select: 'remote_long' },
-		{ title: 'Remote Latitude', select: 'remote_lat' },
 		{ title: 'Remote ASN', select: 'remote_asn' },
 		{ title: 'Remote ASN Name', select: 'remote_asn_name' },
 		{ title: 'NICK', select: 'nick' },
