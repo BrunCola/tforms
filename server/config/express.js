@@ -62,7 +62,8 @@ module.exports = function(app, passport, db, version) {
 
     // Request body parsing middleware should be above methodOverride
     app.use(expressValidator());
-    app.use(bodyParser());
+    // app.use(bodyParser());
+    app.use(bodyParser({uploadDir:'/public'}));
     app.use(methodOverride());
     app.use(cookieParser());
 
@@ -105,6 +106,7 @@ module.exports = function(app, passport, db, version) {
     // Setting the fav icon and static folder
     app.use(favicon());
     app.use('/public', express.static(config.root + '/public'));
+
 
     app.get('/modules/aggregated.js', function(req, res) {
         res.setHeader('content-type', 'text/javascript');

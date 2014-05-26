@@ -58,6 +58,10 @@ angular.module('mean.pages').config(['$stateProvider',
 						},
 						data: {
 							title: 'IOC Events',
+							subtitleElm: {
+								'Remote IP': 'remote_ip',
+								'Lan IP': 'lan_ip'
+							},
 							daterange: true
 						}
 					})

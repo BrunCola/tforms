@@ -29,4 +29,18 @@ angular.module('mean.pages').controller('headController', ['$scope', 'Global', '
 		$scope.isReport = true;
 		$scope.isNotReport = false;
 	}
+
+	$scope.subtitle = [];
+	if ($state.current.data.subtitleElm !== undefined) {
+		$scope.subtitleElm = $state.current.data.subtitleElm;
+		for (var i in $scope.subtitleElm) {
+			$scope.subtitle.push({
+				title: i,
+				value: $location.$$search[$scope.subtitleElm[i]]
+			})
+			// $scope.subtitle += '\n'+i+': '+$location.$$search[$scope.subtitleElm[i]];
+		}
+	}
+
 }]);
+

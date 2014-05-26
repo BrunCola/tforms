@@ -109,7 +109,6 @@ var live_connections = require('../controllers/live_connections/live_connections
 	// IOC EVENTS REPORT
 	var ioc_events_report = require('../controllers/reports/ioc_events');
 
-
 module.exports = function(app) {
 	// LIVE CONNECTIONS
 	app.route('/live_connections/live_connections')
