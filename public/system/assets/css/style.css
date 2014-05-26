@@ -8,6 +8,23 @@ font-family: 'Open Sans';
 src: url('OpenSans-Regular.ttf');
 }
 
+@font-face
+{
+    font-family: "ITCAvantGardeStd-Bk";
+    src: url('fonts/itcavantgardestd-bk-webfont.eot');
+    src: url('fonts/itcavantgardestd-bk-webfont.woff') format('woff'),
+       url('fonts/itcavantgardestd-bk-webfont.ttf') format('truetype'),
+       url('fonts/itcavantgardestd-bk-webfont.svg') format('svg');
+}
+@font-face
+{
+    font-family: "ITCAvantGardeStd-Bold";
+    src: url('fonts/itcavantgardestd-bold-webfont.eot');
+    src: url('fonts/itcavantgardestd-bold-webfont.woff') format('woff'),
+       url('fonts/itcavantgardestd-bold-webfont.ttf') format('truetype'),
+       url('fonts/itcavantgardestd-bold-webfont.svg') format('svg');
+}
+
 /***
 Reset and overrides
 ***/
@@ -75,7 +92,16 @@ th {
   stroke: #666666;
   shape-rendering: crispEdges;
 }
-
+/*#slider{
+    float: left;
+    height: 14px;
+    width: 200px;
+    top: 35px;
+    background-color: rgba(102, 102, 102, 0.90);
+    padding : 10px;
+    z-index: 2;
+}
+*/
 
 
 /*tree chart*/

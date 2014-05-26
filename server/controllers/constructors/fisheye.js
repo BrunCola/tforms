@@ -22,10 +22,12 @@ module.exports = function (params, callback) {
 		})
 		.on('end', function(){
 			// convert time to unix and add a rounded value
+			var coeff = 1000 * 60 * params.grouping;
 			dat.forEach(function (item){
-				var time = Math.round(item.time);
+				var time = new Date(item.time * 1000);
 				item.time = time;
-				item.rTime = (time/60)*60;
+				var rTime = moment(new Date(Math.round(time.getTime() / coeff) * coeff)).unix();
+				item.rTime = rTime;
 			});
 			var a = [], b = [], newarr = dat;
 			// SORT ITEMS BY TIME THEN CLASS

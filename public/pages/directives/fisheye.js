@@ -3,7 +3,41 @@
 angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$rootScope', '$http', '$modal', function ($timeout, $location, $rootScope, $http, $modal) {
 	return {
 		link: function ($scope, element, attrs) {
-			// D3 FISHEYE PLUGIN
+			$(function() {
+				var select = $( "#grouping" );
+				$( "#grouping" ).slider({
+					min: 0,
+					step: 5,
+					max: $scope.number,
+					range: "min",
+					value: $scope.minslider,
+					slide: function( event, ui ) {
+						if (ui.value < 1){
+							ui.value = 1;
+						}
+						if (ui.value === 1) {
+							$( "#count" ).html('Group by: <strong>'+ui.value+'</strong> minute. (Slide bar to change value.)');
+						} else {
+							$( "#count" ).html('Group by: <strong>'+ui.value+'</strong> minutes. (Slide bar to change value.)');
+						}
+					},
+					change: function(event,ui){
+
+						// REDUNDANT SO MAKE GLOBAL !!!!
+						$('.page-content').fadeTo(500, 0.7);
+						var target = document.getElementById('loading-spinner');
+						var spinner = new Spinner().spin(target);
+						$(target).data('spinner', spinner);
+
+						$('#fishchart').empty();
+						if (ui.value < 1){
+							ui.value = 1;
+						}
+						$scope.$broadcast('grouping', ui.value);
+					}
+				});
+				$( "#count" ).html('Group by: <strong>1</strong> minute. (Slide bar to change value.)');
+			});
 			function titles(title) {
 				switch(title){
 					case 'http':
@@ -60,6 +94,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 						return "#D8464A";
 				}
 			}
+			// fisheye function
 			(function() {
 				d3.fisheye = {
 					scale: function(scaleType) {
@@ -136,6 +171,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 			$scope.point = function(element, nickname, title, dType) {
 				if (nickname.search("ioc") !== -1) {
 					element.attr('class', 'ioc');
+					element = element.append('g');
 					element.append('svg:path')
 						.attr('transform', 'translate(-18,-18)')
 						.attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
@@ -164,6 +200,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					return;
 				} else {
 					element.attr('class', nickname);
+					element = element.append('g');
 					switch(nickname){
 						case 'file':
 							element.append('svg:path')
@@ -304,7 +341,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				var width = document.getElementById('fishchart').offsetWidth-60;
 				var height = (width / 3) - margin.top - margin.bottom;
 
-				$('#fishchart').parent().height(height+110);
+				$('#fishchart').parent().height(height+150);
 
 				$scope.xScale = d3.fisheye.scale(d3.time.scale).domain([new Date(moment.unix(data.xAxis[0])), new Date(moment.unix(data.xAxis[1]+3600))]).range([0, width]);
 				$scope.yScale = d3.fisheye.scale(d3.scale.linear).domain([0-(data.yAxis*0.07), data.yAxis+1+(data.yAxis*0.07)]).range([height, 0]);
@@ -407,7 +444,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				var pointCount = 0;
 				var y = height + 39;
 				var x = center - margin; //move group to center, countering the original margin far left
-				$scope.legendHolder.selectAll('g').each(function(d){
+				$scope.legendHolder.selectAll('g').select('g').each(function(d){
 					var elm = d3.select(this);
 					pointCount++;
 					var x = margin*pointCount;
@@ -456,9 +493,11 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					.attr("dy", ".75em")
 					.attr("transform", "rotate(-90)")
 					.text("Number of connections.");
+
 			})
 
 			$scope.$on('fishChart', function (event, dataset) {
+				$scope.$broadcast('spinnerHide');
 				var mouseover = [null, null];
 				var transitions = [];
 				$scope.pTypes = [];
@@ -493,20 +532,14 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					}
 					checkDup(trans);
 				})
-				function x(d) { return d.time; }
-				function y(d, multiple) {
-					if (multiple !== 'max' ) {
-						return d.data.length;
-					} else {
-						return d.data.length+($scope.maxnum*0.02);
-					}
+				function x(d) {
+					return d.time;
+				}
+				function y(d) {
+					return d.data.length;
 				}
 				function scale(d) {
-					if (d.ioc_hits === 0){
-						return 1;
-					} else {
-						return $scope.scale(d.ioc_hits);
-					}
+					return 0.8;
 				}
 				function rPosition(dot) {
 					dot.each(function(d){
@@ -517,10 +550,54 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 						}
 					});
 				}
-				var hoverOver = [], hoverCount = 0;
-				function pointTranslate(count, total) {
 
+				// hover-over spread function
+				var hoverCount = 1;
+				function pointTranslate(count, total) {
+					if (total > 1) {
+						if (total%2 !== 0){
+						}
+						var h = 20, x, y;
+						var segment, fraction;
+						// if odd total
+						if (total%2 !== 0){
+							segment = 180 / (total+1);
+							fraction = segment*count;
+						} else {
+						// if even total
+							segment = 180 / (total+2);
+							fraction = segment*count;
+							if (fraction >= 90) {
+								fraction += segment;
+							}
+						}
+						// some conversion for D3 - just pass it fractions up to 180
+						if (fraction === 90) {
+							y = h;
+							x = 0;
+						} else if (fraction < 90) {
+							y = Math.sin(fraction)*h;
+							x = Math.cos(fraction)*h;
+						} else {
+							fraction = 180 - fraction;
+							if (fraction < 0) {
+								fraction *= -1;
+							}
+							y = Math.sin(fraction)*h;
+							x = Math.cos(fraction)*h;
+							x *= -1;
+						}
+						if (y < 0){
+							y *= -1;
+						}
+						hoverCount ++;
+						return {
+							x: x,
+							y: y
+						}
+					}
 				}
+
 				$scope.dot = $scope.svg.append("g")
 					.attr("class", "dots")
 					.selectAll(".dot")
@@ -531,7 +608,12 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 						var elm = d3.select(this).append('g').attr('class','point').call(rPosition);
 						$scope.point(elm, d.class);
 						// although the function above assignes a class, re-assign each item with time and count
-						elm.attr('class', d.class+' time-'+d.roundedtime.toString()+'count-'+d.data.length)
+						// also if class contains 'ioc', replace the class so it can be toggled in legend
+						if (d.class.search('ioc') !== -1) {
+							elm.attr('class', 'ioc time-'+d.roundedtime.toString()+'count-'+d.data.length)
+						} else {
+							elm.attr('class', d.class+' time-'+d.roundedtime.toString()+'count-'+d.data.length)
+						}
 						elm
 							.style("fill", function(d) { return colors(d.class); })
 							.on('mouseover', $scope.tip.show)
@@ -555,18 +637,33 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 								var elmCount = $.grep(elm, function(e){ return e[0] !== undefined; });
 								// continue with .each statement
 								elm.each(function(d){
-									var elm = d3.select(this);
-										hoverCount++;
-										pointTranslate(hoverCount, elmCount.length);
-										elm
-											.transition().duration(50)
-											.attr('transform', function(d) { return "translate(" + $scope.xScale(x(d)) +","+ $scope.yScale(y(d,'max')) + ")scale("+scale(d)+")";})
-									})
+								var elm = d3.select(this.parentNode);
+									if (elmCount.length > 1) {
+										var trans = pointTranslate(hoverCount, elmCount.length);
+										// elm
+										// 	.transition().duration(100)
+										// 	.attr('transform', function(d) { return 'translate('+trans.x+','+(-1*trans.y)+')';})
+									}
+								})
 							})
 							.on('mouseout', function(d){
 								// remove values from mouseover array on mouseOut
 								mouseover[0] = null;
 								mouseover[1] = null;
+								hoverCount = 1;
+								// on mouseover, grab the classes that match the time and count blended into a string
+								var elm = $scope.dot.selectAll('g .time-'+d.roundedtime.toString()+'count-'+d.data.length);
+								// get count of elements moused over
+								var elmCount = $.grep(elm, function(e){ return e[0] !== undefined; });
+								// continue with .each statement
+								elm.each(function(d){
+									var elm = d3.select(this.parentNode);
+									if (elmCount.length > 1) {
+										elm
+											.transition().duration(100)
+											.attr('transform', function(d) { return 'translate(0,0)';})
+									}
+								})
 							})
 						})
 				var hidden = [];
@@ -583,13 +680,16 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 
 				// LEGEND STUFF
 				$scope.legendHolder.selectAll('g').each(function(d){
-					var elm = d3.select(this);
-					var pclass = elm.attr('class');
+					var par = d3.select(this);
+					var pclass = par.attr('class');
+					var elm = par.select('g');
 					var countArr;
-					if (pclass.search('ioc') === -1) {
-						countArr = $.grep(dataset, function(e){ return e.class == pclass; });
-					} else {
-						countArr = $.grep(dataset, function(e){ return e.class.search('ioc') !== -1; });
+					if (pclass !== null) {
+						if (pclass.search('ioc') === -1) {
+							countArr = $.grep(dataset, function(e){ return e.class == pclass; });
+						} else {
+							countArr = $.grep(dataset, function(e){ return e.class.search('ioc') !== -1; });
+						}
 					}
 					var tcount = 0;
 					for(var c in countArr) {
@@ -660,7 +760,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					$scope.xScale.distortion($scope.zoomSlider($scope.maxnum)).focus($scope.mouse[0]);
 					$scope.yScale.distortion($scope.zoomSlider($scope.maxnum)).focus($scope.mouse[1]);
 
-					$scope.dot.selectAll('g').call(rPosition);
+					$scope.dot.select('g').call(rPosition);
 					$scope.svg.select(".x.axis").call($scope.xAxis);
 					$scope.svg.select(".y.axis").call($scope.yAxis);
 				});
