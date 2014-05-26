@@ -578,7 +578,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-				// TOP LOCAL SMTP
+				// TOP LOCAL SMTP 
 				.state('top_local_smtp', {
 					url: '/top_local_smtp?start&end',
 					templateUrl: 'public/pages/views/general_network/top_local_smtp.html',
@@ -586,10 +586,22 @@ angular.module('mean.pages').config(['$stateProvider',
 						loggedin: checkLoggedin
 					},
 					data: {
-						title: 'Top Local IRC',
+						title: 'Top Email Senders',
 						daterange: true
 					}
 				})
+					// TOP SMTP FROM SENDER 
+					.state('top_smtp_from_sender', {
+						url: '/top_smtp_from_sender?start&end&from',
+						templateUrl: 'public/pages/views/general_network/top_smtp_from_sender.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Emails From Sender',
+							daterange: true
+						}
+					})
 			// REPORTS
 				// IOC EVENTS
 				.state('ioc_events_report', {

@@ -104,7 +104,9 @@ var live_connections = require('../controllers/live_connections/live_connections
 	// TOP LOCAL IRC
 	var top_local_irc = require('../controllers/general_network/top_local_irc');	
 	// TOP LOCAL SMTP
-	var top_local_smtp = require('../controllers/general_network/top_local_smtp');	
+	var top_local_smtp = require('../controllers/general_network/top_local_smtp');
+		// TOP SMTP FROM SENDER
+		var top_smtp_from_sender = require('../controllers/general_network/top_smtp_from_sender');	
 
 
 // REPORTS
@@ -261,6 +263,9 @@ module.exports = function(app) {
 		// TOP LOCAL STMP
 		app.route('/general_network/top_local_smtp')
 		.get(authorization.requiresLogin, top_local_smtp.render);
+			// TOP STMP FROM SENDER
+			app.route('/general_network/top_smtp_from_sender')
+			.get(authorization.requiresLogin, top_smtp_from_sender.render);
 
 	// REPORTS
 		// IOC EVENTS
