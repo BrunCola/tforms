@@ -168,13 +168,13 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'By Local IP',
 			'url': 'app_by_local_ip',
 			'icon': 'fa-bars',
-			'orphans': ['l7_toplocal_app', 'l7_toplocal_drill']
+			'orphans': ['l7_toplocal_app', 'l7_toplocal_drill', 'l7_top_shared']
 		},
 		{
 			'title': 'By Remote IP',
 			'url': 'app_by_remote_ip',
 			'icon': 'fa-bars',
-			'orphans': ['l7_topremote_app', 'l7_topremote_drill']
+			'orphans': ['l7_topremote_app', 'l7_topremote_drill', 'l7_top_shared']
 		}]
 	},
 	{

@@ -21,10 +21,7 @@ exports.render = function(req, res) {
 	var table1SQL = 'SELECT '+
 			// SELECTS
 			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-			'count(*) AS count, '+
-			'`lan_zone`, '+
 			'`remote_ip`, '+
-			'`machine`, '+
 			'`l7_proto`, '+
 			'sum(`in_packets`) as in_packets, '+
 			'sum(`out_packets`) as out_packets, '+
@@ -49,14 +46,11 @@ exports.render = function(req, res) {
 				crumb: false
 			},
 		},
-		{ title: 'Connections', select: 'count' },
-		{ title: 'LAN Zone', select: 'lan_zone' },
-		{ title: 'Remote IP', select: 'remote_ip' }//,
-		// { title: 'Machine Name', select: 'machine' },
-		// { title: 'MB to Remote', select: 'in_bytes' },
-		// { title: 'MB from Remote', select: 'out_bytes' },
-		// { title: 'Packets to Remote', select: 'in_packets' },
-		// { title: 'Packets from Remote', select: 'out_packets' }
+		{ title: 'Remote IP', select: 'remote_ip' },
+		{ title: 'MB to Remote', select: 'in_bytes' },
+		{ title: 'MB from Remote', select: 'out_bytes' },
+		{ title: 'Packets to Remote', select: 'in_packets' },
+		{ title: 'Packets from Remote', select: 'out_packets' }
 	];
 	var table1Settings = {
 		sort: [[0, 'desc']],

@@ -358,6 +358,18 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
+							// L7 TOP SHARED
+							.state('l7_top_shared', {
+								url: '/l7_top_shared?start&end&lan_ip&l7_proto&remote_ip&lan_zone',
+								templateUrl: 'public/pages/views/applications/l7_top_shared.html',
+								resolve: {
+									loggedin: checkLoggedin
+								},
+								data: {
+									title: 'Applications Shared',
+									daterange: true
+								}
+							})
 				// BY REMOTE IP
 				.state('app_by_remote_ip', {
 					url: '/app_by_remote_ip?start&end',

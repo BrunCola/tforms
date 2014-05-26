@@ -21,7 +21,6 @@ exports.render = function(req, res) {
 	var table1SQL = 'SELECT '+
 			// SELECTS
 			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-			'count(*) AS count, '+
 			'`lan_zone`, '+
 			'`lan_ip`, '+
 			'`machine`, '+
@@ -49,7 +48,6 @@ exports.render = function(req, res) {
 				crumb: false
 			},
 		},
-		{ title: 'Connections', select: 'count' },
 		{ title: 'LAN Zone', select: 'lan_zone' },
 		{ title: 'LAN IP', select: 'lan_ip' },
 		{ title: 'Machine Name', select: 'machine' },

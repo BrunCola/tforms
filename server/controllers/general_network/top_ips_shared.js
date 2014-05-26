@@ -30,9 +30,6 @@ exports.render = function(req, res) {
 			'`remote_asn`, ' +
 			'`remote_asn_name`, ' +
 			'`ioc`, ' +
-			'`ioc_attrID`, ' +
-			'`ioc_childID`, ' +
-			'`ioc_parentID`, ' +
 			'`ioc_severity`, ' +
 			'`ioc_typeInfection`, ' +
 			'`ioc_typeIndicator`, ' +
@@ -58,12 +55,9 @@ exports.render = function(req, res) {
 			{ title: 'Remote ASN', select: 'remote_asn' },
 			{ title: 'Remote ASN Name', select: 'remote_asn_name' },
 			{ title: 'IOC', select: 'ioc' },
-			{ title: 'IOC Attribute ID', select: 'ioc_attrID' },
-			{ title: 'IOC Child ID', select: 'ioc_childID' },
-			{ title: 'IOC Parent ID', select: 'ioc_parentID' },
 			{ title: 'IOC Severity', select: 'ioc_severity' },
-			{ title: 'IOC Type Infection', select: 'ioc_typeInfection' },
-			{ title: 'IOC Type Indicator', select: 'ioc_typeIndicator' },
+			{ title: 'Infection Stage', select: 'ioc_typeInfection' },
+			{ title: 'Indicator Type', select: 'ioc_typeIndicator' },
 			{ title: 'IOC Count', select: 'ioc_count' }
 		];
 		var table1Settings = {
