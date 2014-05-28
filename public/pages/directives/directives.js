@@ -494,9 +494,13 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 										$('td:eq('+$scope.r.indexOf("remote_cc")+')', nRow).html('<div class="f32"><span class="flag '+aData.remote_cc.toLowerCase()+'"></span></div>');
 									}
 									if (aData.l7_proto && $scope.r.indexOf('l7_proto') !== -1) {
+										// var div = $('td:eq('+$scope.r.indexOf("l7_proto")+')', nRow);
+										// appIcon(d3.select(div[0]), aData.l7_proto);
+
 										$('td:eq('+$scope.r.indexOf("l7_proto")+')', nRow).html(appIcon(aData.l7_proto));
 									}
 									if (aData.mime && $scope.r.indexOf('mime') !== -1) {
+										console.log(aData.mime)
 										$('td:eq('+$scope.r.indexOf("mime")+')', nRow).html(mimeIcon(aData.mime));
 									}
 									if (notReport) {
