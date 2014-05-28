@@ -103,6 +103,8 @@ var live_connections = require('../controllers/live_connections/live_connections
 		var top_remote2local_ssh_local = require('../controllers/general_network/top_remote2local_ssh_local');
 	// TOP LOCAL IRC
 	var top_local_irc = require('../controllers/general_network/top_local_irc');	
+	// TOP REMOTE IRC
+	var top_remote_irc = require('../controllers/general_network/top_remote_irc');	
 	// TOP LOCAL SMTP
 	var top_local_smtp = require('../controllers/general_network/top_local_smtp');
 		// TOP SMTP FROM SENDER
@@ -263,6 +265,9 @@ module.exports = function(app) {
 		// TOP LOCAL IRC
 		app.route('/general_network/top_local_irc')
 		.get(authorization.requiresLogin, top_local_irc.render);
+		// TOP REMOTE IRC
+		app.route('/general_network/top_remote_irc')
+		.get(authorization.requiresLogin, top_remote_irc.render);
 		// TOP LOCAL STMP
 		app.route('/general_network/top_local_smtp')
 		.get(authorization.requiresLogin, top_local_smtp.render);
