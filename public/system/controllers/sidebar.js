@@ -219,10 +219,16 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'orphans': []
 		},
 		{
-			'title': 'Top Local SMTP',
+			'title': 'Top SMTP Senders',
 			'url': 'top_local_smtp',
 			'icon': 'fa-envelope',
 			'orphans': ['top_smtp_from_sender']
+		},
+		{
+			'title': 'Top SMTP Receivers',
+			'url': 'top_smtp_receivers',
+			'icon': 'fa-envelope',
+			'orphans': ['top_smtp_to_receiver']
 		}]
 	}];
 }]);
