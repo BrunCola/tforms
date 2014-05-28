@@ -70,7 +70,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						loggedin: checkLoggedin
 					},
 					data: {
-						title: 'IOC Top Remote IPs',
+						title: 'IOC Remote IPs',
 						daterange: true
 					}
 				})
@@ -82,7 +82,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							loggedin: checkLoggedin
 						},
 						data: {
-							title: 'IOC Top Remote IPs',
+							title: 'IOC Remote IPs',
 							daterange: true
 						}
 					})
@@ -94,7 +94,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						loggedin: checkLoggedin
 					},
 					data: {
-						title: 'IOC Top Local IPs',
+						title: 'IOC Local IPs',
 						daterange: true
 					}
 				})
@@ -106,7 +106,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							loggedin: checkLoggedin
 						},
 						data: {
-							title: 'IOC Top Local IPs',
+							title: 'IOC Local IPs',
 							daterange: true
 						}
 					})
@@ -461,7 +461,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						loggedin: checkLoggedin
 					},
 					data: {
-						title: 'Top Local IP Bandwidth Use',
+						title: 'Local IP Bandwidth Use',
 						daterange: true
 					}
 				})
@@ -507,7 +507,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						loggedin: checkLoggedin
 					},
 					data: {
-						title: 'Top Remote IP Bandwidth Use',
+						title: 'Remote IP Bandwidth Use',
 						daterange: true
 					}
 				})
@@ -534,7 +534,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						loggedin: checkLoggedin
 					},
 					data: {
-						title: 'Top Endpoint Events',
+						title: 'Endpoint Events',
 						daterange: true
 					}
 				})
@@ -577,7 +577,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						loggedin: checkLoggedin
 					},
 					data: {
-						title: 'Top Local SSH',
+						title: 'Local SSH',
 						daterange: true
 					}
 				})
@@ -620,7 +620,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						loggedin: checkLoggedin
 					},
 					data: {
-						title: 'Top Remote SSH',
+						title: 'Remote SSH',
 						daterange: true
 					}
 				})
@@ -648,7 +648,19 @@ angular.module('mean.pages').config(['$stateProvider',
 						loggedin: checkLoggedin
 					},
 					data: {
-						title: 'Top Local IRC',
+						title: 'Local IRC',
+						daterange: true
+					}
+				})
+				// TOP REMOTE IRC
+				.state('top_remote_irc', {
+					url: '/top_remote_irc?start&end',
+					templateUrl: 'public/pages/views/general_network/top_remote_irc.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Remote IRC',
 						daterange: true
 					}
 				})
@@ -660,7 +672,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						loggedin: checkLoggedin
 					},
 					data: {
-						title: 'Top Email Senders',
+						title: 'Email Senders',
 						daterange: true
 					}
 				})
@@ -687,7 +699,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						loggedin: checkLoggedin
 					},
 					data: {
-						title: 'Top Email Receivers',
+						title: 'Email Receivers',
 						daterange: true
 					}
 				})

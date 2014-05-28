@@ -183,49 +183,55 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		'icon': 'fa-sitemap',
 		'children':
 		[{
-			'title': 'Top Local IP',
+			'title': 'Local Connections',
 			'url': 'top_local_ips',
 			'icon': 'fa-cloud-download',
 			'orphans': ['top_local2remote', 'top_ips_shared']
 		},
 		{
-			'title': 'Top Remote IP',
+			'title': 'Remote Connections',
 			'url': 'top_remote_ips',
 			'icon': 'fa-cloud-upload',
 			'orphans': ['top_remote2local', 'top_ips_shared']
 		},
 		{
-			'title': 'Top Endpoint Events',
+			'title': 'Endpoint Events',
 			'url': 'top_endpoint_events',
 			'icon': 'fa-desktop',
 			'orphans': ['top_endpoint_events_user','top_endpoint_events_user_drill']
 		},
 		{
-			'title': 'Top Local SSH',
+			'title': 'Local SSH',
 			'url': 'top_ssh',
 			'icon': 'fa-chevron-right',
 			'orphans': ['top_ssh_remote', 'top_ssh_remote_shared']
 		},
 		{
-			'title': 'Top Remote SSH',
+			'title': 'Remote SSH',
 			'url': 'top_remote2local_ssh',
 			'icon': 'fa-chevron-right',
 			'orphans': ['top_remote2local_ssh_local', 'top_ssh_remote_shared']
 		},
 		{
-			'title': 'Top Local IRC',
+			'title': 'Local IRC',
 			'url': 'top_local_irc',
 			'icon': 'fa-comment',
 			'orphans': []
 		},
 		{
-			'title': 'Top SMTP Senders',
+			'title': 'Remote IRC',
+			'url': 'top_remote_irc',
+			'icon': 'fa-comment',
+			'orphans': []
+		},
+		{
+			'title': 'SMTP Senders',
 			'url': 'top_local_smtp',
 			'icon': 'fa-envelope',
 			'orphans': ['top_smtp_from_sender']
 		},
 		{
-			'title': 'Top SMTP Receivers',
+			'title': 'SMTP Receivers',
 			'url': 'top_smtp_receivers',
 			'icon': 'fa-envelope',
 			'orphans': ['top_smtp_to_receiver']
