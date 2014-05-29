@@ -48,7 +48,7 @@ exports.render = function(req, res) {
 		var table1Settings = {
 			sort: [[1, 'desc']],
 			div: 'table',
-			title: 'Local User Extracted Files'
+			title: 'Extracted File MIME Types'
 		}
 
 		async.parallel([
