@@ -73,7 +73,7 @@ exports.render = function(req, res) {
 			{ title: 'IOC Count', select: 'ioc_count' }
 		];
 		var table1Settings = {
-			sort: [[0, 'desc']],
+			sort: [[3, 'desc']],
 			div: 'table',
 			title: 'Remote IP Bandwidth Usage'
 		};
