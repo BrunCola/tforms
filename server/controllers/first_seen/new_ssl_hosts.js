@@ -31,7 +31,7 @@ exports.render = function(req, res) {
 		'`remote_country`, '+
 		'`remote_cc` '+
 		// !SELECTS
-		'FROM ssl_remote_ip '+
+		'FROM ssl_uniq_remote_ip '+
 		'WHERE time BETWEEN '+start+' AND '+end;
 
 		var table1Params = [

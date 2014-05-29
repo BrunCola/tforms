@@ -33,7 +33,7 @@ exports.render = function(req, res) {
 		'`user`, '+
 		'`remote_port` '+
 		// !SELECTS
-		'FROM ftp_remote_ip '+
+		'FROM ftp_uniq_remote_ip '+
 		'WHERE time BETWEEN '+start+' AND '+end;
 
 		var table1Params = [

@@ -20,7 +20,7 @@ exports.render = function(req, res) {
 	var info = [];
 	var table1SQL = 'SELECT '+
 		// SELECTS
-		'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+		'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 		'`lan_zone`, '+
 		'`lan_ip`, '+
 		'`machine`, '+
@@ -36,8 +36,8 @@ exports.render = function(req, res) {
 		'`rcode`, '+
 		'`query` '+
 		// !SELECTS
-		'FROM dns_query '+
-		'WHERE time BETWEEN '+start+' AND '+end;
+		'FROM `dns_uniq_query` '+
+		'WHERE `time` BETWEEN '+start+' AND '+end;
 
 	var table1Params = [
 		{ title: 'First Seen', select: 'time' },

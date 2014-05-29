@@ -32,7 +32,7 @@ exports.render = function(req, res) {
 		'`lan_client`, '+
 		'`remote_server` '+
 		// !SELECTS
-		'FROM ssh_remote_ip '+
+		'FROM ssh_uniq_remote_ip '+
 		'WHERE time BETWEEN '+start+' AND '+end;
 
 		var table1Params = [

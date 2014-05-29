@@ -31,7 +31,7 @@ exports.render = function(req, res) {
 		'`remote_country`, '+
 		'`remote_cc` '+
 		// !SELECTS
-		'FROM http_host '+
+		'FROM http_uniq_host '+
 		'WHERE time BETWEEN '+start+' AND '+end;
 
 		var table1Params = [

@@ -30,7 +30,7 @@ exports.render = function(req, res) {
 		'`remote_country`, '+
 		'`remote_cc` '+
 		// !SELECTS
-		'FROM conn_remote_ip '+
+		'FROM conn_uniq_remote_ip '+
 		'WHERE time BETWEEN '+start+' AND '+end;
 
 	var table1Params = [
