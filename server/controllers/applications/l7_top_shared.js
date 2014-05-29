@@ -74,7 +74,7 @@ exports.render = function(req, res) {
 			{ title: 'FTP', select: 'ftp' },
 			{ title: 'IRC', select: 'irc' },
 			{ title: 'SMTP', select: 'smtp' },
-			{ title: 'Files', select: 'files' }
+			{ title: 'File', select: 'file' }
 		];
 		var table1Settings = {
 			sort: [[0, 'desc']],

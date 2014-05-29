@@ -40,7 +40,8 @@ exports.render = function(req, res) {
 		'WHERE '+
 			'`time` BETWEEN '+start+' AND '+end+' '+
 			'AND `l7_proto` !=\'-\' '+
-		'GROUP BY `l7_proto`';
+		'GROUP BY '+
+			'`l7_proto`';
 
 	var table1Params = [
 		{
@@ -66,7 +67,7 @@ exports.render = function(req, res) {
 		{ title: 'FTP', select: 'ftp' },
 		{ title: 'IRC', select: 'irc' },
 		{ title: 'SMTP', select: 'smtp' },
-		{ title: 'Files', select: 'files' },
+		{ title: 'File', select: 'file' },
 		{ title: 'IOC Count', select: 'ioc_count' },	
 	];
 	var table1Settings = {

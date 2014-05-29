@@ -67,7 +67,7 @@ exports.render = function(req, res) {
 					},
 				},
 				{ title: 'Applications', select: 'l7_proto' },
-				{ title: 'LAN Zone', select: 'lan_zone' },
+				{ title: 'Zone', select: 'lan_zone' },
 				{ title: 'LAN IP', select: 'lan_ip' },
 				{ title: 'Machine Name', select: 'machine' },
 				{ title: 'Remote IP', select: 'remote_ip' },
@@ -78,7 +78,16 @@ exports.render = function(req, res) {
 				{ title: 'MB to Remote', select: 'in_bytes' },
 				{ title: 'MB from Remote', select: 'out_bytes'},
 				{ title: 'Packets to Remote', select: 'in_packets', dView:false },
-				{ title: 'Packets from Remote', select: 'out_packets', dView:false }
+				{ title: 'Packets from Remote', select: 'out_packets', dView:false },
+				{ title: 'Connections', select: 'count' },
+				{ title: 'DNS', select: 'dns' },
+				{ title: 'HTTP', select: 'http' },
+				{ title: 'SSL', select: 'ssl' },
+				{ title: 'FTP', select: 'ftp' },
+				{ title: 'IRC', select: 'irc' },
+				{ title: 'SMTP', select: 'smtp' },
+				{ title: 'File', select: 'file' },
+				{ title: 'IOC Count', select: 'ioc_count' }	
 			];
 			var table1Settings = {
 				sort: [[0, 'desc']],
