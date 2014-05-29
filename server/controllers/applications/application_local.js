@@ -14,7 +14,7 @@ exports.render = function(req, res) {
 		start = req.query.start;
 		end = req.query.end;
 	}
-	if (req.query.lan_ip && req.query.l7_proto) {
+	if (req.query.lan_zone && req.query.lan_ip && req.query.l7_proto) {
 		//var results = [];
 		var tables = [];
 		var crossfilter = [];
@@ -22,6 +22,7 @@ exports.render = function(req, res) {
 
 		var table1SQL = 'SELECT '+
 				// SELECTS
+				'count(*) AS `count`, '+
 				'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time, '+ // Last Seen
 				'`l7_proto`, '+
 				'`lan_zone`, '+
@@ -32,14 +33,23 @@ exports.render = function(req, res) {
 				'`remote_asn_name`, '+
 				'`remote_country`, '+
 				'`remote_cc`, '+
+				'(sum(`in_bytes`) / 1048576) AS in_bytes, '+
+				'(sum(`out_bytes`) / 1048576) AS out_bytes, '+
 				'sum(`in_packets`) AS in_packets, '+
 				'sum(`out_packets`) AS out_packets, '+
-				'(sum(`in_bytes`) / 1048576) AS in_bytes, '+
-				'(sum(`out_bytes`) / 1048576) AS out_bytes '+
+				'sum(`dns`) AS `dns`, '+
+				'sum(`http`) AS `http`, '+
+				'sum(`ssl`) AS `ssl`, '+
+				'sum(`ftp`) AS `ftp`, '+
+				'sum(`irc`) AS `irc`, '+
+				'sum(`smtp`) AS `smtp`, '+
+				'sum(`file`) AS `file`, '+
+				'sum(`ioc_count`) AS `ioc_count` '+
 				// !SELECTS
-			'FROM conn_l7 '+
+			'FROM `conn_l7_meta` '+
 			'WHERE '+
 				'`time` BETWEEN '+start+' AND '+end+' '+
+				'AND `lan_zone` = \''+req.query.lan_zone+'\' '+
 				'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
 				'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
 			'GROUP BY `remote_ip`';
@@ -82,11 +92,11 @@ exports.render = function(req, res) {
 					'count(*) as count, '+
 					'`remote_country` '+
 					// !SELECTS
-				'FROM `conn_l7` '+
-				'WHERE time BETWEEN '+start+' AND '+end+' '+
+				'FROM `conn_l7_meta` '+
+				'WHERE `time` BETWEEN '+start+' AND '+end+' '+
 					'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
 					'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
-				'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country';
+				'GROUP BY month(from_unixtime(`time`)), day(from_unixtime(`time`)), hour(from_unixtime(`time`)), `remote_country`';
 
 			async.parallel([
 			// Table function(s)

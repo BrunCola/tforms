@@ -16,8 +16,8 @@ exports.render = function(req, res) {
 	// var end = moment().subtract('minutes', 20).unix();	
 
 
-	var start = moment().subtract('minutes', 81).unix();
-	var end = moment().subtract('minutes', 80).unix();
+	var start = moment().subtract('minutes', 21).unix();
+	var end = moment().subtract('minutes', 20).unix();
 
 	console.log('start: '+ start)
 	console.log('end: '+ end)
@@ -34,7 +34,7 @@ exports.render = function(req, res) {
 			'`ioc_count` '+
 			// !SELECTS
 		'FROM conn '+
-			'WHERE '+
+		'WHERE '+
 			'time BETWEEN '+start+' AND '+end;
 			// 'AND `ioc_count` > 0 '+
 			// 'AND `trash` IS NULL';
