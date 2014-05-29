@@ -48,7 +48,7 @@ exports.render = function(req, res) {
 		var table1Settings = {
 			sort: [[1, 'desc']],
 			div: 'table',
-			title: 'Remote Extracted Files'
+			title: 'Extracted Files From Remote IPs'
 		}
 
 		async.parallel([
