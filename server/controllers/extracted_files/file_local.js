@@ -17,52 +17,55 @@ exports.render = function(req, res) {
 	if (req.query.lan_ip && req.query.mime) {
 		var tables = [];
 		var table1SQL = 'SELECT '+
-			// SELECTS
-			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'`mime`, '+
-			'`name`, '+
-			'`machine`, '+
-			'`lan_ip`, '+
-			'`lan_port`, '+
-			'`lan_zone`, '+
-			'`remote_ip`, '+
-			'`remote_port`, '+
-			'`remote_asn`, '+
-			'`remote_asn_name`, '+
-			'`remote_country`, '+
-			'`remote_cc`, '+
-			'`proto`, '+
-			'`md5`, '+
-			'`http_host`, '+
-			'`ioc`, '+
-			'`ioc_typeIndicator`, '+
-			'`ioc_typeInfection`, '+
-			'size as size '+
-			// !SELECTS
-			'FROM `file` '+
-			'WHERE time BETWEEN '+start+' AND '+end+' '+
-			'AND mime = \''+req.query.mime+'\' AND lan_ip = \''+req.query.lan_ip+'\' ';
+				// SELECTS
+				'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`mime`, '+
+				'`name`, '+
+				'`machine`, '+
+				'`lan_ip`, '+
+				'`lan_port`, '+
+				'`lan_zone`, '+
+				'`remote_ip`, '+
+				'`remote_port`, '+
+				'`remote_asn`, '+
+				'`remote_asn_name`, '+
+				'`remote_country`, '+
+				'`remote_cc`, '+
+				'`proto`, '+
+				'`md5`, '+
+				'`http_host`, '+
+				'`ioc`, '+
+				'`ioc_typeIndicator`, '+
+				'`ioc_typeInfection`, '+
+				'size as size '+
+				// !SELECTS
+			'FROM '+ 
+				'`file` '+
+			'WHERE '+
+				'time BETWEEN '+start+' AND '+end+' '+
+				'AND mime = \''+req.query.mime+'\' '+
+				'AND lan_ip = \''+req.query.lan_ip+'\' ';
 
 			var table1Params = [
 				{ title: 'Last Seen', select: 'time' },
+				{ title: 'MIME', select: 'mime' },
+				{ title: 'Name', select: 'name', sClass:'file'},
+				{ title: 'Size', select: 'size' },
+				{ title: 'Zone', select: 'lan_zone' },
 				{ title: 'Machine', select: 'machine' },
-				{ title: 'Lan Zone', select: 'lan_zone' },
 				{ title: 'LAN IP', select: 'lan_ip' },
 				{ title: 'LAN Port', select: 'lan_port' },
 				{ title: 'Remote IP', select: 'remote_ip' },
 				{ title: 'Remote Port', select: 'remote_port' },
-				{ title: 'Protocol', select: 'proto' },
 				{ title: 'ASN', select: 'remote_asn' },
 				{ title: 'ASN Name', select: 'remote_asn_name' },
 				{ title: 'Remote Country', select: 'remote_country' },
 				{ title: 'Flag', select: 'remote_cc' },
+				{ title: 'Protocol', select: 'proto' },
 				{ title: 'HTTP Host', select: 'http_host' },
 				{ title: 'IOC', select: 'ioc' },
 				{ title: 'IOC Type', select: 'ioc_typeIndicator' },
 				{ title: 'IOC Stage', select: 'ioc_typeInfection' },
-				{ title: 'Name', select: 'name', sClass:'file'},
-				{ title: 'Size', select: 'size' },
-				{ title: 'MIME', select: 'mime' },
 				{ title: 'MD5', select: 'md5' }
 			];
 			var table1Settings = {
