@@ -117,7 +117,10 @@ var live_connections = require('../controllers/live_connections/live_connections
 
 // REPORTS
 	// IOC EVENTS REPORT
-	var ioc_events_report = require('../controllers/reports/ioc_events');
+	var ioc_events_report = require('../controllers/reports/ioc_events');	
+
+// ARCHIVE
+	var archive = require('../controllers/archive');
 
 module.exports = function(app) {
 	// LIVE CONNECTIONS
@@ -284,7 +287,11 @@ module.exports = function(app) {
 	// REPORTS
 		// IOC EVENTS
 		app.route('/reports/ioc_events')
-		.get(authorization.requiresLogin, ioc_events_report.render);
+		.get(authorization.requiresLogin, ioc_events_report.render);		
+
+	// ARCHIVE
+		app.route('/archive')
+		.get(authorization.requiresLogin, archive.render);
 
 
 };

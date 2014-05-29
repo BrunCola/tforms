@@ -732,5 +732,18 @@ angular.module('mean.pages').config(['$stateProvider',
 					}
 				})
 
+			// ARCHIVE
+				.state('archive', {
+					url: '/archive?start&end',
+					templateUrl: 'public/pages/views/archive.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Archive',
+						daterange: false
+					}
+				})
+
 	}
 ]);
