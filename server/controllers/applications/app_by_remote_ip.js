@@ -25,7 +25,6 @@ exports.render = function(req, res) {
 			'`remote_cc`, ' +
 			'`remote_country`, ' +
 			'`remote_asn_name`, ' +
-			'`l7_proto`, '+
 			'sum(`in_packets`) as in_packets, '+
 			'sum(`out_packets`) as out_packets, '+
 			'(sum(`in_bytes`) / 1048576) as in_bytes, '+
@@ -54,7 +53,7 @@ exports.render = function(req, res) {
 			link: {
 				type: 'l7_topremote_app',
 				// val: the pre-evaluated values from the query above
-				val: ['l7_proto', 'remote_ip'],
+				val: ['remote_ip'],
 				crumb: false
 			},
 		},

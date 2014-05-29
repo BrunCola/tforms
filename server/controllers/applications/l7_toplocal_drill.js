@@ -14,7 +14,7 @@ exports.render = function(req, res) {
 		start = req.query.start;
 		end = req.query.end;
 	}
-	if (req.query.lan_ip && req.query.l7_proto) {
+	if (req.query.lan_zone && req.query.lan_ip && req.query.l7_proto) {
 		//var results = [];
 		var tables = [];
 		var crossfilter = [];
@@ -62,7 +62,7 @@ exports.render = function(req, res) {
 					link: {
 						type: 'l7_top_shared',
 						// val: the pre-evaluated values from the query above
-						val: ['lan_ip', 'l7_proto', 'remote_ip','lan_zone'],
+						val: ['lan_zone','lan_ip','remote_ip','l7_proto'],
 						crumb: false
 					},
 				},
