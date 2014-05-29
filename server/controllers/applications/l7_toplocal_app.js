@@ -83,8 +83,10 @@ exports.render = function(req, res) {
 					'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+ // Last Seen
 					'(sum(in_bytes + out_bytes) / 1048576) AS count '+
 				'FROM `conn_l7_meta` '+
-				'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-				'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
+				'WHERE '+
+					'`time` BETWEEN '+start+' AND '+end+' '+
+					'AND `lan_zone` = \''+req.query.lan_zone+'\' '+
+					'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
 				'GROUP BY '+
 					'month(from_unixtime(time)),'+
 					'day(from_unixtime(time)),'+

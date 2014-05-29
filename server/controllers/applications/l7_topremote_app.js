@@ -14,7 +14,7 @@ exports.render = function(req, res) {
 		start = req.query.start;
 		end = req.query.end;
 	}
-	if (req.query.l7_proto && req.query.remote_ip) {
+	if (req.query.remote_ip) {
 		//var results = [];
 		var tables = [];
 		var crossfilter = [];
