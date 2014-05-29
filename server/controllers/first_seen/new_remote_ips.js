@@ -66,7 +66,7 @@ exports.render = function(req, res) {
 		'`remote_country`, '+
 		'count(*) as count '+
 		// !SELECTS
-		'FROM conn_remote_ip '+
+		'FROM conn_uniq_remote_ip '+
 		'WHERE time BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country';
 

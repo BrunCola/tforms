@@ -69,7 +69,7 @@ exports.render = function(req, res) {
 		'count(*) as count, '+
 		'remote_country '+
 		// !SELECTS
-		'FROM dns_query '+
+		'FROM dns_uniq_query '+
 		'WHERE time BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time))';
 
