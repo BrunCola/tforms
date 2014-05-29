@@ -52,7 +52,7 @@ exports.render = function(req, res) {
 	var table1Settings = {
 		sort: [[1, 'desc']],
 		div: 'table',
-		title: 'Local Enpoint Events'
+		title: 'Local Endpoint Events'
 	}
 	async.parallel([
 		// Table function(s)
