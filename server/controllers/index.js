@@ -36,6 +36,10 @@ module.exports = function(version) {
 				end: end,
 				report: 'null'
 			});
+		}, upload: function(req, res) {
+			console.log('postssss')
+			console.log(req.body)
+			console.log(req.files);
 		}
 	};
 };

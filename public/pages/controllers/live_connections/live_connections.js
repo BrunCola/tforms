@@ -4,9 +4,24 @@ angular.module('mean.pages').controller('liveConnectionsController', ['$scope', 
 	$scope.global = Global;
 
 	var query = '/live_connections/live_connections';
-	$http({method: 'GET', url: query}).
-	//success(function(data, status, headers, config) {
-	success(function(data) {
-		$scope.$broadcast('map', data.map);
+
+	function getMap() {
+		$http({method: 'GET', url: query}).
+		success(function(data) {
+			if (data.map.features.length === 0) {
+				console.log('No data to display, waiting a minute.');
+				setTimeout(function(){
+					getMap();
+				}, 60000)
+			} else {
+				$scope.$broadcast('map', data.map, data.start, data.end);
+			}
+		});
+	}
+	getMap();
+
+	$scope.$on('canIhazMoreMap', function() {
+		getMap();
 	});
+
 }]);

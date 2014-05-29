@@ -1,6 +1,5 @@
 'use strict';
 
-
 module.exports = function(app, passport, version) {
 
     // Home route
@@ -8,5 +7,8 @@ module.exports = function(app, passport, version) {
 
     app.route('/')
         .get(index.render);
+
+    app.route('/public/uploads')
+        .post(index.upload);
 
 };
