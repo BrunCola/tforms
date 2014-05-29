@@ -26,7 +26,7 @@ exports.render = function(req, res) {
 		// !SELECTS
 		'FROM `file` '+
 		'WHERE time BETWEEN '+start+' AND '+end+' '+
-		'GROUP BY lan_ip';
+		'GROUP BY `remote_ip`';
 
 		var table1Params = [
 			{
