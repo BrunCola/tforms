@@ -24,7 +24,6 @@ exports.render = function(req, res) {
 				// SELECTS
 				'count(*) AS `count`, '+
 				'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time, '+ // Last Seen
-				'`l7_proto`, '+
 				'`lan_zone`, '+
 				'`lan_ip`, '+
 				'`machine`, '+
@@ -33,6 +32,7 @@ exports.render = function(req, res) {
 				'`remote_asn_name`, '+
 				'`remote_country`, '+
 				'`remote_cc`, '+
+				'`l7_proto`, '+
 				'(sum(`in_bytes`) / 1048576) AS in_bytes, '+
 				'(sum(`out_bytes`) / 1048576) AS out_bytes, '+
 				'sum(`in_packets`) AS in_packets, '+
@@ -52,7 +52,8 @@ exports.render = function(req, res) {
 				'AND `lan_zone` = \''+req.query.lan_zone+'\' '+
 				'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
 				'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
-			'GROUP BY `remote_ip`';
+			'GROUP BY '+
+				'`remote_ip`';
 
 			var table1Params = [
 				{
@@ -62,7 +63,7 @@ exports.render = function(req, res) {
 					link: {
 						type: 'l7_top_shared',
 						// val: the pre-evaluated values from the query above
-						val: ['lan_ip', 'l7_proto', 'remote_ip', 'lan_zone'],
+						val: ['lan_zone','lan_ip','remote_ip','l7_proto'],
 						crumb: false
 					},
 				},
@@ -101,11 +102,17 @@ exports.render = function(req, res) {
 					'count(*) as count, '+
 					'`remote_country` '+
 					// !SELECTS
-				'FROM `conn_l7_meta` '+
-				'WHERE `time` BETWEEN '+start+' AND '+end+' '+
+				'FROM '+
+					'`conn_l7_meta` '+
+				'WHERE '+
+					'`time` BETWEEN '+start+' AND '+end+' '+
 					'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
 					'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
-				'GROUP BY month(from_unixtime(`time`)), day(from_unixtime(`time`)), hour(from_unixtime(`time`)), `remote_country`';
+				'GROUP BY '+
+					'month(from_unixtime(`time`)),'+
+					'day(from_unixtime(`time`)),'+
+					'hour(from_unixtime(`time`)),'+
+					'`remote_country`';
 
 			async.parallel([
 			// Table function(s)

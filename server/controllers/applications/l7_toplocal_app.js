@@ -23,8 +23,9 @@ exports.render = function(req, res) {
 				// SELECTS
 				'count(*) AS count, '+
 				'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time, '+
-				'`l7_proto`, '+
+				'`lan_zone`, '+
 				'`lan_ip`, '+
+				'`l7_proto`, '+
 				'sum(`in_packets`) AS in_packets, '+
 				'sum(`out_packets`) AS out_packets, '+
 				'(sum(`in_bytes`) / 1048576) AS in_bytes, '+

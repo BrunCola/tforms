@@ -103,6 +103,7 @@ exports.render = function(req, res) {
 					// !SELECTS
 				'FROM `conn_l7_meta` '+
 				'WHERE time BETWEEN '+start+' AND '+end+' '+
+					'AND `lan_zone` = \''+req.query.lan_zone+'\' '+
 					'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
 					'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
 				'GROUP BY '+
