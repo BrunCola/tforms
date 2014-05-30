@@ -321,9 +321,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 					var prearr = percentages.sort(function(a, b){return b-a});
 					var arr = prearr.splice(4, prearr.length-5);
 					var min = Math.min.apply(Math, percentages);
-					var match = $.grep(newArr, function(e) { return (arr.indexOf(e['percentage']) !== -1) });
-					console.log(match)
-
+					// var match = $.grep(newArr, function(e) { return (arr.indexOf(e['percentage']) !== -1) });
 				}
 
 				timer = window.setInterval(stepUp, step);
