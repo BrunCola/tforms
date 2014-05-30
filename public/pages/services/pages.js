@@ -37,7 +37,7 @@ angular.module('mean.pages').factory('iocIcon', [
 angular.module('mean.pages').factory('appIcon', [
 	function() {
 		var appIcon = function(app) {
-if (mime.search('/') === -1) return;
+		if (app.search('/') === -1) return;
 			// make input lowercase
 			var app = app.toLowerCase();
 			// create an empty div
@@ -145,6 +145,15 @@ angular.module('mean.pages').factory('mimeIcon', [
 						'c-0.264,0-0.478-0.218-0.478-0.483V7.616c0-0.266,0.214-0.483,0.478-0.483h3.133c0.262,0,0.477,0.218,0.477,0.483V10.792z');
 				// switch between text
 				switch(match[2]) {
+					case 'x-bzip2':
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 9.2139 34.9146)')
+							.style('fill', '#7A7A7A')
+							.attr('font-family', 'ITCAvantGardeStd-Md')
+							.attr('font-size', 14)
+							.text('BZ2');
+						return div;
 					case 'x-bzip2':
 						em
 							.append('text')
