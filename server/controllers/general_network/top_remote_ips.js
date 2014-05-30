@@ -19,19 +19,22 @@ exports.render = function(req, res) {
 	var crossfilter = [];
 	var info = [];
 	var table1SQL = 'SELECT '+
-			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time, '+ // Last Seen
 			'`remote_ip`, '+
 			'`remote_asn`, '+
 			'`remote_asn_name`, '+
 			'`remote_country`, '+
 			'`remote_cc`, '+
-			'sum(in_packets) as in_packets, '+
-			'sum(out_packets) as out_packets, '+
-			'(sum(in_bytes) / 1048576) as in_bytes, '+
-			'(sum(out_bytes) / 1048576) as out_bytes '+
-		'FROM conn_meta '+
-		'WHERE time BETWEEN '+start+' AND '+end+' '+
-		'GROUP BY remote_ip';
+			'sum(`in_packets`) AS in_packets, '+
+			'sum(`out_packets`) AS out_packets, '+
+			'(sum(`in_bytes`) / 1048576) AS in_bytes, '+
+			'(sum(`out_bytes`) / 1048576) AS out_bytes '+
+		'FROM '+
+			'conn_remote '+
+		'WHERE '+
+			'time BETWEEN '+start+' AND '+end+' '+
+		'GROUP BY '+
+			'remote_ip';
 
 	var table1Params = [
 		{
@@ -65,8 +68,10 @@ exports.render = function(req, res) {
 			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time, '+ // Last Seen
 			'(sum(in_bytes + out_bytes) / 1048576) AS count,'+
 			'remote_country '+
-		'FROM `conn_meta` '+
-		'WHERE time BETWEEN '+start+' AND '+end+' '+
+		'FROM '+
+			'`conn_remote` '+
+		'WHERE '+
+			'time BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+
 			'month(from_unixtime(time)),'+
 			'day(from_unixtime(time)),'+

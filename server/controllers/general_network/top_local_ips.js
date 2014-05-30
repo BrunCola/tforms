@@ -27,10 +27,11 @@ exports.render = function(req, res) {
 			'sum(`out_packets`) AS out_packets, '+
 			'(sum(`in_bytes`) / 1048576) AS in_bytes, '+
 			'(sum(`out_bytes`) / 1048576) AS out_bytes '+
-		'FROM `conn_meta` '+
-		'WHERE time BETWEEN '+start+' AND '+end+' '+
+		'FROM `conn_local` '+
+		'WHERE '+
+			'time BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+
-			'`lan_ip`';
+			'`lan_zone`,`lan_ip`';
 
 	var table1Params = [
 		{
@@ -61,7 +62,8 @@ exports.render = function(req, res) {
 	var crossfilterSQL = 'SELECT '+
 			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time,'+
 			'(sum(`in_bytes` + `out_bytes`) / 1048576) AS count '+
-		'FROM `conn_meta` '+
+		'FROM '+
+			'`conn_local` '+
 		'WHERE '+
 			'`time` BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+

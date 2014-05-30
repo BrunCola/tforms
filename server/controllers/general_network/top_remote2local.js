@@ -20,25 +20,29 @@ exports.render = function(req, res) {
 		var crossfilter = [];
 		var info = [];
 		var table1SQL = 'SELECT '+
-            // SELECTS
-            'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-            '`lan_zone`, '+
-            '`lan_ip`, '+
-            '`machine`, '+
-            '`remote_ip`, '+
-            '`remote_asn`, '+
-            '`remote_asn_name`, '+
-            '`remote_country`, '+
-            '`remote_cc`, '+
-            '(sum(in_bytes) / 1048576) as in_bytes, '+
-            '(sum(out_bytes) / 1048576) as out_bytes, '+
-            'sum(in_packets) as in_packets, '+
-            'sum(out_packets) as out_packets '+
-            // !SELECTS
-            'FROM conn_meta '+
-            'WHERE time BETWEEN '+start+' AND '+end+' '+
-            'AND remote_ip = \''+req.query.remote_ip+'\' '+
-            'GROUP BY lan_ip';
+	            // SELECTS
+	            'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time,'+ // Last Seen
+	            '`lan_zone`,'+
+	            '`lan_ip`,'+
+	            '`machine`,'+
+	            '`remote_ip`,'+
+	            '`remote_asn`,'+
+	            '`remote_asn_name`,'+
+	            '`remote_country`,'+
+	            '`remote_cc`,'+
+	            '(sum(`in_bytes`) / 1048576) AS in_bytes,'+
+	            '(sum(`out_bytes`) / 1048576) AS out_bytes,'+
+	            'sum(`in_packets`) AS in_packets,'+
+	            'sum(`out_packets`) AS out_packets '+
+	            // !SELECTS
+            'FROM '+
+            	'`conn_meta` '+
+            'WHERE '+
+            	'`time` BETWEEN '+start+' AND '+end+' '+
+            	'AND `emote_ip` = \''+req.query.remote_ip+'\' '+
+            'GROUP BY '+
+            	'`lan_zone`,'+
+            	'`lan_ip`';
 
 		var table1Params = [
 			{
