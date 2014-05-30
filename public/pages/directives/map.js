@@ -78,8 +78,11 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 				draw(countries);
 			});
 
-
+			var arrayCount = 0;
+			var percentObj = {};
 			$scope.$on('map', function (event, data, start, end) {
+
+
 				/*Animation Timing Variables*/
 				var step = 1000; // 1 second
 				var timer;
@@ -168,12 +171,26 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 						.filter(function(d) {
 							return d.time < start
 						})
-						.attr("visibility", "visible");
+						.attr("visibility", function(d){
+							return "visible";
+						});
 					var point = filtered.filter(function(d) {
 						return d.time > start-1001
 					})
 					point.append('text')
 						.text(function(d){
+							// add count to total count
+							arrayCount += d.properties.count;
+							// push countries to object while keeping track of count
+							var thisCountry = d.properties.country;
+							if (thisCountry in percentObj) {
+								percentObj[thisCountry].count += 1;
+							} else {
+								percentObj[thisCountry] = {
+									count: 1
+								};
+							}
+							// return text for label (REVISIT)
 							return d.properties.country;
 						})
 						.attr("transform", function(d) {return "translate(" + projection([d.geometry.coordinates[0]+2,d.geometry.coordinates[1]]) + ")";})
@@ -248,7 +265,11 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 				function stepUp() {
 					start += step;
 					filterCurrentPoints();
+					for (var i in percentObj) {
+						percentObj[i].percentage = (percentObj[i].count/arrayCount)*100;
+					}
 					if (start >= end) {
+						console.log(percentObj);
 						$scope.$broadcast('canIhazMoreMap');
 						clearInterval(timer);
 					}

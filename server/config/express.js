@@ -10,7 +10,7 @@ var express = require('express'),
 	bodyParser = require('body-parser'),
 	methodOverride = require('method-override'),
 	cookieParser = require('cookie-parser'),
-	// multer = require('multer'),
+	// multiparty = require('multiparty'),
 	session = require('express-session'),
 	errorHandler = require('errorhandler'),
 	mean = require('./meanio'),
@@ -108,7 +108,6 @@ module.exports = function(app, passport, db, version) {
 	// Setting the fav icon and static folder
 	app.use(favicon());
 	app.use('/public', express.static(config.root + '/public'));
-
 
 	app.get('/modules/aggregated.js', function(req, res) {
 		res.setHeader('content-type', 'text/javascript');

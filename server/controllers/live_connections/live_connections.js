@@ -16,8 +16,11 @@ exports.render = function(req, res) {
 	// var end = moment().subtract('minutes', 20).unix();	
 
 
-	var start = moment().subtract('minutes', 81).unix();
-	var end = moment().subtract('minutes', 80).unix();
+	var start = moment().subtract('minutes', 21).unix();
+	var end = moment().subtract('minutes', 20).unix();
+
+	// var start = 1399451261
+	// var end = 1399451321
 
 	console.log('start: '+ start)
 	console.log('end: '+ end)
