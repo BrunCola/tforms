@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('fileLocalController', ['$scope', '$stat
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/extracted_files/file_local?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+$location.$$search.lan_ip+'&mime='+$location.$$search.mime;
+		query = '/extracted_files/file_local?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&mime='+$location.$$search.mime;
 	} else {
-		query = '/extracted_files/file_local?lan_ip='+$location.$$search.lan_ip+'&mime='+$location.$$search.mime;
+		query = '/extracted_files/file_local?lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&mime='+$location.$$search.mime;
 	}
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {

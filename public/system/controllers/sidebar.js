@@ -183,6 +183,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		'icon': 'fa-sitemap',
 		'children':
 		[{
+			'title': 'Endpoint Events',
+			'url': 'top_endpoint_events',
+			'icon': 'fa-desktop',
+			'orphans': ['top_endpoint_events_user','top_endpoint_events_user_drill']
+		},
+		{
 			'title': 'Local Connections',
 			'url': 'top_local_ips',
 			'icon': 'fa-cloud-download',
@@ -194,12 +200,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'icon': 'fa-cloud-upload',
 			'orphans': ['top_remote2local', 'top_ips_shared']
 		},
-		{
-			'title': 'Endpoint Events',
-			'url': 'top_endpoint_events',
-			'icon': 'fa-desktop',
-			'orphans': ['top_endpoint_events_user','top_endpoint_events_user_drill']
-		},
+		
 		{
 			'title': 'Local SSH',
 			'url': 'top_ssh',

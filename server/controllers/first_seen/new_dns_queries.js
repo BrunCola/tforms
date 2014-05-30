@@ -31,9 +31,9 @@ exports.render = function(req, res) {
 		'`remote_country`, '+
 		'`remote_cc`, '+
 		'`proto`, '+
-		'`qtype`, '+
-		'`qclass`, '+
-		'`rcode`, '+
+		'`qtype_name` AS qtype, '+
+		'`qclass_name` AS qclass, '+
+		'`rcode_name` AS rcode, '+
 		'`query` '+
 		// !SELECTS
 		'FROM `dns_uniq_query` '+

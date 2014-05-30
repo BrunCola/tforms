@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('l7TopremoteAppController', ['$scope', '
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/applications/l7_topremote_app?start='+$location.$$search.start+'&end='+$location.$$search.end+'&l7_proto='+$location.$$search.l7_proto+'&remote_ip='+$location.$$search.remote_ip;
+		query = '/applications/l7_topremote_app?start='+$location.$$search.start+'&end='+$location.$$search.end+'&remote_ip='+$location.$$search.remote_ip;
 	} else {
-		query = '/applications/l7_topremote_app?l7_proto='+$location.$$search.l7_proto+'&remote_ip='+$location.$$search.remote_ip;
+		query = '/applications/l7_topremote_app?remote_ip='+$location.$$search.remote_ip;
 	}
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {

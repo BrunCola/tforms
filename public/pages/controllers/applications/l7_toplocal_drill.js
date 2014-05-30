@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('l7ToplocalDrillController', ['$scope', 
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/applications/l7_toplocal_drill?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+$location.$$search.lan_ip+'&l7_proto='+$location.$$search.l7_proto;
+		query = '/applications/l7_toplocal_drill?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&l7_proto='+$location.$$search.l7_proto;
 	} else {
-		query = '/applications/l7_toplocal_drill?lan_ip='+$location.$$search.lan_ip+'&l7_proto='+$location.$$search.l7_proto;
+		query = '/applications/l7_toplocal_drill?lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&l7_proto='+$location.$$search.l7_proto;
 	}
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {

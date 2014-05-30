@@ -14,31 +14,34 @@ exports.render = function(req, res) {
 		end = req.query.end;
 	}
 	//var results = [];
-	if (req.query.lan_ip && req.query.lan_zone && req.query.remote_ip) {
+	if (req.query.lan_zone && req.query.lan_ip && req.query.remote_ip) {
 		var tables = [];
 		var info = [];
 		var table1SQL = 'SELECT ' +
-			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time, ' +
-			'`machine`, ' +
-			'`lan_zone`, ' +
-			'`lan_ip`, ' +
-			'`lan_port`, ' +
-			'`remote_ip`, ' +
-			'`remote_port`, '  +
-			'`remote_cc`, ' +
-			'`remote_country`, ' +
-			'`remote_asn`, ' +
-			'`remote_asn_name`, ' +
-			'`ioc`, ' +
-			'`ioc_severity`, ' +
-			'`ioc_typeInfection`, ' +
-			'`ioc_typeIndicator`, ' +
-			'`ioc_count` ' +
-			'FROM `conn` ' +
-			'WHERE time BETWEEN '+start+' AND '+end+' ' +
-			'AND `lan_ip` = \''+req.query.lan_ip+'\' ' +
-			'AND `remote_ip` = \''+req.query.remote_ip+'\' ' +
-			'AND `lan_zone` = \''+req.query.lan_zone+'\'';
+				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time, ' +
+				'`machine`, ' +
+				'`lan_zone`, ' +
+				'`lan_ip`, ' +
+				'`lan_port`, ' +
+				'`remote_ip`, ' +
+				'`remote_port`, '  +
+				'`remote_cc`, ' +
+				'`remote_country`, ' +
+				'`remote_asn`, ' +
+				'`remote_asn_name`, ' +
+				'`ioc`, ' +
+				'`ioc_severity`, ' +
+				'`ioc_typeInfection`, ' +
+				'`ioc_typeIndicator`, ' +
+				'`ioc_count` ' +
+			'FROM '+
+				'`conn` ' +
+			'WHERE '+ 
+				'time BETWEEN '+start+' AND '+end+' ' +
+				'AND `lan_zone` = \''+req.query.lan_zone+'\' '+
+				'AND `lan_ip` = \''+req.query.lan_ip+'\' ' +
+				'AND `remote_ip` = \''+req.query.remote_ip+'\' ';
+				
 		var table1Params = [
 			{
 				title: 'Time',

@@ -20,18 +20,28 @@ exports.render = function(req, res) {
 	var info = [];
 	var table1SQL = 'SELECT '+
 			// SELECTS
-			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+			'count(*) AS `count`, '+
+			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time, '+ // LASt Seen
 			'`l7_proto`, '+
-			'sum(`in_packets`) as in_packets, '+
-			'sum(`out_packets`) as out_packets, '+
-			'(sum(`in_bytes`) / 1048576) as in_bytes, '+
-			'(sum(`out_bytes`) / 1048576) as out_bytes '+
+			'(sum(`in_bytes`) / 1048576) AS in_bytes, '+
+			'(sum(`out_bytes`) / 1048576) AS out_bytes, '+
+			'sum(`in_packets`) AS in_packets, '+
+			'sum(`out_packets`) AS out_packets, '+
+			'sum(`dns`) AS `dns`, '+
+			'sum(`http`) AS `http`, '+
+			'sum(`ssl`) AS `ssl`, '+
+			'sum(`ftp`) AS `ftp`, '+
+			'sum(`irc`) AS `irc`, '+
+			'sum(`smtp`) AS `smtp`, '+
+			'sum(`file`) AS `file`, '+
+			'sum(`ioc_count`) AS `ioc_count` '+
 			// !SELECTS
-		'FROM `conn_l7` '+
+		'FROM `conn_l7_proto` '+
 		'WHERE '+
 			'`time` BETWEEN '+start+' AND '+end+' '+
 			'AND `l7_proto` !=\'-\' '+
-		'GROUP BY `l7_proto`';
+		'GROUP BY '+
+			'`l7_proto`';
 
 	var table1Params = [
 		{
@@ -48,11 +58,20 @@ exports.render = function(req, res) {
 		{ title: 'Applications', select: 'l7_proto' },
 		{ title: 'MB to Remote', select: 'in_bytes' },
 		{ title: 'MB from Remote', select: 'out_bytes' },
-		{ title: 'Packets to Remote', select: 'in_packets' },
-		{ title: 'Packets from Remote', select: 'out_packets' }
+		{ title: 'Packets to Remote', select: 'in_packets', dView: false },
+		{ title: 'Packets from Remote', select: 'out_packets', dView: false },
+		{ title: 'Connections', select: 'count' },
+		{ title: 'DNS', select: 'dns' },
+		{ title: 'HTTP', select: 'http' },
+		{ title: 'SSL', select: 'ssl' },
+		{ title: 'FTP', select: 'ftp' },
+		{ title: 'IRC', select: 'irc' },
+		{ title: 'SMTP', select: 'smtp' },
+		{ title: 'File', select: 'file' },
+		{ title: 'IOC Count', select: 'ioc_count' },	
 	];
 	var table1Settings = {
-		sort: [[0, 'desc']],
+		sort: [[2, 'desc']],
 		div: 'table',
 		title: 'Application Bandwidth Usage'
 	}
@@ -60,7 +79,7 @@ exports.render = function(req, res) {
 	var crossfilterSQL = 'SELECT '+
 			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+ // Last Seen
 			'(sum(in_bytes + out_bytes) / 1048576) AS count '+
-		'FROM `conn_l7` '+
+		'FROM `conn_l7_proto` '+
 		'WHERE time BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+
 			'month(from_unixtime(time)),'+

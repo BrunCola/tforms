@@ -37,11 +37,14 @@ exports.render = function(req, res) {
 				'sum(in_packets) as in_packets, '+
 				'sum(out_packets) as out_packets '+
 				// !SELECTS
-			'FROM `conn_meta` '+
-			'WHERE `time` BETWEEN '+start+' AND '+end+' '+
+			'FROM '+
+				'`conn_meta` '+
+			'WHERE '+
+				'`time` BETWEEN '+start+' AND '+end+' '+
 				'AND `lan_zone` = \''+req.query.lan_zone+'\' '+
 				'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
-			'GROUP BY `remote_ip`';
+			'GROUP BY '+
+				'`remote_ip`';
 
 		var table1Params = [
 			{
