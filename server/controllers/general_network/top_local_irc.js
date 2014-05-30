@@ -22,7 +22,7 @@ exports.render = function(req, res) {
 			'`machine`, ' +
 			'`lan_zone`, ' +
 			'`lan_ip`, ' +
-			'`lan_port`, ' +
+			'`lan_port` ' +
 		'FROM '+
 			'`irc` '+
 		'WHERE '+

@@ -23,7 +23,7 @@ exports.render = function(req, res) {
 			'`remote_port`, '  +
 			'`remote_cc`, ' +
 			'`remote_country`, ' +
-			'`remote_asn_name`, ' +
+			'`remote_asn_name` ' +
 		'FROM '+
 			'`irc` '+
 		'WHERE '+
