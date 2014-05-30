@@ -34,8 +34,8 @@ exports.render = function(req, res) {
 				'`ioc_typeInfection`, ' +
 				'`ioc_typeIndicator`, ' +
 				'`ioc_count` ' +
-			'FROM 
-				`conn` ' +
+			'FROM '+
+				'`conn` ' +
 			'WHERE '+ 
 				'time BETWEEN '+start+' AND '+end+' ' +
 				'AND `lan_zone` = \''+req.query.lan_zone+'\' '+
