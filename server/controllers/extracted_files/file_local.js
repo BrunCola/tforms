@@ -14,37 +14,36 @@ exports.render = function(req, res) {
 		start = req.query.start;
 		end = req.query.end;
 	}
-	if (req.query.lan_ip && req.query.mime) {
+	if (req.query.lan_zone && req.query.lan_ip && req.query.mime) {
 		var tables = [];
 		var table1SQL = 'SELECT '+
-				// SELECTS
-				'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-				'`mime`, '+
-				'`name`, '+
-				'`machine`, '+
-				'`lan_ip`, '+
-				'`lan_port`, '+
-				'`lan_zone`, '+
-				'`remote_ip`, '+
-				'`remote_port`, '+
-				'`remote_asn`, '+
-				'`remote_asn_name`, '+
-				'`remote_country`, '+
-				'`remote_cc`, '+
-				'`proto`, '+
-				'`md5`, '+
-				'`http_host`, '+
-				'`ioc`, '+
-				'`ioc_typeIndicator`, '+
-				'`ioc_typeInfection`, '+
+				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
+				'`mime`,'+
+				'`name`,'+
+				'`machine`,'+
+				'`lan_ip`,'+
+				'`lan_port`,'+
+				'`lan_zone`,'+
+				'`remote_ip`,'+
+				'`remote_port`,'+
+				'`remote_asn`,'+
+				'`remote_asn_name`,'+
+				'`remote_country`,'+
+				'`remote_cc`,'+
+				'`proto`,'+
+				'`md5`,'+
+				'`http_host`,'+
+				'`ioc`,'+
+				'`ioc_typeIndicator`,'+
+				'`ioc_typeInfection`,'+
 				'size as size '+
-				// !SELECTS
 			'FROM '+ 
 				'`file` '+
 			'WHERE '+
 				'time BETWEEN '+start+' AND '+end+' '+
-				'AND mime = \''+req.query.mime+'\' '+
-				'AND lan_ip = \''+req.query.lan_ip+'\' ';
+				'AND `lan_zone` = \''+req.query.lan_zone+'\' '+
+				'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
+				'AND `mime` = \''+req.query.mime+'\' ';
 
 			var table1Params = [
 				{ title: 'Last Seen', select: 'time' },

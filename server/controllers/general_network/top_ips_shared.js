@@ -14,7 +14,7 @@ exports.render = function(req, res) {
 		end = req.query.end;
 	}
 	//var results = [];
-	if (req.query.lan_ip && req.query.lan_zone && req.query.remote_ip) {
+	if (req.query.lan_zone && req.query.lan_ip && req.query.remote_ip) {
 		var tables = [];
 		var info = [];
 		var table1SQL = 'SELECT ' +

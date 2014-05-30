@@ -15,21 +15,23 @@ exports.render = function(req, res) {
 		end = req.query.end;
 	}
 	//var results = [];
-	if (req.query.lan_ip) {
+	if (req.query.lan_zone && req.query.lan_ip) {
 		var tables = [];
 		var table1SQL = 'SELECT '+
-			// SELECTS
-			'date_format(max(from_unixtime(time)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'count(*) as count, '+
-			'`mime`, '+
-			'`lan_ip`, '+
-			'(sum(size) / 1048576) as size, '+
-			'sum(ioc_count) as ioc_count '+
-			// !SELECTS
-			'FROM `file` '+
-			'WHERE time BETWEEN '+start+' AND '+end+' '+
-			'AND lan_ip = \''+req.query.lan_ip+'\' '+
-			'GROUP BY mime';
+				'count(*) AS count,'+
+				'date_format(max(from_unixtime(time)), "%Y-%m-%d %H:%i:%s") AS time,'+
+				'`mime`,'+
+				'`lan_ip`,'+
+				'(sum(`size`) / 1048576) AS size,'+
+				'sum(`ioc_count`) AS ioc_count '+
+			'FROM '+
+				'`file` '+
+			'WHERE '+
+				'`time` BETWEEN '+start+' AND '+end+' '+
+				'AND lan_zone = \''+req.query.lan_zone+'\' '+
+				'AND lan_ip = \''+req.query.lan_ip+'\' '+
+			'GROUP BY '+
+				'mime';
 
 			var table1Params = [
 				{
@@ -39,7 +41,7 @@ exports.render = function(req, res) {
 					link: {
 						type: 'file_local',
 						// val: the pre-evaluated values from the query above
-						val: ['lan_ip', 'mime'],
+						val: ['lan_zone','lan_ip','mime'],
 						crumb: false
 					},
 				},

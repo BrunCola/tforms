@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('topIpsSharedController', ['$scope', '$s
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/general_network/top_ips_shared?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&remote_ip='+$location.$$search.remote_ip;
+		query = '/general_network/top_ips_shared?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip;
 	} else {
-		query = '/general_network/top_ips_shared?&lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&remote_ip='+$location.$$search.remote_ip;
+		query = '/general_network/top_ips_shared?lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip;
 	}
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {

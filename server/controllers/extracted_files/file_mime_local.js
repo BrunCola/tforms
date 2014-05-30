@@ -39,7 +39,7 @@ exports.render = function(req, res) {
 					link: {
 						type: 'file_local',
 						// val: the pre-evaluated values from the query above
-						val: ['lan_ip', 'mime'],
+						val: ['lan_zone','lan_ip', 'mime'],
 						crumb: false
 					},
 				},

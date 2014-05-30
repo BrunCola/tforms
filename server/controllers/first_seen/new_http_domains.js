@@ -19,22 +19,23 @@ exports.render = function(req, res) {
 	var crossfilter = [];
 	var info = [];
 	var table1SQL = 'SELECT '+
-		// SELECTS
-		'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-		'`host`, '+
-		'`lan_zone`, '+
-		'`lan_ip`, '+
-		'`machine`, '+
-		'`remote_ip`, '+
-		'`remote_asn`, '+
-		'`remote_asn_name`, '+
-		'`remote_country`, '+
-		'`remote_cc` '+
+			// SELECTS
+			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+ // Last Seen
+			'`host`, '+
+			'`lan_zone`, '+
+			'`lan_ip`, '+
+			'`machine`, '+
+			'`remote_ip`, '+
+			'`remote_asn`, '+
+			'`remote_asn_name`, '+
+			'`remote_country`, '+
+			'`remote_cc` '+
 		// !SELECTS
-		'FROM http_uniq_host '+
-		'WHERE time BETWEEN '+start+' AND '+end;
-
-		var table1Params = [
+		'FROM '+
+			'`http_uniq_host` '+
+		'WHERE '+
+			'time BETWEEN '+start+' AND '+end;
+	var table1Params = [
 		{ title: 'First Seen', select: 'time' },
 		{ title: 'HTTP Domain', select: 'host' },
 		{ title: 'Remote IP', select: 'remote_ip' },
@@ -45,24 +46,23 @@ exports.render = function(req, res) {
 		{ title: 'LAN Zone', select: 'lan_zone' },
 		{ title: 'LAN IP', select: 'lan_ip' },
 		{ title: 'Machine Name', select: 'machine' }
-		];
-		var table1Settings = {
-			sort: [[0, 'desc']],
-			div: 'table',
-			title: 'New Remote IP Addresses Detected'
-		}
-
-		var crossfilterSQL = 'SELECT '+
-		// SELECTS
-		'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-		'`remote_country`, '+
-		'count(*) as count '+
-		// !SELECTS
+	];
+	var table1Settings = {
+		sort: [[0, 'desc']],
+		div: 'table',
+		title: 'New Remote IP Addresses Detected'
+	}
+	var crossfilterSQL = 'SELECT '+
+			// SELECTS
+			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'`remote_country`, '+
+			'count(*) as count '+
+			// !SELECTS
 		'FROM http_uniq_host '+
 		'WHERE time BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country';
 
-		async.parallel([
+	async.parallel([
 		// Table function(s)
 		function(callback) {
 			new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
