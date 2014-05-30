@@ -129,7 +129,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 			if (!match) return mimeIcon;
 			if (match[1] == 'application') {
 				// background color generated here
-				bg.style('fill', '#BBBDBF');
+				bg.style('fill', '#BBBBBB');
 				em
 					.append('path')
 					.style('fill', '#F68D55')
@@ -149,23 +149,162 @@ angular.module('mean.pages').factory('mimeIcon', [
 						em
 							.append('text')
 							.attr('transform', 'matrix(1 0 0 1 9.2139 34.9146)')
-							.style('fill', '#7A7A7A')
+							.style('fill', '#7F7F7F')
 							.attr('font-family', 'ITCAvantGardeStd-Md')
 							.attr('font-size', 14)
 							.text('BZ2');
 						return div;
-					case 'x-bzip2':
+					case 'octet-stream':
 						em
 							.append('text')
-							.attr('transform', 'matrix(1 0 0 1 9.2139 34.9146)')
-							.style('fill', '#7A7A7A')
+							.attr('transform', 'matrix(1 0 0 1 9 29)')
+							.style('fill', '#7F7F7F')
+							.attr('font-family', 'ITCAvantGardeStd-Md')
+							.attr('font-size', 8)
+							.text('01001');
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 9 37)')
+							.style('fill', '#7F7F7F')
+							.attr('font-family', 'ITCAvantGardeStd-Md')
+							.attr('font-size', 8)
+							.text('10011');
+						return div;
+					case 'xml':
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 9.2 35)')
+							.style('fill', '#7F7F7F')
+							.attr('font-family', 'ITCAvantGardeStd-Md')
+							.attr('font-size', 13)
+							.text('XML');
+						return div;
+					case 'x-gzip':
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 9.8 35)')
+							.style('fill', '#7F7F7F')
+							.attr('font-family', 'ITCAvantGardeStd-Md')
+							.attr('font-size', 16)
+							.text('GZ');
+						return div;
+					case 'flash':
+						em
+							.append('path')
+							.style('fill', '#7F7F7F')
+							.attr('d', 'M28.614,21.494l-0.121,3.552c0,0-4.175,0.83-4.295,3.904h2.383l0.125,3.551l-4.178-0.117'+
+								'c0,0-1.792,7.338-8.477,7.221l-0.119-3.312c0,0,3.581,0.234,5.492-6.158C19.425,30.134,21.449,21.615,28.614,21.494z');
+						return div;
+					case 'pdf':
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 9.4 34.6)')
+							.style('fill', '#7F7F7F')
 							.attr('font-family', 'ITCAvantGardeStd-Md')
 							.attr('font-size', 14)
-							.text('BZ2');
+							.text('PDF');
+						return div;
+					case 'rpm':
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 5.2 31.6)')
+							.style('fill', '#7F7F7F')
+							.attr('font-family', 'ITCAvantGardeStd-Bk')
+							.attr('font-size', 12)
+							.text('x-rpm');
+						return div;
+					case 'pgp-signature':
+						em
+							.append('path')
+							.attr('fill-rule', 'evenodd')
+							.attr('clip-rule', 'evenodd') 
+							.style('fill', '#7F7F7F')
+							.attr('d', 'M26.946,29.114V27.06l0,0c0-0.002,0-0.004,0-0.007'+
+								'c0-3.123-2.514-5.655-5.617-5.655c-3.102,0-5.615,2.532-5.615,5.655c0,0.003,0,0.005,0,0.007v2.055h-1.15v9.037h13.574v-9.037'+
+								'H26.946z M24.966,27.262v1.853h-7.174v-1.853c0-0.003,0-0.005,0-0.007c0-1.994,1.121-3.817,3.559-3.817'+
+								'c2.389,0,3.615,1.823,3.615,3.817C24.966,27.257,24.966,27.259,24.966,27.262z');
+						em
+							.append('path')
+							.attr('fill-rule', 'evenodd')
+							.attr('clip-rule', 'evenodd') 
+							.style('fill', '#7F7F7F')
+							.attr('d', 'M40.007,18.596l-0.76-2.507l-2.023-1.661l-2.605-0.257l-2.31,1.234'+
+								'l-1.234,2.311l0.21,2.897l1.773,1.253l-1.381,7.327l1.922,2.132l1.729-8.689l2.096,8.806l1.93-2.054l-1.364-7.604l1.259-0.682'+
+								'L40.007,18.596z');
+						return div;
+					case 'postscript':
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 8.95 34.57)')
+							.style('fill', '#7F7F7F')
+							.attr('font-family', 'ITCAvantGardeStd-Md')
+							.attr('font-size', 15)
+							.text('P.S.');
+						return div;
+					case 'ttf':
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 10.6 35.39)')
+							.style('fill', '#7F7F7F')
+							.attr('font-family', 'ITCAvantGardeStd-Md')
+							.attr('font-size', 15)
+							.text('TTF');
+						return div;
+					case 'x-dosexec':
+						em
+							.append('path')
+							.style('fill', '#7F7F7F')
+							.attr('d', 'M32.643,27.167l1.274-1.784l-1.396-1.396l-1.784,1.274l-1.058-0.438l-0.36-2.162h-1.975l-0.36,2.162'+
+								'l-1.059,0.438l-1.783-1.274l-1.396,1.396l1.274,1.784l-0.438,1.058l-2.162,0.36v1.975l2.162,0.36l0.438,1.058l-1.274,1.784'+
+								'l1.396,1.396l1.783-1.274l1.059,0.438l0.36,2.162h1.975l0.36-2.162l1.058-0.438l1.784,1.274l1.396-1.396l-1.274-1.784l0.438-1.058'+
+								'l2.162-0.36v-1.975l-2.162-0.36L32.643,27.167L32.643,27.167z M28.331,31.547l-1.975-1.975l1.975-1.975l1.975,1.975L28.331,31.547'+
+								'L28.331,31.547z');
+						return div;
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 8.79 34.54)')
+							.style('fill', '#7F7F7F')
+							.attr('font-family', 'ITCAvantGardeStd-Bold')
+							.attr('font-size', 12)
+							.text('>_');
+						return div;
+					case 'x-elc':
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 9.384 36)')
+							.style('fill', '#7F7F7F')
+							.attr('font-family', 'ITCAvantGardeStd-Md')
+							.attr('font-size', 15)
+							.text('elc');
+						return div;
+					case 'ogg':
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 5.825 33)')
+							.style('fill', '#7F7F7F')
+							.attr('font-family', 'ITCAvantGardeStd-Md')
+							.attr('font-size', 14)
+							.text('ogg');
+						return div;
+					case 'zip':
+						em
+							.append('polygon')
+							.attr('fill-rule', 'evenodd')
+							.attr('clip-rule', 'evenodd') 
+							.style('fill', '#7F7F7F')
+							.attr('points', '29.796,38.05 29.796,37.1 26.946,37.1 25.996,36.15 '+
+								'25.996,34.25 27.896,34.25 27.896,31.4 25.996,31.4 25.996,26.275 27.896,26.275 27.896,23.9 25.521,23.9 22.671,22 16.021,22 '+
+								'14.121,23.9 21.721,23.9 24.096,26.275 24.096,31.4 21.721,33.775 14.121,33.775 15.546,35.675 22.196,35.675 24.096,34.25 '+
+								'24.096,36.15 23.146,37.1 20.296,37.1 20.296,38.05 23.146,38.05 24.096,39 25.996,39 26.946,38.05');
+						em
+							.append('polygon')
+							.attr('fill-rule', 'evenodd')
+							.attr('clip-rule', 'evenodd') 
+							.style('fill', '#7F7F7F')
+							.attr('points', '20.296,32.825 21.721,31.4 21.721,24.85 13.171,24.85 11.746,26.275 11.746,32.825 ');
 						return div;
 				}
 			}
-
 			if (match[1] == 'text') {
 				// background color generated here
 				bg.style('fill', '#BBBBBB');
