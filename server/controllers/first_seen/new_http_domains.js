@@ -51,7 +51,7 @@ exports.render = function(req, res) {
 	var crossfilterSQL = 'SELECT '+
 			'count(*) AS count,'+
 			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+
-			'`remote_country`, '+
+			'`remote_country` '+
 		'FROM '+
 			'`http_uniq_host` '+
 		'WHERE '+

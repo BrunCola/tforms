@@ -7,7 +7,6 @@ var dataTable = require('../constructors/datatable'),
 
 exports.render = function(req, res) {
 	var database = req.session.passport.user.database;
-	// var database = null;
 	var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 	var end = Math.round(new Date().getTime() / 1000);
 	if (req.query.start && req.query.end) {
@@ -46,7 +45,6 @@ exports.render = function(req, res) {
 				select: 'time',
 				link: {
 					type: 'top_ips_shared',
-					// val: the pre-evaluated values from the query above
 					val: ['lan_ip','lan_zone','remote_ip'],
 					crumb: false
 				}
@@ -70,10 +68,11 @@ exports.render = function(req, res) {
 			title: 'Local IP/Remote IP Traffic'
 		}
 		var crossfilterSQL = 'SELECT '+
-				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time, '+ // Last Seen
+				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
 				'(sum(`in_bytes` + `out_bytes`) / 1048576) AS count,'+
 				'`remote_country` '+
-            'FROM `conn_meta` '+
+            'FROM '+
+            	'`conn_meta` '+
             'WHERE '+
 				'`time` BETWEEN '+start+' AND '+end+' '+
 				'AND `remote_ip` = \''+req.query.remote_ip+'\' '+

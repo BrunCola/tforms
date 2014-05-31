@@ -39,7 +39,6 @@ exports.render = function(req, res) {
 			dView: true,
 			link: {
 				type: 'top_remote2local',
-				// val: the pre-evaluated values from the query above
 				val: ['remote_ip'],
 				crumb: false
 			},
