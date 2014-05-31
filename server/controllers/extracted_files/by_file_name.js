@@ -21,6 +21,7 @@ exports.render = function(req, res) {
 				'count(*) AS count,'+
 				'date_format(max(from_unixtime(time)), "%Y-%m-%d %H:%i:%s") AS time,'+
 				'`mime`,'+
+				'`lan_zone`'
 				'`lan_ip`,'+
 				'(sum(`size`) / 1048576) AS size,'+
 				'sum(`ioc_count`) AS ioc_count '+
