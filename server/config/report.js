@@ -120,17 +120,17 @@ function sendReport(user) {
 }
 
 module.exports = function(db) {
-	// get users and send reports
-	// new CronJob('0 * * * *', function(){
-	// 	var connection = mysql.createConnection(db);
-	// 	var sql="SELECT * FROM user WHERE email_report = '1'";
-	// 	db.query(sql, function(err, users, fields) {
-	// 		console.log(users)
-	// 		if (err) throw err;
-	// 		for (var n in users) {
-	// 			sendReport(users[n]);
-	// 		}
-	// 		connection.destroy();
-	// 	});
-	// }, null, true, null);
+	get users and send reports
+	new CronJob('0 8 * * *', function(){
+		var connection = mysql.createConnection(db);
+		var sql="SELECT * FROM user WHERE email_report = '1'";
+		db.query(sql, function(err, users, fields) {
+			console.log(users)
+			if (err) throw err;
+			for (var n in users) {
+				sendReport(users[n]);
+			}
+			connection.destroy();
+		});
+	}, null, true, null);
 };
