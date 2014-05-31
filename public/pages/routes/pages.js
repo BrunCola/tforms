@@ -134,6 +134,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						data: {
 							title: 'File Mime Types',
 							subtitleElm: {
+								'ZONE': 'lan_zone',
 								'LAN IP': 'lan_ip'
 							},
 							daterange: true
@@ -149,6 +150,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							data: {
 								title: 'Extracted Files for Local IP',
 								subtitleElm: {
+									'Zone': 'lan_zone',
 									'LAN IP': 'lan_ip',
 									'MIME Type': 'mime'
 								},
@@ -341,6 +343,7 @@ angular.module('mean.pages').config(['$stateProvider',
 								title: 'Applications',
 								subtitleElm: {
 									'L7 Protocol': 'l7_proto',
+									'Zone': 'lan_zone',
 									'LAN IP': 'lan_ip'
 								},
 								daterange: true
@@ -368,7 +371,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						data: {
 							title: 'Applications',
 							subtitleElm: {
-								'L7 Protocol': 'l7_proto',
+								'Zone': 'lan_zone',
 								'LAN IP': 'lan_ip'
 							},
 							daterange: true
@@ -384,8 +387,9 @@ angular.module('mean.pages').config(['$stateProvider',
 							data: {
 								title: 'Applications',
 								subtitleElm: {
+									'Zone': 'lan_zone',
+									'LAN IP': 'lan_ip',
 									'L7 Protocol': 'l7_proto',
-									'LAN IP': 'lan_ip'
 								},
 								daterange: true
 							}
@@ -400,9 +404,9 @@ angular.module('mean.pages').config(['$stateProvider',
 								data: {
 									title: 'Applications Shared',
 									subtitleElm: {
-										'L7 Protocol': 'l7_proto',
+										'Zone': 'lan_zone',
 										'LAN IP': 'lan_ip',
-										'LAN Zone': 'lan_zone'
+										'L7 Protocol': 'l7_proto'
 									},
 									daterange: true
 								}
@@ -429,7 +433,6 @@ angular.module('mean.pages').config(['$stateProvider',
 						data: {
 							title: 'Applications',
 							subtitleElm: {
-								'L7 Protocol': 'l7_proto',
 								'Remote IP': 'remote_ip'
 							},
 							daterange: true
@@ -445,8 +448,8 @@ angular.module('mean.pages').config(['$stateProvider',
 							data: {
 								title: 'Applications',
 								subtitleElm: {
-									'L7 Protocol': 'l7_proto',
-									'Remote IP': 'remote_ip'
+									'Remote IP': 'remote_ip',
+									'L7 Protocol': 'l7_proto'
 								},
 								daterange: true
 							}
@@ -744,6 +747,5 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: false
 					}
 				})
-
 	}
 ]);
