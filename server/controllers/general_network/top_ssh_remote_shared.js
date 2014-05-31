@@ -58,10 +58,10 @@ exports.render = function(req, res) {
 			{ title: 'Remote ASN', select: 'remote_asn' },
 			{ title: 'Remote ASN Name', select: 'remote_asn_name' },
 			{ title: 'Status Code', select: 'status_code' },
-			{ title: 'Severity', select: 'ioc_severity' },
 			{ title: 'IOC', select: 'ioc' },
 			{ title: 'Infection Stage', select: 'ioc_typeInfection' },
 			{ title: 'Indicator Type', select: 'ioc_typeIndicator' },
+			{ title: 'Severity', select: 'ioc_severity' },
 			{ title: 'IOC Count', select: 'ioc_count' }
 		];
 		var table1Settings = {
