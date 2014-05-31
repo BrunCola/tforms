@@ -39,7 +39,7 @@ exports.render = function(req, res) {
 		{ title: 'LAN IP', select: 'lan_ip' },
 		{ title: 'LAN Client', select: 'lan_client' },
 		{ title: 'Remote IP', select: 'remote_ip' },
-		{ title: 'Remote Server', select: 'remote_server', }
+		{ title: 'Remote Server', select: 'remote_server', },
 		{ title: 'Remote Country', select: 'remote_country' },
 		{ title: 'Flag', select: 'remote_cc', },
 		{ title: 'Remote ASN', select: 'remote_asn' },
