@@ -18,20 +18,20 @@ exports.render = function(req, res) {
 	if (req.query.mime) {
 		var tables = [];
 		var table1SQL = 'SELECT '+
-				'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time, '+ // Last Seen
-				'count(*) AS count, '+
-				'`mime`, '+
-				'`lan_zone`, '+
-				'`lan_ip`, '+
-				'(sum(`size`) / 1048576) AS size, '+
-				'sum(ioc_count) AS ioc_count '+
+				'count(*) AS count,'+
+				'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time,'+
+				'`mime`,'+
+				'`lan_zone`,'+
+				'`lan_ip`,'+
+				'(sum(`size`) / 1048576) AS size,'+
+				'sum(`ioc_count`) AS ioc_count '+
 			'FROM '+
 				'`file_meta` '+
 			'WHERE '+
 				'time BETWEEN '+start+' AND '+end+' '+
 				'AND `mime` = \''+req.query.mime+'\' '+
 			'GROUP BY '+
-				'`lan_zone`,'
+				'`lan_zone`,'+
 				'`lan_ip`';
 
 			var table1Params = [
