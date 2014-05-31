@@ -33,7 +33,6 @@ exports.render = function(req, res) {
 			'GROUP BY '+
 				'`lan_zone`,'+
 				'`lan_ip`';
-
 			var table1Params = [
 				{
 					title: 'Last Seen',
@@ -41,16 +40,14 @@ exports.render = function(req, res) {
 					dView: true,
 					link: {
 						type: 'file_local',
-						// val: the pre-evaluated values from the query above
 						val: ['lan_zone','lan_ip', 'mime'],
 						crumb: false
 					},
 				},
 				{ title: 'Total Extracted Files', select: 'count' },
-				{ title: 'Mime Type', select: 'mime' },
+				{ title: 'Zone', select: 'lan_zone' },
 				{ title: 'Lan IP', select: 'lan_ip' },
-				// { title: 'File Name', select: 'name', sClass:'file' },
-				{ title: 'Total Size', select: 'size' },
+				{ title: 'Total Size (MB)', select: 'size' },
 				{ title: 'Total IOC Hits', select: 'ioc_count' }
 			];
 			var table1Settings = {

@@ -20,9 +20,9 @@ exports.render = function(req, res) {
 		var table1SQL = 'SELECT '+
 				'count(*) AS count,'+
 				'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time,'+
-				'`mime`,'+
 				'`lan_zone`,'+
 				'`lan_ip`,'+
+				'`mime`,'+
 				'(sum(`size`) / 1048576) AS size,'+
 				'sum(`ioc_count`) AS ioc_count '+
 			'FROM '+
@@ -48,8 +48,7 @@ exports.render = function(req, res) {
 				},
 				{ title: 'Total Extracted Files', select: 'count' },
 				{ title: 'Mime Type', select: 'mime' },
-				// { title: 'File Name', select: 'name', sClass:'file' },
-				{ title: 'Total Size', select: 'size' },
+				{ title: 'Total Size (MB)', select: 'size' },
 				{ title: 'Total IOC Hits', select: 'ioc_count' }
 			];
 			var table1Settings = {
