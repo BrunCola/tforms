@@ -448,8 +448,8 @@ angular.module('mean.pages').config(['$stateProvider',
 							data: {
 								title: 'Applications',
 								subtitleElm: {
-									'L7 Protocol': 'l7_proto',
-									'Remote IP': 'remote_ip'
+									'Remote IP': 'remote_ip',
+									'L7 Protocol': 'l7_proto'
 								},
 								daterange: true
 							}
