@@ -46,7 +46,7 @@ exports.render = function(req, res) {
 		var table1Params = [
 			{ title: 'Time', select: 'time' },
 			{ title: 'Zone', select: 'lan_zone' },
-			{ title: 'Machine', select: 'machine' },
+			{ title: 'Machine Name', select: 'machine' },
 			{ title: 'LAN IP', select: 'lan_ip' },
 			{ title: 'LAN port', select: 'lan_port' },
 			{ title: 'LAN client', select: 'lan_client' },
@@ -58,8 +58,8 @@ exports.render = function(req, res) {
 			{ title: 'Remote ASN', select: 'remote_asn' },
 			{ title: 'Remote ASN Name', select: 'remote_asn_name' },
 			{ title: 'Status Code', select: 'status_code' },
+			{ title: 'Severity', select: 'ioc_severity' },
 			{ title: 'IOC', select: 'ioc' },
-			{ title: 'IOC Severity', select: 'ioc_severity' },
 			{ title: 'Infection Stage', select: 'ioc_typeInfection' },
 			{ title: 'Indicator Type', select: 'ioc_typeIndicator' },
 			{ title: 'IOC Count', select: 'ioc_count' }
