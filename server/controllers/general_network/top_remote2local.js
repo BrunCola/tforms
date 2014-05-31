@@ -15,35 +15,31 @@ exports.render = function(req, res) {
 		end = req.query.end;
 	}
 	if (req.query.remote_ip) {
-		//var results = [];
 		var tables = [];
 		var crossfilter = [];
 		var info = [];
 		var table1SQL = 'SELECT '+
-	            // SELECTS
-	            'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time,'+ // Last Seen
-	            '`lan_zone`,'+
-	            '`lan_ip`,'+
-	            '`machine`,'+
-	            '`remote_ip`,'+
-	            '`remote_asn`,'+
-	            '`remote_asn_name`,'+
-	            '`remote_country`,'+
-	            '`remote_cc`,'+
-	            '(sum(`in_bytes`) / 1048576) AS in_bytes,'+
-	            '(sum(`out_bytes`) / 1048576) AS out_bytes,'+
-	            'sum(`in_packets`) AS in_packets,'+
-	            'sum(`out_packets`) AS out_packets '+
-	            // !SELECTS
-            'FROM '+
-            	'`conn_meta` '+
-            'WHERE '+
-            	'`time` BETWEEN '+start+' AND '+end+' '+
-            	'AND `emote_ip` = \''+req.query.remote_ip+'\' '+
-            'GROUP BY '+
-            	'`lan_zone`,'+
-            	'`lan_ip`';
-
+				'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time,'+
+				'`lan_zone`,'+
+				'`machine`,'+
+				'`lan_ip`,'+
+				'`remote_ip`,'+
+				'`remote_asn`,'+
+				'`remote_asn_name`,'+
+				'`remote_country`,'+
+				'`remote_cc`,'+
+				'(sum(`in_bytes`) / 1048576) AS in_bytes,'+
+				'(sum(`out_bytes`) / 1048576) AS out_bytes,'+
+				'sum(`in_packets`) AS in_packets,'+
+				'sum(`out_packets`) AS out_packets '+
+			'FROM '+
+				'`conn_meta` '+
+			'WHERE '+
+				'`time` BETWEEN '+start+' AND '+end+' '+
+				'AND `remote_ip` = \''+req.query.remote_ip+'\' '+
+			'GROUP BY '+
+				'`lan_zone`,'+
+				'`lan_ip`';
 		var table1Params = [
 			{
 				title: 'Last Seen',
@@ -56,13 +52,13 @@ exports.render = function(req, res) {
 				}
 			},
             { title: 'LAN Zone', select: 'lan_zone' },
-            { title: 'LAN IP', select: 'lan_ip' },
             { title: 'Machine Name', select: 'machine' },
+            { title: 'LAN IP', select: 'lan_ip' },
             { title: 'Remote IP', select: 'remote_ip' },
-            { title: 'Remote ASN', select: 'remote_asn' },
-            { title: 'Remote ASN Name', select: 'remote_asn_name' },
             { title: 'Remote Country', select: 'remote_country' },
             { title: 'Flag', select: 'remote_cc', },
+            { title: 'Remote ASN', select: 'remote_asn' },
+            { title: 'Remote ASN Name', select: 'remote_asn_name' },
             { title: 'MB to Remote', select: 'in_bytes' },
             { title: 'MB from Remote', select: 'out_bytes'},
             { title: 'Packets to Remote', select: 'in_packets', dView:false },
@@ -73,13 +69,10 @@ exports.render = function(req, res) {
 			div: 'table',
 			title: 'Local IP/Remote IP Traffic'
 		}
-
 		var crossfilterSQL = 'SELECT '+
-				// SELECTS
 				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time, '+ // Last Seen
 				'(sum(`in_bytes` + `out_bytes`) / 1048576) AS count,'+
 				'`remote_country` '+
-				// !SELECTS
             'FROM `conn_meta` '+
             'WHERE '+
 				'`time` BETWEEN '+start+' AND '+end+' '+
@@ -89,7 +82,6 @@ exports.render = function(req, res) {
 				'day(from_unixtime(`time`)),'+
 				'hour(from_unixtime(`time`)),'+
 				'`remote_country`';
-
 		async.parallel([
 			// Table function(s)
 			function(callback) {
