@@ -25,7 +25,7 @@ exports.render = function(req, res) {
 				'(sum(`size`) / 1048576) AS size,'+
 				'sum(`ioc_count`) AS ioc_count '+
 			'FROM '+
-				'`file` '+
+				'`file_meta` '+
 			'WHERE '+
 				'time BETWEEN '+start+' AND '+end+' '+
 				'AND `remote_ip` = \''+req.query.remote_ip+'\' '+

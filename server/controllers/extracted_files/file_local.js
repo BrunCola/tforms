@@ -36,7 +36,7 @@ exports.render = function(req, res) {
 				'`ioc`,'+
 				'`ioc_typeIndicator`,'+
 				'`ioc_typeInfection`,'+
-				'size as size '+
+				'size '+
 			'FROM '+ 
 				'`file` '+
 			'WHERE '+

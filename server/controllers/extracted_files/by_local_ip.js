@@ -17,7 +17,6 @@ exports.render = function(req, res) {
 	//var results = [];
 	var tables = [];
 	var table1SQL = 'SELECT '+
-			// SELECTS
 			'count(*) as count, '+
 			'date_format(max(from_unixtime(time)), "%Y-%m-%d %H:%i:%s") as time, '+
 			'`lan_zone`, '+
@@ -25,15 +24,13 @@ exports.render = function(req, res) {
 			'`machine`, '+
 			'(sum(size) / 1048576) as size, '+
 			'sum(ioc_count) as ioc_count '+
-			// !SELECTS
 		'FROM '+
-			'`file` '+
+			'`file_local` '+
 		'WHERE '+
 			'time BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+
 			'`lan_ip`, ' +
 			'`lan_zone`';
-
 		var table1Params = [
 			{
 				title: 'Last Seen',
