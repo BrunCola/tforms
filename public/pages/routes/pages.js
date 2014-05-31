@@ -134,6 +134,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						data: {
 							title: 'File Mime Types',
 							subtitleElm: {
+								'ZONE': 'lan_zone',
 								'LAN IP': 'lan_ip'
 							},
 							daterange: true
@@ -149,6 +150,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							data: {
 								title: 'Extracted Files for Local IP',
 								subtitleElm: {
+									'Zone': 'lan_zone',
 									'LAN IP': 'lan_ip',
 									'MIME Type': 'mime'
 								},
@@ -341,6 +343,7 @@ angular.module('mean.pages').config(['$stateProvider',
 								title: 'Applications',
 								subtitleElm: {
 									'L7 Protocol': 'l7_proto',
+									'Zone': 'lan_zone'
 									'LAN IP': 'lan_ip'
 								},
 								daterange: true
@@ -369,6 +372,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							title: 'Applications',
 							subtitleElm: {
 								'L7 Protocol': 'l7_proto',
+								'Zone': 'lan_zone'
 								'LAN IP': 'lan_ip'
 							},
 							daterange: true
@@ -744,6 +748,5 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: false
 					}
 				})
-
 	}
 ]);
