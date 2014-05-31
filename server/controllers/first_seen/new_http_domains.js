@@ -40,7 +40,7 @@ exports.render = function(req, res) {
 		{ title: 'Remote ASN', select: 'remote_asn' },
 		{ title: 'Remote ASN Name', select: 'remote_asn_name' },
 		{ title: 'Zone', select: 'lan_zone' },
-		{ title: 'Machine Name', select: 'machine' }
+		{ title: 'Machine Name', select: 'machine' },
 		{ title: 'LAN IP', select: 'lan_ip' },
 	];
 	var table1Settings = {
