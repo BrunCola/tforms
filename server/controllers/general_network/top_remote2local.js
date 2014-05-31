@@ -103,11 +103,9 @@ exports.render = function(req, res) {
 				tables: tables,
 				crossfilter: crossfilter
 			};
-			//console.log(results);
 			res.json(results);
 		});
 	} else {
         res.redirect('/');
     }
-
 };
