@@ -25,7 +25,7 @@ exports.render = function(req, res) {
 				'(sum(`size`) / 1048576) AS size,'+
 				'sum(`ioc_count`) AS ioc_count '+
 			'FROM '+
-				'`file` '+
+				'`file_meta` '+
 			'WHERE '+
 				'time BETWEEN '+start+' AND '+end+' '+
 				'AND `remote_ip` = \''+req.query.remote_ip+'\' '+
@@ -47,7 +47,7 @@ exports.render = function(req, res) {
 				{ title: 'Total Extracted Files', select: 'count' },
 				{ title: 'Mime Type', select: 'mime' },
 				// { title: 'File Name', select: 'name', sClass:'file' },
-				{ title: 'Total Size', select: 'size' },
+				{ title: 'Total Size (MB)', select: 'size' },
 				{ title: 'Total IOC Hits', select: 'ioc_count' }
 			];
 			var table1Settings = {

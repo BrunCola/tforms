@@ -9,7 +9,6 @@ angular.module('mean.pages').controller('topRemote2localController', ['$scope', 
 		query = '/general_network/top_remote2local?remote_ip='+$location.$$search.remote_ip;
 	}
 	$http({method: 'GET', url: query}).
-	//success(function(data, status, headers, config) {
 	success(function(data) {
 		if (data.tables[0] === null) {
 			$scope.$broadcast('loadError');

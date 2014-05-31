@@ -18,10 +18,14 @@ exports.render = function(req, res) {
 			'count(*) AS count,'+
 			'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time,'+
 			'`remote_ip`,'+
+			'`remote_asn`,'+
+			'`remote_asn_name`,'+
+			'`remote_country`,'+
+			'`remote_cc`,'+
 			'(sum(`size`) / 1048576) AS size,'+
 			'sum(`ioc_count`) AS ioc_count '+
 		'FROM '+
-			'`file` '+
+			'`file_remote` '+
 		'WHERE '+
 			'`time` BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+
@@ -40,6 +44,10 @@ exports.render = function(req, res) {
 		},
 		{ title: 'Total Extracted Files', select: 'count' },
 		{ title: 'Remote IP', select: 'remote_ip' },
+		{ title: 'Remote Country', select: 'remote_country' },
+		{ title: 'Flag', select: 'remote_cc' },
+		{ title: 'ASN', select: 'remote_asn' },
+		{ title: 'ASN Name', select: 'remote_asn_name' },
 		{ title: 'Total Size (MB)', select: 'size' },
 		{ title: 'Total IOC Hits', select: 'ioc_count' }
 	];

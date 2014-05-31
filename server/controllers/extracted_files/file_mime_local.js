@@ -18,19 +18,21 @@ exports.render = function(req, res) {
 	if (req.query.mime) {
 		var tables = [];
 		var table1SQL = 'SELECT '+
-			// SELECTS
-			'date_format(max(from_unixtime(time)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-            'count(*) as count, '+
-            '`mime`, '+
-            '`lan_ip`, '+
-            '(sum(size) / 1048576) as size, '+
-            'sum(ioc_count) as ioc_count '+
-            // !SELECTS
-            'FROM `file` '+
-            'WHERE time BETWEEN '+start+' AND '+end+' '+
-            'AND mime = \''+req.query.mime+'\' '+
-            'GROUP BY lan_ip';
-
+				'count(*) AS count,'+
+				'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time,'+
+				'`mime`,'+
+				'`lan_zone`,'+
+				'`lan_ip`,'+
+				'(sum(`size`) / 1048576) AS size,'+
+				'sum(`ioc_count`) AS ioc_count '+
+			'FROM '+
+				'`file_meta` '+
+			'WHERE '+
+				'time BETWEEN '+start+' AND '+end+' '+
+				'AND `mime` = \''+req.query.mime+'\' '+
+			'GROUP BY '+
+				'`lan_zone`,'+
+				'`lan_ip`';
 			var table1Params = [
 				{
 					title: 'Last Seen',
@@ -38,16 +40,14 @@ exports.render = function(req, res) {
 					dView: true,
 					link: {
 						type: 'file_local',
-						// val: the pre-evaluated values from the query above
 						val: ['lan_zone','lan_ip', 'mime'],
 						crumb: false
 					},
 				},
 				{ title: 'Total Extracted Files', select: 'count' },
-				{ title: 'Mime Type', select: 'mime' },
+				{ title: 'Zone', select: 'lan_zone' },
 				{ title: 'Lan IP', select: 'lan_ip' },
-				// { title: 'File Name', select: 'name', sClass:'file' },
-				{ title: 'Total Size', select: 'size' },
+				{ title: 'Total Size (MB)', select: 'size' },
 				{ title: 'Total IOC Hits', select: 'ioc_count' }
 			];
 			var table1Settings = {
