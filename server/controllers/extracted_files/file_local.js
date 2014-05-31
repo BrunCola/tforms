@@ -66,7 +66,7 @@ exports.render = function(req, res) {
 				{ title: 'IOC', select: 'ioc' },
 				{ title: 'IOC Type', select: 'ioc_typeIndicator' },
 				{ title: 'IOC Stage', select: 'ioc_typeInfection' },
-				{ title: 'MD5', select: 'md5' }
+				{ title: 'MD5', select: 'md5' },
 				{ title: 'SHA1', select: 'sha1' }
 			];
 			var table1Settings = {
