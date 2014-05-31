@@ -343,7 +343,7 @@ angular.module('mean.pages').config(['$stateProvider',
 								title: 'Applications',
 								subtitleElm: {
 									'L7 Protocol': 'l7_proto',
-									'Zone': 'lan_zone'
+									'Zone': 'lan_zone',
 									'LAN IP': 'lan_ip'
 								},
 								daterange: true
