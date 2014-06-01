@@ -455,7 +455,7 @@ exports.render = function(req, res) {
 							'`file_ioc` '+
 						'WHERE '+
 							'`time` BETWEEN '+start+' AND '+end+' '+
-							'AND `lan_zone`=\''+req.query.lan_zone+'\'',
+							'AND `lan_zone`=\''+req.query.lan_zone+'\''+
 							'AND `lan_ip`=\''+req.query.lan_ip+'\'',
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
