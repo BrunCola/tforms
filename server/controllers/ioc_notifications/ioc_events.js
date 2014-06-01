@@ -170,7 +170,6 @@ exports.render = function(req, res) {
 					'`machine`,'+
 					'`lan_ip`,'+
 					'`remote_ip`,'+
-					'`remote_asn`,'+
 					'`remote_asn_name`,'+
 					'`remote_country`,'+
 					'`remote_cc`,'+
@@ -191,6 +190,7 @@ exports.render = function(req, res) {
 					'AND `ioc_count` > 0 '+
 					'AND `trash` IS NULL '+
 				'GROUP BY '+
+					'`lan_zone`,'+
 					'`lan_ip`,'+
 					'`remote_ip`,'+
 					'`ioc`';
@@ -201,8 +201,7 @@ exports.render = function(req, res) {
 					dView: true,
 					link: {
 						type: 'ioc_events_drilldown',
-						// val: the pre-evaluated values from the query above
-						val: ['lan_ip','remote_ip','ioc','ioc_attrID'],
+						val: ['lan_zone','lan_ip','remote_ip','ioc','ioc_attrID'],
 						crumb: false
 					},
 				},
@@ -217,8 +216,7 @@ exports.render = function(req, res) {
 				{ title: 'Remote IP', select: 'remote_ip' },
 				{ title: 'Remote Country', select: 'remote_country' },
 				{ title: 'Flag', select: 'remote_cc', },
-				{ title: 'Remote ASN', select: 'remote_asn' },
-				{ title: 'Remote ASN Name', select: 'remote_asn_name' },
+				{ title: 'Remote ASN', select: 'remote_asn_name' },
 				{ title: 'Bytes to Remote', select: 'in_bytes'},
 				{ title: 'Bytes from Remote', select: 'out_bytes'},
 				{ title: 'Packets to Remote', select: 'in_packets', dView: false  },

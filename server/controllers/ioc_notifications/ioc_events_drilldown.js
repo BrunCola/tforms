@@ -49,32 +49,35 @@ exports.render = function(req, res) {
 			}
 		break;
 		default:
-			if (req.query.lan_ip && req.query.remote_ip && req.query.ioc && req.query.ioc_attrID) {
+			if (req.query.lan_zone && req.query.lan_ip && req.query.remote_ip && req.query.ioc && req.query.ioc_attrID) {
 				var crossfilter;
 				var conn_ioc = {
 					query: 'SELECT '+
-						'`time`, '+ // Last Seen
-						'`ioc_count`,'+
-						'`lan_zone`,'+
-						'`machine`,'+
-						'`lan_ip`,'+
-						'`lan_port`,'+
-						'`remote_ip`,'+
-						'`remote_port`,'+
-						'`remote_country`,'+
-						'`remote_asn_name`,'+
-						'`in_bytes`,'+
-						'`out_bytes`,'+
-						'`l7_proto`,'+
-						'`ioc`,'+
-						'`ioc_severity`,'+
-						'`ioc_typeIndicator`,'+
-						'`ioc_typeInfection` '+
-						'FROM `conn_ioc` '+
-						'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-						'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
-						'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
-						'AND `ioc`=\''+req.query.ioc+'\' ',
+							'`time`, '+ // Last Seen
+							'`ioc_count`,'+
+							'`lan_zone`,'+
+							'`machine`,'+
+							'`lan_ip`,'+
+							'`lan_port`,'+
+							'`remote_ip`,'+
+							'`remote_port`,'+
+							'`remote_country`,'+
+							'`remote_asn_name`,'+
+							'`in_bytes`,'+
+							'`out_bytes`,'+
+							'`l7_proto`,'+
+							'`ioc`,'+
+							'`ioc_severity`,'+
+							'`ioc_typeIndicator`,'+
+							'`ioc_typeInfection` '+
+						'FROM '+
+							'`conn_ioc` '+
+						'WHERE '+
+							'`time` BETWEEN '+start+' AND '+end+' '+
+							'AND `lan_zone`=\''+req.query.lan_zone+'\' '+
+							'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
+							'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
+							'AND `ioc`=\''+req.query.ioc+'\' ',
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "Zone", "mData": "lan_zone"},
@@ -101,26 +104,29 @@ exports.render = function(req, res) {
 				}
 				var conn = {
 					query: 'SELECT '+
-						'`time`, '+ // Last Seen
-						'`ioc_count`,'+
-						'`lan_zone`,'+
-						'`machine`,'+
-						'`lan_ip`,'+
-						'`lan_port`,'+
-						'`remote_ip`,'+
-						'`remote_port`,'+
-						'`remote_country`,'+
-						'`remote_asn_name`,'+
-						'`in_bytes`,'+
-						'`out_bytes`,'+
-						'`l7_proto`,'+
-						'`ioc`, '+
-						'`ioc_severity`, '+
-						'`ioc_typeIndicator`, '+
-						'`ioc_typeInfection` '+
-						'FROM `conn_ioc` '+
-						'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-						'AND `lan_ip`=\''+req.query.lan_ip+'\' ',
+							'`time`, '+
+							'`ioc_count`,'+
+							'`lan_zone`,'+
+							'`machine`,'+
+							'`lan_ip`,'+
+							'`lan_port`,'+
+							'`remote_ip`,'+
+							'`remote_port`,'+
+							'`remote_country`,'+
+							'`remote_asn_name`,'+
+							'`in_bytes`,'+
+							'`out_bytes`,'+
+							'`l7_proto`,'+
+							'`ioc`, '+
+							'`ioc_severity`, '+
+							'`ioc_typeIndicator`, '+
+							'`ioc_typeInfection` '+
+						'FROM '+
+							'`conn_ioc` '+
+						'WHERE '+
+							'`time` BETWEEN '+start+' AND '+end+' '+
+							'AND `lan_zone`=\''+req.query.lan_zone+'\' '
+							'AND `lan_ip`=\''+req.query.lan_ip+'\' ',
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "Zone", "mData": "lan_zone"},
@@ -147,23 +153,26 @@ exports.render = function(req, res) {
 				}
 				var dns_ioc = {
 					query: 'SELECT '+
-						'`time`, '+ // Last Seen
-						'`ioc_count`,'+
-						'`proto`, '+
-						'`qclass_name`, '+
-						'`qtype_name`, '+
-						'`query`, '+
-						'`answers`, '+
-						'`TTLs`, '+
-						'`ioc`, '+
-						'`ioc_severity`, '+
-						'`ioc_typeIndicator`, '+
-						'`ioc_typeInfection` '+
-						'FROM dns_ioc '+
-						'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-						'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
-						'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
-						'AND `ioc`=\''+req.query.ioc+'\'',
+							'`time`, '+
+							'`ioc_count`,'+
+							'`proto`, '+
+							'`qclass_name`, '+
+							'`qtype_name`, '+
+							'`query`, '+
+							'`answers`, '+
+							'`TTLs`, '+
+							'`ioc`, '+
+							'`ioc_severity`, '+
+							'`ioc_typeIndicator`, '+
+							'`ioc_typeInfection` '+
+						'FROM '+
+							'`dns_ioc` '+
+						'WHERE '+
+							'`time` BETWEEN '+start+' AND '+end+' '+
+							'AND `lan_zone`=\''+req.query.lan_zone+'\' '+
+							'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
+							'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
+							'AND `ioc`=\''+req.query.ioc+'\'',
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "Protocol", "mData": "proto"},
@@ -185,21 +194,24 @@ exports.render = function(req, res) {
 				}
 				var dns = {
 					query: 'SELECT '+
-						'`time`, '+ // Last Seen
-						'`ioc_count`,'+
-						'`proto`, '+
-						'`qclass_name`, '+
-						'`qtype_name`, '+
-						'`query`, '+
-						'`answers`, '+
-						'`TTLs`, '+
-						'`ioc`, '+
-						'`ioc_severity`, '+
-						'`ioc_typeIndicator`, '+
-						'`ioc_typeInfection` '+
-						'FROM dns_ioc '+
-						'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-						'AND `lan_ip`=\''+req.query.lan_ip+'\'',
+							'`time`,'+
+							'`ioc_count`,'+
+							'`proto`,'+
+							'`qclass_name`,'+
+							'`qtype_name`,'+
+							'`query`,'+
+							'`answers`,'+
+							'`TTLs`,'+
+							'`ioc`,'+
+							'`ioc_severity`,'+
+							'`ioc_typeIndicator`,'+
+							'`ioc_typeInfection` '+
+						'FROM '+
+							'`dns_ioc` '+
+						'WHERE '+
+							'`time` BETWEEN '+start+' AND '+end+' '+
+							'AND `lan_zone`=\''+req.query.lan_zone+'\'',
+							'AND `lan_ip`=\''+req.query.lan_ip+'\'',
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "Protocol", "mData": "proto"},
@@ -221,27 +233,30 @@ exports.render = function(req, res) {
 				}
 				var http_ioc = {
 					query: 'SELECT '+
-						'`time`, '+ // Last Seen
-						'`ioc_count`,'+
-						'`host`,'+
-						'`uri`,'+
-						'`referrer`,'+
-						'`user_agent`,'+
-						'`request_body_len`,'+
-						'`response_body_len`,'+
-						'`status_code`,'+
-						'`status_msg`,'+
-						'`info_code`,'+
-						'`info_msg`,'+
-						'`ioc`, '+
-						'`ioc_severity`, '+
-						'`ioc_typeIndicator`, '+
-						'`ioc_typeInfection` '+
-						'FROM `http_ioc` '+
-						'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-						'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
-						'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
-						'AND `ioc`=\''+req.query.ioc+'\'',
+							'`time`,'+
+							'`ioc_count`,'+
+							'`host`,'+
+							'`uri`,'+
+							'`referrer`,'+
+							'`user_agent`,'+
+							'`request_body_len`,'+
+							'`response_body_len`,'+
+							'`status_code`,'+
+							'`status_msg`,'+
+							'`info_code`,'+
+							'`info_msg`,'+
+							'`ioc`,'+
+							'`ioc_severity`,'+
+							'`ioc_typeIndicator`,'+
+							'`ioc_typeInfection` '+
+						'FROM '+
+							'`http_ioc` '+
+						'WHERE '+
+							'`time` BETWEEN '+start+' AND '+end+' '+
+							'AND `lan_zone`=\''+req.query.lan_zone+'\' '+
+							'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
+							'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
+							'AND `ioc`=\''+req.query.ioc+'\'',
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "Host", "mData": "host"},
@@ -261,25 +276,28 @@ exports.render = function(req, res) {
 				}
 				var http = {
 					query: 'SELECT '+
-						'`time`, '+ // Last Seen
-						'`ioc_count`,'+
-						'`host`,'+
-						'`uri`,'+
-						'`referrer`,'+
-						'`user_agent`,'+
-						'`request_body_len`,'+
-						'`response_body_len`,'+
-						'`status_code`,'+
-						'`status_msg`,'+
-						'`info_code`,'+
-						'`info_msg`,'+
-						'`ioc`, '+
-						'`ioc_severity`, '+
-						'`ioc_typeIndicator`, '+
-						'`ioc_typeInfection` '+
-						'FROM `http_ioc` '+
-						'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-						'AND `lan_ip`=\''+req.query.lan_ip+'\'',
+							'`time`,'+
+							'`ioc_count`,'+
+							'`host`,'+
+							'`uri`,'+
+							'`referrer`,'+
+							'`user_agent`,'+
+							'`request_body_len`,'+
+							'`response_body_len`,'+
+							'`status_code`,'+
+							'`status_msg`,'+
+							'`info_code`,'+
+							'`info_msg`,'+
+							'`ioc`,'+
+							'`ioc_severity`,'+
+							'`ioc_typeIndicator`,'+
+							'`ioc_typeInfection` '+
+						'FROM '+
+							'`http_ioc` '+
+						'WHERE '+
+							'`time` BETWEEN '+start+' AND '+end+' '+
+							'AND `lan_zone`=\''+req.query.lan_zone+'\''+
+							'AND `lan_ip`=\''+req.query.lan_ip+'\'',
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "Host", "mData": "host"},
@@ -299,26 +317,27 @@ exports.render = function(req, res) {
 				}
 				var ssl_ioc = {
 					query: 'SELECT '+
-						// SELECTS
-						'`time`, '+ // Last Seen
-						'`ioc_count`,'+
-						'`version`, '+
-						'`cipher`, '+
-						'`server_name`, '+
-						'`subject`, '+
-						'`issuer_subject`, '+
-						'from_unixtime(`not_valid_before`) AS not_valid_before, '+
-						'from_unixtime(`not_valid_after`) AS not_valid_after, '+
-						'`ioc`, '+
-						'`ioc_severity`, '+
-						'`ioc_typeIndicator`, '+
-						'`ioc_typeInfection` '+	
-						// !SELECTS
-						'FROM ssl_ioc '+
-						'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-						'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
-						'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
-						'AND `ioc`=\''+req.query.ioc+'\'',
+							'`time`,'+
+							'`ioc_count`,'+
+							'`version`,'+
+							'`cipher`,'+
+							'`server_name`,'+
+							'`subject`,'+
+							'`issuer_subject`,'+
+							'from_unixtime(`not_valid_before`) AS not_valid_before,'+
+							'from_unixtime(`not_valid_after`) AS not_valid_after,'+
+							'`ioc`,'+
+							'`ioc_severity`,'+
+							'`ioc_typeIndicator`,'+
+							'`ioc_typeInfection` '+	
+						'FROM '+
+							'`ssl_ioc` '+
+						'WHERE '+
+							'`time` BETWEEN '+start+' AND '+end+' '+
+							'AND `lan_zone`=\''+req.query.lan_zone+'\' '+
+							'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
+							'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
+							'AND `ioc`=\''+req.query.ioc+'\'',
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "Server Name", "mData": "server_name"},
@@ -341,24 +360,25 @@ exports.render = function(req, res) {
 				}
 				var ssl = {
 					query: 'SELECT '+
-						// SELECTS
-						'`time`, '+ // Last Seen
-						'`ioc_count`,'+
-						'`version`, '+
-						'`cipher`, '+
-						'`server_name`, '+
-						'`subject`, '+
-						'`issuer_subject`, '+
-						'from_unixtime(`not_valid_before`) AS not_valid_before, '+
-						'from_unixtime(`not_valid_after`) AS not_valid_after, '+
-						'`ioc`, '+
-						'`ioc_severity`, '+
-						'`ioc_typeIndicator`, '+
-						'`ioc_typeInfection` '+	
-						// !SELECTS
-						'FROM ssl_ioc '+
-						'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-						'AND `lan_ip`=\''+req.query.lan_ip+'\'',
+							'`time`,'+
+							'`ioc_count`,'+
+							'`version`,'+
+							'`cipher`,'+
+							'`server_name`,'+
+							'`subject`,'+
+							'`issuer_subject`,'+
+							'from_unixtime(`not_valid_before`) AS not_valid_before,'+
+							'from_unixtime(`not_valid_after`) AS not_valid_after,'+
+							'`ioc`,'+
+							'`ioc_severity`,'+
+							'`ioc_typeIndicator`,'+
+							'`ioc_typeInfection` '+	
+						'FROM '+
+							'`ssl_ioc` '+
+						'WHERE '+
+							'`time` BETWEEN '+start+' AND '+end+' '+
+							'AND `lan_zone`=\''+req.query.lan_zone+'\''+
+							'AND `lan_ip`=\''+req.query.lan_ip+'\'',
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "Server Name", "mData": "server_name"},
@@ -381,22 +401,25 @@ exports.render = function(req, res) {
 				}
 				var file_ioc = {
 					query: 'SELECT '+
-						'`time`, '+ // Last Seen
-						'`ioc_count`,'+
-						'`mime`, '+
-						'`name`, '+
-						'`size`, '+
-						'`md5`, '+
-						'`sha1`, '+
-						'`ioc`, '+
-						'`ioc_severity`, '+
-						'`ioc_typeIndicator`, '+
-						'`ioc_typeInfection` '+
-						'FROM `file_ioc` '+
-						'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-						'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
-						'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
-						'AND `ioc`=\''+req.query.ioc+'\'',
+							'`time`,'+
+							'`ioc_count`,'+
+							'`mime`,'+
+							'`name`,'+
+							'`size`,'+
+							'`md5`,'+
+							'`sha1`,'+
+							'`ioc`,'+
+							'`ioc_severity`,'+
+							'`ioc_typeIndicator`,'+
+							'`ioc_typeInfection` '+
+						'FROM '+
+							'`file_ioc` '+
+						'WHERE '+
+							'`time` BETWEEN '+start+' AND '+end+' '+
+							'AND `lan_zone`=\''+req.query.lan_zone+'\' '+
+							'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
+							'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
+							'AND `ioc`=\''+req.query.ioc+'\'',
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "MIME", "mData": "mime"},
@@ -417,20 +440,23 @@ exports.render = function(req, res) {
 				}
 				var file = {
 					query: 'SELECT '+
-						'`time`, '+ // Last Seen
-						'`ioc_count`,'+
-						'`mime`, '+
-						'`name`, '+
-						'`size`, '+
-						'`md5`, '+
-						'`sha1`, '+
-						'`ioc`, '+
-						'`ioc_severity`, '+
-						'`ioc_typeIndicator`, '+
-						'`ioc_typeInfection` '+
-						'FROM `file_ioc` '+
-						'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-						'AND `lan_ip`=\''+req.query.lan_ip+'\'',
+							'`time`,'+
+							'`ioc_count`,'+
+							'`mime`,'+
+							'`name`,'+
+							'`size`,'+
+							'`md5`,'+
+							'`sha1`,'+
+							'`ioc`,'+
+							'`ioc_severity`,'+
+							'`ioc_typeIndicator`,'+
+							'`ioc_typeInfection` '+
+						'FROM '+
+							'`file_ioc` '+
+						'WHERE '+
+							'`time` BETWEEN '+start+' AND '+end+' '+
+							'AND `lan_zone`=\''+req.query.lan_zone+'\'',
+							'AND `lan_ip`=\''+req.query.lan_ip+'\'',
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "MIME", "mData": "mime"},
@@ -451,18 +477,18 @@ exports.render = function(req, res) {
 				}
 				var endpoint = {
 					query: 'SELECT '+
-						// SELECTS
-						'`time`, '+ // Last Seen
-						'`src_ip`, '+
-						'`dst_ip`, '+
-						'`src_user`, '+
-						'`alert_source`, '+
-						'`program_source`, '+
-						'`alert_info` '+
-						// !SELECTS
-						'FROM `ossec` '+
-						'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-						'AND `src_ip`=\''+req.query.lan_ip+'\' ',
+							'`time`,'+
+							'`src_ip`,'+
+							'`dst_ip`,'+
+							'`src_user`,'+
+							'`alert_source`,'+
+							'`program_source`,'+
+							'`alert_info` '+
+						'FROM '+
+							'`ossec` '+
+						'WHERE '+
+							'`time` BETWEEN '+start+' AND '+end+' '+
+							'AND `src_ip`=\''+req.query.lan_ip+'\' ',
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "User", "mData": "src_user"},
