@@ -17,22 +17,23 @@ exports.render = function(req, res) {
 	var tables = [];
 	var info = [];
 	var table1SQL = 'SELECT '+
-		'count(*) AS count,' +
-		'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-		'`server_id`, '+
-		'`src_user`, '+
-		'`src_ip`, '+
-		'`dst_ip`, '+
-		'`alert_source`, '+
-		'`program_source`, '+
-		'`alert_id`, '+
-		'`alert_info`, '+
-		'`full_log` '+
-		'FROM `ossec` '+
+			'count(*) AS count,'+
+			'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time,'+
+			'`server_id`,'+
+			'`src_user`,'+
+			'`src_ip`,'+
+			'`dst_ip`,'+
+			'`alert_source`,'+
+			'`program_source`,'+
+			'`alert_id`,'+
+			'`alert_info`,'+
+			'`full_log` '+
+		'FROM '+
+			'`ossec` '+
 		'WHERE '+
-		'`time` BETWEEN '+start+' AND '+end+' '+
+			'`time` BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+
-		'`alert_info`';
+			'`alert_info`';
 	var table1Params = [
 		{
 			title: 'Last Seen',
