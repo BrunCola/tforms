@@ -32,7 +32,7 @@ exports.render = function(req, res) {
 				'`ioc`,'+
 				'`ioc_severity`,'+
 				'`ioc_typeIndicator`,'+
-				'`ioc_typeInfection` '+
+				'`ioc_typeInfection`, '+
 				'sum(`ioc_count`) AS ioc_count '+
 			'FROM '+
 				'`conn_ioc` '+
