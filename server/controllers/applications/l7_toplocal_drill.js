@@ -71,14 +71,14 @@ exports.render = function(req, res) {
 				{ title: 'LAN IP', select: 'lan_ip' },
 				{ title: 'Machine Name', select: 'machine' },
 				{ title: 'Remote IP', select: 'remote_ip' },
-				{ title: 'Remote ASN', select: 'remote_asn' },
-				{ title: 'Remote ASN Name', select: 'remote_asn_name' },
 				{ title: 'Remote Country', select: 'remote_country' },
 				{ title: 'Flag', select: 'remote_cc', },
+				{ title: 'Remote ASN', select: 'remote_asn_name' },
 				{ title: 'MB to Remote', select: 'in_bytes' },
 				{ title: 'MB from Remote', select: 'out_bytes'},
 				{ title: 'Packets to Remote', select: 'in_packets', dView:false },
 				{ title: 'Packets from Remote', select: 'out_packets', dView:false },
+				{ title: 'IOC Count', select: 'ioc_count' },
 				{ title: 'Connections', select: 'count' },
 				{ title: 'DNS', select: 'dns' },
 				{ title: 'HTTP', select: 'http' },
@@ -87,7 +87,6 @@ exports.render = function(req, res) {
 				{ title: 'IRC', select: 'irc' },
 				{ title: 'SMTP', select: 'smtp' },
 				{ title: 'File', select: 'file' },
-				{ title: 'IOC Count', select: 'ioc_count' }	
 			];
 			var table1Settings = {
 				sort: [[11, 'desc']],

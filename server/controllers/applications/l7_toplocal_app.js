@@ -64,6 +64,7 @@ exports.render = function(req, res) {
 				{ title: 'MB from Remote', select: 'out_bytes'},
 				{ title: 'Packets to Remote', select: 'in_packets', dView:false },
 				{ title: 'Packets from Remote', select: 'out_packets', dView:false },
+				{ title: 'IOC Count', select: 'ioc_count' },
 				{ title: 'Connections', select: 'count' },
 				{ title: 'DNS', select: 'dns' },
 				{ title: 'HTTP', select: 'http' },
@@ -72,7 +73,6 @@ exports.render = function(req, res) {
 				{ title: 'IRC', select: 'irc' },
 				{ title: 'SMTP', select: 'smtp' },
 				{ title: 'File', select: 'file' },
-				{ title: 'IOC Count', select: 'ioc_count' }	
 			];
 			var table1Settings = {
 				sort: [[3, 'desc']],

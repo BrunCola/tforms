@@ -56,7 +56,7 @@ exports.render = function(req, res) {
 		{ title: 'Remote IP', select: 'remote_ip' },
 		{ title: 'Remote Country', select: 'remote_country' },
 		{ title: 'Flag', select: 'remote_cc', },
-		{ title: 'Remote ASN Name', select: 'remote_asn_name' },
+		{ title: 'Remote ASN', select: 'remote_asn_name' },
 		{ title: 'MB to Remote', select: 'in_bytes' },
 		{ title: 'MB from Remote', select: 'out_bytes'},
 		{ title: 'Packets to Remote', select: 'in_packets', dView:false },
