@@ -117,15 +117,15 @@ exports.render = function(req, res) {
 							'`in_bytes`,'+
 							'`out_bytes`,'+
 							'`l7_proto`,'+
-							'`ioc`, '+
-							'`ioc_severity`, '+
-							'`ioc_typeIndicator`, '+
+							'`ioc`,'+
+							'`ioc_severity`,'+
+							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection` '+
 						'FROM '+
 							'`conn_ioc` '+
 						'WHERE '+
 							'`time` BETWEEN '+start+' AND '+end+' '+
-							'AND `lan_zone`=\''+req.query.lan_zone+'\' '
+							'AND `lan_zone`=\''+req.query.lan_zone+'\' '+
 							'AND `lan_ip`=\''+req.query.lan_ip+'\' ',
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
