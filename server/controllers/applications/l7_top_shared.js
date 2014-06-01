@@ -53,10 +53,10 @@ exports.render = function(req, res) {
 		var table1Params = [
 			{ title: 'Time', select: 'time' },
 			{ title: 'Applications', select: 'l7_proto' },
-			{ title: 'LAN Zone', select: 'lan_zone' },
+			{ title: 'Zone', select: 'lan_zone' },
+			{ title: 'Machine Name', select: 'machine' },
 			{ title: 'LAN IP', select: 'lan_ip' },
 			{ title: 'LAN port', select: 'lan_port' },
-			{ title: 'Machine Name', select: 'machine' },
 			{ title: 'Remote IP', select: 'remote_ip'},
 			{ title: 'Remote port', select: 'remote_port' },
 			{ title: 'Remote Country', select: 'remote_country' },
