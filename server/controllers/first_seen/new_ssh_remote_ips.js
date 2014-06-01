@@ -42,8 +42,7 @@ exports.render = function(req, res) {
 		{ title: 'Remote Server', select: 'remote_server', },
 		{ title: 'Remote Country', select: 'remote_country' },
 		{ title: 'Flag', select: 'remote_cc', },
-		{ title: 'Remote ASN', select: 'remote_asn' },
-		{ title: 'Remote ASN Name', select: 'remote_asn_name' },
+		{ title: 'Remote ASN', select: 'remote_asn_name' },
 	];
 	var table1Settings = {
 		sort: [[0, 'desc']],

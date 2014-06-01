@@ -45,14 +45,14 @@ exports.render = function(req, res) {
 				'sum(`file`) AS `file`,'+
 				'sum(`ioc_count`) AS `ioc_count` '+
 				// !SELECTS
-			'FROM conn_l7_meta '+
+			'FROM '+
+				'`conn_l7_meta` '+
 			'WHERE '+
 				'`time` BETWEEN '+start+' AND '+end+' '+
 				'AND `remote_ip` = \''+req.query.remote_ip+'\' '+
 				'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
 			'GROUP BY '+
 				'`remote_ip`';
-
 		var table1Params = [
 			{
 				title: 'Last Seen',
@@ -66,18 +66,18 @@ exports.render = function(req, res) {
 				},
 			},
 			{ title: 'Applications', select: 'l7_proto' },
-			{ title: 'LAN Zone', select: 'lan_zone' },
-			{ title: 'LAN IP', select: 'lan_ip' },
+			{ title: 'Zone', select: 'lan_zone' },
 			{ title: 'Machine Name', select: 'machine' },
+			{ title: 'LAN IP', select: 'lan_ip' },
 			{ title: 'Remote IP', select: 'remote_ip' },
-			{ title: 'Remote ASN', select: 'remote_asn' },
-			{ title: 'Remote ASN Name', select: 'remote_asn_name' },
+			{ title: 'Remote ASN', select: 'remote_asn_name' },
 			{ title: 'Remote Country', select: 'remote_country' },
 			{ title: 'Flag', select: 'remote_cc', },
 			{ title: 'MB to Remote', select: 'in_bytes' },
 			{ title: 'MB from Remote', select: 'out_bytes'},
 			{ title: 'Packets to Remote', select: 'in_packets', dView:false },
 			{ title: 'Packets from Remote', select: 'out_packets', dView:false },
+			{ title: 'IOC Count', select: 'ioc_count' },
 			{ title: 'Connections', select: 'count' },
 			{ title: 'DNS', select: 'dns' },
 			{ title: 'HTTP', select: 'http' },
@@ -86,14 +86,12 @@ exports.render = function(req, res) {
 			{ title: 'IRC', select: 'irc' },
 			{ title: 'SMTP', select: 'smtp' },
 			{ title: 'File', select: 'file' },
-			{ title: 'IOC Count', select: 'ioc_count' }
 		];
 		var table1Settings = {
 			sort: [[11, 'desc']],
 			div: 'table',
 			title: 'Remote IP/Local IP Bandwidth Usage'
 		};
-
 		var crossfilterSQL = 'SELECT '+
 				// SELECTS
 				'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
