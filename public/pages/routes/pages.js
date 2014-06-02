@@ -652,6 +652,22 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
+					// TOP LOCAL2REMOTE IRC
+					.state('top_local2remote_irc', {
+						url: '/top_local2remote_irc?start&end&lan_ip&lan_zone',
+						templateUrl: 'public/pages/views/general_network/top_local2remote_irc.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Local to Remote IRC',
+							subtitleElm: {
+								'LAN IP': 'lan_ip',
+								'LAN Zone': 'lan_zone'
+							},
+							daterange: true
+						}
+					})
 				// TOP REMOTE IRC
 				.state('top_remote_irc', {
 					url: '/top_remote_irc?start&end',
@@ -664,6 +680,21 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
+					// TOP REMOTE2LOCAL IRC
+					.state('top_remote2local_irc', {
+						url: '/top_remote2local_irc?start&end&remote_ip',
+						templateUrl: 'public/pages/views/general_network/top_remote2local_irc.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Remote to Local IRC',
+							subtitleElm: {
+								'Remote IP': 'remote_ip'
+							},
+							daterange: true
+						}
+					})
 				// TOP LOCAL SMTP 
 				.state('top_local_smtp', {
 					url: '/top_local_smtp?start&end',
@@ -703,6 +734,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
+
 					// TOP SMTP TO RECEIVER
 					.state('top_smtp_to_receiver', {
 						url: '/top_smtp_to_receiver?start&end&to',
@@ -718,6 +750,30 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+				// TOP LOCAL FTP 
+				.state('top_local_ftp', {
+					url: '/top_local_ftp?start&end',
+					templateUrl: 'public/pages/views/general_network/top_local_ftp.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Local FTP',
+						daterange: true
+					}
+				})
+				// TOP REMOTE FTP 
+				.state('top_remote_ftp', {
+					url: '/top_remote_ftp?start&end',
+					templateUrl: 'public/pages/views/general_network/top_remote_ftp.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Remote FTP',
+						daterange: true
+					}
+				})
 			// REPORTS
 				// IOC EVENTS
 				.state('ioc_events_report', {
@@ -731,6 +787,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: false
 					}
 				})
+
 
 	}
 ]);

@@ -17,66 +17,75 @@ exports.render = function(req, res) {
 	var tables = [];
 	var info = [];
 	var table1SQL = 'SELECT '+
-		'count(*) AS count, ' +
+		'count(*) AS count,' +
 		'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-		'`machine`, ' +
-		'`lan_zone`, ' +
-		'`lan_ip`, ' +
-		'`lan_port`, ' +
 		'`remote_ip`, ' +
 		'`remote_port`, '  +
 		'`remote_cc`, ' +
 		'`remote_country`, ' +
+		'`remote_asn`, ' +
 		'`remote_asn_name`, ' +
-		'`nick`, ' +
 		'`user`, ' +
+		'`password`, ' +
 		'`command`, ' +
-		'`value`, ' +
-		'`addl`, ' +
-		'`dcc_file_name`, ' +
-		'`dcc_file_size`, ' +
-		'`dcc_mime_type`, ' +
-		'`fuid` ' +
-		'FROM `irc` '+
+		'`arg`, ' +
+		'`mime_type`, ' +
+		'`file_size`, ' +
+		'`reply_code`, ' +
+		'`reply_msg`, ' +
+		'`dc_passive`, ' +
+		'`dc_orig_h`, ' +
+		'`dc_resp_h`, ' +
+		'`dc_resp_p`, ' +
+		'`ioc`, ' +
+		'`ioc_severity`, ' +
+		'`ioc_typeInfection`, ' +
+		'`ioc_typeIndicator`, ' +
+		'`ioc_count` ' +
+		'FROM `ftp` '+
 		'WHERE time BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+
-		'`lan_ip`';
+		'`remote_ip`';
 	var table1Params = [
 		{
 			title: 'Last Seen',
 			select: 'time',
-			 link: {
-			 	type: 'top_local2remote_irc', 
-			 	// val: the pre-evaluated values from the query above
-			 	val: ['lan_ip', 'lan_zone'],
-			 	crumb: false
-			},
+			//  link: {
+			//  	type: 'top_ssh_remote', 
+			//  	// val: the pre-evaluated values from the query above
+			//  	val: ['lan_ip'],
+			//  	crumb: false
+			// },
 		},
 		{ title: 'Count', select: 'count' },
-		{ title: 'Machine', select: 'machine' },
-		{ title: 'LAN Zone', select: 'lan_zone' },
-		{ title: 'LAN IP', select: 'lan_ip' },
-		{ title: 'LAN port', select: 'lan_port' },
 		{ title: 'Remote IP', select: 'remote_ip'},
 		{ title: 'Remote port', select: 'remote_port' },
 		{ title: 'Flag', select: 'remote_cc' },
 		{ title: 'Remote Country', select: 'remote_country' },
+		{ title: 'Remote ASN', select: 'remote_asn' },
 		{ title: 'Remote ASN Name', select: 'remote_asn_name' },
-		{ title: 'Nick', select: 'nick' },
 		{ title: 'User', select: 'user' },
+		{ title: 'Password', select: 'password' },
 		{ title: 'Command', select: 'command' },
-		{ title: 'Value', select: 'value'},
-		{ title: 'Addl', select: 'addl' },
-		{ title: 'DCC File Name', select: 'dcc_file_name' },
-		{ title: 'DCC File Size', select: 'dcc_file_size' },
-		{ title: 'DCC MIME Type', select: 'dcc_mime_type' },
-		{ title: 'FUID', select: 'fuid' }
-
+		{ title: 'Arg', select: 'arg' },
+		{ title: 'MIME Type', select: 'mime_type' },
+		{ title: 'File Size', select: 'file_size' },
+		{ title: 'Reply Code', select: 'reply_code' },
+		{ title: 'Reply Message', select: 'reply_msg' },
+		{ title: 'DC Passive', select: 'dc_passive' },
+		{ title: 'DC Orig P', select: 'dc_orig_h' },
+		{ title: 'DC Resp H', select: 'dc_resp_h' },
+		{ title: 'DC Resp P', select: 'dc_resp_p' },
+		{ title: 'IOC', select: 'ioc' },
+		{ title: 'IOC Severity', select: 'ioc_severity' },
+		{ title: 'Infection Stage', select: 'ioc_typeInfection' },
+		{ title: 'Indicator Type', select: 'ioc_typeIndicator' },
+		{ title: 'IOC Count', select: 'ioc_count' }
 	];
 	var table1Settings = {
 		sort: [[1, 'desc']],
 		div: 'table',
-		title: 'Local IRC'
+		title: 'Remote FTP'
 	}
 	async.parallel([
 		// Table function(s)

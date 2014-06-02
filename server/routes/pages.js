@@ -103,8 +103,12 @@ var live_connections = require('../controllers/live_connections/live_connections
 		var top_remote2local_ssh_local = require('../controllers/general_network/top_remote2local_ssh_local');
 	// TOP LOCAL IRC
 	var top_local_irc = require('../controllers/general_network/top_local_irc');	
+		// TOP LOCAL2REMOTE IRC
+		var top_local2remote_irc = require('../controllers/general_network/top_local2remote_irc');	
 	// TOP REMOTE IRC
 	var top_remote_irc = require('../controllers/general_network/top_remote_irc');	
+		// TOP REMOTE2LOCAL IRC
+		var top_remote2local_irc = require('../controllers/general_network/top_remote2local_irc');	
 	// TOP LOCAL SMTP
 	var top_local_smtp = require('../controllers/general_network/top_local_smtp');
 		// TOP SMTP FROM SENDER
@@ -113,7 +117,10 @@ var live_connections = require('../controllers/live_connections/live_connections
 	var top_smtp_receivers = require('../controllers/general_network/top_smtp_receivers');
 		// TOP SMTP TO RECEIVER
 		var top_smtp_to_receiver = require('../controllers/general_network/top_smtp_to_receiver');	
-
+	// TOP LOCAL FTP
+	var top_local_ftp = require('../controllers/general_network/top_local_ftp');
+	// TOP REMOTE FTP
+	var top_remote_ftp = require('../controllers/general_network/top_remote_ftp');
 
 // REPORTS
 	// IOC EVENTS REPORT
@@ -265,21 +272,33 @@ module.exports = function(app) {
 		// TOP LOCAL IRC
 		app.route('/general_network/top_local_irc')
 		.get(authorization.requiresLogin, top_local_irc.render);
+			// TOP LOCAL2REMOTE IRC
+			app.route('/general_network/top_local2remote_irc')
+			.get(authorization.requiresLogin, top_local2remote_irc.render);
 		// TOP REMOTE IRC
 		app.route('/general_network/top_remote_irc')
 		.get(authorization.requiresLogin, top_remote_irc.render);
-		// TOP LOCAL STMP
+			// TOP REMOTE2LOCAL IRC
+			app.route('/general_network/top_remote2local_irc')
+			.get(authorization.requiresLogin, top_remote2local_irc.render);
+		// TOP LOCAL SMTP
 		app.route('/general_network/top_local_smtp')
 		.get(authorization.requiresLogin, top_local_smtp.render);
-			// TOP STMP FROM SENDER
+			// TOP SMTP FROM SENDER
 			app.route('/general_network/top_smtp_from_sender')
 			.get(authorization.requiresLogin, top_smtp_from_sender.render);
-		// TOP STMP RECEIVERS
+		// TOP SMTP RECEIVERS
 		app.route('/general_network/top_smtp_receivers')
 		.get(authorization.requiresLogin, top_smtp_receivers.render);
-			// TOP STMP TO RECEIVER
+			// TOP SMTP TO RECEIVER
 			app.route('/general_network/top_smtp_to_receiver')
 			.get(authorization.requiresLogin, top_smtp_to_receiver.render);
+		// TOP LOCAL FTP
+		app.route('/general_network/top_local_ftp')
+		.get(authorization.requiresLogin, top_local_ftp.render);
+		// TOP REMOTE FTP
+		app.route('/general_network/top_remote_ftp')
+		.get(authorization.requiresLogin, top_remote_ftp.render);
 
 	// REPORTS
 		// IOC EVENTS
