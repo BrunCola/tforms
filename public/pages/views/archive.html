@@ -1,0 +1,29 @@
+<section head></section>
+<div data-ng-controller="archiveController">
+	<section id="loading-error" loading-error></section>
+	<section id="loading-spinner" loading-spinner></section>
+	<div class="row-fluid">
+		<button class='pull-right pure-button' type='button' ng-click="emptyArchive()" value='' href=''>Empty Archive</button>
+	</div>
+	<br />
+	<div class="row-fluid">
+		<div class="span4">
+			<div class="jdash-header">Remote IP Locations</div>
+			<div  style="background-color:#FFF;" class="box">
+				<div class="box-content">
+					<div id="geochart" make-geo-chart></div>
+				</div>
+			</div>
+		</div>
+		<div class="span8">
+			<div class="jdash-header">Archived IOC Notifications Per Hour</div>
+			<div  style="background-color:#FFF;" class="box">
+				<div class="box-content">
+					<div id="barchart" make-bar-chart></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<br />
+	<div make-table></div>
+</div>

@@ -18,29 +18,29 @@ exports.render = function(req, res) {
 		var tables = [];
 		var info = [];
 		var table1SQL = 'SELECT '+
-			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'`machine`, ' +
-			'`lan_port`, ' +
-			'`remote_port`, '  +
-			'`remote_cc`, ' +
-			'`remote_country`, ' +
-			'`remote_asn`, ' +
-			'`remote_asn_name`, ' +
-			'`from`, ' +
-			'`to`, ' +
-			'`reply_to`, ' +
-			'`in_reply_to`, ' +
-			'`subject`, ' +
-			'`user_agent`, ' +
-			'`fuids`, ' +
-			'`ioc`, ' +
-			'`ioc_severity`, ' +
-			'`ioc_typeInfection`, ' +
-			'`ioc_typeIndicator`, ' +
-			'`ioc_count` ' +
+				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`machine`, ' +
+				'`lan_port`, ' +
+				'`remote_port`, '  +
+				'`remote_cc`, ' +
+				'`remote_country`, ' +
+				'`remote_asn`, ' +
+				'`remote_asn_name`, ' +
+				'`from`, ' +
+				'`to`, ' +
+				'`reply_to`, ' +
+				'`in_reply_to`, ' +
+				'`subject`, ' +
+				'`user_agent`, ' +
+				'`fuids`, ' +
+				'`ioc`, ' +
+				'`ioc_severity`, ' +
+				'`ioc_typeInfection`, ' +
+				'`ioc_typeIndicator`, ' +
+				'`ioc_count` ' +
 			'FROM `smtp` '+
 			'WHERE time BETWEEN '+start+' AND '+end+' '+
-			'AND `from` = \''+req.query.from+'\'';
+				'AND `from` = \''+req.query.from+'\'';
 		var table1Params = [
 			{
 				title: 'Time',

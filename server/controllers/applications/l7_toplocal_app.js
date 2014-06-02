@@ -14,27 +14,38 @@ exports.render = function(req, res) {
 		start = req.query.start;
 		end = req.query.end;
 	}
-	if (req.query.l7_proto && req.query.lan_ip) {
+	if (req.query.lan_zone && req.query.lan_ip) {
 		//var results = [];
 		var tables = [];
 		var crossfilter = [];
 		var info = [];
 		var table1SQL = 'SELECT '+
 				// SELECTS
-				'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time, '+ // Last Seen
-				'`l7_proto`, '+
+				'count(*) AS count, '+
+				'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time, '+
+				'`lan_zone`, '+
 				'`lan_ip`, '+
+				'`l7_proto`, '+
 				'sum(`in_packets`) AS in_packets, '+
 				'sum(`out_packets`) AS out_packets, '+
 				'(sum(`in_bytes`) / 1048576) AS in_bytes, '+
-				'(sum(`out_bytes`) / 1048576) AS out_bytes '+
+				'(sum(`out_bytes`) / 1048576) AS out_bytes, '+
+				'sum(`dns`) AS `dns`, '+
+				'sum(`http`) AS `http`, '+
+				'sum(`ssl`) AS `ssl`, '+
+				'sum(`ftp`) AS `ftp`, '+
+				'sum(`irc`) AS `irc`, '+
+				'sum(`smtp`) AS `smtp`, '+
+				'sum(`file`) AS `file`, '+
+				'sum(`ioc_count`) AS `ioc_count` '+
 				// !SELECTS
-			'FROM `conn_l7` '+
+			'FROM `conn_l7_meta` '+
 			'WHERE '+
 				'`time` BETWEEN '+start+' AND '+end+' '+
+				'AND `lan_zone` = \''+req.query.lan_zone+'\' '+
 				'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
-			'GROUP '+
-				'BY `l7_proto`';
+			'GROUP BY '+
+				'`l7_proto`';
 
 			var table1Params = [
 				{
@@ -44,7 +55,7 @@ exports.render = function(req, res) {
 					link: {
 						type: 'l7_toplocal_drill',
 						// val: the pre-evaluated values from the query above
-						val: ['lan_ip','l7_proto'],
+						val: ['lan_zone','lan_ip','l7_proto'],
 						crumb: false
 					},
 				},
@@ -52,10 +63,19 @@ exports.render = function(req, res) {
 				{ title: 'MB to Remote', select: 'in_bytes' },
 				{ title: 'MB from Remote', select: 'out_bytes'},
 				{ title: 'Packets to Remote', select: 'in_packets', dView:false },
-				{ title: 'Packets from Remote', select: 'out_packets', dView:false }
+				{ title: 'Packets from Remote', select: 'out_packets', dView:false },
+				{ title: 'IOC Count', select: 'ioc_count' },
+				{ title: 'Connections', select: 'count' },
+				{ title: 'DNS', select: 'dns' },
+				{ title: 'HTTP', select: 'http' },
+				{ title: 'SSL', select: 'ssl' },
+				{ title: 'FTP', select: 'ftp' },
+				{ title: 'IRC', select: 'irc' },
+				{ title: 'SMTP', select: 'smtp' },
+				{ title: 'File', select: 'file' },
 			];
 			var table1Settings = {
-				sort: [[0, 'desc']],
+				sort: [[3, 'desc']],
 				div: 'table',
 				title: 'Local IP Bandwidth Usage'
 			};
@@ -63,9 +83,11 @@ exports.render = function(req, res) {
 			var crossfilterSQL = 'SELECT '+
 					'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+ // Last Seen
 					'(sum(in_bytes + out_bytes) / 1048576) AS count '+
-				'FROM `conn_l7` '+
-				'WHERE `time` BETWEEN '+start+' AND '+end+' '+
-				'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
+				'FROM `conn_l7_meta` '+
+				'WHERE '+
+					'`time` BETWEEN '+start+' AND '+end+' '+
+					'AND `lan_zone` = \''+req.query.lan_zone+'\' '+
+					'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
 				'GROUP BY '+
 					'month(from_unixtime(time)),'+
 					'day(from_unixtime(time)),'+

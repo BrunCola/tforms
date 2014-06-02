@@ -17,31 +17,33 @@ exports.render = function(req, res) {
 	var tables = [];
 	var info = [];
 	var table1SQL = 'SELECT '+
-		'count(*) AS count,' +
-		'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-		'`machine`, ' +
-		'`lan_port`, ' +
-		'`remote_port`, '  +
-		'`remote_cc`, ' +
-		'`remote_country`, ' +
-		'`remote_asn`, ' +
-		'`remote_asn_name`, ' +
-		'`from`, ' +
-		'`to`, ' +
-		'`reply_to`, ' +
-		'`in_reply_to`, ' +
-		'`subject`, ' +
-		'`user_agent`, ' +
-		'`fuids`, ' +
-		'`ioc`, ' +
-		'`ioc_severity`, ' +
-		'`ioc_typeInfection`, ' +
-		'`ioc_typeIndicator`, ' +
-		'`ioc_count` ' +
-		'FROM `smtp` '+
-		'WHERE time BETWEEN '+start+' AND '+end+' '+
+			'count(*) AS count,'+
+			'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time,'+
+			'`machine`,'+
+			'`lan_port`,'+
+			'`remote_port`,'+
+			'`remote_cc`,'+
+			'`remote_country`,'+
+			'`remote_asn`,'+
+			'`remote_asn_name`,'+
+			'`from`,'+
+			'`to`,'+
+			'`reply_to`,'+
+			'`in_reply_to`,'+
+			'`subject`,'+
+			'`user_agent`,'+
+			'`fuids`,'+
+			'`ioc`,'+
+			'`ioc_severity`,'+
+			'`ioc_typeInfection`,'+
+			'`ioc_typeIndicator`,'+
+			'`ioc_count` '+
+		'FROM '+
+			'`smtp` '+
+		'WHERE '+
+			'`time` BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+
-		'`from`';
+			'`from`';
 	var table1Params = [
 		{
 			title: 'Last Seen',

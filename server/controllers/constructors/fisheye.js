@@ -58,7 +58,7 @@ module.exports = function (params, callback) {
 				item.ioc_hits = f;
 				// convert table times to human readable
 				d.forEach(function(e){
-					var time = moment.unix(e.time).format('MMMM Do YYYY, h:mm:ss a');
+					var time = moment(e.time).format('MMMM Do YYYY, h:mm:ss a');
 					e.time = time;
 				});
 				item.data = d;

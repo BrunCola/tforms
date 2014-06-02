@@ -134,6 +134,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						data: {
 							title: 'File Mime Types',
 							subtitleElm: {
+								'ZONE': 'lan_zone',
 								'LAN IP': 'lan_ip'
 							},
 							daterange: true
@@ -149,6 +150,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							data: {
 								title: 'Extracted Files for Local IP',
 								subtitleElm: {
+									'Zone': 'lan_zone',
 									'LAN IP': 'lan_ip',
 									'MIME Type': 'mime'
 								},
@@ -341,6 +343,7 @@ angular.module('mean.pages').config(['$stateProvider',
 								title: 'Applications',
 								subtitleElm: {
 									'L7 Protocol': 'l7_proto',
+									'Zone': 'lan_zone',
 									'LAN IP': 'lan_ip'
 								},
 								daterange: true
@@ -369,6 +372,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							title: 'Applications',
 							subtitleElm: {
 								'L7 Protocol': 'l7_proto',
+								'Zone': 'lan_zone',
 								'LAN IP': 'lan_ip'
 							},
 							daterange: true
@@ -385,6 +389,7 @@ angular.module('mean.pages').config(['$stateProvider',
 								title: 'Applications',
 								subtitleElm: {
 									'L7 Protocol': 'l7_proto',
+									'Zone': 'lan_zone',
 									'LAN IP': 'lan_ip'
 								},
 								daterange: true
@@ -401,8 +406,8 @@ angular.module('mean.pages').config(['$stateProvider',
 									title: 'Applications Shared',
 									subtitleElm: {
 										'L7 Protocol': 'l7_proto',
-										'LAN IP': 'lan_ip',
-										'LAN Zone': 'lan_zone'
+										'Zone': 'lan_zone',
+										'LAN IP': 'lan_ip'
 									},
 									daterange: true
 								}
@@ -445,8 +450,8 @@ angular.module('mean.pages').config(['$stateProvider',
 							data: {
 								title: 'Applications',
 								subtitleElm: {
-									'L7 Protocol': 'l7_proto',
-									'Remote IP': 'remote_ip'
+									'Remote IP': 'remote_ip',
+									'L7 Protocol': 'l7_proto'
 								},
 								daterange: true
 							}
@@ -652,6 +657,18 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
+				// TOP REMOTE IRC
+				.state('top_remote_irc', {
+					url: '/top_remote_irc?start&end',
+					templateUrl: 'public/pages/views/general_network/top_remote_irc.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Remote IRC',
+						daterange: true
+					}
+				})
 					// TOP LOCAL2REMOTE IRC
 					.state('top_local2remote_irc', {
 						url: '/top_local2remote_irc?start&end&lan_ip&lan_zone',
@@ -734,6 +751,33 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
+					// TOP SMTP TO RECEIVER
+					.state('top_smtp_to_receiver', {
+						url: '/top_smtp_to_receiver?start&end&to',
+						templateUrl: 'public/pages/views/general_network/top_smtp_to_receiver.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Emails To Receiver',
+							subtitleElm: {
+								'Recevier': 'to'
+							},
+							daterange: true
+						}
+					})
+				// TOP SMTP RECEIVERS 
+				.state('top_smtp_receivers', {
+					url: '/top_smtp_receivers?start&end',
+					templateUrl: 'public/pages/views/general_network/top_smtp_receivers.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Email Receivers',
+						daterange: true
+					}
+				})
 
 					// TOP SMTP TO RECEIVER
 					.state('top_smtp_to_receiver', {
@@ -788,6 +832,17 @@ angular.module('mean.pages').config(['$stateProvider',
 					}
 				})
 
-
+			// ARCHIVE
+				.state('archive', {
+					url: '/archive?start&end',
+					templateUrl: 'public/pages/views/archive.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Archive',
+						daterange: false
+					}
+				})
 	}
 ]);

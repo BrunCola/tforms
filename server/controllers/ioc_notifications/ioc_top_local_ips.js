@@ -7,21 +7,18 @@ var dataTable = require('../constructors/datatable'),
 
 exports.render = function(req, res) {
 	var database = req.session.passport.user.database;
-	// var database = null;
 	var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 	var end = Math.round(new Date().getTime() / 1000);
 	if (req.query.start && req.query.end) {
 		start = req.query.start;
 		end = req.query.end;
 	}
-	//var results = [];
 	var tables = [];
 	var crossfilter = [];
 	var info = [];
 	var table1SQL = 'SELECT '+
-			// SELECTS
 			'count(*) AS count,'+
-			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time,'+ // Last Seen
+			'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time,'+ // Last Seen
 			'`ioc_severity`,'+
 			'`ioc`,'+
 			'`ioc_typeIndicator`,'+
@@ -33,7 +30,6 @@ exports.render = function(req, res) {
 			'sum(`out_packets`) AS out_packets,'+
 			'sum(`in_bytes`) AS in_bytes,'+
 			'sum(`out_bytes`) AS out_bytes '+
-			// !SELECTS
 		'FROM `conn_ioc` '+
 		'WHERE '+
 			'time BETWEEN '+start+' AND '+end+' '+
@@ -42,7 +38,6 @@ exports.render = function(req, res) {
 		'GROUP BY '+
 			'`lan_ip`,'+
 			'`ioc`';
-
 	var table1Params = [
 		{
 			title: 'Last Seen',
@@ -73,15 +68,13 @@ exports.render = function(req, res) {
 		div: 'table',
 		title: 'Indicators of Compromise (IOC) Notifications'
 	}
-
 	var crossfilterSQL = 'SELECT '+
-		// SELECTS
-		'count(*) as count,'+
-		'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+ // Last Seen
-		'`ioc_severity`,'+
-		'`ioc` '+
-		// !SELECTS
-		'FROM `conn_ioc` '+
+			'count(*) as count,'+
+			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
+			'`ioc_severity`,'+
+			'`ioc` '+
+		'FROM '+
+			'`conn_ioc` '+
 		'WHERE '+
 			'`time` BETWEEN '+start+' AND '+end+' '+
 			'AND `ioc_count` > 0 '+
@@ -92,7 +85,6 @@ exports.render = function(req, res) {
 			'hour(from_unixtime(time)),'+
 			'ioc,'+
 			'ioc_severity';
-
 	async.parallel([
 		// Table function(s)
 		function(callback) {
@@ -115,7 +107,6 @@ exports.render = function(req, res) {
 			tables: tables,
 			crossfilter: crossfilter
 		};
-		//console.log(results);
 		res.json(results);
 	});
 };

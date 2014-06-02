@@ -17,61 +17,60 @@ exports.render = function(req, res) {
 	if (req.query.remote_ip && req.query.mime) {
 		var tables = [];
 		var table1SQL = 'SELECT '+
-			// SELECTS
-			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'`mime`, '+
-			'`name`, '+
-			'`machine`, '+
-			'`lan_ip`, '+
-			'`lan_port`, '+
-			'`lan_zone`, '+
-			'`remote_ip`, '+
-			'`remote_port`, '+
-			'`remote_asn`, '+
-			'`remote_asn_name`, '+
-			'`remote_country`, '+
-			'`remote_cc`, '+
-			'`proto`, '+
-			'`md5`, '+
-			'`http_host`, '+
-			'`ioc`, '+
-			'`ioc_typeIndicator`, '+
-			'`ioc_typeInfection`, '+
-			'size as size '+
-			// !SELECTS
-			'FROM `file` '+
-			'WHERE time BETWEEN '+start+' AND '+end+' '+
-			'AND mime = \''+req.query.mime+'\' AND remote_ip = \''+req.query.remote_ip+'\' ';
-
-			var table1Params = [
-				{ title: 'Last Seen', select: 'time' },
-				{ title: 'Machine', select: 'machine' },
-				{ title: 'Lan Zone', select: 'lan_zone' },
-				{ title: 'LAN IP', select: 'lan_ip' },
-				{ title: 'LAN Port', select: 'lan_port' },
-				{ title: 'Remote IP', select: 'remote_ip' },
-				{ title: 'Remote Port', select: 'remote_port' },
-				{ title: 'Protocol', select: 'proto' },
-				{ title: 'ASN', select: 'remote_asn' },
-				{ title: 'ASN Name', select: 'remote_asn_name' },
-				{ title: 'Remote Country', select: 'remote_country' },
-				{ title: 'Flag', select: 'remote_cc' },
-				{ title: 'HTTP Host', select: 'http_host' },
-				{ title: 'IOC', select: 'ioc' },
-				{ title: 'IOC Type', select: 'ioc_typeIndicator' },
-				{ title: 'IOC Stage', select: 'ioc_typeInfection' },
-				{ title: 'Name', select: 'name', sClass:'file'},
-				{ title: 'Size', select: 'size' },
-				{ title: 'MIME', select: 'mime' },
-				{ title: 'MD5', select: 'md5' }
-			];
-			var table1Settings = {
-				sort: [[0, 'desc']],
-				div: 'table',
-				title: 'Extracted Files by Remote IP'
-			}
-
-			async.parallel([
+				'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`mime`, '+
+				'`name`, '+
+				'`lan_zone`, '+
+				'`machine`, '+
+				'`lan_ip`, '+
+				'`lan_port`, '+
+				'`remote_ip`, '+
+				'`remote_port`, '+
+				'`remote_asn`, '+
+				'`remote_asn_name`, '+
+				'`remote_country`, '+
+				'`remote_cc`, '+
+				'`size`, '+
+				'`proto`, '+
+				'`md5`, '+
+				'`http_host`, '+
+				'`ioc`, '+
+				'`ioc_typeIndicator`, '+
+				'`ioc_typeInfection` '+
+			'FROM '+
+				'`file` '+
+			'WHERE '+
+				'`time` BETWEEN '+start+' AND '+end+' '+
+				'AND `remote_ip` = \''+req.query.remote_ip+'\' '+
+				'AND `mime` = \''+req.query.mime+'\' ';
+		var table1Params = [
+			{ title: 'Last Seen', select: 'time' },
+			{ title: 'MIME', select: 'mime' },
+			{ title: 'Name', select: 'name', sClass:'file'},
+			{ title: 'Size', select: 'size' },
+			{ title: 'Zone', select: 'lan_zone' },
+			{ title: 'Machine', select: 'machine' },
+			{ title: 'LAN IP', select: 'lan_ip' },
+			{ title: 'LAN Port', select: 'lan_port' },
+			{ title: 'Remote IP', select: 'remote_ip' },
+			{ title: 'Remote Port', select: 'remote_port' },
+			{ title: 'Remote Country', select: 'remote_country' },
+			{ title: 'Flag', select: 'remote_cc' },
+			{ title: 'ASN', select: 'remote_asn' },
+			{ title: 'ASN Name', select: 'remote_asn_name' },
+			{ title: 'Protocol', select: 'proto' },
+			{ title: 'HTTP Host', select: 'http_host' },
+			{ title: 'IOC', select: 'ioc' },
+			{ title: 'IOC Type', select: 'ioc_typeIndicator' },
+			{ title: 'IOC Stage', select: 'ioc_typeInfection' },
+			{ title: 'MD5', select: 'md5' }
+		];
+		var table1Settings = {
+			sort: [[0, 'desc']],
+			div: 'table',
+			title: 'Extracted Files by Remote IP'
+		}
+		async.parallel([
 			// Table function(s)
 			function(callback) {
 				new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){

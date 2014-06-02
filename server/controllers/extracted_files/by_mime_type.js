@@ -17,16 +17,17 @@ exports.render = function(req, res) {
 	//var results = [];
 	var tables = [];
 	var table1SQL = 'SELECT '+
-		// SELECTS
-		'date_format(max(from_unixtime(time)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-		'count(*) as count, '+
-		'`mime`, '+
-		'(sum(size) / 1048576) as size, '+
-		'sum(ioc_count) as ioc_count '+
-		// !SELECTS
-		'FROM `file` '+
-		'WHERE time BETWEEN '+start+' AND '+end+' '+
-		'GROUP BY mime';
+			'count(*) AS count,'+
+			'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time,'+
+			'`mime`,'+
+			'(sum(`size`) / 1048576) AS size,'+
+			'sum(`ioc_count`) AS ioc_count '+
+		'FROM '+
+			'`file_mime` '+
+		'WHERE '+
+			'`time` BETWEEN '+start+' AND '+end+' '+
+		'GROUP BY '+
+			'`mime`';
 
 		var table1Params = [
 			{
@@ -48,7 +49,7 @@ exports.render = function(req, res) {
 		var table1Settings = {
 			sort: [[1, 'desc']],
 			div: 'table',
-			title: 'Local User Extracted Files'
+			title: 'Extracted File MIME Types'
 		}
 
 		async.parallel([

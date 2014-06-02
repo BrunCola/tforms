@@ -2,20 +2,26 @@
 
 var map = require('../constructors/map'),
 	config = require('../../config/config'),
-	async = require('async');
+	async = require('async'),
+	moment = require('moment');
 
 exports.render = function(req, res) {
 	var database = req.session.passport.user.database;
 	// var database = null;
-	// var startTime = new Date().getTime()-1800000; // 30 minutes
-	// var endTime = new Date().getTime()-1500000; // 25 minutes
 	// remember 1200ms is one minute
-	var startTime = new Date().getTime()-1260000; // 21 minutes
-	var endTime = new Date().getTime()-1200000; // 20 minutes
-	// var start = 1398700800; // 30 minutes
-	// var end = 1398701100; // 25 minutes
-	var start = Math.round(startTime / 1000);
-	var end = Math.round(endTime / 1000);
+	// var startTime = new Date().getTime()-1260000; // 21 minutes
+	// var endTime = new Date().getTime()-1200000; // 20 minutes	
+
+	// var start = moment().subtract('minutes', 21).unix();
+	// var end = moment().subtract('minutes', 20).unix();	
+
+
+	var start = moment().subtract('minutes', 10).unix();
+	var end = moment().subtract('minutes', 9).unix();
+
+	console.log('start: '+ start)
+	console.log('end: '+ end)
+
 	var queryResult;
 	var mapSQL = 'SELECT '+
 			// 'count(*) as count, '+
@@ -28,7 +34,7 @@ exports.render = function(req, res) {
 			'`ioc_count` '+
 			// !SELECTS
 		'FROM conn '+
-			'WHERE '+
+		'WHERE '+
 			'time BETWEEN '+start+' AND '+end;
 			// 'AND `ioc_count` > 0 '+
 			// 'AND `trash` IS NULL';
@@ -43,7 +49,9 @@ exports.render = function(req, res) {
 	}], function(err) { //This function gets called after the two tasks have called their "task callbacks"
 	if (err) throw console.log(err);
 		var results = {
-			map: queryResult
+			map: queryResult,
+			start: start*1000,
+			end: end*1000
 		};
 		//console.log(results);
 		res.json(results);
