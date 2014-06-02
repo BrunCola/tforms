@@ -657,18 +657,6 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-				// TOP REMOTE IRC
-				.state('top_remote_irc', {
-					url: '/top_remote_irc?start&end',
-					templateUrl: 'public/pages/views/general_network/top_remote_irc.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'Remote IRC',
-						daterange: true
-					}
-				})
 					// TOP LOCAL2REMOTE IRC
 					.state('top_local2remote_irc', {
 						url: '/top_local2remote_irc?start&end&lan_ip&lan_zone',
@@ -751,34 +739,6 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// TOP SMTP TO RECEIVER
-					.state('top_smtp_to_receiver', {
-						url: '/top_smtp_to_receiver?start&end&to',
-						templateUrl: 'public/pages/views/general_network/top_smtp_to_receiver.html',
-						resolve: {
-							loggedin: checkLoggedin
-						},
-						data: {
-							title: 'Emails To Receiver',
-							subtitleElm: {
-								'Recevier': 'to'
-							},
-							daterange: true
-						}
-					})
-				// TOP SMTP RECEIVERS 
-				.state('top_smtp_receivers', {
-					url: '/top_smtp_receivers?start&end',
-					templateUrl: 'public/pages/views/general_network/top_smtp_receivers.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'Email Receivers',
-						daterange: true
-					}
-				})
-
 					// TOP SMTP TO RECEIVER
 					.state('top_smtp_to_receiver', {
 						url: '/top_smtp_to_receiver?start&end&to',
