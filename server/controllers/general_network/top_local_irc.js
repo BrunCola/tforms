@@ -33,12 +33,12 @@ exports.render = function(req, res) {
 		{
 			title: 'Last Seen',
 			select: 'time',
-			//  link: {
-			//  	type: 'top_ssh_remote', 
-			//  	// val: the pre-evaluated values from the query above
-			//  	val: ['lan_zone',lan_ip'],
-			//  	crumb: false
-			// },
+			link: {
+			 	type: 'top_local2remote_irc', 
+			 	// val: the pre-evaluated values from the query above
+			 	val: ['lan_ip', 'lan_zone'],
+			 	crumb: false
+			},
 		},
 		{ title: 'Count', select: 'count' },
 		{ title: 'Zone', select: 'lan_zone' },
