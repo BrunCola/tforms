@@ -6,19 +6,17 @@ async = require('async');
 
 exports.render = function(req, res) {
 	var database = req.session.passport.user.database;
-	// var database = null;
 	var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 	var end = Math.round(new Date().getTime() / 1000);
 	if (req.query.start && req.query.end) {
 		start = req.query.start;
 		end = req.query.end;
 	}
-	//var results = [];
 	var tables = [];
 	var info = [];
 	var table1SQL = 'SELECT '+
 			'count(*) AS count,'+
-			'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time,'+
+			'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time,'+
 			'`from`,'+
 			'sum(`ioc_count`) AS `ioc_count` '+
 		'FROM '+
@@ -33,30 +31,12 @@ exports.render = function(req, res) {
 			select: 'time',
 			 link: {
 			 	type: 'top_smtp_from_sender', 
-			 	// val: the pre-evaluated values from the query above
 			 	val: ['from'],
 			 	crumb: false
 			},
 		},
 		{ title: 'Count', select: 'count' },
-		{ title: 'Machine', select: 'machine' },
-		{ title: 'LAN port', select: 'lan_port' },
-		{ title: 'Remote port', select: 'remote_port' },
-		{ title: 'Flag', select: 'remote_cc' },
-		{ title: 'Remote Country', select: 'remote_country' },
-		{ title: 'Remote ASN', select: 'remote_asn' },
-		{ title: 'Remote ASN Name', select: 'remote_asn_name' },
 		{ title: 'From', select: 'from' },
-		{ title: 'To', select: 'to' },
-		{ title: 'Reply To', select: 'reply_to' },
-		{ title: 'In Reply To', select: 'in_reply_to' },
-		{ title: 'Subject', select: 'subject' },
-		{ title: 'User Agent', select: 'user_agent' },
-		{ title: 'FUIDS', select: 'fuids' },
-		{ title: 'IOC', select: 'ioc' },
-		{ title: 'IOC Severity', select: 'ioc_severity' },
-		{ title: 'Infection Stage', select: 'ioc_typeInfection' },
-		{ title: 'Indicator Type', select: 'ioc_typeIndicator' },
 		{ title: 'IOC Count', select: 'ioc_count' }
 	];
 	var table1Settings = {
@@ -78,7 +58,6 @@ exports.render = function(req, res) {
 			info: info,
 			tables: tables
 		};
-		//console.log(results);
 		res.json(results);
 	});
 
