@@ -48,9 +48,9 @@ exports.render = function(req, res) {
 		{ title: 'Remote Country', select: 'remote_country' },
 		{ title: 'Flag', select: 'remote_cc', },
 		{ title: 'Remote ASN', select: 'remote_asn_name' },
-		{ title: 'LAN Zone', select: 'lan_zone' },
-		{ title: 'LAN IP', select: 'lan_ip' },
+		{ title: 'Zone', select: 'lan_zone' },
 		{ title: 'Machine Name', select: 'machine' }
+		{ title: 'LAN IP', select: 'lan_ip' },
 	];
 	var table1Settings = {
 		sort: [[0, 'desc']],

@@ -19,20 +19,19 @@ exports.render = function(req, res) {
 	var crossfilter = [];
 	var info = [];
 	var table1SQL = 'SELECT '+
-			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time, '+
-			'`lan_zone`, '+
-			'`machine`, '+
-			'`lan_ip`, '+
-			'`remote_ip`, '+
-			'`remote_port`, '+
-			'`remote_asn`, '+
-			'`remote_asn_name`, '+
-			'`remote_country`, '+
-			'`remote_cc`, '+
-			'`proto`, '+
-			'`qtype_name` AS qtype, '+
-			'`qclass_name` AS qclass, '+
-			'`rcode_name` AS rcode, '+
+			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
+			'`lan_zone`,'+
+			'`machine`,'+
+			'`lan_ip`,'+
+			'`remote_ip`,'+
+			'`remote_port`,'+
+			'`remote_asn_name`,'+
+			'`remote_country`,'+
+			'`remote_cc`,'+
+			'`proto`,'+
+			'`qtype_name` AS qtype,'+
+			'`qclass_name` AS qclass,'+
+			'`rcode_name` AS rcode,'+
 			'`query` '+
 		'FROM '+
 			'`dns_uniq_query` '+
