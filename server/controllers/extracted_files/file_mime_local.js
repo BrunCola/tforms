@@ -7,14 +7,12 @@ async = require('async');
 
 exports.render = function(req, res) {
 	var database = req.session.passport.user.database;
-	// var database = null;
 	var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 	var end = Math.round(new Date().getTime() / 1000);
 	if (req.query.start && req.query.end) {
 		start = req.query.start;
 		end = req.query.end;
 	}
-	//var results = [];
 	if (req.query.mime) {
 		var tables = [];
 		var table1SQL = 'SELECT '+
@@ -22,6 +20,7 @@ exports.render = function(req, res) {
 				'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time,'+
 				'`mime`,'+
 				'`lan_zone`,'+
+				'`machine`,'+
 				'`lan_ip`,'+
 				'(sum(`size`) / 1048576) AS size,'+
 				'sum(`ioc_count`) AS ioc_count '+
@@ -46,6 +45,7 @@ exports.render = function(req, res) {
 				},
 				{ title: 'Total Extracted Files', select: 'count' },
 				{ title: 'Zone', select: 'lan_zone' },
+				{ title: 'Machine Name', select: 'machine' },
 				{ title: 'Lan IP', select: 'lan_ip' },
 				{ title: 'Total Size (MB)', select: 'size' },
 				{ title: 'Total IOC Hits', select: 'ioc_count' }
@@ -55,9 +55,7 @@ exports.render = function(req, res) {
 				div: 'table',
 				title: 'Extracted File Mime Types'
 			}
-
 			async.parallel([
-			// Table function(s)
 			function(callback) {
 				new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
 					tables.push(data);
@@ -75,5 +73,4 @@ exports.render = function(req, res) {
 	} else {
 		res.redirect('/');
 	}
-
 };
