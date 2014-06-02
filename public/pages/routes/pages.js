@@ -716,7 +716,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						data: {
 							title: 'Emails To Receiver',
 							subtitleElm: {
-								'Recevier': 'to'
+								'Receiver': 'to'
 							},
 							daterange: true
 						}
