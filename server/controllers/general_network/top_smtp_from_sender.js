@@ -56,7 +56,7 @@ exports.render = function(req, res) {
 			{ title: 'IOC Severity', select: 'ioc_severity' },
 			{ title: 'Infection Stage', select: 'ioc_typeInfection' },
 			{ title: 'Indicator Type', select: 'ioc_typeIndicator' },
-			{ title: 'IOC Count', select: 'ioc_count' }
+			{ title: 'IOC Count', select: 'ioc_count' },
 			{ title: 'Zone', select: 'ioc_zone' },
 			{ title: 'Machine Name', select: 'machine' },
 			{ title: 'LAN IP', select: 'lan_ip' },
