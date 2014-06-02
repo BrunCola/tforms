@@ -34,12 +34,12 @@ exports.render = function(req, res) {
 		{
 			title: 'Last Seen',
 			select: 'time',
-			//  link: {
-			//  	type: 'top_ssh_remote', 
-			//  	// val: the pre-evaluated values from the query above
-			//  	val: ['lan_ip'],
-			//  	crumb: false
-			// },
+			 link: {
+			 	type: 'top_remote2local_irc', 
+			 	// val: the pre-evaluated values from the query above
+			 	val: ['remote_ip'],
+			 	crumb: false
+			},
 		},
 		{ title: 'Count', select: 'count' },
 		{ title: 'Remote IP', select: 'remote_ip'},
@@ -51,7 +51,7 @@ exports.render = function(req, res) {
 	var table1Settings = {
 		sort: [[1, 'desc']],
 		div: 'table',
-		title: 'Local IRC'
+		title: 'Remote IRC'
 	}
 	async.parallel([
 		// Table function(s)
