@@ -165,7 +165,108 @@ angular.module('mean.pages').factory('mimeIcon', [
 						return div;
 				}
 			}
+			if (match[1] == 'text') {
+				// background color generated here
+				bg.style('fill', '#BBBBBB');
+				em
+					.append('path')
+					.style('fill', '#727272')
+					.attr('d', 'M0.104,19.335h42.589c-0.562-5.875-3.5-11.051-7.842-14.567H7.945C3.604,8.284,0.667,13.46,0.104,19.335z');
+				em
+					.append('text')
+					.attr('transform', 'matrix(1 0 0 1 11.4263 16.5557)')
+					.style('fill', '#A5A5A5')
+					.attr('font-family', 'ITCAvantGardeStd-Md')
+					.attr('font-size', 11)
+					.text('txt')
+				// switch between text				
+				switch(match[2]) {
+					case 'plain':
+						em
+							.append('path')
+							.style('fill', '#727272')
+							.attr('d', 'M0.104,19.335h42.589c-0.562-5.875-3.5-11.051-7.842-14.567H7.945C3.604,8.284,0.667,13.46,0.104,19.335z');
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 11.4263 16.5557)')
+							.style('fill', '#A5A5A5')
+							.attr('font-family', 'ITCAvantGardeStd-Md')
+							.attr('font-size', 11)
+							.text('txt')
+						return div;
+					case 'pgp':
+						em
+							.append('path')
+							.attr('fill-rule', 'evenodd')
+							.attr('clip-rule', 'evenodd') 
+							.style('fill', '#7F7F7F')
+							.attr('d', 'M27.17,29.272v-2.055l0,0c0-0.003,0-0.005,0-0.007'+
+								'c0-3.123-2.514-5.655-5.617-5.655c-3.102,0-5.615,2.532-5.615,5.655c0,0.002,0,0.004,0,0.007v2.055h-1.15v9.036h13.574v-9.036H27.17'+
+								'z M25.189,27.42v1.853h-7.174V27.42c0-0.003,0-0.005,0-0.008c0-1.994,1.121-3.816,3.559-3.816c2.389,0,3.615,1.822,3.615,3.816'+
+								'C25.189,27.415,25.189,27.417,25.189,27.42z');
+						return div;
+					case 'html':
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 9.3936 34.5557)')
+							.style('fill', '#7F7F7F')
+							.attr('font-family', 'ITCAvantGardeStd-Md')
+							.attr('font-size', 14)
+							.text('</>');
+						return div;
+					case 'x-shellscript':
+						em
+							.append('path')
+							.attr('fill-rule', 'evenodd')
+							.attr('clip-rule', 'evenodd') 
+							.style('fill', '#7F7F7F')
+							.attr('d', 'M31.665,28.999l-3.078,2.764l2.616-3.812l-1.848-3.234l-3,4.674'+
+								'l2.261-5.285l-2.771-2.01l-1.979,6.074l0.871-6.336l-3.325-0.612l-0.277,6.502l-0.462-6.415l-3.416,0.699l1.043,6.115l-1.874-5.854'+
+								'l-2.957,2.186l2.013,4.537l-2.659-4.1l-1.661,3.496l2.982,3.938l-3.445-2.978l-0.461,2.797l5.265,3.408v2.973l5.877,0.861'+
+								'l5.574-1.037l0.093-2.797l4.987-3.496L31.665,28.999z M21.218,32.666l-4.573,1.927v-1.576l3.061-1.053l-3.061-1.035v-1.576'+
+								'l4.573,1.928V32.666z M26.042,35.376h-4.501v-0.45h4.501V35.376z');
+						return div;
+					case 'c++':
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 6.9932 33.5557)')
+							.style('fill', '#7F7F7F')
+							.attr('font-family', 'ITCAvantGardeStd-Bk')
+							.attr('font-size', 14)
+							.text('C++');
+						return div;
+					case 'fortran':
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 8.0713 34.5557)')
+							.style('fill', '#7F7F7F')
+							.attr('font-family', 'ITCAvantGardeStd-Bk')
+							.attr('font-size', 14)
+							.text('Fortran');
+						return div;
+					case 'asm':
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 7.3218 32.9746)')
+							.style('fill', '#7F7F7F')
+							.attr('font-family', 'ITCAvantGardeStd-Bk')
+							.attr('font-size', 14)
+							.text('Fortran');
+						return div;					
+					case 'troff':
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 7.8828 34)')
+							.style('fill', '#7F7F7F')
+							.attr('font-family', 'ITCAvantGardeStd-Bk')
+							.attr('font-size', 14)
+							.text('TROFF');
+					return div;
+				}
+			}
 		}
+		return mimeIcon;
+	}
 		return mimeIcon;
 	}
 ]);
