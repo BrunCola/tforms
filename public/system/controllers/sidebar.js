@@ -216,13 +216,13 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'Local IRC',
 			'url': 'top_local_irc',
 			'icon': 'fa-comment',
-			'orphans': ['top_local2remote_irc']
+			'orphans': ['top_local2remote_irc', 'top_irc_shared']
 		},
 		{
 			'title': 'Remote IRC',
 			'url': 'top_remote_irc',
 			'icon': 'fa-comment',
-			'orphans': ['top_remote2local_irc']
+			'orphans': ['top_remote2local_irc', 'top_irc_shared']
 		},
 		{
 			'title': 'SMTP Senders',
@@ -240,13 +240,13 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'Local FTP',
 			'url': 'top_local_ftp',
 			'icon': 'fa-file',
-			'orphans': []
+			'orphans': ['top_local2remote_ftp', 'top_ftp_shared']
 		},
 		{
 			'title': 'Remote FTP',
 			'url': 'top_remote_ftp',
 			'icon': 'fa-file',
-			'orphans': []
+			'orphans': ['top_remote2local_ftp', 'top_ftp_shared']
 		}]
 	}];
 }]);

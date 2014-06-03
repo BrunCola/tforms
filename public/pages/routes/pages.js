@@ -473,7 +473,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							title: 'Local / Remote Bandwidth Use',
 							subtitleElm: {
 								'LAN IP': 'lan_ip',
-								'LAN Zone': 'lan_zone'
+								'Zone': 'lan_zone'
 							},
 							daterange: true
 						}
@@ -489,7 +489,7 @@ angular.module('mean.pages').config(['$stateProvider',
 								title: 'Conn Local/Remote Shared',
 								subtitleElm: {
 									'LAN IP': 'lan_ip',
-									'LAN Zone': 'lan_zone',
+									'Zone': 'lan_zone',
 									'Remote IP': 'remote_ip'
 								},
 								daterange: true
@@ -647,6 +647,39 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
+					// TOP LOCAL2REMOTE FTP
+					.state('top_local2remote_ftp', {
+						url: '/top_local2remote_ftp?start&end&lan_ip&lan_zone',
+						templateUrl: 'public/pages/views/general_network/top_local2remote_ftp.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Local to Remote FTP',
+							subtitleElm: {
+								'LAN IP': 'lan_ip',
+								'Zone': 'lan_zone'
+							},
+							daterange: true
+						}
+					})
+						// TOP FTP SHARED
+						.state('top_ftp_shared', {
+							url: '/top_ftp_shared?start&end&lan_ip&lan_zone&remote_ip',
+							templateUrl: 'public/pages/views/general_network/top_ftp_shared.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'FTP Local/Remote Shared',
+								subtitleElm: {
+									'LAN IP': 'lan_ip',
+									'Zone': 'lan_zone',
+									'Remote IP': 'remote_ip'
+								},
+								daterange: true
+							}
+						})
 				// TOP REMOTE FTP 
 				.state('top_remote_ftp', {
 					url: '/top_remote_ftp?start&end',
@@ -659,6 +692,21 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
+					// TOP REMOTE2LOCAL FTP
+					.state('top_remote2local_ftp', {
+						url: '/top_remote2local_ftp?start&end&remote_ip',
+						templateUrl: 'public/pages/views/general_network/top_remote2local_ftp.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Remote to Local FTP',
+							subtitleElm: {
+								'Remote IP': 'remote_ip'
+							},
+							daterange: true
+						}
+					})
 				// TOP LOCAL IRC
 				.state('top_local_irc', {
 					url: '/top_local_irc?start&end',
@@ -682,11 +730,28 @@ angular.module('mean.pages').config(['$stateProvider',
 							title: 'Local to Remote IRC',
 							subtitleElm: {
 								'LAN IP': 'lan_ip',
-								'LAN Zone': 'lan_zone'
+								'Zone': 'lan_zone'
 							},
 							daterange: true
 						}
 					})
+						// TOP IRC SHARED
+						.state('top_irc_shared', {
+							url: '/top_irc_shared?start&end&lan_ip&lan_zone&remote_ip',
+							templateUrl: 'public/pages/views/general_network/top_irc_shared.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'IRC Local/Remote Shared',
+								subtitleElm: {
+									'LAN IP': 'lan_ip',
+									'Zone': 'lan_zone',
+									'Remote IP': 'remote_ip'
+								},
+								daterange: true
+							}
+						})
 				// TOP REMOTE IRC
 				.state('top_remote_irc', {
 					url: '/top_remote_irc?start&end',
