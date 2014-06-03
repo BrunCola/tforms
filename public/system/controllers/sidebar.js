@@ -178,6 +178,30 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		}]
 	},
 	{
+		'title': 'Email',
+		'url': '',
+		'icon': 'fa-envelope',
+		'children':
+		[{
+			'title': 'SMTP Senders',
+			'url': 'top_local_smtp',
+			'icon': 'fa-envelope',
+			'orphans': ['top_smtp_sender2receiver','top_smtp_from_sender']
+		},
+		{
+			'title': 'SMTP Receivers',
+			'url': 'top_smtp_receivers',
+			'icon': 'fa-envelope',
+			'orphans': ['top_smtp_receiver2sender','top_smtp_from_sender']
+		},
+		{
+			'title': 'SMTP Subjects',
+			'url': 'top_smtp_subjects',
+			'icon': 'fa-envelope',
+			'orphans': []
+		}]
+	},
+	{
 		'title': 'General Network',
 		'url': '',
 		'icon': 'fa-sitemap',
@@ -223,18 +247,6 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'url': 'top_remote_irc',
 			'icon': 'fa-comment',
 			'orphans': ['top_remote2local_irc', 'top_irc_shared']
-		},
-		{
-			'title': 'SMTP Senders',
-			'url': 'top_local_smtp',
-			'icon': 'fa-envelope',
-			'orphans': ['top_smtp_sender2receiver','top_smtp_from_sender']
-		},
-		{
-			'title': 'SMTP Receivers',
-			'url': 'top_smtp_receivers',
-			'icon': 'fa-envelope',
-			'orphans': ['top_smtp_receiver2sender','top_smtp_from_sender']
 		},
 		{
 			'title': 'Local FTP',
