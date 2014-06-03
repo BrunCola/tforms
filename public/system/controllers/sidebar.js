@@ -185,13 +185,13 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		[{
 			'title': 'SMTP Senders',
 			'url': 'local_smtp',
-			'icon': 'fa-envelope',
+			'icon': 'fa-mail-forward',
 			'orphans': ['smtp_sender2receiver','smtp_from_sender']
 		},
 		{
 			'title': 'SMTP Receivers',
 			'url': 'smtp_receivers',
-			'icon': 'fa-envelope',
+			'icon': 'fa-mail-reply',
 			'orphans': ['smtp_receiver2sender','smtp_from_sender']
 		},
 		{
