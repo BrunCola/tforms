@@ -74,6 +74,20 @@ var live_connections = require('../controllers/live_connections/live_connections
 			// l7 TOPREMOTE DRILL
 			var l7_topremote_drill = require('../controllers/applications/l7_topremote_drill');
 
+//EMAIL
+	// TOP LOCAL SMTP 
+	var top_local_smtp = require('../controllers/general_network/top_local_smtp');
+		// TOP SMTP SENDER2RECEIVER
+		var top_smtp_sender2receiver = require('../controllers/general_network/top_smtp_sender2receiver');	
+			// TOP SMTP FROM SENDER
+			var top_smtp_from_sender = require('../controllers/email/top_smtp_from_sender');	
+	// TOP SMTP RECEIVERS
+	var top_smtp_receivers = require('../controllers/general_network/top_smtp_receivers');
+		// TOP SMTP RECEIVER2SENDER
+		var top_smtp_receiver2sender = require('../controllers/general_network/top_smtp_receiver2sender')
+	// TOP SMTP SUBJECTS
+	var top_smtp_subjects = require('../controllers/general_network/top_smtp_subjects');
+
 // GENERAL NETWORK
 	// TOP LOCAL IPS
 	var top_local_ips = require('../controllers/general_network/top_local_ips');
@@ -111,18 +125,6 @@ var live_connections = require('../controllers/live_connections/live_connections
 	var top_remote_irc = require('../controllers/general_network/top_remote_irc');	
 		// TOP REMOTE2LOCAL IRC
 		var top_remote2local_irc = require('../controllers/general_network/top_remote2local_irc');	
-	// TOP LOCAL SMTP 
-	var top_local_smtp = require('../controllers/general_network/top_local_smtp');
-		// TOP SMTP SENDER2RECEIVER
-		var top_smtp_sender2receiver = require('../controllers/general_network/top_smtp_sender2receiver');	
-			// TOP SMTP FROM SENDER
-			var top_smtp_from_sender = require('../controllers/general_network/top_smtp_from_sender');	
-	// TOP SMTP RECEIVERS
-	var top_smtp_receivers = require('../controllers/general_network/top_smtp_receivers');
-		// TOP SMTP RECEIVER2SENDER
-		var top_smtp_receiver2sender = require('../controllers/general_network/top_smtp_receiver2sender')
-	// TOP SMTP SUBJECTS
-	var top_smtp_subjects = require('../controllers/general_network/top_smtp_subjects');
 	// TOP LOCAL FTP
 	var top_local_ftp = require('../controllers/general_network/top_local_ftp');
 		// TOP LOCAL2REMOTE FTP
@@ -243,6 +245,26 @@ module.exports = function(app) {
 				app.route('/applications/l7_topremote_drill')
 				.get(authorization.requiresLogin, l7_topremote_drill.render);
 
+	//EMAIL
+		// TOP LOCAL SMTP
+		app.route('/general_network/top_local_smtp')
+		.get(authorization.requiresLogin, top_local_smtp.render);
+			// TOP SMTP SENDER2RECEIVER
+			app.route('/general_network/top_smtp_sender2receiver')
+			.get(authorization.requiresLogin, top_smtp_sender2receiver.render);
+				// TOP SMTP FROM SENDER
+				app.route('/email/top_smtp_from_sender')
+				.get(authorization.requiresLogin, top_smtp_from_sender.render);
+		// TOP SMTP RECEIVERS
+		app.route('/general_network/top_smtp_receivers')
+		.get(authorization.requiresLogin, top_smtp_receivers.render);
+			// TOP SMTP RECEIVER2SENDER
+			app.route('/general_network/top_smtp_receiver2sender')
+			.get(authorization.requiresLogin, top_smtp_receiver2sender.render);
+		// TOP SMTP SUBJECTS
+		app.route('/general_network/top_smtp_subjects')
+		.get(authorization.requiresLogin, top_smtp_subjects.render);
+		
 	// GENERAL NETWORK
 		// TOP LOCAL IPS
 		app.route('/general_network/top_local_ips')
@@ -298,24 +320,6 @@ module.exports = function(app) {
 			// TOP REMOTE2LOCAL IRC 
 			app.route('/general_network/top_remote2local_irc')
 			.get(authorization.requiresLogin, top_remote2local_irc.render);
-		// TOP LOCAL SMTP
-		app.route('/general_network/top_local_smtp')
-		.get(authorization.requiresLogin, top_local_smtp.render);
-			// TOP SMTP SENDER2RECEIVER
-			app.route('/general_network/top_smtp_sender2receiver')
-			.get(authorization.requiresLogin, top_smtp_sender2receiver.render);
-				// TOP SMTP FROM SENDER
-				app.route('/general_network/top_smtp_from_sender')
-				.get(authorization.requiresLogin, top_smtp_from_sender.render);
-		// TOP SMTP RECEIVERS
-		app.route('/general_network/top_smtp_receivers')
-		.get(authorization.requiresLogin, top_smtp_receivers.render);
-			// TOP SMTP RECEIVER2SENDER
-			app.route('/general_network/top_smtp_receiver2sender')
-			.get(authorization.requiresLogin, top_smtp_receiver2sender.render);
-		// TOP SMTP SUBJECTS
-		app.route('/general_network/top_smtp_subjects')
-		.get(authorization.requiresLogin, top_smtp_subjects.render);
 		// TOP LOCAL FTP
 		app.route('/general_network/top_local_ftp')
 		.get(authorization.requiresLogin, top_local_ftp.render);
