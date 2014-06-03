@@ -17,7 +17,7 @@ exports.render = function(req, res) {
 	var crossfilter = [];
 	var info = [];
 	var table1SQL = 'SELECT '+
-			'count(*) AS `count`, '+
+			'sum(`count`) AS `count`, '+
 			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time, '+ // LASt Seen
 			'`l7_proto`, '+
 			'(sum(`in_bytes`) / 1048576) AS in_bytes, '+

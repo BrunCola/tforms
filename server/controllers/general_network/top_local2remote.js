@@ -18,7 +18,7 @@ exports.render = function(req, res) {
 		var crossfilter = [];
 		var info = [];
 		var table1SQL = 'SELECT '+
-				'count(*) as count, '+
+				'sum(`count`) AS `count`, '+
 				'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
 				'`lan_zone`, '+
 				'`lan_ip`, '+

@@ -48,7 +48,7 @@ exports.render = function(req, res) {
 				'`ioc_severity`, ' +
 				'`ioc_typeInfection`, ' +
 				'`ioc_typeIndicator`, ' +
-				'`ioc_count` ' +
+				'sum(`ioc_count`) AS `ioc_count` ' +
 			'FROM ' +
 				'`ftp` ' +
 			'WHERE ' + 
@@ -71,7 +71,7 @@ exports.render = function(req, res) {
 			},
 			{ title: 'Count', select: 'count' },
 			{ title: 'Machine', select: 'machine' },
-			{ title: 'LAN Zone', select: 'lan_zone' },
+			{ title: 'Zone', select: 'lan_zone' },
 			{ title: 'LAN IP', select: 'lan_ip' },
 			{ title: 'LAN port', select: 'lan_port' },
 			{ title: 'Remote IP', select: 'remote_ip'},

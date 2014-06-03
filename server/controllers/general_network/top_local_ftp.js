@@ -17,34 +17,36 @@ exports.render = function(req, res) {
 	var tables = [];
 	var info = [];
 	var table1SQL = 'SELECT '+
-		'count(*) AS count,' +
-		'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-		'`machine`, ' +
-		'`lan_zone`, ' +
-		'`lan_ip`, ' +
-		'`lan_port`, ' +
-		'`user`, ' +
-		'`password`, ' +
-		'`command`, ' +
-		'`arg`, ' +
-		'`mime_type`, ' +
-		'`file_size`, ' +
-		'`reply_code`, ' +
-		'`reply_msg`, ' +
-		'`dc_passive`, ' +
-		'`dc_orig_h`, ' +
-		'`dc_resp_h`, ' +
-		'`dc_resp_p`, ' +
-		'`ioc`, ' +
-		'`ioc_severity`, ' +
-		'`ioc_typeInfection`, ' +
-		'`ioc_typeIndicator`, ' +
-		'`ioc_count` ' +
-		'FROM `ftp` '+
-		'WHERE time BETWEEN '+start+' AND '+end+' '+
+			'count(*) AS count,' +
+			'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'`machine`, ' +
+			'`lan_zone`, ' +
+			'`lan_ip`, ' +
+			'`lan_port`, ' +
+			'`user`, ' +
+			'`password`, ' +
+			'`command`, ' +
+			'`arg`, ' +
+			'`mime_type`, ' +
+			'`file_size`, ' +
+			'`reply_code`, ' +
+			'`reply_msg`, ' +
+			'`dc_passive`, ' +
+			'`dc_orig_h`, ' +
+			'`dc_resp_h`, ' +
+			'`dc_resp_p`, ' +
+			'`ioc`, ' +
+			'`ioc_severity`, ' +
+			'`ioc_typeInfection`, ' +
+			'`ioc_typeIndicator`, ' +
+			'sum(`ioc_count`) AS `ioc_count` ' +
+		'FROM ' + 
+			'`ftp` '+
+		'WHERE ' + 
+			'time BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+
-		'`lan_ip`, ' + 
-		'`lan_zone`';
+			'`lan_ip`, ' + 
+			'`lan_zone`';
 	var table1Params = [
 		{
 			title: 'Last Seen',
@@ -58,7 +60,7 @@ exports.render = function(req, res) {
 		},
 		{ title: 'Count', select: 'count' },
 		{ title: 'Machine', select: 'machine' },
-		{ title: 'LAN Zone', select: 'lan_zone' },
+		{ title: 'Zone', select: 'lan_zone' },
 		{ title: 'LAN IP', select: 'lan_ip' },
 		{ title: 'LAN port', select: 'lan_port' },
 		{ title: 'User', select: 'user' },

@@ -51,7 +51,7 @@ exports.render = function(req, res) {
 				select: 'time'
 			},
 			{ title: 'Machine', select: 'machine' },
-			{ title: 'LAN Zone', select: 'lan_zone' },
+			{ title: 'Zone', select: 'lan_zone' },
 			{ title: 'LAN IP', select: 'lan_ip' },
 			{ title: 'LAN port', select: 'lan_port' },
 			{ title: 'Remote IP', select: 'remote_ip'},

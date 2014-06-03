@@ -17,35 +17,37 @@ exports.render = function(req, res) {
 	var tables = [];
 	var info = [];
 	var table1SQL = 'SELECT '+
-		'count(*) AS count,' +
-		'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-		'`remote_ip`, ' +
-		'`remote_port`, '  +
-		'`remote_cc`, ' +
-		'`remote_country`, ' +
-		'`remote_asn`, ' +
-		'`remote_asn_name`, ' +
-		'`user`, ' +
-		'`password`, ' +
-		'`command`, ' +
-		'`arg`, ' +
-		'`mime_type`, ' +
-		'`file_size`, ' +
-		'`reply_code`, ' +
-		'`reply_msg`, ' +
-		'`dc_passive`, ' +
-		'`dc_orig_h`, ' +
-		'`dc_resp_h`, ' +
-		'`dc_resp_p`, ' +
-		'`ioc`, ' +
-		'`ioc_severity`, ' +
-		'`ioc_typeInfection`, ' +
-		'`ioc_typeIndicator`, ' +
-		'`ioc_count` ' +
-		'FROM `ftp` '+
-		'WHERE time BETWEEN '+start+' AND '+end+' '+
+			'count(*) AS count,' +
+			'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'`remote_ip`, ' +
+			'`remote_port`, '  +
+			'`remote_cc`, ' +
+			'`remote_country`, ' +
+			'`remote_asn`, ' +
+			'`remote_asn_name`, ' +
+			'`user`, ' +
+			'`password`, ' +
+			'`command`, ' +
+			'`arg`, ' +
+			'`mime_type`, ' +
+			'`file_size`, ' +
+			'`reply_code`, ' +
+			'`reply_msg`, ' +
+			'`dc_passive`, ' +
+			'`dc_orig_h`, ' +
+			'`dc_resp_h`, ' +
+			'`dc_resp_p`, ' +
+			'`ioc`, ' +
+			'`ioc_severity`, ' +
+			'`ioc_typeInfection`, ' +
+			'`ioc_typeIndicator`, ' +
+			'`ioc_count` ' +
+		'FROM '+
+			'`ftp` '+
+		'WHERE ' +
+			'time BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+
-		'`remote_ip`';
+			'`remote_ip`';
 	var table1Params = [
 		{
 			title: 'Last Seen',

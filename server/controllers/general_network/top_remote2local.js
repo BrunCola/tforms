@@ -18,6 +18,7 @@ exports.render = function(req, res) {
 		var crossfilter = [];
 		var info = [];
 		var table1SQL = 'SELECT '+
+				'sum(`count`) AS `count`, '+
 				'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time,'+
 				'`lan_zone`,'+
 				'`machine`,'+
@@ -48,7 +49,7 @@ exports.render = function(req, res) {
 					crumb: false
 				}
 			},
-			{ title: 'LAN Zone', select: 'lan_zone' },
+			{ title: 'Zone', select: 'lan_zone' },
 			{ title: 'Machine Name', select: 'machine' },
 			{ title: 'LAN IP', select: 'lan_ip' },
 			{ title: 'Remote IP', select: 'remote_ip' },
@@ -57,6 +58,7 @@ exports.render = function(req, res) {
 			{ title: 'Remote ASN', select: 'remote_asn_name' },
 			{ title: 'MB to Remote', select: 'in_bytes' },
 			{ title: 'MB from Remote', select: 'out_bytes'},
+			{ title: 'Connections', select: 'count', dView:false },
 			{ title: 'Packets to Remote', select: 'in_packets', dView:false },
 			{ title: 'Packets from Remote', select: 'out_packets', dView:false }
         ];

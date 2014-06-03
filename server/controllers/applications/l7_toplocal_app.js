@@ -21,7 +21,7 @@ exports.render = function(req, res) {
 		var info = [];
 		var table1SQL = 'SELECT '+
 				// SELECTS
-				'count(*) AS count, '+
+				'sum(`count`) AS `count`, '+
 				'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time, '+
 				'`lan_zone`, '+
 				'`lan_ip`, '+
