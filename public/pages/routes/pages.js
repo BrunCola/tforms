@@ -663,6 +663,23 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+						// TOP FTP SHARED
+						.state('top_ftp_shared', {
+							url: '/top_ftp_shared?start&end&lan_ip&lan_zone&remote_ip',
+							templateUrl: 'public/pages/views/general_network/top_ftp_shared.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'FTP Local/Remote Shared',
+								subtitleElm: {
+									'LAN IP': 'lan_ip',
+									'Zone': 'lan_zone',
+									'Remote IP': 'remote_ip'
+								},
+								daterange: true
+							}
+						})
 				// TOP REMOTE FTP 
 				.state('top_remote_ftp', {
 					url: '/top_remote_ftp?start&end',

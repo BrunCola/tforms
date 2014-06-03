@@ -240,13 +240,13 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'Local FTP',
 			'url': 'top_local_ftp',
 			'icon': 'fa-file',
-			'orphans': ['top_local2remote_ftp']
+			'orphans': ['top_local2remote_ftp', 'top_ftp_shared']
 		},
 		{
 			'title': 'Remote FTP',
 			'url': 'top_remote_ftp',
 			'icon': 'fa-file',
-			'orphans': ['top_remote2local_ftp']
+			'orphans': ['top_remote2local_ftp', 'top_ftp_shared']
 		}]
 	}];
 }]);

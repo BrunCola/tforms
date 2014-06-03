@@ -121,6 +121,8 @@ var live_connections = require('../controllers/live_connections/live_connections
 	var top_local_ftp = require('../controllers/general_network/top_local_ftp');
 		// TOP LOCAL2REMOTE FTP
 		var top_local2remote_ftp = require('../controllers/general_network/top_local2remote_ftp');
+			// TOP FTP SHARED
+			var top_ftp_shared = require('../controllers/general_network/top_ftp_shared');
 	// TOP REMOTE FTP
 	var top_remote_ftp = require('../controllers/general_network/top_remote_ftp'); 
 		// TOP REMOTE2LOCAL FTP
@@ -302,9 +304,12 @@ module.exports = function(app) {
 		// TOP LOCAL FTP
 		app.route('/general_network/top_local_ftp')
 		.get(authorization.requiresLogin, top_local_ftp.render);
-			// TOP LOCAL2REMOTE FTP 
+			// TOP LOCAL2REMOTE FTP  
 			app.route('/general_network/top_local2remote_ftp')
 			.get(authorization.requiresLogin, top_local2remote_ftp.render);
+				// TOP FTP SHARED
+				app.route('/general_network/top_ftp_shared')
+				.get(authorization.requiresLogin, top_ftp_shared.render);
 		// TOP REMOTE FTP
 		app.route('/general_network/top_remote_ftp')
 		.get(authorization.requiresLogin, top_remote_ftp.render);
