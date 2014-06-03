@@ -21,42 +21,44 @@ exports.render = function(req, res) {
 		var info = [];
 
 		var table1SQL = 'SELECT '+
-			'count(*) AS count, ' +
-			'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'`machine`, ' +
-			'`lan_zone`, ' +
-			'`lan_ip`, ' +
-			'`lan_port`, ' +
-			'`remote_ip`, ' +
-			'`remote_port`, '  +
-			'`remote_cc`, ' +
-			'`remote_country`, ' +
-			'`remote_asn_name`, ' +
-			'`nick`, ' +
-			'`user`, ' +
-			'`command`, ' +
-			'`value`, ' +
-			'`addl`, ' +
-			'`dcc_file_name`, ' +
-			'`dcc_file_size`, ' +
-			'`dcc_mime_type`, ' +
-			'`fuid` ' +
-			'FROM `irc` '+
-			'WHERE time BETWEEN '+start+' AND '+end+' '+
-			'AND `remote_ip` = \''+req.query.remote_ip+'\' '+
+				'count(*) AS count, ' +
+				'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`machine`, ' +
+				'`lan_zone`, ' +
+				'`lan_ip`, ' +
+				'`lan_port`, ' +
+				'`remote_ip`, ' +
+				'`remote_port`, '  +
+				'`remote_cc`, ' +
+				'`remote_country`, ' +
+				'`remote_asn_name`, ' +
+				'`nick`, ' +
+				'`user`, ' +
+				'`command`, ' +
+				'`value`, ' +
+				'`addl`, ' +
+				'`dcc_file_name`, ' +
+				'`dcc_file_size`, ' +
+				'`dcc_mime_type`, ' +
+				'`fuid` ' +
+			'FROM ' +
+				'`irc` '+
+			'WHERE ' +
+				'time BETWEEN '+start+' AND '+end+' '+
+				'AND `remote_ip` = \''+req.query.remote_ip+'\' '+
 			'GROUP BY '+
-			'`lan_ip`';
+				'`lan_ip`';
 
 		var table1Params = [
 			{
 				title: 'Last Seen',
 				select: 'time',
-				// link: {
-				// 	type: 'top_ips_shared',
-				// 	// val: the pre-evaluated values from the query above
-				// 	val: ['lan_ip','lan_zone','remote_ip'],
-				// 	crumb: false
-				// }
+				link: {
+					type: 'top_irc_shared',
+					// val: the pre-evaluated values from the query above
+					val: ['lan_ip','lan_zone','remote_ip'],
+					crumb: false
+				}
 			},
 			{ title: 'Count', select: 'count' },
 			{ title: 'Machine', select: 'machine' },

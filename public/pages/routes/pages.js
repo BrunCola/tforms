@@ -735,6 +735,23 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+						// TOP IRC SHARED
+						.state('top_irc_shared', {
+							url: '/top_irc_shared?start&end&lan_ip&lan_zone&remote_ip',
+							templateUrl: 'public/pages/views/general_network/top_irc_shared.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'IRC Local/Remote Shared',
+								subtitleElm: {
+									'LAN IP': 'lan_ip',
+									'Zone': 'lan_zone',
+									'Remote IP': 'remote_ip'
+								},
+								daterange: true
+							}
+						})
 				// TOP REMOTE IRC
 				.state('top_remote_irc', {
 					url: '/top_remote_irc?start&end',

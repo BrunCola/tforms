@@ -105,6 +105,8 @@ var live_connections = require('../controllers/live_connections/live_connections
 	var top_local_irc = require('../controllers/general_network/top_local_irc');	
 		// TOP LOCAL2REMOTE IRC
 		var top_local2remote_irc = require('../controllers/general_network/top_local2remote_irc');	
+			// TOP IRC SHARED
+			var top_irc_shared = require('../controllers/general_network/top_irc_shared');
 	// TOP REMOTE IRC
 	var top_remote_irc = require('../controllers/general_network/top_remote_irc');	
 		// TOP REMOTE2LOCAL IRC
@@ -283,10 +285,13 @@ module.exports = function(app) {
 			// TOP LOCAL2REMOTE IRC
 			app.route('/general_network/top_local2remote_irc')
 			.get(authorization.requiresLogin, top_local2remote_irc.render);
+				// TOP IRC SHARED
+				app.route('/general_network/top_irc_shared')
+				.get(authorization.requiresLogin, top_irc_shared.render);
 		// TOP REMOTE IRC
 		app.route('/general_network/top_remote_irc')
 		.get(authorization.requiresLogin, top_remote_irc.render);
-			// TOP REMOTE2LOCAL IRC
+			// TOP REMOTE2LOCAL IRC 
 			app.route('/general_network/top_remote2local_irc')
 			.get(authorization.requiresLogin, top_remote2local_irc.render);
 		// TOP LOCAL SMTP
