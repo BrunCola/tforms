@@ -111,10 +111,12 @@ var live_connections = require('../controllers/live_connections/live_connections
 	var top_remote_irc = require('../controllers/general_network/top_remote_irc');	
 		// TOP REMOTE2LOCAL IRC
 		var top_remote2local_irc = require('../controllers/general_network/top_remote2local_irc');	
-	// TOP LOCAL SMTP
+	// TOP LOCAL SMTP 
 	var top_local_smtp = require('../controllers/general_network/top_local_smtp');
-		// TOP SMTP FROM SENDER
-		var top_smtp_from_sender = require('../controllers/general_network/top_smtp_from_sender');	
+		// TOP SMTP SENDER2RECEIVER
+		var top_smtp_sender2receiver = require('../controllers/general_network/top_smtp_sender2receiver');	
+			// TOP SMTP FROM SENDER
+			var top_smtp_from_sender = require('../controllers/general_network/top_smtp_from_sender');	
 	// TOP SMTP RECEIVERS
 	var top_smtp_receivers = require('../controllers/general_network/top_smtp_receivers');
 		// TOP SMTP TO RECEIVER
@@ -297,9 +299,12 @@ module.exports = function(app) {
 		// TOP LOCAL SMTP
 		app.route('/general_network/top_local_smtp')
 		.get(authorization.requiresLogin, top_local_smtp.render);
-			// TOP SMTP FROM SENDER
-			app.route('/general_network/top_smtp_from_sender')
-			.get(authorization.requiresLogin, top_smtp_from_sender.render);
+			// TOP SMTP SENDER2RECEIVER
+			app.route('/general_network/top_smtp_sender2receiver')
+			.get(authorization.requiresLogin, top_smtp_sender2receiver.render);
+				// TOP SMTP FROM SENDER
+				app.route('/general_network/top_smtp_from_sender')
+				.get(authorization.requiresLogin, top_smtp_from_sender.render);
 		// TOP SMTP RECEIVERS
 		app.route('/general_network/top_smtp_receivers')
 		.get(authorization.requiresLogin, top_smtp_receivers.render);

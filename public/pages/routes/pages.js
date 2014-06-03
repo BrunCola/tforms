@@ -791,21 +791,37 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// TOP SMTP FROM SENDER 
-					.state('top_smtp_from_sender', {
-						url: '/top_smtp_from_sender?start&end&from',
-						templateUrl: 'public/pages/views/general_network/top_smtp_from_sender.html',
+					// TOP SMTP SENDER2RECEIVER
+					.state('top_smtp_sender2receiver', {
+						url: '/top_smtp_sender2receiver?start&end&from',
+						templateUrl: 'public/pages/views/general_network/top_smtp_sender2receiver.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
 						data: {
-							title: 'Emails From Sender',
+							title: 'Senders to Reveivers',
 							subtitleElm: {
 								'Sender': 'from'
 							},
 							daterange: true
 						}
 					})
+						// TOP SMTP FROM SENDER 
+						.state('top_smtp_from_sender', {
+							url: '/top_smtp_from_sender?start&end&from&to',
+							templateUrl: 'public/pages/views/general_network/top_smtp_from_sender.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'Emails From Sender to Receiver',
+								subtitleElm: {
+									'Sender': 'from',
+									'Receiver': 'to'
+								},
+								daterange: true
+							}
+						})
 				// TOP SMTP RECEIVERS 
 				.state('top_smtp_receivers', {
 					url: '/top_smtp_receivers?start&end',

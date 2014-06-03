@@ -12,7 +12,7 @@ exports.render = function(req, res) {
 		start = req.query.start;
 		end = req.query.end;
 	}
-	if (req.query.from) {
+	if (req.query.from && req.query.to) {
 		var tables = [];
 		var info = [];
 		var table1SQL = 'SELECT '+
@@ -42,7 +42,8 @@ exports.render = function(req, res) {
 				'`smtp` '+
 			'WHERE '+
 				'`time` BETWEEN '+start+' AND '+end+' '+
-				'AND `from` = \''+req.query.from+'\'';
+				'AND `from` = \''+req.query.from+'\' '+
+				'AND `to` = \''+req.query.to+'\'';
 		var table1Params = [
 			{ title: 'Time', select: 'time' },
 			{ title: 'From', select: 'from' },
@@ -70,7 +71,7 @@ exports.render = function(req, res) {
 		var table1Settings = {
 			sort: [[1, 'desc']],
 			div: 'table',
-			title: 'Emails From Sender'
+			title: 'Emails From Sender to Receiver'
 		}
 		async.parallel([
 			// Table function(s)
