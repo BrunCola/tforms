@@ -30,7 +30,7 @@ exports.render = function(req, res) {
 			title: 'Last Seen',
 			select: 'time',
 			 link: {
-			 	type: 'top_smtp_to_receiver', 
+			 	type: 'top_smtp_receiver2sender', 
 			 	val: ['to'],
 			 	crumb: false
 			},

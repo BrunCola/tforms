@@ -119,6 +119,8 @@ var live_connections = require('../controllers/live_connections/live_connections
 			var top_smtp_from_sender = require('../controllers/general_network/top_smtp_from_sender');	
 	// TOP SMTP RECEIVERS
 	var top_smtp_receivers = require('../controllers/general_network/top_smtp_receivers');
+		// TOP SMTP RECEIVER2SENDER
+		var top_smtp_receiver2sender = require('../controllers/general_network/top_smtp_receiver2sender')
 		// TOP SMTP TO RECEIVER
 		var top_smtp_to_receiver = require('../controllers/general_network/top_smtp_to_receiver');	
 	// TOP LOCAL FTP
@@ -308,7 +310,10 @@ module.exports = function(app) {
 		// TOP SMTP RECEIVERS
 		app.route('/general_network/top_smtp_receivers')
 		.get(authorization.requiresLogin, top_smtp_receivers.render);
-			// TOP SMTP TO RECEIVER
+			// TOP SMTP RECEIVER2SENDER
+			app.route('/general_network/top_smtp_receiver2sender')
+			.get(authorization.requiresLogin, top_smtp_receiver2sender.render);
+			// TOP SMTP TO RECEIVER 
 			app.route('/general_network/top_smtp_to_receiver')
 			.get(authorization.requiresLogin, top_smtp_to_receiver.render);
 		// TOP LOCAL FTP

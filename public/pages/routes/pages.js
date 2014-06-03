@@ -799,7 +799,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							loggedin: checkLoggedin
 						},
 						data: {
-							title: 'Senders to Reveivers',
+							title: 'Senders/Reveivers',
 							subtitleElm: {
 								'Sender': 'from'
 							},
@@ -834,6 +834,21 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
+					// TOP SMTP RECEIVER2SENDER
+					.state('top_smtp_receiver2sender', {
+						url: '/top_smtp_receiver2sender?start&end&to',
+						templateUrl: 'public/pages/views/general_network/top_smtp_receiver2sender.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Receivers/Senders',
+							subtitleElm: {
+								'Sender': 'from'
+							},
+							daterange: true
+						}
+					})
 					// TOP SMTP TO RECEIVER
 					.state('top_smtp_to_receiver', {
 						url: '/top_smtp_to_receiver?start&end&to',
