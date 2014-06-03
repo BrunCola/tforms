@@ -228,13 +228,13 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'SMTP Senders',
 			'url': 'top_local_smtp',
 			'icon': 'fa-envelope',
-			'orphans': ['top_smtp_from_sender']
+			'orphans': ['top_smtp_sender2receiver','top_smtp_from_sender']
 		},
 		{
 			'title': 'SMTP Receivers',
 			'url': 'top_smtp_receivers',
 			'icon': 'fa-envelope',
-			'orphans': ['top_smtp_to_receiver']
+			'orphans': ['top_smtp_receiver2sender','top_smtp_from_sender']
 		},
 		{
 			'title': 'Local FTP',
