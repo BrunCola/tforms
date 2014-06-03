@@ -473,7 +473,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							title: 'Local / Remote Bandwidth Use',
 							subtitleElm: {
 								'LAN IP': 'lan_ip',
-								'LAN Zone': 'lan_zone'
+								'Zone': 'lan_zone'
 							},
 							daterange: true
 						}
@@ -489,7 +489,7 @@ angular.module('mean.pages').config(['$stateProvider',
 								title: 'Conn Local/Remote Shared',
 								subtitleElm: {
 									'LAN IP': 'lan_ip',
-									'LAN Zone': 'lan_zone',
+									'Zone': 'lan_zone',
 									'Remote IP': 'remote_ip'
 								},
 								daterange: true
@@ -658,7 +658,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							title: 'Local to Remote FTP',
 							subtitleElm: {
 								'LAN IP': 'lan_ip',
-								'LAN Zone': 'lan_zone'
+								'Zone': 'lan_zone'
 							},
 							daterange: true
 						}
@@ -675,6 +675,21 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
+					// TOP REMOTE2LOCAL FTP
+					.state('top_remote2local_ftp', {
+						url: '/top_remote2local_ftp?start&end&remote_ip',
+						templateUrl: 'public/pages/views/general_network/top_remote2local_ftp.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Remote to Local FTP',
+							subtitleElm: {
+								'Remote IP': 'remote_ip'
+							},
+							daterange: true
+						}
+					})
 				// TOP LOCAL IRC
 				.state('top_local_irc', {
 					url: '/top_local_irc?start&end',
@@ -698,7 +713,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							title: 'Local to Remote IRC',
 							subtitleElm: {
 								'LAN IP': 'lan_ip',
-								'LAN Zone': 'lan_zone'
+								'Zone': 'lan_zone'
 							},
 							daterange: true
 						}

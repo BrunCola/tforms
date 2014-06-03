@@ -246,7 +246,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'Remote FTP',
 			'url': 'top_remote_ftp',
 			'icon': 'fa-file',
-			'orphans': []
+			'orphans': ['top_remote2local_ftp']
 		}]
 	}];
 }]);

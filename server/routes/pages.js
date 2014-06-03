@@ -122,8 +122,9 @@ var live_connections = require('../controllers/live_connections/live_connections
 		// TOP LOCAL2REMOTE FTP
 		var top_local2remote_ftp = require('../controllers/general_network/top_local2remote_ftp');
 	// TOP REMOTE FTP
-	var top_remote_ftp = require('../controllers/general_network/top_remote_ftp');
-
+	var top_remote_ftp = require('../controllers/general_network/top_remote_ftp'); 
+		// TOP REMOTE2LOCAL FTP
+		var top_remote2local_ftp = require('../controllers/general_network/top_remote2local_ftp');
 // REPORTS
 	// IOC EVENTS REPORT
 	var ioc_events_report = require('../controllers/reports/ioc_events');	
@@ -307,6 +308,9 @@ module.exports = function(app) {
 		// TOP REMOTE FTP
 		app.route('/general_network/top_remote_ftp')
 		.get(authorization.requiresLogin, top_remote_ftp.render);
+			// TOP REMOTE2LOCAL FTP 
+			app.route('/general_network/top_remote2local_ftp')
+			.get(authorization.requiresLogin, top_remote2local_ftp.render);
 
 	// REPORTS
 		// IOC EVENTS
