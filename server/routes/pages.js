@@ -76,17 +76,17 @@ var live_connections = require('../controllers/live_connections/live_connections
 
 //EMAIL
 	// TOP LOCAL SMTP 
-	var top_local_smtp = require('../controllers/general_network/top_local_smtp');
+	var top_local_smtp = require('../controllers/email/top_local_smtp');
 		// TOP SMTP SENDER2RECEIVER
-		var top_smtp_sender2receiver = require('../controllers/general_network/top_smtp_sender2receiver');	
+		var top_smtp_sender2receiver = require('../controllers/email/top_smtp_sender2receiver');	
 			// TOP SMTP FROM SENDER
 			var top_smtp_from_sender = require('../controllers/email/top_smtp_from_sender');	
 	// TOP SMTP RECEIVERS
-	var top_smtp_receivers = require('../controllers/general_network/top_smtp_receivers');
+	var top_smtp_receivers = require('../controllers/email/top_smtp_receivers');
 		// TOP SMTP RECEIVER2SENDER
-		var top_smtp_receiver2sender = require('../controllers/general_network/top_smtp_receiver2sender')
+		var top_smtp_receiver2sender = require('../controllers/email/top_smtp_receiver2sender')
 	// TOP SMTP SUBJECTS
-	var top_smtp_subjects = require('../controllers/general_network/top_smtp_subjects');
+	var top_smtp_subjects = require('../controllers/email/top_smtp_subjects');
 
 // GENERAL NETWORK
 	// TOP LOCAL IPS
@@ -247,22 +247,22 @@ module.exports = function(app) {
 
 	//EMAIL
 		// TOP LOCAL SMTP
-		app.route('/general_network/top_local_smtp')
+		app.route('/email/top_local_smtp')
 		.get(authorization.requiresLogin, top_local_smtp.render);
 			// TOP SMTP SENDER2RECEIVER
-			app.route('/general_network/top_smtp_sender2receiver')
+			app.route('/email/top_smtp_sender2receiver')
 			.get(authorization.requiresLogin, top_smtp_sender2receiver.render);
 				// TOP SMTP FROM SENDER
 				app.route('/email/top_smtp_from_sender')
 				.get(authorization.requiresLogin, top_smtp_from_sender.render);
 		// TOP SMTP RECEIVERS
-		app.route('/general_network/top_smtp_receivers')
+		app.route('/email/top_smtp_receivers')
 		.get(authorization.requiresLogin, top_smtp_receivers.render);
 			// TOP SMTP RECEIVER2SENDER
-			app.route('/general_network/top_smtp_receiver2sender')
+			app.route('/email/top_smtp_receiver2sender')
 			.get(authorization.requiresLogin, top_smtp_receiver2sender.render);
 		// TOP SMTP SUBJECTS
-		app.route('/general_network/top_smtp_subjects')
+		app.route('/email/top_smtp_subjects')
 		.get(authorization.requiresLogin, top_smtp_subjects.render);
 		
 	// GENERAL NETWORK
