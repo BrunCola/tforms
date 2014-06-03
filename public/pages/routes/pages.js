@@ -849,21 +849,18 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-					// TOP SMTP TO RECEIVER
-					.state('top_smtp_to_receiver', {
-						url: '/top_smtp_to_receiver?start&end&to',
-						templateUrl: 'public/pages/views/general_network/top_smtp_to_receiver.html',
-						resolve: {
-							loggedin: checkLoggedin
-						},
-						data: {
-							title: 'Emails To Receiver',
-							subtitleElm: {
-								'Receiver': 'to'
-							},
-							daterange: true
-						}
-					})
+				// TOP SMTP SUBJECTS 
+				.state('top_smtp_subjects', {
+					url: '/top_smtp_subjects?start&end',
+					templateUrl: 'public/pages/views/general_network/top_smtp_subjects.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Email Receivers',
+						daterange: true
+					}
+				})
 			// REPORTS
 				// IOC EVENTS
 				.state('ioc_events_report', {
