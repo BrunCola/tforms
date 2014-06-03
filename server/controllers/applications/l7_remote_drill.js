@@ -7,19 +7,23 @@ async = require('async');
 
 exports.render = function(req, res) {
 	var database = req.session.passport.user.database;
+	// var database = null;
 	var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 	var end = Math.round(new Date().getTime() / 1000);
 	if (req.query.start && req.query.end) {
 		start = req.query.start;
 		end = req.query.end;
 	}
-	if (req.query.lan_zone && req.query.lan_ip && req.query.l7_proto) {
+	if (req.query.remote_ip && req.query.l7_proto) {
+		//var results = [];
 		var tables = [];
 		var crossfilter = [];
 		var info = [];
 		var table1SQL = 'SELECT '+
+				// SELECTS
 				'sum(`count`) AS `count`,'+
 				'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time,'+
+				'`l7_proto`,'+
 				'`lan_zone`,'+
 				'`lan_ip`,'+
 				'`machine`,'+
@@ -28,11 +32,10 @@ exports.render = function(req, res) {
 				'`remote_asn_name`,'+
 				'`remote_country`,'+
 				'`remote_cc`,'+
-				'`l7_proto`,'+
-				'(sum(`in_bytes`) / 1048576) AS in_bytes,'+
-				'(sum(`out_bytes`) / 1048576) AS out_bytes,'+
 				'sum(`in_packets`) AS in_packets,'+
 				'sum(`out_packets`) AS out_packets,'+
+				'(sum(`in_bytes`) / 1048576) AS in_bytes,'+
+				'(sum(`out_bytes`) / 1048576) AS out_bytes,'+
 				'sum(`dns`) AS `dns`,'+
 				'sum(`http`) AS `http`,'+
 				'sum(`ssl`) AS `ssl`,'+
@@ -41,12 +44,12 @@ exports.render = function(req, res) {
 				'sum(`smtp`) AS `smtp`,'+
 				'sum(`file`) AS `file`,'+
 				'sum(`ioc_count`) AS `ioc_count` '+
+				// !SELECTS
 			'FROM '+
 				'`conn_l7_meta` '+
 			'WHERE '+
 				'`time` BETWEEN '+start+' AND '+end+' '+
-				'AND `lan_zone` = \''+req.query.lan_zone+'\' '+
-				'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
+				'AND `remote_ip` = \''+req.query.remote_ip+'\' '+
 				'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
 			'GROUP BY '+
 				'`remote_ip`';
@@ -57,6 +60,7 @@ exports.render = function(req, res) {
 				dView: true,
 				link: {
 					type: 'l7_shared',
+					// val: the pre-evaluated values from the query above
 					val: ['lan_zone','lan_ip','remote_ip','l7_proto'],
 					crumb: false
 				},
@@ -66,9 +70,9 @@ exports.render = function(req, res) {
 			{ title: 'Machine Name', select: 'machine' },
 			{ title: 'LAN IP', select: 'lan_ip' },
 			{ title: 'Remote IP', select: 'remote_ip' },
+			{ title: 'Remote ASN', select: 'remote_asn_name' },
 			{ title: 'Remote Country', select: 'remote_country' },
 			{ title: 'Flag', select: 'remote_cc', },
-			{ title: 'Remote ASN', select: 'remote_asn_name' },
 			{ title: 'MB to Remote', select: 'in_bytes' },
 			{ title: 'MB from Remote', select: 'out_bytes'},
 			{ title: 'Packets to Remote', select: 'in_packets', dView:false },
@@ -86,24 +90,25 @@ exports.render = function(req, res) {
 		var table1Settings = {
 			sort: [[11, 'desc']],
 			div: 'table',
-			title: 'Local IP/Remote IP Bandwidth Usage'
-		}
+			title: 'Remote IP/Local IP Bandwidth Usage'
+		};
 		var crossfilterSQL = 'SELECT '+
-				'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-				'count(*) as count,'+
+				// SELECTS
+				'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'count(*) as count, '+
 				'`remote_country` '+
-			'FROM '+
-				'`conn_l7_meta` '+
+				// !SELECTS
+			'FROM `conn_l7_meta` '+
 			'WHERE '+
-				'`time` BETWEEN '+start+' AND '+end+' '+
-				'AND `lan_zone` = \''+req.query.lan_zone+'\' '+
-				'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
+				'time BETWEEN '+start+' AND '+end+' '+
+				'AND `remote_ip` = \''+req.query.remote_ip+'\' '+
 				'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
 			'GROUP BY '+
-				'month(from_unixtime(`time`)),'+
-				'day(from_unixtime(`time`)),'+
-				'hour(from_unixtime(`time`)),'+
-				'`remote_country`';
+				'month(from_unixtime(time)),'+
+				'day(from_unixtime(time)),'+
+				'hour(from_unixtime(time)),'+
+				'remote_country';
+
 		async.parallel([
 			// Table function(s)
 			function(callback) {
@@ -126,6 +131,7 @@ exports.render = function(req, res) {
 				tables: tables,
 				crossfilter: crossfilter
 			};
+			//console.log(results);
 			res.json(results);
 		});
 	} else {
