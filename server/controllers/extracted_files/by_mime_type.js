@@ -7,14 +7,12 @@ async = require('async');
 
 exports.render = function(req, res) {
 	var database = req.session.passport.user.database;
-	// var database = null;
 	var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 	var end = Math.round(new Date().getTime() / 1000);
 	if (req.query.start && req.query.end) {
 		start = req.query.start;
 		end = req.query.end;
 	}
-	//var results = [];
 	var tables = [];
 	var table1SQL = 'SELECT '+
 			'count(*) AS count,'+
@@ -28,31 +26,28 @@ exports.render = function(req, res) {
 			'`time` BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+
 			'`mime`';
-
-		var table1Params = [
-			{
-				title: 'Last Seen',
-				select: 'time',
-				dView: true,
-				link: {
-					type: 'file_mime_local',
-					// val: the pre-evaluated values from the query above
-					val: ['mime'],
-					crumb: false
-				},
+	var table1Params = [
+		{
+			title: 'Last Seen',
+			select: 'time',
+			dView: true,
+			link: {
+				type: 'file_mime_local',
+				val: ['mime'],
+				crumb: false
 			},
-			{ title: 'Total Extracted Files', select: 'count' },
-			{ title: 'Mime Type', select: 'mime' },
-			{ title: 'Total Size (MB)', select: 'size' },
-			{ title: 'Total IOC Hits', select: 'ioc_count' }
-		];
-		var table1Settings = {
-			sort: [[1, 'desc']],
-			div: 'table',
-			title: 'Extracted File MIME Types'
-		}
-
-		async.parallel([
+		},
+		{ title: 'Total Extracted Files', select: 'count' },
+		{ title: 'Mime Type', select: 'mime' },
+		{ title: 'Total Size (MB)', select: 'size' },
+		{ title: 'Total IOC Hits', select: 'ioc_count' }
+	];
+	var table1Settings = {
+		sort: [[1, 'desc']],
+		div: 'table',
+		title: 'Extracted File MIME Types'
+	}
+	async.parallel([
 		// Table function(s)
 		function(callback) {
 			new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
@@ -65,9 +60,6 @@ exports.render = function(req, res) {
 		var results = {
 			tables: tables
 		};
-		//console.log(results);
 		res.json(results);
-
 	});
-
 };
