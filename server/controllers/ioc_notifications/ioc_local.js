@@ -1,9 +1,9 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-query = require('../constructors/query'),
-config = require('../../config/config'),
-async = require('async');
+	query = require('../constructors/query'),
+	config = require('../../config/config'),
+	async = require('async');
 
 exports.render = function(req, res) {
 	var database = req.session.passport.user.database;
@@ -17,75 +17,74 @@ exports.render = function(req, res) {
 	var crossfilter = [];
 	var info = [];
 	var table1SQL = 'SELECT '+
-			'sum(`count`) AS `count`,'+
-			'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time,'+
+			'count(*) AS count,'+
+			'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time,'+ // Last Seen
+			'`ioc_severity`,'+
+			'`ioc`,'+
+			'`ioc_typeIndicator`,'+
+			'`ioc_typeInfection`,'+
 			'`lan_zone`,'+
 			'`machine`,'+
 			'`lan_ip`,'+
-			'(sum(`in_bytes`) / 1048576) AS in_bytes,'+
-			'(sum(`out_bytes`) / 1048576) AS out_bytes,'+
 			'sum(`in_packets`) AS in_packets,'+
 			'sum(`out_packets`) AS out_packets,'+
-			'sum(`dns`) AS `dns`,'+
-			'sum(`http`) AS `http`,'+
-			'sum(`ssl`) AS `ssl`,'+
-			'sum(`ftp`) AS `ftp`,'+
-			'sum(`irc`) AS `irc`,'+
-			'sum(`smtp`) AS `smtp`,'+
-			'sum(`file`) AS `file`,'+
-			'sum(`ioc_count`) AS `ioc_count` '+
-		'FROM '+
-			'`conn_l7_local` '+
+			'sum(`in_bytes`) AS in_bytes,'+
+			'sum(`out_bytes`) AS out_bytes '+
+		'FROM `conn_ioc` '+
 		'WHERE '+
-			'`time` BETWEEN '+start+' AND '+end+' '+
-			'AND `l7_proto` !=\'-\' '+
+			'time BETWEEN '+start+' AND '+end+' '+
+			'AND `ioc_count` > 0 '+
+			'AND `trash` IS NULL '+
 		'GROUP BY '+
-			'`lan_zone`,'+
-			'`lan_ip`';
+			'`lan_ip`,'+
+			'`ioc`';
 	var table1Params = [
 		{
 			title: 'Last Seen',
 			select: 'time',
 			dView: true,
 			link: {
-				type: 'l7_local_app',
+				type: 'ioc_local_drill',
+				// val: the pre-evaluated values from the query above
 				val: ['lan_zone','lan_ip'],
 				crumb: false
 			},
 		},
+		{ title: 'Severity', select: 'ioc_severity' },
+		{ title: 'IOC Hits', select: 'count' },
+		{ title: 'IOC', select: 'ioc' },
+		{ title: 'IOC Type', select: 'ioc_typeIndicator' },
+		{ title: 'IOC Stage', select: 'ioc_typeInfection' },
 		{ title: 'Zone', select: 'lan_zone' },
-		{ title: 'Machine Name', select: 'machine' },
+		{ title: 'Machine', select: 'machine' },
 		{ title: 'LAN IP', select: 'lan_ip' },
-		{ title: 'MB to Remote', select: 'in_bytes' },
-		{ title: 'MB from Remote', select: 'out_bytes' },
-		{ title: 'Packets to Remote', select: 'in_packets', dView: false },
-		{ title: 'Packets from Remote', select: 'out_packets', dView: false },
-		{ title: 'IOC Count', select: 'ioc_count' },
-		{ title: 'Connections', select: 'count' },
-		{ title: 'DNS', select: 'dns' },
-		{ title: 'HTTP', select: 'http' },
-		{ title: 'SSL', select: 'ssl' },
-		{ title: 'FTP', select: 'ftp' },
-		{ title: 'IRC', select: 'irc' },
-		{ title: 'SMTP', select: 'smtp' },
-		{ title: 'File', select: 'file' },
+		{ title: 'Bytes to Remote', select: 'in_bytes'},
+		{ title: 'Bytes from Remote', select: 'out_bytes'},
+		{ title: 'Packets to Remote', select: 'in_packets', dView: false  },
+		{ title: 'Packets from Remote', select: 'out_packets', dView: false  }
 	];
 	var table1Settings = {
-		sort: [[5, 'desc']],
+		sort: [[2, 'desc']],
 		div: 'table',
-		title: 'Application Bandwidth Usage'
-	};
+		title: 'Indicators of Compromise (IOC) Notifications'
+	}
 	var crossfilterSQL = 'SELECT '+
+			'count(*) as count,'+
 			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
-			'(sum(`in_bytes` + `out_bytes`) / 1048576) AS count '+
+			'`ioc_severity`,'+
+			'`ioc` '+
 		'FROM '+
-			'`conn_l7_local` '+
+			'`conn_ioc` '+
 		'WHERE '+
 			'`time` BETWEEN '+start+' AND '+end+' '+
+			'AND `ioc_count` > 0 '+
+			'AND `trash` IS NULL '+
 		'GROUP BY '+
-			'month(from_unixtime(`time`)),'+
-			'day(from_unixtime(`time`)),'+
-			'hour(from_unixtime(`time`))';
+			'month(from_unixtime(time)),'+
+			'day(from_unixtime(time)),'+
+			'hour(from_unixtime(time)),'+
+			'ioc,'+
+			'ioc_severity';
 	async.parallel([
 		// Table function(s)
 		function(callback) {

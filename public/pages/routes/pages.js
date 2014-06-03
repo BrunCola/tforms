@@ -48,8 +48,8 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-	    			// IOC EVENTS DRILLDOWN
-    				.state('ioc_events_drilldown', {
+	  			// IOC EVENTS DRILLDOWN
+  				.state('ioc_events_drilldown', {
 						url: '/ioc_events_drilldown?start&end&lan_ip&remote_ip&ioc',
 						templateUrl: 'public/pages/views/ioc_notifications/ioc_events_drilldown.html',
 						resolve: {
@@ -60,10 +60,10 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-				// IOC TOP REMOTE IPS
-				.state('ioc_top_remote_ips', {
-					url: '/ioc_top_remote_ips?start&end',
-					templateUrl: 'public/pages/views/ioc_notifications/ioc_top_remote_ips.html',
+				// IOC REMOTE IPS
+				.state('ioc_remote', {
+					url: '/ioc_remote?start&end',
+					templateUrl: 'public/pages/views/ioc_notifications/ioc_remote.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -72,10 +72,10 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// IOC TOP REMOTE2LOCAL
-					.state('ioc_top_remote2local', {
-						url: '/ioc_top_remote2local?start&end&remote_ip&ioc',
-						templateUrl: 'public/pages/views/ioc_notifications/ioc_top_remote2local.html',
+					// IOC REMOTE2LOCAL
+					.state('ioc_remote2local', {
+						url: '/ioc_remote2local?start&end&remote_ip&ioc',
+						templateUrl: 'public/pages/views/ioc_notifications/ioc_remote2local.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -84,10 +84,10 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-				// IOC TOP LOCAL IPS
-				.state('ioc_top_local_ips', {
-					url: '/ioc_top_local_ips?start&end',
-					templateUrl: 'public/pages/views/ioc_notifications/ioc_top_local_ips.html',
+				// IOC LOCAL IPS
+				.state('ioc_local', {
+					url: '/ioc_local?start&end',
+					templateUrl: 'public/pages/views/ioc_notifications/ioc_local.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -96,10 +96,10 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// IOC TOP LOCAL IPS DRILL
-					.state('ioc_top_local_ips_drill', {
-						url: '/ioc_top_local_ips_drill?start&end&lan_zone&lan_ip',
-						templateUrl: 'public/pages/views/ioc_notifications/ioc_top_local_ips_drill.html',
+					// IOC LOCAL IPS DRILL
+					.state('ioc_local_drill', {
+						url: '/ioc_local_drill?start&end&lan_zone&lan_ip',
+						templateUrl: 'public/pages/views/ioc_notifications/ioc_local_drill.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -226,9 +226,9 @@ angular.module('mean.pages').config(['$stateProvider',
 					})
 			// FIRST SEEN
 				// NEW REMOTE IPS
-				.state('new_remote_ips', {
-					url: '/new_remote_ips?start&end',
-					templateUrl: 'public/pages/views/first_seen/new_remote_ips.html',
+				.state('new_remote', {
+					url: '/new_remote?start&end',
+					templateUrl: 'public/pages/views/first_seen/new_remote.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -274,9 +274,9 @@ angular.module('mean.pages').config(['$stateProvider',
 					}
 				})
 				// NEW SSL REMOTE IPS
-				.state('new_ssh_remote_ips', {
-					url: '/new_ssh_remote_ips?start&end',
-					templateUrl: 'public/pages/views/first_seen/new_ssh_remote_ips.html',
+				.state('new_ssh_remote', {
+					url: '/new_ssh_remote?start&end',
+					templateUrl: 'public/pages/views/first_seen/new_ssh_remote.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -286,9 +286,9 @@ angular.module('mean.pages').config(['$stateProvider',
 					}
 				})
 				// NEW FTP REMOTE IPS
-				.state('new_ftp_remote_ips', {
-					url: '/new_ftp_remote_ips?start&end',
-					templateUrl: 'public/pages/views/first_seen/new_ftp_remote_ips.html',
+				.state('new_ftp_remote', {
+					url: '/new_ftp_remote?start&end',
+					templateUrl: 'public/pages/views/first_seen/new_ftp_remote.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -354,10 +354,10 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// L7 TOPLOCAL APP
-					.state('l7_toplocal_app', {
-						url: '/l7_toplocal_app?start&end&l7_proto&lan_ip',
-						templateUrl: 'public/pages/views/applications/l7_toplocal_app.html',
+					// L7 LOCAL APP
+					.state('l7_local_app', {
+						url: '/l7_local_app?start&end&l7_proto&lan_ip',
+						templateUrl: 'public/pages/views/applications/l7_local_app.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -371,10 +371,10 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-						// L7 TOPLOCAL DRILL
-						.state('l7_toplocal_drill', {
-							url: '/l7_toplocal_drill?start&end&lan_ip&l7_proto',
-							templateUrl: 'public/pages/views/applications/l7_toplocal_drill.html',
+						// L7 LOCAL DRILL
+						.state('l7_local_drill', {
+							url: '/l7_local_drill?start&end&lan_ip&l7_proto',
+							templateUrl: 'public/pages/views/applications/l7_local_drill.html',
 							resolve: {
 								loggedin: checkLoggedin
 							},
@@ -388,10 +388,10 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
-							// L7 TOP SHARED
-							.state('l7_top_shared', {
-								url: '/l7_top_shared?start&end&lan_ip&l7_proto&remote_ip&lan_zone',
-								templateUrl: 'public/pages/views/applications/l7_top_shared.html',
+							// L7 SHARED
+							.state('l7_shared', {
+								url: '/l7_shared?start&end&lan_ip&l7_proto&remote_ip&lan_zone',
+								templateUrl: 'public/pages/views/applications/l7_shared.html',
 								resolve: {
 									loggedin: checkLoggedin
 								},
@@ -417,10 +417,10 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// L7 TOPREMOTE APP
-					.state('l7_topremote_app', {
-						url: '/l7_topremote_app?start&end&l7_proto&remote_ip',
-						templateUrl: 'public/pages/views/applications/l7_topremote_app.html',
+					// L7 REMOTE APP
+					.state('l7_remote_app', {
+						url: '/l7_remote_app?start&end&l7_proto&remote_ip',
+						templateUrl: 'public/pages/views/applications/l7_remote_app.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -433,10 +433,10 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-						// L7 TOPREMOTE DRILL
-						.state('l7_topremote_drill', {
-							url: '/l7_topremote_drill?start&end&remote_ip&l7_proto',
-							templateUrl: 'public/pages/views/applications/l7_topremote_drill.html',
+						// L7 REMOTE DRILL
+						.state('l7_remote_drill', {
+							url: '/l7_remote_drill?start&end&remote_ip&l7_proto',
+							templateUrl: 'public/pages/views/applications/l7_remote_drill.html',
 							resolve: {
 								loggedin: checkLoggedin
 							},
@@ -449,11 +449,11 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
-		    // GENERAL NETWORK
-				// TOP LOCAL IPS
-				.state('top_local_ips', {
-					url: '/top_local_ips?start&end',
-					templateUrl: 'public/pages/views/general_network/top_local_ips.html',
+		  // GENERAL NETWORK
+				// LOCAL IPS
+				.state('local', {
+					url: '/local?start&end',
+					templateUrl: 'public/pages/views/general_network/local.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -462,10 +462,10 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// TOP REMOTE2LOCAL
-					.state('top_local2remote', {
-						url: '/top_local2remote?start&end&lan_zone&lan_ip',
-						templateUrl: 'public/pages/views/general_network/top_local2remote.html',
+					// REMOTE2LOCAL
+					.state('local2remote', {
+						url: '/local2remote?start&end&lan_zone&lan_ip',
+						templateUrl: 'public/pages/views/general_network/local2remote.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -478,10 +478,10 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-						// TOP IPS SHARED
-						.state('top_ips_shared', {
-							url: '/top_ips_shared?start&end&lan_ip&lan_zone&remote_ip',
-							templateUrl: 'public/pages/views/general_network/top_ips_shared.html',
+						// IPS SHARED
+						.state('shared', {
+							url: '/shared?start&end&lan_ip&lan_zone&remote_ip',
+							templateUrl: 'public/pages/views/general_network/shared.html',
 							resolve: {
 								loggedin: checkLoggedin
 							},
@@ -495,10 +495,10 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
-				// TOP REMOTE IPS
-				.state('top_remote_ips', {
-					url: '/top_remote_ips?start&end',
-					templateUrl: 'public/pages/views/general_network/top_remote_ips.html',
+				// REMOTE IPS
+				.state('remote', {
+					url: '/remote?start&end',
+					templateUrl: 'public/pages/views/general_network/remote.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -507,10 +507,10 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// TOP REMOTE2LOCAL
-					.state('top_remote2Local', {
-						url: '/top_remote2local?start&end&remote_ip',
-						templateUrl: 'public/pages/views/general_network/top_remote2local.html',
+					// REMOTE2LOCAL
+					.state('remote2Local', {
+						url: '/remote2local?start&end&remote_ip',
+						templateUrl: 'public/pages/views/general_network/remote2local.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -522,10 +522,10 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-				// TOP ENPOINT EVENTS
-				.state('top_endpoint_events', {
-					url: '/top_endpoint_events?start&end',
-					templateUrl: 'public/pages/views/general_network/top_endpoint_events.html',
+				// ENPOINT EVENTS
+				.state('endpoint_events', {
+					url: '/endpoint_events?start&end',
+					templateUrl: 'public/pages/views/general_network/endpoint_events.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -534,10 +534,10 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// TOP ENPOINT EVENTS USER
-					.state('top_endpoint_events_user', {
-						url: '/top_endpoint_events_user?start&end&alert_info',
-						templateUrl: 'public/pages/views/general_network/top_endpoint_events_user.html',
+					// ENPOINT EVENTS USER
+					.state('endpoint_events_user', {
+						url: '/endpoint_events_user?start&end&alert_info',
+						templateUrl: 'public/pages/views/general_network/endpoint_events_user.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -549,10 +549,10 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-						// TOP ENPOINT EVENTS USER DRILL
-						.state('top_endpoint_events_user_drill', {
-							url: '/top_endpoint_events_user_drill?start&end&alert_info&src_user',
-							templateUrl: 'public/pages/views/general_network/top_endpoint_events_user_drill.html',
+						// ENPOINT EVENTS USER DRILL
+						.state('endpoint_events_user_drill', {
+							url: '/endpoint_events_user_drill?start&end&alert_info&src_user',
+							templateUrl: 'public/pages/views/general_network/endpoint_events_user_drill.html',
 							resolve: {
 								loggedin: checkLoggedin
 							},
@@ -565,10 +565,10 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
-				// TOP SSH
-				.state('top_ssh', {
-					url: '/top_ssh?start&end',
-					templateUrl: 'public/pages/views/general_network/top_ssh.html',
+				// SSH
+				.state('ssh', {
+					url: '/ssh?start&end',
+					templateUrl: 'public/pages/views/general_network/ssh.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -577,10 +577,10 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// TOP SSH REMOTE
-					.state('top_ssh_remote', {
-						url: '/top_ssh_remote?start&end&lan_ip',
-						templateUrl: 'public/pages/views/general_network/top_ssh_remote.html',
+					// SSH REMOTE
+					.state('ssh_remote', {
+						url: '/ssh_remote?start&end&lan_ip',
+						templateUrl: 'public/pages/views/general_network/ssh_remote.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -592,10 +592,10 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-						// TOP SSH REMOTE SHARED
-						.state('top_ssh_remote_shared', {
-							url: '/top_ssh_remote_shared?start&end&lan_ip&remote_ip',
-							templateUrl: 'public/pages/views/general_network/top_ssh_remote_shared.html',
+						// SSH REMOTE SHARED
+						.state('ssh_remote_shared', {
+							url: '/ssh_remote_shared?start&end&lan_ip&remote_ip',
+							templateUrl: 'public/pages/views/general_network/ssh_remote_shared.html',
 							resolve: {
 								loggedin: checkLoggedin
 							},
@@ -608,10 +608,10 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
-				// TOP REMOTE2LOCAL SSH
-				.state('top_remote2local_ssh', {
-					url: '/top_remote2local_ssh?start&end',
-					templateUrl: 'public/pages/views/general_network/top_remote2local_ssh.html',
+				// REMOTE2LOCAL SSH
+				.state('remote2local_ssh', {
+					url: '/remote2local_ssh?start&end',
+					templateUrl: 'public/pages/views/general_network/remote2local_ssh.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -620,10 +620,10 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// TOP REMOTE2LOCAL SSH LOCAL
-					.state('top_remote2local_ssh_local', {
-						url: '/top_remote2local_ssh_local?start&end&remote_ip',
-						templateUrl: 'public/pages/views/general_network/top_remote2local_ssh_local.html',
+					// REMOTE2LOCAL SSH LOCAL
+					.state('remote2local_ssh_local', {
+						url: '/remote2local_ssh_local?start&end&remote_ip',
+						templateUrl: 'public/pages/views/general_network/remote2local_ssh_local.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -635,10 +635,10 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-				// TOP LOCAL FTP 
-				.state('top_local_ftp', {
-					url: '/top_local_ftp?start&end',
-					templateUrl: 'public/pages/views/general_network/top_local_ftp.html',
+				// LOCAL FTP 
+				.state('local_ftp', {
+					url: '/local_ftp?start&end',
+					templateUrl: 'public/pages/views/general_network/local_ftp.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -647,10 +647,10 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// TOP LOCAL2REMOTE FTP
-					.state('top_local2remote_ftp', {
-						url: '/top_local2remote_ftp?start&end&lan_ip&lan_zone',
-						templateUrl: 'public/pages/views/general_network/top_local2remote_ftp.html',
+					// LOCAL2REMOTE FTP
+					.state('local2remote_ftp', {
+						url: '/local2remote_ftp?start&end&lan_ip&lan_zone',
+						templateUrl: 'public/pages/views/general_network/local2remote_ftp.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -663,10 +663,10 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-						// TOP FTP SHARED
-						.state('top_ftp_shared', {
-							url: '/top_ftp_shared?start&end&lan_ip&lan_zone&remote_ip',
-							templateUrl: 'public/pages/views/general_network/top_ftp_shared.html',
+						// FTP SHARED
+						.state('ftp_shared', {
+							url: '/ftp_shared?start&end&lan_ip&lan_zone&remote_ip',
+							templateUrl: 'public/pages/views/general_network/ftp_shared.html',
 							resolve: {
 								loggedin: checkLoggedin
 							},
@@ -680,10 +680,10 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
-				// TOP REMOTE FTP 
-				.state('top_remote_ftp', {
-					url: '/top_remote_ftp?start&end',
-					templateUrl: 'public/pages/views/general_network/top_remote_ftp.html',
+				// REMOTE FTP 
+				.state('remote_ftp', {
+					url: '/remote_ftp?start&end',
+					templateUrl: 'public/pages/views/general_network/remote_ftp.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -692,10 +692,10 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// TOP REMOTE2LOCAL FTP
-					.state('top_remote2local_ftp', {
-						url: '/top_remote2local_ftp?start&end&remote_ip',
-						templateUrl: 'public/pages/views/general_network/top_remote2local_ftp.html',
+					// REMOTE2LOCAL FTP
+					.state('remote2local_ftp', {
+						url: '/remote2local_ftp?start&end&remote_ip',
+						templateUrl: 'public/pages/views/general_network/remote2local_ftp.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -707,10 +707,10 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-				// TOP LOCAL IRC
-				.state('top_local_irc', {
-					url: '/top_local_irc?start&end',
-					templateUrl: 'public/pages/views/general_network/top_local_irc.html',
+				// LOCAL IRC
+				.state('local_irc', {
+					url: '/local_irc?start&end',
+					templateUrl: 'public/pages/views/general_network/local_irc.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -719,10 +719,10 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// TOP LOCAL2REMOTE IRC
-					.state('top_local2remote_irc', {
-						url: '/top_local2remote_irc?start&end&lan_ip&lan_zone',
-						templateUrl: 'public/pages/views/general_network/top_local2remote_irc.html',
+					// LOCAL2REMOTE IRC
+					.state('local2remote_irc', {
+						url: '/local2remote_irc?start&end&lan_ip&lan_zone',
+						templateUrl: 'public/pages/views/general_network/local2remote_irc.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -735,10 +735,10 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-						// TOP IRC SHARED
-						.state('top_irc_shared', {
-							url: '/top_irc_shared?start&end&lan_ip&lan_zone&remote_ip',
-							templateUrl: 'public/pages/views/general_network/top_irc_shared.html',
+						// IRC SHARED
+						.state('irc_shared', {
+							url: '/irc_shared?start&end&lan_ip&lan_zone&remote_ip',
+							templateUrl: 'public/pages/views/general_network/irc_shared.html',
 							resolve: {
 								loggedin: checkLoggedin
 							},
@@ -752,10 +752,10 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
-				// TOP REMOTE IRC
-				.state('top_remote_irc', {
-					url: '/top_remote_irc?start&end',
-					templateUrl: 'public/pages/views/general_network/top_remote_irc.html',
+				// REMOTE IRC
+				.state('remote_irc', {
+					url: '/remote_irc?start&end',
+					templateUrl: 'public/pages/views/general_network/remote_irc.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -764,10 +764,10 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// TOP REMOTE2LOCAL IRC
-					.state('top_remote2local_irc', {
-						url: '/top_remote2local_irc?start&end&remote_ip',
-						templateUrl: 'public/pages/views/general_network/top_remote2local_irc.html',
+					// REMOTE2LOCAL IRC
+					.state('remote2local_irc', {
+						url: '/remote2local_irc?start&end&remote_ip',
+						templateUrl: 'public/pages/views/general_network/remote2local_irc.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -779,10 +779,10 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-				// TOP LOCAL SMTP 
-				.state('top_local_smtp', {
-					url: '/top_local_smtp?start&end',
-					templateUrl: 'public/pages/views/email/top_local_smtp.html',
+				// LOCAL SMTP 
+				.state('local_smtp', {
+					url: '/local_smtp?start&end',
+					templateUrl: 'public/pages/views/email/local_smtp.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -791,10 +791,10 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// TOP SMTP SENDER2RECEIVER
-					.state('top_smtp_sender2receiver', {
-						url: '/top_smtp_sender2receiver?start&end&from',
-						templateUrl: 'public/pages/views/email/top_smtp_sender2receiver.html',
+					// SMTP SENDER2RECEIVER
+					.state('smtp_sender2receiver', {
+						url: '/smtp_sender2receiver?start&end&from',
+						templateUrl: 'public/pages/views/email/smtp_sender2receiver.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -806,10 +806,10 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-						// TOP SMTP FROM SENDER 
-						.state('top_smtp_from_sender', {
-							url: '/top_smtp_from_sender?start&end&from&to',
-							templateUrl: 'public/pages/views/email/top_smtp_from_sender.html',
+						// SMTP FROM SENDER 
+						.state('smtp_from_sender', {
+							url: '/smtp_from_sender?start&end&from&to',
+							templateUrl: 'public/pages/views/email/smtp_from_sender.html',
 							resolve: {
 								loggedin: checkLoggedin
 							},
@@ -822,10 +822,10 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
-				// TOP SMTP RECEIVERS 
-				.state('top_smtp_receivers', {
-					url: '/top_smtp_receivers?start&end',
-					templateUrl: 'public/pages/views/email/top_smtp_receivers.html',
+				// SMTP RECEIVERS 
+				.state('smtp_receivers', {
+					url: '/smtp_receivers?start&end',
+					templateUrl: 'public/pages/views/email/smtp_receivers.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -834,10 +834,10 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// TOP SMTP RECEIVER2SENDER
-					.state('top_smtp_receiver2sender', {
-						url: '/top_smtp_receiver2sender?start&end&to',
-						templateUrl: 'public/pages/views/email/top_smtp_receiver2sender.html',
+					// SMTP RECEIVER2SENDER
+					.state('smtp_receiver2sender', {
+						url: '/smtp_receiver2sender?start&end&to',
+						templateUrl: 'public/pages/views/email/smtp_receiver2sender.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -849,10 +849,10 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-				// TOP SMTP SUBJECTS 
-				.state('top_smtp_subjects', {
-					url: '/top_smtp_subjects?start&end',
-					templateUrl: 'public/pages/views/email/top_smtp_subjects.html',
+				// SMTP SUBJECTS 
+				.state('smtp_subjects', {
+					url: '/smtp_subjects?start&end',
+					templateUrl: 'public/pages/views/email/smtp_subjects.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},

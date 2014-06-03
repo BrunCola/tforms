@@ -1,9 +1,9 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-query = require('../constructors/query'),
-config = require('../../config/config'),
-async = require('async');
+	query = require('../constructors/query'),
+	config = require('../../config/config'),
+	async = require('async');
 
 exports.render = function(req, res) {
 	var database = req.session.passport.user.database;
@@ -17,40 +17,36 @@ exports.render = function(req, res) {
 	var crossfilter = [];
 	var info = [];
 	var table1SQL = 'SELECT '+
-			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time,'+
-			'`server_name`,'+
+			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
 			'`lan_zone`,'+
 			'`machine`,'+
 			'`lan_ip`,'+
 			'`remote_ip`,'+
+			'`remote_asn_name`,'+
 			'`remote_country`,'+
-			'`remote_cc`,'+
-			'`remote_asn`,'+
-			'`remote_asn_name` '+
+			'`remote_cc` '+
 		'FROM '+
-			'`ssl_uniq_remote_ip` '+
+			'`conn_uniq_remote_ip` '+
 		'WHERE '+
-			'`time` BETWEEN '+start+' AND '+end;
+			'time BETWEEN '+start+' AND '+end;
 	var table1Params = [
 		{
-			title: 'Last Seen',
+			title: 'First Seen',
 			select: 'time',
 			dView: true,
 			link: {
 				type: 'remote2local',
-				// val: the pre-evaluated values from the query above
 				val: ['remote_ip'],
 				crumb: false
 			},
 		},
-		{ title: 'Server Name', select: 'server_name' },
 		{ title: 'Remote IP', select: 'remote_ip' },
 		{ title: 'Remote Country', select: 'remote_country' },
 		{ title: 'Flag', select: 'remote_cc', },
 		{ title: 'Remote ASN', select: 'remote_asn_name' },
 		{ title: 'Zone', select: 'lan_zone' },
 		{ title: 'Machine Name', select: 'machine' },
-		{ title: 'LAN IP', select: 'lan_ip' },
+		{ title: 'LAN IP', select: 'lan_ip' }
 	];
 	var table1Settings = {
 		sort: [[0, 'desc']],
@@ -62,7 +58,7 @@ exports.render = function(req, res) {
 			'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
 			'`remote_country` '+
 		'FROM '+
-			'`ssl_uniq_remote_ip` '+
+			'`conn_uniq_remote_ip` '+
 		'WHERE '+
 			'`time` BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+
@@ -92,6 +88,8 @@ exports.render = function(req, res) {
 			tables: tables,
 			crossfilter: crossfilter
 		};
+		//console.log(results);
 		res.json(results);
 	});
+
 };

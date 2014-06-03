@@ -1,9 +1,9 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-query = require('../constructors/query'),
-config = require('../../config/config'),
-async = require('async');
+	query = require('../constructors/query'),
+	config = require('../../config/config'),
+	async = require('async');
 
 exports.render = function(req, res) {
 	var database = req.session.passport.user.database;
@@ -13,55 +13,42 @@ exports.render = function(req, res) {
 		start = req.query.start;
 		end = req.query.end;
 	}
-	if (req.query.lan_zone && req.query.lan_ip && req.query.l7_proto) {
+	if (req.query.remote_ip) {
 		var tables = [];
 		var crossfilter = [];
 		var info = [];
 		var table1SQL = 'SELECT '+
-				'sum(`count`) AS `count`,'+
-				'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time,'+
+				'sum(`count`) AS `count`, '+
+				'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time,'+
 				'`lan_zone`,'+
-				'`lan_ip`,'+
 				'`machine`,'+
+				'`lan_ip`,'+
 				'`remote_ip`,'+
-				'`remote_asn`,'+
 				'`remote_asn_name`,'+
 				'`remote_country`,'+
 				'`remote_cc`,'+
-				'`l7_proto`,'+
 				'(sum(`in_bytes`) / 1048576) AS in_bytes,'+
 				'(sum(`out_bytes`) / 1048576) AS out_bytes,'+
 				'sum(`in_packets`) AS in_packets,'+
-				'sum(`out_packets`) AS out_packets,'+
-				'sum(`dns`) AS `dns`,'+
-				'sum(`http`) AS `http`,'+
-				'sum(`ssl`) AS `ssl`,'+
-				'sum(`ftp`) AS `ftp`,'+
-				'sum(`irc`) AS `irc`,'+
-				'sum(`smtp`) AS `smtp`,'+
-				'sum(`file`) AS `file`,'+
-				'sum(`ioc_count`) AS `ioc_count` '+
+				'sum(`out_packets`) AS out_packets '+
 			'FROM '+
-				'`conn_l7_meta` '+
+				'`conn_meta` '+
 			'WHERE '+
 				'`time` BETWEEN '+start+' AND '+end+' '+
-				'AND `lan_zone` = \''+req.query.lan_zone+'\' '+
-				'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
-				'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
+				'AND `remote_ip` = \''+req.query.remote_ip+'\' '+
 			'GROUP BY '+
-				'`remote_ip`';
+				'`lan_zone`,'+
+				'`lan_ip`';
 		var table1Params = [
 			{
 				title: 'Last Seen',
 				select: 'time',
-				dView: true,
 				link: {
-					type: 'l7_shared',
-					val: ['lan_zone','lan_ip','remote_ip','l7_proto'],
+					type: 'shared',
+					val: ['lan_ip','lan_zone','remote_ip'],
 					crumb: false
-				},
+				}
 			},
-			{ title: 'Applications', select: 'l7_proto' },
 			{ title: 'Zone', select: 'lan_zone' },
 			{ title: 'Machine Name', select: 'machine' },
 			{ title: 'LAN IP', select: 'lan_ip' },
@@ -71,35 +58,25 @@ exports.render = function(req, res) {
 			{ title: 'Remote ASN', select: 'remote_asn_name' },
 			{ title: 'MB to Remote', select: 'in_bytes' },
 			{ title: 'MB from Remote', select: 'out_bytes'},
+			{ title: 'Connections', select: 'count', dView:false },
 			{ title: 'Packets to Remote', select: 'in_packets', dView:false },
-			{ title: 'Packets from Remote', select: 'out_packets', dView:false },
-			{ title: 'IOC Count', select: 'ioc_count' },
-			{ title: 'Connections', select: 'count' },
-			{ title: 'DNS', select: 'dns' },
-			{ title: 'HTTP', select: 'http' },
-			{ title: 'SSL', select: 'ssl' },
-			{ title: 'FTP', select: 'ftp' },
-			{ title: 'IRC', select: 'irc' },
-			{ title: 'SMTP', select: 'smtp' },
-			{ title: 'File', select: 'file' },
-		];
+			{ title: 'Packets from Remote', select: 'out_packets', dView:false }
+        ];
 		var table1Settings = {
-			sort: [[11, 'desc']],
+			sort: [[0, 'desc']],
 			div: 'table',
-			title: 'Local IP/Remote IP Bandwidth Usage'
+			title: 'Local IP/Remote IP Traffic'
 		}
 		var crossfilterSQL = 'SELECT '+
-				'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-				'count(*) as count,'+
+				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
+				'(sum(`in_bytes` + `out_bytes`) / 1048576) AS count,'+
 				'`remote_country` '+
-			'FROM '+
-				'`conn_l7_meta` '+
-			'WHERE '+
+            'FROM '+
+            	'`conn_meta` '+
+            'WHERE '+
 				'`time` BETWEEN '+start+' AND '+end+' '+
-				'AND `lan_zone` = \''+req.query.lan_zone+'\' '+
-				'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
-				'AND `l7_proto` = \''+req.query.l7_proto+'\' '+
-			'GROUP BY '+
+				'AND `remote_ip` = \''+req.query.remote_ip+'\' '+
+            'GROUP BY '+
 				'month(from_unixtime(`time`)),'+
 				'day(from_unixtime(`time`)),'+
 				'hour(from_unixtime(`time`)),'+
@@ -129,6 +106,6 @@ exports.render = function(req, res) {
 			res.json(results);
 		});
 	} else {
-		res.redirect('/');
-	}
+        res.redirect('/');
+    }
 };
