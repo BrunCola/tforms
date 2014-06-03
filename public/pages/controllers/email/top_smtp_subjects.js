@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('mean.pages').controller('topLocalSmtpController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
+angular.module('mean.pages').controller('topSmtpSubjectsController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/general_network/top_local_smtp?start='+$location.$$search.start+'&end='+$location.$$search.end;
+		query = '/email/top_smtp_subjects?start='+$location.$$search.start+'&end='+$location.$$search.end;
 	} else {
-		query = '/general_network/top_local_smtp?';
+		query = '/email/top_smtp_subjects?';
 	}
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {

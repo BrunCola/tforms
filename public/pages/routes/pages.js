@@ -782,7 +782,7 @@ angular.module('mean.pages').config(['$stateProvider',
 				// TOP LOCAL SMTP 
 				.state('top_local_smtp', {
 					url: '/top_local_smtp?start&end',
-					templateUrl: 'public/pages/views/general_network/top_local_smtp.html',
+					templateUrl: 'public/pages/views/email/top_local_smtp.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -794,7 +794,7 @@ angular.module('mean.pages').config(['$stateProvider',
 					// TOP SMTP SENDER2RECEIVER
 					.state('top_smtp_sender2receiver', {
 						url: '/top_smtp_sender2receiver?start&end&from',
-						templateUrl: 'public/pages/views/general_network/top_smtp_sender2receiver.html',
+						templateUrl: 'public/pages/views/email/top_smtp_sender2receiver.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -809,7 +809,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						// TOP SMTP FROM SENDER 
 						.state('top_smtp_from_sender', {
 							url: '/top_smtp_from_sender?start&end&from&to',
-							templateUrl: 'public/pages/views/general_network/top_smtp_from_sender.html',
+							templateUrl: 'public/pages/views/email/top_smtp_from_sender.html',
 							resolve: {
 								loggedin: checkLoggedin
 							},
@@ -825,7 +825,7 @@ angular.module('mean.pages').config(['$stateProvider',
 				// TOP SMTP RECEIVERS 
 				.state('top_smtp_receivers', {
 					url: '/top_smtp_receivers?start&end',
-					templateUrl: 'public/pages/views/general_network/top_smtp_receivers.html',
+					templateUrl: 'public/pages/views/email/top_smtp_receivers.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -837,7 +837,7 @@ angular.module('mean.pages').config(['$stateProvider',
 					// TOP SMTP RECEIVER2SENDER
 					.state('top_smtp_receiver2sender', {
 						url: '/top_smtp_receiver2sender?start&end&to',
-						templateUrl: 'public/pages/views/general_network/top_smtp_receiver2sender.html',
+						templateUrl: 'public/pages/views/email/top_smtp_receiver2sender.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -852,7 +852,7 @@ angular.module('mean.pages').config(['$stateProvider',
 				// TOP SMTP SUBJECTS 
 				.state('top_smtp_subjects', {
 					url: '/top_smtp_subjects?start&end',
-					templateUrl: 'public/pages/views/general_network/top_smtp_subjects.html',
+					templateUrl: 'public/pages/views/email/top_smtp_subjects.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
