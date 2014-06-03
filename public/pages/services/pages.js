@@ -129,27 +129,29 @@ angular.module('mean.pages').factory('mimeIcon', [
 			if (!match) return mimeIcon;
 			if (match[1] == 'application') {
 				// background color generated here
-				bg.style('fill', '#BBBBBB');
+				bg.style('fill', '#bababa');
 				em
 					.append('path')
-					.style('fill', '#F68D55')
-					.attr('d', 'M33.923,4.074H8.874c-5.032,3.644-8.402,9.414-8.807,16h42.663C42.325,13.488,38.954,7.718,33.923,4.074z'+
-						'M17.822,16.487c0,0.267-0.215,0.484-0.478,0.484h-3.134c-0.261,0-0.477-0.218-0.477-0.484v-3.176c0-0.265,0.216-0.482,0.477-0.482'+
-						'h3.134c0.263,0,0.478,0.218,0.478,0.482V16.487z M17.822,10.792c0,0.266-0.215,0.483-0.478,0.483h-3.134'+
-						'c-0.261,0-0.477-0.218-0.477-0.483V7.616c0-0.266,0.216-0.483,0.477-0.483h3.134c0.263,0,0.478,0.218,0.478,0.483V10.792z'+
-						'M23.441,16.487c0,0.267-0.214,0.484-0.477,0.484H19.83c-0.261,0-0.476-0.218-0.476-0.484v-3.176c0-0.265,0.215-0.482,0.476-0.482'+
-						'h3.135c0.263,0,0.477,0.218,0.477,0.482V16.487z M23.441,10.792c0,0.266-0.214,0.483-0.477,0.483H19.83'+
-						'c-0.261,0-0.476-0.218-0.476-0.483V7.616c0-0.266,0.215-0.483,0.476-0.483h3.135c0.263,0,0.477,0.218,0.477,0.483V10.792z'+
-						'M29.061,16.487c0,0.267-0.215,0.484-0.477,0.484h-3.133c-0.264,0-0.478-0.218-0.478-0.484v-3.176c0-0.265,0.214-0.482,0.478-0.482'+
-						'h3.133c0.262,0,0.477,0.218,0.477,0.482V16.487z M29.061,10.792c0,0.266-0.215,0.483-0.477,0.483h-3.133'+
-						'c-0.264,0-0.478-0.218-0.478-0.483V7.616c0-0.266,0.214-0.483,0.478-0.483h3.133c0.262,0,0.477,0.218,0.477,0.483V10.792z');
+					.style('fill', '#f48c54')
+					.attr('d', 'M18.515,6.498h5.769c0.482,0,0.876-0.401,0.876-0.89V0.351C23.936,0.133,22.684,0,21.398,0'+
+					'c-1.286,0-2.539,0.133-3.762,0.351v5.258C17.637,6.097,18.033,6.498,18.515,6.498z'+
+					'M27.857,15.981h5.767c0.481,0,0.876-0.401,0.876-0.892V9.245c0-0.487-0.395-0.888-0.876-0.888h-5.767'+
+					'c-0.484,0-0.877,0.401-0.877,0.888v5.844C26.98,15.58,27.373,15.981,27.857,15.981z'+
+					'M9.172,6.498h5.768c0.483,0,0.879-0.401,0.879-0.89V0.761c-2.772,0.748-5.318,2.032-7.523,3.745v1.103'+
+					'C8.295,6.097,8.691,6.498,9.172,6.498z'+
+					'M9.172,15.981h5.768c0.483,0,0.879-0.401,0.879-0.892V9.245c0-0.487-0.396-0.888-0.879-0.888H9.172'+
+					'c-0.48,0-0.876,0.401-0.876,0.888v5.844C8.295,15.58,8.691,15.981,9.172,15.981z'+
+					'M26.98,0.761v4.847c0,0.489,0.393,0.89,0.877,0.89h5.767c0.481,0,0.876-0.401,0.876-0.89V4.506'+
+					'C32.296,2.793,29.751,1.509,26.98,0.761z'+
+					'M25.159,15.089V9.245c0-0.487-0.394-0.888-0.876-0.888h-5.769c-0.481,0-0.878,0.401-0.878,0.888v5.844'+
+					'c0,0.49,0.396,0.892,0.878,0.892h5.769C24.766,15.981,25.159,15.58,25.159,15.089z');
 				// switch between text
 				switch(match[2]) {
 					case 'x-bzip2':
 						em
 							.append('text')
 							.attr('transform', 'matrix(1 0 0 1 9.2139 34.9146)')
-							.style('fill', '#7F7F7F')
+							.style('fill', '#f48c54')
 							.attr('font-family', 'ITCAvantGardeStd-Md')
 							.attr('font-size', 14)
 							.text('BZ2');
@@ -158,14 +160,14 @@ angular.module('mean.pages').factory('mimeIcon', [
 						em
 							.append('text')
 							.attr('transform', 'matrix(1 0 0 1 9 29)')
-							.style('fill', '#7F7F7F')
+							.style('fill', '#f48c54')
 							.attr('font-family', 'ITCAvantGardeStd-Md')
 							.attr('font-size', 8)
 							.text('01001');
 						em
 							.append('text')
 							.attr('transform', 'matrix(1 0 0 1 9 37)')
-							.style('fill', '#7F7F7F')
+							.style('fill', '#f48c54')
 							.attr('font-family', 'ITCAvantGardeStd-Md')
 							.attr('font-size', 8)
 							.text('10011');
@@ -174,7 +176,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 						em
 							.append('text')
 							.attr('transform', 'matrix(1 0 0 1 9.2 35)')
-							.style('fill', '#7F7F7F')
+							.style('fill', '#f48c54')
 							.attr('font-family', 'ITCAvantGardeStd-Md')
 							.attr('font-size', 13)
 							.text('XML');
@@ -183,7 +185,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 						em
 							.append('text')
 							.attr('transform', 'matrix(1 0 0 1 9.8 35)')
-							.style('fill', '#7F7F7F')
+							.style('fill', '#f48c54')
 							.attr('font-family', 'ITCAvantGardeStd-Md')
 							.attr('font-size', 16)
 							.text('GZ');
@@ -191,7 +193,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 					case 'x-shockwave-flash':
 						em
 							.append('path')
-							.style('fill', '#7F7F7F')
+							.style('fill', '#f48c54')
 							.attr('d', 'M28.614,21.494l-0.121,3.552c0,0-4.175,0.83-4.295,3.904h2.383l0.125,3.551l-4.178-0.117'+
 								'c0,0-1.792,7.338-8.477,7.221l-0.119-3.312c0,0,3.581,0.234,5.492-6.158C19.425,30.134,21.449,21.615,28.614,21.494z');
 						return div;
@@ -199,7 +201,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 						em
 							.append('text')
 							.attr('transform', 'matrix(1 0 0 1 9.4 34.6)')
-							.style('fill', '#7F7F7F')
+							.style('fill', '#f48c54')
 							.attr('font-family', 'ITCAvantGardeStd-Md')
 							.attr('font-size', 14)
 							.text('PDF');
@@ -208,7 +210,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 						em
 							.append('text')
 							.attr('transform', 'matrix(1 0 0 1 5.2 31.6)')
-							.style('fill', '#7F7F7F')
+							.style('fill', '#f48c54')
 							.attr('font-family', 'ITCAvantGardeStd-Bk')
 							.attr('font-size', 12)
 							.text('x-rpm');
@@ -218,7 +220,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 							.append('path')
 							.attr('fill-rule', 'evenodd')
 							.attr('clip-rule', 'evenodd') 
-							.style('fill', '#7F7F7F')
+							.style('fill', '#f48c54')
 							.attr('d', 'M26.946,29.114V27.06l0,0c0-0.002,0-0.004,0-0.007'+
 								'c0-3.123-2.514-5.655-5.617-5.655c-3.102,0-5.615,2.532-5.615,5.655c0,0.003,0,0.005,0,0.007v2.055h-1.15v9.037h13.574v-9.037'+
 								'H26.946z M24.966,27.262v1.853h-7.174v-1.853c0-0.003,0-0.005,0-0.007c0-1.994,1.121-3.817,3.559-3.817'+
@@ -227,7 +229,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 							.append('path')
 							.attr('fill-rule', 'evenodd')
 							.attr('clip-rule', 'evenodd') 
-							.style('fill', '#7F7F7F')
+							.style('fill', '#f48c54')
 							.attr('d', 'M40.007,18.596l-0.76-2.507l-2.023-1.661l-2.605-0.257l-2.31,1.234'+
 								'l-1.234,2.311l0.21,2.897l1.773,1.253l-1.381,7.327l1.922,2.132l1.729-8.689l2.096,8.806l1.93-2.054l-1.364-7.604l1.259-0.682'+
 								'L40.007,18.596z');
@@ -236,7 +238,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 						em
 							.append('text')
 							.attr('transform', 'matrix(1 0 0 1 8.95 34.57)')
-							.style('fill', '#7F7F7F')
+							.style('fill', '#f48c54')
 							.attr('font-family', 'ITCAvantGardeStd-Md')
 							.attr('font-size', 15)
 							.text('P.S.');
@@ -245,7 +247,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 						em
 							.append('text')
 							.attr('transform', 'matrix(1 0 0 1 10.6 35.39)')
-							.style('fill', '#7F7F7F')
+							.style('fill', '#f48c54')
 							.attr('font-family', 'ITCAvantGardeStd-Md')
 							.attr('font-size', 15)
 							.text('TTF');
@@ -254,13 +256,13 @@ angular.module('mean.pages').factory('mimeIcon', [
 						em
 							.append('text')
 							.attr('transform', 'matrix(1 0 0 1 8.8 34.54)')
-							.style('fill', '#7F7F7F')
+							.style('fill', '#f48c54')
 							.attr('font-family', 'ITCAvantGardeStd-Md')
 							.attr('font-size', 12)
 							.text('>_');
 						em
 							.append('path')
-							.style('fill', '#7F7F7F')
+							.style('fill', '#f48c54')
 							.attr('d', 'M32.643,27.167l1.274-1.784l-1.396-1.396l-1.784,1.274l-1.058-0.438l-0.36-2.162h-1.975l-0.36,2.162'+
 								'l-1.059,0.438l-1.783-1.274l-1.396,1.396l1.274,1.784l-0.438,1.058l-2.162,0.36v1.975l2.162,0.36l0.438,1.058l-1.274,1.784'+
 								'l1.396,1.396l1.783-1.274l1.059,0.438l0.36,2.162h1.975l0.36-2.162l1.058-0.438l1.784,1.274l1.396-1.396l-1.274-1.784l0.438-1.058'+
@@ -270,7 +272,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 						em
 							.append('text')
 							.attr('transform', 'matrix(1 0 0 1 8.79 34.54)')
-							.style('fill', '#7F7F7F')
+							.style('fill', '#f48c54')
 							.attr('font-family', 'ITCAvantGardeStd-Bold')
 							.attr('font-size', 12)
 							.text('>_');
@@ -279,7 +281,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 						em
 							.append('text')
 							.attr('transform', 'matrix(1 0 0 1 9.384 36)')
-							.style('fill', '#7F7F7F')
+							.style('fill', '#f48c54')
 							.attr('font-family', 'ITCAvantGardeStd-Md')
 							.attr('font-size', 15)
 							.text('elc');
@@ -288,7 +290,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 						em
 							.append('text')
 							.attr('transform', 'matrix(1 0 0 1 5.825 33)')
-							.style('fill', '#7F7F7F')
+							.style('fill', '#f48c54')
 							.attr('font-family', 'ITCAvantGardeStd-Md')
 							.attr('font-size', 14)
 							.text('ogg');
@@ -298,7 +300,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 							.append('polygon')
 							.attr('fill-rule', 'evenodd')
 							.attr('clip-rule', 'evenodd') 
-							.style('fill', '#7F7F7F')
+							.style('fill', '#f48c54')
 							.attr('points', '29.796,38.05 29.796,37.1 26.946,37.1 25.996,36.15 '+
 								'25.996,34.25 27.896,34.25 27.896,31.4 25.996,31.4 25.996,26.275 27.896,26.275 27.896,23.9 25.521,23.9 22.671,22 16.021,22 '+
 								'14.121,23.9 21.721,23.9 24.096,26.275 24.096,31.4 21.721,33.775 14.121,33.775 15.546,35.675 22.196,35.675 24.096,34.25 '+
@@ -307,46 +309,37 @@ angular.module('mean.pages').factory('mimeIcon', [
 							.append('polygon')
 							.attr('fill-rule', 'evenodd')
 							.attr('clip-rule', 'evenodd') 
-							.style('fill', '#7F7F7F')
+							.style('fill', '#f48c54')
 							.attr('points', '20.296,32.825 21.721,31.4 21.721,24.85 13.171,24.85 11.746,26.275 11.746,32.825 ');
 						return div;
 				}
 			}
 			if (match[1] == 'text') {
 				// background color generated here
-				bg.style('fill', '#BBBBBB');
+				bg.style('fill', '#969696');
 				em
 					.append('path')
-					.style('fill', '#727272')
-					.attr('d', 'M0.104,19.335h42.589c-0.562-5.875-3.5-11.051-7.842-14.567H7.945C3.604,8.284,0.667,13.46,0.104,19.335z');
+					.style('fill', '#c2c2c2')
+					.attr('d', 'M9.228,16.602h3.212V6.845h2.465V4.023H9.053C8.24,4.608,7.468,5.244,6.746,5.934v0.911h2.482V16.602z');
 				em
-					.append('text')
-					.attr('transform', 'matrix(1 0 0 1 11.4263 16.5557)')
-					.style('fill', '#A5A5A5')
-					.attr('font-family', 'ITCAvantGardeStd-Md')
-					.attr('font-size', 11)
-					.text('txt')
+					.append('polygon')
+					.style('fill', '#c2c2c2')
+					.attr('points', '27.774,16.602 23.422,9.973 27.263,4.023 23.643,4.023 21.552,7.61 19.394,4.023 15.756,4.023 '+ 
+					'19.648,9.905 15.246,16.602 18.833,16.602 21.417,12.148 24.136,16.602 ');
+				em
+					.append('path')
+					.style('fill', '#c2c2c2')
+					.attr('d', 'M33.969,4.023h-5.837v2.822h2.481v9.757h3.212V6.845h2.465V5.948C35.564,5.252,34.788,4.611,33.969,4.023z');
 				// switch between text
 				switch(match[2]) {
 					case 'plain':
-						em
-							.append('path')
-							.style('fill', '#727272')
-							.attr('d', 'M0.104,19.335h42.589c-0.562-5.875-3.5-11.051-7.842-14.567H7.945C3.604,8.284,0.667,13.46,0.104,19.335z');
-						em
-							.append('text')
-							.attr('transform', 'matrix(1 0 0 1 11.4263 16.5557)')
-							.style('fill', '#A5A5A5')
-							.attr('font-family', 'ITCAvantGardeStd-Md')
-							.attr('font-size', 11)
-							.text('txt')
 						return div;
 					case 'pgp':
 						em
 							.append('path')
 							.attr('fill-rule', 'evenodd')
 							.attr('clip-rule', 'evenodd') 
-							.style('fill', '#7F7F7F')
+							.style('fill', '#c2c2c2')
 							.attr('d', 'M27.17,29.272v-2.055l0,0c0-0.003,0-0.005,0-0.007'+
 								'c0-3.123-2.514-5.655-5.617-5.655c-3.102,0-5.615,2.532-5.615,5.655c0,0.002,0,0.004,0,0.007v2.055h-1.15v9.036h13.574v-9.036H27.17'+
 								'z M25.189,27.42v1.853h-7.174V27.42c0-0.003,0-0.005,0-0.008c0-1.994,1.121-3.816,3.559-3.816c2.389,0,3.615,1.822,3.615,3.816'+
@@ -356,7 +349,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 						em
 							.append('text')
 							.attr('transform', 'matrix(1 0 0 1 9.3936 34.5557)')
-							.style('fill', '#7F7F7F')
+							.style('fill', '#c2c2c2')
 							.attr('font-family', 'ITCAvantGardeStd-Md')
 							.attr('font-size', 14)
 							.text('</>');
@@ -366,7 +359,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 							.append('path')
 							.attr('fill-rule', 'evenodd')
 							.attr('clip-rule', 'evenodd')
-							.style('fill', '#7F7F7F')
+							.style('fill', '#c2c2c2')
 							.attr('d', 'M31.665,28.999l-3.078,2.764l2.616-3.812l-1.848-3.234l-3,4.674'+
 								'l2.261-5.285l-2.771-2.01l-1.979,6.074l0.871-6.336l-3.325-0.612l-0.277,6.502l-0.462-6.415l-3.416,0.699l1.043,6.115l-1.874-5.854'+
 								'l-2.957,2.186l2.013,4.537l-2.659-4.1l-1.661,3.496l2.982,3.938l-3.445-2.978l-0.461,2.797l5.265,3.408v2.973l5.877,0.861'+
@@ -377,7 +370,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 						em
 							.append('text')
 							.attr('transform', 'matrix(1 0 0 1 6.9932 33.5557)')
-							.style('fill', '#7F7F7F')
+							.style('fill', '#c2c2c2')
 							.attr('font-family', 'ITCAvantGardeStd-Bk')
 							.attr('font-size', 14)
 							.text('C++');
@@ -386,7 +379,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 						em
 							.append('text')
 							.attr('transform', 'matrix(1 0 0 1 8.0713 34.5557)')
-							.style('fill', '#7F7F7F')
+							.style('fill', '#c2c2c2')
 							.attr('font-family', 'ITCAvantGardeStd-Bk')
 							.attr('font-size', 14)
 							.text('Fortran');
@@ -395,7 +388,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 						em
 							.append('text')
 							.attr('transform', 'matrix(1 0 0 1 7.3218 32.9746)')
-							.style('fill', '#7F7F7F')
+							.style('fill', '#c2c2c2')
 							.attr('font-family', 'ITCAvantGardeStd-Bk')
 							.attr('font-size', 14)
 							.text('asm');
@@ -404,7 +397,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 						em
 							.append('text')
 							.attr('transform', 'matrix(1 0 0 1 7.8828 34)')
-							.style('fill', '#7F7F7F')
+							.style('fill', '#c2c2c2')
 							.attr('font-family', 'ITCAvantGardeStd-Bk')
 							.attr('font-size', 14)
 							.text('troff');
@@ -465,7 +458,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 							.style('fill', '#6f8ebc')
 							.attr('font-family', 'ITCAvantGardeStd-Bk')
 							.attr('font-size', 11)
-							.text('S-XML');
+							.text('S+xml');
 						return div;
 				}
 			}
@@ -529,7 +522,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 							.attr('transform', 'matrix(1 0 0 1 9 34)')
 							.style('fill', '#6FBF9B')
 							.attr('font-family', 'ITCAvantGardeStd-Bk')
-							.attr('font-size', 11)
+							.attr('font-size', 12)
 							.text('mp4');
 						return div;
 				}
@@ -600,7 +593,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 							.attr('transform', 'matrix(1 0 0 1 9 34)')
 							.style('fill', '#d97373')
 							.attr('font-family', 'ITCAvantGardeStd-Bk')
-							.attr('font-size', 11)
+							.attr('font-size', 12)
 							.text('mp4');
 						return div;
 					case 'x-flv':
