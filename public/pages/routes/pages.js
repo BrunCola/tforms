@@ -35,7 +35,6 @@ angular.module('mean.pages').config(['$stateProvider',
 					daterange: false
 				}
 			})
-
 			// IOC NOTIFICATIONS
 				// IOC EVENTS
 				.state('ioc_events', {
@@ -61,7 +60,6 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-
 				// IOC TOP REMOTE IPS
 				.state('ioc_top_remote_ips', {
 					url: '/ioc_top_remote_ips?start&end',
@@ -110,7 +108,6 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-
 			// EXTRACTED FILES
 				// BY LOCAL IP
 				.state('by_local_ip', {
@@ -157,7 +154,6 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
-
 				// BY REMOTE IP
 				.state('by_remote_ip', {
 					url: '/by_remote_ip?start&end',
@@ -201,7 +197,6 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
-
 				// BY MIME TYPE
 				.state('by_mime_type', {
 					url: '/by_mime_type?start&end',
@@ -229,7 +224,6 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-
 			// FIRST SEEN
 				// NEW REMOTE IPS
 				.state('new_remote_ips', {
@@ -303,7 +297,6 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-
 			// APPLICATIONS
 				// BY APPLICATION
 				.state('app_by_application', {
@@ -456,7 +449,6 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
-
 		    // GENERAL NETWORK
 				// TOP LOCAL IPS
 				.state('top_local_ips', {
@@ -481,7 +473,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							title: 'Local / Remote Bandwidth Use',
 							subtitleElm: {
 								'LAN IP': 'lan_ip',
-								'LAN Zone': 'lan_zone'
+								'Zone': 'lan_zone'
 							},
 							daterange: true
 						}
@@ -497,13 +489,12 @@ angular.module('mean.pages').config(['$stateProvider',
 								title: 'Conn Local/Remote Shared',
 								subtitleElm: {
 									'LAN IP': 'lan_ip',
-									'LAN Zone': 'lan_zone',
+									'Zone': 'lan_zone',
 									'Remote IP': 'remote_ip'
 								},
 								daterange: true
 							}
 						})
-
 				// TOP REMOTE IPS
 				.state('top_remote_ips', {
 					url: '/top_remote_ips?start&end',
@@ -644,7 +635,78 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-
+				// TOP LOCAL FTP 
+				.state('top_local_ftp', {
+					url: '/top_local_ftp?start&end',
+					templateUrl: 'public/pages/views/general_network/top_local_ftp.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Local FTP',
+						daterange: true
+					}
+				})
+					// TOP LOCAL2REMOTE FTP
+					.state('top_local2remote_ftp', {
+						url: '/top_local2remote_ftp?start&end&lan_ip&lan_zone',
+						templateUrl: 'public/pages/views/general_network/top_local2remote_ftp.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Local to Remote FTP',
+							subtitleElm: {
+								'LAN IP': 'lan_ip',
+								'Zone': 'lan_zone'
+							},
+							daterange: true
+						}
+					})
+						// TOP FTP SHARED
+						.state('top_ftp_shared', {
+							url: '/top_ftp_shared?start&end&lan_ip&lan_zone&remote_ip',
+							templateUrl: 'public/pages/views/general_network/top_ftp_shared.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'FTP Local/Remote Shared',
+								subtitleElm: {
+									'LAN IP': 'lan_ip',
+									'Zone': 'lan_zone',
+									'Remote IP': 'remote_ip'
+								},
+								daterange: true
+							}
+						})
+				// TOP REMOTE FTP 
+				.state('top_remote_ftp', {
+					url: '/top_remote_ftp?start&end',
+					templateUrl: 'public/pages/views/general_network/top_remote_ftp.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Remote FTP',
+						daterange: true
+					}
+				})
+					// TOP REMOTE2LOCAL FTP
+					.state('top_remote2local_ftp', {
+						url: '/top_remote2local_ftp?start&end&remote_ip',
+						templateUrl: 'public/pages/views/general_network/top_remote2local_ftp.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Remote to Local FTP',
+							subtitleElm: {
+								'Remote IP': 'remote_ip'
+							},
+							daterange: true
+						}
+					})
 				// TOP LOCAL IRC
 				.state('top_local_irc', {
 					url: '/top_local_irc?start&end',
@@ -668,11 +730,28 @@ angular.module('mean.pages').config(['$stateProvider',
 							title: 'Local to Remote IRC',
 							subtitleElm: {
 								'LAN IP': 'lan_ip',
-								'LAN Zone': 'lan_zone'
+								'Zone': 'lan_zone'
 							},
 							daterange: true
 						}
 					})
+						// TOP IRC SHARED
+						.state('top_irc_shared', {
+							url: '/top_irc_shared?start&end&lan_ip&lan_zone&remote_ip',
+							templateUrl: 'public/pages/views/general_network/top_irc_shared.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'IRC Local/Remote Shared',
+								subtitleElm: {
+									'LAN IP': 'lan_ip',
+									'Zone': 'lan_zone',
+									'Remote IP': 'remote_ip'
+								},
+								daterange: true
+							}
+						})
 				// TOP REMOTE IRC
 				.state('top_remote_irc', {
 					url: '/top_remote_irc?start&end',
@@ -754,30 +833,6 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-				// TOP LOCAL FTP 
-				.state('top_local_ftp', {
-					url: '/top_local_ftp?start&end',
-					templateUrl: 'public/pages/views/general_network/top_local_ftp.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'Local FTP',
-						daterange: true
-					}
-				})
-				// TOP REMOTE FTP 
-				.state('top_remote_ftp', {
-					url: '/top_remote_ftp?start&end',
-					templateUrl: 'public/pages/views/general_network/top_remote_ftp.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'Remote FTP',
-						daterange: true
-					}
-				})
 			// REPORTS
 				// IOC EVENTS
 				.state('ioc_events_report', {
@@ -791,7 +846,6 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: false
 					}
 				})
-
 			// ARCHIVE
 				.state('archive', {
 					url: '/archive?start&end',

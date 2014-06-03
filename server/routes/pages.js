@@ -105,6 +105,8 @@ var live_connections = require('../controllers/live_connections/live_connections
 	var top_local_irc = require('../controllers/general_network/top_local_irc');	
 		// TOP LOCAL2REMOTE IRC
 		var top_local2remote_irc = require('../controllers/general_network/top_local2remote_irc');	
+			// TOP IRC SHARED
+			var top_irc_shared = require('../controllers/general_network/top_irc_shared');
 	// TOP REMOTE IRC
 	var top_remote_irc = require('../controllers/general_network/top_remote_irc');	
 		// TOP REMOTE2LOCAL IRC
@@ -119,9 +121,14 @@ var live_connections = require('../controllers/live_connections/live_connections
 		var top_smtp_to_receiver = require('../controllers/general_network/top_smtp_to_receiver');	
 	// TOP LOCAL FTP
 	var top_local_ftp = require('../controllers/general_network/top_local_ftp');
+		// TOP LOCAL2REMOTE FTP
+		var top_local2remote_ftp = require('../controllers/general_network/top_local2remote_ftp');
+			// TOP FTP SHARED
+			var top_ftp_shared = require('../controllers/general_network/top_ftp_shared');
 	// TOP REMOTE FTP
-	var top_remote_ftp = require('../controllers/general_network/top_remote_ftp');
-
+	var top_remote_ftp = require('../controllers/general_network/top_remote_ftp'); 
+		// TOP REMOTE2LOCAL FTP
+		var top_remote2local_ftp = require('../controllers/general_network/top_remote2local_ftp');
 // REPORTS
 	// IOC EVENTS REPORT
 	var ioc_events_report = require('../controllers/reports/ioc_events');	
@@ -278,10 +285,13 @@ module.exports = function(app) {
 			// TOP LOCAL2REMOTE IRC
 			app.route('/general_network/top_local2remote_irc')
 			.get(authorization.requiresLogin, top_local2remote_irc.render);
+				// TOP IRC SHARED
+				app.route('/general_network/top_irc_shared')
+				.get(authorization.requiresLogin, top_irc_shared.render);
 		// TOP REMOTE IRC
 		app.route('/general_network/top_remote_irc')
 		.get(authorization.requiresLogin, top_remote_irc.render);
-			// TOP REMOTE2LOCAL IRC
+			// TOP REMOTE2LOCAL IRC 
 			app.route('/general_network/top_remote2local_irc')
 			.get(authorization.requiresLogin, top_remote2local_irc.render);
 		// TOP LOCAL SMTP
@@ -299,9 +309,18 @@ module.exports = function(app) {
 		// TOP LOCAL FTP
 		app.route('/general_network/top_local_ftp')
 		.get(authorization.requiresLogin, top_local_ftp.render);
+			// TOP LOCAL2REMOTE FTP  
+			app.route('/general_network/top_local2remote_ftp')
+			.get(authorization.requiresLogin, top_local2remote_ftp.render);
+				// TOP FTP SHARED
+				app.route('/general_network/top_ftp_shared')
+				.get(authorization.requiresLogin, top_ftp_shared.render);
 		// TOP REMOTE FTP
 		app.route('/general_network/top_remote_ftp')
 		.get(authorization.requiresLogin, top_remote_ftp.render);
+			// TOP REMOTE2LOCAL FTP 
+			app.route('/general_network/top_remote2local_ftp')
+			.get(authorization.requiresLogin, top_remote2local_ftp.render);
 
 	// REPORTS
 		// IOC EVENTS
