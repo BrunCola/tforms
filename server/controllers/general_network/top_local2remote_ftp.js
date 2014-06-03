@@ -32,21 +32,29 @@ exports.render = function(req, res) {
 				'`remote_cc`, ' +
 				'`remote_country`, ' +
 				'`remote_asn_name`, ' +
-				'`nick`, ' +
 				'`user`, ' +
+				'`password`, ' +
 				'`command`, ' +
-				'`value`, ' +
-				'`addl`, ' +
-				'`dcc_file_name`, ' +
-				'`dcc_file_size`, ' +
-				'`dcc_mime_type`, ' +
-				'`fuid` ' +
+				'`arg`, ' +
+				'`mime_type`, ' +
+				'`file_size`, ' +
+				'`reply_code`, ' +
+				'`reply_msg`, ' +
+				'`dc_passive`, ' +
+				'`dc_orig_h`, ' +
+				'`dc_resp_h`, ' +
+				'`dc_resp_p`, ' +
+				'`ioc`, ' +
+				'`ioc_severity`, ' +
+				'`ioc_typeInfection`, ' +
+				'`ioc_typeIndicator`, ' +
+				'`ioc_count` ' +
 			'FROM ' +
-				'`irc` ' +
-			'WHERE ' +
-				'time BETWEEN '+start+' AND '+end+' ' +
-				'AND `lan_ip` = \''+req.query.lan_ip+'\' ' +
-				'AND `lan_zone` = \''+req.query.lan_zone+'\' ' +
+				'`ftp` ' +
+			'WHERE ' + 
+				'time BETWEEN '+start+' AND '+end+' '+
+				'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
+				'AND `lan_zone` = \''+req.query.lan_zone+'\' '+
 			'GROUP BY '+
 				'`remote_ip`';
 
@@ -71,20 +79,28 @@ exports.render = function(req, res) {
 			{ title: 'Flag', select: 'remote_cc' },
 			{ title: 'Remote Country', select: 'remote_country' },
 			{ title: 'Remote ASN Name', select: 'remote_asn_name' },
-			{ title: 'Nick', select: 'nick' },
 			{ title: 'User', select: 'user' },
+			{ title: 'Password', select: 'password' },
 			{ title: 'Command', select: 'command' },
-			{ title: 'Value', select: 'value'},
-			{ title: 'Addl', select: 'addl' },
-			{ title: 'DCC File Name', select: 'dcc_file_name' },
-			{ title: 'DCC File Size', select: 'dcc_file_size' },
-			{ title: 'DCC MIME Type', select: 'dcc_mime_type' },
-			{ title: 'FUID', select: 'fuid' }
+			{ title: 'Arg', select: 'arg' },
+			{ title: 'MIME Type', select: 'mime_type' },
+			{ title: 'File Size', select: 'file_size' },
+			{ title: 'Reply Code', select: 'reply_code' },
+			{ title: 'Reply Message', select: 'reply_msg' },
+			{ title: 'DC Passive', select: 'dc_passive' },
+			{ title: 'DC Orig P', select: 'dc_orig_h' },
+			{ title: 'DC Resp H', select: 'dc_resp_h' },
+			{ title: 'DC Resp P', select: 'dc_resp_p' },
+			{ title: 'IOC', select: 'ioc' },
+			{ title: 'IOC Severity', select: 'ioc_severity' },
+			{ title: 'Infection Stage', select: 'ioc_typeInfection' },
+			{ title: 'Indicator Type', select: 'ioc_typeIndicator' },
+			{ title: 'IOC Count', select: 'ioc_count' }
 		];
 		var table1Settings = {
 			sort: [[0, 'desc']],
 			div: 'table',
-			title: 'Local IRC/Remote IRC'
+			title: 'Local FTP/Remote FTP'
 		}
 
 		async.parallel([

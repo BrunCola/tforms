@@ -647,6 +647,22 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
+					// TOP LOCAL2REMOTE FTP
+					.state('top_local2remote_ftp', {
+						url: '/top_local2remote_ftp?start&end&lan_ip&lan_zone',
+						templateUrl: 'public/pages/views/general_network/top_local2remote_ftp.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Local to Remote FTP',
+							subtitleElm: {
+								'LAN IP': 'lan_ip',
+								'LAN Zone': 'lan_zone'
+							},
+							daterange: true
+						}
+					})
 				// TOP REMOTE FTP 
 				.state('top_remote_ftp', {
 					url: '/top_remote_ftp?start&end',

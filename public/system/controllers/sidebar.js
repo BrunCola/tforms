@@ -240,7 +240,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'Local FTP',
 			'url': 'top_local_ftp',
 			'icon': 'fa-file',
-			'orphans': []
+			'orphans': ['top_local2remote_ftp']
 		},
 		{
 			'title': 'Remote FTP',
