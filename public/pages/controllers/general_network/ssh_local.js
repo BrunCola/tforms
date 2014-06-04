@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('mean.pages').controller('sshController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
+angular.module('mean.pages').controller('sshLocalController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/general_network/ssh?start='+$location.$$search.start+'&end='+$location.$$search.end;
+		query = '/general_network/ssh_local?start='+$location.$$search.start+'&end='+$location.$$search.end;
 	} else {
-		query = '/general_network/ssh?';
+		query = '/general_network/ssh_local?';
 	}
 	$http({method: 'GET', url: query}).
 	success(function(data) {

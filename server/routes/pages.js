@@ -108,15 +108,15 @@ var live_connections = require('../controllers/live_connections/live_connections
 			// ENDPOINT EVENTS USER DRILL
 			var endpoint_events_user_drill = require('../controllers/general_network/endpoint_events_user_drill');
 	// SSH
-	var ssh = require('../controllers/general_network/ssh');
+	var ssh_local = require('../controllers/general_network/ssh_local');
 		// SSH REMOTE
-		var ssh_remote = require('../controllers/general_network/ssh_remote');
+		var ssh_local2remote = require('../controllers/general_network/ssh_local2remote');
 			// SSH REMOTE SHARED
-			var ssh_remote_shared = require('../controllers/general_network/ssh_remote_shared');
+			var ssh_shared = require('../controllers/general_network/ssh_shared');
 	// REMOTE2LOCAL SSH
-	var remote2local_ssh = require('../controllers/general_network/remote2local_ssh');
+	var ssh_remote = require('../controllers/general_network/ssh_remote');
 		// SSH REMOTE
-		var remote2local_ssh_local = require('../controllers/general_network/remote2local_ssh_local');
+		var ssh_remote2local = require('../controllers/general_network/ssh_remote2local');
 	// LOCAL IRC
 	var local_irc = require('../controllers/general_network/local_irc');	
 		// LOCAL2REMOTE IRC
@@ -295,21 +295,21 @@ module.exports = function(app) {
 				// ENDPOINT EVENTS USER DRILL
 				app.route('/general_network/endpoint_events_user_drill')
 				.get(authorization.requiresLogin, endpoint_events_user_drill.render);
-		// SSH
-		app.route('/general_network/ssh')
-		.get(authorization.requiresLogin, ssh.render);
-			// SSH REMOTE
-			app.route('/general_network/ssh_remote')
-			.get(authorization.requiresLogin, ssh_remote.render);
+		// SSH LOCAL
+		app.route('/general_network/ssh_local')
+		.get(authorization.requiresLogin, ssh_local.render);
+			// SSH LOCAL2REMOTE
+			app.route('/general_network/ssh_local2remote')
+			.get(authorization.requiresLogin, ssh_local2remote.render);
 				// SSH REMOTE SHARED
-				app.route('/general_network/ssh_remote_shared')
-				.get(authorization.requiresLogin, ssh_remote_shared.render);
+				app.route('/general_network/ssh_shared')
+				.get(authorization.requiresLogin, ssh_shared.render);
 		// REMOTE2LOCAL SSH
-		app.route('/general_network/remote2local_ssh')
-		.get(authorization.requiresLogin, remote2local_ssh.render);
+		app.route('/general_network/ssh_remote')
+		.get(authorization.requiresLogin, ssh_remote.render);
 			// REMOTE2LOCAL SSH LOCAL
-			app.route('/general_network/remote2local_ssh_local')
-			.get(authorization.requiresLogin, remote2local_ssh_local.render);
+			app.route('/general_network/ssh_remote2local')
+			.get(authorization.requiresLogin, ssh_remote2local.render);
 		// LOCAL IRC
 		app.route('/general_network/local_irc')
 		.get(authorization.requiresLogin, local_irc.render);

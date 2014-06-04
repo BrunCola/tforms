@@ -228,13 +228,13 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'Local SSH',
 			'url': 'ssh',
 			'icon': 'fa-chevron-right',
-			'orphans': ['ssh_remote', 'ssh_remote_shared']
+			'orphans': ['ssh_local2remote', 'ssh_shared']
 		},
 		{
 			'title': 'Remote SSH',
-			'url': 'remote2local_ssh',
+			'url': 'ssh_remote',
 			'icon': 'fa-chevron-right',
-			'orphans': ['remote2local_ssh_local', 'ssh_remote_shared']
+			'orphans': ['ssh_remote2local', 'ssh_shared']
 		},
 		{
 			'title': 'Local IRC',

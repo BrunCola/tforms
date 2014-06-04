@@ -565,10 +565,10 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
-				// SSH
-				.state('ssh', {
-					url: '/ssh?start&end',
-					templateUrl: 'public/pages/views/general_network/ssh.html',
+				// SSH LOCAL
+				.state('ssh_local', {
+					url: '/ssh_local?start&end',
+					templateUrl: 'public/pages/views/general_network/ssh_local.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -577,10 +577,10 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// SSH REMOTE
-					.state('ssh_remote', {
-						url: '/ssh_remote?start&end&lan_ip',
-						templateUrl: 'public/pages/views/general_network/ssh_remote.html',
+					// SSH LOCAL2REMOTE
+					.state('ssh_local2remote', {
+						url: '/ssh_local2remote?start&end&lan_ip',
+						templateUrl: 'public/pages/views/general_network/ssh_local2remote.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -592,10 +592,10 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-						// SSH REMOTE SHARED
-						.state('ssh_remote_shared', {
-							url: '/ssh_remote_shared?start&end&lan_ip&remote_ip',
-							templateUrl: 'public/pages/views/general_network/ssh_remote_shared.html',
+						// SSH SHARED
+						.state('ssh_shared', {
+							url: '/ssh_shared?start&end&lan_ip&remote_ip',
+							templateUrl: 'public/pages/views/general_network/ssh_shared.html',
 							resolve: {
 								loggedin: checkLoggedin
 							},
@@ -608,10 +608,10 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
-				// REMOTE2LOCAL SSH
-				.state('remote2local_ssh', {
-					url: '/remote2local_ssh?start&end',
-					templateUrl: 'public/pages/views/general_network/remote2local_ssh.html',
+				// SSH REMOTE
+				.state('ssh_remote', {
+					url: '/ssh_remote?start&end',
+					templateUrl: 'public/pages/views/general_network/ssh_remote.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -620,10 +620,10 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// REMOTE2LOCAL SSH LOCAL
-					.state('remote2local_ssh_local', {
-						url: '/remote2local_ssh_local?start&end&remote_ip',
-						templateUrl: 'public/pages/views/general_network/remote2local_ssh_local.html',
+					// SSH REMOTE2LOCAL
+					.state('ssh_remote2local', {
+						url: '/ssh_remote2local?start&end&remote_ip',
+						templateUrl: 'public/pages/views/general_network/ssh_remote2local.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},

@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('mean.pages').controller('remote2LocalSshController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
+angular.module('mean.pages').controller('sshRemote2LocalController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/general_network/remote2local_ssh?start='+$location.$$search.start+'&end='+$location.$$search.end;
+		query = '/general_network/ssh_remote2local?start='+$location.$$search.start+'&end='+$location.$$search.end+'&remote_ip='+$location.$$search.remote_ip;
 	} else {
-		query = '/general_network/remote2local_ssh?';
+		query = '/general_network/ssh_remote2local?&remote_ip='+$location.$$search.remote_ip;
 	}
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {

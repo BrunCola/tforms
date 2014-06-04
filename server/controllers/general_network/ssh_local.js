@@ -15,43 +15,39 @@ exports.render = function(req, res) {
 	var tables = [];
 	var info = [];
 	var table1SQL = 'SELECT '+
-			'count(*) AS count,' +
-			'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'`remote_ip`, ' +
-			'`remote_cc`, ' +
-			'`remote_country`, ' +
-			'`remote_asn`, ' +
-			'`remote_asn_name`, ' +
-			'sum(`ioc_count`) AS ioc_count ' +
+			'count(*) AS count,'+
+			'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time, '+
+			'`machine`,'+
+			'`lan_zone`,'+
+			'`lan_ip`,'+
+			'sum(`ioc_count`) AS ioc_count '+
 		'FROM '+
 			'`ssh` '+
 		'WHERE '+
 			'time BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+
-			'`remote_ip`';
+			'`lan_zone`,'+
+			'`lan_ip`';
 	var table1Params = [
 		{
 			title: 'Last Seen',
 			select: 'time',
-			 link: {
-			 	type: 'remote2local_ssh_local', 
-			 	// val: the pre-evaluated values from the query above
-			 	val: ['remote_ip'],
+			link: {
+			 	type: 'ssh_local2remote', 
+			 	val: ['lan_zone','lan_ip'],
 			 	crumb: false
 			},
 		},
-		{ title: 'Count', select: 'count' },
-		{ title: 'Remote IP', select: 'remote_ip'},
-		{ title: 'Remote Country', select: 'remote_country' },
-		{ title: 'Flag', select: 'remote_cc' },
-		{ title: 'Remote ASN', select: 'remote_asn' },
-		{ title: 'Remote ASN Name', select: 'remote_asn_name' },
+		{ title: 'Connections', select: 'count' },
+		{ title: 'Zone', select: 'lan_zone' },
+		{ title: 'Machine Name', select: 'machine' },
+		{ title: 'LAN IP', select: 'lan_ip' },
 		{ title: 'IOC Count', select: 'ioc_count' }
 	];
 	var table1Settings = {
 		sort: [[1, 'desc']],
 		div: 'table',
-		title: 'Top Remote SSH'
+		title: 'SSH'
 	}
 	async.parallel([
 		// Table function(s)
