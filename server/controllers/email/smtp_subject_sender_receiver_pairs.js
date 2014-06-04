@@ -57,12 +57,12 @@ exports.render = function(req, res) {
 			{
 				title: 'Last Seen',
 				select: 'time',
-				// link: {
-				// 	type: 'smtp_from_sender',
-				// 	// val: the pre-evaluated values from the query above
-				// 	val: ['from','to'],
-				// 	crumb: false
-				// }
+				link: {
+					type: 'smtp_from_sender_by_subject',
+					// val: the pre-evaluated values from the query above
+					val: ['from','to','subject'],
+					crumb: false
+				}
 			},
 			{ title: 'Count', select: 'count' },
 			{ title: 'From', select: 'from' },

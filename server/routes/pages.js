@@ -88,7 +88,9 @@ var live_connections = require('../controllers/live_connections/live_connections
 	// SMTP SUBJECTS
 	var smtp_subjects = require('../controllers/email/smtp_subjects');
 		// SMTP SUBJECT SENDER RECEIVER PAIRS
-		var smtp_subject_sender_receiver_pairs = require('../controllers/email/smtp_subject_sender_receiver_pairs')
+		var smtp_subject_sender_receiver_pairs = require('../controllers/email/smtp_subject_sender_receiver_pairs') 
+			// SMTP FROM SENDER BY SUBJECT
+			var smtp_from_sender_by_subject = require('../controllers/email/smtp_from_sender_by_subject') 
 
 // GENERAL NETWORK
 	// LOCAL
@@ -266,9 +268,12 @@ module.exports = function(app) {
 		// SMTP SUBJECTS
 		app.route('/email/smtp_subjects')
 		.get(authorization.requiresLogin, smtp_subjects.render);
-			// SMTP SUBJECT SENDER RECEIVER PAIRS
+			// SMTP SUBJECT SENDER RECEIVER PAIRS 
 			app.route('/email/smtp_subject_sender_receiver_pairs')
 			.get(authorization.requiresLogin, smtp_subject_sender_receiver_pairs.render);
+				// SMTP FROM SENDER BY SUBJECT
+				app.route('/email/smtp_from_sender_by_subject')
+				.get(authorization.requiresLogin, smtp_from_sender_by_subject.render);
 
 	// GENERAL NETWORK
 		// LOCAL

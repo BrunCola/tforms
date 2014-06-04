@@ -876,6 +876,21 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+						// SMTP FROM SENDER BY SUBJECT
+						.state('smtp_from_sender_by_subject', {
+							url: '/smtp_from_sender_by_subject?start&end&to&from&subject',
+							templateUrl: 'public/pages/views/email/smtp_from_sender_by_subject.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'Receiver/Sender pairs for Subject',
+								subtitleElm: {
+									'Subject': 'subject'
+								},
+								daterange: true
+							}
+						})
 			// REPORTS
 				// IOC EVENTS
 				.state('ioc_events_report', {
