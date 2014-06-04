@@ -29,11 +29,11 @@ exports.render = function(req, res) {
 		{
 			title: 'Last Seen',
 			select: 'time',
-			//  link: {
-			//  	type: 'smtp_receiver2sender', 
-			//  	val: ['subject'],
-			//  	crumb: false
-			// },
+			 link: {
+			 	type: 'smtp_subject_sender_receiver_pairs', 
+			 	val: ['subject'],
+			 	crumb: false
+			},
 		},
 		{ title: 'Count', select: 'count' },
 		{ title: 'Subject', select: 'subject' },

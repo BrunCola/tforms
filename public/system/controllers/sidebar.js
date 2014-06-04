@@ -198,7 +198,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'SMTP Subjects',
 			'url': 'smtp_subjects',
 			'icon': 'fa-envelope',
-			'orphans': []
+			'orphans': ['smtp_subject_sender_receiver_pairs']
 		}]
 	},
 	{

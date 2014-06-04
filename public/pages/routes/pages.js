@@ -857,10 +857,25 @@ angular.module('mean.pages').config(['$stateProvider',
 						loggedin: checkLoggedin
 					},
 					data: {
-						title: 'Email Receivers',
+						title: 'Email Subjects',
 						daterange: true
 					}
 				})
+					// SMTP SUBJECTS SENDER RECEIVER PAIRS
+					.state('smtp_subject_sender_receiver_pairs', {
+						url: '/smtp_subject_sender_receiver_pairs?start&end&subject',
+						templateUrl: 'public/pages/views/email/smtp_subject_sender_receiver_pairs.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Receiver/Sender pairs for Subject',
+							subtitleElm: {
+								'Subject': 'subject'
+							},
+							daterange: true
+						}
+					})
 			// REPORTS
 				// IOC EVENTS
 				.state('ioc_events_report', {
