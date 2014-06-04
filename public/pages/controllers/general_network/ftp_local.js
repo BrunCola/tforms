@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('mean.pages').controller('remote2localControllerFtp', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
+angular.module('mean.pages').controller('ftpLocalController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/general_network/remote2local_ftp?start='+$location.$$search.start+'&end='+$location.$$search.end+'&remote_ip='+$location.$$search.remote_ip;
+		query = '/general_network/ftp_local?start='+$location.$$search.start+'&end='+$location.$$search.end;
 	} else {
-		query = '/general_network/remote2local_ftp?remote_ip='+$location.$$search.remote_ip;
+		query = '/general_network/ftp_local?';
 	}
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {
@@ -22,6 +22,7 @@ angular.module('mean.pages').controller('remote2localControllerFtp', ['$scope', 
 			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
 			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 			$scope.$broadcast('spinnerHide');
+
 		}
 	});
 }]);

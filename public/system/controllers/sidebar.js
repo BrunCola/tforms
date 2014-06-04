@@ -256,15 +256,15 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		},
 		{
 			'title': 'Local FTP',
-			'url': 'local_ftp',
+			'url': 'ftp_local',
 			'icon': 'fa-file',
-			'orphans': ['local2remote_ftp', 'ftp_shared']
+			'orphans': ['ftp_local2remote', 'ftp_shared']
 		},
 		{
 			'title': 'Remote FTP',
-			'url': 'remote_ftp',
+			'url': 'ftp_remote',
 			'icon': 'fa-file',
-			'orphans': ['remote2local_ftp', 'ftp_shared']
+			'orphans': ['ftp_remote2local', 'ftp_shared']
 		}]
 	}];
 }]);

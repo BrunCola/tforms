@@ -52,7 +52,7 @@ exports.render = function(req, res) {
 			title: 'Last Seen',
 			select: 'time',
 			 link: {
-			 	type: 'local2remote_ftp', 
+			 	type: 'ftp_local2remote', 
 			 	// val: the pre-evaluated values from the query above
 			 	val: ['lan_ip', 'lan_zone'],
 			 	crumb: false

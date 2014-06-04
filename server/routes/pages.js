@@ -136,15 +136,15 @@ var live_connections = require('../controllers/live_connections/live_connections
 		// REMOTE2LOCAL IRC
 		var remote2local_irc = require('../controllers/general_network/remote2local_irc');	
 	// LOCAL FTP
-	var local_ftp = require('../controllers/general_network/local_ftp');
+	var ftp_local = require('../controllers/general_network/ftp_local');
 		// LOCAL2REMOTE FTP
-		var local2remote_ftp = require('../controllers/general_network/local2remote_ftp');
+		var ftp_local2remote = require('../controllers/general_network/ftp_local2remote');
 			// FTP SHARED
 			var ftp_shared = require('../controllers/general_network/ftp_shared');
 	// REMOTE FTP
-	var remote_ftp = require('../controllers/general_network/remote_ftp'); 
+	var ftp_remote = require('../controllers/general_network/ftp_remote'); 
 		// REMOTE2LOCAL FTP
-		var remote2local_ftp = require('../controllers/general_network/remote2local_ftp');
+		var ftp_remote2local = require('../controllers/general_network/ftp_remote2local');
 // REPORTS
 	// IOC EVENTS REPORT
 	var ioc_events_report = require('../controllers/reports/ioc_events');	
@@ -346,20 +346,20 @@ module.exports = function(app) {
 			app.route('/general_network/remote2local_irc')
 			.get(authorization.requiresLogin, remote2local_irc.render);
 		// LOCAL FTP
-		app.route('/general_network/local_ftp')
-		.get(authorization.requiresLogin, local_ftp.render);
+		app.route('/general_network/ftp_local')
+		.get(authorization.requiresLogin, ftp_local.render);
 			// LOCAL2REMOTE FTP 
-			app.route('/general_network/local2remote_ftp')
-			.get(authorization.requiresLogin, local2remote_ftp.render);
+			app.route('/general_network/ftp_local2remote')
+			.get(authorization.requiresLogin, ftp_local2remote.render);
 				// FTP SHARED
 				app.route('/general_network/ftp_shared')
 				.get(authorization.requiresLogin, ftp_shared.render);
 		// REMOTE FTP
-		app.route('/general_network/remote_ftp')
-		.get(authorization.requiresLogin, remote_ftp.render);
+		app.route('/general_network/ftp_remote')
+		.get(authorization.requiresLogin, ftp_remote.render);
 			// REMOTE2LOCAL FTP 
-			app.route('/general_network/remote2local_ftp')
-			.get(authorization.requiresLogin, remote2local_ftp.render);
+			app.route('/general_network/ftp_remote2local')
+			.get(authorization.requiresLogin, ftp_remote2local.render);
 
 	// REPORTS
 		// IOC EVENTS

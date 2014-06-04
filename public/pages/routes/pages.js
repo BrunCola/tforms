@@ -679,9 +679,9 @@ angular.module('mean.pages').config(['$stateProvider',
 						}
 					})
 				// LOCAL FTP 
-				.state('local_ftp', {
-					url: '/local_ftp?start&end',
-					templateUrl: 'public/pages/views/general_network/local_ftp.html',
+				.state('ftp_local`', {
+					url: '/ftp_local?start&end',
+					templateUrl: 'public/pages/views/general_network/ftp_local.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -691,9 +691,9 @@ angular.module('mean.pages').config(['$stateProvider',
 					}
 				})
 					// LOCAL2REMOTE FTP
-					.state('local2remote_ftp', {
-						url: '/local2remote_ftp?start&end&lan_ip&lan_zone',
-						templateUrl: 'public/pages/views/general_network/local2remote_ftp.html',
+					.state('ftp_local2remote', {
+						url: '/ftp_local2remote?start&end&lan_ip&lan_zone',
+						templateUrl: 'public/pages/views/general_network/ftp_local2remote.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -724,9 +724,9 @@ angular.module('mean.pages').config(['$stateProvider',
 							}
 						})
 				// REMOTE FTP 
-				.state('remote_ftp', {
-					url: '/remote_ftp?start&end',
-					templateUrl: 'public/pages/views/general_network/remote_ftp.html',
+				.state('ftp_remote', {
+					url: '/ftp_remote?start&end',
+					templateUrl: 'public/pages/views/general_network/ftp_remote.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -736,9 +736,9 @@ angular.module('mean.pages').config(['$stateProvider',
 					}
 				})
 					// REMOTE2LOCAL FTP
-					.state('remote2local_ftp', {
-						url: '/remote2local_ftp?start&end&remote_ip',
-						templateUrl: 'public/pages/views/general_network/remote2local_ftp.html',
+					.state('ftp_remote2local', {
+						url: '/ftp_remote2local?start&end&remote_ip',
+						templateUrl: 'public/pages/views/general_network/ftp_remote2local.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
