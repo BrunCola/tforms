@@ -19,39 +19,36 @@ exports.render = function(req, res) {
 	var table1SQL = 'SELECT '+
 			'count(*) AS count, ' +
 			'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'`remote_ip`, ' +
-			'`remote_port`, '  +
-			'`remote_cc`, ' +
-			'`remote_country`, ' +
-			'`remote_asn_name` ' +
+			'`machine`, ' +
+			'`lan_zone`, ' +
+			'`lan_ip`, ' +
+			'`lan_port` ' +
 		'FROM '+
 			'`irc` '+
 		'WHERE '+
 			'time BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+
-			'`remote_ip`';
+			'`lan_zone`,`lan_ip`';
 	var table1Params = [
 		{
 			title: 'Last Seen',
 			select: 'time',
-			 link: {
-			 	type: 'remote2local_irc', 
+			link: {
+			 	type: 'irc_local2remote', 
 			 	// val: the pre-evaluated values from the query above
-			 	val: ['remote_ip'],
+			 	val: ['lan_ip', 'lan_zone'],
 			 	crumb: false
 			},
 		},
 		{ title: 'Count', select: 'count' },
-		{ title: 'Remote IP', select: 'remote_ip'},
-		{ title: 'Remote port', select: 'remote_port' },
-		{ title: 'Flag', select: 'remote_cc' },
-		{ title: 'Remote Country', select: 'remote_country' },
-		{ title: 'Remote ASN Name', select: 'remote_asn_name' }
+		{ title: 'Zone', select: 'lan_zone' },
+		{ title: 'Machine', select: 'machine' },
+		{ title: 'LAN IP', select: 'lan_ip' }
 	];
 	var table1Settings = {
 		sort: [[1, 'desc']],
 		div: 'table',
-		title: 'Remote IRC'
+		title: 'Local IRC'
 	}
 	async.parallel([
 		// Table function(s)

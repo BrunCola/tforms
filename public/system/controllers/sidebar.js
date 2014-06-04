@@ -244,15 +244,15 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		},
 		{
 			'title': 'Local IRC',
-			'url': 'local_irc',
+			'url': 'irc_local',
 			'icon': 'fa-comment',
-			'orphans': ['local2remote_irc', 'irc_shared']
+			'orphans': ['irclocal2remote', 'irc_shared']
 		},
 		{
 			'title': 'Remote IRC',
-			'url': 'remote_irc',
+			'url': 'irc_remote',
 			'icon': 'fa-comment',
-			'orphans': ['remote2local_irc', 'irc_shared']
+			'orphans': ['irc_remote2local', 'irc_shared']
 		},
 		{
 			'title': 'Local FTP',

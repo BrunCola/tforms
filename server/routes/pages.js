@@ -126,15 +126,15 @@ var live_connections = require('../controllers/live_connections/live_connections
 		// SSH REMOTE
 		var ssh_remote2local = require('../controllers/general_network/ssh_remote2local');
 	// LOCAL IRC
-	var local_irc = require('../controllers/general_network/local_irc');	
+	var irc_local = require('../controllers/general_network/irc_local');	
 		// LOCAL2REMOTE IRC
-		var local2remote_irc = require('../controllers/general_network/local2remote_irc');	
+		var irc_local2remote = require('../controllers/general_network/irc_local2remote');	
 			// IRC SHARED
 			var irc_shared = require('../controllers/general_network/irc_shared');
 	// REMOTE IRC
-	var remote_irc = require('../controllers/general_network/remote_irc');	
+	var irc_remote = require('../controllers/general_network/irc_remote');	
 		// REMOTE2LOCAL IRC
-		var remote2local_irc = require('../controllers/general_network/remote2local_irc');	
+		var irc_remote2local = require('../controllers/general_network/irc_remote2local');	
 	// LOCAL FTP
 	var ftp_local = require('../controllers/general_network/ftp_local');
 		// LOCAL2REMOTE FTP
@@ -331,20 +331,20 @@ module.exports = function(app) {
 			app.route('/general_network/ssh_remote2local')
 			.get(authorization.requiresLogin, ssh_remote2local.render);
 		// LOCAL IRC
-		app.route('/general_network/local_irc')
-		.get(authorization.requiresLogin, local_irc.render);
+		app.route('/general_network/irc_local')
+		.get(authorization.requiresLogin, irc_local.render);
 			// LOCAL2REMOTE IRC
-			app.route('/general_network/local2remote_irc')
-			.get(authorization.requiresLogin, local2remote_irc.render);
+			app.route('/general_network/irc_local2remote')
+			.get(authorization.requiresLogin, irc_local2remote.render);
 				// IRC SHARED
 				app.route('/general_network/irc_shared')
 				.get(authorization.requiresLogin, irc_shared.render);
 		// REMOTE IRC
-		app.route('/general_network/remote_irc')
-		.get(authorization.requiresLogin, remote_irc.render);
+		app.route('/general_network/irc_remote')
+		.get(authorization.requiresLogin, irc_remote.render);
 			// REMOTE2LOCAL IRC 
-			app.route('/general_network/remote2local_irc')
-			.get(authorization.requiresLogin, remote2local_irc.render);
+			app.route('/general_network/irc_remote2local')
+			.get(authorization.requiresLogin, irc_remote2local.render);
 		// LOCAL FTP
 		app.route('/general_network/ftp_local')
 		.get(authorization.requiresLogin, ftp_local.render);
