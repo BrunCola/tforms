@@ -577,6 +577,21 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
+					// ENPOINT EVENTS USER
+					.state('endpoint_events_local_by_alert_info', {
+						url: '/endpoint_events_local_by_alert_info?start&end&src_ip',
+						templateUrl: 'public/pages/views/general_network/endpoint_events_local_by_alert_info.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Endpoints Triggering Event',
+							subtitleElm: {
+								'Source IP': 'src_ip'
+							},
+							daterange: true
+						}
+					})
 				// SSH LOCAL
 				.state('ssh_local', {
 					url: '/ssh_local?start&end',

@@ -216,7 +216,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'Local Endpoint Events',
 			'url': 'endpoint_events_local',
 			'icon': 'fa-desktop',
-			'orphans': []
+			'orphans': ['endpoint_events_local_by_alert_info']
 		},
 		{
 			'title': 'Local Connections',
