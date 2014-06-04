@@ -232,7 +232,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		},
 		{
 			'title': 'Local SSH',
-			'url': 'ssh',
+			'url': 'ssh_local',
 			'icon': 'fa-chevron-right',
 			'orphans': ['ssh_local2remote', 'ssh_shared']
 		},
