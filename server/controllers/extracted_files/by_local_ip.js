@@ -17,7 +17,7 @@ exports.render = function(req, res) {
 	//var results = [];
 	var tables = [];
 	var table1SQL = 'SELECT '+
-			'count(*) AS count,'+
+			'sum(`count`) AS `count`,'+
 			'date_format(max(from_unixtime(time)), "%Y-%m-%d %H:%i:%s") AS time,'+
 			'`lan_zone`,'+
 			'`machine`,'+

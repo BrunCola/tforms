@@ -17,7 +17,7 @@ exports.render = function(req, res) {
 	var crossfilter = [];
 	var info = [];
 	var table1SQL = 'SELECT '+
-			'count(*) AS `count`,'+
+			'sum(`count`) AS `count`,'+
 			'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time,'+
 			'`remote_ip`,'+
 			'`remote_country`,'+
@@ -48,7 +48,7 @@ exports.render = function(req, res) {
 			select: 'time',
 			dView: true,
 			link: {
-				type: 'l7_topremote_app',
+				type: 'l7_remote_app',
 				val: ['remote_ip'],
 				crumb: false
 			},

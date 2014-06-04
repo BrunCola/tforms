@@ -75,16 +75,16 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'orphans': ['ioc_drill', 'ioc_events_drilldown']
 		},
 		{
-			'title': 'IOC Top Local IPs',
-			'url': 'ioc_top_local_ips',
+			'title': 'IOC by Local IPs',
+			'url': 'ioc_local',
 			'icon': 'fa-warning',
-			'orphans': ['ioc_top_local_ips_drill']
+			'orphans': ['ioc_local_drill']
 		},
 		{
-			'title': 'IOC Top Remote IPs',
-			'url': 'ioc_top_remote_ips',
+			'title': 'IOC by Remote IPs',
+			'url': 'ioc_remote',
 			'icon': 'fa-warning',
-			'orphans': ['ioc_top_remote2local']
+			'orphans': ['ioc_remote2local']
 		}]
 	},
 	{
@@ -118,7 +118,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		'children':
 		[{
 			'title': 'New Remote IPs',
-			'url': 'new_remote_ips',
+			'url': 'new_remote',
 			'icon': 'fa-exchange',
 			'orphans': []
 		},
@@ -142,13 +142,13 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		},
 		{
 			'title': 'New SSH Remote IPs',
-			'url': 'new_ssh_remote_ips',
+			'url': 'new_ssh_remote',
 			'icon': 'fa-lock',
 			'orphans': []
 		},
 		{
 			'title': 'New FTP Remote IPs',
-			'url': 'new_ftp_remote_ips',
+			'url': 'new_ftp_remote',
 			'icon': 'fa-lock',
 			'orphans': []
 		}]
@@ -162,19 +162,19 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'By Application',
 			'url': 'app_by_application',
 			'icon': 'fa-bars',
-			'orphans': ['application_drill', 'application_local', 'l7_top_shared']
+			'orphans': ['application_drill', 'application_local', 'l7_shared']
 		},
 		{
 			'title': 'By Local IP',
 			'url': 'app_by_local_ip',
 			'icon': 'fa-bars',
-			'orphans': ['l7_toplocal_app', 'l7_toplocal_drill', 'l7_top_shared']
+			'orphans': ['l7_local_app', 'l7_local_drill', 'l7_shared']
 		},
 		{
 			'title': 'By Remote IP',
 			'url': 'app_by_remote_ip',
 			'icon': 'fa-bars',
-			'orphans': ['l7_topremote_app', 'l7_topremote_drill', 'l7_top_shared']
+			'orphans': ['l7_remote_app', 'l7_remote_drill', 'l7_shared']
 		}]
 	},
 	{
@@ -184,21 +184,21 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		'children':
 		[{
 			'title': 'SMTP Senders',
-			'url': 'top_local_smtp',
-			'icon': 'fa-envelope',
-			'orphans': ['top_smtp_sender2receiver','top_smtp_from_sender']
+			'url': 'smtp_senders',
+			'icon': 'fa-mail-forward',
+			'orphans': ['smtp_sender2receiver','smtp_from_sender']
 		},
 		{
 			'title': 'SMTP Receivers',
-			'url': 'top_smtp_receivers',
-			'icon': 'fa-envelope',
-			'orphans': ['top_smtp_receiver2sender','top_smtp_from_sender']
+			'url': 'smtp_receivers',
+			'icon': 'fa-mail-reply',
+			'orphans': ['smtp_receiver2sender','smtp_from_sender']
 		},
 		{
 			'title': 'SMTP Subjects',
-			'url': 'top_smtp_subjects',
+			'url': 'smtp_subjects',
 			'icon': 'fa-envelope',
-			'orphans': []
+			'orphans': ['smtp_subject_sender_receiver_pairs', 'smtp_from_sender_by_subject']
 		}]
 	},
 	{
@@ -208,57 +208,63 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		'children':
 		[{
 			'title': 'Endpoint Events',
-			'url': 'top_endpoint_events',
+			'url': 'endpoint_events',
 			'icon': 'fa-desktop',
-			'orphans': ['top_endpoint_events_user','top_endpoint_events_user_drill']
+			'orphans': ['endpoint_events_user','endpoint_events_user_drill']
+		},
+		{
+			'title': 'Local Endpoint Events',
+			'url': 'endpoint_events_local',
+			'icon': 'fa-desktop',
+			'orphans': []
 		},
 		{
 			'title': 'Local Connections',
-			'url': 'top_local_ips',
+			'url': 'local',
 			'icon': 'fa-cloud-download',
-			'orphans': ['top_local2remote', 'top_ips_shared']
+			'orphans': ['local2remote', 'shared']
 		},
 		{
 			'title': 'Remote Connections',
-			'url': 'top_remote_ips',
+			'url': 'remote',
 			'icon': 'fa-cloud-upload',
-			'orphans': ['top_remote2local', 'top_ips_shared']
+			'orphans': ['remote2local', 'shared']
 		},
 		{
 			'title': 'Local SSH',
-			'url': 'top_ssh',
+			'url': 'ssh_local',
 			'icon': 'fa-chevron-right',
-			'orphans': ['top_ssh_remote', 'top_ssh_remote_shared']
+			'orphans': ['ssh_local2remote', 'ssh_shared']
 		},
 		{
 			'title': 'Remote SSH',
-			'url': 'top_remote2local_ssh',
+			'url': 'ssh_remote',
 			'icon': 'fa-chevron-right',
-			'orphans': ['top_remote2local_ssh_local', 'top_ssh_remote_shared']
+			'orphans': ['ssh_remote2local', 'ssh_shared']
 		},
 		{
 			'title': 'Local IRC',
-			'url': 'top_local_irc',
+			'url': 'local_irc',
 			'icon': 'fa-comment',
-			'orphans': ['top_local2remote_irc', 'top_irc_shared']
+			'orphans': ['local2remote_irc', 'irc_shared']
 		},
 		{
 			'title': 'Remote IRC',
-			'url': 'top_remote_irc',
+			'url': 'remote_irc',
 			'icon': 'fa-comment',
-			'orphans': ['top_remote2local_irc', 'top_irc_shared']
+			'orphans': ['remote2local_irc', 'irc_shared']
 		},
 		{
 			'title': 'Local FTP',
-			'url': 'top_local_ftp',
+			'url': 'local_ftp',
 			'icon': 'fa-file',
-			'orphans': ['top_local2remote_ftp', 'top_ftp_shared']
+			'orphans': ['local2remote_ftp', 'ftp_shared']
 		},
 		{
 			'title': 'Remote FTP',
-			'url': 'top_remote_ftp',
+			'url': 'remote_ftp',
 			'icon': 'fa-file',
-			'orphans': ['top_remote2local_ftp', 'top_ftp_shared']
+			'orphans': ['remote2local_ftp', 'ftp_shared']
 		}]
 	}];
 }]);
