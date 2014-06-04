@@ -565,6 +565,18 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
+				// ENPOINT EVENTS LOCAL
+				.state('endpoint_events_local', {
+					url: '/endpoint_events_local?start&end',
+					templateUrl: 'public/pages/views/general_network/endpoint_events_local.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Local Endpoint Events',
+						daterange: true
+					}
+				})
 				// SSH LOCAL
 				.state('ssh_local', {
 					url: '/ssh_local?start&end',
@@ -884,8 +896,10 @@ angular.module('mean.pages').config(['$stateProvider',
 								loggedin: checkLoggedin
 							},
 							data: {
-								title: 'Receiver/Sender pairs for Subject',
+								title: 'Email from Sender to Receiver for Subject',
 								subtitleElm: {
+									'Sender': 'from',
+									'Receiver': 'to',
 									'Subject': 'subject'
 								},
 								daterange: true

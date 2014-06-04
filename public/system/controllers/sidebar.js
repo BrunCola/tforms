@@ -213,6 +213,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'orphans': ['endpoint_events_user','endpoint_events_user_drill']
 		},
 		{
+			'title': 'Local Endpoint Events',
+			'url': 'endpoint_events_local',
+			'icon': 'fa-desktop',
+			'orphans': []
+		},
+		{
 			'title': 'Local Connections',
 			'url': 'local',
 			'icon': 'fa-cloud-download',
