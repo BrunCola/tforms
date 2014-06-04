@@ -780,9 +780,9 @@ angular.module('mean.pages').config(['$stateProvider',
 						}
 					})
 				// LOCAL SMTP 
-				.state('local_smtp', {
-					url: '/local_smtp?start&end',
-					templateUrl: 'public/pages/views/email/local_smtp.html',
+				.state('smtp_senders', {
+					url: '/smtp_senders?start&end',
+					templateUrl: 'public/pages/views/email/smtp_senders.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},

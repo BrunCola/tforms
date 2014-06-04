@@ -76,7 +76,7 @@ var live_connections = require('../controllers/live_connections/live_connections
 
 //EMAIL
 	// LOCAL SMTP 
-	var local_smtp = require('../controllers/email/local_smtp');
+	var smtp_senders = require('../controllers/email/smtp_senders');
 		// SMTP SENDER2RECEIVER
 		var smtp_sender2receiver = require('../controllers/email/smtp_sender2receiver');	
 			// SMTP FROM SENDER
@@ -249,8 +249,8 @@ module.exports = function(app) {
 
 	//EMAIL
 		// LOCAL SMTP
-		app.route('/email/local_smtp')
-		.get(authorization.requiresLogin, local_smtp.render);
+		app.route('/email/smtp_senders')
+		.get(authorization.requiresLogin, smtp_senders.render);
 			// SMTP SENDER2RECEIVER
 			app.route('/email/smtp_sender2receiver')
 			.get(authorization.requiresLogin, smtp_sender2receiver.render);
