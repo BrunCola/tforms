@@ -14,12 +14,11 @@ exports.render = function(req, res) {
 		end = req.query.end;
 	}
 	//var results = [];
-	if (req.query.src_ip) {
+	if (req.query.alert_info && req.query.src_ip) {
 		var tables = [];
 		var info = [];
 		var table1SQL = 'SELECT '+
-			'count(*) AS count,' +
-			'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 			'`server_id`, '+
 			'`src_user`, '+
 			'`src_ip`, '+
@@ -32,32 +31,16 @@ exports.render = function(req, res) {
 			'FROM `ossec` '+
 			'WHERE '+
 			'`time` BETWEEN '+start+' AND '+end+' '+
-			'AND src_ip = \''+req.query.src_ip+'\' '+
-			'GROUP BY '+
-			'`alert_info`';
+			'AND `alert_info` = \''+req.query.alert_info+'\' '+
+			'AND `src_ip` = \''+req.query.src_ip+'\'';
 		var table1Params = [
-			{
-				title: 'Last Seen',
-				select: 'time',
-				link: {
-					type: 'endpoint_events_local_alert_info_drill',
-					// val: the pre-evaluated values from the query above
-					val: ['alert_info','src_ip'],
-					crumb: false
-				}
-			},
-			{ title: 'Count', select: 'count'},
-			{ title: 'User', select: 'src_user'},
-			{ title: 'Source IP', select: 'src_ip'},
-			{ title: 'Destination IP', select: 'dst_ip'},
-			{ title: 'Alert Info', select: 'alert_info' },
-			{ title: 'Alert Source', select: 'alert_source'},
-			{ title: 'Program Source', select: 'program_source'},
+			{ title: 'Time', select: 'time' },
+			{ title: 'Full Log', select: 'full_log' },
 		];
 		var table1Settings = {
-			sort: [[1, 'desc']],
+			sort: [[0, 'desc']],
 			div: 'table',
-			title: 'Local Endpoints Triggering Event'
+			title: 'Full Endpoint Event Logs'
 		}
 		async.parallel([
 			// Table function(s)

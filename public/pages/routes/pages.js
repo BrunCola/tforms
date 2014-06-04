@@ -577,7 +577,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// ENPOINT EVENTS USER
+					// ENPOINT EVENTS LOCAL BY ALERT INFO 
 					.state('endpoint_events_local_by_alert_info', {
 						url: '/endpoint_events_local_by_alert_info?start&end&src_ip',
 						templateUrl: 'public/pages/views/general_network/endpoint_events_local_by_alert_info.html',
@@ -592,6 +592,22 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+						// ENPOINT EVENTS LOCAL ALERT INFO DRILL
+						.state('endpoint_events_local_alert_info_drill', {
+							url: '/endpoint_events_local_alert_info_drill?start&end&alert_info&src_ip',
+							templateUrl: 'public/pages/views/general_network/endpoint_events_local_alert_info_drill.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'Endpoint Event Full Logs',
+								subtitleElm: {
+									'Alert Info': 'alert_info',
+									'Source IP': 'src_ip'
+								},
+								daterange: true
+							}
+						})
 				// SSH LOCAL
 				.state('ssh_local', {
 					url: '/ssh_local?start&end',
