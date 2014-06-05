@@ -231,6 +231,18 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'orphans': ['remote2local', 'shared']
 		},
 		{
+			'title': 'Local FTP',
+			'url': 'ftp_local',
+			'icon': 'fa-file',
+			'orphans': ['ftp_local2remote', 'ftp_shared']
+		},
+		{
+			'title': 'Remote FTP',
+			'url': 'ftp_remote',
+			'icon': 'fa-file',
+			'orphans': ['ftp_remote2local', 'ftp_shared']
+		},
+		{
 			'title': 'Local SSH',
 			'url': 'ssh_local',
 			'icon': 'fa-chevron-right',
@@ -253,18 +265,6 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'url': 'irc_remote',
 			'icon': 'fa-comment',
 			'orphans': ['irc_remote2local', 'irc_shared']
-		},
-		{
-			'title': 'Local FTP',
-			'url': 'ftp_local',
-			'icon': 'fa-file',
-			'orphans': ['ftp_local2remote', 'ftp_shared']
-		},
-		{
-			'title': 'Remote FTP',
-			'url': 'ftp_remote',
-			'icon': 'fa-file',
-			'orphans': ['ftp_remote2local', 'ftp_shared']
 		}]
 	}];
 }]);
