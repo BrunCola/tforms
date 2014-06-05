@@ -31,11 +31,11 @@ exports.render = function(req, res) {
 			title: 'Last Seen',
 			select: 'time',
 			dView: true,
-			// link: {
-			// 	type: 'file_mime_local',
-			// 	val: ['mime'],
-			// 	crumb: false
-			// },
+			link: {
+				type: 'by_domain_local',
+				val: ['http_host'],
+				crumb: false
+			},
 		},
 		{ title: 'Total Extracted Files', select: 'count' },
 		{ title: 'Domain', select: 'http_host' },
