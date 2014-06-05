@@ -57,214 +57,247 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 	};
 
 	$scope.sidebaritems = [
-	{
-		'title': 'Live Connections',
-		'url': 'live_connections',
-		'icon': 'fa-map-marker',
-		'children': []
-	},
-	{
-		'title': 'IOC Notifications',
-		'url': '',
-		'icon': 'fa-warning',
-		'children':
-		[{
-			'title': 'IOC Events',
-			'url': 'ioc_events',
+		{
+			'title': 'Live Connections',
+			'url': 'live_connections',
+			'icon': 'fa-map-marker',
+			'children': []
+		},
+		{
+			'title': 'IOC Notifications',
+			'url': '',
 			'icon': 'fa-warning',
-			'orphans': ['ioc_drill', 'ioc_events_drilldown']
+			'children':
+			[
+				{
+					'title': 'IOC Events',
+					'url': 'ioc_events',
+					'icon': 'fa-warning',
+					'orphans': ['ioc_drill', 'ioc_events_drilldown']
+				},
+				{
+					'title': 'IOC by Local IPs',
+					'url': 'ioc_local',
+					'icon': 'fa-warning',
+					'orphans': ['ioc_local_drill']
+				},
+				{
+					'title': 'IOC by Remote IPs',
+					'url': 'ioc_remote',
+					'icon': 'fa-warning',
+					'orphans': ['ioc_remote2local']
+				}
+			]
 		},
 		{
-			'title': 'IOC by Local IPs',
-			'url': 'ioc_local',
-			'icon': 'fa-warning',
-			'orphans': ['ioc_local_drill']
+			'title': 'Extracted Files',
+			'url': '',
+			'icon': 'fa-folder',
+			'children':
+			[
+				{
+					'title': 'By MIME Type',
+					'url': 'by_mime_type',
+					'icon': 'fa-folder-open',
+					'orphans': ['file_mime_local', 'file_local']
+				},
+				{
+					'title': 'By Local IP',
+					'url': 'by_local_ip',
+					'icon': 'fa-folder-open',
+					'orphans': ['by_file_name','file_local']
+				},
+				{
+					'title': 'By Remote IP',
+					'url': 'by_remote_ip',
+					'icon': 'fa-folder-open',
+					'orphans': ['by_file_name_remote','file_remote']
+				}
+			]
 		},
 		{
-			'title': 'IOC by Remote IPs',
-			'url': 'ioc_remote',
-			'icon': 'fa-warning',
-			'orphans': ['ioc_remote2local']
-		}]
-	},
-	{
-		'title': 'Extracted Files',
-		'url': '',
-		'icon': 'fa-folder',
-		'children':
-		[{
-			'title': 'By MIME Type',
-			'url': 'by_mime_type',
-			'icon': 'fa-folder-open',
-			'orphans': ['file_mime_local', 'file_local']
-		},
-		{
-			'title': 'By Local IP',
-			'url': 'by_local_ip',
-			'icon': 'fa-folder-open',
-			'orphans': ['by_file_name','file_local']
-		},
-		{
-			'title': 'By Remote IP',
-			'url': 'by_remote_ip',
-			'icon': 'fa-folder-open',
-			'orphans': ['by_file_name_remote','file_remote']
-		}]
-	},
-	{
-		'title': 'First Seen',
-		'url': '',
-		'icon': 'fa-asterisk',
-		'children':
-		[{
-			'title': 'New Remote IPs',
-			'url': 'new_remote',
-			'icon': 'fa-exchange',
-			'orphans': []
-		},
-		{
-			'title': 'New DNS Queries',
-			'url': 'new_dns_queries',
-			'icon': 'fa-info-circle',
-			'orphans': []
-		},
-		{
-			'title': 'New HTTP Domains',
-			'url': 'new_http_domains',
-			'icon': 'fa-globe',
-			'orphans': []
-		},
-		{
-			'title': 'New SSL Hosts',
-			'url': 'new_ssl_hosts',
-			'icon': 'fa-lock',
-			'orphans': []
-		},
-		{
-			'title': 'New SSH Remote IPs',
-			'url': 'new_ssh_remote',
-			'icon': 'fa-lock',
-			'orphans': []
-		},
-		{
-			'title': 'New FTP Remote IPs',
-			'url': 'new_ftp_remote',
-			'icon': 'fa-lock',
-			'orphans': []
-		}]
-	},
-	{
-		'title': 'Applications',
-		'url': '',
-		'icon': 'fa-bars',
-		'children':
-		[{
-			'title': 'By Application',
-			'url': 'app_by_application',
+			'title': 'Applications',
+			'url': '',
 			'icon': 'fa-bars',
-			'orphans': ['application_drill', 'application_local', 'l7_shared']
+			'children':
+			[
+				{
+					'title': 'By Application',
+					'url': 'app_by_application',
+					'icon': 'fa-bars',
+					'orphans': ['application_drill', 'application_local', 'l7_shared']
+				},
+				{
+					'title': 'By Local IP',
+					'url': 'app_by_local_ip',
+					'icon': 'fa-bars',
+					'orphans': ['l7_local_app', 'l7_local_drill', 'l7_shared']
+				},
+				{
+					'title': 'By Remote IP',
+					'url': 'app_by_remote_ip',
+					'icon': 'fa-bars',
+					'orphans': ['l7_remote_app', 'l7_remote_drill', 'l7_shared']
+				}
+			]
 		},
 		{
-			'title': 'By Local IP',
-			'url': 'app_by_local_ip',
-			'icon': 'fa-bars',
-			'orphans': ['l7_local_app', 'l7_local_drill', 'l7_shared']
-		},
-		{
-			'title': 'By Remote IP',
-			'url': 'app_by_remote_ip',
-			'icon': 'fa-bars',
-			'orphans': ['l7_remote_app', 'l7_remote_drill', 'l7_shared']
-		}]
-	},
-	{
-		'title': 'Email',
-		'url': '',
-		'icon': 'fa-envelope',
-		'children':
-		[{
-			'title': 'SMTP Senders',
-			'url': 'smtp_senders',
-			'icon': 'fa-mail-forward',
-			'orphans': ['smtp_sender2receiver','smtp_from_sender']
-		},
-		{
-			'title': 'SMTP Receivers',
-			'url': 'smtp_receivers',
-			'icon': 'fa-mail-reply',
-			'orphans': ['smtp_receiver2sender','smtp_from_sender']
-		},
-		{
-			'title': 'SMTP Subjects',
-			'url': 'smtp_subjects',
+			'title': 'Email',
+			'url': '',
 			'icon': 'fa-envelope',
-			'orphans': ['smtp_subject_sender_receiver_pairs', 'smtp_from_sender_by_subject']
-		}]
-	},
-	{
-		'title': 'General Network',
-		'url': '',
-		'icon': 'fa-sitemap',
-		'children':
-		[{
+			'children':
+			[
+				{
+					'title': 'SMTP Senders',
+					'url': 'smtp_senders',
+					'icon': 'fa-mail-forward',
+					'orphans': ['smtp_sender2receiver','smtp_from_sender']
+				},
+				{
+					'title': 'SMTP Receivers',
+					'url': 'smtp_receivers',
+					'icon': 'fa-mail-reply',
+					'orphans': ['smtp_receiver2sender','smtp_from_sender']
+				},
+				{
+					'title': 'SMTP Subjects',
+					'url': 'smtp_subjects',
+					'icon': 'fa-envelope',
+					'orphans': ['smtp_subject_sender_receiver_pairs', 'smtp_from_sender_by_subject']
+				}
+			]
+		},
+		{
+			'title': 'General Network',
+			'url': '',
+			'icon': 'fa-sitemap',
+			'children':
+			[
+				{
+					'title': 'Endpoint Events by Type',
+					'url': 'endpoint_events',
+					'icon': 'fa-desktop',
+					'orphans': ['endpoint_events_user','endpoint_events_user_drill']
+				},
+				{
+					'title': 'Endpoint Events by Local IPs',
+					'url': 'endpoint_events_local',
+					'icon': 'fa-desktop',
+					'orphans': ['endpoint_events_local_by_alert_info', 'endpoint_events_local_alert_info_drill']
+				},
+				{
+					'title': 'Local Connections',
+					'url': 'local',
+					'icon': 'fa-cloud-download',
+					'orphans': ['local2remote', 'shared']
+				},
+				{
+					'title': 'Remote Connections',
+					'url': 'remote',
+					'icon': 'fa-cloud-upload',
+					'orphans': ['remote2local', 'shared']
+				},
+				{
+					'title': 'Local FTP',
+					'url': 'ftp_local',
+					'icon': 'fa-file',
+					'orphans': ['ftp_local2remote', 'ftp_shared']
+				},
+				{
+					'title': 'Remote FTP',
+					'url': 'ftp_remote',
+					'icon': 'fa-file',
+					'orphans': ['ftp_remote2local', 'ftp_shared']
+				},
+				{
+					'title': 'Local SSH',
+					'url': 'ssh_local',
+					'icon': 'fa-chevron-right',
+					'orphans': ['ssh_local2remote', 'ssh_shared']
+				},
+				{
+					'title': 'Remote SSH',
+					'url': 'ssh_remote',
+					'icon': 'fa-chevron-right',
+					'orphans': ['ssh_remote2local', 'ssh_shared']
+				},
+				{
+					'title': 'Local IRC',
+					'url': 'irc_local',
+					'icon': 'fa-comment',
+					'orphans': ['irclocal2remote', 'irc_shared']
+				},
+				{
+					'title': 'Remote IRC',
+					'url': 'irc_remote',
+					'icon': 'fa-comment',
+					'orphans': ['irc_remote2local', 'irc_shared']
+				}
+			]
+		},
+		{
 			'title': 'Endpoint Events',
-			'url': 'endpoint_events',
+			'url': '',
 			'icon': 'fa-desktop',
-			'orphans': ['endpoint_events_user','endpoint_events_user_drill']
+			'children':
+			[
+				{
+					'title': 'By Type',
+					'url': 'endpoint_events',
+					'icon': 'fa-desktop',
+					'orphans': ['endpoint_events_user','endpoint_events_user_drill']
+				},
+				{
+					'title': 'By Local IPs',
+					'url': 'endpoint_events_local',
+					'icon': 'fa-desktop',
+					'orphans': ['endpoint_events_local_by_alert_info', 'endpoint_events_local_alert_info_drill']
+				}
+			]
 		},
 		{
-			'title': 'Local Endpoint Events',
-			'url': 'endpoint_events_local',
-			'icon': 'fa-desktop',
-			'orphans': ['endpoint_events_local_by_alert_info', 'endpoint_events_local_alert_info_drill']
-		},
-		{
-			'title': 'Local Connections',
-			'url': 'local',
-			'icon': 'fa-cloud-download',
-			'orphans': ['local2remote', 'shared']
-		},
-		{
-			'title': 'Remote Connections',
-			'url': 'remote',
-			'icon': 'fa-cloud-upload',
-			'orphans': ['remote2local', 'shared']
-		},
-		{
-			'title': 'Local FTP',
-			'url': 'ftp_local',
-			'icon': 'fa-file',
-			'orphans': ['ftp_local2remote', 'ftp_shared']
-		},
-		{
-			'title': 'Remote FTP',
-			'url': 'ftp_remote',
-			'icon': 'fa-file',
-			'orphans': ['ftp_remote2local', 'ftp_shared']
-		},
-		{
-			'title': 'Local SSH',
-			'url': 'ssh_local',
-			'icon': 'fa-chevron-right',
-			'orphans': ['ssh_local2remote', 'ssh_shared']
-		},
-		{
-			'title': 'Remote SSH',
-			'url': 'ssh_remote',
-			'icon': 'fa-chevron-right',
-			'orphans': ['ssh_remote2local', 'ssh_shared']
-		},
-		{
-			'title': 'Local IRC',
-			'url': 'irc_local',
-			'icon': 'fa-comment',
-			'orphans': ['irclocal2remote', 'irc_shared']
-		},
-		{
-			'title': 'Remote IRC',
-			'url': 'irc_remote',
-			'icon': 'fa-comment',
-			'orphans': ['irc_remote2local', 'irc_shared']
-		}]
-	}];
+			'title': 'First Seen',
+			'url': '',
+			'icon': 'fa-asterisk',
+			'children':
+			[
+				{
+					'title': 'New Remote IPs',
+					'url': 'new_remote',
+					'icon': 'fa-exchange',
+					'orphans': []
+				},
+				{
+					'title': 'New DNS Queries',
+					'url': 'new_dns_queries',
+					'icon': 'fa-info-circle',
+					'orphans': []
+				},
+				{
+					'title': 'New HTTP Domains',
+					'url': 'new_http_domains',
+					'icon': 'fa-globe',
+					'orphans': []
+				},
+				{
+					'title': 'New SSL Hosts',
+					'url': 'new_ssl_hosts',
+					'icon': 'fa-lock',
+					'orphans': []
+				},
+				{
+					'title': 'New SSH Remote IPs',
+					'url': 'new_ssh_remote',
+					'icon': 'fa-lock',
+					'orphans': []
+				},
+				{
+					'title': 'New FTP Remote IPs',
+					'url': 'new_ftp_remote',
+					'icon': 'fa-lock',
+					'orphans': []
+				}
+			]
+		}
+	];
 }]);

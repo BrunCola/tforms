@@ -224,79 +224,6 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-			// FIRST SEEN
-				// NEW REMOTE IPS
-				.state('new_remote', {
-					url: '/new_remote?start&end',
-					templateUrl: 'public/pages/views/first_seen/new_remote.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'New Remote IPs Detected',
-						daterange: true
-					}
-				})
-				// NEW DNS QUERIES
-				.state('new_dns_queries', {
-					url: '/new_dns_queries?start&end',
-					templateUrl: 'public/pages/views/first_seen/new_dns_queries.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'New DNS Queries Detected',
-						daterange: true
-					}
-				})
-				// NEW HTTP HOSTS
-				.state('new_http_domains', {
-					url: '/new_http_domains?start&end',
-					templateUrl: 'public/pages/views/first_seen/new_http_domains.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'New HTTP Domains Detected',
-						daterange: true
-					}
-				})
-				// NEW SSL HOSTS
-				.state('new_ssl_hosts', {
-					url: '/new_ssl_hosts?start&end',
-					templateUrl: 'public/pages/views/first_seen/new_ssl_hosts.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'New Remote IP Detected Serving SSL Traffic',
-						daterange: true
-					}
-				})
-				// NEW SSL REMOTE IPS
-				.state('new_ssh_remote', {
-					url: '/new_ssh_remote?start&end',
-					templateUrl: 'public/pages/views/first_seen/new_ssh_remote.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'New Remote IP Detected Serving SSH Traffic',
-						daterange: true
-					}
-				})
-				// NEW FTP REMOTE IPS
-				.state('new_ftp_remote', {
-					url: '/new_ftp_remote?start&end',
-					templateUrl: 'public/pages/views/first_seen/new_ftp_remote.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'New Remote IP Detected Serving FTP Traffic',
-						daterange: true
-					}
-				})
 			// APPLICATIONS
 				// BY APPLICATION
 				.state('app_by_application', {
@@ -637,92 +564,6 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-				// ENPOINT EVENTS
-				.state('endpoint_events', {
-					url: '/endpoint_events?start&end',
-					templateUrl: 'public/pages/views/general_network/endpoint_events.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'Endpoint Events',
-						daterange: true
-					}
-				})
-					// ENPOINT EVENTS USER
-					.state('endpoint_events_user', {
-						url: '/endpoint_events_user?start&end&alert_info',
-						templateUrl: 'public/pages/views/general_network/endpoint_events_user.html',
-						resolve: {
-							loggedin: checkLoggedin
-						},
-						data: {
-							title: 'Endpoints Triggering Event',
-							subtitleElm: {
-								'Alert Info': 'alert_info'
-							},
-							daterange: true
-						}
-					})
-						// ENPOINT EVENTS USER DRILL
-						.state('endpoint_events_user_drill', {
-							url: '/endpoint_events_user_drill?start&end&alert_info&src_user',
-							templateUrl: 'public/pages/views/general_network/endpoint_events_user_drill.html',
-							resolve: {
-								loggedin: checkLoggedin
-							},
-							data: {
-								title: 'Endpoint Event Full Logs',
-								subtitleElm: {
-									'Alert Info': 'alert_info',
-									'Source User': 'src_user'
-								},
-								daterange: true
-							}
-						})
-				// ENPOINT EVENTS LOCAL
-				.state('endpoint_events_local', {
-					url: '/endpoint_events_local?start&end',
-					templateUrl: 'public/pages/views/general_network/endpoint_events_local.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'Local Endpoint Events',
-						daterange: true
-					}
-				})
-					// ENPOINT EVENTS LOCAL BY ALERT INFO 
-					.state('endpoint_events_local_by_alert_info', {
-						url: '/endpoint_events_local_by_alert_info?start&end&src_ip',
-						templateUrl: 'public/pages/views/general_network/endpoint_events_local_by_alert_info.html',
-						resolve: {
-							loggedin: checkLoggedin
-						},
-						data: {
-							title: 'Endpoints Triggering Event',
-							subtitleElm: {
-								'Source IP': 'src_ip'
-							},
-							daterange: true
-						}
-					})
-						// ENPOINT EVENTS LOCAL ALERT INFO DRILL
-						.state('endpoint_events_local_alert_info_drill', {
-							url: '/endpoint_events_local_alert_info_drill?start&end&alert_info&src_ip',
-							templateUrl: 'public/pages/views/general_network/endpoint_events_local_alert_info_drill.html',
-							resolve: {
-								loggedin: checkLoggedin
-							},
-							data: {
-								title: 'Endpoint Event Full Logs',
-								subtitleElm: {
-									'Alert Info': 'alert_info',
-									'Source IP': 'src_ip'
-								},
-								daterange: true
-							}
-						})
 				// LOCAL FTP 
 				.state('ftp_local`', {
 					url: '/ftp_local?start&end',
@@ -937,6 +778,166 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+			// ENDPOINT EVENTS	
+				// ENPOINT EVENTS
+				.state('endpoint_events', {
+					url: '/endpoint_events?start&end',
+					templateUrl: 'public/pages/views/general_network/endpoint_events.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Endpoint Events',
+						daterange: true
+					}
+				})
+					// ENPOINT EVENTS USER
+					.state('endpoint_events_user', {
+						url: '/endpoint_events_user?start&end&alert_info',
+						templateUrl: 'public/pages/views/general_network/endpoint_events_user.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Endpoints Triggering Event',
+							subtitleElm: {
+								'Alert Info': 'alert_info'
+							},
+							daterange: true
+						}
+					})
+						// ENPOINT EVENTS USER DRILL
+						.state('endpoint_events_user_drill', {
+							url: '/endpoint_events_user_drill?start&end&alert_info&src_user',
+							templateUrl: 'public/pages/views/general_network/endpoint_events_user_drill.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'Endpoint Event Full Logs',
+								subtitleElm: {
+									'Alert Info': 'alert_info',
+									'Source User': 'src_user'
+								},
+								daterange: true
+							}
+						})
+				// ENPOINT EVENTS LOCAL
+				.state('endpoint_events_local', {
+					url: '/endpoint_events_local?start&end',
+					templateUrl: 'public/pages/views/general_network/endpoint_events_local.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Local Endpoint Events',
+						daterange: true
+					}
+				})
+					// ENPOINT EVENTS LOCAL BY ALERT INFO 
+					.state('endpoint_events_local_by_alert_info', {
+						url: '/endpoint_events_local_by_alert_info?start&end&src_ip',
+						templateUrl: 'public/pages/views/general_network/endpoint_events_local_by_alert_info.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Endpoints Triggering Event',
+							subtitleElm: {
+								'Source IP': 'src_ip'
+							},
+							daterange: true
+						}
+					})
+						// ENPOINT EVENTS LOCAL ALERT INFO DRILL
+						.state('endpoint_events_local_alert_info_drill', {
+							url: '/endpoint_events_local_alert_info_drill?start&end&alert_info&src_ip',
+							templateUrl: 'public/pages/views/general_network/endpoint_events_local_alert_info_drill.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'Endpoint Event Full Logs',
+								subtitleElm: {
+									'Alert Info': 'alert_info',
+									'Source IP': 'src_ip'
+								},
+								daterange: true
+							}
+						})
+			// FIRST SEEN
+				// NEW REMOTE IPS
+				.state('new_remote', {
+					url: '/new_remote?start&end',
+					templateUrl: 'public/pages/views/first_seen/new_remote.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'New Remote IPs Detected',
+						daterange: true
+					}
+				})
+				// NEW DNS QUERIES
+				.state('new_dns_queries', {
+					url: '/new_dns_queries?start&end',
+					templateUrl: 'public/pages/views/first_seen/new_dns_queries.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'New DNS Queries Detected',
+						daterange: true
+					}
+				})
+				// NEW HTTP HOSTS
+				.state('new_http_domains', {
+					url: '/new_http_domains?start&end',
+					templateUrl: 'public/pages/views/first_seen/new_http_domains.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'New HTTP Domains Detected',
+						daterange: true
+					}
+				})
+				// NEW SSL HOSTS
+				.state('new_ssl_hosts', {
+					url: '/new_ssl_hosts?start&end',
+					templateUrl: 'public/pages/views/first_seen/new_ssl_hosts.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'New Remote IP Detected Serving SSL Traffic',
+						daterange: true
+					}
+				})
+				// NEW SSL REMOTE IPS
+				.state('new_ssh_remote', {
+					url: '/new_ssh_remote?start&end',
+					templateUrl: 'public/pages/views/first_seen/new_ssh_remote.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'New Remote IP Detected Serving SSH Traffic',
+						daterange: true
+					}
+				})
+				// NEW FTP REMOTE IPS
+				.state('new_ftp_remote', {
+					url: '/new_ftp_remote?start&end',
+					templateUrl: 'public/pages/views/first_seen/new_ftp_remote.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'New Remote IP Detected Serving FTP Traffic',
+						daterange: true
+					}
+				})
 			// REPORTS
 				// IOC EVENTS
 				.state('ioc_events_report', {
