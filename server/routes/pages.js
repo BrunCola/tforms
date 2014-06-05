@@ -109,8 +109,12 @@ var live_connections = require('../controllers/live_connections/live_connections
 		var endpoint_events_user = require('../controllers/general_network/endpoint_events_user');
 			// ENDPOINT EVENTS USER DRILL
 			var endpoint_events_user_drill = require('../controllers/general_network/endpoint_events_user_drill');
-	// ENDPOINT EVENTS LOCAL
+	// ENDPOINT EVENTS LOCAL 
 	var endpoint_events_local = require('../controllers/general_network/endpoint_events_local');
+		// ENDPOINT EVENTS LOCAL BY ALERT INFO
+		var endpoint_events_local_by_alert_info = require('../controllers/general_network/endpoint_events_local_by_alert_info');
+			// ENDPOINT EVENTS LOCAL ALERT INFO DRILL
+			var endpoint_events_local_alert_info_drill = require('../controllers/general_network/endpoint_events_local_alert_info_drill');
 	// SSH
 	var ssh_local = require('../controllers/general_network/ssh_local');
 		// SSH REMOTE
@@ -122,25 +126,25 @@ var live_connections = require('../controllers/live_connections/live_connections
 		// SSH REMOTE
 		var ssh_remote2local = require('../controllers/general_network/ssh_remote2local');
 	// LOCAL IRC
-	var local_irc = require('../controllers/general_network/local_irc');	
+	var irc_local = require('../controllers/general_network/irc_local');	
 		// LOCAL2REMOTE IRC
-		var local2remote_irc = require('../controllers/general_network/local2remote_irc');	
+		var irc_local2remote = require('../controllers/general_network/irc_local2remote');	
 			// IRC SHARED
 			var irc_shared = require('../controllers/general_network/irc_shared');
 	// REMOTE IRC
-	var remote_irc = require('../controllers/general_network/remote_irc');	
+	var irc_remote = require('../controllers/general_network/irc_remote');	
 		// REMOTE2LOCAL IRC
-		var remote2local_irc = require('../controllers/general_network/remote2local_irc');	
+		var irc_remote2local = require('../controllers/general_network/irc_remote2local');	
 	// LOCAL FTP
-	var local_ftp = require('../controllers/general_network/local_ftp');
+	var ftp_local = require('../controllers/general_network/ftp_local');
 		// LOCAL2REMOTE FTP
-		var local2remote_ftp = require('../controllers/general_network/local2remote_ftp');
+		var ftp_local2remote = require('../controllers/general_network/ftp_local2remote');
 			// FTP SHARED
 			var ftp_shared = require('../controllers/general_network/ftp_shared');
 	// REMOTE FTP
-	var remote_ftp = require('../controllers/general_network/remote_ftp'); 
+	var ftp_remote = require('../controllers/general_network/ftp_remote'); 
 		// REMOTE2LOCAL FTP
-		var remote2local_ftp = require('../controllers/general_network/remote2local_ftp');
+		var ftp_remote2local = require('../controllers/general_network/ftp_remote2local');
 // REPORTS
 	// IOC EVENTS REPORT
 	var ioc_events_report = require('../controllers/reports/ioc_events');	
@@ -305,6 +309,12 @@ module.exports = function(app) {
 		// ENDPOINT EVENTS LOCAL
 		app.route('/general_network/endpoint_events_local')
 		.get(authorization.requiresLogin, endpoint_events_local.render);
+			// ENDPOINT EVENTS LOCAL BY ALERT INFO
+			app.route('/general_network/endpoint_events_local_by_alert_info')
+			.get(authorization.requiresLogin, endpoint_events_local_by_alert_info.render);
+				// ENDPOINT EVENTS LOCAL ALERT INFO DRILL
+				app.route('/general_network/endpoint_events_local_alert_info_drill')
+				.get(authorization.requiresLogin, endpoint_events_local_alert_info_drill.render);
 		// SSH LOCAL
 		app.route('/general_network/ssh_local')
 		.get(authorization.requiresLogin, ssh_local.render);
@@ -321,35 +331,35 @@ module.exports = function(app) {
 			app.route('/general_network/ssh_remote2local')
 			.get(authorization.requiresLogin, ssh_remote2local.render);
 		// LOCAL IRC
-		app.route('/general_network/local_irc')
-		.get(authorization.requiresLogin, local_irc.render);
+		app.route('/general_network/irc_local')
+		.get(authorization.requiresLogin, irc_local.render);
 			// LOCAL2REMOTE IRC
-			app.route('/general_network/local2remote_irc')
-			.get(authorization.requiresLogin, local2remote_irc.render);
+			app.route('/general_network/irc_local2remote')
+			.get(authorization.requiresLogin, irc_local2remote.render);
 				// IRC SHARED
 				app.route('/general_network/irc_shared')
 				.get(authorization.requiresLogin, irc_shared.render);
 		// REMOTE IRC
-		app.route('/general_network/remote_irc')
-		.get(authorization.requiresLogin, remote_irc.render);
+		app.route('/general_network/irc_remote')
+		.get(authorization.requiresLogin, irc_remote.render);
 			// REMOTE2LOCAL IRC 
-			app.route('/general_network/remote2local_irc')
-			.get(authorization.requiresLogin, remote2local_irc.render);
+			app.route('/general_network/irc_remote2local')
+			.get(authorization.requiresLogin, irc_remote2local.render);
 		// LOCAL FTP
-		app.route('/general_network/local_ftp')
-		.get(authorization.requiresLogin, local_ftp.render);
+		app.route('/general_network/ftp_local')
+		.get(authorization.requiresLogin, ftp_local.render);
 			// LOCAL2REMOTE FTP 
-			app.route('/general_network/local2remote_ftp')
-			.get(authorization.requiresLogin, local2remote_ftp.render);
+			app.route('/general_network/ftp_local2remote')
+			.get(authorization.requiresLogin, ftp_local2remote.render);
 				// FTP SHARED
 				app.route('/general_network/ftp_shared')
 				.get(authorization.requiresLogin, ftp_shared.render);
 		// REMOTE FTP
-		app.route('/general_network/remote_ftp')
-		.get(authorization.requiresLogin, remote_ftp.render);
+		app.route('/general_network/ftp_remote')
+		.get(authorization.requiresLogin, ftp_remote.render);
 			// REMOTE2LOCAL FTP 
-			app.route('/general_network/remote2local_ftp')
-			.get(authorization.requiresLogin, remote2local_ftp.render);
+			app.route('/general_network/ftp_remote2local')
+			.get(authorization.requiresLogin, ftp_remote2local.render);
 
 	// REPORTS
 		// IOC EVENTS

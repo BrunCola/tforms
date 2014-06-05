@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('mean.pages').controller('remoteFtpController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
+angular.module('mean.pages').controller('ftpRemoteController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/general_network/remote_ftp?start='+$location.$$search.start+'&end='+$location.$$search.end;
+		query = '/general_network/ftp_remote?start='+$location.$$search.start+'&end='+$location.$$search.end;
 	} else {
-		query = '/general_network/remote_ftp?';
+		query = '/general_network/ftp_remote?';
 	}
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {

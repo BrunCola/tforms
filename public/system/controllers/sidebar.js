@@ -216,7 +216,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'Local Endpoint Events',
 			'url': 'endpoint_events_local',
 			'icon': 'fa-desktop',
-			'orphans': []
+			'orphans': ['endpoint_events_local_by_alert_info', 'endpoint_events_local_alert_info_drill']
 		},
 		{
 			'title': 'Local Connections',
@@ -244,27 +244,27 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		},
 		{
 			'title': 'Local IRC',
-			'url': 'local_irc',
+			'url': 'irc_local',
 			'icon': 'fa-comment',
-			'orphans': ['local2remote_irc', 'irc_shared']
+			'orphans': ['irclocal2remote', 'irc_shared']
 		},
 		{
 			'title': 'Remote IRC',
-			'url': 'remote_irc',
+			'url': 'irc_remote',
 			'icon': 'fa-comment',
-			'orphans': ['remote2local_irc', 'irc_shared']
+			'orphans': ['irc_remote2local', 'irc_shared']
 		},
 		{
 			'title': 'Local FTP',
-			'url': 'local_ftp',
+			'url': 'ftp_local',
 			'icon': 'fa-file',
-			'orphans': ['local2remote_ftp', 'ftp_shared']
+			'orphans': ['ftp_local2remote', 'ftp_shared']
 		},
 		{
 			'title': 'Remote FTP',
-			'url': 'remote_ftp',
+			'url': 'ftp_remote',
 			'icon': 'fa-file',
-			'orphans': ['remote2local_ftp', 'ftp_shared']
+			'orphans': ['ftp_remote2local', 'ftp_shared']
 		}]
 	}];
 }]);

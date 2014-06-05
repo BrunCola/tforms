@@ -577,6 +577,37 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
+					// ENPOINT EVENTS LOCAL BY ALERT INFO 
+					.state('endpoint_events_local_by_alert_info', {
+						url: '/endpoint_events_local_by_alert_info?start&end&src_ip',
+						templateUrl: 'public/pages/views/general_network/endpoint_events_local_by_alert_info.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Endpoints Triggering Event',
+							subtitleElm: {
+								'Source IP': 'src_ip'
+							},
+							daterange: true
+						}
+					})
+						// ENPOINT EVENTS LOCAL ALERT INFO DRILL
+						.state('endpoint_events_local_alert_info_drill', {
+							url: '/endpoint_events_local_alert_info_drill?start&end&alert_info&src_ip',
+							templateUrl: 'public/pages/views/general_network/endpoint_events_local_alert_info_drill.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'Endpoint Event Full Logs',
+								subtitleElm: {
+									'Alert Info': 'alert_info',
+									'Source IP': 'src_ip'
+								},
+								daterange: true
+							}
+						})
 				// SSH LOCAL
 				.state('ssh_local', {
 					url: '/ssh_local?start&end',
@@ -648,9 +679,9 @@ angular.module('mean.pages').config(['$stateProvider',
 						}
 					})
 				// LOCAL FTP 
-				.state('local_ftp', {
-					url: '/local_ftp?start&end',
-					templateUrl: 'public/pages/views/general_network/local_ftp.html',
+				.state('ftp_local`', {
+					url: '/ftp_local?start&end',
+					templateUrl: 'public/pages/views/general_network/ftp_local.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -660,9 +691,9 @@ angular.module('mean.pages').config(['$stateProvider',
 					}
 				})
 					// LOCAL2REMOTE FTP
-					.state('local2remote_ftp', {
-						url: '/local2remote_ftp?start&end&lan_ip&lan_zone',
-						templateUrl: 'public/pages/views/general_network/local2remote_ftp.html',
+					.state('ftp_local2remote', {
+						url: '/ftp_local2remote?start&end&lan_ip&lan_zone',
+						templateUrl: 'public/pages/views/general_network/ftp_local2remote.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -693,9 +724,9 @@ angular.module('mean.pages').config(['$stateProvider',
 							}
 						})
 				// REMOTE FTP 
-				.state('remote_ftp', {
-					url: '/remote_ftp?start&end',
-					templateUrl: 'public/pages/views/general_network/remote_ftp.html',
+				.state('ftp_remote', {
+					url: '/ftp_remote?start&end',
+					templateUrl: 'public/pages/views/general_network/ftp_remote.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -705,9 +736,9 @@ angular.module('mean.pages').config(['$stateProvider',
 					}
 				})
 					// REMOTE2LOCAL FTP
-					.state('remote2local_ftp', {
-						url: '/remote2local_ftp?start&end&remote_ip',
-						templateUrl: 'public/pages/views/general_network/remote2local_ftp.html',
+					.state('ftp_remote2local', {
+						url: '/ftp_remote2local?start&end&remote_ip',
+						templateUrl: 'public/pages/views/general_network/ftp_remote2local.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -720,9 +751,9 @@ angular.module('mean.pages').config(['$stateProvider',
 						}
 					})
 				// LOCAL IRC
-				.state('local_irc', {
-					url: '/local_irc?start&end',
-					templateUrl: 'public/pages/views/general_network/local_irc.html',
+				.state('irc_local', {
+					url: '/irc_local?start&end',
+					templateUrl: 'public/pages/views/general_network/irc_local.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -732,9 +763,9 @@ angular.module('mean.pages').config(['$stateProvider',
 					}
 				})
 					// LOCAL2REMOTE IRC
-					.state('local2remote_irc', {
-						url: '/local2remote_irc?start&end&lan_ip&lan_zone',
-						templateUrl: 'public/pages/views/general_network/local2remote_irc.html',
+					.state('irc_local2remote', {
+						url: '/irc_local2remote?start&end&lan_ip&lan_zone',
+						templateUrl: 'public/pages/views/general_network/irc_local2remote.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},
@@ -765,9 +796,9 @@ angular.module('mean.pages').config(['$stateProvider',
 							}
 						})
 				// REMOTE IRC
-				.state('remote_irc', {
-					url: '/remote_irc?start&end',
-					templateUrl: 'public/pages/views/general_network/remote_irc.html',
+				.state('irc_remote', {
+					url: '/irc_remote?start&end',
+					templateUrl: 'public/pages/views/general_network/irc_remote.html',
 					resolve: {
 						loggedin: checkLoggedin
 					},
@@ -777,9 +808,9 @@ angular.module('mean.pages').config(['$stateProvider',
 					}
 				})
 					// REMOTE2LOCAL IRC
-					.state('remote2local_irc', {
-						url: '/remote2local_irc?start&end&remote_ip',
-						templateUrl: 'public/pages/views/general_network/remote2local_irc.html',
+					.state('irc_remote2local', {
+						url: '/irc_remote2local?start&end&remote_ip',
+						templateUrl: 'public/pages/views/general_network/irc_remote2local.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},

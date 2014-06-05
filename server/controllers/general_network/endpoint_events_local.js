@@ -38,12 +38,12 @@ exports.render = function(req, res) {
 		{
 			title: 'Last Seen',
 			select: 'time',
-			// link: {
-			// 	type: 'endpoint_events_user',
-			// 	// val: the pre-evaluated values from the query above
-			// 	val: ['alert_info'],
-			// 	crumb: false
-			// },
+			link: {
+				type: 'endpoint_events_local_by_alert_info',
+				// val: the pre-evaluated values from the query above
+				val: ['src_ip'],
+				crumb: false
+			},
 		},
 		{ title: 'Count', select: 'count' },
 		{ title: 'Source IP', select: 'src_ip' },

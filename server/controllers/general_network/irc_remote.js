@@ -35,7 +35,7 @@ exports.render = function(req, res) {
 			title: 'Last Seen',
 			select: 'time',
 			 link: {
-			 	type: 'remote2local_irc', 
+			 	type: 'irc_remote2local', 
 			 	// val: the pre-evaluated values from the query above
 			 	val: ['remote_ip'],
 			 	crumb: false

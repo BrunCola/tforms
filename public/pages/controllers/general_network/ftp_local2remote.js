@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('mean.pages').controller('remote2localControllerIrc', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
+angular.module('mean.pages').controller('ftpLocal2remoteController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/general_network/remote2local_irc?start='+$location.$$search.start+'&end='+$location.$$search.end+'&remote_ip='+$location.$$search.remote_ip;
+		query = '/general_network/ftp_local2remote?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip;
 	} else {
-		query = '/general_network/remote2local_irc?remote_ip='+$location.$$search.remote_ip;
+		query = '/general_network/ftp_local2remote?lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip;
 	}
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {
