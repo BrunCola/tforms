@@ -718,6 +718,33 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+				// SSH STATUS
+				.state('ssh_status', {
+					url: '/ssh_status?start&end',
+					templateUrl: 'public/pages/views/general_network/ssh_status.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'SSH Status',
+						daterange: true
+					}
+				})
+					// SSH STATUS LOCAL
+					.state('ssh_status_local', {
+						url: '/ssh_status_local?start&end&status_code',
+						templateUrl: 'public/pages/views/general_network/ssh_status_local.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Local SSH Status',
+							subtitleElm: {
+								'Status Code': 'status_code'
+							},
+							daterange: true
+						}
+					})
 				// LOCAL IRC
 				.state('irc_local', {
 					url: '/irc_local?start&end',

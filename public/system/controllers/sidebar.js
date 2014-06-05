@@ -204,6 +204,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 					'orphans': ['ftp_remote2local', 'ftp_shared']
 				},
 				{
+					'title': 'SSH Status',
+					'url': 'ssh_status',
+					'icon': 'fa-chevron-right',
+					'orphans': ['ssh_status_local']
+				},
+				{
 					'title': 'Local SSH',
 					'url': 'ssh_local',
 					'icon': 'fa-chevron-right',
