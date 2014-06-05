@@ -112,6 +112,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 					'url': 'by_remote_ip',
 					'icon': 'fa-folder-open',
 					'orphans': ['by_file_name_remote','file_remote']
+				},
+				{
+					'title': 'By Domain',
+					'url': 'by_domain',
+					'icon': 'fa-folder-open',
+					'orphans': []
 				}
 			]
 		},

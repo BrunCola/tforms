@@ -224,6 +224,18 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+				// BY MIME TYPE
+				.state('by_domain', {
+					url: '/by_domain?start&end',
+					templateUrl: 'public/pages/views/extracted_files/by_domain.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Extracted Files by Domain',
+						daterange: true
+					}
+				})
 			// APPLICATIONS
 				// BY APPLICATION
 				.state('app_by_application', {
