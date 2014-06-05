@@ -449,7 +449,122 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
-		  // GENERAL NETWORK
+			// EMAIL
+				// LOCAL SMTP 
+				.state('smtp_senders', {
+					url: '/smtp_senders?start&end',
+					templateUrl: 'public/pages/views/email/smtp_senders.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Email Senders',
+						daterange: true
+					}
+				})
+					// SMTP SENDER2RECEIVER
+					.state('smtp_sender2receiver', {
+						url: '/smtp_sender2receiver?start&end&from',
+						templateUrl: 'public/pages/views/email/smtp_sender2receiver.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Senders/Reveivers',
+							subtitleElm: {
+								'Sender': 'from'
+							},
+							daterange: true
+						}
+					})
+						// SMTP FROM SENDER 
+						.state('smtp_from_sender', {
+							url: '/smtp_from_sender?start&end&from&to',
+							templateUrl: 'public/pages/views/email/smtp_from_sender.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'Emails From Sender to Receiver',
+								subtitleElm: {
+									'Sender': 'from',
+									'Receiver': 'to'
+								},
+								daterange: true
+							}
+						})
+				// SMTP RECEIVERS 
+				.state('smtp_receivers', {
+					url: '/smtp_receivers?start&end',
+					templateUrl: 'public/pages/views/email/smtp_receivers.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Email Receivers',
+						daterange: true
+					}
+				})
+					// SMTP RECEIVER2SENDER
+					.state('smtp_receiver2sender', {
+						url: '/smtp_receiver2sender?start&end&to',
+						templateUrl: 'public/pages/views/email/smtp_receiver2sender.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Receivers/Senders',
+							subtitleElm: {
+								'Sender': 'from'
+							},
+							daterange: true
+						}
+					})
+				// SMTP SUBJECTS 
+				.state('smtp_subjects', {
+					url: '/smtp_subjects?start&end',
+					templateUrl: 'public/pages/views/email/smtp_subjects.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Email Subjects',
+						daterange: true
+					}
+				})
+					// SMTP SUBJECTS SENDER RECEIVER PAIRS
+					.state('smtp_subject_sender_receiver_pairs', {
+						url: '/smtp_subject_sender_receiver_pairs?start&end&subject',
+						templateUrl: 'public/pages/views/email/smtp_subject_sender_receiver_pairs.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Receiver/Sender pairs for Subject',
+							subtitleElm: {
+								'Subject': 'subject'
+							},
+							daterange: true
+						}
+					})
+						// SMTP FROM SENDER BY SUBJECT
+						.state('smtp_from_sender_by_subject', {
+							url: '/smtp_from_sender_by_subject?start&end&to&from&subject',
+							templateUrl: 'public/pages/views/email/smtp_from_sender_by_subject.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'Email from Sender to Receiver for Subject',
+								subtitleElm: {
+									'Sender': 'from',
+									'Receiver': 'to',
+									'Subject': 'subject'
+								},
+								daterange: true
+							}
+						})			
+			// GENERAL NETWORK
 				// LOCAL IPS
 				.state('local', {
 					url: '/local?start&end',
@@ -608,76 +723,6 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
-				// SSH LOCAL
-				.state('ssh_local', {
-					url: '/ssh_local?start&end',
-					templateUrl: 'public/pages/views/general_network/ssh_local.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'Local SSH',
-						daterange: true
-					}
-				})
-					// SSH LOCAL2REMOTE
-					.state('ssh_local2remote', {
-						url: '/ssh_local2remote?start&end&lan_ip',
-						templateUrl: 'public/pages/views/general_network/ssh_local2remote.html',
-						resolve: {
-							loggedin: checkLoggedin
-						},
-						data: {
-							title: 'SSH Local to Remote',
-							subtitleElm: {
-								'LAN IP': 'lan_ip'
-							},
-							daterange: true
-						}
-					})
-						// SSH SHARED
-						.state('ssh_shared', {
-							url: '/ssh_shared?start&end&lan_ip&remote_ip',
-							templateUrl: 'public/pages/views/general_network/ssh_shared.html',
-							resolve: {
-								loggedin: checkLoggedin
-							},
-							data: {
-								title: 'SSH Local/Remote Shared',
-								subtitleElm: {
-									'LAN IP': 'lan_ip',
-									'Remote IP': 'remote_ip'
-								},
-								daterange: true
-							}
-						})
-				// SSH REMOTE
-				.state('ssh_remote', {
-					url: '/ssh_remote?start&end',
-					templateUrl: 'public/pages/views/general_network/ssh_remote.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'Remote SSH',
-						daterange: true
-					}
-				})
-					// SSH REMOTE2LOCAL
-					.state('ssh_remote2local', {
-						url: '/ssh_remote2local?start&end&remote_ip',
-						templateUrl: 'public/pages/views/general_network/ssh_remote2local.html',
-						resolve: {
-							loggedin: checkLoggedin
-						},
-						data: {
-							title: 'SSH Remote to Local',
-							subtitleElm: {
-								'Remote IP': 'remote_ip'
-							},
-							daterange: true
-						}
-					})
 				// LOCAL FTP 
 				.state('ftp_local`', {
 					url: '/ftp_local?start&end',
@@ -744,6 +789,76 @@ angular.module('mean.pages').config(['$stateProvider',
 						},
 						data: {
 							title: 'Remote to Local FTP',
+							subtitleElm: {
+								'Remote IP': 'remote_ip'
+							},
+							daterange: true
+						}
+					})
+				// SSH LOCAL
+				.state('ssh_local', {
+					url: '/ssh_local?start&end',
+					templateUrl: 'public/pages/views/general_network/ssh_local.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Local SSH',
+						daterange: true
+					}
+				})
+					// SSH LOCAL2REMOTE
+					.state('ssh_local2remote', {
+						url: '/ssh_local2remote?start&end&lan_ip',
+						templateUrl: 'public/pages/views/general_network/ssh_local2remote.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'SSH Local to Remote',
+							subtitleElm: {
+								'LAN IP': 'lan_ip'
+							},
+							daterange: true
+						}
+					})
+						// SSH SHARED
+						.state('ssh_shared', {
+							url: '/ssh_shared?start&end&lan_ip&remote_ip',
+							templateUrl: 'public/pages/views/general_network/ssh_shared.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'SSH Local/Remote Shared',
+								subtitleElm: {
+									'LAN IP': 'lan_ip',
+									'Remote IP': 'remote_ip'
+								},
+								daterange: true
+							}
+						})
+				// SSH REMOTE
+				.state('ssh_remote', {
+					url: '/ssh_remote?start&end',
+					templateUrl: 'public/pages/views/general_network/ssh_remote.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Remote SSH',
+						daterange: true
+					}
+				})
+					// SSH REMOTE2LOCAL
+					.state('ssh_remote2local', {
+						url: '/ssh_remote2local?start&end&remote_ip',
+						templateUrl: 'public/pages/views/general_network/ssh_remote2local.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'SSH Remote to Local',
 							subtitleElm: {
 								'Remote IP': 'remote_ip'
 							},
@@ -822,120 +937,6 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-				// LOCAL SMTP 
-				.state('smtp_senders', {
-					url: '/smtp_senders?start&end',
-					templateUrl: 'public/pages/views/email/smtp_senders.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'Email Senders',
-						daterange: true
-					}
-				})
-					// SMTP SENDER2RECEIVER
-					.state('smtp_sender2receiver', {
-						url: '/smtp_sender2receiver?start&end&from',
-						templateUrl: 'public/pages/views/email/smtp_sender2receiver.html',
-						resolve: {
-							loggedin: checkLoggedin
-						},
-						data: {
-							title: 'Senders/Reveivers',
-							subtitleElm: {
-								'Sender': 'from'
-							},
-							daterange: true
-						}
-					})
-						// SMTP FROM SENDER 
-						.state('smtp_from_sender', {
-							url: '/smtp_from_sender?start&end&from&to',
-							templateUrl: 'public/pages/views/email/smtp_from_sender.html',
-							resolve: {
-								loggedin: checkLoggedin
-							},
-							data: {
-								title: 'Emails From Sender to Receiver',
-								subtitleElm: {
-									'Sender': 'from',
-									'Receiver': 'to'
-								},
-								daterange: true
-							}
-						})
-				// SMTP RECEIVERS 
-				.state('smtp_receivers', {
-					url: '/smtp_receivers?start&end',
-					templateUrl: 'public/pages/views/email/smtp_receivers.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'Email Receivers',
-						daterange: true
-					}
-				})
-					// SMTP RECEIVER2SENDER
-					.state('smtp_receiver2sender', {
-						url: '/smtp_receiver2sender?start&end&to',
-						templateUrl: 'public/pages/views/email/smtp_receiver2sender.html',
-						resolve: {
-							loggedin: checkLoggedin
-						},
-						data: {
-							title: 'Receivers/Senders',
-							subtitleElm: {
-								'Sender': 'from'
-							},
-							daterange: true
-						}
-					})
-				// SMTP SUBJECTS 
-				.state('smtp_subjects', {
-					url: '/smtp_subjects?start&end',
-					templateUrl: 'public/pages/views/email/smtp_subjects.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'Email Subjects',
-						daterange: true
-					}
-				})
-					// SMTP SUBJECTS SENDER RECEIVER PAIRS
-					.state('smtp_subject_sender_receiver_pairs', {
-						url: '/smtp_subject_sender_receiver_pairs?start&end&subject',
-						templateUrl: 'public/pages/views/email/smtp_subject_sender_receiver_pairs.html',
-						resolve: {
-							loggedin: checkLoggedin
-						},
-						data: {
-							title: 'Receiver/Sender pairs for Subject',
-							subtitleElm: {
-								'Subject': 'subject'
-							},
-							daterange: true
-						}
-					})
-						// SMTP FROM SENDER BY SUBJECT
-						.state('smtp_from_sender_by_subject', {
-							url: '/smtp_from_sender_by_subject?start&end&to&from&subject',
-							templateUrl: 'public/pages/views/email/smtp_from_sender_by_subject.html',
-							resolve: {
-								loggedin: checkLoggedin
-							},
-							data: {
-								title: 'Email from Sender to Receiver for Subject',
-								subtitleElm: {
-									'Sender': 'from',
-									'Receiver': 'to',
-									'Subject': 'subject'
-								},
-								daterange: true
-							}
-						})
 			// REPORTS
 				// IOC EVENTS
 				.state('ioc_events_report', {
