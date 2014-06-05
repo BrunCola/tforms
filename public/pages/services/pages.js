@@ -1206,6 +1206,33 @@ angular.module('mean.pages').factory('mimeIcon', [
 							.attr('font-size', 10)
 							.text('deb');
 						return div;
+					case 'x-tar':
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 9 33)')
+							.style('fill', '#c3c3c3')
+							.attr('font-family', 'ITCAvantGardeStd-Bk')
+							.attr('font-size', 14)
+							.text('TAR');
+						return div;
+					case 'vnd.ms-cab-compressed':
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 14 33.6)')
+							.style('fill', '#c3c3c3')
+							.attr('font-family', 'ITCAvantGardeStd-Bk')
+							.attr('font-size', 12)
+							.text('cab');
+						em
+							.append('polygon')
+							.attr('fill-rule', 'evenodd')
+							.attr('clip-rule', 'evenodd') 
+							.style('fill', '#c3c3c3')
+							.attr('points', '6.887,20.771 6.887,21.721 9.736,21.721 10.687,22.67 '+
+							'10.687,24.57 8.786,24.57 8.786,27.42 10.687,27.42 10.687,32.545 8.786,32.545 8.786,34.92 11.161,34.92 14.012,36.82 '+
+							'20.661,36.82 22.562,34.92 14.962,34.92 12.587,32.545 12.587,27.42 14.962,25.045 22.562,25.045 21.137,23.146 14.486,23.146 '+
+							'12.587,24.57 12.587,22.67 13.536,21.721 16.387,21.721 16.387,20.771 13.536,20.771 12.587,19.82 10.687,19.82 9.736,20.771 ');
+						return div;
 				}
 			}
 			if (match[1] == 'text') {
@@ -1268,6 +1295,15 @@ angular.module('mean.pages').factory('mimeIcon', [
 							.attr('font-family', 'ITCAvantGardeStd-Bk')
 							.attr('font-size', 14)
 							.text('C++');
+						return div;
+					case 'x-c':
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 15 35)')
+							.style('fill', '#c3c3c3')
+							.attr('font-family', 'ITCAvantGardeStd-Bk')
+							.attr('font-size', 15)
+							.text('C');
 						return div;
 					case 'fortran':
 						em
