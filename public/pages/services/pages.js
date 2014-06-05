@@ -906,6 +906,33 @@ angular.module('mean.pages').factory('appIcon', [
 						'c-0.32-0.335-0.521-0.787-0.521-1.287c0-1.03,0.838-1.868,1.867-1.868c0.332,0,0.641,0.094,0.91,0.247'+
 						'c0.699-1.508,1.129-3.356,1.129-5.38L26.812,14.882z');
 					return div;
+				case 'steam':
+					em
+						.append('text')
+						.attr('transform', 'matrix(1 0 0 1 2.6 22)')
+						.style('fill', '#ffffff')
+						.attr('font-family', 'ITCAvantGardeStd-Bk')
+						.attr('font-size', 12)
+						.text('Steam');
+					return div;
+				case 'socks5':
+					em
+						.append('text')
+						.attr('transform', 'matrix(1 0 0 1 2.82 22.24)')
+						.style('fill', '#EFAA86')
+						.attr('font-family', 'ITCAvantGardeStd-Bk')
+						.attr('font-size', 11)
+						.text('Socks5');
+					return div;
+				case 'ssdp':
+					em
+						.append('text')
+						.attr('transform', 'matrix(1 0 0 1 5.5 20.5)')
+						.style('fill', '#B572AB')
+						.attr('font-family', 'ITCAvantGardeStd-Bk')
+						.attr('font-size', 14)
+						.text('ssdp');
+					return div;
 			}
 		}
 		return appIcon;
@@ -1152,6 +1179,33 @@ angular.module('mean.pages').factory('mimeIcon', [
 							.attr('font-size', 14)
 							.text('123');
 						return div;
+					case 'x-debian-package':
+						em
+							.append('polygon')
+							.attr('fill-rule', 'evenodd')
+							.attr('clip-rule', 'evenodd') 
+							.style('fill', '#c3c3c3')
+							.attr('points', '10.467,25.523 10.769,37.056 21.318,40.852 33.12,36.923 33.501,26.235 21.446,28.821 ');
+						em
+							.append('polygon')
+							.attr('fill-rule', 'evenodd')
+							.attr('clip-rule', 'evenodd') 
+							.style('fill', '#c3c3c3')
+							.attr('points', '21.243,27.438 20.304,24.354 8.904,21.212 10.184,24.305 ');
+						em
+							.append('polygon')
+							.attr('fill-rule', 'evenodd')
+							.attr('clip-rule', 'evenodd') 
+							.style('fill', '#c3c3c3')
+							.attr('points', '23.912,18.623 21.368,22.557 33.308,25.523 35.929,21.412 ');
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 11.5 36.7)')
+							.style('fill', '#989898')
+							.attr('font-family', 'ITCAvantGardeStd-Bk')
+							.attr('font-size', 10)
+							.text('deb');
+						return div;
 				}
 			}
 			if (match[1] == 'text') {
@@ -1159,16 +1213,16 @@ angular.module('mean.pages').factory('mimeIcon', [
 				bg.style('fill', '#989898');
 				em
 					.append('path')
-					.style('fill', '#EFA986')
+					.style('fill', '#D0C7FF')
 					.attr('d', 'M9.228,16.602h3.212V6.845h2.465V4.023H9.053C8.24,4.608,7.468,5.244,6.746,5.934v0.911h2.482V16.602z');
 				em
 					.append('polygon')
-					.style('fill', '#EFA986')
+					.style('fill', '#D0C7FF')
 					.attr('points', '27.774,16.602 23.422,9.973 27.263,4.023 23.643,4.023 21.552,7.61 19.394,4.023 15.756,4.023 '+ 
 					'19.648,9.905 15.246,16.602 18.833,16.602 21.417,12.148 24.136,16.602 ');
 				em
 					.append('path')
-					.style('fill', '#EFA986')
+					.style('fill', '#D0C7FF')
 					.attr('d', 'M33.969,4.023h-5.837v2.822h2.481v9.757h3.212V6.845h2.465V5.948C35.564,5.252,34.788,4.611,33.969,4.023z');
 				// switch between text
 				switch(match[2]) {
@@ -1258,7 +1312,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 				bg.style('fill', '#989898');
 				em
 					.append('path')
-					.style('fill', '#84BDD1')
+					.style('fill', '#93CDE8')
 					.attr('d', 'M42.078,15.98C39.676,6.792,31.342,0,21.398,0C10.924,0,2.221,7.534,0.376,17.474l11.757-7.152l9.506,5.928'+
 					'l-2.232-2.265l9.326-6.869L42.078,15.98z'+
 					'M16.02,8.862c-1.439,0-2.605-1.167-2.605-2.605s1.166-2.604,2.605-2.604'+
@@ -1310,6 +1364,15 @@ angular.module('mean.pages').factory('mimeIcon', [
 							.attr('font-size', 12)
 							.text('S+xml');
 						return div;
+					case 'x-ms-bmp':
+						em
+							.append('text')
+							.attr('transform', 'matrix(1 0 0 1 8 32)')
+							.style('fill', '#c3c3c3')
+							.attr('font-family', 'ITCAvantGardeStd-Bk')
+							.attr('font-size', 13)
+							.text('BMP');
+						return div;
 				}
 			}
 			if (match[1] == 'audio') {
@@ -1317,7 +1380,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 				bg.style('fill', '#989898');
 				em
 					.append('path')
-					.style('fill', '#6FBF9A')
+					.style('fill', '#64D698')
 					.attr('fill-rule', 'evenodd')
 					.attr('clip-rule', 'evenodd')
 					.attr('d', 'M37.457,7.287c-0.062,1.312-0.03,2.372-0.443,0.528'+
@@ -1381,7 +1444,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 				bg.style('fill', '#989898');
 				em
 					.append('path')
-					.style('fill', '#D97373')
+					.style('fill', '#CFBD63')
 					.attr('fill-rule', 'evenodd')
 					.attr('clip-rule', 'evenodd')
 					.attr('d', 'M16.346,16.707c0,0.229,0.182,0.414,0.412,0.414h1.122c0.226,0,0.412-0.185,0.412-0.414v-1.95'+
