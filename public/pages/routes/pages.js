@@ -403,7 +403,7 @@ angular.module('mean.pages').config(['$stateProvider',
 				})
 					// SMTP SENDER2RECEIVER
 					.state('smtp_sender2receiver', {
-						url: '/smtp_sender2receiver?start&end&from',
+						url: '/smtp_sender2receiver?start&end&mailfrom',
 						templateUrl: 'public/pages/views/email/smtp_sender2receiver.html',
 						resolve: {
 							loggedin: checkLoggedin
@@ -411,14 +411,14 @@ angular.module('mean.pages').config(['$stateProvider',
 						data: {
 							title: 'Senders/Reveivers',
 							subtitleElm: {
-								'Sender': 'from'
+								'Sender': 'mailfrom'
 							},
 							daterange: true
 						}
 					})
 						// SMTP FROM SENDER 
 						.state('smtp_from_sender', {
-							url: '/smtp_from_sender?start&end&from&to',
+							url: '/smtp_from_sender?start&end&mailfrom&receiptto',
 							templateUrl: 'public/pages/views/email/smtp_from_sender.html',
 							resolve: {
 								loggedin: checkLoggedin
@@ -426,8 +426,8 @@ angular.module('mean.pages').config(['$stateProvider',
 							data: {
 								title: 'Emails From Sender to Receiver',
 								subtitleElm: {
-									'Sender': 'from',
-									'Receiver': 'to'
+									'Sender': 'mailfrom',
+									'Receiver': 'receiptto'
 								},
 								daterange: true
 							}
@@ -446,7 +446,7 @@ angular.module('mean.pages').config(['$stateProvider',
 				})
 					// SMTP RECEIVER2SENDER
 					.state('smtp_receiver2sender', {
-						url: '/smtp_receiver2sender?start&end&to',
+						url: '/smtp_receiver2sender?start&end&receiptto',
 						templateUrl: 'public/pages/views/email/smtp_receiver2sender.html',
 						resolve: {
 							loggedin: checkLoggedin
@@ -454,7 +454,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						data: {
 							title: 'Receivers/Senders',
 							subtitleElm: {
-								'Sender': 'from'
+								'Receiver': 'receiptto'
 							},
 							daterange: true
 						}
@@ -488,7 +488,7 @@ angular.module('mean.pages').config(['$stateProvider',
 					})
 						// SMTP FROM SENDER BY SUBJECT
 						.state('smtp_from_sender_by_subject', {
-							url: '/smtp_from_sender_by_subject?start&end&to&from&subject',
+							url: '/smtp_from_sender_by_subject?start&end&receiptto&mailfrom&subject',
 							templateUrl: 'public/pages/views/email/smtp_from_sender_by_subject.html',
 							resolve: {
 								loggedin: checkLoggedin
@@ -496,8 +496,8 @@ angular.module('mean.pages').config(['$stateProvider',
 							data: {
 								title: 'Email from Sender to Receiver for Subject',
 								subtitleElm: {
-									'Sender': 'from',
-									'Receiver': 'to',
+									'Sender': 'mailfrom',
+									'Receiver': 'receiptto',
 									'Subject': 'subject'
 								},
 								daterange: true

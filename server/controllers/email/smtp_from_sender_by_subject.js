@@ -12,7 +12,7 @@ exports.render = function(req, res) {
 		start = req.query.start;
 		end = req.query.end;
 	}
-	if (req.query.from && req.query.to && req.query.subject) {
+	if (req.query.mailfrom && req.query.receiptto && req.query.subject) {
 		var tables = [];
 		var info = [];
 		var table1SQL = 'SELECT '+
@@ -26,8 +26,8 @@ exports.render = function(req, res) {
 				'`remote_country`,'+
 				'`remote_cc`,'+
 				'`remote_asn_name`,'+
-				'`from`,'+
-				'`to`,'+
+				'`mailfrom`,'+
+				'`receiptto`,'+
 				'`reply_to`,'+
 				'`in_reply_to`,'+
 				'`subject`,'+
@@ -42,13 +42,13 @@ exports.render = function(req, res) {
 				'`smtp` '+
 			'WHERE '+
 				'`time` BETWEEN '+start+' AND '+end+' '+
-				'AND `from` = \''+req.query.from+'\' '+
-				'AND `to` = \''+req.query.to+'\' '+
+				'AND `mailfrom` = \''+req.query.mailfrom+'\' '+
+				'AND `receiptto` = \''+req.query.receiptto+'\' '+
 				'AND `subject` = \''+req.query.subject+'\'';
 		var table1Params = [
 			{ title: 'Time', select: 'time' },
-			{ title: 'From', select: 'from' },
-			{ title: 'To', select: 'to' },
+			{ title: 'From', select: 'mailfrom' },
+			{ title: 'To', select: 'receiptto' },
 			{ title: 'Reply To', select: 'reply_to' },
 			{ title: 'In Reply To', select: 'in_reply_to' },
 			{ title: 'Subject', select: 'subject' },

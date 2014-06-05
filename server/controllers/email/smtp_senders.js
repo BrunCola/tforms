@@ -17,26 +17,26 @@ exports.render = function(req, res) {
 	var table1SQL = 'SELECT '+
 			'count(*) AS count,'+
 			'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time,'+
-			'`from`,'+
+			'`mailfrom`,'+
 			'sum(`ioc_count`) AS `ioc_count` '+
 		'FROM '+
 			'`smtp` '+
 		'WHERE '+
 			'`time` BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+
-			'`from`';
+			'`mailfrom`';
 	var table1Params = [
 		{
 			title: 'Last Seen',
 			select: 'time',
 			 link: {
 			 	type: 'smtp_sender2receiver', 
-			 	val: ['from'],
+			 	val: ['mailfrom'],
 			 	crumb: false
 			},
 		},
 		{ title: 'Count', select: 'count' },
-		{ title: 'From', select: 'from' },
+		{ title: 'From', select: 'mailfrom' },
 		{ title: 'IOC Count', select: 'ioc_count' }
 	];
 	var table1Settings = {

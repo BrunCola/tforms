@@ -14,7 +14,7 @@ exports.render = function(req, res) {
 		start = req.query.start;
 		end = req.query.end;
 	}
-	if (req.query.from) {
+	if (req.query.mailfrom) {
 		//var results = [];
 		var tables = [];
 		var crossfilter = [];
@@ -32,8 +32,8 @@ exports.render = function(req, res) {
 				'`remote_country`,'+
 				'`remote_cc`,'+
 				'`remote_asn_name`,'+
-				'`from`,'+
-				'`to`,'+
+				'`mailfrom`,'+
+				'`receiptto`,'+
 				'`reply_to`,'+
 				'`in_reply_to`,'+
 				'`subject`,'+
@@ -48,9 +48,9 @@ exports.render = function(req, res) {
 				'`smtp` '+
 			'WHERE ' + 
 				'time BETWEEN '+start+' AND '+end+' '+
-				'AND `from` = \''+req.query.from+'\' '+
+				'AND `mailfrom` = \''+req.query.mailfrom+'\' '+
 			'GROUP BY '+
-				'`to`';
+				'`receiptto`';
 
 		var table1Params = [
 			{
@@ -59,13 +59,13 @@ exports.render = function(req, res) {
 				link: {
 					type: 'smtp_from_sender',
 					// val: the pre-evaluated values from the query above
-					val: ['from','to'],
+					val: ['mailfrom','receiptto'],
 					crumb: false
 				}
 			},
 			{ title: 'Count', select: 'count' },
-			{ title: 'From', select: 'from' },
-			{ title: 'To', select: 'to' },
+			{ title: 'From', select: 'mailfrom' },
+			{ title: 'To', select: 'receiptto' },
 			{ title: 'Reply To', select: 'reply_to' },
 			{ title: 'In Reply To', select: 'in_reply_to' },
 			{ title: 'Subject', select: 'subject' },
@@ -87,7 +87,7 @@ exports.render = function(req, res) {
 			{ title: 'Remote ASN Name', select: 'remote_asn_name' },
 		];
 		var table1Settings = {
-			sort: [[0, 'desc']],
+			sort: [[1, 'desc']],
 			div: 'table',
 			title: 'Sender/Receiver SMTP'
 		}
