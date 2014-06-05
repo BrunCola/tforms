@@ -117,7 +117,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 					'title': 'By Domain',
 					'url': 'by_domain',
 					'icon': 'fa-folder-open',
-					'orphans': []
+					'orphans': ['by_domain_local', 'by_domain_local_mime']
 				}
 			]
 		},

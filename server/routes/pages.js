@@ -39,6 +39,10 @@ var live_connections = require('../controllers/live_connections/live_connections
 		var file_mime_local = require('../controllers/extracted_files/file_mime_local');
 	// BY DOMAIN
 	var by_domain = require('../controllers/extracted_files/by_domain');
+		// BY DOMAIN LOCAL 
+		var by_domain_local = require('../controllers/extracted_files/by_domain_local');
+			// BY DOMAIN LOCAL MIME 
+			var by_domain_local_mime = require('../controllers/extracted_files/by_domain_local_mime');
 
 // EXTRACTED FILES
 	// NEW REMOTE
@@ -213,6 +217,12 @@ module.exports = function(app) {
 		// BY DOMAIN
 		app.route('/extracted_files/by_domain')
 		.get(authorization.requiresLogin, by_domain.render);
+			// BY DOMAIN LOCAL
+			app.route('/extracted_files/by_domain_local')
+			.get(authorization.requiresLogin, by_domain_local.render);
+				// BY DOMAIN LOCAL 
+				app.route('/extracted_files/by_domain_local_mime')
+				.get(authorization.requiresLogin, by_domain_local_mime.render);
 
 	// FIRST SEEN
 		// NEW REMOTE
