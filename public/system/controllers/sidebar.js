@@ -70,19 +70,19 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'children':
 			[
 				{
-					'title': 'IOC Events',
+					'title': 'By Event',
 					'url': 'ioc_events',
 					'icon': 'fa-warning',
 					'orphans': ['ioc_drill', 'ioc_events_drilldown']
 				},
 				{
-					'title': 'IOC by Local IPs',
+					'title': 'By Local IP',
 					'url': 'ioc_local',
 					'icon': 'fa-warning',
 					'orphans': ['ioc_local_drill']
 				},
 				{
-					'title': 'IOC by Remote IPs',
+					'title': 'By Remote IP',
 					'url': 'ioc_remote',
 					'icon': 'fa-warning',
 					'orphans': ['ioc_remote2local']
@@ -148,19 +148,19 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'children':
 			[
 				{
-					'title': 'SMTP Senders',
+					'title': 'By Sender',
 					'url': 'smtp_senders',
 					'icon': 'fa-mail-forward',
 					'orphans': ['smtp_sender2receiver','smtp_from_sender']
 				},
 				{
-					'title': 'SMTP Receivers',
+					'title': 'By Receiver',
 					'url': 'smtp_receivers',
 					'icon': 'fa-mail-reply',
 					'orphans': ['smtp_receiver2sender','smtp_from_sender']
 				},
 				{
-					'title': 'SMTP Subjects',
+					'title': 'By Subject',
 					'url': 'smtp_subjects',
 					'icon': 'fa-envelope',
 					'orphans': ['smtp_subject_sender_receiver_pairs', 'smtp_from_sender_by_subject']
@@ -236,7 +236,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 					'orphans': ['endpoint_events_user','endpoint_events_user_drill']
 				},
 				{
-					'title': 'By Local IPs',
+					'title': 'By Local IP',
 					'url': 'endpoint_events_local',
 					'icon': 'fa-desktop',
 					'orphans': ['endpoint_events_local_by_alert_info', 'endpoint_events_local_alert_info_drill']
