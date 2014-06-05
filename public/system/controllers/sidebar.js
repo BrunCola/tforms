@@ -174,18 +174,6 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'children':
 			[
 				{
-					'title': 'Endpoint Events by Type',
-					'url': 'endpoint_events',
-					'icon': 'fa-desktop',
-					'orphans': ['endpoint_events_user','endpoint_events_user_drill']
-				},
-				{
-					'title': 'Endpoint Events by Local IPs',
-					'url': 'endpoint_events_local',
-					'icon': 'fa-desktop',
-					'orphans': ['endpoint_events_local_by_alert_info', 'endpoint_events_local_alert_info_drill']
-				},
-				{
 					'title': 'Local Connections',
 					'url': 'local',
 					'icon': 'fa-cloud-download',
