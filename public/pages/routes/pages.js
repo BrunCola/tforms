@@ -44,7 +44,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						loggedin: checkLoggedin
 					},
 					data: {
-						title: 'Indicator Of Compromise Events',
+						title: 'Indicator of Compromise Events',
 						daterange: true
 					}
 				})
@@ -56,7 +56,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							loggedin: checkLoggedin
 						},
 						data: {
-							title: 'Indicator Of Compromise Events',
+							title: 'Indicator of Compromise Events',
 							daterange: true
 						}
 					})
@@ -68,7 +68,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						loggedin: checkLoggedin
 					},
 					data: {
-						title: 'Indicator Of Compromise Events Sorted By Remote IPs',
+						title: 'Indicator of Compromise Events Sorted by Remote IP',
 						daterange: true
 					}
 				})
@@ -80,7 +80,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							loggedin: checkLoggedin
 						},
 						data: {
-							title: 'Indicator Of Compromise Events Sorted By Remote IPs',
+							title: 'Indicator of Compromise Events Sorted by Remote IP',
 							daterange: true
 						}
 					})
@@ -92,7 +92,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						loggedin: checkLoggedin
 					},
 					data: {
-						title: 'Indicator Of Compromise Events Sorted By Local IPs',
+						title: 'Indicator of Compromise Events Sorted by Local IP',
 						daterange: true
 					}
 				})
@@ -104,7 +104,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							loggedin: checkLoggedin
 						},
 						data: {
-							title: 'Indicator Of Compromise Events Sorted By Local IPs',
+							title: 'Indicator of Compromise Events Sorted by Local IP',
 							daterange: true
 						}
 					})
