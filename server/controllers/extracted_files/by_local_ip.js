@@ -17,23 +17,20 @@ exports.render = function(req, res) {
 	//var results = [];
 	var tables = [];
 	var table1SQL = 'SELECT '+
-			// SELECTS
-			'count(*) as count, '+
-			'date_format(max(from_unixtime(time)), "%Y-%m-%d %H:%i:%s") as time, '+
-			'`lan_zone`, '+
-			'`lan_ip`, '+
-			'`machine`, '+
-			'(sum(size) / 1048576) as size, '+
-			'sum(ioc_count) as ioc_count '+
-			// !SELECTS
+			'sum(`count`) AS `count`,'+
+			'date_format(max(from_unixtime(time)), "%Y-%m-%d %H:%i:%s") AS time,'+
+			'`lan_zone`,'+
+			'`machine`,'+
+			'`lan_ip`,'+
+			'(sum(size) / 1048576) AS size,'+
+			'sum(ioc_count) AS ioc_count '+
 		'FROM '+
-			'`file` '+
+			'`file_local` '+
 		'WHERE '+
-			'time BETWEEN '+start+' AND '+end+' '+
+			'`time` BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+
-			'`lan_ip`, ' +
-			'`lan_zone`';
-
+			'`lan_zone`,'+
+			'`lan_ip`';
 		var table1Params = [
 			{
 				title: 'Last Seen',
@@ -48,8 +45,8 @@ exports.render = function(req, res) {
 			},
 			{ title: 'Total Extracted Files', select: 'count' },
 			{ title: 'Zone', select: 'lan_zone' },
+			{ title: 'Machine', select: 'machine' },
 			{ title: 'LAN IP', select: 'lan_ip' },
-			{ title: 'Machine', select: 'lan_ip' },
 			{ title: 'Total Size (MB)', select: 'size' },
 			{ title: 'Total IOC Hits', select: 'ioc_count' }
 		];

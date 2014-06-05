@@ -57,185 +57,235 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 	};
 
 	$scope.sidebaritems = [
-	{
-		'title': 'Live Connections',
-		'url': 'live_connections',
-		'icon': 'fa-map-marker',
-		'children': []
-	},
-	{
-		'title': 'IOC Notifications',
-		'url': '',
-		'icon': 'fa-warning',
-		'children':
-		[{
-			'title': 'IOC Events',
-			'url': 'ioc_events',
+		{
+			'title': 'Live Connections',
+			'url': 'live_connections',
+			'icon': 'fa-map-marker',
+			'children': []
+		},
+		{
+			'title': 'IOC Notifications',
+			'url': '',
 			'icon': 'fa-warning',
-			'orphans': ['ioc_drill', 'ioc_events_drilldown']
+			'children':
+			[
+				{
+					'title': 'By Event',
+					'url': 'ioc_events',
+					'icon': 'fa-warning',
+					'orphans': ['ioc_drill', 'ioc_events_drilldown']
+				},
+				{
+					'title': 'By Local IP',
+					'url': 'ioc_local',
+					'icon': 'fa-warning',
+					'orphans': ['ioc_local_drill']
+				},
+				{
+					'title': 'By Remote IP',
+					'url': 'ioc_remote',
+					'icon': 'fa-warning',
+					'orphans': ['ioc_remote2local']
+				}
+			]
 		},
 		{
-			'title': 'IOC Top Local IPs',
-			'url': 'ioc_top_local_ips',
-			'icon': 'fa-warning',
-			'orphans': ['ioc_top_local_ips_drill']
+			'title': 'Extracted Files',
+			'url': '',
+			'icon': 'fa-folder',
+			'children':
+			[
+				{
+					'title': 'By MIME Type',
+					'url': 'by_mime_type',
+					'icon': 'fa-folder-open',
+					'orphans': ['file_mime_local', 'file_local']
+				},
+				{
+					'title': 'By Local IP',
+					'url': 'by_local_ip',
+					'icon': 'fa-folder-open',
+					'orphans': ['by_file_name','file_local']
+				},
+				{
+					'title': 'By Remote IP',
+					'url': 'by_remote_ip',
+					'icon': 'fa-folder-open',
+					'orphans': ['by_file_name_remote','file_remote']
+				}
+			]
 		},
 		{
-			'title': 'IOC Top Remote IPs',
-			'url': 'ioc_top_remote_ips',
-			'icon': 'fa-warning',
-			'orphans': ['ioc_top_remote2local']
-		}]
-	},
-	{
-		'title': 'Extracted Files',
-		'url': '',
-		'icon': 'fa-folder',
-		'children':
-		[{
-			'title': 'By MIME Type',
-			'url': 'by_mime_type',
-			'icon': 'fa-folder-open',
-			'orphans': ['file_mime_local', 'file_local']
-		},
-		{
-			'title': 'By Local IP',
-			'url': 'by_local_ip',
-			'icon': 'fa-folder-open',
-			'orphans': ['by_file_name','file_local']
-		},
-		{
-			'title': 'By Remote IP',
-			'url': 'by_remote_ip',
-			'icon': 'fa-folder-open',
-			'orphans': ['by_file_name_remote','file_remote']
-		}]
-	},
-	{
-		'title': 'First Seen',
-		'url': '',
-		'icon': 'fa-asterisk',
-		'children':
-		[{
-			'title': 'New Remote IPs',
-			'url': 'new_remote_ips',
-			'icon': 'fa-exchange',
-			'orphans': []
-		},
-		{
-			'title': 'New DNS Queries',
-			'url': 'new_dns_queries',
-			'icon': 'fa-info-circle',
-			'orphans': []
-		},
-		{
-			'title': 'New HTTP Domains',
-			'url': 'new_http_domains',
-			'icon': 'fa-globe',
-			'orphans': []
-		},
-		{
-			'title': 'New SSL Hosts',
-			'url': 'new_ssl_hosts',
-			'icon': 'fa-lock',
-			'orphans': []
-		},
-		{
-			'title': 'New SSH Remote IPs',
-			'url': 'new_ssh_remote_ips',
-			'icon': 'fa-lock',
-			'orphans': []
-		},
-		{
-			'title': 'New FTP Remote IPs',
-			'url': 'new_ftp_remote_ips',
-			'icon': 'fa-lock',
-			'orphans': []
-		}]
-	},
-	{
-		'title': 'Applications',
-		'url': '',
-		'icon': 'fa-bars',
-		'children':
-		[{
-			'title': 'By Application',
-			'url': 'app_by_application',
+			'title': 'Applications',
+			'url': '',
 			'icon': 'fa-bars',
-			'orphans': ['application_drill', 'application_local', 'l7_top_shared']
+			'children':
+			[
+				{
+					'title': 'By Application',
+					'url': 'app_by_application',
+					'icon': 'fa-bars',
+					'orphans': ['application_drill', 'application_local', 'l7_shared']
+				},
+				{
+					'title': 'By Local IP',
+					'url': 'app_by_local_ip',
+					'icon': 'fa-bars',
+					'orphans': ['l7_local_app', 'l7_local_drill', 'l7_shared']
+				},
+				{
+					'title': 'By Remote IP',
+					'url': 'app_by_remote_ip',
+					'icon': 'fa-bars',
+					'orphans': ['l7_remote_app', 'l7_remote_drill', 'l7_shared']
+				}
+			]
 		},
 		{
-			'title': 'By Local IP',
-			'url': 'app_by_local_ip',
-			'icon': 'fa-bars',
-			'orphans': ['l7_toplocal_app', 'l7_toplocal_drill', 'l7_top_shared']
+			'title': 'Email',
+			'url': '',
+			'icon': 'fa-envelope',
+			'children':
+			[
+				{
+					'title': 'By Sender',
+					'url': 'smtp_senders',
+					'icon': 'fa-mail-forward',
+					'orphans': ['smtp_sender2receiver','smtp_from_sender']
+				},
+				{
+					'title': 'By Receiver',
+					'url': 'smtp_receivers',
+					'icon': 'fa-mail-reply',
+					'orphans': ['smtp_receiver2sender','smtp_from_sender']
+				},
+				{
+					'title': 'By Subject',
+					'url': 'smtp_subjects',
+					'icon': 'fa-envelope',
+					'orphans': ['smtp_subject_sender_receiver_pairs', 'smtp_from_sender_by_subject']
+				}
+			]
 		},
 		{
-			'title': 'By Remote IP',
-			'url': 'app_by_remote_ip',
-			'icon': 'fa-bars',
-			'orphans': ['l7_topremote_app', 'l7_topremote_drill', 'l7_top_shared']
-		}]
-	},
-	{
-		'title': 'General Network',
-		'url': '',
-		'icon': 'fa-sitemap',
-		'children':
-		[{
+			'title': 'General Network',
+			'url': '',
+			'icon': 'fa-sitemap',
+			'children':
+			[
+				{
+					'title': 'Local Connections',
+					'url': 'local',
+					'icon': 'fa-cloud-download',
+					'orphans': ['local2remote', 'shared']
+				},
+				{
+					'title': 'Remote Connections',
+					'url': 'remote',
+					'icon': 'fa-cloud-upload',
+					'orphans': ['remote2local', 'shared']
+				},
+				{
+					'title': 'Local FTP',
+					'url': 'ftp_local',
+					'icon': 'fa-file',
+					'orphans': ['ftp_local2remote', 'ftp_shared']
+				},
+				{
+					'title': 'Remote FTP',
+					'url': 'ftp_remote',
+					'icon': 'fa-file',
+					'orphans': ['ftp_remote2local', 'ftp_shared']
+				},
+				{
+					'title': 'Local SSH',
+					'url': 'ssh_local',
+					'icon': 'fa-chevron-right',
+					'orphans': ['ssh_local2remote', 'ssh_shared']
+				},
+				{
+					'title': 'Remote SSH',
+					'url': 'ssh_remote',
+					'icon': 'fa-chevron-right',
+					'orphans': ['ssh_remote2local', 'ssh_shared']
+				},
+				{
+					'title': 'Local IRC',
+					'url': 'irc_local',
+					'icon': 'fa-comment',
+					'orphans': ['irclocal2remote', 'irc_shared']
+				},
+				{
+					'title': 'Remote IRC',
+					'url': 'irc_remote',
+					'icon': 'fa-comment',
+					'orphans': ['irc_remote2local', 'irc_shared']
+				}
+			]
+		},
+		{
 			'title': 'Endpoint Events',
-			'url': 'top_endpoint_events',
+			'url': '',
 			'icon': 'fa-desktop',
-			'orphans': ['top_endpoint_events_user','top_endpoint_events_user_drill']
+			'children':
+			[
+				{
+					'title': 'By Type',
+					'url': 'endpoint_events',
+					'icon': 'fa-desktop',
+					'orphans': ['endpoint_events_user','endpoint_events_user_drill']
+				},
+				{
+					'title': 'By Local IP',
+					'url': 'endpoint_events_local',
+					'icon': 'fa-desktop',
+					'orphans': ['endpoint_events_local_by_alert_info', 'endpoint_events_local_alert_info_drill']
+				}
+			]
 		},
 		{
-			'title': 'Local Connections',
-			'url': 'top_local_ips',
-			'icon': 'fa-cloud-download',
-			'orphans': ['top_local2remote', 'top_ips_shared']
-		},
-		{
-			'title': 'Remote Connections',
-			'url': 'top_remote_ips',
-			'icon': 'fa-cloud-upload',
-			'orphans': ['top_remote2local', 'top_ips_shared']
-		},
-		
-		{
-			'title': 'Local SSH',
-			'url': 'top_ssh',
-			'icon': 'fa-chevron-right',
-			'orphans': ['top_ssh_remote', 'top_ssh_remote_shared']
-		},
-		{
-			'title': 'Remote SSH',
-			'url': 'top_remote2local_ssh',
-			'icon': 'fa-chevron-right',
-			'orphans': ['top_remote2local_ssh_local', 'top_ssh_remote_shared']
-		},
-		{
-			'title': 'Local IRC',
-			'url': 'top_local_irc',
-			'icon': 'fa-comment',
-			'orphans': []
-		},
-		{
-			'title': 'Remote IRC',
-			'url': 'top_remote_irc',
-			'icon': 'fa-comment',
-			'orphans': []
-		},
-		{
-			'title': 'SMTP Senders',
-			'url': 'top_local_smtp',
-			'icon': 'fa-envelope',
-			'orphans': ['top_smtp_from_sender']
-		},
-		{
-			'title': 'SMTP Receivers',
-			'url': 'top_smtp_receivers',
-			'icon': 'fa-envelope',
-			'orphans': ['top_smtp_to_receiver']
-		}]
-	}];
+			'title': 'First Seen',
+			'url': '',
+			'icon': 'fa-asterisk',
+			'children':
+			[
+				{
+					'title': 'New Remote IPs',
+					'url': 'new_remote',
+					'icon': 'fa-exchange',
+					'orphans': []
+				},
+				{
+					'title': 'New DNS Queries',
+					'url': 'new_dns_queries',
+					'icon': 'fa-info-circle',
+					'orphans': []
+				},
+				{
+					'title': 'New HTTP Domains',
+					'url': 'new_http_domains',
+					'icon': 'fa-globe',
+					'orphans': []
+				},
+				{
+					'title': 'New SSL Hosts',
+					'url': 'new_ssl_hosts',
+					'icon': 'fa-lock',
+					'orphans': []
+				},
+				{
+					'title': 'New SSH Remote IPs',
+					'url': 'new_ssh_remote',
+					'icon': 'fa-lock',
+					'orphans': []
+				},
+				{
+					'title': 'New FTP Remote IPs',
+					'url': 'new_ftp_remote',
+					'icon': 'fa-lock',
+					'orphans': []
+				}
+			]
+		}
+	];
 }]);

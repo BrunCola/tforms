@@ -22,70 +22,70 @@ exports.render = function(req, res) {
 	switch (req.query.type) {
 		case 'ioc_notifications':
 		// Info function(s) --- IOC
-			new query('SELECT count(*) as count FROM conn_ioc WHERE (time between '+start+' AND '+end+') AND ioc_count > 0 AND trash IS NULL', database, function(err,data){
+			new query('SELECT count(*) AS count FROM `conn_ioc` WHERE (time between '+start+' AND '+end+') AND `ioc_count` > 0 AND `trash` IS NULL', database, function(err,data){
 				if (data) {
 					res.json(data);
 				}
 			});
 			break;
 		case 'ioc_groups':
-			new query('SELECT ioc FROM conn_ioc WHERE (time between '+start+' AND '+end+') AND ioc_count > 0 AND trash IS NULL GROUP BY ioc', database, function(err,data){
+			new query('SELECT `ioc` FROM `conn_ioc` WHERE (`time` between '+start+' AND '+end+') AND `ioc_count` > 0 AND `trash` IS NULL GROUP BY `ioc`', database, function(err,data){
 				if (data) {
 					res.json(data.length);
 				}
 			});
 			break;
 		case 'local_ips':
-			new query('SELECT lan_ip FROM conn_ioc WHERE (time between '+start+' AND '+end+') AND ioc_count > 0 AND trash IS NULL GROUP BY lan_ip', database, function(err,data){
+			new query('SELECT `lan_ip` FROM `conn_ioc` WHERE (`time` between '+start+' AND '+end+') AND `ioc_count` > 0 AND `trash` IS NULL GROUP BY `lan_zone`,`lan_ip`', database, function(err,data){
 				if (data) {
 					res.json(data.length);
 				}
 			});
 			break;
 		case 'remote_ip':
-			new query('SELECT remote_ip FROM conn_ioc WHERE (time between '+start+' AND '+end+') AND ioc_count > 0 AND trash IS NULL GROUP BY remote_ip', database, function(err,data){
+			new query('SELECT `remote_ip` FROM `conn_ioc` WHERE (`time` between '+start+' AND '+end+') AND `ioc_count` > 0 AND trash IS NULL GROUP BY `remote_ip`', database, function(err,data){
 				if (data) {
 					res.json(data.length);
 				}
 			});
 			break;
 		case 'remote_country':
-			new query('SELECT remote_country FROM conn_ioc WHERE (time between '+start+' AND '+end+') AND ioc_count > 0 AND trash IS NULL GROUP BY remote_country', database, function(err,data){
+			new query('SELECT `remote_country` FROM `conn_ioc` WHERE (`time` BETWEEN '+start+' AND '+end+') AND ioc_count > 0 AND `trash` IS NULL GROUP BY `remote_country`', database, function(err,data){
 				if (data) {
 					res.json(data.length);
 				}
 			});
 			break;
 		case 'query':
-			new query('SELECT query FROM dns_ioc WHERE (time between '+start+' AND '+end+') GROUP BY query', database, function(err,data){
+			new query('SELECT `query` FROM `dns_ioc` WHERE (`time` BETWEEN '+start+' AND '+end+') GROUP BY `query`', database, function(err,data){
 				if (data) {
 					res.json(data.length);
 				}
 			});
 			break;
 		case 'host':
-			new query('SELECT host FROM http_ioc WHERE (time between '+start+' AND '+end+') GROUP BY host', database, function(err,data){
+			new query('SELECT `host` FROM `http_ioc` WHERE (`time` BETWEEN '+start+' AND '+end+') GROUP BY `host`', database, function(err,data){
 				if (data) {
 					res.json(data.length);
 				}
 			});
 			break;
 		case 'remote_ip_ssl':
-			new query('SELECT remote_ip FROM ssl_ioc WHERE (time between '+start+' AND '+end+') GROUP BY remote_ip', database, function(err,data){
+			new query('SELECT `remote_ip` FROM `ssl_ioc` WHERE (`time` BETWEEN '+start+' AND '+end+') GROUP BY `remote_ip`', database, function(err,data){
 				if (data) {
 					res.json(data.length);
 				}
 			});
 			break;
 		case 'name':
-			new query('SELECT name FROM file_ioc WHERE (time between '+start+' AND '+end+') GROUP BY name', database, function(err,data){
+			new query('SELECT `name` FROM `file_ioc` WHERE (`time` BETWEEN '+start+' AND '+end+') GROUP BY `name`', database, function(err,data){
 				if (data) {
 					res.json(data.length);
 				}
 			});
 			break;
 		case 'l7_proto':
-			new query('SELECT `l7_proto` FROM `conn_ioc` WHERE (time between '+start+' AND '+end+') AND ioc_count > 0 AND trash IS NULL GROUP BY `l7_proto`', database, function(err,data){
+			new query('SELECT `l7_proto` FROM `conn_ioc` WHERE (`time` BETWEEN '+start+' AND '+end+') AND `ioc_count` > 0 AND `trash` IS NULL GROUP BY `l7_proto`', database, function(err,data){
 				if (data) {
 					res.json(data.length);
 				}
@@ -93,21 +93,21 @@ exports.render = function(req, res) {
 			break;
 		// Info function(s) --- Network
 		case 'conn_meta':
-			new query('SELECT lan_ip FROM conn_meta WHERE (time between '+start+' AND '+end+') GROUP BY lan_ip', database, function(err,data){
+			new query('SELECT `lan_ip` FROM `conn_meta` WHERE (`time` BETWEEN '+start+' AND '+end+') GROUP BY `lan_zone`,`lan_ip`', database, function(err,data){
 				if (data) {
 					res.json(data.length);
 				}
 			});
 			break;
 		case 'remote_ip_conn_meta':
-			new query('SELECT remote_ip FROM conn_meta WHERE (time between '+start+' AND '+end+') GROUP BY remote_ip', database, function(err,data){
+			new query('SELECT `remote_ip` FROM `conn_meta` WHERE (`time` BETWEEN '+start+' AND '+end+') GROUP BY `remote_ip`', database, function(err,data){
 				if (data) {
 					res.json(data.length);
 				}
 			});
 			break;
 		case 'remote_country_conn_meta':
-			new query('SELECT remote_country FROM conn_meta WHERE (time between '+start+' AND '+end+') GROUP BY remote_country', database, function(err,data){
+			new query('SELECT `remote_country` FROM `conn_meta` WHERE (`time` BETWEEN '+start+' AND '+end+') GROUP BY `remote_country`', database, function(err,data){
 				if (data) {
 					res.json(data.length);
 				}
@@ -115,49 +115,49 @@ exports.render = function(req, res) {
 			break;
 		///
 		case 'bandwidth_in':
-			new query('SELECT ROUND(((sum(in_bytes) / 1048576) / ('+end+' - '+start+')) * 8000,2)  as bandwidth FROM conn_meta WHERE time between '+start+' AND '+end, database, function(err,data){
+			new query('SELECT ROUND(((sum(`in_bytes`) / 1048576) / ('+end+' - '+start+')) * 8000,2) AS `bandwidth` FROM `conn_local` WHERE `time` BETWEEN '+start+' AND '+end, database, function(err,data){
 				if (data) {
 					res.json(data);
 				}
 			});
 			break;
 		case 'bandwidth_out':
-			new query('SELECT ROUND(((sum(out_bytes) / 1048576) / ('+end+' - '+start+')) * 8000,2) as bandwidth FROM conn_meta WHERE time between '+start+' AND '+end, database, function(err,data){
+			new query('SELECT ROUND(((sum(`out_bytes`) / 1048576) / ('+end+' - '+start+')) * 8000,2) AS `bandwidth` FROM `conn_local` WHERE `time` BETWEEN '+start+' AND '+end, database, function(err,data){
 				if (data) {
 					res.json(data);
 				}
 			});
 			break;
 		case 'new_ip':
-			new query('SELECT remote_ip FROM conn_remote_ip WHERE (time between '+start+' AND '+end+') GROUP BY remote_ip', database, function(err,data){
+			new query('SELECT `remote_ip` FROM `conn_uniq_remote_ip` WHERE (`time` BETWEEN '+start+' AND '+end+') GROUP BY `remote_ip`', database, function(err,data){
 				if (data) {
 					res.json(data.length);
 				}
 			});
 			break;
 		case 'new_dns':
-			new query('SELECT query FROM dns_query WHERE (time between '+start+' AND '+end+') GROUP BY query', database, function(err,data){
+			new query('SELECT `query` FROM `dns_uniq_query` WHERE (`time` BETWEEN '+start+' AND '+end+') GROUP BY `query`', database, function(err,data){
 				if (data) {
 					res.json(data.length);
 				}
 			});
 			break;
 		case 'new_http':
-			new query('SELECT `host` FROM `http_host` WHERE (time between '+start+' AND '+end+') GROUP BY `host`', database, function(err,data){
+			new query('SELECT `host` FROM `http_uniq_host` WHERE (`time` BETWEEN '+start+' AND '+end+') GROUP BY `host`', database, function(err,data){
 				if (data) {
 					res.json(data.length);
 				}
 			});
 			break;
 		case 'new_ssl':
-			new query('SELECT `remote_ip` FROM `ssl_remote_ip` WHERE (time between '+start+' AND '+end+') GROUP BY `remote_ip`', database, function(err,data){
+			new query('SELECT `remote_ip` FROM `ssl_uniq_remote_ip` WHERE (`time` BETWEEN '+start+' AND '+end+') GROUP BY `remote_ip`', database, function(err,data){
 				if (data) {
 					res.json(data.length);
 				}
 			});
 			break;
 		case 'new_layer7':
-			new query('SELECT `l7_proto` FROM `conn_l7` WHERE (time between '+start+' AND '+end+') GROUP BY `l7_proto`', database, function(err,data){
+			new query('SELECT `l7_proto` FROM `conn_l7_proto` WHERE (`time` BETWEEN '+start+' AND '+end+') GROUP BY `l7_proto`', database, function(err,data){
 				if (data) {
 					res.json(data.length);
 				}
@@ -165,32 +165,35 @@ exports.render = function(req, res) {
 			break;
 		default:
 			var table1SQL = 'SELECT '+
-				// SELECTS
-				'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-				'`ioc_severity`, '+
-				'count(*) as count, '+
-				'`ioc`, '+
-				'`ioc_typeIndicator`, '+
-				'`ioc_typeInfection`, '+
-				'`ioc_attrID`, '+
-				'`lan_zone`, '+
-				'`lan_ip`, '+
-				'`machine`, '+
-				'`remote_ip`, '+
-				'`remote_asn`, '+
-				'`remote_asn_name`, '+
-				'`remote_country`, '+
-				'`remote_cc`, '+
-				'sum(`in_packets`) as in_packets, '+
-				'sum(`out_packets`) as out_packets, '+
-				'sum(`in_bytes`) as in_bytes, '+
-				'sum(`out_bytes`) as out_bytes '+
-				// !SELECTS
-				'FROM conn_ioc '+
-				'WHERE time BETWEEN '+start+' AND '+end+' '+
-				'AND `ioc_count` > 0 AND `trash` IS NULL '+
-				'GROUP BY `lan_ip`,`remote_ip`,`ioc`';
-
+					'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time,'+
+					'`lan_zone`,'+
+					'`machine`,'+
+					'`lan_ip`,'+
+					'`remote_ip`,'+
+					'`remote_asn_name`,'+
+					'`remote_country`,'+
+					'`remote_cc`,'+
+					'sum(`in_packets`) AS in_packets,'+
+					'sum(`out_packets`) AS out_packets,'+
+					'sum(`in_bytes`) AS in_bytes,'+
+					'sum(`out_bytes`) AS out_bytes,'+
+					'`ioc_severity`,'+
+					'`ioc`,'+
+					'`ioc_typeIndicator`,'+
+					'`ioc_typeInfection`,'+
+					'`ioc_attrID`,'+
+					'sum(`ioc_count`) AS ioc_count '+
+				'FROM '+
+					'`conn_ioc` '+
+				'WHERE '+
+					'time BETWEEN '+start+' AND '+end+' '+
+					'AND `ioc_count` > 0 '+
+					'AND `trash` IS NULL '+
+				'GROUP BY '+
+					'`lan_zone`,'+
+					'`lan_ip`,'+
+					'`remote_ip`,'+
+					'`ioc`';
 			var table1Params = [
 				{
 					title: 'Last Seen',
@@ -198,13 +201,12 @@ exports.render = function(req, res) {
 					dView: true,
 					link: {
 						type: 'ioc_events_drilldown',
-						// val: the pre-evaluated values from the query above
-						val: ['lan_ip','remote_ip','ioc','ioc_attrID'],
+						val: ['lan_zone','lan_ip','remote_ip','ioc','ioc_attrID'],
 						crumb: false
 					},
 				},
 				{ title: 'Severity', select: 'ioc_severity' },
-				{ title: 'IOC Hits', select: 'count' },
+				{ title: 'IOC Hits', select: 'ioc_count' },
 				{ title: 'IOC', select: 'ioc' },
 				{ title: 'IOC Type', select: 'ioc_typeIndicator' },
 				{ title: 'IOC Stage', select: 'ioc_typeInfection' },
@@ -212,10 +214,9 @@ exports.render = function(req, res) {
 				{ title: 'Machine', select: 'machine' },
 				{ title: 'LAN IP', select: 'lan_ip' },
 				{ title: 'Remote IP', select: 'remote_ip' },
-				{ title: 'Remote ASN', select: 'remote_asn' },
-				{ title: 'Remote ASN Name', select: 'remote_asn_name' },
 				{ title: 'Remote Country', select: 'remote_country' },
 				{ title: 'Flag', select: 'remote_cc', },
+				{ title: 'Remote ASN', select: 'remote_asn_name' },
 				{ title: 'Bytes to Remote', select: 'in_bytes'},
 				{ title: 'Bytes from Remote', select: 'out_bytes'},
 				{ title: 'Packets to Remote', select: 'in_packets', dView: false  },
@@ -234,27 +235,25 @@ exports.render = function(req, res) {
 				div: 'table',
 				title: 'Indicators of Compromise (IOC) Notifications'
 			};
-
 			var crossfilterSQL = 'SELECT '+
-					// SELECTS
-					'count(*) as count, '+
-					'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+					'count(*) as count,'+
+					'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time,'+
 					'`remote_country`,'+
 					'`ioc_severity`,'+
 					'`ioc` '+
-					// !SELECTS
-				'FROM conn_ioc '+
+				'FROM '+
+					'`conn_ioc` '+
 				'WHERE '+
-					'time BETWEEN '+start+' AND '+end+' '+
+					'`time` BETWEEN '+start+' AND '+end+' '+
 					'AND `ioc_count` > 0 '+
 					'AND `trash` IS NULL '+
 				'GROUP BY '+
-					'month(from_unixtime(time)),'+
-					'day(from_unixtime(time)),'+
-					'hour(from_unixtime(time)),'+
-					'remote_country,'+
-					'ioc_severity,'+
-					'ioc';
+					'month(from_unixtime(`time`)),'+
+					'day(from_unixtime(`time`)),'+
+					'hour(from_unixtime(`time`)),'+
+					'`remote_country`,'+
+					'`ioc_severity`,'+
+					'`ioc`';
 			async.parallel([
 				// Table function(s)
 				function(callback) {
