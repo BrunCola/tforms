@@ -41,12 +41,12 @@ exports.render = function(req, res) {
 					title: 'Last Seen',
 					select: 'time',
 					dView: true,
-					// link: {
-					// 	type: 'file_remote',
-					// 	// val: the pre-evaluated values from the query above
-					// 	val: ['http_host', 'lan_ip', 'lan_zone'],
-					// 	crumb: false
-					// },
+					link: {
+						type: 'by_domain_local_mime_drill',
+						// val: the pre-evaluated values from the query above
+						val: ['http_host', 'lan_ip', 'lan_zone', 'mime'],
+						crumb: false
+					},
 				},
 				{ title: 'Total Extracted Files', select: 'count' },
 				{ title: 'Domain', select: 'http_host' },

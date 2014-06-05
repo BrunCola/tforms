@@ -251,7 +251,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
-						// BY DOMAIN LOCAL MIME
+						// BY DOMAIN LOCAL MIME by_domain_local_mime_drill
 						.state('by_domain_local_mime', {
 							url: '/by_domain_local_mime?start&end&http_host&lan_zone&lan_ip',
 							templateUrl: 'public/pages/views/extracted_files/by_domain_local_mime.html',
@@ -259,7 +259,7 @@ angular.module('mean.pages').config(['$stateProvider',
 								loggedin: checkLoggedin
 							},
 							data: {
-								title: 'Local Extracted Files by Domain and MIME',
+								title: 'MIME Types of Extracted Files by Domain and Local IP',
 								subtitleElm: {
 									'Zone': 'lan_zone',
 									'LAN IP': 'lan_ip',
@@ -268,6 +268,24 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
+							// BY DOMAIN LOCAL MIME DRILL
+							.state('by_domain_local_mime_drill', {
+								url: '/by_domain_local_mime_drill?start&end&http_host&lan_zone&lan_ip&mime',
+								templateUrl: 'public/pages/views/extracted_files/by_domain_local_mime_drill.html',
+								resolve: {
+									loggedin: checkLoggedin
+								},
+								data: {
+									title: 'Local Extracted Files by Domain and MIME',
+									subtitleElm: {
+										'Zone': 'lan_zone',
+										'LAN IP': 'lan_ip',
+										'Domain': 'http_host',
+										'MIME Type': 'mime'
+									},
+									daterange: true
+								}
+							})
 			// APPLICATIONS
 				// BY APPLICATION
 				.state('app_by_application', {

@@ -43,8 +43,10 @@ var live_connections = require('../controllers/live_connections/live_connections
 		var by_domain_local = require('../controllers/extracted_files/by_domain_local');
 			// BY DOMAIN LOCAL MIME 
 			var by_domain_local_mime = require('../controllers/extracted_files/by_domain_local_mime');
+				// BY DOMAIN LOCAL MIME DRILL
+				var by_domain_local_mime_drill = require('../controllers/extracted_files/by_domain_local_mime_drill');
 
-// EXTRACTED FILES
+// FIRST SEEN
 	// NEW REMOTE
 	var new_remote = require('../controllers/first_seen/new_remote');
 	// NEW DNS QUERIES
@@ -220,9 +222,12 @@ module.exports = function(app) {
 			// BY DOMAIN LOCAL
 			app.route('/extracted_files/by_domain_local')
 			.get(authorization.requiresLogin, by_domain_local.render);
-				// BY DOMAIN LOCAL 
+				// BY DOMAIN LOCAL MIME
 				app.route('/extracted_files/by_domain_local_mime')
 				.get(authorization.requiresLogin, by_domain_local_mime.render);
+					// BY DOMAIN LOCAL MIME DRILL
+					app.route('/extracted_files/by_domain_local_mime_drill')
+					.get(authorization.requiresLogin, by_domain_local_mime_drill.render);
 
 	// FIRST SEEN
 		// NEW REMOTE
