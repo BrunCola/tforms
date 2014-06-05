@@ -35,11 +35,11 @@ exports.render = function(req, res) {
 			{
 				title: 'Last Seen',
 				select: 'time',
-				// link: {
-				// 	type: 'ssh_shared',
-				// 	val: ['lan_zone','lan_ip','remote_ip'],
-				// 	crumb: false
-				// }
+				link: {
+					type: 'ssh_status_local_drill',
+					val: ['lan_zone','lan_ip','status_code'],
+					crumb: false
+				}
 			},
 			{ title: 'Count', select: 'count' },
 			{ title: 'Status', select: 'status_code' },

@@ -677,7 +677,7 @@ angular.module('mean.pages').config(['$stateProvider',
 					})
 						// SSH SHARED
 						.state('ssh_shared', {
-							url: '/ssh_shared?start&end&lan_ip&remote_ip',
+							url: '/ssh_shared?start&end&lan_ip&lan_zone&remote_ip',
 							templateUrl: 'public/pages/views/general_network/ssh_shared.html',
 							resolve: {
 								loggedin: checkLoggedin
@@ -686,6 +686,7 @@ angular.module('mean.pages').config(['$stateProvider',
 								title: 'SSH Local/Remote Shared',
 								subtitleElm: {
 									'LAN IP': 'lan_ip',
+									'Zone': 'lan_zone',
 									'Remote IP': 'remote_ip'
 								},
 								daterange: true
@@ -745,6 +746,23 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+						// SSH STATUS LOCAL DRILL
+						.state('ssh_status_local_drill', {
+							url: '/ssh_status_local_drill?start&end&lan_ip&lan_zone&status_code',
+							templateUrl: 'public/pages/views/general_network/ssh_status_local_drill.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'SSH Local/Remote Shared',
+								subtitleElm: {
+									'LAN IP': 'lan_ip',
+									'Zone': 'lan_zone',
+									'Status Code': 'status_code'
+								},
+								daterange: true
+							}
+						})
 				// LOCAL IRC
 				.state('irc_local', {
 					url: '/irc_local?start&end',

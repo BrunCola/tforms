@@ -131,6 +131,8 @@ var live_connections = require('../controllers/live_connections/live_connections
 	var ssh_status = require('../controllers/general_network/ssh_status');
 		// SSH STATUS LOCAL
 		var ssh_status_local = require('../controllers/general_network/ssh_status_local');
+			// SSH STATUS LOCAL DRILL
+			var ssh_status_local_drill = require('../controllers/general_network/ssh_status_local_drill');
 	// LOCAL IRC
 	var irc_local = require('../controllers/general_network/irc_local');	
 		// LOCAL2REMOTE IRC
@@ -345,6 +347,9 @@ module.exports = function(app) {
 			// SSH STATUS LOCAL
 			app.route('/general_network/ssh_status_local')
 			.get(authorization.requiresLogin, ssh_status_local.render);
+				// SSH STATUS LOCAL DRILL
+				app.route('/general_network/ssh_status_local_drill')
+				.get(authorization.requiresLogin, ssh_status_local_drill.render);
 		// LOCAL IRC
 		app.route('/general_network/irc_local')
 		.get(authorization.requiresLogin, irc_local.render);

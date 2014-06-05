@@ -207,7 +207,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 					'title': 'SSH Status',
 					'url': 'ssh_status',
 					'icon': 'fa-chevron-right',
-					'orphans': ['ssh_status_local']
+					'orphans': ['ssh_status_local', 'ssh_status_local_drill']
 				},
 				{
 					'title': 'Local SSH',
