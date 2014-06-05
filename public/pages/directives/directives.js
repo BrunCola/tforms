@@ -500,7 +500,6 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 										$('td:eq('+$scope.r.indexOf("l7_proto")+')', nRow).html(appIcon(aData.l7_proto));
 									}
 									if (aData.mime && $scope.r.indexOf('mime') !== -1) {
-										console.log(aData.mime)
 										$('td:eq('+$scope.r.indexOf("mime")+')', nRow).html(mimeIcon(aData.mime));
 									}
 									if (notReport) {
