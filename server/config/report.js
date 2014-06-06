@@ -88,19 +88,6 @@ function sendReport(user) {
 			page.setHeaders({'content-type': 'application/x-www-form-urlencoded'});
 			var steps = [
 				function() {
-				// 	//Load Login Page
-				// 	page.open("https://portal.rapidphire.com/#!/login");
-				// 	console.log(page.content);
-				// },
-				// waitFor(function() {function() {
-				// 	// page.settings.userAgent = 'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25';
-				// 	// page.setHeaders({'content-type': 'application/x-www-form-urlencoded'});
-				// 	// page.setHeaders({'content-type': 'application/json'});
-				// 	// var postBody = {
-				// 	// 	'email': 'samyotte@phirelight.com',
-				// 	// 	'password': 'mainstreet'
-				// 	// };
-				// 	'email=samyotte@phirelight.com&password=mainstreet'
 					page.open(config.reports.url+'/login', 'post', 'email=samyotte@phirelight.com&password=mainstreet', function (status) {
 						if (status !== 'success') {
 							console.log('Unable to post!');
@@ -108,44 +95,7 @@ function sendReport(user) {
 							console.log('logged in');
 						}
 					});
-					// page.open(config.reports.url+"/#!/login", function(status) {
-					// 	setTimeout(function () {
-					// 		return
-					// 	}, 5000);
-					// });
-
 				},
-				// function() {
-				// 	page.evaluate(function() {
-				// 		$("#email").val("samyotte@phirelight.com");
-				// 		$("#password").val("mainstreet");
-				// 		// var arr = document.getElementsByClassName("LoginCtrl");
-				// 		// var i;
-				// 		// for (i=0; i < arr.length; i++) {
-				// 		// 	if (arr[i].getAttribute('ng-submit') == "login()") {
-				// 		// 		arr[i].elements["email"].value="samyotte@phirelight.com";
-				// 		// 		arr[i].elements["password"].value="mainstreet";
-				// 		// 		return;
-				// 		// 	}
-				// 		// }
-				// 	});
-				// },
-				// function() {
-				// //Login
-				// 	page.evaluate(function() {
-				// 		$('#login_button').click();
-				// 		// var arr = document.getElementsByClassName("LoginCtrl");
-				// 		// var i;
-				// 		// for (i=0; i < arr.length; i++) {
-				// 		// 	if (arr[i].getAttribute('ng-submit') == "login()") {
-				// 		// 		arr[i].submit();
-				// 		// 		console.log(arr[i]);
-				// 		// 		return;
-				// 		// 	}
-				// 		// }
-				// 	});
-				// },
-
 				function() {
 					//Load Login Page
 					var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
@@ -154,9 +104,6 @@ function sendReport(user) {
 				},
 				function() {
 					page.render('./temp/'+fileName);
-					// page.evaluate(function() {
-					// 	console.log(document.querySelectorAll('html')[0].outerHTML);
-					// });
 				},
 				function() {
 					setTimeout(function(){
@@ -165,7 +112,14 @@ function sendReport(user) {
 								console.log(error);
 							} else {
 								console.log("Message sent: " + response.message);
-								fs.unlinkSync('./temp/'+fileName);
+								fs.exists('./temp/'+fileName, function(exists) {
+									if (exists) {
+										fs.unlinkSync('./temp/'+fileName);
+										return;
+									} else {
+										return;
+									}
+								});
 							}
 						})
 					}, 30000)
