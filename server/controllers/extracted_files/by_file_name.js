@@ -47,14 +47,14 @@ exports.render = function(req, res) {
 					},
 				},
 				{ title: 'Total Extracted Files', select: 'count' },
-				{ title: 'Mime Type', select: 'mime' },
+				{ title: 'File Type', select: 'mime' },
 				{ title: 'Total Size (MB)', select: 'size' },
 				{ title: 'Total IOC Hits', select: 'ioc_count' }
 			];
 			var table1Settings = {
 				sort: [[0, 'desc']],
 				div: 'table',
-				title: 'Extracted File Mime Types'
+				title: 'Extracted File Types'
 			}
 
 			async.parallel([

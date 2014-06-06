@@ -82,7 +82,7 @@ exports.render = function(req, res) {
 			{ title: 'Password', select: 'password' },
 			{ title: 'Command', select: 'command' },
 			{ title: 'Arg', select: 'arg' },
-			{ title: 'MIME Type', select: 'mime_type' },
+			{ title: 'File Type', select: 'mime_type' },
 			{ title: 'File Size', select: 'file_size' },
 			{ title: 'Reply Code', select: 'reply_code' },
 			{ title: 'Reply Message', select: 'reply_msg' },

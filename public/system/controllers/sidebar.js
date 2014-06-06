@@ -96,7 +96,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'children':
 			[
 				{
-					'title': 'By MIME Type',
+					'title': 'By File Type',
 					'url': 'by_mime_type',
 					'icon': 'fa-folder-open',
 					'orphans': ['file_mime_local', 'file_local']
