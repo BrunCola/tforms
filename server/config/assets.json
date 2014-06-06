@@ -49,6 +49,7 @@
 			"public/system/lib/spin.js/spin.js",
 			"public/system/lib/topojson/topojson.js",
 			"public/system/assets/js/app.js",
+			"public/system/assets/js/dataTables.colVis.min.js",
 			"public/system/assets/js/rainbowvis.js",
 			"public/init.js",
 			"public/*/*.js",

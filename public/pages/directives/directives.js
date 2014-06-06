@@ -372,19 +372,21 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 						}
 					}
 				}
-				var bFilter,iDisplayLength,bStateSave,bPaginate,sDom,bDeferRender,notReport;
+				var bFilter,iDisplayLength,bStateSave,bPaginate,sDom,bDeferRender,notReport,stateSave;
 				switch(tableType) {
 					case 'drill':
 						if ($location.$$absUrl.search('/report#!/') === -1) {
 							iDisplayLength = 5;
 							bDeferRender: true
 							notReport = true;
-							sDom = '<"clear"><"clear">r<"table_overflow"t>ip';
+							sDom = '<"clear"><"clear">rC<"table_overflow"t>ip';
+							stateSave: true;
 						} else {
 							iDisplayLength = 99999;
 							bDeferRender = true;
 							sDom = 'r<t>';
 							notReport = false;
+							stateSave: false;
 						}
 						for (var t in params) {
 							if (params[t] != null) {
@@ -394,6 +396,10 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 									'aoColumns': params[t].params,
 									'bDeferRender': bDeferRender,
 									'bDestroy': true,
+									'oColVis': {
+										'iOverlayFade': 400
+									},
+									'stateSave': stateSave,
 									//'bProcessing': true,
 									//'bRebuild': true,
 									'aaSorting': params[t].sort,
@@ -457,13 +463,15 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 						if ($location.$$absUrl.search('/report#!/') === -1) {
 							iDisplayLength = 50;
 							bDeferRender = true;
-							sDom = '<"clear"C>T<"clear">lr<"table_overflow"t>ip';
+							sDom = '<"clear">T<"clear">lCr<"table_overflow"t>ip';
 							notReport = true;
+							stateSave = true;
 						} else {
 							iDisplayLength = 99999;
 							bDeferRender = true;
 							sDom = 'r<t>';
 							notReport = false;
+							stateSave = false;
 						}
 						// $(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table" ></table>');
 						for (var t in params) {
@@ -477,6 +485,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 								'aaSorting': params[t].sort,
 								//'bFilter': true,
 								//'bPaginate': true,
+								'stateSave': stateSave,
 								'sDom': sDom,
 								'iDisplayLength': iDisplayLength,
 								 'fnPreDrawCallback': function( oSettings ) {
