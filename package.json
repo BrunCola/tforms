@@ -55,10 +55,16 @@
     "grunt-bump": "^0.0.13",
     "view-helpers": "^0.1.4",
     "phantom": "0.6.3",
-    "socket.io": "1.0"
+    "socket.io": "1.0",
+    "mysql": "2.3.2",
+    "nodemailer": "0.6.5",
+    "cron": "1.0.4",
+    "meanio": "0.4.28",
+    "async": "0.9.0",
+    "moment": "2.6.0"
   },
   "devDependencies": {
-    "assetmanager": "^0.1.2",
+    "assetmanager": "0.1.2",
     "grunt-karma": "~0.8.2",
     "grunt-mocha-test": "~0.10.2",
     "karma": "~0.12.10",
