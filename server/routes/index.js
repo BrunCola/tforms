@@ -8,7 +8,4 @@ module.exports = function(app, passport, version) {
     app.route('/')
         .get(index.render);
 
-    app.route('/public/uploads')
-        .post(index.upload);
-
 };

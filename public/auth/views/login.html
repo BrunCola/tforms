@@ -24,9 +24,9 @@
 </div> -->
 
 <h1>Login</h1>
-<div data-ng-controller="LoginCtrl" >
+<div data-ng-controller="LoginCtrl" class="LoginCtrl">
     <div class="alert alert-danger animated fadeIn" ng-show="loginerror">{{loginerror}}</div>
-    <form ng-submit="login()">
+    <form ng-submit="login()" class="login-form">
         <div class="control-group">
             <label class="control-label visible-ie8 visible-ie9">Email</label>
             <div class="controls">

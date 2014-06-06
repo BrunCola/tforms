@@ -10,7 +10,7 @@ var express = require('express'),
 	bodyParser = require('body-parser'),
 	methodOverride = require('method-override'),
 	cookieParser = require('cookie-parser'),
-	// multiparty = require('multiparty'),
+	// multer  = require('multer'),
 	session = require('express-session'),
 	errorHandler = require('errorhandler'),
 	mean = require('./meanio'),
@@ -94,6 +94,7 @@ module.exports = function(app, passport, db, version) {
 
 	// Dynamic helpers
 	app.use(helpers(config.app.name));
+	// app.use(multer({ dest: '/uploads'}))
 
 	// Use passport session
 	app.use(passport.initialize());

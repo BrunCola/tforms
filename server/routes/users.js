@@ -11,8 +11,8 @@ module.exports = function(app, passport) {
         .get(users.me);
 
     // Setting up the users api
-    app.route('/register')
-        .post(users.create);
+    // app.route('/register')
+    //     .post(users.create);
 
     // Setting up the userId param
     app.param('userId', users.user);

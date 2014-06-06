@@ -102,6 +102,21 @@ module.exports = function(app, passport, io) {
 				connection.query("UPDATE `user` SET `email`='"+data.newemail+"' WHERE `email` = '"+data.oldemail+"' AND `password` = '"+pass+"'");
 			}
 		});
+		socket.on('checkreport', function(){
+			phantom.create('--ignore-ssl-errors=yes', function(ph) {
+				return ph.createPage(function(page) {
+					page.setHeaders({'Content-Type': 'application/x-www-form-urlencoded'});
+					page.open('https://portal.rapidphire.com/login', 'post', 'email=samyotte@phirelight.com&password=mainstreet', function (status) {
+						if (status !== 'success') {
+							console.log('Unable to post!');
+						} else {
+							console.log(page.content);
+						}
+						// phantom.exit();
+					});
+				});
+			});
+		})
 	// 	// socket.on('new note', function(data){
 	// 	//  // New note added, push to all sockets and insert into db
 	// 	//  notes.push(data)

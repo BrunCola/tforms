@@ -4,15 +4,16 @@
 	config = require('./config'),
 	phantom = require('phantom'),
 	mysql = require('mysql'),
+	$ = require('jquery'),
 	fs = require('fs');
 
 var smtpTransport = nodemailer.createTransport("SMTP", {
-	host: "smtp.emailsrvr.com", // hostname
-	secureConnection: true, // use SSL
-	port: 465, // port for secure SMTP
+	host: config.mailer.host, // hostname
+	secureConnection: config.mailer.secure, // use SSL
+	port: config.mailer.port, // port for secure SMTP
 	auth: {
-		user: "notice@rapidphire.com",
-		pass: "r@p1dph1r3"
+		user: config.mailer.user,
+		pass: config.mailer.pass
 	}
 });
 
@@ -29,6 +30,28 @@ function sendReport(user) {
 			fileName: fileName,
 			filePath: './temp/'+fileName
 		}]
+	};
+	function waitFor(testFx, onReady, timeOutMillis) {
+	    var maxtimeOutMillis = timeOutMillis ? timeOutMillis : 3000, //< Default Max Timout is 3s
+	        start = new Date().getTime(),
+	        condition = false,
+	        interval = setInterval(function() {
+	            if ( (new Date().getTime() - start < maxtimeOutMillis) && !condition ) {
+	                // If not time-out yet and condition not yet fulfilled
+	                condition = (typeof(testFx) === "string" ? eval(testFx) : testFx()); //< defensive code
+	            } else {
+	                if(!condition) {
+	                    // If condition still not fulfilled (timeout but condition is 'false')
+	                    console.log("'waitFor()' timeout");
+	                    phantom.exit(1);
+	                } else {
+	                    // Condition fulfilled (timeout and/or condition is 'true')
+	                    console.log("'waitFor()' finished in " + (new Date().getTime() - start) + "ms.");
+	                    typeof(onReady) === "string" ? eval(onReady) : onReady(); //< Do what it's supposed to do once the condition is fulfilled
+	                    clearInterval(interval); //< Stop this interval
+	                }
+	            }
+	        }, 250); //< repeat check every 250ms
 	};
 	phantom.create('--ignore-ssl-errors=yes', function(ph) {
 		return ph.createPage(function(page) {
@@ -64,27 +87,75 @@ function sendReport(user) {
 			};
 			var steps = [
 				function() {
-					//Load Login Page
-					page.open("https://portal.rapidphire.com/#!/login");
-				},
-				function() {
-					page.open('https://portal.rapidphire.com/login', 'post', 'email=samyotte@phirelight.com&password=mainstreet', function (status) {
+				// 	//Load Login Page
+				// 	page.open("https://portal.rapidphire.com/#!/login");
+				// 	console.log(page.content);
+				// },
+				// waitFor(function() {function() {
+				// 	// page.settings.userAgent = 'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25';
+				// 	// page.setHeaders({'content-type': 'application/x-www-form-urlencoded'});
+				// 	// page.setHeaders({'content-type': 'application/json'});
+				// 	// var postBody = {
+				// 	// 	'email': 'samyotte@phirelight.com',
+				// 	// 	'password': 'mainstreet'
+				// 	// };
+				// 	// page.customHeaders = {'content-type': 'application/x-www-form-urlencoded'};
+				// 	'email=samyotte@phirelight.com&password=mainstreet'
+					page.open(config.reports.url+'/login', 'post', {'email': 'samyotte@phirelight.com', 'password': 'mainstreet'}, function (status) {
 						if (status !== 'success') {
 							console.log('Unable to post!');
 						} else {
-							console.log(page.content);
+							console.log('logged in');
 						}
-						// phantom.exit();
 					});
+					// page.open(config.reports.url+"/#!/login", function(status) {
+					// 	setTimeout(function () {
+					// 		return
+					// 	}, 5000);
+					// });
+
 				},
+				// function() {
+				// 	page.evaluate(function() {
+				// 		$("#email").val("samyotte@phirelight.com");
+				// 		$("#password").val("mainstreet");
+				// 		// var arr = document.getElementsByClassName("LoginCtrl");
+				// 		// var i;
+				// 		// for (i=0; i < arr.length; i++) {
+				// 		// 	if (arr[i].getAttribute('ng-submit') == "login()") {
+				// 		// 		arr[i].elements["email"].value="samyotte@phirelight.com";
+				// 		// 		arr[i].elements["password"].value="mainstreet";
+				// 		// 		return;
+				// 		// 	}
+				// 		// }
+				// 	});
+				// },
+				// function() {
+				// //Login
+				// 	page.evaluate(function() {
+				// 		$('#login_button').click();
+				// 		// var arr = document.getElementsByClassName("LoginCtrl");
+				// 		// var i;
+				// 		// for (i=0; i < arr.length; i++) {
+				// 		// 	if (arr[i].getAttribute('ng-submit') == "login()") {
+				// 		// 		arr[i].submit();
+				// 		// 		console.log(arr[i]);
+				// 		// 		return;
+				// 		// 	}
+				// 		// }
+				// 	});
+				// },
 				function() {
 					//Load Login Page
 					var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 					var end = Math.round(new Date().getTime() / 1000);
-					page.open("https://portal.rapidphire.com/report#!/ioc_events_report?start="+start+"&end="+end);
+					page.open(config.reports.url+"/report#!/ioc_events_report?start="+start+"&end="+end);
 				},
 				function() {
 					page.render('./temp/'+fileName);
+					// page.evaluate(function() {
+					// 	console.log(document.querySelectorAll('html')[0].outerHTML);
+					// });
 				},
 				function() {
 					setTimeout(function(){
@@ -100,7 +171,7 @@ function sendReport(user) {
 				},
 				function() {
 					//sign out of session
-					page.open("https://portal.rapidphire.com/logout");
+					page.open(config.reports.url+"/logout");
 				},
 			];
 			interval = setInterval(function() {
@@ -115,22 +186,81 @@ function sendReport(user) {
 					clearInterval(interval);
 				}
 			}, 5000);
+
+
+			// var steps = [
+			// 			function() {
+			// 				//Load Login Page
+			// 				page.open("https://localhost:3000/#!/login");
+			// 			},
+			// 			function() {
+			// 				page.evaluate(function() {
+			// 					document.getElementById("email").value = "samyotte@phirelight.com";
+			// 					document.getElementById("password").value = "mainstreet";
+			// 					// console.log(result)
+			// 				});
+			// 			},
+			// 			function(){
+			// 				page.evaluate(function() {
+			// 					document.getElementById("login_button").click();
+			// 					console.log("Login submitted!");
+			// 				});
+			// 			},
+			// 			function() {
+			// 				//Load Login Page
+			// 				var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
+			// 				var end = Math.round(new Date().getTime() / 1000);
+			// 				page.open("https://localhost:3000/report#!/iochits_report?start="+start+"&end="+end);
+			// 			},
+			// 			function() {
+			// 				page.render('./temp/'+fileName);
+			// 			},
+			// 			function() {
+			// 				setTimeout(function(){
+			// 					smtpTransport.sendMail(mailOptions, function(error, response){
+			// 						if (error) {
+			// 							console.log(error);
+			// 						} else {
+			// 							console.log("Message sent: " + response.message);
+			// 						}
+			// 					})
+			// 				}, 5000)
+			// 			},
+			// 			function() {
+			// 				//sign out of session
+			// 				page.open("https://localhost:3000/logout");
+			// 			},
+			// 		];
+			// 		interval = setInterval(function() {
+			// 			if (!loadInProgress && typeof steps[testindex] == "function") {
+			// 				console.log("step " + (testindex + 1));
+			// 				steps[testindex]();
+			// 				testindex++;
+			// 			}
+			// 			if (typeof steps[testindex] != "function") {
+			// 				console.log("Report complete!");
+			// 				ph.exit();
+			// 				clearInterval(interval);
+			// 			}
+			// 		}, 5000);
+
 		});
 	});
 }
 
 module.exports = function(db) {
 	// get users and send reports
-	new CronJob('0 8 * * *', function(){
-		var connection = mysql.createConnection(db);
-		var sql="SELECT * FROM user WHERE email_report = '1'";
-		db.query(sql, function(err, users, fields) {
-			console.log(users)
-			if (err) throw err;
-			for (var n in users) {
-				sendReport(users[n]);
-			}
-			connection.destroy();
-		});
-	}, null, true, null);
+	if (config.reports.active === true) {
+		new CronJob(config.reports.schedule, function(){
+			var connection = mysql.createConnection(db);
+			var sql="SELECT * FROM user WHERE email_report = '1'";
+			db.query(sql, function(err, users, fields) {
+				if (err) throw err;
+				for (var n in users) {
+					sendReport(users[n]);
+				}
+				connection.destroy();
+			});
+		}, null, true, null);
+	}
 };

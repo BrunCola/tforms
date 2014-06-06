@@ -54,7 +54,8 @@
     "time-grunt": "^0.3.1",
     "grunt-bump": "^0.0.13",
     "view-helpers": "^0.1.4",
-    "multer": "0.0.7"
+    "phantom": "0.6.3",
+    "socket.io": "1.0"
   },
   "devDependencies": {
     "assetmanager": "^0.1.2",

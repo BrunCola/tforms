@@ -32,7 +32,11 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
 				$modalInstance.close(window.location.href = '/logout');
 			};
 		};
-
+		$scope.retest = function(){
+			console.log('boom')
+			socket.emit('checkreport');
+			$http.post('/uploads', {test: 'test'}).success(successCallback);
+		}
 		// User Settings Modal
 		$scope.userSettings = function () {
 			$scope.modalInstance = $modal.open({
@@ -146,14 +150,14 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
 				for (var i = 0; i < $files.length; i++) {
 					var file = $files[i];
 					$scope.upload = $upload.upload({
-						url: 'public/uploads', //upload.php script, node.js route, or servlet url
+						url: '/uploads', //upload.php script, node.js route, or servlet url
 						method: 'POST',
 						headers: {
 							// 'content-type': "application/x-www-form-urlencoded",
 							'content-type': "multipart/form-data",
 						},
 						// withCredentials: true,
-						data: {myObj: $scope.fileUploadObj},
+						data: { myObj: $scope.fileUploadObj },
 						file: file, // or list of files: $files for html5 only
 						/* set the file formData name ('Content-Desposition'). Default is 'file' */
 						//fileFormDataName: myFile, //or a list of names for multiple files (html5).
@@ -163,6 +167,7 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
 						console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
 					}).success(function(data, status, headers, config) {
 						// file is uploaded successfully
+						console.log('done')
 						console.log(data);
 					});
 					//.error(...)

@@ -165,6 +165,8 @@ var live_connections = require('../controllers/live_connections/live_connections
 
 // ARCHIVE
 	var archive = require('../controllers/archive');
+// ARCHIVE
+	var upload = require('../controllers/upload');
 
 module.exports = function(app) {
 	// LIVE CONNECTIONS
@@ -399,11 +401,15 @@ module.exports = function(app) {
 	// REPORTS
 		// IOC EVENTS
 		app.route('/reports/ioc_events')
-		.get(authorization.requiresLogin, ioc_events_report.render);		
+		.get(authorization.requiresLogin, ioc_events_report.render);
 
 	// ARCHIVE
 		app.route('/archive')
 		.get(authorization.requiresLogin, archive.render);
+
+	// UPLOADS
+		app.route('/uploads')
+			.post(upload.render);
 
 
 };
