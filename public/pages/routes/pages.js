@@ -129,7 +129,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							loggedin: checkLoggedin
 						},
 						data: {
-							title: 'File Mime Types',
+							title: 'File Types',
 							subtitleElm: {
 								'ZONE': 'lan_zone',
 								'LAN IP': 'lan_ip'
@@ -149,7 +149,7 @@ angular.module('mean.pages').config(['$stateProvider',
 								subtitleElm: {
 									'Zone': 'lan_zone',
 									'LAN IP': 'lan_ip',
-									'MIME Type': 'mime'
+									'File Type': 'mime'
 								},
 								daterange: true
 							}
@@ -174,7 +174,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							loggedin: checkLoggedin
 						},
 						data: {
-							title: 'File Mime Types',
+							title: 'File Types',
 							subtitleElm: {
 								'Remote IP': 'remote_ip'
 							},
@@ -192,7 +192,7 @@ angular.module('mean.pages').config(['$stateProvider',
 								title: 'Extracted Files for Remote IP',
 								subtitleElm: {
 									'Remote IP': 'remote_ip',
-									'MIME Type': 'mime'
+									'File Type': 'mime'
 								},
 								daterange: true
 							}
@@ -205,7 +205,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						loggedin: checkLoggedin
 					},
 					data: {
-						title: 'Extracted Files by MIME Type',
+						title: 'Extracted Files by Type',
 						daterange: true
 					}
 				})
@@ -217,9 +217,9 @@ angular.module('mean.pages').config(['$stateProvider',
 							loggedin: checkLoggedin
 						},
 						data: {
-							title: 'Extracted Files by MIME Type',
+							title: 'Extracted Files by Type',
 							subtitleElm: {
-								'MIME Type': 'mime'
+								'File Type': 'mime'
 							},
 							daterange: true
 						}
@@ -259,7 +259,7 @@ angular.module('mean.pages').config(['$stateProvider',
 								loggedin: checkLoggedin
 							},
 							data: {
-								title: 'MIME Types of Extracted Files by Domain and Local IP',
+								title: 'Types of Extracted Files by Domain and Local IP',
 								subtitleElm: {
 									'Zone': 'lan_zone',
 									'LAN IP': 'lan_ip',
@@ -281,7 +281,7 @@ angular.module('mean.pages').config(['$stateProvider',
 										'Zone': 'lan_zone',
 										'LAN IP': 'lan_ip',
 										'Domain': 'http_host',
-										'MIME Type': 'mime'
+										'File Type': 'mime'
 									},
 									daterange: true
 								}

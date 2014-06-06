@@ -52,7 +52,7 @@ exports.render = function(req, res) {
 				{ title: 'Domain', select: 'http_host' },
 				{ title: 'Lan IP', select: 'lan_ip' },
 				{ title: 'Zone', select: 'lan_zone' },
-				{ title: 'Mime Type', select: 'mime' },
+				{ title: 'File Type', select: 'mime' },
 				// { title: 'File Name', select: 'name', sClass:'file' },
 				{ title: 'Total Size (MB)', select: 'size' },
 				{ title: 'Total IOC Hits', select: 'ioc_count' }
@@ -60,7 +60,7 @@ exports.render = function(req, res) {
 			var table1Settings = {
 				sort: [[0, 'desc']],
 				div: 'table',
-				title: 'Extracted File Mime Types'
+				title: 'Extracted File Types'
 			}
 
 			async.parallel([

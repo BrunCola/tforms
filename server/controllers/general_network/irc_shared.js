@@ -66,7 +66,7 @@ exports.render = function(req, res) {
 			{ title: 'Addl', select: 'addl' },
 			{ title: 'DCC File Name', select: 'dcc_file_name' },
 			{ title: 'DCC File Size', select: 'dcc_file_size' },
-			{ title: 'DCC MIME Type', select: 'dcc_mime_type' },
+			{ title: 'DCC File Type', select: 'dcc_mime_type' },
 			{ title: 'FUID', select: 'fuid' }
 		];
 		var table1Settings = {

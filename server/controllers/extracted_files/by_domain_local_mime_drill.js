@@ -49,7 +49,7 @@ exports.render = function(req, res) {
 
 			var table1Params = [
 				{ title: 'Last Seen', select: 'time' },
-				{ title: 'MIME', select: 'mime' },
+				{ title: 'File Type', select: 'mime' },
 				{ title: 'Name', select: 'name', sClass:'file'},
 				{ title: 'Size', select: 'size' },
 				{ title: 'Zone', select: 'lan_zone' },
@@ -73,7 +73,7 @@ exports.render = function(req, res) {
 			var table1Settings = {
 				sort: [[0, 'desc']],
 				div: 'table',
-				title: 'Extracted Files by Local IP, Domain, MIME'
+				title: 'Extracted Files by Local IP, Domain, Type'
 			}
 
 			async.parallel([
