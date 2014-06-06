@@ -85,6 +85,7 @@ function sendReport(user) {
 				loadInProgress = false;
 				console.log("load finished");
 			};
+			page.setHeaders({'content-type': 'application/x-www-form-urlencoded'});
 			var steps = [
 				function() {
 				// 	//Load Login Page
@@ -99,9 +100,8 @@ function sendReport(user) {
 				// 	// 	'email': 'samyotte@phirelight.com',
 				// 	// 	'password': 'mainstreet'
 				// 	// };
-				// 	// page.customHeaders = {'content-type': 'application/x-www-form-urlencoded'};
 				// 	'email=samyotte@phirelight.com&password=mainstreet'
-					page.open(config.reports.url+'/login', 'post', {'email': 'samyotte@phirelight.com', 'password': 'mainstreet'}, function (status) {
+					page.open(config.reports.url+'/login', 'post', 'email=samyotte@phirelight.com&password=mainstreet', function (status) {
 						if (status !== 'success') {
 							console.log('Unable to post!');
 						} else {
@@ -145,6 +145,7 @@ function sendReport(user) {
 				// 		// }
 				// 	});
 				// },
+
 				function() {
 					//Load Login Page
 					var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
@@ -193,56 +194,58 @@ function sendReport(user) {
 			// 				//Load Login Page
 			// 				page.open("https://localhost:3000/#!/login");
 			// 			},
-			// 			function() {
-			// 				page.evaluate(function() {
-			// 					document.getElementById("email").value = "samyotte@phirelight.com";
-			// 					document.getElementById("password").value = "mainstreet";
-			// 					// console.log(result)
-			// 				});
-			// 			},
-			// 			function(){
-			// 				page.evaluate(function() {
-			// 					document.getElementById("login_button").click();
-			// 					console.log("Login submitted!");
-			// 				});
-			// 			},
-			// 			function() {
-			// 				//Load Login Page
-			// 				var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
-			// 				var end = Math.round(new Date().getTime() / 1000);
-			// 				page.open("https://localhost:3000/report#!/iochits_report?start="+start+"&end="+end);
-			// 			},
-			// 			function() {
-			// 				page.render('./temp/'+fileName);
-			// 			},
-			// 			function() {
-			// 				setTimeout(function(){
-			// 					smtpTransport.sendMail(mailOptions, function(error, response){
-			// 						if (error) {
-			// 							console.log(error);
-			// 						} else {
-			// 							console.log("Message sent: " + response.message);
-			// 						}
-			// 					})
-			// 				}, 5000)
-			// 			},
-			// 			function() {
-			// 				//sign out of session
-			// 				page.open("https://localhost:3000/logout");
-			// 			},
-			// 		];
-			// 		interval = setInterval(function() {
-			// 			if (!loadInProgress && typeof steps[testindex] == "function") {
-			// 				console.log("step " + (testindex + 1));
-			// 				steps[testindex]();
-			// 				testindex++;
-			// 			}
-			// 			if (typeof steps[testindex] != "function") {
-			// 				console.log("Report complete!");
-			// 				ph.exit();
-			// 				clearInterval(interval);
-			// 			}
-			// 		}, 5000);
+
+					// 	function() {
+					// 		page.evaluate(function() {
+					// 			document.getElementById("email").value = "samyotte@phirelight.com";
+					// 			document.getElementById("password").value = "mainstreet";
+					// 			// console.log(result)
+					// 		});
+					// 	},
+					// 	function(){
+					// 		page.evaluate(function() {
+					// 			document.getElementById("login_button").click();
+					// 			console.log("Login submitted!");
+					// 		});
+					// 	},
+					// 	function() {
+					// 		//Load Login Page
+					// 		var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
+					// 		var end = Math.round(new Date().getTime() / 1000);
+					// 		page.open("https://localhost:3000/report#!/iochits_report?start="+start+"&end="+end);
+					// 	},
+					// 	function() {
+					// 		page.render('./temp/'+fileName);
+					// 	},
+					// 	function() {
+					// 		setTimeout(function(){
+					// 			smtpTransport.sendMail(mailOptions, function(error, response){
+					// 				if (error) {
+					// 					console.log(error);
+					// 				} else {
+					// 					console.log("Message sent: " + response.message);
+					// 				}
+					// 			})
+					// 		}, 5000)
+					// 	},
+					// 	function() {
+					// 		//sign out of session
+					// 		page.open("https://localhost:3000/logout");
+					// 	},
+					// ];
+					// interval = setInterval(function() {
+					// 	if (!loadInProgress && typeof steps[testindex] == "function") {
+					// 		console.log("step " + (testindex + 1));
+					// 		steps[testindex]();
+					// 		testindex++;
+					// 	}
+					// 	if (typeof steps[testindex] != "function") {
+					// 		console.log("Report complete!");
+					// 		ph.exit();
+					// 		clearInterval(interval);
+					// 	}
+					// }, 5000);
+
 
 		});
 	});
