@@ -422,7 +422,7 @@ exports.render = function(req, res) {
 							'AND `ioc`=\''+req.query.ioc+'\'',
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
-						{"sTitle": "MIME", "mData": "mime"},
+						{"sTitle": "File Type", "mData": "mime"},
 						{"sTitle": "Name", "mData": "name"},
 						{"sTitle": "Size", "mData": "size"},
 						{"sTitle": "MD5", "mData": "md5"},
@@ -459,7 +459,7 @@ exports.render = function(req, res) {
 							'AND `lan_ip`=\''+req.query.lan_ip+'\'',
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
-						{"sTitle": "MIME", "mData": "mime"},
+						{"sTitle": "File Type", "mData": "mime"},
 						{"sTitle": "Name", "mData": "name"},
 						{"sTitle": "Size", "mData": "size"},
 						{"sTitle": "MD5", "mData": "md5"},

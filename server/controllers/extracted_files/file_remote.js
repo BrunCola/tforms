@@ -45,7 +45,7 @@ exports.render = function(req, res) {
 				'AND `mime` = \''+req.query.mime+'\' ';
 		var table1Params = [
 			{ title: 'Last Seen', select: 'time' },
-			{ title: 'MIME', select: 'mime' },
+			{ title: 'File Type', select: 'mime' },
 			{ title: 'Name', select: 'name', sClass:'file'},
 			{ title: 'Size', select: 'size' },
 			{ title: 'Zone', select: 'lan_zone' },

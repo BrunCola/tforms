@@ -53,7 +53,7 @@ exports.render = function(req, res) {
 			var table1Settings = {
 				sort: [[0, 'desc']],
 				div: 'table',
-				title: 'Extracted File Mime Types'
+				title: 'Extracted File Types'
 			}
 			async.parallel([
 			function(callback) {
