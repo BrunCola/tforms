@@ -424,6 +424,14 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 										if (aData.mime && $scope.r.indexOf('mime') !== -1) {
 											$('td:eq('+$scope.r.indexOf("mime")+')', nRow).html(mimeIcon(aData.mime));
 										}
+										if (aData.mailfrom && $scope.r.indexOf('mailfrom') !== -1) {
+											var newVar = aData.mailfrom.replace(/[\<\>]/g,'');
+											$('td:eq('+$scope.r.indexOf("mailfrom")+')', nRow).html(newVar);
+										}
+										if (aData.receiptto && $scope.r.indexOf('receiptto') !== -1) {
+											var newVar = aData.receiptto.replace(/[\<\>]/g,'');
+											$('td:eq('+$scope.r.indexOf("receiptto")+')', nRow).html(newVar);
+										}
 										if (!notReport) {
 											if (aData.icon_in_bytes !== undefined){
 												var bIndex = $scope.r.indexOf("icon_in_bytes");
@@ -501,6 +509,14 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 									}
 									if (aData.mime && $scope.r.indexOf('mime') !== -1) {
 										$('td:eq('+$scope.r.indexOf("mime")+')', nRow).html(mimeIcon(aData.mime));
+									}
+									if (aData.mailfrom && $scope.r.indexOf('mailfrom') !== -1) {
+										var newVar = aData.mailfrom.replace(/[\<\>]/g,'');
+										$('td:eq('+$scope.r.indexOf("mailfrom")+')', nRow).html(newVar);
+									}
+									if (aData.receiptto && $scope.r.indexOf('receiptto') !== -1) {
+										var newVar = aData.receiptto.replace(/[\<\>]/g,'');
+										$('td:eq('+$scope.r.indexOf("receiptto")+')', nRow).html(newVar);
 									}
 									if (notReport) {
 										// url builder

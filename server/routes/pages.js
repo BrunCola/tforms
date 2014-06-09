@@ -37,8 +37,16 @@ var live_connections = require('../controllers/live_connections/live_connections
 	var by_mime_type = require('../controllers/extracted_files/by_mime_type');
 		// FILE MIME LOCAL
 		var file_mime_local = require('../controllers/extracted_files/file_mime_local');
+	// BY DOMAIN
+	var by_domain = require('../controllers/extracted_files/by_domain');
+		// BY DOMAIN LOCAL 
+		var by_domain_local = require('../controllers/extracted_files/by_domain_local');
+			// BY DOMAIN LOCAL MIME 
+			var by_domain_local_mime = require('../controllers/extracted_files/by_domain_local_mime');
+				// BY DOMAIN LOCAL MIME DRILL
+				var by_domain_local_mime_drill = require('../controllers/extracted_files/by_domain_local_mime_drill');
 
-// EXTRACTED FILES
+// FIRST SEEN
 	// NEW REMOTE
 	var new_remote = require('../controllers/first_seen/new_remote');
 	// NEW DNS QUERIES
@@ -125,6 +133,12 @@ var live_connections = require('../controllers/live_connections/live_connections
 	var ssh_remote = require('../controllers/general_network/ssh_remote');
 		// SSH REMOTE
 		var ssh_remote2local = require('../controllers/general_network/ssh_remote2local');
+	// SSH STATUS
+	var ssh_status = require('../controllers/general_network/ssh_status');
+		// SSH STATUS LOCAL
+		var ssh_status_local = require('../controllers/general_network/ssh_status_local');
+			// SSH STATUS LOCAL DRILL
+			var ssh_status_local_drill = require('../controllers/general_network/ssh_status_local_drill');
 	// LOCAL IRC
 	var irc_local = require('../controllers/general_network/irc_local');	
 		// LOCAL2REMOTE IRC
@@ -202,6 +216,18 @@ module.exports = function(app) {
 			// BY MIME TYPE
 			app.route('/extracted_files/file_mime_local')
 			.get(authorization.requiresLogin, file_mime_local.render);
+		// BY DOMAIN
+		app.route('/extracted_files/by_domain')
+		.get(authorization.requiresLogin, by_domain.render);
+			// BY DOMAIN LOCAL
+			app.route('/extracted_files/by_domain_local')
+			.get(authorization.requiresLogin, by_domain_local.render);
+				// BY DOMAIN LOCAL MIME
+				app.route('/extracted_files/by_domain_local_mime')
+				.get(authorization.requiresLogin, by_domain_local_mime.render);
+					// BY DOMAIN LOCAL MIME DRILL
+					app.route('/extracted_files/by_domain_local_mime_drill')
+					.get(authorization.requiresLogin, by_domain_local_mime_drill.render);
 
 	// FIRST SEEN
 		// NEW REMOTE
@@ -330,6 +356,15 @@ module.exports = function(app) {
 			// REMOTE2LOCAL SSH LOCAL
 			app.route('/general_network/ssh_remote2local')
 			.get(authorization.requiresLogin, ssh_remote2local.render);
+		// SSH STATUS
+		app.route('/general_network/ssh_status')
+		.get(authorization.requiresLogin, ssh_status.render);
+			// SSH STATUS LOCAL
+			app.route('/general_network/ssh_status_local')
+			.get(authorization.requiresLogin, ssh_status_local.render);
+				// SSH STATUS LOCAL DRILL
+				app.route('/general_network/ssh_status_local_drill')
+				.get(authorization.requiresLogin, ssh_status_local_drill.render);
 		// LOCAL IRC
 		app.route('/general_network/irc_local')
 		.get(authorization.requiresLogin, irc_local.render);

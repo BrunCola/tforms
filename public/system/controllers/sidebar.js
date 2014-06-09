@@ -112,6 +112,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 					'url': 'by_remote_ip',
 					'icon': 'fa-folder-open',
 					'orphans': ['by_file_name_remote','file_remote']
+				},
+				{
+					'title': 'By Domain',
+					'url': 'by_domain',
+					'icon': 'fa-folder-open',
+					'orphans': ['by_domain_local', 'by_domain_local_mime', 'by_domain_local_mime_drill']
 				}
 			]
 		},
@@ -196,6 +202,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 					'url': 'ftp_remote',
 					'icon': 'fa-file',
 					'orphans': ['ftp_remote2local', 'ftp_shared']
+				},
+				{
+					'title': 'SSH Status',
+					'url': 'ssh_status',
+					'icon': 'fa-chevron-right',
+					'orphans': ['ssh_status_local', 'ssh_status_local_drill']
 				},
 				{
 					'title': 'Local SSH',

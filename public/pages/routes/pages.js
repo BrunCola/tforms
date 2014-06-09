@@ -224,6 +224,68 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+				// BY DOMAIN
+				.state('by_domain', {
+					url: '/by_domain?start&end',
+					templateUrl: 'public/pages/views/extracted_files/by_domain.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Extracted Files by Domain',
+						daterange: true
+					}
+				})
+					// BY DOMAIN LOCAL
+					.state('by_domain_local', {
+						url: '/by_domain_local?start&end&http_host',
+						templateUrl: 'public/pages/views/extracted_files/by_domain_local.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Local Extracted Files by Domain',
+							subtitleElm: {
+								'Domain': 'http_host'
+							},
+							daterange: true
+						}
+					})
+						// BY DOMAIN LOCAL MIME by_domain_local_mime_drill
+						.state('by_domain_local_mime', {
+							url: '/by_domain_local_mime?start&end&http_host&lan_zone&lan_ip',
+							templateUrl: 'public/pages/views/extracted_files/by_domain_local_mime.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'MIME Types of Extracted Files by Domain and Local IP',
+								subtitleElm: {
+									'Zone': 'lan_zone',
+									'LAN IP': 'lan_ip',
+									'Domain': 'http_host'
+								},
+								daterange: true
+							}
+						})
+							// BY DOMAIN LOCAL MIME DRILL
+							.state('by_domain_local_mime_drill', {
+								url: '/by_domain_local_mime_drill?start&end&http_host&lan_zone&lan_ip&mime',
+								templateUrl: 'public/pages/views/extracted_files/by_domain_local_mime_drill.html',
+								resolve: {
+									loggedin: checkLoggedin
+								},
+								data: {
+									title: 'Local Extracted Files by Domain and MIME',
+									subtitleElm: {
+										'Zone': 'lan_zone',
+										'LAN IP': 'lan_ip',
+										'Domain': 'http_host',
+										'MIME Type': 'mime'
+									},
+									daterange: true
+								}
+							})
 			// APPLICATIONS
 				// BY APPLICATION
 				.state('app_by_application', {
@@ -391,7 +453,7 @@ angular.module('mean.pages').config(['$stateProvider',
 				})
 					// SMTP SENDER2RECEIVER
 					.state('smtp_sender2receiver', {
-						url: '/smtp_sender2receiver?start&end&from',
+						url: '/smtp_sender2receiver?start&end&mailfrom',
 						templateUrl: 'public/pages/views/email/smtp_sender2receiver.html',
 						resolve: {
 							loggedin: checkLoggedin
@@ -399,14 +461,14 @@ angular.module('mean.pages').config(['$stateProvider',
 						data: {
 							title: 'Senders/Reveivers',
 							subtitleElm: {
-								'Sender': 'from'
+								'Sender': 'mailfrom'
 							},
 							daterange: true
 						}
 					})
 						// SMTP FROM SENDER 
 						.state('smtp_from_sender', {
-							url: '/smtp_from_sender?start&end&from&to',
+							url: '/smtp_from_sender?start&end&mailfrom&receiptto',
 							templateUrl: 'public/pages/views/email/smtp_from_sender.html',
 							resolve: {
 								loggedin: checkLoggedin
@@ -414,8 +476,8 @@ angular.module('mean.pages').config(['$stateProvider',
 							data: {
 								title: 'Emails From Sender to Receiver',
 								subtitleElm: {
-									'Sender': 'from',
-									'Receiver': 'to'
+									'Sender': 'mailfrom',
+									'Receiver': 'receiptto'
 								},
 								daterange: true
 							}
@@ -434,7 +496,7 @@ angular.module('mean.pages').config(['$stateProvider',
 				})
 					// SMTP RECEIVER2SENDER
 					.state('smtp_receiver2sender', {
-						url: '/smtp_receiver2sender?start&end&to',
+						url: '/smtp_receiver2sender?start&end&receiptto',
 						templateUrl: 'public/pages/views/email/smtp_receiver2sender.html',
 						resolve: {
 							loggedin: checkLoggedin
@@ -442,7 +504,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						data: {
 							title: 'Receivers/Senders',
 							subtitleElm: {
-								'Sender': 'from'
+								'Receiver': 'receiptto'
 							},
 							daterange: true
 						}
@@ -476,7 +538,7 @@ angular.module('mean.pages').config(['$stateProvider',
 					})
 						// SMTP FROM SENDER BY SUBJECT
 						.state('smtp_from_sender_by_subject', {
-							url: '/smtp_from_sender_by_subject?start&end&to&from&subject',
+							url: '/smtp_from_sender_by_subject?start&end&receiptto&mailfrom&subject',
 							templateUrl: 'public/pages/views/email/smtp_from_sender_by_subject.html',
 							resolve: {
 								loggedin: checkLoggedin
@@ -484,8 +546,8 @@ angular.module('mean.pages').config(['$stateProvider',
 							data: {
 								title: 'Email from Sender to Receiver for Subject',
 								subtitleElm: {
-									'Sender': 'from',
-									'Receiver': 'to',
+									'Sender': 'mailfrom',
+									'Receiver': 'receiptto',
 									'Subject': 'subject'
 								},
 								daterange: true
@@ -665,7 +727,7 @@ angular.module('mean.pages').config(['$stateProvider',
 					})
 						// SSH SHARED
 						.state('ssh_shared', {
-							url: '/ssh_shared?start&end&lan_ip&remote_ip',
+							url: '/ssh_shared?start&end&lan_ip&lan_zone&remote_ip',
 							templateUrl: 'public/pages/views/general_network/ssh_shared.html',
 							resolve: {
 								loggedin: checkLoggedin
@@ -674,6 +736,7 @@ angular.module('mean.pages').config(['$stateProvider',
 								title: 'SSH Local/Remote Shared',
 								subtitleElm: {
 									'LAN IP': 'lan_ip',
+									'Zone': 'lan_zone',
 									'Remote IP': 'remote_ip'
 								},
 								daterange: true
@@ -706,6 +769,50 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+				// SSH STATUS
+				.state('ssh_status', {
+					url: '/ssh_status?start&end',
+					templateUrl: 'public/pages/views/general_network/ssh_status.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'SSH Status',
+						daterange: true
+					}
+				})
+					// SSH STATUS LOCAL
+					.state('ssh_status_local', {
+						url: '/ssh_status_local?start&end&status_code',
+						templateUrl: 'public/pages/views/general_network/ssh_status_local.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Local SSH Status',
+							subtitleElm: {
+								'Status Code': 'status_code'
+							},
+							daterange: true
+						}
+					})
+						// SSH STATUS LOCAL DRILL
+						.state('ssh_status_local_drill', {
+							url: '/ssh_status_local_drill?start&end&lan_ip&lan_zone&status_code',
+							templateUrl: 'public/pages/views/general_network/ssh_status_local_drill.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'SSH Local/Remote Shared',
+								subtitleElm: {
+									'LAN IP': 'lan_ip',
+									'Zone': 'lan_zone',
+									'Status Code': 'status_code'
+								},
+								daterange: true
+							}
+						})
 				// LOCAL IRC
 				.state('irc_local', {
 					url: '/irc_local?start&end',

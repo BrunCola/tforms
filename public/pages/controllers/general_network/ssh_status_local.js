@@ -1,28 +1,24 @@
 'use strict';
 
-angular.module('mean.pages').controller('smtpSender2ReceiverController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
+angular.module('mean.pages').controller('sshStatusLocalController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/email/smtp_sender2receiver?start='+$location.$$search.start+'&end='+$location.$$search.end+'&mailfrom='+$location.$$search.mailfrom;
+		query = '/general_network/ssh_status_local?start='+$location.$$search.start+'&end='+$location.$$search.end+'&status_code='+$location.$$search.status_code;
 	} else {
-		query = '/email/smtp_sender2receiver?&mailfrom='+$location.$$search.mailfrom;
+		query = '/general_network/ssh_status_local?status_code='+$location.$$search.status_code;
 	}
 	$http({method: 'GET', url: query}).
-	//success(function(data, status, headers, config) {
 	success(function(data) {
 		if (data.tables[0] === null) {
 			$scope.$broadcast('loadError');
 		} else {
 			var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
-
 			$scope.data = data;
-
 			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
 			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
 			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 			$scope.$broadcast('spinnerHide');
-
 		}
 	});
 }]);

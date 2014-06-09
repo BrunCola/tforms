@@ -16,33 +16,33 @@ exports.render = function(req, res) {
 	var info = [];
 	var table1SQL = 'SELECT '+
 			'count(*) AS count,'+
-			'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time,'+
-			'`receiptto`,'+
+			'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time, '+
+			'`status_code`,'+
 			'sum(`ioc_count`) AS ioc_count '+
 		'FROM '+
-			'`smtp` '+
+			'`ssh` '+
 		'WHERE '+
 			'time BETWEEN '+start+' AND '+end+' '+
 		'GROUP BY '+
-			'`receiptto`';
+			'`status_code`';
 	var table1Params = [
 		{
 			title: 'Last Seen',
 			select: 'time',
-			 link: {
-			 	type: 'smtp_receiver2sender', 
-			 	val: ['receiptto'],
+			link: {
+			 	type: 'ssh_status_local', 
+			 	val: ['status_code'],
 			 	crumb: false
 			},
 		},
-		{ title: 'Count', select: 'count' },
-		{ title: 'To', select: 'receiptto' },
+		{ title: 'Connections', select: 'count' },
+		{ title: 'Status', select: 'status_code' },
 		{ title: 'IOC Count', select: 'ioc_count' }
 	];
 	var table1Settings = {
 		sort: [[1, 'desc']],
 		div: 'table',
-		title: 'Top Email Receivers'
+		title: 'SSH Status'
 	}
 	async.parallel([
 		// Table function(s)
