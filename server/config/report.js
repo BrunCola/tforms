@@ -67,7 +67,6 @@ function sendReport(user) {
 					var end = Math.round(new Date().getTime() / 1000);
 					page.open(config.reports.url+"/report#!/ioc_events_report?start="+start+"&end="+end+"&database="+user.database, function (status) {
 						loadInProgress = false;
-						console.log(status);
 					});
 				},
 				function() {
