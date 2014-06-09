@@ -956,6 +956,28 @@ angular.module('mean.pages').factory('appIcon', [
 						'c-0.063,0-0.122-0.029-0.159-0.081l-5.859-9.227c-0.167-0.249-0.444-0.396-0.742-0.396c-0.493,0-0.894,0.4-0.894,0.893l0.004,8.678'+
 						'c0,0.078-0.063,0.143-0.141,0.143l0,0L12.516,20.258z');
 					return div;
+				case 'windowsupdate':
+					em
+						.append('polygon')
+						.style('fill', '#29ABE2')
+						.attr('points', '22.263,8.218 22.263,3.622 20.269,3.622 20.269,8.276 17.658,6.717 17.658,8.974 21.217,11.1 24.776,8.974 24.776,6.717 ');
+					em
+						.append('polygon')
+						.style('fill', '#29ABE2')
+						.attr('points', '20.824,19.116 20.824,13.749 28.4,12.644 28.4,19.116 ');
+					em
+						.append('polygon')
+						.style('fill', '#29ABE2')
+						.attr('points', '14.311,19.116 14.311,14.7 19.648,13.92 19.648,19.116' );
+					em
+						.append('polygon')
+						.style('fill', '#29ABE2')
+						.attr('points', '14.311,24.771 14.311,20.291 19.648,20.291 19.648,25.559 ');
+					em
+						.append('polygon')
+						.style('fill', '#29ABE2')
+						.attr('points', '20.824,25.732 20.824,20.291 28.4,20.291 28.4,26.85');
+					return div;
 				default:
 
 					return div;
@@ -1356,7 +1378,7 @@ angular.module('mean.pages').factory('mimeIcon', [
 						case 'jar':
 							em
 								.append('text')
-								.attr('transform', 'matrix(1 0 0 1 8 33)')
+								.attr('transform', 'matrix(1 0 0 1 9 33)')
 								.style('fill', '#c3c3c3')
 								.attr('font-family', 'ITCAvantGardeStd-Bk')
 								.attr('font-size', 13)
