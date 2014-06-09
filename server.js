@@ -25,8 +25,8 @@ var db = mysql.createPool(config.db, function(err) {
  * Please note that the order of loading is important.
  */
 var options = {
-    key: fs.readFileSync('./ssl/server.key'),
-    cert: fs.readFileSync('./ssl/server.crt')
+    key: fs.readFileSync(config.sslAssets.key),
+    cert: fs.readFileSync(config.sslAssets.cert)
     //requestCert: true
 };
 // Bootstrap Models, Dependencies, Routes and the app as an express app
@@ -44,12 +44,16 @@ require('./server/config/report.js')(db);
 var SSLport = process.env.sslPORT || config.SSLport;
 var HTTPport = process.env.httpPORT || config.HTTPport;
 httpapp.get('*',function(req, res){
-    res.redirect('https://localhost:'+SSLport+req.url);
+    if (config.httpRedirect.link && config.portEnabled) {
+        res.redirect(config.httpRedirect.link+':'+SSLport+req.url);
+    } else {
+        res.redirect(config.httpRedirect.link+'/'+req.url);
+    }
 });
 server.listen(SSLport);
 http.listen(HTTPport);
 
-console.log('rapidPHIRE app started on port (HTTPS)' + SSLport);
+console.log('rapidPHIRE has started');
 
 // Initializing logger
 // logger.init(app, passport, mongoose);

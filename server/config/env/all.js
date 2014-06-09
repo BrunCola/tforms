@@ -43,9 +43,16 @@ var rootPath = path.normalize(__dirname + '/../../..');
 module.exports = {
 	defaultDateRange: 1,
 	root: rootPath,
-	port: process.env.sslPORT || 3000,
 	SSLport: process.env.sslPORT || 3000,
 	HTTPport: process.env.httpPORT || 3001,
+	httpRedirect: {
+		link: 'https://localhost', // no trailing slashes
+		portEnabled: true
+	},
+	sslAssets: {
+		key: './ssl/server.key',
+		cert: './ssl/server.crt'
+	},
 	mailer: {
 		user: "notice@rapidphire.com",
 		pass: "r@p1dph1r3",

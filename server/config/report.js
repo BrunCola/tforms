@@ -50,17 +50,6 @@ function sendReport(user) {
 				// }
 			});
 			var testindex = 0, loadInProgress = false, interval;
-			page.onConsoleMessage = function(msg) {
-				console.log(msg);
-			};
-			page.onLoadStarted = function() {
-				loadInProgress = true;
-				console.log("load started");
-			};
-			page.onLoadFinished = function() {
-				loadInProgress = false;
-				console.log("load finished");
-			};
 			page.setHeaders({'content-type': 'application/x-www-form-urlencoded'});
 			var steps = [
 				function() {
