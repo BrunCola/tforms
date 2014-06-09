@@ -22,7 +22,6 @@ exports.render = function(req, res) {
 	var crossfilter = [];
 	var info = [];
 
-	console.log('test')
 	switch (req.query.type) {
 		case 'glossary':
 			var iocType = req.query.iocType;

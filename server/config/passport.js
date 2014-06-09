@@ -36,6 +36,6 @@ module.exports = function(passport, connection) {
 	));
 };
 
-// bcrypt.hash('mainstreet', 10, function( err, bcryptedPassword) {
+// bcrypt.hash('', 10, function( err, bcryptedPassword) {
 //    console.log(bcryptedPassword);
 // });

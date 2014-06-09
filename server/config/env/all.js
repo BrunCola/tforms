@@ -55,10 +55,10 @@ module.exports = {
 	},
 	reports: {
 		active: true,
-		schedule: '27 * * * *',
+		schedule: '2 * * * *',
 		url: 'https://localhost:3000',
-		email: 'samyotte@phirelight.com',
-		pass: 'mainstreet'
+		email: 'cron@rapidphire.com',
+		pass: 'rdSF7ovD6NIMOTIHNuiZSewzgRCbW4RRbM9kfzkEP7UndVnuaxqiIV20jkx2CgDKxqs9LR76RSQSmpns'
 	},
 	db: {
 		//socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock',

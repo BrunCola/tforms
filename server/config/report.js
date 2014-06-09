@@ -76,7 +76,10 @@ function sendReport(user) {
 					//Load Login Page
 					var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 					var end = Math.round(new Date().getTime() / 1000);
-					page.open(config.reports.url+"/report#!/ioc_events_report?start="+start+"&end="+end+"&database="+user.database);
+					page.open(config.reports.url+"/report#!/ioc_events_report?start="+start+"&end="+end+"&database="+user.database, function (status) {
+						loadInProgress = false;
+						console.log(status);
+					});
 				},
 				function() {
 					page.render('./temp/'+fileName);
@@ -120,7 +123,7 @@ function sendReport(user) {
 					ph.exit();
 					clearInterval(interval);
 				}
-			}, 5000);
+			}, 20000);
 		});
 	});
 }
