@@ -54,9 +54,11 @@ module.exports = {
 		secure: true
 	},
 	reports: {
-		active: false,
-		schedule: '14 * * * *',
-		url: 'https://localhost:3000'
+		active: true,
+		schedule: '27 * * * *',
+		url: 'https://localhost:3000',
+		email: 'samyotte@phirelight.com',
+		pass: 'mainstreet'
 	},
 	db: {
 		//socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock',

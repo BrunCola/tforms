@@ -56,48 +56,33 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
 			$scope.passBad = false;
 			$scope.user = {
 				email: user.email,
-				upassword: null,
-				password: null
-			};
-			$scope.showpass = function() {
-				if (user.email !== $scope.user.email) {
-					return true;
-				} else if ($scope.user.password !== null) {
-					return true;
-				} else {
-					return false;
-				}
+				password: null,
+				cpassword: null
 			};
 			$scope.submitForm = function(form) {
-			 // check to make sure the form is completely valid
-			 if (form.$valid) {
-				 socket.emit('checkPass', {password: $scope.user.upassword, email: user.email});
-				 socket.on('passGood', function() {
-					 if ($scope.user.password) {
-						 socket.emit('updateUser', { oldemail: user.email, newemail: $scope.user.email, password: $scope.user.upassword, newPass: $scope.user.password });
-						 $http.get('/logout')
-						 .success(function() {
+				// check to make sure the form is completely valid
+				if (form.$valid) {
+					if (($scope.user.password) && ($scope.user.cpassword === $scope.user.password)) {
+						socket.emit('updateUser', { oldemail: user.email, newemail: $scope.user.email, newPass: $scope.user.password });
+						$http.get('/logout')
+							.success(function() {
 							window.location.href = '/';
-							 // $http.post('/users/session', {username: user.username, password:$scope.user.password}).success($route.reload())
-							 // $http.post('/login', {email: $scope.user.email, password:$scope.user.password}).success($modalInstance.close(window.location.href = '/'))
-						 });
-					 } else if (($scope.user.email !== user.email)) {
-						 socket.emit('updateUser', { oldemail: user.email, newemail: $scope.user.email, password: $scope.user.upassword });
-						 $http.get('/logout')
-						 .success(function() {
+							// $http.post('/users/session', {username: user.username, password:$scope.user.password}).success($route.reload())
+							// $http.post('/login', {email: $scope.user.email, password:$scope.user.password}).success($modalInstance.close(window.location.href = '/'))
+						});
+					} else if ($scope.user.email !== user.email) {
+						socket.emit('updateUser', { oldemail: user.email, newemail: $scope.user.email });
+						$http.get('/logout')
+							.success(function() {
 							window.location.href = '/';
-							 // $http.post('/users/session', {username: $scope.global.user.username, password:$scope.user.upassword}).success($route.reload())
-							 // $http.post('/login', {email: $scope.user.email, password:$scope.user.upassword}).success(window.location.href = '/')
-							 // .success(function(){
-							 //     $modalInstance.close();
-							 // });
-						 });
-					 }
-				 });
-				 socket.on('passBad', function() {
-					 $scope.passBad = true;
-				 });
-			 }
+							// $http.post('/users/session', {username: $scope.global.user.username, password:$scope.user.upassword}).success($route.reload())
+							// $http.post('/login', {email: $scope.user.email, password:$scope.user.upassword}).success(window.location.href = '/')
+							// .success(function(){
+							//     $modalInstance.close();
+							// });
+						});
+					}
+				}
 			};
 		};
 

@@ -7,6 +7,9 @@ var dataTable = require('../constructors/datatable'),
 
 exports.render = function(req, res) {
 	var database = req.session.passport.user.database;
+	if ((req.user.email === config.reports.email) && (req.query.database)) {
+		database = req.query.database;
+	}
 	// var database = null;
 	var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 	var end = Math.round(new Date().getTime() / 1000);
@@ -19,6 +22,7 @@ exports.render = function(req, res) {
 	var crossfilter = [];
 	var info = [];
 
+	console.log('test')
 	switch (req.query.type) {
 		case 'glossary':
 			var iocType = req.query.iocType;

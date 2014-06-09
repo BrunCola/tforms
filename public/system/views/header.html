@@ -33,15 +33,6 @@
 							<p ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="help-block">Enter a valid email.</p>
 						</div>
 					</div>
-					<div ng-show="showpass()" class="control-group" ng-class="{ 'has-error' : userForm.upassword.$invalid }">
-						<label class="control-label">Confirm Password *</label>
-						<div class="controls">
-							<input type="password" name="upassword" ng-minlength="1" class="form-control" placeholder="Current Password" ng-model="user.upassword">
-							<p ng-show="passBad" class="help-block">Password Incorrect</p>
-							<p ng-show="userForm.upassword.$error.minlength" class="help-block">Password cannot be blank.</p>
-						</div>
-					</div>
-					<br />
 					<!-- NEW PASSWORD -->
 					<div class="control-group" ng-class="{ 'has-error' : userForm.password.$invalid }">
 						<label class="control-label">New Password</label>

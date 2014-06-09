@@ -3,7 +3,7 @@ var mysql = require('mysql'),
 	config = require('./config'),
 	nodemailer = require("nodemailer"),
 	phantom = require('phantom'),
-	crypto = require('crypto');
+	bcrypt = require('bcrypt');
 
 module.exports = function(app, passport, io) {
 
@@ -70,38 +70,19 @@ module.exports = function(app, passport, io) {
 				}
 			});
 		});
-		socket.on('checkPass', function(data){
-			var db = config.db;
-			db.database = 'rp_users';
-			var connection = mysql.createConnection(db);
-			if (data.password) {
-				var pass = crypto.createHash('md5').update(data.password).digest('hex');
-				var sql="SELECT * FROM user WHERE email = '"+ data.email +"' and password = '"+ pass +"' limit 1";
-				console.log(sql);
-				connection.query(sql,
-					function (err,results) {
-						if (err) throw err;
-						if(results.length > 0){
-							socket.emit('passGood');
-						}else{
-							socket.emit('passBad');
-						}
-					}
-				);
-			}
-		});
 		socket.on('updateUser', function(data){
 			var db = config.db;
 			db.database = 'rp_users';
 			var connection = mysql.createConnection(db);
-			var pass = crypto.createHash('md5').update(data.password).digest('hex');
 			if (data.newPass) {
-				var newpass = crypto.createHash('md5').update(data.newPass).digest('hex');
-				connection.query("UPDATE `user` SET `email`='"+data.newemail+"', `password`='"+newpass+"' WHERE `email` = '"+data.oldemail+"' AND `password` = '"+pass+"'");
+				bcrypt.hash(data.newPass, 10, function( err, bcryptedPassword) {
+					connection.query("UPDATE `user` SET `email`='"+data.newemail+"', `password`='"+bcryptedPassword+"' WHERE `email` = '"+data.oldemail+"'");
+				});
 			} else {
-				connection.query("UPDATE `user` SET `email`='"+data.newemail+"' WHERE `email` = '"+data.oldemail+"' AND `password` = '"+pass+"'");
+				connection.query("UPDATE `user` SET `email`='"+data.newemail+"' WHERE `email` = '"+data.oldemail+"'");
 			}
 		});
+
 		socket.on('checkreport', function(){
 			phantom.create('--ignore-ssl-errors=yes', function(ph) {
 				return ph.createPage(function(page) {
@@ -117,13 +98,6 @@ module.exports = function(app, passport, io) {
 				});
 			});
 		})
-	// 	// socket.on('new note', function(data){
-	// 	//  // New note added, push to all sockets and insert into db
-	// 	//  notes.push(data)
-	// 	//  io.sockets.emit('new note', data)
-	// 	//  // Use node's db injection format to filter incoming data
-	// 	//  connection.query('INSERT INTO notes (note) VALUES (?)', data.note)
-	// 	// })
 		socket.on('report_generate', function(data){
 			var mailOptions = {
 				from: "rapidPHIRE <notice@rapidphire.com>", // sender address

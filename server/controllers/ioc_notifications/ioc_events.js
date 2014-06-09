@@ -18,7 +18,6 @@ exports.render = function(req, res) {
 	var tables = [];
 	var crossfilter = [];
 	var info = [];
-
 	switch (req.query.type) {
 		case 'ioc_notifications':
 		// Info function(s) --- IOC
