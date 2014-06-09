@@ -15,7 +15,7 @@
 							<h3 class="pull-left">{{ title }}</h3> <br />
 						</div>
 						<div ng-repeat="sub in subtitle">
-							<div class="pull-left"><strong> {{ sub.title }}:</strong> {{sub.value}}{{$last ? '' : ', '}} </div>
+							<div class="pull-left"><strong>{{$first ? '' : '&nbsp;'}}{{ sub.title }}:</strong> {{sub.value}}{{$last ? '' : ', '}} </div>
 						</div>
 						<div class="row-fluid">
 							<div id="severity"></div>
