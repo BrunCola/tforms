@@ -7,11 +7,6 @@ var mysql = require('mysql'),
 
 module.exports = function(app, passport, io) {
 
-	// grab config file
-	// var connection = mysql.createConnection(config.db);
-	// change database get to user's
-	// establish new connection
-
 	var alerts = [];
 	var isInitIoc = false;
 	var socketCount = 0;
@@ -81,127 +76,6 @@ module.exports = function(app, passport, io) {
 			} else {
 				connection.query("UPDATE `user` SET `email`='"+data.newemail+"' WHERE `email` = '"+data.oldemail+"'");
 			}
-		});
-
-		socket.on('checkreport', function(){
-			phantom.create('--ignore-ssl-errors=yes', function(ph) {
-				return ph.createPage(function(page) {
-					page.setHeaders({'Content-Type': 'application/x-www-form-urlencoded'});
-					page.open('https://portal.rapidphire.com/login', 'post', 'email=samyotte@phirelight.com&password=mainstreet', function (status) {
-						if (status !== 'success') {
-							console.log('Unable to post!');
-						} else {
-							console.log(page.content);
-						}
-						// phantom.exit();
-					});
-				});
-			});
-		})
-		socket.on('report_generate', function(data){
-			var mailOptions = {
-				from: "rapidPHIRE <notice@rapidphire.com>", // sender address
-				to: data.email, // list of receivers
-				subject: data.subject, // Subject line
-				text: data.body, // plaintext body
-				// html: "<b>Testing</b>", // html body
-				attachments: [{
-					fileName: data.file+".pdf",
-					filePath: "./temp/"+data.file+".pdf"
-				}]
-			};
-			phantom.create('--ignore-ssl-errors=yes', function(ph) {
-				return ph.createPage(function(page) {
-					page.set('viewportSize', {
-						width: 1056,
-						height: 600
-					});
-					page.set('paperSize', {
-						orientation: 'portrait',
-						format: 'A4',
-						margin: '0.4cm',
-						// footer: {
-						// 	height: "0.5cm",
-						// 	contents: phantom.callback(function(pageNum, numPages) {
-						// 		if (pageNum === 0) {
-						// 			return "";
-						// 		}
-						// 		return "<p style='font-size:9px;letter-spacing:0.5px;'>© 2014 Phirelight Security Solutions <span style='float:right;margin-left:-10px'>" + pageNum + " / " + numPages + "</span></p style='font-size:10px'>";
-						// 	})
-						// }
-					});
-					var testindex = 0, loadInProgress = false, interval;
-					page.onConsoleMessage = function(msg) {
-						console.log(msg);
-					};
-					page.onLoadStarted = function() {
-						loadInProgress = true;
-						console.log("load started");
-					};
-					page.onLoadFinished = function() {
-						loadInProgress = false;
-						console.log("load finished");
-					};
-					var steps = [
-						function() {
-							//Load Login Page
-							page.open("https://localhost:3000/signin");
-						},
-						function() {
-							page.evaluate(function() {
-								document.getElementById("username").value = "phirelight";
-								document.getElementById("password").value = "mainstreet";
-								document.getElementById("login_button").click();
-								console.log("Login submitted!");
-								// console.log(result)
-							});
-						},
-						function() {
-							//Load Login Page
-							var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
-							var end = Math.round(new Date().getTime() / 1000);
-							page.open("https://localhost:3000/report#!/iochits_report?start="+start+"&end="+end+"&database="+data.database);
-						},
-						function() {
-							page.render('./temp/'+data.file+'.pdf');
-						},
-						function() {
-							setTimeout(function(){
-								smtpTransport.sendMail(mailOptions, function(error, response){
-									if (error) {
-										console.log(error);
-									} else {
-										console.log("Message sent: " + response.message);
-									}
-								})
-							}, 5000)
-						},
-						function() {
-							//sign out of session
-							page.open("https://localhost:3000/signout");
-						},
-					];
-					interval = setInterval(function() {
-						if (!loadInProgress && typeof steps[testindex] == "function") {
-							console.log("step " + (testindex + 1));
-							steps[testindex]();
-							testindex++;
-						}
-						if (typeof steps[testindex] != "function") {
-							console.log("Report complete!");
-							ph.exit();
-							clearInterval(interval);
-						}
-					}, 5000);
-				});
-			});
-
-			// New note added, push to all sockets and insert into db
-			// notes.push(data)
-			// io.sockets.emit('new note', data)
-			// // Use node's db injection format to filter incoming data
-			// connection.query('INSERT INTO notes (note) VALUES (?)', data.note)
-			// console.log(data.email);
 		});
 
 		var POLLCheckpoint, timer, userConnection, connection;
