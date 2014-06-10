@@ -409,7 +409,7 @@ module.exports = function(app) {
 
 	// UPLOADS
 		app.route('/uploads')
-			.post(upload.render);
+			.post(authorization.requiresLogin, upload.render);
 
 
 };
