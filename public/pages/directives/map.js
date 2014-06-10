@@ -60,7 +60,6 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 					}
 				}
 			}
-
 			// ZOOM BEHAVIOR
 			function move() {
 				var t = d3.event.translate;
@@ -112,6 +111,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 			var percentArr = [];
 			var countrylist = [];
 			var arr = [];
+			var labelList = [];
 			$scope.$on('map', function (event, data, start, end) {
 				/*Animation Timing Variables*/
 				var step = 1000; // 1 second
@@ -122,7 +122,6 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 						d.properties.country = 'United States';
 					}
 				})
-
 				/*Add an svg group for each data point*/
 				var node = svg.selectAll(".node").data(data.features).enter().insert('g')
 					.each(function(d) {
@@ -194,8 +193,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 				node.call(tip);
 				node
 					.on('mouseover', tip.show)
-					.on('mouseout', tip.hide)
-
+					.on('mouseout', tip.hide);
 				filterCurrentPoints();
 				// map.on("zoomend", update);
 				/*Filter map points by date*/
@@ -228,7 +226,16 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 							}
 
 							// return text for label (REVISIT)
-							return d.properties.country;
+							if (labelList.indexOf(d.properties.country) === -1) {
+								labelList.push(d.properties.country);
+								setTimeout(function(){
+									var index = labelList.indexOf(d.properties.country);
+									labelList.splice(index, 1);
+								}, 30000);
+								return d.properties.country;
+							} else {
+								return '';
+							}
 						})
 						.attr("transform", function(d) {return "translate(" + projection([d.geometry.coordinates[0]+2,d.geometry.coordinates[1]]) + ")";})
 						.style('fill', '#000')
@@ -317,7 +324,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 						d.percentage = fDecimal;
 						percentages.push(fDecimal);
 					});
-					var arr = percentages.sort(function(a, b){return b-a});
+					arr = percentages.sort(function(a, b){return b-a});
 					if (arr.length > 4){
 						arr = arr.splice(4, arr.length);
 					}
