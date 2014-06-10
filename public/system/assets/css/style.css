@@ -103,6 +103,10 @@ th {
 }
 */
 
+.livemapTable {
+  width: 240px;
+  text-align: left;
+}
 
 /*tree chart*/
 .conn circle {

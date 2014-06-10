@@ -40,20 +40,26 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 				.text('Country');
 			thead.append("th")
 				.text('Percentage');
+			thead.append("th")
+				.text('Count');
 
 			function updateTable(obj) {
-				tbody.selectAll('tr').remove();
-				for (var i in obj) {
-					var row = tbody.append('tr');
-					row
-						.append('td')
-						.text(i);
-					row
-						.append('td')
-						.text(obj[i].percentage+'%');
+				if (obj.length > 0) {
+					tbody.selectAll('tr').remove();
+					for (var i in obj) {
+						var row = tbody.append('tr');
+						row
+							.append('td')
+							.text(obj[i].country);
+						row
+							.append('td')
+							.text(obj[i].percentage+'%');
+						row
+							.append('td')
+							.text(obj[i].count);
+					}
 				}
 			}
-
 
 			// ZOOM BEHAVIOR
 			function move() {
@@ -105,12 +111,16 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 			var arrayCount = 0;
 			var percentArr = [];
 			var countrylist = [];
+			var arr = [];
 			$scope.$on('map', function (event, data, start, end) {
 				/*Animation Timing Variables*/
 				var step = 1000; // 1 second
 				var timer, percent;
 				data.features.forEach(function(d){
-					d.time = moment(d.properties.date_filed,"YYYY-MM-DD hh:mm:ss").unix()*1000
+					d.time = moment(d.properties.date_filed,"YYYY-MM-DD hh:mm:ss").unix()*1000;
+					if (d.properties.country === 'United States of America') {
+						d.properties.country = 'United States';
+					}
 				})
 
 				/*Add an svg group for each data point*/
@@ -206,15 +216,6 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 							arrayCount += d.properties.count;
 							// push countries to object while keeping track of count
 							var thisCountry = d.properties.country;
-							// if (thisCountry in percentObj) {
-							// 	percentObj[thisCountry].count += d.properties.count;
-							// } else {
-							// 	percentObj[thisCountry] = {
-							// 		count: d.properties.count,
-							// 		country: d.properties.country
-							// 	};
-							// }
-
 							var index = countrylist.indexOf(thisCountry);
 							if (index !== -1) {
 								percentArr[index].count += d.properties.count;
@@ -308,24 +309,31 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 						clearInterval(percent);
 					}
 				}
-
 				function calcPercent() {
-					var percentages = [], match = [];
-
+					var percentages = [], country = [];
 					percentArr.forEach(function(d){
 						var decimal = (d.count/arrayCount) * 100;
-						d.percentage = Math.round(decimal * 100) / 100;
-						percentages.push(Math.round(decimal * 100) / 100);
-					})
-					var newArr = percentArr;
-					var prearr = percentages.sort(function(a, b){return b-a});
-					var arr = prearr.splice(4, prearr.length-5);
-					var min = Math.min.apply(Math, percentages);
-					// var match = $.grep(newArr, function(e) { return (arr.indexOf(e['percentage']) !== -1) });
+						var fDecimal = Math.round(decimal * 100) / 100;
+						d.percentage = fDecimal;
+						percentages.push(fDecimal);
+					});
+					var arr = percentages.sort(function(a, b){return b-a});
+					if (arr.length > 4){
+						arr = arr.splice(4, arr.length);
+					}
+					var fArr = $.grep(percentArr, function(e) {
+						if (arr.length > 0) {
+							var index = arr.indexOf(e.count);
+							if (index === -1){
+								return e;
+							}
+						}
+					});
+					updateTable(fArr);
 				}
 
 				timer = window.setInterval(stepUp, step);
-				percent = window.setInterval(calcPercent, 5000);
+				percent = window.setInterval(calcPercent, step);
 
 				/*Scale dots when map size or zoom is changed*/
 				// d3.behavior.zoom()
