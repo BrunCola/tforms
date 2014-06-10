@@ -552,7 +552,46 @@ angular.module('mean.pages').config(['$stateProvider',
 								},
 								daterange: true
 							}
-						})			
+						})		
+
+			//HTTP
+				// HTTP BY DOMAIN
+				.state('http_by_domain', {
+					url: '/http_by_domain?start&end',
+					templateUrl: 'public/pages/views/http/http_by_domain.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'HTTP By Domain',
+						daterange: true
+					}
+				})
+				// HTTP LOCAL
+				.state('http_local', {
+					url: '/http_local?start&end',
+					templateUrl: 'public/pages/views/http/http_local.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Local HTTP',
+						daterange: true
+					}
+				})
+				// HTTP REMOTE
+				.state('http_remote', {
+					url: '/http_remote?start&end',
+					templateUrl: 'public/pages/views/http/http_remote.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Remote HTTP',
+						daterange: true
+					}
+				})
+				
 			// GENERAL NETWORK
 				// LOCAL IPS
 				.state('local', {
@@ -885,6 +924,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+
 			// ENDPOINT EVENTS	
 				// ENPOINT EVENTS
 				.state('endpoint_events', {
