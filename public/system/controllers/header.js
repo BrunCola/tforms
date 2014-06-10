@@ -86,7 +86,6 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
 			};
 		};
 
-
 		// report modal
 		$scope.reportSettings = function () {
 			$scope.modalInstance = $modal.open({
@@ -120,10 +119,7 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
 			$scope.modalInstance = $modal.open({
 				templateUrl: 'uploadModal.html',
 				controller: uploadInstanceCtrl,
-				keyboard: true,
-				// resolve: {
-				// 	$upload: $upload
-				// }
+				keyboard: true
 			});
 		};
 		var uploadInstanceCtrl = function ($scope, $modalInstance, $upload) {
@@ -141,17 +137,11 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
 					}).success(function(data, status, headers, config) {
 						// file is uploaded successfully
 						console.log('done');
-						console.log(data)
+						console.log(data);
 					});
 				}
 			};
 		};
-
-
-
-		// $scope.test = function() {
-		//  $scope.socket.emit('report_generate', {email: 'andrewdillion6@gmail.com'});
-		// }
 
 		// IOC notification settings
 		$scope.socket.on('disconnect', function(){
