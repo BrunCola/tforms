@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('mean.system').controller('HeaderController', ['$scope', '$rootScope', 'Global', '$location', 'socket', '$modal', 'iocIcon', '$http', '$state', '$upload',
-	function($scope, $rootScope, Global, $location, socket, $modal, iocIcon, $http, $state, $upload) {
+angular.module('mean.system').controller('HeaderController', ['$scope', '$rootScope', 'Global', '$location', 'socket', '$modal', 'iocIcon', '$http', '$state', '$upload', '$timeout',
+	function($scope, $rootScope, Global, $location, socket, $modal, iocIcon, $http, $state, $upload, $timeout) {
 		$scope.global = Global;
 		$scope.socket = socket;
 
@@ -37,6 +37,8 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
 			socket.emit('checkreport');
 			$http.post('/uploads', {test: 'test'}).success(successCallback);
 		}
+
+
 		// User Settings Modal
 		$scope.userSettings = function () {
 			$scope.modalInstance = $modal.open({
@@ -86,6 +88,8 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
 			};
 		};
 
+
+
 		// report modal
 		$scope.reportSettings = function () {
 			$scope.modalInstance = $modal.open({
@@ -115,6 +119,8 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
 			};
 		};
 
+
+		// UPLOAD PANE
 		$scope.uploadOpen = function () {
 			$scope.modalInstance = $modal.open({
 				templateUrl: 'uploadModal.html',
@@ -123,25 +129,63 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
 			});
 		};
 		var uploadInstanceCtrl = function ($scope, $modalInstance, $upload) {
+			$scope.ok = function () {
+				$modalInstance.close();
+			};
 			$scope.onFileSelect = function($files) {
-				//$files: an array of files selected, each file has name, size, and type.
-				for (var i = 0; i < $files.length; i++) {
-					var file = $files[i];
-					$scope.upload = $upload.upload({
-						url: '/uploads', //upload.php script, node.js route, or servlet url
-						method: 'POST',
-						data: { myObj: $scope.fileUploadObj },
-						file: file, // or list of files: $files for html5 only
-					}).progress(function(evt) {
-						console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-					}).success(function(data, status, headers, config) {
-						// file is uploaded successfully
-						console.log('done');
-						console.log(data);
-					});
+				$scope.selectedFiles = [];
+				$scope.progress = [];
+				if ($scope.upload && $scope.upload.length > 0) {
+					for (var i = 0; i < $scope.upload.length; i++) {
+						if ($scope.upload[i] != null) {
+							$scope.upload[i].abort();
+						}
+					}
+				}
+				$scope.upload = [];
+				$scope.uploadResult = [];
+				$scope.selectedFiles = $files;
+				$scope.dataUrls = [];
+				for ( var i = 0; i < $files.length; i++) {
+					var $file = $files[i];
+					if (window.FileReader && $file.type.indexOf('image') > -1) {
+						var fileReader = new FileReader();
+						fileReader.readAsDataURL($files[i]);
+						var loadFile = function(fileReader, index) {
+							fileReader.onload = function(e) {
+								$timeout(function() {
+									$scope.dataUrls[index] = e.target.result;
+								});
+							}
+						}(fileReader, i);
+					}
+					$scope.progress[i] = -1;
+					$scope.start(i);
 				}
 			};
+			$scope.start = function(index) {
+				$scope.progress[index] = 0;
+				$scope.errorMsg = null;
+				$scope.upload[index] = $upload.upload({
+					url : '/uploads',
+					method: 'POST',
+					data : {
+						myModel : $scope.myModel
+					},
+					file: $scope.selectedFiles[index],
+				}).then(function(response) {
+					$scope.uploadResult.push(response.data);
+				}, function(response) {
+					if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
+				}, function(evt) {
+					// Math.min is to fix IE which reports 200% sometimes
+					$scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+				}).xhr(function(xhr){
+					xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
+				});
+			};
 		};
+
 
 		// IOC notification settings
 		$scope.socket.on('disconnect', function(){
