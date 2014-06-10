@@ -1030,6 +1030,24 @@ angular.module('mean.pages').factory('appIcon', [
 						.attr('d', 'M27.738,6.285l-0.121,3.553c0,0-4.175,0.83-4.295,3.904h2.383l0.125,3.551l-4.178-0.117'+
 						'c0,0-1.792,7.338-8.477,7.221l-0.119-3.312c0,0,3.581,0.234,5.492-6.158C18.548,14.926,20.573,6.406,27.738,6.285z');
 					return div;
+				case 'stun':
+					em
+						.append('text')
+						.attr('transform', 'matrix(1 0 0 1 7.8 20.5)')
+						.style('fill', '#EFAA86')
+						.attr('font-family', 'ITCAvantGardeStd-Bk')
+						.attr('font-size', 13)
+						.text('stun');
+					return div;
+				case 'rtmp':
+					em
+						.append('text')
+						.attr('transform', 'matrix(1 0 0 1 8 20.5)')
+						.style('fill', '#AE6498')
+						.attr('font-family', 'ITCAvantGardeStd-Bk')
+						.attr('font-size', 12)
+						.text('rtmp');
+					return div;
 				default:
 
 					return div;
