@@ -103,10 +103,16 @@ var live_connections = require('../controllers/live_connections/live_connections
 //HTTP
 	// HTTP BY DOMAIN
 	var http_by_domain = require('../controllers/http/http_by_domain'); 
+		// HTTP BY DOMAIN LOCAL
+		var http_by_domain_local = require('../controllers/http/http_by_domain_local'); 
 	// HTTP LOCAL
 	var http_local = require('../controllers/http/http_local'); 
+		// HTTP LOCAL BY DOMAIN
+		var http_local_by_domain = require('../controllers/http/http_local_by_domain'); 
 	// HTTP REMOTE
 	var http_remote = require('../controllers/http/http_remote'); 
+		// HTTP REMOTE2LOCAL
+		var http_remote2local = require('../controllers/http/http_remote2local'); 
 
 // GENERAL NETWORK
 	// LOCAL
@@ -322,12 +328,22 @@ module.exports = function(app) {
 		// HTTP BY DOMAIN
 		app.route('/http/http_by_domain')
 		.get(authorization.requiresLogin, http_by_domain.render);
+			// HTTP BY DOMAIN LOCAL
+			app.route('/http/http_by_domain_local')
+			.get(authorization.requiresLogin, http_by_domain_local.render);
 		// HTTP LOCAL
 		app.route('/http/http_local')
 		.get(authorization.requiresLogin, http_local.render);
+			// HTTP LOCAL2REMOTE
+			app.route('/http/http_local_by_domain')
+			.get(authorization.requiresLogin, http_local_by_domain.render);	
 		// HTTP REMOTE
 		app.route('/http/http_remote')
 		.get(authorization.requiresLogin, http_remote.render);
+			// HTTP REMOTE2LOCAL
+			app.route('/http/http_remote2local')
+			.get(authorization.requiresLogin, http_remote2local.render);
+
 
 	// GENERAL NETWORK
 		// LOCAL

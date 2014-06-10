@@ -35,12 +35,12 @@ exports.render = function(req, res) {
 		{
 			title: 'Last Seen',
 			select: 'time',
-			//  link: {
-			//  	type: 'ftp_local2remote', 
-			//  	// val: the pre-evaluated values from the query above
-			//  	val: ['lan_ip', 'lan_zone'],
-			//  	crumb: false
-			// },
+			 link: {
+			 	type: 'http_remote2local', 
+			 	// val: the pre-evaluated values from the query above
+			 	val: ['remote_ip'],
+			 	crumb: false
+			},
 		},
 		{ title: 'Count', select: 'count' },
 		{ title: 'Remote IP', select: 'remote_ip'},

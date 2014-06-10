@@ -31,12 +31,12 @@ exports.render = function(req, res) {
 		{
 			title: 'Last Seen',
 			select: 'time',
-			//  link: {
-			//  	type: 'ftp_local2remote', 
-			//  	// val: the pre-evaluated values from the query above
-			//  	val: ['lan_ip', 'lan_zone'],
-			//  	crumb: false
-			// },
+			 link: {
+			 	type: 'http_by_domain_local', 
+			 	// val: the pre-evaluated values from the query above
+			 	val: ['host'],
+			 	crumb: false
+			},
 		},
 		{ title: 'Count', select: 'count' },
 		{ title: 'Domain', select: 'host' },
