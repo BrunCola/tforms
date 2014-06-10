@@ -49,7 +49,7 @@ module.exports = {
 		secure: true
 	},
 	reports: {
-		active: true,
+		active: false,
 		autoDelete: true,
 		schedule: '12 * * * *',
 		url: 'https://localhost:3000',
@@ -64,7 +64,7 @@ module.exports = {
 		database: 'rp_users'
 	},
 	localUploads: {
-		enabled: true,
+		enabled: false,
 		// remeber this is also set in .gitignore if you plan on moving it
 		directory: './public/uploads/' // with trailing slash
 	},
