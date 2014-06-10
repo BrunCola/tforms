@@ -8,7 +8,7 @@ exports.render = function(req, res) {
 		fs.readFile(req.files[i].path, function (err, data) {
 			var newPath = "./public/uploads/"+req.files[i].name;
 			fs.writeFile(newPath, data, function (err) {
-				res.redirect("/");
+				res.send('done');
 			});
 		});
 	}

@@ -135,21 +135,21 @@ angular.module('mean.pages').controller('iocEventsReportController', ['$scope', 
 					$scope.sev4 = $scope.sevcounts[n].value;
 				}
 			}
-			// var glossary = [];
-			// var glossArr = rowGroup.top(Infinity);
-			// for (var n in glossArr) {
-			// 	// $scope.test = glossArr[n].key;
-			// 	$http({method: 'GET', url: query+'&type=glossary&iocType='+glossArr[n].key}).
-			// 	success(function(data) {
-			// 		if (data.desc[0] !== undefined) {
-			// 			glossary.push({
-			// 				title: data.title,
-			// 				description: data.desc[0].description
-			// 			});
-			// 			$scope.glossary = glossary;
-			// 		}
-			// 	});
-			// }
+			var glossary = [];
+			var glossArr = rowGroup.top(Infinity);
+			for (var n in glossArr) {
+				// $scope.test = glossArr[n].key;
+				$http({method: 'GET', url: query+'&type=glossary&iocType='+glossArr[n].key}).
+				success(function(data) {
+					if (data.desc[0] !== undefined) {
+						glossary.push({
+							title: data.title,
+							description: data.desc[0].description
+						});
+						$scope.glossary = glossary;
+					}
+				});
+			}
 		}
 	});
 
