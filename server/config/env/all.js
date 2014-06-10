@@ -37,6 +37,7 @@ module.exports = {
 		portEnabled: true
 	},
 	sslAssets: {
+		// remeber this is also set in .gitignore if you plan on moving it
 		key: './ssl/server.key',
 		cert: './ssl/server.crt'
 	},
@@ -49,6 +50,7 @@ module.exports = {
 	},
 	reports: {
 		active: true,
+		autoDelete: true,
 		schedule: '12 * * * *',
 		url: 'https://localhost:3000',
 		email: 'cron@rapidphire.com',
@@ -62,13 +64,13 @@ module.exports = {
 		database: 'rp_users'
 	},
 	localUploads: {
-		directory: './public/uploads/', // with trailing slash
-		enabled: true
+		enabled: true,
+		// remeber this is also set in .gitignore if you plan on moving it
+		directory: './public/uploads/' // with trailing slash
 	},
 	templateEngine: 'swig',
 	// The secret should be set to a non-guessable string that
 	// is used to compute a session hash
 	sessionSecret: 'har4aC6Mix3Vot7',
-	// The name of the MongoDB collection to store sessions in
 	sessionCollection: 'sessions'
 };

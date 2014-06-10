@@ -55,9 +55,9 @@ function sendReport(user) {
 				function() {
 					page.open(config.reports.url+'/login', 'post', 'email='+config.reports.email+'&password='+config.reports.pass, function (status) {
 						if (status !== 'success') {
-							console.log('Unable to post!');
+							console.log('Unable to post login!');
 						} else {
-							console.log('logged in');
+							console.log('Logged in.');
 						}
 					});
 				},
@@ -78,18 +78,21 @@ function sendReport(user) {
 						smtpTransport.sendMail(mailOptions, function(error, response){
 							if (error) {
 								console.log(error);
+								console.log('Mailer error for '+user.email);
 								loadInProgress = false;
 							} else {
-								fs.exists('./temp/'+fileName, function(exists) {
-									if (exists) {
-										fs.unlinkSync('./temp/'+fileName);
-										loadInProgress = false;
-										return;
-									} else {
-										loadInProgress = false;
-										return;
-									}
-								});
+								if (config.reports.autoDelete === true) {
+									fs.exists('./temp/'+fileName, function(exists) {
+										if (exists) {
+											fs.unlinkSync('./temp/'+fileName);
+											loadInProgress = false;
+											return;
+										} else {
+											loadInProgress = false;
+											return;
+										}
+									});
+								}
 								return;
 							}
 						})

@@ -133,7 +133,7 @@
 			</li>
 			<li class="navbar-nav nav pull-right"><a href="#" id="welcome" class="dropdown-toggle" data-toggle="dropdown">Welcome, {{global.user.email}} <b class="caret"></b></a>
 				<ul class="dropdown-menu">
-					<!-- <li><a href="" ng-click="uploadOpen()"><i class="fa fa-cog"></i>Upload</a></li> -->
+					<li ng-show="{{global.user.uploads}} == true"><a href="" ng-click="uploadOpen()"><i class="fa fa-cog"></i>Upload</a></li>
 					<li><a href="" ng-click="userSettings()"><i class="fa fa-cog"></i> My Preferences</a></li>
 					<!-- <li><a href="javascript:void(0);" onclick="javascript:page('null','get_cron', null, null, null);"><i class="icon-envelope"></i> Manage Reports</a></li> -->
 					<!-- <li><a href="javascript:void(0);" onclick="#"><i class="fa fa-user"></i> Manage Users</a></li> -->
