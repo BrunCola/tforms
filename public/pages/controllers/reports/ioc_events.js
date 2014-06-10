@@ -3,8 +3,10 @@
 angular.module('mean.pages').controller('iocEventsReportController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
 	$scope.global = Global;
 	var query;
-	if ($location.$$search.start && $location.$$search.end) {
-	 query = '/reports/ioc_events?start='+$location.$$search.start+'&end='+$location.$$search.end;
+	if ($location.$$search.database){
+		query = '/reports/ioc_events?start='+$location.$$search.start+'&end='+$location.$$search.end+'&database='+$location.$$search.database;
+	} else if ($location.$$search.start && $location.$$search.end) {
+		query = '/reports/ioc_events?start='+$location.$$search.start+'&end='+$location.$$search.end;
 	} else {
 		query = '/reports/ioc_events?';
 	}

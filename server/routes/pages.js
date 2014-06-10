@@ -328,7 +328,7 @@ module.exports = function(app) {
 		// ENDPOINT EVENTS
 		app.route('/general_network/endpoint_events')
 		.get(authorization.requiresLogin, endpoint_events.render);
-			// ENDPOINT EVENTS USER
+			// ENDPOINT EVENTS USERw
 			app.route('/general_network/endpoint_events_user')
 			.get(authorization.requiresLogin, endpoint_events_user.render);
 				// ENDPOINT EVENTS USER DRILL

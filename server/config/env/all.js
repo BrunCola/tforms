@@ -48,8 +48,8 @@ module.exports = {
 		secure: true
 	},
 	reports: {
-		active: true,
-		schedule: '2 * * * *',
+		active: false,
+		schedule: '29 * * * *',
 		url: 'https://localhost:3000',
 		email: 'cron@rapidphire.com',
 		pass: 'rdSF7ovD6NIMOTIHNuiZSewzgRCbW4RRbM9kfzkEP7UndVnuaxqiIV20jkx2CgDKxqs9LR76RSQSmpns'
