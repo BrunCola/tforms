@@ -44,12 +44,12 @@ exports.render = function(req, res) {
 			{
 				title: 'Last Seen',
 				select: 'time',
-				// link: {
-				// 	type: 'irc_shared',
-				// 	// val: the pre-evaluated values from the query above
-				// 	val: ['lan_ip','lan_zone','remote_ip'],
-				// 	crumb: false
-				// }
+				link: {
+					type: 'http_remote2local_drill',
+					// val: the pre-evaluated values from the query above
+					val: ['lan_ip','lan_zone','remote_ip'],
+					crumb: false
+				}
 			},
 			{ title: 'Count', select: 'count' },
 			{ title: 'Zone', select: 'lan_zone' },
