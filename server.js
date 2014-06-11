@@ -47,7 +47,7 @@ httpapp.get('*',function(req, res){
     if (config.httpRedirect.link && config.portEnabled) {
         res.redirect(config.httpRedirect.link+':'+SSLport+req.url);
     } else {
-        res.redirect(config.httpRedirect.link+'/'+req.url);
+        res.redirect(config.httpRedirect.link+req.url);
     }
 });
 server.listen(SSLport);
