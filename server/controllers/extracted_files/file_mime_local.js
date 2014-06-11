@@ -44,6 +44,7 @@ exports.render = function(req, res) {
 					},
 				},
 				{ title: 'Total Extracted Files', select: 'count' },
+				{ title: 'File Type', select: 'mime', dView: false },
 				{ title: 'Zone', select: 'lan_zone' },
 				{ title: 'Machine Name', select: 'machine' },
 				{ title: 'Lan IP', select: 'lan_ip' },

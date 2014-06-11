@@ -35,7 +35,7 @@ exports.render = function(req, res) {
 			 	crumb: false
 			},
 		},
-		{ title: 'Count', select: 'count' },
+		{ title: 'Connections', select: 'count' },
 		{ title: 'To', select: 'receiptto' },
 		{ title: 'IOC Count', select: 'ioc_count' }
 	];

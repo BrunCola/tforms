@@ -29,6 +29,16 @@ exports.render = function(req, res) {
 				'`remote_country`, ' +
 				'`remote_asn`, ' +
 				'`remote_asn_name`, ' +
+				'`in_bytes`, ' +
+				'`out_bytes`, ' +
+				'`dns`, ' +
+				'`http`, ' +
+				'`ssl`, ' +
+				'`ssh`, ' +
+				'`ftp`, ' +
+				'`irc`, ' +
+				'`smtp`, ' +
+				'`file`, ' +
 				'`ioc`, ' +
 				'`ioc_severity`, ' +
 				'`ioc_typeInfection`, ' +
@@ -57,11 +67,21 @@ exports.render = function(req, res) {
 			{ title: 'Remote Country', select: 'remote_country' },
 			{ title: 'Remote ASN', select: 'remote_asn' },
 			{ title: 'Remote ASN Name', select: 'remote_asn_name' },
+			{ title: 'B to Remote', select: 'in_bytes' },
+			{ title: 'B from Remote', select: 'out_bytes'},
 			{ title: 'IOC', select: 'ioc' },
 			{ title: 'IOC Severity', select: 'ioc_severity' },
 			{ title: 'Infection Stage', select: 'ioc_typeInfection' },
 			{ title: 'Indicator Type', select: 'ioc_typeIndicator' },
-			{ title: 'IOC Count', select: 'ioc_count' }
+			{ title: 'IOC Count', select: 'ioc_count' },
+			{ title: 'DNS', select: 'dns', dView:false },
+			{ title: 'HTTP', select: 'http', dView:false },
+			{ title: 'SSL', select: 'ssl', dView:false },
+			{ title: 'SSH', select: 'ssh', dView:false },
+			{ title: 'FTP', select: 'ftp', dView:false },
+			{ title: 'IRC', select: 'irc', dView:false },
+			{ title: 'SMTP', select: 'smtp', dView:false },
+			{ title: 'File', select: 'file', dView:false }
 		];
 		var table1Settings = {
 			sort: [[0, 'desc']],

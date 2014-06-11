@@ -24,6 +24,7 @@ exports.render = function(req, res) {
 				'sum(`count`) AS `count`, '+
 				'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time, '+
 				'`lan_zone`, '+
+				'`machine`,'+
 				'`lan_ip`, '+
 				'`l7_proto`, '+
 				'sum(`in_packets`) AS in_packets, '+
@@ -60,6 +61,9 @@ exports.render = function(req, res) {
 					},
 				},
 				{ title: 'Applications', select: 'l7_proto' },
+				{ title: 'Local IP', select: 'lan_ip', dView:false },
+				{ title: 'Machine Name', select: 'machine', dView:false },
+				{ title: 'Zone', select: 'lan_zone', dView:false },
 				{ title: 'MB to Remote', select: 'in_bytes' },
 				{ title: 'MB from Remote', select: 'out_bytes'},
 				{ title: 'Packets to Remote', select: 'in_packets', dView:false },

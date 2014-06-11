@@ -63,7 +63,7 @@ exports.render = function(req, res) {
 				{ title: 'ASN', select: 'remote_asn' },
 				{ title: 'ASN Name', select: 'remote_asn_name' },
 				{ title: 'Protocol', select: 'proto' },
-				{ title: 'HTTP Host', select: 'http_host' },
+				{ title: 'Domain', select: 'http_host' },
 				{ title: 'IOC', select: 'ioc' },
 				{ title: 'IOC Type', select: 'ioc_typeIndicator' },
 				{ title: 'IOC Stage', select: 'ioc_typeInfection' },
