@@ -114,7 +114,7 @@ function sendReport(user) {
 					ph.exit();
 					clearInterval(interval);
 				}
-			}, 20000);
+			}, 60000);
 		});
 	});
 }
