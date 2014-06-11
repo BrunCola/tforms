@@ -48,7 +48,7 @@ exports.render = function(req, res) {
 			},
 			{ title: 'Connections', select: 'count' },
 			{ title: 'Zone', select: 'lan_zone' },
-			{ title: 'LAN IP', select: 'lan_ip' },
+			{ title: 'Local IP', select: 'lan_ip' },
 			{ title: 'Domain', select: 'host' },
 			{ title: 'IOC Count', select: 'ioc_count' }
 		];

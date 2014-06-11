@@ -68,7 +68,7 @@ exports.render = function(req, res) {
 			{ title: 'Applications', select: 'l7_proto' },
 			{ title: 'Zone', select: 'lan_zone' },
 			{ title: 'Machine Name', select: 'machine' },
-			{ title: 'LAN IP', select: 'lan_ip' },
+			{ title: 'Local IP', select: 'lan_ip' },
 			{ title: 'Remote IP', select: 'remote_ip' },
 			{ title: 'Remote ASN', select: 'remote_asn_name' },
 			{ title: 'Remote Country', select: 'remote_country' },

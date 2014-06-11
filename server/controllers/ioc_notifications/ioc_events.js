@@ -211,7 +211,7 @@ exports.render = function(req, res) {
 				{ title: 'IOC Stage', select: 'ioc_typeInfection' },
 				{ title: 'Zone', select: 'lan_zone' },
 				{ title: 'Machine', select: 'machine' },
-				{ title: 'LAN IP', select: 'lan_ip' },
+				{ title: 'Local IP', select: 'lan_ip' },
 				{ title: 'Remote IP', select: 'remote_ip' },
 				{ title: 'Remote Country', select: 'remote_country' },
 				{ title: 'Flag', select: 'remote_cc', },

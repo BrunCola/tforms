@@ -50,7 +50,7 @@ exports.render = function(req, res) {
 				},
 				{ title: 'Total Extracted Files', select: 'count' },
 				{ title: 'Domain', select: 'http_host' },
-				{ title: 'Lan IP', select: 'lan_ip' },
+				{ title: 'Local IP', select: 'lan_ip' },
 				{ title: 'Zone', select: 'lan_zone' },
 				{ title: 'File Type', select: 'mime' },
 				// { title: 'File Name', select: 'name', sClass:'file' },
