@@ -46,7 +46,7 @@ exports.render = function(req, res) {
 			{ title: 'Total Extracted Files', select: 'count' },
 			{ title: 'Zone', select: 'lan_zone' },
 			{ title: 'Machine', select: 'machine' },
-			{ title: 'LAN IP', select: 'lan_ip' },
+			{ title: 'Local IP', select: 'lan_ip' },
 			{ title: 'Total Size (MB)', select: 'size' },
 			{ title: 'Total IOC Hits', select: 'ioc_count' }
 		];

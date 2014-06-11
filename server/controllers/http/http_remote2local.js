@@ -53,7 +53,7 @@ exports.render = function(req, res) {
 			},
 			{ title: 'Count', select: 'count' },
 			{ title: 'Zone', select: 'lan_zone' },
-			{ title: 'LAN IP', select: 'lan_ip' },
+			{ title: 'Local IP', select: 'lan_ip' },
 			{ title: 'Remote IP', select: 'remote_ip'},
 			{ title: 'Remote port', select: 'remote_port' },
 			{ title: 'Flag', select: 'remote_cc' },

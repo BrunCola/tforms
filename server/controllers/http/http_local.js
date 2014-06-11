@@ -42,7 +42,7 @@ exports.render = function(req, res) {
 		},
 		{ title: 'Count', select: 'count' },
 		{ title: 'Zone', select: 'lan_zone' },
-		{ title: 'LAN IP', select: 'lan_ip' },
+		{ title: 'Local IP', select: 'lan_ip' },
 		{ title: 'IOC Count', select: 'ioc_count' }
 	];
 	var table1Settings = {

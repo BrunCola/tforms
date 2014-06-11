@@ -57,7 +57,7 @@ exports.render = function(req, res) {
 		{ title: 'IOC Stage', select: 'ioc_typeInfection' },
 		{ title: 'Zone', select: 'lan_zone' },
 		{ title: 'Machine', select: 'machine' },
-		{ title: 'LAN IP', select: 'lan_ip' },
+		{ title: 'Local IP', select: 'lan_ip' },
 		{ title: 'Bytes to Remote', select: 'in_bytes'},
 		{ title: 'Bytes from Remote', select: 'out_bytes'},
 		{ title: 'Packets to Remote', select: 'in_packets', dView: false  },
