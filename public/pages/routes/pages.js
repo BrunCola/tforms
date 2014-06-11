@@ -552,7 +552,92 @@ angular.module('mean.pages').config(['$stateProvider',
 								},
 								daterange: true
 							}
-						})			
+						})		
+
+			//HTTP
+				// HTTP BY DOMAIN
+				.state('http_by_domain', {
+					url: '/http_by_domain?start&end',
+					templateUrl: 'public/pages/views/http/http_by_domain.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'HTTP By Domain',
+						daterange: true
+					}
+				})
+					// HTTP BY DOMAIN LOCAL
+					.state('http_by_domain_local', {
+						url: '/http_by_domain_local?start&end&host',
+						templateUrl: 'public/pages/views/http/http_by_domain_local.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Local HTTP By Domain',
+							subtitleElm: {
+								'Domain': 'host'
+							},
+							daterange: true
+						}
+					})
+				// HTTP LOCAL
+				.state('http_local', {
+					url: '/http_local?start&end',
+					templateUrl: 'public/pages/views/http/http_local.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Local HTTP',
+						daterange: true
+					}
+				})
+					// HTTP LOCAL2REMOTE
+					.state('http_local_by_domain', {
+						url: '/http_local_by_domain?start&end&lan_ip&lan_zone',
+						templateUrl: 'public/pages/views/http/http_local_by_domain.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Local to Remote HTTP',
+							subtitleElm: {
+								'LAN IP': 'lan_ip',
+								'Zone': 'lan_zone'
+							},
+							daterange: true
+						}
+					})
+				// HTTP REMOTE
+				.state('http_remote', {
+					url: '/http_remote?start&end',
+					templateUrl: 'public/pages/views/http/http_remote.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Remote HTTP',
+						daterange: true
+					}
+				})
+					// HTTP REMOTE2LOCAL
+					.state('http_remote2local', {
+						url: '/http_remote2local?start&end&remote_ip',
+						templateUrl: 'public/pages/views/http/http_remote2local.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Remote to Local HTTP',
+							subtitleElm: {
+								'Remote IP': 'remote_ip'
+							},
+							daterange: true
+						}
+					})
+
 			// GENERAL NETWORK
 				// LOCAL IPS
 				.state('local', {
@@ -885,6 +970,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+
 			// ENDPOINT EVENTS	
 				// ENPOINT EVENTS
 				.state('endpoint_events', {
