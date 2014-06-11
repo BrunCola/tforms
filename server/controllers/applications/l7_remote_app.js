@@ -25,6 +25,9 @@ exports.render = function(req, res) {
 				'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time,'+
 				'`l7_proto`,'+
 				'`remote_ip`,'+
+				'`remote_country`,'+
+				'`remote_cc`,'+
+				'`remote_asn_name`,'+
 				'sum(`in_packets`) AS in_packets,'+
 				'sum(`out_packets`) AS out_packets,'+
 				'(sum(`in_bytes`) / 1048576) AS in_bytes,'+
@@ -58,6 +61,10 @@ exports.render = function(req, res) {
 				},
 			},
 			{ title: 'Applications', select: 'l7_proto' },
+			{ title: 'Remote IP', select: 'remote_ip', dView:false },
+			{ title: 'Remote Country', select: 'remote_country', dView:false },
+			{ title: 'Flag', select: 'remote_cc', dView:false },
+			{ title: 'Remote ASN', select: 'remote_asn_name', dView:false },
 			{ title: 'MB to Remote', select: 'in_bytes' },
 			{ title: 'MB from Remote', select: 'out_bytes'},
 			{ title: 'Packets to Remote', select: 'in_packets', dView:false },
