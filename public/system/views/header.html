@@ -56,28 +56,51 @@
 					</div>
 
 				</form>
-			</div>
-			<div class="modal-footer">
-				<button class="btn btn-primary" ng-click="ok()">Close</button>
-			</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-primary" ng-click="ok()">Close</button>
+				</div>
 		</script>
 
 		<script type="text/ng-template" id="uploadModal.html">
 			<div class="modal-header">
-				<h3>Text goes here</h3>
+				<h3>Upload Local Updates</h3>
 			</div>
 			<div class="modal-body">
-				<input type="text" ng-model="fileUploadObj">
-					<input type="file" ng-file-select="onFileSelect($files)" >
-					<input type="file" ng-file-select="onFileSelect($files)" multiple>
-					<div ng-file-drop="onFileSelect($files)" ng-file-drag-over-class="optional-css-class"
-						ng-show="dropSupported">drop files here</div>
-					<div ng-file-drop-available="dropSupported=true" 
-						ng-show="!dropSupported">HTML5 Drop File is not supported!</div>
-					<button ng-click="upload.abort()">Cancel Upload</button>
+				<div style="width: 70%;margin: 0 auto;">
+					<div style="width: 70%;margin: 0 auto;">
+						Upload file(s): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="file" ng-file-select="onFileSelect($files)" multiple onclick="this.value=null">
+					</div>
+					<br/>
+					<div style="width: 70%;margin: 0 auto;">
+						<div ng-show="dropSupported" class="drop-box" ng-file-drop="onFileSelect($files);" ng-file-drop-available="dropSupported=true">
+							or drop files here
+						</div>
+					</div>
+					<div ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
+					<br/>
+					<div ng-show="progress.length > 0" style="width: 70%;margin: 0 auto;">
+						<div class="err" ng-show="errorMsg != null">{{errorMsg}}</div>
+						Progress:
+						<br/>
+						<div ng-show="selectedFiles != null">
+							<div class="sel-file" ng-repeat="f in selectedFiles">
+								{{($index + 1) + '.'}}
+								<img ng-show="dataUrls[$index]" ng-src="{{dataUrls[$index]}}">
+								<button class="button" ng-click="start($index)" ng-show="progress[$index] < 0">Start</button>
+								<span class="progress" ng-show="progress[$index] >= 0">
+									<div style="width:{{progress[$index]}}%">{{progress[$index]}}%</div>
+								</span>
+								<button class="button" ng-click="abort($index)" ng-show="hasUploader($index) && progress[$index] < 100">Abort</button>
+								{{f.name}} - size: {{f.size}}B - type: {{f.type}}
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-primary" ng-click="ok()">Sign In</button>
+				<button class="btn btn-primary" ng-click="ok()">Close</button>
 			</div>
 		</script>
 
@@ -133,7 +156,7 @@
 			</li>
 			<li class="navbar-nav nav pull-right"><a href="#" id="welcome" class="dropdown-toggle" data-toggle="dropdown">Welcome, {{global.user.email}} <b class="caret"></b></a>
 				<ul class="dropdown-menu">
-					<!-- <li><a href="" ng-click="uploadOpen()"><i class="fa fa-cog"></i>Upload</a></li> -->
+					<li ng-show="{{global.user.uploads}} == true"><a href="" ng-click="uploadOpen()"><i class="fa fa-upload"></i> Upload Updates</a></li>
 					<li><a href="" ng-click="userSettings()"><i class="fa fa-cog"></i> My Preferences</a></li>
 					<!-- <li><a href="javascript:void(0);" onclick="javascript:page('null','get_cron', null, null, null);"><i class="icon-envelope"></i> Manage Reports</a></li> -->
 					<!-- <li><a href="javascript:void(0);" onclick="#"><i class="fa fa-user"></i> Manage Users</a></li> -->

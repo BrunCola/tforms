@@ -3,8 +3,9 @@ Thumbs.db
 node_modules/
 bower_components/
 public/system/lib
+public/uploads/*
 test/coverage/
-ssl/
+ssl/*
 temp/*.pdf
 npm-dedug.log
 ._*

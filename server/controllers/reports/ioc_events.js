@@ -7,7 +7,7 @@ var dataTable = require('../constructors/datatable'),
 
 exports.render = function(req, res) {
 	var database = req.session.passport.user.database;
-	if ((req.user.email === config.reports.email) && (req.query.database)) {
+	if ((req.session.passport.user.email === config.reports.email) && (req.query.database !== null)) {
 		database = req.query.database;
 	}
 	// var database = null;

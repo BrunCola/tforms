@@ -100,6 +100,20 @@ var live_connections = require('../controllers/live_connections/live_connections
 			// SMTP FROM SENDER BY SUBJECT
 			var smtp_from_sender_by_subject = require('../controllers/email/smtp_from_sender_by_subject') 
 
+//HTTP
+	// HTTP BY DOMAIN
+	var http_by_domain = require('../controllers/http/http_by_domain'); 
+		// HTTP BY DOMAIN LOCAL
+		var http_by_domain_local = require('../controllers/http/http_by_domain_local'); 
+	// HTTP LOCAL
+	var http_local = require('../controllers/http/http_local'); 
+		// HTTP LOCAL BY DOMAIN
+		var http_local_by_domain = require('../controllers/http/http_local_by_domain'); 
+	// HTTP REMOTE
+	var http_remote = require('../controllers/http/http_remote'); 
+		// HTTP REMOTE2LOCAL
+		var http_remote2local = require('../controllers/http/http_remote2local'); 
+
 // GENERAL NETWORK
 	// LOCAL
 	var local = require('../controllers/general_network/local');
@@ -159,6 +173,7 @@ var live_connections = require('../controllers/live_connections/live_connections
 	var ftp_remote = require('../controllers/general_network/ftp_remote'); 
 		// REMOTE2LOCAL FTP
 		var ftp_remote2local = require('../controllers/general_network/ftp_remote2local');
+
 // REPORTS
 	// IOC EVENTS REPORT
 	var ioc_events_report = require('../controllers/reports/ioc_events');	
@@ -309,6 +324,27 @@ module.exports = function(app) {
 				app.route('/email/smtp_from_sender_by_subject')
 				.get(authorization.requiresLogin, smtp_from_sender_by_subject.render);
 
+	//HTTP
+		// HTTP BY DOMAIN
+		app.route('/http/http_by_domain')
+		.get(authorization.requiresLogin, http_by_domain.render);
+			// HTTP BY DOMAIN LOCAL
+			app.route('/http/http_by_domain_local')
+			.get(authorization.requiresLogin, http_by_domain_local.render);
+		// HTTP LOCAL
+		app.route('/http/http_local')
+		.get(authorization.requiresLogin, http_local.render);
+			// HTTP LOCAL2REMOTE
+			app.route('/http/http_local_by_domain')
+			.get(authorization.requiresLogin, http_local_by_domain.render);	
+		// HTTP REMOTE
+		app.route('/http/http_remote')
+		.get(authorization.requiresLogin, http_remote.render);
+			// HTTP REMOTE2LOCAL
+			app.route('/http/http_remote2local')
+			.get(authorization.requiresLogin, http_remote2local.render);
+
+
 	// GENERAL NETWORK
 		// LOCAL
 		app.route('/general_network/local')
@@ -328,7 +364,7 @@ module.exports = function(app) {
 		// ENDPOINT EVENTS
 		app.route('/general_network/endpoint_events')
 		.get(authorization.requiresLogin, endpoint_events.render);
-			// ENDPOINT EVENTS USER
+			// ENDPOINT EVENTS USERw
 			app.route('/general_network/endpoint_events_user')
 			.get(authorization.requiresLogin, endpoint_events_user.render);
 				// ENDPOINT EVENTS USER DRILL
@@ -409,7 +445,7 @@ module.exports = function(app) {
 
 	// UPLOADS
 		app.route('/uploads')
-			.post(upload.render);
+			.post(authorization.requiresLogin, upload.render);
 
 
 };

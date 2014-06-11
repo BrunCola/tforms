@@ -3,8 +3,10 @@
 angular.module('mean.pages').controller('iocEventsReportController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
 	$scope.global = Global;
 	var query;
-	if ($location.$$search.start && $location.$$search.end) {
-	 query = '/reports/ioc_events?start='+$location.$$search.start+'&end='+$location.$$search.end;
+	if ($location.$$search.database){
+		query = '/reports/ioc_events?start='+$location.$$search.start+'&end='+$location.$$search.end+'&database='+$location.$$search.database;
+	} else if ($location.$$search.start && $location.$$search.end) {
+		query = '/reports/ioc_events?start='+$location.$$search.start+'&end='+$location.$$search.end;
 	} else {
 		query = '/reports/ioc_events?';
 	}
@@ -133,21 +135,21 @@ angular.module('mean.pages').controller('iocEventsReportController', ['$scope', 
 					$scope.sev4 = $scope.sevcounts[n].value;
 				}
 			}
-			// var glossary = [];
-			// var glossArr = rowGroup.top(Infinity);
-			// for (var n in glossArr) {
-			// 	// $scope.test = glossArr[n].key;
-			// 	$http({method: 'GET', url: query+'&type=glossary&iocType='+glossArr[n].key}).
-			// 	success(function(data) {
-			// 		if (data.desc[0] !== undefined) {
-			// 			glossary.push({
-			// 				title: data.title,
-			// 				description: data.desc[0].description
-			// 			});
-			// 			$scope.glossary = glossary;
-			// 		}
-			// 	});
-			// }
+			var glossary = [];
+			var glossArr = rowGroup.top(Infinity);
+			for (var n in glossArr) {
+				// $scope.test = glossArr[n].key;
+				$http({method: 'GET', url: query+'&type=glossary&iocType='+glossArr[n].key}).
+				success(function(data) {
+					if (data.desc[0] !== undefined) {
+						glossary.push({
+							title: data.title,
+							description: data.desc[0].description
+						});
+						$scope.glossary = glossary;
+					}
+				});
+			}
 		}
 	});
 

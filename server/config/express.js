@@ -11,6 +11,7 @@ var express = require('express'),
 	methodOverride = require('method-override'),
 	cookieParser = require('cookie-parser'),
 	session = require('express-session'),
+	multer = require('multer'),
 	errorHandler = require('errorhandler'),
 	mean = require('./meanio'),
 	consolidate = require('consolidate'),
@@ -66,6 +67,7 @@ module.exports = function(app, passport, db, version) {
 	app.use(bodyParser());
 	app.use(methodOverride());
 	app.use(cookieParser());
+	app.use(multer());
 
 	// Import your asset file
 	var assets = require('./assets.json');
