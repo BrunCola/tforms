@@ -45,7 +45,7 @@ exports.render = function(req, res) {
 					crumb: false
 				}
 			},
-			{ title: 'Count', select: 'count' },
+			{ title: 'Connections', select: 'count' },
 			{ title: 'Zone', select: 'lan_zone' },
 			{ title: 'Machine Name', select: 'machine' },
 			{ title: 'LAN IP', select: 'lan_ip' },

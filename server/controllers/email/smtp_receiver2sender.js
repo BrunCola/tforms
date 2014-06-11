@@ -63,7 +63,7 @@ exports.render = function(req, res) {
 					crumb: false
 				}
 			},
-			{ title: 'Count', select: 'count' },
+			{ title: 'Connections', select: 'count' },
 			{ title: 'From', select: 'mailfrom' },
 			{ title: 'To', select: 'receiptto' },
 			{ title: 'Reply To', select: 'reply_to' },

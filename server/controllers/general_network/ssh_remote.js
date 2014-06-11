@@ -40,7 +40,7 @@ exports.render = function(req, res) {
 			 	crumb: false
 			},
 		},
-		{ title: 'Count', select: 'count' },
+		{ title: 'Connections', select: 'count' },
 		{ title: 'Remote IP', select: 'remote_ip'},
 		{ title: 'Remote Country', select: 'remote_country' },
 		{ title: 'Flag', select: 'remote_cc' },

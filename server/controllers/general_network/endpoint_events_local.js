@@ -45,7 +45,7 @@ exports.render = function(req, res) {
 				crumb: false
 			},
 		},
-		{ title: 'Count', select: 'count' },
+		{ title: 'Connections', select: 'count' },
 		{ title: 'Source IP', select: 'src_ip' },
 		{ title: 'Alert Source', select: 'alert_source'},
 		{ title: 'Program Source', select: 'program_source' },
