@@ -44,7 +44,7 @@ require('./server/config/report.js')(db);
 var SSLport = process.env.sslPORT || config.SSLport;
 var HTTPport = process.env.httpPORT || config.HTTPport;
 httpapp.get('*',function(req, res){
-	if (config.httpRedirect.link && config.httpRedirect.portEnabled) {
+	if (config.httpRedirect.portEnabled) {
 		res.redirect(config.httpRedirect.link+':'+SSLport+req.url);
 	} else {
 		res.redirect(config.httpRedirect.link+req.url);
