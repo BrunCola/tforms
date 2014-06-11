@@ -23,7 +23,7 @@ var express = require('express'),
 	util = require('./util'),
 	assetmanager = require('assetmanager');
 
-module.exports = function(app, passport, db, version) {
+module.exports = function(app, passport, db, version, io) {
 	app.set('showStackError', true);
 
 	// Prettify HTML
@@ -132,7 +132,7 @@ module.exports = function(app, passport, db, version) {
 			// used and shared by routes as further middlewares and is not a
 			// route by itself
 			util.walk(appPath + '/server/routes', 'middlewares', function(path) {
-				require(path)(app, passport, version);
+				require(path)(app, passport, version, io);
 			});
 		}
 

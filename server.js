@@ -7,7 +7,12 @@ var fs = require('fs'),
     passport = require('passport'),
     config = require('./server/config/config'),
 	mysql = require('mysql'),
-    express = require('express');
+    express = require('express'),
+    pjson = require('./package.json'),
+    appPath = process.cwd();
+
+    var mean = require('./server/config/meanio');
+    mean.app('', {});
     // logger = require('mean-logger');
 
 
@@ -29,14 +34,35 @@ var options = {
     cert: fs.readFileSync(config.sslAssets.cert)
     //requestCert: true
 };
+
 // Bootstrap Models, Dependencies, Routes and the app as an express app
-var app = require('./server/config/system/bootstrap')(passport, db, options);
+var d = new Date();
+var n = d.getFullYear();
+var version = n +' Phirelight Security Solutions - rapidPHIRE version: '+pjson.version;
+
+// Bootstrap passport config
+require(appPath + '/server/config/passport')(passport, db);
+
+// Express settings
+var app = express();
 
 var httpapp = express(),
-    http = require('http').createServer(httpapp),
-    https = require('https'),
-    server = https.createServer(options, app),
-    io = require('socket.io').listen(server);
+http = require('http').createServer(httpapp),
+https = require('https'),
+server = https.createServer(options, app),
+io = require('socket.io').listen(server);
+
+// setup socket connections
+var socketCount = 0;
+// io.on('connection', function(socket) {
+// 	exports.socket = function(socket) {
+// 		return function(req, res) {
+// 			console.log(req)
+// 			conosle.log(socket)
+// 		}
+// 	}
+// });
+require(appPath + '/server/config/express')(app, passport, db, version, io);
 
 require('./server/config/socket.js')(app, passport, io);
 require('./server/config/report.js')(db);

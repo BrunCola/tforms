@@ -38,6 +38,7 @@ module.exports = function (sql, database, callback) {
 							'date_filed': d.time,
 							'severity': d.ioc_severity,
 							'ioc': d.ioc,
+							'l7_proto': d.l7_proto,
 							'units': d.ioc_count,
 							'count': d.count,
 							'country': d.remote_country

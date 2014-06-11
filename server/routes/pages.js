@@ -3,9 +3,6 @@
 // Auth Check
 var authorization = require('./middlewares/authorization');
 
-// LIVE CONNECTION
-var live_connections = require('../controllers/live_connections/live_connections');
-
 // IOC NOTIFICATIONS
 	// IOC EVENTS
 	var ioc_events = require('../controllers/ioc_notifications/ioc_events');
@@ -183,8 +180,9 @@ var live_connections = require('../controllers/live_connections/live_connections
 // ARCHIVE
 	var upload = require('../controllers/upload');
 
-module.exports = function(app) {
+module.exports = function(app, passport, version, io) {
 	// LIVE CONNECTIONS
+	var live_connections = require('../controllers/live_connections/live_connections')(io);
 	app.route('/live_connections/live_connections')
 	.get(authorization.requiresLogin, live_connections.render);
 
