@@ -264,10 +264,11 @@ exports.render = function(req, res) {
 			}
 			var table3SQL = 'SELECT '+
 					'count(*) AS count,'+
-					'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time,'+
-					'l7_proto,'+
-					'(sum(`in_bytes`) / 1048576) AS in_bytes,'+
-					'(sum(`out_bytes`) / 1048576) AS out_bytes '+
+					'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time,'+
+					'`l7_proto`,'+
+					'`l7_proto` AS `l7_description`, '+
+					'(sum(`in_bytes`) / 1048576) AS `in_bytes`,'+
+					'(sum(`out_bytes`) / 1048576) AS `out_bytes` '+
 				'FROM '+
 					'`conn_l7_meta` '+
 				'WHERE '+
@@ -280,14 +281,15 @@ exports.render = function(req, res) {
 			var table3Params = [
 				{ title: 'Last Seen', select: 'time' },
 				{ title: 'Connections', select: 'count' },
-				{ title: 'Layer 7 protocol', select: 'l7_proto' },
+				{ title: 'Application', select: 'l7_proto' },
+				{ title: ' ', select: 'l7_description' },
 				{ title: 'MB to Remote', select: 'in_bytes' },
 				{ title: 'MB from Remote', select: 'out_bytes' }
 			];
 			var table3Settings = {
 				sort: [[ 3, "desc" ],[ 4, "desc" ]],
 				div: 'table3',
-				title: 'Layer 7 Protocol Bandwidth',
+				title: 'Application Bandwidth',
 				pagebreakBefore: true
 			}
 			var crossfilterSQL = 'SELECT '+
@@ -310,24 +312,24 @@ exports.render = function(req, res) {
 					'`ioc`,'+
 					'`ioc_severity`';
 			var glossarySQL = 'SELECT '+
-				'count(*) AS `count`,'+
-				'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS `time`,'+
-				'`remote_country`,'+
-				'`ioc`,'+
-				'`ioc_severity` '+
-			'FROM '+
-				'`conn_ioc` '+
-			'WHERE '+
-				'time BETWEEN '+start+' AND '+end+' '+
-				'AND `ioc_count` > 0 '+
-				'AND `trash` IS NULL '+
-			'GROUP BY '+
-				'month(from_unixtime(`time`)),'+
-				'day(from_unixtime(`time`)),'+
-				'hour(from_unixtime(`time`)),'+
-				'`remote_country`,'+
-				'`ioc`,'+
-				'`ioc_severity`';
+					'count(*) AS `count`,'+
+					'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS `time`,'+
+					'`remote_country`,'+
+					'`ioc`,'+
+					'`ioc_severity` '+
+				'FROM '+
+					'`conn_ioc` '+
+				'WHERE '+
+					'time BETWEEN '+start+' AND '+end+' '+
+					'AND `ioc_count` > 0 '+
+					'AND `trash` IS NULL '+
+				'GROUP BY '+
+					'month(from_unixtime(`time`)),'+
+					'day(from_unixtime(`time`)),'+
+					'hour(from_unixtime(`time`)),'+
+					'`remote_country`,'+
+					'`ioc`,'+
+					'`ioc_severity`';
 			async.parallel([
 				// Table function(s)
 				function(callback) {
