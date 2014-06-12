@@ -176,7 +176,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		{
 			'title': 'HTTP',
 			'url': '',
-			'icon': 'fa-arrows-h',
+			'icon': 'fa-globe',
 			'children':
 			[
 				{
