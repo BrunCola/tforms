@@ -233,7 +233,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 								pushTo: topLocalArr,
 								check: topLocallist
 							},{
-								val: d.properties.remote_ip,
+								val: d.properties.remote_ip+' ('+d.properties.country+')',
 								pushTo: topRemoteArr,
 								check: topRemotelist
 							}]
