@@ -14,50 +14,45 @@ exports.render = function(req, res) {
 		end = req.query.end;
 	}
 	//var results = [];
-	if (req.query.alert_info) {
+	if (req.query.lan_zone && req.query.lan_ip && req.query.remote_ip) {
 		var tables = [];
 		var info = [];
-		var table1SQL = 'SELECT '+
-			'count(*) AS count,' +
-			'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-			'`server_id`, '+
-			'`src_user`, '+
-			'`src_ip`, '+
-			'`dst_ip`, '+
-			'`alert_source`, '+
-			'`program_source`, '+
-			'`alert_id`, '+
-			'`alert_info`, '+
-			'`full_log` '+
-			'FROM `ossec` '+
-			'WHERE '+
-			'`time` BETWEEN '+start+' AND '+end+' '+
-			'AND alert_info = \''+req.query.alert_info+'\' '+
-			'GROUP BY '+
-			'`src_user`';
+		var table1SQL = 'SELECT ' +
+				'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'`lan_zone`, ' +
+				'`lan_ip`, ' +
+				'`remote_ip`, ' +
+				'`remote_port`, ' +
+				'`remote_cc`, ' +
+				'`remote_country`, ' +
+				'`remote_asn_name`, ' +
+				'`ioc_count` ' +
+			'FROM ' +
+				'`http_meta` ' +
+			'WHERE '+ 
+				'time BETWEEN '+start+' AND '+end+' ' +
+				'AND `lan_zone` = \''+req.query.lan_zone+'\' '+
+				'AND `lan_ip` = \''+req.query.lan_ip+'\' ' +
+				'AND `remote_ip` = \''+req.query.remote_ip+'\' ';
+				
 		var table1Params = [
 			{
-				title: 'Last Seen',
-				select: 'time',
-				link: {
-					type: 'endpoint_events_user_drill',
-					// val: the pre-evaluated values from the query above
-					val: ['alert_info','src_user'],
-					crumb: false
-				}
+				title: 'Time',
+				select: 'time'
 			},
-			{ title: 'Connections', select: 'count'},
-			{ title: 'User', select: 'src_user'},
-			{ title: 'Source IP', select: 'src_ip'},
-			{ title: 'Destination IP', select: 'dst_ip'},
-			{ title: 'Alert Info', select: 'alert_info' },
-			{ title: 'Alert Source', select: 'alert_source'},
-			{ title: 'Program Source', select: 'program_source'},
+			{ title: 'Zone', select: 'lan_zone' },
+			{ title: 'LAN IP', select: 'lan_ip' },
+			{ title: 'Remote IP', select: 'remote_ip'},
+			{ title: 'Remote port', select: 'remote_port' },
+			{ title: 'Flag', select: 'remote_cc' },
+			{ title: 'Remote Country', select: 'remote_country' },
+			{ title: 'Remote ASN Name', select: 'remote_asn_name' },
+			{ title: 'IOC Count', select: 'ioc_count' }
 		];
 		var table1Settings = {
-			sort: [[1, 'desc']],
+			sort: [[0, 'desc']],
 			div: 'table',
-			title: 'Local Endpoints Triggering Event'
+			title: 'Common HTTP Connections between Remote and Local Host'
 		}
 		async.parallel([
 			// Table function(s)

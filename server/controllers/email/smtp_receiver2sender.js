@@ -63,7 +63,7 @@ exports.render = function(req, res) {
 					crumb: false
 				}
 			},
-			{ title: 'Count', select: 'count' },
+			{ title: 'Connections', select: 'count' },
 			{ title: 'From', select: 'mailfrom' },
 			{ title: 'To', select: 'receiptto' },
 			{ title: 'Reply To', select: 'reply_to' },
@@ -78,8 +78,8 @@ exports.render = function(req, res) {
 			{ title: 'IOC Count', select: 'ioc_count' },
 			{ title: 'Zone', select: 'lan_zone' },
 			{ title: 'Machine Name', select: 'machine' },
-			{ title: 'LAN IP', select: 'lan_ip' },
-			{ title: 'LAN port', select: 'lan_port' },
+			{ title: 'Local IP', select: 'lan_ip' },
+			{ title: 'Local port', select: 'lan_port' },
 			{ title: 'Remote IP', select: 'remote_ip' },
 			{ title: 'Remote port', select: 'remote_port' },
 			{ title: 'Remote Country', select: 'remote_country' },

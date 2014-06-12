@@ -21,6 +21,7 @@ exports.render = function(req, res) {
 				'sum(`count`) AS `count`,'+
 				'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time,'+
 				'`lan_zone`,'+
+				'`machine`,'+
 				'`lan_ip`,'+
 				'`mime`,'+
 				'(sum(`size`) / 1048576) AS size,'+
@@ -47,6 +48,9 @@ exports.render = function(req, res) {
 					},
 				},
 				{ title: 'Total Extracted Files', select: 'count' },
+				{ title: 'Zone', select: 'lan_zone', dView: false },
+				{ title: 'Machine', select: 'machine', dView: false },
+				{ title: 'LAN IP', select: 'lan_ip', dView: false },
 				{ title: 'File Type', select: 'mime' },
 				{ title: 'Total Size (MB)', select: 'size' },
 				{ title: 'Total IOC Hits', select: 'ioc_count' }

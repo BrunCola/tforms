@@ -51,7 +51,7 @@ module.exports = {
 	reports: {
 		active: false,
 		autoDelete: true,
-		schedule: '12 * * * *',
+		schedule: '23 * * * *', // NOTE: recorded time is cron-time + 2 minutes & email-to-client wait is cron-time + 4 minutes
 		url: 'https://localhost:3000',
 		email: 'cron@rapidphire.com',
 		pass: 'rdSF7ovD6NIMOTIHNuiZSewzgRCbW4RRbM9kfzkEP7UndVnuaxqiIV20jkx2CgDKxqs9LR76RSQSmpns'

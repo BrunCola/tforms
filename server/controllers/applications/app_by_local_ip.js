@@ -55,7 +55,7 @@ exports.render = function(req, res) {
 		},
 		{ title: 'Zone', select: 'lan_zone' },
 		{ title: 'Machine Name', select: 'machine' },
-		{ title: 'LAN IP', select: 'lan_ip' },
+		{ title: 'Local IP', select: 'lan_ip' },
 		{ title: 'MB to Remote', select: 'in_bytes' },
 		{ title: 'MB from Remote', select: 'out_bytes' },
 		{ title: 'Packets to Remote', select: 'in_packets', dView: false },

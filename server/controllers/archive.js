@@ -62,7 +62,7 @@ exports.render = function(req, res) {
 		{ title: 'IOC Type', select: 'ioc_typeIndicator' },
 		{ title: 'IOC Stage', select: 'ioc_typeInfection' },
 		{ title: 'Zone', select: 'lan_zone' },
-		{ title: 'LAN IP', select: 'lan_ip' },
+		{ title: 'Local IP', select: 'lan_ip' },
 		{ title: 'Machine Name', select: 'machine' },
 		{ title: 'Remote IP', select: 'remote_ip' },
 		{ title: 'Remote ASN', select: 'remote_asn' },

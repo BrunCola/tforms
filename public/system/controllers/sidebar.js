@@ -176,26 +176,26 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		{
 			'title': 'HTTP',
 			'url': '',
-			'icon': 'fa-arrows-h',
+			'icon': 'fa-globe',
 			'children':
 			[
 				{
 					'title': 'HTTP by Domain',
 					'url': 'http_by_domain',
 					'icon': 'fa-arrows-h',
-					'orphans': ['http_by_domain_local']
+					'orphans': ['http_by_domain_local', 'http_by_domain_local_drill']
 				},
 				{
 					'title': 'Local HTTP',
 					'url': 'http_local',
 					'icon': 'fa-long-arrow-left',
-					'orphans': ['http_local_by_domain']
+					'orphans': ['http_local_by_domain', 'http_by_domain_local_drill']
 				},
 				{
 					'title': 'Remote HTTP',
 					'url': 'http_remote',
 					'icon': 'fa-long-arrow-right',
-					'orphans': ['http_remote2local']
+					'orphans': ['http_remote2local', 'http_remote2local_drill']
 				}
 			]
 		},

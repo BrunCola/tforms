@@ -132,7 +132,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							title: 'File Types',
 							subtitleElm: {
 								'ZONE': 'lan_zone',
-								'LAN IP': 'lan_ip'
+								'Local IP': 'lan_ip'
 							},
 							daterange: true
 						}
@@ -148,7 +148,7 @@ angular.module('mean.pages').config(['$stateProvider',
 								title: 'Extracted Files for Local IP',
 								subtitleElm: {
 									'Zone': 'lan_zone',
-									'LAN IP': 'lan_ip',
+									'Local IP': 'lan_ip',
 									'File Type': 'mime'
 								},
 								daterange: true
@@ -262,7 +262,7 @@ angular.module('mean.pages').config(['$stateProvider',
 								title: 'Types of Extracted Files by Domain and Local IP',
 								subtitleElm: {
 									'Zone': 'lan_zone',
-									'LAN IP': 'lan_ip',
+									'Local IP': 'lan_ip',
 									'Domain': 'http_host'
 								},
 								daterange: true
@@ -279,7 +279,7 @@ angular.module('mean.pages').config(['$stateProvider',
 									title: 'Local Extracted Files by Domain and MIME',
 									subtitleElm: {
 										'Zone': 'lan_zone',
-										'LAN IP': 'lan_ip',
+										'Local IP': 'lan_ip',
 										'Domain': 'http_host',
 										'File Type': 'mime'
 									},
@@ -326,7 +326,7 @@ angular.module('mean.pages').config(['$stateProvider',
 								subtitleElm: {
 									'L7 Protocol': 'l7_proto',
 									'Zone': 'lan_zone',
-									'LAN IP': 'lan_ip'
+									'Local IP': 'lan_ip'
 								},
 								daterange: true
 							}
@@ -355,7 +355,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							subtitleElm: {
 								'L7 Protocol': 'l7_proto',
 								'Zone': 'lan_zone',
-								'LAN IP': 'lan_ip'
+								'Local IP': 'lan_ip'
 							},
 							daterange: true
 						}
@@ -372,7 +372,7 @@ angular.module('mean.pages').config(['$stateProvider',
 								subtitleElm: {
 									'L7 Protocol': 'l7_proto',
 									'Zone': 'lan_zone',
-									'LAN IP': 'lan_ip'
+									'Local IP': 'lan_ip'
 								},
 								daterange: true
 							}
@@ -389,7 +389,7 @@ angular.module('mean.pages').config(['$stateProvider',
 									subtitleElm: {
 										'L7 Protocol': 'l7_proto',
 										'Zone': 'lan_zone',
-										'LAN IP': 'lan_ip'
+										'Local IP': 'lan_ip'
 									},
 									daterange: true
 								}
@@ -582,6 +582,23 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+						// HTTP BY DOMAIN LOCAL DRILL
+						.state('http_by_domain_local_drill', {
+							url: '/http_by_domain_local_drill?start&end&host&lan_zone&lan_ip',
+							templateUrl: 'public/pages/views/http/http_by_domain_local_drill.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'Local HTTP By Domain',
+								subtitleElm: {
+									'Domain': 'host',
+									'LAN IP': 'lan_ip',
+									'Zone': 'lan_zone'
+								},
+								daterange: true
+							}
+						})
 				// HTTP LOCAL
 				.state('http_local', {
 					url: '/http_local?start&end',
@@ -594,7 +611,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-					// HTTP LOCAL2REMOTE
+					// HTTP LOCAL BY DOMAIN
 					.state('http_local_by_domain', {
 						url: '/http_local_by_domain?start&end&lan_ip&lan_zone',
 						templateUrl: 'public/pages/views/http/http_local_by_domain.html',
@@ -602,9 +619,9 @@ angular.module('mean.pages').config(['$stateProvider',
 							loggedin: checkLoggedin
 						},
 						data: {
-							title: 'Local to Remote HTTP',
+							title: 'Local HTTP by Domain',
 							subtitleElm: {
-								'LAN IP': 'lan_ip',
+								'Local IP': 'lan_ip',
 								'Zone': 'lan_zone'
 							},
 							daterange: true
@@ -637,6 +654,23 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+						// HTTP REMOTE2LOCAL DRILL
+						.state('http_remote2local_drill', {
+							url: '/http_remote2local_drill?start&end&lan_ip&lan_zone&remote_ip',
+							templateUrl: 'public/pages/views/http/http_remote2local_drill.html',
+							resolve: {
+								loggedin: checkLoggedin
+							},
+							data: {
+								title: 'Local/Remote HTTP',
+								subtitleElm: {
+									'LAN IP': 'lan_ip',
+									'Zone': 'lan_zone',
+									'Remote IP': 'remote_ip'
+								},
+								daterange: true
+							}
+						})
 
 			// GENERAL NETWORK
 				// LOCAL IPS
@@ -661,7 +695,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						data: {
 							title: 'Local / Remote Bandwidth Use',
 							subtitleElm: {
-								'LAN IP': 'lan_ip',
+								'Local IP': 'lan_ip',
 								'Zone': 'lan_zone'
 							},
 							daterange: true
@@ -677,7 +711,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							data: {
 								title: 'Conn Local/Remote Shared',
 								subtitleElm: {
-									'LAN IP': 'lan_ip',
+									'Local IP': 'lan_ip',
 									'Zone': 'lan_zone',
 									'Remote IP': 'remote_ip'
 								},
@@ -733,7 +767,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						data: {
 							title: 'Local to Remote FTP',
 							subtitleElm: {
-								'LAN IP': 'lan_ip',
+								'Local IP': 'lan_ip',
 								'Zone': 'lan_zone'
 							},
 							daterange: true
@@ -749,7 +783,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							data: {
 								title: 'FTP Local/Remote Shared',
 								subtitleElm: {
-									'LAN IP': 'lan_ip',
+									'Local IP': 'lan_ip',
 									'Zone': 'lan_zone',
 									'Remote IP': 'remote_ip'
 								},
@@ -805,7 +839,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						data: {
 							title: 'SSH Local to Remote',
 							subtitleElm: {
-								'LAN IP': 'lan_ip'
+								'Local IP': 'lan_ip'
 							},
 							daterange: true
 						}
@@ -820,7 +854,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							data: {
 								title: 'SSH Local/Remote Shared',
 								subtitleElm: {
-									'LAN IP': 'lan_ip',
+									'Local IP': 'lan_ip',
 									'Zone': 'lan_zone',
 									'Remote IP': 'remote_ip'
 								},
@@ -891,7 +925,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							data: {
 								title: 'SSH Local/Remote Shared',
 								subtitleElm: {
-									'LAN IP': 'lan_ip',
+									'Local IP': 'lan_ip',
 									'Zone': 'lan_zone',
 									'Status Code': 'status_code'
 								},
@@ -920,7 +954,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						data: {
 							title: 'Local to Remote IRC',
 							subtitleElm: {
-								'LAN IP': 'lan_ip',
+								'Local IP': 'lan_ip',
 								'Zone': 'lan_zone'
 							},
 							daterange: true
@@ -936,7 +970,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							data: {
 								title: 'IRC Local/Remote Shared',
 								subtitleElm: {
-									'LAN IP': 'lan_ip',
+									'Local IP': 'lan_ip',
 									'Zone': 'lan_zone',
 									'Remote IP': 'remote_ip'
 								},

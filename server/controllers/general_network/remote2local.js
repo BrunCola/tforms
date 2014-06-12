@@ -30,7 +30,16 @@ exports.render = function(req, res) {
 				'(sum(`in_bytes`) / 1048576) AS in_bytes,'+
 				'(sum(`out_bytes`) / 1048576) AS out_bytes,'+
 				'sum(`in_packets`) AS in_packets,'+
-				'sum(`out_packets`) AS out_packets '+
+				'sum(`out_packets`) AS out_packets, '+
+				'sum(`dns`) AS `dns`,'+
+				'sum(`http`) AS `http`,'+
+				'sum(`ssl`) AS `ssl`,'+
+				'sum(`ssh`) AS `ssh`,'+
+				'sum(`ftp`) AS `ftp`,'+
+				'sum(`irc`) AS `irc`,'+
+				'sum(`smtp`) AS `smtp`,'+
+				'sum(`file`) AS `file`,'+
+				'sum(`ioc_count`) AS `ioc_count` '+
 			'FROM '+
 				'`conn_meta` '+
 			'WHERE '+
@@ -51,7 +60,7 @@ exports.render = function(req, res) {
 			},
 			{ title: 'Zone', select: 'lan_zone' },
 			{ title: 'Machine Name', select: 'machine' },
-			{ title: 'LAN IP', select: 'lan_ip' },
+			{ title: 'Local IP', select: 'lan_ip' },
 			{ title: 'Remote IP', select: 'remote_ip' },
 			{ title: 'Remote Country', select: 'remote_country' },
 			{ title: 'Flag', select: 'remote_cc', },
@@ -60,7 +69,17 @@ exports.render = function(req, res) {
 			{ title: 'MB from Remote', select: 'out_bytes'},
 			{ title: 'Connections', select: 'count', dView:false },
 			{ title: 'Packets to Remote', select: 'in_packets', dView:false },
-			{ title: 'Packets from Remote', select: 'out_packets', dView:false }
+			{ title: 'Packets from Remote', select: 'out_packets', dView:false },
+			{ title: 'IOC Hits', select: 'ioc_count' },
+			{ title: 'Connections', select: 'count', dView:false },
+			{ title: 'DNS', select: 'dns', dView:false },
+			{ title: 'HTTP', select: 'http', dView:false },
+			{ title: 'SSL', select: 'ssl', dView:false },
+			{ title: 'SSH', select: 'ssh', dView:false },
+			{ title: 'FTP', select: 'ftp', dView:false },
+			{ title: 'IRC', select: 'irc', dView:false },
+			{ title: 'SMTP', select: 'smtp', dView:false },
+			{ title: 'File', select: 'file', dView:false }
         ];
 		var table1Settings = {
 			sort: [[0, 'desc']],

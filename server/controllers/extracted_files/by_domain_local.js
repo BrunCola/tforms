@@ -48,7 +48,7 @@ exports.render = function(req, res) {
 				},
 				{ title: 'Total Extracted Files', select: 'count' },
 				{ title: 'Domain', select: 'http_host' },
-				{ title: 'Lan IP', select: 'lan_ip' },
+				{ title: 'Local IP', select: 'lan_ip' },
 				{ title: 'Zone', select: 'lan_zone' },
 				// { title: 'File Name', select: 'name', sClass:'file' },
 				{ title: 'Total Size (MB)', select: 'size' },

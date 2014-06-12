@@ -102,6 +102,8 @@ var authorization = require('./middlewares/authorization');
 	var http_by_domain = require('../controllers/http/http_by_domain'); 
 		// HTTP BY DOMAIN LOCAL
 		var http_by_domain_local = require('../controllers/http/http_by_domain_local'); 
+			// HTTP BY DOMAIN LOCAL DRILL
+			var http_by_domain_local_drill = require('../controllers/http/http_by_domain_local_drill'); 
 	// HTTP LOCAL
 	var http_local = require('../controllers/http/http_local'); 
 		// HTTP LOCAL BY DOMAIN
@@ -110,7 +112,9 @@ var authorization = require('./middlewares/authorization');
 	var http_remote = require('../controllers/http/http_remote'); 
 		// HTTP REMOTE2LOCAL
 		var http_remote2local = require('../controllers/http/http_remote2local'); 
-
+			// HTTP REMOTE2LOCAL DRILL
+			var http_remote2local_drill = require('../controllers/http/http_remote2local_drill'); 
+			
 // GENERAL NETWORK
 	// LOCAL
 	var local = require('../controllers/general_network/local');
@@ -326,9 +330,12 @@ module.exports = function(app, passport, version, io) {
 		// HTTP BY DOMAIN
 		app.route('/http/http_by_domain')
 		.get(authorization.requiresLogin, http_by_domain.render);
-			// HTTP BY DOMAIN LOCAL
+			// HTTP BY DOMAIN LOCAL 
 			app.route('/http/http_by_domain_local')
 			.get(authorization.requiresLogin, http_by_domain_local.render);
+				// HTTP BY DOMAIN LOCAL DRILL
+				app.route('/http/http_by_domain_local_drill')
+				.get(authorization.requiresLogin, http_by_domain_local_drill.render);
 		// HTTP LOCAL
 		app.route('/http/http_local')
 		.get(authorization.requiresLogin, http_local.render);
@@ -341,7 +348,9 @@ module.exports = function(app, passport, version, io) {
 			// HTTP REMOTE2LOCAL
 			app.route('/http/http_remote2local')
 			.get(authorization.requiresLogin, http_remote2local.render);
-
+				// HTTP REMOTE2LOCAL DRILL
+				app.route('/http/http_remote2local_drill')
+				.get(authorization.requiresLogin, http_remote2local_drill.render);
 
 	// GENERAL NETWORK
 		// LOCAL
