@@ -41,7 +41,9 @@ module.exports = function (sql, database, callback) {
 							'l7_proto': d.l7_proto,
 							'units': d.ioc_count,
 							'count': d.count,
-							'country': d.remote_country
+							'country': d.remote_country,
+							'remote_ip': d.remote_ip,
+							'lan_ip': d.lan_ip
 						},
 						'geometry':{
 							'type':'Point',

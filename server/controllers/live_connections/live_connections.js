@@ -8,7 +8,6 @@ var map = require('../constructors/map'),
 module.exports = function(io) {
 	return {
 		render: function(req, res) {
-			console.log(req.session)
 			var database = req.session.passport.user.database;
 			var start = moment().subtract('minutes', 10).unix();
 			var end = moment().subtract('minutes', 9).unix();
@@ -21,7 +20,9 @@ module.exports = function(io) {
 					'`remote_long`,'+
 					'`l7_proto`,'+
 					'`remote_lat`,'+
-					'`ioc_count` '+
+					'`ioc_count`,'+
+					'`remote_ip`,'+
+					'`lan_ip` '+
 				'FROM '+
 					'conn '+
 				'WHERE '+

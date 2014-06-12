@@ -52,16 +52,6 @@ https = require('https'),
 server = https.createServer(options, app),
 io = require('socket.io').listen(server);
 
-// setup socket connections
-var socketCount = 0;
-// io.on('connection', function(socket) {
-// 	exports.socket = function(socket) {
-// 		return function(req, res) {
-// 			console.log(req)
-// 			conosle.log(socket)
-// 		}
-// 	}
-// });
 require(appPath + '/server/config/express')(app, passport, db, version, io);
 
 require('./server/config/socket.js')(app, passport, io);

@@ -10,7 +10,6 @@ module.exports = function(app, passport, io) {
 	var alerts = [];
 	var isInitIoc = false;
 	var socketCount = 0;
-
 	var smtpTransport = nodemailer.createTransport("SMTP", {
 		host: "smtp.emailsrvr.com", // hostname
 		secureConnection: true, // use SSL
