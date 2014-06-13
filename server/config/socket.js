@@ -5,8 +5,8 @@ var mysql = require('mysql'),
 	phantom = require('phantom'),
 	bcrypt = require('bcrypt');
 
-module.exports = function(app, passport, io) {
-
+module.exports = function(app, passport, io, pool) {
+	var POLLCheckpoint, timer, connection;
 	var alerts = [];
 	var isInitIoc = false;
 	var socketCount = 0;
@@ -28,6 +28,15 @@ module.exports = function(app, passport, io) {
 			// Decrease the socket count on a disconnect, emit
 			socketCount--
 			io.sockets.emit('users connected', socketCount);
+			// if (userConnection){
+			// 	userConnection.destroy();
+			// }
+			// if (connection){
+			// 	connection.destroy();
+			// }
+			// if (timer) {
+			// 	clearInterval(timer);
+			// }
 			// socket.emit('disconnected');
 		})
 
@@ -36,13 +45,17 @@ module.exports = function(app, passport, io) {
 			var db = config.db;
 			db.database = data.database;
 			var connection = mysql.createConnection(db);
-			connection.query("UPDATE `conn_ioc` SET `trash` = UNIX_TIMESTAMP(NOW()) WHERE `lan_ip`='"+data.lan_ip+"' AND `remote_ip`='"+data.remote_ip+"' AND ioc='"+data.ioc+"'");
+			connection.query("UPDATE `conn_ioc` SET `trash` = UNIX_TIMESTAMP(NOW()) WHERE `lan_ip`='"+data.lan_ip+"' AND `remote_ip`='"+data.remote_ip+"' AND ioc='"+data.ioc+"'", function(err, rows, fields){
+				connection.destroy();
+			});
 		});
 		socket.on('restoreIOC', function(data){
 			var db = config.db;
 			db.database = data.database;
 			var connection = mysql.createConnection(db);
-			connection.query("UPDATE `conn_ioc` SET `trash` = null WHERE `lan_ip`='"+data.lan_ip+"' AND `remote_ip`='"+data.remote_ip+"' AND ioc='"+data.ioc+"'");
+			connection.query("UPDATE `conn_ioc` SET `trash` = null WHERE `lan_ip`='"+data.lan_ip+"' AND `remote_ip`='"+data.remote_ip+"' AND ioc='"+data.ioc+"'", function(err, rows, fields){
+				connection.destroy();
+			});
 		});
 		// socket.on('emptyArchive', function(data){
 		// 	var db = config.db;
@@ -62,6 +75,7 @@ module.exports = function(app, passport, io) {
 				if (response) {
 					socket.emit('emptyArchiveConfirm');
 				}
+				connection.destroy();
 			});
 		});
 		socket.on('updateUser', function(data){
@@ -70,14 +84,16 @@ module.exports = function(app, passport, io) {
 			var connection = mysql.createConnection(db);
 			if (data.newPass) {
 				bcrypt.hash(data.newPass, 10, function( err, bcryptedPassword) {
-					connection.query("UPDATE `user` SET `email`='"+data.newemail+"', `password`='"+bcryptedPassword+"' WHERE `email` = '"+data.oldemail+"'");
+					connection.query("UPDATE `user` SET `email`='"+data.newemail+"', `password`='"+bcryptedPassword+"' WHERE `email` = '"+data.oldemail+"'", function(err, rows, fields){
+						connection.destroy();
+					});
 				});
 			} else {
-				connection.query("UPDATE `user` SET `email`='"+data.newemail+"' WHERE `email` = '"+data.oldemail+"'");
+				connection.query("UPDATE `user` SET `email`='"+data.newemail+"' WHERE `email` = '"+data.oldemail+"'", function(err, rows, fields){
+					connection.destroy();
+				});
 			}
 		});
-
-		var POLLCheckpoint, timer, userConnection, connection;
 		socket.on('init', function(userData) {
 			// console.log(userData)
 			var alerts = [], newIOCcount = 0;
@@ -88,9 +104,9 @@ module.exports = function(app, passport, io) {
 				password: config.db.password,
 				database: 'rp_users'
 			};
-			userConnection = mysql.createConnection(cdb);
+			// userConnection = mysql.createConnection(cdb);
 			// get user's checkpoint from session data (to avoid caching)
-			userConnection.query("SELECT checkpoint FROM user WHERE username = '"+userData.username +"'", function(err, results){
+			pool.query("SELECT checkpoint FROM user WHERE username = '"+userData.username +"'", function(err, results){
 				if (err) throw err;
 				if (results.length > 0) {
 					// if result is returned, run query checking for new alerts
@@ -142,12 +158,9 @@ module.exports = function(app, passport, io) {
 				// var connection = mysql.createConnection(db);
 				clearInterval(timer);
 				timer = setInterval(function(){polling(userData.username, POLLCheckpoint, connection)}, 5000);
-				userConnection.query("UPDATE `user` SET `checkpoint`= "+newCheckpoint+" WHERE `username` = '"+userData.username+"'");
+				pool.query("UPDATE `user` SET `checkpoint`= "+newCheckpoint+" WHERE `username` = '"+userData.username+"'");
 			}
 			newCP();
-		});
-		socket.on('disconnect', function () {
-			clearInterval(timer);
 		});
 		function polling(username, POLLCheckpoint, connection) {
 			var newarr = []; var arr = []; var topAdded = 0;

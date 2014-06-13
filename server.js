@@ -55,7 +55,7 @@ io = require('socket.io').listen(server);
 
 require(appPath + '/server/config/express')(app, passport, db, version, io);
 
-require('./server/config/socket.js')(app, passport, io);
+require('./server/config/socket.js')(app, passport, io, db);
 require('./server/config/report.js')(db);
 
 var SSLport = process.env.sslPORT || config.SSLport;
