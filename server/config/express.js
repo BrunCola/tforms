@@ -170,4 +170,27 @@ module.exports = function(app, passport, db, version, io) {
 			app.use(errorHandler());
 		}
 	});
+	
+	// REGEX PARAMS
+	// 
+	// ioc
+	// any ip address
+	// email address
+	// pure text
+	// text with spaces
+	// pure numbers
+	// pure text containing _
+	// 'start' & 'end' unix times (see any url when date is changed)
+	// l7_proto
+	// lan_zone
+	// email subject
+	// mime
+	// http_host
+	// status_code
+	// alert_info
+	// src_user
+	// host
+	// ioc_attrID
+	// 
+
 };
