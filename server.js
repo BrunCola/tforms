@@ -53,7 +53,7 @@ httpapp.get('*',function(req, res){
 server.listen(SSLport);
 http.listen(HTTPport);
 
-console.log('rapidPHIRE has started');
+console.log('rapidPHIRE has started on port '+SSLport);
 
 // Initializing logger
 // logger.init(app, passport, mongoose);
