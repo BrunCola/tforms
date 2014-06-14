@@ -1,0 +1,6 @@
+{
+  "name"        : "rapidPHIRE",
+  "script"      : "./server.js",
+  "ignoreWatch" : ["temp","public/uploads","node_modules"],
+  "watch"       : "true"
+}
