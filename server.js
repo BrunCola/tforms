@@ -53,7 +53,7 @@ https = require('https'),
 server = https.createServer(options, app),
 io = require('socket.io').listen(server);
 
-require(appPath + '/server/config/express')(app, passport, db, version, io);
+require(appPath + '/server/config/express')(app, passport, version, io, db);
 
 require('./server/config/socket.js')(app, passport, io, db);
 require('./server/config/report.js')(db);

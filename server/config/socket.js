@@ -6,7 +6,6 @@ var mysql = require('mysql'),
 	bcrypt = require('bcrypt');
 
 module.exports = function(app, passport, io, pool) {
-	var POLLCheckpoint, timer, connection;
 	var alerts = [];
 	var isInitIoc = false;
 	var socketCount = 0;
@@ -20,6 +19,7 @@ module.exports = function(app, passport, io, pool) {
 		}
 	});
 	io.sockets.on('connection', function(socket){
+		var POLLCheckpoint, timer, connection;
 		socketCount++;
 		// Let all sockets know how many are connected
 		io.sockets.emit('users connected', socketCount);
@@ -28,16 +28,6 @@ module.exports = function(app, passport, io, pool) {
 			// Decrease the socket count on a disconnect, emit
 			socketCount--
 			io.sockets.emit('users connected', socketCount);
-			// if (userConnection){
-			// 	userConnection.destroy();
-			// }
-			// if (connection){
-			// 	connection.destroy();
-			// }
-			// if (timer) {
-			// 	clearInterval(timer);
-			// }
-			// socket.emit('disconnected');
 		})
 
 		// Archive functions
@@ -57,16 +47,6 @@ module.exports = function(app, passport, io, pool) {
 				connection.destroy();
 			});
 		});
-		// socket.on('emptyArchive', function(data){
-		// 	var db = config.db;
-		// 	db.database = data.database;
-		// 	var connection = mysql.createConnection(db);
-		// 	connection.query("DELETE FROM `conn_ioc` WHERE `trash` IS NOT NULL", function (err, response){
-		// 		if (response) {
-		// 			socket.emit('emptyArchiveConfirm');
-		// 		}
-		// 	});
-		// });
 		socket.on('emptyArchive', function(data){
 			var db = config.db;
 			db.database = data.database;
@@ -94,17 +74,11 @@ module.exports = function(app, passport, io, pool) {
 				});
 			}
 		});
+
+
 		socket.on('init', function(userData) {
 			// console.log(userData)
 			var alerts = [], newIOCcount = 0;
-			var cdb = {
-				port: config.db.port,
-				host: config.db.host,
-				user: config.db.user,
-				password: config.db.password,
-				database: 'rp_users'
-			};
-			// userConnection = mysql.createConnection(cdb);
 			// get user's checkpoint from session data (to avoid caching)
 			pool.query("SELECT checkpoint FROM user WHERE username = '"+userData.username +"'", function(err, results){
 				if (err) throw err;

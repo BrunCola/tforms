@@ -4,7 +4,9 @@ var dataTable = require('../constructors/datatable'),
 config = require('../../config/config'),
 async = require('async');
 
-exports.render = function(req, res) {
+module.exports = function(pool) {
+	return {
+		render: function(req, res) {
 	var database = req.session.passport.user.database;
 	var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 	var end = Math.round(new Date().getTime() / 1000);
@@ -69,4 +71,6 @@ exports.render = function(req, res) {
 		};
 		res.json(results);
 	});
+		}
+	}
 };

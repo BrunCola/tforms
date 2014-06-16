@@ -23,7 +23,8 @@ var express = require('express'),
 	util = require('./util'),
 	assetmanager = require('assetmanager');
 
-module.exports = function(app, passport, db, version, io) {
+module.exports = function(app, passport, version, io, pool) {
+	// app.param('end', /^[0-9]{1,10}$/);
 	app.set('showStackError', true);
 
 	// Prettify HTML
@@ -94,7 +95,6 @@ module.exports = function(app, passport, db, version, io) {
 
 	// Dynamic helpers
 	app.use(helpers(config.app.name));
-	// app.use(multer({ dest: '/uploads'}))
 
 	// Use passport session
 	app.use(passport.initialize());
@@ -132,7 +132,7 @@ module.exports = function(app, passport, db, version, io) {
 			// used and shared by routes as further middlewares and is not a
 			// route by itself
 			util.walk(appPath + '/server/routes', 'middlewares', function(path) {
-				require(path)(app, passport, version, io);
+				require(path)(app, passport, version, io, pool);
 			});
 		}
 
@@ -170,7 +170,8 @@ module.exports = function(app, passport, db, version, io) {
 			app.use(errorHandler());
 		}
 	});
-	
+
+	// app.param('id', /^\d+$/);
 	// REGEX PARAMS
 	// 
 	// ioc
