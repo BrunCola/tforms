@@ -228,14 +228,5 @@ module.exports = function(app, passport, version, io, pool) {
 	// alert_info 
 	// app.param('alertInfo', //);	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	 
 
 };
