@@ -178,6 +178,10 @@ var live_connections = require('../controllers/live_connections/live_connections
 		// REMOTE2LOCAL FTP
 		var ftp_remote2local = require('../controllers/general_network/ftp_remote2local');
 
+//HEALTH
+	//OVERVIEW
+	var overview = require('../controllers/health/overview'); 
+
 // REPORTS
 	// IOC EVENTS REPORT
 	var ioc_events_report = require('../controllers/reports/ioc_events');	
@@ -442,6 +446,11 @@ module.exports = function(app) {
 			// REMOTE2LOCAL FTP 
 			app.route('/general_network/ftp_remote2local')
 			.get(authorization.requiresLogin, ftp_remote2local.render);
+
+	//SYSTEM HEALTH
+		//OVERVIEW
+		app.route('/health/overview')
+		.get(authorization.requiresLogin, overview.render);
 
 	// REPORTS
 		// IOC EVENTS
