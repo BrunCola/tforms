@@ -1165,6 +1165,19 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
+			// SYSTEM HEALTH
+				// OVERVIEW
+				.state('overview', {
+					url: '/overview?start&end',
+					templateUrl: 'public/pages/views/health/overview.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'RapidPHIRE Health',
+						daterange: true
+					}
+				})
 			// REPORTS
 				// IOC EVENTS
 				.state('ioc_events_report', {

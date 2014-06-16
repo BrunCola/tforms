@@ -324,6 +324,20 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 					'orphans': []
 				}
 			]
+		},
+		{
+			'title': 'Health',
+			'url': '',
+			'icon': 'fa-plus-square',
+			'children':
+			[
+				{
+					'title': 'RapidPHIRE Health',
+					'url': 'overview',
+					'icon': 'fa-plus-square',
+					'orphans': []
+				}
+			]
 		}
 	];
 }]);
