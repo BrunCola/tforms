@@ -13,6 +13,19 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			$.noty.closeAll();
 		}
 	};
+	$scope.display = function (accessLevel) {
+		if ((accessLevel === undefined) || (accessLevel.length === 0)) {
+			return true;
+		} else if (accessLevel.length > 0) {
+			if (accessLevel.indexOf($scope.global.user.level) !== -1) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
 	$scope.parentClass = function (link) {
 		var currentRoute = $location.path().substring(1) || 'home';
 		// return page === currentRoute ? 'start active' : '';
@@ -56,12 +69,42 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		return linkClass;
 	};
 
+	// $scope.adminItems = [];
+
 	$scope.sidebaritems = [
 		{
 			'title': 'Live Connections',
 			'url': 'live_connections',
 			'icon': 'fa-map-marker',
 			'children': []
+		},
+		{
+			'title': 'IOCs for Admins ;)',
+			'url': '',
+			'icon': 'fa-warning',
+			'accessLevel': [1, 2], // optional as f***
+			'children':
+			[
+				{
+					'title': 'By Event',
+					'url': 'ioc_events',
+					// 'accessLevel': [1], // if you'd like to limit access to a specific child instead
+					'icon': 'fa-warning',
+					'orphans': ['ioc_drill', 'ioc_events_drilldown']
+				},
+				{
+					'title': 'By Local IP',
+					'url': 'ioc_local',
+					'icon': 'fa-warning',
+					'orphans': ['ioc_local_drill']
+				},
+				{
+					'title': 'By Remote IP',
+					'url': 'ioc_remote',
+					'icon': 'fa-warning',
+					'orphans': ['ioc_remote2local']
+				}
+			]
 		},
 		{
 			'title': 'IOC Notifications',
