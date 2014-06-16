@@ -79,7 +79,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'children': []
 		},
 		{
-			'title': 'IOCs for Admins ;)',
+			'title': 'IOC Notifications',
 			'url': '',
 			'icon': 'fa-warning',
 			'accessLevel': [1, 2], // optional as f***
@@ -88,34 +88,8 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 				{
 					'title': 'By Event',
 					'url': 'ioc_events',
+					'icon': 'fa-warning',
 					// 'accessLevel': [1], // if you'd like to limit access to a specific child instead
-					'icon': 'fa-warning',
-					'orphans': ['ioc_drill', 'ioc_events_drilldown']
-				},
-				{
-					'title': 'By Local IP',
-					'url': 'ioc_local',
-					'icon': 'fa-warning',
-					'orphans': ['ioc_local_drill']
-				},
-				{
-					'title': 'By Remote IP',
-					'url': 'ioc_remote',
-					'icon': 'fa-warning',
-					'orphans': ['ioc_remote2local']
-				}
-			]
-		},
-		{
-			'title': 'IOC Notifications',
-			'url': '',
-			'icon': 'fa-warning',
-			'children':
-			[
-				{
-					'title': 'By Event',
-					'url': 'ioc_events',
-					'icon': 'fa-warning',
 					'orphans': ['ioc_drill', 'ioc_events_drilldown']
 				},
 				{
