@@ -73,7 +73,6 @@ module.exports = function (sql, options, callback) {
 					});
 				}
 			}
-			console.log(b);
 			// for (var n in objSorted) {
 			// 	objSorted[n].time = Math.round(objSorted[n].time);
 			// 	// console.log(objSorted[n].time);

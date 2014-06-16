@@ -1,9 +1,9 @@
 'use strict';
 
-module.exports = function(app, passport, version, io, pool) {
-	// Auth Check
-	var authorization = require('./middlewares/authorization')(pool);
+// Auth Check
+	var authorization = require('./middlewares/authorization');
 
+module.exports = function(app, passport, version, io, pool) {
 	// IOC NOTIFICATIONS
 		// IOC EVENTS
 		var ioc_events = require('../controllers/ioc_notifications/ioc_events')(pool);
@@ -37,9 +37,9 @@ module.exports = function(app, passport, version, io, pool) {
 			var file_mime_local = require('../controllers/extracted_files/file_mime_local')(pool);
 		// BY DOMAIN
 		var by_domain = require('../controllers/extracted_files/by_domain')(pool);
-			// BY DOMAIN LOCAL 
+			// BY DOMAIN LOCAL
 			var by_domain_local = require('../controllers/extracted_files/by_domain_local')(pool);
-				// BY DOMAIN LOCAL MIME 
+				// BY DOMAIN LOCAL MIME
 				var by_domain_local_mime = require('../controllers/extracted_files/by_domain_local_mime')(pool);
 					// BY DOMAIN LOCAL MIME DRILL
 					var by_domain_local_mime_drill = require('../controllers/extracted_files/by_domain_local_mime_drill')(pool);
@@ -81,41 +81,41 @@ module.exports = function(app, passport, version, io, pool) {
 				var l7_remote_drill = require('../controllers/applications/l7_remote_drill')(pool);
 
 	//EMAIL
-		// LOCAL SMTP 
+		// LOCAL SMTP
 		var smtp_senders = require('../controllers/email/smtp_senders')(pool);
 			// SMTP SENDER2RECEIVER
-			var smtp_sender2receiver = require('../controllers/email/smtp_sender2receiver')(pool);	
+			var smtp_sender2receiver = require('../controllers/email/smtp_sender2receiver')(pool);
 				// SMTP FROM SENDER
-				var smtp_from_sender = require('../controllers/email/smtp_from_sender')(pool);	
+				var smtp_from_sender = require('../controllers/email/smtp_from_sender')(pool);
 		// SMTP RECEIVERS
 		var smtp_receivers = require('../controllers/email/smtp_receivers')(pool);
-			// SMTP RECEIVER2SENDER 
-			var smtp_receiver2sender = require('../controllers/email/smtp_receiver2sender')
+			// SMTP RECEIVER2SENDER
+			var smtp_receiver2sender = require('../controllers/email/smtp_receiver2sender')(pool)
 		// SMTP SUBJECTS
 		var smtp_subjects = require('../controllers/email/smtp_subjects')(pool);
 			// SMTP SUBJECT SENDER RECEIVER PAIRS
-			var smtp_subject_sender_receiver_pairs = require('../controllers/email/smtp_subject_sender_receiver_pairs') 
+			var smtp_subject_sender_receiver_pairs = require('../controllers/email/smtp_subject_sender_receiver_pairs')(pool)
 				// SMTP FROM SENDER BY SUBJECT
-				var smtp_from_sender_by_subject = require('../controllers/email/smtp_from_sender_by_subject') 
+				var smtp_from_sender_by_subject = require('../controllers/email/smtp_from_sender_by_subject')(pool)
 
 	//HTTP
 		// HTTP BY DOMAIN
-		var http_by_domain = require('../controllers/http/http_by_domain')(pool); 
+		var http_by_domain = require('../controllers/http/http_by_domain')(pool);
 			// HTTP BY DOMAIN LOCAL
-			var http_by_domain_local = require('../controllers/http/http_by_domain_local')(pool); 
+			var http_by_domain_local = require('../controllers/http/http_by_domain_local')(pool);
 				// HTTP BY DOMAIN LOCAL DRILL
-				var http_by_domain_local_drill = require('../controllers/http/http_by_domain_local_drill')(pool); 
+				var http_by_domain_local_drill = require('../controllers/http/http_by_domain_local_drill')(pool);
 		// HTTP LOCAL
-		var http_local = require('../controllers/http/http_local')(pool); 
+		var http_local = require('../controllers/http/http_local')(pool);
 			// HTTP LOCAL BY DOMAIN
-			var http_local_by_domain = require('../controllers/http/http_local_by_domain')(pool); 
+			var http_local_by_domain = require('../controllers/http/http_local_by_domain')(pool);
 		// HTTP REMOTE
-		var http_remote = require('../controllers/http/http_remote')(pool); 
+		var http_remote = require('../controllers/http/http_remote')(pool);
 			// HTTP REMOTE2LOCAL
-			var http_remote2local = require('../controllers/http/http_remote2local')(pool); 
+			var http_remote2local = require('../controllers/http/http_remote2local')(pool);
 				// HTTP REMOTE2LOCAL DRILL
-				var http_remote2local_drill = require('../controllers/http/http_remote2local_drill')(pool); 
-				
+				var http_remote2local_drill = require('../controllers/http/http_remote2local_drill')(pool);
+
 	// GENERAL NETWORK
 		// LOCAL
 		var local = require('../controllers/general_network/local')(pool);
@@ -133,7 +133,7 @@ module.exports = function(app, passport, version, io, pool) {
 			var endpoint_events_user = require('../controllers/general_network/endpoint_events_user')(pool);
 				// ENDPOINT EVENTS USER DRILL
 				var endpoint_events_user_drill = require('../controllers/general_network/endpoint_events_user_drill')(pool);
-		// ENDPOINT EVENTS LOCAL 
+		// ENDPOINT EVENTS LOCAL
 		var endpoint_events_local = require('../controllers/general_network/endpoint_events_local')(pool);
 			// ENDPOINT EVENTS LOCAL BY ALERT INFO
 			var endpoint_events_local_by_alert_info = require('../controllers/general_network/endpoint_events_local_by_alert_info')(pool);
@@ -156,15 +156,15 @@ module.exports = function(app, passport, version, io, pool) {
 				// SSH STATUS LOCAL DRILL
 				var ssh_status_local_drill = require('../controllers/general_network/ssh_status_local_drill')(pool);
 		// LOCAL IRC
-		var irc_local = require('../controllers/general_network/irc_local')(pool);	
+		var irc_local = require('../controllers/general_network/irc_local')(pool);
 			// LOCAL2REMOTE IRC
-			var irc_local2remote = require('../controllers/general_network/irc_local2remote')(pool);	
+			var irc_local2remote = require('../controllers/general_network/irc_local2remote')(pool);
 				// IRC SHARED
 				var irc_shared = require('../controllers/general_network/irc_shared')(pool);
 		// REMOTE IRC
-		var irc_remote = require('../controllers/general_network/irc_remote')(pool);	
+		var irc_remote = require('../controllers/general_network/irc_remote')(pool);
 			// REMOTE2LOCAL IRC
-			var irc_remote2local = require('../controllers/general_network/irc_remote2local')(pool);	
+			var irc_remote2local = require('../controllers/general_network/irc_remote2local')(pool);
 		// LOCAL FTP
 		var ftp_local = require('../controllers/general_network/ftp_local')(pool);
 			// LOCAL2REMOTE FTP
@@ -172,13 +172,13 @@ module.exports = function(app, passport, version, io, pool) {
 				// FTP SHARED
 				var ftp_shared = require('../controllers/general_network/ftp_shared')(pool);
 		// REMOTE FTP
-		var ftp_remote = require('../controllers/general_network/ftp_remote')(pool); 
+		var ftp_remote = require('../controllers/general_network/ftp_remote')(pool);
 			// REMOTE2LOCAL FTP
 			var ftp_remote2local = require('../controllers/general_network/ftp_remote2local')(pool);
 
 	// REPORTS
 		// IOC EVENTS REPORT
-		var ioc_events_report = require('../controllers/reports/ioc_events')(pool);	
+		var ioc_events_report = require('../controllers/reports/ioc_events')(pool);
 
 	// ARCHIVE
 		var archive = require('../controllers/archive')(pool);
@@ -320,7 +320,7 @@ module.exports = function(app, passport, version, io, pool) {
 		// SMTP SUBJECTS
 		app.route('/email/smtp_subjects')
 		.get(authorization.requiresLogin, smtp_subjects.render);
-			// SMTP SUBJECT SENDER RECEIVER PAIRS 
+			// SMTP SUBJECT SENDER RECEIVER PAIRS
 			app.route('/email/smtp_subject_sender_receiver_pairs')
 			.get(authorization.requiresLogin, smtp_subject_sender_receiver_pairs.render);
 				// SMTP FROM SENDER BY SUBJECT
@@ -331,7 +331,7 @@ module.exports = function(app, passport, version, io, pool) {
 		// HTTP BY DOMAIN
 		app.route('/http/http_by_domain')
 		.get(authorization.requiresLogin, http_by_domain.render);
-			// HTTP BY DOMAIN LOCAL 
+			// HTTP BY DOMAIN LOCAL
 			app.route('/http/http_by_domain_local')
 			.get(authorization.requiresLogin, http_by_domain_local.render);
 				// HTTP BY DOMAIN LOCAL DRILL
@@ -342,7 +342,7 @@ module.exports = function(app, passport, version, io, pool) {
 		.get(authorization.requiresLogin, http_local.render);
 			// HTTP LOCAL2REMOTE
 			app.route('/http/http_local_by_domain')
-			.get(authorization.requiresLogin, http_local_by_domain.render);	
+			.get(authorization.requiresLogin, http_local_by_domain.render);
 		// HTTP REMOTE
 		app.route('/http/http_remote')
 		.get(authorization.requiresLogin, http_remote.render);
@@ -423,13 +423,13 @@ module.exports = function(app, passport, version, io, pool) {
 		// REMOTE IRC
 		app.route('/general_network/irc_remote')
 		.get(authorization.requiresLogin, irc_remote.render);
-			// REMOTE2LOCAL IRC 
+			// REMOTE2LOCAL IRC
 			app.route('/general_network/irc_remote2local')
 			.get(authorization.requiresLogin, irc_remote2local.render);
 		// LOCAL FTP
 		app.route('/general_network/ftp_local')
 		.get(authorization.requiresLogin, ftp_local.render);
-			// LOCAL2REMOTE FTP 
+			// LOCAL2REMOTE FTP
 			app.route('/general_network/ftp_local2remote')
 			.get(authorization.requiresLogin, ftp_local2remote.render);
 				// FTP SHARED
@@ -438,7 +438,7 @@ module.exports = function(app, passport, version, io, pool) {
 		// REMOTE FTP
 		app.route('/general_network/ftp_remote')
 		.get(authorization.requiresLogin, ftp_remote.render);
-			// REMOTE2LOCAL FTP 
+			// REMOTE2LOCAL FTP
 			app.route('/general_network/ftp_remote2local')
 			.get(authorization.requiresLogin, ftp_remote2local.render);
 
