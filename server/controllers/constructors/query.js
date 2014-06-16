@@ -1,20 +1,20 @@
 'use strict';
 
-var config = require('../../config/config'),
-	mysql = require('mysql');
+var config = require('../../config/config');
 
-module.exports = function (sql, database, callback) {
-	config.db.database = database;
-	var connection = mysql.createConnection(config.db);
-
-	this.sql = sql;
-	connection.query(this.sql, function(err, result) {
-		if (err) {
-			callback(err, null);
-			connection.destroy();
-		} else {
-			callback(null, result);
-			connection.destroy();
-		}
+module.exports = function (sql, conn, callback) {
+	conn.pool.getConnection(function(err, connection) {
+		connection.changeUser({database : conn.database}, function(err) {
+			if (err) throw err;
+		});
+		connection.query(sql.query, sql.insert, function(err, result) {
+			if (err) {
+				callback(err, null);
+				connection.release();
+			} else {
+				callback(null, result);
+				connection.release();
+			}
+		});
 	});
 };

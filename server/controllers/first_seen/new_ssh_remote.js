@@ -18,63 +18,69 @@ module.exports = function(pool) {
 			var tables = [];
 			var crossfilter = [];
 			var info = [];
-			var table1SQL = 'SELECT '+
-					'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-					'`lan_zone`,'+
-					'`machine`,'+
-					'`lan_ip`,'+
-					'`remote_ip`,'+
-					'`remote_country`,'+
-					'`remote_cc`,'+
-					'`remote_asn`,'+
-					'`remote_asn_name`,'+
-					'`lan_client`,'+
-					'`remote_server` '+
-				'FROM '+
-					'`ssh_uniq_remote_ip` '+
-				'WHERE '+
-					'`time` BETWEEN '+start+' AND '+end;
-			var table1Params = [
-				{ title: 'Last Seen', select: 'time' },
-				{ title: 'Zone', select: 'lan_zone' },
-				{ title: 'Machine Name', select: 'machine' },
-				{ title: 'Local IP', select: 'lan_ip' },
-				{ title: 'Local Client', select: 'lan_client' },
-				{ title: 'Remote IP', select: 'remote_ip' },
-				{ title: 'Remote Server', select: 'remote_server', },
-				{ title: 'Remote Country', select: 'remote_country' },
-				{ title: 'Flag', select: 'remote_cc', },
-				{ title: 'Remote ASN', select: 'remote_asn_name' },
-			];
-			var table1Settings = {
-				sort: [[0, 'desc']],
-				div: 'table',
-				title: 'New Remote IP Addresses Detected'
+			var table1 = {
+				query: 'SELECT '+
+						'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+						'`lan_zone`,'+
+						'`machine`,'+
+						'`lan_ip`,'+
+						'`remote_ip`,'+
+						'`remote_country`,'+
+						'`remote_cc`,'+
+						'`remote_asn`,'+
+						'`remote_asn_name`,'+
+						'`lan_client`,'+
+						'`remote_server` '+
+					'FROM '+
+						'`ssh_uniq_remote_ip` '+
+					'WHERE '+
+						'`time` BETWEEN ? AND ?',
+				insert: [start, end],
+				params: [
+					{ title: 'Last Seen', select: 'time' },
+					{ title: 'Zone', select: 'lan_zone' },
+					{ title: 'Machine Name', select: 'machine' },
+					{ title: 'Local IP', select: 'lan_ip' },
+					{ title: 'Local Client', select: 'lan_client' },
+					{ title: 'Remote IP', select: 'remote_ip' },
+					{ title: 'Remote Server', select: 'remote_server', },
+					{ title: 'Remote Country', select: 'remote_country' },
+					{ title: 'Flag', select: 'remote_cc', },
+					{ title: 'Remote ASN', select: 'remote_asn_name' },
+				],
+				settings: {
+					sort: [[0, 'desc']],
+					div: 'table',
+					title: 'New Remote IP Addresses Detected'
+				}
 			}
-			var crossfilterSQL = 'SELECT '+
-					'count(*) AS count,'+
-					'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-					'`remote_country` '+
-				'FROM '+
-					'`ssh_uniq_remote_ip` '+
-				'WHERE '+
-					'`time` BETWEEN '+start+' AND '+end+' '+
-				'GROUP BY '+
-					'month(from_unixtime(`time`)),'+
-					'day(from_unixtime(`time`)),'+
-					'hour(from_unixtime(`time`)),'+
-					'`remote_country`';
+			var crossfilterQ = {
+				query: 'SELECT '+
+						'count(*) AS count,'+
+						'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+						'`remote_country` '+
+					'FROM '+
+						'`ssh_uniq_remote_ip` '+
+					'WHERE '+
+						'`time` BETWEEN ? AND ? '+
+					'GROUP BY '+
+						'month(from_unixtime(`time`)),'+
+						'day(from_unixtime(`time`)),'+
+						'hour(from_unixtime(`time`)),'+
+						'`remote_country`',
+				insert: [start, end]
+			}
 			async.parallel([
 				// Table function(s)
 				function(callback) {
-					new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
+					new dataTable(table1, {database: database, pool: pool}, function(err,data){
 						tables.push(data);
 						callback();
 					});
 				},
 				// Crossfilter function
 				function(callback) {
-					new query(crossfilterSQL, database, function(err,data){
+					new query(crossfilterQ, {database: database, pool: pool}, function(err,data){
 						crossfilter = data;
 						callback();
 					});

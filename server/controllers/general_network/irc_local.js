@@ -18,44 +18,47 @@ module.exports = function(pool) {
 			//var results = [];
 			var tables = [];
 			var info = [];
-			var table1SQL = 'SELECT '+
-					'count(*) AS count, ' +
-					'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-					'`machine`, ' +
-					'`lan_zone`, ' +
-					'`lan_ip`, ' +
-					'`lan_port` ' +
-				'FROM '+
-					'`irc` '+
-				'WHERE '+
-					'time BETWEEN '+start+' AND '+end+' '+
-				'GROUP BY '+
-					'`lan_zone`,`lan_ip`';
-			var table1Params = [
-				{
-					title: 'Last Seen',
-					select: 'time',
-					link: {
-					 	type: 'irc_local2remote', 
-					 	// val: the pre-evaluated values from the query above
-					 	val: ['lan_ip', 'lan_zone'],
-					 	crumb: false
+			var table1 = {
+				query: 'SELECT '+
+						'count(*) AS count, ' +
+						'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+						'`machine`, ' +
+						'`lan_zone`, ' +
+						'`lan_ip`, ' +
+						'`lan_port` ' +
+					'FROM '+
+						'`irc` '+
+					'WHERE '+
+						'time BETWEEN ? AND ? '+
+					'GROUP BY '+
+						'`lan_zone`,`lan_ip`',
+				insert: [start, end],
+					params: [
+					{
+						title: 'Last Seen',
+						select: 'time',
+						link: {
+						 	type: 'irc_local2remote', 
+						 	// val: the pre-evaluated values from the query above
+						 	val: ['lan_ip', 'lan_zone'],
+						 	crumb: false
+						},
 					},
-				},
-				{ title: 'Connections', select: 'count' },
-				{ title: 'Zone', select: 'lan_zone' },
-				{ title: 'Machine', select: 'machine' },
-				{ title: 'Local IP', select: 'lan_ip' }
-			];
-			var table1Settings = {
-				sort: [[1, 'desc']],
-				div: 'table',
-				title: 'Local IRC'
+					{ title: 'Connections', select: 'count' },
+					{ title: 'Zone', select: 'lan_zone' },
+					{ title: 'Machine', select: 'machine' },
+					{ title: 'Local IP', select: 'lan_ip' }
+				],
+				settings: {
+					sort: [[1, 'desc']],
+					div: 'table',
+					title: 'Local IRC'
+				}
 			}
 			async.parallel([
 				// Table function(s)
 				function(callback) {
-					new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
+					new dataTable(table1, {database: database, pool: pool}, function(err,data){
 						tables.push(data);
 						callback();
 					});

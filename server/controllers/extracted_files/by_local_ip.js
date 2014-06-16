@@ -18,22 +18,24 @@ module.exports = function(pool) {
 			}
 			//var results = [];
 			var tables = [];
-			var table1SQL = 'SELECT '+
-					'sum(`count`) AS `count`,'+
-					'date_format(max(from_unixtime(time)), "%Y-%m-%d %H:%i:%s") AS time,'+
-					'`lan_zone`,'+
-					'`machine`,'+
-					'`lan_ip`,'+
-					'(sum(size) / 1048576) AS size,'+
-					'sum(ioc_count) AS ioc_count '+
-				'FROM '+
-					'`file_local` '+
-				'WHERE '+
-					'`time` BETWEEN '+start+' AND '+end+' '+
-				'GROUP BY '+
-					'`lan_zone`,'+
-					'`lan_ip`';
-				var table1Params = [
+			var table1 = {
+				query: 'SELECT '+
+						'sum(`count`) AS `count`,'+
+						'date_format(max(from_unixtime(time)), "%Y-%m-%d %H:%i:%s") AS time,'+
+						'`lan_zone`,'+
+						'`machine`,'+
+						'`lan_ip`,'+
+						'(sum(size) / 1048576) AS size,'+
+						'sum(ioc_count) AS ioc_count '+
+					'FROM '+
+						'`file_local` '+
+					'WHERE '+
+						'`time` BETWEEN ? AND ? '+
+					'GROUP BY '+
+						'`lan_zone`,'+
+						'`lan_ip`',
+				insert: [start, end],
+				params: [
 					{
 						title: 'Last Seen',
 						select: 'time',
@@ -51,17 +53,17 @@ module.exports = function(pool) {
 					{ title: 'Local IP', select: 'lan_ip' },
 					{ title: 'Total Size (MB)', select: 'size' },
 					{ title: 'Total IOC Hits', select: 'ioc_count' }
-				];
-				var table1Settings = {
+				],
+				settings: {
 					sort: [[1, 'desc']],
 					div: 'table',
 					title: 'Local User Extracted Files'
 				}
-
-				async.parallel([
+			}
+			async.parallel([
 				// Table function(s)
 				function(callback) {
-					new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
+					new dataTable(table1, {database: database, pool: pool}, function(err,data){
 						tables.push(data);
 						callback();
 					});

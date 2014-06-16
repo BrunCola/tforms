@@ -19,59 +19,60 @@ module.exports = function(pool) {
 			//var results = [];
 			if (req.query.http_host) {
 				var tables = [];
-				var table1SQL = 'SELECT '+
-						'count(*) as count, '+
-						'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time,'+
-						'`lan_ip`,'+
-						'`lan_zone`,'+
-						'`http_host`,'+
-						'(sum(`size`) / 1048576) AS size,'+
-						'sum(`ioc_count`) AS ioc_count '+
-					'FROM '+
-						'`file` '+
-					'WHERE '+
-						'time BETWEEN '+start+' AND '+end+' '+
-						'AND `http_host` = \''+req.query.http_host+'\' '+
-					'GROUP BY '+
-						'`lan_ip`, '+
-						'`lan_zone`';
-
-					var table1Params = [
-						{
-							title: 'Last Seen',
-							select: 'time',
-							dView: true,
-							link: {
-								type: 'by_domain_local_mime',
-								// val: the pre-evaluated values from the query above
-								val: ['http_host', 'lan_ip', 'lan_zone'],
-								crumb: false
+				var table1 = {
+					query: 'SELECT '+
+							'count(*) as count, '+
+							'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time,'+
+							'`lan_ip`,'+
+							'`lan_zone`,'+
+							'`http_host`,'+
+							'(sum(`size`) / 1048576) AS size,'+
+							'sum(`ioc_count`) AS ioc_count '+
+						'FROM '+
+							'`file` '+
+						'WHERE '+
+							'time BETWEEN ? AND ? '+
+							'AND `http_host` = \'?\' '+
+						'GROUP BY '+
+							'`lan_ip`, '+
+							'`lan_zone`',
+					insert: [start, end, req.query.http_host],
+					params: [
+							{
+								title: 'Last Seen',
+								select: 'time',
+								dView: true,
+								link: {
+									type: 'by_domain_local_mime',
+									// val: the pre-evaluated values from the query above
+									val: ['http_host', 'lan_ip', 'lan_zone'],
+									crumb: false
+								},
 							},
-						},
-						{ title: 'Total Extracted Files', select: 'count' },
-						{ title: 'Domain', select: 'http_host' },
-						{ title: 'Local IP', select: 'lan_ip' },
-						{ title: 'Zone', select: 'lan_zone' },
-						// { title: 'File Name', select: 'name', sClass:'file' },
-						{ title: 'Total Size (MB)', select: 'size' },
-						{ title: 'Total IOC Hits', select: 'ioc_count' }
-					];
-					var table1Settings = {
+							{ title: 'Total Extracted Files', select: 'count' },
+							{ title: 'Domain', select: 'http_host' },
+							{ title: 'Local IP', select: 'lan_ip' },
+							{ title: 'Zone', select: 'lan_zone' },
+							// { title: 'File Name', select: 'name', sClass:'file' },
+							{ title: 'Total Size (MB)', select: 'size' },
+							{ title: 'Total IOC Hits', select: 'ioc_count' }
+						],
+					settings: {
 						sort: [[0, 'desc']],
 						div: 'table',
 						title: 'Extracted Files by Domain'
 					}
-
-					async.parallel([
+				}
+				async.parallel([
 					// Table function(s)
 					function(callback) {
-						new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
+						new dataTable(table1, {database: database, pool: pool}, function(err,data){
 							tables.push(data);
 							callback();
 						});
 					}
 				], function(err) { //This function gets called after the two tasks have called their "task callbacks"
-					if (err) throw console.log(err);
+					if (err) throw console.log(err)
 					var results = {
 						tables: tables
 					};

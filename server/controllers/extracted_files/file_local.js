@@ -18,37 +18,38 @@ module.exports = function(pool) {
 			}
 			if (req.query.lan_zone && req.query.lan_ip && req.query.mime) {
 				var tables = [];
-				var table1SQL = 'SELECT '+
-						'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
-						'`machine`,'+
-						'`lan_ip`,'+
-						'`lan_port`,'+
-						'`lan_zone`,'+
-						'`remote_ip`,'+
-						'`remote_port`,'+
-						'`remote_asn`,'+
-						'`remote_asn_name`,'+
-						'`remote_country`,'+
-						'`remote_cc`,'+
-						'`proto`,'+
-						'`http_host`,'+
-						'`mime`,'+
-						'`name`,'+
-						'`size`, '+
-						'`md5`,'+
-						'`sha1`,'+
-						'`ioc`,'+
-						'`ioc_typeIndicator`,'+
-						'`ioc_typeInfection` '+
-					'FROM '+ 
-						'`file` '+
-					'WHERE '+
-						'`time` BETWEEN '+start+' AND '+end+' '+
-						'AND `lan_zone` = \''+req.query.lan_zone+'\' '+
-						'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
-						'AND `mime` = \''+req.query.mime+'\' ';
-
-					var table1Params = [
+				var table1 = {
+					query: 'SELECT '+
+							'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
+							'`machine`,'+
+							'`lan_ip`,'+
+							'`lan_port`,'+
+							'`lan_zone`,'+
+							'`remote_ip`,'+
+							'`remote_port`,'+
+							'`remote_asn`,'+
+							'`remote_asn_name`,'+
+							'`remote_country`,'+
+							'`remote_cc`,'+
+							'`proto`,'+
+							'`http_host`,'+
+							'`mime`,'+
+							'`name`,'+
+							'`size`, '+
+							'`md5`,'+
+							'`sha1`,'+
+							'`ioc`,'+
+							'`ioc_typeIndicator`,'+
+							'`ioc_typeInfection` '+
+						'FROM '+ 
+							'`file` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `lan_zone` = \'?\' '+
+							'AND `lan_ip` = \'?\' '+
+							'AND `mime` = \'?\' ',
+					insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.mime],
+					params: [
 						{ title: 'Last Seen', select: 'time' },
 						{ title: 'File Type', select: 'mime' },
 						{ title: 'Name', select: 'name', sClass:'file'},
@@ -70,23 +71,23 @@ module.exports = function(pool) {
 						{ title: 'IOC Stage', select: 'ioc_typeInfection' },
 						{ title: 'MD5', select: 'md5' },
 						{ title: 'SHA1', select: 'sha1' }
-					];
-					var table1Settings = {
+					],
+					settings: {
 						sort: [[0, 'desc']],
 						div: 'table',
 						title: 'Extracted Files by Local IP'
 					}
-
-					async.parallel([
+				}
+				async.parallel([
 					// Table function(s)
 					function(callback) {
-						new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
+						new dataTable(table1, {database: database, pool: pool}, function(err,data){
 							tables.push(data);
 							callback();
 						});
 					}
 				], function(err) { //This function gets called after the two tasks have called their "task callbacks"
-					if (err) throw console.log(err);
+					if (err) throw console.log(err)
 					var results = {
 						tables: tables
 					};

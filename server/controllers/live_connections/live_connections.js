@@ -12,24 +12,27 @@ module.exports = function(io) {
 			var start = moment().subtract('minutes', 10).unix();
 			var end = moment().subtract('minutes', 9).unix();
 			var queryResult;
-			var mapSQL = 'SELECT '+
-					'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
-					'`remote_country`,'+
-					'`ioc_severity`,'+
-					'`ioc`,'+
-					'`remote_long`,'+
-					'`l7_proto`,'+
-					'`remote_lat`,'+
-					'`ioc_count`,'+
-					'`remote_ip`,'+
-					'`lan_ip` '+
-				'FROM '+
-					'conn '+
-				'WHERE '+
-					'time BETWEEN '+start+' AND '+end;
+			var mapSQL = {
+				query: 'SELECT '+
+						'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
+						'`remote_country`,'+
+						'`ioc_severity`,'+
+						'`ioc`,'+
+						'`remote_long`,'+
+						'`l7_proto`,'+
+						'`remote_lat`,'+
+						'`ioc_count`,'+
+						'`remote_ip`,'+
+						'`lan_ip` '+
+					'FROM '+
+						'conn '+
+					'WHERE '+
+						'time BETWEEN ? AND ?',
+				insert: [start, end]
+			}
 			async.parallel([
 			function(callback) {
-				new map(mapSQL, database, function(err,data){
+				new map(mapSQL, {database: database, pool: pool}, function(err,data){
 					// console.log(data);
 					queryResult = data;
 					callback();

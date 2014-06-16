@@ -19,25 +19,26 @@ module.exports = function(pool) {
 			//var results = [];
 			if (req.query.lan_zone && req.query.lan_ip) {
 				var tables = [];
-				var table1SQL = 'SELECT '+
-						'sum(`count`) AS `count`,'+
-						'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time,'+
-						'`lan_zone`,'+
-						'`machine`,'+
-						'`lan_ip`,'+
-						'`mime`,'+
-						'(sum(`size`) / 1048576) AS size,'+
-						'sum(`ioc_count`) AS ioc_count '+
-					'FROM '+
-						'`file_meta` '+
-					'WHERE '+
-						'`time` BETWEEN '+start+' AND '+end+' '+
-						'AND `lan_zone` = \''+req.query.lan_zone+'\' '+
-						'AND `lan_ip` = \''+req.query.lan_ip+'\' '+
-					'GROUP BY '+
-						'mime';
-
-					var table1Params = [
+				var table1 = {
+					query: 'SELECT '+
+							'sum(`count`) AS `count`,'+
+							'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time,'+
+							'`lan_zone`,'+
+							'`machine`,'+
+							'`lan_ip`,'+
+							'`mime`,'+
+							'(sum(`size`) / 1048576) AS size,'+
+							'sum(`ioc_count`) AS ioc_count '+
+						'FROM '+
+							'`file_meta` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `lan_zone` = \'?\' '+
+							'AND `lan_ip` = \'?\' '+
+						'GROUP BY '+
+							'mime',
+					insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+					params: [
 						{
 							title: 'Last Seen',
 							select: 'time',
@@ -56,23 +57,23 @@ module.exports = function(pool) {
 						{ title: 'File Type', select: 'mime' },
 						{ title: 'Total Size (MB)', select: 'size' },
 						{ title: 'Total IOC Hits', select: 'ioc_count' }
-					];
-					var table1Settings = {
+					],
+					settings: {
 						sort: [[0, 'desc']],
 						div: 'table',
 						title: 'Extracted File Types'
 					}
-
-					async.parallel([
+				}
+				async.parallel([
 					// Table function(s)
 					function(callback) {
-						new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
+						new dataTable(table1, {database: database, pool: pool}, function(err,data){
 							tables.push(data);
 							callback();
 						});
 					}
 				], function(err) { //This function gets called after the two tasks have called their "task callbacks"
-					if (err) throw console.log(err);
+					if (err) throw console.log(err)
 					var results = {
 						tables: tables
 					};

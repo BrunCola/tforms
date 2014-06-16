@@ -17,24 +17,26 @@ module.exports = function(pool) {
 			}
 			if (req.query.mime) {
 				var tables = [];
-				var table1SQL = 'SELECT '+
-						'sum(`count`) AS `count`,'+
-						'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time,'+
-						'`mime`,'+
-						'`lan_zone`,'+
-						'`machine`,'+
-						'`lan_ip`,'+
-						'(sum(`size`) / 1048576) AS size,'+
-						'sum(`ioc_count`) AS ioc_count '+
-					'FROM '+
-						'`file_meta` '+
-					'WHERE '+
-						'time BETWEEN '+start+' AND '+end+' '+
-						'AND `mime` = \''+req.query.mime+'\' '+
-					'GROUP BY '+
-						'`lan_zone`,'+
-						'`lan_ip`';
-					var table1Params = [
+				var table1 = {
+					query: 'SELECT '+
+							'sum(`count`) AS `count`,'+
+							'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time,'+
+							'`mime`,'+
+							'`lan_zone`,'+
+							'`machine`,'+
+							'`lan_ip`,'+
+							'(sum(`size`) / 1048576) AS size,'+
+							'sum(`ioc_count`) AS ioc_count '+
+						'FROM '+
+							'`file_meta` '+
+						'WHERE '+
+							'time BETWEEN ? AND ? '+
+							'AND `mime` = \'?\' '+
+						'GROUP BY '+
+							'`lan_zone`,'+
+							'`lan_ip`',
+					insert: [start, end, req.query.mime],
+					params: [
 						{
 							title: 'Last Seen',
 							select: 'time',
@@ -52,21 +54,22 @@ module.exports = function(pool) {
 						{ title: 'Local IP', select: 'lan_ip' },
 						{ title: 'Total Size (MB)', select: 'size' },
 						{ title: 'Total IOC Hits', select: 'ioc_count' }
-					];
-					var table1Settings = {
+					],
+					settings: {
 						sort: [[0, 'desc']],
 						div: 'table',
 						title: 'Extracted File Types'
 					}
-					async.parallel([
+				}
+				async.parallel([
 					function(callback) {
-						new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
+						new dataTable(table1, {database: database, pool: pool}, function(err,data){
 							tables.push(data);
 							callback();
 						});
 					}
 				], function(err) { //This function gets called after the two tasks have called their "task callbacks"
-					if (err) throw console.log(err);
+					if (err) throw console.log(err)
 					var results = {
 						tables: tables
 					};

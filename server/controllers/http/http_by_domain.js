@@ -18,41 +18,44 @@ module.exports = function(pool) {
 			//var results = [];
 			var tables = [];
 			var info = [];
-			var table1SQL = 'SELECT '+
-					'sum(`count`) AS `count`, '+
-					'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-					'`host`, ' +
-					'sum(`ioc_count`) AS `ioc_count` ' +
-				'FROM ' + 
-					'`http_host` '+
-				'WHERE ' + 
-					'time BETWEEN '+start+' AND '+end+' '+
-				'GROUP BY '+
-					'`host`';
-			var table1Params = [
-				{
-					title: 'Last Seen',
-					select: 'time',
-					 link: {
-					 	type: 'http_by_domain_local', 
-					 	// val: the pre-evaluated values from the query above
-					 	val: ['host'],
-					 	crumb: false
+			var table1 = {
+				query: 'SELECT '+
+						'sum(`count`) AS `count`, '+
+						'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+						'`host`, ' +
+						'sum(`ioc_count`) AS `ioc_count` ' +
+					'FROM ' +
+						'`http_host` '+
+					'WHERE ' +
+						'time BETWEEN ? AND ? '+
+					'GROUP BY '+
+						'`host`',
+				insert: [start, end],
+				params: [
+					{
+						title: 'Last Seen',
+						select: 'time',
+						 link: {
+						 	type: 'http_by_domain_local',
+						 	// val: the pre-evaluated values from the query above
+						 	val: ['host'],
+						 	crumb: false
+						},
 					},
-				},
-				{ title: 'Connections', select: 'count' },
-				{ title: 'Domain', select: 'host' },
-				{ title: 'IOC Count', select: 'ioc_count' }
-			];
-			var table1Settings = {
-				sort: [[1, 'desc']],
-				div: 'table',
-				title: 'HTTP by Domain'
+					{ title: 'Connections', select: 'count' },
+					{ title: 'Domain', select: 'host' },
+					{ title: 'IOC Count', select: 'ioc_count' }
+				],
+				settings: {
+					sort: [[1, 'desc']],
+					div: 'table',
+					title: 'HTTP by Domain'
+				}
 			}
 			async.parallel([
 				// Table function(s)
 				function(callback) {
-					new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
+					new dataTable(table1, {database: database, pool: pool}, function(err,data){
 						tables.push(data);
 						callback();
 					});

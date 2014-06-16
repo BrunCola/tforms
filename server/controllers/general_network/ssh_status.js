@@ -16,40 +16,43 @@ module.exports = function(pool) {
 			}
 			var tables = [];
 			var info = [];
-			var table1SQL = 'SELECT '+
-					'count(*) AS count,'+
-					'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time, '+
-					'`status_code`,'+
-					'sum(`ioc_count`) AS ioc_count '+
-				'FROM '+
-					'`ssh` '+
-				'WHERE '+
-					'time BETWEEN '+start+' AND '+end+' '+
-				'GROUP BY '+
-					'`status_code`';
-			var table1Params = [
-				{
-					title: 'Last Seen',
-					select: 'time',
-					link: {
-					 	type: 'ssh_status_local', 
-					 	val: ['status_code'],
-					 	crumb: false
+			var table1 = {
+				query: 'SELECT '+
+						'count(*) AS count,'+
+						'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time, '+
+						'`status_code`,'+
+						'sum(`ioc_count`) AS ioc_count '+
+					'FROM '+
+						'`ssh` '+
+					'WHERE '+
+						'time BETWEEN ? AND ? '+
+					'GROUP BY '+
+						'`status_code`',
+				insert: [start, end],
+				params: [
+					{
+						title: 'Last Seen',
+						select: 'time',
+						link: {
+						 	type: 'ssh_status_local', 
+						 	val: ['status_code'],
+						 	crumb: false
+						},
 					},
-				},
-				{ title: 'Connections', select: 'count' },
-				{ title: 'Status', select: 'status_code' },
-				{ title: 'IOC Count', select: 'ioc_count' }
-			];
-			var table1Settings = {
-				sort: [[1, 'desc']],
-				div: 'table',
-				title: 'SSH Status'
+					{ title: 'Connections', select: 'count' },
+					{ title: 'Status', select: 'status_code' },
+					{ title: 'IOC Count', select: 'ioc_count' }
+				],
+				settings: {
+					sort: [[1, 'desc']],
+					div: 'table',
+					title: 'SSH Status'
+				}
 			}
 			async.parallel([
 				// Table function(s)
 				function(callback) {
-					new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
+					new dataTable(table1, {database: database, pool: pool}, function(err,data){
 						tables.push(data);
 						callback();
 					});

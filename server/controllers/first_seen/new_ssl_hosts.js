@@ -18,71 +18,77 @@ module.exports = function(pool) {
 			var tables = [];
 			var crossfilter = [];
 			var info = [];
-			var table1SQL = 'SELECT '+
-					'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time,'+
-					'`server_name`,'+
-					'`lan_zone`,'+
-					'`machine`,'+
-					'`lan_ip`,'+
-					'`remote_ip`,'+
-					'`remote_country`,'+
-					'`remote_cc`,'+
-					'`remote_asn`,'+
-					'`remote_asn_name` '+
-				'FROM '+
-					'`ssl_uniq_remote_ip` '+
-				'WHERE '+
-					'`time` BETWEEN '+start+' AND '+end;
-			var table1Params = [
-				{
-					title: 'Last Seen',
-					select: 'time',
-					dView: true,
-					link: {
-						type: 'remote2local',
-						// val: the pre-evaluated values from the query above
-						val: ['remote_ip'],
-						crumb: false
+			var table1 = {
+				query: 'SELECT '+
+						'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time,'+
+						'`server_name`,'+
+						'`lan_zone`,'+
+						'`machine`,'+
+						'`lan_ip`,'+
+						'`remote_ip`,'+
+						'`remote_country`,'+
+						'`remote_cc`,'+
+						'`remote_asn`,'+
+						'`remote_asn_name` '+
+					'FROM '+
+						'`ssl_uniq_remote_ip` '+
+					'WHERE '+
+						'`time` BETWEEN ? AND ?',
+				insert: [start, end],
+				params: [
+					{
+						title: 'Last Seen',
+						select: 'time',
+						dView: true,
+						link: {
+							type: 'remote2local',
+							// val: the pre-evaluated values from the query above
+							val: ['remote_ip'],
+							crumb: false
+						},
 					},
-				},
-				{ title: 'Server Name', select: 'server_name' },
-				{ title: 'Remote IP', select: 'remote_ip' },
-				{ title: 'Remote Country', select: 'remote_country' },
-				{ title: 'Flag', select: 'remote_cc', },
-				{ title: 'Remote ASN', select: 'remote_asn_name' },
-				{ title: 'Zone', select: 'lan_zone' },
-				{ title: 'Machine Name', select: 'machine' },
-				{ title: 'Local IP', select: 'lan_ip' },
-			];
-			var table1Settings = {
-				sort: [[0, 'desc']],
-				div: 'table',
-				title: 'New Remote IP Addresses Detected'
+					{ title: 'Server Name', select: 'server_name' },
+					{ title: 'Remote IP', select: 'remote_ip' },
+					{ title: 'Remote Country', select: 'remote_country' },
+					{ title: 'Flag', select: 'remote_cc', },
+					{ title: 'Remote ASN', select: 'remote_asn_name' },
+					{ title: 'Zone', select: 'lan_zone' },
+					{ title: 'Machine Name', select: 'machine' },
+					{ title: 'Local IP', select: 'lan_ip' },
+				],
+				settings: {
+					sort: [[0, 'desc']],
+					div: 'table',
+					title: 'New Remote IP Addresses Detected'
+				}
 			}
-			var crossfilterSQL = 'SELECT '+
-					'count(*) AS count,'+
-					'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-					'`remote_country` '+
-				'FROM '+
-					'`ssl_uniq_remote_ip` '+
-				'WHERE '+
-					'`time` BETWEEN '+start+' AND '+end+' '+
-				'GROUP BY '+
-					'month(from_unixtime(`time`)),'+
-					'day(from_unixtime(`time`)),'+
-					'hour(from_unixtime(`time`)),'+
-					'`remote_country`';
+			var crossfilterQ = {
+				query: 'SELECT '+
+						'count(*) AS count,'+
+						'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+						'`remote_country` '+
+					'FROM '+
+						'`ssl_uniq_remote_ip` '+
+					'WHERE '+
+						'`time` BETWEEN ? AND ? '+
+					'GROUP BY '+
+						'month(from_unixtime(`time`)),'+
+						'day(from_unixtime(`time`)),'+
+						'hour(from_unixtime(`time`)),'+
+						'`remote_country`',
+				insert: [start, end]
+			}
 			async.parallel([
 				// Table function(s)
 				function(callback) {
-					new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
+					new dataTable(table1, {database: database, pool: pool}, function(err,data){
 						tables.push(data);
 						callback();
 					});
 				},
 				// Crossfilter function
 				function(callback) {
-					new query(crossfilterSQL, database, function(err,data){
+					new query(crossfilterQ, {database: database, pool: pool}, function(err,data){
 						crossfilter = data;
 						callback();
 					});
@@ -94,7 +100,7 @@ module.exports = function(pool) {
 					tables: tables,
 					crossfilter: crossfilter
 				};
-				res.json(resuts);
+				res.json(results);
 			});
 		}
 	}

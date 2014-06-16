@@ -18,7 +18,8 @@ module.exports = function(pool) {
 			var tables = [];
 			var crossfilter = [];
 			var info = [];
-			var table1SQL = 'SELECT '+
+			var table1 = {
+				query: 'SELECT '+
 					'count(*) AS count,'+
 					'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time,'+ // Last Seen
 					'`ioc_severity`,'+
@@ -34,43 +35,46 @@ module.exports = function(pool) {
 					'sum(`out_bytes`) AS out_bytes '+
 				'FROM `conn_ioc` '+
 				'WHERE '+
-					'time BETWEEN '+start+' AND '+end+' '+
+					'time BETWEEN ? AND ? '+
 					'AND `ioc_count` > 0 '+
 					'AND `trash` IS NULL '+
 				'GROUP BY '+
 					'`lan_ip`,'+
-					'`ioc`';
-			var table1Params = [
-				{
-					title: 'Last Seen',
-					select: 'time',
-					dView: true,
-					link: {
-						type: 'ioc_local_drill',
-						// val: the pre-evaluated values from the query above
-						val: ['lan_zone','lan_ip'],
-						crumb: false
+					'`ioc`',
+				insert: [start, end],
+				params: [
+					{
+						title: 'Last Seen',
+						select: 'time',
+						dView: true,
+						link: {
+							type: 'ioc_local_drill',
+							// val: the pre-evaluated values from the query above
+							val: ['lan_zone','lan_ip'],
+							crumb: false
+						},
 					},
-				},
-				{ title: 'Severity', select: 'ioc_severity' },
-				{ title: 'IOC Hits', select: 'count' },
-				{ title: 'IOC', select: 'ioc' },
-				{ title: 'IOC Type', select: 'ioc_typeIndicator' },
-				{ title: 'IOC Stage', select: 'ioc_typeInfection' },
-				{ title: 'Zone', select: 'lan_zone' },
-				{ title: 'Machine', select: 'machine' },
-				{ title: 'Local IP', select: 'lan_ip' },
-				{ title: 'Bytes to Remote', select: 'in_bytes'},
-				{ title: 'Bytes from Remote', select: 'out_bytes'},
-				{ title: 'Packets to Remote', select: 'in_packets', dView: false  },
-				{ title: 'Packets from Remote', select: 'out_packets', dView: false  }
-			];
-			var table1Settings = {
-				sort: [[2, 'desc']],
-				div: 'table',
-				title: 'Indicators of Compromise (IOC) Notifications'
+					{ title: 'Severity', select: 'ioc_severity' },
+					{ title: 'IOC Hits', select: 'count' },
+					{ title: 'IOC', select: 'ioc' },
+					{ title: 'IOC Type', select: 'ioc_typeIndicator' },
+					{ title: 'IOC Stage', select: 'ioc_typeInfection' },
+					{ title: 'Zone', select: 'lan_zone' },
+					{ title: 'Machine', select: 'machine' },
+					{ title: 'Local IP', select: 'lan_ip' },
+					{ title: 'Bytes to Remote', select: 'in_bytes'},
+					{ title: 'Bytes from Remote', select: 'out_bytes'},
+					{ title: 'Packets to Remote', select: 'in_packets', dView: false  },
+					{ title: 'Packets from Remote', select: 'out_packets', dView: false  }
+				],
+				settings: {
+					sort: [[2, 'desc']],
+					div: 'table',
+					title: 'Indicators of Compromise (IOC) Notifications'
+				}
 			}
-			var crossfilterSQL = 'SELECT '+
+			var crossfilterQ = {
+				query: 'SELECT '+
 					'count(*) as count,'+
 					'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
 					'`ioc_severity`,'+
@@ -78,7 +82,7 @@ module.exports = function(pool) {
 				'FROM '+
 					'`conn_ioc` '+
 				'WHERE '+
-					'`time` BETWEEN '+start+' AND '+end+' '+
+					'`time` BETWEEN ? AND ? '+
 					'AND `ioc_count` > 0 '+
 					'AND `trash` IS NULL '+
 				'GROUP BY '+
@@ -86,18 +90,20 @@ module.exports = function(pool) {
 					'day(from_unixtime(time)),'+
 					'hour(from_unixtime(time)),'+
 					'ioc,'+
-					'ioc_severity';
+					'ioc_severity',
+				insert: [start, end]
+			}
 			async.parallel([
 				// Table function(s)
 				function(callback) {
-					new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
+					new dataTable(table1, {database: database, pool: pool}, function(err,data){
 						tables.push(data);
 						callback();
 					});
 				},
 				// Crossfilter function
 				function(callback) {
-					new query(crossfilterSQL, database, function(err,data){
+					new query(crossfilterQ, {database: database, pool: pool}, function(err,data){
 						crossfilter = data;
 						callback();
 					});
@@ -109,7 +115,7 @@ module.exports = function(pool) {
 					tables: tables,
 					crossfilter: crossfilter
 				};
-				res.json(resuts);
+				res.json(results);
 			});
 		}
 	}

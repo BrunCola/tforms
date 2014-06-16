@@ -18,49 +18,52 @@ module.exports = function(pool) {
 			//var results = [];
 			var tables = [];
 			var info = [];
-			var table1SQL = 'SELECT '+
-					'count(*) AS count,'+
-					'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time,'+
-					'`server_id`,'+
-					'`src_user`,'+
-					'`src_ip`,'+
-					'`dst_ip`,'+
-					'`alert_source`,'+
-					'`program_source`,'+
-					'`alert_id`,'+
-					'`alert_info`,'+
-					'`full_log` '+
-				'FROM '+
-					'`ossec` '+
-				'WHERE '+
-					'`time` BETWEEN '+start+' AND '+end+' '+
-				'GROUP BY '+
-					'`src_ip`';
-			var table1Params = [
-				{
-					title: 'Last Seen',
-					select: 'time',
-					link: {
-						type: 'endpoint_events_local_by_alert_info',
-						// val: the pre-evaluated values from the query above
-						val: ['src_ip'],
-						crumb: false
+			var table1 = {
+				query: 'SELECT '+
+						'count(*) AS count,'+
+						'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time,'+
+						'`server_id`,'+
+						'`src_user`,'+
+						'`src_ip`,'+
+						'`dst_ip`,'+
+						'`alert_source`,'+
+						'`program_source`,'+
+						'`alert_id`,'+
+						'`alert_info`,'+
+						'`full_log` '+
+					'FROM '+
+						'`ossec` '+
+					'WHERE '+
+						'`time` BETWEEN ? AND ? '+
+					'GROUP BY '+
+						'`src_ip`',
+				insert: [start, end],
+				params: [
+					{
+						title: 'Last Seen',
+						select: 'time',
+						link: {
+							type: 'endpoint_events_local_by_alert_info',
+							// val: the pre-evaluated values from the query above
+							val: ['src_ip'],
+							crumb: false
+						},
 					},
-				},
-				{ title: 'Connections', select: 'count' },
-				{ title: 'Source IP', select: 'src_ip' },
-				{ title: 'Alert Source', select: 'alert_source'},
-				{ title: 'Program Source', select: 'program_source' },
-			];
-			var table1Settings = {
-				sort: [[1, 'desc']],
-				div: 'table',
-				title: 'Local Endpoint Events'
+					{ title: 'Connections', select: 'count' },
+					{ title: 'Source IP', select: 'src_ip' },
+					{ title: 'Alert Source', select: 'alert_source'},
+					{ title: 'Program Source', select: 'program_source' },
+				],
+				settings: {
+					sort: [[1, 'desc']],
+					div: 'table',
+					title: 'Local Endpoint Events'
+				}
 			}
 			async.parallel([
 				// Table function(s)
 				function(callback) {
-					new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
+					new dataTable(table1, {database: database, pool: pool}, function(err,data){
 						tables.push(data);
 						callback();
 					});

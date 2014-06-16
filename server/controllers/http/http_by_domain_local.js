@@ -22,54 +22,55 @@ module.exports = function(pool) {
 				var crossfilter = [];
 				var info = [];
 
-				var table1SQL = 'SELECT '+
-						'sum(`count`) AS `count`, '+
-						'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-						'`lan_zone`, ' +
-						'`lan_ip`, ' +
-						'`host`, ' +
-						'sum(`ioc_count`) AS `ioc_count` ' +
-					'FROM ' +
-						'`http_meta` '+
-					'WHERE ' +
-						'time BETWEEN '+start+' AND '+end+' '+
-						'AND `host` = \''+req.query.host+'\' '+
-					'GROUP BY '+
-						'`lan_ip`';
-
-				var table1Params = [
-					{
-						title: 'Last Seen',
-						select: 'time',
-						link: {
-							type: 'http_by_domain_local_drill',
-							// val: the pre-evaluated values from the query above
-							val: ['lan_ip','lan_zone','host'],
-							crumb: false
-						}
-					},
-					{ title: 'Connections', select: 'count' },
-					{ title: 'Zone', select: 'lan_zone' },
-					{ title: 'Local IP', select: 'lan_ip' },
-					{ title: 'Domain', select: 'host' },
-					{ title: 'IOC Count', select: 'ioc_count' }
-				];
-				var table1Settings = {
-					sort: [[1, 'desc']],
-					div: 'table',
-					title: 'Local HTTP By Domain'
+				var table1 = {
+					query: 'SELECT '+
+							'sum(`count`) AS `count`, '+
+							'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+							'`lan_zone`, ' +
+							'`lan_ip`, ' +
+							'`host`, ' +
+							'sum(`ioc_count`) AS `ioc_count` ' +
+						'FROM ' +
+							'`http_meta` '+
+						'WHERE ' +
+							'time BETWEEN ? AND ? '+
+							'AND `host` = \'?\' '+
+						'GROUP BY '+
+							'`lan_ip`',
+					insert: [start, end, req.query.host],
+					params: [
+						{
+							title: 'Last Seen',
+							select: 'time',
+							link: {
+								type: 'http_by_domain_local_drill',
+								// val: the pre-evaluated values from the query above
+								val: ['lan_ip','lan_zone','host'],
+								crumb: false
+							}
+						},
+						{ title: 'Connections', select: 'count' },
+						{ title: 'Zone', select: 'lan_zone' },
+						{ title: 'Local IP', select: 'lan_ip' },
+						{ title: 'Domain', select: 'host' },
+						{ title: 'IOC Count', select: 'ioc_count' }
+					],
+					settings: {
+						sort: [[1, 'desc']],
+						div: 'table',
+						title: 'Local HTTP By Domain'
+					}
 				}
-
 				async.parallel([
 					// Table function(s)
 					function(callback) {
-						new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
+						new dataTable(table1, {database: database, pool: pool}, function(err,data){
 							tables.push(data);
 							callback();
 						});
 					},
 				], function(err) { //This function gets called after the two tasks have called their "task callbacks"
-					if (err) throw console.log(err);
+					if (err) throw console.log(err)
 					var results = {
 						info: info,
 						tables: tables

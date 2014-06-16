@@ -18,44 +18,47 @@ module.exports = function(pool) {
 			//var results = [];
 			var tables = [];
 			var info = [];
-			var table1SQL = 'SELECT '+
-					'sum(`count`) AS `count`, '+
-					'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-					'`lan_zone`, ' +
-					'`lan_ip`, ' +
-					'sum(`ioc_count`) AS `ioc_count` ' +
-				'FROM ' + 
-					'`http_local` '+
-				'WHERE ' + 
-					'time BETWEEN '+start+' AND '+end+' '+
-				'GROUP BY '+
-					'`lan_zone`, '+
-					'`lan_ip`';
-			var table1Params = [
-				{
-					title: 'Last Seen',
-					select: 'time',
-					 link: {
-					 	type: 'http_local_by_domain', 
-					 	// val: the pre-evaluated values from the query above
-					 	val: ['lan_ip', 'lan_zone'],
-					 	crumb: false
+			var table1 = {
+				query: 'SELECT '+
+						'sum(`count`) AS `count`, '+
+						'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+						'`lan_zone`, ' +
+						'`lan_ip`, ' +
+						'sum(`ioc_count`) AS `ioc_count` ' +
+					'FROM ' + 
+						'`http_local` '+
+					'WHERE ' + 
+						'time BETWEEN ? AND ? '+
+					'GROUP BY '+
+						'`lan_zone`, '+
+						'`lan_ip`',
+				insert: [start, end],
+				params: [
+					{
+						title: 'Last Seen',
+						select: 'time',
+						 link: {
+						 	type: 'http_local_by_domain', 
+						 	// val: the pre-evaluated values from the query above
+						 	val: ['lan_ip', 'lan_zone'],
+						 	crumb: false
+						},
 					},
-				},
-				{ title: 'Connections', select: 'count' },
-				{ title: 'Zone', select: 'lan_zone' },
-				{ title: 'Local IP', select: 'lan_ip' },
-				{ title: 'IOC Count', select: 'ioc_count' }
-			];
-			var table1Settings = {
-				sort: [[1, 'desc']],
-				div: 'table',
-				title: 'Local HTTP'
+					{ title: 'Connections', select: 'count' },
+					{ title: 'Zone', select: 'lan_zone' },
+					{ title: 'Local IP', select: 'lan_ip' },
+					{ title: 'IOC Count', select: 'ioc_count' }
+				],
+				settings: {
+					sort: [[1, 'desc']],
+					div: 'table',
+					title: 'Local HTTP'
+				}
 			}
 			async.parallel([
 				// Table function(s)
 				function(callback) {
-					new dataTable(table1SQL, table1Params, table1Settings, database, function(err,data){
+					new dataTable(table1, {database: database, pool: pool}, function(err,data){
 						tables.push(data);
 						callback();
 					});

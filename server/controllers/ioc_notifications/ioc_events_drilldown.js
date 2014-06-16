@@ -44,8 +44,11 @@ module.exports = function(pool) {
 			switch(req.query.type) {
 				case 'assets':
 					if (req.query.lan_ip && req.query.lan_zone) {
-						var sql = 'SELECT `file` FROM assets where lan_ip = "'+req.query.lan_ip+'" AND lan_zone = "'+req.query.lan_zone+'"';
-						new query(sql, database, function(err,data){
+						var sql = {
+							query: 'SELECT `file` FROM assets where lan_ip = ? AND lan_zone = ?',
+							insert: [req.query.lan_ip, req.query.lan_zone]
+						}
+						new query(sql, {database: database, pool: pool}, function(err,data){
 							res.json(data)
 						});
 					}
@@ -75,11 +78,12 @@ module.exports = function(pool) {
 								'FROM '+
 									'`conn_ioc` '+
 								'WHERE '+
-									'`time` BETWEEN '+start+' AND '+end+' '+
-									'AND `lan_zone`=\''+req.query.lan_zone+'\' '+
-									'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
-									'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
-									'AND `ioc`=\''+req.query.ioc+'\' ',
+									'`time` BETWEEN ? AND ? '+
+									'AND `lan_zone`=\'?\' '+
+									'AND `lan_ip`=\'?\' '+
+									'AND `remote_ip`=\'?\' '+
+									'AND `ioc`=\'?\' ',
+							insert: [req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "Zone", "mData": "lan_zone"},
@@ -99,6 +103,7 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"}
 							],
 							database: database,
+							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
@@ -126,9 +131,10 @@ module.exports = function(pool) {
 								'FROM '+
 									'`conn_ioc` '+
 								'WHERE '+
-									'`time` BETWEEN '+start+' AND '+end+' '+
-									'AND `lan_zone`=\''+req.query.lan_zone+'\' '+
-									'AND `lan_ip`=\''+req.query.lan_ip+'\' ',
+									'`time` BETWEEN ? AND ? '+
+									'AND `lan_zone`=\'?\' '+
+									'AND `lan_ip`=\'?\' ',
+							insert: [req.query.lan_zone, req.query.lan_ip],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "Zone", "mData": "lan_zone"},
@@ -148,6 +154,7 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"}
 							],
 							database: database,
+							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
@@ -170,11 +177,12 @@ module.exports = function(pool) {
 								'FROM '+
 									'`dns_ioc` '+
 								'WHERE '+
-									'`time` BETWEEN '+start+' AND '+end+' '+
-									'AND `lan_zone`=\''+req.query.lan_zone+'\' '+
-									'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
-									'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
-									'AND `ioc`=\''+req.query.ioc+'\'',
+									'`time` BETWEEN ? AND ? '+
+									'AND `lan_zone`=\'?\' '+
+									'AND `lan_ip`=\'?\' '+
+									'AND `remote_ip`=\'?\' '+
+									'AND `ioc`=\'?\'',
+							insert: [req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "Protocol", "mData": "proto"},
@@ -189,6 +197,7 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
 							],
 							database: database,
+							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
@@ -211,9 +220,10 @@ module.exports = function(pool) {
 								'FROM '+
 									'`dns_ioc` '+
 								'WHERE '+
-									'`time` BETWEEN '+start+' AND '+end+' '+
-									'AND `lan_zone`=\''+req.query.lan_zone+'\''+
-									'AND `lan_ip`=\''+req.query.lan_ip+'\'',
+									'`time` BETWEEN ? AND ? '+
+									'AND `lan_zone`=\'?\''+
+									'AND `lan_ip`=\'?\'',
+							insert: [req.query.lan_zone, req.query.lan_ip],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "Protocol", "mData": "proto"},
@@ -228,6 +238,7 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
 							],
 							database: database,
+							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
@@ -254,11 +265,12 @@ module.exports = function(pool) {
 								'FROM '+
 									'`http_ioc` '+
 								'WHERE '+
-									'`time` BETWEEN '+start+' AND '+end+' '+
-									'AND `lan_zone`=\''+req.query.lan_zone+'\' '+
-									'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
-									'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
-									'AND `ioc`=\''+req.query.ioc+'\'',
+									'`time` BETWEEN ? AND ? '+
+									'AND `lan_zone`=\'?\' '+
+									'AND `lan_ip`=\'?\' '+
+									'AND `remote_ip`=\'?\' '+
+									'AND `ioc`=\'?\'',
+							insert: [req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "Host", "mData": "host"},
@@ -271,6 +283,7 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
 							],
 							database: database,
+							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
@@ -297,9 +310,10 @@ module.exports = function(pool) {
 								'FROM '+
 									'`http_ioc` '+
 								'WHERE '+
-									'`time` BETWEEN '+start+' AND '+end+' '+
-									'AND `lan_zone`=\''+req.query.lan_zone+'\''+
-									'AND `lan_ip`=\''+req.query.lan_ip+'\'',
+									'`time` BETWEEN ? AND ? '+
+									'AND `lan_zone`=\'?\''+
+									'AND `lan_ip`=\'?\'',
+							insert: [req.query.lan_zone, req.query.lan_ip],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "Host", "mData": "host"},
@@ -312,6 +326,7 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
 							],
 							database: database,
+							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
@@ -335,11 +350,12 @@ module.exports = function(pool) {
 								'FROM '+
 									'`ssl_ioc` '+
 								'WHERE '+
-									'`time` BETWEEN '+start+' AND '+end+' '+
-									'AND `lan_zone`=\''+req.query.lan_zone+'\' '+
-									'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
-									'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
-									'AND `ioc`=\''+req.query.ioc+'\'',
+									'`time` BETWEEN ? AND ? '+
+									'AND `lan_zone`=\'?\' '+
+									'AND `lan_ip`=\'?\' '+
+									'AND `remote_ip`=\'?\' '+
+									'AND `ioc`=\'?\'',
+							insert: [req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "Server Name", "mData": "server_name"},
@@ -355,6 +371,7 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
 							],
 							database: database,
+							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
@@ -378,9 +395,10 @@ module.exports = function(pool) {
 								'FROM '+
 									'`ssl_ioc` '+
 								'WHERE '+
-									'`time` BETWEEN '+start+' AND '+end+' '+
-									'AND `lan_zone`=\''+req.query.lan_zone+'\''+
-									'AND `lan_ip`=\''+req.query.lan_ip+'\'',
+									'`time` BETWEEN ? AND ? '+
+									'AND `lan_zone`=\'?\''+
+									'AND `lan_ip`=\'?\'',
+							insert: [req.query.lan_zone, req.query.lan_ip],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "Server Name", "mData": "server_name"},
@@ -396,6 +414,7 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
 							],
 							database: database,
+							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
@@ -417,11 +436,12 @@ module.exports = function(pool) {
 								'FROM '+
 									'`file_ioc` '+
 								'WHERE '+
-									'`time` BETWEEN '+start+' AND '+end+' '+
-									'AND `lan_zone`=\''+req.query.lan_zone+'\' '+
-									'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
-									'AND `remote_ip`=\''+req.query.remote_ip+'\' '+
-									'AND `ioc`=\''+req.query.ioc+'\'',
+									'`time` BETWEEN ? AND ? '+
+									'AND `lan_zone`=\'?\' '+
+									'AND `lan_ip`=\'?\' '+
+									'AND `remote_ip`=\'?\' '+
+									'AND `ioc`=\'?\'',
+							insert: [req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "File Type", "mData": "mime"},
@@ -435,6 +455,7 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
 							],
 							database: database,
+							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
@@ -456,9 +477,10 @@ module.exports = function(pool) {
 								'FROM '+
 									'`file_ioc` '+
 								'WHERE '+
-									'`time` BETWEEN '+start+' AND '+end+' '+
-									'AND `lan_zone`=\''+req.query.lan_zone+'\''+
-									'AND `lan_ip`=\''+req.query.lan_ip+'\'',
+									'`time` BETWEEN ? AND ? '+
+									'AND `lan_zone`=\'?\''+
+									'AND `lan_ip`=\'?\'',
+							insert: [req.query.lan_zone, req.query.lan_ip],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "File Type", "mData": "mime"},
@@ -472,6 +494,7 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
 							],
 							database: database,
+							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
@@ -489,8 +512,9 @@ module.exports = function(pool) {
 								'FROM '+
 									'`ossec` '+
 								'WHERE '+
-									'`time` BETWEEN '+start+' AND '+end+' '+
-									'AND `src_ip`=\''+req.query.lan_ip+'\' ',
+									'`time` BETWEEN ? AND ? '+
+									'AND `src_ip`=\'?\' ',
+							insert: [req.query.lan_ip],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "User", "mData": "src_user"},
@@ -501,65 +525,78 @@ module.exports = function(pool) {
 								{"sTitle": "Alert Info", "mData": "alert_info"},
 							],
 							database: database,
+							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
 							sClass: 'endpoint'
 						}
 						var info = {};
-						var InfoSQL = 'SELECT '+
-							'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as last, '+
-							'date_format(min(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as first, '+
-							'sum(`in_packets`) as in_packets, '+
-							'sum(`out_packets`) as out_packets, '+
-							'sum(`in_bytes`) as in_bytes, '+
-							'sum(`out_bytes`) as out_bytes, '+
-							'`machine`, '+
-							'`lan_zone`, '+
-							'`lan_port`, '+
-							'`remote_port`, '+
-							'`remote_cc`, '+
-							'`remote_country`, '+
-							'`remote_asn`, '+
-							'`remote_asn_name`, '+
-							'`l7_proto`, '+
-							'`ioc_typeIndicator` '+
-							'FROM `conn_ioc` '+
-							'WHERE '+
-							'`lan_ip` = \''+req.query.lan_ip+'\' AND '+
-							'`remote_ip` = \''+req.query.remote_ip+'\' AND '+
-							'`ioc` = \''+req.query.ioc+'\' '+
-							'LIMIT 1';
-						var Info2SQL = 'SELECT '+
-							'`description` '+
-							'FROM `ioc_parent` '+
-							'WHERE '+
-							'`ioc_parent` = \''+req.query.ioc+'\' '+
-							'LIMIT 1';
+						var InfoSQL = {
+							query: 'SELECT '+
+								'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as last, '+
+								'date_format(min(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as first, '+
+								'sum(`in_packets`) as in_packets, '+
+								'sum(`out_packets`) as out_packets, '+
+								'sum(`in_bytes`) as in_bytes, '+
+								'sum(`out_bytes`) as out_bytes, '+
+								'`machine`, '+
+								'`lan_zone`, '+
+								'`lan_port`, '+
+								'`remote_port`, '+
+								'`remote_cc`, '+
+								'`remote_country`, '+
+								'`remote_asn`, '+
+								'`remote_asn_name`, '+
+								'`l7_proto`, '+
+								'`ioc_typeIndicator` '+
+								'FROM `conn_ioc` '+
+								'WHERE '+
+								'`lan_ip` = \'?\' AND '+
+								'`remote_ip` = \'?\' AND '+
+								'`ioc` = \'?\' '+
+								'LIMIT 1',
+							insert: [req.query.lan_ip, req.query.remote_ip, req.query.ioc]
+						}
+						var Info2SQL = {
+							query: 'SELECT '+
+								'`description` '+
+								'FROM `ioc_parent` '+
+								'WHERE '+
+								'`ioc_parent` = \'?\' '+
+								'LIMIT 1',
+							insert: [req.query.ioc]
+						}
 						var treereturn = [];
-						var treeSQL = 'SELECT '+
-							// SELECTS
-							'ioc_attrID, '+
-							'ioc_childID, '+
-							'ioc_parentID, '+
-							'ioc_typeIndicator, '+
-							'ioc_severity, '+
-							'ioc '+
-							// !SELECTS
-							'FROM conn_ioc '+
-							'WHERE time BETWEEN '+start+' AND '+end+' '+
-							'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
-							'GROUP BY  ioc_parentID, ioc_childID, ioc_attrID';
+						var treeSQL = {
+							query: 'SELECT '+
+								// SELECTS
+								'ioc_attrID, '+
+								'ioc_childID, '+
+								'ioc_parentID, '+
+								'ioc_typeIndicator, '+
+								'ioc_severity, '+
+								'ioc '+
+								// !SELECTS
+								'FROM conn_ioc '+
+								'WHERE time BETWEEN ? AND ? '+
+								'AND `lan_ip`=\'?\' '+
+								'GROUP BY  ioc_parentID, ioc_childID, ioc_attrID',
+							insert: [start, end, req.query.lan_ip]
+						}
 						var forcereturn = [];
-						var forceSQL = 'SELECT '+
-							// SELECTS
-							'`remote_ip`, '+
-							'count(*) as count '+
-							// !SELECTS
-							'FROM conn_ioc '+
-							'WHERE time BETWEEN '+start+' AND '+end+' '+
-							'AND `lan_ip`=\''+req.query.lan_ip+'\' '+
-							'GROUP BY remote_ip';
+						var forceSQL = {
+							query: 'SELECT '+
+								// SELECTS
+								'`remote_ip`, '+
+								'count(*) as count '+
+								// !SELECTS
+								'FROM conn_ioc '+
+								'WHERE time BETWEEN ? AND ? '+
+								'AND `lan_ip`=\'?\' '+
+								'GROUP BY remote_ip',
+							insert: [start, end, req.query.lan_ip]
+						}
 						var lanIP = req.query.lan_ip;
 						var attrID = req.query.ioc_attrID;
 						async.parallel([
@@ -620,25 +657,25 @@ module.exports = function(pool) {
 								});
 							},
 							function(callback) { // InfoSQL
-								new query(InfoSQL, database, function(err,data){
+								new query(InfoSQL, {database: database, pool: pool}, function(err,data){
 									info.main = data;
 									callback();
 								});
 							},
 							function(callback) { // Info2SQL
-								new query(Info2SQL, 'rp_ioc_intel', function(err,data){
+								new query(Info2SQL, {database: 'rp_ioc_intel', pool: pool}, function(err,data){
 									info.desc = data;
 									callback();
 								});
 							},
 							function(callback) {
-								new force(forceSQL, database, lanIP, function(err,data){
+								new force(forceSQL, {database: database, pool: pool}, lanIP, function(err,data){
 									forcereturn = data;
 									callback();
 								});
 							},
 							function(callback) {
-								new treechart(treeSQL, database, lanIP, attrID, function(err,data){
+								new treechart(treeSQL, {database: database, pool: pool}, lanIP, attrID, function(err,data){
 									treereturn = data;
 									callback();
 								});
