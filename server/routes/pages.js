@@ -176,6 +176,12 @@ module.exports = function(app, passport, version, io, pool) {
 			// REMOTE2LOCAL FTP
 			var ftp_remote2local = require('../controllers/general_network/ftp_remote2local')(pool);
 
+	//HEALTH
+		//OVERVIEW
+		var overview = require('../controllers/health/overview')(pool); 
+			//OVERVIEW
+			var health_drill = require('../controllers/health/health_drill')(pool); 
+	
 	// REPORTS
 		// IOC EVENTS REPORT
 		var ioc_events_report = require('../controllers/reports/ioc_events')(pool);
@@ -184,7 +190,6 @@ module.exports = function(app, passport, version, io, pool) {
 		var archive = require('../controllers/archive')(pool);
 	// ARCHIVE
 		var upload = require('../controllers/upload')(pool);
-
 
 	// LIVE CONNECTIONS
 	var live_connections = require('../controllers/live_connections/live_connections')(pool);
@@ -442,6 +447,13 @@ module.exports = function(app, passport, version, io, pool) {
 			app.route('/general_network/ftp_remote2local')
 			.get(authorization.requiresLogin, ftp_remote2local.render);
 
+	//SYSTEM HEALTH
+		//OVERVIEW
+		app.route('/health/overview')
+		.get(authorization.requiresLogin, overview.render);
+			//HEALTH DRILL
+			app.route('/health/health_drill')
+			.get(authorization.requiresLogin, health_drill.render);
 	// REPORTS
 		// IOC EVENTS
 		app.route('/reports/ioc_events')

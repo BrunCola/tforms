@@ -1164,6 +1164,35 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
+			// SYSTEM HEALTH
+				// OVERVIEW
+				.state('overview', {
+					url: '/overview?start&end',
+					templateUrl: 'public/pages/views/health/overview.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'RapidPHIRE Health',
+						daterange: true
+					}
+				})
+					// HEALTH DRILL
+					.state('health_drill', {
+						url: '/health_drill?start&end&client&zone',
+						templateUrl: 'public/pages/views/health/health_drill.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Overall Zone Health',
+							subtitleElm: {
+								'Client': 'client',
+								'Zone': 'zone'
+							},
+							daterange: true
+						}
+					})
 			// REPORTS
 				// IOC EVENTS
 				.state('ioc_events_report', {
