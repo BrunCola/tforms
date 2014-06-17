@@ -82,7 +82,6 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'IOC Notifications',
 			'url': '',
 			'icon': 'fa-warning',
-			'accessLevel': [1, 2], // optional as f***
 			'children':
 			[
 				{

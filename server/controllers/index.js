@@ -28,7 +28,8 @@ module.exports = function (version) {
 					id: req.session.passport.user.id,
 					database: req.session.passport.user.database,
 					uploads: config.localUploads.enabled,
-					roles: (req.session.passport.user ? req.session.passport.user.roles : ['anonymous'])
+					level: req.session.passport.user.level,
+					// roles: (req.session.passport.user ? req.session.passport.user.roles : ['anonymous'])
 				}) : 'null',
 				modules: JSON.stringify(modules),
 				version: version,

@@ -119,18 +119,19 @@ function sendReport(user) {
 	});
 }
 
-module.exports = function(db) {
+module.exports = function(pool) {
 	// get users and send reports
 	if (config.reports.active === true) {
 		new CronJob(config.reports.schedule, function(){
-			var connection = mysql.createConnection(db);
-			var sql="SELECT * FROM user WHERE email_report = '1'";
-			db.query(sql, function(err, users, fields) {
-				if (err) throw err;
-				for (var n in users) {
-					sendReport(users[n]);
-				}
-				connection.destroy();
+			pool.getConnection(function(err, connection) {
+				var sql="SELECT * FROM user WHERE email_report = '1'";
+				connection.query(sql, function(err, users, fields) {
+					if (err) throw err;
+					for (var n in users) {
+						sendReport(users[n]);
+					}
+					connection.release();
+				});
 			});
 		}, null, true, null);
 	}
