@@ -34,10 +34,8 @@ function keepAlive() {
         return;
     });
 }
-setTimeout(function(){
-    setInterval(keepAlive, 60000);
-}, 60000);
-// var db = mongoose.connect(config.db);
+setInterval(keepAlive, 1800000); // 30 minutes in miliseconds
+
 /**
  * Main application entry file.
  * Please note that the order of loading is important.
