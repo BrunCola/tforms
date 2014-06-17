@@ -82,7 +82,6 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'IOC Notifications',
 			'url': '',
 			'icon': 'fa-warning',
-			'accessLevel': [1, 2], // optional as f***
 			'children':
 			[
 				{
@@ -345,14 +344,15 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		{
 			'title': 'Health',
 			'url': '',
-			'icon': 'fa-plus-square',
+			'icon': 'fa-plus-square',		
+			'accessLevel': [3],	
 			'children':
 			[
 				{
 					'title': 'RapidPHIRE Health',
 					'url': 'overview',
 					'icon': 'fa-plus-square',
-					'orphans': []
+					'orphans': ['health_drill']
 				}
 			]
 		}

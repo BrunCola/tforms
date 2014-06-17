@@ -25,17 +25,17 @@ module.exports = function(pool) {
 		                'GROUP BY client, zone, process_name) a ' +
 		                'ON a.zone = b.zone AND a.maxtimestamp = b.timestamp AND a.process_name = b.process_name AND a.client = b.client ' + 
 		                'GROUP BY a.client, a.zone, a.process_name ORDER BY a.process_name',
-                insert: [start, end],
-				params :[
+                insert: [],
+				params: [
 					{
 						title: 'Last Seen',
 						select: 'timestamp',
-						//  link: {
-						//  	type: 'health_drill', 
-						//  	// val: the pre-evaluated values from the query above
-						//  	val: ['client', 'zone'],
-						//  	crumb: false
-						// },
+						 link: {
+						 	type: 'health_drill', 
+						 	// val: the pre-evaluated values from the query above
+						 	val: ['client', 'zone'],
+						 	crumb: false
+						},
 					},
 					{ title: 'Client', select: 'client' },
 					{ title: 'Zone', select: 'zone' },

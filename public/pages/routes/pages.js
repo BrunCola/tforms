@@ -1177,6 +1177,18 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
+					// HEALTH DRILL
+					.state('health_drill', {
+						url: '/health_drill?start&end&client&zone',
+						templateUrl: 'public/pages/views/health/health_drill.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Overall Zone Health',
+							daterange: true
+						}
+					})
 			// REPORTS
 				// IOC EVENTS
 				.state('ioc_events_report', {

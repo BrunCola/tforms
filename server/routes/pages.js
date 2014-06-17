@@ -179,6 +179,8 @@ module.exports = function(app, passport, version, io, pool) {
 	//HEALTH
 		//OVERVIEW
 		var overview = require('../controllers/health/overview')(pool); 
+			//OVERVIEW
+			var health_drill = require('../controllers/health/health_drill')(pool); 
 	
 	// REPORTS
 		// IOC EVENTS REPORT
@@ -449,7 +451,9 @@ module.exports = function(app, passport, version, io, pool) {
 		//OVERVIEW
 		app.route('/health/overview')
 		.get(authorization.requiresLogin, overview.render);
-
+			//HEALTH DRILL
+			app.route('/health/health_drill')
+			.get(authorization.requiresLogin, health_drill.render);
 	// REPORTS
 		// IOC EVENTS
 		app.route('/reports/ioc_events')
