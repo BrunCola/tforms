@@ -20,7 +20,8 @@ angular.module('mean.pages').controller('healthDrillController', ['$scope', '$st
 
 			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
 			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
-			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
+			// $scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
+			$scope.$broadcast('tableLoad', null, $scope.data.tables, 'drill');
 			$scope.$broadcast('spinnerHide');
 
 		}

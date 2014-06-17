@@ -1186,6 +1186,10 @@ angular.module('mean.pages').config(['$stateProvider',
 						},
 						data: {
 							title: 'Overall Zone Health',
+							subtitleElm: {
+								'Client': 'client',
+								'Zone': 'zone'
+							},
 							daterange: true
 						}
 					})

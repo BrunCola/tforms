@@ -44,7 +44,7 @@ module.exports = function(pool) {
 						},
 						{ title: 'Client', select: 'client' },
 						{ title: 'Zone', select: 'zone' },
-					//	{ title: 'System Name', select: 'system_name' },
+						{ title: 'System Name', select: 'system_name' },
 						{ title: 'System Status as reported by Monit', select: 'status' },
 						{ title: 'Load Average', select: 'load_average' },
 						{ title: 'CPU Usage', select: 'cpu' },
@@ -54,7 +54,7 @@ module.exports = function(pool) {
 					],
 					settings: {
 						sort: [[1, 'desc']],
-						div: 'table',
+						div: 'table1',
 						title: 'System Health'
 					}
 				}
