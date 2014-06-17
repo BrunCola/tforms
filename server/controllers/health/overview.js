@@ -27,9 +27,9 @@ exports.render = function(req, res) {
 			title: 'Last Seen',
 			select: 'timestamp',
 			//  link: {
-			//  	type: 'http_local_by_domain', 
+			//  	type: 'health_drill', 
 			//  	// val: the pre-evaluated values from the query above
-			//  	val: ['lan_ip', 'lan_zone'],
+			//  	val: ['client', 'zone'],
 			//  	crumb: false
 			// },
 		},
