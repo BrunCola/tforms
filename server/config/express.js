@@ -69,7 +69,7 @@ module.exports = function(app, passport, version, io, pool) {
 	app.use(methodOverride());
 	app.use(cookieParser());
 	app.use(multer());
-
+	// app.set('pool', pool);
 	// Import your asset file
 	var assets = require('./assets.json');
 	assetmanager.init({

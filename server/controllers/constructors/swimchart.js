@@ -20,10 +20,10 @@ module.exports = function (sql, options, callback) {
 	// connection.query(sql, function(err, result) {
 	// 	if (err) {
 	// 		callback(err, null);
-	// 		connection.release();
+	// 		connection.destroy();
 	// 	} else {
 	// 		callback(null, result);
-	// 		connection.release();
+	// 		connection.destroy();
 	// 	}
 	// });
 	var dat = [];
@@ -115,7 +115,7 @@ module.exports = function (sql, options, callback) {
 				// 	if (item.end > today) { item.end = today;}
 				// });
 				callback(null, b);
-				connection.release();
+				connection.destroy();
 			});
 			//group by type and push a main and sub-group for each time slice
 	});

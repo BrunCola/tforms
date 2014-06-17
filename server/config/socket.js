@@ -54,7 +54,7 @@ module.exports = function(app, passport, io, pool) {
 							socket.emit('initial iocs', alerts, newIOCcount);
 							POLLCheckpoint = Math.round(new Date().getTime() / 1000);
 							timer = setInterval(function(){polling(userData.username, POLLCheckpoint, userData.database)}, 10000);
-							connection.release();
+							connection.destroy();
 						})
 					}
 				})
@@ -104,7 +104,7 @@ module.exports = function(app, passport, io, pool) {
 							clearInterval(timer); // add a second to the timer
 							socket.emit('newIOC', newarr, arr.length);
 							timer = setInterval(function(){polling(username, topAdded, database)}, 300000); //change to 5 minutes on result
-							connection.release()
+							connection.destroy();
 						}
 					})
 			});

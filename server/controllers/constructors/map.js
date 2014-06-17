@@ -56,7 +56,7 @@ module.exports = function (sql, conn, callback) {
 				});
 				// console.log(result);
 				callback(null, mapData);
-				connection.release();
+				connection.destroy();
 			});
 	})
 };

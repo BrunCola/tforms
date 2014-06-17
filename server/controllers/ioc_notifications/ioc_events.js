@@ -8,6 +8,7 @@ var dataTable = require('../constructors/datatable'),
 module.exports = function(pool) {
 	return {
 		render: function(req, res) {
+			// var pool = req.app.get('pool');
 			var database = req.session.passport.user.database;
 			// var database = null;
 			var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
