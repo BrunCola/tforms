@@ -20,7 +20,6 @@ angular.module('mean.pages').config(['$stateProvider',
 			});
 			return deferred.promise;
 		};
-
 		$stateProvider
 
 			// LIVE CONNECTIONS
