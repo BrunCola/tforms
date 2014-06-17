@@ -187,7 +187,7 @@ module.exports = function(app, passport, version, io, pool) {
 
 
 	// LIVE CONNECTIONS
-	var live_connections = require('../controllers/live_connections/live_connections')(io);
+	var live_connections = require('../controllers/live_connections/live_connections')(pool);
 	app.route('/live_connections/live_connections')
 	.get(authorization.requiresLogin, live_connections.render);
 
