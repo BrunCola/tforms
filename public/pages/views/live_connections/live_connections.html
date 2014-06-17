@@ -1,11 +1,50 @@
 <section head></section>
 <div data-ng-controller="liveConnectionsController">
 	<div class="box-content">
-		<!-- <table>
-			Top Countries
-			<thead></thead>
+		<table class="livemapTable countriesTable" style="position:absolute">
+			Top Countries:
+			<thead>
+				<tr>
+					<th>Country</th>
+					<th>Percentage</th>
+					<th>Count</th>
+				</tr>
+			</thead>
 			<tbody></tbody>
-		</table> -->
+		</table>
+		<table class="livemapTable protosTable" style="position:absolute;margin-left:65%">
+			Top Applications:
+			<thead>
+				<tr>
+					<th>Application</th>
+					<th>Percentage</th>
+					<th>Count</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+		<table class="livemapTable localTable" style="position:absolute;margin-top:40%;">
+			Top Local IP's:
+			<thead>
+				<tr>
+					<th>Local IP</th>
+					<th>Percentage</th>
+					<th>Count</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+		<table class="livemapTable remoteTable" style="position:absolute;margin-top:40%;margin-left:65%">
+			Top Remote IP's:
+			<thead>
+				<tr>
+					<th>Remote IP</th>
+					<th>Percentage</th>
+					<th>Count</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
 		<div style="height:900px" id="map" make-map></div>
 	</div>
 </div>

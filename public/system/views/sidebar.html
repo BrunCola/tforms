@@ -3,14 +3,14 @@
 		<div class="sidebar-toggler hidden-phone"></div>
 		<br />
 	</li>
-	<li data-ng-repeat="sidebar in sidebaritems" id="heading" ng-class="parentClass(sidebar)" >
+	<li data-ng-repeat="sidebar in sidebaritems" id="heading" ng-show="display(sidebar.accessLevel)" ng-class="parentClass(sidebar)" >
 		<a  ng-click="select(sidebar.url)" href="">
 			<i class="fa {{sidebar.icon}}"></i>
 			<span class="title">{{sidebar.title}}</span>
 			<span  ng-class="parentClassSelected('{{sidebar.url}}')" id="heading_sub"></span>
 		</a>
 		<ul ng-show="sidebar.children.length > 0" class="sub-menu">
-			<li data-ng-repeat="child in sidebar.children" ng-class="childClass(child)">
+			<li data-ng-repeat="child in sidebar.children" ng-show="display(child.accessLevel)" ng-class="childClass(child)">
 				<a ng-click="select(child.url)">
 					<i class="fa {{child.icon}}"></i>
 					{{child.title}}

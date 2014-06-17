@@ -1,69 +1,67 @@
 'use strict';
 
-var config = require('../../config/config'),
-	mysql = require('mysql');
+var config = require('../../config/config');
 
-module.exports = function (sql, params, settings, database, callback) {
-	config.db.database = database;
-	var connection = mysql.createConnection(config.db);
-
-	this.sql = sql;
-	this.params = params;
-	this.callback = callback;
+module.exports = function (sql, conn, callback) {
 	var arr = [];
-	connection.query(this.sql, function(err, result) {
-		if (err) {
-			callback(err, null);
-			connection.destroy();
-		} else {
-			//var arr = this.arr;
-			for (var d in params) {
-				if (params[d].dView === undefined) {
-					params[d].dView = true;
-				}
-				if (params[d].select === 'Archive') {
-					params[d].select = null;
-				}
-				if (!params[d].sClass) {
-					params[d].sClass = null;
-				}
-				// if (params[d].dType === undefined) {
-				//	params[d].dType = 'string-case';
-				// }
-				//	if ((this.params[d].title === null) && (this.params[d].select==='remote_cc')) {
-				//	//do something
-				//	//replace type with html
-				//	//wrap response
-				//	}
-				arr.push({
-					'sTitle': params[d].title,
-					'mData': params[d].select,
-					'sType': params[d].dType,
-					'bVisible': params[d].dView,
-					'link': params[d].link,
-					'sClass': params[d].sClass
-				});
-			}
-
-			if (!settings.pagebreakBefore) {
-				settings.pagebreakBefore = false;
-			}
-
-			var table;
-			if (result.length === 0) {
-				table = null;
+	conn.pool.getConnection(function(err, connection) {
+		connection.changeUser({database : conn.database}, function(err) {
+			if (err) throw err;
+		});
+		connection.query(sql.query, sql.insert, function(err, result) {
+			if (err) {
+				callback(err, null);
+				connection.release();
 			} else {
-				table = {
-					aaData: result,
-					params: arr,
-					sort: settings.sort,
-					div: settings.div,
-					title: settings.title,
-					pagebreakBefore: settings.pagebreakBefore
-				};
+				//var arr = this.arr;
+				for (var d in sql.params) {
+					if (sql.params[d].dView === undefined) {
+						sql.params[d].dView = true;
+					}
+					if (sql.params[d].select === 'Archive') {
+						sql.params[d].select = null;
+					}
+					if (!sql.params[d].sClass) {
+						sql.params[d].sClass = null;
+					}
+					// if (sql.params[d].dType === undefined) {
+					//	sql.params[d].dType = 'string-case';
+					// }
+					//	if ((this.sql.params[d].title === null) && (this.sql.params[d].select==='remote_cc')) {
+					//	//do something
+					//	//replace type with html
+					//	//wrap response
+					//	}
+					arr.push({
+						'sTitle': sql.params[d].title,
+						'mData': sql.params[d].select,
+						'sType': sql.params[d].dType,
+						'bVisible': sql.params[d].dView,
+						'link': sql.params[d].link,
+						'sClass': sql.params[d].sClass
+					});
+				}
+
+				if (!sql.settings.pagebreakBefore) {
+					sql.settings.pagebreakBefore = false;
+				}
+
+				var table;
+				if (result.length === 0) {
+					table = null;
+				} else {
+					table = {
+						aaData: result,
+						params: arr,
+						sort: sql.settings.sort,
+						div: sql.settings.div,
+						title: sql.settings.title,
+						pagebreakBefore: sql.settings.pagebreakBefore
+					};
+				}
+				callback(null, table);
+				connection.release();
 			}
-			callback(null, table);
-			connection.destroy();
-		}
+		});
 	});
 };
