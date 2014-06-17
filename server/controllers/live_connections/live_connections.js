@@ -5,7 +5,7 @@ var map = require('../constructors/map'),
 	async = require('async'),
 	moment = require('moment');
 
-module.exports = function(io) {
+module.exports = function(pool) {
 	return {
 		render: function(req, res) {
 			var database = req.session.passport.user.database;
