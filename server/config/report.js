@@ -82,7 +82,8 @@ function sendReport(user) {
 								loadInProgress = false;
 							} else {
 								if (config.reports.autoDelete === true) {
-									fs.exists('./temp/'+fileName, function(exists) {
+									fs.exists('./temp/'+fileName, function(err, exists) {
+										if (err) {console.log('Error checking for pdf existance')}
 										if (exists) {
 											fs.unlinkSync('./temp/'+fileName);
 											loadInProgress = false;
