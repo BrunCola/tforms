@@ -35,7 +35,7 @@ module.exports = function(pool) {
 							'`file_meta` '+
 						'WHERE '+
 							'time BETWEEN ? AND ? '+
-							'AND `remote_ip` = \'?\' '+
+							'AND `remote_ip` = ? '+
 						'GROUP BY '+
 							'`mime`',
 					insert: [start, end, req.query.remote_ip],

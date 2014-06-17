@@ -43,9 +43,9 @@ module.exports = function(pool) {
 							'`ssh` '+
 						'WHERE '+
 							'time BETWEEN ? AND ? '+
-							'AND `lan_zone` = \'?\' '+
-							'AND `lan_ip` = \'?\' '+
-							'AND `status_code` = \'?\'',
+							'AND `lan_zone` = ? '+
+							'AND `lan_ip` = ? '+
+							'AND `status_code` = ?',
 					insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.status_code],
 					params: [
 						{ title: 'Time', select: 'time' },

@@ -51,7 +51,7 @@ module.exports = function(pool) {
 							'`smtp` '+
 						'WHERE ' +
 							'time BETWEEN ? AND ? '+
-							'AND `subject` = \'?\' '+
+							'AND `subject` = ? '+
 						'GROUP BY '+
 							'`receiptto`, ' +
 							'`mailfrom`',

@@ -35,7 +35,7 @@ module.exports = function(pool) {
 						'FROM `ossec` '+
 						'WHERE '+
 						'`time` BETWEEN ? AND ? '+
-						'AND src_ip = \'?\' '+
+						'AND src_ip = ? '+
 						'GROUP BY '+
 						'`alert_info`',
 					insert: [start, end, req.query.src_ip],

@@ -38,7 +38,7 @@ module.exports = function(pool) {
 							'`http_meta` '+
 						'WHERE ' +
 							'time BETWEEN ? AND ? '+
-							'AND `remote_ip` = \'?\' '+
+							'AND `remote_ip` = ? '+
 						'GROUP BY '+
 							'`lan_zone`, ' +
 							'`lan_ip`',

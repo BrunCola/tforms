@@ -32,7 +32,7 @@ module.exports = function(pool) {
 							'`file` '+
 						'WHERE '+
 							'time BETWEEN ? AND ? '+
-							'AND `http_host` = \'?\' '+
+							'AND `http_host` = ? '+
 						'GROUP BY '+
 							'`lan_ip`, '+
 							'`lan_zone`',

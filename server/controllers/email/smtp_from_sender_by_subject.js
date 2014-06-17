@@ -45,9 +45,9 @@ module.exports = function(pool) {
 							'`smtp` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `mailfrom` = \'?\' '+
-							'AND `receiptto` = \'?\' '+
-							'AND `subject` = \'?\'',
+							'AND `mailfrom` = ? '+
+							'AND `receiptto` = ? '+
+							'AND `subject` = ?',
 					insert: [start, end, req.query.mailfrom, req.query.receiptto, req.query.subject],
 					params: [
 						{ title: 'Time', select: 'time' },

@@ -45,7 +45,7 @@ module.exports = function(pool) {
 							'`conn_l7_meta` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `l7_proto` = \'?\' '+
+							'AND `l7_proto` = ? '+
 						'GROUP BY '+
 							'`lan_zone`,'+
 							'`lan_ip`',
@@ -93,7 +93,7 @@ module.exports = function(pool) {
 							'`conn_l7_meta` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `l7_proto` = \'?\' '+
+							'AND `l7_proto` = ? '+
 						'GROUP BY '+
 							'month(from_unixtime(time)),'+
 							'day(from_unixtime(time)),'+

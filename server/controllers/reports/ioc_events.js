@@ -27,7 +27,7 @@ module.exports = function(pool) {
 			switch (req.query.type) {
 				case 'glossary':
 					var iocType = req.query.iocType;
-					new query({query: 'SELECT description FROM ioc_parent WHERE ioc_parent =\'?\'', insert: [iocType]}, 'rp_ioc_intel', function(err,data){
+					new query({query: 'SELECT description FROM ioc_parent WHERE ioc_parent =?', insert: [iocType]}, 'rp_ioc_intel', function(err,data){
 						if (data) {
 							res.json({
 								title: iocType,

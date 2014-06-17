@@ -49,10 +49,10 @@ module.exports = function(pool) {
 							'`conn` ' +
 						'WHERE '+
 							'`time` BETWEEN ? AND ? ' +
-							'AND `lan_zone` = \'?\' '+
-							'AND `lan_ip` = \'?\' ' +
-							'AND `remote_ip` = \'?\' ' +
-							'AND `l7_proto` = \'?\'',
+							'AND `lan_zone` = ? '+
+							'AND `lan_ip` = ? ' +
+							'AND `remote_ip` = ? ' +
+							'AND `l7_proto` = ?',
 						insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.l7_proto],
 					params: [
 						{ title: 'Time', select: 'time' },

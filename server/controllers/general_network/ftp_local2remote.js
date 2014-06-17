@@ -56,8 +56,8 @@ module.exports = function(pool) {
 							'`ftp` ' +
 						'WHERE ' + 
 							'time BETWEEN ? AND ? '+
-							'AND `lan_ip` = \'?\' '+
-							'AND `lan_zone` = \'?\' '+
+							'AND `lan_ip` = ? '+
+							'AND `lan_zone` = ? '+
 						'GROUP BY '+
 							'`remote_ip`',
 					insert: [start, end, req.query.lan_ip, req.query.lan_zone],

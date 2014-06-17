@@ -33,9 +33,9 @@ module.exports = function(pool) {
 							'`file` '+
 						'WHERE '+
 							'time BETWEEN ? AND ? '+
-							'AND `http_host` = \'?\' '+
-							'AND `lan_ip` = \'?\' '+
-							'AND `lan_zone` = \'?\' '+
+							'AND `http_host` = ? '+
+							'AND `lan_ip` = ? '+
+							'AND `lan_zone` = ? '+
 						'GROUP BY '+
 							'`mime`',
 					insert: [start, end, req.query.http_host, req.query.lan_ip, req.query.lan_zone],

@@ -34,8 +34,8 @@ module.exports = function(pool) {
 							'`ssh` '+
 						'WHERE '+
 							'time BETWEEN ? AND ? '+
-							'AND `lan_zone` = \'?\' '+
-							'AND `lan_ip` = \'?\' '+
+							'AND `lan_zone` = ? '+
+							'AND `lan_ip` = ? '+
 						'GROUP BY '+
 							'`remote_ip`',
 					insert: [start, end, req.query.lan_zone, req.query.lan_ip],

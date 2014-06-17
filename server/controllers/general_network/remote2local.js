@@ -47,7 +47,7 @@ module.exports = function(pool) {
 							'`conn_meta` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `remote_ip` = \'?\' '+
+							'AND `remote_ip` = ? '+
 						'GROUP BY '+
 							'`lan_zone`,'+
 							'`lan_ip`',
@@ -100,7 +100,7 @@ module.exports = function(pool) {
 			            	'`conn_meta` '+
 			            'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `remote_ip` = \'?\' '+
+							'AND `remote_ip` = ? '+
 			            'GROUP BY '+
 							'month(from_unixtime(`time`)),'+
 							'day(from_unixtime(`time`)),'+

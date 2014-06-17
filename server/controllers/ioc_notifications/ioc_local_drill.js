@@ -42,8 +42,8 @@ module.exports = function(pool) {
 							'`conn_ioc` '+
 						'WHERE '+
 							'time BETWEEN ? AND ? '+
-							'AND `lan_zone` = \'?\' '+
-							'AND `lan_ip` = \'?\' '+
+							'AND `lan_zone` = ? '+
+							'AND `lan_ip` = ? '+
 							'AND `ioc_count` > 0 '+
 							'AND `trash` IS NULL '+
 						'GROUP BY '+
@@ -94,8 +94,8 @@ module.exports = function(pool) {
 							'`conn_ioc` '+
 						'WHERE '+
 							'time BETWEEN ? AND ? '+
-							'AND `lan_zone` = \'?\' '+
-							'AND `lan_ip` = \'?\' '+
+							'AND `lan_zone` = ? '+
+							'AND `lan_ip` = ? '+
 							'AND `ioc_count` > 0 '+
 							'AND `trash` IS NULL '+
 						'GROUP BY '+

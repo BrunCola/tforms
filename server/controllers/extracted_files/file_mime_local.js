@@ -31,7 +31,7 @@ module.exports = function(pool) {
 							'`file_meta` '+
 						'WHERE '+
 							'time BETWEEN ? AND ? '+
-							'AND `mime` = \'?\' '+
+							'AND `mime` = ? '+
 						'GROUP BY '+
 							'`lan_zone`,'+
 							'`lan_ip`',

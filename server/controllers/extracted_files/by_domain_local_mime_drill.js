@@ -45,10 +45,10 @@ module.exports = function(pool) {
 							'`file` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `lan_zone` = \'?\' '+
-							'AND `lan_ip` = \'?\' '+
-							'AND `mime` = \'?\' '+
-							'AND `http_host` = \'?\'',
+							'AND `lan_zone` = ? '+
+							'AND `lan_ip` = ? '+
+							'AND `mime` = ? '+
+							'AND `http_host` = ?',
 					insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.mime, req.query.http_host],
 					params: [
 						{ title: 'Last Seen', select: 'time' },

@@ -30,7 +30,7 @@ module.exports = function(pool) {
 							'`ssh` '+
 						'WHERE '+
 							'time BETWEEN ? AND ? '+
-							'AND `status_code` = \'?\' '+
+							'AND `status_code` = ? '+
 						'GROUP BY '+
 							'`lan_zone`, '+
 							'`lan_ip`',

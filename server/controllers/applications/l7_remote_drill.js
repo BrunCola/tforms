@@ -52,8 +52,8 @@ module.exports = function(pool) {
 							'`conn_l7_meta` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `remote_ip` = \'?\' '+
-							'AND `l7_proto` = \'?\' '+
+							'AND `remote_ip` = ? '+
+							'AND `l7_proto` = ? '+
 						'GROUP BY '+
 							'`remote_ip`',
 						insert: [start, end, req.query.remote_ip, req.query.l7_proto],
@@ -107,8 +107,8 @@ module.exports = function(pool) {
 						'FROM `conn_l7_meta` '+
 						'WHERE '+
 							'time BETWEEN ? AND ? '+
-							'AND `remote_ip` = \'?\' '+
-							'AND `l7_proto` = \'?\' '+
+							'AND `remote_ip` = ? '+
+							'AND `l7_proto` = ? '+
 						'GROUP BY '+
 							'month(from_unixtime(time)),'+
 							'day(from_unixtime(time)),'+

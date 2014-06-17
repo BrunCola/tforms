@@ -34,8 +34,8 @@ module.exports = function(pool) {
 							'`http_meta` '+
 						'WHERE ' +
 							'time BETWEEN ? AND ? '+
-							'AND `lan_zone` = \'?\' '+
-							'AND `lan_ip` = \'?\' '+
+							'AND `lan_zone` = ? '+
+							'AND `lan_ip` = ? '+
 						'GROUP BY '+
 							'`host`',
 					insert: [start, end, req.query.lan_zone, req.query.lan_ip],

@@ -41,8 +41,8 @@ module.exports = function(pool) {
 							'`conn_ioc` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `remote_ip` = \'?\' '+
-							'AND `ioc` = \'?\' '+
+							'AND `remote_ip` = ? '+
+							'AND `ioc` = ? '+
 							'AND `ioc_count` > 0 '+
 							'AND `trash` IS NULL '+
 						'GROUP BY '+

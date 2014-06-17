@@ -51,7 +51,7 @@ module.exports = function(pool) {
 							'`smtp` '+
 						'WHERE ' +
 							'time BETWEEN ? AND ? '+
-							'AND `mailfrom` = \'?\' '+
+							'AND `mailfrom` = ? '+
 						'GROUP BY '+
 							'`receiptto`',
 					insert: [start, end, req.query.mailfrom],

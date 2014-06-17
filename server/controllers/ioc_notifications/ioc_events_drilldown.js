@@ -79,10 +79,10 @@ module.exports = function(pool) {
 									'`conn_ioc` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `lan_zone`=\'?\' '+
-									'AND `lan_ip`=\'?\' '+
-									'AND `remote_ip`=\'?\' '+
-									'AND `ioc`=\'?\' ',
+									'AND `lan_zone`=? '+
+									'AND `lan_ip`=? '+
+									'AND `remote_ip`=? '+
+									'AND `ioc`=? ',
 							insert: [req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
@@ -132,8 +132,8 @@ module.exports = function(pool) {
 									'`conn_ioc` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `lan_zone`=\'?\' '+
-									'AND `lan_ip`=\'?\' ',
+									'AND `lan_zone`=? '+
+									'AND `lan_ip`=? ',
 							insert: [req.query.lan_zone, req.query.lan_ip],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
@@ -178,10 +178,10 @@ module.exports = function(pool) {
 									'`dns_ioc` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `lan_zone`=\'?\' '+
-									'AND `lan_ip`=\'?\' '+
-									'AND `remote_ip`=\'?\' '+
-									'AND `ioc`=\'?\'',
+									'AND `lan_zone`=? '+
+									'AND `lan_ip`=? '+
+									'AND `remote_ip`=? '+
+									'AND `ioc`=?',
 							insert: [req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
@@ -221,8 +221,8 @@ module.exports = function(pool) {
 									'`dns_ioc` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `lan_zone`=\'?\''+
-									'AND `lan_ip`=\'?\'',
+									'AND `lan_zone`=?'+
+									'AND `lan_ip`=?',
 							insert: [req.query.lan_zone, req.query.lan_ip],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
@@ -266,10 +266,10 @@ module.exports = function(pool) {
 									'`http_ioc` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `lan_zone`=\'?\' '+
-									'AND `lan_ip`=\'?\' '+
-									'AND `remote_ip`=\'?\' '+
-									'AND `ioc`=\'?\'',
+									'AND `lan_zone`=? '+
+									'AND `lan_ip`=? '+
+									'AND `remote_ip`=? '+
+									'AND `ioc`=?',
 							insert: [req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
@@ -311,8 +311,8 @@ module.exports = function(pool) {
 									'`http_ioc` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `lan_zone`=\'?\''+
-									'AND `lan_ip`=\'?\'',
+									'AND `lan_zone`=?'+
+									'AND `lan_ip`=?',
 							insert: [req.query.lan_zone, req.query.lan_ip],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
@@ -351,10 +351,10 @@ module.exports = function(pool) {
 									'`ssl_ioc` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `lan_zone`=\'?\' '+
-									'AND `lan_ip`=\'?\' '+
-									'AND `remote_ip`=\'?\' '+
-									'AND `ioc`=\'?\'',
+									'AND `lan_zone`=? '+
+									'AND `lan_ip`=? '+
+									'AND `remote_ip`=? '+
+									'AND `ioc`=?',
 							insert: [req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
@@ -396,8 +396,8 @@ module.exports = function(pool) {
 									'`ssl_ioc` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `lan_zone`=\'?\''+
-									'AND `lan_ip`=\'?\'',
+									'AND `lan_zone`=?'+
+									'AND `lan_ip`=?',
 							insert: [req.query.lan_zone, req.query.lan_ip],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
@@ -437,10 +437,10 @@ module.exports = function(pool) {
 									'`file_ioc` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `lan_zone`=\'?\' '+
-									'AND `lan_ip`=\'?\' '+
-									'AND `remote_ip`=\'?\' '+
-									'AND `ioc`=\'?\'',
+									'AND `lan_zone`=? '+
+									'AND `lan_ip`=? '+
+									'AND `remote_ip`=? '+
+									'AND `ioc`=?',
 							insert: [req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
@@ -478,8 +478,8 @@ module.exports = function(pool) {
 									'`file_ioc` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `lan_zone`=\'?\''+
-									'AND `lan_ip`=\'?\'',
+									'AND `lan_zone`=?'+
+									'AND `lan_ip`=?',
 							insert: [req.query.lan_zone, req.query.lan_ip],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
@@ -513,7 +513,7 @@ module.exports = function(pool) {
 									'`ossec` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `src_ip`=\'?\' ',
+									'AND `src_ip`=? ',
 							insert: [req.query.lan_ip],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
@@ -552,9 +552,9 @@ module.exports = function(pool) {
 								'`ioc_typeIndicator` '+
 								'FROM `conn_ioc` '+
 								'WHERE '+
-								'`lan_ip` = \'?\' AND '+
-								'`remote_ip` = \'?\' AND '+
-								'`ioc` = \'?\' '+
+								'`lan_ip` = ? AND '+
+								'`remote_ip` = ? AND '+
+								'`ioc` = ? '+
 								'LIMIT 1',
 							insert: [req.query.lan_ip, req.query.remote_ip, req.query.ioc]
 						}
@@ -563,7 +563,7 @@ module.exports = function(pool) {
 								'`description` '+
 								'FROM `ioc_parent` '+
 								'WHERE '+
-								'`ioc_parent` = \'?\' '+
+								'`ioc_parent` = ? '+
 								'LIMIT 1',
 							insert: [req.query.ioc]
 						}
@@ -580,7 +580,7 @@ module.exports = function(pool) {
 								// !SELECTS
 								'FROM conn_ioc '+
 								'WHERE time BETWEEN ? AND ? '+
-								'AND `lan_ip`=\'?\' '+
+								'AND `lan_ip`=? '+
 								'GROUP BY  ioc_parentID, ioc_childID, ioc_attrID',
 							insert: [start, end, req.query.lan_ip]
 						}
@@ -593,7 +593,7 @@ module.exports = function(pool) {
 								// !SELECTS
 								'FROM conn_ioc '+
 								'WHERE time BETWEEN ? AND ? '+
-								'AND `lan_ip`=\'?\' '+
+								'AND `lan_ip`=? '+
 								'GROUP BY remote_ip',
 							insert: [start, end, req.query.lan_ip]
 						}

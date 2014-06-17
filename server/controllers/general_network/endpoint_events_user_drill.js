@@ -34,8 +34,8 @@ module.exports = function(pool) {
 						'FROM `ossec` '+
 						'WHERE '+
 						'`time` BETWEEN ? AND ? '+
-						'AND `alert_info` = \'?\' '+
-						'AND `src_user` = \'?\'',
+						'AND `alert_info` = ? '+
+						'AND `src_user` = ?',
 					insert: [start, end, req.query.alert_info, req.query.src_user],
 					params: [
 						{ title: 'Time', select: 'time' },

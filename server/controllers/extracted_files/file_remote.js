@@ -44,8 +44,8 @@ module.exports = function(pool) {
 							'`file` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `remote_ip` = \'?\' '+
-							'AND `mime` = \'?\' ',
+							'AND `remote_ip` = ? '+
+							'AND `mime` = ? ',
 					insert: [start, end, req.query.remote_ip, req.query.mime],
 					params: [
 						{ title: 'Last Seen', select: 'time' },

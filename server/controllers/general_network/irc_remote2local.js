@@ -48,7 +48,7 @@ module.exports = function(pool) {
 							'`irc` '+
 						'WHERE ' +
 							'time BETWEEN ? AND ? '+
-							'AND `remote_ip` = \'?\' '+
+							'AND `remote_ip` = ? '+
 						'GROUP BY '+
 							'`lan_ip`',
 					insert: [start, end, req.query.remote_ip],

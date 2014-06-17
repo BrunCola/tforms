@@ -48,9 +48,9 @@ module.exports = function(pool) {
 							'`conn_l7_meta` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `lan_zone` = \'?\' '+
-							'AND `lan_ip` = \'?\' '+
-							'AND `l7_proto` = \'?\' '+
+							'AND `lan_zone` = ? '+
+							'AND `lan_ip` = ? '+
+							'AND `l7_proto` = ? '+
 						'GROUP BY '+
 							'`remote_ip`',
 					insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.l7_proto],
@@ -102,9 +102,9 @@ module.exports = function(pool) {
 							'`conn_l7_meta` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `lan_zone` = \'?\' '+
-							'AND `lan_ip` = \'?\' '+
-							'AND `l7_proto` = \'?\' '+
+							'AND `lan_zone` = ? '+
+							'AND `lan_ip` = ? '+
+							'AND `l7_proto` = ? '+
 						'GROUP BY '+
 							'month(from_unixtime(`time`)),'+
 							'day(from_unixtime(`time`)),'+
