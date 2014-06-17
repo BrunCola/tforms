@@ -13,9 +13,9 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 			var tooltip = d3.select("#map").append("div").attr("class", "tooltip hidden");
 			var width = document.getElementById('map').offsetWidth-60;
 			var height = width / 1.5;
-			var zoom = d3.behavior.zoom()
-				.scaleExtent([1, 8])
-				.on("zoom", move);
+			// var zoom = d3.behavior.zoom()
+			// 	.scaleExtent([1, 8])
+			// 	.on("zoom", move);
 
 			// BUILD SVG LAYER
 			var projection = d3.geo.mercator()
@@ -27,46 +27,27 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 				.attr("width", width)
 				.attr("height", height)
 				.append("g")
-				.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
-				.call(zoom);
+				.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+				// .call(zoom);
 			var g = svg.append("g");
 
-			// APPEND TABLE
-			var tableDiv = d3.select('table')
-				.attr('transform', "translate(-" + ((width / 2) - 20) + ",-" + ((height / 2) - 20) + ")");
-			var thead = tableDiv.select('thead').append('tr');
-			var tbody = tableDiv.select('tbody');
-			thead.append("th")
-				.text('Country');
-			thead.append("th")
-				.text('Percentage');
-
-			function updateTable(obj) {
-				tbody.selectAll('tr').remove();
-				for (var i in obj) {
-					var row = tbody.append('tr');
-					row
-						.append('td')
-						.text(i);
-					row
-						.append('td')
-						.text(obj[i].percentage+'%');
+			function populateTable(array, dClass) {
+				var thisDiv = d3.select('.'+dClass).select('tbody');
+				if (array.length > 0) {
+					thisDiv.selectAll('tr').remove();
+					for (var i in array) {
+						var row = thisDiv.append('tr');
+						row
+							.append('td')
+							.text(array[i].display);
+						row
+							.append('td')
+							.text(array[i].percentage+'%');
+						row
+							.append('td')
+							.text(array[i].count);
+					}
 				}
-			}
-
-
-			// ZOOM BEHAVIOR
-			function move() {
-				var t = d3.event.translate;
-				var s = d3.event.scale;
-				var h = height / 3;
-				t[0] = Math.min(width / 2 * (s - 1), Math.max(width / 2 * (1 - s), t[0]));
-				t[1] = Math.min(height / 2 * (s - 1) + h * s, Math.max(height / 2 * (1 - s) - h * s, t[1]));
-
-				zoom.translate(t);
-				g.style("stroke-width", 1 / s).attr("transform", "translate(" + t + ")scale(" + s + ")");
-				// var up = s/5;
-				// node.attr("transform", function(d) {return "translate(" + projection([d.geometry.coordinates[0],d.geometry.coordinates[1]]) + ")scale("+up+")";})
 			}
 
 			// DRAW MAP
@@ -103,16 +84,30 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 			});
 
 			var arrayCount = 0;
-			var percentArr = [];
+			// country tables arr
+			var countryArr = [];
 			var countrylist = [];
+			// l7 table arr
+			var l7Arr = [];
+			var l7list = [];
+			// top local arr
+			var topLocalArr = [];
+			var topLocallist = [];
+			// top remote arr
+			var topRemoteArr = [];
+			var topRemotelist = [];
+			// Country labels arr
+			var labelList = [];
 			$scope.$on('map', function (event, data, start, end) {
 				/*Animation Timing Variables*/
 				var step = 1000; // 1 second
 				var timer, percent;
 				data.features.forEach(function(d){
-					d.time = moment(d.properties.date_filed,"YYYY-MM-DD hh:mm:ss").unix()*1000
+					d.time = moment(d.properties.date_filed,"YYYY-MM-DD hh:mm:ss").unix()*1000;
+					if (d.properties.country === 'United States of America') {
+						d.properties.country = 'United States';
+					}
 				})
-
 				/*Add an svg group for each data point*/
 				var node = svg.selectAll(".node").data(data.features).enter().insert('g')
 					.each(function(d) {
@@ -184,8 +179,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 				node.call(tip);
 				node
 					.on('mouseover', tip.show)
-					.on('mouseout', tip.hide)
-
+					.on('mouseout', tip.hide);
 				filterCurrentPoints();
 				// map.on("zoomend", update);
 				/*Filter map points by date*/
@@ -205,35 +199,65 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 							// add count to total count
 							arrayCount += d.properties.count;
 							// push countries to object while keeping track of count
-							var thisCountry = d.properties.country;
-							// if (thisCountry in percentObj) {
-							// 	percentObj[thisCountry].count += d.properties.count;
-							// } else {
-							// 	percentObj[thisCountry] = {
-							// 		count: d.properties.count,
-							// 		country: d.properties.country
-							// 	};
-							// }
-
-							var index = countrylist.indexOf(thisCountry);
-							if (index !== -1) {
-								percentArr[index].count += d.properties.count;
-							} else {
-								countrylist.push(thisCountry);
-								percentArr.push({
-									count: d.properties.count,
-									country: d.properties.country
-								});
+							function calc(value, pushTo, check) {
+								switch(value.toString()) {
+									// switch for values to ignore
+									case '-':
+										return;
+									case 'Default':
+										return;
+									default:
+										var index = check.indexOf(value);
+										if (index !== -1) {
+											pushTo[index].count += d.properties.count;
+										} else {
+											check.push(value);
+											pushTo.push({
+												count: d.properties.count,
+												display: value
+											});
+										}
+									return;
+								}
+							}
+							var props = [{
+								val: d.properties.country,
+								pushTo: countryArr,
+								check: countrylist
+							},{
+								val: d.properties.l7_proto,
+								pushTo: l7Arr,
+								check: l7list
+							},{
+								val: d.properties.lan_ip,
+								pushTo: topLocalArr,
+								check: topLocallist
+							},{
+								val: d.properties.remote_ip+' ('+d.properties.country+')',
+								pushTo: topRemoteArr,
+								check: topRemotelist
+							}]
+							for (var i in props) {
+								calc(props[i].val, props[i].pushTo, props[i].check);
 							}
 
-							// return text for label (REVISIT)
-							return d.properties.country;
+							// return text for label (REVISIT SOMETIME)
+							if (labelList.indexOf(d.properties.country) === -1) {
+								labelList.push(d.properties.country);
+								setTimeout(function(){
+									var index = labelList.indexOf(d.properties.country);
+									labelList.splice(index, 1);
+								}, 30000);
+								return d.properties.country;
+							} else {
+								return '';
+							}
 						})
 						.attr("transform", function(d) {return "translate(" + projection([d.geometry.coordinates[0]+2,d.geometry.coordinates[1]]) + ")";})
 						.style('fill', '#000')
 						.attr("text-anchor","left")
-						.attr('font-size','10px')
-						.call(zoom);
+						.attr('font-size','10px');
+						// .call(zoom);
 
 					point.append('text')
 						.text(function(d){
@@ -245,7 +269,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 						.attr("font-size", '10px')
 						.transition()
 						.style("fill-opacity", 0)
-						.duration(function(d) {
+						.duration(function(d){
 							return 800 / (d.properties.count/5);
 						})
 						// .attr('font-size','19px')
@@ -308,24 +332,55 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 						clearInterval(percent);
 					}
 				}
-
 				function calcPercent() {
-					var percentages = [], match = [];
-
-					percentArr.forEach(function(d){
-						var decimal = (d.count/arrayCount) * 100;
-						d.percentage = Math.round(decimal * 100) / 100;
-						percentages.push(Math.round(decimal * 100) / 100);
-					})
-					var newArr = percentArr;
-					var prearr = percentages.sort(function(a, b){return b-a});
-					var arr = prearr.splice(4, prearr.length-5);
-					var min = Math.min.apply(Math, percentages);
-					// var match = $.grep(newArr, function(e) { return (arr.indexOf(e['percentage']) !== -1) });
+					var arrs = [{
+						arr: countryArr,
+						result: null,
+						class: 'countriesTable'
+					},{
+						arr: l7Arr,
+						result: null,
+						class: 'protosTable'
+					},{
+						arr: topLocalArr,
+						result: null,
+						class: 'localTable'
+					},{
+						arr: topRemoteArr,
+						result: null,
+						class: 'remoteTable'
+					}];
+					function calc(arr) {
+						var percentages = [];
+						arr.forEach(function(d){
+							var decimal = (d.count/arrayCount) * 100;
+							var fDecimal = Math.round(decimal * 100) / 100;
+							d.percentage = fDecimal;
+							percentages.push(fDecimal);
+						});
+						percentages.sort(function(a, b){return b-a});
+						if (percentages.length > 5){
+							var difference = (percentages.length) - 5;
+							percentages.splice(5, difference);
+						}
+						var result = $.grep(arr, function(e) {
+							if (percentages.length > 0) {
+								var index = percentages.indexOf(e.percentage);
+								if (index !== -1){
+									return e;
+								}
+							}
+						});
+						return result;
+					}
+					for (var i in arrs){
+						arrs[i].result = calc(arrs[i].arr);
+						populateTable(arrs[i].result, arrs[i].class)
+					}
 				}
 
 				timer = window.setInterval(stepUp, step);
-				percent = window.setInterval(calcPercent, 5000);
+				percent = window.setInterval(calcPercent, step);
 
 				/*Scale dots when map size or zoom is changed*/
 				// d3.behavior.zoom()
