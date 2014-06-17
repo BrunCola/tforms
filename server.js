@@ -4,9 +4,9 @@
  * Module dependencies.
  */
 var fs = require('fs'),
-	passport = require('passport'),
-	config = require('./server/config/config'),
-	mysql = require('mysql'),
+    passport = require('passport'),
+    config = require('./server/config/config'),
+    mysql = require('mysql'),
     express = require('express'),
     pjson = require('./package.json'),
     appPath = process.cwd();
@@ -18,21 +18,34 @@ var fs = require('fs'),
 
 // Initializing system variables
 var db = mysql.createPool(config.db, function(err) {
-	if (err) {
-		console.log('Error establishing database pool. '+err);
-	} else {
-		console.log('Connected to database!');
-	}
+    if (err) {
+        console.log('Error establishing database pool. '+err);
+    } else {
+        console.log('Connected to database!');
+    }
 });
+function keepAlive() {
+    db.getConnection(function(err, connection) {
+        connection.query('SELECT 1', [], function(err, rows) {
+            if (err) { console.log('ERROR firing keep-alive query') }
+            connection.release();
+            console.log("Fired Keep-Alive");
+        });
+        return;
+    });
+}
+setTimeout(function(){
+    setInterval(keepAlive, 60000);
+}, 60000);
 // var db = mongoose.connect(config.db);
 /**
  * Main application entry file.
  * Please note that the order of loading is important.
  */
 var options = {
-	key: fs.readFileSync(config.sslAssets.key),
-	cert: fs.readFileSync(config.sslAssets.cert)
-	//requestCert: true
+    key: fs.readFileSync(config.sslAssets.key),
+    cert: fs.readFileSync(config.sslAssets.cert)
+    //requestCert: true
 };
 
 // Bootstrap Models, Dependencies, Routes and the app as an express app
@@ -61,11 +74,11 @@ require('./server/config/report.js')(db);
 var SSLport = process.env.sslPORT || config.SSLport;
 var HTTPport = process.env.httpPORT || config.HTTPport;
 httpapp.get('*',function(req, res){
-	if (config.httpRedirect.portEnabled) {
-		res.redirect(config.httpRedirect.link+':'+SSLport+req.url);
-	} else {
-		res.redirect(config.httpRedirect.link+req.url);
-	}
+    if (config.httpRedirect.portEnabled) {
+        res.redirect(config.httpRedirect.link+':'+SSLport+req.url);
+    } else {
+        res.redirect(config.httpRedirect.link+req.url);
+    }
 });
 server.listen(SSLport);
 http.listen(HTTPport);

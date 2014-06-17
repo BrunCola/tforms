@@ -328,7 +328,7 @@ angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '
 	};
 }]);
 
-angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$rootScope', 'iocIcon', 'appIcon', 'mimeIcon', 'socket', function ($timeout, $location, $rootScope, iocIcon, appIcon, mimeIcon, socket) {
+angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$rootScope', 'iocIcon', 'appIcon', 'mimeIcon', 'socket', '$http', function ($timeout, $location, $rootScope, iocIcon, appIcon, mimeIcon, socket, $http) {
 	return {
 		link: function ($scope, element, attrs) {
 			$scope.socket = socket;
@@ -570,19 +570,23 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 										});
 										$('table .bArchive').on('click',function(){
 											var rowData = JSON.parse(this.value);
-											$scope.socket.emit('archiveIOC', {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc, database: window.user.database});
-											var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
-											$scope.tableCrossfitler.remove(fil);
-											tableData.filterAll();
-											redrawTable();
+											$http({method: 'POST', url: '/actions/archive', data: {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc}}).
+												success(function(data, status, headers, config) {
+													var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
+													$scope.tableCrossfitler.remove(fil);
+													tableData.filterAll();
+													redrawTable();
+												})
 										});
 										$('table .bRestore').on('click',function(){
 											var rowData = JSON.parse(this.value);
-											$scope.socket.emit('restoreIOC', {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc, database: window.user.database});
-											var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
-											$scope.tableCrossfitler.remove(fil);
-											tableData.filterAll();
-											redrawTable();
+											$http({method: 'POST', url: '/actions/restore', data: {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc}}).
+												success(function(data, status, headers, config) {
+													var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
+													$scope.tableCrossfitler.remove(fil);
+													tableData.filterAll();
+													redrawTable();
+												})
 										});
 										$scope.country = [];
 										$scope.ioc = [];

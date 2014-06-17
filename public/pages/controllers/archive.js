@@ -7,6 +7,7 @@ angular.module('mean.system').controller('archiveController', ['$scope', 'Global
 	} else {
 		query = '/archive'
 	}
+	$scope.archiveBtn = false;
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {
 	success(function(data) {
@@ -19,21 +20,27 @@ angular.module('mean.system').controller('archiveController', ['$scope', 'Global
 				d.hour = d3.time.hour(d.dd);
 				d.count = +d.count;
 			});
+			$scope.archiveBtn = true;
+			$scope.emptyarchive = function() {
+				var r = confirm("Are you sure?");
+				if (r === true) {
+					$http({method: 'POST', url: '/actions/clear'}).
+					success(function(data, status, headers, config) {
+						// $route.reload();
+						$location.path('/');
+					}).
+					error(function(data, status, headers, config) {
+						alert('There was an error clearing Archive. Please try again in a couple minutes.')
+					});
+				}
+			}
 			$scope.crossfilterData = crossfilter(data.crossfilter);
 			$scope.data = data;
 			var geoDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
 			var geoGroup = geoDimension.group().reduceSum(function (d) {
 				return d.count;
 			});
-			$scope.emptyArchive = function() {
-				var r = confirm("Are you sure?");
-				if (r === true) {
-					$scope.socket.emit('emptyArchive', {database: window.user.database});
-					$scope.socket.on('emptyArchiveConfirm', function(){
-						$route.reload();
-					})
-				}
-			}
+
 			$scope.$broadcast('geoChart', geoDimension, geoGroup);
 			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
 			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});

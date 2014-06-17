@@ -65,29 +65,19 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
 				// check to make sure the form is completely valid
 				if (form.$valid) {
 					if (($scope.user.password) && ($scope.user.cpassword === $scope.user.password)) {
-						socket.emit('updateUser', { oldemail: user.email, newemail: $scope.user.email, newPass: $scope.user.password });
-						$http.get('/logout')
-							.success(function() {
-							window.location.href = '/';
-							// $http.post('/users/session', {username: user.username, password:$scope.user.password}).success($route.reload())
-							// $http.post('/login', {email: $scope.user.email, password:$scope.user.password}).success($modalInstance.close(window.location.href = '/'))
-						});
+						$http({method: 'POST', url: '/actions/update', data: {newemail: $scope.user.email, newPass: $scope.user.password}}).
+							success(function(data, status, headers, config) {
+								window.location.href = '/logout';
+							})
 					} else if ($scope.user.email !== user.email) {
-						socket.emit('updateUser', { oldemail: user.email, newemail: $scope.user.email });
-						$http.get('/logout')
-							.success(function() {
-							window.location.href = '/';
-							// $http.post('/users/session', {username: $scope.global.user.username, password:$scope.user.upassword}).success($route.reload())
-							// $http.post('/login', {email: $scope.user.email, password:$scope.user.upassword}).success(window.location.href = '/')
-							// .success(function(){
-							//     $modalInstance.close();
-							// });
-						});
+						$http({method: 'POST', url: '/actions/update', data: {newemail: $scope.user.email}}).
+							success(function(data, status, headers, config) {
+								window.location.href = '/logout';
+							})
 					}
 				}
 			};
 		};
-
 
 
 		// report modal
@@ -222,7 +212,7 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
 		});
 		$scope.checkpoint = function() {
 			$scope.iocCount = 0;
-			$scope.socket.emit('checkpoint', {username: $scope.global.user.username, id: $scope.global.user.id});
+			$scope.socket.emit('checkpoint', {username: $scope.global.user.username, id: $scope.global.user.id, database: $scope.global.user.database});
 			$rootScope.$broadcast('killNoty');
 			$scope.flagged_drop = '';
 			for (var i in $scope.iocalerts) {
