@@ -28,7 +28,7 @@ function keepAlive() {
     db.getConnection(function(err, connection) {
         connection.query('SELECT 1', [], function(err, rows) {
             if (err) { console.log('ERROR firing keep-alive query') }
-            connection.release();
+            connection.destroy();
             console.log("Fired Keep-Alive");
         });
         return;

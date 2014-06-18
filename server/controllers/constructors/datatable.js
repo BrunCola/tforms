@@ -11,7 +11,7 @@ module.exports = function (sql, conn, callback) {
 		connection.query(sql.query, sql.insert, function(err, result) {
 			if (err) {
 				callback(err, null);
-				connection.release();
+				connection.destroy();
 			} else {
 				//var arr = this.arr;
 				for (var d in sql.params) {
@@ -60,7 +60,7 @@ module.exports = function (sql, conn, callback) {
 					};
 				}
 				callback(null, table);
-				connection.release();
+				connection.destroy();
 			}
 		});
 	});

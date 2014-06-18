@@ -89,7 +89,7 @@ module.exports = function (params, callback) {
 
 				console.log(tArr)
 				callback(null, b, maxConn, maxIOC);
-				connection.release();
+				connection.destroy();
 			});
 			//group by type and push a main and sub-group for each time slice
 	});

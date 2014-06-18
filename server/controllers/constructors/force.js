@@ -41,7 +41,7 @@ module.exports = function (sql, conn, lanIP, callback) {
 					nodes: node
 				};
 				callback(null, results);
-				connection.release();
+				connection.destroy();
 			});
 			//group by type and push a main and sub-group for each time slice
 	})

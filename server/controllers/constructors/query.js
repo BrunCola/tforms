@@ -10,10 +10,10 @@ module.exports = function (sql, conn, callback) {
 		connection.query(sql.query, sql.insert, function(err, result) {
 			if (err) {
 				callback(err, null);
-				connection.release();
+				connection.destroy();
 			} else {
 				callback(null, result);
-				connection.release();
+				connection.destroy();
 			}
 		});
 	});
