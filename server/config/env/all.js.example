@@ -61,7 +61,8 @@ module.exports = {
 		host: '192.168.0.28',
 		user: 'andrew',
 		password: 'BlowItOutTheWater',
-		database: 'rp_users'
+		database: 'rp_users',
+		connectionLimit: 10000
 	},
 	localUploads: {
 		enabled: false,
