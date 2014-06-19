@@ -126,11 +126,11 @@ module.exports = function(pool) {
 			pool.getConnection(function(err, connection) {
 				var sql="SELECT * FROM user WHERE email_report = '1'";
 				connection.query(sql, function(err, users, fields) {
+					connection.release();
 					if (err) throw err;
 					for (var n in users) {
 						sendReport(users[n]);
 					}
-					connection.release();
 				});
 			});
 		}, null, true, null);

@@ -37,9 +37,6 @@ module.exports = function (version) {
 				end: end,
 				report: 'null'
 			});
-		}, test: function(req, res) {
-			// var start = req.params.start;
-			console.log(start);
 		}
 	};
 };

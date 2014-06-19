@@ -3,15 +3,15 @@
 var LocalStrategy = require('passport-local').Strategy,
 	bcrypt = require('bcrypt');
 
-module.exports = function(passport, connection) {
+module.exports = function(passport, pool) {
 	passport.use(new LocalStrategy({
 			usernameField: 'email',
 			passwordField: 'password'
 		},
 		function(email, password, done) {
 			//to compare password that user supplies in the future
-			var hash = "SELECT * FROM user WHERE email = '"+ email +"' limit 1";
-			connection.query(hash, function (err, results) {
+			var select = "SELECT * FROM user WHERE email = '"+ email +"' limit 1";
+			pool.query(select, function (err, results) {
 				if (err) throw err;
 				if(results.length > 0){
 					var res = results[0];

@@ -27,8 +27,8 @@ var db = mysql.createPool(config.db, function(err) {
 function keepAlive() {
     db.getConnection(function(err, connection) {
         connection.query('SELECT 1', [], function(err, rows) {
+             connection.release();
             if (err) { console.log('ERROR firing keep-alive query') }
-            connection.destroy();
             console.log("Fired Keep-Alive");
         });
         return;
