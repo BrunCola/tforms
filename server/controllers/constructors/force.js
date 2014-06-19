@@ -36,13 +36,14 @@ module.exports = function (sql, conn, lanIP, callback) {
 				});
 			})
 			.on('end', function(){
+				connection.release();
 				var results = {
 					links: link,
 					nodes: node
 				};
 				callback(null, results);
-				connection.destroy();
 			});
+			connection.release();
 			//group by type and push a main and sub-group for each time slice
 	})
 };

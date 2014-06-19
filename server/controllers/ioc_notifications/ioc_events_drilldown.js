@@ -79,11 +79,11 @@ module.exports = function(pool) {
 									'`conn_ioc` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `lan_zone`=? '+
-									'AND `lan_ip`=? '+
-									'AND `remote_ip`=? '+
+									'AND `lan_zone`= ? '+
+									'AND `lan_ip`= ? '+
+									'AND `remote_ip`= ? '+
 									'AND `ioc`=? ',
-							insert: [req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
+							insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "Zone", "mData": "lan_zone"},
@@ -102,8 +102,6 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"}
 							],
-							database: database,
-							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
@@ -132,9 +130,9 @@ module.exports = function(pool) {
 									'`conn_ioc` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `lan_zone`=? '+
-									'AND `lan_ip`=? ',
-							insert: [req.query.lan_zone, req.query.lan_ip],
+									'AND `lan_zone`= ? '+
+									'AND `lan_ip`= ? ',
+							insert: [start, end, req.query.lan_zone, req.query.lan_ip],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "Zone", "mData": "lan_zone"},
@@ -153,8 +151,6 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"}
 							],
-							database: database,
-							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
@@ -178,11 +174,11 @@ module.exports = function(pool) {
 									'`dns_ioc` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `lan_zone`=? '+
-									'AND `lan_ip`=? '+
-									'AND `remote_ip`=? '+
+									'AND `lan_zone`= ? '+
+									'AND `lan_ip`= ? '+
+									'AND `remote_ip`= ? '+
 									'AND `ioc`=?',
-							insert: [req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
+							insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "Protocol", "mData": "proto"},
@@ -196,8 +192,6 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
 							],
-							database: database,
-							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
@@ -223,7 +217,7 @@ module.exports = function(pool) {
 									'`time` BETWEEN ? AND ? '+
 									'AND `lan_zone`=?'+
 									'AND `lan_ip`=?',
-							insert: [req.query.lan_zone, req.query.lan_ip],
+							insert: [start, end, req.query.lan_zone, req.query.lan_ip],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "Protocol", "mData": "proto"},
@@ -237,8 +231,6 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
 							],
-							database: database,
-							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
@@ -266,11 +258,11 @@ module.exports = function(pool) {
 									'`http_ioc` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `lan_zone`=? '+
-									'AND `lan_ip`=? '+
-									'AND `remote_ip`=? '+
+									'AND `lan_zone`= ? '+
+									'AND `lan_ip`= ? '+
+									'AND `remote_ip`= ? '+
 									'AND `ioc`=?',
-							insert: [req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
+							insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "Host", "mData": "host"},
@@ -282,8 +274,6 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
 							],
-							database: database,
-							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
@@ -311,9 +301,9 @@ module.exports = function(pool) {
 									'`http_ioc` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `lan_zone`=?'+
-									'AND `lan_ip`=?',
-							insert: [req.query.lan_zone, req.query.lan_ip],
+									'AND `lan_zone`= ?'+
+									'AND `lan_ip`= ?',
+							insert: [start, end, req.query.lan_zone, req.query.lan_ip],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "Host", "mData": "host"},
@@ -325,8 +315,6 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
 							],
-							database: database,
-							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
@@ -351,11 +339,11 @@ module.exports = function(pool) {
 									'`ssl_ioc` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `lan_zone`=? '+
-									'AND `lan_ip`=? '+
-									'AND `remote_ip`=? '+
+									'AND `lan_zone`= ? '+
+									'AND `lan_ip`= ? '+
+									'AND `remote_ip`= ? '+
 									'AND `ioc`=?',
-							insert: [req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
+							insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "Server Name", "mData": "server_name"},
@@ -370,8 +358,6 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
 							],
-							database: database,
-							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
@@ -396,9 +382,9 @@ module.exports = function(pool) {
 									'`ssl_ioc` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `lan_zone`=?'+
-									'AND `lan_ip`=?',
-							insert: [req.query.lan_zone, req.query.lan_ip],
+									'AND `lan_zone`= ?'+
+									'AND `lan_ip`= ?',
+							insert: [start, end, req.query.lan_zone, req.query.lan_ip],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "Server Name", "mData": "server_name"},
@@ -413,8 +399,6 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
 							],
-							database: database,
-							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
@@ -437,11 +421,11 @@ module.exports = function(pool) {
 									'`file_ioc` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `lan_zone`=? '+
+									'AND `lan_zone`= ? '+
 									'AND `lan_ip`=? '+
-									'AND `remote_ip`=? '+
+									'AND `remote_ip`= ? '+
 									'AND `ioc`=?',
-							insert: [req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
+							insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "File Type", "mData": "mime"},
@@ -454,8 +438,6 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
 							],
-							database: database,
-							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
@@ -478,9 +460,9 @@ module.exports = function(pool) {
 									'`file_ioc` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `lan_zone`=?'+
-									'AND `lan_ip`=?',
-							insert: [req.query.lan_zone, req.query.lan_ip],
+									'AND `lan_zone`= ?'+
+									'AND `lan_ip`= ?',
+							insert: [start, end, req.query.lan_zone, req.query.lan_ip],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "File Type", "mData": "mime"},
@@ -493,8 +475,6 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
 							],
-							database: database,
-							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
@@ -513,8 +493,8 @@ module.exports = function(pool) {
 									'`ossec` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `src_ip`=? ',
-							insert: [req.query.lan_ip],
+									'AND `src_ip`= ? ',
+							insert: [start, end, req.query.lan_ip],
 							columns: [
 								{"sTitle": "Time", "mData": "time"},
 								{"sTitle": "User", "mData": "src_user"},
@@ -524,8 +504,6 @@ module.exports = function(pool) {
 								{"sTitle": "Program Source", "mData": "program_source"},
 								{"sTitle": "Alert Info", "mData": "alert_info"},
 							],
-							database: database,
-							pool: pool,
 							start: start,
 							end: end,
 							grouping: pointGroup,
@@ -580,7 +558,7 @@ module.exports = function(pool) {
 								// !SELECTS
 								'FROM conn_ioc '+
 								'WHERE time BETWEEN ? AND ? '+
-								'AND `lan_ip`=? '+
+								'AND `lan_ip`= ? '+
 								'GROUP BY  ioc_parentID, ioc_childID, ioc_attrID',
 							insert: [start, end, req.query.lan_ip]
 						}
@@ -593,7 +571,7 @@ module.exports = function(pool) {
 								// !SELECTS
 								'FROM conn_ioc '+
 								'WHERE time BETWEEN ? AND ? '+
-								'AND `lan_ip`=? '+
+								'AND `lan_ip`= ? '+
 								'GROUP BY remote_ip',
 							insert: [start, end, req.query.lan_ip]
 						}
@@ -602,57 +580,57 @@ module.exports = function(pool) {
 						async.parallel([
 							// Table function(s)
 							function(callback) { // conn_ioc
-								new fisheye(conn_ioc, function(err,data, maxConn, maxIOC){
+								new fisheye(conn_ioc, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},
 							function(callback) { // conn
-								new fisheye(conn, function(err,data, maxConn, maxIOC){
+								new fisheye(conn, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},
 							function(callback) { // dns_ioc
-								new fisheye(dns_ioc, function(err,data, maxConn, maxIOC){
+								new fisheye(dns_ioc, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},
 							function(callback) { // dns
-								new fisheye(dns, function(err,data, maxConn, maxIOC){
+								new fisheye(dns, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},
 							function(callback) { // http_ioc
-								new fisheye(http_ioc, function(err, data, maxConn, maxIOC){
+								new fisheye(http_ioc, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},
 							function(callback) { // http
-								new fisheye(http, function(err, data, maxConn, maxIOC){
+								new fisheye(http, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},
 							function(callback) { // ssl_ioc
-								new fisheye(ssl_ioc, function(err, data, maxConn, maxIOC){
+								new fisheye(ssl_ioc, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},
 							function(callback) { // ssl
-								new fisheye(ssl, function(err, data, maxConn, maxIOC){
+								new fisheye(ssl, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},
 							function(callback) { // file_ioc
-								new fisheye(file_ioc, function(err, data, maxConn, maxIOC){
+								new fisheye(file_ioc, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},
 							function(callback) { // file
-								new fisheye(file, function(err, data, maxConn, maxIOC){
+								new fisheye(file, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},
 							function(callback) { // endpoint
-								new fisheye(endpoint, function(err, data, maxConn, maxIOC){
+								new fisheye(endpoint, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},

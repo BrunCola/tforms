@@ -53,9 +53,9 @@ module.exports = function(app, passport, io, pool) {
 						.on('end', function(){
 							socket.emit('initial iocs', alerts, newIOCcount);
 							POLLCheckpoint = Math.round(new Date().getTime() / 1000);
-							timer = setInterval(function(){polling(userData.username, POLLCheckpoint, userData.database)}, 10000);
-							connection.destroy();
+							timer = setInterval(function(){polling(userData.username, POLLCheckpoint, userData.database)}, 5000);
 						})
+						connection.release();
 					}
 				})
 			});
@@ -66,7 +66,7 @@ module.exports = function(app, passport, io, pool) {
 				POLLCheckpoint = newCheckpoint;
 				console.log('checkpoint now set to: '+newCheckpoint);
 				clearInterval(timer);
-				timer = setInterval(function(){polling(userData.username, POLLCheckpoint, userData.database)}, 10000);
+				timer = setInterval(function(){polling(userData.username, POLLCheckpoint, userData.database)}, 5000);
 				pool.query("UPDATE `user` SET `checkpoint`= ? WHERE `username` = ?", [newCheckpoint, userData.username]);
 			}
 			newCP();
@@ -104,9 +104,9 @@ module.exports = function(app, passport, io, pool) {
 							clearInterval(timer); // add a second to the timer
 							socket.emit('newIOC', newarr, arr.length);
 							timer = setInterval(function(){polling(username, topAdded, database)}, 300000); //change to 5 minutes on result
-							connection.destroy();
 						}
 					})
+					connection.release();
 			});
 		}
 	})

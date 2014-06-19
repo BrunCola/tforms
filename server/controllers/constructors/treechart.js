@@ -88,8 +88,8 @@ module.exports = function (sql, conn, lanIP, attrID, callback) {
 				result.childCount = countGrandChildren;
 				callback(null, result);
 				// console.log(newarr);
-				connection.destroy();
 			});
+		connection.release();
 			//group by type and push a main and sub-group for each time slice
 	});
 };

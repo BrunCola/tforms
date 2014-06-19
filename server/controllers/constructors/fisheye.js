@@ -3,17 +3,18 @@
 var config = require('../../config/config'),
 	moment = require('moment');
 
-module.exports = function (params, callback) {
+module.exports = function (params, conn, callback) {
 	var dat = [];
 	var count = 0;
 	var maxConn = 0;
 	var maxIOC = 0;
 	var tArr = [];
-	params.pool.getConnection(function(err, connection) {
-		connection.changeUser({database : params.database}, function(err) {
+	console.log(params.insert)
+	conn.pool.getConnection(function(err, connection) {
+		connection.changeUser({database : conn.database}, function(err) {
 			if (err) throw err;
 		});
-		connection.query(params.query)
+		connection.query(params.query, params.insert)
 			.on('result', function(data){
 				data.class = params.sClass;
 				data.title = params.title;
@@ -70,7 +71,6 @@ module.exports = function (params, callback) {
 					}
 					// PUSH FINISHED PRODUCT BACK TO ORIGINAL ARRAY (dat)
 				});
-
 				// spread items on top of each other
 				// for (var n in b) {
 				// 	var time = Math.round(b[n].time/1000)*1000;
@@ -86,11 +86,9 @@ module.exports = function (params, callback) {
 				// 		while (tArr.indexOf(JSON.stringify({time: time, count: b[n].data.length})) !== -1);
 				// 	}
 				// }
-
-				console.log(tArr)
 				callback(null, b, maxConn, maxIOC);
-				connection.destroy();
 			});
+			connection.release();
 			//group by type and push a main and sub-group for each time slice
 	});
 };

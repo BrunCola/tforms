@@ -115,8 +115,8 @@ module.exports = function (sql, options, callback) {
 				// 	if (item.end > today) { item.end = today;}
 				// });
 				callback(null, b);
-				connection.destroy();
 			});
+			connection.release();
 			//group by type and push a main and sub-group for each time slice
 	});
 };

@@ -9,9 +9,9 @@ module.exports = function (sql, conn, callback) {
 			if (err) throw err;
 		});
 		connection.query(sql.query, sql.insert, function(err, result) {
+			connection.release();
 			if (err) {
 				callback(err, null);
-				connection.destroy();
 			} else {
 				//var arr = this.arr;
 				for (var d in sql.params) {
@@ -60,7 +60,6 @@ module.exports = function (sql, conn, callback) {
 					};
 				}
 				callback(null, table);
-				connection.destroy();
 			}
 		});
 	});
