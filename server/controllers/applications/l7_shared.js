@@ -33,6 +33,10 @@ module.exports = function(pool) {
 							'`remote_country`,'+
 							'`remote_asn`,'+
 							'`remote_asn_name`,'+
+							'(`in_bytes` / 1024) AS `in_bytes`,'+
+							'(`out_bytes` / 1024) AS `out_bytes`,'+
+							'`in_packets`,'+
+							'`out_packets`,'+
 							'`dns`,'+
 							'`http`,'+
 							'`ssl`,'+
@@ -70,6 +74,11 @@ module.exports = function(pool) {
 						{ title: 'Infection Stage', select: 'ioc_typeInfection' },
 						{ title: 'Indicator Type', select: 'ioc_typeIndicator' },
 						{ title: 'IOC Severity', select: 'ioc_severity' },
+						{ title: 'IOC Count', select: 'ioc_count' },
+						{ title: 'KB to Remote', select: 'in_bytes' },
+						{ title: 'KB from Remote', select: 'out_bytes'},
+						{ title: 'Packets to Remote', select: 'in_packets', dView:false },
+						{ title: 'Packets from Remote', select: 'out_packets', dView:false },
 						{ title: 'IOC Count', select: 'ioc_count' },
 						{ title: 'DNS', select: 'dns' },
 						{ title: 'HTTP', select: 'http' },

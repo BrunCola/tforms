@@ -35,7 +35,7 @@ module.exports = function(pool) {
 							'`http_host`,'+
 							'`mime`,'+
 							'`name`,'+
-							'`size`, '+
+							'(`size` / 1024) AS `size`, '+
 							'`md5`,'+
 							'`sha1`,'+
 							'`ioc`,'+
@@ -54,7 +54,7 @@ module.exports = function(pool) {
 						{ title: 'Last Seen', select: 'time' },
 						{ title: 'File Type', select: 'mime' },
 						{ title: 'Name', select: 'name', sClass:'file'},
-						{ title: 'Size', select: 'size' },
+						{ title: 'Size (KB)', select: 'size' },
 						{ title: 'Zone', select: 'lan_zone' },
 						{ title: 'Machine', select: 'machine' },
 						{ title: 'Local IP', select: 'lan_ip' },

@@ -33,7 +33,7 @@ module.exports = function(pool) {
 							'`remote_asn_name`, '+
 							'`remote_country`, '+
 							'`remote_cc`, '+
-							'`size`, '+
+							'(`size` / 1024) AS `size`, '+
 							'`proto`, '+
 							'`md5`, '+
 							'`http_host`, '+
@@ -51,7 +51,7 @@ module.exports = function(pool) {
 						{ title: 'Last Seen', select: 'time' },
 						{ title: 'File Type', select: 'mime' },
 						{ title: 'Name', select: 'name', sClass:'file'},
-						{ title: 'Size', select: 'size' },
+						{ title: 'Size (KB)', select: 'size' },
 						{ title: 'Zone', select: 'lan_zone' },
 						{ title: 'Machine', select: 'machine' },
 						{ title: 'Local IP', select: 'lan_ip' },
