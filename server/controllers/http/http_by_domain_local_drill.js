@@ -22,12 +22,36 @@ module.exports = function(pool) {
 				var table1 = {
 					query: 'SELECT ' +
 							'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+							'`stealth`, ' +
+							'`machine`, ' +
 							'`lan_zone`, ' +
 							'`lan_ip`, ' +
+							'`remote_ip`, ' +
+							'`remote_port`, ' +
+							'`remote_cc`, ' +
+							'`remote_country`, ' +
+							'`remote_asn_name`, ' +
+							'`depth`, ' +
+							'`method`, ' +
 							'`host`, ' +
+							'`uri`, ' +
+							'`url`, ' +
+							'`referrer`, ' +
+							'`user_agent`, ' +
+							'`request_body_len`, ' +
+							'`response_body_len`, ' +
+							'`status_code`, ' +
+							'`status_msg`, ' +
+							'`info_code`, ' +
+							'`info_msg`, ' +
+							'`filename`, ' +
+							'`tags`, ' +
+							'`proxied`, ' +
+							'`local_mime_types`, ' +
+							'`remote_mime_types`, ' +
 							'`ioc_count` ' +
 						'FROM ' +
-							'`http_meta` ' +
+							'`http` ' +
 						'WHERE '+ 
 							'time BETWEEN ? AND ? ' +
 							'AND `lan_zone` = ? '+
@@ -39,9 +63,33 @@ module.exports = function(pool) {
 							title: 'Time',
 							select: 'time'
 						},
+						{ title: 'Stealth', select: 'stealth', dView:false },
+						{ title: 'Domain', select: 'host' },
+						{ title: 'URI', select: 'uri' },
+						{ title: 'URL', select: 'url' },
+						{ title: 'Referrer', select: 'referrer' },
+						{ title: 'User Agent', select: 'user_agent' },
+						{ title: 'Depth', select: 'depth' },
+						{ title: 'Method', select: 'method' },
+						{ title: 'Machine Name', select: 'machine' },
 						{ title: 'Zone', select: 'lan_zone' },
 						{ title: 'LAN IP', select: 'lan_ip' },
-						{ title: 'Domain', select: 'host' },
+						{ title: 'Remote IP', select: 'remote_ip'},
+						{ title: 'Remote port', select: 'remote_port' },
+						{ title: 'Flag', select: 'remote_cc' },
+						{ title: 'Remote Country', select: 'remote_country' },
+						{ title: 'Remote ASN Name', select: 'remote_asn_name' },
+						{ title: 'Request Body Length', select: 'request_body_len', dView:false },
+						{ title: 'Response Body Length', select: 'response_body_len', dView:false },
+						{ title: 'Status Code', select: 'status_code', dView:false },
+						{ title: 'Status Message', select: 'status_msg', dView:false },
+						{ title: 'Info Code', select: 'info_code', dView:false },
+						{ title: 'Info Message', select: 'info_msg', dView:false },
+						{ title: 'File Name', select: 'filename', dView:false },
+						{ title: 'Tags', select: 'tags', dView:false },
+						{ title: 'Proxied', select: 'proxied', dView:false },
+						{ title: 'Local File Type', select: 'local_mime_types', dView:false },
+						{ title: 'Reemote File Type', select: 'remote_mime_types', dView:false },
 						{ title: 'IOC Count', select: 'ioc_count' }
 					],
 					settings: {

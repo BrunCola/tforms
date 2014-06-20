@@ -187,28 +187,24 @@ module.exports = function(pool) {
 					// Table function(s)
 					function(callback) {
 						new dataTable(table1, {database: 'rp_health', pool: pool}, function(err,data){
-							// console.log(table1.query);
 							tables[3] = data;
 							callback();
 						});
 					},
 					function(callback) {
 						new dataTable(table2, {database: 'rp_health', pool: pool}, function(err,data){
-							// console.log(table2.query);
 							tables[2] = data;
 							callback();
 						});
 					},
 					function(callback) {
 						new dataTable(table3, {database: 'rp_health', pool: pool}, function(err,data){
-							// console.log(table3.query);
 							tables[1] = data;
 							callback();
 						});
 					},
 					function(callback) {
 						new dataTable(table4, {database: 'rp_health', pool: pool}, function(err,data){
-							console.log(table4.query);
 							tables[0] = data;
 							callback();
 						});
@@ -219,7 +215,6 @@ module.exports = function(pool) {
 						info: info,
 						tables: tables
 					};
-					//console.log(results);
 					res.json(results);
 				});
 			} else {

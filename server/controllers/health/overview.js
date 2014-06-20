@@ -146,8 +146,6 @@ module.exports = function(pool) {
 					});
 				}
 				
-
-				//console.log(final_arr);
 				var results = {
 					info: info,
 					tables: [{
@@ -159,7 +157,6 @@ module.exports = function(pool) {
 						"pagebreakBefore": table1.settings.pagebreakBefore
 					}]
 				};
-				//console.log(results);
 				res.json(results);
 			});
 		}
