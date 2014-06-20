@@ -5,7 +5,6 @@
 	phantom = require('phantom'),
 	mysql = require('mysql'),
 	$ = require('jquery'),
-	request = require('request'),
 	fs = require('fs');
 
 var smtpTransport = nodemailer.createTransport("SMTP", {
