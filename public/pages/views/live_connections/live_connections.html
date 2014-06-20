@@ -1,52 +1,66 @@
 <section head></section>
 <div data-ng-controller="liveConnectionsController">
-	<div class="box-content">
-		<table class="livemapTable countriesTable" style="position:absolute">
-			Top Countries:
-			<thead>
-				<tr>
-					<th>Country</th>
-					<th>Percentage</th>
-					<th>Count</th>
-				</tr>
-			</thead>
-			<tbody></tbody>
-		</table>
-		<table class="livemapTable protosTable" style="position:absolute;margin-left:65%">
-			Top Applications:
-			<thead>
-				<tr>
-					<th>Application</th>
-					<th>Percentage</th>
-					<th>Count</th>
-				</tr>
-			</thead>
-			<tbody></tbody>
-		</table>
-		<table class="livemapTable localTable" style="position:absolute;margin-top:40%;">
-			Top Local IP's:
-			<thead>
-				<tr>
-					<th>Local IP</th>
-					<th>Percentage</th>
-					<th>Count</th>
-				</tr>
-			</thead>
-			<tbody></tbody>
-		</table>
-		<table class="livemapTable remoteTable" style="position:absolute;margin-top:40%;margin-left:65%">
-			Top Remote IP's:
-			<thead>
-				<tr>
-					<th>Remote IP</th>
-					<th>Percentage</th>
-					<th>Count</th>
-				</tr>
-			</thead>
-			<tbody></tbody>
-		</table>
-		<div style="height:900px" id="map" make-map></div>
-	</div>
+	<!-- <div class="box-content"> -->
+		<div class="row-fluid" style="position:absolute;z-index:700">
+			<div class="span4">
+				<table class="livemapTable countriesTable" >
+					Top Countries:
+					<thead>
+						<tr>
+							<th>Country</th>
+							<th>Percentage</th>
+							<th>Count</th>
+							<th>Flag</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+			</div>
+			<div class="span4 offset3">
+				<table class="livemapTable protosTable">
+					Top Applications:
+					<thead>
+						<tr>
+							<th>Application</th>
+							<th>Percentage</th>
+							<th>Count</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row-fluid" style="position:absolute;vertical-align: bottom; bottom:90px;z-index:700">
+			<div class="span4">
+				<table class="livemapTable localTable">
+					Top Local IP's:
+					<thead>
+						<tr>
+							<th>Local IP</th>
+							<th>Percentage</th>
+							<th>Count</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+			</div>
+			<div class="span4 offset3">
+				<table class="livemapTable remoteTable">
+					Top Remote IP's:
+					<thead>
+						<tr>
+							<th>Remote IP</th>
+							<th>Percentage</th>
+							<th>Count</th>
+							<th>Flag</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+			</div>
+		</div>
+		<div style="height:900px;" id="map" make-map></div>
+	<!-- </div> -->
 </div>
 <br />
 </section>
