@@ -388,6 +388,11 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 					}
 				}
 
+				$scope.$on('$destroy', function() {
+					clearInterval(timer);
+					clearInterval(percent)
+				});
+
 				timer = window.setInterval(stepUp, step);
 				percent = window.setInterval(calcPercent, step);
 
