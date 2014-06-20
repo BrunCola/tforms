@@ -16,6 +16,7 @@ module.exports = function(pool) {
 				query: 'SELECT '+
 						'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
 						'`remote_country`,'+
+						'`remote_cc`,'+
 						'`ioc_severity`,'+
 						'`ioc`,'+
 						'`remote_long`,'+

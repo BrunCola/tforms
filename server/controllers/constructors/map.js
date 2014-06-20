@@ -41,6 +41,7 @@ module.exports = function (sql, conn, callback) {
 								'units': d.ioc_count,
 								'count': d.count,
 								'country': d.remote_country,
+								'flag': d.remote_cc,
 								'remote_ip': d.remote_ip,
 								'lan_ip': d.lan_ip
 							},

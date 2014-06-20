@@ -104,11 +104,12 @@ th {
 */
 
 .livemapTable {
-  width: 23%;
-  z-index:9999;
+  width: 90%;
   text-align: left;
 }
-
+#map{
+  z-index:500 !important;
+}
 /*tree chart*/
 .conn circle {
   /*fill: #fff;*/

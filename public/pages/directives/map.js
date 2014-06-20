@@ -12,7 +12,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 			// SET PARAMS
 			var tooltip = d3.select("#map").append("div").attr("class", "tooltip hidden");
 			var width = document.getElementById('map').offsetWidth-60;
-			var height = width / 1.5;
+			var height = width / 1.7;
 			// var zoom = d3.behavior.zoom()
 			// 	.scaleExtent([1, 8])
 			// 	.on("zoom", move);
@@ -27,7 +27,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 				.attr("width", width)
 				.attr("height", height)
 				.append("g")
-				.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+				.attr("transform", "translate(" + width / 2 + "," + height / 3 + ")");
 				// .call(zoom);
 			var g = svg.append("g");
 
@@ -46,6 +46,14 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 						row
 							.append('td')
 							.text(array[i].count);
+						if ((dClass == 'countriesTable') || (dClass == 'remoteTable')) {
+							row
+								.append('td')
+								.append('div')
+								.attr('class', 'f16')
+								.append('span')
+								.attr('class', 'flag '+array[i].flag)
+						}
 					}
 				}
 			}
@@ -214,7 +222,8 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 											check.push(value);
 											pushTo.push({
 												count: d.properties.count,
-												display: value
+												display: value,
+												flag: d.properties.flag.toLowerCase()
 											});
 										}
 									return;

@@ -5,6 +5,7 @@
 	phantom = require('phantom'),
 	mysql = require('mysql'),
 	$ = require('jquery'),
+	request = require('request'),
 	fs = require('fs');
 
 var smtpTransport = nodemailer.createTransport("SMTP", {
@@ -118,6 +119,46 @@ function sendReport(user) {
 		});
 	});
 }
+
+// function sendReport2(user, server){
+
+// 	request.defaults({
+// 		strictSSL: false, // allow us to use our self-signed cert for testing
+// 		rejectUnauthorized: false
+// 	});
+// 	request({ 
+//       uri: 'https/localhost:3000', 
+//       path: '/',
+//       method: 'GET',
+//       rejectUnauthorized: false,
+//       requestCert: true,
+//       agent: false
+//     }, function(err, response, body) {
+// 		if (err) console.error(err); // outputs the zero_depth error
+// 	});
+	// request("http://www.sitepoint.com", function(error, response, body) {
+	// console.log(body);
+	// });
+	// request.get('https://localhost:3000/#!/live_connections').auth(config.reports.email, config.reports.pass, false);
+
+	// var data = 'email='+config.reports.email+'&password='+config.reports.pass;
+
+	// var headers = {
+	// 	'Content-Type': 'application/x-www-form-urlencoded'
+	// };
+
+	// var request = server.request('POST', '/login', headers);
+
+	// // listening to the response is optional, I suppose
+	// request.on('response', function(response) {
+	// 	response.on('data', function(chunk) {
+	// 		console.log(data)
+	// 	});
+	// 	response.on('end', function() {
+	// 	// do what you do
+	// 	});
+	// });
+// }
 
 module.exports = function(pool) {
 	// get users and send reports
