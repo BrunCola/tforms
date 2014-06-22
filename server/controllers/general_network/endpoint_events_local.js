@@ -49,7 +49,7 @@ module.exports = function(pool) {
 							crumb: false
 						},
 					},
-					{ title: 'Connections', select: 'count' },
+					{ title: 'Events', select: 'count' },
 					{ title: 'Source IP', select: 'src_ip' },
 					{ title: 'Alert Source', select: 'alert_source'},
 					{ title: 'Program Source', select: 'program_source' },

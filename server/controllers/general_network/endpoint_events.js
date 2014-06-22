@@ -49,7 +49,7 @@ module.exports = function(pool) {
 							crumb: false
 						},
 					},
-					{ title: 'Connections', select: 'count' },
+					{ title: 'Events', select: 'count' },
 					{ title: 'Alert Info', select: 'alert_info' },
 					{ title: 'Alert Source', select: 'alert_source'},
 					{ title: 'Program Source', select: 'program_source' },
