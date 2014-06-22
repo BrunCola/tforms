@@ -9,8 +9,8 @@ module.exports = function(pool) {
 	return {
 		render: function(req, res) {
 			var database = req.session.passport.user.database;
-			var start = moment().subtract('minutes', 10).unix();
-			var end = moment().subtract('minutes', 9).unix();
+			var start = moment().subtract('minutes', 7).unix();
+			var end = moment().subtract('minutes', 6).unix();
 			var queryResult;
 			var mapSQL = {
 				query: 'SELECT '+

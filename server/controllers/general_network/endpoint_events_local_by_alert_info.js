@@ -50,7 +50,7 @@ module.exports = function(pool) {
 								crumb: false
 							}
 						},
-						{ title: 'Connections', select: 'count'},
+						{ title: 'Events', select: 'count'},
 						{ title: 'User', select: 'src_user'},
 						{ title: 'Source IP', select: 'src_ip'},
 						{ title: 'Destination IP', select: 'dst_ip'},
