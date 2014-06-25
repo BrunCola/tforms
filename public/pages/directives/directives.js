@@ -664,25 +664,41 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
 								d3.select('#barchart svg').attr('width', width).attr('height', width/3.5);
 								$scope.barChart.redraw();
 							}
-							if ($scope.customBar.length > 1) {
-								$scope.barChart
-									.group(group, $scope.customBar[0].title)
-									.valueAccessor(function(d) {
+							// if ($scope.customBar.length > 1) {
+								var bc = $scope.barChart
+									bc.group(group, $scope.customBar[0].title)
+									bc.valueAccessor(function(d) {
 										return d.value[$scope.customBar[0].value];
 									})
+									function stak() {
+										for (var i = 1; i < $scope.customBar.length; i++) {
+											var val = $scope.customBar[i].value;
+											var index = i;
+											.stack(group, $scope.customBar[index].title.toString(), function(d){ return d.value[val]; })
+										}
+									}
+									// bc.stack(group, $scope.customBar[2].title.toString(), function(d){ console.log(val); return d.value[val]; })
 								var colors = [];
-								colors.push($scope.customBar[0].color)
-								for (var i = 1; i < $scope.customBar.length; i++) {
-									var val = $scope.customBar[i].value;
-									$scope.barChart.stack(group, $scope.customBar[i].title, function(d){ return d.value[val]; })
+								for (var i in $scope.customBar) {
 									colors.push($scope.customBar[i].color)
 								}
+								// colors.push($scope.customBar[0].color)
+								// colors.push($scope.customBar[1].color)
+								// var val = $scope.customBar[1].value;
+							// 	// var val = $scope.customBar[2].value;
+							// 	for (var i = 1; i < $scope.customBar.length; i++) {
+							// 		var val = $scope.customBar[i].value;
+							// 		var index = i;
+							// // 		var val = $scope.customBar[i].value;
+							// // 		$scope.barChart.stack(group, $scope.customBar[i].title, function(d){ return d.value[val]; })
+							// // 		colors.push($scope.customBar[i].color)
+							// 	}
 								$scope.barChart.colors(colors);
-							} else {
-								$scope.barChart
-									.group(group)
-								$scope.barChart.colors([$scope.customBar[0].color]);
-							}
+							// } else {
+							// 	$scope.barChart
+							// 		.group(group)
+								// $scope.barChart.colors([$scope.customBar[0].color]);
+							// }
 							filter = true;
 							break;
 						case 'severity':
@@ -788,7 +804,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
 						//.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
 						.title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
 						.renderTitle(true); // (optional) whether chart should render titles, :default = fal
-						$scope.barChart.render();
+						bc.render();
 						$scope.$broadcast('spinnerHide');
 						$(window).resize(function () {
 							waitForFinalEvent(function(){

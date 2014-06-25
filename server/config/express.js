@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 var express = require('express'),
-	favicon = require('static-favicon'),
+	favicon = require('serve-favicon'),
 	morgan = require('morgan'),
 	compression = require('compression'),
 	bodyParser = require('body-parser'),
@@ -107,7 +107,7 @@ module.exports = function(app, passport, version, io, pool) {
 	app.use(flash());
 
 	// Setting the fav icon and static folder
-	app.use(favicon());
+	app.use(favicon(appPath + '/public/system/assets/img/favicon.ico'));
 	app.use('/public', express.static(config.root + '/public'));
 
 	app.get('/modules/aggregated.js', function(req, res) {

@@ -124,6 +124,10 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
 				title: '(4) Severe',
 				value: 'severe',
 				color: '#DD122A'
+			},{
+				title: '(5) OTHER',
+				value: 'severe',
+				color: '#000'
 			}]
 			$scope.$broadcast('barChart', barDimension, barGroup, 'custom');
 
