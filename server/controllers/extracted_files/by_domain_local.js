@@ -23,18 +23,23 @@ module.exports = function(pool) {
 					query: 'SELECT '+
 							'count(*) as count, '+
 							'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time,'+
-							'`lan_ip`,'+
+							'file.lan_ip,'+
 							'`lan_zone`,'+
 							'`http_host`,'+
 							'(sum(`size`) / 1048576) AS size,'+
-							'sum(`ioc_count`) AS ioc_count '+
+							'sum(`ioc_count`) AS ioc_count,'+
+							'stealth_ips.stealth, '+
+							'stealth_ips.stealth_groups '+
 						'FROM '+
 							'`file` '+
+						'LEFT JOIN `stealth_ips` '+
+						'ON ' +
+							'file.lan_ip = stealth_ips.lan_ip ' +
 						'WHERE '+
 							'time BETWEEN ? AND ? '+
 							'AND `http_host` = ? '+
 						'GROUP BY '+
-							'`lan_ip`, '+
+							'file.lan_ip, '+
 							'`lan_zone`',
 					insert: [start, end, req.query.http_host],
 					params: [
@@ -49,6 +54,8 @@ module.exports = function(pool) {
 									crumb: false
 								},
 							},
+							{ title: 'Stealth', select: 'stealth' },
+							{ title: 'COI Groups', select: 'stealth_groups' },
 							{ title: 'Total Extracted Files', select: 'count' },
 							{ title: 'Domain', select: 'http_host' },
 							{ title: 'Local IP', select: 'lan_ip' },
@@ -58,7 +65,7 @@ module.exports = function(pool) {
 							{ title: 'Total IOC Hits', select: 'ioc_count' }
 						],
 					settings: {
-						sort: [[0, 'desc']],
+						sort: [[1, 'desc']],
 						div: 'table',
 						title: 'Extracted Files by Domain'
 					}

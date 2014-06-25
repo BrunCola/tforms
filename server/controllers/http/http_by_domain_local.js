@@ -27,16 +27,21 @@ module.exports = function(pool) {
 							'sum(`count`) AS `count`, '+
 							'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 							'`lan_zone`, ' +
-							'`lan_ip`, ' +
+							'http_meta.lan_ip, ' +
 							'`host`, ' +
-							'sum(`ioc_count`) AS `ioc_count` ' +
+							'sum(`ioc_count`) AS `ioc_count`, ' +
+							'stealth_ips.stealth, '+
+							'stealth_ips.stealth_groups '+
 						'FROM ' +
 							'`http_meta` '+
+						'LEFT JOIN `stealth_ips` '+
+						'ON ' +
+							'http_meta.lan_ip = stealth_ips.lan_ip ' +
 						'WHERE ' +
 							'time BETWEEN ? AND ? '+
 							'AND `host` = ? '+
 						'GROUP BY '+
-							'`lan_ip`',
+							'http_meta.lan_ip',
 					insert: [start, end, req.query.host],
 					params: [
 						{
@@ -49,6 +54,8 @@ module.exports = function(pool) {
 								crumb: false
 							}
 						},
+						{ title: 'Stealth', select: 'stealth' },
+						{ title: 'COI Groups', select: 'stealth_groups' },
 						{ title: 'Connections', select: 'count' },
 						{ title: 'Zone', select: 'lan_zone' },
 						{ title: 'Local IP', select: 'lan_ip' },

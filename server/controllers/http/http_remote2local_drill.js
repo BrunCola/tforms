@@ -22,10 +22,10 @@ module.exports = function(pool) {
 				var table1 = {
 					query: 'SELECT ' +
 							'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-							'`stealth`, ' +
+							//'`stealth`, ' +
 							'`machine`, ' +
 							'`lan_zone`, ' +
-							'`lan_ip`, ' +
+							'http.lan_ip, ' +
 							'`remote_ip`, ' +
 							'`remote_port`, ' +
 							'`remote_cc`, ' +
@@ -49,13 +49,18 @@ module.exports = function(pool) {
 							'`proxied`, ' +
 							'`local_mime_types`, ' +
 							'`remote_mime_types`, ' +
-							'`ioc_count` ' +
+							'`ioc_count`, ' +
+							'stealth_ips.stealth, '+
+							'stealth_ips.stealth_groups '+
 						'FROM ' +
 							'`http` ' +
+						'LEFT JOIN `stealth_ips` '+
+						'ON ' +
+							'http.lan_ip = stealth_ips.lan_ip ' +
 						'WHERE '+
 							'time BETWEEN ? AND ? ' +
 							'AND `lan_zone` = ? '+
-							'AND `lan_ip` = ? ' +
+							'AND http.lan_ip = ? ' +
 							'AND `remote_ip` = ? ',
 					insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip],
 					params: [
@@ -63,7 +68,9 @@ module.exports = function(pool) {
 							title: 'Time',
 							select: 'time'
 						},
-						{ title: 'Stealth', select: 'stealth', dView:false },
+						//{ title: 'Stealth', select: 'stealth', dView:false },
+						{ title: 'Stealth', select: 'stealth' },
+						{ title: 'COI Groups', select: 'stealth_groups' },
 						{ title: 'Domain', select: 'host' },
 						{ title: 'URI', select: 'uri' },
 						{ title: 'URL', select: 'url' },

@@ -23,11 +23,13 @@ module.exports = function(pool) {
 							'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time,'+
 							'`lan_zone`,'+
 							'`machine`,'+
-							'`lan_ip`,'+
+							'conn_ioc.lan_ip,'+
 							'`remote_ip`,'+
 							'`remote_country`,'+
 							'`remote_cc`,'+
 							'`remote_asn_name`,'+
+							'stealth_ips.stealth,'+
+							'stealth_ips.stealth_groups,'+
 							'sum(`in_packets`) as in_packets,'+
 							'sum(`out_packets`) as out_packets,'+
 							'sum(`in_bytes`) as in_bytes,'+
@@ -39,6 +41,9 @@ module.exports = function(pool) {
 							'sum(`ioc_count`) AS ioc_count '+
 						'FROM '+
 							'`conn_ioc` '+
+							'LEFT JOIN `stealth_ips` '+
+						'ON ' +
+							'conn_ioc.lan_ip = stealth_ips.lan_ip ' +
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `remote_ip` = ? '+
@@ -47,7 +52,7 @@ module.exports = function(pool) {
 							'AND `trash` IS NULL '+
 						'GROUP BY '+
 							'`lan_zone`,'+
-							'`lan_ip`',
+							'conn_ioc.lan_ip',
 					insert: [start, end, req.query.remote_ip, req.query.ioc],
 					params: [
 						{
@@ -60,6 +65,8 @@ module.exports = function(pool) {
 								crumb: false
 							},
 						},
+						{ title: 'Stealth', select: 'stealth' },
+						{ title: 'COI Groups', select: 'stealth_groups' },
 						{ title: 'Severity', select: 'ioc_severity' },
 						{ title: 'IOC Hits', select: 'ioc_count' },
 						{ title: 'IOC', select: 'ioc' },
@@ -78,7 +85,7 @@ module.exports = function(pool) {
 						{ title: 'Packets from Remote', select: 'out_packets', dView: false },
 					],
 					settings: {
-						sort: [[0, 'desc']],
+						sort: [[1, 'desc']],
 						div: 'table',
 						title: 'Indicators of Compromise (IOC) Notifications'
 					}

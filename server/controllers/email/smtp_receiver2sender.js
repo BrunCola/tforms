@@ -28,7 +28,7 @@ module.exports = function(pool) {
 							'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 							'`machine`,'+
 							'`lan_zone`,'+
-							'`lan_ip`,'+
+							'smtp.lan_ip,'+
 							'`lan_port`,'+
 							'`remote_ip`,'+
 							'`remote_port`,'+
@@ -46,9 +46,14 @@ module.exports = function(pool) {
 							'`ioc_severity`,'+
 							'`ioc_typeInfection`,'+
 							'`ioc_typeIndicator`,'+
-							'`ioc_count` '+
+							'`ioc_count`,'+
+							'stealth_ips.stealth, '+
+							'stealth_ips.stealth_groups '+
 						'FROM '+
 							'`smtp` '+
+						'LEFT JOIN `stealth_ips` '+
+						'ON ' +
+							'smtp.lan_ip = stealth_ips.lan_ip ' +
 						'WHERE ' + 
 							'time BETWEEN ? AND ? '+
 							'AND `receiptto` = ? '+
@@ -66,6 +71,8 @@ module.exports = function(pool) {
 								crumb: false
 							}
 						},
+						{ title: 'Stealth', select: 'stealth' },
+						{ title: 'COI Groups', select: 'stealth_groups' },
 						{ title: 'Connections', select: 'count' },
 						{ title: 'From', select: 'mailfrom' },
 						{ title: 'To', select: 'receiptto' },

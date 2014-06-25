@@ -29,21 +29,26 @@ module.exports = function(pool) {
 							'`ioc_typeInfection`,'+
 							'`lan_zone`,'+
 							'`machine`,'+
-							'`lan_ip`,'+
+							'conn_ioc.lan_ip,'+
 							'`remote_ip`,'+
 							'`remote_country`,'+
 							'`remote_cc`,'+
 							'`remote_asn_name`,'+
+							'stealth_ips.stealth,'+
+							'stealth_ips.stealth_groups,'+
 							'sum(`in_packets`) AS in_packets,'+
 							'sum(`out_packets`) AS out_packets,'+
 							'sum(`in_bytes`) AS in_bytes,'+
 							'sum(`out_bytes`) AS out_bytes '+
 						'FROM '+
 							'`conn_ioc` '+
+						'LEFT JOIN `stealth_ips` '+
+						'ON ' +
+							'conn_ioc.lan_ip = stealth_ips.lan_ip ' +
 						'WHERE '+
 							'time BETWEEN ? AND ? '+
 							'AND `lan_zone` = ? '+
-							'AND `lan_ip` = ? '+
+							'AND conn_ioc.lan_ip = ? '+
 							'AND `ioc_count` > 0 '+
 							'AND `trash` IS NULL '+
 						'GROUP BY '+
@@ -61,6 +66,8 @@ module.exports = function(pool) {
 								crumb: false
 							},
 						},
+						{ title: 'Stealth', select: 'stealth' },
+						{ title: 'COI Groups', select: 'stealth_groups' },
 						{ title: 'Severity', select: 'ioc_severity' },
 						{ title: 'IOC Hits', select: 'count' },
 						{ title: 'IOC', select: 'ioc' },
@@ -79,7 +86,7 @@ module.exports = function(pool) {
 						{ title: 'Packets from Remote', select: 'out_packets', dView: false },
 					],
 					settings: {
-						sort: [[2, 'desc']],
+						sort: [[4, 'desc']],
 						div: 'table',
 						title: 'Indicators of Compromise (IOC) Notifications'
 					}

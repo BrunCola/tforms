@@ -28,7 +28,7 @@ module.exports = function(pool) {
 							'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time, '+
 							'`lan_zone`, '+
 							'`machine`,'+
-							'`lan_ip`, '+
+							'conn_l7_meta.lan_ip, '+
 							'`l7_proto`, '+
 							'sum(`in_packets`) AS in_packets, '+
 							'sum(`out_packets`) AS out_packets, '+
@@ -41,13 +41,18 @@ module.exports = function(pool) {
 							'sum(`irc`) AS `irc`, '+
 							'sum(`smtp`) AS `smtp`, '+
 							'sum(`file`) AS `file`, '+
-							'sum(`ioc_count`) AS `ioc_count` '+
+							'sum(`ioc_count`) AS `ioc_count`, '+
+							'stealth_ips.stealth, '+
+							'stealth_ips.stealth_groups '+
 							// !SELECTS
 						'FROM `conn_l7_meta` '+
+						'LEFT JOIN `stealth_ips` '+
+						'ON ' +
+							'conn_l7_meta.lan_ip = stealth_ips.lan_ip ' +
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_zone` = ? '+
-							'AND `lan_ip` = ? '+
+							'AND conn_l7_meta.lan_ip = ? '+
 						'GROUP BY '+
 							'`l7_proto`',
 						insert: [start, end, req.query.lan_zone, req.query.lan_ip],
@@ -63,6 +68,8 @@ module.exports = function(pool) {
 									crumb: false
 								},
 							},
+							{ title: 'Stealth', select: 'stealth' },
+							{ title: 'COI Groups', select: 'stealth_groups' },
 							{ title: 'Applications', select: 'l7_proto' },
 							{ title: 'Local IP', select: 'lan_ip', dView:false },
 							{ title: 'Machine Name', select: 'machine', dView:false },
@@ -82,7 +89,7 @@ module.exports = function(pool) {
 							{ title: 'File', select: 'file' },
 						],
 					settings: {
-						sort: [[3, 'desc']],
+						sort: [[5, 'desc']],
 						div: 'table',
 						title: 'Local IP Bandwidth Usage'
 					}

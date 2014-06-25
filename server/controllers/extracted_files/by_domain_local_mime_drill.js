@@ -22,7 +22,7 @@ module.exports = function(pool) {
 					query: 'SELECT '+
 							'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
 							'`machine`,'+
-							'`lan_ip`,'+
+							'file.lan_ip,'+
 							'`lan_port`,'+
 							'`lan_zone`,'+
 							'`remote_ip`,'+
@@ -35,23 +35,30 @@ module.exports = function(pool) {
 							'`http_host`,'+
 							'`mime`,'+
 							'`name`,'+
-							'(`size` / 1024) AS `size`, '+
+							'(`size` / 1024) AS `size`, '+	
 							'`md5`,'+
 							'`sha1`,'+
 							'`ioc`,'+
 							'`ioc_typeIndicator`,'+
-							'`ioc_typeInfection` '+
+							'`ioc_typeInfection`,'+
+							'stealth_ips.stealth, '+
+							'stealth_ips.stealth_groups '+
 						'FROM '+ 
 							'`file` '+
+						'LEFT JOIN `stealth_ips` '+
+						'ON ' +
+							'file.lan_ip = stealth_ips.lan_ip ' +
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_zone` = ? '+
-							'AND `lan_ip` = ? '+
+							'AND file.lan_ip = ? '+
 							'AND `mime` = ? '+
 							'AND `http_host` = ?',
 					insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.mime, req.query.http_host],
 					params: [
 						{ title: 'Last Seen', select: 'time' },
+						{ title: 'Stealth', select: 'stealth' },
+						{ title: 'COI Groups', select: 'stealth_groups' },
 						{ title: 'File Type', select: 'mime' },
 						{ title: 'Name', select: 'name', sClass:'file'},
 						{ title: 'Size (KB)', select: 'size' },

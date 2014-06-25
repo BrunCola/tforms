@@ -25,7 +25,7 @@ module.exports = function(pool) {
 							'`name`, '+
 							'`lan_zone`, '+
 							'`machine`, '+
-							'`lan_ip`, '+
+							'file.lan_ip, '+
 							'`lan_port`, '+
 							'`remote_ip`, '+
 							'`remote_port`, '+
@@ -39,9 +39,14 @@ module.exports = function(pool) {
 							'`http_host`, '+
 							'`ioc`, '+
 							'`ioc_typeIndicator`, '+
-							'`ioc_typeInfection` '+
+							'`ioc_typeInfection`, '+
+							'stealth_ips.stealth, '+
+							'stealth_ips.stealth_groups '+
 						'FROM '+
 							'`file` '+
+						'LEFT JOIN `stealth_ips` '+
+						'ON ' +
+							'file.lan_ip = stealth_ips.lan_ip ' +
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `remote_ip` = ? '+
@@ -49,6 +54,8 @@ module.exports = function(pool) {
 					insert: [start, end, req.query.remote_ip, req.query.mime],
 					params: [
 						{ title: 'Last Seen', select: 'time' },
+						{ title: 'Stealth', select: 'stealth' },
+						{ title: 'COI Groups', select: 'stealth_groups' },
 						{ title: 'File Type', select: 'mime' },
 						{ title: 'Name', select: 'name', sClass:'file'},
 						{ title: 'Size (KB)', select: 'size' },
@@ -70,7 +77,7 @@ module.exports = function(pool) {
 						{ title: 'MD5', select: 'md5' }
 					],
 					settings: {
-						sort: [[0, 'desc']],
+						sort: [[1, 'desc']],
 						div: 'table',
 						title: 'Extracted Files by Remote IP'
 					}

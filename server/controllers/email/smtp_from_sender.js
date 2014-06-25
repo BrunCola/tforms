@@ -22,7 +22,7 @@ module.exports = function(pool) {
 							'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
 							'`lan_zone`,'+
 							'`machine`,'+
-							'`lan_ip`,'+
+							'smtp.lan_ip,'+
 							'`lan_port`,'+
 							'`remote_ip`,'+
 							'`remote_port`,'+
@@ -40,9 +40,14 @@ module.exports = function(pool) {
 							'`ioc_severity`,'+
 							'`ioc_typeInfection`,'+
 							'`ioc_typeIndicator`,'+
-							'`ioc_count` '+
+							'`ioc_count`,'+
+							'stealth_ips.stealth, '+
+							'stealth_ips.stealth_groups '+
 						'FROM '+
 							'`smtp` '+
+						'LEFT JOIN `stealth_ips` '+
+						'ON ' +
+							'smtp.lan_ip = stealth_ips.lan_ip ' +
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `mailfrom` = ? '+
@@ -50,6 +55,8 @@ module.exports = function(pool) {
 					insert: [start, end, req.query.mailfrom, req.query.receiptto],
 					params: [
 						{ title: 'Time', select: 'time' },
+						{ title: 'Stealth', select: 'stealth' },
+						{ title: 'COI Groups', select: 'stealth_groups' },
 						{ title: 'From', select: 'mailfrom' },
 						{ title: 'To', select: 'receiptto' },
 						{ title: 'Reply To', select: 'reply_to' },
@@ -73,7 +80,7 @@ module.exports = function(pool) {
 						{ title: 'Remote ASN Name', select: 'remote_asn_name' },
 					],
 					settings: {
-						sort: [[0, 'desc']],
+						sort: [[1, 'desc']],
 						div: 'table',
 						title: 'Emails From Sender to Receiver'
 					}

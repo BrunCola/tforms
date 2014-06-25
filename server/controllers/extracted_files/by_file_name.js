@@ -25,16 +25,21 @@ module.exports = function(pool) {
 							'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time,'+
 							'`lan_zone`,'+
 							'`machine`,'+
-							'`lan_ip`,'+
+							'file_meta.lan_ip,'+
 							'`mime`,'+
+							'stealth_ips.stealth,'+
+							'stealth_ips.stealth_groups,'+
 							'(sum(`size`) / 1048576) AS size,'+
 							'sum(`ioc_count`) AS ioc_count '+
 						'FROM '+
 							'`file_meta` '+
+						'LEFT JOIN `stealth_ips` '+
+						'ON ' +
+							'file_meta.lan_ip = stealth_ips.lan_ip ' +
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_zone` = ? '+
-							'AND `lan_ip` = ? '+
+							'AND file_meta.lan_ip = ? '+
 						'GROUP BY '+
 							'mime',
 					insert: [start, end, req.query.lan_zone, req.query.lan_ip],
@@ -50,6 +55,8 @@ module.exports = function(pool) {
 								crumb: false
 							},
 						},
+						{ title: 'Stealth', select: 'stealth' },
+						{ title: 'COI Groups', select: 'stealth_groups' },
 						{ title: 'Total Extracted Files', select: 'count' },
 						{ title: 'Zone', select: 'lan_zone', dView: false },
 						{ title: 'Machine', select: 'machine', dView: false },

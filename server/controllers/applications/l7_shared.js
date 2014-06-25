@@ -25,7 +25,7 @@ module.exports = function(pool) {
 							'`machine`,'+
 							'`l7_proto`,'+
 							'`lan_zone`,'+
-							'`lan_ip`,'+
+							'conn.lan_ip,'+
 							'`lan_port`,'+
 							'`remote_ip`,'+
 							'`remote_port`,'+
@@ -48,18 +48,25 @@ module.exports = function(pool) {
 							'`ioc_severity`,'+
 							'`ioc_typeInfection`,'+
 							'`ioc_typeIndicator`,'+
-							'`ioc_count` '+
+							'`ioc_count`,'+
+							'stealth_ips.stealth, '+
+							'stealth_ips.stealth_groups '+
 						'FROM '+
 							'`conn` ' +
+						'LEFT JOIN `stealth_ips` '+
+						'ON ' +
+							'conn.lan_ip = stealth_ips.lan_ip ' +
 						'WHERE '+
 							'`time` BETWEEN ? AND ? ' +
 							'AND `lan_zone` = ? '+
-							'AND `lan_ip` = ? ' +
+							'AND conn.lan_ip = ? ' +
 							'AND `remote_ip` = ? ' +
 							'AND `l7_proto` = ?',
 						insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.l7_proto],
 					params: [
 						{ title: 'Time', select: 'time' },
+						{ title: 'Stealth', select: 'stealth' },
+						{ title: 'COI Groups', select: 'stealth_groups' },
 						{ title: 'Applications', select: 'l7_proto' },
 						{ title: 'Zone', select: 'lan_zone' },
 						{ title: 'Machine Name', select: 'machine' },
