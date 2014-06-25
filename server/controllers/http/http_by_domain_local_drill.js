@@ -51,6 +51,7 @@ module.exports = function(pool) {
 							'`remote_mime_types`, ' +
 							'`ioc_count`, ' +
 							'stealth_ips.stealth, '+
+							'stealth_ips.user, '+
 							'stealth_ips.stealth_groups '+
 						'FROM ' +
 							'`http` ' +
@@ -70,6 +71,7 @@ module.exports = function(pool) {
 						},
 						{ title: 'Stealth', select: 'stealth' },
 						{ title: 'COI Groups', select: 'stealth_groups' },
+						{ title: 'User', select: 'user' },
 						//{ title: 'Stealth', select: 'stealth', dView:false },
 						{ title: 'Domain', select: 'host' },
 						{ title: 'URI', select: 'uri' },

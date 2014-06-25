@@ -24,14 +24,14 @@ module.exports = function(pool) {
 							'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 							'`machine`, ' +
 							'`lan_zone`, ' +
-							'`lan_ip`, ' +
+							'ftp.lan_ip, ' +
 							'`lan_port`, ' +
 							'`remote_ip`, ' +
 							'`remote_port`, '  +
 							'`remote_cc`, ' +
 							'`remote_country`, ' +
 							'`remote_asn_name`, ' +
-							'`user`, ' +
+							'ftp.user AS `ftp_user`, ' +
 							'`password`, ' +
 							'`command`, ' +
 							'`arg`, ' +
@@ -47,13 +47,19 @@ module.exports = function(pool) {
 							'`ioc_severity`, ' +
 							'`ioc_typeInfection`, ' +
 							'`ioc_typeIndicator`, ' +
-							'`ioc_count` ' +
+							'`ioc_count`, ' +
+							'stealth_ips.stealth,'+
+							'stealth_ips.stealth_groups, '+
+							'stealth_ips.user '+
 						'FROM ' +
 							'`ftp` ' +
+						'LEFT JOIN `stealth_ips` '+
+						'ON ' +
+							'ftp.lan_ip = stealth_ips.lan_ip ' +
 						'WHERE '+ 
 							'time BETWEEN ? AND ? ' +
 							'AND `lan_zone` = ? '+
-							'AND `lan_ip` = ? ' +
+							'AND ftp.lan_ip = ? ' +
 							'AND `remote_ip` = ? ',
 					insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip],
 					params: [
@@ -61,6 +67,9 @@ module.exports = function(pool) {
 							title: 'Time',
 							select: 'time'
 						},
+						{ title: 'Stealth', select: 'stealth' },
+						{ title: 'COI Groups', select: 'stealth_groups' },
+						{ title: 'User', select: 'user' },
 						{ title: 'Machine', select: 'machine' },
 						{ title: 'Zone', select: 'lan_zone' },
 						{ title: 'Local IP', select: 'lan_ip' },
@@ -70,7 +79,7 @@ module.exports = function(pool) {
 						{ title: 'Flag', select: 'remote_cc' },
 						{ title: 'Remote Country', select: 'remote_country' },
 						{ title: 'Remote ASN Name', select: 'remote_asn_name' },
-						{ title: 'User', select: 'user' },
+						{ title: 'User', select: 'ftp_user' },
 						{ title: 'Password', select: 'password' },
 						{ title: 'Command', select: 'command' },
 						{ title: 'Arg', select: 'arg' },

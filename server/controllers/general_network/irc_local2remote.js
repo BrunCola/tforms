@@ -28,7 +28,7 @@ module.exports = function(pool) {
 							'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 							'`machine`, ' +
 							'`lan_zone`, ' +
-							'`lan_ip`, ' +
+							'irc.lan_ip, ' +
 							'`lan_port`, ' +
 							'`remote_ip`, ' +
 							'`remote_port`, '  +
@@ -36,19 +36,25 @@ module.exports = function(pool) {
 							'`remote_country`, ' +
 							'`remote_asn_name`, ' +
 							'`nick`, ' +
-							'`user`, ' +
+							'irc.user AS irc_user, ' +
 							'`command`, ' +
 							'`value`, ' +
 							'`addl`, ' +
 							'`dcc_file_name`, ' +
 							'`dcc_file_size`, ' +
 							'`dcc_mime_type`, ' +
-							'`fuid` ' +
+							'`fuid`, ' +
+							'stealth_ips.stealth,'+
+							'stealth_ips.stealth_groups, '+
+							'stealth_ips.user '+
 						'FROM ' +
 							'`irc` ' +
+						'LEFT JOIN `stealth_ips` '+
+						'ON ' +
+							'irc.lan_ip = stealth_ips.lan_ip ' +
 						'WHERE ' +
 							'time BETWEEN ? AND ? ' +
-							'AND `lan_ip` = ? ' +
+							'AND irc.lan_ip = ? ' +
 							'AND `lan_zone` = ? ' +
 						'GROUP BY '+
 							'`remote_ip`',
@@ -64,6 +70,9 @@ module.exports = function(pool) {
 								crumb: false
 							}
 						},
+						{ title: 'Stealth', select: 'stealth' },
+						{ title: 'COI Groups', select: 'stealth_groups' },
+						{ title: 'User', select: 'user' },
 						{ title: 'Connections', select: 'count' },
 						{ title: 'Machine', select: 'machine' },
 						{ title: 'Zone', select: 'lan_zone' },
@@ -75,7 +84,7 @@ module.exports = function(pool) {
 						{ title: 'Remote Country', select: 'remote_country' },
 						{ title: 'Remote ASN Name', select: 'remote_asn_name' },
 						{ title: 'Nick', select: 'nick' },
-						{ title: 'User', select: 'user' },
+						{ title: 'IRC User', select: 'irc_user' },
 						{ title: 'Command', select: 'command' },
 						{ title: 'Value', select: 'value'},
 						{ title: 'Addl', select: 'addl' },

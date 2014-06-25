@@ -171,7 +171,7 @@ module.exports = function(pool) {
 							'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time,'+
 							'`lan_zone`,'+
 							'`machine`,'+
-							'`lan_ip`,'+
+							'conn_ioc.lan_ip,'+
 							'`remote_ip`,'+
 							'`remote_asn_name`,'+
 							'`remote_country`,'+
@@ -185,16 +185,22 @@ module.exports = function(pool) {
 							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection`,'+
 							'`ioc_attrID`,'+
-							'sum(`ioc_count`) AS ioc_count '+
+							'sum(`ioc_count`) AS ioc_count,'+
+							'stealth_ips.stealth,'+
+							'stealth_ips.stealth_groups,'+
+							'stealth_ips.user '+
 						'FROM '+
 							'`conn_ioc` '+
+						'LEFT JOIN `stealth_ips` '+
+						'ON ' +
+							'conn_ioc.lan_ip = stealth_ips.lan_ip ' +
 						'WHERE '+
 							'time BETWEEN ? AND ? '+
 							'AND `ioc_count` > 0 '+
 							'AND `trash` IS NULL '+
 						'GROUP BY '+
 							'`lan_zone`,'+
-							'`lan_ip`,'+
+							'conn_ioc.lan_ip,'+
 							'`remote_ip`,'+
 							'`ioc`',
 					insert: [start, end],
@@ -209,6 +215,9 @@ module.exports = function(pool) {
 								crumb: false
 							},
 						},
+						{ title: 'Stealth', select: 'stealth' },
+						{ title: 'COI Groups', select: 'stealth_groups' },
+						{ title: 'User', select: 'user' },
 						{ title: 'Severity', select: 'ioc_severity' },
 						{ title: 'IOC Hits', select: 'ioc_count' },
 						{ title: 'IOC', select: 'ioc' },

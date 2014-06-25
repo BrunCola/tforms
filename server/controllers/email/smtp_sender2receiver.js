@@ -48,6 +48,7 @@ module.exports = function(pool) {
 							'`ioc_typeIndicator`,'+
 							'`ioc_count`,'+
 							'stealth_ips.stealth, '+
+							'stealth_ips.user, '+
 							'stealth_ips.stealth_groups '+
 						'FROM '+
 							'`smtp` '+
@@ -73,6 +74,7 @@ module.exports = function(pool) {
 						},
 						{ title: 'Stealth', select: 'stealth' },
 						{ title: 'COI Groups', select: 'stealth_groups' },
+						{ title: 'User', select: 'user' },
 						{ title: 'Connections', select: 'count' },
 						{ title: 'From', select: 'mailfrom' },
 						{ title: 'To', select: 'receiptto' },

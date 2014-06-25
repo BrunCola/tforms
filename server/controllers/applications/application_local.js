@@ -45,6 +45,7 @@ module.exports = function(pool) {
 							'sum(`file`) AS `file`,'+
 							'sum(`ioc_count`) AS `ioc_count`,'+
 							'stealth_ips.stealth, '+
+							'stealth_ips.user, '+
 							'stealth_ips.stealth_groups '+
 						'FROM '+
 							'`conn_l7_meta` '+
@@ -72,6 +73,7 @@ module.exports = function(pool) {
 						},
 						{ title: 'Stealth', select: 'stealth' },
 						{ title: 'COI Groups', select: 'stealth_groups' },
+						{ title: 'User', select: 'user' },
 						{ title: 'Applications', select: 'l7_proto' },
 						{ title: 'Zone', select: 'lan_zone' },
 						{ title: 'Machine Name', select: 'machine' },

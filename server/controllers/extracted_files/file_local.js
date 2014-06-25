@@ -42,6 +42,7 @@ module.exports = function(pool) {
 							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection`, '+
 							'stealth_ips.stealth,'+
+							'stealth_ips.user,'+
 							'stealth_ips.stealth_groups '+
 						'FROM '+ 
 							'`file` '+
@@ -58,6 +59,7 @@ module.exports = function(pool) {
 						{ title: 'Last Seen', select: 'time' },
 						{ title: 'Stealth', select: 'stealth' },
 						{ title: 'COI Groups', select: 'stealth_groups' },
+						{ title: 'User', select: 'user' },
 						{ title: 'File Type', select: 'mime' },
 						{ title: 'Name', select: 'name', sClass:'file'},
 						{ title: 'Size (KB)', select: 'size' },

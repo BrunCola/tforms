@@ -30,6 +30,7 @@ module.exports = function(pool) {
 							'(sum(`size`) / 1048576) AS size,'+
 							'sum(`ioc_count`) AS ioc_count, '+
 							'stealth_ips.stealth, '+
+							'stealth_ips.user, ' +
 							'stealth_ips.stealth_groups '+
 						'FROM '+
 							'`file` '+
@@ -58,6 +59,7 @@ module.exports = function(pool) {
 						},
 						{ title: 'Stealth', select: 'stealth' },
 						{ title: 'COI Groups', select: 'stealth_groups' },
+						{ title: 'User', select: 'user' },
 						{ title: 'Total Extracted Files', select: 'count' },
 						{ title: 'Domain', select: 'http_host' },
 						{ title: 'Local IP', select: 'lan_ip' },

@@ -26,6 +26,7 @@ module.exports = function(pool) {
 						'http_local.lan_ip, ' +
 						'sum(`ioc_count`) AS `ioc_count`, ' +
 						'stealth_ips.stealth, '+
+						'stealth_ips.user, '+
 						'stealth_ips.stealth_groups '+
 					'FROM ' + 
 						'`http_local` '+
@@ -51,6 +52,7 @@ module.exports = function(pool) {
 					},
 					{ title: 'Stealth', select: 'stealth' },
 					{ title: 'COI Groups', select: 'stealth_groups' },
+					{ title: 'User', select: 'user' },
 					{ title: 'Connections', select: 'count' },
 					{ title: 'Zone', select: 'lan_zone' },
 					{ title: 'Local IP', select: 'lan_ip' },

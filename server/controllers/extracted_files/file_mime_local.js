@@ -24,17 +24,23 @@ module.exports = function(pool) {
 							'`mime`,'+
 							'`lan_zone`,'+
 							'`machine`,'+
-							'`lan_ip`,'+
+							'file_meta.lan_ip,'+
 							'(sum(`size`) / 1048576) AS size,'+
-							'sum(`ioc_count`) AS ioc_count '+
+							'sum(`ioc_count`) AS ioc_count, '+
+							'stealth_ips.stealth,'+
+							'stealth_ips.stealth_groups,'+
+							'stealth_ips.user '+
 						'FROM '+
 							'`file_meta` '+
+						'LEFT JOIN `stealth_ips` '+
+						'ON ' +
+							'file_meta.lan_ip = stealth_ips.lan_ip ' +
 						'WHERE '+
 							'time BETWEEN ? AND ? '+
 							'AND `mime` = ? '+
 						'GROUP BY '+
 							'`lan_zone`,'+
-							'`lan_ip`',
+							'file_meta.lan_ip',
 					insert: [start, end, req.query.mime],
 					params: [
 						{
@@ -47,6 +53,9 @@ module.exports = function(pool) {
 								crumb: false
 							},
 						},
+						{ title: 'Stealth', select: 'stealth' },
+						{ title: 'COI Groups', select: 'stealth_groups' },
+						{ title: 'User', select: 'user' },
 						{ title: 'Total Extracted Files', select: 'count' },
 						{ title: 'File Type', select: 'mime', dView: false },
 						{ title: 'Zone', select: 'lan_zone' },
@@ -56,7 +65,7 @@ module.exports = function(pool) {
 						{ title: 'Total IOC Hits', select: 'ioc_count' }
 					],
 					settings: {
-						sort: [[0, 'desc']],
+						sort: [[1, 'desc']],
 						div: 'table',
 						title: 'Extracted File Types'
 					}

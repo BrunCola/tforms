@@ -29,6 +29,7 @@ module.exports = function(pool) {
 							'`mime`,'+
 							'stealth_ips.stealth,'+
 							'stealth_ips.stealth_groups,'+
+							'stealth_ips.user,'+
 							'(sum(`size`) / 1048576) AS size,'+
 							'sum(`ioc_count`) AS ioc_count '+
 						'FROM '+
@@ -57,6 +58,7 @@ module.exports = function(pool) {
 						},
 						{ title: 'Stealth', select: 'stealth' },
 						{ title: 'COI Groups', select: 'stealth_groups' },
+						{ title: 'User', select: 'user' },
 						{ title: 'Total Extracted Files', select: 'count' },
 						{ title: 'Zone', select: 'lan_zone', dView: false },
 						{ title: 'Machine', select: 'machine', dView: false },

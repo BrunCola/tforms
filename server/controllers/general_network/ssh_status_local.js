@@ -24,16 +24,22 @@ module.exports = function(pool) {
 							'`status_code`, '+
 							'`lan_zone`,'+
 							'`machine`,'+
-							'`lan_ip`,'+
-							'sum(`ioc_count`) AS ioc_count ' +
+							'ssh.lan_ip,'+
+							'sum(`ioc_count`) AS ioc_count, ' +
+							'stealth_ips.stealth,'+
+							'stealth_ips.stealth_groups, '+
+							'stealth_ips.user '+
 						'FROM '+
 							'`ssh` '+
+						'LEFT JOIN `stealth_ips` '+
+						'ON ' +
+							'ssh.lan_ip = stealth_ips.lan_ip ' +
 						'WHERE '+
 							'time BETWEEN ? AND ? '+
 							'AND `status_code` = ? '+
 						'GROUP BY '+
 							'`lan_zone`, '+
-							'`lan_ip`',
+							'ssh.lan_ip',
 					insert: [start, end, req.query.status_code],
 					params: [
 						{
@@ -45,6 +51,9 @@ module.exports = function(pool) {
 								crumb: false
 							}
 						},
+						{ title: 'Stealth', select: 'stealth' },
+						{ title: 'COI Groups', select: 'stealth_groups' },
+						{ title: 'User', select: 'user' },
 						{ title: 'Connections', select: 'count' },
 						{ title: 'Status', select: 'status_code' },
 						{ title: 'Zone', select: 'lan_zone' },

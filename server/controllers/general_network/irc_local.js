@@ -24,14 +24,20 @@ module.exports = function(pool) {
 						'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 						'`machine`, ' +
 						'`lan_zone`, ' +
-						'`lan_ip`, ' +
-						'`lan_port` ' +
+						'irc.lan_ip, ' +
+						'`lan_port`, ' +
+						'stealth_ips.stealth,'+
+						'stealth_ips.stealth_groups, '+
+						'stealth_ips.user '+
 					'FROM '+
 						'`irc` '+
+					'LEFT JOIN `stealth_ips` '+
+					'ON ' +
+						'irc.lan_ip = stealth_ips.lan_ip ' +
 					'WHERE '+
 						'time BETWEEN ? AND ? '+
 					'GROUP BY '+
-						'`lan_zone`,`lan_ip`',
+						'`lan_zone`, irc.lan_ip',
 				insert: [start, end],
 					params: [
 					{
@@ -44,6 +50,9 @@ module.exports = function(pool) {
 						 	crumb: false
 						},
 					},
+					{ title: 'Stealth', select: 'stealth' },
+					{ title: 'COI Groups', select: 'stealth_groups' },
+					{ title: 'User', select: 'user' },
 					{ title: 'Connections', select: 'count' },
 					{ title: 'Zone', select: 'lan_zone' },
 					{ title: 'Machine', select: 'machine' },

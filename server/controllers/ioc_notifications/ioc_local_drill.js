@@ -36,6 +36,7 @@ module.exports = function(pool) {
 							'`remote_asn_name`,'+
 							'stealth_ips.stealth,'+
 							'stealth_ips.stealth_groups,'+
+							'stealth_ips.user,'+
 							'sum(`in_packets`) AS in_packets,'+
 							'sum(`out_packets`) AS out_packets,'+
 							'sum(`in_bytes`) AS in_bytes,'+
@@ -68,6 +69,7 @@ module.exports = function(pool) {
 						},
 						{ title: 'Stealth', select: 'stealth' },
 						{ title: 'COI Groups', select: 'stealth_groups' },
+						{ title: 'Stealth', select: 'user' },
 						{ title: 'Severity', select: 'ioc_severity' },
 						{ title: 'IOC Hits', select: 'count' },
 						{ title: 'IOC', select: 'ioc' },

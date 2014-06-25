@@ -25,21 +25,27 @@ module.exports = function(pool) {
 							'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time,'+
 							'`lan_zone`,'+
 							'`machine`,'+
-							'`lan_ip`,'+
+							'ssh.lan_ip,'+
 							'`remote_ip`,'+
 							'`remote_cc`, ' +
 							'`remote_country`, ' +
 							'`remote_asn`, ' +
 							'`remote_asn_name`, ' +
-							'sum(`ioc_count`) AS ioc_count ' +
+							'sum(`ioc_count`) AS ioc_count, ' +
+							'stealth_ips.stealth,'+
+							'stealth_ips.stealth_groups, '+
+							'stealth_ips.user '+
 						'FROM '+
 							'`ssh` '+
+						'LEFT JOIN `stealth_ips` '+
+						'ON ' +
+							'ssh.lan_ip = stealth_ips.lan_ip ' +
 						'WHERE '+
 							'time BETWEEN ? AND ? '+
 							'AND `remote_ip` = ? '+
 						'GROUP BY '+
 							'`lan_zone`,'+
-							'`lan_ip`',
+							'ssh.lan_ip',
 					insert: [start, end, req.query.remote_ip],
 					params: [
 						{
@@ -52,6 +58,9 @@ module.exports = function(pool) {
 								crumb: false
 							}
 						},
+						{ title: 'Stealth', select: 'stealth' },
+						{ title: 'COI Groups', select: 'stealth_groups' },
+						{ title: 'User', select: 'user' },
 						{ title: 'Connections', select: 'count' },
 						{ title: 'Zone', select: 'lan_zone' },
 						{ title: 'Machine Name', select: 'machine' },

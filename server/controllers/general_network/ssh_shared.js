@@ -22,7 +22,7 @@ module.exports = function(pool) {
 							'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
 							'`machine`,'+
 							'`lan_zone`,'+
-							'`lan_ip`,'+
+							'ssh.lan_ip,'+
 							'`lan_port`,'+
 							'`remote_ip`,'+
 							'`remote_port`,'+
@@ -38,17 +38,26 @@ module.exports = function(pool) {
 							'`ioc_severity`,'+
 							'`ioc_typeInfection`,'+
 							'`ioc_typeIndicator`,'+
-							'`ioc_count` '+
+							'`ioc_count`, ' +
+							'stealth_ips.stealth,'+
+							'stealth_ips.stealth_groups, '+
+							'stealth_ips.user '+
 						'FROM '+
 							'`ssh` '+
+						'LEFT JOIN `stealth_ips` '+
+						'ON ' +
+							'ssh.lan_ip = stealth_ips.lan_ip ' +
 						'WHERE '+
 							'time BETWEEN ? AND ? '+
 							'AND `lan_zone` = ? '+
-							'AND `lan_ip` = ? '+
+							'AND ssh.lan_ip = ? '+
 							'AND `remote_ip` = ?',
 					insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip],
 					params: [
 						{ title: 'Time', select: 'time' },
+						{ title: 'Stealth', select: 'stealth' },
+						{ title: 'COI Groups', select: 'stealth_groups' },
+						{ title: 'User', select: 'user' },
 						{ title: 'Zone', select: 'lan_zone' },
 						{ title: 'Machine Name', select: 'machine' },
 						{ title: 'Local IP', select: 'lan_ip' },
