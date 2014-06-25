@@ -2,6 +2,6 @@
 
 module.exports = {
 	app: {
-		name: 'rapidPHIRE - Fight fire with PHIRE'
+		name: 'rapidPHIRE - Fight Fire With PHIRE'
 	}
 };
