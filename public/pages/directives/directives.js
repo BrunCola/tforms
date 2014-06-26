@@ -665,23 +665,32 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
 								$scope.barChart.redraw();
 							}
 							// if ($scope.customBar.length > 1) {
-								var bc = $scope.barChart
-									bc.group(group, $scope.customBar[0].title)
-									bc.valueAccessor(function(d) {
+								$scope.barChart
+									// .chain
+									$scope.barChart.group(group, $scope.customBar[0].title)
+									$scope.barChart.valueAccessor(function(d) {
 										return d.value[$scope.customBar[0].value];
 									})
-									function stak() {
-										for (var i = 1; i < $scope.customBar.length; i++) {
-											var val = $scope.customBar[i].value;
-											var index = i;
-											.stack(group, $scope.customBar[index].title.toString(), function(d){ return d.value[val]; })
-										}
+									var colors = [];
+									colors.push($scope.customBar[0].color);
+									for (var i = 1; i < $scope.customBar.length-1; i++) {
+										var val = $scope.customBar[i].value;
+										$scope.barChart.stack(group, $scope.customBar[i].title.toString(), function(d){ return d.value[val]; })
+										colors.push($scope.customBar[i].color);
 									}
+									$scope.barChart.colors(colors);
+
+
+
+
+									// .and(function ($scope.barChart){
+
+									// })
 									// bc.stack(group, $scope.customBar[2].title.toString(), function(d){ console.log(val); return d.value[val]; })
-								var colors = [];
-								for (var i in $scope.customBar) {
-									colors.push($scope.customBar[i].color)
-								}
+								// var colors = [];
+								// for (var i in $scope.customBar) {
+								// 	colors.push($scope.customBar[i].color)
+								// }
 								// colors.push($scope.customBar[0].color)
 								// colors.push($scope.customBar[1].color)
 								// var val = $scope.customBar[1].value;
@@ -693,7 +702,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
 							// // 		$scope.barChart.stack(group, $scope.customBar[i].title, function(d){ return d.value[val]; })
 							// // 		colors.push($scope.customBar[i].color)
 							// 	}
-								$scope.barChart.colors(colors);
+								// $scope.barChart.colors(colors);
 							// } else {
 							// 	$scope.barChart
 							// 		.group(group)
@@ -804,7 +813,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
 						//.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
 						.title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
 						.renderTitle(true); // (optional) whether chart should render titles, :default = fal
-						bc.render();
+					$scope.barChart.render();
 						$scope.$broadcast('spinnerHide');
 						$(window).resize(function () {
 							waitForFinalEvent(function(){

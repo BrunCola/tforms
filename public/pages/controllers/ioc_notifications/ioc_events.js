@@ -105,31 +105,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
 					};
 				}
 			);
-			// $scope.$broadcast('barChart', barDimension, barGroup, 'severity');
-
-			$scope.customBar = [
-			{
-				title: '(1) Guarded',
-				value: 'guarded',
-				color: '#377FC7'
-			}, {
-				title: '(2) Elevated',
-				value: 'elevated',
-				color: '#F5D800'
-			},{
-				title: '(3) High',
-				value: 'high',
-				color: '#F88B12'
-			},{
-				title: '(4) Severe',
-				value: 'severe',
-				color: '#DD122A'
-			},{
-				title: '(5) OTHER',
-				value: 'severe',
-				color: '#000'
-			}]
-			$scope.$broadcast('barChart', barDimension, barGroup, 'custom');
+			$scope.$broadcast('barChart', barDimension, barGroup, 'severity');
 
 			$scope.barChartxAxis = '';
 			$scope.barChartyAxis = '# IOC / Hour';

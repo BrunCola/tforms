@@ -339,7 +339,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 			$scope.$on('buildFishChart', function (event, data){
 				var margin = {top: 5.5, right: 19.5, bottom: 30.5, left: 55.5};
 				var width = document.getElementById('fishchart').offsetWidth-60;
-				var height = (width / 3) - margin.top - margin.bottom;
+				var height = (width / 4) - margin.top - margin.bottom;
 
 				$('#fishchart').parent().height(height+150);
 
@@ -365,7 +365,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					if (count < 1000){
 						return count*0.0000002*((data.xAxis[1]-data.xAxis[0]));
 					} else {
-						return 0.30;
+						return 0.50;
 					}
 				}
 
@@ -557,7 +557,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					if (total > 1) {
 						if (total%2 !== 0){
 						}
-						var h = 20, x, y;
+						var h = 10, x, y;
 						var segment, fraction;
 						// if odd total
 						if (total%2 !== 0){
@@ -587,7 +587,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 							x = Math.cos(fraction)*h;
 							x *= -1;
 						}
-						if (y < 0){
+						if (y > 0){
 							y *= -1;
 						}
 						hoverCount ++;
@@ -640,9 +640,9 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 								var elm = d3.select(this.parentNode);
 									if (elmCount.length > 1) {
 										var trans = pointTranslate(hoverCount, elmCount.length);
-										// elm
-										// 	.transition().duration(100)
-										// 	.attr('transform', function(d) { return 'translate('+trans.x+','+(-1*trans.y)+')';})
+										elm
+											.transition().duration(100)
+											.attr('transform', function(d) { return 'translate('+trans.x+','+(trans.y)+')';})
 									}
 								})
 							})

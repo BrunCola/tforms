@@ -9,7 +9,6 @@ module.exports = function (params, conn, callback) {
 	var maxConn = 0;
 	var maxIOC = 0;
 	var tArr = [];
-	console.log(params.insert)
 	conn.pool.getConnection(function(err, connection) {
 		connection.changeUser({database : conn.database}, function(err) {
 			if (err) throw err;
