@@ -555,13 +555,11 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				var hoverCount = 1;
 				function pointTranslate(count, total) {
 					if (total > 1) {
-						if (total%2 !== 0){
-						}
-						var h = 10, x, y;
+						var h = 17, x, y;
 						var segment, fraction;
 						// if odd total
 						if (total%2 !== 0){
-							segment = 180 / (total+1);
+							segment = 180 / (total+2);
 							fraction = segment*count;
 						} else {
 						// if even total
@@ -659,9 +657,11 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 								elm.each(function(d){
 									var elm = d3.select(this.parentNode);
 									if (elmCount.length > 1) {
-										elm
-											.transition().duration(100)
-											.attr('transform', function(d) { return 'translate(0,0)';})
+										setTimeout(function(){
+											elm
+												.transition().duration(1000)
+												.attr('transform', function(d) { return 'translate(0,0)';})
+										}, 100)
 									}
 								})
 							})

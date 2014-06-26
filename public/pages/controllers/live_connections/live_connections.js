@@ -21,7 +21,6 @@ angular.module('mean.pages').controller('liveConnectionsController', ['$scope', 
 			}
 		});
 	}
-	
 	getMap();
 	$scope.$on('$destroy', function() {
 		clearTimeout(timer);
