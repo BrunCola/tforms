@@ -25,7 +25,7 @@ module.exports = function(pool) {
 						'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
 						'`lan_zone`,'+
 						'`machine`,'+
-						'`lan_ip`,'+
+						'dns_uniq_query.lan_ip,'+
 						'`remote_ip`,'+
 						'`remote_port`,'+
 						'`remote_asn_name`,'+
@@ -35,14 +35,23 @@ module.exports = function(pool) {
 						'`qtype_name` AS qtype,'+
 						'`qclass_name` AS qclass,'+
 						'`rcode_name` AS rcode,'+
-						'`query` '+
+						'`query`, '+
+						'stealth_ips.stealth,'+
+						'stealth_ips.stealth_groups,'+
+						'stealth_ips.user '+
 					'FROM '+
 						'`dns_uniq_query` '+
+					'LEFT JOIN `stealth_ips` '+
+					'ON ' +
+						'dns_uniq_query.lan_ip = stealth_ips.lan_ip ' +
 					'WHERE '+
 						'`time` BETWEEN ? AND ?',
 				insert: [start, end],
 				params: [
 					{ title: 'First Seen', select: 'time' },
+					{ title: 'Stealth', select: 'stealth' },
+					{ title: 'COI Groups', select: 'stealth_groups' },
+					{ title: 'User', select: 'user' },
 					{ title: 'Query Type', select: 'qtype' },
 					{ title: 'Query Class', select: 'qclass', dView: false },
 					{ title: 'Response Code', select: 'rcode', dView: false },
@@ -58,7 +67,7 @@ module.exports = function(pool) {
 					{ title: 'Local IP', select: 'lan_ip' },
 				],
 				settings: {
-					sort: [[0, 'desc']],
+					sort: [[1, 'desc']],
 					div: 'table',
 					title: 'New Remote IP Addresses Detected'
 				}

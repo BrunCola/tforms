@@ -24,19 +24,28 @@ module.exports = function(pool) {
 						'`host`,'+
 						'`lan_zone`,'+
 						'`machine`,'+
-						'`lan_ip`,'+
+						'http_uniq_host.lan_ip,'+
 						'`remote_ip`,'+
 						'`remote_country`,'+
 						'`remote_cc`,'+
 						'`remote_asn`,'+
-						'`remote_asn_name` '+
+						'`remote_asn_name`, '+
+						'stealth_ips.stealth,'+
+						'stealth_ips.stealth_groups,'+
+						'stealth_ips.user '+
 					'FROM '+
 						'`http_uniq_host` '+
+					'LEFT JOIN `stealth_ips` '+
+					'ON ' +
+						'http_uniq_host.lan_ip = stealth_ips.lan_ip ' +
 					'WHERE '+
 						'`time` BETWEEN ? AND ?',
 				insert: [start, end],
 				params: [
 					{ title: 'First Seen', select: 'time' },
+					{ title: 'Stealth', select: 'stealth' },
+					{ title: 'COI Groups', select: 'stealth_groups' },
+					{ title: 'User', select: 'user' },
 					{ title: 'HTTP Domain', select: 'host' },
 					{ title: 'Remote IP', select: 'remote_ip' },
 					{ title: 'Remote Country', select: 'remote_country' },
@@ -47,7 +56,7 @@ module.exports = function(pool) {
 					{ title: 'Local IP', select: 'lan_ip' },
 				],
 				settings: {
-					sort: [[0, 'desc']],
+					sort: [[1, 'desc']],
 					div: 'table',
 					title: 'New Remote IP Addresses Detected'
 				}

@@ -23,7 +23,7 @@ module.exports = function(pool) {
 						'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
 						'`lan_zone`,'+
 						'`machine`,'+
-						'`lan_ip`,'+
+						'ftp_uniq_remote_ip.lan_ip,'+
 						'`lan_port`,'+
 						'`remote_ip`,'+
 						'`remote_port`,'+
@@ -31,19 +31,28 @@ module.exports = function(pool) {
 						'`remote_asn_name`,'+
 						'`remote_country`,'+
 						'`remote_cc`,'+
-						'`user` '+
+						'ftp_uniq_remote_ip.user AS ftp_user, '+
+						'stealth_ips.stealth,'+
+						'stealth_ips.stealth_groups,'+
+						'stealth_ips.user '+
 					'FROM '+
 						'`ftp_uniq_remote_ip` '+
+					'LEFT JOIN `stealth_ips` '+
+					'ON ' +
+						'ftp_uniq_remote_ip.lan_ip = stealth_ips.lan_ip ' +
 					'WHERE '+
 						'`time` BETWEEN ? AND ?',
 				insert: [start, end],
 				params: [
 					{ title: 'Last Seen', select: 'time' },
+					{ title: 'Stealth', select: 'stealth' },
+					{ title: 'COI Groups', select: 'stealth_groups' },
+					{ title: 'User', select: 'user' },
 					{ title: 'Zone', select: 'lan_zone' },
 					{ title: 'Machine Name', select: 'machine' },
 					{ title: 'Local IP', select: 'lan_ip' },
 					{ title: 'Local Port', select: 'lan_port' },
-					{ title: 'User', select: 'user' },
+					{ title: 'FTP User', select: 'ftp_user' },
 					{ title: 'Remote IP', select: 'remote_ip' },
 					{ title: 'Remote Port', select: 'remote_port' },
 					{ title: 'Remote Country', select: 'remote_country' },
@@ -51,7 +60,7 @@ module.exports = function(pool) {
 					{ title: 'Remote ASN', select: 'remote_asn_name' },
 				],
 				settings: {
-					sort: [[0, 'desc']],
+					sort: [[1, 'desc']],
 					div: 'table',
 					title: 'New Remote IP Addresses Detected'
 				}

@@ -21,23 +21,29 @@ module.exports = function(pool) {
 				var info = [];
 				var table1 = {
 					query: 'SELECT '+
-						'count(*) AS count,' +
-						'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-						'`server_id`, '+
-						'`src_user`, '+
-						'`src_ip`, '+
-						'`dst_ip`, '+
-						'`alert_source`, '+
-						'`program_source`, '+
-						'`alert_id`, '+
-						'`alert_info`, '+
-						'`full_log` '+
+							'count(*) AS count,' +
+							'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+							'`server_id`, '+
+							'`src_user`, '+
+							'`src_ip`, '+
+							'`dst_ip`, '+
+							'`alert_source`, '+
+							'`program_source`, '+
+							'`alert_id`, '+
+							'`alert_info`, '+
+							'`full_log`, '+
+							'stealth_ips.stealth,'+
+							'stealth_ips.stealth_groups,'+
+							'stealth_ips.user '+
 						'FROM `ossec` '+
+						'LEFT JOIN `stealth_ips` '+
+						'ON ' +
+							'ossec.src_ip = stealth_ips.lan_ip ' +
 						'WHERE '+
-						'`time` BETWEEN ? AND ? '+
-						'AND src_ip = ? '+
+							'`time` BETWEEN ? AND ? '+
+							'AND src_ip = ? '+
 						'GROUP BY '+
-						'`alert_info`',
+							'`alert_info`',
 					insert: [start, end, req.query.src_ip],
 					params: [
 						{
@@ -50,6 +56,9 @@ module.exports = function(pool) {
 								crumb: false
 							}
 						},
+						{ title: 'Stealth', select: 'stealth' },
+						{ title: 'COI Groups', select: 'stealth_groups' },
+						{ title: 'User', select: 'user' },
 						{ title: 'Events', select: 'count'},
 						{ title: 'User', select: 'src_user'},
 						{ title: 'Source IP', select: 'src_ip'},

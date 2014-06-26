@@ -30,9 +30,15 @@ module.exports = function(pool) {
 						'`program_source`,'+
 						'`alert_id`,'+
 						'`alert_info`,'+
-						'`full_log` '+
+						'`full_log`, '+
+						'stealth_ips.stealth,'+
+						'stealth_ips.stealth_groups,'+
+						'stealth_ips.user '+
 					'FROM '+
 						'`ossec` '+
+					'LEFT JOIN `stealth_ips` '+
+					'ON ' +
+						'ossec.src_ip = stealth_ips.lan_ip ' +
 					'WHERE '+
 						'`time` BETWEEN ? AND ? '+
 					'GROUP BY '+
@@ -49,6 +55,9 @@ module.exports = function(pool) {
 							crumb: false
 						},
 					},
+					{ title: 'Stealth', select: 'stealth' },
+					{ title: 'COI Groups', select: 'stealth_groups' },
+					{ title: 'User', select: 'user' },
 					{ title: 'Events', select: 'count' },
 					{ title: 'Source IP', select: 'src_ip' },
 					{ title: 'Alert Source', select: 'alert_source'},
