@@ -106,6 +106,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
 				}
 			);
 			$scope.$broadcast('barChart', barDimension, barGroup, 'severity');
+
 			$scope.barChartxAxis = '';
 			$scope.barChartyAxis = '# IOC / Hour';
 			$scope.$broadcast('severityLoad');

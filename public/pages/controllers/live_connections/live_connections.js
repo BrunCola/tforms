@@ -6,13 +6,14 @@ angular.module('mean.pages').controller('liveConnectionsController', ['$scope', 
 	socket.on('test',function(){
 		console.log('boom')
 	})
+	var timer;
 	var query = '/live_connections/live_connections';
 	function getMap() {
 		$http({method: 'GET', url: query}).
 		success(function(data) {
 			if (data.map.features.length === 0) {
 				console.log('No data to display, waiting a minute.');
-				setTimeout(function(){
+				timer = setTimeout(function(){
 					getMap();
 				}, 60000)
 			} else {
@@ -21,6 +22,9 @@ angular.module('mean.pages').controller('liveConnectionsController', ['$scope', 
 		});
 	}
 	getMap();
+	$scope.$on('$destroy', function() {
+		clearTimeout(timer);
+	});
 
 	$scope.$on('canIhazMoreMap', function() {
 		getMap();
