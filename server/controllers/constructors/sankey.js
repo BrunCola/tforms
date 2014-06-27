@@ -70,6 +70,8 @@ module.exports = function (params, conn, callback) {
 
 				result.links = links;
 
+				results.totalCount = totalCount;
+
 				callback(null, result);
 			});
 			connection.release();
