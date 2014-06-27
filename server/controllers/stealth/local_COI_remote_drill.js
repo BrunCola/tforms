@@ -37,7 +37,9 @@ module.exports = function(pool) {
 							'AND stealth_ips.stealth > 0 '+
 							'AND stealth_ips.lan_ip = ? '+
 						'GROUP BY stealth_ips.lan_ip, '+
-						'conn.remote_ip',
+						'conn.remote_ip '+
+						'ORDER BY `count` DESC '+
+						'LIMIT 10',
 					insert: [start, end, req.query.lan_ip]
 				}
 				async.parallel([
