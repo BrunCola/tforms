@@ -21,6 +21,7 @@ module.exports = function(pool) {
 				var info = [];
 				var table1 = {
 					query: 'SELECT '+
+							'S.stealth_groups AS stealth_groups_remote, '+
 							'count(*) AS `count`, '+
 							'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
 							'conn.remote_ip, '+
@@ -31,7 +32,11 @@ module.exports = function(pool) {
 							'`stealth_ips` '+
 						'LEFT JOIN `conn` '+
 						'ON ' +
-							'conn.lan_ip = stealth_ips.lan_ip ' +
+							'conn.lan_ip = stealth_ips.lan_ip '+
+						'INNER JOIN ('+
+							'SELECT `lan_ip`, `stealth`, `stealth_groups` FROM `stealth_ips` WHERE `stealth` > 0'+
+						') S ON '+
+							'conn.remote_ip = S.lan_ip '+	
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND stealth_ips.stealth > 0 '+
@@ -46,6 +51,7 @@ module.exports = function(pool) {
 					// Table function(s)
 					function(callback) {
 						new sankey(table1, {database: database, pool: pool}, function(err,data){
+							console.log(table1.query);
 							sankeyData = data;
 							callback();
 						});

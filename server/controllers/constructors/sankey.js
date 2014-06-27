@@ -17,7 +17,7 @@ module.exports = function (params, conn, callback) {
 			.on('result', function(data){
 				//split the stealth groups up into an array
 				var stealthGroups = data.stealth_groups.split(", ");
-
+				var remoteStealthGroups = data.stealth_groups_remote.split(", ");
 				//create the nodes for the stealth groups
 				//TODO expensive to check this for every row...technically only need to do it once, so consider optimizing
 				stealthGroups.forEach(function(d){
@@ -45,17 +45,19 @@ module.exports = function (params, conn, callback) {
 					src.push(data.remote_ip);
 					totalCount += data.count;
 					stealthGroups.forEach(function(d){
-						links.push({
-							"source":d,
-							"target":data.remote_ip,
-							"value":data.count
-						});
-						//increment the value of the connections between the local IP and it's stealth groups
-						links.forEach(function(l){
-							if(l.source == data.lan_ip && l.target == d) {
-								l.value = totalCount;
-							}
-						});
+						if(remoteStealthGroups.indexOf(d) !== -1){
+							links.push({
+								"source":d,
+								"target":data.remote_ip,
+								"value":data.count
+							});
+							//increment the value of the connections between the local IP and it's stealth groups
+							links.forEach(function(l){
+								if(l.source == data.lan_ip && l.target == d) {
+									l.value += data.count;
+								}
+							});
+						}
 					});
 				}
 			})

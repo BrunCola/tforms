@@ -18,7 +18,6 @@ module.exports = function(pool) {
 			var info = [];
 			var table1 = {
 				query: 'SELECT '+
-							'count(*) AS `count`, '+
 							'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
 							'stealth_ips.lan_ip, '+
 							'stealth_ips.stealth, '+
@@ -48,7 +47,6 @@ module.exports = function(pool) {
 					{ title: 'Stealth', select: 'stealth' },
 					{ title: 'COI Groups', select: 'stealth_groups' },
 					{ title: 'User', select: 'user' },
-					{ title: 'Connections', select: 'count' },
 					{ title: 'Local IP', select: 'lan_ip' }
 				],
 				settings: {
