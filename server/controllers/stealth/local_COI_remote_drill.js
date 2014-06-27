@@ -23,10 +23,8 @@ module.exports = function(pool) {
 					query: 'SELECT '+
 							'count(*) AS `count`, '+
 							'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-							'`lan_zone`, '+
 							'conn.remote_ip, '+
 							'stealth_ips.lan_ip, '+
-							'stealth_ips.stealth, '+
 							'stealth_ips.stealth_groups, '+
 							'stealth_ips.user '+
 						'FROM '+
@@ -37,6 +35,7 @@ module.exports = function(pool) {
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND stealth_ips.stealth > 0 '+
+							'AND stealth_ips.lan_ip = ? '+
 						'GROUP BY stealth_ips.lan_ip, '+
 						'conn.remote_ip',
 					insert: [start, end, req.query.lan_ip]
