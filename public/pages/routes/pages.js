@@ -1164,6 +1164,34 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
+			// STEALTH
+				//LOCAL COI REMOTE
+				.state('local_COI_remote', {
+					url: '/local_COI_remote?start&end',
+					templateUrl: 'public/pages/views/stealth/local_COI_remote.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Local to Remote Traffic through Stealth',
+						daterange: true
+					}
+				})		
+					//LOCAL COI REMOTE DRILL
+					.state('local_COI_remote_drill', {
+						url: '/local_COI_remote_drill?start&end&lan_ip',
+						templateUrl: 'public/pages/views/stealth/local_COI_remote_drill.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Local to Remote Traffic through Stealth',
+							subtitleElm: {
+								'Local IP': 'lan_ip'
+							},
+							daterange: true
+						}
+					})			
 			// SYSTEM HEALTH
 				// OVERVIEW
 				.state('overview', {

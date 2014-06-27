@@ -175,11 +175,15 @@ module.exports = function(app, passport, version, io, pool) {
 		var ftp_remote = require('../controllers/general_network/ftp_remote')(pool);
 			// REMOTE2LOCAL FTP
 			var ftp_remote2local = require('../controllers/general_network/ftp_remote2local')(pool);
-
+	//STEALTH
+		//LOCAL COI REMOTE
+		var local_COI_remote = require('../controllers/stealth/local_COI_remote')(pool); 
+			//LOCAL COI REMOTE DRILL
+			var local_COI_remote_drill = require('../controllers/stealth/local_COI_remote_drill')(pool); 
 	//HEALTH
 		//OVERVIEW
 		var overview = require('../controllers/health/overview')(pool); 
-			//OVERVIEW
+			//HEALTH DRILL
 			var health_drill = require('../controllers/health/health_drill')(pool); 
 	
 	// REPORTS
@@ -446,7 +450,13 @@ module.exports = function(app, passport, version, io, pool) {
 			// REMOTE2LOCAL FTP
 			app.route('/general_network/ftp_remote2local')
 			.get(authorization.requiresLogin, ftp_remote2local.render);
-
+	// STEALTH
+		//LOCAL COI REMOTE
+		app.route('/stealth/local_COI_remote')
+		.get(authorization.requiresLogin, local_COI_remote.render);
+			//LOCAL COI REMOTE DRILL
+			app.route('/stealth/local_COI_remote_drill')
+			.get(authorization.requiresLogin, local_COI_remote_drill.render);
 	//SYSTEM HEALTH
 		//OVERVIEW
 		app.route('/health/overview')

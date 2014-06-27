@@ -345,7 +345,13 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'title': 'Stealth',
 			'url': '',
 			'icon': 'fa-shield',		
-			'children': []
+			'children': [
+			{
+				'title': 'Stealth',
+				'url': 'local_COI_remote',
+				'icon': 'shield',
+				'orphans': ['local_COI_remote_drill']
+			}]
 		},
 		{
 			'title': 'Health',

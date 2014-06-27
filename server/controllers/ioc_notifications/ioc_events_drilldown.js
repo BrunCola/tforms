@@ -655,6 +655,55 @@ module.exports = function(pool) {
 							function(callback) {
 								new treechart(treeSQL, {database: database, pool: pool}, lanIP, attrID, function(err,data){
 									treereturn = data;
+
+								// 	treereturn = {name: "10.0.0.40",
+								// 		severity: 3,
+								// 		idRoute: true,
+								// 		children: [
+								// 		{
+								// 			parentID: 116,
+								// 			name: "Malware Detected",
+								// 			severity: 2,
+								// 			children: [
+											
+								// 				{name: 260086,
+								// 				severity: 3,
+								// 				idRoute: true,
+								// 				children: [
+								// 				{
+								// 					name: "260088 SHA1; MD5 (2) *",
+								// 					severity: 3,
+								// 					idRoute: true
+								// 				}
+								// 				]};
+											
+								// 			]
+								// 		},
+								// 		{
+								// 			parentID: 119,
+								// 			name: "Malware Detected - Exploit:Java/CVE-2012-4681",
+								// 			severity: 3,
+								// 			children: [
+											
+								// 				{name: 260086,
+								// 				severity: 3,
+								// 				idRoute: true,
+								// 				children: [
+								// 				{
+								// 					name: "260088 SHA1; MD5 (2) *",
+								// 					severity: 3,
+								// 					idRoute: true
+								// 				}
+								// 				]};
+											
+								// 			],
+								// 			idRoute: true
+								// 		},
+								// 		],
+								// 		childCount: 2
+								// 	};
+
+									console.log(treereturn);
 									callback();
 								});
 							}
