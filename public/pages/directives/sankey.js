@@ -272,9 +272,22 @@ angular.module('mean.pages').directive('makeSankey', ['$timeout', '$location', '
 
 			$scope.$on('sankey', function (event, graph, params) {
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
-					var width = 1000
+
+					function logslider(x) {
+						var minp = 0;
+						var maxp = graph.totalCount;
+						// The result should be between 100 an 10000000
+						var minv = Math.log(1);
+						var maxv = Math.log(100);
+						// calculate adjustment factor
+						var scale = (maxv-minv) / (maxp-minp);
+						return Math.exp(minv + scale*(x-minp));
+					}
+
+					var width = 1000;
 							// height = params["height"];
-					var height = 5000;
+
+					var height = 2000;
 
 					var units = "Widgets";
 
@@ -288,17 +301,16 @@ angular.module('mean.pages').directive('makeSankey', ['$timeout', '$location', '
 
 					// append the svg canvas to the page
 					var svg = d3.select("#sankey").append("svg")
-							.attr("width", width + margin.left + margin.right)
-							.attr("height", height + margin.top + margin.bottom)
+						.attr("width", width + margin.left + margin.right)
+						.attr("height", height + margin.top + margin.bottom)
 						.append("g")
-							.attr("transform",
-										"translate(" + margin.left + "," + margin.top + ")");
+						.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 					// Set the sankey diagram properties
 					var sankey = d3.sankey()
-							.nodeWidth(36)
-							.nodePadding(10)
-							.size([width, height]);
+						.nodeWidth(36)
+						.nodePadding(10)
+						.size([width, height]);
 
 					var path = sankey.link();
 
@@ -308,7 +320,7 @@ angular.module('mean.pages').directive('makeSankey', ['$timeout', '$location', '
 						return {
 							source: nodeMap[x.source],
 							target: nodeMap[x.target],
-							value: x.value
+							value: logslider(x.value)
 						};
 					});
 

@@ -58,8 +58,6 @@ module.exports = function (params, conn, callback) {
 						});
 					});
 				}
-
-				
 			})
 			.on('end', function(){
 				var src_formatted = [];
@@ -70,7 +68,7 @@ module.exports = function (params, conn, callback) {
 
 				result.links = links;
 
-				results.totalCount = totalCount;
+				result.totalCount = totalCount;
 
 				callback(null, result);
 			});
