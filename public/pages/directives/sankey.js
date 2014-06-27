@@ -284,10 +284,10 @@ angular.module('mean.pages').directive('makeSankey', ['$timeout', '$location', '
 						return Math.exp(minv + scale*(x-minp));
 					}
 
-					var width = 1000;
+					var width = document.getElementById('sankey').offsetWidth;
 							// height = params["height"];
 
-					var height = 2000;
+					var height = 700;
 
 					var units = "Widgets";
 
@@ -315,12 +315,14 @@ angular.module('mean.pages').directive('makeSankey', ['$timeout', '$location', '
 					var path = sankey.link();
 
 					var nodeMap = {};
-					graph.nodes.forEach(function(x) { nodeMap[x.name] = x; });
+					graph.nodes.forEach(function(x) {
+						nodeMap[x.name] = x;
+					});
 					graph.links = graph.links.map(function(x) {
 						return {
 							source: nodeMap[x.source],
 							target: nodeMap[x.target],
-							value: logslider(x.value)
+							value: x.value
 						};
 					});
 
