@@ -546,7 +546,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 														obj.end = $location.$$search.end;
 													}
 													for (var l in $scope.e[c].link.val) {
-														obj[$scope.e[c].link.val[l]] = aData[$scope.e[c].link.val[l]].replace("'", "&#44;");
+														obj[$scope.e[c].link.val[l]] = aData[$scope.e[c].link.val[l]].replace("'", "&#39;");
 													}
 													var links = JSON.stringify({
 														type: $scope.e[c].link.type,
