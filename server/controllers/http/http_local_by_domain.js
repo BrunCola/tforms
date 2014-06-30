@@ -19,7 +19,6 @@ module.exports = function(pool) {
 			if (req.query.lan_ip && req.query.lan_zone) {
 				//var results = [];
 				var tables = [];
-				var crossfilter = [];
 				var info = [];
 
 				var table1 = {

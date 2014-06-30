@@ -102,7 +102,9 @@ module.exports = function(pool) {
 							// SELECTS
 							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time,'+
 							'count(*) as count,'+
-							'`remote_country` '+
+							'`remote_country`, '+
+							'(sum(`in_bytes`) / 1048576) AS in_bytes, '+
+							'(sum(`out_bytes`) / 1048576) AS out_bytes '+
 							// !SELECTS
 						'FROM `conn_l7_meta` '+
 						'WHERE time BETWEEN ? AND ? '+

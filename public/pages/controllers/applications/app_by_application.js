@@ -29,25 +29,16 @@ angular.module('mean.pages').controller('appByApplicationController', ['$scope',
 				$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 
 				var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
-				// var barGroup = barDimension.group().reduceSum(function(d) { return d.count });
 				var barGroupPre = barDimension.group();
 				var barGroup = barGroupPre.reduce(
 					function(p, v) {
-						// if (v.in_bytes > 0) {
-							p.in_bytes += v.in_bytes;
-						// }
-						// if (v.out_bytes > 0) {
-							p.out_bytes += v.out_bytes;
-						// }
+						p.in_bytes += v.in_bytes;
+						p.out_bytes += v.out_bytes;
 						return p;
 					},
 					function(p, v) {
-						// if (v.in_bytes > 0) {
-							p.in_bytes -= v.in_bytes;
-						// }
-						// if (v.out_bytes > 0) {
-							p.out_bytes -= v.out_bytes;
-						// }
+						p.in_bytes -= v.in_bytes;
+						p.out_bytes -= v.out_bytes;
 						return p;
 					},
 					function() {
