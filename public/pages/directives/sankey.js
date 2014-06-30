@@ -385,7 +385,7 @@ angular.module('mean.pages').directive('makeSankey', ['$timeout', '$location', '
 						.attr("dy", ".35em")
 						.attr("text-anchor", "end")
 						.attr("transform", null)
-						.text(function(d) { return d.name; })
+						.text(function(d) { return d.name+' ('+d.value+')'; })
 						.filter(function(d) { return d.x < width / 2; })
 						.attr("x", 6 + sankey.nodeWidth())
 						.attr("text-anchor", "start");
