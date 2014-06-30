@@ -16,7 +16,7 @@ angular.module('mean.pages').controller('usersCoiGroupsController', ['$scope', '
 
 			$scope.data = data;
 
-			$scope.$broadcast('forceChart', data.force, {height: 500});
+			$scope.$broadcast('stealthForceChart', data.force, {height: 1000});
 			
 			$scope.$broadcast('spinnerHide');
 
