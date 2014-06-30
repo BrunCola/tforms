@@ -204,10 +204,10 @@ angular.module('mean.pages').directive('makeSankey', ['$timeout', '$location', '
 					function resolveCollisions() {
 						nodesByBreadth.forEach(function(nodes) {
 							var node,
-									dy,
-									y0 = 0,
-									n = nodes.length,
-									i;
+								dy,
+								y0 = 0,
+								n = nodes.length,
+								i;
 
 							// Push any overlapping nodes down.
 							nodes.sort(ascendingDepth);
@@ -287,7 +287,7 @@ angular.module('mean.pages').directive('makeSankey', ['$timeout', '$location', '
 					var width = document.getElementById('sankey').offsetWidth;
 							// height = params["height"];
 
-					var height = 700;
+					var height = width/2;
 
 					var units = "Widgets";
 
@@ -352,12 +352,16 @@ angular.module('mean.pages').directive('makeSankey', ['$timeout', '$location', '
 							.attr("class", "node")
 							.attr("transform", function(d) {
 									return "translate(" + d.x + "," + d.y + ")"; })
-						.call(d3.behavior.drag()
-							.origin(function(d) { return d; })
-							.on("dragstart", function() {
-								this.parentNode.appendChild(this);
+						// .call(d3.behavior.drag()
+							// .origin(function(d) { return d; })
+							// .on("dragstart", function() {
+							// 	this.parentNode.appendChild(this);
+							// })
+							.on("click", function(d) {
+								console.log(d.name)
 							})
-							.on("drag", dragmove));
+							// .on("drag", dragmove)
+						// );
 
 					// add the rectangles for the nodes
 					node.append("rect")
@@ -389,11 +393,11 @@ angular.module('mean.pages').directive('makeSankey', ['$timeout', '$location', '
 					// the function for moving the nodes
 					function dragmove(d) {
 						d3.select(this).attr("transform",
-								"translate(" + (
-											 d.x = Math.max(0, Math.min(width - d.dx, d3.event.x))
-										) + "," + (
-													 d.y = Math.max(0, Math.min(height - d.dy, d3.event.y))
-										) + ")");
+							"translate(" + (
+								 d.x = Math.max(0, Math.min(width - d.dx, d3.event.x))
+							) + "," + (
+										 d.y = Math.max(0, Math.min(height - d.dy, d3.event.y))
+							) + ")");
 						sankey.relayout();
 						link.attr("d", path);
 					}
