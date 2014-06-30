@@ -27,8 +27,26 @@ angular.module('mean.pages').controller('appByRemoteIpController', ['$scope', '$
 				$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 
 				var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
-				var barGroup = barDimension.group().reduceSum(function(d) { return d.count });
-				$scope.$broadcast('barChart', barDimension, barGroup, 'bar');
+				var barGroupPre = barDimension.group();
+				var barGroup = barGroupPre.reduce(
+					function(p, v) {
+						p.in_bytes += v.in_bytes;
+						p.out_bytes += v.out_bytes;
+						return p;
+					},
+					function(p, v) {
+						p.in_bytes -= v.in_bytes;
+						p.out_bytes -= v.out_bytes;
+						return p;
+					},
+					function() {
+						return {
+							in_bytes: 0,
+							out_bytes: 0
+						};
+					}
+				);
+				$scope.$broadcast('barChart', barDimension, barGroup, 'bandwidth');
 
 				$scope.barChartxAxis = '';
 				$scope.barChartyAxis = '# MB / Hour';

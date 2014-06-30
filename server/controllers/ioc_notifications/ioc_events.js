@@ -246,7 +246,9 @@ module.exports = function(pool) {
 							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time,'+
 							'`remote_country`,'+
 							'`ioc_severity`,'+
-							'`ioc` '+
+							'`ioc`, '+
+							'(sum(`in_bytes`) / 1048576) AS in_bytes, '+
+							'(sum(`out_bytes`) / 1048576) AS out_bytes '+
 						'FROM '+
 							'`conn_ioc` '+
 						'WHERE '+

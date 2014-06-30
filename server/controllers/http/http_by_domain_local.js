@@ -19,7 +19,6 @@ module.exports = function(pool) {
 			if (req.query.host) {
 				//var results = [];
 				var tables = [];
-				var crossfilter = [];
 				var info = [];
 
 				var table1 = {
