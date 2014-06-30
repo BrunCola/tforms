@@ -17,7 +17,7 @@ module.exports = function(pool) {
 				start = req.query.start;
 				end = req.query.end;
 			}
-			if ((req.query.lan_ip) && (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1)) {
+			if (req.query.lan_ip && (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1)) {
 				var sankeyData;
 				var crossfilter = [];
 				var info = [];

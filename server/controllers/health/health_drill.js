@@ -5,6 +5,8 @@ var dataTable = require('../constructors/datatable'),
 	config = require('../../config/config'),
 	async = require('async');
 
+var permissions = [3];
+
 module.exports = function(pool) {
 	return {
 		render: function(req, res) {
@@ -16,7 +18,7 @@ module.exports = function(pool) {
 				start = req.query.start;
 				end = req.query.end;
 			}
-			if (req.query.client, req.query.zone) {
+			if ((req.query.client, req.query.zone) && (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1)) {
 				//var results = [];
 				var tables = [];
 				var crossfilter = [];
