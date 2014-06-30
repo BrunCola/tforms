@@ -5,6 +5,8 @@ var sankey = require('../constructors/sankey'),
 	config = require('../../config/config'),
 	async = require('async');
 
+var permissions = [3];
+
 module.exports = function(pool) {
 	return {
 		render: function(req, res) {
@@ -15,7 +17,7 @@ module.exports = function(pool) {
 				start = req.query.start;
 				end = req.query.end;
 			}
-			if (req.query.lan_ip) {
+			if ((req.query.lan_ip) && (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1)) {
 				var sankeyData;
 				var crossfilter = [];
 				var info = [];
@@ -36,7 +38,7 @@ module.exports = function(pool) {
 						'INNER JOIN ('+
 							'SELECT `lan_ip`, `stealth`, `stealth_groups` FROM `stealth_ips` WHERE `stealth` > 0'+
 						') S ON '+
-							'conn.remote_ip = S.lan_ip '+	
+							'conn.remote_ip = S.lan_ip '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND stealth_ips.stealth > 0 '+
