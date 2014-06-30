@@ -344,7 +344,8 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		{
 			'title': 'Stealth',
 			'url': '',
-			'icon': 'fa-shield',		
+			'icon': 'fa-shield',	
+			'accessLevel': [3],		
 			'children': [
 			{
 				'title': 'Stealth',
