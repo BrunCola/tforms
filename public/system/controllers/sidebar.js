@@ -352,6 +352,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 				'url': 'local_COI_remote',
 				'icon': 'shield',
 				'orphans': ['local_COI_remote_drill']
+			},
+			{
+				'title': 'COI Users',
+				'url': 'users_COI_groups',
+				'icon': 'shield',
+				'orphans': []
 			}]
 		},
 		{

@@ -180,6 +180,8 @@ module.exports = function(app, passport, version, io, pool) {
 		var local_COI_remote = require('../controllers/stealth/local_COI_remote')(pool); 
 			//LOCAL COI REMOTE DRILL
 			var local_COI_remote_drill = require('../controllers/stealth/local_COI_remote_drill')(pool); 
+		//USERS COI GROUPS
+		var users_COI_groups = require('../controllers/stealth/users_COI_groups')(pool); 
 	//HEALTH
 		//OVERVIEW
 		var overview = require('../controllers/health/overview')(pool); 
@@ -457,6 +459,9 @@ module.exports = function(app, passport, version, io, pool) {
 			//LOCAL COI REMOTE DRILL
 			app.route('/stealth/local_COI_remote_drill')
 			.get(authorization.requiresLogin, local_COI_remote_drill.render);
+		//USERS COI GROUPS
+		app.route('/stealth/users_COI_groups')
+		.get(authorization.requiresLogin, users_COI_groups.render);
 	//SYSTEM HEALTH
 		//OVERVIEW
 		app.route('/health/overview')

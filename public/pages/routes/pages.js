@@ -1192,6 +1192,18 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})			
+				//USERS COI GROUPS
+				.state('users_COI_groups', {
+					url: '/users_COI_groups',
+					templateUrl: 'public/pages/views/stealth/users_COI_groups.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Local to Remote Traffic through Stealth',
+						daterange: true
+					}
+				})	
 			// SYSTEM HEALTH
 				// OVERVIEW
 				.state('overview', {
