@@ -657,11 +657,11 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 								elm.each(function(d){
 									var elm = d3.select(this.parentNode);
 									if (elmCount.length > 1) {
-										setTimeout(function(){
+										// setTimeout(function(){
 											elm
 												.transition().duration(1000)
 												.attr('transform', function(d) { return 'translate(0,0)';})
-										}, 100)
+										// }, 100)
 									}
 								})
 							})
