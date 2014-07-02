@@ -19,16 +19,19 @@ module.exports = function (sql, conn, callback) {
 			
 				//populate the IP nodes
 				if(node.indexOf(data.lan_ip) === -1) {//this check is only kinda necessary...
+					var stealthGroups = data.stealth_groups.split(", ");
+					//group of the IP determines the colour of the node, and is dependent on how may stealth groups it belongs to
+					console.log(data.lan_ip + ' group ' +stealthGroups.length);
 					node.push({
 						name: data.lan_ip,
-						group: 2,
+						group: stealthGroups.length,
 						xVal: xVal + 10,
 						width: 0.25
 					});
 					var current_ip_index = count;
 					count ++;
 					//split the stealth groups up into an array
-					var stealthGroups = data.stealth_groups.split(", ");
+					
 					//add the stealth groups as level 1 nodes if they are not added already
 					stealthGroups.forEach(function(d){
 						var alreadyInserted = false;
@@ -39,9 +42,10 @@ module.exports = function (sql, conn, callback) {
 						});
 
 						if(!alreadyInserted){
+							//add stealth group nodes as group 0 to differentiate from any possible IP nodes
 							node.push({
 								name: d,
-								group: 1,
+								group: 0,
 								xVal: xVal,
 								width: 0.75
 							});

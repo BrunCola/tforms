@@ -1252,8 +1252,8 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 		link: function ($scope, element, attrs) {
 			$scope.$on('stealthForceChart', function (event, data, params) {
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
-					var width = 1000,
-						height = params["height"];
+					var width = 1400,
+						height = 1100;//params["height"];
 					var tCount = [];
 					data.links.forEach(function(d) {
 						tCount.push(d.value);
@@ -1272,8 +1272,8 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 
 						"paleryellow": "#FCF4DC",
 						"paleyellow": "#EAE3CB",
-						"yellow": "#A57706",
-						"orange": "#BD3613",
+						"yellow": "#E9D805",
+						"orange": "#FFA500",
 						"red": "#D11C24",
 						"pink": "#C61C6F",
 						"purple": "#595AB7",
@@ -1288,14 +1288,18 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 						return size;
 					}
 					var color = function(group) {
-						if (group === 1) {
+						if (group === 0) { //COI group node
 							return palette.pink
-						} else if (group === 2) {
-							return palette.lightgray
-						} else if (group === 3) {
+						} else if (group === 1) { //IP node with 1 COI group
+							return palette.blue
+						} else if (group === 2) { //IP node with 2 COI groups
+							return palette.gray
+						} else if (group === 3) { //etc...
+							return palette.yellow
+						} else if (group === 4) {
 							return palette.orange
 						} else {
-
+							return palette.red
 						}
 					}
 					function logslider(x) {
@@ -1325,9 +1329,9 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 					var force = d3.layout.force()
 						.nodes(data.nodes)
 						.links(data.links)
-						.gravity(0.1)
+						.gravity(0.05)
 						.linkDistance(width/6)
-						.charge(-50)
+						.charge(-2000)
 						.size([width-50, height]);
 
 					var link = vis.selectAll(".link")
@@ -1407,7 +1411,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 
 					//TEXT
 					node.append("text")
-						.text(function(d, i) { return d.name+'('+count(d.width)+')'; })
+						.text(function(d, i) { return d.name })
 						.attr("x",    function(d, i) { return circleWidth + 5; })
 						.attr("y",            function(d, i) { if (i>0) { return circleWidth + 0 }    else { return 8 } })
 						// .attr("font-family",  "Bree Serif")
