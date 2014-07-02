@@ -23,6 +23,7 @@ module.exports = function(pool) {
 						'sum(`count`) AS `count`, '+
 						'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 						'`lan_zone`, ' +
+						'`machine`, '+
 						'`lan_ip`, ' +
 						'sum(`ioc_count`) AS `ioc_count` ' +
 					'FROM ' + 
@@ -46,6 +47,7 @@ module.exports = function(pool) {
 					},
 					{ title: 'Connections', select: 'count' },
 					{ title: 'Zone', select: 'lan_zone' },
+					{ title: 'Machine Name', select: 'machine' },
 					{ title: 'Local IP', select: 'lan_ip' },
 					{ title: 'IOC Count', select: 'ioc_count' }
 				],
