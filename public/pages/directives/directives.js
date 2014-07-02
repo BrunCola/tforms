@@ -1348,38 +1348,28 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 
 					//MOUSEOVER
 					.on("mouseover", function(d,i) {
-						if (i>0) {
-							//CIRCLE
-							d3.select(this).selectAll("circle")
-								.transition()
-								.duration(250)
-								.style("cursor", "none")
-								.attr("r", function (d) {return logslider(d["width"])+4; })
-								.attr("fill",function(d){ return color(d.group); });
-
-							//TEXT
-							d3.select(this).select("text")
-								.transition()
-								.style("cursor", "none")
-								.duration(250)
-								.style("cursor", "none")
-								.attr("font-size","1.5em")
-								.attr("x", 15 )
-								.attr("y", 5 )
-						} else {
 						//CIRCLE
-							d3.select(this).selectAll("circle")
-								.style("cursor", "none")
+						d3.select(this).selectAll("circle")
+							.transition()
+							.duration(250)
+							.style("cursor", "none")
+							.attr("r", function (d) {return logslider(d["width"])+4; })
+							.attr("fill",function(d){ return color(d.group); });
 
-							//TEXT
-							d3.select(this).select("text")
-								.style("cursor", "none")
-						}
+						//TEXT
+						d3.select(this).select("text")
+							.transition()
+							.style("cursor", "none")
+							.duration(250)
+							.style("cursor", "none")
+							.attr("font-size","1.5em")
+							.attr("x", 15 )
+							.attr("y", 5 )
+						
 					})
 
 					//MOUSEOUT
 					.on("mouseout", function(d,i) {
-						if (i>0) {
 						//CIRCLE
 						d3.select(this).selectAll("circle")
 							.transition()
@@ -1394,7 +1384,6 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 							.attr("font-size","1em")
 							.attr("x", 8 )
 							.attr("y", 4 )
-						}
 					})
 
 					.call(force.drag);
@@ -1405,7 +1394,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 						.attr("cx", function(d) { return d.x; })
 						.attr("cy", function(d) { return d.y; })
 						.attr("r", function (d) {return logslider(d["width"]); })
-						.attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.gray } } )
+						.attr("fill", function(d, i) { return  color(d.group); })
 						.style("stroke-width", "1.5px")
 						.style("stroke", "#fff")
 
@@ -1413,11 +1402,11 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 					node.append("text")
 						.text(function(d, i) { return d.name })
 						.attr("x",    function(d, i) { return circleWidth + 5; })
-						.attr("y",            function(d, i) { if (i>0) { return circleWidth + 0 }    else { return 8 } })
+						.attr("y",            function(d, i) { return circleWidth + 0 })
 						// .attr("font-family",  "Bree Serif")
 						// .attr("fill",         function(d, i) {  return  palette.paleryellow;  })
 						.attr("font-size",    function(d, i) {  return  "1em"; })
-						.attr("text-anchor",  function(d, i) { if (i>0) { return  "beginning"; }      else { return "end" } })
+						.attr("text-anchor",  function(d, i) { return  "beginning"; })  
 
 					force.on("tick", function(e) {
 						node.attr("transform", function(d, i) {

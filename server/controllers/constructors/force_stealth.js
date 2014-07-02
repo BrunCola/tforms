@@ -8,7 +8,6 @@ module.exports = function (sql, conn, callback) {
 	var count = 0;
 	var ip_nodes = [];
 	var group_nodes = [];
-	var xVal = 50;
 
 	conn.pool.getConnection(function(err, connection) {
 		connection.changeUser({database : conn.database}, function(err) {
@@ -25,7 +24,6 @@ module.exports = function (sql, conn, callback) {
 					node.push({
 						name: data.lan_ip,
 						group: stealthGroups.length,
-						xVal: xVal + 10,
 						width: 0.25
 					});
 					var current_ip_index = count;
@@ -46,7 +44,6 @@ module.exports = function (sql, conn, callback) {
 							node.push({
 								name: d,
 								group: 0,
-								xVal: xVal,
 								width: 0.75
 							});
 							group_nodes.push({
