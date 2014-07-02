@@ -15,9 +15,10 @@ angular.module('mean.system').directive('iocDesc', function() {
 	return {
 		link: function($scope, element, attrs) {
 			$scope.$on('iocDesc', function (event, description) {
+				console.log(description)
 				$(element).html('... <a href="javascript:void(0);"><strong ng-click="open">Read More</strong></a>');
 				$(element).on('click', function(){
-					$scope.open();
+					$scope.description(description);
 				})
 			});
 		}
@@ -465,7 +466,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 							bDeferRender = true;
 							sDom = '<"clear">T<"clear">lCr<"table_overflow"t>ip';
 							notReport = true;
-							stateSave = true;
+							stateSave = false;
 						} else {
 							iDisplayLength = 99999;
 							bDeferRender = true;
