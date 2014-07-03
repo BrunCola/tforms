@@ -1179,7 +1179,7 @@ angular.module('mean.pages').config(['$stateProvider',
 				})		
 					//LOCAL COI REMOTE DRILL
 					.state('local_COI_remote_drill', {
-						url: '/local_COI_remote_drill?start&end&lan_ip',
+						url: '/local_COI_remote_drill?start&end&ip',
 						templateUrl: 'public/pages/views/stealth/local_COI_remote_drill.html',
 						resolve: {
 							loggedin: checkLoggedin
@@ -1187,7 +1187,7 @@ angular.module('mean.pages').config(['$stateProvider',
 						data: {
 							title: 'Local to Remote Traffic through Stealth',
 							subtitleElm: {
-								'Local IP': 'lan_ip'
+								'Local IP': 'ip'
 							},
 							daterange: true
 						}
