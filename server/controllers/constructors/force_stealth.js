@@ -24,7 +24,8 @@ module.exports = function (sql, conn, callback) {
 					node.push({
 						name: data.lan_ip,
 						group: stealthGroups.length,
-						width: 0.25
+						width: 0.25,
+						gateway: data.gateway
 					});
 					var current_ip_index = count;
 					count ++;
