@@ -22,19 +22,16 @@ module.exports = function(pool) {
 				var table1 = {
 					query: 'SELECT '+
 								'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-								'stealth_ips.lan_ip, '+
-								'stealth_ips.stealth, '+
-								'stealth_ips.stealth_groups, '+
-								'stealth_ips.user '+
+								'`ip`, '+
+								'sum(`in_packets`) AS `in_packets`, '+
+								'sum(`out_packets`) AS `out_packets`, '+
+								'sum(`in_bytes`) AS `in_bytes`, '+
+								'sum(`out_bytes`) AS `out_bytes` '+
 							'FROM '+
-								'`stealth_ips` '+
-							'LEFT JOIN `conn` '+
-							'ON ' +
-								'conn.lan_ip = stealth_ips.lan_ip ' +
+								'`stealth_user` '+
 							'WHERE '+
 								'`time` BETWEEN ? AND ? '+
-								'AND stealth_ips.stealth > 0 '+
-							'GROUP BY stealth_ips.lan_ip',
+							'GROUP BY `ip`',
 					insert: [start, end],
 					params: [
 						{
@@ -43,19 +40,20 @@ module.exports = function(pool) {
 							link: {
 								type: 'local_COI_remote_drill',
 								// val: the pre-evaluated values from the query above
-								val: ['lan_ip'],
+								val: ['ip'],
 								crumb: false
 							}
 						},
-						{ title: 'Stealth', select: 'stealth' },
-						{ title: 'COI Groups', select: 'stealth_groups' },
-						{ title: 'User', select: 'user' },
-						{ title: 'Local IP', select: 'lan_ip' }
+						{ title: 'IP', select: 'ip' },
+						{ title: 'MB to Remote', select: 'in_bytes' },
+						{ title: 'MB from Remote', select: 'out_bytes' },
+						{ title: 'Packets to Remote', select: 'in_packets' },
+						{ title: 'Packets from Remote', select: 'out_packets' }
 					],
 					settings: {
 						sort: [[0, 'desc']],
 						div: 'table',
-						title: 'Stealth'
+						title: 'Stealth IPs'
 					}
 				}
 				async.parallel([
