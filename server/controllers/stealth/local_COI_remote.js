@@ -17,6 +17,7 @@ module.exports = function(pool) {
 				start = req.query.start;
 				end = req.query.end;
 			}
+			var crossfilter;
 			if (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1) {
 				var tables = [];
 				var info = [];
@@ -93,7 +94,8 @@ module.exports = function(pool) {
 					if (err) throw console.log(err);
 					var results = {
 						info: info,
-						tables: tables
+						tables: tables,
+						crossfilter: crossfilter
 					};
 					res.json(results);
 				});

@@ -15,7 +15,6 @@ module.exports = function (sql, conn, callback) {
 		});
 		connection.query(sql.query)
 			.on('result', function(data){
-			
 				//populate the IP nodes
 				if(node.indexOf(data.lan_ip) === -1) {//this check is only kinda necessary...
 					var stealthGroups = data.stealth_groups.split(", ");
@@ -30,7 +29,6 @@ module.exports = function (sql, conn, callback) {
 					var current_ip_index = count;
 					count ++;
 					//split the stealth groups up into an array
-					
 					//add the stealth groups as level 1 nodes if they are not added already
 					stealthGroups.forEach(function(d){
 						var alreadyInserted = false;
@@ -72,10 +70,7 @@ module.exports = function (sql, conn, callback) {
 						});
 
 					});
-
-					
 				}
-				
 			})
 			.on('end', function(){
 				connection.release();

@@ -2,5 +2,36 @@
 <div data-ng-controller="localCoiRemoteDrillController">
 	<section id="loading-error" loading-error></section>
 	<section id="loading-spinner" loading-spinner></section>
-	<p id="sankey" make-sankey></p>
+	<script type="text/ng-template" id="tableModal.html">
+      <div class="modal-header">
+        <h3>{{data.class.toUpperCase()}}</h3>
+      </div>
+      	<div class="modal-body">
+        	<div id="mTable"></div>
+        </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">Close</button>
+      </div>
+    </script>
+	<div class="row-fluid">
+		<!-- <div class="span4"> -->
+			<div class="span12">
+				<div style="background-color:#FFF;" class="box" id="box">
+					<div class="box-content">
+						<div id="count"></div>
+						<div id='grouping'></div>
+						<div id="fishchart" stealth-fish-graph></div>
+					</div>
+				</div>
+			</div>
+		<!-- </div> -->
+	</div>
+	<br />
+	<div class="row-fluid">
+		<div class="span12">
+			<div style="background-color:#FFF;" class="box" id="box">
+				<p id="sankey" make-sankey></p>
+			</div>
+		</div>
+	</div>
 </div>

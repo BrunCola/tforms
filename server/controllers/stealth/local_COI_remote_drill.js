@@ -39,11 +39,10 @@ module.exports = function(pool) {
 			if (req.query.group) {
 				pointGroup = req.query.group;
 			} else {
-				pointGroup = 1;
+				pointGroup = 60;
 			}
 			if (req.query.ip && (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1)) {
 				var sankeyData;
-				var crossfilter = [];
 				var info = [];
 				var sankey1 = {
 					query: 'SELECT '+
@@ -456,14 +455,14 @@ module.exports = function(pool) {
 					if (err) throw console.log(err)
 
 					res.json({
-								sankey: sankeyData,
-								info: info,
-								// result: result,
-								// maxConn: largestGroup,
-								// maxIOC: largestIOC,
-								// start: start,
-								// end: end
-							});
+						sankey: sankeyData,
+						info: info,
+						result: result,
+						maxConn: largestGroup,
+						maxIOC: largestIOC,
+						start: start,
+						end: end
+					});
 				});
 			} else {
 				res.redirect('/');
