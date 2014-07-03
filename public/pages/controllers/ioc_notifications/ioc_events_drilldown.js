@@ -45,6 +45,31 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 			$scope.data = data;
 		};
 
+		$scope.description = function (d) {
+			$scope.mData = d;
+			// $scope.$broadcast('moodal', d);
+			$scope.modalInstance = $modal.open({
+				templateUrl: 'descModal.html',
+				controller: descInstanceCtrl,
+				keyboard: true,
+				resolve: {
+					data: function() {
+						return $scope.mData;
+					},
+					ioc: function() {
+						return $location.$$search.ioc;
+					}
+				}
+			});
+		};
+		var descInstanceCtrl = function ($scope, $modalInstance, data, ioc) {
+			$scope.ok = function () {
+				$modalInstance.close();
+			};
+			$scope.data = data;
+			$scope.iocc = ioc;
+		};
+
 		if (data.tree.childCount >= 35) {
 			var divHeight = data.tree.childCount*12;
 		} else {

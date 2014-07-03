@@ -14,7 +14,7 @@ module.exports = function (sql, conn, lanIP, callback) {
 		connection.changeUser({database : conn.database}, function(err) {
 			if (err) throw err;
 		});
-		connection.query(sql.query)
+		connection.query(sql.query, sql.insert)
 			.on('result', function(data){
 				if (data.remote_ip.match(/(^192\.168|^10|^172\.16)\.(\d+)/g) === true) {
 					node.push({

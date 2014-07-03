@@ -19,7 +19,6 @@ module.exports = function(pool) {
 			if (req.query.host) {
 				//var results = [];
 				var tables = [];
-				var crossfilter = [];
 				var info = [];
 
 				var table1 = {
@@ -28,6 +27,8 @@ module.exports = function(pool) {
 							'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 							'`lan_zone`, ' +
 							'http_meta.lan_ip, ' +
+							'`machine`, '+
+							'`lan_ip`, ' +
 							'`host`, ' +
 							'sum(`ioc_count`) AS `ioc_count`, ' +
 							'stealth_ips.stealth, '+
@@ -60,6 +61,7 @@ module.exports = function(pool) {
 						{ title: 'User', select: 'user' },
 						{ title: 'Connections', select: 'count' },
 						{ title: 'Zone', select: 'lan_zone' },
+						{ title: 'Machine Name', select: 'machine' },
 						{ title: 'Local IP', select: 'lan_ip' },
 						{ title: 'Domain', select: 'host' },
 						{ title: 'IOC Count', select: 'ioc_count' }

@@ -99,7 +99,9 @@ module.exports = function(pool) {
 				var crossfilterQ = {
 					query: 'SELECT '+
 							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+ // Last Seen
-							'(sum(in_bytes + out_bytes) / 1048576) AS count '+
+							'(sum(in_bytes + out_bytes) / 1048576) AS count, '+
+							'(sum(`in_bytes`) / 1048576) AS in_bytes, '+
+							'(sum(`out_bytes`) / 1048576) AS out_bytes '+
 						'FROM `conn_l7_meta` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+

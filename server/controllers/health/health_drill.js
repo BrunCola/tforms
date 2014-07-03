@@ -21,7 +21,6 @@ module.exports = function(pool) {
 			if ((req.query.client, req.query.zone) && (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1)) {
 				//var results = [];
 				var tables = [];
-				var crossfilter = [];
 				var info = [];
 
 				var table1 = {

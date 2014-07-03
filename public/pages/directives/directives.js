@@ -15,9 +15,10 @@ angular.module('mean.system').directive('iocDesc', function() {
 	return {
 		link: function($scope, element, attrs) {
 			$scope.$on('iocDesc', function (event, description) {
+				console.log(description)
 				$(element).html('... <a href="javascript:void(0);"><strong ng-click="open">Read More</strong></a>');
 				$(element).on('click', function(){
-					$scope.open();
+					$scope.description(description);
 				})
 			});
 		}
@@ -465,7 +466,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 							bDeferRender = true;
 							sDom = '<"clear">T<"clear">lCr<"table_overflow"t>ip';
 							notReport = true;
-							stateSave = true;
+							stateSave = false;
 						} else {
 							iDisplayLength = 99999;
 							bDeferRender = true;
@@ -552,7 +553,10 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 														obj.end = $location.$$search.end;
 													}
 													for (var l in $scope.e[c].link.val) {
-														obj[$scope.e[c].link.val[l]] = aData[$scope.e[c].link.val[l]];
+														if (aData[$scope.e[c].link.val[l]] !== null) {
+															var newVar = aData[$scope.e[c].link.val[l]].toString();
+															obj[$scope.e[c].link.val[l]] = newVar.replace("'", "&#39;");
+														}
 													}
 													var links = JSON.stringify({
 														type: $scope.e[c].link.type,
@@ -650,7 +654,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
 							if (timers[uniqueId]) {
 								clearTimeout (timers[uniqueId]);
 							}
-						timers[uniqueId] = setTimeout(callback, ms);
+							timers[uniqueId] = setTimeout(callback, ms);
 						};
 					})();
 					var filter, height;
@@ -660,6 +664,26 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
 						return $('#barchart').parent().width();
 					}
 					switch (chartType){
+						case 'bandwidth':
+							var setNewSize = function(width) {
+								$scope.barChart
+									.width(width)
+									.height(width/3.5)
+									.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+								// $('#barchart').parent().height(width/3.5);
+								d3.select('#barchart svg').attr('width', width).attr('height', width/3.5);
+								$scope.barChart.redraw();
+							}
+							$scope.barChart
+								.group(group, "MB To Remote")
+								.valueAccessor(function(d) {
+									return d.value.in_bytes;
+								})
+								.stack(group, "MB From Remote", function(d){return d.value.out_bytes;})
+								.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
+								.colors(["#112F41","#068587"]);
+							filter = true;
+							break;
 						case 'severity':
 							var setNewSize = function(width) {
 								$scope.barChart
@@ -763,7 +787,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
 						//.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
 						.title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
 						.renderTitle(true); // (optional) whether chart should render titles, :default = fal
-						$scope.barChart.render();
+					$scope.barChart.render();
 						$scope.$broadcast('spinnerHide');
 						$(window).resize(function () {
 							waitForFinalEvent(function(){

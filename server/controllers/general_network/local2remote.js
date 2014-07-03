@@ -104,7 +104,9 @@ module.exports = function(pool) {
 					query: 'SELECT '+
 							'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time, '+ // Last Seen
 							'(sum(`in_bytes` + `out_bytes`) / 1048576) AS count,'+
-							'`remote_country` '+
+							'`remote_country`, '+
+							'(sum(`in_bytes`) / 1048576) AS in_bytes, '+
+							'(sum(`out_bytes`) / 1048576) AS out_bytes '+
 						'FROM '+
 							'`conn_meta` '+
 						'WHERE '+

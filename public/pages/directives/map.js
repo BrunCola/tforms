@@ -32,6 +32,23 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 			var g = svg.append("g");
 
 			function populateTable(array, dClass) {
+				function sortArrOfObjectsByParam(arrToSort, strObjParamToSortBy, sortAscending) {
+				if(sortAscending == undefined) sortAscending = true;  // default to true
+					if(sortAscending) {
+						arrToSort.sort(function (a, b) {
+							return a[strObjParamToSortBy] > b[strObjParamToSortBy];
+						});
+					}
+					else {
+						arrToSort.sort(function (a, b) {
+							return a[strObjParamToSortBy] < b[strObjParamToSortBy];
+						});
+					}
+				}
+				sortArrOfObjectsByParam(array, "count", false);  // sort tables by count
+				if (array.length > 5) {
+					array.splice(4, array.length-4);
+				}
 				var thisDiv = d3.select('.'+dClass).select('tbody');
 				if (array.length > 0) {
 					thisDiv.selectAll('tr').remove();
