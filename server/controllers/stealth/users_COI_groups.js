@@ -24,7 +24,7 @@ module.exports = function(pool) {
 								'stealth_ips.lan_ip, '+
 								'stealth_ips.stealth, '+
 								'stealth_ips.stealth_groups, '+
-								'stealth_ips.user '+
+								'stealth_ips.user, '+
 								'stealth_ips.gateway '+
 							'FROM '+
 								'`stealth_ips` '+

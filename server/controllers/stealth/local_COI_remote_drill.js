@@ -50,25 +50,25 @@ module.exports = function(pool) {
 							'S.stealth_groups AS stealth_groups_remote, '+
 							'count(*) AS `count`, '+
 							'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-							'conn.remote_ip, '+
+							'stealth_conn.dst_ip, '+
 							'stealth_ips.lan_ip, '+
 							'stealth_ips.stealth_groups, '+
 							'stealth_ips.user '+
 						'FROM '+
 							'`stealth_ips` '+
-						'LEFT JOIN `conn` '+
+						'LEFT JOIN `stealth_conn` '+
 						'ON ' +
-							'conn.lan_ip = stealth_ips.lan_ip '+
+							'stealth_conn.src_ip = stealth_ips.lan_ip '+
 						'INNER JOIN ('+
 							'SELECT `lan_ip`, `stealth`, `stealth_groups` FROM `stealth_ips` WHERE `stealth` > 0'+
 						') S ON '+
-							'conn.remote_ip = S.lan_ip '+
+							'stealth_conn.dst_ip = S.lan_ip '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND stealth_ips.stealth > 0 '+
 							'AND stealth_ips.lan_ip = ? '+
 						'GROUP BY stealth_ips.lan_ip, '+
-						'conn.remote_ip '+
+						'stealth_conn.dst_ip '+
 						'ORDER BY `count` DESC '+
 						'LIMIT 10',
 					insert: [start, end, req.query.ip]
@@ -444,25 +444,25 @@ module.exports = function(pool) {
 							handleReturn(data, maxConn, maxIOC, callback);
 						});
 					},
-					// //SANKEY
-					// function(callback) {
-					// 	new sankey(sankey1, {database: database, pool: pool}, function(err,data){
-					// 		console.log(sankey1.query);
-					// 		sankeyData = data;
-					// 		callback();
-					// 	});
-					// }
+					//SANKEY
+					function(callback) {
+						new sankey(sankey1, {database: database, pool: pool}, function(err,data){
+							console.log(sankey1.query);
+							sankeyData = data;
+							callback();
+						});
+					}
 				], function(err) { //This function gets called after the two tasks have called their "task callbacks"
 					if (err) throw console.log(err)
 
 					res.json({
-								//sankey: sankeyData,
+								sankey: sankeyData,
 								info: info,
-								result: result,
-								maxConn: largestGroup,
-								maxIOC: largestIOC,
-								start: start,
-								end: end
+								// result: result,
+								// maxConn: largestGroup,
+								// maxIOC: largestIOC,
+								// start: start,
+								// end: end
 							});
 				});
 			} else {

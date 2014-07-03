@@ -40,15 +40,15 @@ module.exports = function (params, conn, callback) {
 					});
 				}
 
-				//populate the nodes for remote IPs, and all third-level links (between stealth groups and remote IPs)
-				if(src.indexOf(data.remote_ip) === -1) {
-					src.push(data.remote_ip);
+				//populate the nodes for dst IPs, and all third-level links (between stealth groups and dst IPs)
+				if(src.indexOf(data.dst_ip) === -1) {
+					src.push(data.dst_ip);
 					totalCount += data.count;
 					stealthGroups.forEach(function(d){
 						if(remoteStealthGroups.indexOf(d) !== -1){
 							links.push({
 								"source":d,
-								"target":data.remote_ip,
+								"target":data.dst_ip,
 								"value":data.count
 							});
 							//increment the value of the connections between the local IP and it's stealth groups

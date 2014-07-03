@@ -27,8 +27,8 @@ module.exports = function(pool) {
 								'`ip`, '+
 								'sum(`in_packets`) AS `in_packets`, '+
 								'sum(`out_packets`) AS `out_packets`, '+
-								'sum(`in_bytes`) AS `in_bytes`, '+
-								'sum(`out_bytes`) AS `out_bytes` '+
+								'(sum(`in_bytes`) / 1048576) AS `in_bytes`, '+
+								'(sum(`out_bytes`) / 1048576) AS `out_bytes` '+
 							'FROM '+
 								'`stealth_user` '+
 							'WHERE '+
