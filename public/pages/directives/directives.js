@@ -1277,7 +1277,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 			$scope.$on('stealthForceChart', function (event, data, params) {
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
 					var width = $('#stealthforcechart').width();
-					var height = width/2;
+					var height = width/1.5;
 					var tCount = [];
 					data.links.forEach(function(d) {
 						tCount.push(d.value);
@@ -1353,8 +1353,8 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 					var force = d3.layout.force()
 						.nodes(data.nodes)
 						.links(data.links)
-						.gravity(0.10)
-						.linkDistance(width/10)
+						.gravity(0.20)
+						.linkDistance(20)
 						.charge(-2000)
 						.size([width-50, height]);
 
