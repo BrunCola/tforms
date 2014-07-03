@@ -45,7 +45,8 @@ module.exports = function (sql, conn, callback) {
 							node.push({
 								name: d,
 								group: 0,
-								width: 0.75
+								width: 0.75,
+								gateway: 0
 							});
 							group_nodes.push({
 								index: count,
