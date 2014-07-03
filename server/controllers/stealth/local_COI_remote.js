@@ -1,6 +1,7 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
+query = require('../constructors/query'),
 config = require('../../config/config'),
 async = require('async');
 
@@ -19,6 +20,7 @@ module.exports = function(pool) {
 			if (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1) {
 				var tables = [];
 				var info = [];
+				var crossfilter = [];
 				var table1 = {
 					query: 'SELECT '+
 								'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen

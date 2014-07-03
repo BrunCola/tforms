@@ -339,6 +339,64 @@ module.exports = function(pool) {
 					grouping: pointGroup,
 					sClass: 'endpoint'
 				}
+				var endpoint_logon = {
+					query: 'SELECT '+
+							'`time`,'+
+							'`src_ip`,'+
+							'`dst_ip`,'+
+							'`src_user`,'+
+							'`alert_source`,'+
+							'`program_source`,'+
+							'`alert_info` '+
+						'FROM '+
+							'`ossec` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `src_ip`= ? '+
+							'AND `alert_info` LIKE "%logon%" ',
+					insert: [start, end, req.query.ip],
+					columns: [
+						{"sTitle": "Time", "mData": "time"},
+						{"sTitle": "User", "mData": "src_user"},
+						{"sTitle": "Source IP", "mData": "src_ip"},
+						{"sTitle": "Alert Source", "mData": "alert_source"},
+						{"sTitle": "Program Source", "mData": "program_source"},
+						{"sTitle": "Alert Info", "mData": "alert_info"},
+					],
+					start: start,
+					end: end,
+					grouping: pointGroup,
+					sClass: 'endpoint'
+				}
+				var endpoint_logoff = {
+					query: 'SELECT '+
+							'`time`,'+
+							'`src_ip`,'+
+							'`dst_ip`,'+
+							'`src_user`,'+
+							'`alert_source`,'+
+							'`program_source`,'+
+							'`alert_info` '+
+						'FROM '+
+							'`ossec` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `src_ip`= ? '+
+							'AND `alert_info` LIKE "%logoff%" ',
+					insert: [start, end, req.query.ip],
+					columns: [
+						{"sTitle": "Time", "mData": "time"},
+						{"sTitle": "User", "mData": "src_user"},
+						{"sTitle": "Source IP", "mData": "src_ip"},
+						{"sTitle": "Alert Source", "mData": "alert_source"},
+						{"sTitle": "Program Source", "mData": "program_source"},
+						{"sTitle": "Alert Info", "mData": "alert_info"},
+					],
+					start: start,
+					end: end,
+					grouping: pointGroup,
+					sClass: 'endpoint'
+				}
 				async.parallel([
 					// FISHEYE	
 					function(callback) { // stealth_conn
@@ -373,6 +431,16 @@ module.exports = function(pool) {
 					},
 					function(callback) { // endpoint
 						new fisheye(endpoint, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
+							handleReturn(data, maxConn, maxIOC, callback);
+						});
+					},
+					function(callback) { // endpoint_logon
+						new fisheye(endpoint_logon, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
+							handleReturn(data, maxConn, maxIOC, callback);
+						});
+					},
+					function(callback) { // endpoint_logoff
+						new fisheye(endpoint_logoff, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
 							handleReturn(data, maxConn, maxIOC, callback);
 						});
 					},
