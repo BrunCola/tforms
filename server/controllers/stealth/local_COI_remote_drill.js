@@ -39,7 +39,7 @@ module.exports = function(pool) {
 			if (req.query.group) {
 				pointGroup = req.query.group;
 			} else {
-				pointGroup = 1;
+				pointGroup = 60;
 			}
 			if (req.query.ip && (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1)) {
 				var sankeyData;
@@ -130,7 +130,7 @@ module.exports = function(pool) {
 					start: start,
 					end: end,
 					grouping: pointGroup,
-					sClass: 'stealth_conn'
+					sClass: 'stealth'
 				}
 				var conn_ioc = {
 					query: 'SELECT '+
