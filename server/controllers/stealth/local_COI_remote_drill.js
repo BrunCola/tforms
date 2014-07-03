@@ -388,23 +388,6 @@ module.exports = function(pool) {
 					grouping: pointGroup,
 					sClass: 'endpoint'
 				}
-				var crossfilterQ = {
-					query: 'SELECT '+
-							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-							'count(*) as count,'+
-							'(sum(`in_bytes`) / 1048576) AS in_bytes, '+
-							'(sum(`out_bytes`) / 1048576) AS out_bytes '+
-						'FROM '+
-							'`stealth_conn` '+
-						'WHERE '+
-							'`time` BETWEEN ? AND ? '+
-							'AND `src_ip` = ? '+
-						'GROUP BY '+
-							'month(from_unixtime(`time`)),'+
-							'day(from_unixtime(`time`)),'+
-							'hour(from_unixtime(`time`))',
-					insert: [start, end, req.query.ip]
-				}
 				async.parallel([
 					// FISHEYE	
 					function(callback) { // stealth_conn
@@ -447,13 +430,6 @@ module.exports = function(pool) {
 							handleReturn(data, maxConn, maxIOC, callback);
 						});
 					},
-					// Crossfilter function
-					function(callback) {
-						new query(crossfilterQ, {database: database, pool: pool}, function(err,data){
-							crossfilter = data;
-							callback();
-						});
-					}
 					// //SANKEY
 					// function(callback) {
 					// 	new sankey(sankey1, {database: database, pool: pool}, function(err,data){
