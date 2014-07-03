@@ -62,6 +62,8 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 						return "DNS IOC";
 					case 'endpoint':
 						return "Endpoint";
+					case 'stealth':
+						return "Stealth";
 					default: //endpoint events
 						return "IOC Hits";
 				}
@@ -90,6 +92,8 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 						return "#F3BD5D";
 					case 'endpoint':
 						return "#7E9E7B";
+					case 'stealth':
+						return "#0080CE";
 					default: //endpoint events
 						return "#D8464A";
 				}
@@ -332,6 +336,31 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 									.attr('transform', 'translate(-24,32)');
 							}
 							return;
+						case 'stealth':
+							element.append('circle')
+								.attr('transform', 'translate(-18,-18)')
+								.attr('fill', '#0080CE')
+								.attr('cx', 18)
+								.attr('cy', 18)
+								.attr('r', 18);
+							element.append('svg:path')
+								.attr('transform', 'translate(-18,-18)')
+								.attr('fill', '#58595B')
+								.attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
+									'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
+									'C28.014,15.545,26.676,21.468,23.587,26.751z')
+							element.append('svg:path')
+								.attr('transform', 'translate(-18,-18)')
+								.attr('fill', '#0080CE')
+								.attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
+									'C11.076,16.238,11.938,20.26,13.699,23.661z')
+							if(dType === 'legend') {
+								element.append('text')
+									.text(title)
+									.attr('fill', '#7f7f7f')
+									.attr('transform', 'translate(-24,32)');
+							}
+							return;
 					}
 				}
 			}
@@ -390,6 +419,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 				/////// LEGEND ///////
 				//////////////////////
 				$scope.legendHolder = $scope.svg.append('g').attr('class', 'legend');
+				var pStealth = $scope.legendHolder.append('g');
 				var pIoc = $scope.legendHolder.append('g');
 				var pFile = $scope.legendHolder.append('g');
 				var pConn = $scope.legendHolder.append('g');
@@ -432,6 +462,11 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 						element: pSsl,
 						nickname: 'ssl',
 						title: titles('ssl')
+					},
+					{
+						element: pStealth,
+						nickname: 'stealth',
+						title: titles('stealth')
 					}
 				];
 				for (var i in legendPoints) {
