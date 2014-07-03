@@ -123,7 +123,7 @@ module.exports = function(pool) {
 							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection` '+
 						'FROM '+
-							'`conn` '+
+							'`conn_ioc` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`= ? ',
@@ -152,55 +152,6 @@ module.exports = function(pool) {
 					sClass: 'conn'
 				}
 
-				var conn_ioc = {
-					query: 'SELECT '+
-							'`time`, '+
-							'`ioc_count`,'+
-							'`lan_zone`,'+
-							'`machine`,'+
-							'`lan_ip`,'+
-							'`lan_port`,'+
-							'`remote_ip`,'+
-							'`remote_port`,'+
-							'`remote_country`,'+
-							'`remote_asn_name`,'+
-							'`in_bytes`,'+
-							'`out_bytes`,'+
-							'`l7_proto`,'+
-							'`ioc`,'+
-							'`ioc_severity`,'+
-							'`ioc_typeIndicator`,'+
-							'`ioc_typeInfection` '+
-						'FROM '+
-							'`conn_ioc` '+
-						'WHERE '+
-							'`time` BETWEEN ? AND ? '+
-							'AND `lan_ip`= ? ',
-					insert: [start, end, req.query.ip],
-					columns: [
-						{"sTitle": "Time", "mData": "time"},
-						{"sTitle": "Zone", "mData": "lan_zone"},
-						{"sTitle": "Machine", "mData": "machine"},
-						{"sTitle": "Local IP", "mData": "lan_ip"},
-						{"sTitle": "Local Port", "mData": "lan_port"},
-						{"sTitle": "Remote IP", "mData": "remote_ip"},
-						{"sTitle": "Remote Port", "mData": "remote_port"},
-						{"sTitle": "Remote Country", "mData": "remote_country"},
-						{"sTitle": "Remote ASN", "mData": "remote_asn_name"},
-						{"sTitle": "Application", "mData": "l7_proto"},
-						{"sTitle": "Bytes to Remote", "mData": "in_bytes"},
-						{"sTitle": "Bytes from Remote", "mData": "out_bytes"},
-						{"sTitle": "IOC", "mData": "ioc"},
-						{"sTitle": "IOC Severity", "mData": "ioc_severity"},
-						{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
-						{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"}
-					],
-					start: start,
-					end: end,
-					grouping: pointGroup,
-					sClass: 'conn_ioc'
-				}
-
 				var dns = {
 					query: 'SELECT '+
 							'`time`,'+
@@ -216,7 +167,7 @@ module.exports = function(pool) {
 							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection` '+
 						'FROM '+
-							'`dns` '+
+							'`dns_ioc` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`=?',
@@ -259,7 +210,7 @@ module.exports = function(pool) {
 							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection` '+
 						'FROM '+
-							'`http` '+
+							'`http_ioc` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`= ?',
@@ -297,7 +248,7 @@ module.exports = function(pool) {
 							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection` '+	
 						'FROM '+
-							'`ssl` '+
+							'`ssl_ioc` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`= ?',
@@ -336,7 +287,7 @@ module.exports = function(pool) {
 							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection` '+
 						'FROM '+
-							'`file` '+
+							'`file_ioc` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`= ?',
@@ -387,6 +338,64 @@ module.exports = function(pool) {
 					grouping: pointGroup,
 					sClass: 'endpoint'
 				}
+				var endpoint_logon = {
+					query: 'SELECT '+
+							'`time`,'+
+							'`src_ip`,'+
+							'`dst_ip`,'+
+							'`src_user`,'+
+							'`alert_source`,'+
+							'`program_source`,'+
+							'`alert_info` '+
+						'FROM '+
+							'`ossec` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `src_ip`= ? '+
+							'AND `alert_info` LIKE "%logon%" ',
+					insert: [start, end, req.query.ip],
+					columns: [
+						{"sTitle": "Time", "mData": "time"},
+						{"sTitle": "User", "mData": "src_user"},
+						{"sTitle": "Source IP", "mData": "src_ip"},
+						{"sTitle": "Alert Source", "mData": "alert_source"},
+						{"sTitle": "Program Source", "mData": "program_source"},
+						{"sTitle": "Alert Info", "mData": "alert_info"},
+					],
+					start: start,
+					end: end,
+					grouping: pointGroup,
+					sClass: 'endpoint'
+				}
+				var endpoint_logoff = {
+					query: 'SELECT '+
+							'`time`,'+
+							'`src_ip`,'+
+							'`dst_ip`,'+
+							'`src_user`,'+
+							'`alert_source`,'+
+							'`program_source`,'+
+							'`alert_info` '+
+						'FROM '+
+							'`ossec` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `src_ip`= ? '+
+							'AND `alert_info` LIKE "%logoff%" ',
+					insert: [start, end, req.query.ip],
+					columns: [
+						{"sTitle": "Time", "mData": "time"},
+						{"sTitle": "User", "mData": "src_user"},
+						{"sTitle": "Source IP", "mData": "src_ip"},
+						{"sTitle": "Alert Source", "mData": "alert_source"},
+						{"sTitle": "Program Source", "mData": "program_source"},
+						{"sTitle": "Alert Info", "mData": "alert_info"},
+					],
+					start: start,
+					end: end,
+					grouping: pointGroup,
+					sClass: 'endpoint'
+				}
 				async.parallel([
 					// FISHEYE	
 					function(callback) { // stealth_conn
@@ -396,11 +405,6 @@ module.exports = function(pool) {
 					},				
 					function(callback) { // conn
 						new fisheye(conn, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
-							handleReturn(data, maxConn, maxIOC, callback);
-						});
-					},
-					function(callback) { // conn_ioc
-						new fisheye(conn_ioc, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
 							handleReturn(data, maxConn, maxIOC, callback);
 						});
 					},
@@ -428,7 +432,17 @@ module.exports = function(pool) {
 						new fisheye(endpoint, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
 							handleReturn(data, maxConn, maxIOC, callback);
 						});
-					}
+					},
+					function(callback) { // endpoint_logon
+						new fisheye(endpoint_logon, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
+							handleReturn(data, maxConn, maxIOC, callback);
+						});
+					},
+					function(callback) { // endpoint_logoff
+						new fisheye(endpoint_logoff, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
+							handleReturn(data, maxConn, maxIOC, callback);
+						});
+					},
 					// //SANKEY
 					// function(callback) {
 					// 	new sankey(sankey1, {database: database, pool: pool}, function(err,data){
