@@ -18,7 +18,7 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
 			data.crossfilter.forEach(function(d) {
 				d.dd = dateFormat.parse(d.time);
 				d.hour = d3.time.hour(d.dd);
-				d.count = +d.count;§
+				d.count = +d.count;
 			});
 			$scope.crossfilterData = crossfilter(data.crossfilter);
 

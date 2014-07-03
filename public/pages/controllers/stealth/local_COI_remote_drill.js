@@ -55,7 +55,7 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 			var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
 
 			$scope.data = data;
-			// $scope.$broadcast('sankey', data.sankey, null);
+			$scope.$broadcast('sankey', data.sankey, null);
 			fishchart(data);
 
 			$scope.$broadcast('spinnerHide');

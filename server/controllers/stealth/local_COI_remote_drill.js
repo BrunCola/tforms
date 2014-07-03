@@ -43,7 +43,6 @@ module.exports = function(pool) {
 			}
 			if (req.query.ip && (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1)) {
 				var sankeyData;
-				var crossfilter = [];
 				var info = [];
 				var sankey1 = {
 					query: 'SELECT '+
@@ -388,23 +387,6 @@ module.exports = function(pool) {
 					grouping: pointGroup,
 					sClass: 'endpoint'
 				}
-				var crossfilterQ = {
-					query: 'SELECT '+
-							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-							'count(*) as count,'+
-							'(sum(`in_bytes`) / 1048576) AS in_bytes, '+
-							'(sum(`out_bytes`) / 1048576) AS out_bytes '+
-						'FROM '+
-							'`stealth_conn` '+
-						'WHERE '+
-							'`time` BETWEEN ? AND ? '+
-							'AND `src_ip` = ? '+
-						'GROUP BY '+
-							'month(from_unixtime(`time`)),'+
-							'day(from_unixtime(`time`)),'+
-							'hour(from_unixtime(`time`))',
-					insert: [start, end, req.query.ip]
-				}
 				async.parallel([
 					// FISHEYE	
 					function(callback) { // stealth_conn
@@ -446,13 +428,6 @@ module.exports = function(pool) {
 						new fisheye(endpoint, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
 							handleReturn(data, maxConn, maxIOC, callback);
 						});
-					},
-					// Crossfilter function
-					function(callback) {
-						new query(crossfilterQ, {database: database, pool: pool}, function(err,data){
-							crossfilter = data;
-							callback();
-						});
 					}
 					// //SANKEY
 					// function(callback) {
@@ -466,14 +441,14 @@ module.exports = function(pool) {
 					if (err) throw console.log(err)
 
 					res.json({
-								//sankey: sankeyData,
-								info: info,
-								result: result,
-								maxConn: largestGroup,
-								maxIOC: largestIOC,
-								start: start,
-								end: end
-							});
+						//sankey: sankeyData,
+						info: info,
+						result: result,
+						maxConn: largestGroup,
+						maxIOC: largestIOC,
+						start: start,
+						end: end
+					});
 				});
 			} else {
 				res.redirect('/');
