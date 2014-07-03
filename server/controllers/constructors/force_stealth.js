@@ -20,7 +20,7 @@ module.exports = function (sql, conn, callback) {
 				if(node.indexOf(data.lan_ip) === -1) {//this check is only kinda necessary...
 					var stealthGroups = data.stealth_groups.split(", ");
 					//group of the IP determines the colour of the node, and is dependent on how may stealth groups it belongs to
-					console.log(data.lan_ip + ' group ' +stealthGroups.length);
+					//console.log(data.lan_ip + ' group ' +stealthGroups.length);
 					node.push({
 						name: data.lan_ip,
 						group: stealthGroups.length,
