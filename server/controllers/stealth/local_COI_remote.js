@@ -1,6 +1,7 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
+query = require('../constructors/query'),
 config = require('../../config/config'),
 async = require('async');
 
@@ -16,6 +17,7 @@ module.exports = function(pool) {
 				start = req.query.start;
 				end = req.query.end;
 			}
+			var crossfilter;
 			if (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1) {
 				var tables = [];
 				var info = [];
@@ -56,6 +58,22 @@ module.exports = function(pool) {
 						title: 'Stealth IPs'
 					}
 				}
+				var crossfilterQ = {
+					query: 'SELECT '+
+						'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+						'(sum(in_bytes + out_bytes) / 1048576) AS count, '+
+						'(sum(`in_bytes`) / 1048576) AS in_bytes, '+
+						'(sum(`out_bytes`) / 1048576) AS out_bytes '+
+					'FROM '+
+						'`stealth_conn` '+
+					'WHERE '+
+						'`time` BETWEEN ? AND ? '+
+					'GROUP BY '+
+						'month(from_unixtime(time)),'+
+						'day(from_unixtime(time)),'+
+						'hour(from_unixtime(time))',
+					insert: [start, end, req.query.ip]
+				}
 				async.parallel([
 					// Table function(s)
 					function(callback) {
@@ -64,11 +82,19 @@ module.exports = function(pool) {
 							callback();
 						});
 					},
+					// Crossfilter function
+					function(callback) {
+						new query(crossfilterQ, {database: database, pool: pool}, function(err,data){
+							crossfilter = data;
+							callback();
+						});
+					}
 				], function(err) { //This function gets called after the two tasks have called their "task callbacks"
 					if (err) throw console.log(err);
 					var results = {
 						info: info,
-						tables: tables
+						tables: tables,
+						crossfilter: crossfilter
 					};
 					res.json(results);
 				});

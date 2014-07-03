@@ -11,7 +11,7 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 
 	function fishchart(data) {
 		var all = [];
-		$scope.$broadcast('buildFishChart', {
+		$scope.$broadcast('fishChartData', {
 			maxIOC: data.maxIOC,
 			yAxis: data.maxConn,
 			xAxis: [parseInt(data.start), parseInt(data.end)]
