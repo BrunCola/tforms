@@ -124,7 +124,7 @@ module.exports = function(pool) {
 							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection` '+
 						'FROM '+
-							'`conn` '+
+							'`conn_ioc` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`= ? ',
@@ -153,55 +153,6 @@ module.exports = function(pool) {
 					sClass: 'conn'
 				}
 
-				var conn_ioc = {
-					query: 'SELECT '+
-							'`time`, '+
-							'`ioc_count`,'+
-							'`lan_zone`,'+
-							'`machine`,'+
-							'`lan_ip`,'+
-							'`lan_port`,'+
-							'`remote_ip`,'+
-							'`remote_port`,'+
-							'`remote_country`,'+
-							'`remote_asn_name`,'+
-							'`in_bytes`,'+
-							'`out_bytes`,'+
-							'`l7_proto`,'+
-							'`ioc`,'+
-							'`ioc_severity`,'+
-							'`ioc_typeIndicator`,'+
-							'`ioc_typeInfection` '+
-						'FROM '+
-							'`conn_ioc` '+
-						'WHERE '+
-							'`time` BETWEEN ? AND ? '+
-							'AND `lan_ip`= ? ',
-					insert: [start, end, req.query.ip],
-					columns: [
-						{"sTitle": "Time", "mData": "time"},
-						{"sTitle": "Zone", "mData": "lan_zone"},
-						{"sTitle": "Machine", "mData": "machine"},
-						{"sTitle": "Local IP", "mData": "lan_ip"},
-						{"sTitle": "Local Port", "mData": "lan_port"},
-						{"sTitle": "Remote IP", "mData": "remote_ip"},
-						{"sTitle": "Remote Port", "mData": "remote_port"},
-						{"sTitle": "Remote Country", "mData": "remote_country"},
-						{"sTitle": "Remote ASN", "mData": "remote_asn_name"},
-						{"sTitle": "Application", "mData": "l7_proto"},
-						{"sTitle": "Bytes to Remote", "mData": "in_bytes"},
-						{"sTitle": "Bytes from Remote", "mData": "out_bytes"},
-						{"sTitle": "IOC", "mData": "ioc"},
-						{"sTitle": "IOC Severity", "mData": "ioc_severity"},
-						{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
-						{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"}
-					],
-					start: start,
-					end: end,
-					grouping: pointGroup,
-					sClass: 'conn_ioc'
-				}
-
 				var dns = {
 					query: 'SELECT '+
 							'`time`,'+
@@ -217,7 +168,7 @@ module.exports = function(pool) {
 							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection` '+
 						'FROM '+
-							'`dns` '+
+							'`dns_ioc` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`=?',
@@ -260,7 +211,7 @@ module.exports = function(pool) {
 							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection` '+
 						'FROM '+
-							'`http` '+
+							'`http_ioc` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`= ?',
@@ -298,7 +249,7 @@ module.exports = function(pool) {
 							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection` '+	
 						'FROM '+
-							'`ssl` '+
+							'`ssl_ioc` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`= ?',
@@ -337,7 +288,7 @@ module.exports = function(pool) {
 							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection` '+
 						'FROM '+
-							'`file` '+
+							'`file_ioc` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`= ?',
@@ -397,11 +348,6 @@ module.exports = function(pool) {
 					},				
 					function(callback) { // conn
 						new fisheye(conn, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
-							handleReturn(data, maxConn, maxIOC, callback);
-						});
-					},
-					function(callback) { // conn_ioc
-						new fisheye(conn_ioc, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
 							handleReturn(data, maxConn, maxIOC, callback);
 						});
 					},
