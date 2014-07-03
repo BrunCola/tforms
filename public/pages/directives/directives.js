@@ -1271,7 +1271,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
 	};
 }]);
 
-angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
+angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$rootScope', '$location', function ($timeout, $rootScope, $location) {
 	return {
 		link: function ($scope, element, attrs) {
 			$scope.$on('stealthForceChart', function (event, data, params) {
@@ -1440,6 +1440,17 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 							.style("stroke-width", "1.5px")
 							.style("stroke", "#fff")
 						}
+						elm.on('mouseover', function(d){
+							elm.style('cursor', 'pointer')
+						})
+						.on("click", function (d){
+							var link = {ip: d.name};
+							if ($location.$$search.start && $location.$$search.end) {
+								link.start = $location.$$search.start;
+								link.end = $location.$$search.end;
+							}
+							$scope.$apply($location.path('local_COI_remote_drill').search(link));
+						});
 					})
 
 					//TEXT
