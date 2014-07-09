@@ -362,7 +362,7 @@ angular.module('mean.pages').directive('fishGraph', ['$timeout', '$location', '$
 					return Math.exp(minv + scale*(position-minp));
 				}
 				$scope.zoomSlider = function(count) {
-					if (count < 1000){
+					if (count < 100){
 						return count*0.0000002*((data.xAxis[1]-data.xAxis[0]));
 					} else {
 						return 0.50;
