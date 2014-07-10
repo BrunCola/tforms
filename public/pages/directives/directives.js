@@ -455,6 +455,10 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 										}
 									},
 									'fnDrawCallback': function( oSettings ) {
+										// $('.paginate_button').on('click', function(){
+										// 	console.log('poo')
+										// 	$('html, body').animate({scrollTop:0}, 'slow');
+										// })
 									}
 								});
 							}
