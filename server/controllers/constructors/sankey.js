@@ -16,8 +16,8 @@ module.exports = function (params, conn, callback) {
 		connection.query(params.query, params.insert)
 			.on('result', function(data){
 				//split the stealth groups up into an array
-				var stealthGroups = data.stealth_groups.split(", ");
-				var remoteStealthGroups = data.stealth_groups_remote.split(", ");
+				var stealthGroups = data.stealth_COIs.split(", ");
+				var remoteStealthGroups = data.stealth_COIs_remote.split(", ");
 				//create the nodes for the stealth groups
 				//TODO expensive to check this for every row...technically only need to do it once, so consider optimizing
 				stealthGroups.forEach(function(d){

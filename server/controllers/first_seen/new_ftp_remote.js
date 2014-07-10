@@ -20,7 +20,7 @@ module.exports = function(pool) {
 			var info = [];
 			var table1 = {
 				query: 'SELECT '+
-						'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+						'date_format(from_unixtime(ftp_uniq_remote_ip.time), "%Y-%m-%d %H:%i:%s") AS time,'+
 						'`lan_zone`,'+
 						'`machine`,'+
 						'ftp_uniq_remote_ip.lan_ip,'+
@@ -32,21 +32,21 @@ module.exports = function(pool) {
 						'`remote_country`,'+
 						'`remote_cc`,'+
 						'ftp_uniq_remote_ip.user AS ftp_user, '+
-						'stealth_ips.stealth,'+
-						'stealth_ips.stealth_groups,'+
-						'stealth_ips.user '+
+						'endpoint_tracking.stealth,'+
+						'endpoint_tracking.stealth_COIs,'+
+						'endpoint_tracking.user '+
 					'FROM '+
 						'`ftp_uniq_remote_ip` '+
-					'LEFT JOIN `stealth_ips` '+
+					'LEFT JOIN `endpoint_tracking` '+
 					'ON ' +
-						'ftp_uniq_remote_ip.lan_ip = stealth_ips.lan_ip ' +
+						'ftp_uniq_remote_ip.lan_ip = endpoint_tracking.lan_ip ' +
 					'WHERE '+
-						'`time` BETWEEN ? AND ?',
+						'ftp_uniq_remote_ip.time BETWEEN ? AND ?',
 				insert: [start, end],
 				params: [
 					{ title: 'Last Seen', select: 'time' },
 					{ title: 'Stealth', select: 'stealth' },
-					{ title: 'COI Groups', select: 'stealth_groups' },
+					{ title: 'COI Groups', select: 'stealth_COIs' },
 					{ title: 'User', select: 'user' },
 					{ title: 'Zone', select: 'lan_zone' },
 					{ title: 'Machine Name', select: 'machine' },

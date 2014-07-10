@@ -21,7 +21,7 @@ module.exports = function(pool) {
 				var info = [];
 				var table1 = {
 					query: 'SELECT ' +
-							'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+							'date_format(from_unixtime(ftp.time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 							'`machine`, ' +
 							'`lan_zone`, ' +
 							'ftp.lan_ip, ' +
@@ -48,16 +48,16 @@ module.exports = function(pool) {
 							'`ioc_typeInfection`, ' +
 							'`ioc_typeIndicator`, ' +
 							'`ioc_count`, ' +
-							'stealth_ips.stealth,'+
-							'stealth_ips.stealth_groups, '+
-							'stealth_ips.user '+
+							'endpoint_tracking.stealth,'+
+							'endpoint_tracking.stealth_COIs, '+
+							'endpoint_tracking.user '+
 						'FROM ' +
 							'`ftp` ' +
-						'LEFT JOIN `stealth_ips` '+
+						'LEFT JOIN `endpoint_tracking` '+
 						'ON ' +
-							'ftp.lan_ip = stealth_ips.lan_ip ' +
+							'ftp.lan_ip = endpoint_tracking.lan_ip ' +
 						'WHERE '+ 
-							'time BETWEEN ? AND ? ' +
+							'ftp.time BETWEEN ? AND ? ' +
 							'AND `lan_zone` = ? '+
 							'AND ftp.lan_ip = ? ' +
 							'AND `remote_ip` = ? ',
@@ -68,7 +68,7 @@ module.exports = function(pool) {
 							select: 'time'
 						},
 						{ title: 'Stealth', select: 'stealth' },
-						{ title: 'COI Groups', select: 'stealth_groups' },
+						{ title: 'COI Groups', select: 'stealth_COIs' },
 						{ title: 'User', select: 'user' },
 						{ title: 'Machine', select: 'machine' },
 						{ title: 'Zone', select: 'lan_zone' },

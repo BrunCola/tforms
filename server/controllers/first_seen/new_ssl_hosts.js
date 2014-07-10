@@ -20,7 +20,7 @@ module.exports = function(pool) {
 			var info = [];
 			var table1 = {
 				query: 'SELECT '+
-						'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time,'+
+						'date_format(from_unixtime(ssl_uniq_remote_ip.time), "%Y-%m-%d %H:%i:%s") as time,'+
 						'`server_name`,'+
 						'`lan_zone`,'+
 						'`machine`,'+
@@ -30,16 +30,16 @@ module.exports = function(pool) {
 						'`remote_cc`,'+
 						'`remote_asn`,'+
 						'`remote_asn_name`, '+
-						'stealth_ips.stealth,'+
-						'stealth_ips.stealth_groups,'+
-						'stealth_ips.user '+
+						'endpoint_tracking.stealth,'+
+						'endpoint_tracking.stealth_COIs,'+
+						'endpoint_tracking.user '+
 					'FROM '+
 						'`ssl_uniq_remote_ip` '+
-					'LEFT JOIN `stealth_ips` '+
+					'LEFT JOIN `endpoint_tracking` '+
 					'ON ' +
-						'ssl_uniq_remote_ip.lan_ip = stealth_ips.lan_ip ' +
+						'ssl_uniq_remote_ip.lan_ip = endpoint_tracking.lan_ip ' +
 					'WHERE '+
-						'`time` BETWEEN ? AND ?',
+						'ssl_uniq_remote_ip.time BETWEEN ? AND ?',
 				insert: [start, end],
 				params: [
 					{
@@ -54,7 +54,7 @@ module.exports = function(pool) {
 						},
 					},
 					{ title: 'Stealth', select: 'stealth' },
-					{ title: 'COI Groups', select: 'stealth_groups' },
+					{ title: 'COI Groups', select: 'stealth_COIs' },
 					{ title: 'User', select: 'user' },
 					{ title: 'Server Name', select: 'server_name' },
 					{ title: 'Remote IP', select: 'remote_ip' },

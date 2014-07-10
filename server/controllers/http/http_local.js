@@ -21,23 +21,21 @@ module.exports = function(pool) {
 			var table1 = {
 				query: 'SELECT '+
 						'sum(`count`) AS `count`, '+
-						'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+						'date_format(max(from_unixtime(http_local.time)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 						'`lan_zone`, ' +
 						'http_local.lan_ip, ' +
-						'sum(`ioc_count`) AS `ioc_count`, ' +
-						'stealth_ips.stealth, '+
-						'stealth_ips.user, '+
-						'stealth_ips.stealth_groups '+
+						'endpoint_tracking.stealth, '+
+						'endpoint_tracking.user, '+
+						'endpoint_tracking.stealth_COIs, '+
 						'`machine`, '+
-						'`lan_ip`, ' +
 						'sum(`ioc_count`) AS `ioc_count` ' +
 					'FROM ' + 
 						'`http_local` '+
-					'LEFT JOIN `stealth_ips` '+
+					'LEFT JOIN `endpoint_tracking` '+
 					'ON ' +
-						'http_local.lan_ip = stealth_ips.lan_ip ' +
+						'http_local.lan_ip = endpoint_tracking.lan_ip ' +
 					'WHERE ' + 
-						'time BETWEEN ? AND ? '+
+						'http_local.time BETWEEN ? AND ? '+
 					'GROUP BY '+
 						'`lan_zone`, '+
 						'http_local.lan_ip',
@@ -54,7 +52,7 @@ module.exports = function(pool) {
 						},
 					},
 					{ title: 'Stealth', select: 'stealth' },
-					{ title: 'COI Groups', select: 'stealth_groups' },
+					{ title: 'COI Groups', select: 'stealth_COIs' },
 					{ title: 'User', select: 'user' },
 					{ title: 'Connections', select: 'count' },
 					{ title: 'Zone', select: 'lan_zone' },
@@ -71,6 +69,7 @@ module.exports = function(pool) {
 			async.parallel([
 				// Table function(s)
 				function(callback) {
+					console.log(table1.query);
 					new dataTable(table1, {database: database, pool: pool}, function(err,data){
 						tables.push(data);
 						callback();

@@ -21,7 +21,7 @@ module.exports = function(pool) {
 			var table1 = {
 				query: 'SELECT '+
 					'count(*) AS count,'+
-					'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time,'+ // Last Seen
+					'max(date_format(from_unixtime(conn_ioc.time), "%Y-%m-%d %H:%i:%s")) AS time,'+ // Last Seen
 					'`ioc_severity`,'+
 					'`ioc`,'+
 					'`ioc_typeIndicator`,'+
@@ -29,19 +29,19 @@ module.exports = function(pool) {
 					'`lan_zone`,'+
 					'`machine`,'+
 					'conn_ioc.lan_ip,'+
-					'stealth_ips.stealth,'+
-					'stealth_ips.stealth_groups,'+
-					'stealth_ips.user,'+
+					'endpoint_tracking.stealth,'+
+					'endpoint_tracking.stealth_COIs,'+
+					'endpoint_tracking.user,'+
 					'sum(`in_packets`) AS in_packets,'+
 					'sum(`out_packets`) AS out_packets,'+
 					'sum(`in_bytes`) AS in_bytes,'+
 					'sum(`out_bytes`) AS out_bytes '+
 				'FROM `conn_ioc` '+
-				'LEFT JOIN `stealth_ips` '+
+				'LEFT JOIN `endpoint_tracking` '+
 				'ON ' +
-					'conn_ioc.lan_ip = stealth_ips.lan_ip ' +
+					'conn_ioc.lan_ip = endpoint_tracking.lan_ip ' +
 				'WHERE '+
-					'time BETWEEN ? AND ? '+
+					'conn_ioc.time BETWEEN ? AND ? '+
 					'AND `ioc_count` > 0 '+
 					'AND `trash` IS NULL '+
 				'GROUP BY '+
@@ -61,7 +61,7 @@ module.exports = function(pool) {
 						},
 					},
 					{ title: 'Stealth', select: 'stealth' },
-					{ title: 'COI Groups', select: 'stealth_groups' },
+					{ title: 'COI Groups', select: 'stealth_COIs' },
 					{ title: 'User', select: 'user' },
 					{ title: 'Severity', select: 'ioc_severity' },
 					{ title: 'IOC Hits', select: 'count' },
@@ -107,6 +107,7 @@ module.exports = function(pool) {
 				function(callback) {
 					new dataTable(table1, {database: database, pool: pool}, function(err,data){
 						tables.push(data);
+
 						callback();
 					});
 				},

@@ -22,7 +22,7 @@ module.exports = function(pool) {
 				var table1 = {
 					query: 'SELECT '+
 							'sum(`count`) AS `count`, '+
-							'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time,'+
+							'max(date_format(from_unixtime(conn_meta.time), "%Y-%m-%d %H:%i:%s")) AS time,'+
 							'`lan_zone`,'+
 							'`machine`,'+
 							'conn_meta.lan_ip,'+
@@ -43,16 +43,16 @@ module.exports = function(pool) {
 							'sum(`smtp`) AS `smtp`,'+
 							'sum(`file`) AS `file`,'+
 							'sum(`ioc_count`) AS `ioc_count`, '+
-							'stealth_ips.stealth,'+
-							'stealth_ips.stealth_groups, '+
-							'stealth_ips.user '+
+							'endpoint_tracking.stealth,'+
+							'endpoint_tracking.stealth_COIs, '+
+							'endpoint_tracking.user '+
 						'FROM '+
 							'`conn_meta` '+
-						'LEFT JOIN `stealth_ips` '+
+						'LEFT JOIN `endpoint_tracking` '+
 						'ON ' +
-							'conn_meta.lan_ip = stealth_ips.lan_ip ' +
+							'conn_meta.lan_ip = endpoint_tracking.lan_ip ' +
 						'WHERE '+
-							'`time` BETWEEN ? AND ? '+
+							'conn_meta.time BETWEEN ? AND ? '+
 							'AND `remote_ip` = ? '+
 						'GROUP BY '+
 							'`lan_zone`,'+
@@ -69,7 +69,7 @@ module.exports = function(pool) {
 							}
 						},
 						{ title: 'Stealth', select: 'stealth' },
-						{ title: 'COI Groups', select: 'stealth_groups' },
+						{ title: 'COI Groups', select: 'stealth_COIs' },
 						{ title: 'User', select: 'user' },
 						{ title: 'Zone', select: 'lan_zone' },
 						{ title: 'Machine Name', select: 'machine' },

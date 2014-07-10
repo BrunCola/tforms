@@ -22,22 +22,22 @@ module.exports = function(pool) {
 				var table1 = {
 					query: 'SELECT '+
 							'count(*) as count, '+
-							'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time,'+
+							'date_format(max(from_unixtime(file.time)), "%Y-%m-%d %H:%i:%s") AS time,'+
 							'file.lan_ip,'+
 							'`lan_zone`,'+
 							'`http_host`,'+
 							'(sum(`size`) / 1048576) AS size,'+
 							'sum(`ioc_count`) AS ioc_count,'+
-							'stealth_ips.stealth, '+
-							'stealth_ips.user, '+
-							'stealth_ips.stealth_groups '+
+							'endpoint_tracking.stealth, '+
+							'endpoint_tracking.user, '+
+							'endpoint_tracking.stealth_COIs '+
 						'FROM '+
 							'`file` '+
-						'LEFT JOIN `stealth_ips` '+
+						'LEFT JOIN `endpoint_tracking` '+
 						'ON ' +
-							'file.lan_ip = stealth_ips.lan_ip ' +
+							'file.lan_ip = endpoint_tracking.lan_ip ' +
 						'WHERE '+
-							'time BETWEEN ? AND ? '+
+							'file.time BETWEEN ? AND ? '+
 							'AND `http_host` = ? '+
 						'GROUP BY '+
 							'file.lan_ip, '+
@@ -56,7 +56,7 @@ module.exports = function(pool) {
 								},
 							},
 							{ title: 'Stealth', select: 'stealth' },
-							{ title: 'COI Groups', select: 'stealth_groups' },
+							{ title: 'COI Groups', select: 'stealth_COIs' },
 							{ title: 'User', select: 'user' },
 							{ title: 'Total Extracted Files', select: 'count' },
 							{ title: 'Domain', select: 'http_host' },

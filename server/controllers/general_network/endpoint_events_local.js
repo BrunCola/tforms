@@ -21,7 +21,7 @@ module.exports = function(pool) {
 			var table1 = {
 				query: 'SELECT '+
 						'count(*) AS count,'+
-						'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time,'+
+						'date_format(max(from_unixtime(ossec.time)), "%Y-%m-%d %H:%i:%s") as time,'+
 						'`server_id`,'+
 						'`src_user`,'+
 						'`src_ip`,'+
@@ -31,16 +31,16 @@ module.exports = function(pool) {
 						'`alert_id`,'+
 						'`alert_info`,'+
 						'`full_log`, '+
-						'stealth_ips.stealth,'+
-						'stealth_ips.stealth_groups,'+
-						'stealth_ips.user '+
+						'endpoint_tracking.stealth,'+
+						'endpoint_tracking.stealth_COIs,'+
+						'endpoint_tracking.user '+
 					'FROM '+
 						'`ossec` '+
-					'LEFT JOIN `stealth_ips` '+
+					'LEFT JOIN `endpoint_tracking` '+
 					'ON ' +
-						'ossec.src_ip = stealth_ips.lan_ip ' +
+						'ossec.src_ip = endpoint_tracking.lan_ip ' +
 					'WHERE '+
-						'`time` BETWEEN ? AND ? '+
+						'ossec.time BETWEEN ? AND ? '+
 					'GROUP BY '+
 						'`src_ip`',
 				insert: [start, end],
@@ -56,7 +56,7 @@ module.exports = function(pool) {
 						},
 					},
 					{ title: 'Stealth', select: 'stealth' },
-					{ title: 'COI Groups', select: 'stealth_groups' },
+					{ title: 'COI Groups', select: 'stealth_COIs' },
 					{ title: 'User', select: 'user' },
 					{ title: 'Events', select: 'count' },
 					{ title: 'Source IP', select: 'src_ip' },

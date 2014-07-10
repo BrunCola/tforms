@@ -20,22 +20,22 @@ module.exports = function(pool) {
 				var table1 = {
 					query: 'SELECT '+
 							'count(*) AS count,'+
-							'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time,'+
+							'date_format(max(from_unixtime(ssh.time)), "%Y-%m-%d %H:%i:%s") AS time,'+
 							'`status_code`, '+
 							'`lan_zone`,'+
 							'`machine`,'+
 							'ssh.lan_ip,'+
 							'sum(`ioc_count`) AS ioc_count, ' +
-							'stealth_ips.stealth,'+
-							'stealth_ips.stealth_groups, '+
-							'stealth_ips.user '+
+							'endpoint_tracking.stealth,'+
+							'endpoint_tracking.stealth_COIs, '+
+							'endpoint_tracking.user '+
 						'FROM '+
 							'`ssh` '+
-						'LEFT JOIN `stealth_ips` '+
+						'LEFT JOIN `endpoint_tracking` '+
 						'ON ' +
-							'ssh.lan_ip = stealth_ips.lan_ip ' +
+							'ssh.lan_ip = endpoint_tracking.lan_ip ' +
 						'WHERE '+
-							'time BETWEEN ? AND ? '+
+							'ssh.time BETWEEN ? AND ? '+
 							'AND `status_code` = ? '+
 						'GROUP BY '+
 							'`lan_zone`, '+
@@ -52,7 +52,7 @@ module.exports = function(pool) {
 							}
 						},
 						{ title: 'Stealth', select: 'stealth' },
-						{ title: 'COI Groups', select: 'stealth_groups' },
+						{ title: 'COI Groups', select: 'stealth_COIs' },
 						{ title: 'User', select: 'user' },
 						{ title: 'Connections', select: 'count' },
 						{ title: 'Status', select: 'status_code' },

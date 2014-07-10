@@ -46,27 +46,27 @@ module.exports = function(pool) {
 				var info = [];
 				var sankey1 = {
 					query: 'SELECT '+
-							'S.stealth_groups AS stealth_groups_remote, '+
+							'S.stealth_COIs AS stealth_COIs_remote, '+
 							'count(*) AS `count`, '+
-							'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+							'max(date_format(from_unixtime(stealth_conn.time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
 							'stealth_conn.dst_ip, '+
-							'stealth_ips.lan_ip, '+
-							'stealth_ips.stealth_groups, '+
-							'stealth_ips.user '+
+							'endpoint_tracking.lan_ip, '+
+							'endpoint_tracking.stealth_COIs, '+
+							'endpoint_tracking.user '+
 						'FROM '+
-							'`stealth_ips` '+
+							'`endpoint_tracking` '+
 						'LEFT JOIN `stealth_conn` '+
 						'ON ' +
-							'stealth_conn.src_ip = stealth_ips.lan_ip '+
+							'stealth_conn.src_ip = endpoint_tracking.lan_ip '+
 						'INNER JOIN ('+
-							'SELECT `lan_ip`, `stealth`, `stealth_groups` FROM `stealth_ips` WHERE `stealth` > 0'+
+							'SELECT `lan_ip`, `stealth`, `stealth_COIs` FROM `endpoint_tracking` WHERE `stealth` > 0'+
 						') S ON '+
 							'stealth_conn.dst_ip = S.lan_ip '+
 						'WHERE '+
-							'`time` BETWEEN ? AND ? '+
-							'AND stealth_ips.stealth > 0 '+
-							'AND stealth_ips.lan_ip = ? '+
-						'GROUP BY stealth_ips.lan_ip, '+
+							'stealth_conn.time BETWEEN ? AND ? '+
+							'AND endpoint_tracking.stealth > 0 '+
+							'AND endpoint_tracking.lan_ip = ? '+
+						'GROUP BY endpoint_tracking.lan_ip, '+
 						'stealth_conn.dst_ip '+
 						'ORDER BY `count` DESC '+
 						'LIMIT 10',
@@ -446,7 +446,6 @@ module.exports = function(pool) {
 					//SANKEY
 					function(callback) {
 						new sankey(sankey1, {database: database, pool: pool}, function(err,data){
-							console.log(sankey1.query);
 							sankeyData = data;
 							callback();
 						});

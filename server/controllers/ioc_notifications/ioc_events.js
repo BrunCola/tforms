@@ -168,7 +168,7 @@ module.exports = function(pool) {
 				default:
 				var table1 = {
 					query: 'SELECT '+
-							'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time,'+
+							'max(date_format(from_unixtime(conn_ioc.time), "%Y-%m-%d %H:%i:%s")) AS time,'+
 							'`lan_zone`,'+
 							'`machine`,'+
 							'conn_ioc.lan_ip,'+
@@ -186,16 +186,16 @@ module.exports = function(pool) {
 							'`ioc_typeInfection`,'+
 							'`ioc_attrID`,'+
 							'sum(`ioc_count`) AS ioc_count,'+
-							'stealth_ips.stealth,'+
-							'stealth_ips.stealth_groups,'+
-							'stealth_ips.user '+
+							'endpoint_tracking.stealth,'+
+							'endpoint_tracking.stealth_COIs,'+
+							'endpoint_tracking.user '+
 						'FROM '+
 							'`conn_ioc` '+
-						'LEFT JOIN `stealth_ips` '+
+						'LEFT JOIN `endpoint_tracking` '+
 						'ON ' +
-							'conn_ioc.lan_ip = stealth_ips.lan_ip ' +
+							'conn_ioc.lan_ip = endpoint_tracking.lan_ip ' +
 						'WHERE '+
-							'time BETWEEN ? AND ? '+
+							'conn_ioc.time BETWEEN ? AND ? '+
 							'AND `ioc_count` > 0 '+
 							'AND `trash` IS NULL '+
 						'GROUP BY '+
@@ -216,7 +216,7 @@ module.exports = function(pool) {
 							},
 						},
 						{ title: 'Stealth', select: 'stealth' },
-						{ title: 'COI Groups', select: 'stealth_groups' },
+						{ title: 'COI Groups', select: 'stealth_COIs' },
 						{ title: 'User', select: 'user' },
 						{ title: 'Severity', select: 'ioc_severity' },
 						{ title: 'IOC Hits', select: 'ioc_count' },

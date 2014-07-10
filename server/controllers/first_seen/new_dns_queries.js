@@ -22,7 +22,7 @@ module.exports = function(pool) {
 			var info = [];
 			var table1 = {
 				query: 'SELECT '+
-						'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
+						'date_format(from_unixtime(dns_uniq_query.time), "%Y-%m-%d %H:%i:%s") AS time,'+
 						'`lan_zone`,'+
 						'`machine`,'+
 						'dns_uniq_query.lan_ip,'+
@@ -36,21 +36,21 @@ module.exports = function(pool) {
 						'`qclass_name` AS qclass,'+
 						'`rcode_name` AS rcode,'+
 						'`query`, '+
-						'stealth_ips.stealth,'+
-						'stealth_ips.stealth_groups,'+
-						'stealth_ips.user '+
+						'endpoint_tracking.stealth,'+
+						'endpoint_tracking.stealth_COIs,'+
+						'endpoint_tracking.user '+
 					'FROM '+
 						'`dns_uniq_query` '+
-					'LEFT JOIN `stealth_ips` '+
+					'LEFT JOIN `endpoint_tracking` '+
 					'ON ' +
-						'dns_uniq_query.lan_ip = stealth_ips.lan_ip ' +
+						'dns_uniq_query.lan_ip = endpoint_tracking.lan_ip ' +
 					'WHERE '+
-						'`time` BETWEEN ? AND ?',
+						'dns_uniq_query.time BETWEEN ? AND ?',
 				insert: [start, end],
 				params: [
 					{ title: 'First Seen', select: 'time' },
 					{ title: 'Stealth', select: 'stealth' },
-					{ title: 'COI Groups', select: 'stealth_groups' },
+					{ title: 'COI Groups', select: 'stealth_COIs' },
 					{ title: 'User', select: 'user' },
 					{ title: 'Query Type', select: 'qtype' },
 					{ title: 'Query Class', select: 'qclass', dView: false },

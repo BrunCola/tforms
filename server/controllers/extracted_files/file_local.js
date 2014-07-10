@@ -20,7 +20,7 @@ module.exports = function(pool) {
 				var tables = [];
 				var table1 = {
 					query: 'SELECT '+
-							'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
+							'date_format(from_unixtime(file.time), "%Y-%m-%d %H:%i:%s") AS time,'+
 							'`machine`,'+
 							'file.lan_ip,'+
 							'`lan_port`,'+
@@ -41,16 +41,16 @@ module.exports = function(pool) {
 							'`ioc`,'+
 							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection`, '+
-							'stealth_ips.stealth,'+
-							'stealth_ips.user,'+
-							'stealth_ips.stealth_groups '+
+							'endpoint_tracking.stealth,'+
+							'endpoint_tracking.user,'+
+							'endpoint_tracking.stealth_COIs '+
 						'FROM '+ 
 							'`file` '+
-						'LEFT JOIN `stealth_ips` '+
+						'LEFT JOIN `endpoint_tracking` '+
 						'ON ' +
-							'file.lan_ip = stealth_ips.lan_ip ' +
+							'file.lan_ip = endpoint_tracking.lan_ip ' +
 						'WHERE '+
-							'`time` BETWEEN ? AND ? '+
+							'file.time BETWEEN ? AND ? '+
 							'AND `lan_zone` = ? '+
 							'AND file.lan_ip = ? '+
 							'AND `mime` = ? ',
@@ -58,7 +58,7 @@ module.exports = function(pool) {
 					params: [
 						{ title: 'Last Seen', select: 'time' },
 						{ title: 'Stealth', select: 'stealth' },
-						{ title: 'COI Groups', select: 'stealth_groups' },
+						{ title: 'COI Groups', select: 'stealth_COIs' },
 						{ title: 'User', select: 'user' },
 						{ title: 'File Type', select: 'mime' },
 						{ title: 'Name', select: 'name', sClass:'file'},

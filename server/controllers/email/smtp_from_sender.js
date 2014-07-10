@@ -19,7 +19,7 @@ module.exports = function(pool) {
 				var info = [];
 				var table1 = {
 					query: 'SELECT '+
-							'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
+							'date_format(from_unixtime(smtp.time), "%Y-%m-%d %H:%i:%s") AS time,'+
 							'`lan_zone`,'+
 							'`machine`,'+
 							'smtp.lan_ip,'+
@@ -41,23 +41,23 @@ module.exports = function(pool) {
 							'`ioc_typeInfection`,'+
 							'`ioc_typeIndicator`,'+
 							'`ioc_count`,'+
-							'stealth_ips.stealth, '+
-							'stealth_ips.user, '+
-							'stealth_ips.stealth_groups '+
+							'endpoint_tracking.stealth, '+
+							'endpoint_tracking.user, '+
+							'endpoint_tracking.stealth_COIs '+
 						'FROM '+
 							'`smtp` '+
-						'LEFT JOIN `stealth_ips` '+
+						'LEFT JOIN `endpoint_tracking` '+
 						'ON ' +
-							'smtp.lan_ip = stealth_ips.lan_ip ' +
+							'smtp.lan_ip = endpoint_tracking.lan_ip ' +
 						'WHERE '+
-							'`time` BETWEEN ? AND ? '+
+							'smtp.time BETWEEN ? AND ? '+
 							'AND `mailfrom` = ? '+
 							'AND `receiptto` = ?',
 					insert: [start, end, req.query.mailfrom, req.query.receiptto],
 					params: [
 						{ title: 'Time', select: 'time' },
 						{ title: 'Stealth', select: 'stealth' },
-						{ title: 'COI Groups', select: 'stealth_groups' },
+						{ title: 'COI Groups', select: 'stealth_COIs' },
 						{ title: 'User', select: 'user' },
 						{ title: 'From', select: 'mailfrom' },
 						{ title: 'To', select: 'receiptto' },
