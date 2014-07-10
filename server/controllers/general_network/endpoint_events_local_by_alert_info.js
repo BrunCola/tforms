@@ -23,7 +23,6 @@ module.exports = function(pool) {
 					query: 'SELECT '+
 							'count(*) AS count,' +
 							'date_format(max(from_unixtime(ossec.time)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-							'`server_id`, '+
 							'`src_user`, '+
 							'`src_ip`, '+
 							'`dst_ip`, '+
