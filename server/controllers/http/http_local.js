@@ -1,6 +1,6 @@
 'use strict';
 
-var dataTable = require('../constructors/datatable'),
+var datatable_stealth = require('../constructors/datatable_stealth'),
 config = require('../../config/config'),
 async = require('async');
 
@@ -15,30 +15,24 @@ module.exports = function(pool) {
 				start = req.query.start;
 				end = req.query.end;
 			}
-			//var results = [];
-			var tables = [];
+
 			var info = [];
+			var tables = [];
 			var table1 = {
 				query: 'SELECT '+
 						'sum(`count`) AS `count`, '+
-						'date_format(max(from_unixtime(http_local.time)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+						'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 						'`lan_zone`, ' +
-						'http_local.lan_ip, ' +
-						'endpoint_tracking.stealth, '+
-						'endpoint_tracking.user, '+
-						'endpoint_tracking.stealth_COIs, '+
 						'`machine`, '+
+						'`lan_ip`, ' +
 						'sum(`ioc_count`) AS `ioc_count` ' +
 					'FROM ' + 
 						'`http_local` '+
-					'LEFT JOIN `endpoint_tracking` '+
-					'ON ' +
-						'http_local.lan_ip = endpoint_tracking.lan_ip ' +
 					'WHERE ' + 
-						'http_local.time BETWEEN ? AND ? '+
+						'time BETWEEN ? AND ? '+
 					'GROUP BY '+
 						'`lan_zone`, '+
-						'http_local.lan_ip',
+						'`lan_ip`',
 				insert: [start, end],
 				params: [
 					{
@@ -51,9 +45,6 @@ module.exports = function(pool) {
 						 	crumb: false
 						},
 					},
-					{ title: 'Stealth', select: 'stealth' },
-					{ title: 'COI Groups', select: 'stealth_COIs' },
-					{ title: 'User', select: 'user' },
 					{ title: 'Connections', select: 'count' },
 					{ title: 'Zone', select: 'lan_zone' },
 					{ title: 'Machine Name', select: 'machine' },
@@ -66,14 +57,34 @@ module.exports = function(pool) {
 					title: 'Local HTTP'
 				}
 			}
+			var table2 = {
+				query: 'SELECT '+
+						'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ 
+						'`stealth_COIs`, ' +
+						'`stealth`, '+
+						'`lan_ip`, ' +
+						'`event`, ' +
+						'`user` ' +
+					'FROM ' + 
+						'`endpoint_tracking` '+
+					'WHERE ' + 
+						'stealth > 0 '+
+						'AND event = "Log On" ',
+				insert: [],
+				params: [
+					{ title: 'Stealth', select: 'stealth' },
+					{ title: 'COI Groups', select: 'stealth_COIs' },
+					{ title: 'User', select: 'user' }
+				],
+				settings: {}
+			}
 			async.parallel([
 				// Table function(s)
 				function(callback) {
-					console.log(table1.query);
-					new dataTable(table1, {database: database, pool: pool}, function(err,data){
+					new datatable_stealth(table1, table2, {database: database, pool: pool}, function(err,data){
 						tables.push(data);
 						callback();
-					});
+					});					
 				},
 			], function(err) { //This function gets called after the two tasks have called their "task callbacks"
 				if (err) throw console.log(err);
@@ -81,8 +92,8 @@ module.exports = function(pool) {
 					info: info,
 					tables: tables
 				};
-				//console.log(results);
 				res.json(results);
+
 			});
 		}
 	}
