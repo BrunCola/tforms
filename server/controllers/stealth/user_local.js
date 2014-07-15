@@ -25,20 +25,28 @@ module.exports = function(pool) {
 				var table1 = {
 					query: 'SELECT '+
 								'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-								'`lan_ip`, '+
+								'count(*) AS `count`, '+
+								'`lan_ip` AS `ip`, '+
+								'E.event, '+
+								'E.user, '+
+								'E.stealth_COIs, '+ 
+								'sum(`ioc_count`) AS `ioc_count` ' +
+							'FROM '+
+							'conn_meta JOIN (SELECT ' +
+								'`lan_ip` AS `ip`, '+
 								'`event`, '+
 								'endpoint_tracking.user, '+
-								'stealth_policy.stealth_COIs '+ //TODO IOC Hits and Connection counts
-							'FROM '+
+								'stealth_policy.stealth_COIs '+ 
+							'FROM ' +
 								'`endpoint_tracking` '+
 							'JOIN '+
 								'`stealth_policy` '+
 							'ON '+
-								'endpoint_tracking.user = stealth_policy.user '+
+								'endpoint_tracking.user = stealth_policy.user ) E ON E.ip = conn_meta.lan_ip '+
 							'WHERE '+
 								'`time` BETWEEN ? AND ? '+
-								'AND event = "Log On" '+
-								'AND endpoint_tracking.user = ? '+
+								'AND E.event = "Log On" '+
+								'AND E.user = ? '+
 							'GROUP BY `lan_ip`',
 					insert: [start, end, req.query.user],
 					params: [
@@ -48,13 +56,15 @@ module.exports = function(pool) {
 							link: {
 								type: 'local_COI_remote_drill',
 								// val: the pre-evaluated values from the query above
-								val: ['lan_ip'],
+								val: ['ip'],
 								crumb: false
 							}
 						},
+						{ title: 'Connections', select: 'count' },
 						{ title: 'User', select: 'user' },
-						{ title: 'IP', select: 'lan_ip' },						
+						{ title: 'IP', select: 'ip' },						
 						{ title: 'Stealth COIs', select: 'stealth_COIs' },
+						{ title: 'IOC Count', select: 'ioc_count' }
 					],
 					settings: {
 						sort: [[0, 'desc']],
@@ -62,22 +72,6 @@ module.exports = function(pool) {
 						title: 'Log Ons by User'
 					}
 				}
-				// var crossfilterQ = {
-				// 	query: 'SELECT '+
-				// 		'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-				// 		'(sum(in_bytes + out_bytes) / 1048576) AS count, '+
-				// 		'(sum(`in_bytes`) / 1048576) AS in_bytes, '+
-				// 		'(sum(`out_bytes`) / 1048576) AS out_bytes '+
-				// 	'FROM '+
-				// 		'`stealth_conn` '+
-				// 	'WHERE '+
-				// 		'`time` BETWEEN ? AND ? '+
-				// 	'GROUP BY '+
-				// 		'month(from_unixtime(time)),'+
-				// 		'day(from_unixtime(time)),'+
-				// 		'hour(from_unixtime(time))',
-				// 	insert: [start, end, req.query.ip]
-				// }
 				async.parallel([
 					// Table function(s)
 					function(callback) {
@@ -87,13 +81,6 @@ module.exports = function(pool) {
 							callback();
 						});
 					},
-					// // Crossfilter function
-					// function(callback) {
-					// 	new query(crossfilterQ, {database: database, pool: pool}, function(err,data){
-					// 		crossfilter = data;
-					// 		callback();
-					// 	});
-					// }
 				], function(err) { //This function gets called after the two tasks have called their "task callbacks"
 					if (err) throw console.log(err);
 					var results = {

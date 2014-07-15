@@ -40,17 +40,32 @@ module.exports = function (sql, conn, callback) {
 
 						if(!alreadyInserted){
 							//add stealth group nodes as group 0 to differentiate from any possible IP nodes
-							node.push({
-								name: d,
-								group: 0,
-								width: 0.75,
-								gateway: 0
-							});
-							group_nodes.push({
-								index: count,
-								groupName: d
-							});
-							count ++;
+							if(d === "ClearText") {
+								node.push({
+									name: d,
+									group: 0,
+									width: 0.75,
+									gateway: 1
+								});
+								group_nodes.push({
+									index: count,
+									groupName: d
+								});
+								count ++;
+							}
+							else {
+								node.push({
+									name: d,
+									group: 0,
+									width: 0.75,
+									gateway: 0
+								});
+								group_nodes.push({
+									index: count,
+									groupName: d
+								});
+								count ++;
+							}
 						}
 
 						//get the force chart index of the stealth group
