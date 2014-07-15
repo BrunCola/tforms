@@ -1448,12 +1448,12 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 							elm.style('cursor', 'pointer')
 						})
 						.on("click", function (d){
-							var link = {ip: d.name};
+							var link = {user: d.name};
 							if ($location.$$search.start && $location.$$search.end) {
 								link.start = $location.$$search.start;
 								link.end = $location.$$search.end;
 							}
-							$scope.$apply($location.path('local_COI_remote_drill').search(link));
+							$scope.$apply($location.path('user_local').search(link));
 						});
 					})
 

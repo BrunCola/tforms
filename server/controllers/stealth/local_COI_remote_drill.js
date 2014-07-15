@@ -341,60 +341,50 @@ module.exports = function(pool) {
 				var endpoint_logon = {
 					query: 'SELECT '+
 							'`time`,'+
-							'`src_ip`,'+
-							'`dst_ip`,'+
-							'`src_user`,'+
-							'`alert_source`,'+
-							'`program_source`,'+
-							'`alert_info` '+
+							'`lan_ip`,'+
+							'`user`,'+
+							'`event` '+
 						'FROM '+
-							'`ossec` '+
+							'`endpoint_tracking` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `src_ip`= ? '+
-							'AND `alert_info` LIKE "%logon%" ',
+							'AND `lan_ip`= ? '+
+							'AND `event` = "Log On" ',
 					insert: [start, end, req.query.ip],
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
-						{"sTitle": "User", "mData": "src_user"},
-						{"sTitle": "Source IP", "mData": "src_ip"},
-						{"sTitle": "Alert Source", "mData": "alert_source"},
-						{"sTitle": "Program Source", "mData": "program_source"},
-						{"sTitle": "Alert Info", "mData": "alert_info"},
+						{"sTitle": "User", "mData": "user"},
+						{"sTitle": "IP", "mData": "lan_ip"},
+						{"sTitle": "Event", "mData": "event"},
 					],
 					start: start,
 					end: end,
 					grouping: pointGroup,
-					sClass: 'endpoint'
+					sClass: 'login'
 				}
 				var endpoint_logoff = {
 					query: 'SELECT '+
 							'`time`,'+
-							'`src_ip`,'+
-							'`dst_ip`,'+
-							'`src_user`,'+
-							'`alert_source`,'+
-							'`program_source`,'+
-							'`alert_info` '+
+							'`lan_ip`,'+
+							'`user`,'+
+							'`event` '+
 						'FROM '+
-							'`ossec` '+
+							'`endpoint_tracking` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `src_ip`= ? '+
-							'AND `alert_info` LIKE "%logoff%" ',
+							'AND `lan_ip`= ? '+
+							'AND `event` = "Log Off" ',
 					insert: [start, end, req.query.ip],
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
-						{"sTitle": "User", "mData": "src_user"},
-						{"sTitle": "Source IP", "mData": "src_ip"},
-						{"sTitle": "Alert Source", "mData": "alert_source"},
-						{"sTitle": "Program Source", "mData": "program_source"},
-						{"sTitle": "Alert Info", "mData": "alert_info"},
+						{"sTitle": "User", "mData": "user"},
+						{"sTitle": "IP", "mData": "lan_ip"},
+						{"sTitle": "Event", "mData": "event"},
 					],
 					start: start,
 					end: end,
 					grouping: pointGroup,
-					sClass: 'endpoint'
+					sClass: 'logout'
 				}
 				async.parallel([
 					// FISHEYE	

@@ -357,7 +357,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 				'title': 'COI Users',
 				'url': 'users_COI_groups',
 				'icon': 'shield',
-				'orphans': []
+				'orphans': ['user_local']
 			}]
 		},
 		{

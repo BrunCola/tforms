@@ -15,18 +15,18 @@ module.exports = function (sql, conn, callback) {
 		});
 		connection.query(sql.query)
 			.on('result', function(data){
-				//populate the IP nodes
-				if(node.indexOf(data.lan_ip) === -1) {//this check is only kinda necessary...
+				//populate the user
+				if(node.indexOf(data.user) === -1) {//this check is only kinda necessary...
 					var stealthGroups = data.stealth_COIs.split(", ");
 					//group of the IP determines the colour of the node, and is dependent on how may stealth groups it belongs to
-					//console.log(data.lan_ip + ' group ' +stealthGroups.length);
+					//console.log(data.user + ' group ' +stealthGroups.length);
 					node.push({
-						name: data.lan_ip,
+						name: data.user,
 						group: stealthGroups.length,
 						width: 0.25,
 						gateway: data.gateway
 					});
-					var current_ip_index = count;
+					var current_user_index = count;
 					count ++;
 					//split the stealth groups up into an array
 					//add the stealth groups as level 1 nodes if they are not added already
@@ -65,7 +65,7 @@ module.exports = function (sql, conn, callback) {
 						//create the links from the IP to the groups
 						link.push({
 							target: current_group_index,
-							source: current_ip_index,
+							source: current_user_index,
 							value: 1
 						});
 

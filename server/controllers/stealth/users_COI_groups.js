@@ -21,15 +21,10 @@ module.exports = function(pool) {
 				var info = [];
 				var forceSQL = {
 					query: 'SELECT '+
-								'endpoint_tracking.lan_ip, '+
-								'endpoint_tracking.stealth, '+
-								'endpoint_tracking.stealth_COIs, '+
-								'endpoint_tracking.user, '+
-								'endpoint_tracking.gateway '+
+								'`user`, '+
+								'`stealth_COIs` '+
 							'FROM '+
-								'`endpoint_tracking` '+
-							'WHERE '+
-								'endpoint_tracking.stealth > 0',
+								'`stealth_policy`',
 					insert: []
 				}
 				async.parallel([

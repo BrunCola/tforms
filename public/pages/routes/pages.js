@@ -1204,6 +1204,21 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})	
+					//USERS LOCAL
+					.state('user_local', {
+						url: '/user_local?start&end&user',
+						templateUrl: 'public/pages/views/stealth/user_local.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'User IPs',
+							subtitleElm: {
+								'User': 'user'
+							},
+							daterange: true
+						}
+					})	
 			// SYSTEM HEALTH
 				// OVERVIEW
 				.state('overview', {
