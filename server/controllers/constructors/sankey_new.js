@@ -24,7 +24,7 @@ module.exports = function (params, conn, callback) {
 						"value":data.out_bytes, //??
 						"coverageCount":10, //??
 						"utilizationCount":15, //??
-						"scale":3.0//??
+						"scale":0.2//??
 					});	
 					central_populated = true;
 				}
@@ -35,7 +35,7 @@ module.exports = function (params, conn, callback) {
 					"value":data.out_bytes, //??
 					"coverageCount":10, //??
 					"utilizationCount":15, //??
-					"scale":1.0//??
+					"scale":0.2//??
 				});
 				//create link between stealth IP and central node
 				links.push({
