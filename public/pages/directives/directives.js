@@ -1444,17 +1444,26 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 							.style("stroke-width", "1.5px")
 							.style("stroke", "#fff")
 						}
-						elm.on('mouseover', function(d){
-							elm.style('cursor', 'pointer')
-						})
-						.on("click", function (d){
-							var link = {user: d.name};
-							if ($location.$$search.start && $location.$$search.end) {
-								link.start = $location.$$search.start;
-								link.end = $location.$$search.end;
-							}
-							$scope.$apply($location.path('user_local').search(link));
-						});
+						
+						if(d.group > 0) {
+							elm.on('mouseover', function(d){
+								elm.style('cursor', 'pointer')
+							})
+							.on("click", function (d){
+								var link = {user: d.name};
+								if ($location.$$search.start && $location.$$search.end) {
+									link.start = $location.$$search.start;
+									link.end = $location.$$search.end;
+								}
+								$scope.$apply($location.path('user_local').search(link));
+							});
+						} else {
+							elm.on('mouseover', function(d){
+								elm.style('cursor', 'pointer')
+							}).on("click", function (d){
+								// Do nothing (no link from COI for now)
+							});
+						}
 					})
 
 					//LEGEND
