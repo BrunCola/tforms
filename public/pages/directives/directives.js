@@ -531,8 +531,9 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 									if (aData.stealth && $scope.r.indexOf('stealth') !== -1) {
 										if (aData.stealth > 0){
 											$('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-shield fa-stack-1x fa-inverse"></i></span>');
-									}	} else {
-											$('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html('');
+										}
+									} else {
+										$('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html(aData.stealth);
 									}
 									if (aData.receiptto && $scope.r.indexOf('receiptto') !== -1) {
 										var newVar = aData.receiptto.replace(/[\<\>]/g,'');
