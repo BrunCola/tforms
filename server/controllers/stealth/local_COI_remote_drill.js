@@ -1,6 +1,6 @@
 'use strict';
 
-var sankey = require('../constructors/sankey'),
+var sankey = require('../constructors/sankey_new'),
 	fisheye = require('../constructors/fisheye'),
 	query = require('../constructors/query'),
 	config = require('../../config/config'),
@@ -46,30 +46,22 @@ module.exports = function(pool) {
 				var info = [];
 				var sankey1 = {
 					query: 'SELECT '+
-							'S.stealth_COIs AS stealth_COIs_remote, '+
 							'count(*) AS `count`, '+
 							'max(date_format(from_unixtime(stealth_conn.time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-							'stealth_conn.dst_ip, '+
-							'endpoint_tracking.lan_ip, '+
-							'endpoint_tracking.stealth_COIs, '+
-							'endpoint_tracking.user '+
+							'`src_ip`, '+
+							'`dst_ip`, '+
+							'(sum(in_bytes) / 1048576) as in_bytes, '+
+							'(sum(out_bytes) / 1048576) as out_bytes, '+
+							'sum(in_packets) as in_packets, '+
+							'sum(out_packets) as out_packets '+
 						'FROM '+
-							'`endpoint_tracking` '+
-						'LEFT JOIN `stealth_conn` '+
-						'ON ' +
-							'stealth_conn.src_ip = endpoint_tracking.lan_ip '+
-						'INNER JOIN ('+
-							'SELECT `lan_ip`, `stealth`, `stealth_COIs` FROM `endpoint_tracking` WHERE `stealth` > 0'+
-						') S ON '+
-							'stealth_conn.dst_ip = S.lan_ip '+
+							'`stealth_conn` '+
 						'WHERE '+
-							'stealth_conn.time BETWEEN ? AND ? '+
-							'AND endpoint_tracking.stealth > 0 '+
-							'AND endpoint_tracking.lan_ip = ? '+
-						'GROUP BY endpoint_tracking.lan_ip, '+
-						'stealth_conn.dst_ip '+
-						'ORDER BY `count` DESC '+
-						'LIMIT 10',
+							'time BETWEEN ? AND ? '+
+							'AND `dst_ip` = ? '+
+						'GROUP BY '+
+							'`src_ip` '+
+						'ORDER BY `count` DESC ',
 					insert: [start, end, req.query.ip]
 				}
 
@@ -433,8 +425,9 @@ module.exports = function(pool) {
 							handleReturn(data, maxConn, maxIOC, callback);
 						});
 					},
-					//SANKEY
+				//	SANKEY
 					function(callback) {
+						console.log(sankey1.query);
 						new sankey(sankey1, {database: database, pool: pool}, function(err,data){
 							sankeyData = data;
 							callback();
@@ -442,7 +435,7 @@ module.exports = function(pool) {
 					}
 				], function(err) { //This function gets called after the two tasks have called their "task callbacks"
 					if (err) throw console.log(err)
-
+					
 					res.json({
 						sankey: sankeyData,
 						info: info,
