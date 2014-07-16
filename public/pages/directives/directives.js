@@ -1492,16 +1492,14 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 						.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
 					legend.append("rect")
-						.attr("x", 228)
 						.attr("width", 18)
 						.attr("height", 18)
 						.style("fill", function(d) { return legend_color(d) });
 
 					legend.append("text")
-						.attr("x", 220)
+						.attr("x", 23)
 						.attr("y", 9)
 						.attr("dy", ".35em")
-						.style("text-anchor", "end")
 						.text(function(d) { return d; });
 
 					var gateway_legend = vis.selectAll(".gateway_legend")
@@ -1511,12 +1509,12 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 						.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
 					gateway_legend.append('svg:path')
-						.attr('transform', 'translate(219,122)')
+						.attr('transform', 'translate(0,122)')
 						.attr('d', 'M18,0C8.059,0,0,8.06,0,18.001C0,27.941,8.059,36,18,36c9.94,0,18-8.059,18-17.999C36,8.06,27.94,0,18,0z')
 						.attr('fill', '#67AAB5');
 
 					gateway_legend.append('svg:path')
-						.attr('transform', 'translate(219,122)')
+						.attr('transform', 'translate(0,122)')
 						.attr('d', 'M24.715,19.976l-2.057-1.122l-1.384-0.479l-1.051,0.857l-1.613-0.857l0.076-0.867l-1.062-0.325l0.31-1.146'+
 							'l-1.692,0.593l-0.724-1.616l0.896-1.049l1.108,0.082l0.918-0.511l0.806,1.629l0.447,0.087l-0.326-1.965l0.855-0.556l0.496-1.458'+
 							'l1.395-1.011l1.412-0.155l-0.729-0.7L22.06,9.039l1.984-0.283l0.727-0.568L22.871,6.41l-0.912,0.226L21.63,6.109l-1.406-0.352'+
@@ -1528,10 +1526,9 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 						.attr('fill', '#595A5C');
 
 					gateway_legend.append("text")
-						.attr("x", 212)
+						.attr("x", 40)
 						.attr("y", 140)
 						.attr("dy", ".35em")
-						.style("text-anchor", "end")
 						.text(function(d) { return d; });
 
 					//TEXT
