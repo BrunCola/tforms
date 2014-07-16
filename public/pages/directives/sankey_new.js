@@ -5,7 +5,6 @@ angular.module('mean.pages').directive('makeSankeyNew', ['$timeout', '$location'
 		link: function ($scope, element, attrs) {
 
 			d3.sankey = function() {
-				console.log("TESTTETSTSTETS");
 				var sankey = {},
 					nodeWidth = 24,
 					nodePadding = 8,
@@ -350,7 +349,6 @@ angular.module('mean.pages').directive('makeSankeyNew', ['$timeout', '$location'
 			};
 
 			$scope.$on('sankey_new', function (event, graph, params) {
-				console.log("TESTTE22222222222222 TSTSTETS");
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
 
 					function logslider(x) {

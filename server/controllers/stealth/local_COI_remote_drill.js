@@ -64,14 +64,57 @@ module.exports = function(pool) {
 						'ORDER BY `count` DESC ',
 					insert: [start, end, req.query.ip]
 				}
+				var sankey2 = {
+					query: 'SELECT '+
+							'count(*) AS `count`, '+
+							'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+							'`lan_ip`, '+
+							'`remote_ip`, '+
+							'(sum(in_bytes) / 1048576) as in_bytes, '+
+							'(sum(out_bytes) / 1048576) as out_bytes, '+
+							'sum(in_packets) as in_packets, '+
+							'sum(out_packets) as out_packets '+
+						'FROM '+
+							'`conn_meta` '+
+						'WHERE '+
+							'time BETWEEN ? AND ? '+
+							'AND ((`remote_ip` = ?) '+
+							'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%")) '+
+						'GROUP BY '+
+							'`lan_ip`, '+
+							'`remote_ip` '+
+						'ORDER BY `count` DESC ',
+					insert: [start, end, req.query.ip, req.query.ip]
+				}
+				var sankey3 = {
+					query: 'SELECT '+
+							'count(*) AS `count`, '+
+							'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+							'`lan_ip`, '+
+							'`remote_ip`, '+
+							'(sum(in_bytes) / 1048576) as in_bytes, '+
+							'(sum(out_bytes) / 1048576) as out_bytes, '+
+							'sum(in_packets) as in_packets, '+
+							'sum(out_packets) as out_packets '+
+						'FROM '+
+							'`conn_meta` '+
+						'WHERE '+
+							'time BETWEEN ? AND ? '+
+							'AND `lan_ip` = ? '+
+							'AND NOT (remote_ip LIKE "192.168.222.%") '+
+						'GROUP BY '+
+							'`remote_ip` '+
+						'ORDER BY `count` DESC LIMIT 10',
+					insert: [start, end, req.query.ip]
+				}
 
 				var stealth_conn = {
 					query: 'SELECT '+
 							'`time`, '+
 							'`src_ip`,'+
 							'`dst_ip`,'+
-							'`in_bytes`,'+
-							'`out_bytes`,'+
+							'`(in_bytes / 1048576) as in_bytes`,'+
+							'`(out_bytes / 1048576) as out_bytes`,'+
 							'`in_packets`,'+
 							'`out_packets` '+
 						'FROM '+
@@ -107,8 +150,8 @@ module.exports = function(pool) {
 							'`remote_port`,'+
 							'`remote_country`,'+
 							'`remote_asn_name`,'+
-							'`in_bytes`,'+
-							'`out_bytes`,'+
+							'`(in_bytes / 1048576) as in_bytes`,'+
+							'`(out_bytes / 1048576) as out_bytes`,'+
 							'`l7_proto`,'+
 							'`ioc`,'+
 							'`ioc_severity`,'+
@@ -427,8 +470,8 @@ module.exports = function(pool) {
 					},
 				//	SANKEY
 					function(callback) {
-						console.log(sankey1.query);
-						new sankey(sankey1, {database: database, pool: pool}, function(err,data){
+						console.log(sankey3.query);
+						new sankey(sankey1, sankey2, sankey3, {database: database, pool: pool}, function(err,data){
 							sankeyData = data;
 							callback();
 						});
