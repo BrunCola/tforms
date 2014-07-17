@@ -1,6 +1,6 @@
 'use strict';
 
-var dataTable = require('../constructors/datatable'),
+var datatable_stealth = require('../constructors/datatable_stealth'),
 	query = require('../constructors/query'),
 	config = require('../../config/config'),
 	async = require('async');
@@ -185,15 +185,9 @@ module.exports = function(pool) {
 							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection`,'+
 							'`ioc_attrID`,'+
-							'sum(`ioc_count`) AS ioc_count,'+
-							'endpoint_tracking.stealth,'+
-							'endpoint_tracking.stealth_COIs,'+
-							'endpoint_tracking.user '+
+							'sum(`ioc_count`) AS ioc_count '+
 						'FROM '+
 							'`conn_ioc` '+
-						'LEFT JOIN `endpoint_tracking` '+
-						'ON ' +
-							'conn_ioc.lan_ip = endpoint_tracking.lan_ip ' +
 						'WHERE '+
 							'conn_ioc.time BETWEEN ? AND ? '+
 							'AND `ioc_count` > 0 '+
@@ -215,9 +209,6 @@ module.exports = function(pool) {
 								crumb: false
 							},
 						},
-						{ title: 'Stealth', select: 'stealth' },
-						{ title: 'COI Groups', select: 'stealth_COIs' },
-						{ title: 'User', select: 'user' },
 						{ title: 'Severity', select: 'ioc_severity' },
 						{ title: 'IOC Hits', select: 'ioc_count' },
 						{ title: 'IOC', select: 'ioc' },
@@ -244,10 +235,31 @@ module.exports = function(pool) {
 						},
 					],
 					settings: {
-						sort: [[0, 'desc']],
+						sort: [[1, 'desc']],
 						div: 'table',
 						title: 'Indicators of Compromise (IOC) Notifications'
 					}
+				}
+				var table2 = {
+					query: 'SELECT '+
+							'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ 
+							'`stealth_COIs`, ' +
+							'`stealth`, '+
+							'`lan_ip`, ' +
+							'`event`, ' +
+							'`user` ' +
+						'FROM ' + 
+							'`endpoint_tracking` '+
+						'WHERE ' + 
+							'stealth > 0 '+
+							'AND event = "Log On" ',
+					insert: [],
+					params: [
+						{ title: 'Stealth', select: 'stealth' },
+						{ title: 'COI Groups', select: 'stealth_COIs' },
+						{ title: 'User', select: 'user' }
+					],
+					settings: {}
 				}
 				var crossfilterQ = {
 					query: 'SELECT '+
@@ -276,7 +288,7 @@ module.exports = function(pool) {
 				async.parallel([
 					// Table function(s)
 					function(callback) {
-						new dataTable(table1, {database: database, pool: pool}, function(err,data){
+						new datatable_stealth(table1, table2, {database: database, pool: pool}, function(err,data){
 							tables.push(data);
 							callback();
 						});

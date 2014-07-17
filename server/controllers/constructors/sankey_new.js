@@ -26,21 +26,21 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 							if(!central_populated){
 								src.push({
 									"name":data.dst_ip,
-									"value": data.in_bytes + 10, //??
-									"coverageCount":data.in_bytes + 10, //??
-									"utilizationCount":data.in_bytes + 10, //??
+									"value": data.out_bytes + 10, //??
+									"coverageCount":data.out_bytes + 10, //??
+									"utilizationCount":data.out_bytes + 10, //??
 									"scale":0.2,//??
 									"type":"stealth"
 								});	
 								central_populated = true;
 							}
 							else {
-								src[0].value += data.in_bytes;
-								src[0].utilizationCount += data.in_bytes;
-								src[0].coverageCount += data.in_bytes; //????????????*(******)
+								src[0].value += data.out_bytes;
+								src[0].utilizationCount += data.out_bytes;
+								src[0].coverageCount += data.out_bytes; //????????????*(******)
 							}
 							//populate stealth nodes that try to connect to the central node
-							if(data.out_bytes < 0.5) {
+							if(data.in_bytes < 0.5) {
 								src.push({
 									"name":data.src_ip,
 									"value":0.2, //??
@@ -52,8 +52,8 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 							} else {
 								src.push({
 									"name":data.src_ip,
-									"value":data.out_bytes, //??
-									"coverageCount":data.out_bytes, //??
+									"value":data.in_bytes, //??
+									"coverageCount":data.in_bytes, //??
 									"utilizationCount":2, //??
 									"scale":0.3,//??
 									"type":"stealth"
@@ -63,8 +63,8 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 							links.push({
 								"source":src.length -1,
 								"target":0,
-								"value":data.out_bytes + 0.01,
-								"targetCount":data.in_bytes + 0.01//????
+								"value":data.in_bytes + 0.01,
+								"targetCount":data.out_bytes + 0.01//????
 							});
 				
 						})		
@@ -84,7 +84,7 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 						result.forEach(function(data){ 
 							//if the remote IP = the central add the local
 							if(data.remote_ip === src[0].name) {
-								if(data.out_bytes < 0.5) {
+								if(data.in_bytes < 0.5) {
 									src.push({
 										"name":data.lan_ip + " (cleartext)",
 										"value":0.2, //??
@@ -96,7 +96,7 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 								} else {
 									src.push({
 										"name":data.lan_ip + " (cleartext)",
-										"value":data.out_bytes, //??
+										"value":data.in_bytes, //??
 										"coverageCount":10, //??
 										"utilizationCount":2, //??
 										"scale":0.3,//??
@@ -107,13 +107,13 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 								links.push({
 									"source":0,
 									"target":src.length -1,
-									"value":data.in_bytes + 0.01,
-									"targetCount":data.out_bytes + 0.01//????
+									"value":data.out_bytes + 0.01,
+									"targetCount":data.in_bytes + 0.01//????
 								});
 							}
 							//if the lan_ip = the central add the "remote" node
 							else if(data.lan_ip === src[0].name) {
-								if(data.in_bytes < 0.5) {
+								if(data.out_bytes < 0.5) {
 									src.push({
 										"name":data.remote_ip + " (cleartext)",
 										"value":0.2, //??
@@ -125,7 +125,7 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 								} else {
 									src.push({
 										"name":data.remote_ip + " (cleartext)",
-										"value":data.in_bytes, //??
+										"value":data.out_bytes, //??
 										"coverageCount":10, //??
 										"utilizationCount":2, //??
 										"scale":0.3,//??
@@ -136,8 +136,8 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 								links.push({
 									"source":0,
 									"target":src.length -1,
-									"value":data.out_bytes + 0.01,
-									"targetCount":data.in_bytes + 0.01//????
+									"value":data.in_bytes + 0.01,
+									"targetCount":data.out_bytes + 0.01//????
 								});
 							}
 						});
@@ -153,7 +153,7 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 						callback(err, null);
 					} else {
 						result.forEach(function(data){ 
-							if(data.in_bytes < 0.5) {
+							if(data.out_bytes < 0.5) {
 								src.push({
 									"name":data.remote_ip + " (cleartext-remote)",
 									"value":0.2, //??
@@ -165,7 +165,7 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 							} else {
 								src.push({
 									"name":data.remote_ip + " (cleartext-remote)",
-									"value":data.in_bytes, //??
+									"value":data.out_bytes, //??
 									"coverageCount":10, //??
 									"utilizationCount":2, //??
 									"scale":0.3,//??
@@ -176,8 +176,8 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 							links.push({
 								"source":0,
 								"target":src.length -1,
-								"value":data.out_bytes + 0.01,
-								"targetCount":data.in_bytes + 0.01//????
+								"value":data.in_bytes + 0.01,
+								"targetCount":data.out_bytes + 0.01//????
 							});
 						});
 						callback();

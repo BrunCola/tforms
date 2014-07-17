@@ -50,8 +50,8 @@ module.exports = function(pool) {
 						{ title: 'IP', select: 'ip' },
 						{ title: 'MB to Remote', select: 'in_bytes' },
 						{ title: 'MB from Remote', select: 'out_bytes' },
-						{ title: 'Packets to Remote', select: 'in_packets' },
-						{ title: 'Packets from Remote', select: 'out_packets' }
+						{ title: 'Packets to Remote', select: 'out_packets' },
+						{ title: 'Packets from Remote', select: 'in_packets' }
 					],
 					settings: {
 						sort: [[0, 'desc']],
@@ -62,9 +62,7 @@ module.exports = function(pool) {
 				var crossfilterQ = {
 					query: 'SELECT '+
 						'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-						'(sum(in_bytes + out_bytes) / 1048576) AS count, '+
-						'(sum(`in_bytes`) / 1048576) AS in_bytes, '+
-						'(sum(`out_bytes`) / 1048576) AS out_bytes '+
+						'(sum(in_bytes + out_bytes) / 1048576) AS count '+
 					'FROM '+
 						'`stealth_conn` '+
 					'WHERE '+
@@ -73,7 +71,7 @@ module.exports = function(pool) {
 						'month(from_unixtime(time)),'+
 						'day(from_unixtime(time)),'+
 						'hour(from_unixtime(time))',
-					insert: [start, end, req.query.ip]
+					insert: [start, end]
 				}
 				async.parallel([
 					// Table function(s)

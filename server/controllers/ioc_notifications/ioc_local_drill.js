@@ -1,6 +1,6 @@
 'use strict';
 
-var dataTable = require('../constructors/datatable'),
+var datatable_stealth = require('../constructors/datatable_stealth'),
 query = require('../constructors/query'),
 config = require('../../config/config'),
 async = require('async');
@@ -35,18 +35,12 @@ module.exports = function(pool) {
 							'`remote_country`,'+
 							'`remote_cc`,'+
 							'`remote_asn_name`,'+
-							'endpoint_tracking.stealth,'+
-							'endpoint_tracking.stealth_COIs,'+
-							'endpoint_tracking.user,'+
 							'sum(`in_packets`) AS in_packets,'+
 							'sum(`out_packets`) AS out_packets,'+
 							'sum(`in_bytes`) AS in_bytes,'+
 							'sum(`out_bytes`) AS out_bytes '+
 						'FROM '+
 							'`conn_ioc` '+
-						'LEFT JOIN `endpoint_tracking` '+
-						'ON ' +
-							'conn_ioc.lan_ip = endpoint_tracking.lan_ip ' +
 						'WHERE '+
 							'conn_ioc.time BETWEEN ? AND ? '+
 							'AND `lan_zone` = ? '+
@@ -68,9 +62,6 @@ module.exports = function(pool) {
 								crumb: false
 							},
 						},
-						{ title: 'Stealth', select: 'stealth' },
-						{ title: 'COI Groups', select: 'stealth_COIs' },
-						{ title: 'Stealth', select: 'user' },
 						{ title: 'Severity', select: 'ioc_severity' },
 						{ title: 'IOC Hits', select: 'count' },
 						{ title: 'IOC', select: 'ioc' },
@@ -89,10 +80,51 @@ module.exports = function(pool) {
 						{ title: 'Packets from Remote', select: 'out_packets', dView: false },
 					],
 					settings: {
-						sort: [[4, 'desc']],
+						sort: [[1, 'desc']],
 						div: 'table',
 						title: 'Indicators of Compromise (IOC) Notifications'
 					}
+				}
+				var table2 = {
+					query: 'SELECT '+
+							'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ 
+							'`stealth_COIs`, ' +
+							'`stealth`, '+
+							'`lan_ip`, ' +
+							'`event`, ' +
+							'`user` ' +
+						'FROM ' + 
+							'`endpoint_tracking` '+
+						'WHERE ' + 
+							'stealth > 0 '+
+							'AND event = "Log On" ',
+					insert: [],
+					params: [
+						{ title: 'Stealth', select: 'stealth' },
+						{ title: 'COI Groups', select: 'stealth_COIs' },
+						{ title: 'User', select: 'user' }
+					],
+					settings: {}
+				}	
+				var crossfilterQ = {
+					query: 'SELECT '+
+						'count(*) as count,'+
+						'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
+						'`ioc_severity`,'+
+						'`ioc` '+
+					'FROM '+
+						'`conn_ioc` '+
+					'WHERE '+
+						'`time` BETWEEN ? AND ? '+
+						'AND `ioc_count` > 0 '+
+						'AND `trash` IS NULL '+
+					'GROUP BY '+
+						'month(from_unixtime(time)),'+
+						'day(from_unixtime(time)),'+
+						'hour(from_unixtime(time)),'+
+						'ioc,'+
+						'ioc_severity',
+					insert: [start, end]
 				}
 				var crossfilterQ = {
 					query: 'SELECT '+
@@ -120,7 +152,7 @@ module.exports = function(pool) {
 					// Table function(s)
 					function(callback) {
 						console.log(table1.query);
-						new dataTable(table1, {database: database, pool: pool}, function(err,data){
+						new datatable_stealth(table1, table2, {database: database, pool: pool}, function(err,data){
 							tables.push(data);
 							callback();
 						});
