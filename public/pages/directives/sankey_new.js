@@ -417,24 +417,65 @@ angular.module('mean.pages').directive('makeSankeyNew', ['$timeout', '$location'
 					  .on("dragstart", function() { this.parentNode.appendChild(this); })
 					  .on("drag", dragmove));
 
-					node.append("rect")
-					  .attr("height", function(d) { return d.dy; })
-					  .attr("width", sankey.nodeWidth())
-					  .style("fill", function(d) { return d.color = color(d.name.replace(/ .*/, "")); })
-					  .style("stroke", function(d) { return d3.rgb(d.color).darker(2); })
-					.append("title")
-					  .text(function(d) { return d.name + "\n" + format(d.value); });
+					node.each(function(d){
+						var elm = d3.select(this);
+						switch (d.type) {
+							case 'stealth':
+								elm.append('circle')
+									.attr('transform', 'translate(-18,-18)')
+									.attr('fill', '#0080CE')
+									.attr('cx', 18)
+									.attr('cy', 18)
+									.attr('r', 18);
+								elm.append('svg:path')
+									.attr('transform', 'translate(-18,-18)')
+									.attr('fill', '#58595B')
+									.attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
+										'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
+										'C28.014,15.545,26.676,21.468,23.587,26.751z')
+								elm.append('svg:path')
+									.attr('transform', 'translate(-18,-18)')
+									.attr('fill', '#0080CE')
+									.attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
+										'C11.076,16.238,11.938,20.26,13.699,23.661z')
+								return;
+							case 'cleartext':
+								element.append('svg:path')
+									.attr('transform', 'translate(-18,-18)')
+									.attr('d', 'M18,0C8.059,0,0,8.059,0,18c0,9.94,8.059,18,18,18s18-8.06,18-18C36,8.059,27.94,0,18,0z')
+									.attr('fill', '#6FBF9B');
+								element.append('svg:polygon')
+									.attr('transform', 'translate(-18,-18)')
+									.attr('points', '24.585,6.299 24.585,9.064 11.195,9.064 11.195,14.221 24.585,14.221 24.585,16.986 31.658,11.643 ')
+									.attr('fill', '#595A5C');
+								element.append('svg:polygon')
+									.attr('transform', 'translate(-18,-18)')
+									.attr('points', '10.99,17.822 3.916,23.166 10.99,28.51 10.99,25.744 24.287,25.744 24.287,20.59 10.99,20.59 ')
+									.attr('fill', '#595A5C');
+								return;
+							default:
+								elm.append("rect")
+									.attr("height", function(d) { return d.dy; })
+									.attr("width", sankey.nodeWidth())
+									.style("fill", function(d) { return d.color = color(d.name.replace(/ .*/, "")); })
+									.style("stroke", function(d) { return d3.rgb(d.color).darker(2); })
+									.append("title")
+									.text(function(d) { return d.name + "\n" + format(d.value); });
 
-					node.append("text")
-					  .attr("x", -6)
-					  .attr("y", function(d) { return d.dy / 2; })
-					  .attr("dy", ".35em")
-					  .attr("text-anchor", "end")
-					  .attr("transform", null)
-					  .text(function(d) { return d.name; })
-					.filter(function(d) { return d.x < width / 2; })
-					  .attr("x", 6 + sankey.nodeWidth())
-					  .attr("text-anchor", "start");
+								elm.append("text")
+									.attr("x", -6)
+									.attr("y", function(d) { return d.dy / 2; })
+									.attr("dy", ".35em")
+									.attr("text-anchor", "end")
+									.attr("transform", null)
+									.text(function(d) { return d.name; })
+									.filter(function(d) { return d.x < width / 2; })
+									.attr("x", 6 + sankey.nodeWidth())
+									.attr("text-anchor", "start");
+								return;
+						}
+					})
+
 
 					link.on("click", function(d){ 
 						window.showAlert(d.source.name + "->"+d.target.name);
