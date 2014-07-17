@@ -63,7 +63,7 @@ module.exports = function(pool) {
 						title: 'Local Endpoints Triggering Event'
 					}
 				}
-				var table2 = {
+			var table2 = {	
 				query: 'SELECT '+
 						'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ 
 						'`stealth_COIs`, ' +
