@@ -1,6 +1,6 @@
 'use strict';
 
-var dataTable = require('../constructors/datatable'),
+var datatable_stealth = require('../constructors/datatable_stealth'),
 query = require('../constructors/query'),
 config = require('../../config/config'),
 async = require('async');
@@ -37,15 +37,9 @@ module.exports = function(pool) {
 						'sum(`irc`) AS `irc`,'+
 						'sum(`smtp`) AS `smtp`,'+
 						'sum(`file`) AS `file`,'+
-						'sum(`ioc_count`) AS `ioc_count`, '+
-						'endpoint_tracking.stealth,'+
-						'endpoint_tracking.stealth_COIs, '+
-						'endpoint_tracking.user '+
+						'sum(`ioc_count`) AS `ioc_count` '+
 					'FROM '+
 						'`conn_local` '+
-					'LEFT JOIN `endpoint_tracking` '+
-					'ON ' +
-						'conn_local.lan_ip = endpoint_tracking.lan_ip ' +
 					'WHERE '+
 						'conn_local.time BETWEEN ? AND ? '+
 					'GROUP BY '+
@@ -64,9 +58,6 @@ module.exports = function(pool) {
 							crumb: false
 						},
 					},
-					{ title: 'Stealth', select: 'stealth' },
-					{ title: 'COI Groups', select: 'stealth_COIs' },
-					{ title: 'User', select: 'user' },
 					{ title: 'Zone', select: 'lan_zone' },
 					{ title: 'Machine Name', select: 'machine' },
 					{ title: 'Local IP', select: 'lan_ip' },
@@ -91,6 +82,27 @@ module.exports = function(pool) {
 					title: 'Local IP Traffic'
 				}
 			}
+			var table2 = {
+				query: 'SELECT '+
+						'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ 
+						'`stealth_COIs`, ' +
+						'`stealth`, '+
+						'`lan_ip`, ' +
+						'`event`, ' +
+						'`user` ' +
+					'FROM ' + 
+						'`endpoint_tracking` '+
+					'WHERE ' + 
+						'stealth > 0 '+
+						'AND event = "Log On" ',
+				insert: [],
+				params: [
+					{ title: 'Stealth', select: 'stealth' },
+					{ title: 'COI Groups', select: 'stealth_COIs' },
+					{ title: 'User', select: 'user' }
+				],
+				settings: {}
+			}
 			var crossfilterQ = {
 				query: 'SELECT '+
 						'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time,'+
@@ -110,7 +122,7 @@ module.exports = function(pool) {
 			async.parallel([
 				// Table function(s)
 				function(callback) {
-					new dataTable(table1, {database: database, pool: pool}, function(err,data){
+					new datatable_stealth(table1, table2, {database: database, pool: pool}, function(err,data){
 						tables.push(data);
 						callback();
 					});
