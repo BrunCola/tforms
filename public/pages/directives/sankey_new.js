@@ -421,36 +421,88 @@ angular.module('mean.pages').directive('makeSankeyNew', ['$timeout', '$location'
 						var elm = d3.select(this);
 						switch (d.type) {
 							case 'stealth':
-								elm.append('circle')
+								elm.append("rect")
+									.attr("height", function(d) { return d.dy; })
+									.attr("width", sankey.nodeWidth())
+									.style("fill", function(d) { return d.color = color(d.name.replace(/ .*/, "")); })
+									.style("stroke", function(d) { return d3.rgb(d.color).darker(2); })
+									.append("title")
+									.text(function(d) { return d.name + "\n" + format(d.value); });
+								
+								var text =  elm.append("text")
+									.attr("x", -6)
+									.attr("y", function(d) { return d.dy / 2; })
+									.attr("dy", ".35em")
+									.attr("text-anchor", "end")
+									.attr("transform", null)
+									.text(function(d) { return d.name; })
+									.filter(function(d) { return d.x < width / 2; })
+									.attr("x", 6 + sankey.nodeWidth())
+									.attr("text-anchor", "start");
+
+								var viz = elm.append('g')
+									.attr('transform', function(d) { 
+										var width = parseInt(text.style('width').match(/(\d+)/g));
+										return 'translate('+(20 + sankey.nodeWidth() + width)+','+(d.dy / 2)+')scale(0.5)'; 
+									})
+	
+								viz.append('circle')
 									.attr('transform', 'translate(-18,-18)')
-									.attr('fill', '#0080CE')
+									.attr('fill', function(d) { return d.color = color(d.name.replace(/ .*/, "")); })
 									.attr('cx', 18)
 									.attr('cy', 18)
 									.attr('r', 18);
-								elm.append('svg:path')
+								viz.append('svg:path')
 									.attr('transform', 'translate(-18,-18)')
 									.attr('fill', '#58595B')
 									.attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
 										'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
 										'C28.014,15.545,26.676,21.468,23.587,26.751z')
-								elm.append('svg:path')
+								viz.append('svg:path')
 									.attr('transform', 'translate(-18,-18)')
-									.attr('fill', '#0080CE')
+									.attr('fill', function(d) { return d.color = color(d.name.replace(/ .*/, "")); })
 									.attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
 										'C11.076,16.238,11.938,20.26,13.699,23.661z')
 								return;
 							case 'cleartext':
-								element.append('svg:path')
-									.attr('transform', 'translate(-18,-18)')
-									.attr('d', 'M18,0C8.059,0,0,8.059,0,18c0,9.94,8.059,18,18,18s18-8.06,18-18C36,8.059,27.94,0,18,0z')
-									.attr('fill', '#6FBF9B');
-								element.append('svg:polygon')
-									.attr('transform', 'translate(-18,-18)')
-									.attr('points', '24.585,6.299 24.585,9.064 11.195,9.064 11.195,14.221 24.585,14.221 24.585,16.986 31.658,11.643 ')
-									.attr('fill', '#595A5C');
-								element.append('svg:polygon')
-									.attr('transform', 'translate(-18,-18)')
-									.attr('points', '10.99,17.822 3.916,23.166 10.99,28.51 10.99,25.744 24.287,25.744 24.287,20.59 10.99,20.59 ')
+								elm.append("rect")
+									.attr("height", function(d) { return d.dy; })
+									.attr("width", sankey.nodeWidth())
+									.style("fill", function(d) { return d.color = color(d.name.replace(/ .*/, "")); })
+									.style("stroke", function(d) { return d3.rgb(d.color).darker(2); })
+									.append("title")
+									.text(function(d) { return d.name + "\n" + format(d.value); });
+	
+								var text = elm.append("text")
+									.attr("x", -6)
+									.attr("y", function(d) { return d.dy / 2; })
+									.attr("dy", ".35em")
+									.attr("text-anchor", "end")
+									.attr("transform", null)
+									.text(function(d) { return d.name; })
+									.filter(function(d) { return d.x < width / 2; })
+									.attr("x", 6 + sankey.nodeWidth())
+									.attr("text-anchor", "start");
+
+								var viz = elm.append('g')
+									.attr('transform', function(d) { 
+										// var width = parseInt(text.style('width').match(/(\d+)/g));
+										return 'scale(0.5)'; 
+									})
+								viz.append('svg:path')
+									.attr('transform', 'translate(0,-18)')
+									.attr('d', 'M18,0C8.059,0,0,8.06,0,18.001C0,27.941,8.059,36,18,36c9.94,0,18-8.059,18-17.999C36,8.06,27.94,0,18,0z')
+									.attr('fill', '#67AAB5');
+								viz.append('svg:path')
+									.attr('transform', 'translate(0,-18)')
+									.attr('d', 'M24.715,19.976l-2.057-1.122l-1.384-0.479l-1.051,0.857l-1.613-0.857l0.076-0.867l-1.062-0.325l0.31-1.146'+
+										'l-1.692,0.593l-0.724-1.616l0.896-1.049l1.108,0.082l0.918-0.511l0.806,1.629l0.447,0.087l-0.326-1.965l0.855-0.556l0.496-1.458'+
+										'l1.395-1.011l1.412-0.155l-0.729-0.7L22.06,9.039l1.984-0.283l0.727-0.568L22.871,6.41l-0.912,0.226L21.63,6.109l-1.406-0.352'+
+										'l-0.406,0.596l0.436,0.957l-0.485,1.201L18.636,7.33l-2.203-0.934l1.97-1.563L17.16,3.705l-2.325,0.627L8.91,3.678L6.39,6.285'+
+										'l2.064,1.242l1.479,1.567l0.307,2.399l1.009,1.316l1.694,2.576l0.223,0.177l-0.69-1.864l1.58,2.279l0.869,1.03'+
+										'c0,0,1.737,0.646,1.767,0.569c0.027-0.07,1.964,1.598,1.964,1.598l1.084,0.52L19.456,21.1l-0.307,1.775l1.17,1.996l0.997,1.242'+
+										'l-0.151,2.002L20.294,32.5l0.025,2.111l1.312-0.626c0,0,2.245-3.793,2.368-3.554c0.122,0.238,2.129-2.76,2.129-2.76l1.666-1.26'+
+										'l0.959-3.195l-2.882-1.775L24.715,19.976z')
 									.attr('fill', '#595A5C');
 								return;
 							default:
