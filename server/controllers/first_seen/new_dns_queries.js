@@ -35,23 +35,14 @@ module.exports = function(pool) {
 						'`qtype_name` AS qtype,'+
 						'`qclass_name` AS qclass,'+
 						'`rcode_name` AS rcode,'+
-						'`query`, '+
-						'endpoint_tracking.stealth,'+
-						'endpoint_tracking.stealth_COIs,'+
-						'endpoint_tracking.user '+
+						'`query` '+
 					'FROM '+
 						'`dns_uniq_query` '+
-					'LEFT JOIN `endpoint_tracking` '+
-					'ON ' +
-						'dns_uniq_query.lan_ip = endpoint_tracking.lan_ip ' +
 					'WHERE '+
 						'dns_uniq_query.time BETWEEN ? AND ?',
 				insert: [start, end],
 				params: [
 					{ title: 'First Seen', select: 'time' },
-					{ title: 'Stealth', select: 'stealth' },
-					{ title: 'COI Groups', select: 'stealth_COIs' },
-					{ title: 'User', select: 'user' },
 					{ title: 'Query Type', select: 'qtype' },
 					{ title: 'Query Class', select: 'qclass', dView: false },
 					{ title: 'Response Code', select: 'rcode', dView: false },

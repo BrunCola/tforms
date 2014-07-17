@@ -31,23 +31,14 @@ module.exports = function(pool) {
 						'`remote_asn_name`,'+
 						'`remote_country`,'+
 						'`remote_cc`,'+
-						'ftp_uniq_remote_ip.user AS ftp_user, '+
-						'endpoint_tracking.stealth,'+
-						'endpoint_tracking.stealth_COIs,'+
-						'endpoint_tracking.user '+
+						'ftp_uniq_remote_ip.user AS ftp_user '+
 					'FROM '+
 						'`ftp_uniq_remote_ip` '+
-					'LEFT JOIN `endpoint_tracking` '+
-					'ON ' +
-						'ftp_uniq_remote_ip.lan_ip = endpoint_tracking.lan_ip ' +
 					'WHERE '+
 						'ftp_uniq_remote_ip.time BETWEEN ? AND ?',
 				insert: [start, end],
 				params: [
 					{ title: 'Last Seen', select: 'time' },
-					{ title: 'Stealth', select: 'stealth' },
-					{ title: 'COI Groups', select: 'stealth_COIs' },
-					{ title: 'User', select: 'user' },
 					{ title: 'Zone', select: 'lan_zone' },
 					{ title: 'Machine Name', select: 'machine' },
 					{ title: 'Local IP', select: 'lan_ip' },

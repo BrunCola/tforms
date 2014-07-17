@@ -29,15 +29,9 @@ module.exports = function(pool) {
 						'`remote_country`,'+
 						'`remote_cc`,'+
 						'`remote_asn`,'+
-						'`remote_asn_name`, '+
-						'endpoint_tracking.stealth,'+
-						'endpoint_tracking.stealth_COIs,'+
-						'endpoint_tracking.user '+
+						'`remote_asn_name` '+
 					'FROM '+
 						'`ssl_uniq_remote_ip` '+
-					'LEFT JOIN `endpoint_tracking` '+
-					'ON ' +
-						'ssl_uniq_remote_ip.lan_ip = endpoint_tracking.lan_ip ' +
 					'WHERE '+
 						'ssl_uniq_remote_ip.time BETWEEN ? AND ?',
 				insert: [start, end],
@@ -53,9 +47,6 @@ module.exports = function(pool) {
 							crumb: false
 						},
 					},
-					{ title: 'Stealth', select: 'stealth' },
-					{ title: 'COI Groups', select: 'stealth_COIs' },
-					{ title: 'User', select: 'user' },
 					{ title: 'Server Name', select: 'server_name' },
 					{ title: 'Remote IP', select: 'remote_ip' },
 					{ title: 'Remote Country', select: 'remote_country' },

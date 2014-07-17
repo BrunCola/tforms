@@ -30,23 +30,14 @@ module.exports = function(pool) {
 						'`remote_asn`,'+
 						'`remote_asn_name`,'+
 						'`lan_client`,'+
-						'`remote_server`, '+
-						'endpoint_tracking.stealth,'+
-						'endpoint_tracking.stealth_COIs,'+
-						'endpoint_tracking.user '+
+						'`remote_server` '+
 					'FROM '+
 						'`ssh_uniq_remote_ip` '+
-					'LEFT JOIN `endpoint_tracking` '+
-					'ON ' +
-						'ssh_uniq_remote_ip.lan_ip = endpoint_tracking.lan_ip ' +
 					'WHERE '+
 						'ssh_uniq_remote_ip.time BETWEEN ? AND ?',
 				insert: [start, end],
 				params: [
 					{ title: 'Last Seen', select: 'time' },
-					{ title: 'Stealth', select: 'stealth' },
-					{ title: 'COI Groups', select: 'stealth_COIs' },
-					{ title: 'User', select: 'user' },
 					{ title: 'Zone', select: 'lan_zone' },
 					{ title: 'Machine Name', select: 'machine' },
 					{ title: 'Local IP', select: 'lan_ip' },

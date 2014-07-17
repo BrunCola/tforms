@@ -26,33 +26,12 @@ angular.module('mean.pages').controller('newRemoteController', ['$scope', '$stat
 				$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
 				$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
 				$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
-				var geoDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
-				var geoGroup = geoDimension.group().reduceSum(function (d) {
-					return d.count;
-				});
-				$scope.$broadcast('geoChart', geoDimension, geoGroup);
 				
 				var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
-				var barGroupPre = barDimension.group();
-				var barGroup = barGroupPre.reduce(
-					function(p, v) {
-						p.in_bytes += v.in_bytes;
-						p.out_bytes += v.out_bytes;
-						return p;
-					},
-					function(p, v) {
-						p.in_bytes -= v.in_bytes;
-						p.out_bytes -= v.out_bytes;
-						return p;
-					},
-					function() {
-						return {
-							in_bytes: 0,
-							out_bytes: 0
-						};
-					}
-				);
-				$scope.$broadcast('barChart', barDimension, barGroup, 'bandwidth');
+
+				var barGroup = barDimension.group().reduceSum(function(d) { return d.count });
+				$scope.$broadcast('barChart', barDimension, barGroup, 'bar')
+					
 					$scope.barChartxAxis = '';
 					$scope.barChartyAxis = '# New IP / Hour';
 			}

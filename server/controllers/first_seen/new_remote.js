@@ -27,15 +27,9 @@ module.exports = function(pool) {
 						'`remote_ip`,'+
 						'`remote_asn_name`,'+
 						'`remote_country`,'+
-						'`remote_cc`, '+
-						'endpoint_tracking.stealth,'+
-						'endpoint_tracking.stealth_COIs,'+
-						'endpoint_tracking.user '+
+						'`remote_cc` '+
 					'FROM '+
 						'`conn_uniq_remote_ip` '+
-					'LEFT JOIN `endpoint_tracking` '+
-					'ON ' +
-						'conn_uniq_remote_ip.lan_ip = endpoint_tracking.lan_ip ' +
 					'WHERE '+
 						'conn_uniq_remote_ip.time BETWEEN ? AND ?',
 				insert: [start, end],
@@ -50,9 +44,6 @@ module.exports = function(pool) {
 							crumb: false
 						},
 					},
-					{ title: 'Stealth', select: 'stealth' },
-					{ title: 'COI Groups', select: 'stealth_COIs' },
-					{ title: 'User', select: 'user' },
 					{ title: 'Remote IP', select: 'remote_ip' },
 					{ title: 'Remote Country', select: 'remote_country' },
 					{ title: 'Flag', select: 'remote_cc', },
@@ -71,9 +62,7 @@ module.exports = function(pool) {
 				query: 'SELECT '+
 						'count(*) AS count,'+
 						'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-						'`remote_country`, '+
-						'(sum(`in_bytes`) / 1048576) AS in_bytes, '+
-						'(sum(`out_bytes`) / 1048576) AS out_bytes '+
+						'`remote_country` '+
 					'FROM '+
 						'`conn_uniq_remote_ip` '+
 					'WHERE '+

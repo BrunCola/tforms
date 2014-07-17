@@ -29,23 +29,14 @@ module.exports = function(pool) {
 						'`remote_country`,'+
 						'`remote_cc`,'+
 						'`remote_asn`,'+
-						'`remote_asn_name`, '+
-						'endpoint_tracking.stealth,'+
-						'endpoint_tracking.stealth_COIs,'+
-						'endpoint_tracking.user '+
+						'`remote_asn_name` '+
 					'FROM '+
 						'`http_uniq_host` '+
-					'LEFT JOIN `endpoint_tracking` '+
-					'ON ' +
-						'http_uniq_host.lan_ip = endpoint_tracking.lan_ip ' +
 					'WHERE '+
 						'http_uniq_host.time BETWEEN ? AND ?',
 				insert: [start, end],
 				params: [
 					{ title: 'First Seen', select: 'time' },
-					{ title: 'Stealth', select: 'stealth' },
-					{ title: 'COI Groups', select: 'stealth_COIs' },
-					{ title: 'User', select: 'user' },
 					{ title: 'HTTP Domain', select: 'host' },
 					{ title: 'Remote IP', select: 'remote_ip' },
 					{ title: 'Remote Country', select: 'remote_country' },
