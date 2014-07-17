@@ -1,6 +1,6 @@
 'use strict';
 
-var dataTable = require('../constructors/datatable'),
+var datatable_stealth = require('../constructors/datatable_stealth'),
 query = require('../constructors/query'),
 config = require('../../config/config'),
 async = require('async');
@@ -26,15 +26,9 @@ module.exports = function(pool) {
 							'`machine`,'+
 							'file_meta.lan_ip,'+
 							'(sum(`size`) / 1048576) AS size,'+
-							'sum(`ioc_count`) AS ioc_count, '+
-							'endpoint_tracking.stealth,'+
-							'endpoint_tracking.stealth_COIs,'+
-							'endpoint_tracking.user '+
+							'sum(`ioc_count`) AS ioc_count '+
 						'FROM '+
 							'`file_meta` '+
-						'LEFT JOIN `endpoint_tracking` '+
-						'ON ' +
-							'file_meta.lan_ip = endpoint_tracking.lan_ip ' +
 						'WHERE '+
 							'file_meta.time BETWEEN ? AND ? '+
 							'AND `mime` = ? '+
@@ -53,9 +47,6 @@ module.exports = function(pool) {
 								crumb: false
 							},
 						},
-						{ title: 'Stealth', select: 'stealth' },
-						{ title: 'COI Groups', select: 'stealth_COIs' },
-						{ title: 'User', select: 'user' },
 						{ title: 'Total Extracted Files', select: 'count' },
 						{ title: 'File Type', select: 'mime', dView: false },
 						{ title: 'Zone', select: 'lan_zone' },
@@ -70,9 +61,30 @@ module.exports = function(pool) {
 						title: 'Extracted File Types'
 					}
 				}
+				var table2 = {
+					query: 'SELECT '+
+							'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ 
+							'`stealth_COIs`, ' +
+							'`stealth`, '+
+							'`lan_ip`, ' +
+							'`event`, ' +
+							'`user` ' +
+						'FROM ' + 
+							'`endpoint_tracking` '+
+						'WHERE ' + 
+							'stealth > 0 '+
+							'AND event = "Log On" ',
+					insert: [],
+					params: [
+						{ title: 'Stealth', select: 'stealth' },
+						{ title: 'COI Groups', select: 'stealth_COIs' },
+						{ title: 'User', select: 'user' }
+					],
+					settings: {}
+				}
 				async.parallel([
 					function(callback) {
-						new dataTable(table1, {database: database, pool: pool}, function(err,data){
+						new datatable_stealth(table1, table2, {database: database, pool: pool}, function(err,data){
 							tables.push(data);
 							callback();
 						});
