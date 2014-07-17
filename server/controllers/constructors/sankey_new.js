@@ -29,7 +29,8 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 									"value": data.in_bytes + 10, //??
 									"coverageCount":data.in_bytes + 10, //??
 									"utilizationCount":data.in_bytes + 10, //??
-									"scale":0.2//??
+									"scale":0.2,//??
+									"type":"stealth"
 								});	
 								central_populated = true;
 							}
@@ -45,7 +46,8 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 									"value":0.2, //??
 									"coverageCount":10, //??
 									"utilizationCount":1, //??
-									"scale":0.3//??
+									"scale":0.3,//??
+									"type":"stealth"
 								});
 							} else {
 								src.push({
@@ -53,7 +55,8 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 									"value":data.out_bytes, //??
 									"coverageCount":data.out_bytes, //??
 									"utilizationCount":2, //??
-									"scale":0.3//??
+									"scale":0.3,//??
+									"type":"stealth"
 								});
 							}
 							//create link between stealth IP and central node
@@ -87,7 +90,8 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 										"value":0.2, //??
 										"coverageCount":10, //??
 										"utilizationCount":1, //??
-										"scale":0.3//??
+										"scale":0.3,//??
+										"type":"cleartext"
 									});
 								} else {
 									src.push({
@@ -95,7 +99,8 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 										"value":data.out_bytes, //??
 										"coverageCount":10, //??
 										"utilizationCount":2, //??
-										"scale":0.3//??
+										"scale":0.3,//??
+										"type":"cleartext"
 									});
 								}
 								//create link between central IP and local IP, with the data going IN to the local IP being the value from the central
@@ -114,7 +119,8 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 										"value":0.2, //??
 										"coverageCount":10, //??
 										"utilizationCount":1, //??
-										"scale":0.3//??
+										"scale":0.3,//??
+										"type":"cleartext"
 									});
 								} else {
 									src.push({
@@ -122,7 +128,8 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 										"value":data.in_bytes, //??
 										"coverageCount":10, //??
 										"utilizationCount":2, //??
-										"scale":0.3//??
+										"scale":0.3,//??
+										"type":"cleartext"
 									});
 								}
 								//create link between central IP and local IP, with the data going OUT FROM the local IP being the value from the central
@@ -141,7 +148,7 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 			},
 			function(callback){
 				connection.query(sql3.query, sql3.insert, function(err, result) {
-					
+					//this query returns the remote cleartext connections to and from the central IP
 					if (err) {
 						callback(err, null);
 					} else {
@@ -152,7 +159,8 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 									"value":0.2, //??
 									"coverageCount":10, //??
 									"utilizationCount":1, //??
-									"scale":0.3//??
+									"scale":0.3,//??
+									"type":"cleartext"
 								});
 							} else {
 								src.push({
@@ -160,7 +168,8 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 									"value":data.in_bytes, //??
 									"coverageCount":10, //??
 									"utilizationCount":2, //??
-									"scale":0.3//??
+									"scale":0.3,//??
+									"type":"cleartext"
 								});
 							}
 							//create link between central IP and local IP, with the data going OUT FROM the local IP being the value from the central
