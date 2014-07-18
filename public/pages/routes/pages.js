@@ -1091,6 +1091,18 @@ angular.module('mean.pages').config(['$stateProvider',
 								daterange: true
 							}
 						})
+				// ENPOINT EVENTS SHAREPOINT
+				.state('endpoint_events_sharepoint', {
+					url: '/endpoint_events_sharepoint?start&end',
+					templateUrl: 'public/pages/views/general_network/endpoint_events_sharepoint.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Endpoint Events',
+						daterange: true
+					}
+				})
 			// FIRST SEEN
 				// NEW REMOTE IPS
 				.state('new_remote', {

@@ -294,6 +294,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 					'url': 'endpoint_events_local',
 					'icon': 'fa-desktop',
 					'orphans': ['endpoint_events_local_by_alert_info', 'endpoint_events_local_alert_info_drill']
+				},
+				{
+					'title': 'Sharepoint',
+					'url': 'endpoint_events_sharepoint',
+					'icon': 'fa-desktop',
+					'orphans': []
 				}
 			]
 		},
