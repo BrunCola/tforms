@@ -25,6 +25,7 @@ module.exports = function(pool) {
 						'`ioc`,'+
 						'`ioc_typeIndicator`,'+
 						'`ioc_typeInfection`,'+
+						'`ioc_rule`,'+
 						'sum(`ioc_count`) AS ioc_count,'+
 						'`remote_ip`,'+
 						'`remote_asn_name`,'+
@@ -60,6 +61,7 @@ module.exports = function(pool) {
 					{ title: 'IOC', select: 'ioc' },
 					{ title: 'IOC Type', select: 'ioc_typeIndicator' },
 					{ title: 'IOC Stage', select: 'ioc_typeInfection' },
+					{ title: 'IOC Rule', select: 'ioc_rule' },
 					{ title: 'Remote IP', select: 'remote_ip' },
 					{ title: 'Remote Country', select: 'remote_country' },
 					{ title: 'Flag', select: 'remote_cc' },

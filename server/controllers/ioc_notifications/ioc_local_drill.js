@@ -26,6 +26,7 @@ module.exports = function(pool) {
 							'`ioc_severity`,'+
 							'`ioc`,'+
 							'`ioc_attrID`,'+
+							'`ioc_rule`,'+
 							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection`,'+
 							'`lan_zone`,'+
@@ -67,6 +68,7 @@ module.exports = function(pool) {
 						{ title: 'IOC', select: 'ioc' },
 						{ title: 'IOC Type', select: 'ioc_typeIndicator' },
 						{ title: 'IOC Stage', select: 'ioc_typeInfection' },
+						{ title: 'IOC Rule', select: 'ioc_rule' },
 						{ title: 'Zone', select: 'lan_zone' },
 						{ title: 'Machine', select: 'machine' },
 						{ title: 'Local IP', select: 'lan_ip' },

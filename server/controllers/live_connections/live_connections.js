@@ -18,6 +18,7 @@ module.exports = function(pool) {
 						'`remote_country`,'+
 						'`remote_cc`,'+
 						'`ioc_severity`,'+
+						'`ioc_rule`,'+
 						'`ioc`,'+
 						'`remote_long`,'+
 						'`l7_proto`,'+

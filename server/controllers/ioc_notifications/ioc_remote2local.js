@@ -36,6 +36,7 @@ module.exports = function(pool) {
 							'`ioc_severity`,'+
 							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection`, '+
+							'`ioc_rule`,'+
 							'sum(`ioc_count`) AS ioc_count '+
 						'FROM '+
 							'`conn_ioc` '+
@@ -65,6 +66,7 @@ module.exports = function(pool) {
 						{ title: 'IOC', select: 'ioc' },
 						{ title: 'IOC Type', select: 'ioc_typeIndicator' },
 						{ title: 'IOC Stage', select: 'ioc_typeInfection' },
+						{ title: 'IOC Rule', select: 'ioc_rule' },
 						{ title: 'Zone', select: 'lan_zone' },
 						{ title: 'Machine', select: 'machine' },
 						{ title: 'Local IP', select: 'lan_ip' },

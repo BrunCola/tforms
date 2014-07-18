@@ -38,6 +38,7 @@ module.exports = function(pool) {
 							'`md5`, '+
 							'`http_host`, '+
 							'`ioc`, '+
+							'`ioc_rule`, '+
 							'`ioc_typeIndicator`, '+
 							'`ioc_typeInfection` '+
 						'FROM '+
@@ -67,6 +68,7 @@ module.exports = function(pool) {
 						{ title: 'IOC', select: 'ioc' },
 						{ title: 'IOC Type', select: 'ioc_typeIndicator' },
 						{ title: 'IOC Stage', select: 'ioc_typeInfection' },
+						{ title: 'IOC Rule', select: 'ioc_rule' },
 						{ title: 'MD5', select: 'md5' }
 					],
 					settings: {

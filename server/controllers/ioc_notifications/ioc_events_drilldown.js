@@ -73,6 +73,7 @@ module.exports = function(pool) {
 									'`l7_proto`,'+
 									'`ioc`,'+
 									'`ioc_severity`,'+
+									'`ioc_rule`,'+
 									'`ioc_typeIndicator`,'+
 									'`ioc_typeInfection` '+
 								'FROM '+
@@ -100,7 +101,8 @@ module.exports = function(pool) {
 								{"sTitle": "IOC", "mData": "ioc"},
 								{"sTitle": "IOC Severity", "mData": "ioc_severity"},
 								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
-								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"}
+								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+								{"sTitle": "IOC Rule", "mData": "ioc_rule"},
 							],
 							start: start,
 							end: end,
@@ -124,6 +126,7 @@ module.exports = function(pool) {
 									'`l7_proto`,'+
 									'`ioc`,'+
 									'`ioc_severity`,'+
+									'`ioc_rule`,'+
 									'`ioc_typeIndicator`,'+
 									'`ioc_typeInfection` '+
 								'FROM '+
@@ -149,7 +152,8 @@ module.exports = function(pool) {
 								{"sTitle": "IOC", "mData": "ioc"},
 								{"sTitle": "IOC Severity", "mData": "ioc_severity"},
 								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
-								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"}
+								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+								{"sTitle": "IOC Rule", "mData": "ioc_rule"},
 							],
 							start: start,
 							end: end,
@@ -168,6 +172,7 @@ module.exports = function(pool) {
 									'`TTLs`, '+
 									'`ioc`, '+
 									'`ioc_severity`, '+
+									'`ioc_rule`,'+
 									'`ioc_typeIndicator`, '+
 									'`ioc_typeInfection` '+
 								'FROM '+
@@ -191,6 +196,7 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Severity", "mData": "ioc_severity"},
 								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+								{"sTitle": "IOC Rule", "mData": "ioc_rule"},
 							],
 							start: start,
 							end: end,
@@ -209,6 +215,7 @@ module.exports = function(pool) {
 									'`TTLs`,'+
 									'`ioc`,'+
 									'`ioc_severity`,'+
+									'`ioc_rule`,'+
 									'`ioc_typeIndicator`,'+
 									'`ioc_typeInfection` '+
 								'FROM '+
@@ -230,6 +237,7 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Severity", "mData": "ioc_severity"},
 								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+								{"sTitle": "IOC Rule", "mData": "ioc_rule"},
 							],
 							start: start,
 							end: end,
@@ -252,6 +260,7 @@ module.exports = function(pool) {
 									'`info_msg`,'+
 									'`ioc`,'+
 									'`ioc_severity`,'+
+									'`ioc_rule`,'+
 									'`ioc_typeIndicator`,'+
 									'`ioc_typeInfection` '+
 								'FROM '+
@@ -273,6 +282,7 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Severity", "mData": "ioc_severity"},
 								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+								{"sTitle": "IOC Rule", "mData": "ioc_rule"},
 							],
 							start: start,
 							end: end,
@@ -295,6 +305,7 @@ module.exports = function(pool) {
 									'`info_msg`,'+
 									'`ioc`,'+
 									'`ioc_severity`,'+
+									'`ioc_rule`,'+
 									'`ioc_typeIndicator`,'+
 									'`ioc_typeInfection` '+
 								'FROM '+
@@ -314,6 +325,7 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Severity", "mData": "ioc_severity"},
 								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+								{"sTitle": "IOC Rule", "mData": "ioc_rule"},
 							],
 							start: start,
 							end: end,
@@ -333,6 +345,7 @@ module.exports = function(pool) {
 									'from_unixtime(`not_valid_after`) AS not_valid_after,'+
 									'`ioc`,'+
 									'`ioc_severity`,'+
+									'`ioc_rule`,'+
 									'`ioc_typeIndicator`,'+
 									'`ioc_typeInfection` '+	
 								'FROM '+
@@ -357,6 +370,7 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Severity", "mData": "ioc_severity"},
 								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+								{"sTitle": "IOC Rule", "mData": "ioc_rule"},
 							],
 							start: start,
 							end: end,
@@ -376,6 +390,7 @@ module.exports = function(pool) {
 									'from_unixtime(`not_valid_after`) AS not_valid_after,'+
 									'`ioc`,'+
 									'`ioc_severity`,'+
+									'`ioc_rule`,'+
 									'`ioc_typeIndicator`,'+
 									'`ioc_typeInfection` '+	
 								'FROM '+
@@ -398,6 +413,7 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Severity", "mData": "ioc_severity"},
 								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+								{"sTitle": "IOC Rule", "mData": "ioc_rule"},
 							],
 							start: start,
 							end: end,
@@ -415,6 +431,7 @@ module.exports = function(pool) {
 									'`sha1`,'+
 									'`ioc`,'+
 									'`ioc_severity`,'+
+									'`ioc_rule`,'+
 									'`ioc_typeIndicator`,'+
 									'`ioc_typeInfection` '+
 								'FROM '+
@@ -437,6 +454,7 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Severity", "mData": "ioc_severity"},
 								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+								{"sTitle": "IOC Rule", "mData": "ioc_rule"},
 							],
 							start: start,
 							end: end,
@@ -454,6 +472,7 @@ module.exports = function(pool) {
 									'`sha1`,'+
 									'`ioc`,'+
 									'`ioc_severity`,'+
+									'`ioc_rule`,'+
 									'`ioc_typeIndicator`,'+
 									'`ioc_typeInfection` '+
 								'FROM '+
@@ -474,6 +493,7 @@ module.exports = function(pool) {
 								{"sTitle": "IOC Severity", "mData": "ioc_severity"},
 								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
 								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+								{"sTitle": "IOC Rule", "mData": "ioc_rule"},
 							],
 							start: start,
 							end: end,

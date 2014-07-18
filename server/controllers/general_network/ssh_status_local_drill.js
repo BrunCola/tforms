@@ -38,6 +38,7 @@ module.exports = function(pool) {
 							'`ioc_severity`,'+
 							'`ioc_typeInfection`,'+
 							'`ioc_typeIndicator`,'+
+							'`ioc_rule`,'+
 							'`ioc_count` '+
 						'FROM '+
 							'`ssh` '+
@@ -66,6 +67,7 @@ module.exports = function(pool) {
 						{ title: 'Infection Stage', select: 'ioc_typeInfection' },
 						{ title: 'Indicator Type', select: 'ioc_typeIndicator' },
 						{ title: 'Severity', select: 'ioc_severity' },
+						{ title: 'IOC Rule', select: 'ioc_rule' },
 						{ title: 'IOC Count', select: 'ioc_count' }
 					],
 					settings: {

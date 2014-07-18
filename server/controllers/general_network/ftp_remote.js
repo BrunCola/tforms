@@ -44,6 +44,7 @@ module.exports = function(pool) {
 						'`ioc_severity`, ' +
 						'`ioc_typeInfection`, ' +
 						'`ioc_typeIndicator`, ' +
+						'`ioc_rule`, ' +
 						'`ioc_count` ' +
 					'FROM '+
 						'`ftp` '+
@@ -86,6 +87,7 @@ module.exports = function(pool) {
 					{ title: 'IOC Severity', select: 'ioc_severity' },
 					{ title: 'Infection Stage', select: 'ioc_typeInfection' },
 					{ title: 'Indicator Type', select: 'ioc_typeIndicator' },
+					{ title: 'IOC Rule', select: 'ioc_rule' },
 					{ title: 'IOC Count', select: 'ioc_count' }
 				],
 				settings: {

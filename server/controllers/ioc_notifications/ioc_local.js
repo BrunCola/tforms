@@ -24,6 +24,7 @@ module.exports = function(pool) {
 					'max(date_format(from_unixtime(conn_ioc.time), "%Y-%m-%d %H:%i:%s")) AS time,'+ // Last Seen
 					'`ioc_severity`,'+
 					'`ioc`,'+
+					'`ioc_rule`,'+
 					'`ioc_typeIndicator`,'+
 					'`ioc_typeInfection`,'+
 					'`lan_zone`,'+
@@ -59,6 +60,7 @@ module.exports = function(pool) {
 					{ title: 'IOC', select: 'ioc' },
 					{ title: 'IOC Type', select: 'ioc_typeIndicator' },
 					{ title: 'IOC Stage', select: 'ioc_typeInfection' },
+					{ title: 'IOC Rule', select: 'ioc_rule' },
 					{ title: 'Zone', select: 'lan_zone' },
 					{ title: 'Machine', select: 'machine' },
 					{ title: 'Local IP', select: 'lan_ip' },

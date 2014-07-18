@@ -186,6 +186,7 @@ module.exports = function(pool) {
 								'ioc,'+
 								'ioc_severity,'+
 								'ioc_typeIndicator,'+
+								'ioc_rule,'+
 								'remote_ip,'+
 								'remote_country,'+
 								'remote_cc,'+
@@ -212,6 +213,7 @@ module.exports = function(pool) {
 							{ title: 'IOC Hits', select: 'count' },
 							{ title: 'IOC', select: 'ioc' },
 							{ title: 'IOC Type', select: 'ioc_typeIndicator' },
+							{ title: 'IOC Rule', select: 'ioc_rule' },
 							{ title: 'Remote IP', select: 'remote_ip' },
 							{ title: 'Remote Country', select: 'remote_country' },
 							{ title: 'Flag', select: 'remote_cc' },
@@ -231,6 +233,7 @@ module.exports = function(pool) {
 								'ioc,'+
 								'ioc_severity,'+
 								'ioc_typeIndicator,'+
+								'ioc_rule,'+
 								'lan_zone,'+
 								'machine,'+
 								'lan_ip,'+
@@ -257,6 +260,7 @@ module.exports = function(pool) {
 							{ title: 'IOC Hits', select: 'count' },
 							{ title: 'IOC', select: 'ioc' },
 							{ title: 'IOC Type', select: 'ioc_typeIndicator' },
+							{ title: 'IOC Rule', select: 'ioc_rule' },
 							{ title: 'Zone', select: 'lan_zone' },
 							{ title: 'Machine Name', select: 'machine' },
 							{ title: 'Local IP', select: 'lan_ip' },
