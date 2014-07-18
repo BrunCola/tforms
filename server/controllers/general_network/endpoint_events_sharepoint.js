@@ -20,8 +20,8 @@ module.exports = function(pool) {
 			var info = [];
 			var table1 = {
 				query: 'SELECT '+
-						'count(*) AS count,'+
-						'date_format(max(from_unixtime(`timestamp`)), "%Y-%m-%d %H:%i:%s") as time,'+
+					//	'count(*) AS count,'+
+					//	'date_format(from_unixtime(`timestamp`), "%Y-%m-%d %H:%i:%s") as time,'+
 						'`sharepoint_user`,'+
 						'`lan_ip`,'+
 						'`machine`, ' +
@@ -36,37 +36,37 @@ module.exports = function(pool) {
 						'`event_id`,'+
 						'`event_location` '+
 					'FROM '+
-						'`sharepoint` '+
-					'WHERE '+
-						'`time` BETWEEN ? AND ? '+
-					'GROUP BY '+
-						'`lan_ip`', 
+						'`sharepoint` ',//+
+				//	'WHERE '+
+				//		'`time` BETWEEN ? AND ? '+
+				//	'GROUP BY '+
+				//		'`lan_ip`', 
 				insert: [start, end],
 				params: [
-					{
-						title: 'Last Seen',
-						select: 'time',
-						// link: {
-						// 	type: 'endpoint_events_user',
-						// 	// val: the pre-evaluated values from the query above
-						// 	val: ['alert_info'],
-						// 	crumb: false
-						// },
-					},
-					{ title: 'Events', select: 'count' },
-					{ title: 'Machine', select: 'machine' },
-					{ title: 'Zone', select: 'lan_zone' },
+					// {
+					// 	title: 'Last Seen',
+					// 	select: 'time',
+					// 	// link: {
+					// 	// 	type: 'endpoint_events_user',
+					// 	// 	// val: the pre-evaluated values from the query above
+					// 	// 	val: ['alert_info'],
+					// 	// 	crumb: false
+					// 	// },
+					// },
+					//{ title: 'Events', select: 'count' },
+				//	{ title: 'Machine', select: 'machine' },
+				//	{ title: 'Zone', select: 'lan_zone' },
 					{ title: 'Local IP', select: 'lan_ip' },
 					{ title: 'Sharepoint User', select: 'sharepoint_user'},
 					{ title: 'Location', select: 'location' },
 					{ title: 'Event', select: 'event' },
 					{ title: 'Event ID', select: 'event_id'},
 					{ title: 'Event Location', select: 'event_location' },
-					{ title: 'Remote IP', select: 'remote_ip'},
-					{ title: 'Remote port', select: 'remote_port' },
-					{ title: 'Flag', select: 'remote_cc' },
-					{ title: 'Remote Country', select: 'remote_country' },
-					{ title: 'Remote ASN Name', select: 'remote_asn_name' }
+				//	{ title: 'Remote IP', select: 'remote_ip'},
+			//		{ title: 'Remote port', select: 'remote_port' },
+			//		{ title: 'Flag', select: 'remote_cc' },
+			//		{ title: 'Remote Country', select: 'remote_country' },
+			//		{ title: 'Remote ASN Name', select: 'remote_asn_name' }
 				],
 				settings: {
 					sort: [[0, 'desc']],
@@ -77,6 +77,7 @@ module.exports = function(pool) {
 			async.parallel([
 				// Table function(s)
 				function(callback) {
+					console.log(table1.query);
 					new dataTable(table1, {database: database, pool: pool}, function(err,data){
 						tables.push(data);
 						callback();
