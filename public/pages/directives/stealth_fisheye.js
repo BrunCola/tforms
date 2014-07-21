@@ -10,7 +10,7 @@ angular.module('mean.pages').directive('stealthFishGraph', ['$timeout', '$locati
 					step: 5,
 					max: $scope.number,
 					range: "min",
-					value: $scope.minslider,
+					value: 10,//$scope.minslider,
 					slide: function( event, ui ) {
 						if (ui.value < 1){
 							ui.value = 1;
@@ -36,7 +36,7 @@ angular.module('mean.pages').directive('stealthFishGraph', ['$timeout', '$locati
 						$scope.$broadcast('grouping', ui.value);
 					}
 				});
-				$( "#count" ).html('Group by: <strong>1</strong> minute. (Slide bar to change value.)');
+				$( "#count" ).html('Group by: <strong>10</strong> minute. (Slide bar to change value.)');
 			});
 			function titles(title) {
 				switch(title){
