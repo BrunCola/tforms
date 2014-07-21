@@ -97,8 +97,8 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 									src.push({
 										"name":data.lan_ip + " (cleartext)",
 										"value":data.in_bytes, //??
-										"coverageCount":10, //??
-										"utilizationCount":2, //??
+										"coverageCount":data.in_bytes, //??
+										"utilizationCount":data.in_bytes,  //??
 										"scale":0.3,//??
 										"type":"cleartext"
 									});
@@ -126,8 +126,8 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 									src.push({
 										"name":data.remote_ip + " (cleartext)",
 										"value":data.out_bytes, //??
-										"coverageCount":10, //??
-										"utilizationCount":2, //??
+										"coverageCount":data.out_bytes, //??
+										"utilizationCount":data.out_bytes, //??
 										"scale":0.3,//??
 										"type":"cleartext"
 									});
@@ -166,8 +166,8 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 								src.push({
 									"name":data.remote_ip + " (cleartext-remote)",
 									"value":data.out_bytes, //??
-									"coverageCount":10, //??
-									"utilizationCount":2, //??
+									"coverageCount":data.out_bytes, //??
+									"utilizationCount":data.out_bytes, //??
 									"scale":0.3,//??
 									"type":"cleartext"
 								});
