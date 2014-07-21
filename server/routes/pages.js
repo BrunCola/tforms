@@ -139,6 +139,8 @@ module.exports = function(app, passport, version, io, pool) {
 			var endpoint_events_local_by_alert_info = require('../controllers/general_network/endpoint_events_local_by_alert_info')(pool);
 				// ENDPOINT EVENTS LOCAL ALERT INFO DRILL
 				var endpoint_events_local_alert_info_drill = require('../controllers/general_network/endpoint_events_local_alert_info_drill')(pool);
+		// ENDPOINT EVENTS SHAREPOINT
+		var endpoint_events_sharepoint = require('../controllers/general_network/endpoint_events_sharepoint')(pool);
 		// SSH
 		var ssh_local = require('../controllers/general_network/ssh_local')(pool);
 			// SSH REMOTE
@@ -400,6 +402,9 @@ module.exports = function(app, passport, version, io, pool) {
 				// ENDPOINT EVENTS LOCAL ALERT INFO DRILL
 				app.route('/general_network/endpoint_events_local_alert_info_drill')
 				.get(authorization.requiresLogin, endpoint_events_local_alert_info_drill.render);
+		// ENDPOINT EVENTS SHAREPOINT
+		app.route('/general_network/endpoint_events_sharepoint')
+		.get(authorization.requiresLogin, endpoint_events_sharepoint.render);
 		// SSH LOCAL
 		app.route('/general_network/ssh_local')
 		.get(authorization.requiresLogin, ssh_local.render);
