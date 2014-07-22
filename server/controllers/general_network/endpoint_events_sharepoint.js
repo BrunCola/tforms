@@ -20,8 +20,8 @@ module.exports = function(pool) {
 			var info = [];
 			var table1 = {
 				query: 'SELECT '+
-					//	'count(*) AS count,'+
-					//	'date_format(from_unixtime(`timestamp`), "%Y-%m-%d %H:%i:%s") as time,'+
+						'count(*) AS count,'+
+						'max(date_format(from_unixtime(`timestamp`), "%Y-%m-%d %H:%i:%s")) as time,'+
 						'`sharepoint_user`,'+
 						'`lan_ip`,'+
 						'`machine`, ' +
@@ -36,24 +36,26 @@ module.exports = function(pool) {
 						'`event_id`,'+
 						'`event_location` '+
 					'FROM '+
-						'`sharepoint` ',//+
-				//	'WHERE '+
-				//		'`time` BETWEEN ? AND ? '+
-				//	'GROUP BY '+
-				//		'`lan_ip`', 
+						'`sharepoint` '+
+					'WHERE '+
+						'`timestamp` BETWEEN ? AND ? '+
+					'GROUP BY '+
+						'`event`, '+
+						'`lan_ip`, '+
+						'`lan_zone`', 
 				insert: [start, end],
 				params: [
-					// {
-					// 	title: 'Last Seen',
-					// 	select: 'time',
-					// 	// link: {
-					// 	// 	type: 'endpoint_events_user',
-					// 	// 	// val: the pre-evaluated values from the query above
-					// 	// 	val: ['alert_info'],
-					// 	// 	crumb: false
-					// 	// },
-					// },
-					//{ title: 'Events', select: 'count' },
+					{
+						title: 'Last Seen',
+						select: 'time',
+						// link: {
+						// 	type: 'endpoint_events_sharepoint_drill',
+						// 	// val: the pre-evaluated values from the query above
+						// 	val: ['event_id', 'lan_ip'],
+						// 	crumb: false
+						// },
+					},
+					{ title: 'Events', select: 'count' },
 				//	{ title: 'Machine', select: 'machine' },
 				//	{ title: 'Zone', select: 'lan_zone' },
 					{ title: 'Local IP', select: 'lan_ip' },
@@ -77,7 +79,6 @@ module.exports = function(pool) {
 			async.parallel([
 				// Table function(s)
 				function(callback) {
-					console.log(table1.query);
 					new dataTable(table1, {database: database, pool: pool}, function(err,data){
 						tables.push(data);
 						callback();

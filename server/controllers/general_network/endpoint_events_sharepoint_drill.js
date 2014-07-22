@@ -16,29 +16,41 @@ module.exports = function(pool) {
 				end = req.query.end;
 			}
 			//var results = [];
-			if (req.query.alert_info && req.query.src_user) {
+			if (req.query.event_id && req.query.lan_ip && req.query.src_user) {
 				var tables = [];
 				var info = [];
 				var table1 = {
 					query: 'SELECT '+
-							'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-							'`src_user`, '+
-							'`src_ip`, '+
-							'`dst_ip`, '+
-							'`alert_source`, '+
-							'`program_source`, '+
-							'`alert_id`, '+
-							'`alert_info`, '+
-							'`full_log` '+
-						'FROM `ossec` '+
-						'WHERE '+
-							'`time` BETWEEN ? AND ? '+
-							'AND `alert_info` = ? '+
-							'AND `src_user` = ?',
-					insert: [start, end, req.query.alert_info, req.query.src_user],
+						'date_format(from_unixtime(`timestamp`), "%Y-%m-%d %H:%i:%s") as time,'+
+						'`sharepoint_user`,'+
+						'`lan_ip`,'+
+						'`machine`, ' +
+						'`lan_zone`, ' +
+						'`remote_ip`, ' +
+						'`remote_port`, '  +
+						'`remote_cc`, ' +
+						'`remote_country`, ' +
+						'`remote_asn_name`, ' +
+						'`location`,'+
+						'`event`,'+
+						'`event_id`,'+
+						'`event_location` '+
+					'FROM '+
+						'`sharepoint` '+
+					'WHERE '+
+						'`timestamp` BETWEEN ? AND ? '+
+						'AND event_id = ? '+
+						'AND lan_ip = ? ',//+
+					//	'AND lan_zone = ?',
+					insert: [start, end, req.query.event_id, req.query.lan_ip],
 					params: [
 						{ title: 'Time', select: 'time' },
-						{ title: 'Full Log', select: 'full_log' },
+						{ title: 'Local IP', select: 'lan_ip' },
+						{ title: 'Sharepoint User', select: 'sharepoint_user'},
+						{ title: 'Location', select: 'location' },
+						{ title: 'Event', select: 'event' },
+						{ title: 'Event ID', select: 'event_id'},
+						{ title: 'Event Location', select: 'event_location' },
 					],
 					settings: {
 						sort: [[0, 'desc']],
@@ -49,6 +61,7 @@ module.exports = function(pool) {
 				async.parallel([
 					// Table function(s)
 					function(callback) {
+						console.log(table1.query);
 						new dataTable(table1, {database: database, pool: pool}, function(err,data){
 							tables.push(data);
 							callback();

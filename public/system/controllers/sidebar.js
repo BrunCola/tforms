@@ -299,7 +299,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 					'title': 'Sharepoint',
 					'url': 'endpoint_events_sharepoint',
 					'icon': 'fa-desktop',
-					'orphans': []
+					'orphans': ['endpoint_events_sharepoint_drill']
 				}
 			]
 		},

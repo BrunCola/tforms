@@ -1103,6 +1103,23 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
+					// ENPOINT EVENTS SHAREPOINT DRILL
+					.state('endpoint_events_sharepoint_drill', {
+						url: '/endpoint_events_sharepoint_drill?start&end&event_id&lan_ip',
+						templateUrl: 'public/pages/views/general_network/endpoint_events_sharepoint_drill.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'Endpoint Event Full Logs',
+							subtitleElm: {
+								'Event ID': 'event_id',
+								'Local IP': 'lan_ip'
+								//'Zone': 'lan_zone'
+							},
+							daterange: true
+						}
+					})
 			// FIRST SEEN
 				// NEW REMOTE IPS
 				.state('new_remote', {
