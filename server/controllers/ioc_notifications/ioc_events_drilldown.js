@@ -547,6 +547,7 @@ module.exports = function(pool) {
 								'`remote_asn`, '+
 								'`remote_asn_name`, '+
 								'`l7_proto`, '+
+								'`ioc_rule`, '+
 								'`ioc_typeIndicator` '+
 								'FROM `conn_ioc` '+
 								'WHERE '+

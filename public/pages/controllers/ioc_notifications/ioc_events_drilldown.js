@@ -102,7 +102,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 
 		$scope.iocc = $location.$$search.ioc;
 		$scope.ioc_type = data.info.main[0].ioc_typeIndicator;
-
+		$scope.ioc_rule = data.info.main[0].ioc_rule;
 		// draw chart
 		fishchart(data);
 
@@ -111,7 +111,6 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 			$http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?lan_zone='+$scope.lan_zone+'&lan_ip='+$scope.lan_ip+'&type=assets'}).
 			success(function(data) {
 				if (data) {
-					console.log(data);
 					$scope.userImage = 'public/pages/assets/img/staff/'+data[0].file;
 				}
 			});
