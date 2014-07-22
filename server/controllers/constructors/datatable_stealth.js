@@ -4,7 +4,7 @@
 var config = require('../../config/config'),
 	async = require('async');
 
-module.exports = function (sql1, sql2, conn, callback) {
+module.exports = function (sql1, sql2, userLevel, conn, callback) {
 	var page_data = []; //data other than stealth enpoint data
 	var table; //final table data
 	conn.pool.getConnection(function(err, connection) {
@@ -82,7 +82,7 @@ module.exports = function (sql1, sql2, conn, callback) {
 								'sClass': sql1.params[d].sClass
 							});
 							//put the stealth columns in after Last Seen/Time
-							if(sql1.params[d].title === 'Last Seen' || sql1.params[d].title === 'Time') {
+							if((sql1.params[d].title === 'Last Seen' || sql1.params[d].title === 'Time') && userLevel === 3) {
 								for (var e in sql2.params) {
 									if (sql2.params[e].dView === undefined) {
 										sql2.params[e].dView = true;

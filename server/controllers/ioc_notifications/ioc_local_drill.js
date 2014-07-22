@@ -154,7 +154,7 @@ module.exports = function(pool) {
 					// Table function(s)
 					function(callback) {
 						console.log(table1.query);
-						new datatable_stealth(table1, table2, {database: database, pool: pool}, function(err,data){
+						new datatable_stealth(table1, table2, parseInt(req.session.passport.user.level), {database: database, pool: pool}, function(err,data){
 							tables.push(data);
 							callback();
 						});
