@@ -532,28 +532,28 @@ module.exports = function(pool) {
 						var info = {};
 						var InfoSQL = {
 							query: 'SELECT '+
-								'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as last, '+
-								'date_format(min(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as first, '+
-								'sum(`in_packets`) as in_packets, '+
-								'sum(`out_packets`) as out_packets, '+
-								'sum(`in_bytes`) as in_bytes, '+
-								'sum(`out_bytes`) as out_bytes, '+
-								'`machine`, '+
-								'`lan_zone`, '+
-								'`lan_port`, '+
-								'`remote_port`, '+
-								'`remote_cc`, '+
-								'`remote_country`, '+
-								'`remote_asn`, '+
-								'`remote_asn_name`, '+
-								'`l7_proto`, '+
-								'`ioc_rule`, '+
-								'`ioc_typeIndicator` '+
+									'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as last, '+
+									'date_format(min(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as first, '+
+									'sum(`in_packets`) as in_packets, '+
+									'sum(`out_packets`) as out_packets, '+
+									'sum(`in_bytes`) as in_bytes, '+
+									'sum(`out_bytes`) as out_bytes, '+
+									'`machine`, '+
+									'`lan_zone`, '+
+									'`lan_port`, '+
+									'`remote_port`, '+
+									'`remote_cc`, '+
+									'`remote_country`, '+
+									'`remote_asn`, '+
+									'`remote_asn_name`, '+
+									'`l7_proto`, '+
+									'`ioc_rule`, '+
+									'`ioc_typeIndicator` '+
 								'FROM `conn_ioc` '+
 								'WHERE '+
-								'`lan_ip` = ? AND '+
-								'`remote_ip` = ? AND '+
-								'`ioc` = ? '+
+									'`lan_ip` = ? AND '+
+									'`remote_ip` = ? AND '+
+									'`ioc` = ? '+
 								'LIMIT 1',
 							insert: [req.query.lan_ip, req.query.remote_ip, req.query.ioc]
 						}

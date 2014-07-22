@@ -50,8 +50,8 @@ module.exports = function(pool) {
 						{ title: 'IP', select: 'ip' },
 						{ title: 'MB to Remote', select: 'in_bytes' },
 						{ title: 'MB from Remote', select: 'out_bytes' },
-						{ title: 'Packets to Remote', select: 'out_packets' },
-						{ title: 'Packets from Remote', select: 'in_packets' }
+						{ title: 'Packets to Remote', select: 'in_packets' },
+						{ title: 'Packets from Remote', select: 'out_packets' }
 					],
 					settings: {
 						sort: [[0, 'desc']],
