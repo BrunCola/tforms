@@ -37,12 +37,15 @@ module.exports = function (sql, conn, lanIP, attrID, callback) {
 				for (var n in newarr) {
 					var nn = [];
 					// var finalarr = [];
+					var childrenArr = [];
 					for (var t in tree) {
-						if (newarr[n].parentID === tree[t].ioc_parentID){
+						if (newarr[n].parentID === tree[t].ioc_parentID && childrenArr.indexOf(tree[t].ioc_childID) === -1){
 							nn.push({
 								'name': tree[t].ioc_childID,
 								'severity': 0
 							});
+
+							childrenArr.push(tree[t].ioc_childID);
 						}
 					}
 					newarr[n].children = nn;
@@ -51,6 +54,7 @@ module.exports = function (sql, conn, lanIP, attrID, callback) {
 					for (var c in newarr[v].children) {
 						var cn = [];
 						for (var y in tree) {
+							console.log(tree[y]);
 							if (newarr[v].children[c].name === tree[y].ioc_childID){
 								if (tree[y].ioc_attrID === iocID) {
 									newarr[v].children[c].idRoute = true;
@@ -61,7 +65,15 @@ module.exports = function (sql, conn, lanIP, attrID, callback) {
 										'severity': tree[y].ioc_severity,
 										'idRoute': true
 									});
-								} else {
+								}
+								//  else if (tree[y].ioc_attrID != tree[y].id_attr) {
+								// 	cn.push({
+								// 		'name': tree[y].id_attr+' '+tree[y].typeIndicator+' NOT HIT',
+								// 		'severity': tree[y].ioc_severity
+								// 	});
+
+								// } 
+								else {
 									cn.push({
 										'name': tree[y].ioc_attrID+' '+tree[y].ioc_typeIndicator,
 										'severity': tree[y].ioc_severity

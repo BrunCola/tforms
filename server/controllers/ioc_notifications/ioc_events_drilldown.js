@@ -570,17 +570,21 @@ module.exports = function(pool) {
 						var treeSQL = {
 							query: 'SELECT '+
 								// SELECTS
-								'ioc_attrID, '+
-								'ioc_childID, '+
-								'ioc_parentID, '+
-								'ioc_typeIndicator, '+
-								'ioc_severity, '+
-								'ioc '+
+									'ioc_attrID, '+
+									'ioc_childID, '+
+									'ioc_parentID, '+
+									'ioc_typeIndicator, '+
+									'ioc_severity, '+
+									'conn_ioc.ioc '+
+							//		'id_attr, '+
+							//		'typeIndicator '+
 								// !SELECTS
 								'FROM conn_ioc '+
+							//	'JOIN cyrin.ioc '+
+							//		'ON ioc_childID = id_child '+
 								'WHERE time BETWEEN ? AND ? '+
-								'AND `lan_ip`= ? '+
-								'GROUP BY  ioc_parentID, ioc_childID, ioc_attrID',
+									'AND `lan_ip`= ? '+
+								'GROUP BY  ioc_parentID, ioc_childID, ioc_attrID',// id_attr',
 							insert: [start, end, req.query.lan_ip]
 						}
 						var forcereturn = [];
@@ -675,6 +679,7 @@ module.exports = function(pool) {
 							},
 							function(callback) {
 								new treechart(treeSQL, {database: database, pool: pool}, lanIP, attrID, function(err,data){
+									console.log(treeSQL);
 									treereturn = data;
 
 								// 	treereturn = {name: "10.0.0.40",

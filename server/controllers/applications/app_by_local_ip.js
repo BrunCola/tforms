@@ -1,6 +1,7 @@
 'use strict';
 
 var datatable_stealth = require('../constructors/datatable_stealth'),
+datatable = require('../constructors/datatable'),
 query = require('../constructors/query'),
 config = require('../../config/config'),
 async = require('async');
@@ -120,10 +121,17 @@ module.exports = function(pool) {
 			async.parallel([
 				// Table function(s)
 				function(callback) {
-					new datatable_stealth(table1, table2, {database: database, pool: pool}, function(err,data){
-						tables.push(data);
-						callback();
-					});
+					if (parseInt(req.session.passport.user.level) === 3) {
+						new datatable_stealth(table1, table2, {database: database, pool: pool}, function(err,data){
+							tables.push(data);
+							callback();
+						});
+					} else {
+						new datatable(table1, {database: database, pool: pool}, function(err,data){
+							tables.push(data);
+							callback();
+						});
+					}
 				},
 				// Crossfilter function
 				function(callback) {
