@@ -45,9 +45,6 @@ module.exports = function(pool) {
 							'`fuid` ' +
 						'FROM ' +
 							'`irc` '+
-						'LEFT JOIN `endpoint_tracking` '+
-						'ON ' +
-							'irc.lan_ip = endpoint_tracking.lan_ip ' +
 						'WHERE ' +
 							'irc.time BETWEEN ? AND ? '+
 							'AND `remote_ip` = ? '+

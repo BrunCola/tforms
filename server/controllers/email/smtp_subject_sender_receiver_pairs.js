@@ -49,9 +49,6 @@ module.exports = function(pool) {
 							'`ioc_count` '+
 						'FROM '+
 							'`smtp` '+
-						'LEFT JOIN `endpoint_tracking` '+
-						'ON ' +
-							'smtp.lan_ip = endpoint_tracking.lan_ip ' +
 						'WHERE ' +
 							'smtp.time BETWEEN ? AND ? '+
 							'AND `subject` = ? '+

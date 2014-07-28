@@ -28,9 +28,6 @@ module.exports = function(pool) {
 							'sum(`ioc_count`) AS ioc_count ' +
 						'FROM '+
 							'`ssh` '+
-						'LEFT JOIN `endpoint_tracking` '+
-						'ON ' +
-							'ssh.lan_ip = endpoint_tracking.lan_ip ' +
 						'WHERE '+
 							'ssh.time BETWEEN ? AND ? '+
 							'AND `status_code` = ? '+
