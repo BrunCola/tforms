@@ -24,17 +24,21 @@ module.exports = function(pool) {
 				var crossfilter = [];
 				var table1 = {
 					query: 'SELECT '+
-								'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-								'`ip`, '+
+								'max(date_format(from_unixtime(stealth_src.time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+								'`src_ip`, '+
+								'`user`, '+
+								'`stealth_COIs`, '+
 								'sum(`in_packets`) AS `in_packets`, '+
 								'sum(`out_packets`) AS `out_packets`, '+
 								'(sum(`in_bytes`) / 1048576) AS `in_bytes`, '+
 								'(sum(`out_bytes`) / 1048576) AS `out_bytes` '+
 							'FROM '+
-								'`stealth_user` '+
+								'`stealth_src` '+
+							'JOIN '+
+								'`endpoint_tracking` ON `src_ip` = `lan_ip` '+
 							'WHERE '+
-								'`time` BETWEEN ? AND ? '+
-							'GROUP BY `ip`',
+								'stealth_src.time BETWEEN ? AND ? '+
+							'GROUP BY `src_ip`',
 					insert: [start, end],
 					params: [
 						{
@@ -43,11 +47,13 @@ module.exports = function(pool) {
 							link: {
 								type: 'local_COI_remote_drill',
 								// val: the pre-evaluated values from the query above
-								val: ['ip'],
+								val: ['src_ip'],
 								crumb: false
 							}
 						},
-						{ title: 'IP', select: 'ip' },
+						{ title: 'IP', select: 'src_ip' },
+						{ title: 'User', select: 'user' },
+						{ title: 'COI', select: 'stealth_COIs' },
 						{ title: 'MB to Remote', select: 'in_bytes' },
 						{ title: 'MB from Remote', select: 'out_bytes' },
 						{ title: 'Packets to Remote', select: 'in_packets' },
@@ -76,6 +82,7 @@ module.exports = function(pool) {
 				async.parallel([
 					// Table function(s)
 					function(callback) {
+						console.log(table1);
 						new dataTable(table1, {database: database, pool: pool}, function(err,data){
 							tables.push(data);
 							callback();

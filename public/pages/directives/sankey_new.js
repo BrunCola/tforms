@@ -362,7 +362,7 @@ angular.module('mean.pages').directive('makeSankeyNew', ['$timeout', '$location'
 						return Math.exp(minv + scale*(x-minp));
 					}
 
-					var width = document.getElementById('sankey_new').offsetWidth;
+					var width = document.getElementById('sankey_new').offsetWidth - 200;
 							// height = params["height"];
 
 					//var dataUrl = "nodes.json";
@@ -463,6 +463,17 @@ angular.module('mean.pages').directive('makeSankeyNew', ['$timeout', '$location'
 									.attr('fill', function(d) { return d.color = color(d.name.replace(/ .*/, "")); })
 									.attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
 										'C11.076,16.238,11.938,20.26,13.699,23.661z')
+
+								elm.append("text")
+									.attr("x", -6)
+									.attr("y", function(d) { return d.dy / 2; })
+									.attr("dy", ".35em")
+									// .attr("text-anchor", "end")
+									// .attr("transform", null)
+									.text(function(d) { if(d.authorized) { return ""} else {return "X"}})//d.name; })
+									.attr("x", 6 + sankey.nodeWidth())
+									.style("stroke", "#E71010")
+									.attr("text-anchor", "end");
 								return;
 							case 'cleartext':
 								elm.append("rect")
@@ -504,6 +515,17 @@ angular.module('mean.pages').directive('makeSankeyNew', ['$timeout', '$location'
 										'l-0.151,2.002L20.294,32.5l0.025,2.111l1.312-0.626c0,0,2.245-3.793,2.368-3.554c0.122,0.238,2.129-2.76,2.129-2.76l1.666-1.26'+
 										'l0.959-3.195l-2.882-1.775L24.715,19.976z')
 									.attr('fill', '#595A5C');
+									
+								elm.append("text")
+									.attr("x", -6)
+									.attr("y", function(d) { return d.dy / 2; })
+									.attr("dy", ".35em")
+									// .attr("text-anchor", "end")
+									// .attr("transform", null)
+									.text(function(d) { if(d.authorized) { return ""} else {return "X"}})//d.name; })
+									.attr("x", 6 + sankey.nodeWidth())
+									.style("stroke", "#E71010")
+									.attr("text-anchor", "end");
 								return;
 							default:
 								elm.append("rect")
@@ -524,6 +546,17 @@ angular.module('mean.pages').directive('makeSankeyNew', ['$timeout', '$location'
 									.filter(function(d) { return d.x < width / 2; })
 									.attr("x", 6 + sankey.nodeWidth())
 									.attr("text-anchor", "start");
+
+								elm.append("text")
+									.attr("x", -6)
+									.attr("y", function(d) { return d.dy / 2; })
+									.attr("dy", ".35em")
+									// .attr("text-anchor", "end")
+									// .attr("transform", null)
+									.text(function(d) { if(d.authorized) { return ""} else {return "X"}})//d.name; })
+									.attr("x", 6 + sankey.nodeWidth())
+									.style("stroke", "#E71010")
+									.attr("text-anchor", "end");
 								return;
 						}
 					})

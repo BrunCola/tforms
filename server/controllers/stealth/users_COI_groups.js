@@ -19,18 +19,48 @@ module.exports = function(pool) {
 			if (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1) {
 				var forceReturn = [];
 				var info = [];
-				var forceSQL = {
+				var forceSQL1 = {
 					query: 'SELECT '+
 								'`user`, '+
-								'`stealth_COIs` '+
+								'`role` '+
 							'FROM '+
-								'`stealth_policy`',
+								'`stealth_role_user` '+
+							'WHERE '+
+								'`archive` = 0',
+					insert: []
+				}
+				var forceSQL2 = {
+					query: 'SELECT '+
+								'`lan_user` AS `user`, '+
+								'`role` '+
+							'FROM '+
+								'`stealth_user` '+
+							'JOIN '+
+								'`stealth_role_group` '+
+							'ON '+
+								'stealth_user.group = stealth_role_group.group '+
+								'AND stealth_role_group.archive = 0 '+
+								'AND stealth_user.archive = 0',
+					insert: []
+				}
+				var forceSQL3 = {
+					query: 'SELECT '+
+								'`role`, '+
+								'`cois`, '+
+								'`rule`, '+
+								'`rule_order` '+
+							'FROM '+
+								'`stealth_role_coi` '+
+							'WHERE '+
+								'`archive` = 0 ' +
+							'ORDER BY '+
+								'`cois`, `rule_order` ASC',
 					insert: []
 				}
 				async.parallel([
 					// Table function(s)
 					function(callback) {
-						new force_stealth(forceSQL, {database: database, pool: pool}, function(err,data){
+						new force_stealth(forceSQL1, forceSQL2, forceSQL3, {database: database, pool: pool}, function(err,data){
 							forceReturn = data;
 							callback();
 						});

@@ -41,10 +41,10 @@ module.exports = function(pool) {
 			} else {
 				pointGroup = 60;
 			}
-			if (req.query.ip && (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1)) {
+			if (req. query.src_ip && (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1)) {
 				var sankeyData;
 				var info = [];
-				var sankey1 = {
+				var sankey_auth1 = {
 					query: 'SELECT '+
 							'count(*) AS `count`, '+
 							'max(date_format(from_unixtime(stealth_conn.time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
@@ -59,12 +59,15 @@ module.exports = function(pool) {
 						'WHERE '+
 							'time BETWEEN ? AND ? '+
 							'AND `dst_ip` = ? '+
+							// 'AND `out_bytes` > 0 '+
+							'AND `in_bytes` > 0 '+
 						'GROUP BY '+
 							'`src_ip` '+
 						'ORDER BY `count` DESC ',
-					insert: [start, end, req.query.ip]
+					insert: [start, end, req.query.src_ip]
 				}
-				var sankey2 = {
+				//from center node to local (center node is the lan) AUTH
+				var sankey_auth2 = {
 					query: 'SELECT '+
 							'count(*) AS `count`, '+
 							'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
@@ -78,15 +81,19 @@ module.exports = function(pool) {
 							'`conn_meta` '+
 						'WHERE '+
 							'time BETWEEN ? AND ? '+
-							'AND ((`remote_ip` = ?) '+
-							'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%")) '+
+							// 'AND `in_bytes` > 0 '+
+							// 'AND ((`remote_ip` = ?) '+
+							// 'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%")) '+
+							'AND ((`remote_ip` = ? AND `out_bytes` > 0 ) '+
+							'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%" AND `in_bytes` > 0 )) '+
 						'GROUP BY '+
 							'`lan_ip`, '+
 							'`remote_ip` '+
 						'ORDER BY `count` DESC ',
-					insert: [start, end, req.query.ip, req.query.ip]
+					insert: [start, end, req.query.src_ip, req.query.src_ip]
 				}
-				var sankey3 = {
+				//from center to remote (center is the lan) AUTH
+				var sankey_auth3 = {
 					query: 'SELECT '+
 							'count(*) AS `count`, '+
 							'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
@@ -100,12 +107,82 @@ module.exports = function(pool) {
 							'`conn_meta` '+
 						'WHERE '+
 							'time BETWEEN ? AND ? '+
+							'AND `out_bytes` > 0 '+
 							'AND `lan_ip` = ? '+
-							'AND NOT (remote_ip LIKE "192.168.222.%") '+
+							// 'AND NOT (remote_ip LIKE "192.168.222.%") '+
 						'GROUP BY '+
 							'`remote_ip` '+
 						'ORDER BY `count` DESC LIMIT 10',
-					insert: [start, end, req.query.ip]
+					insert: [start, end, req.query.src_ip]
+				}
+				var sankey_unauth1 = {
+					query: 'SELECT '+
+							'count(*) AS `count`, '+
+							'max(date_format(from_unixtime(stealth_conn.time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+							'`src_ip`, '+
+							'`dst_ip`, '+
+							'(sum(in_bytes) / 1048576) as in_bytes, '+
+							'(sum(out_bytes) / 1048576) as out_bytes, '+
+							'sum(in_packets) as in_packets, '+
+							'sum(out_packets) as out_packets '+
+						'FROM '+
+							'`stealth_conn` '+
+						'WHERE '+
+							'time BETWEEN ? AND ? '+
+							'AND `dst_ip` = ? '+
+							// 'AND `out_bytes` = 0 '+
+							'AND `in_bytes` = 0 '+
+						'GROUP BY '+
+							'`src_ip` '+
+						'ORDER BY `count` DESC ',
+					insert: [start, end, req.query.src_ip]
+				}
+				//from center node to local (center node is the lan) AUTH
+				var sankey_unauth2 = {
+					query: 'SELECT '+
+							'count(*) AS `count`, '+
+							'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+							'`lan_ip`, '+
+							'`remote_ip`, '+
+							'(sum(in_bytes) / 1048576) as in_bytes, '+
+							'(sum(out_bytes) / 1048576) as out_bytes, '+
+							'sum(in_packets) as in_packets, '+
+							'sum(out_packets) as out_packets '+
+						'FROM '+
+							'`conn_meta` '+
+						'WHERE '+
+							'time BETWEEN ? AND ? '+
+							// 'AND `in_bytes` = 0 '+
+							'AND ((`remote_ip` = ? AND `out_bytes` = 0 ) '+
+							'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%" AND `in_bytes` = 0 )) '+
+						'GROUP BY '+
+							'`lan_ip`, '+
+							'`remote_ip` '+
+						'ORDER BY `count` DESC ',
+					insert: [start, end, req.query.src_ip, req.query.src_ip]
+				}
+				//from center to remote (center is the lan) AUTH
+				var sankey_unauth3 = {
+					query: 'SELECT '+
+							'count(*) AS `count`, '+
+							'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+							'`lan_ip`, '+
+							'`remote_ip`, '+
+							'(sum(in_bytes) / 1048576) as in_bytes, '+
+							'(sum(out_bytes) / 1048576) as out_bytes, '+
+							'sum(in_packets) as in_packets, '+
+							'sum(out_packets) as out_packets '+
+						'FROM '+
+							'`conn_meta` '+
+						'WHERE '+
+							'time BETWEEN ? AND ? '+
+							'AND `out_bytes` = 0 '+
+							'AND `lan_ip` = ? '+
+							// 'AND NOT (remote_ip LIKE "192.168.222.%") '+
+						'GROUP BY '+
+							'`remote_ip` '+
+						'ORDER BY `count` DESC LIMIT 10',
+					insert: [start, end, req.query.src_ip]
 				}
 				//The rest of the queries are for the fisheye visual
 				var stealth_conn = {
@@ -113,8 +190,8 @@ module.exports = function(pool) {
 							'`time`, '+
 							'`src_ip`,'+
 							'`dst_ip`,'+
-							'`(in_bytes / 1048576) as in_bytes`,'+
-							'`(out_bytes / 1048576) as out_bytes`,'+
+							'(`in_bytes` / 1048576) as in_bytes,'+
+							'(`out_bytes` / 1048576) as out_bytes,'+
 							'`in_packets`,'+
 							'`out_packets` '+
 						'FROM '+
@@ -122,7 +199,7 @@ module.exports = function(pool) {
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `src_ip`= ? ',
-					insert: [start, end, req.query.ip],
+					insert: [start, end, req. query.src_ip],
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "Source IP", "mData": "src_ip"},
@@ -150,8 +227,8 @@ module.exports = function(pool) {
 							'`remote_port`,'+
 							'`remote_country`,'+
 							'`remote_asn_name`,'+
-							'`(in_bytes / 1048576) as in_bytes`,'+
-							'`(out_bytes / 1048576) as out_bytes`,'+
+							'(`in_bytes` / 1048576) as in_bytes,'+
+							'(`out_bytes` / 1048576) as out_bytes,'+
 							'`l7_proto`,'+
 							'`ioc`,'+
 							'`ioc_severity`,'+
@@ -163,7 +240,7 @@ module.exports = function(pool) {
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`= ? ',
-					insert: [start, end, req.query.ip],
+					insert: [start, end, req. query.src_ip],
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "Zone", "mData": "lan_zone"},
@@ -209,7 +286,7 @@ module.exports = function(pool) {
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`=?',
-					insert: [start, end, req.query.ip],
+					insert: [start, end, req. query.src_ip],
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "Protocol", "mData": "proto"},
@@ -254,7 +331,7 @@ module.exports = function(pool) {
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`= ?',
-					insert: [start, end, req.query.ip],
+					insert: [start, end, req. query.src_ip],
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "Host", "mData": "host"},
@@ -294,7 +371,7 @@ module.exports = function(pool) {
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`= ?',
-					insert: [start, end, req.query.ip],
+					insert: [start, end, req. query.src_ip],
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "Server Name", "mData": "server_name"},
@@ -335,7 +412,7 @@ module.exports = function(pool) {
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`= ?',
-					insert: [start, end, req.query.ip],
+					insert: [start, end, req. query.src_ip],
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "File Type", "mData": "mime"},
@@ -368,7 +445,7 @@ module.exports = function(pool) {
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `src_ip`= ? ',
-					insert: [start, end, req.query.ip],
+					insert: [start, end, req. query.src_ip],
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "User", "mData": "src_user"},
@@ -395,7 +472,7 @@ module.exports = function(pool) {
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`= ? '+
 							'AND `event` = "Log On" ',
-					insert: [start, end, req.query.ip],
+					insert: [start, end, req. query.src_ip],
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "User", "mData": "user"},
@@ -419,7 +496,7 @@ module.exports = function(pool) {
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`= ? '+
 							'AND `event` = "Log Off" ',
-					insert: [start, end, req.query.ip],
+					insert: [start, end, req. query.src_ip],
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "User", "mData": "user"},
@@ -480,8 +557,8 @@ module.exports = function(pool) {
 					},
 				//	SANKEY
 					function(callback) {
-						console.log(sankey3.query);
-						new sankey(sankey1, sankey2, sankey3, {database: database, pool: pool}, function(err,data){
+						// console.log(sankey3.query);
+						new sankey(sankey_auth1, sankey_auth2, sankey_auth3, sankey_unauth1, sankey_unauth2, sankey_unauth3, {database: database, pool: pool}, function(err,data){
 							sankeyData = data;
 							callback();
 						});

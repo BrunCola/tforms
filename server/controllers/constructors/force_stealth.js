@@ -1,101 +1,153 @@
 'use strict';
 
-var config = require('../../config/config');
+var config = require('../../config/config'),
+	async = require('async');
 
-module.exports = function (sql, conn, callback) {
+module.exports = function (sql1, sql2, sql3, conn, callback) {
 	var node = [];
 	var link = [];
-	var count = 0;
-	var ip_nodes = [];
-	var group_nodes = [];
+	var users = [];
+	var groups = [];
+	var connections = [];
+
+	function processData(data) {
+		var current_user_index; 
+		var current_group_index;
+
+		//insert the user node if it is not already there and grab its index either way
+		if(users.indexOf(data.user) === -1) {
+			node.push({
+				name: data.user,
+				group: 1,
+				width: 0.25,
+				gateway: 0
+			});
+			users.push(data.user);
+			current_user_index = node.length - 1; //since just pushed to end of array
+
+		} else {
+			for(var i = 0; i < node.length; i++) {
+				if(node[i].name === data.user && node[i].group !== 0) {
+					node[i].group ++; //increment the number of groups this user belongs to.
+					current_user_index = i;
+					break;
+				}
+			}
+		}
+
+		//insert the group node if it is not already there and grab its index either way
+		if(groups.indexOf(data.role) === -1) {
+			if(data.role === "ClearText") {
+				node.push({
+					name: data.role,
+					group: 0,
+					width: 0.75,
+					gateway: 1
+				});
+				groups.push(data.role);
+				current_group_index = node.length - 1;
+			}
+			else {
+				node.push({
+					name: data.role,
+					group: 0,
+					width: 0.75,
+					gateway: 0
+				});
+				groups.push(data.role);
+				current_group_index = node.length - 1;
+			}
+		} else {
+			for(var i = 0; i < node.length; i++) {
+				if(node[i].name === data.role && node[i].group === 0) {
+					current_group_index = i;
+					break;
+				}
+			}
+		}
+
+		//create the links from the user to the group
+		link.push({
+			target: current_group_index,
+			source: current_user_index,
+			value: 1
+		});
+
+		connections.push(data.user + "" + data.role);
+	}
 
 	conn.pool.getConnection(function(err, connection) {
 		connection.changeUser({database : conn.database}, function(err) {
 			if (err) throw err;
 		});
-		connection.query(sql.query)
-			.on('result', function(data){
-				//populate the user
-				if(node.indexOf(data.user) === -1) {//this check is only kinda necessary...
-					var stealthGroups = data.stealth_COIs.split(", ");
-					//group of the IP determines the colour of the node, and is dependent on how may stealth groups it belongs to
-					//console.log(data.user + ' group ' +stealthGroups.length);
-					node.push({
-						name: data.user,
-						group: stealthGroups.length,
-						width: 0.25,
-						gateway: data.gateway
-					});
-					var current_user_index = count;
-					count ++;
-					//split the stealth groups up into an array
-					//add the stealth groups as level 1 nodes if they are not added already
-					stealthGroups.forEach(function(d){
-						var alreadyInserted = false;
-						node.forEach(function(n){
-							if(n.name == d){
-								alreadyInserted = true;
+		async.series([
+			function(callback){
+				connection.query(sql1.query, sql1.insert, function(err, result) {
+					if (err) {
+						callback(err, null);
+					} else {
+						result.forEach(function(data){ 
+							processData(data);
+						})
+						callback();
+					}
+				})
+			},
+			function(callback){
+				connection.query(sql2.query, sql2.insert, function(err, result) {
+					if (err) {
+						callback(err, null);
+					} else {
+						result.forEach(function(data){ 
+							if (connections.indexOf(data.user + "" + data.role) === -1) {
+								processData(data);
 							}
-						});
-
-						if(!alreadyInserted){
-							//add stealth group nodes as group 0 to differentiate from any possible IP nodes
-							if(d === "ClearText") {
-								node.push({
-									name: d,
-									group: 0,
-									width: 0.75,
-									gateway: 1
-								});
-								group_nodes.push({
-									index: count,
-									groupName: d
-								});
-								count ++;
+						})
+						callback();
+					}
+				})
+			},
+			function(callback){
+				connection.query(sql3.query, sql3.insert, function(err, result) {
+					if (err) {
+						callback(err, null);
+					} else {
+						result.forEach(function(data){
+							for(var i = 0; i < node.length; i++) {
+								if(node[i].name === data.role && node[i].group === 0) {
+									if(node[i].cois === undefined) {
+										node[i].cois = [data.cois];
+									} else {
+										node[i].cois.push(data.cois);
+									}
+									if(node[i].rules === undefined) {
+										node[i].rules = [{
+											rule: data.rule, 
+											order: data.rule_order
+										}];
+									} else {
+										node[i].rules.push({
+											rule: data.rule, 
+											order: data.rule_order
+										});
+									}
+									break;
+								}
 							}
-							else {
-								node.push({
-									name: d,
-									group: 0,
-									width: 0.75,
-									gateway: 0
-								});
-								group_nodes.push({
-									index: count,
-									groupName: d
-								});
-								count ++;
-							}
-						}
-
-						//get the force chart index of the stealth group
-						var current_group_index;
-						group_nodes.forEach(function(g){
-							if(g.groupName == d) {
-								current_group_index = g.index;
-								//break;
-							}
-						});
-
-						//create the links from the IP to the groups
-						link.push({
-							target: current_group_index,
-							source: current_user_index,
-							value: 1
-						});
-
-					});
-				}
-			})
-			.on('end', function(){
-				connection.release();
-				var results = {
-					links: link,
-					nodes: node
-				};
-				callback(null, results);
-			});
+						})
+						callback();
+					}
+				})
+			}
+		], function(err) { 
+			if (err) throw console.log(err);
 			connection.release();
-			//group by type and push a main and sub-group for each time slice
+			var results = {
+				links: link,
+				nodes: node
+			};
+			callback(null, results);
+		});
+
 	})
 };

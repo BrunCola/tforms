@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/stealth/local_COI_remote_drill?start='+$location.$$search.start+'&end='+$location.$$search.end+'&ip='+$location.$$search.ip;
+		query = '/stealth/local_COI_remote_drill?start='+$location.$$search.start+'&end='+$location.$$search.end+'&src_ip='+$location.$$search.src_ip;
 	} else {
-		query = '/stealth/local_COI_remote_drill?ip='+$location.$$search.ip;
+		query = '/stealth/local_COI_remote_drill?src_ip='+$location.$$search.src_ip;
 	}
 
 	function fishchart(data) {

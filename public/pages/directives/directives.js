@@ -1277,287 +1277,318 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
 }]);
 
 angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$rootScope', '$location', function ($timeout, $rootScope, $location) {
-	return {
-		link: function ($scope, element, attrs) {
-			$scope.$on('stealthForceChart', function (event, data, params) {
-				$timeout(function () { // You might need this timeout to be sure its run after DOM render
-					var width = $('#stealthforcechart').width();
-					var height = width/1.5;
-					var tCount = [];
-					data.links.forEach(function(d) {
-						tCount.push(d.value);
-					});
-					var maxNum = Math.max.apply(Math, tCount);
+    return {
+        link: function ($scope, element, attrs) {
+            $scope.$on('stealthForceChart', function (event, data, params) {
+                $timeout(function () { // You might need this timeout to be sure its run after DOM render
+                    var width = $('#stealthforcechart').width();
+                    var height = width/1.5;
+                    var tCount = [];
+                    data.links.forEach(function(d) {
+                        tCount.push(d.value);
+                    });
+                    var maxNum = Math.max.apply(Math, tCount);
 
-					// var color = d3.scale.category20();
-					var palette = {
-						"lightgray": "#819090",
-						"gray": "#708284",
-						"mediumgray": "#536870",
-						"darkgray": "#475B62",
+                    // var color = d3.scale.category20();
+                    var palette = {
+                        "lightgray": "#819090",
+                        "gray": "#708284",
+                        "mediumgray": "#536870",
+                        "darkgray": "#475B62",
 
-						"darkblue": "#0A2933",
-						"darkerblue": "#042029",
+                        "darkblue": "#0A2933",
+                        "darkerblue": "#042029",
 
-						"paleryellow": "#FCF4DC",
-						"paleyellow": "#EAE3CB",
-						"yellow": "#E9D805",
-						"orange": "#FFA500",
-						"red": "#D11C24",
-						"pink": "#C61C6F",
-						"purple": "#595AB7",
-						"blue": "#2176C7",
-						"green": "#259286",
-						"yellowgreen": "#738A05"
-					}
-					var count = function(size) {
-						if (size === undefined) {
-							size = 1;
-						}
-						return size;
-					}
-					var color = function(group) {
-						if (group === 0) { //COI group node
-							return palette.pink
-						} else if (group === 1) { //IP node with 1 COI group
-							return palette.blue
-						} else if (group === 2) { //IP node with 2 COI groups
-							return palette.gray
-						} else if (group === 3) { //etc...
-							return palette.yellow
-						} else if (group === 4) {
-							return palette.orange
-						} else {
-							return palette.red
-						}
-					}
-					function logslider(x) {
-						if (x === undefined) {
-							return 18;
-						}
-						// position will be between 0 and 100
-						// if(x > 50) {
-						// 	x = 50;
-						// }
-						var minp = 0;
-						var maxp = maxNum;
-						// The result should be between 100 an 10000000
-						var minv = Math.log(5);
-						var maxv = Math.log(50);
-						// calculate adjustment factor
-						var scale = (maxv-minv) / (maxp-minp);
-						return Math.exp(minv + scale*(x-minp));
-					}
+                        "paleryellow": "#FCF4DC",
+                        "paleyellow": "#EAE3CB",
+                        "yellow": "#E9D805",
+                        "orange": "#FFA500",
+                        "red": "#D11C24",
+                        "pink": "#C61C6F",
+                        "purple": "#595AB7",
+                        "blue": "#2176C7",
+                        "green": "#259286",
+                        "yellowgreen": "#738A05"
+                    }
+                    var count = function(size) {
+                        if (size === undefined) {
+                            size = 1;
+                        }
+                        return size;
+                    }
+                    var color = function(group) {
+                        if (group === 0) { //COI group node
+                            return palette.pink
+                        } else if (group === 1) { //IP node with 1 COI group
+                            return palette.blue
+                        } else if (group === 2) { //IP node with 2 COI groups
+                            return palette.gray
+                        } else if (group === 3) { //etc...
+                            return palette.yellow
+                        } else if (group === 4) {
+                            return palette.orange
+                        } else {
+                            return palette.red
+                        }
+                    }
+                    function logslider(x) {
+                        if (x === undefined) {
+                            return 18;
+                        }
+                        // position will be between 0 and 100
+                        // if(x > 50) {
+                        //  x = 50;
+                        // }
+                        var minp = 0;
+                        var maxp = maxNum;
+                        // The result should be between 100 an 10000000
+                        var minv = Math.log(5);
+                        var maxv = Math.log(50);
+                        // calculate adjustment factor
+                        var scale = (maxv-minv) / (maxp-minp);
+                        return Math.exp(minv + scale*(x-minp));
+                    }
 
-					var circleWidth = 5;
-					var vis = d3.select("#stealthforcechart")
-						.append("svg:svg")
-						.attr("class", "stage")
-						.attr("width", width)
-						.attr("height", height);
-					var force = d3.layout.force()
-						.nodes(data.nodes)
-						.links(data.links)
-						.gravity(0.20)
-						.linkDistance(20)
-						.charge(-2000)
-						.size([width-50, height]);
+                    var circleWidth = 5;
+                    var vis = d3.select("#stealthforcechart")
+                        .append("svg:svg")
+                        .attr("class", "stage")
+                        .attr("width", width)
+                        .attr("height", height);
+                    var force = d3.layout.force()
+                        .nodes(data.nodes)
+                        .links(data.links)
+                        .gravity(0.20)
+                        .linkDistance(20)
+                        .charge(-2000)
+                        .size([width-50, height]);
 
-					var link = vis.selectAll(".link")
-						.data(data.links)
-						.enter().append("line")
-						.attr("class", "link")
-						.attr("stroke", "#CCC")
-						.attr("fill", "#000");
+                    var link = vis.selectAll(".link")
+                        .data(data.links)
+                        .enter().append("line")
+                        .attr("class", "link")
+                        .attr("stroke", "#CCC")
+                        .attr("fill", "#000");
 
-					var node = vis.selectAll("circle.node")
-						.data(data.nodes)
-						.enter().append("g")
-						.attr("class", "node")
+                    var node = vis.selectAll("circle.node")
+                        .data(data.nodes)
+                        .enter().append("g")
+                        .attr("class", "node")
 
-					//MOUSEOVER
-					.on("mouseover", function(d,i) {
-						//CIRCLE
-						d3.select(this).selectAll("circle")
-							.transition()
-							.duration(250)
-							.style("cursor", "none")
-							.attr("r", function (d) {return logslider(d["width"])+4; })
-							.attr("fill",function(d){ return color(d.group); });
+                    //MOUSEOVER
+                    .on("mouseover", function(d,i) {
+                        //CIRCLE
+                        d3.select(this).selectAll("circle")
+                            .transition()
+                            .duration(250)
+                            .style("cursor", "none")
+                            .attr("r", function (d) {return logslider(d["width"])+4; })
+                            .attr("fill",function(d){ return color(d.group); });
 
-						//TEXT
-						d3.select(this).select("text")
-							.transition()
-							.style("cursor", "none")
-							.duration(250)
-							.style("cursor", "none")
-							.attr("font-size","1.5em")
-							.attr("x", 15 )
-							.attr("y", 5 )
-					})
+                        //TEXT
+                        d3.select(this).select("text")
+                            .transition()
+                            .style("cursor", "none")
+                            .duration(250)
+                            .style("cursor", "none")
+                            .attr("font-size","1.5em")
+                            .attr("x", 15 )
+                            .attr("y", 5 )
+                    })
 
-					//MOUSEOUT
-					.on("mouseout", function(d,i) {
-						//CIRCLE
-						d3.select(this).selectAll("circle")
-							.transition()
-							.duration(250)
-							.attr("r", function (d) {return logslider(d["width"]); })
-							.attr("fill",function(d){ return color(d.group); } );
+                    //MOUSEOUT
+                    .on("mouseout", function(d,i) {
+                        //CIRCLE
+                        d3.select(this).selectAll("circle")
+                            .transition()
+                            .duration(250)
+                            .attr("r", function (d) {return logslider(d["width"]); })
+                            .attr("fill",function(d){ return color(d.group); } );
 
-						//TEXT
-						d3.select(this).select("text")
-							.transition()
-							.duration(250)
-							.attr("font-size","1em")
-							.attr("x", 8 )
-							.attr("y", 4 )
-					})
+                        //TEXT
+                        d3.select(this).select("text")
+                            .transition()
+                            .duration(250)
+                            .attr("font-size","1em")
+                            .attr("x", 8 )
+                            .attr("y", 4 )
+                    })
 
-					.call(force.drag);
+                    .call(force.drag);
 
+                    // Add tooltip
+                    $scope.tip = d3.tip()
+                        .attr('class', 't-tip')
+                        .offset([-50, 0])
+                        .html(function(d) {
 
-					//CIRCLE
-					node.each(function(d){
-						var elm = d3.select(this)
-						if (d.gateway === 1) {
-							elm.append('svg:path')
-								.attr('transform', 'translate(-18,-18)')
-								.attr('d', 'M18,0C8.059,0,0,8.06,0,18.001C0,27.941,8.059,36,18,36c9.94,0,18-8.059,18-17.999C36,8.06,27.94,0,18,0z')
-								.attr('fill', '#67AAB5');
-							elm.append('svg:path')
-								.attr('transform', 'translate(-18,-18)')
-								.attr('d', 'M24.715,19.976l-2.057-1.122l-1.384-0.479l-1.051,0.857l-1.613-0.857l0.076-0.867l-1.062-0.325l0.31-1.146'+
-									'l-1.692,0.593l-0.724-1.616l0.896-1.049l1.108,0.082l0.918-0.511l0.806,1.629l0.447,0.087l-0.326-1.965l0.855-0.556l0.496-1.458'+
-									'l1.395-1.011l1.412-0.155l-0.729-0.7L22.06,9.039l1.984-0.283l0.727-0.568L22.871,6.41l-0.912,0.226L21.63,6.109l-1.406-0.352'+
-									'l-0.406,0.596l0.436,0.957l-0.485,1.201L18.636,7.33l-2.203-0.934l1.97-1.563L17.16,3.705l-2.325,0.627L8.91,3.678L6.39,6.285'+
-									'l2.064,1.242l1.479,1.567l0.307,2.399l1.009,1.316l1.694,2.576l0.223,0.177l-0.69-1.864l1.58,2.279l0.869,1.03'+
-									'c0,0,1.737,0.646,1.767,0.569c0.027-0.07,1.964,1.598,1.964,1.598l1.084,0.52L19.456,21.1l-0.307,1.775l1.17,1.996l0.997,1.242'+
-									'l-0.151,2.002L20.294,32.5l0.025,2.111l1.312-0.626c0,0,2.245-3.793,2.368-3.554c0.122,0.238,2.129-2.76,2.129-2.76l1.666-1.26'+
-									'l0.959-3.195l-2.882-1.775L24.715,19.976z')
-								.attr('fill', '#595A5C');
-						} else {
-							elm.append("svg:circle")
-							.attr("cx", function(d) { return d.x; })
-							.attr("cy", function(d) { return d.y; })
-							.attr("r", function (d) {return logslider(d["width"]); })
-							.attr("fill", function(d, i) { return  color(d.group); })
-							.style("stroke-width", "1.5px")
-							.style("stroke", "#fff")
-						}
-						
-						if(d.group > 0) {
-							elm.on('mouseover', function(d){
-								elm.style('cursor', 'pointer')
-							})
-							.on("click", function (d){
-								var link = {user: d.name};
-								if ($location.$$search.start && $location.$$search.end) {
-									link.start = $location.$$search.start;
-									link.end = $location.$$search.end;
-								}
-								$scope.$apply($location.path('user_local').search(link));
-							});
-						} else {
-							elm.on('mouseover', function(d){
-								elm.style('cursor', 'pointer')
-							}).on("click", function (d){
-								// Do nothing (no link from COI for now)
-							});
-						}
-					})
+                            var ret = "<strong>COIs and rules: </strong> <br />";
 
-					//LEGEND
+                            for(var i = 0; i < d.cois.length; i++) {
+                                if(d.rules[i].order === 1) {
+                                    if(d.rules[i].rule !== "-"){
+                                        ret += d.cois[i] + ":<br />" +
+                                            "&nbsp&nbsp&nbsp" + d.rules[i].order + " " + d.rules[i].rule + "<br />";
+                                    } else {
+                                        ret += d.cois[i] + "<br />";
+                                    }
+                                } else {
+                                    ret += "&nbsp&nbsp&nbsp" + d.rules[i].order + " " + d.rules[i].rule + "<br />";
+                                }
+                                
+                            }
 
-					var legend_color = function(legend_item) {
-						if (legend_item === "COI") { //COI group node
-							return palette.pink
-						} else if (legend_item === "User belonging to one group") { //IP node with 1 COI group
-							return palette.blue
-						} else if (legend_item === "User belonging to two groups") { //IP node with 2 COI groups
-							return palette.gray
-						} else if (legend_item === "User belonging to three groups") { //etc...
-							return palette.yellow
-						} else if (legend_item === "User belonging to four groups") {
-							return palette.orange
-						} else {
-							return palette.red
-						}
-					}
-					var legend_data = ["COI", "User belonging to one group", "User belonging to two groups", 
-						"User belonging to three groups", "User belonging to four groups", "User belonging to five or more groups"];
-					var legend = vis.selectAll(".legend")
-						.data(legend_data)
-						.enter().append("g")
-						.attr("class", "legend")
-						.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+                            return ret;
+                            // "<strong>Connection Type: </strong> <br />";//+
+                                // "<strong>Connection Count: </strong> <span style='color:"+colors(d.class)+"'>" + d.data.length + "</span><br />"+
+                                // "<strong>IOC Hits </strong> <span style='color:"+colors(d.class)+"'>" + d.ioc_hits + "</span><br />"+
+                                // "<strong>Date: </strong> <span style='color:"+colors(d.class)+"'>" + moment.unix(d.roundedtime).format('MMMM Do YYYY, h:mm:ss a') + "</span>";
+                        });
 
-					legend.append("rect")
-						.attr("width", 18)
-						.attr("height", 18)
-						.style("fill", function(d) { return legend_color(d) });
+                    vis.call($scope.tip);
 
-					legend.append("text")
-						.attr("x", 23)
-						.attr("y", 9)
-						.attr("dy", ".35em")
-						.text(function(d) { return d; });
+                    //CIRCLE
+                    node.each(function(d){
+                        var elm = d3.select(this)
+                        if (d.gateway === 1) {
+                            elm.append('svg:path')
+                                .attr('transform', 'translate(-18,-18)')
+                                .attr('d', 'M18,0C8.059,0,0,8.06,0,18.001C0,27.941,8.059,36,18,36c9.94,0,18-8.059,18-17.999C36,8.06,27.94,0,18,0z')
+                                .attr('fill', '#67AAB5');
+                            elm.append('svg:path')
+                                .attr('transform', 'translate(-18,-18)')
+                                .attr('d', 'M24.715,19.976l-2.057-1.122l-1.384-0.479l-1.051,0.857l-1.613-0.857l0.076-0.867l-1.062-0.325l0.31-1.146'+
+                                    'l-1.692,0.593l-0.724-1.616l0.896-1.049l1.108,0.082l0.918-0.511l0.806,1.629l0.447,0.087l-0.326-1.965l0.855-0.556l0.496-1.458'+
+                                    'l1.395-1.011l1.412-0.155l-0.729-0.7L22.06,9.039l1.984-0.283l0.727-0.568L22.871,6.41l-0.912,0.226L21.63,6.109l-1.406-0.352'+
+                                    'l-0.406,0.596l0.436,0.957l-0.485,1.201L18.636,7.33l-2.203-0.934l1.97-1.563L17.16,3.705l-2.325,0.627L8.91,3.678L6.39,6.285'+
+                                    'l2.064,1.242l1.479,1.567l0.307,2.399l1.009,1.316l1.694,2.576l0.223,0.177l-0.69-1.864l1.58,2.279l0.869,1.03'+
+                                    'c0,0,1.737,0.646,1.767,0.569c0.027-0.07,1.964,1.598,1.964,1.598l1.084,0.52L19.456,21.1l-0.307,1.775l1.17,1.996l0.997,1.242'+
+                                    'l-0.151,2.002L20.294,32.5l0.025,2.111l1.312-0.626c0,0,2.245-3.793,2.368-3.554c0.122,0.238,2.129-2.76,2.129-2.76l1.666-1.26'+
+                                    'l0.959-3.195l-2.882-1.775L24.715,19.976z')
+                                .attr('fill', '#595A5C');
+                        } else {
+                            elm.append("svg:circle")
+                            .attr("cx", function(d) { return d.x; })
+                            .attr("cy", function(d) { return d.y; })
+                            .attr("r", function (d) {return logslider(d["width"]); })
+                            .attr("fill", function(d, i) { return  color(d.group); })
+                            .style("stroke-width", "1.5px")
+                            .style("stroke", "#fff")
+                        }
+                        
+                        if(d.group > 0) {
+                            elm.on('mouseover', function(d){
+                                elm.style('cursor', 'pointer')
+                            })
+                            // .on("click", function (d){
+                            //     var link = {user: d.name};
+                            //     if ($location.$$search.start && $location.$$search.end) {
+                            //         link.start = $location.$$search.start;
+                            //         link.end = $location.$$search.end;
+                            //     }
+                            //     $scope.$apply($location.path('user_local').search(link));
+                            // });
+                        } else {
+                            elm.on('mouseover', function(d){
+                                elm.style('cursor', 'pointer')
+                            }).on("click", function (d){
+                                // Do nothing (no link from COI for now)
+                            }).on('mouseover', $scope.tip.show)
+                                .on('mouseout', $scope.tip.hide);
+                        }
+                    })
 
-					var gateway_legend = vis.selectAll(".gateway_legend")
-						.data(["Internet Gateway"])
-						.enter().append("g")
-						.attr("class", "legend")
-						.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+                    //LEGEND
 
-					gateway_legend.append('svg:path')
-						.attr('transform', 'translate(0,122)')
-						.attr('d', 'M18,0C8.059,0,0,8.06,0,18.001C0,27.941,8.059,36,18,36c9.94,0,18-8.059,18-17.999C36,8.06,27.94,0,18,0z')
-						.attr('fill', '#67AAB5');
+                    var legend_color = function(legend_item) {
+                        if (legend_item === "Role") { //COI group node
+                            return palette.pink
+                        } else if (legend_item === "User with one role") { //IP node with 1 COI group
+                            return palette.blue
+                        } else if (legend_item === "User with two roles") { //IP node with 2 COI groups
+                            return palette.gray
+                        } else if (legend_item === "User with three roles") { //etc...
+                            return palette.yellow
+                        } else if (legend_item === "User with four roles") {
+                            return palette.orange
+                        } else {
+                            return palette.red
+                        }
+                    }
+                    var legend_data = ["Role", "User with one role", "User with two roles", 
+                        "User with three roles", "User with four roles", "User with five or more roles"];
+                    var legend = vis.selectAll(".legend")
+                        .data(legend_data)
+                        .enter().append("g")
+                        .attr("class", "legend")
+                        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
-					gateway_legend.append('svg:path')
-						.attr('transform', 'translate(0,122)')
-						.attr('d', 'M24.715,19.976l-2.057-1.122l-1.384-0.479l-1.051,0.857l-1.613-0.857l0.076-0.867l-1.062-0.325l0.31-1.146'+
-							'l-1.692,0.593l-0.724-1.616l0.896-1.049l1.108,0.082l0.918-0.511l0.806,1.629l0.447,0.087l-0.326-1.965l0.855-0.556l0.496-1.458'+
-							'l1.395-1.011l1.412-0.155l-0.729-0.7L22.06,9.039l1.984-0.283l0.727-0.568L22.871,6.41l-0.912,0.226L21.63,6.109l-1.406-0.352'+
-							'l-0.406,0.596l0.436,0.957l-0.485,1.201L18.636,7.33l-2.203-0.934l1.97-1.563L17.16,3.705l-2.325,0.627L8.91,3.678L6.39,6.285'+
-							'l2.064,1.242l1.479,1.567l0.307,2.399l1.009,1.316l1.694,2.576l0.223,0.177l-0.69-1.864l1.58,2.279l0.869,1.03'+
-							'c0,0,1.737,0.646,1.767,0.569c0.027-0.07,1.964,1.598,1.964,1.598l1.084,0.52L19.456,21.1l-0.307,1.775l1.17,1.996l0.997,1.242'+
-							'l-0.151,2.002L20.294,32.5l0.025,2.111l1.312-0.626c0,0,2.245-3.793,2.368-3.554c0.122,0.238,2.129-2.76,2.129-2.76l1.666-1.26'+
-							'l0.959-3.195l-2.882-1.775L24.715,19.976z')
-						.attr('fill', '#595A5C');
+                    legend.append("rect")
+                        .attr("width", 18)
+                        .attr("height", 18)
+                        .style("fill", function(d) { return legend_color(d) });
 
-					gateway_legend.append("text")
-						.attr("x", 40)
-						.attr("y", 140)
-						.attr("dy", ".35em")
-						.text(function(d) { return d; });
+                    legend.append("text")
+                        .attr("x", 23)
+                        .attr("y", 9)
+                        .attr("dy", ".35em")
+                        .text(function(d) { return d; });
 
-					//TEXT
-					node.append("text")
-						.text(function(d, i) { return d.name })
-						.attr("x",    function(d, i) { return circleWidth + 5; })
-						.attr("y",            function(d, i) { return circleWidth + 0 })
-						// .attr("font-family",  "Bree Serif")
-						// .attr("fill",         function(d, i) {  return  palette.paleryellow;  })
-						.attr("font-size",    function(d, i) {  return  "1em"; })
-						.attr("text-anchor",  function(d, i) { return  "beginning"; })  
+                    var gateway_legend = vis.selectAll(".gateway_legend")
+                        .data(["Internet Gateway"])
+                        .enter().append("g")
+                        .attr("class", "legend")
+                        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
-					force.on("tick", function(e) {
-						node.attr("transform", function(d, i) {
-							return "translate(" + d.x + "," + d.y + ")";
-						});
+                    gateway_legend.append('svg:path')
+                        .attr('transform', 'translate(0,122)')
+                        .attr('d', 'M18,0C8.059,0,0,8.06,0,18.001C0,27.941,8.059,36,18,36c9.94,0,18-8.059,18-17.999C36,8.06,27.94,0,18,0z')
+                        .attr('fill', '#67AAB5');
 
-						link.attr("x1", function(d)   { return d.source.x; })
-							.attr("y1", function(d)   { return d.source.y; })
-							.attr("x2", function(d)   { return d.target.x; })
-							.attr("y2", function(d)   { return d.target.y; })
-					});
+                    gateway_legend.append('svg:path')
+                        .attr('transform', 'translate(0,122)')
+                        .attr('d', 'M24.715,19.976l-2.057-1.122l-1.384-0.479l-1.051,0.857l-1.613-0.857l0.076-0.867l-1.062-0.325l0.31-1.146'+
+                            'l-1.692,0.593l-0.724-1.616l0.896-1.049l1.108,0.082l0.918-0.511l0.806,1.629l0.447,0.087l-0.326-1.965l0.855-0.556l0.496-1.458'+
+                            'l1.395-1.011l1.412-0.155l-0.729-0.7L22.06,9.039l1.984-0.283l0.727-0.568L22.871,6.41l-0.912,0.226L21.63,6.109l-1.406-0.352'+
+                            'l-0.406,0.596l0.436,0.957l-0.485,1.201L18.636,7.33l-2.203-0.934l1.97-1.563L17.16,3.705l-2.325,0.627L8.91,3.678L6.39,6.285'+
+                            'l2.064,1.242l1.479,1.567l0.307,2.399l1.009,1.316l1.694,2.576l0.223,0.177l-0.69-1.864l1.58,2.279l0.869,1.03'+
+                            'c0,0,1.737,0.646,1.767,0.569c0.027-0.07,1.964,1.598,1.964,1.598l1.084,0.52L19.456,21.1l-0.307,1.775l1.17,1.996l0.997,1.242'+
+                            'l-0.151,2.002L20.294,32.5l0.025,2.111l1.312-0.626c0,0,2.245-3.793,2.368-3.554c0.122,0.238,2.129-2.76,2.129-2.76l1.666-1.26'+
+                            'l0.959-3.195l-2.882-1.775L24.715,19.976z')
+                        .attr('fill', '#595A5C');
 
-					force.start();
-				}, 0, false);
-			})
-		}
-	};
+                    gateway_legend.append("text")
+                        .attr("x", 40)
+                        .attr("y", 140)
+                        .attr("dy", ".35em")
+                        .text(function(d) { return d; });
+
+                    //TEXT
+                    node.append("text")
+                        .text(function(d, i) { return d.name })
+                        .attr("x",    function(d, i) { return circleWidth + 5; })
+                        .attr("y",            function(d, i) { return circleWidth + 0 })
+                        // .attr("font-family",  "Bree Serif")
+                        // .attr("fill",         function(d, i) {  return  palette.paleryellow;  })
+                        .attr("font-size",    function(d, i) {  return  "1em"; })
+                        .attr("text-anchor",  function(d, i) { return  "beginning"; })  
+
+                    force.on("tick", function(e) {
+                        node.attr("transform", function(d, i) {
+                            return "translate(" + d.x + "," + d.y + ")";
+                        });
+
+                        link.attr("x1", function(d)   { return d.source.x; })
+                            .attr("y1", function(d)   { return d.source.y; })
+                            .attr("x2", function(d)   { return d.target.x; })
+                            .attr("y2", function(d)   { return d.target.y; })
+                    });
+
+                    force.start();
+                }, 0, false);
+            })
+        }
+    };
 }]);
 
 angular.module('mean.pages').directive('makeTreeChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
