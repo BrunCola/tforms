@@ -32,6 +32,7 @@ module.exports = function(pool) {
 				var forceSQL2 = {
 					query: 'SELECT '+
 								'`lan_user` AS `user`, '+
+								'stealth_user.group, '+
 								'`role` '+
 							'FROM '+
 								'`stealth_user` '+
