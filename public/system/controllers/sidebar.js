@@ -274,6 +274,21 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 					'url': 'irc_remote',
 					'icon': 'fa-comment',
 					'orphans': ['irc_remote2local', 'irc_shared']
+				},
+				
+			]
+		},
+		{
+			'title': 'Users',
+			'url': '',
+			'icon': 'fa-user',
+			'children':
+			[
+				{
+					'title': 'Users',
+					'url': 'users_local',
+					'icon': 'fa-user',
+					'orphans': []
 				}
 			]
 		},

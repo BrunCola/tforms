@@ -179,6 +179,8 @@ module.exports = function(app, passport, version, io, pool) {
 		var ftp_remote = require('../controllers/general_network/ftp_remote')(pool);
 			// REMOTE2LOCAL FTP
 			var ftp_remote2local = require('../controllers/general_network/ftp_remote2local')(pool);
+		//USERS LOCAL
+		var users_local = require('../controllers/users/users_local')(pool);
 	//STEALTH
 		//LOCAL COI REMOTE
 		var local_COI_remote = require('../controllers/stealth/local_COI_remote')(pool); 
@@ -464,6 +466,9 @@ module.exports = function(app, passport, version, io, pool) {
 			// REMOTE2LOCAL FTP
 			app.route('/general_network/ftp_remote2local')
 			.get(authorization.requiresLogin, ftp_remote2local.render);
+		// USERS LOCAL
+		app.route('/users/users_local')
+		.get(authorization.requiresLogin, users_local.render);
 	// STEALTH
 		//LOCAL COI REMOTE
 		app.route('/stealth/local_COI_remote')

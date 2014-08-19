@@ -1003,6 +1003,19 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+				// USERS LOCAL
+				.state('users_local', {
+					url: '/users_local?start&end',
+					templateUrl: 'public/pages/views/users/users_local.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Users',
+						daterange: true
+					}
+				})
+
 
 			// ENDPOINT EVENTS	
 				// ENPOINT EVENTS
