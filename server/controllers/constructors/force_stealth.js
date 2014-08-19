@@ -9,6 +9,7 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 	var users = [];
 	var roles = [];
 	var groups = [];
+	var cois = [];
 	var connections = [];
 
 	function processData(data) {
@@ -22,6 +23,7 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 				name: data.user,
 				group: 1, //or greater denotes users
 				width: 0.25,
+				type: "user",
 				gateway: 0
 			});
 			users.push(data.user);
@@ -29,7 +31,7 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 
 		} else {
 			for(var i = 0; i < node.length; i++) {
-				if(node[i].name === data.user && node[i].group > 0) {
+				if(node[i].name === data.user && node[i].type === "user") {
 					node[i].group ++; //increment the number of groups this user belongs to.
 					current_user_index = i;
 					break;
@@ -40,18 +42,19 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 		//if there's group between user and role and it is not already there insert it, grab its index
 		if(data.group !== undefined) {
 			if(groups.indexOf(data.group) === -1) {
-			node.push({
-				name: data.group,
-				group: -1, //denotes groups
-				width: 0.50,
-				gateway: 0
-			});
-			groups.push(data.group);
-			current_group_index = node.length - 1; //since just pushed to end of array
+				node.push({
+					name: data.group,
+					group: 0, //denotes anything but user
+					width: 0.50,
+					type: "group",
+					gateway: 0
+				});
+				groups.push(data.group);
+				current_group_index = node.length - 1; //since just pushed to end of array
 
 			} else {
 				for(var i = 0; i < node.length; i++) {
-					if(node[i].name === data.group && node[i].group === -1) {
+					if(node[i].name === data.group && node[i].type === "group") {
 						current_group_index = i;
 						break;
 					}
@@ -61,29 +64,30 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 
 		//insert the group node if it is not already there and grab its index either way
 		if(roles.indexOf(data.role) === -1) {
-			if(data.role === "ClearText") {
-				node.push({
-					name: data.role,
-					group: 0, //denotes roles
-					width: 0.75,
-					gateway: 1
-				});
-				roles.push(data.role);
-				current_role_index = node.length - 1;
-			}
-			else {
-				node.push({
-					name: data.role,
-					group: 0,
-					width: 0.75,
-					gateway: 0
-				});
-				roles.push(data.role);
-				current_role_index = node.length - 1;
-			}
+			// if(data.role === "ClearText") {
+			// 	node.push({
+			// 		name: data.role,
+			// 		group: 0, //denotes roles
+			// 		width: 0.75,
+			// 		gateway: 1
+			// 	});
+			// 	roles.push(data.role);
+			// 	current_role_index = node.length - 1;
+			// }
+			// else {
+			node.push({
+				name: data.role,
+				group: 0,
+				width: 0.68,
+				type: "role",
+				gateway: 0
+			});
+			roles.push(data.role);
+			current_role_index = node.length - 1;
+			// }
 		} else {
 			for(var i = 0; i < node.length; i++) {
-				if(node[i].name === data.role && node[i].group === 0) {
+				if(node[i].name === data.role && node[i].type === "role") {
 					current_role_index = i;
 					break;
 				}
@@ -121,7 +125,7 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 			if (err) throw err;
 		});
 		async.series([
-			function(callback){
+			function(callback){ //first query deals with role to user relationship
 				connection.query(sql1.query, sql1.insert, function(err, result) {
 					if (err) {
 						callback(err, null);
@@ -133,7 +137,7 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 					}
 				})
 			},
-			function(callback){
+			function(callback){ //second query deals with role to user relationship
 				connection.query(sql2.query, sql2.insert, function(err, result) {
 					if (err) {
 						callback(err, null);
@@ -147,31 +151,88 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 					}
 				})
 			},
-			function(callback){
+			function(callback){ //third query deals with role to COI relationship
 				connection.query(sql3.query, sql3.insert, function(err, result) {
 					if (err) {
 						callback(err, null);
 					} else {
 						result.forEach(function(data){
 							for(var i = 0; i < node.length; i++) {
-								if(node[i].name === data.role && node[i].group === 0) {
-									if(node[i].cois === undefined) {
-										node[i].cois = [data.cois];
-									} else {
-										node[i].cois.push(data.cois);
+								if(node[i].name === data.role && node[i].type === "role") { //loop over current nodes until the role is found
+									
+									var current_coi_index;
+									var current_role_index = i; 
+									if (cois.indexOf(data.cois) === -1) { //if its a new coi, add it, grab the index
+										if(data.cois === "OpenCOI") {
+											node.push({
+												name: data.cois,
+												group: 0,
+												width: 0.75,
+												type: "coi",
+												rules: [{
+													rule: data.rule, 
+													order: data.rule_order
+												}],
+												gateway: 1
+											});
+										}
+										else {
+											node.push({
+												name: data.cois,
+												group: 0,
+												width: 0.75,
+												type: "coi",
+												rules: [{
+													rule: data.rule, 
+													order: data.rule_order
+												}],
+												gateway: 0
+											}); //push the coi node
+										}
+										cois.push(data.cois);
+										current_coi_index = node.length - 1; //set the coi index
+
+									} else { //if the coi already exists, grab its index, and add the rule to it
+										for(var j = 0; j < node.length; j++) {
+											if(node[j].name === data.cois && node[j].type === "coi") {
+												current_coi_index = j;
+												if (node[j].rules.length > 0) { //if there's already rules
+													var ruleinserted = 0; 
+													//check if this rule is already inserted
+													for(var k = 0; k < node[j].rules.length; k++) {
+														ruleinserted = (node[j].rules[k].rule === data.rule);
+													}
+
+													if(!ruleinserted){ //if it's not, insert it
+														node[j].rules.push({
+															rule: data.rule, 
+															order: data.rule_order
+														});
+													}
+												} else { //if there's no rules yet push this one
+													node[j].rules.push({
+														rule: data.rule, 
+														order: data.rule_order
+													});
+												}
+											}
+										}
 									}
-									if(node[i].rules === undefined) {
-										node[i].rules = [{
-											rule: data.rule, 
-											order: data.rule_order
-										}];
-									} else {
-										node[i].rules.push({
-											rule: data.rule, 
-											order: data.rule_order
-										});
+									//create the link between the role and the COI if it does not already exist
+									
+									if (connections.indexOf(data.role + "" + data.cois) === -1) {
+										if(data.role === "LegalCOI" && data.cois === "OpenCOI"){
+											console.log("target: "+current_role_index+" source: "+current_coi_index);
+										}
+										link.push({
+											target: current_role_index,
+											source: current_coi_index,
+											value: 1
+										});		
+
+										connections.push(data.role + "" + data.cois);
 									}
-									break;
+									// break;
 								}
 							}
 						})
