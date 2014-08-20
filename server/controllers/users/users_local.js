@@ -1,6 +1,6 @@
 'use strict';
 
-var datatable_stealth = require('../constructors/datatable_stealth'),
+var dataTable = require('../constructors/datatable'),
 query = require('../constructors/query'),
 config = require('../../config/config'),
 async = require('async');
@@ -67,31 +67,32 @@ module.exports = function(pool) {
 					title: 'Users'
 				}
 			}
-			var table2 = {
-				query: 'SELECT '+
-						'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ 
-						'`stealth_COIs`, ' +
-						'`stealth`, '+
-						'`lan_ip`, ' +
-						'`event`, ' +
-						'`user` ' +
-					'FROM ' + 
-						'`endpoint_tracking` '+
-					'WHERE ' + 
-						'stealth > 0 '+
-						'AND event = "Log On" ',
-				insert: [],
-				params: [
-					{ title: 'Stealth', select: 'stealth' },
-					{ title: 'COI Groups', select: 'stealth_COIs' },
-					{ title: 'User', select: 'user' }
-				],
-				settings: {}
-			}
+			// var table2 = {
+			// 	query: 'SELECT '+
+			// 			'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ 
+			// 			'`stealth_COIs`, ' +
+			// 			'`stealth`, '+
+			// 			'`lan_ip`, ' +
+			// 			'`event`, ' +
+			// 			'`user` ' +
+			// 		'FROM ' + 
+			// 			'`endpoint_tracking` '+
+			// 		'WHERE ' + 
+			// 			'stealth > 0 '+
+			// 			'AND event = "Log On" ',
+			// 	insert: [],
+			// 	params: [
+			// 		{ title: 'Stealth', select: 'stealth' },
+			// 		{ title: 'COI Groups', select: 'stealth_COIs' },
+			// 		{ title: 'User', select: 'user' }
+			// 	],
+			// 	settings: {}
+			// }
 			async.parallel([
 				// Table function(s)
 				function(callback) {
-					new datatable_stealth(table1, table2, parseInt(req.session.passport.user.level), {database: database, pool: pool}, function(err,data){
+					// new datatable_stealth(table1, table2, parseInt(req.session.passport.user.level), {database: database, pool: pool}, function(err,data){
+					new dataTable(table1, {database: database, pool: pool}, function(err,data){
 						tables.push(data);
 						callback();
 					});
