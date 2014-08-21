@@ -470,7 +470,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 							bDeferRender = true;
 							sDom = '<"clear">T<"clear">lCr<"table_overflow"t>ip';
 							notReport = true;
-							stateSave = false;
+							stateSave = true;
 						} else {
 							iDisplayLength = 99999;
 							bDeferRender = true;
