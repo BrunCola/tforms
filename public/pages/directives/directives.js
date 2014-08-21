@@ -643,6 +643,187 @@ angular.module('mean.pages').directive('universalSearch', function() {
 	};
 });
 
+angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '$rootScope', function ($timeout, $window, $rootScope) {
+	return {
+		link: function ($scope, element, attrs) {
+			$scope.$on('pieChart', function (event, dimension, group, chartType, params) {
+				$timeout(function () { // You might need this timeout to be sure its run after DOM render
+					//var arr = $scope.data.tables[0].aaData;
+					$scope.pieChart = dc.pieChart('#piechart');
+					// var waitForFinalEvent = (function () {
+					// 	var timers = {};
+					// 	return function (callback, ms, uniqueId) {
+					// 		if (!uniqueId) {
+					// 			uniqueId = "piechartWait"; //Don't call this twice without a uniqueId
+					// 		}
+					// 		if (timers[uniqueId]) {
+					// 			clearTimeout (timers[uniqueId]);
+					// 		}
+					// 		timers[uniqueId] = setTimeout(callback, ms);
+					// 	};
+					// })();
+					var filter, height;
+					var width = $('#piechart').parent().width();
+					height = width/3.5;
+					$scope.sevWidth = function() {
+						return $('#piechart').parent().width();
+					}
+					// switch (chartType){
+					// 	case 'bandwidth':
+					// 		var setNewSize = function(width) {
+					// 			$scope.pieChart
+					// 				.width(width)
+					// 				.height(width/3.5)
+					// 				.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+					// 			// $('#piechart').parent().height(width/3.5);
+					// 			d3.select('#piechart svg').attr('width', width).attr('height', width/3.5);
+					// 			$scope.pieChart.redraw();
+					// 		}
+					// 		$scope.pieChart
+					// 			.group(group, "MB To Remote")
+					// 			.valueAccessor(function(d) {
+					// 				return d.value.in_bytes;
+					// 			})
+					// 			.stack(group, "MB From Remote", function(d){return d.value.out_bytes;})
+					// 			.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
+					// 			.colors(["#112F41","#068587"]);
+					// 		filter = true;
+					// 		break;
+					// 	case 'severity':
+					// 		var setNewSize = function(width) {
+					// 			$scope.pieChart
+					// 				.width(width)
+					// 				.height(width/3.5)
+					// 				.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+					// 			// $('#piechart').parent().height(width/3.5);
+					// 			d3.select('#piechart svg').attr('width', width).attr('height', width/3.5);
+					// 			$scope.pieChart.redraw();
+					// 		}
+					// 		$scope.pieChart
+					// 			.group(group, "(1) Guarded")
+					// 			.valueAccessor(function(d) {
+					// 				return d.value.guarded;
+					// 			})
+					// 			.stack(group, "(2) Elevated", function(d){return d.value.elevated;})
+					// 			.stack(group, "(3) High", function(d){return d.value.high;})
+					// 			.stack(group, "(4) Severe", function(d){return d.value.severe;})
+					// 			.colors(["#377FC7","#F5D800","#F88B12","#DD122A","#000"]);
+					// 		filter = true;
+					// 		break;
+					// 	case 'drill':
+					// 		var setNewSize = function(width) {
+					// 			$scope.pieChart
+					// 				.width(width)
+					// 				.height(width/1.63)
+					// 				.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+					// 			$('#piechart').parent().height(width/1.63);
+					// 			d3.select('#piechart svg').attr('width', width).attr('height', width/1.63);
+					// 			$scope.pieChart.redraw();
+					// 		}
+					// 		$scope.pieChart
+					// 			.group(group, "(1) DNS")
+					// 			.valueAccessor(function(d) {
+					// 				return d.value.dns;
+					// 			})
+					// 			.stack(group, "(2) HTTP", function(d){return d.value.http;})
+					// 			.stack(group, "(3) SSL", function(d){return d.value.ssl;})
+					// 			.stack(group, "(4) File", function(d){return d.value.file;})
+					// 			.stack(group, "(5) Endpoint", function(d){return d.value.ossec;})
+					// 			.stack(group, "(6) Total Connections", function(d){return d.value.connections;})
+					// 			.colors(["#cb2815","#e29e23","#a3c0ce","#5c5e7d","#e3cdc9","#524A4F"]);
+					// 		filter = false;
+					// 		height = width/1.63;
+					// 		break;
+					// 	case 'bar':
+					// 		var setNewSize = function(width) {
+					// 			$scope.pieChart
+					// 				.width(width)
+					// 				.height(width/3.5)
+					// 				.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+					// 			// $(element).height(width/3.5);
+					// 			d3.select('#pieChart svg').attr('width', width).attr('height', width/3.5);
+					// 			$scope.pieChart.redraw();
+					// 		}
+					// 		$scope.pieChart
+					// 			.group(group)
+					// 			.colors(["#193459"]);
+					// 		filter = false;
+					// 		break;
+					// }
+					// if (filter == true) {
+					// 	$scope.pieChart
+					// 		.on("filtered", function(chart, filter){
+					// 			waitForFinalEvent(function(){
+					// 				$scope.tableData.filterAll();
+					// 				var arr = [];
+					// 				for(var i in dimension.top(Infinity)) {
+					// 					arr.push(dimension.top(Infinity)[i].time);
+					// 				}
+					// 				console.log(dimension.group().top(Infinity))
+					// 				//console.log(dimension.group().top(Infinity));
+					// 				$scope.tableData.filter(function(d) { return arr.indexOf(d.time) >= 0; });
+					// 				$scope.$broadcast('crossfilterToTable');
+					// 				// console.log($scope.tableData.top(Infinity));
+					// 				// console.log(timeDimension.top(Infinity))
+					// 			}, 400, "filterWait");
+					// 		})
+					// }
+		
+					$scope.pieChart
+						.width(width) // (optional) define chart width, :default = 200
+						.height(height)
+						.transitionDuration(500) // (optional) define chart transition duration, :default = 500
+						// .margins(margin) // (optional) define margins
+						.dimension(dimension) // set dimension
+						.group(group); // set group
+						//.stack(group, "0 - Other", function(d){return d.value.other;})
+						// .xAxisLabel($scope.pieChartxAxis) // (optional) render an axis label below the x axis
+						// .yAxisLabel($scope.pieChartyAxis) // (optional) render a vertical axis lable left of the y axis
+						// .elasticY(true) // (optional) whether chart should rescale y axis to fit data, :default = false
+						// .elasticX(false) // (optional) whether chart should rescale x axis to fit data, :default = false
+						// .x(d3.time.scale().domain([moment($scope.start), moment($scope.end)])) // define x scale
+						// .xUnits(d3.time.hours) // define x axis units
+						// .renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
+						// .renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
+						//.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
+						// .title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
+						// .renderTitle(true); // (optional) whether chart should render titles, :default = fal
+  // chart
+    // .width(768)
+    // .height(480)
+    // .slicesCap(4)
+    // .innerRadius(100)
+    // .dimension(runDimension)
+    // .group(speedSumGroup)
+    // .legend(dc.legend());
+
+					$scope.pieChart.render();
+						$scope.$broadcast('spinnerHide');
+						$(window).resize(function () {
+							waitForFinalEvent(function(){
+								$scope.pieChart.render();
+							}, 200, "pieChartresize");
+						});
+						$(window).bind('resize', function() {
+							setTimeout(function(){
+								setNewSize($scope.sevWidth());
+							}, 150);
+						});
+						$('.sidebar-toggler').on("click", function() {
+							setTimeout(function() {
+								setNewSize($scope.sevWidth());
+								$scope.pieChart.render();
+							},10);
+						});
+						$rootScope.$watch('search', function(){
+							$scope.pieChart.redraw();
+						});
+				}, 0, false);
+			})
+		}
+	};
+}]);
+
 angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '$rootScope', function ($timeout, $window, $rootScope) {
 	return {
 		link: function ($scope, element, attrs) {

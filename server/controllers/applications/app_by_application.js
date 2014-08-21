@@ -17,6 +17,7 @@ module.exports = function(pool) {
 			}
 			var tables = [];
 			var crossfilter = [];
+			var piechart = [];
 			var info = [];
 			var table1 = {
 				query: 'SELECT '+
@@ -91,6 +92,20 @@ module.exports = function(pool) {
 						'hour(from_unixtime(time))',
 				insert: [start, end]
 			}
+			var piechartQ = {
+				query: 'SELECT '+
+						'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+						'`l7_proto`, '+
+						'(sum(in_bytes + out_bytes) / 1048576) AS count '+
+					'FROM '+
+						'`conn_l7_proto` '+
+					'WHERE '+
+						'`time` BETWEEN ? AND ? '+
+						'AND `l7_proto` !=\'-\' '+
+					'GROUP BY '+
+						'`l7_proto`',
+				insert: [start, end]
+			}
 			async.parallel([
 				// Table function(s)
 				function(callback) {
@@ -105,13 +120,22 @@ module.exports = function(pool) {
 						crossfilter = data;
 						callback();
 					});
+				},
+				// Piechart function
+				function(callback) {
+					new query(piechartQ, {database: database, pool: pool}, function(err,data){
+						piechart = data;
+						console.log(piechart);
+						callback();
+					});
 				}
 			], function(err) { //This function gets called after the two tasks have called their "task callbacks"
 				if (err) throw console.log(err);
 				var results = {
 					info: info,
 					tables: tables,
-					crossfilter: crossfilter
+					crossfilter: crossfilter,
+					piechart: piechart
 				};
 				res.json(results);
 			});

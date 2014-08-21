@@ -22,6 +22,7 @@ angular.module('mean.pages').controller('appByApplicationController', ['$scope',
 					d.count = +d.count;
 				});
 				$scope.crossfilterData = crossfilter(data.crossfilter);
+				$scope.piechartData = crossfilter(data.piechart);
 				$scope.data = data;
 
 				$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
@@ -49,6 +50,13 @@ angular.module('mean.pages').controller('appByApplicationController', ['$scope',
 					}
 				);
 				$scope.$broadcast('barChart', barDimension, barGroup, 'bandwidth');
+
+				var pieDimension = $scope.piechartData.dimension(function(d) { return d.l7_proto });
+				var pieGroup = pieDimension.group().reduceSum(function (d) {
+			        return d.count;
+			    });
+
+				$scope.$broadcast('pieChart', pieDimension, pieGroup, 'application');
 
 				$scope.barChartxAxis = '';
 				$scope.barChartyAxis = '# MB / Hour';
