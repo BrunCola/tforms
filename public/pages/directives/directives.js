@@ -664,7 +664,7 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 					// })();
 					var filter, height;
 					var width = $('#piechart').parent().width();
-					height = width/3.5;
+					height = width/2.4;
 					$scope.sevWidth = function() {
 						return $('#piechart').parent().width();
 					}
@@ -775,7 +775,9 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 						.transitionDuration(500) // (optional) define chart transition duration, :default = 500
 						// .margins(margin) // (optional) define margins
 						.dimension(dimension) // set dimension
-						.group(group); // set group
+						.group(group) // set group
+						.legend(dc.legend().x(width - 100).y(10).itemHeight(13).gap(5))
+						.colors(d3.scale.category20());
 						//.stack(group, "0 - Other", function(d){return d.value.other;})
 						// .xAxisLabel($scope.pieChartxAxis) // (optional) render an axis label below the x axis
 						// .yAxisLabel($scope.pieChartyAxis) // (optional) render a vertical axis lable left of the y axis
@@ -788,14 +790,6 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 						//.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
 						// .title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
 						// .renderTitle(true); // (optional) whether chart should render titles, :default = fal
-  // chart
-    // .width(768)
-    // .height(480)
-    // .slicesCap(4)
-    // .innerRadius(100)
-    // .dimension(runDimension)
-    // .group(speedSumGroup)
-    // .legend(dc.legend());
 
 					$scope.pieChart.render();
 						$scope.$broadcast('spinnerHide');
@@ -867,7 +861,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
 								})
 								.stack(group, "MB From Remote", function(d){return d.value.out_bytes;})
 								.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
-								.colors(["#112F41","#068587"]);
+								.colors(d3.scale.ordinal().domain(["in_bytes","out_bytes"]).range(["#112F41","#068587"]));
 							filter = true;
 							break;
 						case 'severity':
@@ -888,7 +882,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
 								.stack(group, "(2) Elevated", function(d){return d.value.elevated;})
 								.stack(group, "(3) High", function(d){return d.value.high;})
 								.stack(group, "(4) Severe", function(d){return d.value.severe;})
-								.colors(["#377FC7","#F5D800","#F88B12","#DD122A","#000"]);
+								.colors(d3.scale.ordinal().domain(["guarded","elevated","high","severe"]).range(["#377FC7","#F5D800","#F88B12","#DD122A"]));
 							filter = true;
 							break;
 						case 'drill':
@@ -911,7 +905,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
 								.stack(group, "(4) File", function(d){return d.value.file;})
 								.stack(group, "(5) Endpoint", function(d){return d.value.ossec;})
 								.stack(group, "(6) Total Connections", function(d){return d.value.connections;})
-								.colors(["#cb2815","#e29e23","#a3c0ce","#5c5e7d","#e3cdc9","#524A4F"]);
+								.colors(d3.scale.ordinal().domain(["dns","http","ssl","file","ossec","connections"]).range(["#cb2815","#e29e23","#a3c0ce","#5c5e7d","#e3cdc9","#524A4F"]));
 							filter = false;
 							height = width/1.63;
 							break;
@@ -1048,7 +1042,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
 								}
 							};
 							$scope.rowChart
-								.colors(["#377FC7","#F5D800","#F88B12","#DD122A"])
+								.colors(d3.scale.ordinal().domain("guarded","elevated","high","severe").range(["#377FC7","#DD122A","#F88B12", "#F5D800"]))
 								.colorAccessor(function (d){return d.value.severity;});
 							filter = true;
 							break;
@@ -1200,7 +1194,9 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
 					rainbow.setNumberRange(0, numberOfItems);
 					rainbow.setSpectrum("#FF0000", "#CC0000", "#990000", "#660000", "#360000");
 					var cc = [];
+					var domain = [];
 					for (var i = 1; i <= numberOfItems; i++) {
+						domain.push(i);
 						var hexColour = rainbow.colourAt(i);
 						cc.push('#' + hexColour);
 					}
@@ -1217,7 +1213,7 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
 							.width(width)
 							.height(height)
 							.colors(["#377FC7","#F5D800","#F88B12","#DD122A","#000"])
-							.colors(cc)
+							.colors(d3.scale.ordinal().domain(domain).range(cc))
 							.colorCalculator(function (d) { return d ? $scope.geoChart.colors()(d) : '#ccc'; })
 							.overlayGeoJson(world.features, "country", function(d) {
 								return d.properties.name;
