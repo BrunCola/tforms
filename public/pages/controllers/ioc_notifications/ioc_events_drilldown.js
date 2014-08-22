@@ -103,6 +103,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 		$scope.iocc = $location.$$search.ioc;
 		$scope.ioc_type = data.info.main[0].ioc_typeIndicator;
 		$scope.ioc_rule = data.info.main[0].ioc_rule;
+		
 		// draw chart
 		fishchart(data);
 
