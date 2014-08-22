@@ -164,8 +164,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 					'url': 'irc_remote',
 					'icon': 'fa-comment',
 					'orphans': ['irc_remote2local', 'irc_shared']
-				},
-				
+				},				
 			]
 		},
 		{
@@ -197,6 +196,52 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 					'title': 'Users',
 					'url': 'users_local',
 					'icon': 'fa-user',
+					'orphans': []
+				}
+			]
+		},
+		{
+			'title': 'DNS',
+			'url': '',
+			'icon': 'fa-level-up',
+			'children':
+			[
+				{
+					'title': 'Local DNS',
+					'url': 'dns_local',
+					'icon': 'fa-level-down',
+					'orphans': []
+				},
+				{
+					'title': 'Remote DNS',
+					'url': 'dns_remote',
+					'icon': 'fa-level-up',
+					'orphans': []
+				}
+			]
+		},
+		{
+			'title': 'SSL',
+			'url': '',
+			'icon': 'fa-lock',
+			'children':
+			[
+				{
+					'title': 'SSL Server',
+					'url': 'ssl_server',
+					'icon': 'fa-lock',
+					'orphans': []
+				},
+				{
+					'title': 'Local SSL',
+					'url': 'ssl_local',
+					'icon': 'fa-lock',
+					'orphans': []
+				},
+				{
+					'title': 'Remote SSL',
+					'url': 'ssl_remote',
+					'icon': 'fa-lock',
 					'orphans': []
 				}
 			]
