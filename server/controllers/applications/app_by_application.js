@@ -95,6 +95,7 @@ module.exports = function(pool) {
            
             var piechartQ = {
                 query: 'SELECT '+
+                         'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
                          '`l7_proto`, '+
                          '(sum(in_bytes + out_bytes) / 1048576) AS app_count '+
                      'FROM '+
