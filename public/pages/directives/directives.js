@@ -664,7 +664,7 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 					// })();
 					var filter, height;
 					var width = $('#piechart').parent().width();
-					height = width/3.5;
+					height = width/2.4;
 					$scope.sevWidth = function() {
 						return $('#piechart').parent().width();
 					}
@@ -788,14 +788,6 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 						//.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
 						// .title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
 						// .renderTitle(true); // (optional) whether chart should render titles, :default = fal
-  // chart
-    // .width(768)
-    // .height(480)
-    // .slicesCap(4)
-    // .innerRadius(100)
-    // .dimension(runDimension)
-    // .group(speedSumGroup)
-    // .legend(dc.legend());
 
 					$scope.pieChart.render();
 						$scope.$broadcast('spinnerHide');
