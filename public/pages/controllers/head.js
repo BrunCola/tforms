@@ -41,6 +41,10 @@ angular.module('mean.pages').controller('headController', ['$scope', 'Global', '
 			// $scope.subtitle += '\n'+i+': '+$location.$$search[$scope.subtitleElm[i]];
 		}
 	}
-
+	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){ 
+		$rootScope.search = "";
+		$('#table').dataTable().fnFilter("");
+		$('#table').dataTable().fnClearTable();		
+	})
 }]);
 

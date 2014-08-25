@@ -339,6 +339,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 					$('#table').dataTable().fnAddData(tableData.top(Infinity));
 					$('#table').dataTable().fnDraw();
 				}
+
 				for (var t in params) {
 					if (params[t] != null) {
 						if ($location.$$absUrl.search('/report#!/') === -1) {
@@ -606,7 +607,9 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 										$scope.country = [];
 										$scope.ioc = [];
 										$scope.severity = [];
+										$scope.l7_proto = [];
 										for (var d in oSettings.aiDisplay) {
+											$scope.l7_proto.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.l7_proto);
 											$scope.country.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.remote_country);
 											$scope.ioc.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc);
 											$scope.severity.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc_severity);
@@ -639,6 +642,7 @@ angular.module('mean.pages').directive('universalSearch', function() {
 					}
 				}
 			});
+
 		}
 	};
 });
@@ -760,25 +764,13 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 									for(var i in dimension.top(Infinity)) {
 										arr.push(dimension.top(Infinity)[i].l7_proto);
 									}
-									// console.log(dimension.group().top(Infinity));
-									//console.log(dimension.group().top(Infinity));
+
 									$scope.tableData.filter(function(d) { return arr.indexOf(d.l7_proto) >= 0; });
 									$scope.$broadcast('crossfilterToTable');
-									// console.log($scope.tableData.top(Infinity));
-									// console.log(timeDimension.top(Infinity))
+
 								}, 400, "filterWait");
 							})
 					}
-					// $scope.geoChart
-					// 		.on("filtered", function(chart, filter){
-					// 			$scope.tableData.filterAll();
-					// 			var arr = [];
-					// 			for(var c in dimension.top(Infinity)) {
-					// 				arr.push(dimension.top(Infinity)[c].remote_country);
-					// 			}
-					// 			$scope.tableData.filter(function(d) { return arr.indexOf(d.remote_country) >= 0; });
-					// 			$scope.$broadcast('crossfilterToTable');
-					// 		});
 		
 					$scope.pieChart
 						.width(width) // (optional) define chart width, :default = 200
@@ -789,18 +781,6 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 						.group(group) // set group
 						.legend(dc.legend().x(width - 100).y(10).itemHeight(13).gap(5))
 						.colors(d3.scale.category20());
-						//.stack(group, "0 - Other", function(d){return d.value.other;})
-						// .xAxisLabel($scope.pieChartxAxis) // (optional) render an axis label below the x axis
-						// .yAxisLabel($scope.pieChartyAxis) // (optional) render a vertical axis lable left of the y axis
-						// .elasticY(true) // (optional) whether chart should rescale y axis to fit data, :default = false
-						// .elasticX(false) // (optional) whether chart should rescale x axis to fit data, :default = false
-						// .x(d3.time.scale().domain([moment($scope.start), moment($scope.end)])) // define x scale
-						// .xUnits(d3.time.hours) // define x axis units
-						// .renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
-						// .renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
-						//.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
-						// .title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
-						// .renderTitle(true); // (optional) whether chart should render titles, :default = fal
 
 					$scope.pieChart.render();
 						$scope.$broadcast('spinnerHide');
@@ -823,6 +803,22 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 						$rootScope.$watch('search', function(){
 							$scope.pieChart.redraw();
 						});
+
+					// var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
+					$rootScope.$watch('search', function(){
+
+						if($rootScope.search === null) {
+								dimension.filterAll();
+							} else {
+								dimension.filterAll();
+								console.log($scope.l7_proto);
+								if ($scope.l7_proto) {
+									dimension.filter(function(d) {console.log($scope.l7_proto.indexOf(d)); return $scope.l7_proto.indexOf(d) >= 0; });
+								}
+							}
+						$scope.pieChart.redraw();
+						$scope.pieChart.render();
+					});
 				}, 0, false);
 			})
 		}
