@@ -10219,8 +10219,13 @@
 		"fnStateLoadCallback": function ( settings ) {
 			try {
 
-				var pageName = location.hash.match(/#\!\/(\S+)(?:\?|$)/);
-
+				//try to match with ? at the end
+				var pageName = location.hash.match(/#\!\/(\S+)\?/); //old expression (doesn't work with params) #\!\/(\S+)(?:\?|$)
+				
+				if(pageName === null) {
+					//match without ? at the end
+					pageName = location.hash.match(/#\!\/(\S+)$/);
+				}
 				return JSON.parse(
 					(settings.iStateDuration === -1 ? sessionStorage : localStorage).getItem(
 						'DataTables_'+settings.sInstance+'_'+pageName[1]
@@ -10323,7 +10328,13 @@
 		 */
 		"fnStateSaveCallback": function ( settings, data ) {
 			try {
-				var pageName = location.hash.match(/#\!\/(\S+)(?:\?|$)/);
+				//try to match with ? at the end
+				var pageName = location.hash.match(/#\!\/(\S+)\?/); //old expression (doesn't work with params) #\!\/(\S+)(?:\?|$)
+
+				if(pageName === null) {
+					//match without ? at the end
+					pageName = location.hash.match(/#\!\/(\S+)$/);
+				}
 				(settings.iStateDuration === -1 ? sessionStorage : localStorage).setItem(
 					'DataTables_'+settings.sInstance+'_'+pageName[1],
 					JSON.stringify( data )

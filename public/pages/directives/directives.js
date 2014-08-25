@@ -760,7 +760,7 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 									for(var i in dimension.top(Infinity)) {
 										arr.push(dimension.top(Infinity)[i].l7_proto);
 									}
-									console.log(dimension.group().top(Infinity));
+									// console.log(dimension.group().top(Infinity));
 									//console.log(dimension.group().top(Infinity));
 									$scope.tableData.filter(function(d) { return arr.indexOf(d.l7_proto) >= 0; });
 									$scope.$broadcast('crossfilterToTable');
@@ -945,7 +945,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
 									for(var i in dimension.top(Infinity)) {
 										arr.push(dimension.top(Infinity)[i].time);
 									}
-									console.log(dimension.group().top(Infinity))
+									// console.log(dimension.group().top(Infinity))
 									//console.log(dimension.group().top(Infinity));
 									$scope.tableData.filter(function(d) { return arr.indexOf(d.time) >= 0; });
 									$scope.$broadcast('crossfilterToTable');

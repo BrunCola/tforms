@@ -124,10 +124,8 @@ module.exports = function(pool) {
                 },
                 // Piechart function
                 function(callback) {
-                    console.log(piechartQ);
                     new query(piechartQ, {database: database, pool: pool}, function(err,data){
                         piechart = data;
-                        console.log(piechart);
                         callback();
                     });
                 }
