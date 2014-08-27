@@ -21,6 +21,10 @@ angular.module('mean.pages').controller('usersLocalController', ['$scope', '$sta
 			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
 			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
 			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
+
+			var divHeight = 620;
+			$scope.$broadcast('networkChart', data.network[0], {height: divHeight});
+
 			$scope.$broadcast('spinnerHide');
 
 		}
