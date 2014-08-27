@@ -650,7 +650,7 @@ angular.module('mean.pages').directive('universalSearch', function() {
 angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '$rootScope', function ($timeout, $window, $rootScope) {
 	return {
 		link: function ($scope, element, attrs) {
-			$scope.$on('pieChart', function (event, dimension, group, chartType, params) {
+			$scope.$on('pieChart', function (event, chartType, params) {
 				$timeout(function () { // You might need this timeout to be sure its run after DOM render
 					//var arr = $scope.data.tables[0].aaData;
 					$scope.pieChart = dc.pieChart('#piechart');
@@ -761,8 +761,8 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 								waitForFinalEvent(function(){
 									$scope.tableData.filterAll();
 									var arr = [];
-									for(var i in dimension.top(Infinity)) {
-										arr.push(dimension.top(Infinity)[i].l7_proto);
+									for(var i in $scope.appDimension.top(Infinity)) {
+										arr.push($scope.appDimension.top(Infinity)[i].l7_proto);
 									}
 
 									$scope.tableData.filter(function(d) { return arr.indexOf(d.l7_proto) >= 0; });
@@ -777,8 +777,8 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 						.height(height)
 						.transitionDuration(500) // (optional) define chart transition duration, :default = 500
 						// .margins(margin) // (optional) define margins
-						.dimension(dimension) // set dimension
-						.group(group) // set group
+						.dimension($scope.appDimension) // set dimension
+						.group($scope.pieGroup) // set group
 						.legend(dc.legend().x(width - 100).y(10).itemHeight(13).gap(5))
 						.colors(d3.scale.category20());
 
@@ -808,16 +808,23 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 					$rootScope.$watch('search', function(){
 
 						if($rootScope.search === null) {
-								dimension.filterAll();
-							} else {
-								dimension.filterAll();
-								console.log($scope.l7_proto);
-								if ($scope.l7_proto) {
-									dimension.filter(function(d) {console.log($scope.l7_proto.indexOf(d)); return $scope.l7_proto.indexOf(d) >= 0; });
-								}
+							$scope.appDimension.filterAll();
+						} else {
+							$scope.appDimension.filterAll();
+							// console.log($scope.appDimension.top(Infinity));
+							if ($scope.l7_proto) {
+								$scope.appDimension.filter(function(d) { return $scope.l7_proto.indexOf(d) >= 0; });
+								// $scope.pieGroup = $scope.appDimension.group().reduceSum(function (d) {
+				    //                 return d.app_count;
+				    //             });
 							}
+							// console.log($scope.appDimension.top(Infinity));
+
+						}
+						$scope.pieChart.dimension($scope.appDimension);
+						$scope.pieChart.group($scope.pieGroup); // set group
 						$scope.pieChart.redraw();
-						$scope.pieChart.render();
+						// $scope.pieChart.render();
 					});
 				}, 0, false);
 			})

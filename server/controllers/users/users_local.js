@@ -1,6 +1,7 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
+networkChart = require('../constructors/networkchart'),
 query = require('../constructors/query'),
 config = require('../../config/config'),
 async = require('async');
@@ -18,6 +19,7 @@ module.exports = function(pool) {
 			var tables = [];
 			var crossfilter = [];
 			var info = [];
+			var network = [];
 			var table1 = {
 				query: 'SELECT '+
 						'`lan_zone`,'+
@@ -91,7 +93,12 @@ module.exports = function(pool) {
 			async.parallel([
 				// Table function(s)
 				function(callback) {
-					// new datatable_stealth(table1, table2, parseInt(req.session.passport.user.level), {database: database, pool: pool}, function(err,data){
+					new networkChart(table1, {database: database, pool: pool}, function(err,data){
+						network.push(data);
+						callback();
+					});
+				},
+				function(callback) {
 					new dataTable(table1, {database: database, pool: pool}, function(err,data){
 						tables.push(data);
 						callback();
@@ -102,6 +109,7 @@ module.exports = function(pool) {
 				var results = {
 					info: info,
 					tables: tables,
+					network: network,
 					crossfilter: crossfilter
 				};
 				res.json(results);

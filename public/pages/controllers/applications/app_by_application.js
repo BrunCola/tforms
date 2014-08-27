@@ -52,18 +52,18 @@ angular.module('mean.pages').controller('appByApplicationController', ['$scope',
                 $scope.$broadcast('barChart', barDimension, barGroup, 'bandwidth');
 
                 var countDimension = $scope.piechartData.dimension(function(d) { return d.app_count }).top(10).map(function(d){ return d.l7_proto });
-                var appDimension = $scope.piechartData.dimension(function(d) { 
+                $scope.appDimension = $scope.piechartData.dimension(function(d) { 
                     if(countDimension.indexOf(d.l7_proto) !== -1) {
                         return d.l7_proto;
                     } else {
                         return "Other";
                     }
                 });                 
-                var pieGroup = appDimension.group().reduceSum(function (d) {
+                $scope.pieGroup = $scope.appDimension.group().reduceSum(function (d) {
                     return d.app_count;
                 });
                 // console.log(pieGroup.top(Infinity));
-                $scope.$broadcast('pieChart', appDimension, pieGroup, 'application');
+                $scope.$broadcast('pieChart', 'application');
 
                 $scope.barChartxAxis = '';
                 $scope.barChartyAxis = '# MB / Hour';
