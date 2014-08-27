@@ -41,7 +41,7 @@ module.exports = function(pool) {
 			} else {
 				pointGroup = 60;
 			}
-			if (req. query.src_ip && (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1)) {
+			if (req.query.src_ip && (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1)) {
 				var sankeyData;
 				var info = [];
 				var sankey_auth1 = {
@@ -185,6 +185,7 @@ module.exports = function(pool) {
 					insert: [start, end, req.query.src_ip]
 				}
 				//The rest of the queries are for the fisheye visual
+
 				var stealth_conn = {
 					query: 'SELECT '+
 							'`time`, '+
@@ -198,8 +199,10 @@ module.exports = function(pool) {
 							'`stealth_conn` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `src_ip`= ? ',
-					insert: [start, end, req. query.src_ip],
+							'AND `src_ip`= ? '+
+							'AND `in_bytes` > 0 '+
+							'AND `out_bytes` > 0 ',
+					insert: [start, end, req.query.src_ip],
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "Source IP", "mData": "src_ip"},
@@ -213,6 +216,97 @@ module.exports = function(pool) {
 					end: end,
 					grouping: pointGroup,
 					sClass: 'stealth'
+				}
+
+				var stealth_blocked1 = {
+					query: 'SELECT '+
+							'`time`, '+
+							'`src_ip`, '+
+							'`dst_ip`, '+
+							'(`in_bytes` / 1048576) as in_bytes, '+
+							'(`out_bytes` / 1048576) as out_bytes, '+
+							'`in_packets`, '+
+							'`out_packets` '+
+						'FROM '+
+							'`stealth_conn` '+
+						'WHERE '+
+							'time BETWEEN ? AND ? '+
+							'AND `dst_ip` = ? '+
+							'AND `in_bytes` = 0 ',
+					insert: [start, end, req.query.src_ip],
+					columns: [
+						{"sTitle": "Time", "mData": "time"},
+						{"sTitle": "Source IP", "mData": "src_ip"},
+						{"sTitle": "Destination IP", "mData": "dst_ip"},
+						{"sTitle": "MB from Remote", "mData": "in_bytes"},
+						{"sTitle": "MB to Remote", "mData": "out_bytes"},
+						{"sTitle": "Packets from Remote", "mData": "in_packets"},
+						{"sTitle": "Packets to Remote", "mData": "out_packets"}
+					],
+					start: start,
+					end: end,
+					grouping: pointGroup,
+					sClass: 'stealthBlocked'
+				}
+				var stealth_blocked2 = {
+					query: 'SELECT '+
+							'`time`, '+
+							'`lan_ip`, '+
+							'`remote_ip`, '+
+							'(`in_bytes` / 1048576) as in_bytes, '+
+							'(`out_bytes` / 1048576) as out_bytes, '+
+							'`in_packets`, '+
+							'`out_packets` '+
+						'FROM '+
+							'`conn_meta` '+
+						'WHERE '+
+							'time BETWEEN ? AND ? '+
+							'AND ((`remote_ip` = ? AND `out_bytes` = 0 ) '+
+							'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%" AND `in_bytes` = 0 )) ',
+					insert: [start, end, req.query.src_ip, req.query.src_ip],
+					columns: [
+						{"sTitle": "Time", "mData": "time"},
+						{"sTitle": "Local IP", "mData": "lan_ip"},
+						{"sTitle": "Remote IP", "mData": "remote_ip"},
+						{"sTitle": "MB from Remote", "mData": "in_bytes"},
+						{"sTitle": "MB to Remote", "mData": "out_bytes"},
+						{"sTitle": "Packets from Remote", "mData": "in_packets"},
+						{"sTitle": "Packets to Remote", "mData": "out_packets"}
+					],
+					start: start,
+					end: end,
+					grouping: pointGroup,
+					sClass: 'stealthBlocked'
+				}
+				var stealth_blocked3 = {
+					query:'SELECT '+
+							'`time`, '+
+							'`lan_ip`, '+
+							'`remote_ip`, '+
+							'(`in_bytes` / 1048576) as in_bytes, '+
+							'(`out_bytes` / 1048576) as out_bytes, '+
+							'`in_packets`, '+
+							'`out_packets` '+
+						'FROM '+
+							'`conn_meta` '+
+						'WHERE '+
+							'time BETWEEN ? AND ? '+
+							'AND `out_bytes` = 0 '+
+							'AND `lan_ip` = ? ',
+					insert: [start, end, req.query.src_ip, req.query.src_ip],
+					columns: [
+						{"sTitle": "Time", "mData": "time"},
+						{"sTitle": "Local IP", "mData": "lan_ip"},
+						{"sTitle": "Remote IP", "mData": "remote_ip"},
+						{"sTitle": "MB from Remote", "mData": "in_bytes"},
+						{"sTitle": "MB to Remote", "mData": "out_bytes"},
+						{"sTitle": "Packets from Remote", "mData": "in_packets"},
+						{"sTitle": "Packets to Remote", "mData": "out_packets"}
+					],
+					start: start,
+					end: end,
+					grouping: pointGroup,
+					sClass: 'stealthBlocked'
 				}
 
 				var conn = {
@@ -240,7 +334,7 @@ module.exports = function(pool) {
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`= ? ',
-					insert: [start, end, req. query.src_ip],
+					insert: [start, end, req.query.src_ip],
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "Zone", "mData": "lan_zone"},
@@ -286,7 +380,7 @@ module.exports = function(pool) {
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`=?',
-					insert: [start, end, req. query.src_ip],
+					insert: [start, end, req.query.src_ip],
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "Protocol", "mData": "proto"},
@@ -331,7 +425,7 @@ module.exports = function(pool) {
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`= ?',
-					insert: [start, end, req. query.src_ip],
+					insert: [start, end, req.query.src_ip],
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "Host", "mData": "host"},
@@ -371,7 +465,7 @@ module.exports = function(pool) {
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`= ?',
-					insert: [start, end, req. query.src_ip],
+					insert: [start, end, req.query.src_ip],
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "Server Name", "mData": "server_name"},
@@ -412,7 +506,7 @@ module.exports = function(pool) {
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`= ?',
-					insert: [start, end, req. query.src_ip],
+					insert: [start, end, req.query.src_ip],
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "File Type", "mData": "mime"},
@@ -445,7 +539,7 @@ module.exports = function(pool) {
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
 							'AND `src_ip`= ? ',
-					insert: [start, end, req. query.src_ip],
+					insert: [start, end, req.query.src_ip],
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "User", "mData": "src_user"},
@@ -472,7 +566,7 @@ module.exports = function(pool) {
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`= ? '+
 							'AND `event` = "Log On" ',
-					insert: [start, end, req. query.src_ip],
+					insert: [start, end, req.query.src_ip],
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "User", "mData": "user"},
@@ -496,7 +590,7 @@ module.exports = function(pool) {
 							'`time` BETWEEN ? AND ? '+
 							'AND `lan_ip`= ? '+
 							'AND `event` = "Log Off" ',
-					insert: [start, end, req. query.src_ip],
+					insert: [start, end, req.query.src_ip],
 					columns: [
 						{"sTitle": "Time", "mData": "time"},
 						{"sTitle": "User", "mData": "user"},
@@ -514,7 +608,22 @@ module.exports = function(pool) {
 						new fisheye(stealth_conn, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
 							handleReturn(data, maxConn, maxIOC, callback);
 						});
-					},				
+					},			
+					function(callback) { // stealth_blocked1
+						new fisheye(stealth_blocked1, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
+							handleReturn(data, maxConn, maxIOC, callback);
+						});
+					},	
+					function(callback) { // stealth_blocked2
+						new fisheye(stealth_blocked2, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
+							handleReturn(data, maxConn, maxIOC, callback);
+						});
+					},	
+					function(callback) { // stealth_blocked3
+						new fisheye(stealth_blocked3, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
+							handleReturn(data, maxConn, maxIOC, callback);
+						});
+					},	
 					function(callback) { // conn
 						new fisheye(conn, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
 							handleReturn(data, maxConn, maxIOC, callback);
@@ -557,7 +666,6 @@ module.exports = function(pool) {
 					},
 				//	SANKEY
 					function(callback) {
-						// console.log(sankey3.query);
 						new sankey(sankey_auth1, sankey_auth2, sankey_auth3, sankey_unauth1, sankey_unauth2, sankey_unauth3, {database: database, pool: pool}, function(err,data){
 							sankeyData = data;
 							callback();
