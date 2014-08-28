@@ -98,7 +98,7 @@ module.exports = function(pool) {
 				insert: [],
 				params: [
 					{ title: 'Stealth', select: 'stealth' },
-					{ title: 'COI Groups', select: 'stealth_COIs' },
+					// { title: 'COI Groups', select: 'stealth_COIs' },
 					{ title: 'User', select: 'user' }
 				],
 				settings: {}
