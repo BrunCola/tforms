@@ -66,7 +66,7 @@ module.exports = function (sql, conn, callback) {
 					node.push({
 						name: data.operating_system,
 						id: data.lan_zone + "" + data.operating_system,
-						width: 0.25,
+						width: 0.55,
 						type: "os"
 					});
 					zonesAndOS.push(data.lan_zone + "" + data.operating_system);
