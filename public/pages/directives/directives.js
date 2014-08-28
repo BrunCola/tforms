@@ -2584,6 +2584,19 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                     //     .call(brush.extent([minExtent, maxExtent]));
                     x1.domain([minExtent, maxExtent]);
                     xAxisBrush.transition().duration(50).call(xAxis);
+
+                    itemRects.selectAll('g').remove();
+                    var icons = itemRects.selectAll("g").data(visItems);
+                    icons.enter().append("g").each(function(d){
+                        var elm = d3.select(this);
+                        console.log('building')
+                        elm
+                            .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
+                            .attr("class", function(d) {return "miniItem" + d.lane;})
+                            // .attr("width", 5)
+                            // .attr("height", function(d) {return .8 * y1(1);});
+                        $scope.point(elm, d.type);
+                    })
                     //update main item rects
                     // rects = itemRects.selectAll("rect")
                     //     .data(visItems, function(d) { return d.type; })
