@@ -2231,9 +2231,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                 var items = itemsDimension.top(Infinity);
 
                 // var lanes = ["Chinese","Japanese","Korean"],
-                var laneLength = lanes.length,
-                timeBegin = 0,
-                timeEnd = 2000;
+                var laneLength = lanes.length;
 
                 var m = [20, 15, 15, 120], //top right bottom left
                     w = 960 - m[1] - m[3],
@@ -2546,7 +2544,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                 var brush = d3.svg.brush()
                     .x(x1)
                     .on("brushend", mouseup);
-
                 main.append("g")
                     .attr("class", "x brush")
                     .call(brush)
@@ -2559,32 +2556,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                 function redraw() {
                     var visItems = items;
                     x1.domain([new Date($scope.start), new Date($scope.end)]);
-                    xAxisBrush.call(xAxis);
-                    var icons = itemRects.selectAll("g").data(visItems);
-                    icons.enter().append("g").each(function(d){
-                        var elm = d3.select(this);
-                        console.log('building')
-                        elm
-                            .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
-                            .attr("class", function(d) {return "miniItem" + d.lane;})
-                            // .attr("width", 5)
-                            // .attr("height", function(d) {return .8 * y1(1);});
-                        $scope.point(elm, d.type);
-                    })
-                    icons.exit().remove();
-                }
-        
-                function mouseup() {
-                    var rects, labels,
-                        minExtent = brush.extent()[0],
-                        maxExtent = brush.extent()[1],
-                        visItems = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;});
-                        console.log(visItems)
-                    // main.select(".brush")
-                    //     .call(brush.extent([minExtent, maxExtent]));
-                    x1.domain([minExtent, maxExtent]);
-                    xAxisBrush.transition().duration(50).call(xAxis);
-
+                    xAxisBrush.transition().duration(500).call(xAxis);
                     itemRects.selectAll('g').remove();
                     var icons = itemRects.selectAll("g").data(visItems);
                     icons.enter().append("g").each(function(d){
@@ -2592,43 +2564,48 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                         console.log('building')
                         elm
                             .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
-                            .attr("class", function(d) {return "miniItem" + d.lane;})
-                            // .attr("width", 5)
-                            // .attr("height", function(d) {return .8 * y1(1);});
+                            .attr("class", function(d) {return "mainItem" + d.lane;})
                         $scope.point(elm, d.type);
                     })
-                    //update main item rects
-                    // rects = itemRects.selectAll("rect")
-                    //     .data(visItems, function(d) { return d.type; })
-                    //     .attr("x", function(d) {return x1(d.dd);})
-                    //     .attr("width", 100);
-                    
-                    // rects.enter().append("rect")
-                    //     .attr("class", function(d) {return "miniItem" + d.lane;})
-                    //     .attr("x", function(d) {return x1(d.dd);})
-                    //     .attr("y", function(d) {return y1(d.lane) + 10;})
-                    //     .attr("width", 300)
-                    //     .attr("height", function(d) {return .8 * y1(1);});
-                    // rects.exit().remove();
-                    // //update the item l
-                    // //
-                    // // 
-                    // rects = itemRects.selectAll("g")
-                    //     .data(visItems)
-                    //     .attr('transform', function(d){ return 'translate('+x1(d.dd)+',0)' });
-                    // var icons = itemRects.selectAll("g").exit().remove();
-
-                    // icons.enter().append("g").each(function(d){
-                    //     var elm = d3.select(this);
-                    //     console.log(elm.attr('transform'))
-                    //     elm
-                    //         .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
-                    //         .attr("class", function(d) {return "miniItem" + d.lane;})
-                    //         // .attr("width", 5)
-                    //         // .attr("height", function(d) {return .8 * y1(1);});
-                    //     $scope.point(elm, d.type);
-                    // })
-                    // icons.exit().remove();
+                    icons.exit();
+                }
+        
+                function mouseup() {
+                    var rects, labels,
+                        minExtent = brush.extent()[0],
+                        maxExtent = brush.extent()[1],
+                        visItems = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;});
+                    // only draw the brush isn't a single point on the svg
+                    if (moment(maxExtent).unix() !== moment(minExtent).unix()) {
+                        main.select('g.brush .extent')
+                            .transition()
+                            .duration(150)
+                            .attr('width', w)
+                            .attr('x', x/2)
+                            .transition()
+                            .duration(50)
+                            .attr('width', 0);
+                        x1.domain([minExtent, maxExtent]);
+                        xAxisBrush.transition().duration(500).call(xAxis);
+                        itemRects.selectAll('g').remove();
+                        var icons = itemRects.selectAll("g").data(visItems);
+                        icons.enter().append("g").each(function(d){
+                            var elm = d3.select(this);
+                            elm
+                                .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
+                                .attr("class", function(d) {return "mainItem" + d.lane;})
+                                // .attr("width", 5)
+                                // .attr("height", function(d) {return .8 * y1(1);});
+                            $scope.point(elm, d.type);
+                        })
+                        icons.exit();
+                    }
+                    // main.append("g")
+                    //     .attr("class", "x brush")
+                    //     .call(brush)
+                    //     .selectAll("rect")
+                    //     .attr("y", 1)
+                    //     .attr("height", mainHeight - 1);
                 }
 
 
