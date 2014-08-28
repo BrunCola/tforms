@@ -1,6 +1,6 @@
 'use strict';
 
-var fisheye = require('../constructors/fisheye'),
+var query = require('../constructors/query'),
 	config = require('../../config/config'),
 	query = require('../constructors/query'),
 	force = require('../constructors/force'),
@@ -56,26 +56,489 @@ module.exports = function(pool) {
 				default:
 					if (req.query.lan_zone && req.query.lan_ip && req.query.remote_ip && req.query.ioc && req.query.ioc_attrID) {
 						var crossfilter;
+						// var conn_ioc = {
+						// 	query: 'SELECT '+
+						// 			'`time`, '+ // Last Seen
+						// 			'`ioc_count`,'+
+						// 			'`lan_zone`,'+
+						// 			'`machine`,'+
+						// 			'`lan_ip`,'+
+						// 			'`lan_port`,'+
+						// 			'`remote_ip`,'+
+						// 			'`remote_port`,'+
+						// 			'`remote_country`,'+
+						// 			'`remote_asn_name`,'+
+						// 			'`in_bytes`,'+
+						// 			'`out_bytes`,'+
+						// 			'`l7_proto`,'+
+						// 			'`ioc`,'+
+						// 			'`ioc_severity`,'+
+						// 			'`ioc_rule`,'+
+						// 			'`ioc_typeIndicator`,'+
+						// 			'`ioc_typeInfection` '+
+						// 		'FROM '+
+						// 			'`conn_ioc` '+
+						// 		'WHERE '+
+						// 			'`time` BETWEEN ? AND ? '+
+						// 			'AND `lan_zone`= ? '+
+						// 			'AND `lan_ip`= ? '+
+						// 			'AND `remote_ip`= ? '+
+						// 			'AND `ioc`=? ',
+						// 	insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
+						// 	columns: [
+						// 		{"sTitle": "Time", "mData": "time"},
+						// 		{"sTitle": "Zone", "mData": "lan_zone"},
+						// 		{"sTitle": "Machine", "mData": "machine"},
+						// 		{"sTitle": "Local IP", "mData": "lan_ip"},
+						// 		{"sTitle": "Local Port", "mData": "lan_port"},
+						// 		{"sTitle": "Remote IP", "mData": "remote_ip"},
+						// 		{"sTitle": "Remote Port", "mData": "remote_port"},
+						// 		{"sTitle": "Remote Country", "mData": "remote_country"},
+						// 		{"sTitle": "Remote ASN", "mData": "remote_asn_name"},
+						// 		{"sTitle": "Application", "mData": "l7_proto"},
+						// 		{"sTitle": "Bytes to Remote", "mData": "in_bytes"},
+						// 		{"sTitle": "Bytes from  Remote", "mData": "out_bytes"},
+						// 		{"sTitle": "IOC", "mData": "ioc"},
+						// 		{"sTitle": "IOC Severity", "mData": "ioc_severity"},
+						// 		{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
+						// 		{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+						// 		{"sTitle": "IOC Rule", "mData": "ioc_rule"},
+						// 	],
+						// 	start: start,
+						// 	end: end,
+						// 	grouping: pointGroup,
+						// 	sClass: 'conn_ioc'
+						// }
+						// var conn = {
+						// 	query: 'SELECT '+
+						// 			'`time`, '+
+						// 			'`ioc_count`,'+
+						// 			'`lan_zone`,'+
+						// 			'`machine`,'+
+						// 			'`lan_ip`,'+
+						// 			'`lan_port`,'+
+						// 			'`remote_ip`,'+
+						// 			'`remote_port`,'+
+						// 			'`remote_country`,'+
+						// 			'`remote_asn_name`,'+
+						// 			'`in_bytes`,'+
+						// 			'`out_bytes`,'+
+						// 			'`l7_proto`,'+
+						// 			'`ioc`,'+
+						// 			'`ioc_severity`,'+
+						// 			'`ioc_rule`,'+
+						// 			'`ioc_typeIndicator`,'+
+						// 			'`ioc_typeInfection` '+
+						// 		'FROM '+
+						// 			'`conn_ioc` '+
+						// 		'WHERE '+
+						// 			'`time` BETWEEN ? AND ? '+
+						// 			'AND `lan_zone`= ? '+
+						// 			'AND `lan_ip`= ? ',
+						// 	insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+						// 	columns: [
+						// 		{"sTitle": "Time", "mData": "time"},
+						// 		{"sTitle": "Zone", "mData": "lan_zone"},
+						// 		{"sTitle": "Machine", "mData": "machine"},
+						// 		{"sTitle": "Local IP", "mData": "lan_ip"},
+						// 		{"sTitle": "Local Port", "mData": "lan_port"},
+						// 		{"sTitle": "Remote IP", "mData": "remote_ip"},
+						// 		{"sTitle": "Remote Port", "mData": "remote_port"},
+						// 		{"sTitle": "Remote Country", "mData": "remote_country"},
+						// 		{"sTitle": "Remote ASN", "mData": "remote_asn_name"},
+						// 		{"sTitle": "Application", "mData": "l7_proto"},
+						// 		{"sTitle": "Bytes to Remote", "mData": "in_bytes"},
+						// 		{"sTitle": "Bytes from Remote", "mData": "out_bytes"},
+						// 		{"sTitle": "IOC", "mData": "ioc"},
+						// 		{"sTitle": "IOC Severity", "mData": "ioc_severity"},
+						// 		{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
+						// 		{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+						// 		{"sTitle": "IOC Rule", "mData": "ioc_rule"},
+						// 	],
+						// 	start: start,
+						// 	end: end,
+						// 	grouping: pointGroup,
+						// 	sClass: 'conn'
+						// }
+						// var dns_ioc = {
+						// 	query: 'SELECT '+
+						// 			'`time`, '+
+						// 			'`ioc_count`,'+
+						// 			'`proto`, '+
+						// 			'`qclass_name`, '+
+						// 			'`qtype_name`, '+
+						// 			'`query`, '+
+						// 			'`answers`, '+
+						// 			'`TTLs`, '+
+						// 			'`ioc`, '+
+						// 			'`ioc_severity`, '+
+						// 			'`ioc_rule`,'+
+						// 			'`ioc_typeIndicator`, '+
+						// 			'`ioc_typeInfection` '+
+						// 		'FROM '+
+						// 			'`dns_ioc` '+
+						// 		'WHERE '+
+						// 			'`time` BETWEEN ? AND ? '+
+						// 			'AND `lan_zone`= ? '+
+						// 			'AND `lan_ip`= ? '+
+						// 			'AND `remote_ip`= ? '+
+						// 			'AND `ioc`=?',
+						// 	insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
+						// 	columns: [
+						// 		{"sTitle": "Time", "mData": "time"},
+						// 		{"sTitle": "Protocol", "mData": "proto"},
+						// 		{"sTitle": "Query Class", "mData": "qclass_name"},
+						// 		{"sTitle": "Query Type", "mData": "qtype_name"},
+						// 		{"sTitle": "Query", "mData": "query"},
+						// 		{"sTitle": "Answers", "mData": "answers"},
+						// 		{"sTitle": "TTLs", "mData": "TTLs"},
+						// 		{"sTitle": "IOC", "mData": "ioc"},
+						// 		{"sTitle": "IOC Severity", "mData": "ioc_severity"},
+						// 		{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
+						// 		{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+						// 		{"sTitle": "IOC Rule", "mData": "ioc_rule"},
+						// 	],
+						// 	start: start,
+						// 	end: end,
+						// 	grouping: pointGroup,
+						// 	sClass: 'dns_ioc'
+						// }
+						// var dns = {
+						// 	query: 'SELECT '+
+						// 			'`time`,'+
+						// 			'`ioc_count`,'+
+						// 			'`proto`,'+
+						// 			'`qclass_name`,'+
+						// 			'`qtype_name`,'+
+						// 			'`query`,'+
+						// 			'`answers`,'+
+						// 			'`TTLs`,'+
+						// 			'`ioc`,'+
+						// 			'`ioc_severity`,'+
+						// 			'`ioc_rule`,'+
+						// 			'`ioc_typeIndicator`,'+
+						// 			'`ioc_typeInfection` '+
+						// 		'FROM '+
+						// 			'`dns_ioc` '+
+						// 		'WHERE '+
+						// 			'`time` BETWEEN ? AND ? '+
+						// 			'AND `lan_zone`=?'+
+						// 			'AND `lan_ip`=?',
+						// 	insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+						// 	columns: [
+						// 		{"sTitle": "Time", "mData": "time"},
+						// 		{"sTitle": "Protocol", "mData": "proto"},
+						// 		{"sTitle": "Query Class", "mData": "qclass_name"},
+						// 		{"sTitle": "Query Type", "mData": "qtype_name"},
+						// 		{"sTitle": "Query", "mData": "query"},
+						// 		{"sTitle": "Answers", "mData": "answers"},
+						// 		{"sTitle": "TTLs", "mData": "TTLs"},
+						// 		{"sTitle": "IOC", "mData": "ioc"},
+						// 		{"sTitle": "IOC Severity", "mData": "ioc_severity"},
+						// 		{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
+						// 		{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+						// 		{"sTitle": "IOC Rule", "mData": "ioc_rule"},
+						// 	],
+						// 	start: start,
+						// 	end: end,
+						// 	grouping: pointGroup,
+						// 	sClass: 'dns'
+						// }
+						// var http_ioc = {
+						// 	query: 'SELECT '+
+						// 			'`time`,'+
+						// 			'`ioc_count`,'+
+						// 			'`host`,'+
+						// 			'`uri`,'+
+						// 			'`referrer`,'+
+						// 			'`user_agent`,'+
+						// 			'`request_body_len`,'+
+						// 			'`response_body_len`,'+
+						// 			'`status_code`,'+
+						// 			'`status_msg`,'+
+						// 			'`info_code`,'+
+						// 			'`info_msg`,'+
+						// 			'`ioc`,'+
+						// 			'`ioc_severity`,'+
+						// 			'`ioc_rule`,'+
+						// 			'`ioc_typeIndicator`,'+
+						// 			'`ioc_typeInfection` '+
+						// 		'FROM '+
+						// 			'`http_ioc` '+
+						// 		'WHERE '+
+						// 			'`time` BETWEEN ? AND ? '+
+						// 			'AND `lan_zone`= ? '+
+						// 			'AND `lan_ip`= ? '+
+						// 			'AND `remote_ip`= ? '+
+						// 			'AND `ioc`=?',
+						// 	insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
+						// 	columns: [
+						// 		{"sTitle": "Time", "mData": "time"},
+						// 		{"sTitle": "Host", "mData": "host"},
+						// 		{"sTitle": "URI", "mData": "uri"},
+						// 		{"sTitle": "Referrer", "mData": "referrer"},
+						// 		{"sTitle": "User Agent", "mData": "user_agent"},
+						// 		{"sTitle": "IOC", "mData": "ioc"},
+						// 		{"sTitle": "IOC Severity", "mData": "ioc_severity"},
+						// 		{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
+						// 		{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+						// 		{"sTitle": "IOC Rule", "mData": "ioc_rule"},
+						// 	],
+						// 	start: start,
+						// 	end: end,
+						// 	grouping: pointGroup,
+						// 	sClass: 'http_ioc'
+						// }
+						// var http = {
+						// 	query: 'SELECT '+
+						// 			'`time`,'+
+						// 			'`ioc_count`,'+
+						// 			'`host`,'+
+						// 			'`uri`,'+
+						// 			'`referrer`,'+
+						// 			'`user_agent`,'+
+						// 			'`request_body_len`,'+
+						// 			'`response_body_len`,'+
+						// 			'`status_code`,'+
+						// 			'`status_msg`,'+
+						// 			'`info_code`,'+
+						// 			'`info_msg`,'+
+						// 			'`ioc`,'+
+						// 			'`ioc_severity`,'+
+						// 			'`ioc_rule`,'+
+						// 			'`ioc_typeIndicator`,'+
+						// 			'`ioc_typeInfection` '+
+						// 		'FROM '+
+						// 			'`http_ioc` '+
+						// 		'WHERE '+
+						// 			'`time` BETWEEN ? AND ? '+
+						// 			'AND `lan_zone`= ?'+
+						// 			'AND `lan_ip`= ?',
+						// 	insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+						// 	columns: [
+						// 		{"sTitle": "Time", "mData": "time"},
+						// 		{"sTitle": "Host", "mData": "host"},
+						// 		{"sTitle": "URI", "mData": "uri"},
+						// 		{"sTitle": "Referrer", "mData": "referrer"},
+						// 		{"sTitle": "User Agent", "mData": "user_agent"},
+						// 		{"sTitle": "IOC", "mData": "ioc"},
+						// 		{"sTitle": "IOC Severity", "mData": "ioc_severity"},
+						// 		{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
+						// 		{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+						// 		{"sTitle": "IOC Rule", "mData": "ioc_rule"},
+						// 	],
+						// 	start: start,
+						// 	end: end,
+						// 	grouping: pointGroup,
+						// 	sClass: 'http'
+						// }
+						// var ssl_ioc = {
+						// 	query: 'SELECT '+
+						// 			'`time`,'+
+						// 			'`ioc_count`,'+
+						// 			'`version`,'+
+						// 			'`cipher`,'+
+						// 			'`server_name`,'+
+						// 			'`subject`,'+
+						// 			'`issuer_subject`,'+
+						// 			'from_unixtime(`not_valid_before`) AS not_valid_before,'+
+						// 			'from_unixtime(`not_valid_after`) AS not_valid_after,'+
+						// 			'`ioc`,'+
+						// 			'`ioc_severity`,'+
+						// 			'`ioc_rule`,'+
+						// 			'`ioc_typeIndicator`,'+
+						// 			'`ioc_typeInfection` '+	
+						// 		'FROM '+
+						// 			'`ssl_ioc` '+
+						// 		'WHERE '+
+						// 			'`time` BETWEEN ? AND ? '+
+						// 			'AND `lan_zone`= ? '+
+						// 			'AND `lan_ip`= ? '+
+						// 			'AND `remote_ip`= ? '+
+						// 			'AND `ioc`=?',
+						// 	insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
+						// 	columns: [
+						// 		{"sTitle": "Time", "mData": "time"},
+						// 		{"sTitle": "Server Name", "mData": "server_name"},
+						// 		{"sTitle": "Version", "mData": "version"},
+						// 		{"sTitle": "cipher", "mData": "cipher"},
+						// 		{"sTitle": "Subject", "mData": "subject"},
+						// 		{"sTitle": "Issuer Subject", "mData": "issuer_subject"},
+						// 		{"sTitle": "Not Valid Before", "mData": "not_valid_before"},
+						// 		{"sTitle": "Not Valid After", "mData": "not_valid_after"},
+						// 		{"sTitle": "IOC", "mData": "ioc"},
+						// 		{"sTitle": "IOC Severity", "mData": "ioc_severity"},
+						// 		{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
+						// 		{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+						// 		{"sTitle": "IOC Rule", "mData": "ioc_rule"},
+						// 	],
+						// 	start: start,
+						// 	end: end,
+						// 	grouping: pointGroup,
+						// 	sClass: 'ssl_ioc'
+						// }
+						// var ssl = {
+						// 	query: 'SELECT '+
+						// 			'`time`,'+
+						// 			'`ioc_count`,'+
+						// 			'`version`,'+
+						// 			'`cipher`,'+
+						// 			'`server_name`,'+
+						// 			'`subject`,'+
+						// 			'`issuer_subject`,'+
+						// 			'from_unixtime(`not_valid_before`) AS not_valid_before,'+
+						// 			'from_unixtime(`not_valid_after`) AS not_valid_after,'+
+						// 			'`ioc`,'+
+						// 			'`ioc_severity`,'+
+						// 			'`ioc_rule`,'+
+						// 			'`ioc_typeIndicator`,'+
+						// 			'`ioc_typeInfection` '+	
+						// 		'FROM '+
+						// 			'`ssl_ioc` '+
+						// 		'WHERE '+
+						// 			'`time` BETWEEN ? AND ? '+
+						// 			'AND `lan_zone`= ?'+
+						// 			'AND `lan_ip`= ?',
+						// 	insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+						// 	columns: [
+						// 		{"sTitle": "Time", "mData": "time"},
+						// 		{"sTitle": "Server Name", "mData": "server_name"},
+						// 		{"sTitle": "Version", "mData": "version"},
+						// 		{"sTitle": "cipher", "mData": "cipher"},
+						// 		{"sTitle": "Subject", "mData": "subject"},
+						// 		{"sTitle": "Issuer Subject", "mData": "issuer_subject"},
+						// 		{"sTitle": "Not Valid Before", "mData": "not_valid_before"},
+						// 		{"sTitle": "Not Valid After", "mData": "not_valid_after"},
+						// 		{"sTitle": "IOC", "mData": "ioc"},
+						// 		{"sTitle": "IOC Severity", "mData": "ioc_severity"},
+						// 		{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
+						// 		{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+						// 		{"sTitle": "IOC Rule", "mData": "ioc_rule"},
+						// 	],
+						// 	start: start,
+						// 	end: end,
+						// 	grouping: pointGroup,
+						// 	sClass: 'ssl'
+						// }
+						// var file_ioc = {
+						// 	query: 'SELECT '+
+						// 			'`time`,'+
+						// 			'`ioc_count`,'+
+						// 			'`mime`,'+
+						// 			'`name`,'+
+						// 			'`size`,'+
+						// 			'`md5`,'+
+						// 			'`sha1`,'+
+						// 			'`ioc`,'+
+						// 			'`ioc_severity`,'+
+						// 			'`ioc_rule`,'+
+						// 			'`ioc_typeIndicator`,'+
+						// 			'`ioc_typeInfection` '+
+						// 		'FROM '+
+						// 			'`file_ioc` '+
+						// 		'WHERE '+
+						// 			'`time` BETWEEN ? AND ? '+
+						// 			'AND `lan_zone`= ? '+
+						// 			'AND `lan_ip`=? '+
+						// 			'AND `remote_ip`= ? '+
+						// 			'AND `ioc`=?',
+						// 	insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
+						// 	columns: [
+						// 		{"sTitle": "Time", "mData": "time"},
+						// 		{"sTitle": "File Type", "mData": "mime"},
+						// 		{"sTitle": "Name", "mData": "name"},
+						// 		{"sTitle": "Size", "mData": "size"},
+						// 		{"sTitle": "MD5", "mData": "md5"},
+						// 		{"sTitle": "SHA1", "mData": "sha1"},
+						// 		{"sTitle": "IOC", "mData": "ioc"},
+						// 		{"sTitle": "IOC Severity", "mData": "ioc_severity"},
+						// 		{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
+						// 		{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+						// 		{"sTitle": "IOC Rule", "mData": "ioc_rule"},
+						// 	],
+						// 	start: start,
+						// 	end: end,
+						// 	grouping: pointGroup,
+						// 	sClass: 'file_ioc'
+						// }
+						// var file = {
+						// 	query: 'SELECT '+
+						// 			'`time`,'+
+						// 			'`ioc_count`,'+
+						// 			'`mime`,'+
+						// 			'`name`,'+
+						// 			'`size`,'+
+						// 			'`md5`,'+
+						// 			'`sha1`,'+
+						// 			'`ioc`,'+
+						// 			'`ioc_severity`,'+
+						// 			'`ioc_rule`,'+
+						// 			'`ioc_typeIndicator`,'+
+						// 			'`ioc_typeInfection` '+
+						// 		'FROM '+
+						// 			'`file_ioc` '+
+						// 		'WHERE '+
+						// 			'`time` BETWEEN ? AND ? '+
+						// 			'AND `lan_zone`= ?'+
+						// 			'AND `lan_ip`= ?',
+						// 	insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+						// 	columns: [
+						// 		{"sTitle": "Time", "mData": "time"},
+						// 		{"sTitle": "File Type", "mData": "mime"},
+						// 		{"sTitle": "Name", "mData": "name"},
+						// 		{"sTitle": "Size", "mData": "size"},
+						// 		{"sTitle": "MD5", "mData": "md5"},
+						// 		{"sTitle": "SHA1", "mData": "sha1"},
+						// 		{"sTitle": "IOC", "mData": "ioc"},
+						// 		{"sTitle": "IOC Severity", "mData": "ioc_severity"},
+						// 		{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
+						// 		{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
+						// 		{"sTitle": "IOC Rule", "mData": "ioc_rule"},
+						// 	],
+						// 	start: start,
+						// 	end: end,
+						// 	grouping: pointGroup,
+						// 	sClass: 'file'
+						// }
+						// var endpoint = {
+						// 	query: 'SELECT '+
+						// 			'`time`,'+
+						// 			'`src_ip`,'+
+						// 			'`dst_ip`,'+
+						// 			'`src_user`,'+
+						// 			'`alert_source`,'+
+						// 			'`program_source`,'+
+						// 			'`alert_info` '+
+						// 		'FROM '+
+						// 			'`ossec` '+
+						// 		'WHERE '+
+						// 			'`time` BETWEEN ? AND ? '+
+						// 			'AND `src_ip`= ? ',
+						// 	insert: [start, end, req.query.lan_ip],
+						// 	columns: [
+						// 		{"sTitle": "Time", "mData": "time"},
+						// 		{"sTitle": "User", "mData": "src_user"},
+						// 		{"sTitle": "Source IP", "mData": "src_ip"},
+						// 		{"sTitle": "Destination IP", "mData": "dst_ip"},
+						// 		{"sTitle": "Alert Source", "mData": "alert_source"},
+						// 		{"sTitle": "Program Source", "mData": "program_source"},
+						// 		{"sTitle": "Alert Info", "mData": "alert_info"},
+						// 	],
+						// 	start: start,
+						// 	end: end,
+						// 	grouping: pointGroup,
+						// 	sClass: 'endpoint'
+						// }
+
+
+
+
+
 						var conn_ioc = {
 							query: 'SELECT '+
-									'`time`, '+ // Last Seen
-									'`ioc_count`,'+
-									'`lan_zone`,'+
-									'`machine`,'+
-									'`lan_ip`,'+
-									'`lan_port`,'+
-									'`remote_ip`,'+
-									'`remote_port`,'+
-									'`remote_country`,'+
-									'`remote_asn_name`,'+
-									'`in_bytes`,'+
-									'`out_bytes`,'+
-									'`l7_proto`,'+
-									'`ioc`,'+
-									'`ioc_severity`,'+
-									'`ioc_rule`,'+
-									'`ioc_typeIndicator`,'+
-									'`ioc_typeInfection` '+
+									'\'conn_ioc\' AS type, '+
+									'`time` as raw_time, '+
+									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
 								'FROM '+
 									'`conn_ioc` '+
 								'WHERE '+
@@ -85,50 +548,15 @@ module.exports = function(pool) {
 									'AND `remote_ip`= ? '+
 									'AND `ioc`=? ',
 							insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
-							columns: [
-								{"sTitle": "Time", "mData": "time"},
-								{"sTitle": "Zone", "mData": "lan_zone"},
-								{"sTitle": "Machine", "mData": "machine"},
-								{"sTitle": "Local IP", "mData": "lan_ip"},
-								{"sTitle": "Local Port", "mData": "lan_port"},
-								{"sTitle": "Remote IP", "mData": "remote_ip"},
-								{"sTitle": "Remote Port", "mData": "remote_port"},
-								{"sTitle": "Remote Country", "mData": "remote_country"},
-								{"sTitle": "Remote ASN", "mData": "remote_asn_name"},
-								{"sTitle": "Application", "mData": "l7_proto"},
-								{"sTitle": "Bytes to Remote", "mData": "in_bytes"},
-								{"sTitle": "Bytes from  Remote", "mData": "out_bytes"},
-								{"sTitle": "IOC", "mData": "ioc"},
-								{"sTitle": "IOC Severity", "mData": "ioc_severity"},
-								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
-								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
-								{"sTitle": "IOC Rule", "mData": "ioc_rule"},
-							],
 							start: start,
 							end: end,
-							grouping: pointGroup,
-							sClass: 'conn_ioc'
+							grouping: pointGroup
 						}
 						var conn = {
 							query: 'SELECT '+
-									'`time`, '+
-									'`ioc_count`,'+
-									'`lan_zone`,'+
-									'`machine`,'+
-									'`lan_ip`,'+
-									'`lan_port`,'+
-									'`remote_ip`,'+
-									'`remote_port`,'+
-									'`remote_country`,'+
-									'`remote_asn_name`,'+
-									'`in_bytes`,'+
-									'`out_bytes`,'+
-									'`l7_proto`,'+
-									'`ioc`,'+
-									'`ioc_severity`,'+
-									'`ioc_rule`,'+
-									'`ioc_typeIndicator`,'+
-									'`ioc_typeInfection` '+
+									'\'conn\' AS type, '+
+									'`time` as raw_time, '+
+									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
 								'FROM '+
 									'`conn_ioc` '+
 								'WHERE '+
@@ -136,45 +564,15 @@ module.exports = function(pool) {
 									'AND `lan_zone`= ? '+
 									'AND `lan_ip`= ? ',
 							insert: [start, end, req.query.lan_zone, req.query.lan_ip],
-							columns: [
-								{"sTitle": "Time", "mData": "time"},
-								{"sTitle": "Zone", "mData": "lan_zone"},
-								{"sTitle": "Machine", "mData": "machine"},
-								{"sTitle": "Local IP", "mData": "lan_ip"},
-								{"sTitle": "Local Port", "mData": "lan_port"},
-								{"sTitle": "Remote IP", "mData": "remote_ip"},
-								{"sTitle": "Remote Port", "mData": "remote_port"},
-								{"sTitle": "Remote Country", "mData": "remote_country"},
-								{"sTitle": "Remote ASN", "mData": "remote_asn_name"},
-								{"sTitle": "Application", "mData": "l7_proto"},
-								{"sTitle": "Bytes to Remote", "mData": "in_bytes"},
-								{"sTitle": "Bytes from Remote", "mData": "out_bytes"},
-								{"sTitle": "IOC", "mData": "ioc"},
-								{"sTitle": "IOC Severity", "mData": "ioc_severity"},
-								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
-								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
-								{"sTitle": "IOC Rule", "mData": "ioc_rule"},
-							],
 							start: start,
 							end: end,
-							grouping: pointGroup,
-							sClass: 'conn'
+							grouping: pointGroup
 						}
 						var dns_ioc = {
 							query: 'SELECT '+
-									'`time`, '+
-									'`ioc_count`,'+
-									'`proto`, '+
-									'`qclass_name`, '+
-									'`qtype_name`, '+
-									'`query`, '+
-									'`answers`, '+
-									'`TTLs`, '+
-									'`ioc`, '+
-									'`ioc_severity`, '+
-									'`ioc_rule`,'+
-									'`ioc_typeIndicator`, '+
-									'`ioc_typeInfection` '+
+									'\'dns_ioc\' AS type, '+
+									'`time` as raw_time, '+
+									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
 								'FROM '+
 									'`dns_ioc` '+
 								'WHERE '+
@@ -184,40 +582,15 @@ module.exports = function(pool) {
 									'AND `remote_ip`= ? '+
 									'AND `ioc`=?',
 							insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
-							columns: [
-								{"sTitle": "Time", "mData": "time"},
-								{"sTitle": "Protocol", "mData": "proto"},
-								{"sTitle": "Query Class", "mData": "qclass_name"},
-								{"sTitle": "Query Type", "mData": "qtype_name"},
-								{"sTitle": "Query", "mData": "query"},
-								{"sTitle": "Answers", "mData": "answers"},
-								{"sTitle": "TTLs", "mData": "TTLs"},
-								{"sTitle": "IOC", "mData": "ioc"},
-								{"sTitle": "IOC Severity", "mData": "ioc_severity"},
-								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
-								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
-								{"sTitle": "IOC Rule", "mData": "ioc_rule"},
-							],
 							start: start,
 							end: end,
-							grouping: pointGroup,
-							sClass: 'dns_ioc'
+							grouping: pointGroup
 						}
 						var dns = {
 							query: 'SELECT '+
-									'`time`,'+
-									'`ioc_count`,'+
-									'`proto`,'+
-									'`qclass_name`,'+
-									'`qtype_name`,'+
-									'`query`,'+
-									'`answers`,'+
-									'`TTLs`,'+
-									'`ioc`,'+
-									'`ioc_severity`,'+
-									'`ioc_rule`,'+
-									'`ioc_typeIndicator`,'+
-									'`ioc_typeInfection` '+
+									'\'dns\' AS type, '+
+									'`time` as raw_time, '+
+									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
 								'FROM '+
 									'`dns_ioc` '+
 								'WHERE '+
@@ -225,44 +598,15 @@ module.exports = function(pool) {
 									'AND `lan_zone`=?'+
 									'AND `lan_ip`=?',
 							insert: [start, end, req.query.lan_zone, req.query.lan_ip],
-							columns: [
-								{"sTitle": "Time", "mData": "time"},
-								{"sTitle": "Protocol", "mData": "proto"},
-								{"sTitle": "Query Class", "mData": "qclass_name"},
-								{"sTitle": "Query Type", "mData": "qtype_name"},
-								{"sTitle": "Query", "mData": "query"},
-								{"sTitle": "Answers", "mData": "answers"},
-								{"sTitle": "TTLs", "mData": "TTLs"},
-								{"sTitle": "IOC", "mData": "ioc"},
-								{"sTitle": "IOC Severity", "mData": "ioc_severity"},
-								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
-								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
-								{"sTitle": "IOC Rule", "mData": "ioc_rule"},
-							],
 							start: start,
 							end: end,
-							grouping: pointGroup,
-							sClass: 'dns'
+							grouping: pointGroup
 						}
 						var http_ioc = {
 							query: 'SELECT '+
-									'`time`,'+
-									'`ioc_count`,'+
-									'`host`,'+
-									'`uri`,'+
-									'`referrer`,'+
-									'`user_agent`,'+
-									'`request_body_len`,'+
-									'`response_body_len`,'+
-									'`status_code`,'+
-									'`status_msg`,'+
-									'`info_code`,'+
-									'`info_msg`,'+
-									'`ioc`,'+
-									'`ioc_severity`,'+
-									'`ioc_rule`,'+
-									'`ioc_typeIndicator`,'+
-									'`ioc_typeInfection` '+
+									'\'http_ioc\' AS type, '+
+									'`time` as raw_time, '+
+									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
 								'FROM '+
 									'`http_ioc` '+
 								'WHERE '+
@@ -272,42 +616,15 @@ module.exports = function(pool) {
 									'AND `remote_ip`= ? '+
 									'AND `ioc`=?',
 							insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
-							columns: [
-								{"sTitle": "Time", "mData": "time"},
-								{"sTitle": "Host", "mData": "host"},
-								{"sTitle": "URI", "mData": "uri"},
-								{"sTitle": "Referrer", "mData": "referrer"},
-								{"sTitle": "User Agent", "mData": "user_agent"},
-								{"sTitle": "IOC", "mData": "ioc"},
-								{"sTitle": "IOC Severity", "mData": "ioc_severity"},
-								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
-								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
-								{"sTitle": "IOC Rule", "mData": "ioc_rule"},
-							],
 							start: start,
 							end: end,
-							grouping: pointGroup,
-							sClass: 'http_ioc'
+							grouping: pointGroup
 						}
 						var http = {
 							query: 'SELECT '+
-									'`time`,'+
-									'`ioc_count`,'+
-									'`host`,'+
-									'`uri`,'+
-									'`referrer`,'+
-									'`user_agent`,'+
-									'`request_body_len`,'+
-									'`response_body_len`,'+
-									'`status_code`,'+
-									'`status_msg`,'+
-									'`info_code`,'+
-									'`info_msg`,'+
-									'`ioc`,'+
-									'`ioc_severity`,'+
-									'`ioc_rule`,'+
-									'`ioc_typeIndicator`,'+
-									'`ioc_typeInfection` '+
+									'\'http\' AS type, '+
+									'`time` as raw_time, '+
+									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
 								'FROM '+
 									'`http_ioc` '+
 								'WHERE '+
@@ -315,39 +632,15 @@ module.exports = function(pool) {
 									'AND `lan_zone`= ?'+
 									'AND `lan_ip`= ?',
 							insert: [start, end, req.query.lan_zone, req.query.lan_ip],
-							columns: [
-								{"sTitle": "Time", "mData": "time"},
-								{"sTitle": "Host", "mData": "host"},
-								{"sTitle": "URI", "mData": "uri"},
-								{"sTitle": "Referrer", "mData": "referrer"},
-								{"sTitle": "User Agent", "mData": "user_agent"},
-								{"sTitle": "IOC", "mData": "ioc"},
-								{"sTitle": "IOC Severity", "mData": "ioc_severity"},
-								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
-								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
-								{"sTitle": "IOC Rule", "mData": "ioc_rule"},
-							],
 							start: start,
 							end: end,
-							grouping: pointGroup,
-							sClass: 'http'
+							grouping: pointGroup
 						}
 						var ssl_ioc = {
 							query: 'SELECT '+
-									'`time`,'+
-									'`ioc_count`,'+
-									'`version`,'+
-									'`cipher`,'+
-									'`server_name`,'+
-									'`subject`,'+
-									'`issuer_subject`,'+
-									'from_unixtime(`not_valid_before`) AS not_valid_before,'+
-									'from_unixtime(`not_valid_after`) AS not_valid_after,'+
-									'`ioc`,'+
-									'`ioc_severity`,'+
-									'`ioc_rule`,'+
-									'`ioc_typeIndicator`,'+
-									'`ioc_typeInfection` '+	
+									'\'ssl_ioc\' AS type, '+
+									'`time` as raw_time, '+
+									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
 								'FROM '+
 									'`ssl_ioc` '+
 								'WHERE '+
@@ -357,42 +650,15 @@ module.exports = function(pool) {
 									'AND `remote_ip`= ? '+
 									'AND `ioc`=?',
 							insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
-							columns: [
-								{"sTitle": "Time", "mData": "time"},
-								{"sTitle": "Server Name", "mData": "server_name"},
-								{"sTitle": "Version", "mData": "version"},
-								{"sTitle": "cipher", "mData": "cipher"},
-								{"sTitle": "Subject", "mData": "subject"},
-								{"sTitle": "Issuer Subject", "mData": "issuer_subject"},
-								{"sTitle": "Not Valid Before", "mData": "not_valid_before"},
-								{"sTitle": "Not Valid After", "mData": "not_valid_after"},
-								{"sTitle": "IOC", "mData": "ioc"},
-								{"sTitle": "IOC Severity", "mData": "ioc_severity"},
-								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
-								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
-								{"sTitle": "IOC Rule", "mData": "ioc_rule"},
-							],
 							start: start,
 							end: end,
-							grouping: pointGroup,
-							sClass: 'ssl_ioc'
+							grouping: pointGroup
 						}
 						var ssl = {
 							query: 'SELECT '+
-									'`time`,'+
-									'`ioc_count`,'+
-									'`version`,'+
-									'`cipher`,'+
-									'`server_name`,'+
-									'`subject`,'+
-									'`issuer_subject`,'+
-									'from_unixtime(`not_valid_before`) AS not_valid_before,'+
-									'from_unixtime(`not_valid_after`) AS not_valid_after,'+
-									'`ioc`,'+
-									'`ioc_severity`,'+
-									'`ioc_rule`,'+
-									'`ioc_typeIndicator`,'+
-									'`ioc_typeInfection` '+	
+									'\'ssl\' AS type, '+
+									'`time` as raw_time, '+
+									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
 								'FROM '+
 									'`ssl_ioc` '+
 								'WHERE '+
@@ -400,40 +666,15 @@ module.exports = function(pool) {
 									'AND `lan_zone`= ?'+
 									'AND `lan_ip`= ?',
 							insert: [start, end, req.query.lan_zone, req.query.lan_ip],
-							columns: [
-								{"sTitle": "Time", "mData": "time"},
-								{"sTitle": "Server Name", "mData": "server_name"},
-								{"sTitle": "Version", "mData": "version"},
-								{"sTitle": "cipher", "mData": "cipher"},
-								{"sTitle": "Subject", "mData": "subject"},
-								{"sTitle": "Issuer Subject", "mData": "issuer_subject"},
-								{"sTitle": "Not Valid Before", "mData": "not_valid_before"},
-								{"sTitle": "Not Valid After", "mData": "not_valid_after"},
-								{"sTitle": "IOC", "mData": "ioc"},
-								{"sTitle": "IOC Severity", "mData": "ioc_severity"},
-								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
-								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
-								{"sTitle": "IOC Rule", "mData": "ioc_rule"},
-							],
 							start: start,
 							end: end,
-							grouping: pointGroup,
-							sClass: 'ssl'
+							grouping: pointGroup
 						}
 						var file_ioc = {
 							query: 'SELECT '+
-									'`time`,'+
-									'`ioc_count`,'+
-									'`mime`,'+
-									'`name`,'+
-									'`size`,'+
-									'`md5`,'+
-									'`sha1`,'+
-									'`ioc`,'+
-									'`ioc_severity`,'+
-									'`ioc_rule`,'+
-									'`ioc_typeIndicator`,'+
-									'`ioc_typeInfection` '+
+									'\'file_ioc\' AS type, '+
+									'`time` as raw_time, '+
+									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
 								'FROM '+
 									'`file_ioc` '+
 								'WHERE '+
@@ -443,38 +684,15 @@ module.exports = function(pool) {
 									'AND `remote_ip`= ? '+
 									'AND `ioc`=?',
 							insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
-							columns: [
-								{"sTitle": "Time", "mData": "time"},
-								{"sTitle": "File Type", "mData": "mime"},
-								{"sTitle": "Name", "mData": "name"},
-								{"sTitle": "Size", "mData": "size"},
-								{"sTitle": "MD5", "mData": "md5"},
-								{"sTitle": "SHA1", "mData": "sha1"},
-								{"sTitle": "IOC", "mData": "ioc"},
-								{"sTitle": "IOC Severity", "mData": "ioc_severity"},
-								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
-								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
-								{"sTitle": "IOC Rule", "mData": "ioc_rule"},
-							],
 							start: start,
 							end: end,
-							grouping: pointGroup,
-							sClass: 'file_ioc'
+							grouping: pointGroup
 						}
 						var file = {
 							query: 'SELECT '+
-									'`time`,'+
-									'`ioc_count`,'+
-									'`mime`,'+
-									'`name`,'+
-									'`size`,'+
-									'`md5`,'+
-									'`sha1`,'+
-									'`ioc`,'+
-									'`ioc_severity`,'+
-									'`ioc_rule`,'+
-									'`ioc_typeIndicator`,'+
-									'`ioc_typeInfection` '+
+									'\'file\' AS type, '+
+									'`time` as raw_time, '+
+									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
 								'FROM '+
 									'`file_ioc` '+
 								'WHERE '+
@@ -482,53 +700,30 @@ module.exports = function(pool) {
 									'AND `lan_zone`= ?'+
 									'AND `lan_ip`= ?',
 							insert: [start, end, req.query.lan_zone, req.query.lan_ip],
-							columns: [
-								{"sTitle": "Time", "mData": "time"},
-								{"sTitle": "File Type", "mData": "mime"},
-								{"sTitle": "Name", "mData": "name"},
-								{"sTitle": "Size", "mData": "size"},
-								{"sTitle": "MD5", "mData": "md5"},
-								{"sTitle": "SHA1", "mData": "sha1"},
-								{"sTitle": "IOC", "mData": "ioc"},
-								{"sTitle": "IOC Severity", "mData": "ioc_severity"},
-								{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
-								{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
-								{"sTitle": "IOC Rule", "mData": "ioc_rule"},
-							],
 							start: start,
 							end: end,
-							grouping: pointGroup,
-							sClass: 'file'
+							grouping: pointGroup
 						}
 						var endpoint = {
 							query: 'SELECT '+
-									'`time`,'+
-									'`src_ip`,'+
-									'`dst_ip`,'+
-									'`src_user`,'+
-									'`alert_source`,'+
-									'`program_source`,'+
-									'`alert_info` '+
+									'\'endpoint\' AS type, '+
+									'`time` as raw_time, '+
+									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
 								'FROM '+
 									'`ossec` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
 									'AND `src_ip`= ? ',
 							insert: [start, end, req.query.lan_ip],
-							columns: [
-								{"sTitle": "Time", "mData": "time"},
-								{"sTitle": "User", "mData": "src_user"},
-								{"sTitle": "Source IP", "mData": "src_ip"},
-								{"sTitle": "Destination IP", "mData": "dst_ip"},
-								{"sTitle": "Alert Source", "mData": "alert_source"},
-								{"sTitle": "Program Source", "mData": "program_source"},
-								{"sTitle": "Alert Info", "mData": "alert_info"},
-							],
 							start: start,
 							end: end,
-							grouping: pointGroup,
-							sClass: 'endpoint'
+							grouping: pointGroup
 						}
+
+
+
+
+
 						var info = {};
 						var InfoSQL = {
 							query: 'SELECT '+
@@ -605,57 +800,57 @@ module.exports = function(pool) {
 						async.parallel([
 							// Table function(s)
 							function(callback) { // conn_ioc
-								new fisheye(conn_ioc, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
+								new query(conn_ioc, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},
 							function(callback) { // conn
-								new fisheye(conn, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
+								new query(conn, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},
 							function(callback) { // dns_ioc
-								new fisheye(dns_ioc, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
+								new query(dns_ioc, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},
 							function(callback) { // dns
-								new fisheye(dns, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
+								new query(dns, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},
 							function(callback) { // http_ioc
-								new fisheye(http_ioc, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
+								new query(http_ioc, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},
 							function(callback) { // http
-								new fisheye(http, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
+								new query(http, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},
 							function(callback) { // ssl_ioc
-								new fisheye(ssl_ioc, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
+								new query(ssl_ioc, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},
 							function(callback) { // ssl
-								new fisheye(ssl, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
+								new query(ssl, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},
 							function(callback) { // file_ioc
-								new fisheye(file_ioc, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
+								new query(file_ioc, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},
 							function(callback) { // file
-								new fisheye(file, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
+								new query(file, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},
 							function(callback) { // endpoint
-								new fisheye(endpoint, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
+								new query(endpoint, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
 									handleReturn(data, maxConn, maxIOC, callback);
 								});
 							},
@@ -742,7 +937,7 @@ module.exports = function(pool) {
 							//console.log(results);
 							res.json({
 								info: info,
-								result: result,
+								laneGraph: result,
 								maxConn: largestGroup,
 								maxIOC: largestIOC,
 								start: start,

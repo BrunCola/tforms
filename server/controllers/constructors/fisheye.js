@@ -15,6 +15,7 @@ module.exports = function (params, conn, callback) {
 		});
 		connection.query(params.query, params.insert)
 			.on('result', function(data){
+				console.log(data)
 				data.class = params.sClass;
 				data.title = params.title;
 				data.id = count++;
@@ -70,21 +71,7 @@ module.exports = function (params, conn, callback) {
 					}
 					// PUSH FINISHED PRODUCT BACK TO ORIGINAL ARRAY (dat)
 				});
-				// spread items on top of each other
-				// for (var n in b) {
-				// 	var time = Math.round(b[n].time/1000)*1000;
-				// 	if (tArr.indexOf(JSON.stringify({time: time, count: b[n].data.length})) === -1) {
-				// 		b[n].time = time;
-				// 		tArr.push(JSON.stringify({time: time, count: b[n].data.length}));
-				// 	} else {
-				// 		do {
-				// 			time += 3000;
-				// 			b[n].time = time;
-				// 			tArr.push(JSON.stringify({time: time, count: b[n].data.length}));
-				// 		}
-				// 		while (tArr.indexOf(JSON.stringify({time: time, count: b[n].data.length})) !== -1);
-				// 	}
-				// }
+
 				callback(null, b, maxConn, maxIOC);
 			});
 			connection.release();

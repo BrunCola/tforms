@@ -1717,3 +1717,492 @@ angular.module('mean.pages').directive('makeTreeChart', ['$timeout', '$rootScope
         }
     };
 }]);
+
+
+angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$rootScope', function ($timeout, $location, $rootScope) {
+    return {
+        link: function ($scope, element, attrs) {
+            $scope.$on('laneGraph', function() {
+
+                $scope.$broadcast('spinnerHide')
+
+                var lanes = $scope.crossfilterData.dimension(function(d){ return d.type }).group().reduceSum(function(d){return null}).top(Infinity).map(function(d){return d.key});
+                var itemsDimension = $scope.crossfilterData.dimension(function(d){ return d.time });
+                var items = itemsDimension.top(Infinity);
+
+                // var lanes = ["Chinese","Japanese","Korean"],
+                var laneLength = lanes.length,
+                timeBegin = 0,
+                timeEnd = 2000;
+
+                var m = [20, 15, 15, 120], //top right bottom left
+                    w = 960 - m[1] - m[3],
+                    h = 500 - m[0] - m[2],
+                    miniHeight = 0,
+                    mainHeight = h - miniHeight - 50;
+
+                //scales
+                var x = d3.time.scale()
+                    .domain([new Date($scope.start), new Date($scope.end)])
+                    .range([0, w]);
+                var x1 = d3.time.scale()
+                    .domain([new Date($scope.start), new Date($scope.end)])
+                    .range([0, w]);
+                var y1 = d3.scale.linear()
+                    .domain([0, laneLength])
+                    .range([0, mainHeight]);
+
+
+                var chart = d3.select("#lanegraph")
+                    .append("svg")
+                    .attr("width", w + m[1] + m[3])
+                    .attr("height", h + m[0] + m[2])
+                    .on("dblclick", redraw)
+                    .attr("class", "chart");
+            
+                chart.append("defs").append("clipPath")
+                    .attr("id", "clip")
+                    .append("rect")
+                    .attr("width", w)
+                    .attr("height", mainHeight);
+
+                var main = chart.append("g")
+                    .attr("transform", "translate(" + m[3] + "," + m[0] + ")")
+                    .attr("width", w)
+                    .attr("height", mainHeight)
+                    .attr("class", "main");
+
+                var xAxis = d3.svg.axis()
+                    .scale(x1)
+                    .orient('bottom')
+                    // .tickFormat(d3.time.format('%a %d'))
+                    .tickSize(1)
+                    .tickPadding(8);
+                
+                var xAxisBrush = chart.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", "translate(" + m[3] + "," + mainHeight + ")")
+                    .call(xAxis);
+
+
+                //main lanes and texts
+                main.append("g").selectAll(".laneLines")
+                    .data(items)
+                    .enter().append("line")
+                    .attr("x1", m[1])
+                    .attr("y1", function(d) {return y1(d.lane);})
+                    .attr("x2", w)
+                    .attr("y2", function(d) {return y1(d.lane);})
+                    .attr("stroke", "lightgray");
+
+                main.append("g").selectAll(".laneText")
+                    .data(lanes)
+                    .enter().append("text")
+                    .text(function(d) {return d;})
+                    .attr("x", -m[1])
+                    .attr("y", function(d, i) {return y1(i + .5);})
+                    .attr("dy", ".5ex")
+                    .attr("text-anchor", "end");
+
+                var itemRects = main.append("g")
+                    .attr("clip-path", "url(#clip)");
+                
+
+                function colors(title) {
+                    switch(title){
+                        case 'http':
+                            return "#67AAB5";
+                        case 'ssl':
+                            return "#A0BB71";
+                        case 'file': // extracted files
+                            return "#B572AB";
+                        case 'dns': // new dns
+                            return "#708EBC";
+                        case 'conn': //first seen
+                            return "#6FBF9B";
+                        case 'conn_ioc':
+                            return "#EFAA86";
+                        case 'http_ioc':
+                            return "#FFF2A0";
+                        case 'ssl_ioc':
+                            return "#D97373";
+                        case 'file_ioc':
+                            return "#F68D55";
+                        case 'dns_ioc':
+                            return "#F3BD5D";
+                        case 'endpoint':
+                            return "#7E9E7B";
+                        case 'stealth':
+                            return "#0080CE";
+                        default: //endpoint events
+                            return "#D8464A";
+                    }
+                }
+
+
+                $scope.point = function(element, nickname, title, dType) {
+                    if (nickname.search("ioc") !== -1) {
+                        element.attr('class', 'ioc');
+                        element = element.append('g');
+                        element.append('svg:path')
+                            .attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
+                            .attr('fill', colors(nickname));
+                        element.append('svg:polygon')
+                            .attr('points', '18.155,3.067 5.133,26.932 31.178,26.932 ')
+                            .attr('fill', '#595A5C');
+                        element.append('svg:polygon')
+                            .attr('points', '19.037,21.038 19.626,12.029 15.888,12.029 16.477,21.038 ')
+                            .attr('fill', colors(nickname));
+                        element.append('rect')
+                            .attr('x', 16.376)
+                            .attr('y', 22.045)
+                            .attr('fill', colors(nickname))
+                            .attr('width', 2.838)
+                            .attr('height', 2.448);
+                        if(dType === 'legend') {
+                            element.append('text')
+                                .text(title)
+                                .attr('fill', '#7f7f7f')
+                                .attr('transform', 'translate(-23,32)');
+                        }
+                        return;
+                    } else {
+                        element.attr('class', nickname);
+                        element = element.append('g');
+                        switch(nickname){
+                            case 'file':
+                                element.append('circle')
+                                    .attr('fill', '#B572AB')
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                // element.append('svg:path')
+                                //     .attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
+                                //     .attr('fill', '#B572AB');
+                                element.append('svg:path')
+                                    .attr('d', 'M13.702,12.807h13.189c-0.436-0.655-1.223-1.104-2.066-1.104c0,0-7.713,0-8.361,0'+
+                                        'c-0.386-0.796-1.278-1.361-2.216-1.361H7.562c-1.625,0-1.968,0.938-1.839,2.025l2.104,11.42c0.146,0.797,0.791,1.461,1.594,1.735'+
+                                        'c0,0,2.237-10.702,2.378-11.308C12.005,13.334,12.403,12.807,13.702,12.807z')
+                                    .attr('fill', '#595A5C');
+                                element.append('svg:path')
+                                    .attr('d', 'M29.697,13.898c0,0-14.47-0.037-14.68-0.037c-1.021,0-1.435,0.647-1.562,1.289l-2.414,10.508h16.716'+
+                                        'c1.146,0,2.19-0.821,2.383-1.871l1.399-7.859C31.778,14.706,31.227,13.848,29.697,13.898z')
+                                    .attr('fill', '#595A5C');
+                                if(dType === 'legend') {
+                                    element.append('text')
+                                        .text(title)
+                                        .attr('fill', '#7f7f7f')
+                                        .attr('transform', 'translate(-11,32)');
+                                }
+                                return;
+                            case 'conn':
+                                element.append('circle')
+                                    .attr('fill', '#6FBF9B')
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                // element.append('svg:path')
+                                //     .attr('d', 'M18,0C8.059,0,0,8.059,0,18c0,9.94,8.059,18,18,18s18-8.06,18-18C36,8.059,27.94,0,18,0z')
+                                //     .attr('fill', '#6FBF9B');
+                                element.append('svg:polygon')
+                                    .attr('points', '24.585,6.299 24.585,9.064 11.195,9.064 11.195,14.221 24.585,14.221 24.585,16.986 31.658,11.643 ')
+                                    .attr('fill', '#595A5C');
+                                element.append('svg:polygon')
+                                    .attr('points', '10.99,17.822 3.916,23.166 10.99,28.51 10.99,25.744 24.287,25.744 24.287,20.59 10.99,20.59 ')
+                                    .attr('fill', '#595A5C');
+                                if(dType === 'legend') {
+                                    element.append('text')
+                                        .text(title)
+                                        .attr('fill', '#7f7f7f')
+                                        .attr('transform', 'translate(-31,32)');
+                                }
+                                return;
+                            case 'dns':
+                                element.append('circle')
+                                    .attr('fill', '#708EBC')
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                // element.append('svg:path')
+                                //     .attr('d', 'M18,0C8.059,0,0,8.059,0,18s8.059,18,18,18s18-8.059,18-18S27.941,0,18,0z')
+                                //     .attr('fill', '#708EBC');
+                                element.append('svg:path')
+                                    .attr('d', 'M20.909,13.115c0-0.07,0-0.106-0.071-0.106c-0.283,0-6.022,0.813-7.935,0.956'+
+                                        'c-0.036,0.955-0.071,2.053-0.071,3.009l2.267,0.106v8.707c0,0.071-0.035,0.143-0.142,0.178l-1.877,0.07'+
+                                        'c-0.035,0.92-0.035,1.982-0.035,2.938c1.452,0,3.33-0.036,4.818-0.036h4.888V26l-1.949-0.07'+
+                                        'C20.801,22.39,20.874,16.938,20.909,13.115z')
+                                    .attr('fill', '#595A5C');
+                                element.append('svg:path')
+                                    .attr('d', 'M17.473,10.921c1.771,0,3.329-1.274,3.329-3.187c0-1.486-1.098-2.867-3.152-2.867'+
+                                        'c-1.948,0-3.259,1.451-3.259,2.938C14.391,9.611,15.949,10.921,17.473,10.921z')
+                                    .attr('fill', '#595A5C');
+                                if(dType === 'legend') {
+                                    element.append('text')
+                                        .text(title)
+                                        .attr('fill', '#7f7f7f')
+                                        .attr('transform', 'translate(-13,32)');
+                                }
+                                return;
+                            case 'http':
+                                element.append('circle')
+                                    .attr('fill', '#67AAB5')
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                // element.append('svg:path')
+                                //     .attr('d', 'M18,0C8.059,0,0,8.06,0,18.001C0,27.941,8.059,36,18,36c9.94,0,18-8.059,18-17.999C36,8.06,27.94,0,18,0z')
+                                //     .attr('fill', '#67AAB5');
+                                element.append('svg:path')
+                                    .attr('d', 'M24.715,19.976l-2.057-1.122l-1.384-0.479l-1.051,0.857l-1.613-0.857l0.076-0.867l-1.062-0.325l0.31-1.146'+
+                                        'l-1.692,0.593l-0.724-1.616l0.896-1.049l1.108,0.082l0.918-0.511l0.806,1.629l0.447,0.087l-0.326-1.965l0.855-0.556l0.496-1.458'+
+                                        'l1.395-1.011l1.412-0.155l-0.729-0.7L22.06,9.039l1.984-0.283l0.727-0.568L22.871,6.41l-0.912,0.226L21.63,6.109l-1.406-0.352'+
+                                        'l-0.406,0.596l0.436,0.957l-0.485,1.201L18.636,7.33l-2.203-0.934l1.97-1.563L17.16,3.705l-2.325,0.627L8.91,3.678L6.39,6.285'+
+                                        'l2.064,1.242l1.479,1.567l0.307,2.399l1.009,1.316l1.694,2.576l0.223,0.177l-0.69-1.864l1.58,2.279l0.869,1.03'+
+                                        'c0,0,1.737,0.646,1.767,0.569c0.027-0.07,1.964,1.598,1.964,1.598l1.084,0.52L19.456,21.1l-0.307,1.775l1.17,1.996l0.997,1.242'+
+                                        'l-0.151,2.002L20.294,32.5l0.025,2.111l1.312-0.626c0,0,2.245-3.793,2.368-3.554c0.122,0.238,2.129-2.76,2.129-2.76l1.666-1.26'+
+                                        'l0.959-3.195l-2.882-1.775L24.715,19.976z')
+                                    .attr('fill', '#595A5C');
+                                if(dType === 'legend') {
+                                    element.append('text')
+                                        .text(title)
+                                        .attr('fill', '#7f7f7f')
+                                        .attr('transform', 'translate(-16,32)');
+                                }
+                                return;
+                            case 'ssl':
+                                // element.append('svg:path')
+                                //     .attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
+                                //     .attr('fill', '#A0BB71');
+                                element.append('circle')
+                                    .attr('fill', '#A0BB71')
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                element.append('svg:path')
+                                    .attr('d', 'M25.518,13.467h-0.002c0-0.003,0.002-0.006,0.002-0.008c0-4.064-3.297-7.359-7.359-7.359'+
+                                        'c-4.064,0-7.359,3.295-7.359,7.359c0,0.002,0,0.005,0,0.008v2.674H9.291V27.9h17.785v-11.76h-1.559V13.467z')
+                                    .attr('fill', '#595A5C');
+                                element.append('svg:path')
+                                    .attr('d', 'M18.184,8.754c-3.191,0-4.661,2.372-4.661,4.967'+
+                                        'c0,0.004,0,0.006,0,0.008v2.412h9.397v-2.412c0-0.002,0-0.004,0-0.008C22.92,11.126,21.315,8.754,18.184,8.754z')
+                                    .attr('fill', '#A0BB71');
+                                if(dType === 'legend') {
+                                    element.append('text')
+                                        .text(title)
+                                        .attr('fill', '#7f7f7f')
+                                        .attr('transform', 'translate(-5.5,32)');
+                                }
+                                return;
+                            case 'endpoint':
+                                // element.append('svg:path')
+                                //     .attr('d', 'M18,0C8.059,0,0,8.06,0,18c0,9.941,8.059,18,18,18c9.94,0,18-8.059,18-18C36,8.06,27.94,0,18,0z')
+                                //     .attr('fill', '#7E9E7B');
+                                element.append('circle')
+                                    .attr('fill', '#7E9E7B')
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                element.append('svg:path')
+                                    .attr('d', 'M28.649,8.6H7.351c-0.684,0-1.238,0.554-1.238,1.238v14.363c0,0.684,0.554,1.238,1.238,1.238h7.529'+
+                                        'l-1.09,3.468v0.495h8.419v-0.495l-1.09-3.468h7.529c0.684,0,1.237-0.555,1.237-1.238V9.838C29.887,9.153,29.333,8.6,28.649,8.6z'+
+                                        'M28.477,22.072H7.635V10.074h20.842V22.072z')
+                                    .attr('fill', '#595A5C');
+                                if(dType === 'legend') {
+                                    element.append('text')
+                                        .text(title)
+                                        .attr('fill', '#7f7f7f')
+                                        .attr('transform', 'translate(-24,32)');
+                                }
+                                return;
+                            case 'stealth':
+                                element.append('circle')
+                                    .attr('fill', '#0080CE')
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                element.append('svg:path')
+                                    .attr('fill', '#58595B')
+                                    .attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
+                                        'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
+                                        'C28.014,15.545,26.676,21.468,23.587,26.751z')
+                                element.append('svg:path')
+                                    .attr('fill', '#0080CE')
+                                    .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
+                                        'C11.076,16.238,11.938,20.26,13.699,23.661z')
+                                if(dType === 'legend') {
+                                    element.append('text')
+                                        .text(title)
+                                        .attr('fill', '#7f7f7f')
+                                        .attr('transform', 'translate(-24,32)');
+                                }
+                                return;
+                            default:
+                                console.log('cannot be drawn');
+                                return;
+                        }
+                    }
+                }
+ 
+                var brush = d3.svg.brush()
+                    .x(x1)
+                    .on("brushend", mouseup);
+
+                main.append("g")
+                    .attr("class", "x brush")
+                    .call(brush)
+                    .selectAll("rect")
+                    .attr("y", 1)
+                    .attr("height", mainHeight - 1);
+                redraw();
+
+
+                function redraw() {
+                    var visItems = items;
+                    x1.domain([new Date($scope.start), new Date($scope.end)]);
+                    xAxisBrush.call(xAxis);
+                    var icons = itemRects.selectAll("g").data(visItems);
+                    icons.enter().append("g").each(function(d){
+                        var elm = d3.select(this);
+                        console.log('building')
+                        elm
+                            .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
+                            .attr("class", function(d) {return "miniItem" + d.lane;})
+                            // .attr("width", 5)
+                            // .attr("height", function(d) {return .8 * y1(1);});
+                        $scope.point(elm, d.type);
+                    })
+                    icons.exit().remove();
+                }
+        
+                function mouseup() {
+                    var rects, labels,
+                        minExtent = brush.extent()[0],
+                        maxExtent = brush.extent()[1],
+                        visItems = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;});
+                        console.log(visItems)
+                    // main.select(".brush")
+                    //     .call(brush.extent([minExtent, maxExtent]));
+                    x1.domain([minExtent, maxExtent]);
+                    xAxisBrush.transition().duration(50).call(xAxis);
+                    //update main item rects
+                    // rects = itemRects.selectAll("rect")
+                    //     .data(visItems, function(d) { return d.type; })
+                    //     .attr("x", function(d) {return x1(d.dd);})
+                    //     .attr("width", 100);
+                    
+                    // rects.enter().append("rect")
+                    //     .attr("class", function(d) {return "miniItem" + d.lane;})
+                    //     .attr("x", function(d) {return x1(d.dd);})
+                    //     .attr("y", function(d) {return y1(d.lane) + 10;})
+                    //     .attr("width", 300)
+                    //     .attr("height", function(d) {return .8 * y1(1);});
+                    // rects.exit().remove();
+                    // //update the item l
+                    // //
+                    // // 
+                    // rects = itemRects.selectAll("g")
+                    //     .data(visItems)
+                    //     .attr('transform', function(d){ return 'translate('+x1(d.dd)+',0)' });
+                    // var icons = itemRects.selectAll("g").exit().remove();
+
+                    // icons.enter().append("g").each(function(d){
+                    //     var elm = d3.select(this);
+                    //     console.log(elm.attr('transform'))
+                    //     elm
+                    //         .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
+                    //         .attr("class", function(d) {return "miniItem" + d.lane;})
+                    //         // .attr("width", 5)
+                    //         // .attr("height", function(d) {return .8 * y1(1);});
+                    //     $scope.point(elm, d.type);
+                    // })
+                    // icons.exit().remove();
+                }
+
+
+
+
+                // var itemRects = main.append("g")
+                //     .attr("clip-path", "url(#clip)");
+
+                // //mini item rects
+                // mini.append("g").selectAll("miniItems")
+                //     .data(items)
+                //     .enter().append("rect")
+                //     .attr("class", function(d) {return "miniItem" + d.lane;})
+                //     .attr("x", function(d) {return x(d.dd);})
+                //     .attr("y", function(d) {return y2(d.lane + .5) - 5;})
+                //     .attr("width", 10)
+                //     .attr("height", 10);
+
+                // //mini labels
+                // mini.append("g").selectAll(".miniLabels")
+                //     .data(items)
+                //     .enter().append("text")
+                //     .text(function(d) {return d.id;})
+                //     .attr("x", function(d) {return x(d.dd);})
+                //     .attr("y", function(d) {return y2(d.lane + .5);})
+                //     .attr("dy", ".5ex");
+
+                // //brush
+                // var brush = d3.svg.brush()
+                //     .x(x1)
+                //     .on("brush", display);
+                // mini.append("g")
+                //     .attr("class", "x brush")
+                //     .call(brush)
+                //     .selectAll("rect")
+                //     .attr("y", 1)
+                //     .attr("height", miniHeight - 1);
+                // display();
+
+
+                // var rects, labels,
+                //     minExtent = brush.extent()[0],
+                //     maxExtent = brush.extent()[1];
+                    // visItems = items.filter(function(d) {return ((moment(d.dd).unix() < maxExtent) && (moment(d.dd).unix() > minExtent))});
+                // mini.select(".brush")
+                //     .call(brush.extent([minExtent, maxExtent]));
+                //update main item rects
+
+
+
+
+                
+                // function display() {
+                //     var rects, labels,
+                //         minExtent = brush.extent()[0],
+                //         maxExtent = brush.extent()[1],
+                //         visItems = items.filter(function(d) {return moment(d.dd).unix() < moment(maxExtent).unix() && moment(d.dd).unix() > moment(minExtent).unix();});
+                //     mini.select(".brush")
+                //         .call(brush.extent([minExtent, maxExtent]));
+                //     x1.domain([minExtent, maxExtent]);
+                //     //update main item rects
+                //     rects = itemRects.selectAll("rect")
+                //         .data(visItems, function(d) { return d.type; })
+                //         .attr("x", function(d) {return x1(d.dd);})
+                //         .attr("width", 100);
+                    
+                //     rects.enter().append("rect")
+                //         .attr("class", function(d) {return "miniItem" + d.lane;})
+                //         .attr("x", function(d) {return x1(d.dd);})
+                //         .attr("y", function(d) {return y1(d.lane) + 10;})
+                //         .attr("width", 300)
+                //         .attr("height", function(d) {return .8 * y1(1);});
+                //     rects.exit().remove();
+                //     //update the item labels
+                //     labels = itemRects.selectAll("text")
+                //         .data(visItems, function (d) { return d.id; })
+                //         .attr("x", function(d) {return x1(Math.max(d.dd, minExtent) + 2);});
+                //     labels.enter().append("text")
+                //         .text(function(d) {return d.id;})
+                //         .attr("x", function(d) {return x1(Math.max(d.dd, minExtent));})
+                //         .attr("y", function(d) {return y1(d.lane + .5);})
+                //         .attr("text-anchor", "start");
+                //     labels.exit().remove();
+                // }
+
+
+            });
+        }
+    };
+}]);
