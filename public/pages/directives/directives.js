@@ -2550,10 +2550,53 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                     .selectAll("rect")
                     .attr("y", 1)
                     .attr("height", mainHeight - 1);
-                redraw();
+                
 
+                // nav
+                var navArray = [], currentNavPos = 0;
+                var buttonHolder = d3.select("#lanegraph").append('div').attr('class', 'buttonHolder');
+                var currentTimeSlice = d3.select("#lanegraph").append('div').attr('class', 'timeslice');
+                var resetBtn = buttonHolder
+                    .append('button')
+                    .html('Reset')
+                    .attr('class', 'resetButton')
+                    .on('click', function(){
+                        redraw();
+                    });
+                var prevButton = buttonHolder.append('button')
+                    .html('Previous')
+                    .attr('class', 'prevButton')
+                    .on('click', function(){
+                        if (currentNavPos > 0) {
+                            nextButton.attr('disabled', null);
+                            currentNavPos--;
+                            mouseup('nav');
+                        }
+                    });
+                var nextButton = buttonHolder
+                    .append('button')
+                    .html('Next')
+                    .attr('class', 'prevButton')
+                    .on('click', function(){
+                        if (currentNavPos < navArray.length) {
+                            prevButton.attr('disabled', null);
+                            currentNavPos++;
+                            mouseup('nav');
+                        }
+                    });
+
+                // current time
+                
 
                 function redraw() {
+                    // nav settings
+                    navArray = [];
+                    currentNavPos = 0;
+                    prevButton.attr('disabled', 'disabled');
+                    nextButton.attr('disabled', 'disabled');
+                    resetBtn.attr('disabled', 'disabled');
+                    navArray.push({'min': new Date($scope.start), 'max': new Date($scope.end)});
+
                     var visItems = items;
                     x1.domain([new Date($scope.start), new Date($scope.end)]);
                     xAxisBrush.transition().duration(500).call(xAxis);
@@ -2561,7 +2604,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                     var icons = itemRects.selectAll("g").data(visItems);
                     icons.enter().append("g").each(function(d){
                         var elm = d3.select(this);
-                        console.log('building')
                         elm
                             .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
                             .attr("class", function(d) {return "mainItem" + d.lane;})
@@ -2569,12 +2611,34 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                     })
                     icons.exit();
                 }
-        
-                function mouseup() {
-                    var rects, labels,
-                        minExtent = brush.extent()[0],
-                        maxExtent = brush.extent()[1],
-                        visItems = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;});
+                function mouseup(action) {
+                    if (action === 'nav') {
+                        var rects, labels,
+                            minExtent = navArray[currentNavPos].min,
+                            maxExtent = navArray[currentNavPos].max,
+                            visItems = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;});
+                        // disable previous button if all the way back
+                        if (currentNavPos === 0) {
+                            resetBtn.attr('disabled', 'disabled');
+                            prevButton.attr('disabled', 'disabled');
+                        } else if (currentNavPos === navArray.length-1) {
+                            nextButton.attr('disabled', 'disabled');
+                        } else {
+                            resetBtn.attr('disabled', null);
+                        }
+
+                    } else {
+                        var rects, labels,
+                            minExtent = brush.extent()[0],
+                            maxExtent = brush.extent()[1],
+                            visItems = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;});
+                        // step up nav array pos and push new values in;
+                        currentNavPos++;
+                        navArray.push({'min': minExtent, 'max': maxExtent});
+                        prevButton.attr('disabled', null);
+                        resetBtn.attr('disabled', null);
+                    }
+
                     // only draw the brush isn't a single point on the svg
                     if (moment(maxExtent).unix() !== moment(minExtent).unix()) {
                         main.select('g.brush .extent')
@@ -2600,97 +2664,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                         })
                         icons.exit();
                     }
-                    // main.append("g")
-                    //     .attr("class", "x brush")
-                    //     .call(brush)
-                    //     .selectAll("rect")
-                    //     .attr("y", 1)
-                    //     .attr("height", mainHeight - 1);
                 }
-
-
-
-
-                // var itemRects = main.append("g")
-                //     .attr("clip-path", "url(#clip)");
-
-                // //mini item rects
-                // mini.append("g").selectAll("miniItems")
-                //     .data(items)
-                //     .enter().append("rect")
-                //     .attr("class", function(d) {return "miniItem" + d.lane;})
-                //     .attr("x", function(d) {return x(d.dd);})
-                //     .attr("y", function(d) {return y2(d.lane + .5) - 5;})
-                //     .attr("width", 10)
-                //     .attr("height", 10);
-
-                // //mini labels
-                // mini.append("g").selectAll(".miniLabels")
-                //     .data(items)
-                //     .enter().append("text")
-                //     .text(function(d) {return d.id;})
-                //     .attr("x", function(d) {return x(d.dd);})
-                //     .attr("y", function(d) {return y2(d.lane + .5);})
-                //     .attr("dy", ".5ex");
-
-                // //brush
-                // var brush = d3.svg.brush()
-                //     .x(x1)
-                //     .on("brush", display);
-                // mini.append("g")
-                //     .attr("class", "x brush")
-                //     .call(brush)
-                //     .selectAll("rect")
-                //     .attr("y", 1)
-                //     .attr("height", miniHeight - 1);
-                // display();
-
-
-                // var rects, labels,
-                //     minExtent = brush.extent()[0],
-                //     maxExtent = brush.extent()[1];
-                    // visItems = items.filter(function(d) {return ((moment(d.dd).unix() < maxExtent) && (moment(d.dd).unix() > minExtent))});
-                // mini.select(".brush")
-                //     .call(brush.extent([minExtent, maxExtent]));
-                //update main item rects
-
-
-
-
-                
-                // function display() {
-                //     var rects, labels,
-                //         minExtent = brush.extent()[0],
-                //         maxExtent = brush.extent()[1],
-                //         visItems = items.filter(function(d) {return moment(d.dd).unix() < moment(maxExtent).unix() && moment(d.dd).unix() > moment(minExtent).unix();});
-                //     mini.select(".brush")
-                //         .call(brush.extent([minExtent, maxExtent]));
-                //     x1.domain([minExtent, maxExtent]);
-                //     //update main item rects
-                //     rects = itemRects.selectAll("rect")
-                //         .data(visItems, function(d) { return d.type; })
-                //         .attr("x", function(d) {return x1(d.dd);})
-                //         .attr("width", 100);
-                    
-                //     rects.enter().append("rect")
-                //         .attr("class", function(d) {return "miniItem" + d.lane;})
-                //         .attr("x", function(d) {return x1(d.dd);})
-                //         .attr("y", function(d) {return y1(d.lane) + 10;})
-                //         .attr("width", 300)
-                //         .attr("height", function(d) {return .8 * y1(1);});
-                //     rects.exit().remove();
-                //     //update the item labels
-                //     labels = itemRects.selectAll("text")
-                //         .data(visItems, function (d) { return d.id; })
-                //         .attr("x", function(d) {return x1(Math.max(d.dd, minExtent) + 2);});
-                //     labels.enter().append("text")
-                //         .text(function(d) {return d.id;})
-                //         .attr("x", function(d) {return x1(Math.max(d.dd, minExtent));})
-                //         .attr("y", function(d) {return y1(d.lane + .5);})
-                //         .attr("text-anchor", "start");
-                //     labels.exit().remove();
-                // }
-
+                redraw();
 
             });
         }
