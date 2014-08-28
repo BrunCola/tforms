@@ -1467,7 +1467,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
 	};
 }]);
 
-//network chart starts here
+//NETWORK CHART STARTS HERE
 angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
 	return {
 		link: function ($scope, element, attrs) {
@@ -1512,13 +1512,13 @@ angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootSc
 					}
 					var color = function(type) {
 						if (type === "zone") {
-							return palette.pink
+							return palette.blue
 						} else if (type === "network") {
 							return palette.pink
 						} else if (type === "os") {
 							return palette.orange
 						} else if (type === "endpoint") {
-							return palette.orange
+							return palette.yellow
 						} else {
 
 						}
@@ -1550,8 +1550,8 @@ angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootSc
 					var force = d3.layout.force()
 						.nodes(data.nodes)
 						.links(data.links)
-						.gravity(0.1)
-						.linkDistance(width/6)
+						.gravity(0.2)
+						.linkDistance(width/10)
 						.charge(-500)
 						.size([width-50, height]);
 
@@ -1576,7 +1576,7 @@ angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootSc
 								.duration(250)
 								.style("cursor", "none")
 								.attr("r", function (d) {return logslider(d["width"])+4; })
-								.attr("fill",function(d){ return color(d.group); });
+								.attr("fill",function(d){ return color(d.type); });
 
 							//TEXT
 							d3.select(this).select("text")
@@ -1605,8 +1605,8 @@ angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootSc
 						d3.select(this).selectAll("circle")
 							.transition()
 							.duration(250)
-							.attr("r", function (d) {return logslider(d["width"]); })
-							.attr("fill",function(d){ return color(d.type); } );
+							.attr("r", function(d){return logslider(d["width"]); })
+							.attr("fill",function(d){return color(d.type);});
 
 						//TEXT
 						d3.select(this).select("text")
@@ -1623,20 +1623,90 @@ angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootSc
 					node.each(function(d){
 						var elm = d3.select(this);
 						if(d.type === "os" && d.name === "Linux") {
-							elm.append("svg:circle")
-							.attr("cx", function(d) { return d.x; })
-							.attr("cy", function(d) { return d.y; })
-							.attr("r", function (d) {return logslider(d["width"]); })
-							.attr("fill", function(d, i) { if (i>0) { return  color(d.type); } else { return palette.green } } )
-							.style("stroke-width", "1.5px")
-							.style("stroke", "#fff")
+							// elm.append("svg:circle")
+							// .attr("cx", function(d) { return d.x; })
+							// .attr("cy", function(d) { return d.y; })
+							// .attr("r", function(d) {return logslider(d["width"]); })
+							// .attr("fill", function(d, i) { if (i>0) { return  color(d.type); } else { return palette.green } } )
+							// .style("stroke-width", "1.5px")
+							// .style("stroke", "#fff")
+							
+							elm.append('path')
+							.style('fill', '#000000')
+							.attr('d', 'M26.3,0c2.2-0.1,5.4,1.9,5.7,4.2c0.3,1.4,0.1,3,0.1,4.4c0,1.6,0,3.3,0.2,4.9'+
+							'c0.3,2.9,2.4,4.8,3.7,7.2c0.6,1.2,1.4,2.4,1.7,3.8c0.4,1.5,0.7,3.1,1,4.6c0.2,1.5,0.4,2.9,0.3,4.4c0,0.6,0.1,1.3-0.1,2'+
+							'c-0.2,0.8-0.6,1.3-0.3,2.1c0.2,0.7,0.1,1.2,0.9,1.3c0.7,0.1,1.3-0.2,2-0.1c1.4,0.1,2.8,0.7,2.3,2.3c-1.6,2.3-3.3,4.8-5.6,6.5'+
+							'c-0.9,0.7-1.8,1.9-3,2.1c-1.2,0.4-2.8,0.3-3.9-0.6c-0.4-0.3-0.7-0.7-0.9-1.1c-0.1-0.3-0.2-0.5-0.3-0.8c0-0.5,0-0.5-0.5-0.5'+
+							'c-1.7,0.1-3.4,0.2-5,0c-1.5-0.2-3-0.4-4.5-0.9c-0.6-0.3-1.2-0.5-1.8-0.8c-0.5-0.2-1,1.1-1.2,1.5c-0.5,0.9-1.3,1.9-2.4,2'+
+							'c-0.6,0-1.1,0.1-1.7-0.1c-0.8-0.3-1.4-0.7-2.2-1.1c-1.3-0.7-2.5-1.6-3.6-2.6c-1.2-1-2.8-1.9-3.1-3.5c0.4-1.1,0.9-1.6,2.1-1.7'+
+							'c0.4,0,1.1-0.1,1.4-0.5c0.2-0.2,0.1-0.5,0.1-0.8c-0.1-0.5,0-0.8,0.2-1.3c0.5-1.2,2.3-0.3,3.1-0.2c0.4-0.3,0.6-0.9,0.9-1.3'+
+							'c0.4-0.6,0.7-0.6,0.6-1.4c-0.6-6.4,3-11.9,5.9-17.3c0.4-0.8,0.9-1.6,1.4-2.4c0.4-0.6,0.3-1.6,0.3-2.3c0-2-0.1-4-0.1-6'+
+							'c0-1.7,0.3-3,1.7-4.2C22.9,0.9,24.5,0,26.3,0z')
+							.attr('transform', 'translate(-25,-25)')
+
+							elm.append('path')
+							.style('fill', '#FFF')
+							.attr('d', 'M28.5,7.6c0.3,0.2,0.8,0.4,0.8,0.8c0,0.4,0,0.9-0.1,1.3'+
+							'c-0.1,0.3-0.2,0.7-0.5,1c-0.4,0.5-0.9,0.3-1.4,0.1c1.1-0.4,1.7-1.9,0.6-2.7c-0.5-0.4-1.1-0.3-1.5,0.3c-0.4,0.7-0.3,1.4,0.1,2.1'+
+							'c-0.2-0.2-0.6-0.2-0.7-0.5c-0.2-0.5-0.3-1.1-0.2-1.7c0.1-0.8,0.5-0.8,1.2-0.9C27.4,7.4,28,7.4,28.5,7.6z')
+							.attr('transform', 'translate(-25,-25)')
+
+							elm.append('path')
+							.style('fill', '#FFF')
+							.attr('d', 'M22.4,7.6c0.2,0.1,0.5,0.1,0.6,0.3c0.2,0.4,0.2,0.8,0.3,1.3'+
+							'c0,0.3,0,0.6-0.1,1c-0.1,0-0.4,0.4-0.5,0.2c0.3-0.8,0-2.8-1.2-2.1c-1,0.6-0.6,2.3,0.3,2.7c-0.6,0.3-0.7,0.3-1-0.3'+
+							'c-0.2-0.6-0.4-1.1-0.3-1.7c0-0.6,0-0.8,0.6-1.2C21.6,7.6,21.9,7.6,22.4,7.6z')
+							.attr('transform', 'translate(-25,-25)')
+
+							elm.append('path')
+							.style('fill', '#FFF')
+							.attr('d', 'M28.7,14.3c0.3,0.9,0.4,1.9,0.8,2.9c0.4,1,0.8,1.9,1.3,2.8'+
+							'c0.9,1.9,1.9,3.9,2.7,5.9c0.7,1.9,1.4,3.8,0.9,5.9c-0.2,0.9-0.4,2-0.9,2.8c-0.1,0.2-0.4,0.3-0.5,0.5c-0.3,0.4-0.4,1-0.4,1.5'+
+							'c-0.7-0.1-1.3-0.7-2.1-0.5c-0.8,0.2-0.8,1.6-0.9,2.2c-0.1,1.1-0.1,2.2-0.2,3.3c0,0.2,0,0.5,0,0.7c-0.3,0.2-0.6,0.3-0.9,0.5'+
+							'c-0.5,0.2-1,0.4-1.4,0.5c-2,0.5-4.4,0.4-6.3-0.1c-0.4-0.1-0.9-0.2-1.3-0.4c-0.6-0.2-1-0.3-0.8-1c0.2-1-0.7-2.3-1.1-3.2'+
+							'c-1-2.1-1.6-4.3-2.5-6.5c-0.2-0.5-0.4-0.9-0.5-1.4c-0.2-0.3,0.1-1,0.2-1.2c0.3-1.1,0.8-2.1,1.3-3.2c0.5-0.9,1.1-1.9,1.5-2.8'+
+							'c0.4-1,0.5-2.1,1-3.1c0.4-0.9,0.9-1.8,1.4-2.7c0.5-0.9,0.8-2,1.3-2.9c1.2,1.1,2.2,1.1,3.8,1.1c0.7-0.1,1.3-0.3,1.9-0.5'+
+							'C27.2,15,28.6,14.1,28.7,14.3z')
+							.attr('transform', 'translate(-25,-25)')
+
+							elm.append('path')
+							.style('fill', '#f5c055')
+							.attr('d', 'M24.7,9.6c0.9,0.3,1.5,0.9,2.4,1.3c0.9,0.4,2.1,0.2,2.5,1.2'+
+							'c0.4,1.1-0.7,1.6-1.5,2.1c-1,0.6-2,1-3.1,1.2c-1.2,0.1-2.3,0.2-3.3-0.5c-0.7-0.5-1.5-1.1-1.5-2.1c0.1-1.2,1.1-1.3,2-1.8'+
+							'C22.9,10.6,23.9,9.4,24.7,9.6z')
+							.attr('transform', 'translate(-25,-25)')
+
+							elm.append('path')
+							.style('fill', '#f5c055')
+							.attr('d', 'M13.7,34.6c0.6,0.2,0.9,1.1,1.2,1.7c0.4,1,0.8,2.1,1.1,3.1'+
+							'c0.6,1.9,1,3.9,1,6c0,1.7-1.3,2.9-3,2.9c-1,0-1.8-0.5-2.6-0.9c-1-0.5-1.8-1.1-2.7-1.7c-1.5-1.1-3.7-2.4-4.3-4.1'+
+							'C4,40.8,5,39.9,5.9,39.9c0.7-0.2,1.5,0,1.9-0.8c0.3-0.5-0.1-1.3,0.2-1.9c0.4-0.8,1.5-0.4,2.2-0.2c0.4,0.1,0.6,0.3,0.9-0.1'+
+							'c0.4-0.4,0.6-0.9,0.9-1.4C12.2,35.3,13.6,34.1,13.7,34.6z')
+							.attr('transform', 'translate(-25,-25)')
+
+							elm.append('path')
+							.style('fill', '#f5c055')
+							.attr('d', 'M31.6,36.3c0.3,0,0.6,0.3,0.9,0.3c0.1,0.5-0.1,0.9,0.1,1.4'+
+							'c0.2,0.9,1.2,1.5,2,1.7c2,0.7,2.6-1.1,3.4-2.6c0.5,0.2,0.4,1.1,0.6,1.6c0.3,0.7,1.1,0.7,1.8,0.5c1.5-0.2,3.9-0.1,3.2,2'+
+							'c-1,1.4-2,2.7-3.1,4c-0.6,0.5-1,1.2-1.6,1.7c-0.6,0.5-1.2,0.9-1.8,1.4c-1.4,1.1-2.7,1.8-4.5,1.3c-2-0.5-2.3-2.6-2.6-4.3'+
+							'c-0.4-1.9-0.4-3.9-0.3-5.9c0.1-0.9,0.2-1.7,0.3-2.6C30.1,36.2,31,35.8,31.6,36.3z')
+							.attr('transform', 'translate(-25,-25)')
 						} 
 						else if(d.type === "os" && d.name === "Windows") {
 							elm.append("svg:circle")
 							.attr("cx", function(d) { return d.x; })
 							.attr("cy", function(d) { return d.y; })
-							.attr("r", function (d) {return logslider(d["width"]); })
+							.attr("r", function(d) {return logslider(d["width"]); })
 							.attr("fill", function(d, i) { if (i>0) { return  color(d.type); } else { return palette.red } } )
+							.style("stroke-width", "1.5px")
+							.style("stroke", "#fff")
+						} 
+						else if(d.type === "os" && d.name === "MacOS") {
+							elm.append("svg:circle")
+							.attr("cx", function(d) { return d.x; })
+							.attr("cy", function(d) { return d.y; })
+							.attr("r", function(d) {return logslider(d["width"]); })
+							.attr("fill", function(d) {return palette.blue} )
 							.style("stroke-width", "1.5px")
 							.style("stroke", "#fff")
 						} 
@@ -1645,8 +1715,9 @@ angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootSc
 							elm.append("svg:circle")
 								.attr("cx", function(d) { return d.x; })
 								.attr("cy", function(d) { return d.y; })
-								.attr("r", function (d) {return logslider(d["width"]); })
-								.attr("fill", function(d, i) { if (i>0) { return  color(d.type); } else { return palette.gray } } )
+								.attr("r", function(d) {return logslider(d["width"]); })
+								.attr("fill", function(d) {return color(d.type);} )
+								// .attr("fill", function(d, i) { if (i>0) { return  color(d.type); } else { return palette.gray } } )
 								.style("stroke-width", "1.5px")
 								.style("stroke", "#fff")
 						}
@@ -1680,6 +1751,7 @@ angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootSc
 		}
 	};
 }]);
+//NETWORK CHART ENDS HERE
 
 angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$rootScope', '$location', function ($timeout, $rootScope, $location) {
     return {
