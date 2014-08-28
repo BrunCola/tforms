@@ -1933,11 +1933,11 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                     //LEGEND
 
                     var legend_color = function(legend_item) {
-                        if (legend_item === "Role") { 
+                        if (legend_item === "Stealth Role") { 
                             return palette.pink;
-                        } else if (legend_item === "Group") { 
+                        } else if (legend_item === "AD Group") { 
                             return palette.purple;
-                        } else if (legend_item === "COI") { 
+                        } else if (legend_item === "Stealth COI") { 
                             return palette.green;
                         } else if (legend_item === "User with one role") { //IP node with 1 COI group
                             return palette.blue;
@@ -1952,7 +1952,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         }
                     }
 
-                    var circle_legend_data = ["Role", "Group", "COI"];
+                    var circle_legend_data = ["Stealth Role", "AD Group", "Stealth COI"];
                     var circle_legend = vis.selectAll(".circle_legend")
                         .data(circle_legend_data)
                         .enter().append("g")

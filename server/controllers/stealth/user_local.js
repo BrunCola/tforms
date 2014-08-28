@@ -76,7 +76,6 @@ module.exports = function(pool) {
 					// Table function(s)
 					function(callback) {
 						new dataTable(table1, {database: database, pool: pool}, function(err,data){
-							console.log(table1.query);
 							tables.push(data);
 							callback();
 						});
