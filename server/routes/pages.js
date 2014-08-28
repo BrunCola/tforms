@@ -179,6 +179,19 @@ module.exports = function(app, passport, version, io, pool) {
 		var ftp_remote = require('../controllers/general_network/ftp_remote')(pool);
 			// REMOTE2LOCAL FTP
 			var ftp_remote2local = require('../controllers/general_network/ftp_remote2local')(pool);
+	//DNS
+		// LOCAL DNS
+		var dns_local = require('../controllers/dns/dns_local')(pool);
+		// REMOTE DNS
+		var dns_remote = require('../controllers/dns/dns_remote')(pool);
+	//SSL
+		// SSL SERVER
+		var ssl_server = require('../controllers/ssl/ssl_server')(pool);
+		// LOCAL SSL
+		var ssl_local = require('../controllers/ssl/ssl_local')(pool);
+		// REMOTE SSL
+		var ssl_remote = require('../controllers/ssl/ssl_remote')(pool);
+	//USERS
 		//USERS LOCAL
 		var users_local = require('../controllers/users/users_local')(pool);
 	//STEALTH
@@ -466,9 +479,27 @@ module.exports = function(app, passport, version, io, pool) {
 			// REMOTE2LOCAL FTP
 			app.route('/general_network/ftp_remote2local')
 			.get(authorization.requiresLogin, ftp_remote2local.render);
+	//USERS
 		// USERS LOCAL
 		app.route('/users/users_local')
 		.get(authorization.requiresLogin, users_local.render);
+	//DNS
+		// LOCAL DNS
+		app.route('/dns/dns_local')
+		.get(authorization.requiresLogin, dns_local.render);
+		// REMOTE DNS
+		app.route('/dns/dns_remote')
+		.get(authorization.requiresLogin, dns_remote.render);
+	//SSL
+		// SSL SERVER
+		app.route('/ssl/ssl_server')
+		.get(authorization.requiresLogin, ssl_server.render);
+		// LOCAL SSL
+		app.route('/ssl/ssl_local')
+		.get(authorization.requiresLogin, ssl_local.render);
+		// REMOTE SSL
+		app.route('/ssl/ssl_remote')
+		.get(authorization.requiresLogin, ssl_remote.render);
 	// STEALTH
 		//LOCAL COI REMOTE
 		app.route('/stealth/local_COI_remote')

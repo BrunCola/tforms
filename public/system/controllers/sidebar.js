@@ -106,116 +106,6 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			]
 		},
 		{
-			'title': 'Extracted Files',
-			'url': '',
-			'icon': 'fa-folder',
-			'children':
-			[
-				{
-					'title': 'By File Type',
-					'url': 'by_mime_type',
-					'icon': 'fa-folder-open',
-					'orphans': ['file_mime_local', 'file_local']
-				},
-				{
-					'title': 'By Local IP',
-					'url': 'by_local_ip',
-					'icon': 'fa-folder-open',
-					'orphans': ['by_file_name','file_local']
-				},
-				{
-					'title': 'By Remote IP',
-					'url': 'by_remote_ip',
-					'icon': 'fa-folder-open',
-					'orphans': ['by_file_name_remote','file_remote']
-				},
-				{
-					'title': 'By Domain',
-					'url': 'by_domain',
-					'icon': 'fa-folder-open',
-					'orphans': ['by_domain_local', 'by_domain_local_mime', 'by_domain_local_mime_drill']
-				}
-			]
-		},
-		{
-			'title': 'Applications',
-			'url': '',
-			'icon': 'fa-bars',
-			'children':
-			[
-				{
-					'title': 'By Application',
-					'url': 'app_by_application',
-					'icon': 'fa-bars',
-					'orphans': ['application_drill', 'application_local', 'l7_shared']
-				},
-				{
-					'title': 'By Local IP',
-					'url': 'app_by_local_ip',
-					'icon': 'fa-bars',
-					'orphans': ['l7_local_app', 'l7_local_drill', 'l7_shared']
-				},
-				{
-					'title': 'By Remote IP',
-					'url': 'app_by_remote_ip',
-					'icon': 'fa-bars',
-					'orphans': ['l7_remote_app', 'l7_remote_drill', 'l7_shared']
-				}
-			]
-		},
-		{
-			'title': 'Email',
-			'url': '',
-			'icon': 'fa-envelope',
-			'children':
-			[
-				{
-					'title': 'By Sender',
-					'url': 'smtp_senders',
-					'icon': 'fa-mail-forward',
-					'orphans': ['smtp_sender2receiver','smtp_from_sender']
-				},
-				{
-					'title': 'By Receiver',
-					'url': 'smtp_receivers',
-					'icon': 'fa-mail-reply',
-					'orphans': ['smtp_receiver2sender','smtp_from_sender']
-				},
-				{
-					'title': 'By Subject',
-					'url': 'smtp_subjects',
-					'icon': 'fa-envelope',
-					'orphans': ['smtp_subject_sender_receiver_pairs', 'smtp_from_sender_by_subject']
-				}
-			]
-		},
-		{
-			'title': 'HTTP',
-			'url': '',
-			'icon': 'fa-globe',
-			'children':
-			[
-				{
-					'title': 'HTTP by Domain',
-					'url': 'http_by_domain',
-					'icon': 'fa-arrows-h',
-					'orphans': ['http_by_domain_local', 'http_by_domain_local_drill']
-				},
-				{
-					'title': 'Local HTTP',
-					'url': 'http_local',
-					'icon': 'fa-long-arrow-left',
-					'orphans': ['http_local_by_domain', 'http_by_domain_local_drill']
-				},
-				{
-					'title': 'Remote HTTP',
-					'url': 'http_remote',
-					'icon': 'fa-long-arrow-right',
-					'orphans': ['http_remote2local', 'http_remote2local_drill']
-				}
-			]
-		},
-		{
 			'title': 'General Network',
 			'url': '',
 			'icon': 'fa-sitemap',
@@ -274,9 +164,27 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 					'url': 'irc_remote',
 					'icon': 'fa-comment',
 					'orphans': ['irc_remote2local', 'irc_shared']
-				},
-				
+				},				
 			]
+		},
+		{
+			'title': 'Stealth',
+			'url': '',
+			'icon': 'fa-shield',	
+			'accessLevel': [3],		
+			'children': [
+			{
+				'title': 'Stealth',
+				'url': 'local_COI_remote',
+				'icon': 'shield',
+				'orphans': ['local_COI_remote_drill']
+			},
+			{
+				'title': 'COI Map',
+				'url': 'users_COI_groups',
+				'icon': 'shield',
+				'orphans': ['user_local']
+			}]
 		},
 		{
 			'title': 'Users',
@@ -288,6 +196,52 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 					'title': 'Users',
 					'url': 'users_local',
 					'icon': 'fa-user',
+					'orphans': []
+				}
+			]
+		},
+		{
+			'title': 'DNS',
+			'url': '',
+			'icon': 'fa-level-up',
+			'children':
+			[
+				{
+					'title': 'Local DNS',
+					'url': 'dns_local',
+					'icon': 'fa-level-down',
+					'orphans': []
+				},
+				{
+					'title': 'Remote DNS',
+					'url': 'dns_remote',
+					'icon': 'fa-level-up',
+					'orphans': []
+				}
+			]
+		},
+		{
+			'title': 'SSL',
+			'url': '',
+			'icon': 'fa-lock',
+			'children':
+			[
+				{
+					'title': 'SSL Server',
+					'url': 'ssl_server',
+					'icon': 'fa-lock',
+					'orphans': []
+				},
+				{
+					'title': 'Local SSL',
+					'url': 'ssl_local',
+					'icon': 'fa-lock',
+					'orphans': []
+				},
+				{
+					'title': 'Remote SSL',
+					'url': 'ssl_remote',
+					'icon': 'fa-lock',
 					'orphans': []
 				}
 			]
@@ -315,6 +269,116 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 					'url': 'endpoint_events_sharepoint',
 					'icon': 'fa-desktop',
 					'orphans': ['endpoint_events_sharepoint_drill']
+				}
+			]
+		},
+		{
+			'title': 'Applications',
+			'url': '',
+			'icon': 'fa-bars',
+			'children':
+			[
+				{
+					'title': 'By Application',
+					'url': 'app_by_application',
+					'icon': 'fa-bars',
+					'orphans': ['application_drill', 'application_local', 'l7_shared']
+				},
+				{
+					'title': 'By Local IP',
+					'url': 'app_by_local_ip',
+					'icon': 'fa-bars',
+					'orphans': ['l7_local_app', 'l7_local_drill', 'l7_shared']
+				},
+				{
+					'title': 'By Remote IP',
+					'url': 'app_by_remote_ip',
+					'icon': 'fa-bars',
+					'orphans': ['l7_remote_app', 'l7_remote_drill', 'l7_shared']
+				}
+			]
+		},
+		{
+			'title': 'HTTP',
+			'url': '',
+			'icon': 'fa-globe',
+			'children':
+			[
+				{
+					'title': 'HTTP by Domain',
+					'url': 'http_by_domain',
+					'icon': 'fa-arrows-h',
+					'orphans': ['http_by_domain_local', 'http_by_domain_local_drill']
+				},
+				{
+					'title': 'Local HTTP',
+					'url': 'http_local',
+					'icon': 'fa-long-arrow-left',
+					'orphans': ['http_local_by_domain', 'http_by_domain_local_drill']
+				},
+				{
+					'title': 'Remote HTTP',
+					'url': 'http_remote',
+					'icon': 'fa-long-arrow-right',
+					'orphans': ['http_remote2local', 'http_remote2local_drill']
+				}
+			]
+		},
+		{
+			'title': 'Email',
+			'url': '',
+			'icon': 'fa-envelope',
+			'children':
+			[
+				{
+					'title': 'By Sender',
+					'url': 'smtp_senders',
+					'icon': 'fa-mail-forward',
+					'orphans': ['smtp_sender2receiver','smtp_from_sender']
+				},
+				{
+					'title': 'By Receiver',
+					'url': 'smtp_receivers',
+					'icon': 'fa-mail-reply',
+					'orphans': ['smtp_receiver2sender','smtp_from_sender']
+				},
+				{
+					'title': 'By Subject',
+					'url': 'smtp_subjects',
+					'icon': 'fa-envelope',
+					'orphans': ['smtp_subject_sender_receiver_pairs', 'smtp_from_sender_by_subject']
+				}
+			]
+		},
+		{
+			'title': 'Extracted Files',
+			'url': '',
+			'icon': 'fa-folder',
+			'children':
+			[
+				{
+					'title': 'By File Type',
+					'url': 'by_mime_type',
+					'icon': 'fa-folder-open',
+					'orphans': ['file_mime_local', 'file_local']
+				},
+				{
+					'title': 'By Local IP',
+					'url': 'by_local_ip',
+					'icon': 'fa-folder-open',
+					'orphans': ['by_file_name','file_local']
+				},
+				{
+					'title': 'By Remote IP',
+					'url': 'by_remote_ip',
+					'icon': 'fa-folder-open',
+					'orphans': ['by_file_name_remote','file_remote']
+				},
+				{
+					'title': 'By Domain',
+					'url': 'by_domain',
+					'icon': 'fa-folder-open',
+					'orphans': ['by_domain_local', 'by_domain_local_mime', 'by_domain_local_mime_drill']
 				}
 			]
 		},
@@ -361,25 +425,6 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 					'orphans': []
 				}
 			]
-		},
-		{
-			'title': 'Stealth',
-			'url': '',
-			'icon': 'fa-shield',	
-			'accessLevel': [3],		
-			'children': [
-			{
-				'title': 'Stealth',
-				'url': 'local_COI_remote',
-				'icon': 'shield',
-				'orphans': ['local_COI_remote_drill']
-			},
-			{
-				'title': 'COI Map',
-				'url': 'users_COI_groups',
-				'icon': 'shield',
-				'orphans': ['user_local']
-			}]
 		},
 		{
 			'title': 'Health',

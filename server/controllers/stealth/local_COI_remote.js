@@ -82,7 +82,6 @@ module.exports = function(pool) {
 				async.parallel([
 					// Table function(s)
 					function(callback) {
-						console.log(table1);
 						new dataTable(table1, {database: database, pool: pool}, function(err,data){
 							tables.push(data);
 							callback();

@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('mean.pages').controller('usersLocalController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
+angular.module('mean.pages').controller('sslRemoteController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/users/users_local?start='+$location.$$search.start+'&end='+$location.$$search.end;
+		query = '/ssl/ssl_remote?start='+$location.$$search.start+'&end='+$location.$$search.end;
 	} else {
-		query = '/users/users_local?';
+		query = '/ssl/ssl_remote?';
 	}
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {
@@ -21,10 +21,6 @@ angular.module('mean.pages').controller('usersLocalController', ['$scope', '$sta
 			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
 			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
 			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
-
-			var divHeight = 620;
-			$scope.$broadcast('networkChart', data.network[0], {height: divHeight});
-
 			$scope.$broadcast('spinnerHide');
 
 		}

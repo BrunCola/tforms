@@ -339,6 +339,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                     $('#table').dataTable().fnAddData(tableData.top(Infinity));
                     $('#table').dataTable().fnDraw();
                 }
+
                 for (var t in params) {
                     if (params[t] != null) {
                         if ($location.$$absUrl.search('/report#!/') === -1) {
@@ -606,7 +607,9 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         $scope.country = [];
                                         $scope.ioc = [];
                                         $scope.severity = [];
+                                        $scope.l7_proto = [];
                                         for (var d in oSettings.aiDisplay) {
+                                            $scope.l7_proto.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.l7_proto);
                                             $scope.country.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.remote_country);
                                             $scope.ioc.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc);
                                             $scope.severity.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc_severity);
@@ -639,9 +642,195 @@ angular.module('mean.pages').directive('universalSearch', function() {
                     }
                 }
             });
+
         }
     };
 });
+
+angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '$rootScope', function ($timeout, $window, $rootScope) {
+    return {
+        link: function ($scope, element, attrs) {
+            $scope.$on('pieChart', function (event, chartType, params) {
+                $timeout(function () { // You might need this timeout to be sure its run after DOM render
+                    //var arr = $scope.data.tables[0].aaData;
+                    $scope.pieChart = dc.pieChart('#piechart');
+                    var waitForFinalEvent = (function () {
+                        var timers = {};
+                        return function (callback, ms, uniqueId) {
+                            if (!uniqueId) {
+                                uniqueId = "piechartWait"; //Don't call this twice without a uniqueId
+                            }
+                            if (timers[uniqueId]) {
+                                clearTimeout (timers[uniqueId]);
+                            }
+                            timers[uniqueId] = setTimeout(callback, ms);
+                        };
+                    })();
+                    var filter, height;
+                    var width = $('#piechart').parent().width();
+                    height = width/2.4;
+                    $scope.sevWidth = function() {
+                        return $('#piechart').parent().width();
+                    }
+                    filter = true;
+                    // switch (chartType){
+                    //  case 'bandwidth':
+                    //      var setNewSize = function(width) {
+                    //          $scope.pieChart
+                    //              .width(width)
+                    //              .height(width/3.5)
+                    //              .margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+                    //          // $('#piechart').parent().height(width/3.5);
+                    //          d3.select('#piechart svg').attr('width', width).attr('height', width/3.5);
+                    //          $scope.pieChart.redraw();
+                    //      }
+                    //      $scope.pieChart
+                    //          .group(group, "MB To Remote")
+                    //          .valueAccessor(function(d) {
+                    //              return d.value.in_bytes;
+                    //          })
+                    //          .stack(group, "MB From Remote", function(d){return d.value.out_bytes;})
+                    //          .legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
+                    //          .colors(["#112F41","#068587"]);
+                    //      filter = true;
+                    //      break;
+                    //  case 'severity':
+                    //      var setNewSize = function(width) {
+                    //          $scope.pieChart
+                    //              .width(width)
+                    //              .height(width/3.5)
+                    //              .margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+                    //          // $('#piechart').parent().height(width/3.5);
+                    //          d3.select('#piechart svg').attr('width', width).attr('height', width/3.5);
+                    //          $scope.pieChart.redraw();
+                    //      }
+                    //      $scope.pieChart
+                    //          .group(group, "(1) Guarded")
+                    //          .valueAccessor(function(d) {
+                    //              return d.value.guarded;
+                    //          })
+                    //          .stack(group, "(2) Elevated", function(d){return d.value.elevated;})
+                    //          .stack(group, "(3) High", function(d){return d.value.high;})
+                    //          .stack(group, "(4) Severe", function(d){return d.value.severe;})
+                    //          .colors(["#377FC7","#F5D800","#F88B12","#DD122A","#000"]);
+                    //      filter = true;
+                    //      break;
+                    //  case 'drill':
+                    //      var setNewSize = function(width) {
+                    //          $scope.pieChart
+                    //              .width(width)
+                    //              .height(width/1.63)
+                    //              .margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+                    //          $('#piechart').parent().height(width/1.63);
+                    //          d3.select('#piechart svg').attr('width', width).attr('height', width/1.63);
+                    //          $scope.pieChart.redraw();
+                    //      }
+                    //      $scope.pieChart
+                    //          .group(group, "(1) DNS")
+                    //          .valueAccessor(function(d) {
+                    //              return d.value.dns;
+                    //          })
+                    //          .stack(group, "(2) HTTP", function(d){return d.value.http;})
+                    //          .stack(group, "(3) SSL", function(d){return d.value.ssl;})
+                    //          .stack(group, "(4) File", function(d){return d.value.file;})
+                    //          .stack(group, "(5) Endpoint", function(d){return d.value.ossec;})
+                    //          .stack(group, "(6) Total Connections", function(d){return d.value.connections;})
+                    //          .colors(["#cb2815","#e29e23","#a3c0ce","#5c5e7d","#e3cdc9","#524A4F"]);
+                    //      filter = false;
+                    //      height = width/1.63;
+                    //      break;
+                    //  case 'bar':
+                    //      var setNewSize = function(width) {
+                    //          $scope.pieChart
+                    //              .width(width)
+                    //              .height(width/3.5)
+                    //              .margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+                    //          // $(element).height(width/3.5);
+                    //          d3.select('#pieChart svg').attr('width', width).attr('height', width/3.5);
+                    //          $scope.pieChart.redraw();
+                    //      }
+                    //      $scope.pieChart
+                    //          .group(group)
+                    //          .colors(["#193459"]);
+                    //      filter = false;
+                    //      break;
+                    // }
+                    if (filter == true) {
+                        $scope.pieChart
+                            .on("filtered", function(chart, filter){
+                                waitForFinalEvent(function(){
+                                    $scope.tableData.filterAll();
+                                    var arr = [];
+                                    for(var i in $scope.appDimension.top(Infinity)) {
+                                        arr.push($scope.appDimension.top(Infinity)[i].l7_proto);
+                                    }
+
+                                    $scope.tableData.filter(function(d) { return arr.indexOf(d.l7_proto) >= 0; });
+                                    $scope.$broadcast('crossfilterToTable');
+
+                                }, 400, "filterWait");
+                            })
+                    }
+        
+                    $scope.pieChart
+                        .width(width) // (optional) define chart width, :default = 200
+                        .height(height)
+                        .transitionDuration(500) // (optional) define chart transition duration, :default = 500
+                        // .margins(margin) // (optional) define margins
+                        .dimension($scope.appDimension) // set dimension
+                        .group($scope.pieGroup) // set group
+                        .legend(dc.legend().x(width - 100).y(10).itemHeight(13).gap(5))
+                        .colors(d3.scale.category20());
+
+                    $scope.pieChart.render();
+                        $scope.$broadcast('spinnerHide');
+                        $(window).resize(function () {
+                            waitForFinalEvent(function(){
+                                $scope.pieChart.render();
+                            }, 200, "pieChartresize");
+                        });
+                        $(window).bind('resize', function() {
+                            setTimeout(function(){
+                                setNewSize($scope.sevWidth());
+                            }, 150);
+                        });
+                        $('.sidebar-toggler').on("click", function() {
+                            setTimeout(function() {
+                                setNewSize($scope.sevWidth());
+                                $scope.pieChart.render();
+                            },10);
+                        });
+                        $rootScope.$watch('search', function(){
+                            $scope.pieChart.redraw();
+                        });
+
+                    // var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
+                    $rootScope.$watch('search', function(){
+
+                        if($rootScope.search === null) {
+                            $scope.appDimension.filterAll();
+                        } else {
+                            $scope.appDimension.filterAll();
+                            // console.log($scope.appDimension.top(Infinity));
+                            if ($scope.l7_proto) {
+                                $scope.appDimension.filter(function(d) { return $scope.l7_proto.indexOf(d) >= 0; });
+                                // $scope.pieGroup = $scope.appDimension.group().reduceSum(function (d) {
+                    //                 return d.app_count;
+                    //             });
+                            }
+                            // console.log($scope.appDimension.top(Infinity));
+
+                        }
+                        $scope.pieChart.dimension($scope.appDimension);
+                        $scope.pieChart.group($scope.pieGroup); // set group
+                        $scope.pieChart.redraw();
+                        // $scope.pieChart.render();
+                    });
+                }, 0, false);
+            })
+        }
+    };
+}]);
 
 angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '$rootScope', function ($timeout, $window, $rootScope) {
     return {
@@ -686,7 +875,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                                 })
                                 .stack(group, "MB From Remote", function(d){return d.value.out_bytes;})
                                 .legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
-                                .colors(["#112F41","#068587"]);
+                                .colors(d3.scale.ordinal().domain(["in_bytes","out_bytes"]).range(["#112F41","#068587"]));
                             filter = true;
                             break;
                         case 'severity':
@@ -707,7 +896,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                                 .stack(group, "(2) Elevated", function(d){return d.value.elevated;})
                                 .stack(group, "(3) High", function(d){return d.value.high;})
                                 .stack(group, "(4) Severe", function(d){return d.value.severe;})
-                                .colors(["#377FC7","#F5D800","#F88B12","#DD122A","#000"]);
+                                .colors(d3.scale.ordinal().domain(["guarded","elevated","high","severe"]).range(["#377FC7","#F5D800","#F88B12","#DD122A"]));
                             filter = true;
                             break;
                         case 'drill':
@@ -730,7 +919,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                                 .stack(group, "(4) File", function(d){return d.value.file;})
                                 .stack(group, "(5) Endpoint", function(d){return d.value.ossec;})
                                 .stack(group, "(6) Total Connections", function(d){return d.value.connections;})
-                                .colors(["#cb2815","#e29e23","#a3c0ce","#5c5e7d","#e3cdc9","#524A4F"]);
+                                .colors(d3.scale.ordinal().domain(["dns","http","ssl","file","ossec","connections"]).range(["#cb2815","#e29e23","#a3c0ce","#5c5e7d","#e3cdc9","#524A4F"]));
                             filter = false;
                             height = width/1.63;
                             break;
@@ -759,7 +948,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                                     for(var i in dimension.top(Infinity)) {
                                         arr.push(dimension.top(Infinity)[i].time);
                                     }
-                                    console.log(dimension.group().top(Infinity))
+                                    // console.log(dimension.group().top(Infinity))
                                     //console.log(dimension.group().top(Infinity));
                                     $scope.tableData.filter(function(d) { return arr.indexOf(d.time) >= 0; });
                                     $scope.$broadcast('crossfilterToTable');
@@ -867,7 +1056,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                                 }
                             };
                             $scope.rowChart
-                                .colors(["#377FC7","#F5D800","#F88B12","#DD122A"])
+                                .colors(d3.scale.ordinal().domain("guarded","elevated","high","severe").range(["#377FC7","#DD122A","#F88B12", "#F5D800"]))
                                 .colorAccessor(function (d){return d.value.severity;});
                             filter = true;
                             break;
@@ -1019,7 +1208,9 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
                     rainbow.setNumberRange(0, numberOfItems);
                     rainbow.setSpectrum("#FF0000", "#CC0000", "#990000", "#660000", "#360000");
                     var cc = [];
+                    var domain = [];
                     for (var i = 1; i <= numberOfItems; i++) {
+                        domain.push(i);
                         var hexColour = rainbow.colourAt(i);
                         cc.push('#' + hexColour);
                     }
@@ -1036,7 +1227,7 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
                             .width(width)
                             .height(height)
                             .colors(["#377FC7","#F5D800","#F88B12","#DD122A","#000"])
-                            .colors(cc)
+                            .colors(d3.scale.ordinal().domain(domain).range(cc))
                             .colorCalculator(function (d) { return d ? $scope.geoChart.colors()(d) : '#ccc'; })
                             .overlayGeoJson(world.features, "country", function(d) {
                                 return d.properties.name;
@@ -1275,6 +1466,315 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
         }
     };
 }]);
+
+//NETWORK CHART STARTS HERE
+angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
+    return {
+        link: function ($scope, element, attrs) {
+            $scope.$on('networkChart', function (event, data, params) {
+                $timeout(function () { // You might need this timeout to be sure its run after DOM render
+                    var width = $("#networkchart").parent().width(),
+                        height = params["height"];
+                    var tCount = [];
+                    console.log(data);
+                    console.log(data.links);
+                    data.links.forEach(function(d) {
+                        tCount.push(d.value);
+                    });
+                    var maxNum = Math.max.apply(Math, tCount);
+
+                    // var color = d3.scale.category20();
+                    var palette = {
+                        "lightgray": "#819090",
+                        "gray": "#708284",
+                        "mediumgray": "#536870",
+                        "darkgray": "#475B62",
+
+                        "darkblue": "#0A2933",
+                        "darkerblue": "#042029",
+
+                        "paleryellow": "#FCF4DC",
+                        "paleyellow": "#EAE3CB",
+                        "yellow": "#A57706",
+                        "orange": "#BD3613",
+                        "red": "#D11C24",
+                        "pink": "#C61C6F",
+                        "purple": "#595AB7",
+                        "blue": "#2176C7",
+                        "green": "#259286",
+                        "yellowgreen": "#738A05"
+                    }
+                    var count = function(size) {
+                        if (size === undefined) {
+                            size = 1;
+                        }
+                        return size;
+                    }
+                    var color = function(type) {
+                        if (type === "zone") {
+                            return palette.blue
+                        } else if (type === "network") {
+                            return palette.pink
+                        } else if (type === "os") {
+                            return palette.orange
+                        } else if (type === "endpoint") {
+                            return palette.yellow
+                        } else {
+
+                        }
+                    }
+                    function logslider(x) {
+                        if (x === undefined) {
+                            return 18;
+                        }
+                        // position will be between 0 and 100
+                        // if(x > 50) {
+                        //  x = 50;
+                        // }
+                        var minp = 0;
+                        var maxp = maxNum;
+                        // The result should be between 100 an 10000000
+                        var minv = Math.log(5);
+                        var maxv = Math.log(50);
+                        // calculate adjustment factor
+                        var scale = (maxv-minv) / (maxp-minp);
+                        return Math.exp(minv + scale*(x-minp));
+                    }
+
+                    var circleWidth = 5;
+                    var vis = d3.select("#networkchart")
+                        .append("svg:svg")
+                        .attr("class", "stage")
+                        .attr("width", width)
+                        .attr("height", height);
+                    var force = d3.layout.force()
+                        .nodes(data.nodes)
+                        .links(data.links)
+                        .gravity(0.2)
+                        .linkDistance(width/10)
+                        .charge(-500)
+                        .size([width-50, height]);
+
+                    var link = vis.selectAll(".link")
+                        .data(data.links)
+                        .enter().append("line")
+                        .attr("class", "link")
+                        .attr("stroke", "#CCC")
+                        .attr("fill", "#000");
+
+                    var node = vis.selectAll("circle.node")
+                        .data(data.nodes)
+                        .enter().append("g")
+                        .attr("class", "node")
+
+                    //MOUSEOVER
+                    .on("mouseover", function(d,i) {
+                        if (i>0) {
+                            //CIRCLE
+                            d3.select(this).selectAll("circle")
+                                .transition()
+                                .duration(250)
+                                .style("cursor", "none")
+                                .attr("r", function (d) {return logslider(d["width"])+4; })
+                                .attr("fill",function(d){ return color(d.type); });
+
+                            //TEXT
+                            d3.select(this).select("text")
+                                .transition()
+                                .style("cursor", "none")
+                                .duration(250)
+                                .style("cursor", "none")
+                                .attr("font-size","1.5em")
+                                .attr("x", 15 )
+                                .attr("y", 5 )
+                        } else {
+                        //CIRCLE
+                            d3.select(this).selectAll("circle")
+                                .style("cursor", "none")
+
+                            //TEXT
+                            d3.select(this).select("text")
+                                .style("cursor", "none")
+                        }
+                    })
+
+                    //MOUSEOUT
+                    .on("mouseout", function(d,i) {
+                        if (i>0) {
+                        //CIRCLE
+                        d3.select(this).selectAll("circle")
+                            .transition()
+                            .duration(250)
+                            .attr("r", function(d){return logslider(d["width"]); })
+                            .attr("fill",function(d){return color(d.type);});
+
+                        //TEXT
+                        d3.select(this).select("text")
+                            .transition()
+                            .duration(250)
+                            .attr("font-size","1em")
+                            .attr("x", 8 )
+                            .attr("y", 4 )
+                        }
+                    })
+
+                    .call(force.drag);
+
+                    node.each(function(d){
+                        var elm = d3.select(this);
+                        if(d.type === "os" && d.name === "Linux") {
+                            // elm.append("svg:circle")
+                            // .attr("cx", function(d) { return d.x; })
+                            // .attr("cy", function(d) { return d.y; })
+                            // .attr("r", function(d) {return logslider(d["width"]); })
+                            // .attr("fill", function(d, i) { if (i>0) { return  color(d.type); } else { return palette.green } } )
+                            // .style("stroke-width", "1.5px")
+                            // .style("stroke", "#fff")
+                            
+                            elm.append('path')
+                            .style('fill', '#000000')
+                            .attr('d', 'M26.3,0c2.2-0.1,5.4,1.9,5.7,4.2c0.3,1.4,0.1,3,0.1,4.4c0,1.6,0,3.3,0.2,4.9'+
+                            'c0.3,2.9,2.4,4.8,3.7,7.2c0.6,1.2,1.4,2.4,1.7,3.8c0.4,1.5,0.7,3.1,1,4.6c0.2,1.5,0.4,2.9,0.3,4.4c0,0.6,0.1,1.3-0.1,2'+
+                            'c-0.2,0.8-0.6,1.3-0.3,2.1c0.2,0.7,0.1,1.2,0.9,1.3c0.7,0.1,1.3-0.2,2-0.1c1.4,0.1,2.8,0.7,2.3,2.3c-1.6,2.3-3.3,4.8-5.6,6.5'+
+                            'c-0.9,0.7-1.8,1.9-3,2.1c-1.2,0.4-2.8,0.3-3.9-0.6c-0.4-0.3-0.7-0.7-0.9-1.1c-0.1-0.3-0.2-0.5-0.3-0.8c0-0.5,0-0.5-0.5-0.5'+
+                            'c-1.7,0.1-3.4,0.2-5,0c-1.5-0.2-3-0.4-4.5-0.9c-0.6-0.3-1.2-0.5-1.8-0.8c-0.5-0.2-1,1.1-1.2,1.5c-0.5,0.9-1.3,1.9-2.4,2'+
+                            'c-0.6,0-1.1,0.1-1.7-0.1c-0.8-0.3-1.4-0.7-2.2-1.1c-1.3-0.7-2.5-1.6-3.6-2.6c-1.2-1-2.8-1.9-3.1-3.5c0.4-1.1,0.9-1.6,2.1-1.7'+
+                            'c0.4,0,1.1-0.1,1.4-0.5c0.2-0.2,0.1-0.5,0.1-0.8c-0.1-0.5,0-0.8,0.2-1.3c0.5-1.2,2.3-0.3,3.1-0.2c0.4-0.3,0.6-0.9,0.9-1.3'+
+                            'c0.4-0.6,0.7-0.6,0.6-1.4c-0.6-6.4,3-11.9,5.9-17.3c0.4-0.8,0.9-1.6,1.4-2.4c0.4-0.6,0.3-1.6,0.3-2.3c0-2-0.1-4-0.1-6'+
+                            'c0-1.7,0.3-3,1.7-4.2C22.9,0.9,24.5,0,26.3,0z')
+                            .attr('transform', 'translate(-30,-25)')
+
+                            elm.append('path')
+                            .style('fill', '#FFF')
+                            .attr('d', 'M28.5,7.6c0.3,0.2,0.8,0.4,0.8,0.8c0,0.4,0,0.9-0.1,1.3'+
+                            'c-0.1,0.3-0.2,0.7-0.5,1c-0.4,0.5-0.9,0.3-1.4,0.1c1.1-0.4,1.7-1.9,0.6-2.7c-0.5-0.4-1.1-0.3-1.5,0.3c-0.4,0.7-0.3,1.4,0.1,2.1'+
+                            'c-0.2-0.2-0.6-0.2-0.7-0.5c-0.2-0.5-0.3-1.1-0.2-1.7c0.1-0.8,0.5-0.8,1.2-0.9C27.4,7.4,28,7.4,28.5,7.6z')
+                            .attr('transform', 'translate(-30,-25)')
+
+                            elm.append('path')
+                            .style('fill', '#FFF')
+                            .attr('d', 'M22.4,7.6c0.2,0.1,0.5,0.1,0.6,0.3c0.2,0.4,0.2,0.8,0.3,1.3'+
+                            'c0,0.3,0,0.6-0.1,1c-0.1,0-0.4,0.4-0.5,0.2c0.3-0.8,0-2.8-1.2-2.1c-1,0.6-0.6,2.3,0.3,2.7c-0.6,0.3-0.7,0.3-1-0.3'+
+                            'c-0.2-0.6-0.4-1.1-0.3-1.7c0-0.6,0-0.8,0.6-1.2C21.6,7.6,21.9,7.6,22.4,7.6z')
+                            .attr('transform', 'translate(-30,-25)')
+
+                            elm.append('path')
+                            .style('fill', '#FFF')
+                            .attr('d', 'M28.7,14.3c0.3,0.9,0.4,1.9,0.8,2.9c0.4,1,0.8,1.9,1.3,2.8'+
+                            'c0.9,1.9,1.9,3.9,2.7,5.9c0.7,1.9,1.4,3.8,0.9,5.9c-0.2,0.9-0.4,2-0.9,2.8c-0.1,0.2-0.4,0.3-0.5,0.5c-0.3,0.4-0.4,1-0.4,1.5'+
+                            'c-0.7-0.1-1.3-0.7-2.1-0.5c-0.8,0.2-0.8,1.6-0.9,2.2c-0.1,1.1-0.1,2.2-0.2,3.3c0,0.2,0,0.5,0,0.7c-0.3,0.2-0.6,0.3-0.9,0.5'+
+                            'c-0.5,0.2-1,0.4-1.4,0.5c-2,0.5-4.4,0.4-6.3-0.1c-0.4-0.1-0.9-0.2-1.3-0.4c-0.6-0.2-1-0.3-0.8-1c0.2-1-0.7-2.3-1.1-3.2'+
+                            'c-1-2.1-1.6-4.3-2.5-6.5c-0.2-0.5-0.4-0.9-0.5-1.4c-0.2-0.3,0.1-1,0.2-1.2c0.3-1.1,0.8-2.1,1.3-3.2c0.5-0.9,1.1-1.9,1.5-2.8'+
+                            'c0.4-1,0.5-2.1,1-3.1c0.4-0.9,0.9-1.8,1.4-2.7c0.5-0.9,0.8-2,1.3-2.9c1.2,1.1,2.2,1.1,3.8,1.1c0.7-0.1,1.3-0.3,1.9-0.5'+
+                            'C27.2,15,28.6,14.1,28.7,14.3z')
+                            .attr('transform', 'translate(-30,-25)')
+
+                            elm.append('path')
+                            .style('fill', '#f5c055')
+                            .attr('d', 'M24.7,9.6c0.9,0.3,1.5,0.9,2.4,1.3c0.9,0.4,2.1,0.2,2.5,1.2'+
+                            'c0.4,1.1-0.7,1.6-1.5,2.1c-1,0.6-2,1-3.1,1.2c-1.2,0.1-2.3,0.2-3.3-0.5c-0.7-0.5-1.5-1.1-1.5-2.1c0.1-1.2,1.1-1.3,2-1.8'+
+                            'C22.9,10.6,23.9,9.4,24.7,9.6z')
+                            .attr('transform', 'translate(-30,-25)')
+
+                            elm.append('path')
+                            .style('fill', '#f5c055')
+                            .attr('d', 'M13.7,34.6c0.6,0.2,0.9,1.1,1.2,1.7c0.4,1,0.8,2.1,1.1,3.1'+
+                            'c0.6,1.9,1,3.9,1,6c0,1.7-1.3,2.9-3,2.9c-1,0-1.8-0.5-2.6-0.9c-1-0.5-1.8-1.1-2.7-1.7c-1.5-1.1-3.7-2.4-4.3-4.1'+
+                            'C4,40.8,5,39.9,5.9,39.9c0.7-0.2,1.5,0,1.9-0.8c0.3-0.5-0.1-1.3,0.2-1.9c0.4-0.8,1.5-0.4,2.2-0.2c0.4,0.1,0.6,0.3,0.9-0.1'+
+                            'c0.4-0.4,0.6-0.9,0.9-1.4C12.2,35.3,13.6,34.1,13.7,34.6z')
+                            .attr('transform', 'translate(-30,-25)')
+
+                            elm.append('path')
+                            .style('fill', '#f5c055')
+                            .attr('d', 'M31.6,36.3c0.3,0,0.6,0.3,0.9,0.3c0.1,0.5-0.1,0.9,0.1,1.4'+
+                            'c0.2,0.9,1.2,1.5,2,1.7c2,0.7,2.6-1.1,3.4-2.6c0.5,0.2,0.4,1.1,0.6,1.6c0.3,0.7,1.1,0.7,1.8,0.5c1.5-0.2,3.9-0.1,3.2,2'+
+                            'c-1,1.4-2,2.7-3.1,4c-0.6,0.5-1,1.2-1.6,1.7c-0.6,0.5-1.2,0.9-1.8,1.4c-1.4,1.1-2.7,1.8-4.5,1.3c-2-0.5-2.3-2.6-2.6-4.3'+
+                            'c-0.4-1.9-0.4-3.9-0.3-5.9c0.1-0.9,0.2-1.7,0.3-2.6C30.1,36.2,31,35.8,31.6,36.3z')
+                            .attr('transform', 'translate(-30,-25)')
+                        } 
+                        else if(d.type === "os" && d.name === "Windows") {
+                            elm.append('polygon')
+                                .style('fill', '#fff')
+                                .attr('points', '8.8,14.4 38,9.3 38,40.7 8.8,35.7 ')
+                                .attr('transform', 'translate(-30,-25)')
+                            elm.append('polygon')
+                                .style('fill', '#00AEEF')
+                                .attr('points', '36.1,24.4 36.1,11.9 21.7,14 21.7,24.4 ')
+                                .attr('transform', 'translate(-30,-25)')
+
+                            elm.append('polygon')
+                                .style('fill', '#00AEEF')
+                                .attr('points', '20.7,14.1 10.2,15.6 10.2,24.4 20.7,24.4 ')
+                                .attr('transform', 'translate(-30,-25)')
+
+                            elm.append('polygon')
+                                .style('fill', '#00AEEF')
+                                .attr('points', '10.2,25.4 10.2,34.3 20.7,35.9 20.7,25.4 ')
+                                .attr('transform', 'translate(-30,-25)')
+                                
+                            elm.append('polygon')
+                                .style('fill', '#00AEEF')
+                                .attr('points', '21.7,36 36.1,38.1 36.1,25.4 21.7,25.4 ')
+                                .attr('transform', 'translate(-30,-25)')
+                        } 
+                        else if(d.type === "os" && d.name === "MacOS") {
+                            elm.append('path')
+                            .style('fill', '#828487')
+                            .attr('d', 'M28.8,13.7c0.9-1.2,1.6-2.8,1.3-4.5c-1.5,0.1-3.2,1-4.2,2.3c-0.9,1.1-1.7,2.8-1.4,4.4'+
+                            'C26.2,15.9,27.9,15,28.8,13.7z M33.2,21.7c0.4-1.3,1.4-2.4,2.7-3.2c-1.4-1.8-3.4-2.8-5.3-2.8c-2.5,0-3.5,1.2-5.2,1.2'+
+                            'c-1.8,0-3.1-1.2-5.3-1.2c-2.1,0-4.3,1.3-5.8,3.5c-0.5,0.8-0.9,1.8-1.1,2.9c-0.5,3.1,0.3,7.2,2.7,10.9c1.2,1.8,2.7,3.8,4.7,3.8'+
+                            'c1.8,0,2.3-1.2,4.8-1.2c2.4,0,2.9,1.2,4.7,1.2c2,0,3.6-2.2,4.8-4c0.8-1.3,1.1-1.9,1.8-3.3C33.5,28.2,32.2,24.6,33.2,21.7z')
+                            .attr('transform', 'translate(-30,-25)')
+
+                            // elm.append('path')
+                            // .style('fill', '#f5c055')
+                            // .attr('d', 'M33.2,21.7c0.4-1.3,1.4-2.4,2.7-3.2c-1.4-1.8-3.4-2.8-5.3-2.8c-2.5,0-3.5,1.2-5.2,1.2'+
+                            // 'c-1.8,0-3.1-1.2-5.3-1.2c-2.1,0-4.3,1.3-5.8,3.5c-0.5,0.8-0.9,1.8-1.1,2.9c-0.5,3.1,0.3,7.2,2.7,10.9c1.2,1.8,2.7,3.8,4.7,3.8'+
+                            // 'c1.8,0,2.3-1.2,4.8-1.2c2.4,0,2.9,1.2,4.7,1.2c2,0,3.6-2.2,4.8-4c0.8-1.3,1.1-1.9,1.8-3.3C33.5,28.2,32.2,24.6,33.2,21.7z')
+                            // .attr('transform', 'translate(-25,-25)')
+                        } 
+                        else {
+                            //CIRCLE
+                            elm.append("svg:circle")
+                                .attr("cx", function(d) { return d.x; })
+                                .attr("cy", function(d) { return d.y; })
+                                .attr("r", function(d) {return logslider(d["width"]); })
+                                .attr("fill", function(d) {return color(d.type);} )
+                                // .attr("fill", function(d, i) { if (i>0) { return  color(d.type); } else { return palette.gray } } )
+                                .style("stroke-width", "1.5px")
+                                .style("stroke", "#fff")
+                        }
+                    })
+                    
+
+                    //TEXT
+                    node.append("text")
+                        .text(function(d, i) { return d.name; })
+                        .attr("x",    function(d, i) { return circleWidth + 5; })
+                        .attr("y",            function(d, i) { if (i>0) { return circleWidth + 0 }    else { return 8 } })
+                        // .attr("font-family",  "Bree Serif")
+                        // .attr("fill",         function(d, i) {  return  palette.paleryellow;  })
+                        .attr("font-size",    function(d, i) {  return  "1em"; })
+                        .attr("text-anchor",  function(d, i) { if (i>0) { return  "beginning"; }      else { return "end" } })
+
+                    force.on("tick", function(e) {
+                        node.attr("transform", function(d, i) {
+                            return "translate(" + d.x + "," + d.y + ")";
+                        });
+
+                        link.attr("x1", function(d)   { return d.source.x; })
+                            .attr("y1", function(d)   { return d.source.y; })
+                            .attr("x2", function(d)   { return d.target.x; })
+                            .attr("y2", function(d)   { return d.target.y; })
+                    });
+
+                    force.start();
+                }, 0, false);
+            })
+        }
+    };
+}]);
+//NETWORK CHART ENDS HERE
 
 angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$rootScope', '$location', function ($timeout, $rootScope, $location) {
     return {
@@ -1528,11 +2028,11 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                     //LEGEND
 
                     var legend_color = function(legend_item) {
-                        if (legend_item === "Role") { 
+                        if (legend_item === "Stealth Role") { 
                             return palette.pink;
-                        } else if (legend_item === "Group") { 
+                        } else if (legend_item === "AD Group") { 
                             return palette.purple;
-                        } else if (legend_item === "COI") { 
+                        } else if (legend_item === "Stealth COI") { 
                             return palette.green;
                         } else if (legend_item === "User with one role") { //IP node with 1 COI group
                             return palette.blue;
@@ -1547,7 +2047,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         }
                     }
 
-                    var circle_legend_data = ["Role", "Group", "COI"];
+                    var circle_legend_data = ["Stealth Role", "AD Group", "Stealth COI"];
                     var circle_legend = vis.selectAll(".circle_legend")
                         .data(circle_legend_data)
                         .enter().append("g")

@@ -1003,6 +1003,7 @@ angular.module('mean.pages').config(['$stateProvider',
 							daterange: true
 						}
 					})
+			//USERS
 				// USERS LOCAL
 				.state('users_local', {
 					url: '/users_local?start&end',
@@ -1015,8 +1016,68 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-
-
+			//DNS
+				// LOCAL DNS
+				.state('dns_local', {
+					url: '/dns_local?start&end',
+					templateUrl: 'public/pages/views/dns/dns_local.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Local DNS',
+						daterange: true
+					}
+				})
+				// REMOTE DNS
+				.state('dns_remote', {
+					url: '/dns_remote?start&end',
+					templateUrl: 'public/pages/views/dns/dns_remote.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Remote DNS',
+						daterange: true
+					}
+				})
+			//SSL
+				// SSL SERVER
+				.state('ssl_server', {
+					url: '/ssl_server?start&end',
+					templateUrl: 'public/pages/views/ssl/ssl_server.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'SSL Server',
+						daterange: true
+					}
+				})
+				// LOCAL SSL
+				.state('ssl_local', {
+					url: '/ssl_local?start&end',
+					templateUrl: 'public/pages/views/ssl/ssl_local.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Local SSL',
+						daterange: true
+					}
+				})
+				// REMOTE SSL
+				.state('ssl_remote', {
+					url: '/ssl_remote?start&end',
+					templateUrl: 'public/pages/views/ssl/ssl_remote.html',
+					resolve: {
+						loggedin: checkLoggedin
+					},
+					data: {
+						title: 'Remote SSL',
+						daterange: true
+					}
+				})
 			// ENDPOINT EVENTS	
 				// ENPOINT EVENTS
 				.state('endpoint_events', {
