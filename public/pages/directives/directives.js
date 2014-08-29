@@ -1479,8 +1479,8 @@ angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootSc
 					var width = $("#networkchart").parent().width(),
 						height = params["height"];
 					var tCount = [];
-					console.log(data);
-					console.log(data.links);
+					// console.log(data);
+					// console.log(data.links);
 					data.links.forEach(function(d) {
 						tCount.push(d.value);
 					});
@@ -1552,13 +1552,27 @@ angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootSc
 						.attr("width", width)
 						.attr("height", height);
 
+					var radius = d3.scale.sqrt()
+					    .range([0, 6]);
+					
 					var force = d3.layout.force()
 						.nodes(data.nodes)
 						.links(data.links)
-						.gravity(0.18)
-						.linkDistance(width/14)
-						.charge(-500)
-						.size([width-10, height]);
+						.friction(0.45)
+    					.linkStrength(1)
+						.gravity(0.0)
+						// .linkDistance(width/14)
+						.linkDistance(function(d) {
+							// console.log(d);
+							// return 10; 
+							if(d.type === "osToEndpoint") {
+								return 5; 
+							} else {
+								return width/8; 
+							}	
+					     })
+						.charge(-800)
+						.size([width-50, height]);
 
 					var link = vis.selectAll(".link")
 						.data(data.links)
@@ -1797,6 +1811,13 @@ angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootSc
 					})
 
 					force.on("tick", function(e) {
+						data.nodes[0].x = width / 2;
+   						data.nodes[0].y = height / 2;
+						// data.nodes.forEach(function(o, i) {
+				  //       	o.y += (data.nodes[0].y - o.y) * k;
+				  //       	o.x += (data.nodes[0].x - o.x) * k;
+				  //       });
+
 						node.attr("transform", function(d, i) {
 							return "translate(" + d.x + "," + d.y + ")";
 						});
