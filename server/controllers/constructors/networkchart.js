@@ -44,6 +44,7 @@ module.exports = function (sql, conn, callback) {
 					link.push({
 						target: 0,
 						source: count++,
+						type: "gateToZone",
 						value: 1
 					});
 					currentZoneIndex = count - 1; //since just pushed to end of array
@@ -55,6 +56,7 @@ module.exports = function (sql, conn, callback) {
 							link.push({
 								target: 0,
 								source: currentZoneIndex,
+								type: "gateToZone",
 								value: 1
 							});
 							break;
@@ -74,6 +76,7 @@ module.exports = function (sql, conn, callback) {
 					link.push({
 						target: currentZoneIndex,
 						source: count++,
+						type: "zoneToOs",
 						value: 1
 					});
 					currentZoneOSIndex = count - 1; //since just pushed to end of array
@@ -85,6 +88,7 @@ module.exports = function (sql, conn, callback) {
 							link.push({
 								target: currentZoneIndex,
 								source: currentZoneOSIndex,
+								type: "zoneToOs",
 								value: 1
 							});
 							break;
@@ -93,15 +97,18 @@ module.exports = function (sql, conn, callback) {
 				}
 
 				node.push({
-					name: data.username + " on " + data.lan_ip,
+					name: data.lan_ip,
 					width: 0.15,
-					type: "endpoint"
+					type: "endpoint",
+					user: data.username,
+					iochits: data.ioc_count
 				});
 
 				link.push({
 					target: currentZoneOSIndex,
 					source: count++,
-					value: 1
+					type: "osToEndpoint",
+					value: 0.1
 				});
 
 			})
