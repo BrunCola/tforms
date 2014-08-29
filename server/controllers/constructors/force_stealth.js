@@ -163,7 +163,7 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 									var current_coi_index;
 									var current_role_index = i; 
 									if (cois.indexOf(data.cois) === -1) { //if its a new coi, add it, grab the index
-										if(data.cois === "OpenCOI") {
+										if(data.cois === "CleartextCOI") {
 											node.push({
 												name: data.cois,
 												group: 0,

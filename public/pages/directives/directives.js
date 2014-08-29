@@ -1056,7 +1056,8 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
 								}
 							};
 							$scope.rowChart
-								.colors(d3.scale.ordinal().domain("guarded","elevated","high","severe").range(["#377FC7","#DD122A","#F88B12", "#F5D800"]))
+								// .colors(d3.scale.ordinal().domain(["guarded","elevated","high","severe"]).range(["#F88B12","#F5D800","#377FC7","#DD122A"]))//["#377FC7","#F5D800","#F88B12","#DD122A"]))
+								.colors(d3.scale.ordinal().domain([0,1,2,3,4]).range(["#377FC7","#F5D800","#F88B12","#DD122A"]))//["#377FC7","#DD122A","#F88B12", "#F5D800"]))
 								.colorAccessor(function (d){return d.value.severity;});
 							filter = true;
 							break;
@@ -2136,7 +2137,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .text(function(d) { return d; });
 
                     var gateway_legend = vis.selectAll(".gateway_legend")
-                        .data(["Internet Gateway"])
+                        .data(["Cleartex Gateway"])
                         .enter().append("g")
                         .attr("class", "gateway_legend")
                         .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
