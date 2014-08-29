@@ -1543,7 +1543,7 @@ angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootSc
 						return Math.exp(minv + scale*(x-minp));
 					}
 
-					var circleWidth = 5;
+					// var circleWidth = 15;
 
 					var vis = d3.select("#networkchart")
 						.append("svg:svg")
@@ -1554,10 +1554,10 @@ angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootSc
 					var force = d3.layout.force()
 						.nodes(data.nodes)
 						.links(data.links)
-						.gravity(0.2)
+						.gravity(0.18)
 						.linkDistance(width/14)
 						.charge(-500)
-						.size([width-50, height]);
+						.size([width-10, height]);
 
 					var link = vis.selectAll(".link")
 						.data(data.links)
@@ -1571,64 +1571,62 @@ angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootSc
 						.enter().append("g")
 						.attr("class", "node")
 
-					//MOUSEOVER
-					.on("mouseover", function(d,i) {
-						if (i>0) {
+						//MOUSEOVER
+						.on("mouseover", function(d,i) {
+							if (i>0) {
+								//CIRCLE
+								d3.select(this).selectAll("circle")
+									.transition()
+									.duration(250)
+									.style("cursor", "none")
+									.attr("r", function (d) {return logslider(d["width"])+4; })
+									.attr("fill",function(d){ return color(d.type); });
+
+								//TEXT
+								d3.select(this).select("text")
+									.transition()
+									.style("cursor", "none")
+									.duration(250)
+									.style("cursor", "none")
+									// .attr("font-size","5.5em")
+									.attr("x", 10 )
+									.attr("y", 10 )
+							} else {
+							//CIRCLE
+								d3.select(this).selectAll("circle")
+									.style("cursor", "none")
+
+								//TEXT
+								d3.select(this).select("text")
+									.style("cursor", "none")
+							}
+						})
+
+						//MOUSEOUT
+						.on("mouseout", function(d,i) {
+							if (i>0) {
 							//CIRCLE
 							d3.select(this).selectAll("circle")
 								.transition()
 								.duration(250)
-								.style("cursor", "none")
-								.attr("r", function (d) {return logslider(d["width"])+4; })
-								.attr("fill",function(d){ return color(d.type); });
+								.attr("r", function(d){return logslider(d["width"]); })
+								.attr("fill",function(d){return color(d.type);});
 
 							//TEXT
 							d3.select(this).select("text")
 								.transition()
-								.style("cursor", "none")
 								.duration(250)
-								.style("cursor", "none")
-								.attr("font-size","1.5em")
+								// .attr("font-size","7em")
 								.attr("x", 15 )
-								.attr("y", 5 )
-						} else {
-						//CIRCLE
-							d3.select(this).selectAll("circle")
-								.style("cursor", "none")
+								.attr("y", 30 )
+							}
+						})
 
-							//TEXT
-							d3.select(this).select("text")
-								.style("cursor", "none")
-						}
-					})
-
-					//MOUSEOUT
-					.on("mouseout", function(d,i) {
-						if (i>0) {
-						//CIRCLE
-						d3.select(this).selectAll("circle")
-							.transition()
-							.duration(250)
-							.attr("r", function(d){return logslider(d["width"]); })
-							.attr("fill",function(d){return color(d.type);});
-
-						//TEXT
-						d3.select(this).select("text")
-							.transition()
-							.duration(250)
-							.attr("font-size","1em")
-							.attr("x", 8 )
-							.attr("y", 4 )
-						}
-					})
-
-					.call(force.drag);
+						.call(force.drag);
 
 					link.each(function(d){
 						
 						if(d.type === "osToEndpoint"){
-							console.log(d);	
-							// console.log(d3.select(this));
 							d3.select(this)
 							.attr("stroke", "#eaeaea");
 						}
@@ -1637,10 +1635,9 @@ angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootSc
 					var appendText = function(elm) {
 							elm.append("text")
 							.text(function(d, i) { return d.name; })
-							.attr("x",    function(d, i) { return circleWidth + 5; })
-							.attr("y",            function(d, i) { if (i>0) { return circleWidth + 0 }    else { return 8 } })
-							.attr("font-size",    function(d, i) {  return  "1em"; })
-							.attr("text-anchor",  function(d, i) { if (i>0) { return  "beginning"; }      else { return "end" } })
+							.attr("x", "15")
+							.attr("y", "30")
+							.style("font-size", "1.6em")
 					}
 
 					node.each(function(d){
@@ -1714,27 +1711,27 @@ angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootSc
 							elm.append('polygon')
 								.style('fill', '#fff')
 								.attr('points', '8.8,14.4 38,9.3 38,40.7 8.8,35.7 ')
-								.attr('transform', 'translate(-30,-25) scale(1.7)');
+								.attr('transform', 'translate(-40,-40) scale(1.7)');
 
 							elm.append('polygon')
 								.style('fill', '#00AEEF')
 								.attr('points', '36.1,24.4 36.1,11.9 21.7,14 21.7,24.4 ')
-								.attr('transform', 'translate(-30,-25) scale(1.7)');
+								.attr('transform', 'translate(-40,-40) scale(1.7)');
 
 							elm.append('polygon')
 								.style('fill', '#00AEEF')
 								.attr('points', '20.7,14.1 10.2,15.6 10.2,24.4 20.7,24.4 ')
-								.attr('transform', 'translate(-30,-25) scale(1.7)');
+								.attr('transform', 'translate(-40,-40) scale(1.7)');
 
 							elm.append('polygon')
 								.style('fill', '#00AEEF')
 								.attr('points', '10.2,25.4 10.2,34.3 20.7,35.9 20.7,25.4 ')
-								.attr('transform', 'translate(-30,-25) scale(1.7)');
+								.attr('transform', 'translate(-40,-40) scale(1.7)');
 								
 							elm.append('polygon')
 								.style('fill', '#00AEEF')
 								.attr('points', '21.7,36 36.1,38.1 36.1,25.4 21.7,25.4 ')
-								.attr('transform', 'translate(-30,-25) scale(1.7)');
+								.attr('transform', 'translate(-40,-40) scale(1.7)');
 
 							appendText(elm);
 						} 
@@ -1746,7 +1743,7 @@ angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootSc
 							'C26.2,15.9,27.9,15,28.8,13.7z M33.2,21.7c0.4-1.3,1.4-2.4,2.7-3.2c-1.4-1.8-3.4-2.8-5.3-2.8c-2.5,0-3.5,1.2-5.2,1.2'+
 							'c-1.8,0-3.1-1.2-5.3-1.2c-2.1,0-4.3,1.3-5.8,3.5c-0.5,0.8-0.9,1.8-1.1,2.9c-0.5,3.1,0.3,7.2,2.7,10.9c1.2,1.8,2.7,3.8,4.7,3.8'+
 							'c1.8,0,2.3-1.2,4.8-1.2c2.4,0,2.9,1.2,4.7,1.2c2,0,3.6-2.2,4.8-4c0.8-1.3,1.1-1.9,1.8-3.3C33.5,28.2,32.2,24.6,33.2,21.7z')
-							.attr('transform', 'translate(-30,-25) scale(1.7)');
+							.attr('transform', 'translate(-40,-40) scale(1.7)');
 
 							appendText(elm);
 						} 
@@ -1761,6 +1758,8 @@ angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootSc
 								// .attr("fill", function(d, i) { if (i>0) { return  color(d.type); } else { return palette.gray } } )
 								.style("stroke-width", "1.5px")
 								.style("stroke", "#fff")
+
+							// appendText(elm);
 						}
 
 						else if (d.type === "network") {
@@ -1789,24 +1788,12 @@ angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootSc
 								.attr("cy", function(d) { return d.y; })
 								.attr("r", function(d) {return logslider(d["width"]); })
 								.attr("fill", function(d) {return color(d.type);} )
-								// .attr("fill", function(d, i) { if (i>0) { return  color(d.type); } else { return palette.gray } } )
 								.style("stroke-width", "1.5px")
 								.style("stroke", "#fff")
 
 							appendText(elm);
 						}
 					})
-					
-
-					//TEXT
-					// node.append("text")
-					// 	.text(function(d, i) { return d.name; })
-					// 	.attr("x",    function(d, i) { return circleWidth + 5; })
-					// 	.attr("y",            function(d, i) { if (i>0) { return circleWidth + 0 }    else { return 8 } })
-					// 	// .attr("font-family",  "Bree Serif")
-					// 	// .attr("fill",         function(d, i) {  return  palette.paleryellow;  })
-					// 	.attr("font-size",    function(d, i) {  return  "1em"; })
-					// 	.attr("text-anchor",  function(d, i) { if (i>0) { return  "beginning"; }      else { return "end" } })
 
 					force.on("tick", function(e) {
 						node.attr("transform", function(d, i) {
