@@ -25,27 +25,17 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 	$http({method: 'GET', url: query}).
 	success(function(data) {
 		$scope.crossfilterData = crossfilter();
-		var laneIndex = 0;
+		// var laneIndex = 0;
+		$scope.lanes = ['conn', 'file', 'dns', 'http', 'ssl', 'endpoint'];
 		var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
 		data.laneGraph.forEach(function(parent) {
 			if (parent.length > 0) {
-				// format time
+				var index = $scope.lanes.indexOf(parent[0].type.replace('_ioc', ''));
 				parent.forEach(function(child) {
-					// var endtime = child.raw_time + 30000; // adds 5 minutes to time interval
-					// child.dds = dateFormat.parse(child.time);
-					// console.log(endtime)
-					// child.dde = dateFormat.parse(endtime);
-					// child.start = d3.time.hour(child.dds);
-					// console.log(child.dde)
-					// child.end = d3.time.hour(child.dde);
-					// child.lane = laneIndex;
-					// 
 					child.dd = dateFormat.parse(child.time);
 					child.segment = d3.time.hour(child.dd);
-					child.lane = laneIndex;
+					child.lane = index;
 				})
-				laneIndex++;
-				// add to crossfilter
 				$scope.crossfilterData.add(parent);
 			}
 		});
@@ -138,15 +128,57 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 		// fishchart(data);
 
 		// get user image
-		if ($scope.lan_ip !== '-') {
-			$http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?lan_zone='+$scope.lan_zone+'&lan_ip='+$scope.lan_ip+'&type=assets'}).
-			success(function(data) {
-				if (data) {
-					$scope.userImage = 'public/pages/assets/img/staff/'+data[0].file;
-				}
-			});
-		}
+		// if ($scope.lan_ip !== '-') {
+		// 	$http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?lan_zone='+$scope.lan_zone+'&lan_ip='+$scope.lan_ip+'&type=assets'}).
+		// 	success(function(data) {
+		// 		if (data) {
+		// 			$scope.userImage = 'public/pages/assets/img/staff/'+data[0].file;
+		// 		}
+		// 	});
+		// }
 	});
+
+	$scope.requery = function(min, max, callback) {
+		var minUnix = moment(min).unix();
+		var maxUnix = moment(max).unix();
+		if (($scope.inTooDeep.min === minUnix) && ($scope.inTooDeep.max === maxUnix)) {
+			$scope.inTooDeep.areWe = true;
+		}
+		if (($scope.inTooDeep.areWe === true) && (minUnix >= $scope.inTooDeep.min) && (maxUnix <= $scope.inTooDeep.max)) {
+			var deepItems = $scope.deepItems.filter(function(d) { if((d.dd < max) && (d.dd > min)) {return true};});
+			callback(deepItems);
+			console.log('filtering fetch')
+		} else {
+			//  set $scope.inTooDeep
+			$scope.inTooDeep = {
+				areWe: true,
+				min: minUnix,
+				max: maxUnix
+			};
+			console.log('fetching again')
+			//  grab more from api
+			var query = '/ioc_notifications/ioc_events_drilldown?start='+minUnix+'&end='+maxUnix+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc+'&ioc_attrID='+$location.$$search.ioc_attrID+'&typ=connAll';
+			$http({method: 'GET', url: query}).
+				success(function(data) {
+					$scope.crossfilterDeep = crossfilter();
+					var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
+					data.laneGraph.forEach(function(parent) {
+						if (parent.length > 0) {
+							var index = $scope.lanes.indexOf(parent[0].type.replace('_ioc', ''));
+							parent.forEach(function(child) {
+								child.dd = dateFormat.parse(child.time);
+								child.segment = d3.time.hour(child.dd);
+								child.lane = index;
+							})
+							$scope.crossfilterDeep.add(parent);
+						}
+					});
+					var itemsDimension = $scope.crossfilterDeep.dimension(function(d){ return d.time });
+					$scope.deepItems = itemsDimension.top(Infinity);
+					callback($scope.deepItems);
+				});
+		}
+	}
 
 	// function fishchart(data) {
 	// 	var all = [];

@@ -2226,18 +2226,26 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
 
                 $scope.$broadcast('spinnerHide')
 
-                var lanes = $scope.crossfilterData.dimension(function(d){ return d.type }).group().reduceSum(function(d){return null}).top(Infinity).map(function(d){return d.key});
+                // var lanes = $scope.crossfilterData.dimension(function(d){ return d.type }).group().reduceSum(function(d){return null}).top(Infinity).map(function(d){return d.key});
+                var lanes = ['conn', 'file', 'dns', 'http', 'ssl', 'endpoint'];
                 var itemsDimension = $scope.crossfilterData.dimension(function(d){ return d.time });
                 var items = itemsDimension.top(Infinity);
+                $scope.inTooDeep = {
+                    areWe: false,
+                    min: null,
+                    max: null
+                };
 
                 // var lanes = ["Chinese","Japanese","Korean"],
-                var laneLength = lanes.length;
+                var laneLength = $scope.lanes.length;
 
                 var m = [20, 15, 15, 120], //top right bottom left
                     w = 960 - m[1] - m[3],
                     h = 500 - m[0] - m[2],
                     miniHeight = 0,
                     mainHeight = h - miniHeight - 50;
+
+                var queryThreshhold = 3600; // one hour in seconds
 
                 //scales
                 var x = d3.time.scale()
@@ -2250,6 +2258,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                     .domain([0, laneLength])
                     .range([0, mainHeight]);
 
+                // current time div
+                var currentTimeSlice = d3.select("#lanegraph").append('div').attr('class', 'timeslice');
+                var currentTime = currentTimeSlice.append('div');
 
                 var chart = d3.select("#lanegraph")
                     .append("svg")
@@ -2294,7 +2305,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                     .attr("stroke", "lightgray");
 
                 main.append("g").selectAll(".laneText")
-                    .data(lanes)
+                    .data($scope.lanes)
                     .enter().append("text")
                     .text(function(d) {return d;})
                     .attr("x", -m[1])
@@ -2551,11 +2562,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                     .attr("y", 1)
                     .attr("height", mainHeight - 1);
                 
-
                 // nav
                 var navArray = [], currentNavPos = 0;
                 var buttonHolder = d3.select("#lanegraph").append('div').attr('class', 'buttonHolder');
-                var currentTimeSlice = d3.select("#lanegraph").append('div').attr('class', 'timeslice');
                 var resetBtn = buttonHolder
                     .append('button')
                     .html('Reset')
@@ -2585,8 +2594,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                         }
                     });
 
-                // current time
-                
 
                 function redraw() {
                     // nav settings
@@ -2596,6 +2603,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                     nextButton.attr('disabled', 'disabled');
                     resetBtn.attr('disabled', 'disabled');
                     navArray.push({'min': new Date($scope.start), 'max': new Date($scope.end)});
+
+                    currentTime.html('Current Time Slice: <strong>'+$scope.start+'</strong> - <strong>'+$scope.end+'</strong>');
 
                     var visItems = items;
                     x1.domain([new Date($scope.start), new Date($scope.end)]);
@@ -2611,12 +2620,13 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                     })
                     icons.exit();
                 }
+
                 function mouseup(action) {
+                    var rects, labels, minExtent, maxExtent, visItems;
                     if (action === 'nav') {
-                        var rects, labels,
-                            minExtent = navArray[currentNavPos].min,
-                            maxExtent = navArray[currentNavPos].max,
-                            visItems = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;});
+                            // get max and min from mav array
+                            minExtent = navArray[currentNavPos].min;
+                            maxExtent = navArray[currentNavPos].max;
                         // disable previous button if all the way back
                         if (currentNavPos === 0) {
                             resetBtn.attr('disabled', 'disabled');
@@ -2626,12 +2636,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                         } else {
                             resetBtn.attr('disabled', null);
                         }
-
                     } else {
-                        var rects, labels,
-                            minExtent = brush.extent()[0],
-                            maxExtent = brush.extent()[1],
-                            visItems = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;});
+                        // get max and min from click/drag
+                        minExtent = brush.extent()[0];
+                        maxExtent = brush.extent()[1];
                         // step up nav array pos and push new values in;
                         currentNavPos++;
                         navArray.push({'min': minExtent, 'max': maxExtent});
@@ -2639,8 +2647,27 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                         resetBtn.attr('disabled', null);
                     }
 
-                    // only draw the brush isn't a single point on the svg
-                    if (moment(maxExtent).unix() !== moment(minExtent).unix()) {
+                    var minUnix = moment(minExtent).unix();
+                    var maxUnix = moment(maxExtent).unix();
+                    // should it requery?
+                    var msDifference = maxUnix - minUnix;
+                    if ((msDifference < queryThreshhold) && (msDifference !== 0)) {
+                        $scope.requery(minExtent, maxExtent, function(data){
+                            visItems = data;
+                            plot(visItems, minExtent, maxExtent);
+                        })                
+                    } else {
+                        // reset if not within threshold
+                        $scope.inTooDeep.areWe = false;
+                        visItems = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;});
+                        plot(visItems, minExtent, maxExtent);
+                    }
+                }
+                redraw();
+
+                function plot(data, min, max) {
+                    if (moment(max).unix() !== moment(min).unix()) {
+                        currentTime.html('Current Time Slice: <strong>'+moment(min).format('MMMM D, YYYY h:mm A')+'</strong> - <strong>'+moment(max).format('MMMM D, YYYY h:mm A')+'</strong>')
                         main.select('g.brush .extent')
                             .transition()
                             .duration(150)
@@ -2649,10 +2676,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                             .transition()
                             .duration(50)
                             .attr('width', 0);
-                        x1.domain([minExtent, maxExtent]);
+                        x1.domain([min, max]);
                         xAxisBrush.transition().duration(500).call(xAxis);
                         itemRects.selectAll('g').remove();
-                        var icons = itemRects.selectAll("g").data(visItems);
+                        var icons = itemRects.selectAll("g").data(data);
                         icons.enter().append("g").each(function(d){
                             var elm = d3.select(this);
                             elm
@@ -2665,7 +2692,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                         icons.exit();
                     }
                 }
-                redraw();
 
             });
         }
