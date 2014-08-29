@@ -79,6 +79,7 @@ module.exports = function(pool) {
             var crossfilterQ = {
                 query: 'SELECT '+
                         'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+                        '`l7_proto`, '+
                         '(sum(in_bytes + out_bytes) / 1048576) AS count, '+
                         '(sum(`in_bytes`) / 1048576) AS in_bytes, '+
                         '(sum(`out_bytes`) / 1048576) AS out_bytes '+
@@ -89,7 +90,8 @@ module.exports = function(pool) {
                     'GROUP BY '+
                         'month(from_unixtime(time)),'+
                         'day(from_unixtime(time)),'+
-                        'hour(from_unixtime(time))',
+                        'hour(from_unixtime(time)),'+
+                        '`l7_proto`',
                 insert: [start, end]
             }
            
