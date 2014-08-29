@@ -2086,13 +2086,13 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                             return palette.purple;
                         } else if (legend_item === "Stealth COI") { 
                             return palette.green;
-                        } else if (legend_item === "User with one role") { //IP node with 1 COI group
+                        } else if (legend_item === "User with one COI") { //IP node with 1 COI group
                             return palette.blue;
-                        } else if (legend_item === "User with two roles") { //IP node with 2 COI groups
+                        } else if (legend_item === "User with two COIs") { //IP node with 2 COI groups
                             return palette.gray;
-                        } else if (legend_item === "User with three roles") { //etc...
+                        } else if (legend_item === "User with three COIs") { //etc...
                             return palette.yellow;
-                        } else if (legend_item === "User with four roles") {
+                        } else if (legend_item === "User with four COIs") {
                             return palette.orange;
                         } else {
                             return palette.red;
@@ -2116,8 +2116,8 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .attr("dy", ".35em")
                         .text(function(d) { return d; });
 
-                    var legend_data = ["User with one role", "User with two roles", 
-                        "User with three roles", "User with four roles", "User with five or more roles"];
+                    var legend_data = ["User with one COI", "User with two COIs", 
+                        "User with three COIs", "User with four COIs", "User with five or more COIs"];
 
                     var legend = vis.selectAll(".legend")
                         .data(legend_data)

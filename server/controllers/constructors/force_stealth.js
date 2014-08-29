@@ -3,7 +3,7 @@
 var config = require('../../config/config'),
 	async = require('async');
 
-module.exports = function (sql1, sql2, sql3, conn, callback) {
+module.exports = function (sql1, sql2, sql3, sql4, conn, callback) {
 	var node = [];
 	var link = [];
 	var users = [];
@@ -21,7 +21,7 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 		if(users.indexOf(data.user) === -1) {
 			node.push({
 				name: data.user,
-				group: 1, //or greater denotes users
+				group: 0, //1
 				width: 0.25,
 				type: "user",
 				gateway: 0
@@ -32,7 +32,7 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 		} else {
 			for(var i = 0; i < node.length; i++) {
 				if(node[i].name === data.user && node[i].type === "user") {
-					node[i].group ++; //increment the number of groups this user belongs to.
+					// node[i].group ++; //increment the number of groups this user belongs to.
 					current_user_index = i;
 					break;
 				}
@@ -44,7 +44,7 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 			if(groups.indexOf(data.group) === -1) {
 				node.push({
 					name: data.group,
-					group: 0, //denotes anything but user
+					group: 0, 
 					width: 0.50,
 					type: "group",
 					gateway: 0
@@ -64,17 +64,6 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 
 		//insert the group node if it is not already there and grab its index either way
 		if(roles.indexOf(data.role) === -1) {
-			// if(data.role === "ClearText") {
-			// 	node.push({
-			// 		name: data.role,
-			// 		group: 0, //denotes roles
-			// 		width: 0.75,
-			// 		gateway: 1
-			// 	});
-			// 	roles.push(data.role);
-			// 	current_role_index = node.length - 1;
-			// }
-			// else {
 			node.push({
 				name: data.role,
 				group: 0,
@@ -84,7 +73,6 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 			});
 			roles.push(data.role);
 			current_role_index = node.length - 1;
-			// }
 		} else {
 			for(var i = 0; i < node.length; i++) {
 				if(node[i].name === data.role && node[i].type === "role") {
@@ -233,6 +221,24 @@ module.exports = function (sql1, sql2, sql3, conn, callback) {
 										connections.push(data.role + "" + data.cois);
 									}
 									// break;
+								}
+							}
+						})
+						callback();
+					}
+				})
+			},
+			function(callback){ //second query deals with role to user relationship
+				connection.query(sql4.query, sql4.insert, function(err, result) {
+					if (err) {
+						callback(err, null);
+					} else {
+						result.forEach(function(data){ 
+							for(var i = 0; i < node.length; i++) {
+								if(node[i].name === data.user && node[i].type === "user") {
+									
+									node[i].group ++; //increment the number of groups this user belongs to.
+									break;
 								}
 							}
 						})
