@@ -58,10 +58,39 @@ module.exports = function(pool) {
 								'`cois`, `rule_order` ASC',
 					insert: []
 				}
+				var forceSQL4 = {
+					query: '(SELECT '+
+								'`user`, '+
+								'`cois` '+
+							'FROM '+
+								'`stealth_role_user` '+
+							'JOIN '+
+								'`stealth_role_coi` '+
+								'ON stealth_role_user.role = stealth_role_coi.role '+
+							'GROUP BY '+
+								'`user`, '+
+								'`cois` '+
+							') UNION '+
+							'(SELECT '+
+								'stealth_user.lan_user AS user, '+
+								'stealth_role_coi.cois '+
+							'FROM '+
+								'`stealth_user`, '+ 
+								'`stealth_role_group`, '+
+								'`stealth_role_coi` '+
+							'WHERE '+
+								'stealth_user.group = stealth_role_group.group '+
+								'AND stealth_role_group.role = stealth_role_coi.role '+
+							'GROUP BY '+
+								'`lan_user`, '+
+								'`cois` '+
+							') ',
+					insert: []
+				}
 				async.parallel([
 					// Table function(s)
 					function(callback) {
-						new force_stealth(forceSQL1, forceSQL2, forceSQL3, {database: database, pool: pool}, function(err,data){
+						new force_stealth(forceSQL1, forceSQL2, forceSQL3, forceSQL4, {database: database, pool: pool}, function(err,data){
 							forceReturn = data;
 							callback();
 						});

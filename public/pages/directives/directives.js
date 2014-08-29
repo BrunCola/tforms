@@ -1056,7 +1056,8 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
 								}
 							};
 							$scope.rowChart
-								.colors(d3.scale.ordinal().domain("guarded","elevated","high","severe").range(["#377FC7","#DD122A","#F88B12", "#F5D800"]))
+								// .colors(d3.scale.ordinal().domain(["guarded","elevated","high","severe"]).range(["#F88B12","#F5D800","#377FC7","#DD122A"]))//["#377FC7","#F5D800","#F88B12","#DD122A"]))
+								.colors(d3.scale.ordinal().domain([0,1,2,3,4]).range(["#377FC7","#F5D800","#F88B12","#DD122A"]))//["#377FC7","#DD122A","#F88B12", "#F5D800"]))
 								.colorAccessor(function (d){return d.value.severity;});
 							filter = true;
 							break;
@@ -2066,26 +2067,26 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                     //LEGEND
 
                     var legend_color = function(legend_item) {
-                        if (legend_item === "Role") { 
+                        if (legend_item === "Stealth Role") { 
                             return palette.pink;
-                        } else if (legend_item === "Group") { 
+                        } else if (legend_item === "AD Group") { 
                             return palette.purple;
-                        } else if (legend_item === "COI") { 
+                        } else if (legend_item === "Stealth COI") { 
                             return palette.green;
-                        } else if (legend_item === "User with one role") { //IP node with 1 COI group
+                        } else if (legend_item === "User with one COI") { //IP node with 1 COI group
                             return palette.blue;
-                        } else if (legend_item === "User with two roles") { //IP node with 2 COI groups
+                        } else if (legend_item === "User with two COIs") { //IP node with 2 COI groups
                             return palette.gray;
-                        } else if (legend_item === "User with three roles") { //etc...
+                        } else if (legend_item === "User with three COIs") { //etc...
                             return palette.yellow;
-                        } else if (legend_item === "User with four roles") {
+                        } else if (legend_item === "User with four COIs") {
                             return palette.orange;
                         } else {
                             return palette.red;
                         }
                     }
 
-                    var circle_legend_data = ["Role", "Group", "COI"];
+                    var circle_legend_data = ["Stealth Role", "AD Group", "Stealth COI"];
                     var circle_legend = vis.selectAll(".circle_legend")
                         .data(circle_legend_data)
                         .enter().append("g")
@@ -2102,8 +2103,8 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .attr("dy", ".35em")
                         .text(function(d) { return d; });
 
-                    var legend_data = ["User with one role", "User with two roles", 
-                        "User with three roles", "User with four roles", "User with five or more roles"];
+                    var legend_data = ["User with one COI", "User with two COIs", 
+                        "User with three COIs", "User with four COIs", "User with five or more COIs"];
 
                     var legend = vis.selectAll(".legend")
                         .data(legend_data)
@@ -2123,7 +2124,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .text(function(d) { return d; });
 
                     var gateway_legend = vis.selectAll(".gateway_legend")
-                        .data(["Internet Gateway"])
+                        .data(["Cleartex Gateway"])
                         .enter().append("g")
                         .attr("class", "gateway_legend")
                         .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
