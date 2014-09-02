@@ -11,17 +11,9 @@ module.exports = function(pool) {
 	return {
 		render: function(req, res) {
 			var result = [];
-			var largestGroup = 0;
-			var largestIOC = 0;
-			function handleReturn(data, maxConn, maxIOC, callback) {
-				if (data) {
+			function handleReturn(data, callback) {
+				if ((data !== null) && (data.length > 0)) {
 					result.push(data);
-					if (maxConn >= largestGroup) {
-						largestGroup = maxConn;
-					}
-					if (maxIOC >= largestIOC) {
-						largestIOC = maxIOC;
-					}
 					return callback();
 				} else {
 					return callback();
@@ -41,20 +33,409 @@ module.exports = function(pool) {
 				pointGroup = 1;
 			}
 
-			switch(req.query.type) {
-				case 'assets':
-					if (req.query.lan_ip && req.query.lan_zone) {
-						var sql = {
-							query: 'SELECT `file` FROM assets where lan_ip = ? AND lan_zone = ?',
-							insert: [req.query.lan_ip, req.query.lan_zone]
-						}
-						new query(sql, {database: database, pool: pool}, function(err,data){
-							res.json(data)
+			if (req.query.type === 'drill') {
+				var conn_ioc = {
+					query: 'SELECT '+
+							'\'conn_ioc\' AS type, '+
+							'`time` as raw_time, '+
+							'`ioc_count` as ioc_count, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
+						'FROM '+
+							'`conn` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `lan_zone`= ? '+
+							'AND `lan_ip`= ? '+
+							'AND `remote_ip`= ? '+
+							'AND `ioc`=? ',
+					insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
+					start: start,
+					end: end,
+					grouping: pointGroup
+				}
+				var conn = {
+					query: 'SELECT '+
+							'\'conn\' AS type, '+
+							'`time` as raw_time, '+
+							'`ioc_count` as ioc_count, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
+						'FROM '+
+							'`conn` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `lan_zone`= ? '+
+							'AND `lan_ip`= ? ',
+					insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+					start: start,
+					end: end,
+					grouping: pointGroup
+				}
+				var dns_ioc = {
+					query: 'SELECT '+
+							'\'dns_ioc\' AS type, '+
+							'`time` as raw_time, '+
+							'`ioc_count` as ioc_count, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
+						'FROM '+
+							'`dns` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `lan_zone`= ? '+
+							'AND `lan_ip`= ? '+
+							'AND `remote_ip`= ? '+
+							'AND `ioc`=?',
+					insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
+					start: start,
+					end: end,
+					grouping: pointGroup
+				}
+				var dns = {
+					query: 'SELECT '+
+							'\'dns\' AS type, '+
+							'`time` as raw_time, '+
+							'`ioc_count` as ioc_count, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
+						'FROM '+
+							'`dns` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `lan_zone`=?'+
+							'AND `lan_ip`=?',
+					insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+					start: start,
+					end: end,
+					grouping: pointGroup
+				}
+				var http_ioc = {
+					query: 'SELECT '+
+							'\'http_ioc\' AS type, '+
+							'`time` as raw_time, '+
+							'`ioc_count` as ioc_count, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
+						'FROM '+
+							'`http` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `lan_zone`= ? '+
+							'AND `lan_ip`= ? '+
+							'AND `remote_ip`= ? '+
+							'AND `ioc`=?',
+					insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
+					start: start,
+					end: end,
+					grouping: pointGroup
+				}
+				var http = {
+					query: 'SELECT '+
+							'\'http\' AS type, '+
+							'`time` as raw_time, '+
+							'`ioc_count` as ioc_count, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
+						'FROM '+
+							'`http` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `lan_zone`= ?'+
+							'AND `lan_ip`= ?',
+					insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+					start: start,
+					end: end,
+					grouping: pointGroup
+				}
+				var ssl_ioc = {
+					query: 'SELECT '+
+							'\'ssl_ioc\' AS type, '+
+							'`time` as raw_time, '+
+							'`ioc_count` as ioc_count, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
+						'FROM '+
+							'`ssl` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `lan_zone`= ? '+
+							'AND `lan_ip`= ? '+
+							'AND `remote_ip`= ? '+
+							'AND `ioc`=?',
+					insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
+					start: start,
+					end: end,
+					grouping: pointGroup
+				}
+				var ssl = {
+					query: 'SELECT '+
+							'\'ssl\' AS type, '+
+							'`time` as raw_time, '+
+							'`ioc_count` as ioc_count, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
+						'FROM '+
+							'`ssl` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `lan_zone`= ?'+
+							'AND `lan_ip`= ?',
+					insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+					start: start,
+					end: end,
+					grouping: pointGroup
+				}
+				var file_ioc = {
+					query: 'SELECT '+
+							'\'file_ioc\' AS type, '+
+							'`time` as raw_time, '+
+							'`ioc_count` as ioc_count, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
+						'FROM '+
+							'`file` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `lan_zone`= ? '+
+							'AND `lan_ip`=? '+
+							'AND `remote_ip`= ? '+
+							'AND `ioc`=?',
+					insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
+					start: start,
+					end: end,
+					grouping: pointGroup
+				}
+				var file = {
+					query: 'SELECT '+
+							'\'file\' AS type, '+
+							'`time` as raw_time, '+
+							'`ioc_count` as ioc_count, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
+						'FROM '+
+							'`file` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `lan_zone`= ?'+
+							'AND `lan_ip`= ?',
+					insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+					start: start,
+					end: end,
+					grouping: pointGroup
+				}
+				var endpoint = {
+					query: 'SELECT '+
+							'\'endpoint\' AS type, '+
+							'`time` as raw_time, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
+						'FROM '+
+							'`ossec` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `src_ip`= ? ',
+					insert: [start, end, req.query.lan_ip],
+					start: start,
+					end: end,
+					grouping: pointGroup
+				}
+
+				var stealth_conn = {
+					query: 'SELECT '+
+							'\'stealth\' AS type, '+
+							'`time` as raw_time, '+
+							'`ioc_count` as ioc_count, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
+							'`src_ip`,'+
+							'`dst_ip`,'+
+							'(`in_bytes` / 1048576) as in_bytes,'+
+							'(`out_bytes` / 1048576) as out_bytes,'+
+							'`in_packets`,'+
+							'`out_packets` '+
+						'FROM '+
+							'`stealth_conn` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `src_ip`= ? '+
+							'AND `in_bytes` > 0 '+
+							'AND `out_bytes` > 0 ',
+					insert: [start, end, req.query.src_ip],
+					start: start,
+					end: end,
+					grouping: pointGroup
+				}
+				var stealth1 = {
+					query: 'SELECT '+
+							'\'stealth_ioc\' AS type, '+
+							'`time` as raw_time, '+
+							'`ioc_count` as ioc_count, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
+							'`src_ip`, '+
+							'`dst_ip`, '+
+							'(`in_bytes` / 1048576) as in_bytes, '+
+							'(`out_bytes` / 1048576) as out_bytes, '+
+							'`in_packets`, '+
+							'`out_packets` '+
+						'FROM '+
+							'`stealth_conn` '+
+						'WHERE '+
+							'time BETWEEN ? AND ? '+
+							'AND `dst_ip` = ? '+
+							'AND `in_bytes` = 0 ',
+					insert: [start, end, req.query.src_ip],
+					start: start,
+					end: end,
+					grouping: pointGroup
+				}
+				var stealth2 = {
+					query: 'SELECT '+
+							'\'stealth_ioc\' AS type, '+
+							'`time` as raw_time, '+
+							'`ioc_count` as ioc_count, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
+							'`lan_ip`, '+
+							'`remote_ip`, '+
+							'(`in_bytes` / 1048576) as in_bytes, '+
+							'(`out_bytes` / 1048576) as out_bytes, '+
+							'`in_packets`, '+
+							'`out_packets` '+
+						'FROM '+
+							'`conn_meta` '+
+						'WHERE '+
+							'time BETWEEN ? AND ? '+
+							'AND ((`remote_ip` = ? AND `out_bytes` = 0 ) '+
+							'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%" AND `in_bytes` = 0 )) ',
+					insert: [start, end, req.query.src_ip, req.query.src_ip],
+					start: start,
+					end: end,
+					grouping: pointGroup
+				}
+				var stealth3 = {
+					query:'SELECT '+
+							'\'stealth_ioc\' AS type, '+
+							'`time` as raw_time, '+
+							'`ioc_count` as ioc_count, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
+							'`lan_ip`, '+
+							'`remote_ip`, '+
+							'(`in_bytes` / 1048576) as in_bytes, '+
+							'(`out_bytes` / 1048576) as out_bytes, '+
+							'`in_packets`, '+
+							'`out_packets` '+
+						'FROM '+
+							'`conn_meta` '+
+						'WHERE '+
+							'time BETWEEN ? AND ? '+
+							'AND `out_bytes` = 0 '+
+							'AND `lan_ip` = ? ',
+					insert: [start, end, req.query.src_ip, req.query.src_ip],
+					start: start,
+					end: end,
+					grouping: pointGroup
+				}
+
+
+				async.parallel([
+					// Table function(s)
+					function(callback) { // conn_ioc
+						new query(conn_ioc, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
 						});
+					},
+					function(callback) { // conn
+						new query(conn, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
+						});
+					},
+					function(callback) { // dns_ioc
+						new query(dns_ioc, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
+						});
+					},
+					function(callback) { // dns
+						new query(dns, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
+						});
+					},
+					function(callback) { // http_ioc
+						new query(http_ioc, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
+						});
+					},
+					function(callback) { // http
+						new query(http, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
+						});
+					},
+					function(callback) { // ssl_ioc
+						new query(ssl_ioc, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
+						});
+					},
+					function(callback) { // ssl
+						new query(ssl, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
+						});
+					},
+					function(callback) { // file_ioc
+						new query(file_ioc, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
+						});
+					},
+					function(callback) { // file
+						new query(file, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
+						});
+					},
+					function(callback) { // endpoint
+						new query(endpoint, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
+						});
+					},
+					function(callback) { // stealth
+						if (req.session.passport.user.level === 3) {
+							new query(stealth_conn, {database: database, pool:pool}, function(err, data){
+								handleReturn(data, callback);
+							});
+						} else {
+							callback();
+						}
+					},
+					function(callback) { // stealth
+						if (req.session.passport.user.level === 3) {
+							new query(stealth1, {database: database, pool:pool}, function(err, data){
+								handleReturn(data, callback);
+							});
+						} else {
+							callback();
+						}
+					},
+					function(callback) { // stealth
+						if (req.session.passport.user.level === 3) {
+							new query(stealth2, {database: database, pool:pool}, function(err, data){
+								handleReturn(data, callback);
+							});
+						} else {
+							callback();
+						}
+					},
+					function(callback) { // stealth
+						if (req.session.passport.user.level === 3) {
+							new query(stealth3, {database: database, pool:pool}, function(err, data){
+								handleReturn(data, callback);
+							});
+						} else {
+							callback();
+						}
 					}
-				break;
-				default:
-					if (req.query.lan_zone && req.query.lan_ip && req.query.remote_ip && req.query.ioc && req.query.ioc_attrID) {
+				], function(err) { //This function gets called after the two tasks have called their "task callbacks"
+					if (err) throw console.log(err);
+					res.json({
+						laneGraph: result
+					});
+				});
+			} else if (req.query.type === 'assets') {
+				if (req.query.lan_ip && req.query.lan_zone) {
+					var sql = {
+						query: 'SELECT `file` FROM assets where lan_ip = ? AND lan_zone = ?',
+						insert: [req.query.lan_ip, req.query.lan_zone]
+					}
+					new query(sql, {database: database, pool: pool}, function(err,data){
+						res.json(data)
+					});
+				}
+			} else {
+				if (req.query.lan_zone && req.query.lan_ip && req.query.remote_ip && req.query.ioc && req.query.ioc_attrID) {
 						var crossfilter;
 						// var conn_ioc = {
 						// 	query: 'SELECT '+
@@ -534,10 +915,17 @@ module.exports = function(pool) {
 
 
 
+
+
+
+
+
+
 						var conn_ioc = {
 							query: 'SELECT '+
 									'\'conn_ioc\' AS type, '+
 									'`time` as raw_time, '+
+									'`ioc_count` as ioc_count, '+
 									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
 								'FROM '+
 									'`conn_ioc` '+
@@ -556,6 +944,7 @@ module.exports = function(pool) {
 							query: 'SELECT '+
 									'\'conn\' AS type, '+
 									'`time` as raw_time, '+
+									'`ioc_count` as ioc_count, '+
 									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
 								'FROM '+
 									'`conn_ioc` '+
@@ -572,6 +961,7 @@ module.exports = function(pool) {
 							query: 'SELECT '+
 									'\'dns_ioc\' AS type, '+
 									'`time` as raw_time, '+
+									'`ioc_count` as ioc_count, '+
 									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
 								'FROM '+
 									'`dns_ioc` '+
@@ -590,6 +980,7 @@ module.exports = function(pool) {
 							query: 'SELECT '+
 									'\'dns\' AS type, '+
 									'`time` as raw_time, '+
+									'`ioc_count` as ioc_count, '+
 									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
 								'FROM '+
 									'`dns_ioc` '+
@@ -606,6 +997,7 @@ module.exports = function(pool) {
 							query: 'SELECT '+
 									'\'http_ioc\' AS type, '+
 									'`time` as raw_time, '+
+									'`ioc_count` as ioc_count, '+
 									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
 								'FROM '+
 									'`http_ioc` '+
@@ -624,6 +1016,7 @@ module.exports = function(pool) {
 							query: 'SELECT '+
 									'\'http\' AS type, '+
 									'`time` as raw_time, '+
+									'`ioc_count` as ioc_count, '+
 									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
 								'FROM '+
 									'`http_ioc` '+
@@ -640,6 +1033,7 @@ module.exports = function(pool) {
 							query: 'SELECT '+
 									'\'ssl_ioc\' AS type, '+
 									'`time` as raw_time, '+
+									'`ioc_count` as ioc_count, '+
 									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
 								'FROM '+
 									'`ssl_ioc` '+
@@ -658,6 +1052,7 @@ module.exports = function(pool) {
 							query: 'SELECT '+
 									'\'ssl\' AS type, '+
 									'`time` as raw_time, '+
+									'`ioc_count` as ioc_count, '+
 									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
 								'FROM '+
 									'`ssl_ioc` '+
@@ -673,6 +1068,7 @@ module.exports = function(pool) {
 						var file_ioc = {
 							query: 'SELECT '+
 									'\'file_ioc\' AS type, '+
+									'`ioc_count` as ioc_count, '+
 									'`time` as raw_time, '+
 									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
 								'FROM '+
@@ -692,6 +1088,7 @@ module.exports = function(pool) {
 							query: 'SELECT '+
 									'\'file\' AS type, '+
 									'`time` as raw_time, '+
+									'`ioc_count` as ioc_count, '+
 									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
 								'FROM '+
 									'`file_ioc` '+
@@ -720,8 +1117,99 @@ module.exports = function(pool) {
 							grouping: pointGroup
 						}
 
-
-
+						var stealth_conn = {
+							query: 'SELECT '+
+									'\'stealth\' AS type, '+
+									'`time` as raw_time, '+
+									'`ioc_count` as ioc_count, '+
+									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
+									'`src_ip`,'+
+									'`dst_ip`,'+
+									'(`in_bytes` / 1048576) as in_bytes,'+
+									'(`out_bytes` / 1048576) as out_bytes,'+
+									'`in_packets`,'+
+									'`out_packets` '+
+								'FROM '+
+									'`stealth_conn` '+
+								'WHERE '+
+									'`time` BETWEEN ? AND ? '+
+									'AND `src_ip`= ? '+
+									'AND `in_bytes` > 0 '+
+									'AND `out_bytes` > 0 ',
+							insert: [start, end, req.query.src_ip],
+							start: start,
+							end: end,
+							grouping: pointGroup
+						}
+						var stealth1 = {
+							query: 'SELECT '+
+									'\'stealth_ioc\' AS type, '+
+									'`time` as raw_time, '+
+									'`ioc_count` as ioc_count, '+
+									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
+									'`src_ip`, '+
+									'`dst_ip`, '+
+									'(`in_bytes` / 1048576) as in_bytes, '+
+									'(`out_bytes` / 1048576) as out_bytes, '+
+									'`in_packets`, '+
+									'`out_packets` '+
+								'FROM '+
+									'`stealth_conn` '+
+								'WHERE '+
+									'time BETWEEN ? AND ? '+
+									'AND `dst_ip` = ? '+
+									'AND `in_bytes` = 0 ',
+							insert: [start, end, req.query.src_ip],
+							start: start,
+							end: end,
+							grouping: pointGroup
+						}
+						var stealth2 = {
+							query: 'SELECT '+
+									'\'stealth_ioc\' AS type, '+
+									'`time` as raw_time, '+
+									'`ioc_count` as ioc_count, '+
+									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
+									'`lan_ip`, '+
+									'`remote_ip`, '+
+									'(`in_bytes` / 1048576) as in_bytes, '+
+									'(`out_bytes` / 1048576) as out_bytes, '+
+									'`in_packets`, '+
+									'`out_packets` '+
+								'FROM '+
+									'`conn_meta` '+
+								'WHERE '+
+									'time BETWEEN ? AND ? '+
+									'AND ((`remote_ip` = ? AND `out_bytes` = 0 ) '+
+									'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%" AND `in_bytes` = 0 )) ',
+							insert: [start, end, req.query.src_ip, req.query.src_ip],
+							start: start,
+							end: end,
+							grouping: pointGroup
+						}
+						var stealth3 = {
+							query:'SELECT '+
+									'\'stealth_ioc\' AS type, '+
+									'`time` as raw_time, '+
+									'`ioc_count` as ioc_count, '+
+									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time '+
+									'`lan_ip`, '+
+									'`remote_ip`, '+
+									'(`in_bytes` / 1048576) as in_bytes, '+
+									'(`out_bytes` / 1048576) as out_bytes, '+
+									'`in_packets`, '+
+									'`out_packets` '+
+								'FROM '+
+									'`conn_meta` '+
+								'WHERE '+
+									'time BETWEEN ? AND ? '+
+									'AND `out_bytes` = 0 '+
+									'AND `lan_ip` = ? ',
+							insert: [start, end, req.query.src_ip, req.query.src_ip],
+							start: start,
+							end: end,
+							grouping: pointGroup
+						}
 
 
 						var info = {};
@@ -800,58 +1288,58 @@ module.exports = function(pool) {
 						async.parallel([
 							// Table function(s)
 							function(callback) { // conn_ioc
-								new query(conn_ioc, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
-									handleReturn(data, maxConn, maxIOC, callback);
+								new query(conn_ioc, {database: database, pool:pool}, function(err, data){
+									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // conn
-								new query(conn, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
-									handleReturn(data, maxConn, maxIOC, callback);
+								new query(conn, {database: database, pool:pool}, function(err, data){
+									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // dns_ioc
-								new query(dns_ioc, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
-									handleReturn(data, maxConn, maxIOC, callback);
+								new query(dns_ioc, {database: database, pool:pool}, function(err, data){
+									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // dns
-								new query(dns, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
-									handleReturn(data, maxConn, maxIOC, callback);
+								new query(dns, {database: database, pool:pool}, function(err, data){
+									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // http_ioc
-								new query(http_ioc, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
-									handleReturn(data, maxConn, maxIOC, callback);
+								new query(http_ioc, {database: database, pool:pool}, function(err, data){
+									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // http
-								new query(http, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
-									handleReturn(data, maxConn, maxIOC, callback);
+								new query(http, {database: database, pool:pool}, function(err, data){
+									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // ssl_ioc
-								new query(ssl_ioc, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
-									handleReturn(data, maxConn, maxIOC, callback);
+								new query(ssl_ioc, {database: database, pool:pool}, function(err, data){
+									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // ssl
-								new query(ssl, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
-									handleReturn(data, maxConn, maxIOC, callback);
+								new query(ssl, {database: database, pool:pool}, function(err, data){
+									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // file_ioc
-								new query(file_ioc, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
-									handleReturn(data, maxConn, maxIOC, callback);
+								new query(file_ioc, {database: database, pool:pool}, function(err, data){
+									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // file
-								new query(file, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
-									handleReturn(data, maxConn, maxIOC, callback);
+								new query(file, {database: database, pool:pool}, function(err, data){
+									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // endpoint
-								new query(endpoint, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
-									handleReturn(data, maxConn, maxIOC, callback);
+								new query(endpoint, {database: database, pool:pool}, function(err, data){
+									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // InfoSQL
@@ -874,59 +1362,45 @@ module.exports = function(pool) {
 							},
 							function(callback) {
 								new treechart(treeSQL, {database: database, pool: pool}, lanIP, attrID, function(err,data){
-									console.log(treeSQL);
 									treereturn = data;
-
-								// 	treereturn = {name: "10.0.0.40",
-								// 		severity: 3,
-								// 		idRoute: true,
-								// 		children: [
-								// 		{
-								// 			parentID: 116,
-								// 			name: "Malware Detected",
-								// 			severity: 2,
-								// 			children: [
-											
-								// 				{name: 260086,
-								// 				severity: 3,
-								// 				idRoute: true,
-								// 				children: [
-								// 				{
-								// 					name: "260088 SHA1; MD5 (2) *",
-								// 					severity: 3,
-								// 					idRoute: true
-								// 				}
-								// 				]};
-											
-								// 			]
-								// 		},
-								// 		{
-								// 			parentID: 119,
-								// 			name: "Malware Detected - Exploit:Java/CVE-2012-4681",
-								// 			severity: 3,
-								// 			children: [
-											
-								// 				{name: 260086,
-								// 				severity: 3,
-								// 				idRoute: true,
-								// 				children: [
-								// 				{
-								// 					name: "260088 SHA1; MD5 (2) *",
-								// 					severity: 3,
-								// 					idRoute: true
-								// 				}
-								// 				]};
-											
-								// 			],
-								// 			idRoute: true
-								// 		},
-								// 		],
-								// 		childCount: 2
-								// 	};
-
-								//console.log(treereturn);
 									callback();
 								});
+							},
+							function(callback) { // stealth
+								if (req.session.passport.user.level === 3) {
+									new query(stealth_conn, {database: database, pool:pool}, function(err, data){
+										handleReturn(data, callback);
+									});
+								} else {
+									callback();
+								}
+							},
+							function(callback) { // stealth
+								if (req.session.passport.user.level === 3) {
+									new query(stealth1, {database: database, pool:pool}, function(err, data){
+										handleReturn(data, callback);
+									});
+								} else {
+									callback();
+								}
+							},
+							function(callback) { // stealth
+								if (req.session.passport.user.level === 3) {
+									new query(stealth2, {database: database, pool:pool}, function(err, data){
+										handleReturn(data, callback);
+									});
+								} else {
+									callback();
+								}
+							},
+							function(callback) { // stealth
+								if (req.session.passport.user.level === 3) {
+									new query(stealth3, {database: database, pool:pool}, function(err, data){
+										handleReturn(data, callback);
+									});
+								} else {
+									callback();
+								}
 							}
 						], function(err) { //This function gets called after the two tasks have called their "task callbacks"
 							if (err) throw console.log(err);
@@ -938,8 +1412,6 @@ module.exports = function(pool) {
 							res.json({
 								info: info,
 								laneGraph: result,
-								maxConn: largestGroup,
-								maxIOC: largestIOC,
 								start: start,
 								end: end,
 								tree: treereturn,

@@ -2227,7 +2227,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                 $scope.$broadcast('spinnerHide')
 
                 // var lanes = $scope.crossfilterData.dimension(function(d){ return d.type }).group().reduceSum(function(d){return null}).top(Infinity).map(function(d){return d.key});
-                var lanes = ['conn', 'file', 'dns', 'http', 'ssl', 'endpoint'];
                 var itemsDimension = $scope.crossfilterData.dimension(function(d){ return d.time });
                 var items = itemsDimension.top(Infinity);
                 $scope.inTooDeep = {
@@ -2238,9 +2237,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
 
                 // var lanes = ["Chinese","Japanese","Korean"],
                 var laneLength = $scope.lanes.length;
+                var width = element.width();
 
                 var m = [20, 15, 15, 120], //top right bottom left
-                    w = 960 - m[1] - m[3],
+                    w = width - m[1] - m[3],
                     h = 500 - m[0] - m[2],
                     miniHeight = 0,
                     mainHeight = h - miniHeight - 50;
@@ -2260,7 +2260,20 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
 
                 // current time div
                 var currentTimeSlice = d3.select("#lanegraph").append('div').attr('class', 'timeslice');
-                var currentTime = currentTimeSlice.append('div');
+                var currentTime = currentTimeSlice.append('div').style('float', 'left');
+
+                  // enhanced view alert
+                $scope.alert = currentTimeSlice.append('div')
+                    .attr('class', 'laneAlert')
+                    .style('background-color', '#CC0000')
+                    .style('padding', '0 10px 0 10px')
+                    .style('text-align', 'center')
+                    .style('color', '#FFFFFF')
+                    .style('float', 'right')
+                    .style('display', 'none')
+                    .style('width', '140px');
+
+                $scope.alert.html('Enhanced drill-down view');
 
                 var chart = d3.select("#lanegraph")
                     .append("svg")
@@ -2293,15 +2306,14 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                     .attr("transform", "translate(" + m[3] + "," + mainHeight + ")")
                     .call(xAxis);
 
-
                 //main lanes and texts
                 main.append("g").selectAll(".laneLines")
-                    .data(items)
+                    .data($scope.lanes)
                     .enter().append("line")
                     .attr("x1", m[1])
-                    .attr("y1", function(d) {return y1(d.lane);})
+                    .attr("y1", function(d, i) { return y1(i);})
                     .attr("x2", w)
-                    .attr("y2", function(d) {return y1(d.lane);})
+                    .attr("y2", function(d, i) {return y1(i);})
                     .attr("stroke", "lightgray");
 
                 main.append("g").selectAll(".laneText")
@@ -2313,8 +2325,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                     .attr("dy", ".5ex")
                     .attr("text-anchor", "end");
 
-                var itemRects = main.append("g")
-                    .attr("clip-path", "url(#clip)");
                 
 
                 function colors(title) {
@@ -2348,11 +2358,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                     }
                 }
 
-
                 $scope.point = function(element, nickname, title, dType) {
                     if (nickname.search("ioc") !== -1) {
                         element.attr('class', 'ioc');
-                        element = element.append('g');
+                        element = element.append('g')
+                            .attr('transform', 'scale(0.8)');
                         element.append('svg:path')
                             .attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
                             .attr('fill', colors(nickname));
@@ -2377,11 +2387,18 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                         return;
                     } else {
                         element.attr('class', nickname);
-                        element = element.append('g');
+                        element = element.append('g')
+                            .attr('transform', 'scale(0.8)');
                         switch(nickname){
                             case 'file':
                                 element.append('circle')
-                                    .attr('fill', '#B572AB')
+                                    .attr('fill', function(d){
+                                        if (d.ioc_count > 0) {
+                                            return '#d67636';
+                                        } else {
+                                            return '#B572AB';
+                                        }
+                                    })
                                     .attr('cx', 18)
                                     .attr('cy', 18)
                                     .attr('r', 18);
@@ -2406,7 +2423,13 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                 return;
                             case 'conn':
                                 element.append('circle')
-                                    .attr('fill', '#6FBF9B')
+                                    .attr('fill', function(d){
+                                        if (d.ioc_count > 0) {
+                                            return '#d19d41';
+                                        } else {
+                                            return '#6FBF9B';
+                                        }
+                                    })
                                     .attr('cx', 18)
                                     .attr('cy', 18)
                                     .attr('r', 18);
@@ -2428,7 +2451,13 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                 return;
                             case 'dns':
                                 element.append('circle')
-                                    .attr('fill', '#708EBC')
+                                    .attr('fill', function(d){
+                                        if (d.ioc_count > 0) {
+                                            return '#bf7d39';
+                                        } else {
+                                            return '#708EBC';
+                                        }
+                                    })
                                     .attr('cx', 18)
                                     .attr('cy', 18)
                                     .attr('r', 18);
@@ -2454,7 +2483,13 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                 return;
                             case 'http':
                                 element.append('circle')
-                                    .attr('fill', '#67AAB5')
+                                    .attr('fill', function(d){
+                                        if (d.ioc_count > 0) {
+                                            return '#67AAB5';
+                                        } else {
+                                            return '#67AAB5';
+                                        }
+                                    })
                                     .attr('cx', 18)
                                     .attr('cy', 18)
                                     .attr('r', 18);
@@ -2483,7 +2518,13 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                 //     .attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
                                 //     .attr('fill', '#A0BB71');
                                 element.append('circle')
-                                    .attr('fill', '#A0BB71')
+                                    .attr('fill', function(d){
+                                        if (d.ioc_count > 0) {
+                                            return '#e2a23c';
+                                        } else {
+                                            return '#A0BB71';
+                                        }
+                                    })
                                     .attr('cx', 18)
                                     .attr('cy', 18)
                                     .attr('r', 18);
@@ -2560,7 +2601,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                     .call(brush)
                     .selectAll("rect")
                     .attr("y", 1)
-                    .attr("height", mainHeight - 1);
+                    .attr("height", mainHeight);
+
+                
+                var itemRects = main.append("g")
+                    .attr("clip-path", "url(#clip)");
                 
                 // nav
                 var navArray = [], currentNavPos = 0;
@@ -2594,7 +2639,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                         }
                     });
 
-
                 function redraw() {
                     // nav settings
                     navArray = [];
@@ -2616,6 +2660,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                         elm
                             .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
                             .attr("class", function(d) {return "mainItem" + d.lane;})
+                            .on("click", function (d){
+                                $scope.open(d);
+                            });
                         $scope.point(elm, d.type);
                     })
                     icons.exit();
@@ -2660,6 +2707,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                         // reset if not within threshold
                         $scope.inTooDeep.areWe = false;
                         visItems = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;});
+                        $scope.alert.style('display', 'none');
                         plot(visItems, minExtent, maxExtent);
                     }
                 }
@@ -2672,7 +2720,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                             .transition()
                             .duration(150)
                             .attr('width', w)
-                            .attr('x', x/2)
+                            // .attr('x', function(d) {console.log(x); return x/2 })
                             .transition()
                             .duration(50)
                             .attr('width', 0);
@@ -2685,6 +2733,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                             elm
                                 .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
                                 .attr("class", function(d) {return "mainItem" + d.lane;})
+                                .on("click", function (d){
+                                    $scope.open(d);
+                                });
                                 // .attr("width", 5)
                                 // .attr("height", function(d) {return .8 * y1(1);});
                             $scope.point(elm, d.type);

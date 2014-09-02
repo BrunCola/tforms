@@ -26,18 +26,20 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 	success(function(data) {
 		$scope.crossfilterData = crossfilter();
 		// var laneIndex = 0;
-		$scope.lanes = ['conn', 'file', 'dns', 'http', 'ssl', 'endpoint'];
+		if ($scope.global.user.level === 3) {
+			$scope.lanes = ['conn', 'file', 'dns', 'http', 'ssl', 'endpoint', 'stealth'];
+		} else {
+			$scope.lanes = ['conn', 'file', 'dns', 'http', 'ssl', 'endpoint'];
+		}
 		var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
 		data.laneGraph.forEach(function(parent) {
-			if (parent.length > 0) {
-				var index = $scope.lanes.indexOf(parent[0].type.replace('_ioc', ''));
-				parent.forEach(function(child) {
-					child.dd = dateFormat.parse(child.time);
-					child.segment = d3.time.hour(child.dd);
-					child.lane = index;
-				})
-				$scope.crossfilterData.add(parent);
-			}
+			var index = $scope.lanes.indexOf(parent[0].type.replace('_ioc', ''));
+			parent.forEach(function(child) {
+				child.dd = dateFormat.parse(child.time);
+				child.segment = d3.time.hour(child.dd);
+				child.lane = index;
+			})
+			$scope.crossfilterData.add(parent);
 		});
 		$scope.$broadcast('laneGraph');
 
@@ -143,11 +145,13 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 		var maxUnix = moment(max).unix();
 		if (($scope.inTooDeep.min === minUnix) && ($scope.inTooDeep.max === maxUnix)) {
 			$scope.inTooDeep.areWe = true;
+			// $scope.inTooDeep.min = minUnix;
+			// $scope.inTooDeep.max = maxUnix;
 		}
 		if (($scope.inTooDeep.areWe === true) && (minUnix >= $scope.inTooDeep.min) && (maxUnix <= $scope.inTooDeep.max)) {
 			var deepItems = $scope.deepItems.filter(function(d) { if((d.dd < max) && (d.dd > min)) {return true};});
 			callback(deepItems);
-			console.log('filtering fetch')
+			$scope.alert.style('display', 'block');
 		} else {
 			//  set $scope.inTooDeep
 			$scope.inTooDeep = {
@@ -155,27 +159,25 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 				min: minUnix,
 				max: maxUnix
 			};
-			console.log('fetching again')
 			//  grab more from api
-			var query = '/ioc_notifications/ioc_events_drilldown?start='+minUnix+'&end='+maxUnix+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc+'&ioc_attrID='+$location.$$search.ioc_attrID+'&typ=connAll';
+			var query = '/ioc_notifications/ioc_events_drilldown?start='+minUnix+'&end='+maxUnix+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc+'&ioc_attrID='+$location.$$search.ioc_attrID+'&type=drill';
 			$http({method: 'GET', url: query}).
 				success(function(data) {
 					$scope.crossfilterDeep = crossfilter();
 					var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
 					data.laneGraph.forEach(function(parent) {
-						if (parent.length > 0) {
-							var index = $scope.lanes.indexOf(parent[0].type.replace('_ioc', ''));
-							parent.forEach(function(child) {
-								child.dd = dateFormat.parse(child.time);
-								child.segment = d3.time.hour(child.dd);
-								child.lane = index;
-							})
-							$scope.crossfilterDeep.add(parent);
-						}
+						var index = $scope.lanes.indexOf(parent[0].type.replace('_ioc', ''));
+						parent.forEach(function(child) {
+							child.dd = dateFormat.parse(child.time);
+							child.segment = d3.time.hour(child.dd);
+							child.lane = index;
+						})
+						$scope.crossfilterDeep.add(parent);
 					});
 					var itemsDimension = $scope.crossfilterDeep.dimension(function(d){ return d.time });
 					$scope.deepItems = itemsDimension.top(Infinity);
 					callback($scope.deepItems);
+					$scope.alert.style('display', 'block');
 				});
 		}
 	}
