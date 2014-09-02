@@ -2171,7 +2171,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .text(function(d) { return d; });
 
                     var gateway_legend = vis.selectAll(".gateway_legend")
-                        .data(["Cleartex Gateway"])
+                        .data(["Cleartext COI"])
                         .enter().append("g")
                         .attr("class", "gateway_legend")
                         .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
