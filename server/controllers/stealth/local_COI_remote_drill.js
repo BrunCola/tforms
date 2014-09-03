@@ -64,11 +64,8 @@ module.exports = function(pool) {
 							'`conn` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `lan_zone`= ? '+
-							'AND `lan_ip`= ? '+
-							'AND `remote_ip`= ? '+
-							'AND `ioc`=? ',
-					insert: [start, end, req.query.lan_zone, req.query.src_ip, req.query.remote_ip, req.query.ioc],
+							'AND `lan_ip`= ? ',
+					insert: [start, end, req.query.src_ip],
 					params: [
 						{title: "Time", select: "time"},
 						{title: "Zone", select: "lan_zone"},
@@ -121,9 +118,8 @@ module.exports = function(pool) {
 							'`conn` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `lan_zone`= ? '+
 							'AND `lan_ip`= ? ',
-					insert: [start, end, req.query.lan_zone, req.query.src_ip],
+					insert: [start, end, req.query.src_ip],
 					params: [
 						{title: "Time", select: "time"},
 						{title: "Zone", select: "lan_zone"},
@@ -171,11 +167,8 @@ module.exports = function(pool) {
 							'`dns` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `lan_zone`= ? '+
-							'AND `lan_ip`= ? '+
-							'AND `remote_ip`= ? '+
-							'AND `ioc`=?',
-					insert: [start, end, req.query.lan_zone, req.query.src_ip, req.query.remote_ip, req.query.ioc],
+							'AND `lan_ip`= ? ',
+					insert: [start, end, req.query.src_ip],
 					params: [
 						{title: "Time", select: "time"},
 						{title: "Protocol", select: "proto"},
@@ -218,9 +211,8 @@ module.exports = function(pool) {
 							'`dns` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `lan_zone`=?'+
-							'AND `lan_ip`=?',
-					insert: [start, end, req.query.lan_zone, req.query.src_ip],
+							'AND `lan_ip`= ? ',
+					insert: [start, end, req.query.src_ip],
 					params: [
 						{title: "Time", select: "time"},
 						{title: "Protocol", select: "proto"},
@@ -267,11 +259,8 @@ module.exports = function(pool) {
 							'`http` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `lan_zone`= ? '+
-							'AND `lan_ip`= ? '+
-							'AND `remote_ip`= ? '+
-							'AND `ioc`=?',
-					insert: [start, end, req.query.lan_zone, req.query.src_ip, req.query.remote_ip, req.query.ioc],
+							'AND `lan_ip`= ? ',
+					insert: [start, end, req.query.src_ip],
 					params: [
 						{title: "Time", select: "time"},
 						{title: "Host", select: "host"},
@@ -316,9 +305,8 @@ module.exports = function(pool) {
 							'`http` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `lan_zone`= ?'+
-							'AND `lan_ip`= ?',
-					insert: [start, end, req.query.lan_zone, req.query.src_ip],
+							'AND `lan_ip`= ? ',
+					insert: [start, end, req.query.src_ip],
 					params: [
 						{title: "Time", select: "time"},
 						{title: "Host", select: "host"},
@@ -360,11 +348,8 @@ module.exports = function(pool) {
 							'`ssl` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `lan_zone`= ? '+
-							'AND `lan_ip`= ? '+
-							'AND `remote_ip`= ? '+
-							'AND `ioc`=?',
-					insert: [start, end, req.query.lan_zone, req.query.src_ip, req.query.remote_ip, req.query.ioc],
+							'AND `lan_ip`= ? ',
+					insert: [start, end, req.query.src_ip],
 					params: [
 						{title: "Time", select: "time"},
 						{title: "Server Name", select: "server_name"},
@@ -409,9 +394,8 @@ module.exports = function(pool) {
 							'`ssl` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `lan_zone`= ?'+
-							'AND `lan_ip`= ?',
-					insert: [start, end, req.query.lan_zone, req.query.src_ip],
+							'AND `lan_ip`= ? ',
+					insert: [start, end, req.query.src_ip],
 					params: [
 						{title: "Time", select: "time"},
 						{title: "Server Name", select: "server_name"},
@@ -454,11 +438,8 @@ module.exports = function(pool) {
 							'`file` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `lan_zone`= ? '+
-							'AND `lan_ip`=? '+
-							'AND `remote_ip`= ? '+
-							'AND `ioc`=?',
-					insert: [start, end, req.query.lan_zone, req.query.src_ip, req.query.remote_ip, req.query.ioc],
+							'AND `lan_ip`= ? ',
+					insert: [start, end, req.query.src_ip],
 					params: [
 						{title: "Time", select: "time"},
 						{title: "File Type", select: "mime"},
@@ -499,9 +480,8 @@ module.exports = function(pool) {
 							'`file` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `lan_zone`= ?'+
-							'AND `lan_ip`= ?',
-					insert: [start, end, req.query.lan_zone, req.query.src_ip],
+							'AND `lan_ip`= ? ',
+					insert: [start, end, req.query.src_ip],
 					params: [
 						{title: "Time", select: "time"},
 						{title: "File Type", select: "mime"},
