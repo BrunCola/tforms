@@ -675,7 +675,8 @@ module.exports = function(pool) {
 								'WHERE '+
 									'time BETWEEN ? AND ? '+
 									'AND `out_bytes` = 0 '+
-									'AND `lan_ip` = ? ',
+									'AND `lan_ip` = ? '+
+									'AND lan_ip LIKE "192.168.222.%"',
 							insert: [start, end, req.query.lan_ip, req.query.lan_ip],
 							params: [
 								{title: "Time", select: "time"},

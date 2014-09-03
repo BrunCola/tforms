@@ -12,7 +12,7 @@ module.exports = function(pool) {
 	return {
 		render: function(req, res) {
 			var result = [];
-			var columns = [];
+			var columns = {};
 			function handleReturn(data, callback) {
 				if ((data !== null) && (data.aaData.length > 0)) {
 					// data.aaData.columns = data.params;
