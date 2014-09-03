@@ -11,6 +11,7 @@ module.exports = function (sql, conn, callback) {
 		connection.query(sql.query, sql.insert, function(err, result) {
 			connection.release();
 			if (err) {
+				console.log(err)
 				callback(err, null);
 			} else {
 				//var arr = this.arr;

@@ -24,6 +24,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 	
 	$http({method: 'GET', url: query}).
 	success(function(data) {
+		$scope.data = data;
 		$scope.crossfilterData = crossfilter();
 		// var laneIndex = 0;
 		if ($scope.global.user.level === 3) {
@@ -44,8 +45,9 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 		$scope.$broadcast('laneGraph');
 
 
-		$scope.open = function (d) {
+		$scope.open = function (d, columns) {
 			$scope.mData = d;
+			$scope.columns = columns;
 			// $scope.$broadcast('moodal', d);
 			$scope.modalInstance = $modal.open({
 				templateUrl: 'tableModal.html',
@@ -53,7 +55,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 				keyboard: true,
 				resolve: {
 					data: function() {
-						return $scope.mData;
+						return {data: $scope.mData, columns: $scope.columns};
 					}
 				},
 				windowClass: 'modalTable'
@@ -63,8 +65,13 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 			$scope.ok = function () {
 				$modalInstance.close();
 			};
-			$scope.data = data;
+
+			$scope.data = [];
+			$scope.data.push(data.data);
+			$scope.columns = data.columns;
 		};
+
+
 
 		$scope.description = function (d) {
 			$scope.mData = d;

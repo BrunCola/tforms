@@ -33,12 +33,12 @@ angular.module('mean.pages').directive('modalWindow', function() {
                 var elm = $(element).find('div#mTable');
                 elm.html('<div><table style="width:100%; height:100%; overflow:scroll !important;" cellpadding="0" cellspacing="0" border="0" class="display" id="tTable"></table></div>');
                 elm.find('#tTable').dataTable({
-                    "aaData": $scope.data.data,
+                    "aaData": $scope.data,
                     "sDom": '<"clear"C>T<"clear">r<"table_overflow"t>ip',
                     "bDestroy": true,
                     "bFilter": true,
                     "bRebuild": true,
-                    "aoColumns": $scope.data.columns,
+                    "aoColumns": $scope.columns[$scope.data[0].type],
                     "iDisplayLength": 4,
                 });
             }
@@ -2239,9 +2239,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                 var laneLength = $scope.lanes.length;
                 var width = element.width();
 
-                var m = [20, 15, 15, 120], //top right bottom left
+                var m = [5, 15, 15, 120], //top right bottom left
                     w = width - m[1] - m[3],
-                    h = 500 - m[0] - m[2],
+                    h = 350 - m[0] - m[2],
                     miniHeight = 0,
                     mainHeight = h - miniHeight - 50;
 
@@ -2303,7 +2303,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                 
                 var xAxisBrush = chart.append("g")
                     .attr("class", "x axis")
-                    .attr("transform", "translate(" + m[3] + "," + mainHeight + ")")
+                    .attr("transform", "translate(" + m[3] + "," + (mainHeight+9) + ")")
                     .call(xAxis);
 
                 //main lanes and texts
@@ -2362,7 +2362,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                     if (nickname.search("ioc") !== -1) {
                         element.attr('class', 'ioc');
                         element = element.append('g')
-                            .attr('transform', 'scale(0.8)');
+                            .attr('transform', 'translate(-6, -6)scale(0.8)');
                         element.append('svg:path')
                             .attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
                             .attr('fill', colors(nickname));
@@ -2388,7 +2388,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                     } else {
                         element.attr('class', nickname);
                         element = element.append('g')
-                            .attr('transform', 'scale(0.8)');
+                            .attr('transform', 'translate(-6, -6)scale(0.8)');
                         switch(nickname){
                             case 'file':
                                 element.append('circle')
@@ -2661,7 +2661,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                             .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
                             .attr("class", function(d) {return "mainItem" + d.lane;})
                             .on("click", function (d){
-                                $scope.open(d);
+                                $scope.open(d, $scope.data.columns);
                             });
                         $scope.point(elm, d.type);
                     })
@@ -2734,7 +2734,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                 .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
                                 .attr("class", function(d) {return "mainItem" + d.lane;})
                                 .on("click", function (d){
-                                    $scope.open(d);
+                                    $scope.open(d, $scope.data.columns);
                                 });
                                 // .attr("width", 5)
                                 // .attr("height", function(d) {return .8 * y1(1);});
