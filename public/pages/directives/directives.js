@@ -1,1011 +1,1011 @@
 'use strict';
 
 angular.module('mean.pages').directive('head', function() {
-	return {
-		restrict: 'A',
-		scope : {
-			title : '@'
-		},
-		templateUrl : 'public/pages/views/head.html',
-		transclude : true
-	};
+    return {
+        restrict: 'A',
+        scope : {
+            title : '@'
+        },
+        templateUrl : 'public/pages/views/head.html',
+        transclude : true
+    };
 });
 
 angular.module('mean.system').directive('iocDesc', function() {
-	return {
-		link: function($scope, element, attrs) {
-			$scope.$on('iocDesc', function (event, description) {
-				console.log(description)
-				$(element).html('... <a href="javascript:void(0);"><strong ng-click="open">Read More</strong></a>');
-				$(element).on('click', function(){
-					$scope.description(description);
-				})
-			});
-		}
-	};
+    return {
+        link: function($scope, element, attrs) {
+            $scope.$on('iocDesc', function (event, description) {
+                console.log(description)
+                $(element).html('... <a href="javascript:void(0);"><strong ng-click="open">Read More</strong></a>');
+                $(element).on('click', function(){
+                    $scope.description(description);
+                })
+            });
+        }
+    };
 });
 
 angular.module('mean.pages').directive('modalWindow', function() {
-	return {
-		// restrict: 'EA',
-		link: function($scope, element) {
-			if ($scope.data !== undefined) {
-				var elm = $(element).find('div#mTable');
-				elm.html('<div><table style="width:100%; height:100%; overflow:scroll !important;" cellpadding="0" cellspacing="0" border="0" class="display" id="tTable"></table></div>');
-				elm.find('#tTable').dataTable({
-					"aaData": $scope.data.data,
-					"sDom": '<"clear"C>T<"clear">r<"table_overflow"t>ip',
-					"bDestroy": true,
-					"bFilter": true,
-					"bRebuild": true,
-					"aoColumns": $scope.data.columns,
-					"iDisplayLength": 4,
-				});
-			}
-		}
-	}
+    return {
+        // restrict: 'EA',
+        link: function($scope, element) {
+            if ($scope.data !== undefined) {
+                var elm = $(element).find('div#mTable');
+                elm.html('<div><table style="width:100%; height:100%; overflow:scroll !important;" cellpadding="0" cellspacing="0" border="0" class="display" id="tTable"></table></div>');
+                elm.find('#tTable').dataTable({
+                    "aaData": $scope.data,
+                    "sDom": '<"clear"C>T<"clear">r<"table_overflow"t>ip',
+                    "bDestroy": true,
+                    "bFilter": true,
+                    "bRebuild": true,
+                    "aoColumns": $scope.columns[$scope.data[0].type],
+                    "iDisplayLength": 4,
+                });
+            }
+        }
+    }
 });
 
 angular.module('mean.pages').directive('loadingError', function() {
-	return {
-		link: function($scope, element, attrs) {
-			$scope.$on('loadError', function (event) {
-				noty({
-					layout: 'top',
-					theme: 'defaultTheme',
-					type: 'error',
-					text: 'Sorry, no results were returned.',
-					dismissQueue: false, // If you want to use queue feature set this true
-					animation: {
-						open: { height: 'toggle' },
-						close: { height: 'toggle' },
-						easing: 'swing',
-						speed: 500 // opening & closing animation speed
-					},
-					timeout: 2300 // delay for closing event. Set false for sticky notifications
-				});
-				$scope.$broadcast('spinnerHide');
-			});
-		}
-	};
+    return {
+        link: function($scope, element, attrs) {
+            $scope.$on('loadError', function (event) {
+                noty({
+                    layout: 'top',
+                    theme: 'defaultTheme',
+                    type: 'error',
+                    text: 'Sorry, no results were returned.',
+                    dismissQueue: false, // If you want to use queue feature set this true
+                    animation: {
+                        open: { height: 'toggle' },
+                        close: { height: 'toggle' },
+                        easing: 'swing',
+                        speed: 500 // opening & closing animation speed
+                    },
+                    timeout: 2300 // delay for closing event. Set false for sticky notifications
+                });
+                $scope.$broadcast('spinnerHide');
+            });
+        }
+    };
 });
 
 angular.module('mean.pages').directive('newNotification', function() {
-	return {
-		link: function($scope, element, attrs) {
-			$scope.$on('newNoty', function (event, ioc) {
-				noty({
-					layout: 'bottomLeft',
-					theme: 'defaultTheme',
-					type: 'information',
-					text: 'Incoming flagged host: '+ioc,
-					maxVisible: 1,
-					dismissQueue: true, // If you want to use queue feature set this true
-					animation: {
-						open: { height: 'toggle' },
-						close: { height: 'toggle' },
-						easing: 'swing',
-						speed: 500 // opening & closing animation speed
-					},
-					timeout: 5000 // delay for closing event. Set false for sticky notifications
-				});
-			});
-			$scope.$on('killNoty', function (event) {
-				$.noty.closeAll();
-				$(".flagged_drop").effect("highlight", {}, 5500);
-			});
-		}
-	};
+    return {
+        link: function($scope, element, attrs) {
+            $scope.$on('newNoty', function (event, ioc) {
+                noty({
+                    layout: 'bottomLeft',
+                    theme: 'defaultTheme',
+                    type: 'information',
+                    text: 'Incoming flagged host: '+ioc,
+                    maxVisible: 1,
+                    dismissQueue: true, // If you want to use queue feature set this true
+                    animation: {
+                        open: { height: 'toggle' },
+                        close: { height: 'toggle' },
+                        easing: 'swing',
+                        speed: 500 // opening & closing animation speed
+                    },
+                    timeout: 5000 // delay for closing event. Set false for sticky notifications
+                });
+            });
+            $scope.$on('killNoty', function (event) {
+                $.noty.closeAll();
+                $(".flagged_drop").effect("highlight", {}, 5500);
+            });
+        }
+    };
 });
 
 angular.module('mean.system').directive('loadingSpinner', ['$rootScope', function ($rootScope) {
-	return {
-		link: function($scope, element, attrs) {
-			$('.page-content').fadeTo(500, 0.7);
-			var opts = {
-				lines: 11, // The number of lines to draw
-				length: 21, // The length of each line
-				width: 8, // The line thickness
-				radius: 14, // The radius of the inner circle
-				corners: 1, // Corner roundness (0..1)
-				rotate: 0, // The rotation offset
-				direction: 1, // 1: clockwise, -1: counterclockwise
-				color: '#000', // #rgb or #rrggbb or array of colors
-				speed: 1.2, // Rounds per second
-				trail: 57, // Afterglow percentage
-				shadow: false, // Whether to render a shadow
-				hwaccel: false, // Whether to use hardware acceleration
-				className: 'spinner', // The CSS class to assign to the spinner
-				zIndex: 2e9, // The z-index (defaults to 2000000000)
-				top: 'auto', // Top position relative to parent in px
-				left: 'auto' // Left position relative to parent in px
-			};
-			var target = document.getElementById('loading-spinner');
-			var spinner = new Spinner(opts).spin(target);
-			$(target).data('spinner', spinner);
-			$scope.$on('spinnerHide', function (event) {
-				if ($rootScope.rootpage !== false) {
-					$('#loading-spinner').data('spinner').stop();
-				}
-				$('html, body').animate({scrollTop:0}, 'slow');
-				window.onscroll = function (event) {
-					$('html, body').stop( true, true ).animate();
-				}
-				$(".page-content").fadeTo(500, 1);
-			});
-		}
-	};
+    return {
+        link: function($scope, element, attrs) {
+            $('.page-content').fadeTo(500, 0.7);
+            var opts = {
+                lines: 11, // The number of lines to draw
+                length: 21, // The length of each line
+                width: 8, // The line thickness
+                radius: 14, // The radius of the inner circle
+                corners: 1, // Corner roundness (0..1)
+                rotate: 0, // The rotation offset
+                direction: 1, // 1: clockwise, -1: counterclockwise
+                color: '#000', // #rgb or #rrggbb or array of colors
+                speed: 1.2, // Rounds per second
+                trail: 57, // Afterglow percentage
+                shadow: false, // Whether to render a shadow
+                hwaccel: false, // Whether to use hardware acceleration
+                className: 'spinner', // The CSS class to assign to the spinner
+                zIndex: 2e9, // The z-index (defaults to 2000000000)
+                top: 'auto', // Top position relative to parent in px
+                left: 'auto' // Left position relative to parent in px
+            };
+            var target = document.getElementById('loading-spinner');
+            var spinner = new Spinner(opts).spin(target);
+            $(target).data('spinner', spinner);
+            $scope.$on('spinnerHide', function (event) {
+                if ($rootScope.rootpage !== false) {
+                    $('#loading-spinner').data('spinner').stop();
+                }
+                $('html, body').animate({scrollTop:0}, 'slow');
+                window.onscroll = function (event) {
+                    $('html, body').stop( true, true ).animate();
+                }
+                $(".page-content").fadeTo(500, 1);
+            });
+        }
+    };
 }]);
 
 angular.module('mean.system').directive('sidebar', function() {
-	return {
-		link: function ($scope, element, attrs) {
-			var floating_logo = function() {
-				var viewPort = $(window).height();
-				var sidebarHeight = $('.page-sidebar').height() + 180;
-				if (viewPort < sidebarHeight) {
-					$('#footimg').css({ display: 'none' });
-				}
-				else {
-					$('#footimg').css({ position: 'fixed', bottom: 30, display: '' });
-				}
-			};
-			floating_logo();
-			$(window).scroll(function() {
-				$('.page-sidebar').css({ position: 'fixed' });
-			});
-			// BOTTOM LEFT LOGO VISIBILITY
-			$('.page-sidebar li a').click(function() {
-				setTimeout(function() {
-					floating_logo();
-				}, 150);
-			});
-			$(window).bind("resize", function() {
-				floating_logo();
-			});
-			// sidebar memory
-			if (!localStorage.getItem('sidebar')) {
-				localStorage.setItem('sidebar', 1);
-			}
-			if (localStorage.getItem('sidebar') == 0) { // keep sidebar consistent between pages
-				var body = $('body');
-				var sidebar = $('.page-sidebar');
-				$('.sidebar-search', sidebar).removeClass('open');
-				body.addClass('page-sidebar-closed');
-			} else {
-				var body = $('body');
-				var sidebar = $('.page-sidebar');
-				body.removeClass('page-sidebar-closed');
-				sidebar.css('width', '');
-			}
-			App.init();
-		}
-	};
+    return {
+        link: function ($scope, element, attrs) {
+            var floating_logo = function() {
+                var viewPort = $(window).height();
+                var sidebarHeight = $('.page-sidebar').height() + 180;
+                if (viewPort < sidebarHeight) {
+                    $('#footimg').css({ display: 'none' });
+                }
+                else {
+                    $('#footimg').css({ position: 'fixed', bottom: 30, display: '' });
+                }
+            };
+            floating_logo();
+            $(window).scroll(function() {
+                $('.page-sidebar').css({ position: 'fixed' });
+            });
+            // BOTTOM LEFT LOGO VISIBILITY
+            $('.page-sidebar li a').click(function() {
+                setTimeout(function() {
+                    floating_logo();
+                }, 150);
+            });
+            $(window).bind("resize", function() {
+                floating_logo();
+            });
+            // sidebar memory
+            if (!localStorage.getItem('sidebar')) {
+                localStorage.setItem('sidebar', 1);
+            }
+            if (localStorage.getItem('sidebar') == 0) { // keep sidebar consistent between pages
+                var body = $('body');
+                var sidebar = $('.page-sidebar');
+                $('.sidebar-search', sidebar).removeClass('open');
+                body.addClass('page-sidebar-closed');
+            } else {
+                var body = $('body');
+                var sidebar = $('.page-sidebar');
+                body.removeClass('page-sidebar-closed');
+                sidebar.css('width', '');
+            }
+            App.init();
+        }
+    };
 });
 
 angular.module('mean.pages').directive('severityLevels', ['$timeout', function ($timeout) {
-	return {
-		link: function ($scope, element, attrs) {
-			$('.alert').on('click',function(){
-				alert('test');
-			});
-			function updateSevCounts(sevcounts) {
-				$('#severity').children().addClass('severity-deselect');
-				for (var s in sevcounts) {
-					if (sevcounts[s].value === 0) {
-						$('#al'+sevcounts[s].key).html(' '+sevcounts[s].value+' ');
-						$('.alert'+sevcounts[s].key).addClass('severity-deselect');
-					} else {
-						$('#al'+sevcounts[s].key).html(' '+sevcounts[s].value+' ');
-						$('.alert'+sevcounts[s].key).removeClass('severity-deselect');
-					}
-				}
-			}
+    return {
+        link: function ($scope, element, attrs) {
+            $('.alert').on('click',function(){
+                alert('test');
+            });
+            function updateSevCounts(sevcounts) {
+                $('#severity').children().addClass('severity-deselect');
+                for (var s in sevcounts) {
+                    if (sevcounts[s].value === 0) {
+                        $('#al'+sevcounts[s].key).html(' '+sevcounts[s].value+' ');
+                        $('.alert'+sevcounts[s].key).addClass('severity-deselect');
+                    } else {
+                        $('#al'+sevcounts[s].key).html(' '+sevcounts[s].value+' ');
+                        $('.alert'+sevcounts[s].key).removeClass('severity-deselect');
+                    }
+                }
+            }
 
-			$scope.$on('severityLoad', function () {
-				$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert1 alert"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> 0 </span></button>');
-				$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert2 alert"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> 0 </span></button>');
-				$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert3 alert"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> 0 </span></button>');
-				$('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
-				$scope.severityDim = $scope.crossfilterData.dimension(function(d){return d.ioc_severity;});
-				$scope.sevcounts = $scope.severityDim.group().reduceSum(function(d) {return d.count;}).top(Infinity);
-				updateSevCounts($scope.sevcounts);
-				$('.alert1').on('click',function(){
-					$scope.severityDim.filterAll();
-					var arr = [];
-					if ($('.alert1').hasClass('selected')) {
-						$('.alert1').removeClass('selected');
-					} else {
-						for(var i in $scope.severityDim.top(Infinity)) {
-							if ($scope.severityDim.top(Infinity)[i].ioc_severity === 1) {
-								arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
-							}
-						}
-						$scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
-						$('.alert1').addClass('selected');
-					}
-					$scope.$broadcast('crossfilterToTable');
-					dc.redrawAll();
-					updateSevCounts($scope.sevcounts);
-				});
-				$('.alert2').on('click',function(){
-					$scope.severityDim.filterAll();
-					var arr = [];
-					if ($('.alert2').hasClass('selected')) {
-						$('.alert2').removeClass('selected');
-					} else {
-						for(var i in $scope.severityDim.top(Infinity)) {
-							if ($scope.severityDim.top(Infinity)[i].ioc_severity === 2) {
-								arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
-							}
-						}
-						$scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
-						$('.alert2').addClass('selected');
-					}
-					$scope.$broadcast('crossfilterToTable');
-					dc.redrawAll();
-					updateSevCounts($scope.sevcounts);
-				});
-				$('.alert3').on('click',function(){
-					$scope.severityDim.filterAll();
-					var arr = [];
-					if ($('.alert3').hasClass('selected')) {
-						$('.alert3').removeClass('selected');
-					} else {
-						for(var i in $scope.severityDim.top(Infinity)) {
-							if ($scope.severityDim.top(Infinity)[i].ioc_severity === 3) {
-								arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
-							}
-						}
-						$scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
-						$('.alert3').addClass('selected');
-					}
-					$scope.$broadcast('crossfilterToTable');
-					dc.redrawAll();
-					updateSevCounts($scope.sevcounts);
-				});
-				$('.alert4').on('click',function(){
-					$scope.severityDim.filterAll();
-					var arr = [];
-					if ($('.alert4').hasClass('selected')) {
-						$('.alert4').removeClass('selected');
-					} else {
-						for(var i in $scope.severityDim.top(Infinity)) {
-							if ($scope.severityDim.top(Infinity)[i].ioc_severity === 4) {
-								arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
-							}
-						}
-						$scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
-						$('.alert4').addClass('selected');
-					}
-					$scope.$broadcast('crossfilterToTable');
-					dc.redrawAll();
-					updateSevCounts($scope.sevcounts);
-				});
-			});
-			$scope.$on('severityUpdate', function () {
-				updateSevCounts($scope.sevcounts);
-			});
-		}
-	};
+            $scope.$on('severityLoad', function () {
+                $('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert1 alert"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> 0 </span></button>');
+                $('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert2 alert"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> 0 </span></button>');
+                $('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert3 alert"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> 0 </span></button>');
+                $('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
+                $scope.severityDim = $scope.crossfilterData.dimension(function(d){return d.ioc_severity;});
+                $scope.sevcounts = $scope.severityDim.group().reduceSum(function(d) {return d.count;}).top(Infinity);
+                updateSevCounts($scope.sevcounts);
+                $('.alert1').on('click',function(){
+                    $scope.severityDim.filterAll();
+                    var arr = [];
+                    if ($('.alert1').hasClass('selected')) {
+                        $('.alert1').removeClass('selected');
+                    } else {
+                        for(var i in $scope.severityDim.top(Infinity)) {
+                            if ($scope.severityDim.top(Infinity)[i].ioc_severity === 1) {
+                                arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
+                            }
+                        }
+                        $scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
+                        $('.alert1').addClass('selected');
+                    }
+                    $scope.$broadcast('crossfilterToTable');
+                    dc.redrawAll();
+                    updateSevCounts($scope.sevcounts);
+                });
+                $('.alert2').on('click',function(){
+                    $scope.severityDim.filterAll();
+                    var arr = [];
+                    if ($('.alert2').hasClass('selected')) {
+                        $('.alert2').removeClass('selected');
+                    } else {
+                        for(var i in $scope.severityDim.top(Infinity)) {
+                            if ($scope.severityDim.top(Infinity)[i].ioc_severity === 2) {
+                                arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
+                            }
+                        }
+                        $scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
+                        $('.alert2').addClass('selected');
+                    }
+                    $scope.$broadcast('crossfilterToTable');
+                    dc.redrawAll();
+                    updateSevCounts($scope.sevcounts);
+                });
+                $('.alert3').on('click',function(){
+                    $scope.severityDim.filterAll();
+                    var arr = [];
+                    if ($('.alert3').hasClass('selected')) {
+                        $('.alert3').removeClass('selected');
+                    } else {
+                        for(var i in $scope.severityDim.top(Infinity)) {
+                            if ($scope.severityDim.top(Infinity)[i].ioc_severity === 3) {
+                                arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
+                            }
+                        }
+                        $scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
+                        $('.alert3').addClass('selected');
+                    }
+                    $scope.$broadcast('crossfilterToTable');
+                    dc.redrawAll();
+                    updateSevCounts($scope.sevcounts);
+                });
+                $('.alert4').on('click',function(){
+                    $scope.severityDim.filterAll();
+                    var arr = [];
+                    if ($('.alert4').hasClass('selected')) {
+                        $('.alert4').removeClass('selected');
+                    } else {
+                        for(var i in $scope.severityDim.top(Infinity)) {
+                            if ($scope.severityDim.top(Infinity)[i].ioc_severity === 4) {
+                                arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
+                            }
+                        }
+                        $scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
+                        $('.alert4').addClass('selected');
+                    }
+                    $scope.$broadcast('crossfilterToTable');
+                    dc.redrawAll();
+                    updateSevCounts($scope.sevcounts);
+                });
+            });
+            $scope.$on('severityUpdate', function () {
+                updateSevCounts($scope.sevcounts);
+            });
+        }
+    };
 }]);
 
 angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '$rootScope', '$state', function ($timeout, $location, $rootScope, $state) {
-	return {
-		link: function ($scope, element, attrs) {
-			$timeout(function () {
-				var searchObj;
-				if ($scope.daterange !== false) {
-					$(element).daterangepicker(
-						{
-						ranges: {
-							'Today': [moment().startOf('day'), moment()],
-							'Yesterday': [moment().subtract('days', 1).startOf('day'), moment().subtract('days', 1).endOf('day')],
-							'Last 7 Days': [moment().subtract('days', 6), moment()],
-							'Last 30 Days': [moment().subtract('days', 29), moment()],
-							'This Month': [moment().startOf('month'), moment().endOf('month')],
-							'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
-						},
-							format: 'MMMM D, YYYY h:mm A',
-							timePicker: true,
-							timePickerIncrement: 5,
-							startDate: $scope.start,
-							endDate: $scope.end
-						},
-						function(start, end) {
-							$('#reportrange span').html(start.format('MMMM D, YYYY h:mm A') + ' - ' + end.format('MMMM D, YYYY h:mm A'));
-							searchObj = $location.$$search;
-							searchObj.start = moment(start.format('MMMM D, YYYY h:mm A')).unix();
-							searchObj.end = moment(end.format('MMMM D, YYYY h:mm A')).unix();
-						}
-					);
-					$('#reportrange').on('apply', function(ev, picker) {
-						// some kind of clear option is needed here
-						$state.go($state.current, searchObj);
-					});
-				}
-			}, 0, false);
-		}
-	};
+    return {
+        link: function ($scope, element, attrs) {
+            $timeout(function () {
+                var searchObj;
+                if ($scope.daterange !== false) {
+                    $(element).daterangepicker(
+                        {
+                        ranges: {
+                            'Today': [moment().startOf('day'), moment()],
+                            'Yesterday': [moment().subtract('days', 1).startOf('day'), moment().subtract('days', 1).endOf('day')],
+                            'Last 7 Days': [moment().subtract('days', 6), moment()],
+                            'Last 30 Days': [moment().subtract('days', 29), moment()],
+                            'This Month': [moment().startOf('month'), moment().endOf('month')],
+                            'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+                        },
+                            format: 'MMMM D, YYYY h:mm A',
+                            timePicker: true,
+                            timePickerIncrement: 5,
+                            startDate: $scope.start,
+                            endDate: $scope.end
+                        },
+                        function(start, end) {
+                            $('#reportrange span').html(start.format('MMMM D, YYYY h:mm A') + ' - ' + end.format('MMMM D, YYYY h:mm A'));
+                            searchObj = $location.$$search;
+                            searchObj.start = moment(start.format('MMMM D, YYYY h:mm A')).unix();
+                            searchObj.end = moment(end.format('MMMM D, YYYY h:mm A')).unix();
+                        }
+                    );
+                    $('#reportrange').on('apply', function(ev, picker) {
+                        // some kind of clear option is needed here
+                        $state.go($state.current, searchObj);
+                    });
+                }
+            }, 0, false);
+        }
+    };
 }]);
 
 angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$rootScope', 'iocIcon', 'appIcon', 'mimeIcon', 'socket', '$http', function ($timeout, $location, $rootScope, iocIcon, appIcon, mimeIcon, socket, $http) {
-	return {
-		link: function ($scope, element, attrs) {
-			$scope.socket = socket;
-			$scope.$on('tableLoad', function (event, tableData, params, tableType) {
-				function redrawTable() {
-					$('#table').dataTable().fnClearTable();
-					$('#table').dataTable().fnAddData(tableData.top(Infinity));
-					$('#table').dataTable().fnDraw();
-				}
+    return {
+        link: function ($scope, element, attrs) {
+            $scope.socket = socket;
+            $scope.$on('tableLoad', function (event, tableData, params, tableType) {
+                function redrawTable() {
+                    $('#table').dataTable().fnClearTable();
+                    $('#table').dataTable().fnAddData(tableData.top(Infinity));
+                    $('#table').dataTable().fnDraw();
+                }
 
-				for (var t in params) {
-					if (params[t] != null) {
-						if ($location.$$absUrl.search('/report#!/') === -1) {
-							$(element).prepend('<div class="row-fluid"> '+
-							'<div class="span12"> '+
-									'<div class="jdash-header">'+params[t].title+'</div> '+
-									'<div  style="background-color:#FFF;" class="box"> '+
-										'<div class="box-content"> '+
-											'<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="'+params[t].div+'" ></table>'+
-										'</div> '+
-									'</div> '+
-								'</div> '+
-							'</div><br />');
-						} else {
-							$(element).prepend('<div style="margin-bottom:17px;margin-left:0;"> '+
-								'<div class="row-fluid"> '+
-									'<div class="span12"> '+
-										'<div class="jdash-header">'+params[t].title+'</div> '+
-										'<div  style="background-color:#FFF;" class="box"> '+
-											'<div class="box-content"> '+
-												'<table class="table report-table" id="'+params[t].div+'" ></table>'+
-											'</div> '+
-										'</div> '+
-									'</div> '+
-								'</div> '+
-							'</div><br />');
-						}
-					}
-					if (params[t]) {
-						if (params[t].pagebreakBefore === true) {
-							$(element).prepend('<div style="page-break-before: always;"></div>');
-						}
-					}
-				}
-				var bFilter,iDisplayLength,bStateSave,bPaginate,sDom,bDeferRender,notReport,stateSave;
-				switch(tableType) {
-					case 'drill':
-						if ($location.$$absUrl.search('/report#!/') === -1) {
-							iDisplayLength = 5;
-							bDeferRender: true
-							notReport = true;
-							sDom = '<"clear"><"clear">rC<"table_overflow"t>ip';
-							stateSave: true;
-						} else {
-							iDisplayLength = 99999;
-							bDeferRender = true;
-							sDom = 'r<t>';
-							notReport = false;
-							stateSave: false;
-						}
-						for (var t in params) {
-							if (params[t] != null) {
-							// $('#'+params[t].div).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table-'+params[t].div+'" ></table>');
-								$('#'+params[t].div).dataTable({
-									'aaData': params[t].aaData,
-									'aoColumns': params[t].params,
-									'bDeferRender': bDeferRender,
-									'bDestroy': true,
-									'oColVis': {
-										'iOverlayFade': 400
-									},
-									'stateSave': stateSave,
-									//'bProcessing': true,
-									//'bRebuild': true,
-									'aaSorting': params[t].sort,
-									//'bFilter': true,
-									// 'bPaginate': bPaginate,
-									'sDom': sDom,
-									'iDisplayLength': iDisplayLength,
-									'fnPreDrawCallback': function( oSettings ) {
-										$scope.r = [];
-										for (var a in oSettings.aoColumns) {
-											// find the index of column rows so they can me modified below
-											if (oSettings.aoColumns[a].bVisible === true) {
-												$scope.r.push(oSettings.aoColumns[a].mData);
-											}
-										}
-									},
-									'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-										if (aData.ioc_severity && $scope.r.indexOf('ioc_severity') !== -1) {
-											var rIndex = $scope.r.indexOf("ioc_severity");
-											$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa '+iocIcon(aData.ioc_severity)+' fa-stack-1x fa-inverse"></i></span>');
-										}
-										if (aData.remote_cc && $scope.r.indexOf('remote_cc') !== -1) {
-											$('td:eq('+$scope.r.indexOf("remote_cc")+')', nRow).html('<div class="f32"><span class="flag '+aData.remote_cc.toLowerCase()+'"></span></div>');
-										}
-										if (aData.l7_proto && $scope.r.indexOf('l7_proto') !== -1) {
-											$('td:eq('+$scope.r.indexOf("l7_proto")+')', nRow).html(appIcon(aData.l7_proto));
-										}
-										if (aData.mime && $scope.r.indexOf('mime') !== -1) {
-											$('td:eq('+$scope.r.indexOf("mime")+')', nRow).html(mimeIcon(aData.mime));
-										}
-										if (aData.mailfrom && $scope.r.indexOf('mailfrom') !== -1) {
-											var newVar = aData.mailfrom.replace(/[\<\>]/g,'');
-											$('td:eq('+$scope.r.indexOf("mailfrom")+')', nRow).html(newVar);
-										}
-										if (aData.receiptto && $scope.r.indexOf('receiptto') !== -1) {
-											var newVar = aData.receiptto.replace(/[\<\>]/g,'');
-											$('td:eq('+$scope.r.indexOf("receiptto")+')', nRow).html(newVar);
-										}
-										if (!notReport) {
-											if (aData.icon_in_bytes !== undefined){
-												var bIndex = $scope.r.indexOf("icon_in_bytes");
-												if ((aData.icon_in_bytes > 0) && (aData.icon_out_bytes > 0)) {
-													$('td:eq('+bIndex+')', nRow).html('<span><i style="font-size:16px !important" class="fa fa-arrow-up"></i><i style="font-size:16px !important" class="fa fa-arrow-down"></i></span>');
-												} else if ((aData.icon_in_bytes == 0) && (aData.icon_out_bytes > 0)) {
-													$('td:eq('+bIndex+')', nRow).html('<span><i style="opacity:0.25 !important;font-size:16px !important" class="fa fa-arrow-up"></i><i style="font-size:16px !important" class="fa fa-arrow-down"></i></span>');
-												} else if ((aData.icon_in_bytes > 0) && (aData.icon_out_bytes == 0)) {
-													$('td:eq('+bIndex+')', nRow).html('<span><i style="font-size:16px !important" class="fa fa-arrow-up"></i><i style="opacity:0.25 !important;font-size:16px !important" class="fa fa-arrow-down"></i></span>');
-												} else {
-													$('td:eq('+bIndex+')', nRow).html('<span><i style="opacity:0.25 !important;font-size:16px !important" class="fa fa-arrow-up"></i><i style="opacity:0.25 !important;font-size:16px !important" class="fa fa-arrow-down"></i></span>');
-												}
-											}
-										}
-									},
-									'fnDrawCallback': function( oSettings ) {
-										// $('.paginate_button').on('click', function(){
-										// 	console.log('poo')
-										// 	$('html, body').animate({scrollTop:0}, 'slow');
-										// })
-									}
-								});
-							}
-						}
-						break;
-					default:
-						if ($location.$$absUrl.search('/report#!/') === -1) {
-							iDisplayLength = 50;
-							bDeferRender = true;
-							sDom = '<"clear">T<"clear">lCr<"table_overflow"t>ip';
-							notReport = true;
-							stateSave = true;
-						} else {
-							iDisplayLength = 99999;
-							bDeferRender = true;
-							sDom = 'r<t>';
-							notReport = false;
-							stateSave = false;
-						}
-						// $(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table" ></table>');
-						for (var t in params) {
-							params[t].div = $('#'+params[t].div).dataTable({
-								'aaData': tableData.top(Infinity),
-								'aoColumns': params[t].params,
-								'bDeferRender': bDeferRender,
-								// 'bDestroy': true,
-								//'bProcessing': true,
-								// 'bRebuild': true,
-								'aaSorting': params[t].sort,
-								//'bFilter': true,
-								//'bPaginate': true,
-								'stateSave': stateSave,
-								'sDom': sDom,
-								'iDisplayLength': iDisplayLength,
-								 'fnPreDrawCallback': function( oSettings ) {
-									//console.log(oSettings.aoColumns);
-									$scope.r = [], $scope.e = [];
-									for (var a in oSettings.aoColumns) {
-										// find the index of column rows so they can me modified below
-										if (oSettings.aoColumns[a].bVisible === true) {
-											$scope.r.push(oSettings.aoColumns[a].mData);
-										}
-										// push unique to link builder
-										if (oSettings.aoColumns[a].link) {
-											$scope.e.push(oSettings.aoColumns[a]);
-										}
-									}
-								},
-								'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-									if (aData.ioc_severity && $scope.r.indexOf('ioc_severity') !== -1) {
-										var rIndex = $scope.r.indexOf("ioc_severity");
-										$('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa '+iocIcon(aData.ioc_severity)+' fa-stack-1x fa-inverse"></i></span>');
-									}
-									if (aData.remote_cc && $scope.r.indexOf('remote_cc') !== -1) {
-										$('td:eq('+$scope.r.indexOf("remote_cc")+')', nRow).html('<div class="f32"><span class="flag '+aData.remote_cc.toLowerCase()+'"></span></div>');
-									}
-									if (aData.l7_proto && $scope.r.indexOf('l7_proto') !== -1) {
-										// var div = $('td:eq('+$scope.r.indexOf("l7_proto")+')', nRow);
-										// appIcon(d3.select(div[0]), aData.l7_proto);
+                for (var t in params) {
+                    if (params[t] != null) {
+                        if ($location.$$absUrl.search('/report#!/') === -1) {
+                            $(element).prepend('<div class="row-fluid"> '+
+                            '<div class="span12"> '+
+                                    '<div class="jdash-header">'+params[t].title+'</div> '+
+                                    '<div  style="background-color:#FFF;" class="box"> '+
+                                        '<div class="box-content"> '+
+                                            '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="'+params[t].div+'" ></table>'+
+                                        '</div> '+
+                                    '</div> '+
+                                '</div> '+
+                            '</div><br />');
+                        } else {
+                            $(element).prepend('<div style="margin-bottom:17px;margin-left:0;"> '+
+                                '<div class="row-fluid"> '+
+                                    '<div class="span12"> '+
+                                        '<div class="jdash-header">'+params[t].title+'</div> '+
+                                        '<div  style="background-color:#FFF;" class="box"> '+
+                                            '<div class="box-content"> '+
+                                                '<table class="table report-table" id="'+params[t].div+'" ></table>'+
+                                            '</div> '+
+                                        '</div> '+
+                                    '</div> '+
+                                '</div> '+
+                            '</div><br />');
+                        }
+                    }
+                    if (params[t]) {
+                        if (params[t].pagebreakBefore === true) {
+                            $(element).prepend('<div style="page-break-before: always;"></div>');
+                        }
+                    }
+                }
+                var bFilter,iDisplayLength,bStateSave,bPaginate,sDom,bDeferRender,notReport,stateSave;
+                switch(tableType) {
+                    case 'drill':
+                        if ($location.$$absUrl.search('/report#!/') === -1) {
+                            iDisplayLength = 5;
+                            bDeferRender: true
+                            notReport = true;
+                            sDom = '<"clear"><"clear">rC<"table_overflow"t>ip';
+                            stateSave: true;
+                        } else {
+                            iDisplayLength = 99999;
+                            bDeferRender = true;
+                            sDom = 'r<t>';
+                            notReport = false;
+                            stateSave: false;
+                        }
+                        for (var t in params) {
+                            if (params[t] != null) {
+                            // $('#'+params[t].div).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table-'+params[t].div+'" ></table>');
+                                $('#'+params[t].div).dataTable({
+                                    'aaData': params[t].aaData,
+                                    'aoColumns': params[t].params,
+                                    'bDeferRender': bDeferRender,
+                                    'bDestroy': true,
+                                    'oColVis': {
+                                        'iOverlayFade': 400
+                                    },
+                                    'stateSave': stateSave,
+                                    //'bProcessing': true,
+                                    //'bRebuild': true,
+                                    'aaSorting': params[t].sort,
+                                    //'bFilter': true,
+                                    // 'bPaginate': bPaginate,
+                                    'sDom': sDom,
+                                    'iDisplayLength': iDisplayLength,
+                                    'fnPreDrawCallback': function( oSettings ) {
+                                        $scope.r = [];
+                                        for (var a in oSettings.aoColumns) {
+                                            // find the index of column rows so they can me modified below
+                                            if (oSettings.aoColumns[a].bVisible === true) {
+                                                $scope.r.push(oSettings.aoColumns[a].mData);
+                                            }
+                                        }
+                                    },
+                                    'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                                        if (aData.ioc_severity && $scope.r.indexOf('ioc_severity') !== -1) {
+                                            var rIndex = $scope.r.indexOf("ioc_severity");
+                                            $('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa '+iocIcon(aData.ioc_severity)+' fa-stack-1x fa-inverse"></i></span>');
+                                        }
+                                        if (aData.remote_cc && $scope.r.indexOf('remote_cc') !== -1) {
+                                            $('td:eq('+$scope.r.indexOf("remote_cc")+')', nRow).html('<div class="f32"><span class="flag '+aData.remote_cc.toLowerCase()+'"></span></div>');
+                                        }
+                                        if (aData.l7_proto && $scope.r.indexOf('l7_proto') !== -1) {
+                                            $('td:eq('+$scope.r.indexOf("l7_proto")+')', nRow).html(appIcon(aData.l7_proto));
+                                        }
+                                        if (aData.mime && $scope.r.indexOf('mime') !== -1) {
+                                            $('td:eq('+$scope.r.indexOf("mime")+')', nRow).html(mimeIcon(aData.mime));
+                                        }
+                                        if (aData.mailfrom && $scope.r.indexOf('mailfrom') !== -1) {
+                                            var newVar = aData.mailfrom.replace(/[\<\>]/g,'');
+                                            $('td:eq('+$scope.r.indexOf("mailfrom")+')', nRow).html(newVar);
+                                        }
+                                        if (aData.receiptto && $scope.r.indexOf('receiptto') !== -1) {
+                                            var newVar = aData.receiptto.replace(/[\<\>]/g,'');
+                                            $('td:eq('+$scope.r.indexOf("receiptto")+')', nRow).html(newVar);
+                                        }
+                                        if (!notReport) {
+                                            if (aData.icon_in_bytes !== undefined){
+                                                var bIndex = $scope.r.indexOf("icon_in_bytes");
+                                                if ((aData.icon_in_bytes > 0) && (aData.icon_out_bytes > 0)) {
+                                                    $('td:eq('+bIndex+')', nRow).html('<span><i style="font-size:16px !important" class="fa fa-arrow-up"></i><i style="font-size:16px !important" class="fa fa-arrow-down"></i></span>');
+                                                } else if ((aData.icon_in_bytes == 0) && (aData.icon_out_bytes > 0)) {
+                                                    $('td:eq('+bIndex+')', nRow).html('<span><i style="opacity:0.25 !important;font-size:16px !important" class="fa fa-arrow-up"></i><i style="font-size:16px !important" class="fa fa-arrow-down"></i></span>');
+                                                } else if ((aData.icon_in_bytes > 0) && (aData.icon_out_bytes == 0)) {
+                                                    $('td:eq('+bIndex+')', nRow).html('<span><i style="font-size:16px !important" class="fa fa-arrow-up"></i><i style="opacity:0.25 !important;font-size:16px !important" class="fa fa-arrow-down"></i></span>');
+                                                } else {
+                                                    $('td:eq('+bIndex+')', nRow).html('<span><i style="opacity:0.25 !important;font-size:16px !important" class="fa fa-arrow-up"></i><i style="opacity:0.25 !important;font-size:16px !important" class="fa fa-arrow-down"></i></span>');
+                                                }
+                                            }
+                                        }
+                                    },
+                                    'fnDrawCallback': function( oSettings ) {
+                                        // $('.paginate_button').on('click', function(){
+                                        //  console.log('poo')
+                                        //  $('html, body').animate({scrollTop:0}, 'slow');
+                                        // })
+                                    }
+                                });
+                            }
+                        }
+                        break;
+                    default:
+                        if ($location.$$absUrl.search('/report#!/') === -1) {
+                            iDisplayLength = 50;
+                            bDeferRender = true;
+                            sDom = '<"clear">T<"clear">lCr<"table_overflow"t>ip';
+                            notReport = true;
+                            stateSave = true;
+                        } else {
+                            iDisplayLength = 99999;
+                            bDeferRender = true;
+                            sDom = 'r<t>';
+                            notReport = false;
+                            stateSave = false;
+                        }
+                        // $(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table" ></table>');
+                        for (var t in params) {
+                            params[t].div = $('#'+params[t].div).dataTable({
+                                'aaData': tableData.top(Infinity),
+                                'aoColumns': params[t].params,
+                                'bDeferRender': bDeferRender,
+                                // 'bDestroy': true,
+                                //'bProcessing': true,
+                                // 'bRebuild': true,
+                                'aaSorting': params[t].sort,
+                                //'bFilter': true,
+                                //'bPaginate': true,
+                                'stateSave': stateSave,
+                                'sDom': sDom,
+                                'iDisplayLength': iDisplayLength,
+                                 'fnPreDrawCallback': function( oSettings ) {
+                                    //console.log(oSettings.aoColumns);
+                                    $scope.r = [], $scope.e = [];
+                                    for (var a in oSettings.aoColumns) {
+                                        // find the index of column rows so they can me modified below
+                                        if (oSettings.aoColumns[a].bVisible === true) {
+                                            $scope.r.push(oSettings.aoColumns[a].mData);
+                                        }
+                                        // push unique to link builder
+                                        if (oSettings.aoColumns[a].link) {
+                                            $scope.e.push(oSettings.aoColumns[a]);
+                                        }
+                                    }
+                                },
+                                'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                                    if (aData.ioc_severity && $scope.r.indexOf('ioc_severity') !== -1) {
+                                        var rIndex = $scope.r.indexOf("ioc_severity");
+                                        $('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa '+iocIcon(aData.ioc_severity)+' fa-stack-1x fa-inverse"></i></span>');
+                                    }
+                                    if (aData.remote_cc && $scope.r.indexOf('remote_cc') !== -1) {
+                                        $('td:eq('+$scope.r.indexOf("remote_cc")+')', nRow).html('<div class="f32"><span class="flag '+aData.remote_cc.toLowerCase()+'"></span></div>');
+                                    }
+                                    if (aData.l7_proto && $scope.r.indexOf('l7_proto') !== -1) {
+                                        // var div = $('td:eq('+$scope.r.indexOf("l7_proto")+')', nRow);
+                                        // appIcon(d3.select(div[0]), aData.l7_proto);
 
-										$('td:eq('+$scope.r.indexOf("l7_proto")+')', nRow).html(appIcon(aData.l7_proto));
-									}
-									if (aData.mime && $scope.r.indexOf('mime') !== -1) {
-										$('td:eq('+$scope.r.indexOf("mime")+')', nRow).html(mimeIcon(aData.mime));
-									}
-									if (aData.mailfrom && $scope.r.indexOf('mailfrom') !== -1) {
-										var newVar = aData.mailfrom.replace(/[\<\>]/g,'');
-										$('td:eq('+$scope.r.indexOf("mailfrom")+')', nRow).html(newVar);
-									}
-									if (aData.stealth && $scope.r.indexOf('stealth') !== -1) {
-										if (aData.stealth > 0){
-											$('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-shield fa-stack-1x fa-inverse"></i></span>');
-										}
-									} else {
-										$('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html(aData.stealth);
-									}
-									if (aData.receiptto && $scope.r.indexOf('receiptto') !== -1) {
-										var newVar = aData.receiptto.replace(/[\<\>]/g,'');
-										$('td:eq('+$scope.r.indexOf("receiptto")+')', nRow).html(newVar);
-									}
-									if (notReport) {
-										// url builder
-										for (var c in $scope.e) {
-											var type = $scope.e[c].link.type;
-											switch(type) {
-												case 'Archive':
-													$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
-												break;
-												case 'Restore':
-													$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bRestore button-success pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Restore</button>");
-												break;
-												default:
-													var obj = new Object();
-													//var all = new Object();
-													if ($location.$$search.start && $location.$$search.end) {
-														obj.start = $location.$$search.start;
-														obj.end = $location.$$search.end;
-													}
-													for (var l in $scope.e[c].link.val) {
-														if (aData[$scope.e[c].link.val[l]] !== null) {
-															var newVar = aData[$scope.e[c].link.val[l]].toString();
-															obj[$scope.e[c].link.val[l]] = newVar.replace("'", "&#39;");
-														}
-													}
-													var links = JSON.stringify({
-														type: $scope.e[c].link.type,
-														objlink: obj
-													});
-													if ($scope.e[c].mData === 'time') {
-														$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+aData[$scope.e[c].mData]+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
-													} else {
-														$('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+aData[$scope.e[c].mData]+"</button>");
-													}
-												break;
-											}
-										}
-									}
-								},
-								'fnDrawCallback': function( oSettings ) {
-									if (notReport) {
-										$('table .bPage').click(function(){
-											var link = JSON.parse(this.value);
-											$scope.$apply($location.path(link.type).search(link.objlink));
-										});
-										$('table .bArchive').on('click',function(){
-											var rowData = JSON.parse(this.value);
-											$http({method: 'POST', url: '/actions/archive', data: {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc}}).
-												success(function(data, status, headers, config) {
-													var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
-													$scope.tableCrossfitler.remove(fil);
-													tableData.filterAll();
-													redrawTable();
-												})
-										});
-										$('table .bRestore').on('click',function(){
-											var rowData = JSON.parse(this.value);
-											$http({method: 'POST', url: '/actions/restore', data: {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc}}).
-												success(function(data, status, headers, config) {
-													var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
-													$scope.tableCrossfitler.remove(fil);
-													tableData.filterAll();
-													redrawTable();
-												})
-										});
-										$scope.country = [];
-										$scope.ioc = [];
-										$scope.severity = [];
-										$scope.l7_proto = [];
-										for (var d in oSettings.aiDisplay) {
-											$scope.l7_proto.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.l7_proto);
-											$scope.country.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.remote_country);
-											$scope.ioc.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc);
-											$scope.severity.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc_severity);
-										}
-										$scope.$broadcast('severityUpdate');
-									}
-								}
-							});
-							$scope.$on('crossfilterToTable', function () {
-								$('#table').dataTable().fnClearTable();
-								$('#table').dataTable().fnAddData(tableData.top(Infinity));
-								$('#table').dataTable().fnDraw();
-							});
-							// new $.fn.dataTable.FixedHeader( params[t].div );
-							$.fn.dataTableExt.sErrMode = 'throw';
-						}
-					break;
-				}
-			})
-		}
-	};
+                                        $('td:eq('+$scope.r.indexOf("l7_proto")+')', nRow).html(appIcon(aData.l7_proto));
+                                    }
+                                    if (aData.mime && $scope.r.indexOf('mime') !== -1) {
+                                        $('td:eq('+$scope.r.indexOf("mime")+')', nRow).html(mimeIcon(aData.mime));
+                                    }
+                                    if (aData.mailfrom && $scope.r.indexOf('mailfrom') !== -1) {
+                                        var newVar = aData.mailfrom.replace(/[\<\>]/g,'');
+                                        $('td:eq('+$scope.r.indexOf("mailfrom")+')', nRow).html(newVar);
+                                    }
+                                    if (aData.stealth && $scope.r.indexOf('stealth') !== -1) {
+                                        if (aData.stealth > 0){
+                                            $('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-shield fa-stack-1x fa-inverse"></i></span>');
+                                        }
+                                    } else {
+                                        $('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html(aData.stealth);
+                                    }
+                                    if (aData.receiptto && $scope.r.indexOf('receiptto') !== -1) {
+                                        var newVar = aData.receiptto.replace(/[\<\>]/g,'');
+                                        $('td:eq('+$scope.r.indexOf("receiptto")+')', nRow).html(newVar);
+                                    }
+                                    if (notReport) {
+                                        // url builder
+                                        for (var c in $scope.e) {
+                                            var type = $scope.e[c].link.type;
+                                            switch(type) {
+                                                case 'Archive':
+                                                    $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
+                                                break;
+                                                case 'Restore':
+                                                    $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bRestore button-success pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Restore</button>");
+                                                break;
+                                                default:
+                                                    var obj = new Object();
+                                                    //var all = new Object();
+                                                    if ($location.$$search.start && $location.$$search.end) {
+                                                        obj.start = $location.$$search.start;
+                                                        obj.end = $location.$$search.end;
+                                                    }
+                                                    for (var l in $scope.e[c].link.val) {
+                                                        if (aData[$scope.e[c].link.val[l]] !== null) {
+                                                            var newVar = aData[$scope.e[c].link.val[l]].toString();
+                                                            obj[$scope.e[c].link.val[l]] = newVar.replace("'", "&#39;");
+                                                        }
+                                                    }
+                                                    var links = JSON.stringify({
+                                                        type: $scope.e[c].link.type,
+                                                        objlink: obj
+                                                    });
+                                                    if ($scope.e[c].mData === 'time') {
+                                                        $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+aData[$scope.e[c].mData]+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
+                                                    } else {
+                                                        $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+aData[$scope.e[c].mData]+"</button>");
+                                                    }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                },
+                                'fnDrawCallback': function( oSettings ) {
+                                    if (notReport) {
+                                        $('table .bPage').click(function(){
+                                            var link = JSON.parse(this.value);
+                                            $scope.$apply($location.path(link.type).search(link.objlink));
+                                        });
+                                        $('table .bArchive').on('click',function(){
+                                            var rowData = JSON.parse(this.value);
+                                            $http({method: 'POST', url: '/actions/archive', data: {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc}}).
+                                                success(function(data, status, headers, config) {
+                                                    var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
+                                                    $scope.tableCrossfitler.remove(fil);
+                                                    tableData.filterAll();
+                                                    redrawTable();
+                                                })
+                                        });
+                                        $('table .bRestore').on('click',function(){
+                                            var rowData = JSON.parse(this.value);
+                                            $http({method: 'POST', url: '/actions/restore', data: {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc}}).
+                                                success(function(data, status, headers, config) {
+                                                    var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
+                                                    $scope.tableCrossfitler.remove(fil);
+                                                    tableData.filterAll();
+                                                    redrawTable();
+                                                })
+                                        });
+                                        $scope.country = [];
+                                        $scope.ioc = [];
+                                        $scope.severity = [];
+                                        $scope.l7_proto = [];
+                                        for (var d in oSettings.aiDisplay) {
+                                            $scope.l7_proto.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.l7_proto);
+                                            $scope.country.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.remote_country);
+                                            $scope.ioc.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc);
+                                            $scope.severity.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc_severity);
+                                        }
+                                        $scope.$broadcast('severityUpdate');
+                                    }
+                                }
+                            });
+                            $scope.$on('crossfilterToTable', function () {
+                                $('#table').dataTable().fnClearTable();
+                                $('#table').dataTable().fnAddData(tableData.top(Infinity));
+                                $('#table').dataTable().fnDraw();
+                            });
+                            // new $.fn.dataTable.FixedHeader( params[t].div );
+                            $.fn.dataTableExt.sErrMode = 'throw';
+                        }
+                    break;
+                }
+            })
+        }
+    };
 }]);
 angular.module('mean.pages').directive('universalSearch', function() {
-	return {
-		link: function($scope, element, attrs) {
-			$scope.$watch('search', function(){
-				if ($scope.search) {
-					if (($scope.search !== null) || ($scope.search !== '')) {
-						$('#table').dataTable().fnFilter($scope.search);
-					}
-				}
-			});
+    return {
+        link: function($scope, element, attrs) {
+            $scope.$watch('search', function(){
+                if ($scope.search) {
+                    if (($scope.search !== null) || ($scope.search !== '')) {
+                        $('#table').dataTable().fnFilter($scope.search);
+                    }
+                }
+            });
 
-		}
-	};
+        }
+    };
 });
 
 angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '$rootScope', function ($timeout, $window, $rootScope) {
-	return {
-		link: function ($scope, element, attrs) {
-			$scope.$on('pieChart', function (event, chartType, params) {
-				$timeout(function () { // You might need this timeout to be sure its run after DOM render
-					//var arr = $scope.data.tables[0].aaData;
-					$scope.pieChart = dc.pieChart('#piechart');
-					var waitForFinalEvent = (function () {
-						var timers = {};
-						return function (callback, ms, uniqueId) {
-							if (!uniqueId) {
-								uniqueId = "piechartWait"; //Don't call this twice without a uniqueId
-							}
-							if (timers[uniqueId]) {
-								clearTimeout (timers[uniqueId]);
-							}
-							timers[uniqueId] = setTimeout(callback, ms);
-						};
-					})();
-					var filter, height;
-					var width = $('#piechart').parent().width();
-					height = width/2.4;
-					$scope.sevWidth = function() {
-						return $('#piechart').parent().width();
-					}
-					filter = true;
-					// switch (chartType){
-					// 	case 'bandwidth':
-					// 		var setNewSize = function(width) {
-					// 			$scope.pieChart
-					// 				.width(width)
-					// 				.height(width/3.5)
-					// 				.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
-					// 			// $('#piechart').parent().height(width/3.5);
-					// 			d3.select('#piechart svg').attr('width', width).attr('height', width/3.5);
-					// 			$scope.pieChart.redraw();
-					// 		}
-					// 		$scope.pieChart
-					// 			.group(group, "MB To Remote")
-					// 			.valueAccessor(function(d) {
-					// 				return d.value.in_bytes;
-					// 			})
-					// 			.stack(group, "MB From Remote", function(d){return d.value.out_bytes;})
-					// 			.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
-					// 			.colors(["#112F41","#068587"]);
-					// 		filter = true;
-					// 		break;
-					// 	case 'severity':
-					// 		var setNewSize = function(width) {
-					// 			$scope.pieChart
-					// 				.width(width)
-					// 				.height(width/3.5)
-					// 				.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
-					// 			// $('#piechart').parent().height(width/3.5);
-					// 			d3.select('#piechart svg').attr('width', width).attr('height', width/3.5);
-					// 			$scope.pieChart.redraw();
-					// 		}
-					// 		$scope.pieChart
-					// 			.group(group, "(1) Guarded")
-					// 			.valueAccessor(function(d) {
-					// 				return d.value.guarded;
-					// 			})
-					// 			.stack(group, "(2) Elevated", function(d){return d.value.elevated;})
-					// 			.stack(group, "(3) High", function(d){return d.value.high;})
-					// 			.stack(group, "(4) Severe", function(d){return d.value.severe;})
-					// 			.colors(["#377FC7","#F5D800","#F88B12","#DD122A","#000"]);
-					// 		filter = true;
-					// 		break;
-					// 	case 'drill':
-					// 		var setNewSize = function(width) {
-					// 			$scope.pieChart
-					// 				.width(width)
-					// 				.height(width/1.63)
-					// 				.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
-					// 			$('#piechart').parent().height(width/1.63);
-					// 			d3.select('#piechart svg').attr('width', width).attr('height', width/1.63);
-					// 			$scope.pieChart.redraw();
-					// 		}
-					// 		$scope.pieChart
-					// 			.group(group, "(1) DNS")
-					// 			.valueAccessor(function(d) {
-					// 				return d.value.dns;
-					// 			})
-					// 			.stack(group, "(2) HTTP", function(d){return d.value.http;})
-					// 			.stack(group, "(3) SSL", function(d){return d.value.ssl;})
-					// 			.stack(group, "(4) File", function(d){return d.value.file;})
-					// 			.stack(group, "(5) Endpoint", function(d){return d.value.ossec;})
-					// 			.stack(group, "(6) Total Connections", function(d){return d.value.connections;})
-					// 			.colors(["#cb2815","#e29e23","#a3c0ce","#5c5e7d","#e3cdc9","#524A4F"]);
-					// 		filter = false;
-					// 		height = width/1.63;
-					// 		break;
-					// 	case 'bar':
-					// 		var setNewSize = function(width) {
-					// 			$scope.pieChart
-					// 				.width(width)
-					// 				.height(width/3.5)
-					// 				.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
-					// 			// $(element).height(width/3.5);
-					// 			d3.select('#pieChart svg').attr('width', width).attr('height', width/3.5);
-					// 			$scope.pieChart.redraw();
-					// 		}
-					// 		$scope.pieChart
-					// 			.group(group)
-					// 			.colors(["#193459"]);
-					// 		filter = false;
-					// 		break;
-					// }
-					if (filter == true) {
-						$scope.pieChart
-							.on("filtered", function(chart, filter){
-								waitForFinalEvent(function(){
-									$scope.tableData.filterAll();
-									var arr = [];
-									for(var i in $scope.appDimension.top(Infinity)) {
-										arr.push($scope.appDimension.top(Infinity)[i].l7_proto);
-									}
+    return {
+        link: function ($scope, element, attrs) {
+            $scope.$on('pieChart', function (event, chartType, params) {
+                $timeout(function () { // You might need this timeout to be sure its run after DOM render
+                    //var arr = $scope.data.tables[0].aaData;
+                    $scope.pieChart = dc.pieChart('#piechart');
+                    var waitForFinalEvent = (function () {
+                        var timers = {};
+                        return function (callback, ms, uniqueId) {
+                            if (!uniqueId) {
+                                uniqueId = "piechartWait"; //Don't call this twice without a uniqueId
+                            }
+                            if (timers[uniqueId]) {
+                                clearTimeout (timers[uniqueId]);
+                            }
+                            timers[uniqueId] = setTimeout(callback, ms);
+                        };
+                    })();
+                    var filter, height;
+                    var width = $('#piechart').parent().width();
+                    height = width/2.4;
+                    $scope.sevWidth = function() {
+                        return $('#piechart').parent().width();
+                    }
+                    filter = true;
+                    // switch (chartType){
+                    //  case 'bandwidth':
+                    //      var setNewSize = function(width) {
+                    //          $scope.pieChart
+                    //              .width(width)
+                    //              .height(width/3.5)
+                    //              .margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+                    //          // $('#piechart').parent().height(width/3.5);
+                    //          d3.select('#piechart svg').attr('width', width).attr('height', width/3.5);
+                    //          $scope.pieChart.redraw();
+                    //      }
+                    //      $scope.pieChart
+                    //          .group(group, "MB To Remote")
+                    //          .valueAccessor(function(d) {
+                    //              return d.value.in_bytes;
+                    //          })
+                    //          .stack(group, "MB From Remote", function(d){return d.value.out_bytes;})
+                    //          .legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
+                    //          .colors(["#112F41","#068587"]);
+                    //      filter = true;
+                    //      break;
+                    //  case 'severity':
+                    //      var setNewSize = function(width) {
+                    //          $scope.pieChart
+                    //              .width(width)
+                    //              .height(width/3.5)
+                    //              .margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+                    //          // $('#piechart').parent().height(width/3.5);
+                    //          d3.select('#piechart svg').attr('width', width).attr('height', width/3.5);
+                    //          $scope.pieChart.redraw();
+                    //      }
+                    //      $scope.pieChart
+                    //          .group(group, "(1) Guarded")
+                    //          .valueAccessor(function(d) {
+                    //              return d.value.guarded;
+                    //          })
+                    //          .stack(group, "(2) Elevated", function(d){return d.value.elevated;})
+                    //          .stack(group, "(3) High", function(d){return d.value.high;})
+                    //          .stack(group, "(4) Severe", function(d){return d.value.severe;})
+                    //          .colors(["#377FC7","#F5D800","#F88B12","#DD122A","#000"]);
+                    //      filter = true;
+                    //      break;
+                    //  case 'drill':
+                    //      var setNewSize = function(width) {
+                    //          $scope.pieChart
+                    //              .width(width)
+                    //              .height(width/1.63)
+                    //              .margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+                    //          $('#piechart').parent().height(width/1.63);
+                    //          d3.select('#piechart svg').attr('width', width).attr('height', width/1.63);
+                    //          $scope.pieChart.redraw();
+                    //      }
+                    //      $scope.pieChart
+                    //          .group(group, "(1) DNS")
+                    //          .valueAccessor(function(d) {
+                    //              return d.value.dns;
+                    //          })
+                    //          .stack(group, "(2) HTTP", function(d){return d.value.http;})
+                    //          .stack(group, "(3) SSL", function(d){return d.value.ssl;})
+                    //          .stack(group, "(4) File", function(d){return d.value.file;})
+                    //          .stack(group, "(5) Endpoint", function(d){return d.value.ossec;})
+                    //          .stack(group, "(6) Total Connections", function(d){return d.value.connections;})
+                    //          .colors(["#cb2815","#e29e23","#a3c0ce","#5c5e7d","#e3cdc9","#524A4F"]);
+                    //      filter = false;
+                    //      height = width/1.63;
+                    //      break;
+                    //  case 'bar':
+                    //      var setNewSize = function(width) {
+                    //          $scope.pieChart
+                    //              .width(width)
+                    //              .height(width/3.5)
+                    //              .margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+                    //          // $(element).height(width/3.5);
+                    //          d3.select('#pieChart svg').attr('width', width).attr('height', width/3.5);
+                    //          $scope.pieChart.redraw();
+                    //      }
+                    //      $scope.pieChart
+                    //          .group(group)
+                    //          .colors(["#193459"]);
+                    //      filter = false;
+                    //      break;
+                    // }
+                    if (filter == true) {
+                        $scope.pieChart
+                            .on("filtered", function(chart, filter){
+                                waitForFinalEvent(function(){
+                                    $scope.tableData.filterAll();
+                                    var arr = [];
+                                    for(var i in $scope.appDimension.top(Infinity)) {
+                                        arr.push($scope.appDimension.top(Infinity)[i].l7_proto);
+                                    }
 
-									$scope.tableData.filter(function(d) { return arr.indexOf(d.l7_proto) >= 0; });
-									$scope.$broadcast('crossfilterToTable');
+                                    $scope.tableData.filter(function(d) { return arr.indexOf(d.l7_proto) >= 0; });
+                                    $scope.$broadcast('crossfilterToTable');
 
-								}, 400, "filterWait");
-							})
-					}
-		
-					$scope.pieChart
-						.width(width) // (optional) define chart width, :default = 200
-						.height(height)
-						.transitionDuration(500) // (optional) define chart transition duration, :default = 500
-						// .margins(margin) // (optional) define margins
-						.dimension($scope.appDimension) // set dimension
-						.group($scope.pieGroup) // set group
-						.legend(dc.legend().x(width - 100).y(10).itemHeight(13).gap(5))
-						.colors(d3.scale.category20());
+                                }, 400, "filterWait");
+                            })
+                    }
+        
+                    $scope.pieChart
+                        .width(width) // (optional) define chart width, :default = 200
+                        .height(height)
+                        .transitionDuration(500) // (optional) define chart transition duration, :default = 500
+                        // .margins(margin) // (optional) define margins
+                        .dimension($scope.appDimension) // set dimension
+                        .group($scope.pieGroup) // set group
+                        .legend(dc.legend().x(width - 100).y(10).itemHeight(13).gap(5))
+                        .colors(d3.scale.category20());
 
-					$scope.pieChart.render();
-						$scope.$broadcast('spinnerHide');
-						$(window).resize(function () {
-							waitForFinalEvent(function(){
-								$scope.pieChart.render();
-							}, 200, "pieChartresize");
-						});
-						$(window).bind('resize', function() {
-							setTimeout(function(){
-								setNewSize($scope.sevWidth());
-							}, 150);
-						});
-						$('.sidebar-toggler').on("click", function() {
-							setTimeout(function() {
-								setNewSize($scope.sevWidth());
-								$scope.pieChart.render();
-							},10);
-						});
-						$rootScope.$watch('search', function(){
-							$scope.pieChart.redraw();
-						});
+                    $scope.pieChart.render();
+                        $scope.$broadcast('spinnerHide');
+                        $(window).resize(function () {
+                            waitForFinalEvent(function(){
+                                $scope.pieChart.render();
+                            }, 200, "pieChartresize");
+                        });
+                        $(window).bind('resize', function() {
+                            setTimeout(function(){
+                                setNewSize($scope.sevWidth());
+                            }, 150);
+                        });
+                        $('.sidebar-toggler').on("click", function() {
+                            setTimeout(function() {
+                                setNewSize($scope.sevWidth());
+                                $scope.pieChart.render();
+                            },10);
+                        });
+                        $rootScope.$watch('search', function(){
+                            $scope.pieChart.redraw();
+                        });
 
-					// var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
-					$rootScope.$watch('search', function(){
+                    // var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
+                    $rootScope.$watch('search', function(){
 
-						if($rootScope.search === null) {
-							$scope.appDimension.filterAll();
-						} else {
-							$scope.appDimension.filterAll();
-							// console.log($scope.appDimension.top(Infinity));
-							if ($scope.l7_proto) {
-								$scope.appDimension.filter(function(d) { return $scope.l7_proto.indexOf(d) >= 0; });
-								// $scope.pieGroup = $scope.appDimension.group().reduceSum(function (d) {
-				    //                 return d.app_count;
-				    //             });
-							}
-							// console.log($scope.appDimension.top(Infinity));
+                        if($rootScope.search === null) {
+                            $scope.appDimension.filterAll();
+                        } else {
+                            $scope.appDimension.filterAll();
+                            // console.log($scope.appDimension.top(Infinity));
+                            if ($scope.l7_proto) {
+                                $scope.appDimension.filter(function(d) { return $scope.l7_proto.indexOf(d) >= 0; });
+                                // $scope.pieGroup = $scope.appDimension.group().reduceSum(function (d) {
+                    //                 return d.app_count;
+                    //             });
+                            }
+                            // console.log($scope.appDimension.top(Infinity));
 
-						}
-						$scope.pieChart.dimension($scope.appDimension);
-						$scope.pieChart.group($scope.pieGroup); // set group
-						$scope.pieChart.redraw();
-						// $scope.pieChart.render();
-					});
-				}, 0, false);
-			})
-		}
-	};
+                        }
+                        $scope.pieChart.dimension($scope.appDimension);
+                        $scope.pieChart.group($scope.pieGroup); // set group
+                        $scope.pieChart.redraw();
+                        // $scope.pieChart.render();
+                    });
+                }, 0, false);
+            })
+        }
+    };
 }]);
 
 angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '$rootScope', function ($timeout, $window, $rootScope) {
-	return {
-		link: function ($scope, element, attrs) {
-			$scope.$on('barChart', function (event, dimension, group, chartType, params) {
-				$timeout(function () { // You might need this timeout to be sure its run after DOM render
-					//var arr = $scope.data.tables[0].aaData;
-					$scope.barChart = dc.barChart('#barchart');
-					var waitForFinalEvent = (function () {
-						var timers = {};
-						return function (callback, ms, uniqueId) {
-							if (!uniqueId) {
-								uniqueId = "barchartWait"; //Don't call this twice without a uniqueId
-							}
-							if (timers[uniqueId]) {
-								clearTimeout (timers[uniqueId]);
-							}
-							timers[uniqueId] = setTimeout(callback, ms);
-						};
-					})();
-					var filter, height;
-					var width = $('#barchart').parent().width();
-					height = width/3.5;
-					$scope.sevWidth = function() {
-						return $('#barchart').parent().width();
-					}
-					switch (chartType){
-						case 'bandwidth':
-							var setNewSize = function(width) {
-								$scope.barChart
-									.width(width)
-									.height(width/3.5)
-									.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
-								// $('#barchart').parent().height(width/3.5);
-								d3.select('#barchart svg').attr('width', width).attr('height', width/3.5);
-								$scope.barChart.redraw();
-							}
-							$scope.barChart
-								.group(group, "MB To Remote")
-								.valueAccessor(function(d) {
-									return d.value.in_bytes;
-								})
-								.stack(group, "MB From Remote", function(d){return d.value.out_bytes;})
-								.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
-								.colors(d3.scale.ordinal().domain(["in_bytes","out_bytes"]).range(["#112F41","#068587"]));
-							filter = true;
-							break;
-						case 'severity':
-							var setNewSize = function(width) {
-								$scope.barChart
-									.width(width)
-									.height(width/3.5)
-									.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
-								// $('#barchart').parent().height(width/3.5);
-								d3.select('#barchart svg').attr('width', width).attr('height', width/3.5);
-								$scope.barChart.redraw();
-							}
-							$scope.barChart
-								.group(group, "(1) Guarded")
-								.valueAccessor(function(d) {
-									return d.value.guarded;
-								})
-								.stack(group, "(2) Elevated", function(d){return d.value.elevated;})
-								.stack(group, "(3) High", function(d){return d.value.high;})
-								.stack(group, "(4) Severe", function(d){return d.value.severe;})
-								.colors(d3.scale.ordinal().domain(["guarded","elevated","high","severe"]).range(["#377FC7","#F5D800","#F88B12","#DD122A"]));
-							filter = true;
-							break;
-						case 'drill':
-							var setNewSize = function(width) {
-								$scope.barChart
-									.width(width)
-									.height(width/1.63)
-									.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
-								$('#barchart').parent().height(width/1.63);
-								d3.select('#barchart svg').attr('width', width).attr('height', width/1.63);
-								$scope.barChart.redraw();
-							}
-							$scope.barChart
-								.group(group, "(1) DNS")
-								.valueAccessor(function(d) {
-									return d.value.dns;
-								})
-								.stack(group, "(2) HTTP", function(d){return d.value.http;})
-								.stack(group, "(3) SSL", function(d){return d.value.ssl;})
-								.stack(group, "(4) File", function(d){return d.value.file;})
-								.stack(group, "(5) Endpoint", function(d){return d.value.ossec;})
-								.stack(group, "(6) Total Connections", function(d){return d.value.connections;})
-								.colors(d3.scale.ordinal().domain(["dns","http","ssl","file","ossec","connections"]).range(["#cb2815","#e29e23","#a3c0ce","#5c5e7d","#e3cdc9","#524A4F"]));
-							filter = false;
-							height = width/1.63;
-							break;
-						case 'bar':
-							var setNewSize = function(width) {
-								$scope.barChart
-									.width(width)
-									.height(width/3.5)
-									.margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
-								// $(element).height(width/3.5);
-								d3.select('#barchart svg').attr('width', width).attr('height', width/3.5);
-								$scope.barChart.redraw();
-							}
-							$scope.barChart
-								.group(group)
-								.colors(["#193459"]);
-							filter = false;
-							break;
-					}
-					if (filter == true) {
-						$scope.barChart
-							.on("filtered", function(chart, filter){
-								waitForFinalEvent(function(){
-									$scope.tableData.filterAll();
-									var arr = [];
-									for(var i in dimension.top(Infinity)) {
-										arr.push(dimension.top(Infinity)[i].time);
-									}
-									// console.log(dimension.group().top(Infinity))
-									//console.log(dimension.group().top(Infinity));
-									$scope.tableData.filter(function(d) { return arr.indexOf(d.time) >= 0; });
-									$scope.$broadcast('crossfilterToTable');
-									// console.log($scope.tableData.top(Infinity));
-									// console.log(timeDimension.top(Infinity))
-								}, 400, "filterWait");
-							})
-					}
-					if (($scope.barChartxAxis == null) && ($scope.barChartyAxis == null)) {
-						var margin = {top: 10, right: 20, bottom: 10, left: 20};
-					} else {
-						var margin = {top: 10, right: 30, bottom: 25, left: 43};
-					}
-					$scope.barChart
-						.width(width) // (optional) define chart width, :default = 200
-						.height(height)
-						.transitionDuration(500) // (optional) define chart transition duration, :default = 500
-						.margins(margin) // (optional) define margins
-						.dimension(dimension) // set dimension
-						//.group(group[g]) // set group
-						//.stack(group, "0 - Other", function(d){return d.value.other;})
-						.xAxisLabel($scope.barChartxAxis) // (optional) render an axis label below the x axis
-						.yAxisLabel($scope.barChartyAxis) // (optional) render a vertical axis lable left of the y axis
-						.elasticY(true) // (optional) whether chart should rescale y axis to fit data, :default = false
-						.elasticX(false) // (optional) whether chart should rescale x axis to fit data, :default = false
-						.x(d3.time.scale().domain([moment($scope.start), moment($scope.end)])) // define x scale
-						.xUnits(d3.time.hours) // define x axis units
-						.renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
-						.renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
-						//.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
-						.title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
-						.renderTitle(true); // (optional) whether chart should render titles, :default = fal
-					$scope.barChart.render();
-						$scope.$broadcast('spinnerHide');
-						$(window).resize(function () {
-							waitForFinalEvent(function(){
-								$scope.barChart.render();
-							}, 200, "barchartresize");
-						});
-						$(window).bind('resize', function() {
-							setTimeout(function(){
-								setNewSize($scope.sevWidth());
-							}, 150);
-						});
-						$('.sidebar-toggler').on("click", function() {
-							setTimeout(function() {
-								setNewSize($scope.sevWidth());
-								$scope.barChart.render();
-							},10);
-						});
-						$rootScope.$watch('search', function(){
-							$scope.barChart.redraw();
-						});
-				}, 0, false);
-			})
-		}
-	};
+    return {
+        link: function ($scope, element, attrs) {
+            $scope.$on('barChart', function (event, dimension, group, chartType, params) {
+                $timeout(function () { // You might need this timeout to be sure its run after DOM render
+                    //var arr = $scope.data.tables[0].aaData;
+                    $scope.barChart = dc.barChart('#barchart');
+                    var waitForFinalEvent = (function () {
+                        var timers = {};
+                        return function (callback, ms, uniqueId) {
+                            if (!uniqueId) {
+                                uniqueId = "barchartWait"; //Don't call this twice without a uniqueId
+                            }
+                            if (timers[uniqueId]) {
+                                clearTimeout (timers[uniqueId]);
+                            }
+                            timers[uniqueId] = setTimeout(callback, ms);
+                        };
+                    })();
+                    var filter, height;
+                    var width = $('#barchart').parent().width();
+                    height = width/3.5;
+                    $scope.sevWidth = function() {
+                        return $('#barchart').parent().width();
+                    }
+                    switch (chartType){
+                        case 'bandwidth':
+                            var setNewSize = function(width) {
+                                $scope.barChart
+                                    .width(width)
+                                    .height(width/3.5)
+                                    .margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+                                // $('#barchart').parent().height(width/3.5);
+                                d3.select('#barchart svg').attr('width', width).attr('height', width/3.5);
+                                $scope.barChart.redraw();
+                            }
+                            $scope.barChart
+                                .group(group, "MB To Remote")
+                                .valueAccessor(function(d) {
+                                    return d.value.in_bytes;
+                                })
+                                .stack(group, "MB From Remote", function(d){return d.value.out_bytes;})
+                                .legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
+                                .colors(d3.scale.ordinal().domain(["in_bytes","out_bytes"]).range(["#112F41","#068587"]));
+                            filter = true;
+                            break;
+                        case 'severity':
+                            var setNewSize = function(width) {
+                                $scope.barChart
+                                    .width(width)
+                                    .height(width/3.5)
+                                    .margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+                                // $('#barchart').parent().height(width/3.5);
+                                d3.select('#barchart svg').attr('width', width).attr('height', width/3.5);
+                                $scope.barChart.redraw();
+                            }
+                            $scope.barChart
+                                .group(group, "(1) Guarded")
+                                .valueAccessor(function(d) {
+                                    return d.value.guarded;
+                                })
+                                .stack(group, "(2) Elevated", function(d){return d.value.elevated;})
+                                .stack(group, "(3) High", function(d){return d.value.high;})
+                                .stack(group, "(4) Severe", function(d){return d.value.severe;})
+                                .colors(d3.scale.ordinal().domain(["guarded","elevated","high","severe"]).range(["#377FC7","#F5D800","#F88B12","#DD122A"]));
+                            filter = true;
+                            break;
+                        case 'drill':
+                            var setNewSize = function(width) {
+                                $scope.barChart
+                                    .width(width)
+                                    .height(width/1.63)
+                                    .margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+                                $('#barchart').parent().height(width/1.63);
+                                d3.select('#barchart svg').attr('width', width).attr('height', width/1.63);
+                                $scope.barChart.redraw();
+                            }
+                            $scope.barChart
+                                .group(group, "(1) DNS")
+                                .valueAccessor(function(d) {
+                                    return d.value.dns;
+                                })
+                                .stack(group, "(2) HTTP", function(d){return d.value.http;})
+                                .stack(group, "(3) SSL", function(d){return d.value.ssl;})
+                                .stack(group, "(4) File", function(d){return d.value.file;})
+                                .stack(group, "(5) Endpoint", function(d){return d.value.ossec;})
+                                .stack(group, "(6) Total Connections", function(d){return d.value.connections;})
+                                .colors(d3.scale.ordinal().domain(["dns","http","ssl","file","ossec","connections"]).range(["#cb2815","#e29e23","#a3c0ce","#5c5e7d","#e3cdc9","#524A4F"]));
+                            filter = false;
+                            height = width/1.63;
+                            break;
+                        case 'bar':
+                            var setNewSize = function(width) {
+                                $scope.barChart
+                                    .width(width)
+                                    .height(width/3.5)
+                                    .margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+                                // $(element).height(width/3.5);
+                                d3.select('#barchart svg').attr('width', width).attr('height', width/3.5);
+                                $scope.barChart.redraw();
+                            }
+                            $scope.barChart
+                                .group(group)
+                                .colors(["#193459"]);
+                            filter = false;
+                            break;
+                    }
+                    if (filter == true) {
+                        $scope.barChart
+                            .on("filtered", function(chart, filter){
+                                waitForFinalEvent(function(){
+                                    $scope.tableData.filterAll();
+                                    var arr = [];
+                                    for(var i in dimension.top(Infinity)) {
+                                        arr.push(dimension.top(Infinity)[i].time);
+                                    }
+                                    // console.log(dimension.group().top(Infinity))
+                                    //console.log(dimension.group().top(Infinity));
+                                    $scope.tableData.filter(function(d) { return arr.indexOf(d.time) >= 0; });
+                                    $scope.$broadcast('crossfilterToTable');
+                                    // console.log($scope.tableData.top(Infinity));
+                                    // console.log(timeDimension.top(Infinity))
+                                }, 400, "filterWait");
+                            })
+                    }
+                    if (($scope.barChartxAxis == null) && ($scope.barChartyAxis == null)) {
+                        var margin = {top: 10, right: 20, bottom: 10, left: 20};
+                    } else {
+                        var margin = {top: 10, right: 30, bottom: 25, left: 43};
+                    }
+                    $scope.barChart
+                        .width(width) // (optional) define chart width, :default = 200
+                        .height(height)
+                        .transitionDuration(500) // (optional) define chart transition duration, :default = 500
+                        .margins(margin) // (optional) define margins
+                        .dimension(dimension) // set dimension
+                        //.group(group[g]) // set group
+                        //.stack(group, "0 - Other", function(d){return d.value.other;})
+                        .xAxisLabel($scope.barChartxAxis) // (optional) render an axis label below the x axis
+                        .yAxisLabel($scope.barChartyAxis) // (optional) render a vertical axis lable left of the y axis
+                        .elasticY(true) // (optional) whether chart should rescale y axis to fit data, :default = false
+                        .elasticX(false) // (optional) whether chart should rescale x axis to fit data, :default = false
+                        .x(d3.time.scale().domain([moment($scope.start), moment($scope.end)])) // define x scale
+                        .xUnits(d3.time.hours) // define x axis units
+                        .renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
+                        .renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
+                        //.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
+                        .title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
+                        .renderTitle(true); // (optional) whether chart should render titles, :default = fal
+                    $scope.barChart.render();
+                        $scope.$broadcast('spinnerHide');
+                        $(window).resize(function () {
+                            waitForFinalEvent(function(){
+                                $scope.barChart.render();
+                            }, 200, "barchartresize");
+                        });
+                        $(window).bind('resize', function() {
+                            setTimeout(function(){
+                                setNewSize($scope.sevWidth());
+                            }, 150);
+                        });
+                        $('.sidebar-toggler').on("click", function() {
+                            setTimeout(function() {
+                                setNewSize($scope.sevWidth());
+                                $scope.barChart.render();
+                            },10);
+                        });
+                        $rootScope.$watch('search', function(){
+                            $scope.barChart.redraw();
+                        });
+                }, 0, false);
+            })
+        }
+    };
 }]);
 
 angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
@@ -1169,117 +1169,117 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
 }]);
 
 angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
-	return {
-		link: function ($scope, element, attrs) {
-			$scope.$on('geoChart', function (event, dimension, group, chartType) {
-				// console.log(chartType)
-				$timeout(function () { // You might need this timeout to be sure its run after DOM render
-					$scope.geoChart = dc.geoChoroplethChart('#geochart');
-					var filter;
-					switch (chartType) {
-						case 'drill':
-							filter = false;
-							break;
-						default:
-							filter = true;
-							break;
-					}
-					if (filter == true) {
-						$scope.geoChart
-							.on("filtered", function(chart, filter){
-								$scope.tableData.filterAll();
-								var arr = [];
-								for(var c in dimension.top(Infinity)) {
-									arr.push(dimension.top(Infinity)[c].remote_country);
-								}
-								$scope.tableData.filter(function(d) { return arr.indexOf(d.remote_country) >= 0; });
-								$scope.$broadcast('crossfilterToTable');
-							});
-					}
-					var numberFormat = d3.format(".2f");
-					//var dimension = crossfilterData.dimension(function(d){ return d.remote_country;});
-					var count = group.top(Infinity).length;
-					if (count > 0) {
-						var top = group.orderNatural(function (p) {return p.count;}).top(1);
-						var numberOfItems = top[0].value+1;
-					} else {
-						var numberOfItems = 1;
-					};
-					var rainbow = new Rainbow();
-					rainbow.setNumberRange(0, numberOfItems);
-					rainbow.setSpectrum("#FF0000", "#CC0000", "#990000", "#660000", "#360000");
-					var cc = [];
-					var domain = [];
-					for (var i = 1; i <= numberOfItems; i++) {
-						domain.push(i);
-						var hexColour = rainbow.colourAt(i);
-						cc.push('#' + hexColour);
-					}
-					function MapCallbackFunction(context)
-					{
-						var cb = function(error, world) {
-							var width = $('#geochart').parent().width();
-							var height = width/1.628;
-							var projection = d3.geo.mercator().precision(0.1).scale((width + 1) / 2 / Math.PI).translate([width / 2.1, width / 2.4]);
-							$scope.geoChart
-							.dimension(dimension)
-							.group(group)
-							.projection(projection)
-							.width(width)
-							.height(height)
-							.colors(["#377FC7","#F5D800","#F88B12","#DD122A","#000"])
-							.colors(d3.scale.ordinal().domain(domain).range(cc))
-							.colorCalculator(function (d) { return d ? $scope.geoChart.colors()(d) : '#ccc'; })
-							.overlayGeoJson(world.features, "country", function(d) {
-								return d.properties.name;
-							})
-							$scope.geoChart.render();
-						}
-						return cb;
-					}
-					d3.json("public/system/assets/world.json", MapCallbackFunction(this));
+    return {
+        link: function ($scope, element, attrs) {
+            $scope.$on('geoChart', function (event, dimension, group, chartType) {
+                // console.log(chartType)
+                $timeout(function () { // You might need this timeout to be sure its run after DOM render
+                    $scope.geoChart = dc.geoChoroplethChart('#geochart');
+                    var filter;
+                    switch (chartType) {
+                        case 'drill':
+                            filter = false;
+                            break;
+                        default:
+                            filter = true;
+                            break;
+                    }
+                    if (filter == true) {
+                        $scope.geoChart
+                            .on("filtered", function(chart, filter){
+                                $scope.tableData.filterAll();
+                                var arr = [];
+                                for(var c in dimension.top(Infinity)) {
+                                    arr.push(dimension.top(Infinity)[c].remote_country);
+                                }
+                                $scope.tableData.filter(function(d) { return arr.indexOf(d.remote_country) >= 0; });
+                                $scope.$broadcast('crossfilterToTable');
+                            });
+                    }
+                    var numberFormat = d3.format(".2f");
+                    //var dimension = crossfilterData.dimension(function(d){ return d.remote_country;});
+                    var count = group.top(Infinity).length;
+                    if (count > 0) {
+                        var top = group.orderNatural(function (p) {return p.count;}).top(1);
+                        var numberOfItems = top[0].value+1;
+                    } else {
+                        var numberOfItems = 1;
+                    };
+                    var rainbow = new Rainbow();
+                    rainbow.setNumberRange(0, numberOfItems);
+                    rainbow.setSpectrum("#FF0000", "#CC0000", "#990000", "#660000", "#360000");
+                    var cc = [];
+                    var domain = [];
+                    for (var i = 1; i <= numberOfItems; i++) {
+                        domain.push(i);
+                        var hexColour = rainbow.colourAt(i);
+                        cc.push('#' + hexColour);
+                    }
+                    function MapCallbackFunction(context)
+                    {
+                        var cb = function(error, world) {
+                            var width = $('#geochart').parent().width();
+                            var height = width/1.628;
+                            var projection = d3.geo.mercator().precision(0.1).scale((width + 1) / 2 / Math.PI).translate([width / 2.1, width / 2.4]);
+                            $scope.geoChart
+                            .dimension(dimension)
+                            .group(group)
+                            .projection(projection)
+                            .width(width)
+                            .height(height)
+                            .colors(["#377FC7","#F5D800","#F88B12","#DD122A","#000"])
+                            .colors(d3.scale.ordinal().domain(domain).range(cc))
+                            .colorCalculator(function (d) { return d ? $scope.geoChart.colors()(d) : '#ccc'; })
+                            .overlayGeoJson(world.features, "country", function(d) {
+                                return d.properties.name;
+                            })
+                            $scope.geoChart.render();
+                        }
+                        return cb;
+                    }
+                    d3.json("public/system/assets/world.json", MapCallbackFunction(this));
 
-					$scope.geoWidth = function() {
-						return $('#geochart').parent().width();
-					}
-					var setNewSize = function(width) {
-						if (width > 0) {
-							$scope.geoChart
-								.width(width)
-								.height(width/3.3)
-								.projection(d3.geo.mercator().precision(0.1).scale((width + 1) / 2 / Math.PI).translate([width / 2.1, width / 2.4]))
-								$(element).height(width/1.628);
-								d3.select('#geochart svg').attr('width', width).attr('height', width/1.628);
-							$scope.geoChart.redraw();
-						}
-					}
-					$(window).bind('resize', function() {
-						setTimeout(function(){
-							setNewSize($scope.geoWidth());
-						}, 150);
-					});
-					$('.sidebar-toggler').on("click", function() {
-						setTimeout(function() {
-							setNewSize($scope.geoWidth());
-						},10);
-					});
-					var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
-					$rootScope.$watch('search', function(){
-						if($rootScope.search === null) {
-								geoFilterDimension.filterAll();
-							} else {
-								geoFilterDimension.filterAll();
-								if ($scope.country) {
-									geoFilterDimension.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
-								}
-							}
-						$scope.geoChart.redraw();
-					});
-					$scope.$broadcast('spinnerHide');
-				}, 200, false);
-			})
-		}
-	};
+                    $scope.geoWidth = function() {
+                        return $('#geochart').parent().width();
+                    }
+                    var setNewSize = function(width) {
+                        if (width > 0) {
+                            $scope.geoChart
+                                .width(width)
+                                .height(width/3.3)
+                                .projection(d3.geo.mercator().precision(0.1).scale((width + 1) / 2 / Math.PI).translate([width / 2.1, width / 2.4]))
+                                $(element).height(width/1.628);
+                                d3.select('#geochart svg').attr('width', width).attr('height', width/1.628);
+                            $scope.geoChart.redraw();
+                        }
+                    }
+                    $(window).bind('resize', function() {
+                        setTimeout(function(){
+                            setNewSize($scope.geoWidth());
+                        }, 150);
+                    });
+                    $('.sidebar-toggler').on("click", function() {
+                        setTimeout(function() {
+                            setNewSize($scope.geoWidth());
+                        },10);
+                    });
+                    var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
+                    $rootScope.$watch('search', function(){
+                        if($rootScope.search === null) {
+                                geoFilterDimension.filterAll();
+                            } else {
+                                geoFilterDimension.filterAll();
+                                if ($scope.country) {
+                                    geoFilterDimension.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
+                                }
+                            }
+                        $scope.geoChart.redraw();
+                    });
+                    $scope.$broadcast('spinnerHide');
+                }, 200, false);
+            })
+        }
+    };
 }]);
 
 angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
@@ -2202,78 +2202,609 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 }]);
 
 angular.module('mean.pages').directive('makeTreeChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
-	return {
-		link: function ($scope, element, attrs) {
-			$scope.$on('treeChart', function (event, root, params) {
-				$timeout(function () { // You might need this timeout to be sure its run after DOM render
-					var width = $("#treechart").parent().width(),
-						height = params["height"];
+    return {
+        link: function ($scope, element, attrs) {
+            $scope.$on('treeChart', function (event, root, params) {
+                $timeout(function () { // You might need this timeout to be sure its run after DOM render
+                    var width = $("#treechart").parent().width(),
+                        height = params["height"];
 
-					var cluster = d3.layout.cluster()
-						.size([height, width - 230]);
+                    var cluster = d3.layout.cluster()
+                        .size([height, width - 230]);
 
-					var nodeColor = function(severity) {
-						switch(severity) {
-							case 1:
-								return "#377FC7";
-								break;
-							case 2:
-								return "#F5D800";
-								break;
-							case 3:
-								return "#F88B12";
-								break;
-							case 4:
-								return "#DD122A";
-								break;
-							default:
-							return "#377FC7";
-						}
-					}
+                    var nodeColor = function(severity) {
+                        switch(severity) {
+                            case 1:
+                                return "#377FC7";
+                                break;
+                            case 2:
+                                return "#F5D800";
+                                break;
+                            case 3:
+                                return "#F88B12";
+                                break;
+                            case 4:
+                                return "#DD122A";
+                                break;
+                            default:
+                            return "#377FC7";
+                        }
+                    }
 
-					var diagonal = d3.svg.diagonal()
-						.projection(function(d) { return [d.y, d.x]; });
+                    var diagonal = d3.svg.diagonal()
+                        .projection(function(d) { return [d.y, d.x]; });
 
-					var svg = d3.select("#treechart").append("svg")
-						.attr("width", width)
-						.attr("height", height)
-						.append("g")
-						.attr("transform", "translate(90,0)");
+                    var svg = d3.select("#treechart").append("svg")
+                        .attr("width", width)
+                        .attr("height", height)
+                        .append("g")
+                        .attr("transform", "translate(90,0)");
 
-						var nodes = cluster.nodes(root),
-						links = cluster.links(nodes);
+                        var nodes = cluster.nodes(root),
+                        links = cluster.links(nodes);
 
-						var link = svg.selectAll(".link")
-							.data(links)
-							.enter().append("path")
-							.attr("d", diagonal)
-							.data(nodes)
-							.attr("stroke-width", function(d) { return d.idRoute ? "1px" : "0"; })
-							.attr("class", "conn_link");
+                        var link = svg.selectAll(".link")
+                            .data(links)
+                            .enter().append("path")
+                            .attr("d", diagonal)
+                            .data(nodes)
+                            .attr("stroke-width", function(d) { return d.idRoute ? "1px" : "0"; })
+                            .attr("class", "conn_link");
 
-						var node = svg.selectAll(".conn")
-							.data(nodes)
-							.enter().append("g")
-							.attr("class", "conn")
-							.attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+                        var node = svg.selectAll(".conn")
+                            .data(nodes)
+                            .enter().append("g")
+                            .attr("class", "conn")
+                            .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
 
-						node.append("circle")
-							.attr("fill",function(d){ return nodeColor(d.severity); } )
-							.attr("stroke", "#000")
-							.attr("stroke-width", "0.7px")
-							.attr("r", 4.5);
+                        node.append("circle")
+                            .attr("fill",function(d){ return nodeColor(d.severity); } )
+                            .attr("stroke", "#000")
+                            .attr("stroke-width", "0.7px")
+                            .attr("r", 4.5);
 
-						node.append("text")
-							.attr("dx", function(d) { return d.children ? -8 : 8; })
-							.attr("dy", 3)
-							.attr("font-weight", function(d) { return d.idRoute ? "bold" : 400; })
-							// .attr("class", function(d){return aRoute(d.idRoute)})
-							.style("text-anchor", function(d) { return d.children ? "end" : "start"; })
-							.text(function(d) { return d.name; });
-					d3.select(self.frameElement).style("height", height + "px");
+                        node.append("text")
+                            .attr("dx", function(d) { return d.children ? -8 : 8; })
+                            .attr("dy", 3)
+                            .attr("font-weight", function(d) { return d.idRoute ? "bold" : 400; })
+                            // .attr("class", function(d){return aRoute(d.idRoute)})
+                            .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
+                            .text(function(d) { return d.name; });
+                    d3.select(self.frameElement).style("height", height + "px");
 
-				}, 0, false);
-			})
-		}
-	};
+                }, 0, false);
+            })
+        }
+    };
+}]);
+
+
+angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$rootScope', function ($timeout, $location, $rootScope) {
+    return {
+        link: function ($scope, element, attrs) {
+            $scope.$on('laneGraph', function() {
+
+                $scope.$broadcast('spinnerHide')
+
+                // var lanes = $scope.crossfilterData.dimension(function(d){ return d.type }).group().reduceSum(function(d){return null}).top(Infinity).map(function(d){return d.key});
+                var itemsDimension = $scope.crossfilterData.dimension(function(d){ return d.time });
+                var items = itemsDimension.top(Infinity);
+                $scope.inTooDeep = {
+                    areWe: false,
+                    min: null,
+                    max: null
+                };
+
+                // var lanes = ["Chinese","Japanese","Korean"],
+                var laneLength = $scope.lanes.length;
+                var width = element.width();
+
+                var m = [5, 15, 15, 120], //top right bottom left
+                    w = width - m[1] - m[3],
+                    h = 350 - m[0] - m[2],
+                    miniHeight = 0,
+                    mainHeight = h - miniHeight - 50;
+
+                var queryThreshhold = 3600; // one hour in seconds
+
+                //scales
+                var x = d3.time.scale()
+                    .domain([new Date($scope.start), new Date($scope.end)])
+                    .range([0, w]);
+                var x1 = d3.time.scale()
+                    .domain([new Date($scope.start), new Date($scope.end)])
+                    .range([0, w]);
+                var y1 = d3.scale.linear()
+                    .domain([0, laneLength])
+                    .range([0, mainHeight]);
+
+                // current time div
+                var currentTimeSlice = d3.select("#lanegraph").append('div').attr('class', 'timeslice');
+                var currentTime = currentTimeSlice.append('div').style('float', 'left');
+
+                  // enhanced view alert
+                $scope.alert = currentTimeSlice.append('div')
+                    .attr('class', 'laneAlert')
+                    .style('background-color', '#CC0000')
+                    .style('padding', '0 10px 0 10px')
+                    .style('text-align', 'center')
+                    .style('color', '#FFFFFF')
+                    .style('float', 'right')
+                    .style('display', 'none')
+                    .style('width', '140px');
+
+                $scope.alert.html('Enhanced drill-down view');
+
+                var chart = d3.select("#lanegraph")
+                    .append("svg")
+                    .attr("width", w + m[1] + m[3])
+                    .attr("height", h + m[0] + m[2])
+                    .on("dblclick", redraw)
+                    .attr("class", "chart");
+            
+                chart.append("defs").append("clipPath")
+                    .attr("id", "clip")
+                    .append("rect")
+                    .attr("width", w)
+                    .attr("height", mainHeight);
+
+                var main = chart.append("g")
+                    .attr("transform", "translate(" + m[3] + "," + m[0] + ")")
+                    .attr("width", w)
+                    .attr("height", mainHeight)
+                    .attr("class", "main");
+
+                var xAxis = d3.svg.axis()
+                    .scale(x1)
+                    .orient('bottom')
+                    // .tickFormat(d3.time.format('%a %d'))
+                    .tickSize(1)
+                    .tickPadding(8);
+                
+                var xAxisBrush = chart.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", "translate(" + m[3] + "," + (mainHeight+9) + ")")
+                    .call(xAxis);
+
+                //main lanes and texts
+                main.append("g").selectAll(".laneLines")
+                    .data($scope.lanes)
+                    .enter().append("line")
+                    .attr("x1", m[1])
+                    .attr("y1", function(d, i) { return y1(i);})
+                    .attr("x2", w)
+                    .attr("y2", function(d, i) {return y1(i);})
+                    .attr("stroke", "lightgray");
+
+                main.append("g").selectAll(".laneText")
+                    .data($scope.lanes)
+                    .enter().append("text")
+                    .text(function(d) {return d;})
+                    .attr("x", -m[1])
+                    .attr("y", function(d, i) {return y1(i + .5);})
+                    .attr("dy", ".5ex")
+                    .attr("text-anchor", "end");
+
+                
+
+                function colors(title) {
+                    switch(title){
+                        case 'http':
+                            return "#67AAB5";
+                        case 'ssl':
+                            return "#A0BB71";
+                        case 'file': // extracted files
+                            return "#B572AB";
+                        case 'dns': // new dns
+                            return "#708EBC";
+                        case 'conn': //first seen
+                            return "#6FBF9B";
+                        case 'conn_ioc':
+                            return "#EFAA86";
+                        case 'http_ioc':
+                            return "#FFF2A0";
+                        case 'ssl_ioc':
+                            return "#D97373";
+                        case 'file_ioc':
+                            return "#F68D55";
+                        case 'dns_ioc':
+                            return "#F3BD5D";
+                        case 'endpoint':
+                            return "#7E9E7B";
+                        case 'stealth':
+                            return "#0080CE";
+                        default: //endpoint events
+                            return "#D8464A";
+                    }
+                }
+
+                $scope.point = function(element, nickname, title, dType) {
+                    if (nickname.search("ioc") !== -1) {
+                        element.attr('class', 'ioc');
+                        element = element.append('g')
+                            .attr('transform', 'translate(-6, -6)scale(0.8)');
+                        element.append('svg:path')
+                            .attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
+                            .attr('fill', colors(nickname));
+                        element.append('svg:polygon')
+                            .attr('points', '18.155,3.067 5.133,26.932 31.178,26.932 ')
+                            .attr('fill', '#595A5C');
+                        element.append('svg:polygon')
+                            .attr('points', '19.037,21.038 19.626,12.029 15.888,12.029 16.477,21.038 ')
+                            .attr('fill', colors(nickname));
+                        element.append('rect')
+                            .attr('x', 16.376)
+                            .attr('y', 22.045)
+                            .attr('fill', colors(nickname))
+                            .attr('width', 2.838)
+                            .attr('height', 2.448);
+                        if(dType === 'legend') {
+                            element.append('text')
+                                .text(title)
+                                .attr('fill', '#7f7f7f')
+                                .attr('transform', 'translate(-23,32)');
+                        }
+                        return;
+                    } else {
+                        element.attr('class', nickname);
+                        element = element.append('g')
+                            .attr('transform', 'translate(-6, -6)scale(0.8)');
+                        switch(nickname){
+                            case 'file':
+                                element.append('circle')
+                                    .attr('fill', function(d){
+                                        if (d.ioc_count > 0) {
+                                            return '#d67636';
+                                        } else {
+                                            return '#B572AB';
+                                        }
+                                    })
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                // element.append('svg:path')
+                                //     .attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
+                                //     .attr('fill', '#B572AB');
+                                element.append('svg:path')
+                                    .attr('d', 'M13.702,12.807h13.189c-0.436-0.655-1.223-1.104-2.066-1.104c0,0-7.713,0-8.361,0'+
+                                        'c-0.386-0.796-1.278-1.361-2.216-1.361H7.562c-1.625,0-1.968,0.938-1.839,2.025l2.104,11.42c0.146,0.797,0.791,1.461,1.594,1.735'+
+                                        'c0,0,2.237-10.702,2.378-11.308C12.005,13.334,12.403,12.807,13.702,12.807z')
+                                    .attr('fill', '#595A5C');
+                                element.append('svg:path')
+                                    .attr('d', 'M29.697,13.898c0,0-14.47-0.037-14.68-0.037c-1.021,0-1.435,0.647-1.562,1.289l-2.414,10.508h16.716'+
+                                        'c1.146,0,2.19-0.821,2.383-1.871l1.399-7.859C31.778,14.706,31.227,13.848,29.697,13.898z')
+                                    .attr('fill', '#595A5C');
+                                if(dType === 'legend') {
+                                    element.append('text')
+                                        .text(title)
+                                        .attr('fill', '#7f7f7f')
+                                        .attr('transform', 'translate(-11,32)');
+                                }
+                                return;
+                            case 'conn':
+                                element.append('circle')
+                                    .attr('fill', function(d){
+                                        if (d.ioc_count > 0) {
+                                            return '#d19d41';
+                                        } else {
+                                            return '#6FBF9B';
+                                        }
+                                    })
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                // element.append('svg:path')
+                                //     .attr('d', 'M18,0C8.059,0,0,8.059,0,18c0,9.94,8.059,18,18,18s18-8.06,18-18C36,8.059,27.94,0,18,0z')
+                                //     .attr('fill', '#6FBF9B');
+                                element.append('svg:polygon')
+                                    .attr('points', '24.585,6.299 24.585,9.064 11.195,9.064 11.195,14.221 24.585,14.221 24.585,16.986 31.658,11.643 ')
+                                    .attr('fill', '#595A5C');
+                                element.append('svg:polygon')
+                                    .attr('points', '10.99,17.822 3.916,23.166 10.99,28.51 10.99,25.744 24.287,25.744 24.287,20.59 10.99,20.59 ')
+                                    .attr('fill', '#595A5C');
+                                if(dType === 'legend') {
+                                    element.append('text')
+                                        .text(title)
+                                        .attr('fill', '#7f7f7f')
+                                        .attr('transform', 'translate(-31,32)');
+                                }
+                                return;
+                            case 'dns':
+                                element.append('circle')
+                                    .attr('fill', function(d){
+                                        if (d.ioc_count > 0) {
+                                            return '#bf7d39';
+                                        } else {
+                                            return '#708EBC';
+                                        }
+                                    })
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                // element.append('svg:path')
+                                //     .attr('d', 'M18,0C8.059,0,0,8.059,0,18s8.059,18,18,18s18-8.059,18-18S27.941,0,18,0z')
+                                //     .attr('fill', '#708EBC');
+                                element.append('svg:path')
+                                    .attr('d', 'M20.909,13.115c0-0.07,0-0.106-0.071-0.106c-0.283,0-6.022,0.813-7.935,0.956'+
+                                        'c-0.036,0.955-0.071,2.053-0.071,3.009l2.267,0.106v8.707c0,0.071-0.035,0.143-0.142,0.178l-1.877,0.07'+
+                                        'c-0.035,0.92-0.035,1.982-0.035,2.938c1.452,0,3.33-0.036,4.818-0.036h4.888V26l-1.949-0.07'+
+                                        'C20.801,22.39,20.874,16.938,20.909,13.115z')
+                                    .attr('fill', '#595A5C');
+                                element.append('svg:path')
+                                    .attr('d', 'M17.473,10.921c1.771,0,3.329-1.274,3.329-3.187c0-1.486-1.098-2.867-3.152-2.867'+
+                                        'c-1.948,0-3.259,1.451-3.259,2.938C14.391,9.611,15.949,10.921,17.473,10.921z')
+                                    .attr('fill', '#595A5C');
+                                if(dType === 'legend') {
+                                    element.append('text')
+                                        .text(title)
+                                        .attr('fill', '#7f7f7f')
+                                        .attr('transform', 'translate(-13,32)');
+                                }
+                                return;
+                            case 'http':
+                                element.append('circle')
+                                    .attr('fill', function(d){
+                                        if (d.ioc_count > 0) {
+                                            return '#67AAB5';
+                                        } else {
+                                            return '#67AAB5';
+                                        }
+                                    })
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                // element.append('svg:path')
+                                //     .attr('d', 'M18,0C8.059,0,0,8.06,0,18.001C0,27.941,8.059,36,18,36c9.94,0,18-8.059,18-17.999C36,8.06,27.94,0,18,0z')
+                                //     .attr('fill', '#67AAB5');
+                                element.append('svg:path')
+                                    .attr('d', 'M24.715,19.976l-2.057-1.122l-1.384-0.479l-1.051,0.857l-1.613-0.857l0.076-0.867l-1.062-0.325l0.31-1.146'+
+                                        'l-1.692,0.593l-0.724-1.616l0.896-1.049l1.108,0.082l0.918-0.511l0.806,1.629l0.447,0.087l-0.326-1.965l0.855-0.556l0.496-1.458'+
+                                        'l1.395-1.011l1.412-0.155l-0.729-0.7L22.06,9.039l1.984-0.283l0.727-0.568L22.871,6.41l-0.912,0.226L21.63,6.109l-1.406-0.352'+
+                                        'l-0.406,0.596l0.436,0.957l-0.485,1.201L18.636,7.33l-2.203-0.934l1.97-1.563L17.16,3.705l-2.325,0.627L8.91,3.678L6.39,6.285'+
+                                        'l2.064,1.242l1.479,1.567l0.307,2.399l1.009,1.316l1.694,2.576l0.223,0.177l-0.69-1.864l1.58,2.279l0.869,1.03'+
+                                        'c0,0,1.737,0.646,1.767,0.569c0.027-0.07,1.964,1.598,1.964,1.598l1.084,0.52L19.456,21.1l-0.307,1.775l1.17,1.996l0.997,1.242'+
+                                        'l-0.151,2.002L20.294,32.5l0.025,2.111l1.312-0.626c0,0,2.245-3.793,2.368-3.554c0.122,0.238,2.129-2.76,2.129-2.76l1.666-1.26'+
+                                        'l0.959-3.195l-2.882-1.775L24.715,19.976z')
+                                    .attr('fill', '#595A5C');
+                                if(dType === 'legend') {
+                                    element.append('text')
+                                        .text(title)
+                                        .attr('fill', '#7f7f7f')
+                                        .attr('transform', 'translate(-16,32)');
+                                }
+                                return;
+                            case 'ssl':
+                                // element.append('svg:path')
+                                //     .attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
+                                //     .attr('fill', '#A0BB71');
+                                element.append('circle')
+                                    .attr('fill', function(d){
+                                        if (d.ioc_count > 0) {
+                                            return '#e2a23c';
+                                        } else {
+                                            return '#A0BB71';
+                                        }
+                                    })
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                element.append('svg:path')
+                                    .attr('d', 'M25.518,13.467h-0.002c0-0.003,0.002-0.006,0.002-0.008c0-4.064-3.297-7.359-7.359-7.359'+
+                                        'c-4.064,0-7.359,3.295-7.359,7.359c0,0.002,0,0.005,0,0.008v2.674H9.291V27.9h17.785v-11.76h-1.559V13.467z')
+                                    .attr('fill', '#595A5C');
+                                element.append('svg:path')
+                                    .attr('d', 'M18.184,8.754c-3.191,0-4.661,2.372-4.661,4.967'+
+                                        'c0,0.004,0,0.006,0,0.008v2.412h9.397v-2.412c0-0.002,0-0.004,0-0.008C22.92,11.126,21.315,8.754,18.184,8.754z')
+                                    .attr('fill', '#A0BB71');
+                                if(dType === 'legend') {
+                                    element.append('text')
+                                        .text(title)
+                                        .attr('fill', '#7f7f7f')
+                                        .attr('transform', 'translate(-5.5,32)');
+                                }
+                                return;
+                            case 'endpoint':
+                                // element.append('svg:path')
+                                //     .attr('d', 'M18,0C8.059,0,0,8.06,0,18c0,9.941,8.059,18,18,18c9.94,0,18-8.059,18-18C36,8.06,27.94,0,18,0z')
+                                //     .attr('fill', '#7E9E7B');
+                                element.append('circle')
+                                    .attr('fill', '#7E9E7B')
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                element.append('svg:path')
+                                    .attr('d', 'M28.649,8.6H7.351c-0.684,0-1.238,0.554-1.238,1.238v14.363c0,0.684,0.554,1.238,1.238,1.238h7.529'+
+                                        'l-1.09,3.468v0.495h8.419v-0.495l-1.09-3.468h7.529c0.684,0,1.237-0.555,1.237-1.238V9.838C29.887,9.153,29.333,8.6,28.649,8.6z'+
+                                        'M28.477,22.072H7.635V10.074h20.842V22.072z')
+                                    .attr('fill', '#595A5C');
+                                if(dType === 'legend') {
+                                    element.append('text')
+                                        .text(title)
+                                        .attr('fill', '#7f7f7f')
+                                        .attr('transform', 'translate(-24,32)');
+                                }
+                                return;
+                            case 'stealth':
+                                element.append('circle')
+                                    .attr('fill', '#0080CE')
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                element.append('svg:path')
+                                    .attr('fill', '#58595B')
+                                    .attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
+                                        'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
+                                        'C28.014,15.545,26.676,21.468,23.587,26.751z')
+                                element.append('svg:path')
+                                    .attr('fill', '#0080CE')
+                                    .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
+                                        'C11.076,16.238,11.938,20.26,13.699,23.661z')
+                                if(dType === 'legend') {
+                                    element.append('text')
+                                        .text(title)
+                                        .attr('fill', '#7f7f7f')
+                                        .attr('transform', 'translate(-24,32)');
+                                }
+                                return;
+                            default:
+                                console.log('cannot be drawn');
+                                return;
+                        }
+                    }
+                }
+ 
+                var brush = d3.svg.brush()
+                    .x(x1)
+                    .on("brushend", mouseup);
+                main.append("g")
+                    .attr("class", "x brush")
+                    .call(brush)
+                    .selectAll("rect")
+                    .attr("y", 1)
+                    .attr("height", mainHeight);
+
+                
+                var itemRects = main.append("g")
+                    .attr("clip-path", "url(#clip)");
+                
+                // nav
+                var navArray = [], currentNavPos = 0;
+                var buttonHolder = d3.select("#lanegraph").append('div').attr('class', 'buttonHolder');
+                var resetBtn = buttonHolder
+                    .append('button')
+                    .html('Reset')
+                    .attr('class', 'resetButton')
+                    .on('click', function(){
+                        redraw();
+                    });
+                var prevButton = buttonHolder.append('button')
+                    .html('Previous')
+                    .attr('class', 'prevButton')
+                    .on('click', function(){
+                        if (currentNavPos > 0) {
+                            nextButton.attr('disabled', null);
+                            currentNavPos--;
+                            mouseup('nav');
+                        }
+                    });
+                var nextButton = buttonHolder
+                    .append('button')
+                    .html('Next')
+                    .attr('class', 'prevButton')
+                    .on('click', function(){
+                        if (currentNavPos < navArray.length) {
+                            prevButton.attr('disabled', null);
+                            currentNavPos++;
+                            mouseup('nav');
+                        }
+                    });
+
+                function redraw() {
+                    // nav settings
+                    navArray = [];
+                    currentNavPos = 0;
+                    prevButton.attr('disabled', 'disabled');
+                    nextButton.attr('disabled', 'disabled');
+                    resetBtn.attr('disabled', 'disabled');
+                    navArray.push({'min': new Date($scope.start), 'max': new Date($scope.end)});
+
+                    currentTime.html('Current Time Slice: <strong>'+$scope.start+'</strong> - <strong>'+$scope.end+'</strong>');
+
+                    var visItems = items;
+                    x1.domain([new Date($scope.start), new Date($scope.end)]);
+                    xAxisBrush.transition().duration(500).call(xAxis);
+                    itemRects.selectAll('g').remove();
+                    var icons = itemRects.selectAll("g").data(visItems);
+                    icons.enter().append("g").each(function(d){
+                        var elm = d3.select(this);
+                        elm
+                            .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
+                            .attr("class", function(d) {return "mainItem" + d.lane;})
+                            .on("click", function (d){
+                                $scope.open(d, $scope.data.columns);
+                            });
+                        $scope.point(elm, d.type);
+                    })
+                    icons.exit();
+                }
+
+                function mouseup(action) {
+                    var rects, labels, minExtent, maxExtent, visItems;
+                    if (action === 'nav') {
+                            // get max and min from mav array
+                            minExtent = navArray[currentNavPos].min;
+                            maxExtent = navArray[currentNavPos].max;
+                        // disable previous button if all the way back
+                        if (currentNavPos === 0) {
+                            resetBtn.attr('disabled', 'disabled');
+                            prevButton.attr('disabled', 'disabled');
+                        } else if (currentNavPos === navArray.length-1) {
+                            nextButton.attr('disabled', 'disabled');
+                        } else {
+                            resetBtn.attr('disabled', null);
+                        }
+                    } else {
+                        // get max and min from click/drag
+                        minExtent = brush.extent()[0];
+                        maxExtent = brush.extent()[1];
+                        // step up nav array pos and push new values in;
+                        currentNavPos++;
+                        navArray.push({'min': minExtent, 'max': maxExtent});
+                        prevButton.attr('disabled', null);
+                        resetBtn.attr('disabled', null);
+                    }
+
+                    var minUnix = moment(minExtent).unix();
+                    var maxUnix = moment(maxExtent).unix();
+                    // should it requery?
+                    var msDifference = maxUnix - minUnix;
+                    if ((msDifference < queryThreshhold) && (msDifference !== 0)) {
+                        $scope.requery(minExtent, maxExtent, function(data){
+                            visItems = data;
+                            plot(visItems, minExtent, maxExtent);
+                        })                
+                    } else {
+                        // reset if not within threshold
+                        $scope.inTooDeep.areWe = false;
+                        visItems = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;});
+                        $scope.alert.style('display', 'none');
+                        plot(visItems, minExtent, maxExtent);
+                    }
+                }
+                redraw();
+
+                function plot(data, min, max) {
+                    if (moment(max).unix() !== moment(min).unix()) {
+                        currentTime.html('Current Time Slice: <strong>'+moment(min).format('MMMM D, YYYY h:mm A')+'</strong> - <strong>'+moment(max).format('MMMM D, YYYY h:mm A')+'</strong>')
+                        main.select('g.brush .extent')
+                            .transition()
+                            .duration(150)
+                            .attr('width', w)
+                            // .attr('x', function(d) {console.log(x); return x/2 })
+                            .transition()
+                            .duration(50)
+                            .attr('width', 0);
+                        x1.domain([min, max]);
+                        xAxisBrush.transition().duration(500).call(xAxis);
+                        itemRects.selectAll('g').remove();
+                        var icons = itemRects.selectAll("g").data(data);
+                        icons.enter().append("g").each(function(d){
+                            var elm = d3.select(this);
+                            elm
+                                .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
+                                .attr("class", function(d) {return "mainItem" + d.lane;})
+                                .on("click", function (d){
+                                    $scope.open(d, $scope.data.columns);
+                                });
+                                // .attr("width", 5)
+                                // .attr("height", function(d) {return .8 * y1(1);});
+                            $scope.point(elm, d.type);
+                        })
+                        icons.exit();
+                    }
+                }
+
+            });
+        }
+    };
 }]);
