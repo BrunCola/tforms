@@ -1,7 +1,7 @@
 'use strict';
 
 var sankey = require('../constructors/sankey_new'),
-	fisheye = require('../constructors/fisheye'),
+	datatable = require('../constructors/datatable'),
 	query = require('../constructors/query'),
 	config = require('../../config/config'),
 	async = require('async');
@@ -12,17 +12,12 @@ module.exports = function(pool) {
 	return {
 		render: function(req, res) {
 			var result = [];
-			var largestGroup = 0;
-			var largestIOC = 0;
-			function handleReturn(data, maxConn, maxIOC, callback) {
-				if (data) {
-					result.push(data);
-					if (maxConn >= largestGroup) {
-						largestGroup = maxConn;
-					}
-					if (maxIOC >= largestIOC) {
-						largestIOC = maxIOC;
-					}
+			var columns = [];
+			function handleReturn(data, callback) {
+				if ((data !== null) && (data.aaData.length > 0)) {
+					// data.aaData.columns = data.params;
+					columns[data.aaData[0].type] = data.params;
+					result.push(data.aaData);
 					return callback();
 				} else {
 					return callback();
@@ -41,277 +36,13 @@ module.exports = function(pool) {
 			} else {
 				pointGroup = 60;
 			}
-			if (req.query.src_ip && (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1)) {
-				var sankeyData;
-				var info = [];
-				var sankey_auth1 = {
-					query: 'SELECT '+
-							'count(*) AS `count`, '+
-							'max(date_format(from_unixtime(stealth_conn.time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-							'`src_ip`, '+
-							'`dst_ip`, '+
-							'(sum(in_bytes) / 1048576) as in_bytes, '+
-							'(sum(out_bytes) / 1048576) as out_bytes, '+
-							'sum(in_packets) as in_packets, '+
-							'sum(out_packets) as out_packets '+
-						'FROM '+
-							'`stealth_conn` '+
-						'WHERE '+
-							'time BETWEEN ? AND ? '+
-							'AND `dst_ip` = ? '+
-							// 'AND `out_bytes` > 0 '+
-							'AND `in_bytes` > 0 '+
-						'GROUP BY '+
-							'`src_ip` '+
-						'ORDER BY `count` DESC ',
-					insert: [start, end, req.query.src_ip]
-				}
-				//from center node to local (center node is the lan) AUTH
-				var sankey_auth2 = {
-					query: 'SELECT '+
-							'count(*) AS `count`, '+
-							'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-							'`lan_ip`, '+
-							'`remote_ip`, '+
-							'(sum(in_bytes) / 1048576) as in_bytes, '+
-							'(sum(out_bytes) / 1048576) as out_bytes, '+
-							'sum(in_packets) as in_packets, '+
-							'sum(out_packets) as out_packets '+
-						'FROM '+
-							'`conn_meta` '+
-						'WHERE '+
-							'time BETWEEN ? AND ? '+
-							// 'AND `in_bytes` > 0 '+
-							// 'AND ((`remote_ip` = ?) '+
-							// 'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%")) '+
-							'AND ((`remote_ip` = ? AND `out_bytes` > 0 ) '+
-							'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%" AND `in_bytes` > 0 )) '+
-						'GROUP BY '+
-							'`lan_ip`, '+
-							'`remote_ip` '+
-						'ORDER BY `count` DESC ',
-					insert: [start, end, req.query.src_ip, req.query.src_ip]
-				}
-				//from center to remote (center is the lan) AUTH
-				var sankey_auth3 = {
-					query: 'SELECT '+
-							'count(*) AS `count`, '+
-							'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-							'`lan_ip`, '+
-							'`remote_ip`, '+
-							'(sum(in_bytes) / 1048576) as in_bytes, '+
-							'(sum(out_bytes) / 1048576) as out_bytes, '+
-							'sum(in_packets) as in_packets, '+
-							'sum(out_packets) as out_packets '+
-						'FROM '+
-							'`conn_meta` '+
-						'WHERE '+
-							'time BETWEEN ? AND ? '+
-							'AND `out_bytes` > 0 '+
-							'AND `lan_ip` = ? '+
-							// 'AND NOT (remote_ip LIKE "192.168.222.%") '+
-						'GROUP BY '+
-							'`remote_ip` '+
-						'ORDER BY `count` DESC LIMIT 10',
-					insert: [start, end, req.query.src_ip]
-				}
-				var sankey_unauth1 = {
-					query: 'SELECT '+
-							'count(*) AS `count`, '+
-							'max(date_format(from_unixtime(stealth_conn.time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-							'`src_ip`, '+
-							'`dst_ip`, '+
-							'(sum(in_bytes) / 1048576) as in_bytes, '+
-							'(sum(out_bytes) / 1048576) as out_bytes, '+
-							'sum(in_packets) as in_packets, '+
-							'sum(out_packets) as out_packets '+
-						'FROM '+
-							'`stealth_conn` '+
-						'WHERE '+
-							'time BETWEEN ? AND ? '+
-							'AND `dst_ip` = ? '+
-							// 'AND `out_bytes` = 0 '+
-							'AND `in_bytes` = 0 '+
-						'GROUP BY '+
-							'`src_ip` '+
-						'ORDER BY `count` DESC ',
-					insert: [start, end, req.query.src_ip]
-				}
-				//from center node to local (center node is the lan) AUTH
-				var sankey_unauth2 = {
-					query: 'SELECT '+
-							'count(*) AS `count`, '+
-							'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-							'`lan_ip`, '+
-							'`remote_ip`, '+
-							'(sum(in_bytes) / 1048576) as in_bytes, '+
-							'(sum(out_bytes) / 1048576) as out_bytes, '+
-							'sum(in_packets) as in_packets, '+
-							'sum(out_packets) as out_packets '+
-						'FROM '+
-							'`conn_meta` '+
-						'WHERE '+
-							'time BETWEEN ? AND ? '+
-							// 'AND `in_bytes` = 0 '+
-							'AND ((`remote_ip` = ? AND `out_bytes` = 0 ) '+
-							'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%" AND `in_bytes` = 0 )) '+
-						'GROUP BY '+
-							'`lan_ip`, '+
-							'`remote_ip` '+
-						'ORDER BY `count` DESC ',
-					insert: [start, end, req.query.src_ip, req.query.src_ip]
-				}
-				//from center to remote (center is the lan) AUTH
-				var sankey_unauth3 = {
-					query: 'SELECT '+
-							'count(*) AS `count`, '+
-							'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-							'`lan_ip`, '+
-							'`remote_ip`, '+
-							'(sum(in_bytes) / 1048576) as in_bytes, '+
-							'(sum(out_bytes) / 1048576) as out_bytes, '+
-							'sum(in_packets) as in_packets, '+
-							'sum(out_packets) as out_packets '+
-						'FROM '+
-							'`conn_meta` '+
-						'WHERE '+
-							'time BETWEEN ? AND ? '+
-							'AND `out_bytes` = 0 '+
-							'AND `lan_ip` = ? '+
-							// 'AND NOT (remote_ip LIKE "192.168.222.%") '+
-						'GROUP BY '+
-							'`remote_ip` '+
-						'ORDER BY `count` DESC LIMIT 10',
-					insert: [start, end, req.query.src_ip]
-				}
-				//The rest of the queries are for the fisheye visual
 
-				var stealth_conn = {
+			if (req.query.type === 'drill') {
+				var conn_ioc = {
 					query: 'SELECT '+
-							'`time`, '+
-							'`src_ip`,'+
-							'`dst_ip`,'+
-							'(`in_bytes` / 1048576) as in_bytes,'+
-							'(`out_bytes` / 1048576) as out_bytes,'+
-							'`in_packets`,'+
-							'`out_packets` '+
-						'FROM '+
-							'`stealth_conn` '+
-						'WHERE '+
-							'`time` BETWEEN ? AND ? '+
-							'AND `src_ip`= ? '+
-							'AND `in_bytes` > 0 '+
-							'AND `out_bytes` > 0 ',
-					insert: [start, end, req.query.src_ip],
-					columns: [
-						{"sTitle": "Time", "mData": "time"},
-						{"sTitle": "Source IP", "mData": "src_ip"},
-						{"sTitle": "Destination IP", "mData": "dst_ip"},
-						{"sTitle": "MB from Remote", "mData": "in_bytes"},
-						{"sTitle": "MB to Remote", "mData": "out_bytes"},
-						{"sTitle": "Packets from Remote", "mData": "in_packets"},
-						{"sTitle": "Packets to Remote", "mData": "out_packets"}
-					],
-					start: start,
-					end: end,
-					grouping: pointGroup,
-					sClass: 'stealth'
-				}
-
-				var stealth_blocked1 = {
-					query: 'SELECT '+
-							'`time`, '+
-							'`src_ip`, '+
-							'`dst_ip`, '+
-							'(`in_bytes` / 1048576) as in_bytes, '+
-							'(`out_bytes` / 1048576) as out_bytes, '+
-							'`in_packets`, '+
-							'`out_packets` '+
-						'FROM '+
-							'`stealth_conn` '+
-						'WHERE '+
-							'time BETWEEN ? AND ? '+
-							'AND `dst_ip` = ? '+
-							'AND `in_bytes` = 0 ',
-					insert: [start, end, req.query.src_ip],
-					columns: [
-						{"sTitle": "Time", "mData": "time"},
-						{"sTitle": "Source IP", "mData": "src_ip"},
-						{"sTitle": "Destination IP", "mData": "dst_ip"},
-						{"sTitle": "MB from Remote", "mData": "in_bytes"},
-						{"sTitle": "MB to Remote", "mData": "out_bytes"},
-						{"sTitle": "Packets from Remote", "mData": "in_packets"},
-						{"sTitle": "Packets to Remote", "mData": "out_packets"}
-					],
-					start: start,
-					end: end,
-					grouping: pointGroup,
-					sClass: 'stealthBlocked'
-				}
-				var stealth_blocked2 = {
-					query: 'SELECT '+
-							'`time`, '+
-							'`lan_ip`, '+
-							'`remote_ip`, '+
-							'(`in_bytes` / 1048576) as in_bytes, '+
-							'(`out_bytes` / 1048576) as out_bytes, '+
-							'`in_packets`, '+
-							'`out_packets` '+
-						'FROM '+
-							'`conn_meta` '+
-						'WHERE '+
-							'time BETWEEN ? AND ? '+
-							'AND ((`remote_ip` = ? AND `out_bytes` = 0 ) '+
-							'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%" AND `in_bytes` = 0 )) ',
-					insert: [start, end, req.query.src_ip, req.query.src_ip],
-					columns: [
-						{"sTitle": "Time", "mData": "time"},
-						{"sTitle": "Local IP", "mData": "lan_ip"},
-						{"sTitle": "Remote IP", "mData": "remote_ip"},
-						{"sTitle": "MB from Remote", "mData": "in_bytes"},
-						{"sTitle": "MB to Remote", "mData": "out_bytes"},
-						{"sTitle": "Packets from Remote", "mData": "in_packets"},
-						{"sTitle": "Packets to Remote", "mData": "out_packets"}
-					],
-					start: start,
-					end: end,
-					grouping: pointGroup,
-					sClass: 'stealthBlocked'
-				}
-				var stealth_blocked3 = {
-					query:'SELECT '+
-							'`time`, '+
-							'`lan_ip`, '+
-							'`remote_ip`, '+
-							'(`in_bytes` / 1048576) as in_bytes, '+
-							'(`out_bytes` / 1048576) as out_bytes, '+
-							'`in_packets`, '+
-							'`out_packets` '+
-						'FROM '+
-							'`conn_meta` '+
-						'WHERE '+
-							'time BETWEEN ? AND ? '+
-							'AND `out_bytes` = 0 '+
-							'AND `lan_ip` = ? ',
-					insert: [start, end, req.query.src_ip, req.query.src_ip],
-					columns: [
-						{"sTitle": "Time", "mData": "time"},
-						{"sTitle": "Local IP", "mData": "lan_ip"},
-						{"sTitle": "Remote IP", "mData": "remote_ip"},
-						{"sTitle": "MB from Remote", "mData": "in_bytes"},
-						{"sTitle": "MB to Remote", "mData": "out_bytes"},
-						{"sTitle": "Packets from Remote", "mData": "in_packets"},
-						{"sTitle": "Packets to Remote", "mData": "out_packets"}
-					],
-					start: start,
-					end: end,
-					grouping: pointGroup,
-					sClass: 'stealthBlocked'
-				}
-
-				var conn = {
-					query: 'SELECT '+
-							'`time`, '+
+							'\'conn_ioc\' AS type, '+
+							'`time` as raw_time, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
 							'`ioc_count`,'+
 							'`lan_zone`,'+
 							'`machine`,'+
@@ -321,8 +52,8 @@ module.exports = function(pool) {
 							'`remote_port`,'+
 							'`remote_country`,'+
 							'`remote_asn_name`,'+
-							'(`in_bytes` / 1048576) as in_bytes,'+
-							'(`out_bytes` / 1048576) as out_bytes,'+
+							'`in_bytes`,'+
+							'`out_bytes`,'+
 							'`l7_proto`,'+
 							'`ioc`,'+
 							'`ioc_severity`,'+
@@ -330,39 +61,147 @@ module.exports = function(pool) {
 							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection` '+
 						'FROM '+
-							'`conn_ioc` '+
+							'`conn` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `lan_ip`= ? ',
-					insert: [start, end, req.query.src_ip],
-					columns: [
-						{"sTitle": "Time", "mData": "time"},
-						{"sTitle": "Zone", "mData": "lan_zone"},
-						{"sTitle": "Machine", "mData": "machine"},
-						{"sTitle": "Local IP", "mData": "lan_ip"},
-						{"sTitle": "Local Port", "mData": "lan_port"},
-						{"sTitle": "Remote IP", "mData": "remote_ip"},
-						{"sTitle": "Remote Port", "mData": "remote_port"},
-						{"sTitle": "Remote Country", "mData": "remote_country"},
-						{"sTitle": "Remote ASN", "mData": "remote_asn_name"},
-						{"sTitle": "Application", "mData": "l7_proto"},
-						{"sTitle": "Bytes to Remote", "mData": "in_bytes"},
-						{"sTitle": "Bytes from Remote", "mData": "out_bytes"},
-						{"sTitle": "IOC", "mData": "ioc"},
-						{"sTitle": "IOC Severity", "mData": "ioc_severity"},
-						{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
-						{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
-						{"sTitle": "IOC Rule", "mData": "ioc_rule"},
+							'AND `lan_zone`= ? '+
+							'AND `lan_ip`= ? '+
+							'AND `remote_ip`= ? '+
+							'AND `ioc`=? ',
+					insert: [start, end, req.query.lan_zone, req.query.src_ip, req.query.remote_ip, req.query.ioc],
+					params: [
+						{title: "Time", select: "time"},
+						{title: "Zone", select: "lan_zone"},
+						{title: "Machine", select: "machine"},
+						{title: "Local IP", select: "lan_ip"},
+						{title: "Local Port", select: "lan_port"},
+						{title: "Remote IP", select: "remote_ip"},
+						{title: "Remote Port", select: "remote_port"},
+						{title: "Remote Country", select: "remote_country"},
+						{title: "Remote ASN", select: "remote_asn_name"},
+						{title: "Application", select: "l7_proto"},
+						{title: "Bytes to Remote", select: "in_bytes"},
+						{title: "Bytes from  Remote", select: "out_bytes"},
+						{title: "IOC", select: "ioc"},
+						{title: "IOC Severity", select: "ioc_severity"},
+						{title: "IOC Type", select: "ioc_typeIndicator"},
+						{title: "IOC Stage", select: "ioc_typeInfection"},
+						{title: "IOC Rule", select: "ioc_rule"},
 					],
-					start: start,
-					end: end,
-					grouping: pointGroup,
-					sClass: 'conn'
+					settings: {
+						sort: [[1, 'desc']],
+						div: 'table',
+						title: 'Indicators of Compromise (IOC) Notifications',
+						pageBreakBefore: false
+					}
 				}
-
+				var conn = {
+					query: 'SELECT '+
+							'\'conn\' AS type, '+
+							'`time` as raw_time, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+							'`ioc_count`,'+
+							'`lan_zone`,'+
+							'`machine`,'+
+							'`lan_ip`,'+
+							'`lan_port`,'+
+							'`remote_ip`,'+
+							'`remote_port`,'+
+							'`remote_country`,'+
+							'`remote_asn_name`,'+
+							'`in_bytes`,'+
+							'`out_bytes`,'+
+							'`l7_proto`,'+
+							'`ioc`,'+
+							'`ioc_severity`,'+
+							'`ioc_rule`,'+
+							'`ioc_typeIndicator`,'+
+							'`ioc_typeInfection` '+
+						'FROM '+
+							'`conn` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `lan_zone`= ? '+
+							'AND `lan_ip`= ? ',
+					insert: [start, end, req.query.lan_zone, req.query.src_ip],
+					params: [
+						{title: "Time", select: "time"},
+						{title: "Zone", select: "lan_zone"},
+						{title: "Machine", select: "machine"},
+						{title: "Local IP", select: "lan_ip"},
+						{title: "Local Port", select: "lan_port"},
+						{title: "Remote IP", select: "remote_ip"},
+						{title: "Remote Port", select: "remote_port"},
+						{title: "Remote Country", select: "remote_country"},
+						{title: "Remote ASN", select: "remote_asn_name"},
+						{title: "Application", select: "l7_proto"},
+						{title: "Bytes to Remote", select: "in_bytes"},
+						{title: "Bytes from Remote", select: "out_bytes"},
+						{title: "IOC", select: "ioc"},
+						{title: "IOC Severity", select: "ioc_severity"},
+						{title: "IOC Type", select: "ioc_typeIndicator"},
+						{title: "IOC Stage", select: "ioc_typeInfection"},
+						{title: "IOC Rule", select: "ioc_rule"},
+					],
+					settings: {
+						sort: [[1, 'desc']],
+						div: 'table',
+						title: 'Indicators of Compromise (IOC) Notifications',
+						pageBreakBefore: false
+					}
+				}
+				var dns_ioc = {
+					query: 'SELECT '+
+							'\'dns_ioc\' AS type, '+
+							'`time` as raw_time, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+							'`ioc_count`,'+
+							'`proto`, '+
+							'`qclass_name`, '+
+							'`qtype_name`, '+
+							'`query`, '+
+							'`answers`, '+
+							'`TTLs`, '+
+							'`ioc`, '+
+							'`ioc_severity`, '+
+							'`ioc_rule`,'+
+							'`ioc_typeIndicator`, '+
+							'`ioc_typeInfection` '+
+						'FROM '+
+							'`dns` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `lan_zone`= ? '+
+							'AND `lan_ip`= ? '+
+							'AND `remote_ip`= ? '+
+							'AND `ioc`=?',
+					insert: [start, end, req.query.lan_zone, req.query.src_ip, req.query.remote_ip, req.query.ioc],
+					params: [
+						{title: "Time", select: "time"},
+						{title: "Protocol", select: "proto"},
+						{title: "Query Class", select: "qclass_name"},
+						{title: "Query Type", select: "qtype_name"},
+						{title: "Query", select: "query"},
+						{title: "Answers", select: "answers"},
+						{title: "TTLs", select: "TTLs"},
+						{title: "IOC", select: "ioc"},
+						{title: "IOC Severity", select: "ioc_severity"},
+						{title: "IOC Type", select: "ioc_typeIndicator"},
+						{title: "IOC Stage", select: "ioc_typeInfection"},
+						{title: "IOC Rule", select: "ioc_rule"},
+					],
+					settings: {
+						sort: [[1, 'desc']],
+						div: 'table',
+						title: 'Indicators of Compromise (IOC) Notifications',
+						pageBreakBefore: false
+					}
+				}
 				var dns = {
 					query: 'SELECT '+
-							'`time`,'+
+							'\'dns\' AS type, '+
+							'`time` as raw_time, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
 							'`ioc_count`,'+
 							'`proto`,'+
 							'`qclass_name`,'+
@@ -376,34 +215,38 @@ module.exports = function(pool) {
 							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection` '+
 						'FROM '+
-							'`dns_ioc` '+
+							'`dns` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
+							'AND `lan_zone`=?'+
 							'AND `lan_ip`=?',
-					insert: [start, end, req.query.src_ip],
-					columns: [
-						{"sTitle": "Time", "mData": "time"},
-						{"sTitle": "Protocol", "mData": "proto"},
-						{"sTitle": "Query Class", "mData": "qclass_name"},
-						{"sTitle": "Query Type", "mData": "qtype_name"},
-						{"sTitle": "Query", "mData": "query"},
-						{"sTitle": "Answers", "mData": "answers"},
-						{"sTitle": "TTLs", "mData": "TTLs"},
-						{"sTitle": "IOC", "mData": "ioc"},
-						{"sTitle": "IOC Severity", "mData": "ioc_severity"},
-						{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
-						{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
-						{"sTitle": "IOC Rule", "mData": "ioc_rule"},
+					insert: [start, end, req.query.lan_zone, req.query.src_ip],
+					params: [
+						{title: "Time", select: "time"},
+						{title: "Protocol", select: "proto"},
+						{title: "Query Class", select: "qclass_name"},
+						{title: "Query Type", select: "qtype_name"},
+						{title: "Query", select: "query"},
+						{title: "Answers", select: "answers"},
+						{title: "TTLs", select: "TTLs"},
+						{title: "IOC", select: "ioc"},
+						{title: "IOC Severity", select: "ioc_severity"},
+						{title: "IOC Type", select: "ioc_typeIndicator"},
+						{title: "IOC Stage", select: "ioc_typeInfection"},
+						{title: "IOC Rule", select: "ioc_rule"},
 					],
-					start: start,
-					end: end,
-					grouping: pointGroup,
-					sClass: 'dns'
+					settings: {
+						sort: [[1, 'desc']],
+						div: 'table',
+						title: 'Indicators of Compromise (IOC) Notifications',
+						pageBreakBefore: false
+					}
 				}
-
-				var http = {
+				var http_ioc = {
 					query: 'SELECT '+
-							'`time`,'+
+							'\'http_ioc\' AS type, '+
+							'`time` as raw_time, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
 							'`ioc_count`,'+
 							'`host`,'+
 							'`uri`,'+
@@ -421,32 +264,85 @@ module.exports = function(pool) {
 							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection` '+
 						'FROM '+
-							'`http_ioc` '+
+							'`http` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `lan_ip`= ?',
-					insert: [start, end, req.query.src_ip],
-					columns: [
-						{"sTitle": "Time", "mData": "time"},
-						{"sTitle": "Host", "mData": "host"},
-						{"sTitle": "URI", "mData": "uri"},
-						{"sTitle": "Referrer", "mData": "referrer"},
-						{"sTitle": "User Agent", "mData": "user_agent"},
-						{"sTitle": "IOC", "mData": "ioc"},
-						{"sTitle": "IOC Severity", "mData": "ioc_severity"},
-						{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
-						{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
-						{"sTitle": "IOC Rule", "mData": "ioc_rule"},
+							'AND `lan_zone`= ? '+
+							'AND `lan_ip`= ? '+
+							'AND `remote_ip`= ? '+
+							'AND `ioc`=?',
+					insert: [start, end, req.query.lan_zone, req.query.src_ip, req.query.remote_ip, req.query.ioc],
+					params: [
+						{title: "Time", select: "time"},
+						{title: "Host", select: "host"},
+						{title: "URI", select: "uri"},
+						{title: "Referrer", select: "referrer"},
+						{title: "User Agent", select: "user_agent"},
+						{title: "IOC", select: "ioc"},
+						{title: "IOC Severity", select: "ioc_severity"},
+						{title: "IOC Type", select: "ioc_typeIndicator"},
+						{title: "IOC Stage", select: "ioc_typeInfection"},
+						{title: "IOC Rule", select: "ioc_rule"},
 					],
-					start: start,
-					end: end,
-					grouping: pointGroup,
-					sClass: 'http'
+					settings: {
+						sort: [[1, 'desc']],
+						div: 'table',
+						title: 'Indicators of Compromise (IOC) Notifications',
+						pageBreakBefore: false
+					}
 				}
-
-				var ssl = {
+				var http = {
 					query: 'SELECT '+
-							'`time`,'+
+							'\'http\' AS type, '+
+							'`time` as raw_time, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+							'`ioc_count`,'+
+							'`host`,'+
+							'`uri`,'+
+							'`referrer`,'+
+							'`user_agent`,'+
+							'`request_body_len`,'+
+							'`response_body_len`,'+
+							'`status_code`,'+
+							'`status_msg`,'+
+							'`info_code`,'+
+							'`info_msg`,'+
+							'`ioc`,'+
+							'`ioc_severity`,'+
+							'`ioc_rule`,'+
+							'`ioc_typeIndicator`,'+
+							'`ioc_typeInfection` '+
+						'FROM '+
+							'`http` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `lan_zone`= ?'+
+							'AND `lan_ip`= ?',
+					insert: [start, end, req.query.lan_zone, req.query.src_ip],
+					params: [
+						{title: "Time", select: "time"},
+						{title: "Host", select: "host"},
+						{title: "URI", select: "uri"},
+						{title: "Referrer", select: "referrer"},
+						{title: "User Agent", select: "user_agent"},
+						{title: "IOC", select: "ioc"},
+						{title: "IOC Severity", select: "ioc_severity"},
+						{title: "IOC Type", select: "ioc_typeIndicator"},
+						{title: "IOC Stage", select: "ioc_typeInfection"},
+						{title: "IOC Rule", select: "ioc_rule"},
+					],
+					settings: {
+						sort: [[1, 'desc']],
+						div: 'table',
+						title: 'Indicators of Compromise (IOC) Notifications',
+						pageBreakBefore: false
+					}
+				}
+				var ssl_ioc = {
+					query: 'SELECT '+
+							'\'ssl_ioc\' AS type, '+
+							'`time` as raw_time, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
 							'`ioc_count`,'+
 							'`version`,'+
 							'`cipher`,'+
@@ -461,35 +357,88 @@ module.exports = function(pool) {
 							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection` '+	
 						'FROM '+
-							'`ssl_ioc` '+
+							'`ssl` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `lan_ip`= ?',
-					insert: [start, end, req.query.src_ip],
-					columns: [
-						{"sTitle": "Time", "mData": "time"},
-						{"sTitle": "Server Name", "mData": "server_name"},
-						{"sTitle": "Version", "mData": "version"},
-						{"sTitle": "cipher", "mData": "cipher"},
-						{"sTitle": "Subject", "mData": "subject"},
-						{"sTitle": "Issuer Subject", "mData": "issuer_subject"},
-						{"sTitle": "Not Valid Before", "mData": "not_valid_before"},
-						{"sTitle": "Not Valid After", "mData": "not_valid_after"},
-						{"sTitle": "IOC", "mData": "ioc"},
-						{"sTitle": "IOC Severity", "mData": "ioc_severity"},
-						{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
-						{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
-						{"sTitle": "IOC Rule", "mData": "ioc_rule"},
+							'AND `lan_zone`= ? '+
+							'AND `lan_ip`= ? '+
+							'AND `remote_ip`= ? '+
+							'AND `ioc`=?',
+					insert: [start, end, req.query.lan_zone, req.query.src_ip, req.query.remote_ip, req.query.ioc],
+					params: [
+						{title: "Time", select: "time"},
+						{title: "Server Name", select: "server_name"},
+						{title: "Version", select: "version"},
+						{title: "cipher", select: "cipher"},
+						{title: "Subject", select: "subject"},
+						{title: "Issuer Subject", select: "issuer_subject"},
+						{title: "Not Valid Before", select: "not_valid_before"},
+						{title: "Not Valid After", select: "not_valid_after"},
+						{title: "IOC", select: "ioc"},
+						{title: "IOC Severity", select: "ioc_severity"},
+						{title: "IOC Type", select: "ioc_typeIndicator"},
+						{title: "IOC Stage", select: "ioc_typeInfection"},
+						{title: "IOC Rule", select: "ioc_rule"},
 					],
-					start: start,
-					end: end,
-					grouping: pointGroup,
-					sClass: 'ssl'
+					settings: {
+						sort: [[1, 'desc']],
+						div: 'table',
+						title: 'Indicators of Compromise (IOC) Notifications',
+						pageBreakBefore: false
+					}
 				}
-
-				var file = {
+				var ssl = {
 					query: 'SELECT '+
-							'`time`,'+
+							'\'ssl\' AS type, '+
+							'`time` as raw_time, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+							'`ioc_count`,'+
+							'`version`,'+
+							'`cipher`,'+
+							'`server_name`,'+
+							'`subject`,'+
+							'`issuer_subject`,'+
+							'from_unixtime(`not_valid_before`) AS not_valid_before,'+
+							'from_unixtime(`not_valid_after`) AS not_valid_after,'+
+							'`ioc`,'+
+							'`ioc_severity`,'+
+							'`ioc_rule`,'+
+							'`ioc_typeIndicator`,'+
+							'`ioc_typeInfection` '+	
+						'FROM '+
+							'`ssl` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `lan_zone`= ?'+
+							'AND `lan_ip`= ?',
+					insert: [start, end, req.query.lan_zone, req.query.src_ip],
+					params: [
+						{title: "Time", select: "time"},
+						{title: "Server Name", select: "server_name"},
+						{title: "Version", select: "version"},
+						{title: "cipher", select: "cipher"},
+						{title: "Subject", select: "subject"},
+						{title: "Issuer Subject", select: "issuer_subject"},
+						{title: "Not Valid Before", select: "not_valid_before"},
+						{title: "Not Valid After", select: "not_valid_after"},
+						{title: "IOC", select: "ioc"},
+						{title: "IOC Severity", select: "ioc_severity"},
+						{title: "IOC Type", select: "ioc_typeIndicator"},
+						{title: "IOC Stage", select: "ioc_typeInfection"},
+						{title: "IOC Rule", select: "ioc_rule"},
+					],
+					settings: {
+						sort: [[1, 'desc']],
+						div: 'table',
+						title: 'Indicators of Compromise (IOC) Notifications',
+						pageBreakBefore: false
+					}
+				}
+				var file_ioc = {
+					query: 'SELECT '+
+							'\'file_ioc\' AS type, '+
+							'`time` as raw_time, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
 							'`ioc_count`,'+
 							'`mime`,'+
 							'`name`,'+
@@ -502,32 +451,82 @@ module.exports = function(pool) {
 							'`ioc_typeIndicator`,'+
 							'`ioc_typeInfection` '+
 						'FROM '+
-							'`file_ioc` '+
+							'`file` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `lan_ip`= ?',
-					insert: [start, end, req.query.src_ip],
-					columns: [
-						{"sTitle": "Time", "mData": "time"},
-						{"sTitle": "File Type", "mData": "mime"},
-						{"sTitle": "Name", "mData": "name"},
-						{"sTitle": "Size", "mData": "size"},
-						{"sTitle": "MD5", "mData": "md5"},
-						{"sTitle": "SHA1", "mData": "sha1"},
-						{"sTitle": "IOC", "mData": "ioc"},
-						{"sTitle": "IOC Severity", "mData": "ioc_severity"},
-						{"sTitle": "IOC Type", "mData": "ioc_typeIndicator"},
-						{"sTitle": "IOC Stage", "mData": "ioc_typeInfection"},
-						{"sTitle": "IOC Rule", "mData": "ioc_rule"},
+							'AND `lan_zone`= ? '+
+							'AND `lan_ip`=? '+
+							'AND `remote_ip`= ? '+
+							'AND `ioc`=?',
+					insert: [start, end, req.query.lan_zone, req.query.src_ip, req.query.remote_ip, req.query.ioc],
+					params: [
+						{title: "Time", select: "time"},
+						{title: "File Type", select: "mime"},
+						{title: "Name", select: "name"},
+						{title: "Size", select: "size"},
+						{title: "MD5", select: "md5"},
+						{title: "SHA1", select: "sha1"},
+						{title: "IOC", select: "ioc"},
+						{title: "IOC Severity", select: "ioc_severity"},
+						{title: "IOC Type", select: "ioc_typeIndicator"},
+						{title: "IOC Stage", select: "ioc_typeInfection"},
+						{title: "IOC Rule", select: "ioc_rule"},
 					],
-					start: start,
-					end: end,
-					grouping: pointGroup,
-					sClass: 'file'
+					settings: {
+						sort: [[1, 'desc']],
+						div: 'table',
+						title: 'Indicators of Compromise (IOC) Notifications',
+						pageBreakBefore: false
+					}
+				}
+				var file = {
+					query: 'SELECT '+
+							'\'file\' AS type, '+
+							'`time` as raw_time, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+							'`ioc_count`,'+
+							'`mime`,'+
+							'`name`,'+
+							'`size`,'+
+							'`md5`,'+
+							'`sha1`,'+
+							'`ioc`,'+
+							'`ioc_severity`,'+
+							'`ioc_rule`,'+
+							'`ioc_typeIndicator`,'+
+							'`ioc_typeInfection` '+
+						'FROM '+
+							'`file` '+
+						'WHERE '+
+							'`time` BETWEEN ? AND ? '+
+							'AND `lan_zone`= ?'+
+							'AND `lan_ip`= ?',
+					insert: [start, end, req.query.lan_zone, req.query.src_ip],
+					params: [
+						{title: "Time", select: "time"},
+						{title: "File Type", select: "mime"},
+						{title: "Name", select: "name"},
+						{title: "Size", select: "size"},
+						{title: "MD5", select: "md5"},
+						{title: "SHA1", select: "sha1"},
+						{title: "IOC", select: "ioc"},
+						{title: "IOC Severity", select: "ioc_severity"},
+						{title: "IOC Type", select: "ioc_typeIndicator"},
+						{title: "IOC Stage", select: "ioc_typeInfection"},
+						{title: "IOC Rule", select: "ioc_rule"},
+					],
+					settings: {
+						sort: [[1, 'desc']],
+						div: 'table',
+						title: 'Indicators of Compromise (IOC) Notifications',
+						pageBreakBefore: false
+					}
 				}
 				var endpoint = {
 					query: 'SELECT '+
-							'`time`,'+
+							'\'endpoint\' AS type, '+
+							'`time` as raw_time, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
 							'`src_ip`,'+
 							'`dst_ip`,'+
 							'`src_user`,'+
@@ -540,152 +539,1210 @@ module.exports = function(pool) {
 							'`time` BETWEEN ? AND ? '+
 							'AND `src_ip`= ? ',
 					insert: [start, end, req.query.src_ip],
-					columns: [
-						{"sTitle": "Time", "mData": "time"},
-						{"sTitle": "User", "mData": "src_user"},
-						{"sTitle": "Source IP", "mData": "src_ip"},
-						{"sTitle": "Destination IP", "mData": "dst_ip"},
-						{"sTitle": "Alert Source", "mData": "alert_source"},
-						{"sTitle": "Program Source", "mData": "program_source"},
-						{"sTitle": "Alert Info", "mData": "alert_info"},
+					params: [
+						{title: "Time", select: "time"},
+						{title: "User", select: "src_user"},
+						{title: "Source IP", select: "src_ip"},
+						{title: "Destination IP", select: "dst_ip"},
+						{title: "Alert Source", select: "alert_source"},
+						{title: "Program Source", select: "program_source"},
+						{title: "Alert Info", select: "alert_info"},
 					],
-					start: start,
-					end: end,
-					grouping: pointGroup,
-					sClass: 'endpoint'
+					settings: {
+						sort: [[1, 'desc']],
+						div: 'table',
+						title: 'Indicators of Compromise (IOC) Notifications',
+						pageBreakBefore: false
+					}
 				}
-				var endpoint_logon = {
-					query: 'SELECT '+
-							'`time`,'+
-							'`lan_ip`,'+
-							'`user`,'+
-							'`event` '+
-						'FROM '+
-							'`endpoint_tracking` '+
-						'WHERE '+
-							'`time` BETWEEN ? AND ? '+
-							'AND `lan_ip`= ? '+
-							'AND `event` = "Log On" ',
-					insert: [start, end, req.query.src_ip],
-					columns: [
-						{"sTitle": "Time", "mData": "time"},
-						{"sTitle": "User", "mData": "user"},
-						{"sTitle": "IP", "mData": "lan_ip"},
-						{"sTitle": "Event", "mData": "event"},
-					],
-					start: start,
-					end: end,
-					grouping: pointGroup,
-					sClass: 'login'
-				}
-				var endpoint_logoff = {
-					query: 'SELECT '+
-							'`time`,'+
-							'`lan_ip`,'+
-							'`user`,'+
-							'`event` '+
-						'FROM '+
-							'`endpoint_tracking` '+
-						'WHERE '+
-							'`time` BETWEEN ? AND ? '+
-							'AND `lan_ip`= ? '+
-							'AND `event` = "Log Off" ',
-					insert: [start, end, req.query.src_ip],
-					columns: [
-						{"sTitle": "Time", "mData": "time"},
-						{"sTitle": "User", "mData": "user"},
-						{"sTitle": "IP", "mData": "lan_ip"},
-						{"sTitle": "Event", "mData": "event"},
-					],
-					start: start,
-					end: end,
-					grouping: pointGroup,
-					sClass: 'logout'
-				}
+
+				var stealth_conn = {
+							query: 'SELECT '+
+									'\'stealth\' AS type, '+
+									'`time` as raw_time, '+
+									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+									'`src_ip`,'+
+									'`dst_ip`,'+
+									'(`in_bytes` / 1048576) as in_bytes,'+
+									'(`out_bytes` / 1048576) as out_bytes,'+
+									'`in_packets`,'+
+									'`out_packets` '+
+								'FROM '+
+									'`stealth_conn` '+
+								'WHERE '+
+									'`time` BETWEEN ? AND ? '+
+									'AND `src_ip`= ? '+
+									'AND `in_bytes` > 0 '+
+									'AND `out_bytes` > 0 ',
+							insert: [start, end, req.query.src_ip],
+							params: [
+								{title: "Time", select: "time"},
+								{title: "Source IP", select: "src_ip"},
+								{title: "Destination IP", select: "dst_ip"},
+								{title: "MB from Remote", select: "in_bytes"},
+								{title: "MB to Remote", select: "out_bytes"},
+								{title: "Packets from Remote", select: "in_packets"},
+								{title: "Packets to Remote", select: "out_packets"}
+							],
+							settings: {
+								sort: [[1, 'desc']],
+								div: 'table',
+								title: 'Indicators of Compromise (IOC) Notifications',
+								pageBreakBefore: false
+							}
+						}
+
+						var stealth1 = {
+							query: 'SELECT '+
+									'\'stealth_ioc\' AS type, '+
+									'`time` as raw_time, '+
+									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+									'`src_ip`, '+
+									'`dst_ip`, '+
+									'(`in_bytes` / 1048576) as in_bytes, '+
+									'(`out_bytes` / 1048576) as out_bytes, '+
+									'`in_packets`, '+
+									'`out_packets` '+
+								'FROM '+
+									'`stealth_conn` '+
+								'WHERE '+
+									'time BETWEEN ? AND ? '+
+									'AND `dst_ip` = ? '+
+									'AND `in_bytes` = 0 ',
+							insert: [start, end, req.query.src_ip],
+							params: [
+								{title: "Time", select: "time"},
+								{title: "Source IP", select: "src_ip"},
+								{title: "Destination IP", select: "dst_ip"},
+								{title: "MB from Remote", select: "in_bytes"},
+								{title: "MB to Remote", select: "out_bytes"},
+								{title: "Packets from Remote", select: "in_packets"},
+								{title: "Packets to Remote", select: "out_packets"}
+							],
+							settings: {
+								sort: [[1, 'desc']],
+								div: 'table',
+								title: 'Indicators of Compromise (IOC) Notifications',
+								pageBreakBefore: false
+							}
+						}
+						var stealth2 = {
+							query: 'SELECT '+
+									'\'stealth_ioc\' AS type, '+
+									'`time` as raw_time, '+
+									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+									'`lan_ip`, '+
+									'`remote_ip`, '+
+									'(`in_bytes` / 1048576) as in_bytes, '+
+									'(`out_bytes` / 1048576) as out_bytes, '+
+									'`in_packets`, '+
+									'`out_packets` '+
+								'FROM '+
+									'`conn_meta` '+
+								'WHERE '+
+									'time BETWEEN ? AND ? '+
+									'AND ((`remote_ip` = ? AND `out_bytes` = 0 ) '+
+									'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%" AND `in_bytes` = 0 )) ',
+							insert: [start, end, req.query.src_ip, req.query.src_ip],
+							params: [
+								{title: "Time", select: "time"},
+								{title: "Local IP", select: "lan_ip"},
+								{title: "Remote IP", select: "remote_ip"},
+								{title: "MB from Remote", select: "in_bytes"},
+								{title: "MB to Remote", select: "out_bytes"},
+								{title: "Packets from Remote", select: "in_packets"},
+								{title: "Packets to Remote", select: "out_packets"}
+							],
+							settings: {
+								sort: [[1, 'desc']],
+								div: 'table',
+								title: 'Indicators of Compromise (IOC) Notifications',
+								pageBreakBefore: false
+							}
+						}
+						var stealth3 = {
+							query:'SELECT '+
+									'\'stealth_ioc\' AS type, '+
+									'`time` as raw_time, '+
+									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+									'`lan_ip`, '+
+									'`remote_ip`, '+
+									'(`in_bytes` / 1048576) as in_bytes, '+
+									'(`out_bytes` / 1048576) as out_bytes, '+
+									'`in_packets`, '+
+									'`out_packets` '+
+								'FROM '+
+									'`conn_meta` '+
+								'WHERE '+
+									'time BETWEEN ? AND ? '+
+									'AND `out_bytes` = 0 '+
+									'AND `lan_ip` = ? ',
+							insert: [start, end, req.query.src_ip, req.query.src_ip],
+							params: [
+								{title: "Time", select: "time"},
+								{title: "Local IP", select: "lan_ip"},
+								{title: "Remote IP", select: "remote_ip"},
+								{title: "MB from Remote", select: "in_bytes"},
+								{title: "MB to Remote", select: "out_bytes"},
+								{title: "Packets from Remote", select: "in_packets"},
+								{title: "Packets to Remote", select: "out_packets"}
+							],
+							settings: {
+								sort: [[1, 'desc']],
+								div: 'table',
+								title: 'Indicators of Compromise (IOC) Notifications',
+								pageBreakBefore: false
+							}
+						}
+
+
 				async.parallel([
-					// FISHEYE	
-					function(callback) { // stealth_conn
-						new fisheye(stealth_conn, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
-							handleReturn(data, maxConn, maxIOC, callback);
+					// Table function(s)
+					function(callback) { // conn_ioc
+						new datatable(conn_ioc, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
 						});
-					},			
-					function(callback) { // stealth_blocked1
-						new fisheye(stealth_blocked1, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
-							handleReturn(data, maxConn, maxIOC, callback);
-						});
-					},	
-					function(callback) { // stealth_blocked2
-						new fisheye(stealth_blocked2, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
-							handleReturn(data, maxConn, maxIOC, callback);
-						});
-					},	
-					function(callback) { // stealth_blocked3
-						new fisheye(stealth_blocked3, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
-							handleReturn(data, maxConn, maxIOC, callback);
-						});
-					},	
+					},
 					function(callback) { // conn
-						new fisheye(conn, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
-							handleReturn(data, maxConn, maxIOC, callback);
+						new datatable(conn, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
+						});
+					},
+					function(callback) { // dns_ioc
+						new datatable(dns_ioc, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
 						});
 					},
 					function(callback) { // dns
-						new fisheye(dns, {database: database, pool:pool}, function(err,data, maxConn, maxIOC){
-							handleReturn(data, maxConn, maxIOC, callback);
+						new datatable(dns, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
+						});
+					},
+					function(callback) { // http_ioc
+						new datatable(http_ioc, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
 						});
 					},
 					function(callback) { // http
-						new fisheye(http, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
-							handleReturn(data, maxConn, maxIOC, callback);
+						new datatable(http, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
+						});
+					},
+					function(callback) { // ssl_ioc
+						new datatable(ssl_ioc, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
 						});
 					},
 					function(callback) { // ssl
-						new fisheye(ssl, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
-							handleReturn(data, maxConn, maxIOC, callback);
+						new datatable(ssl, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
+						});
+					},
+					function(callback) { // file_ioc
+						new datatable(file_ioc, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
 						});
 					},
 					function(callback) { // file
-						new fisheye(file, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
-							handleReturn(data, maxConn, maxIOC, callback);
+						new datatable(file, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
 						});
 					},
 					function(callback) { // endpoint
-						new fisheye(endpoint, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
-							handleReturn(data, maxConn, maxIOC, callback);
+						new datatable(endpoint, {database: database, pool:pool}, function(err, data){
+							handleReturn(data, callback);
 						});
 					},
-					function(callback) { // endpoint_logon
-						new fisheye(endpoint_logon, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
-							handleReturn(data, maxConn, maxIOC, callback);
-						});
-					},
-					function(callback) { // endpoint_logoff
-						new fisheye(endpoint_logoff, {database: database, pool:pool}, function(err, data, maxConn, maxIOC){
-							handleReturn(data, maxConn, maxIOC, callback);
-						});
-					},
-				//	SANKEY
-					function(callback) {
-						new sankey(sankey_auth1, sankey_auth2, sankey_auth3, sankey_unauth1, sankey_unauth2, sankey_unauth3, {database: database, pool: pool}, function(err,data){
-							sankeyData = data;
+					function(callback) { // stealth
+						if (req.session.passport.user.level === 3) {
+							new datatable(stealth_conn, {database: database, pool:pool}, function(err, data){
+								handleReturn(data, callback);
+							});
+						} else {
 							callback();
-						});
+						}
+					},
+					function(callback) { // stealth
+						if (req.session.passport.user.level === 3) {
+							new datatable(stealth1, {database: database, pool:pool}, function(err, data){
+								handleReturn(data, callback);
+							});
+						} else {
+							callback();
+						}
+					},
+					function(callback) { // stealth
+						if (req.session.passport.user.level === 3) {
+							new datatable(stealth2, {database: database, pool:pool}, function(err, data){
+								handleReturn(data, callback);
+							});
+						} else {
+							callback();
+						}
+					},
+					function(callback) { // stealth
+						if (req.session.passport.user.level === 3) {
+							new datatable(stealth3, {database: database, pool:pool}, function(err, data){
+								handleReturn(data, callback);
+							});
+						} else {
+							callback();
+						}
 					}
 				], function(err) { //This function gets called after the two tasks have called their "task callbacks"
-					if (err) throw console.log(err)
-					
+					if (err) throw console.log(err);
 					res.json({
-						sankey: sankeyData,
-						info: info,
-						result: result,
-						maxConn: largestGroup,
-						maxIOC: largestIOC,
-						start: start,
-						end: end
+						laneGraph: result
 					});
 				});
 			} else {
-				res.redirect('/');
+				if (req.query.src_ip && (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1)) {
+					var sankeyData;
+					var info = [];
+					var sankey_auth1 = {
+						query: 'SELECT '+
+								'count(*) AS `count`, '+
+								'max(date_format(from_unixtime(stealth_conn.time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+								'`src_ip`, '+
+								'`dst_ip`, '+
+								'(sum(in_bytes) / 1048576) as in_bytes, '+
+								'(sum(out_bytes) / 1048576) as out_bytes, '+
+								'sum(in_packets) as in_packets, '+
+								'sum(out_packets) as out_packets '+
+							'FROM '+
+								'`stealth_conn` '+
+							'WHERE '+
+								'time BETWEEN ? AND ? '+
+								'AND `dst_ip` = ? '+
+								// 'AND `out_bytes` > 0 '+
+								'AND `in_bytes` > 0 '+
+							'GROUP BY '+
+								'`src_ip` '+
+							'ORDER BY `count` DESC ',
+						insert: [start, end, req.query.src_ip]
+					}
+					//from center node to local (center node is the lan) AUTH
+					var sankey_auth2 = {
+						query: 'SELECT '+
+								'count(*) AS `count`, '+
+								'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+								'`lan_ip`, '+
+								'`remote_ip`, '+
+								'(sum(in_bytes) / 1048576) as in_bytes, '+
+								'(sum(out_bytes) / 1048576) as out_bytes, '+
+								'sum(in_packets) as in_packets, '+
+								'sum(out_packets) as out_packets '+
+							'FROM '+
+								'`conn_meta` '+
+							'WHERE '+
+								'time BETWEEN ? AND ? '+
+								// 'AND `in_bytes` > 0 '+
+								// 'AND ((`remote_ip` = ?) '+
+								// 'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%")) '+
+								'AND ((`remote_ip` = ? AND `out_bytes` > 0 ) '+
+								'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%" AND `in_bytes` > 0 )) '+
+							'GROUP BY '+
+								'`lan_ip`, '+
+								'`remote_ip` '+
+							'ORDER BY `count` DESC ',
+						insert: [start, end, req.query.src_ip, req.query.src_ip]
+					}
+					//from center to remote (center is the lan) AUTH
+					var sankey_auth3 = {
+						query: 'SELECT '+
+								'count(*) AS `count`, '+
+								'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+								'`lan_ip`, '+
+								'`remote_ip`, '+
+								'(sum(in_bytes) / 1048576) as in_bytes, '+
+								'(sum(out_bytes) / 1048576) as out_bytes, '+
+								'sum(in_packets) as in_packets, '+
+								'sum(out_packets) as out_packets '+
+							'FROM '+
+								'`conn_meta` '+
+							'WHERE '+
+								'time BETWEEN ? AND ? '+
+								'AND `out_bytes` > 0 '+
+								'AND `lan_ip` = ? '+
+								// 'AND NOT (remote_ip LIKE "192.168.222.%") '+
+							'GROUP BY '+
+								'`remote_ip` '+
+							'ORDER BY `count` DESC LIMIT 10',
+						insert: [start, end, req.query.src_ip]
+					}
+					var sankey_unauth1 = {
+						query: 'SELECT '+
+								'count(*) AS `count`, '+
+								'max(date_format(from_unixtime(stealth_conn.time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+								'`src_ip`, '+
+								'`dst_ip`, '+
+								'(sum(in_bytes) / 1048576) as in_bytes, '+
+								'(sum(out_bytes) / 1048576) as out_bytes, '+
+								'sum(in_packets) as in_packets, '+
+								'sum(out_packets) as out_packets '+
+							'FROM '+
+								'`stealth_conn` '+
+							'WHERE '+
+								'time BETWEEN ? AND ? '+
+								'AND `dst_ip` = ? '+
+								// 'AND `out_bytes` = 0 '+
+								'AND `in_bytes` = 0 '+
+							'GROUP BY '+
+								'`src_ip` '+
+							'ORDER BY `count` DESC ',
+						insert: [start, end, req.query.src_ip]
+					}
+					//from center node to local (center node is the lan) AUTH
+					var sankey_unauth2 = {
+						query: 'SELECT '+
+								'count(*) AS `count`, '+
+								'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+								'`lan_ip`, '+
+								'`remote_ip`, '+
+								'(sum(in_bytes) / 1048576) as in_bytes, '+
+								'(sum(out_bytes) / 1048576) as out_bytes, '+
+								'sum(in_packets) as in_packets, '+
+								'sum(out_packets) as out_packets '+
+							'FROM '+
+								'`conn_meta` '+
+							'WHERE '+
+								'time BETWEEN ? AND ? '+
+								// 'AND `in_bytes` = 0 '+
+								'AND ((`remote_ip` = ? AND `out_bytes` = 0 ) '+
+								'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%" AND `in_bytes` = 0 )) '+
+							'GROUP BY '+
+								'`lan_ip`, '+
+								'`remote_ip` '+
+							'ORDER BY `count` DESC ',
+						insert: [start, end, req.query.src_ip, req.query.src_ip]
+					}
+					//from center to remote (center is the lan) AUTH
+					var sankey_unauth3 = {
+						query: 'SELECT '+
+								'count(*) AS `count`, '+
+								'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+								'`lan_ip`, '+
+								'`remote_ip`, '+
+								'(sum(in_bytes) / 1048576) as in_bytes, '+
+								'(sum(out_bytes) / 1048576) as out_bytes, '+
+								'sum(in_packets) as in_packets, '+
+								'sum(out_packets) as out_packets '+
+							'FROM '+
+								'`conn_meta` '+
+							'WHERE '+
+								'time BETWEEN ? AND ? '+
+								'AND `out_bytes` = 0 '+
+								'AND `lan_ip` = ? '+
+								// 'AND NOT (remote_ip LIKE "192.168.222.%") '+
+							'GROUP BY '+
+								'`remote_ip` '+
+							'ORDER BY `count` DESC LIMIT 10',
+						insert: [start, end, req.query.src_ip]
+					}
+					//The rest of the queries are for the fisheye visual
+
+					var conn_ioc = {
+						query: 'SELECT '+
+								'\'conn_ioc\' AS type, '+
+								'`time` as raw_time, '+
+								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+								'`ioc_count`,'+
+								'`lan_zone`,'+
+								'`machine`,'+
+								'`lan_ip`,'+
+								'`lan_port`,'+
+								'`remote_ip`,'+
+								'`remote_port`,'+
+								'`remote_country`,'+
+								'`remote_asn_name`,'+
+								'`in_bytes`,'+
+								'`out_bytes`,'+
+								'`l7_proto`,'+
+								'`ioc`,'+
+								'`ioc_severity`,'+
+								'`ioc_rule`,'+
+								'`ioc_typeIndicator`,'+
+								'`ioc_typeInfection` '+
+							'FROM '+
+								'`conn_ioc` '+
+							'WHERE '+
+								'`time` BETWEEN ? AND ? '+
+								'AND `lan_ip`= ? ',
+						insert: [start, end, req.query.src_ip],
+						params: [
+							{title: "Time", select: "time"},
+							{title: "Zone", select: "lan_zone"},
+							{title: "Machine", select: "machine"},
+							{title: "Local IP", select: "lan_ip"},
+							{title: "Local Port", select: "lan_port"},
+							{title: "Remote IP", select: "remote_ip"},
+							{title: "Remote Port", select: "remote_port"},
+							{title: "Remote Country", select: "remote_country"},
+							{title: "Remote ASN", select: "remote_asn_name"},
+							{title: "Application", select: "l7_proto"},
+							{title: "Bytes to Remote", select: "in_bytes"},
+							{title: "Bytes from  Remote", select: "out_bytes"},
+							{title: "IOC", select: "ioc"},
+							{title: "IOC Severity", select: "ioc_severity"},
+							{title: "IOC Type", select: "ioc_typeIndicator"},
+							{title: "IOC Stage", select: "ioc_typeInfection"},
+							{title: "IOC Rule", select: "ioc_rule"},
+						],
+						settings: {
+							sort: [[1, 'desc']],
+							div: 'table',
+							title: 'Indicators of Compromise (IOC) Notifications',
+							pageBreakBefore: false
+						}
+					}
+					var conn = {
+						query: 'SELECT '+
+								'\'conn\' AS type, '+
+								'`time` as raw_time, '+
+								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+								'`ioc_count`,'+
+								'`lan_zone`,'+
+								'`machine`,'+
+								'`lan_ip`,'+
+								'`lan_port`,'+
+								'`remote_ip`,'+
+								'`remote_port`,'+
+								'`remote_country`,'+
+								'`remote_asn_name`,'+
+								'`in_bytes`,'+
+								'`out_bytes`,'+
+								'`l7_proto`,'+
+								'`ioc`,'+
+								'`ioc_severity`,'+
+								'`ioc_rule`,'+
+								'`ioc_typeIndicator`,'+
+								'`ioc_typeInfection` '+
+							'FROM '+
+								'`conn_ioc` '+
+							'WHERE '+
+								'`time` BETWEEN ? AND ? '+
+								'AND `lan_ip`= ? ',
+						insert: [start, end, req.query.src_ip],
+						params: [
+							{title: "Time", select: "time"},
+							{title: "Zone", select: "lan_zone"},
+							{title: "Machine", select: "machine"},
+							{title: "Local IP", select: "lan_ip"},
+							{title: "Local Port", select: "lan_port"},
+							{title: "Remote IP", select: "remote_ip"},
+							{title: "Remote Port", select: "remote_port"},
+							{title: "Remote Country", select: "remote_country"},
+							{title: "Remote ASN", select: "remote_asn_name"},
+							{title: "Application", select: "l7_proto"},
+							{title: "Bytes to Remote", select: "in_bytes"},
+							{title: "Bytes from Remote", select: "out_bytes"},
+							{title: "IOC", select: "ioc"},
+							{title: "IOC Severity", select: "ioc_severity"},
+							{title: "IOC Type", select: "ioc_typeIndicator"},
+							{title: "IOC Stage", select: "ioc_typeInfection"},
+							{title: "IOC Rule", select: "ioc_rule"},
+						],
+						settings: {
+							sort: [[1, 'desc']],
+							div: 'table',
+							title: 'Indicators of Compromise (IOC) Notifications',
+							pageBreakBefore: false
+						}
+					}
+					var dns_ioc = {
+						query: 'SELECT '+
+								'\'dns_ioc\' AS type, '+
+								'`time` as raw_time, '+
+								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+								'`ioc_count`,'+
+								'`proto`, '+
+								'`qclass_name`, '+
+								'`qtype_name`, '+
+								'`query`, '+
+								'`answers`, '+
+								'`TTLs`, '+
+								'`ioc`, '+
+								'`ioc_severity`, '+
+								'`ioc_rule`,'+
+								'`ioc_typeIndicator`, '+
+								'`ioc_typeInfection` '+
+							'FROM '+
+								'`dns_ioc` '+
+							'WHERE '+
+								'`time` BETWEEN ? AND ? '+
+								'AND `lan_ip`= ? ',
+						insert: [start, end, req.query.src_ip],
+						params: [
+							{title: "Time", select: "time"},
+							{title: "Protocol", select: "proto"},
+							{title: "Query Class", select: "qclass_name"},
+							{title: "Query Type", select: "qtype_name"},
+							{title: "Query", select: "query"},
+							{title: "Answers", select: "answers"},
+							{title: "TTLs", select: "TTLs"},
+							{title: "IOC", select: "ioc"},
+							{title: "IOC Severity", select: "ioc_severity"},
+							{title: "IOC Type", select: "ioc_typeIndicator"},
+							{title: "IOC Stage", select: "ioc_typeInfection"},
+							{title: "IOC Rule", select: "ioc_rule"},
+						],
+						settings: {
+							sort: [[1, 'desc']],
+							div: 'table',
+							title: 'Indicators of Compromise (IOC) Notifications',
+							pageBreakBefore: false
+						}
+					}
+					var dns = {
+						query: 'SELECT '+
+								'\'dns\' AS type, '+
+								'`time` as raw_time, '+
+								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+								'`ioc_count`,'+
+								'`proto`,'+
+								'`qclass_name`,'+
+								'`qtype_name`,'+
+								'`query`,'+
+								'`answers`,'+
+								'`TTLs`,'+
+								'`ioc`,'+
+								'`ioc_severity`,'+
+								'`ioc_rule`,'+
+								'`ioc_typeIndicator`,'+
+								'`ioc_typeInfection` '+
+							'FROM '+
+								'`dns_ioc` '+
+							'WHERE '+
+								'`time` BETWEEN ? AND ? '+
+								'AND `lan_ip`= ? ',
+						insert: [start, end, req.query.src_ip],
+						params: [
+							{title: "Time", select: "time"},
+							{title: "Protocol", select: "proto"},
+							{title: "Query Class", select: "qclass_name"},
+							{title: "Query Type", select: "qtype_name"},
+							{title: "Query", select: "query"},
+							{title: "Answers", select: "answers"},
+							{title: "TTLs", select: "TTLs"},
+							{title: "IOC", select: "ioc"},
+							{title: "IOC Severity", select: "ioc_severity"},
+							{title: "IOC Type", select: "ioc_typeIndicator"},
+							{title: "IOC Stage", select: "ioc_typeInfection"},
+							{title: "IOC Rule", select: "ioc_rule"},
+						],
+						settings: {
+							sort: [[1, 'desc']],
+							div: 'table',
+							title: 'Indicators of Compromise (IOC) Notifications',
+							pageBreakBefore: false
+						}
+					}
+					var http_ioc = {
+						query: 'SELECT '+
+								'\'http_ioc\' AS type, '+
+								'`time` as raw_time, '+
+								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+								'`ioc_count`,'+
+								'`host`,'+
+								'`uri`,'+
+								'`referrer`,'+
+								'`user_agent`,'+
+								'`request_body_len`,'+
+								'`response_body_len`,'+
+								'`status_code`,'+
+								'`status_msg`,'+
+								'`info_code`,'+
+								'`info_msg`,'+
+								'`ioc`,'+
+								'`ioc_severity`,'+
+								'`ioc_rule`,'+
+								'`ioc_typeIndicator`,'+
+								'`ioc_typeInfection` '+
+							'FROM '+
+								'`http_ioc` '+
+							'WHERE '+
+								'`time` BETWEEN ? AND ? '+
+								'AND `lan_ip`= ? ',
+						insert: [start, end, req.query.src_ip],
+						params: [
+							{title: "Time", select: "time"},
+							{title: "Host", select: "host"},
+							{title: "URI", select: "uri"},
+							{title: "Referrer", select: "referrer"},
+							{title: "User Agent", select: "user_agent"},
+							{title: "IOC", select: "ioc"},
+							{title: "IOC Severity", select: "ioc_severity"},
+							{title: "IOC Type", select: "ioc_typeIndicator"},
+							{title: "IOC Stage", select: "ioc_typeInfection"},
+							{title: "IOC Rule", select: "ioc_rule"},
+						],
+						settings: {
+							sort: [[1, 'desc']],
+							div: 'table',
+							title: 'Indicators of Compromise (IOC) Notifications',
+							pageBreakBefore: false
+						}
+					}
+					var http = {
+						query: 'SELECT '+
+								'\'http\' AS type, '+
+								'`time` as raw_time, '+
+								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+								'`ioc_count`,'+
+								'`host`,'+
+								'`uri`,'+
+								'`referrer`,'+
+								'`user_agent`,'+
+								'`request_body_len`,'+
+								'`response_body_len`,'+
+								'`status_code`,'+
+								'`status_msg`,'+
+								'`info_code`,'+
+								'`info_msg`,'+
+								'`ioc`,'+
+								'`ioc_severity`,'+
+								'`ioc_rule`,'+
+								'`ioc_typeIndicator`,'+
+								'`ioc_typeInfection` '+
+							'FROM '+
+								'`http_ioc` '+
+							'WHERE '+
+								'`time` BETWEEN ? AND ? '+
+								'AND `lan_ip`= ? ',
+						insert: [start, end, req.query.src_ip],
+						params: [
+							{title: "Time", select: "time"},
+							{title: "Host", select: "host"},
+							{title: "URI", select: "uri"},
+							{title: "Referrer", select: "referrer"},
+							{title: "User Agent", select: "user_agent"},
+							{title: "IOC", select: "ioc"},
+							{title: "IOC Severity", select: "ioc_severity"},
+							{title: "IOC Type", select: "ioc_typeIndicator"},
+							{title: "IOC Stage", select: "ioc_typeInfection"},
+							{title: "IOC Rule", select: "ioc_rule"},
+						],
+						settings: {
+							sort: [[1, 'desc']],
+							div: 'table',
+							title: 'Indicators of Compromise (IOC) Notifications',
+							pageBreakBefore: false
+						}
+					}
+					var ssl_ioc = {
+						query: 'SELECT '+
+								'\'ssl_ioc\' AS type, '+
+								'`time` as raw_time, '+
+								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+								'`ioc_count`,'+
+								'`version`,'+
+								'`cipher`,'+
+								'`server_name`,'+
+								'`subject`,'+
+								'`issuer_subject`,'+
+								'from_unixtime(`not_valid_before`) AS not_valid_before,'+
+								'from_unixtime(`not_valid_after`) AS not_valid_after,'+
+								'`ioc`,'+
+								'`ioc_severity`,'+
+								'`ioc_rule`,'+
+								'`ioc_typeIndicator`,'+
+								'`ioc_typeInfection` '+	
+							'FROM '+
+								'`ssl_ioc` '+
+							'WHERE '+
+								'`time` BETWEEN ? AND ? '+
+								'AND `lan_ip`= ? ',
+						insert: [start, end, req.query.src_ip],
+						params: [
+							{title: "Time", select: "time"},
+							{title: "Server Name", select: "server_name"},
+							{title: "Version", select: "version"},
+							{title: "cipher", select: "cipher"},
+							{title: "Subject", select: "subject"},
+							{title: "Issuer Subject", select: "issuer_subject"},
+							{title: "Not Valid Before", select: "not_valid_before"},
+							{title: "Not Valid After", select: "not_valid_after"},
+							{title: "IOC", select: "ioc"},
+							{title: "IOC Severity", select: "ioc_severity"},
+							{title: "IOC Type", select: "ioc_typeIndicator"},
+							{title: "IOC Stage", select: "ioc_typeInfection"},
+							{title: "IOC Rule", select: "ioc_rule"},
+						],
+						settings: {
+							sort: [[1, 'desc']],
+							div: 'table',
+							title: 'Indicators of Compromise (IOC) Notifications',
+							pageBreakBefore: false
+						}
+					}
+					var ssl = {
+						query: 'SELECT '+
+								'\'ssl\' AS type, '+
+								'`time` as raw_time, '+
+								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+								'`ioc_count`,'+
+								'`version`,'+
+								'`cipher`,'+
+								'`server_name`,'+
+								'`subject`,'+
+								'`issuer_subject`,'+
+								'from_unixtime(`not_valid_before`) AS not_valid_before,'+
+								'from_unixtime(`not_valid_after`) AS not_valid_after,'+
+								'`ioc`,'+
+								'`ioc_severity`,'+
+								'`ioc_rule`,'+
+								'`ioc_typeIndicator`,'+
+								'`ioc_typeInfection` '+	
+							'FROM '+
+								'`ssl_ioc` '+
+							'WHERE '+
+								'`time` BETWEEN ? AND ? '+
+								'AND `lan_ip`= ? ',
+						insert: [start, end, req.query.src_ip],
+						params: [
+							{title: "Time", select: "time"},
+							{title: "Server Name", select: "server_name"},
+							{title: "Version", select: "version"},
+							{title: "cipher", select: "cipher"},
+							{title: "Subject", select: "subject"},
+							{title: "Issuer Subject", select: "issuer_subject"},
+							{title: "Not Valid Before", select: "not_valid_before"},
+							{title: "Not Valid After", select: "not_valid_after"},
+							{title: "IOC", select: "ioc"},
+							{title: "IOC Severity", select: "ioc_severity"},
+							{title: "IOC Type", select: "ioc_typeIndicator"},
+							{title: "IOC Stage", select: "ioc_typeInfection"},
+							{title: "IOC Rule", select: "ioc_rule"},
+						],
+						settings: {
+							sort: [[1, 'desc']],
+							div: 'table',
+							title: 'Indicators of Compromise (IOC) Notifications',
+							pageBreakBefore: false
+						}
+					}
+					var file_ioc = {
+						query: 'SELECT '+
+								'\'file_ioc\' AS type, '+
+								'`time` as raw_time, '+
+								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+								'`ioc_count`,'+
+								'`mime`,'+
+								'`name`,'+
+								'`size`,'+
+								'`md5`,'+
+								'`sha1`,'+
+								'`ioc`,'+
+								'`ioc_severity`,'+
+								'`ioc_rule`,'+
+								'`ioc_typeIndicator`,'+
+								'`ioc_typeInfection` '+
+							'FROM '+
+								'`file_ioc` '+
+							'WHERE '+
+								'`time` BETWEEN ? AND ? '+
+								'AND `lan_ip`= ? ',
+						insert: [start, end, req.query.src_ip],
+						params: [
+							{title: "Time", select: "time"},
+							{title: "File Type", select: "mime"},
+							{title: "Name", select: "name"},
+							{title: "Size", select: "size"},
+							{title: "MD5", select: "md5"},
+							{title: "SHA1", select: "sha1"},
+							{title: "IOC", select: "ioc"},
+							{title: "IOC Severity", select: "ioc_severity"},
+							{title: "IOC Type", select: "ioc_typeIndicator"},
+							{title: "IOC Stage", select: "ioc_typeInfection"},
+							{title: "IOC Rule", select: "ioc_rule"},
+						],
+						settings: {
+							sort: [[1, 'desc']],
+							div: 'table',
+							title: 'Indicators of Compromise (IOC) Notifications',
+							pageBreakBefore: false
+						}
+					}
+					var file = {
+						query: 'SELECT '+
+								'\'file\' AS type, '+
+								'`time` as raw_time, '+
+								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+								'`ioc_count`,'+
+								'`mime`,'+
+								'`name`,'+
+								'`size`,'+
+								'`md5`,'+
+								'`sha1`,'+
+								'`ioc`,'+
+								'`ioc_severity`,'+
+								'`ioc_rule`,'+
+								'`ioc_typeIndicator`,'+
+								'`ioc_typeInfection` '+
+							'FROM '+
+								'`file_ioc` '+
+							'WHERE '+
+								'`time` BETWEEN ? AND ? '+
+								'AND `lan_ip`= ? ',
+						insert: [start, end, req.query.src_ip],
+						params: [
+							{title: "Time", select: "time"},
+							{title: "File Type", select: "mime"},
+							{title: "Name", select: "name"},
+							{title: "Size", select: "size"},
+							{title: "MD5", select: "md5"},
+							{title: "SHA1", select: "sha1"},
+							{title: "IOC", select: "ioc"},
+							{title: "IOC Severity", select: "ioc_severity"},
+							{title: "IOC Type", select: "ioc_typeIndicator"},
+							{title: "IOC Stage", select: "ioc_typeInfection"},
+							{title: "IOC Rule", select: "ioc_rule"},
+						],
+						settings: {
+							sort: [[1, 'desc']],
+							div: 'table',
+							title: 'Indicators of Compromise (IOC) Notifications',
+							pageBreakBefore: false
+						}
+					}
+					var endpoint = {
+						query: 'SELECT '+
+								'\'endpoint\' AS type, '+
+								'`time` as raw_time, '+
+								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+								'`src_ip`,'+
+								'`dst_ip`,'+
+								'`src_user`,'+
+								'`alert_source`,'+
+								'`program_source`,'+
+								'`alert_info` '+
+							'FROM '+
+								'`ossec` '+
+							'WHERE '+
+								'`time` BETWEEN ? AND ? '+
+								'AND `lan_ip`= ? ',
+						insert: [start, end, req.query.src_ip],
+						params: [
+							{title: "Time", select: "time"},
+							{title: "User", select: "src_user"},
+							{title: "Source IP", select: "src_ip"},
+							{title: "Destination IP", select: "dst_ip"},
+							{title: "Alert Source", select: "alert_source"},
+							{title: "Program Source", select: "program_source"},
+							{title: "Alert Info", select: "alert_info"},
+						],
+						settings: {
+							sort: [[1, 'desc']],
+							div: 'table',
+							title: 'Indicators of Compromise (IOC) Notifications',
+							pageBreakBefore: false
+						}
+					}
+
+					var stealth_conn = {
+						query: 'SELECT '+
+								'\'stealth\' AS type, '+
+								'`time` as raw_time, '+
+								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+								'`src_ip`,'+
+								'`dst_ip`,'+
+								'(`in_bytes` / 1048576) as in_bytes,'+
+								'(`out_bytes` / 1048576) as out_bytes,'+
+								'`in_packets`,'+
+								'`out_packets` '+
+							'FROM '+
+								'`stealth_conn` '+
+							'WHERE '+
+								'`time` BETWEEN ? AND ? '+
+								'AND `lan_ip`= ? ',
+						insert: [start, end, req.query.src_ip],
+						params: [
+							{title: "Time", select: "time"},
+							{title: "Source IP", select: "src_ip"},
+							{title: "Destination IP", select: "dst_ip"},
+							{title: "MB from Remote", select: "in_bytes"},
+							{title: "MB to Remote", select: "out_bytes"},
+							{title: "Packets from Remote", select: "in_packets"},
+							{title: "Packets to Remote", select: "out_packets"}
+						],
+						settings: {
+							sort: [[1, 'desc']],
+							div: 'table',
+							title: 'Indicators of Compromise (IOC) Notifications',
+							pageBreakBefore: false
+						}
+					}
+
+					var stealth1 = {
+						query: 'SELECT '+
+								'\'stealth_ioc\' AS type, '+
+								'`time` as raw_time, '+
+								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+								'`src_ip`, '+
+								'`dst_ip`, '+
+								'(`in_bytes` / 1048576) as in_bytes, '+
+								'(`out_bytes` / 1048576) as out_bytes, '+
+								'`in_packets`, '+
+								'`out_packets` '+
+							'FROM '+
+								'`stealth_conn` '+
+							'WHERE '+
+								'time BETWEEN ? AND ? '+
+								'AND `dst_ip` = ? '+
+								'AND `in_bytes` = 0 ',
+						insert: [start, end, req.query.src_ip],
+						params: [
+							{title: "Time", select: "time"},
+							{title: "Source IP", select: "src_ip"},
+							{title: "Destination IP", select: "dst_ip"},
+							{title: "MB from Remote", select: "in_bytes"},
+							{title: "MB to Remote", select: "out_bytes"},
+							{title: "Packets from Remote", select: "in_packets"},
+							{title: "Packets to Remote", select: "out_packets"}
+						],
+						settings: {
+							sort: [[1, 'desc']],
+							div: 'table',
+							title: 'Indicators of Compromise (IOC) Notifications',
+							pageBreakBefore: false
+						}
+					}
+					var stealth2 = {
+						query: 'SELECT '+
+								'\'stealth_ioc\' AS type, '+
+								'`time` as raw_time, '+
+								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+								'`lan_ip`, '+
+								'`remote_ip`, '+
+								'(`in_bytes` / 1048576) as in_bytes, '+
+								'(`out_bytes` / 1048576) as out_bytes, '+
+								'`in_packets`, '+
+								'`out_packets` '+
+							'FROM '+
+								'`conn_meta` '+
+							'WHERE '+
+								'time BETWEEN ? AND ? '+
+								'AND ((`remote_ip` = ? AND `out_bytes` = 0 ) '+
+								'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%" AND `in_bytes` = 0 )) ',
+						insert: [start, end, req.query.src_ip, req.query.src_ip],
+						params: [
+							{title: "Time", select: "time"},
+							{title: "Local IP", select: "lan_ip"},
+							{title: "Remote IP", select: "remote_ip"},
+							{title: "MB from Remote", select: "in_bytes"},
+							{title: "MB to Remote", select: "out_bytes"},
+							{title: "Packets from Remote", select: "in_packets"},
+							{title: "Packets to Remote", select: "out_packets"}
+						],
+						settings: {
+							sort: [[1, 'desc']],
+							div: 'table',
+							title: 'Indicators of Compromise (IOC) Notifications',
+							pageBreakBefore: false
+						}
+					}
+					var stealth3 = {
+						query:'SELECT '+
+								'\'stealth_ioc\' AS type, '+
+								'`time` as raw_time, '+
+								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+								'`lan_ip`, '+
+								'`remote_ip`, '+
+								'(`in_bytes` / 1048576) as in_bytes, '+
+								'(`out_bytes` / 1048576) as out_bytes, '+
+								'`in_packets`, '+
+								'`out_packets` '+
+							'FROM '+
+								'`conn_meta` '+
+							'WHERE '+
+								'time BETWEEN ? AND ? '+
+								'AND `out_bytes` = 0 '+
+								'AND `lan_ip` = ? ',
+						insert: [start, end, req.query.src_ip, req.query.src_ip],
+						params: [
+							{title: "Time", select: "time"},
+							{title: "Local IP", select: "lan_ip"},
+							{title: "Remote IP", select: "remote_ip"},
+							{title: "MB from Remote", select: "in_bytes"},
+							{title: "MB to Remote", select: "out_bytes"},
+							{title: "Packets from Remote", select: "in_packets"},
+							{title: "Packets to Remote", select: "out_packets"}
+						],
+						settings: {
+							sort: [[1, 'desc']],
+							div: 'table',
+							title: 'Indicators of Compromise (IOC) Notifications',
+							pageBreakBefore: false
+						}
+					}
+					var endpoint_logon = {
+						query: 'SELECT '+
+								'`time`,'+
+								'`lan_ip`,'+
+								'`user`,'+
+								'`event` '+
+							'FROM '+
+								'`endpoint_tracking` '+
+							'WHERE '+
+								'`time` BETWEEN ? AND ? '+
+								'AND `lan_ip`= ? '+
+								'AND `event` = "Log On" ',
+						insert: [start, end, req.query.src_ip],
+						columns: [
+							{"sTitle": "Time", "mData": "time"},
+							{"sTitle": "User", "mData": "user"},
+							{"sTitle": "IP", "mData": "lan_ip"},
+							{"sTitle": "Event", "mData": "event"},
+						],
+						start: start,
+						end: end,
+						grouping: pointGroup,
+						sClass: 'login'
+					}
+					var endpoint_logoff = {
+						query: 'SELECT '+
+								'`time`,'+
+								'`lan_ip`,'+
+								'`user`,'+
+								'`event` '+
+							'FROM '+
+								'`endpoint_tracking` '+
+							'WHERE '+
+								'`time` BETWEEN ? AND ? '+
+								'AND `lan_ip`= ? '+
+								'AND `event` = "Log Off" ',
+						insert: [start, end, req.query.src_ip],
+						columns: [
+							{"sTitle": "Time", "mData": "time"},
+							{"sTitle": "User", "mData": "user"},
+							{"sTitle": "IP", "mData": "lan_ip"},
+							{"sTitle": "Event", "mData": "event"},
+						],
+						start: start,
+						end: end,
+						grouping: pointGroup,
+						sClass: 'logout'
+					}
+					async.parallel([
+						// FISHEYE	
+						function(callback) { // conn_ioc
+							new datatable(conn_ioc, {database: database, pool:pool}, function(err, data){
+								handleReturn(data, callback);
+							});
+						},
+						function(callback) { // conn
+							new datatable(conn, {database: database, pool:pool}, function(err, data){
+								handleReturn(data, callback);
+							});
+						},
+						function(callback) { // dns_ioc
+							new datatable(dns_ioc, {database: database, pool:pool}, function(err, data){
+								handleReturn(data, callback);
+							});
+						},
+						function(callback) { // dns
+							new datatable(dns, {database: database, pool:pool}, function(err, data){
+								handleReturn(data, callback);
+							});
+						},
+						function(callback) { // http_ioc
+							new datatable(http_ioc, {database: database, pool:pool}, function(err, data){
+								handleReturn(data, callback);
+							});
+						},
+						function(callback) { // http
+							new datatable(http, {database: database, pool:pool}, function(err, data){
+								handleReturn(data, callback);
+							});
+						},
+						function(callback) { // ssl_ioc
+							new datatable(ssl_ioc, {database: database, pool:pool}, function(err, data){
+								handleReturn(data, callback);
+							});
+						},
+						function(callback) { // ssl
+							new datatable(ssl, {database: database, pool:pool}, function(err, data){
+								handleReturn(data, callback);
+							});
+						},
+						function(callback) { // file_ioc
+							new datatable(file_ioc, {database: database, pool:pool}, function(err, data){
+								handleReturn(data, callback);
+							});
+						},
+						function(callback) { // file
+							new datatable(file, {database: database, pool:pool}, function(err, data){
+								handleReturn(data, callback);
+							});
+						},
+						function(callback) { // endpoint
+							new datatable(endpoint, {database: database, pool:pool}, function(err, data){
+								handleReturn(data, callback);
+							});
+						},
+						function(callback) { // stealth
+							if (req.session.passport.user.level === 3) {
+								new datatable(stealth_conn, {database: database, pool:pool}, function(err, data){
+									console.log(data)
+									handleReturn(data, callback);
+								});
+							} else {
+								callback();
+							}
+						},
+						function(callback) { // stealth
+							if (req.session.passport.user.level === 3) {
+								new datatable(stealth1, {database: database, pool:pool}, function(err, data){
+									console.log(data)
+									handleReturn(data, callback);
+								});
+							} else {
+								callback();
+							}
+						},
+						function(callback) { // stealth
+							if (req.session.passport.user.level === 3) {
+								new datatable(stealth2, {database: database, pool:pool}, function(err, data){
+									console.log(data)
+									handleReturn(data, callback);
+								});
+							} else {
+								callback();
+							}
+						},
+						function(callback) { // stealth
+							if (req.session.passport.user.level === 3) {
+								new datatable(stealth3, {database: database, pool:pool}, function(err, data){
+									console.log(data)
+									handleReturn(data, callback);
+								});
+							} else {
+								callback();
+							}
+						},
+					//	SANKEY
+						function(callback) {
+							new sankey(sankey_auth1, sankey_auth2, sankey_auth3, sankey_unauth1, sankey_unauth2, sankey_unauth3, {database: database, pool: pool}, function(err,data){
+								sankeyData = data;
+								callback();
+							});
+						}
+					], function(err) { //This function gets called after the two tasks have called their "task callbacks"
+						if (err) throw console.log(err)
+						
+						res.json({
+							sankey: sankeyData,
+							info: info,
+							columns: columns,
+							laneGraph: result,
+							result: result,
+							start: start,
+							end: end
+						});
+					});
+				} else {
+					res.redirect('/');
+				}
 			}
 		}
 	}
