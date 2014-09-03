@@ -74,6 +74,8 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 
 
 		$scope.open = function (d, columns) {
+			console.log(d);
+			console.log(columns)
 			$scope.mData = d;
 			$scope.columns = columns;
 			// $scope.$broadcast('moodal', d);
