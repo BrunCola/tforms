@@ -302,12 +302,12 @@ module.exports = function(pool) {
 				var stealth_conn = {
 					query: 'SELECT '+
 							'\'stealth\' AS type, '+
-							'`time` as raw_time, '+
+							'`time` AS raw_time, '+
 							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
 							'`src_ip`,'+
 							'`dst_ip`,'+
-							'(`in_bytes` / 1048576) as in_bytes,'+
-							'(`out_bytes` / 1048576) as out_bytes,'+
+							'(`in_bytes` / 1048576) AS in_bytes,'+
+							'(`out_bytes` / 1048576) AS out_bytes,'+
 							'`in_packets`,'+
 							'`out_packets` '+
 						'FROM '+
@@ -843,7 +843,7 @@ module.exports = function(pool) {
 								'`in_packets`,'+
 								'`out_packets` '+
 							'FROM '+
-								'`stealth_conn` '+
+								'`stealth_conn_meta` '+
 							'WHERE '+
 								'`time` BETWEEN ? AND ? '+
 								'AND `lan_ip`= ? ',
@@ -876,7 +876,7 @@ module.exports = function(pool) {
 								'`in_packets`, '+
 								'`out_packets` '+
 							'FROM '+
-								'`stealth_conn` '+
+								'`stealth_conn_meta` '+
 							'WHERE '+
 								'time BETWEEN ? AND ? '+
 								'AND `src_ip` = ? '+
