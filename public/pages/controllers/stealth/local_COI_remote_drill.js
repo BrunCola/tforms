@@ -146,16 +146,4 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 
 
 
-
-	$scope.$on('grouping', function (event, val){
-		$http({method: 'GET', url: query+'&group='+val}).
-		success(function(data) {
-			fishchart(data);
-		});
-	})
-
-
-
-
-
 }]);

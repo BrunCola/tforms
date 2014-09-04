@@ -967,7 +967,6 @@ module.exports = function(pool) {
 							info: info,
 							columns: columns,
 							laneGraph: result,
-							result: result,
 							start: start,
 							end: end
 						});
