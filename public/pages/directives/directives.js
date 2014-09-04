@@ -1009,163 +1009,163 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
 }]);
 
 angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
-	return {
-		link: function ($scope, element, attrs) {
-			$scope.$on('rowChart', function (event, dimension, group, chartType) {
-				$timeout(function () { // You might need this timeout to be sure its run after DOM render
-					var waitForFinalEvent = (function () {
-						var timers = {};
-						return function (callback, ms, uniqueId) {
-							if (!uniqueId) {
-								uniqueId = "rowchartWait"; //Don't call this twice without a uniqueId
-							}
-							if (timers[uniqueId]) {
-								clearTimeout (timers[uniqueId]);
-							}
-						timers[uniqueId] = setTimeout(callback, ms);
-						};
-					})();
-					var hHeight, lOffset;
-					var count = group.top(Infinity).length; ///CHANGE THIS to count return rows
-					if (count < 7) {
-						lOffset = 17+(count*0.2);
-						hHeight = 25+(count*35);
-					}
-					else if (count >= 7) {
-						lOffset = 12.7+(count*0.2);
-						hHeight = 25+(count*28);
-					}
-					var fill;
-					var width = $('#rowchart').width();
-					$scope.rowChart = dc.rowChart('#rowchart');
-					$scope.rowWidth = function() {
-						return $('#rowchart').parent().width();
-					}
-					var filter;
-					switch (chartType) {
-						case 'severity':
-							var setNewSize = function(width) {
-								if (width > 0) {
-									$scope.rowChart
-										.width(width)
-										//.height(width/3.3)
-										.x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width]));
-										$(element).height(hHeight);
-										d3.select('#rowchart svg').attr('width', width).attr('height', hHeight);
-									$scope.rowChart.redraw();
-								}
-							};
-							$scope.rowChart
-								// .colors(d3.scale.ordinal().domain(["guarded","elevated","high","severe"]).range(["#F88B12","#F5D800","#377FC7","#DD122A"]))//["#377FC7","#F5D800","#F88B12","#DD122A"]))
-								.colors(d3.scale.ordinal().domain([0,1,2,3,4]).range(["#377FC7","#F5D800","#F88B12","#DD122A"]))//["#377FC7","#DD122A","#F88B12", "#F5D800"]))
-								.colorAccessor(function (d){return d.value.severity;});
-							filter = true;
-							break;
-						case 'drill':
-							var setNewSize = function(width) {
-								hHeight = width*0.613;
-								if (width > 0) {
-									lOffset = 12+(count*0.7);
-									$scope.rowChart
-										.width(width)
-										.height(width*0.613)
-										.x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width]));
-										//$(element).height(hHeight);
-										d3.select('#rowchart svg').attr('width', width).attr('height', hHeight);
-									$scope.rowChart.redraw();
-								}
-							};
-							$scope.rowChart
-								.colors(["#cb2815","#e29e23","#a3c0ce","#5c5e7d","#e3cdc9","#524A4F"])
-								.colorAccessor(function (d){return d.value.cColor;});
-								hHeight = width*0.613;
-								lOffset = 12+(count*0.7);
-							filter = false;
-							break;
-					}
-					if (filter == true) {
-						$scope.rowChart
-							.on("filtered", function(chart, filter){
-								$scope.tableData.filterAll();
-								var arr = [];
-								for(var i in dimension.top(Infinity)) {
-									arr.push(dimension.top(Infinity)[i].ioc);
-								}
-								$scope.tableData.filter(function(d) { return arr.indexOf(d.ioc) >= 0; });
-								$scope.$broadcast('crossfilterToTable');
-							});
-					}
-					if (count > 0) {
-						var tops = group.order(function (p) {return p.count;}).top(1);
-						$scope.rowDomain = tops[0].value.count+0.1;
-					} else {
-						$scope.rowDomain = 50;
-					}
-					var numberFormat = d3.format(",f");
-					function logFormat(d) {
-						var x = Math.log(d) / Math.log(10) + 1e-6;
-						return Math.abs(x - Math.floor(x)) < 0.3 ? numberFormat(d) : "";
-					}
-					$scope.rowChart
-					.width(width)
-						//.height(width/2 + barExpand)
-						.height(hHeight)
-						.margins({top: 5, left: 0, right: 0, bottom: 20})
-						.group(group)
-						.dimension(dimension)
-						.valueAccessor(function(d) {
-							if (d.value.count === 1){
-								return d.value.count+1;
-							} else if (d.value.count === 0){
-								return 1;
-							} else {
-								return d.value.count;
-							}
-						})
-						.renderLabel(true)
-						.label(function(d) { return d.key+' ('+d.value.count+')'; })
-						.labelOffsetY(lOffset) //lOffset
-						.elasticX(false)
-						.x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width])) //500 ->width
-						.xAxis()
-						.scale($scope.rowChart.x())
-						.tickFormat(logFormat);
-						$scope.rowChart.render();
-						$(window).bind('resize', function() {
-							setTimeout(function(){
-								setNewSize($scope.rowWidth());
-							}, 150);
-						});
-						$(window).resize(function () {
-							waitForFinalEvent(function(){
-								$scope.rowChart.render();
-							}, 200, "rowchartresize");
-						});
-						$('.sidebar-toggler').on("click", function() {
-							setTimeout(function() {
-								setNewSize($scope.rowWidth());
-								$scope.rowChart.render();
-							},10);
-						});
-						var rowFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
-						$rootScope.$watch('search', function(){
-							$scope.tableToRowChart = function () {
-								if($rootScope.search === null) {
-									rowFilterDimension.filterAll();
-								} else {
-									rowFilterDimension.filterAll();
-									if ($scope.country) {
-										rowFilterDimension.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
-									}
-								}
-							}
-							$scope.tableToRowChart();
-							$scope.rowChart.redraw();
-						});
-				}, 0, false);
-			});
-		}
-	}
+    return {
+        link: function ($scope, element, attrs) {
+            $scope.$on('rowChart', function (event, dimension, group, chartType) {
+                $timeout(function () { // You might need this timeout to be sure its run after DOM render
+                    var waitForFinalEvent = (function () {
+                        var timers = {};
+                        return function (callback, ms, uniqueId) {
+                            if (!uniqueId) {
+                                uniqueId = "rowchartWait"; //Don't call this twice without a uniqueId
+                            }
+                            if (timers[uniqueId]) {
+                                clearTimeout (timers[uniqueId]);
+                            }
+                        timers[uniqueId] = setTimeout(callback, ms);
+                        };
+                    })();
+                    var hHeight, lOffset;
+                    var count = group.top(Infinity).length; ///CHANGE THIS to count return rows
+                    if (count < 7) {
+                        lOffset = 17+(count*0.2);
+                        hHeight = 25+(count*35);
+                    }
+                    else if (count >= 7) {
+                        lOffset = 12.7+(count*0.2);
+                        hHeight = 25+(count*28);
+                    }
+                    var fill;
+                    var width = $('#rowchart').width();
+                    $scope.rowChart = dc.rowChart('#rowchart');
+                    $scope.rowWidth = function() {
+                        return $('#rowchart').parent().width();
+                    }
+                    var filter;
+                    switch (chartType) {
+                        case 'severity':
+                            var setNewSize = function(width) {
+                                if (width > 0) {
+                                    $scope.rowChart
+                                        .width(width)
+                                        //.height(width/3.3)
+                                        .x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width]));
+                                        $(element).height(hHeight);
+                                        d3.select('#rowchart svg').attr('width', width).attr('height', hHeight);
+                                    $scope.rowChart.redraw();
+                                }
+                            };
+                            $scope.rowChart
+                                // .colors(d3.scale.ordinal().domain(["guarded","elevated","high","severe"]).range(["#F88B12","#F5D800","#377FC7","#DD122A"]))//["#377FC7","#F5D800","#F88B12","#DD122A"]))
+                                .colors(d3.scale.ordinal().domain([0,1,2,3,4]).range(["#377FC7","#F5D800","#F88B12","#DD122A"]))//["#377FC7","#DD122A","#F88B12", "#F5D800"]))
+                                .colorAccessor(function (d){return d.value.severity;});
+                            filter = true;
+                            break;
+                        case 'drill':
+                            var setNewSize = function(width) {
+                                hHeight = width*0.613;
+                                if (width > 0) {
+                                    lOffset = 12+(count*0.7);
+                                    $scope.rowChart
+                                        .width(width)
+                                        .height(width*0.613)
+                                        .x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width]));
+                                        //$(element).height(hHeight);
+                                        d3.select('#rowchart svg').attr('width', width).attr('height', hHeight);
+                                    $scope.rowChart.redraw();
+                                }
+                            };
+                            $scope.rowChart
+                                .colors(["#cb2815","#e29e23","#a3c0ce","#5c5e7d","#e3cdc9","#524A4F"])
+                                .colorAccessor(function (d){return d.value.cColor;});
+                                hHeight = width*0.613;
+                                lOffset = 12+(count*0.7);
+                            filter = false;
+                            break;
+                    }
+                    if (filter == true) {
+                        $scope.rowChart
+                            .on("filtered", function(chart, filter){
+                                $scope.tableData.filterAll();
+                                var arr = [];
+                                for(var i in dimension.top(Infinity)) {
+                                    arr.push(dimension.top(Infinity)[i].ioc);
+                                }
+                                $scope.tableData.filter(function(d) { return arr.indexOf(d.ioc) >= 0; });
+                                $scope.$broadcast('crossfilterToTable');
+                            });
+                    }
+                    if (count > 0) {
+                        var tops = group.order(function (p) {return p.count;}).top(1);
+                        $scope.rowDomain = tops[0].value.count+0.1;
+                    } else {
+                        $scope.rowDomain = 50;
+                    }
+                    var numberFormat = d3.format(",f");
+                    function logFormat(d) {
+                        var x = Math.log(d) / Math.log(10) + 1e-6;
+                        return Math.abs(x - Math.floor(x)) < 0.3 ? numberFormat(d) : "";
+                    }
+                    $scope.rowChart
+                    .width(width)
+                        //.height(width/2 + barExpand)
+                        .height(hHeight)
+                        .margins({top: 5, left: 0, right: 0, bottom: 20})
+                        .group(group)
+                        .dimension(dimension)
+                        .valueAccessor(function(d) {
+                            if (d.value.count === 1){
+                                return d.value.count+1;
+                            } else if (d.value.count === 0){
+                                return 1;
+                            } else {
+                                return d.value.count;
+                            }
+                        })
+                        .renderLabel(true)
+                        .label(function(d) { return d.key+' ('+d.value.count+')'; })
+                        .labelOffsetY(lOffset) //lOffset
+                        .elasticX(false)
+                        .x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width])) //500 ->width
+                        .xAxis()
+                        .scale($scope.rowChart.x())
+                        .tickFormat(logFormat);
+                        $scope.rowChart.render();
+                        $(window).bind('resize', function() {
+                            setTimeout(function(){
+                                setNewSize($scope.rowWidth());
+                            }, 150);
+                        });
+                        $(window).resize(function () {
+                            waitForFinalEvent(function(){
+                                $scope.rowChart.render();
+                            }, 200, "rowchartresize");
+                        });
+                        $('.sidebar-toggler').on("click", function() {
+                            setTimeout(function() {
+                                setNewSize($scope.rowWidth());
+                                $scope.rowChart.render();
+                            },10);
+                        });
+                        var rowFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
+                        $rootScope.$watch('search', function(){
+                            $scope.tableToRowChart = function () {
+                                if($rootScope.search === null) {
+                                    rowFilterDimension.filterAll();
+                                } else {
+                                    rowFilterDimension.filterAll();
+                                    if ($scope.country) {
+                                        rowFilterDimension.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
+                                    }
+                                }
+                            }
+                            $scope.tableToRowChart();
+                            $scope.rowChart.redraw();
+                        });
+                }, 0, false);
+            });
+        }
+    }
 }]);
 
 angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
@@ -1283,502 +1283,502 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
 }]);
 
 angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
-	return {
-		link: function ($scope, element, attrs) {
-			$scope.$on('forceChart', function (event, data, params) {
-				$timeout(function () { // You might need this timeout to be sure its run after DOM render
-					var width = $("#forcechart").parent().width(),
-						height = params["height"];
-					var tCount = [];
-					data.links.forEach(function(d) {
-						tCount.push(d.value);
-					});
-					var maxNum = Math.max.apply(Math, tCount);
+    return {
+        link: function ($scope, element, attrs) {
+            $scope.$on('forceChart', function (event, data, params) {
+                $timeout(function () { // You might need this timeout to be sure its run after DOM render
+                    var width = $("#forcechart").parent().width(),
+                        height = params["height"];
+                    var tCount = [];
+                    data.links.forEach(function(d) {
+                        tCount.push(d.value);
+                    });
+                    var maxNum = Math.max.apply(Math, tCount);
 
-					// var color = d3.scale.category20();
-					var palette = {
-						"lightgray": "#819090",
-						"gray": "#708284",
-						"mediumgray": "#536870",
-						"darkgray": "#475B62",
+                    // var color = d3.scale.category20();
+                    var palette = {
+                        "lightgray": "#819090",
+                        "gray": "#708284",
+                        "mediumgray": "#536870",
+                        "darkgray": "#475B62",
 
-						"darkblue": "#0A2933",
-						"darkerblue": "#042029",
+                        "darkblue": "#0A2933",
+                        "darkerblue": "#042029",
 
-						"paleryellow": "#FCF4DC",
-						"paleyellow": "#EAE3CB",
-						"yellow": "#A57706",
-						"orange": "#BD3613",
-						"red": "#D11C24",
-						"pink": "#C61C6F",
-						"purple": "#595AB7",
-						"blue": "#2176C7",
-						"green": "#259286",
-						"yellowgreen": "#738A05"
-					}
-					var count = function(size) {
-						if (size === undefined) {
-							size = 1;
-						}
-						return size;
-					}
-					var color = function(group) {
-						if (group === 1) {
-							return palette.pink
-						} else if (group === 2) {
-							return palette.pink
-						} else if (group === 3) {
-							return palette.orange
-						} else {
+                        "paleryellow": "#FCF4DC",
+                        "paleyellow": "#EAE3CB",
+                        "yellow": "#A57706",
+                        "orange": "#BD3613",
+                        "red": "#D11C24",
+                        "pink": "#C61C6F",
+                        "purple": "#595AB7",
+                        "blue": "#2176C7",
+                        "green": "#259286",
+                        "yellowgreen": "#738A05"
+                    }
+                    var count = function(size) {
+                        if (size === undefined) {
+                            size = 1;
+                        }
+                        return size;
+                    }
+                    var color = function(group) {
+                        if (group === 1) {
+                            return palette.pink
+                        } else if (group === 2) {
+                            return palette.pink
+                        } else if (group === 3) {
+                            return palette.orange
+                        } else {
 
-						}
-					}
-					function logslider(x) {
-						if (x === undefined) {
-							return 18;
-						}
-						// position will be between 0 and 100
-						// if(x > 50) {
-						// 	x = 50;
-						// }
-						var minp = 0;
-						var maxp = maxNum;
-						// The result should be between 100 an 10000000
-						var minv = Math.log(5);
-						var maxv = Math.log(50);
-						// calculate adjustment factor
-						var scale = (maxv-minv) / (maxp-minp);
-						return Math.exp(minv + scale*(x-minp));
-					}
+                        }
+                    }
+                    function logslider(x) {
+                        if (x === undefined) {
+                            return 18;
+                        }
+                        // position will be between 0 and 100
+                        // if(x > 50) {
+                        //  x = 50;
+                        // }
+                        var minp = 0;
+                        var maxp = maxNum;
+                        // The result should be between 100 an 10000000
+                        var minv = Math.log(5);
+                        var maxv = Math.log(50);
+                        // calculate adjustment factor
+                        var scale = (maxv-minv) / (maxp-minp);
+                        return Math.exp(minv + scale*(x-minp));
+                    }
 
-					var circleWidth = 5;
-					
-					var vis = d3.select("#forcechart")
-						.append("svg:svg")
-						.attr("class", "stage")
-						.attr("width", width)
-						.attr("height", height);
+                    var circleWidth = 5;
+                    
+                    var vis = d3.select("#forcechart")
+                        .append("svg:svg")
+                        .attr("class", "stage")
+                        .attr("width", width)
+                        .attr("height", height);
 
-					var force = d3.layout.force()
-						.nodes(data.nodes)
-						.links(data.links)
-						.gravity(0.1)
-						.linkDistance(width/6)
-						.charge(-500)
-						.size([width-50, height]);
+                    var force = d3.layout.force()
+                        .nodes(data.nodes)
+                        .links(data.links)
+                        .gravity(0.1)
+                        .linkDistance(width/6)
+                        .charge(-500)
+                        .size([width-50, height]);
 
-					var link = vis.selectAll(".link")
-						.data(data.links)
-						.enter().append("line")
-						.attr("class", "link")
-						.attr("stroke", "#CCC")
-						.attr("fill", "#000");
+                    var link = vis.selectAll(".link")
+                        .data(data.links)
+                        .enter().append("line")
+                        .attr("class", "link")
+                        .attr("stroke", "#CCC")
+                        .attr("fill", "#000");
 
-					var node = vis.selectAll("circle.node")
-						.data(data.nodes)
-						.enter().append("g")
-						.attr("class", "node")
+                    var node = vis.selectAll("circle.node")
+                        .data(data.nodes)
+                        .enter().append("g")
+                        .attr("class", "node")
 
-					//MOUSEOVER
-					.on("mouseover", function(d,i) {
-						if (i>0) {
-							//CIRCLE
-							d3.select(this).selectAll("circle")
-								.transition()
-								.duration(250)
-								.style("cursor", "none")
-								.attr("r", function (d) {return logslider(d["width"])+4; })
-								.attr("fill",function(d){ return color(d.group); });
+                    //MOUSEOVER
+                    .on("mouseover", function(d,i) {
+                        if (i>0) {
+                            //CIRCLE
+                            d3.select(this).selectAll("circle")
+                                .transition()
+                                .duration(250)
+                                .style("cursor", "none")
+                                .attr("r", function (d) {return logslider(d["width"])+4; })
+                                .attr("fill",function(d){ return color(d.group); });
 
-							//TEXT
-							d3.select(this).select("text")
-								.transition()
-								.style("cursor", "none")
-								.duration(250)
-								.style("cursor", "none")
-								.attr("font-size","1.5em")
-								.attr("x", 15 )
-								.attr("y", 5 )
-						} else {
-						//CIRCLE
-							d3.select(this).selectAll("circle")
-								.style("cursor", "none")
+                            //TEXT
+                            d3.select(this).select("text")
+                                .transition()
+                                .style("cursor", "none")
+                                .duration(250)
+                                .style("cursor", "none")
+                                .attr("font-size","1.5em")
+                                .attr("x", 15 )
+                                .attr("y", 5 )
+                        } else {
+                        //CIRCLE
+                            d3.select(this).selectAll("circle")
+                                .style("cursor", "none")
 
-							//TEXT
-							d3.select(this).select("text")
-								.style("cursor", "none")
-						}
-					})
+                            //TEXT
+                            d3.select(this).select("text")
+                                .style("cursor", "none")
+                        }
+                    })
 
-					//MOUSEOUT
-					.on("mouseout", function(d,i) {
-						if (i>0) {
-						//CIRCLE
-						d3.select(this).selectAll("circle")
-							.transition()
-							.duration(250)
-							.attr("r", function (d) {return logslider(d["width"]); })
-							.attr("fill",function(d){ return color(d.group); } );
+                    //MOUSEOUT
+                    .on("mouseout", function(d,i) {
+                        if (i>0) {
+                        //CIRCLE
+                        d3.select(this).selectAll("circle")
+                            .transition()
+                            .duration(250)
+                            .attr("r", function (d) {return logslider(d["width"]); })
+                            .attr("fill",function(d){ return color(d.group); } );
 
-						//TEXT
-						d3.select(this).select("text")
-							.transition()
-							.duration(250)
-							.attr("font-size","1em")
-							.attr("x", 8 )
-							.attr("y", 4 )
-						}
-					})
+                        //TEXT
+                        d3.select(this).select("text")
+                            .transition()
+                            .duration(250)
+                            .attr("font-size","1em")
+                            .attr("x", 8 )
+                            .attr("y", 4 )
+                        }
+                    })
 
-					.call(force.drag);
+                    .call(force.drag);
 
 
-					//CIRCLE
-					node.append("svg:circle")
-						.attr("cx", function(d) { return d.x; })
-						.attr("cy", function(d) { return d.y; })
-						.attr("r", function (d) {return logslider(d["width"]); })
-						.attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.gray } } )
-						.style("stroke-width", "1.5px")
-						.style("stroke", "#fff")
+                    //CIRCLE
+                    node.append("svg:circle")
+                        .attr("cx", function(d) { return d.x; })
+                        .attr("cy", function(d) { return d.y; })
+                        .attr("r", function (d) {return logslider(d["width"]); })
+                        .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.gray } } )
+                        .style("stroke-width", "1.5px")
+                        .style("stroke", "#fff")
 
-					//TEXT
-					node.append("text")
-						.text(function(d, i) { return d.name+'('+count(d.width)+')'; })
-						.attr("x",    function(d, i) { return circleWidth + 5; })
-						.attr("y",            function(d, i) { if (i>0) { return circleWidth + 0 }    else { return 8 } })
-						// .attr("font-family",  "Bree Serif")
-						// .attr("fill",         function(d, i) {  return  palette.paleryellow;  })
-						.attr("font-size",    function(d, i) {  return  "1em"; })
-						.attr("text-anchor",  function(d, i) { if (i>0) { return  "beginning"; }      else { return "end" } })
+                    //TEXT
+                    node.append("text")
+                        .text(function(d, i) { return d.name+'('+count(d.width)+')'; })
+                        .attr("x",    function(d, i) { return circleWidth + 5; })
+                        .attr("y",            function(d, i) { if (i>0) { return circleWidth + 0 }    else { return 8 } })
+                        // .attr("font-family",  "Bree Serif")
+                        // .attr("fill",         function(d, i) {  return  palette.paleryellow;  })
+                        .attr("font-size",    function(d, i) {  return  "1em"; })
+                        .attr("text-anchor",  function(d, i) { if (i>0) { return  "beginning"; }      else { return "end" } })
 
-					force.on("tick", function(e) {
-						node.attr("transform", function(d, i) {
-							return "translate(" + d.x + "," + d.y + ")";
-						});
+                    force.on("tick", function(e) {
+                        node.attr("transform", function(d, i) {
+                            return "translate(" + d.x + "," + d.y + ")";
+                        });
 
-						link.attr("x1", function(d)   { return d.source.x; })
-							.attr("y1", function(d)   { return d.source.y; })
-							.attr("x2", function(d)   { return d.target.x; })
-							.attr("y2", function(d)   { return d.target.y; })
-					});
+                        link.attr("x1", function(d)   { return d.source.x; })
+                            .attr("y1", function(d)   { return d.source.y; })
+                            .attr("x2", function(d)   { return d.target.x; })
+                            .attr("y2", function(d)   { return d.target.y; })
+                    });
 
-					force.start();
-				}, 0, false);
-			})
-		}
-	};
+                    force.start();
+                }, 0, false);
+            })
+        }
+    };
 }]);
 
 //NETWORK CHART STARTS HERE
 angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
-	return {
-		link: function ($scope, element, attrs) {
-			$scope.$on('networkChart', function (event, data, params) {
-				$timeout(function () { // You might need this timeout to be sure its run after DOM render
-					var width = $("#networkchart").parent().width(),
-						height = params["height"];
-					var tCount = [];
-					// console.log(data);
-					// console.log(data.links);
-					data.links.forEach(function(d) {
-						tCount.push(d.value);
-					});
-					var maxNum = Math.max.apply(Math, tCount);
+    return {
+        link: function ($scope, element, attrs) {
+            $scope.$on('networkChart', function (event, data, params) {
+                $timeout(function () { // You might need this timeout to be sure its run after DOM render
+                    var width = $("#networkchart").parent().width(),
+                        height = params["height"];
+                    var tCount = [];
+                    // console.log(data);
+                    // console.log(data.links);
+                    data.links.forEach(function(d) {
+                        tCount.push(d.value);
+                    });
+                    var maxNum = Math.max.apply(Math, tCount);
 
-					// var color = d3.scale.category20();
-					var palette = {
-						"lightgray": "#819090",
-						"gray": "#708284",
-						"mediumgray": "#536870",
-						"darkgray": "#475B62",
+                    // var color = d3.scale.category20();
+                    var palette = {
+                        "lightgray": "#819090",
+                        "gray": "#708284",
+                        "mediumgray": "#536870",
+                        "darkgray": "#475B62",
 
-						"darkblue": "#0A2933",
-						"darkerblue": "#042029",
+                        "darkblue": "#0A2933",
+                        "darkerblue": "#042029",
 
-						"paleryellow": "#FCF4DC",
-						"paleyellow": "#EAE3CB",
-						"yellow": "#A57706",
-						"orange": "#BD3613",
-						"red": "#D11C24",
-						"pink": "#C61C6F",
-						"purple": "#595AB7",
-						"blue": "#2176C7",
-						"green": "#259286",
-						"yellowgreen": "#738A05"
-					}
-					var count = function(size) {
-						if (size === undefined) {
-							size = 1;
-						}
-						return size;
-					}
-					var color = function(type) {
-						if (type === "zone") {
-							return palette.blue
-						} else if (type === "network") {
-							return palette.pink
-						} else if (type === "os") {
-							return palette.orange
-						} else if (type === "endpoint") {
-							return palette.yellow
-						} else {
+                        "paleryellow": "#FCF4DC",
+                        "paleyellow": "#EAE3CB",
+                        "yellow": "#A57706",
+                        "orange": "#BD3613",
+                        "red": "#D11C24",
+                        "pink": "#C61C6F",
+                        "purple": "#595AB7",
+                        "blue": "#2176C7",
+                        "green": "#259286",
+                        "yellowgreen": "#738A05"
+                    }
+                    var count = function(size) {
+                        if (size === undefined) {
+                            size = 1;
+                        }
+                        return size;
+                    }
+                    var color = function(type) {
+                        if (type === "zone") {
+                            return palette.blue
+                        } else if (type === "network") {
+                            return palette.pink
+                        } else if (type === "os") {
+                            return palette.orange
+                        } else if (type === "endpoint") {
+                            return palette.yellow
+                        } else {
 
-						}
-					}
-					function logslider(x) {
-						if (x === undefined) {
-							return 18;
-						}
-						// position will be between 0 and 100
-						// if(x > 50) {
-						// 	x = 50;
-						// }
-						var minp = 0;
-						var maxp = maxNum;
-						// The result should be between 100 an 10000000
-						var minv = Math.log(5);
-						var maxv = Math.log(50);
-						// calculate adjustment factor
-						var scale = (maxv-minv) / (maxp-minp);
-						return Math.exp(minv + scale*(x-minp));
-					}
+                        }
+                    }
+                    function logslider(x) {
+                        if (x === undefined) {
+                            return 18;
+                        }
+                        // position will be between 0 and 100
+                        // if(x > 50) {
+                        //  x = 50;
+                        // }
+                        var minp = 0;
+                        var maxp = maxNum;
+                        // The result should be between 100 an 10000000
+                        var minv = Math.log(5);
+                        var maxv = Math.log(50);
+                        // calculate adjustment factor
+                        var scale = (maxv-minv) / (maxp-minp);
+                        return Math.exp(minv + scale*(x-minp));
+                    }
 
-					// var circleWidth = 15;
+                    // var circleWidth = 15;
 
-					var vis = d3.select("#networkchart")
-						.append("svg:svg")
-						.attr("class", "stage")
-						.attr("width", width)
-						.attr("height", height);
+                    var vis = d3.select("#networkchart")
+                        .append("svg:svg")
+                        .attr("class", "stage")
+                        .attr("width", width)
+                        .attr("height", height);
 
-					var radius = d3.scale.sqrt()
-					    .range([0, 6]);
-					
-					var force = d3.layout.force()
-						.nodes(data.nodes)
-						.links(data.links)
-						.friction(0.5)
-    					.linkStrength(1)
-						.gravity(-0.04)
-						// .linkDistance(width/14)
-						.linkDistance(function(d) {
-							// console.log(d);
-							// return 10; 
-							if(d.type === "osToEndpoint") {
-								return 3; 
-							} else {
-								return width/14; 
-							}	
-					     })
-						.charge(-800)
-						.size([width-50, height]);
+                    var radius = d3.scale.sqrt()
+                        .range([0, 6]);
+                    
+                    var force = d3.layout.force()
+                        .nodes(data.nodes)
+                        .links(data.links)
+                        .friction(0.5)
+                        .linkStrength(1)
+                        .gravity(-0.04)
+                        // .linkDistance(width/14)
+                        .linkDistance(function(d) {
+                            // console.log(d);
+                            // return 10; 
+                            if(d.type === "osToEndpoint") {
+                                return 3; 
+                            } else {
+                                return width/14; 
+                            }   
+                         })
+                        .charge(-800)
+                        .size([width-50, height]);
 
-					var link = vis.selectAll(".link")
-						.data(data.links)
-						.enter().append("line")
-						// .attr("class", "link")
-						.attr("stroke", "#CCC");
-						// .attr("fill", "#000");
+                    var link = vis.selectAll(".link")
+                        .data(data.links)
+                        .enter().append("line")
+                        // .attr("class", "link")
+                        .attr("stroke", "#CCC");
+                        // .attr("fill", "#000");
 
-					var node = vis.selectAll("circle.node")
-						.data(data.nodes)
-						.enter().append("g")
-						.attr("class", "node")
+                    var node = vis.selectAll("circle.node")
+                        .data(data.nodes)
+                        .enter().append("g")
+                        .attr("class", "node")
 
-						//MOUSEOVER
-						.on("mouseover", function(d,i) {
-							if (i>0) {
-								//CIRCLE
-								d3.select(this).selectAll("circle")
-									.transition()
-									.duration(250)
-									.style("cursor", "none")
-									.attr("r", function (d) {return logslider(d["width"])+4; })
-									.attr("fill",function(d){ return color(d.type); });
+                        //MOUSEOVER
+                        .on("mouseover", function(d,i) {
+                            if (i>0) {
+                                //CIRCLE
+                                d3.select(this).selectAll("circle")
+                                    .transition()
+                                    .duration(250)
+                                    .style("cursor", "none")
+                                    .attr("r", function (d) {return logslider(d["width"])+4; })
+                                    .attr("fill",function(d){ return color(d.type); });
 
-								//TEXT
-								d3.select(this).select("text")
-									.transition()
-									.style("cursor", "none")
-									.duration(250)
-									.style("cursor", "none")
-									// .attr("font-size","5.5em")
-									.attr("x", 10 )
-									.attr("y", 10 )
-							} else {
-							//CIRCLE
-								d3.select(this).selectAll("circle")
-									.style("cursor", "none")
+                                //TEXT
+                                d3.select(this).select("text")
+                                    .transition()
+                                    .style("cursor", "none")
+                                    .duration(250)
+                                    .style("cursor", "none")
+                                    // .attr("font-size","5.5em")
+                                    .attr("x", 10 )
+                                    .attr("y", 10 )
+                            } else {
+                            //CIRCLE
+                                d3.select(this).selectAll("circle")
+                                    .style("cursor", "none")
 
-								//TEXT
-								d3.select(this).select("text")
-									.style("cursor", "none")
-							}
-						})
+                                //TEXT
+                                d3.select(this).select("text")
+                                    .style("cursor", "none")
+                            }
+                        })
 
-						//MOUSEOUT
-						.on("mouseout", function(d,i) {
-							if (i>0) {
-							//CIRCLE
-							d3.select(this).selectAll("circle")
-								.transition()
-								.duration(250)
-								.attr("r", function(d){return logslider(d["width"]); })
-								.attr("fill",function(d){return color(d.type);});
+                        //MOUSEOUT
+                        .on("mouseout", function(d,i) {
+                            if (i>0) {
+                            //CIRCLE
+                            d3.select(this).selectAll("circle")
+                                .transition()
+                                .duration(250)
+                                .attr("r", function(d){return logslider(d["width"]); })
+                                .attr("fill",function(d){return color(d.type);});
 
-							//TEXT
-							d3.select(this).select("text")
-								.transition()
-								.duration(250)
-								// .attr("font-size","7em")
-								.attr("x", 15 )
-								.attr("y", 30 )
-							}
-						})
+                            //TEXT
+                            d3.select(this).select("text")
+                                .transition()
+                                .duration(250)
+                                // .attr("font-size","7em")
+                                .attr("x", 15 )
+                                .attr("y", 30 )
+                            }
+                        })
 
-						.call(force.drag);
+                        .call(force.drag);
 
-					link.each(function(d){
-						
-						if(d.type === "osToEndpoint"){
-							d3.select(this)
-							.attr("stroke", "#eaeaea");
-						}
-					});
+                    link.each(function(d){
+                        
+                        if(d.type === "osToEndpoint"){
+                            d3.select(this)
+                            .attr("stroke", "#eaeaea");
+                        }
+                    });
 
-					var appendText = function(elm) {
-							elm.append("text")
-							.text(function(d, i) { return d.name; })
-							.attr("x", "15")
-							.attr("y", "30")
-							.style("font-size", "1.6em")
-					}
+                    var appendText = function(elm) {
+                            elm.append("text")
+                            .text(function(d, i) { return d.name; })
+                            .attr("x", "15")
+                            .attr("y", "30")
+                            .style("font-size", "1.6em")
+                    }
 
-					node.each(function(d){
-						var elm = d3.select(this);
-						if(d.type === "os" && d.name === "Linux") {							
-							elm.append('path')
-							.style('fill', '#000000')
-							.attr('d', 'M26.3,0c2.2-0.1,5.4,1.9,5.7,4.2c0.3,1.4,0.1,3,0.1,4.4c0,1.6,0,3.3,0.2,4.9'+
-							'c0.3,2.9,2.4,4.8,3.7,7.2c0.6,1.2,1.4,2.4,1.7,3.8c0.4,1.5,0.7,3.1,1,4.6c0.2,1.5,0.4,2.9,0.3,4.4c0,0.6,0.1,1.3-0.1,2'+
-							'c-0.2,0.8-0.6,1.3-0.3,2.1c0.2,0.7,0.1,1.2,0.9,1.3c0.7,0.1,1.3-0.2,2-0.1c1.4,0.1,2.8,0.7,2.3,2.3c-1.6,2.3-3.3,4.8-5.6,6.5'+
-							'c-0.9,0.7-1.8,1.9-3,2.1c-1.2,0.4-2.8,0.3-3.9-0.6c-0.4-0.3-0.7-0.7-0.9-1.1c-0.1-0.3-0.2-0.5-0.3-0.8c0-0.5,0-0.5-0.5-0.5'+
-							'c-1.7,0.1-3.4,0.2-5,0c-1.5-0.2-3-0.4-4.5-0.9c-0.6-0.3-1.2-0.5-1.8-0.8c-0.5-0.2-1,1.1-1.2,1.5c-0.5,0.9-1.3,1.9-2.4,2'+
-							'c-0.6,0-1.1,0.1-1.7-0.1c-0.8-0.3-1.4-0.7-2.2-1.1c-1.3-0.7-2.5-1.6-3.6-2.6c-1.2-1-2.8-1.9-3.1-3.5c0.4-1.1,0.9-1.6,2.1-1.7'+
-							'c0.4,0,1.1-0.1,1.4-0.5c0.2-0.2,0.1-0.5,0.1-0.8c-0.1-0.5,0-0.8,0.2-1.3c0.5-1.2,2.3-0.3,3.1-0.2c0.4-0.3,0.6-0.9,0.9-1.3'+
-							'c0.4-0.6,0.7-0.6,0.6-1.4c-0.6-6.4,3-11.9,5.9-17.3c0.4-0.8,0.9-1.6,1.4-2.4c0.4-0.6,0.3-1.6,0.3-2.3c0-2-0.1-4-0.1-6'+
-							'c0-1.7,0.3-3,1.7-4.2C22.9,0.9,24.5,0,26.3,0z')
-							.attr('transform', 'translate(-30,-25)');
+                    node.each(function(d){
+                        var elm = d3.select(this);
+                        if(d.type === "os" && d.name === "Linux") {                         
+                            elm.append('path')
+                            .style('fill', '#000000')
+                            .attr('d', 'M26.3,0c2.2-0.1,5.4,1.9,5.7,4.2c0.3,1.4,0.1,3,0.1,4.4c0,1.6,0,3.3,0.2,4.9'+
+                            'c0.3,2.9,2.4,4.8,3.7,7.2c0.6,1.2,1.4,2.4,1.7,3.8c0.4,1.5,0.7,3.1,1,4.6c0.2,1.5,0.4,2.9,0.3,4.4c0,0.6,0.1,1.3-0.1,2'+
+                            'c-0.2,0.8-0.6,1.3-0.3,2.1c0.2,0.7,0.1,1.2,0.9,1.3c0.7,0.1,1.3-0.2,2-0.1c1.4,0.1,2.8,0.7,2.3,2.3c-1.6,2.3-3.3,4.8-5.6,6.5'+
+                            'c-0.9,0.7-1.8,1.9-3,2.1c-1.2,0.4-2.8,0.3-3.9-0.6c-0.4-0.3-0.7-0.7-0.9-1.1c-0.1-0.3-0.2-0.5-0.3-0.8c0-0.5,0-0.5-0.5-0.5'+
+                            'c-1.7,0.1-3.4,0.2-5,0c-1.5-0.2-3-0.4-4.5-0.9c-0.6-0.3-1.2-0.5-1.8-0.8c-0.5-0.2-1,1.1-1.2,1.5c-0.5,0.9-1.3,1.9-2.4,2'+
+                            'c-0.6,0-1.1,0.1-1.7-0.1c-0.8-0.3-1.4-0.7-2.2-1.1c-1.3-0.7-2.5-1.6-3.6-2.6c-1.2-1-2.8-1.9-3.1-3.5c0.4-1.1,0.9-1.6,2.1-1.7'+
+                            'c0.4,0,1.1-0.1,1.4-0.5c0.2-0.2,0.1-0.5,0.1-0.8c-0.1-0.5,0-0.8,0.2-1.3c0.5-1.2,2.3-0.3,3.1-0.2c0.4-0.3,0.6-0.9,0.9-1.3'+
+                            'c0.4-0.6,0.7-0.6,0.6-1.4c-0.6-6.4,3-11.9,5.9-17.3c0.4-0.8,0.9-1.6,1.4-2.4c0.4-0.6,0.3-1.6,0.3-2.3c0-2-0.1-4-0.1-6'+
+                            'c0-1.7,0.3-3,1.7-4.2C22.9,0.9,24.5,0,26.3,0z')
+                            .attr('transform', 'translate(-30,-25)');
 
-							elm.append('path')
-							.style('fill', '#FFF')
-							.attr('d', 'M28.5,7.6c0.3,0.2,0.8,0.4,0.8,0.8c0,0.4,0,0.9-0.1,1.3'+
-							'c-0.1,0.3-0.2,0.7-0.5,1c-0.4,0.5-0.9,0.3-1.4,0.1c1.1-0.4,1.7-1.9,0.6-2.7c-0.5-0.4-1.1-0.3-1.5,0.3c-0.4,0.7-0.3,1.4,0.1,2.1'+
-							'c-0.2-0.2-0.6-0.2-0.7-0.5c-0.2-0.5-0.3-1.1-0.2-1.7c0.1-0.8,0.5-0.8,1.2-0.9C27.4,7.4,28,7.4,28.5,7.6z')
-							.attr('transform', 'translate(-30,-25)');
+                            elm.append('path')
+                            .style('fill', '#FFF')
+                            .attr('d', 'M28.5,7.6c0.3,0.2,0.8,0.4,0.8,0.8c0,0.4,0,0.9-0.1,1.3'+
+                            'c-0.1,0.3-0.2,0.7-0.5,1c-0.4,0.5-0.9,0.3-1.4,0.1c1.1-0.4,1.7-1.9,0.6-2.7c-0.5-0.4-1.1-0.3-1.5,0.3c-0.4,0.7-0.3,1.4,0.1,2.1'+
+                            'c-0.2-0.2-0.6-0.2-0.7-0.5c-0.2-0.5-0.3-1.1-0.2-1.7c0.1-0.8,0.5-0.8,1.2-0.9C27.4,7.4,28,7.4,28.5,7.6z')
+                            .attr('transform', 'translate(-30,-25)');
 
-							elm.append('path')
-							.style('fill', '#FFF')
-							.attr('d', 'M22.4,7.6c0.2,0.1,0.5,0.1,0.6,0.3c0.2,0.4,0.2,0.8,0.3,1.3'+
-							'c0,0.3,0,0.6-0.1,1c-0.1,0-0.4,0.4-0.5,0.2c0.3-0.8,0-2.8-1.2-2.1c-1,0.6-0.6,2.3,0.3,2.7c-0.6,0.3-0.7,0.3-1-0.3'+
-							'c-0.2-0.6-0.4-1.1-0.3-1.7c0-0.6,0-0.8,0.6-1.2C21.6,7.6,21.9,7.6,22.4,7.6z')
-							.attr('transform', 'translate(-30,-25)');
+                            elm.append('path')
+                            .style('fill', '#FFF')
+                            .attr('d', 'M22.4,7.6c0.2,0.1,0.5,0.1,0.6,0.3c0.2,0.4,0.2,0.8,0.3,1.3'+
+                            'c0,0.3,0,0.6-0.1,1c-0.1,0-0.4,0.4-0.5,0.2c0.3-0.8,0-2.8-1.2-2.1c-1,0.6-0.6,2.3,0.3,2.7c-0.6,0.3-0.7,0.3-1-0.3'+
+                            'c-0.2-0.6-0.4-1.1-0.3-1.7c0-0.6,0-0.8,0.6-1.2C21.6,7.6,21.9,7.6,22.4,7.6z')
+                            .attr('transform', 'translate(-30,-25)');
 
-							elm.append('path')
-							.style('fill', '#FFF')
-							.attr('d', 'M28.7,14.3c0.3,0.9,0.4,1.9,0.8,2.9c0.4,1,0.8,1.9,1.3,2.8'+
-							'c0.9,1.9,1.9,3.9,2.7,5.9c0.7,1.9,1.4,3.8,0.9,5.9c-0.2,0.9-0.4,2-0.9,2.8c-0.1,0.2-0.4,0.3-0.5,0.5c-0.3,0.4-0.4,1-0.4,1.5'+
-							'c-0.7-0.1-1.3-0.7-2.1-0.5c-0.8,0.2-0.8,1.6-0.9,2.2c-0.1,1.1-0.1,2.2-0.2,3.3c0,0.2,0,0.5,0,0.7c-0.3,0.2-0.6,0.3-0.9,0.5'+
-							'c-0.5,0.2-1,0.4-1.4,0.5c-2,0.5-4.4,0.4-6.3-0.1c-0.4-0.1-0.9-0.2-1.3-0.4c-0.6-0.2-1-0.3-0.8-1c0.2-1-0.7-2.3-1.1-3.2'+
-							'c-1-2.1-1.6-4.3-2.5-6.5c-0.2-0.5-0.4-0.9-0.5-1.4c-0.2-0.3,0.1-1,0.2-1.2c0.3-1.1,0.8-2.1,1.3-3.2c0.5-0.9,1.1-1.9,1.5-2.8'+
-							'c0.4-1,0.5-2.1,1-3.1c0.4-0.9,0.9-1.8,1.4-2.7c0.5-0.9,0.8-2,1.3-2.9c1.2,1.1,2.2,1.1,3.8,1.1c0.7-0.1,1.3-0.3,1.9-0.5'+
-							'C27.2,15,28.6,14.1,28.7,14.3z')
-							.attr('transform', 'translate(-30,-25)');
+                            elm.append('path')
+                            .style('fill', '#FFF')
+                            .attr('d', 'M28.7,14.3c0.3,0.9,0.4,1.9,0.8,2.9c0.4,1,0.8,1.9,1.3,2.8'+
+                            'c0.9,1.9,1.9,3.9,2.7,5.9c0.7,1.9,1.4,3.8,0.9,5.9c-0.2,0.9-0.4,2-0.9,2.8c-0.1,0.2-0.4,0.3-0.5,0.5c-0.3,0.4-0.4,1-0.4,1.5'+
+                            'c-0.7-0.1-1.3-0.7-2.1-0.5c-0.8,0.2-0.8,1.6-0.9,2.2c-0.1,1.1-0.1,2.2-0.2,3.3c0,0.2,0,0.5,0,0.7c-0.3,0.2-0.6,0.3-0.9,0.5'+
+                            'c-0.5,0.2-1,0.4-1.4,0.5c-2,0.5-4.4,0.4-6.3-0.1c-0.4-0.1-0.9-0.2-1.3-0.4c-0.6-0.2-1-0.3-0.8-1c0.2-1-0.7-2.3-1.1-3.2'+
+                            'c-1-2.1-1.6-4.3-2.5-6.5c-0.2-0.5-0.4-0.9-0.5-1.4c-0.2-0.3,0.1-1,0.2-1.2c0.3-1.1,0.8-2.1,1.3-3.2c0.5-0.9,1.1-1.9,1.5-2.8'+
+                            'c0.4-1,0.5-2.1,1-3.1c0.4-0.9,0.9-1.8,1.4-2.7c0.5-0.9,0.8-2,1.3-2.9c1.2,1.1,2.2,1.1,3.8,1.1c0.7-0.1,1.3-0.3,1.9-0.5'+
+                            'C27.2,15,28.6,14.1,28.7,14.3z')
+                            .attr('transform', 'translate(-30,-25)');
 
-							elm.append('path')
-							.style('fill', '#f5c055')
-							.attr('d', 'M24.7,9.6c0.9,0.3,1.5,0.9,2.4,1.3c0.9,0.4,2.1,0.2,2.5,1.2'+
-							'c0.4,1.1-0.7,1.6-1.5,2.1c-1,0.6-2,1-3.1,1.2c-1.2,0.1-2.3,0.2-3.3-0.5c-0.7-0.5-1.5-1.1-1.5-2.1c0.1-1.2,1.1-1.3,2-1.8'+
-							'C22.9,10.6,23.9,9.4,24.7,9.6z')
-							.attr('transform', 'translate(-30,-25)');
+                            elm.append('path')
+                            .style('fill', '#f5c055')
+                            .attr('d', 'M24.7,9.6c0.9,0.3,1.5,0.9,2.4,1.3c0.9,0.4,2.1,0.2,2.5,1.2'+
+                            'c0.4,1.1-0.7,1.6-1.5,2.1c-1,0.6-2,1-3.1,1.2c-1.2,0.1-2.3,0.2-3.3-0.5c-0.7-0.5-1.5-1.1-1.5-2.1c0.1-1.2,1.1-1.3,2-1.8'+
+                            'C22.9,10.6,23.9,9.4,24.7,9.6z')
+                            .attr('transform', 'translate(-30,-25)');
 
-							elm.append('path')
-							.style('fill', '#f5c055')
-							.attr('d', 'M13.7,34.6c0.6,0.2,0.9,1.1,1.2,1.7c0.4,1,0.8,2.1,1.1,3.1'+
-							'c0.6,1.9,1,3.9,1,6c0,1.7-1.3,2.9-3,2.9c-1,0-1.8-0.5-2.6-0.9c-1-0.5-1.8-1.1-2.7-1.7c-1.5-1.1-3.7-2.4-4.3-4.1'+
-							'C4,40.8,5,39.9,5.9,39.9c0.7-0.2,1.5,0,1.9-0.8c0.3-0.5-0.1-1.3,0.2-1.9c0.4-0.8,1.5-0.4,2.2-0.2c0.4,0.1,0.6,0.3,0.9-0.1'+
-							'c0.4-0.4,0.6-0.9,0.9-1.4C12.2,35.3,13.6,34.1,13.7,34.6z')
-							.attr('transform', 'translate(-30,-25)');
+                            elm.append('path')
+                            .style('fill', '#f5c055')
+                            .attr('d', 'M13.7,34.6c0.6,0.2,0.9,1.1,1.2,1.7c0.4,1,0.8,2.1,1.1,3.1'+
+                            'c0.6,1.9,1,3.9,1,6c0,1.7-1.3,2.9-3,2.9c-1,0-1.8-0.5-2.6-0.9c-1-0.5-1.8-1.1-2.7-1.7c-1.5-1.1-3.7-2.4-4.3-4.1'+
+                            'C4,40.8,5,39.9,5.9,39.9c0.7-0.2,1.5,0,1.9-0.8c0.3-0.5-0.1-1.3,0.2-1.9c0.4-0.8,1.5-0.4,2.2-0.2c0.4,0.1,0.6,0.3,0.9-0.1'+
+                            'c0.4-0.4,0.6-0.9,0.9-1.4C12.2,35.3,13.6,34.1,13.7,34.6z')
+                            .attr('transform', 'translate(-30,-25)');
 
-							elm.append('path')
-							.style('fill', '#f5c055')
-							.attr('d', 'M31.6,36.3c0.3,0,0.6,0.3,0.9,0.3c0.1,0.5-0.1,0.9,0.1,1.4'+
-							'c0.2,0.9,1.2,1.5,2,1.7c2,0.7,2.6-1.1,3.4-2.6c0.5,0.2,0.4,1.1,0.6,1.6c0.3,0.7,1.1,0.7,1.8,0.5c1.5-0.2,3.9-0.1,3.2,2'+
-							'c-1,1.4-2,2.7-3.1,4c-0.6,0.5-1,1.2-1.6,1.7c-0.6,0.5-1.2,0.9-1.8,1.4c-1.4,1.1-2.7,1.8-4.5,1.3c-2-0.5-2.3-2.6-2.6-4.3'+
-							'c-0.4-1.9-0.4-3.9-0.3-5.9c0.1-0.9,0.2-1.7,0.3-2.6C30.1,36.2,31,35.8,31.6,36.3z')
-							.attr('transform', 'translate(-30,-25)');
+                            elm.append('path')
+                            .style('fill', '#f5c055')
+                            .attr('d', 'M31.6,36.3c0.3,0,0.6,0.3,0.9,0.3c0.1,0.5-0.1,0.9,0.1,1.4'+
+                            'c0.2,0.9,1.2,1.5,2,1.7c2,0.7,2.6-1.1,3.4-2.6c0.5,0.2,0.4,1.1,0.6,1.6c0.3,0.7,1.1,0.7,1.8,0.5c1.5-0.2,3.9-0.1,3.2,2'+
+                            'c-1,1.4-2,2.7-3.1,4c-0.6,0.5-1,1.2-1.6,1.7c-0.6,0.5-1.2,0.9-1.8,1.4c-1.4,1.1-2.7,1.8-4.5,1.3c-2-0.5-2.3-2.6-2.6-4.3'+
+                            'c-0.4-1.9-0.4-3.9-0.3-5.9c0.1-0.9,0.2-1.7,0.3-2.6C30.1,36.2,31,35.8,31.6,36.3z')
+                            .attr('transform', 'translate(-30,-25)');
 
-							appendText(elm);
-						} 
+                            appendText(elm);
+                        } 
 
-						else if(d.type === "os" && d.name === "Windows") {
-							elm.append('polygon')
-								.style('fill', '#fff')
-								.attr('points', '8.8,14.4 38,9.3 38,40.7 8.8,35.7 ')
-								.attr('transform', 'translate(-40,-40) scale(1.7)');
+                        else if(d.type === "os" && d.name === "Windows") {
+                            elm.append('polygon')
+                                .style('fill', '#fff')
+                                .attr('points', '8.8,14.4 38,9.3 38,40.7 8.8,35.7 ')
+                                .attr('transform', 'translate(-40,-40) scale(1.7)');
 
-							elm.append('polygon')
-								.style('fill', '#00AEEF')
-								.attr('points', '36.1,24.4 36.1,11.9 21.7,14 21.7,24.4 ')
-								.attr('transform', 'translate(-40,-40) scale(1.7)');
+                            elm.append('polygon')
+                                .style('fill', '#00AEEF')
+                                .attr('points', '36.1,24.4 36.1,11.9 21.7,14 21.7,24.4 ')
+                                .attr('transform', 'translate(-40,-40) scale(1.7)');
 
-							elm.append('polygon')
-								.style('fill', '#00AEEF')
-								.attr('points', '20.7,14.1 10.2,15.6 10.2,24.4 20.7,24.4 ')
-								.attr('transform', 'translate(-40,-40) scale(1.7)');
+                            elm.append('polygon')
+                                .style('fill', '#00AEEF')
+                                .attr('points', '20.7,14.1 10.2,15.6 10.2,24.4 20.7,24.4 ')
+                                .attr('transform', 'translate(-40,-40) scale(1.7)');
 
-							elm.append('polygon')
-								.style('fill', '#00AEEF')
-								.attr('points', '10.2,25.4 10.2,34.3 20.7,35.9 20.7,25.4 ')
-								.attr('transform', 'translate(-40,-40) scale(1.7)');
-								
-							elm.append('polygon')
-								.style('fill', '#00AEEF')
-								.attr('points', '21.7,36 36.1,38.1 36.1,25.4 21.7,25.4 ')
-								.attr('transform', 'translate(-40,-40) scale(1.7)');
+                            elm.append('polygon')
+                                .style('fill', '#00AEEF')
+                                .attr('points', '10.2,25.4 10.2,34.3 20.7,35.9 20.7,25.4 ')
+                                .attr('transform', 'translate(-40,-40) scale(1.7)');
+                                
+                            elm.append('polygon')
+                                .style('fill', '#00AEEF')
+                                .attr('points', '21.7,36 36.1,38.1 36.1,25.4 21.7,25.4 ')
+                                .attr('transform', 'translate(-40,-40) scale(1.7)');
 
-							appendText(elm);
-						} 
+                            appendText(elm);
+                        } 
 
-						else if(d.type === "os" && d.name === "MacOS") {
-							elm.append('path')
-							.style('fill', '#828487')
-							.attr('d', 'M28.8,13.7c0.9-1.2,1.6-2.8,1.3-4.5c-1.5,0.1-3.2,1-4.2,2.3c-0.9,1.1-1.7,2.8-1.4,4.4'+
-							'C26.2,15.9,27.9,15,28.8,13.7z M33.2,21.7c0.4-1.3,1.4-2.4,2.7-3.2c-1.4-1.8-3.4-2.8-5.3-2.8c-2.5,0-3.5,1.2-5.2,1.2'+
-							'c-1.8,0-3.1-1.2-5.3-1.2c-2.1,0-4.3,1.3-5.8,3.5c-0.5,0.8-0.9,1.8-1.1,2.9c-0.5,3.1,0.3,7.2,2.7,10.9c1.2,1.8,2.7,3.8,4.7,3.8'+
-							'c1.8,0,2.3-1.2,4.8-1.2c2.4,0,2.9,1.2,4.7,1.2c2,0,3.6-2.2,4.8-4c0.8-1.3,1.1-1.9,1.8-3.3C33.5,28.2,32.2,24.6,33.2,21.7z')
-							.attr('transform', 'translate(-40,-40) scale(1.7)');
+                        else if(d.type === "os" && d.name === "MacOS") {
+                            elm.append('path')
+                            .style('fill', '#828487')
+                            .attr('d', 'M28.8,13.7c0.9-1.2,1.6-2.8,1.3-4.5c-1.5,0.1-3.2,1-4.2,2.3c-0.9,1.1-1.7,2.8-1.4,4.4'+
+                            'C26.2,15.9,27.9,15,28.8,13.7z M33.2,21.7c0.4-1.3,1.4-2.4,2.7-3.2c-1.4-1.8-3.4-2.8-5.3-2.8c-2.5,0-3.5,1.2-5.2,1.2'+
+                            'c-1.8,0-3.1-1.2-5.3-1.2c-2.1,0-4.3,1.3-5.8,3.5c-0.5,0.8-0.9,1.8-1.1,2.9c-0.5,3.1,0.3,7.2,2.7,10.9c1.2,1.8,2.7,3.8,4.7,3.8'+
+                            'c1.8,0,2.3-1.2,4.8-1.2c2.4,0,2.9,1.2,4.7,1.2c2,0,3.6-2.2,4.8-4c0.8-1.3,1.1-1.9,1.8-3.3C33.5,28.2,32.2,24.6,33.2,21.7z')
+                            .attr('transform', 'translate(-40,-40) scale(1.7)');
 
-							appendText(elm);
-						} 
+                            appendText(elm);
+                        } 
 
-						else if (d.type === "endpoint") {
-							//CIRCLE
-							elm.append("svg:circle")
-								.attr("cx", function(d) { return d.x; })
-								.attr("cy", function(d) { return d.y; })
-								.attr("r", function(d) {return logslider(d["width"]); })
-								.attr("fill", function(d) {return color(d.type);} )
-								// .attr("fill", function(d, i) { if (i>0) { return  color(d.type); } else { return palette.gray } } )
-								.style("stroke-width", "1.5px")
-								.style("stroke", "#fff")
+                        else if (d.type === "endpoint") {
+                            //CIRCLE
+                            elm.append("svg:circle")
+                                .attr("cx", function(d) { return d.x; })
+                                .attr("cy", function(d) { return d.y; })
+                                .attr("r", function(d) {return logslider(d["width"]); })
+                                .attr("fill", function(d) {return color(d.type);} )
+                                // .attr("fill", function(d, i) { if (i>0) { return  color(d.type); } else { return palette.gray } } )
+                                .style("stroke-width", "1.5px")
+                                .style("stroke", "#fff")
 
-							// appendText(elm);
-						}
+                            // appendText(elm);
+                        }
 
-						else if (d.type === "network") {
-							//rapidphire logo
+                        else if (d.type === "network") {
+                            //rapidphire logo
                             elm.append('svg:circle')
                                 .attr('cx', '15')
                                 .attr('cy', '15')
@@ -1820,45 +1820,45 @@ angular.module('mean.pages').directive('makeNetworkChart', ['$timeout', '$rootSc
                                 'c0-0.2,0-0.4,0.1-0.5c0.1-0.1,0.2-0.2,0.4-0.2s0.3,0.1,0.4,0.2c0.1,0.1,0.1,0.3,0.1,0.5C12.1,20.6,12,20.7,11.9,20.9z')
                                 .attr('fill', '#fff')
                                 .attr('transform', 'translate(-40,-42) scale(3,3)');
-						}
+                        }
 
-						else {
-							//CIRCLE
-							elm.append("svg:circle")
-								.attr("cx", function(d) { return d.x; })
-								.attr("cy", function(d) { return d.y; })
-								.attr("r", function(d) {return logslider(d["width"]); })
-								.attr("fill", function(d) {return color(d.type);} )
-								.style("stroke-width", "1.5px")
-								.style("stroke", "#fff")
+                        else {
+                            //CIRCLE
+                            elm.append("svg:circle")
+                                .attr("cx", function(d) { return d.x; })
+                                .attr("cy", function(d) { return d.y; })
+                                .attr("r", function(d) {return logslider(d["width"]); })
+                                .attr("fill", function(d) {return color(d.type);} )
+                                .style("stroke-width", "1.5px")
+                                .style("stroke", "#fff")
 
-							appendText(elm);
-						}
-					})
+                            appendText(elm);
+                        }
+                    })
 
-					force.on("tick", function(e) {
-						data.nodes[0].x = width / 2;
-   						data.nodes[0].y = height / 2;
-						// data.nodes.forEach(function(o, i) {
-				  //       	o.y += (data.nodes[0].y - o.y) * k;
-				  //       	o.x += (data.nodes[0].x - o.x) * k;
-				  //       });
+                    force.on("tick", function(e) {
+                        data.nodes[0].x = width / 2;
+                        data.nodes[0].y = height / 2;
+                        // data.nodes.forEach(function(o, i) {
+                  //        o.y += (data.nodes[0].y - o.y) * k;
+                  //        o.x += (data.nodes[0].x - o.x) * k;
+                  //       });
 
-						node.attr("transform", function(d, i) {
-							return "translate(" + d.x + "," + d.y + ")";
-						});
+                        node.attr("transform", function(d, i) {
+                            return "translate(" + d.x + "," + d.y + ")";
+                        });
 
-						link.attr("x1", function(d)   { return d.source.x; })
-							.attr("y1", function(d)   { return d.source.y; })
-							.attr("x2", function(d)   { return d.target.x; })
-							.attr("y2", function(d)   { return d.target.y; })
-					});
+                        link.attr("x1", function(d)   { return d.source.x; })
+                            .attr("y1", function(d)   { return d.source.y; })
+                            .attr("x2", function(d)   { return d.target.x; })
+                            .attr("y2", function(d)   { return d.target.y; })
+                    });
 
-					force.start();
-				}, 0, false);
-			})
-		}
-	};
+                    force.start();
+                }, 0, false);
+            })
+        }
+    };
 }]);
 //NETWORK CHART ENDS HERE
 
@@ -2444,11 +2444,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                     }
                 }
 
-                $scope.point = function(element, nickname, title, dType) {
+                $scope.point = function(element, nickname, title) {
                     if (nickname.search("ioc") !== -1) {
                         element.attr('class', 'ioc');
                         element = element.append('g')
-                            .attr('transform', 'translate(-6, -6)scale(0.8)');
+                            .attr('transform', 'translate(-18, -6)scale(0.8)');
                         element.append('svg:path')
                             .attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
                             .attr('fill', colors(nickname));
@@ -2464,17 +2464,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                             .attr('fill', colors(nickname))
                             .attr('width', 2.838)
                             .attr('height', 2.448);
-                        if(dType === 'legend') {
-                            element.append('text')
-                                .text(title)
-                                .attr('fill', '#7f7f7f')
-                                .attr('transform', 'translate(-23,32)');
-                        }
                         return;
                     } else {
                         element.attr('class', nickname);
-                        element = element.append('g')
-                            .attr('transform', 'translate(-6, -6)scale(0.8)');
+                        element = element.append('g').attr('transform', 'translate(-18, -6)scale(0.8)');
                         switch(nickname){
                             case 'file':
                                 element.append('circle')
@@ -2488,9 +2481,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                     .attr('cx', 18)
                                     .attr('cy', 18)
                                     .attr('r', 18);
-                                // element.append('svg:path')
-                                //     .attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
-                                //     .attr('fill', '#B572AB');
                                 element.append('svg:path')
                                     .attr('d', 'M13.702,12.807h13.189c-0.436-0.655-1.223-1.104-2.066-1.104c0,0-7.713,0-8.361,0'+
                                         'c-0.386-0.796-1.278-1.361-2.216-1.361H7.562c-1.625,0-1.968,0.938-1.839,2.025l2.104,11.42c0.146,0.797,0.791,1.461,1.594,1.735'+
@@ -2500,12 +2490,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                     .attr('d', 'M29.697,13.898c0,0-14.47-0.037-14.68-0.037c-1.021,0-1.435,0.647-1.562,1.289l-2.414,10.508h16.716'+
                                         'c1.146,0,2.19-0.821,2.383-1.871l1.399-7.859C31.778,14.706,31.227,13.848,29.697,13.898z')
                                     .attr('fill', '#595A5C');
-                                if(dType === 'legend') {
-                                    element.append('text')
-                                        .text(title)
-                                        .attr('fill', '#7f7f7f')
-                                        .attr('transform', 'translate(-11,32)');
-                                }
                                 return;
                             case 'conn':
                                 element.append('circle')
@@ -2519,21 +2503,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                     .attr('cx', 18)
                                     .attr('cy', 18)
                                     .attr('r', 18);
-                                // element.append('svg:path')
-                                //     .attr('d', 'M18,0C8.059,0,0,8.059,0,18c0,9.94,8.059,18,18,18s18-8.06,18-18C36,8.059,27.94,0,18,0z')
-                                //     .attr('fill', '#6FBF9B');
                                 element.append('svg:polygon')
                                     .attr('points', '24.585,6.299 24.585,9.064 11.195,9.064 11.195,14.221 24.585,14.221 24.585,16.986 31.658,11.643 ')
                                     .attr('fill', '#595A5C');
                                 element.append('svg:polygon')
                                     .attr('points', '10.99,17.822 3.916,23.166 10.99,28.51 10.99,25.744 24.287,25.744 24.287,20.59 10.99,20.59 ')
                                     .attr('fill', '#595A5C');
-                                if(dType === 'legend') {
-                                    element.append('text')
-                                        .text(title)
-                                        .attr('fill', '#7f7f7f')
-                                        .attr('transform', 'translate(-31,32)');
-                                }
                                 return;
                             case 'dns':
                                 element.append('circle')
@@ -2547,9 +2522,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                     .attr('cx', 18)
                                     .attr('cy', 18)
                                     .attr('r', 18);
-                                // element.append('svg:path')
-                                //     .attr('d', 'M18,0C8.059,0,0,8.059,0,18s8.059,18,18,18s18-8.059,18-18S27.941,0,18,0z')
-                                //     .attr('fill', '#708EBC');
                                 element.append('svg:path')
                                     .attr('d', 'M20.909,13.115c0-0.07,0-0.106-0.071-0.106c-0.283,0-6.022,0.813-7.935,0.956'+
                                         'c-0.036,0.955-0.071,2.053-0.071,3.009l2.267,0.106v8.707c0,0.071-0.035,0.143-0.142,0.178l-1.877,0.07'+
@@ -2560,12 +2532,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                     .attr('d', 'M17.473,10.921c1.771,0,3.329-1.274,3.329-3.187c0-1.486-1.098-2.867-3.152-2.867'+
                                         'c-1.948,0-3.259,1.451-3.259,2.938C14.391,9.611,15.949,10.921,17.473,10.921z')
                                     .attr('fill', '#595A5C');
-                                if(dType === 'legend') {
-                                    element.append('text')
-                                        .text(title)
-                                        .attr('fill', '#7f7f7f')
-                                        .attr('transform', 'translate(-13,32)');
-                                }
                                 return;
                             case 'http':
                                 element.append('circle')
@@ -2579,9 +2545,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                     .attr('cx', 18)
                                     .attr('cy', 18)
                                     .attr('r', 18);
-                                // element.append('svg:path')
-                                //     .attr('d', 'M18,0C8.059,0,0,8.06,0,18.001C0,27.941,8.059,36,18,36c9.94,0,18-8.059,18-17.999C36,8.06,27.94,0,18,0z')
-                                //     .attr('fill', '#67AAB5');
                                 element.append('svg:path')
                                     .attr('d', 'M24.715,19.976l-2.057-1.122l-1.384-0.479l-1.051,0.857l-1.613-0.857l0.076-0.867l-1.062-0.325l0.31-1.146'+
                                         'l-1.692,0.593l-0.724-1.616l0.896-1.049l1.108,0.082l0.918-0.511l0.806,1.629l0.447,0.087l-0.326-1.965l0.855-0.556l0.496-1.458'+
@@ -2592,17 +2555,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                         'l-0.151,2.002L20.294,32.5l0.025,2.111l1.312-0.626c0,0,2.245-3.793,2.368-3.554c0.122,0.238,2.129-2.76,2.129-2.76l1.666-1.26'+
                                         'l0.959-3.195l-2.882-1.775L24.715,19.976z')
                                     .attr('fill', '#595A5C');
-                                if(dType === 'legend') {
-                                    element.append('text')
-                                        .text(title)
-                                        .attr('fill', '#7f7f7f')
-                                        .attr('transform', 'translate(-16,32)');
-                                }
                                 return;
                             case 'ssl':
-                                // element.append('svg:path')
-                                //     .attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
-                                //     .attr('fill', '#A0BB71');
                                 element.append('circle')
                                     .attr('fill', function(d){
                                         if (d.ioc_count > 0) {
@@ -2622,17 +2576,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                     .attr('d', 'M18.184,8.754c-3.191,0-4.661,2.372-4.661,4.967'+
                                         'c0,0.004,0,0.006,0,0.008v2.412h9.397v-2.412c0-0.002,0-0.004,0-0.008C22.92,11.126,21.315,8.754,18.184,8.754z')
                                     .attr('fill', '#A0BB71');
-                                if(dType === 'legend') {
-                                    element.append('text')
-                                        .text(title)
-                                        .attr('fill', '#7f7f7f')
-                                        .attr('transform', 'translate(-5.5,32)');
-                                }
                                 return;
                             case 'endpoint':
-                                // element.append('svg:path')
-                                //     .attr('d', 'M18,0C8.059,0,0,8.06,0,18c0,9.941,8.059,18,18,18c9.94,0,18-8.059,18-18C36,8.06,27.94,0,18,0z')
-                                //     .attr('fill', '#7E9E7B');
                                 element.append('circle')
                                     .attr('fill', '#7E9E7B')
                                     .attr('cx', 18)
@@ -2643,12 +2588,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                         'l-1.09,3.468v0.495h8.419v-0.495l-1.09-3.468h7.529c0.684,0,1.237-0.555,1.237-1.238V9.838C29.887,9.153,29.333,8.6,28.649,8.6z'+
                                         'M28.477,22.072H7.635V10.074h20.842V22.072z')
                                     .attr('fill', '#595A5C');
-                                if(dType === 'legend') {
-                                    element.append('text')
-                                        .text(title)
-                                        .attr('fill', '#7f7f7f')
-                                        .attr('transform', 'translate(-24,32)');
-                                }
                                 return;
                             case 'stealth':
                                 element.append('circle')
@@ -2660,17 +2599,27 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                     .attr('fill', '#58595B')
                                     .attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
                                         'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
-                                        'C28.014,15.545,26.676,21.468,23.587,26.751z')
+                                        'C28.014,15.545,26.676,21.468,23.587,26.751z');
                                 element.append('svg:path')
                                     .attr('fill', '#0080CE')
                                     .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
-                                        'C11.076,16.238,11.938,20.26,13.699,23.661z')
-                                if(dType === 'legend') {
-                                    element.append('text')
-                                        .text(title)
-                                        .attr('fill', '#7f7f7f')
-                                        .attr('transform', 'translate(-24,32)');
-                                }
+                                        'C11.076,16.238,11.938,20.26,13.699,23.661z');
+                                return;
+                            case 'stealth_block':
+                                element.append('circle')
+                                    .attr('fill', '#D8464A')
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                element.append('svg:path')
+                                    .attr('fill', '#58595B')
+                                    .attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
+                                        'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
+                                        'C28.014,15.545,26.676,21.468,23.587,26.751z');
+                                element.append('svg:path')
+                                    .attr('fill', '#0080CE')
+                                    .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
+                                        'C11.076,16.238,11.938,20.26,13.699,23.661z');
                                 return;
                             default:
                                 console.log('cannot be drawn');
