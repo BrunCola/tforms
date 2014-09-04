@@ -38,7 +38,7 @@ angular.module('mean.pages').directive('modalWindow', function() {
                     "bDestroy": true,
                     "bFilter": true,
                     "bRebuild": true,
-                    "aoColumns": $scope.columns[$scope.data[0].type],
+                    "aoColumns": $scope.columns,
                     "iDisplayLength": 4,
                 });
             }
@@ -2696,7 +2696,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                             .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
                             .attr("class", function(d) {return "mainItem" + d.lane;})
                             .on("click", function (d){
-                                $scope.open(d, $scope.data.columns);
+                                $scope.open(d, $scope.columns);
                             });
                         $scope.point(elm, d.type);
                     })
@@ -2769,7 +2769,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                 .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
                                 .attr("class", function(d) {return "mainItem" + d.lane;})
                                 .on("click", function (d){
-                                    $scope.open(d, $scope.data.columns);
+                                    $scope.open(d, $scope.columns);
                                 });
                                 // .attr("width", 5)
                                 // .attr("height", function(d) {return .8 * y1(1);});

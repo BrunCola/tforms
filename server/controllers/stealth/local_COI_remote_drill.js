@@ -426,7 +426,8 @@ module.exports = function(pool) {
 				], function(err) { //This function gets called after the two tasks have called their "task callbacks"
 					if (err) throw console.log(err);
 					res.json({
-						laneGraph: result
+						laneGraph: result,
+						columns: columns
 					});
 				});
 			} else {

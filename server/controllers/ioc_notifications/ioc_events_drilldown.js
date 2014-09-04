@@ -589,40 +589,40 @@ module.exports = function(pool) {
 						pageBreakBefore: false
 					}
 				}
-    			var stealth_block = {
-    				query: 'SELECT '+
-    						'\'stealth_ioc\' AS type, '+
-    						'`time` as raw_time, '+
-    						'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-    						'`src_ip`, '+
-    						'`dst_ip`, '+
-    						'(`in_bytes` / 1048576) as in_bytes, '+
-    						'(`out_bytes` / 1048576) as out_bytes, '+
-    						'`in_packets`, '+
-    						'`out_packets` '+
-    					'FROM '+
-    						'`stealth_conn_meta` '+
-    					'WHERE '+
-    						'time BETWEEN ? AND ? '+
-    						'AND `src_ip` = ? '+
-    						'AND (`in_bytes` = 0 OR `out_bytes` = 0)',
-    				insert: [start, end, req.query.lan_ip],
-    				params: [
-    					{title: "Time", select: "time"},
-    					{title: "Source IP", select: "src_ip"},
-    					{title: "Destination IP", select: "dst_ip"},
-    					{title: "MB from Remote", select: "in_bytes"},
-    					{title: "MB to Remote", select: "out_bytes"},
-    					{title: "Packets from Remote", select: "in_packets"},
-    					{title: "Packets to Remote", select: "out_packets"}
-    				],
-    				settings: {
-    					sort: [[1, 'desc']],
-    					div: 'table',
-    					title: 'Indicators of Compromise (IOC) Notifications',
-    					pageBreakBefore: false
-    				}
-    			}
+				var stealth_block = {
+					query: 'SELECT '+
+							'\'stealth_ioc\' AS type, '+
+							'`time` as raw_time, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+							'`src_ip`, '+
+							'`dst_ip`, '+
+							'(`in_bytes` / 1048576) as in_bytes, '+
+							'(`out_bytes` / 1048576) as out_bytes, '+
+							'`in_packets`, '+
+							'`out_packets` '+
+						'FROM '+
+							'`stealth_conn_meta` '+
+						'WHERE '+
+							'time BETWEEN ? AND ? '+
+							'AND `src_ip` = ? '+
+							'AND (`in_bytes` = 0 OR `out_bytes` = 0)',
+					insert: [start, end, req.query.lan_ip],
+					params: [
+						{title: "Time", select: "time"},
+						{title: "Source IP", select: "src_ip"},
+						{title: "Destination IP", select: "dst_ip"},
+						{title: "MB from Remote", select: "in_bytes"},
+						{title: "MB to Remote", select: "out_bytes"},
+						{title: "Packets from Remote", select: "in_packets"},
+						{title: "Packets to Remote", select: "out_packets"}
+					],
+					settings: {
+						sort: [[1, 'desc']],
+						div: 'table',
+						title: 'Indicators of Compromise (IOC) Notifications',
+						pageBreakBefore: false
+					}
+				}
 
 				async.parallel([
 					// Table function(s)
@@ -702,7 +702,8 @@ module.exports = function(pool) {
 				], function(err) { //This function gets called after the two tasks have called their "task callbacks"
 					if (err) throw console.log(err);
 					res.json({
-						laneGraph: result
+						laneGraph: result,
+						columns: columns
 					});
 				});
 			} else if (req.query.type === 'assets') {
@@ -1235,7 +1236,7 @@ module.exports = function(pool) {
 								pageBreakBefore: false
 							}
 						}
-        				var stealth_conn = {
+						var stealth_conn = {
 							query: 'SELECT '+
 									'\'stealth\' AS type, '+
 									'`time` as raw_time, '+
@@ -1286,7 +1287,7 @@ module.exports = function(pool) {
 								'WHERE '+
 									'time BETWEEN ? AND ? '+
 									'AND `src_ip` = ? '+
-									'AND (`in_bytes` = 0 OR `out_bytes` = 0)', 
+									'AND (`in_bytes` = 0 OR `out_bytes` = 0)',
 							insert: [start, end, req.query.lan_ip],
 							params: [
 								{title: "Time", select: "time"},
@@ -1435,26 +1436,26 @@ module.exports = function(pool) {
 									handleReturn(data, callback);
 								});
 							},
-                            function(callback) { // stealth
-                                if (req.session.passport.user.level === 3) {
-                                    new datatable(stealth_conn, {database: database, pool:pool}, function(err, data){
-                                        console.log(data)
-                                        handleReturn(data, callback);
-                                    });
-                                } else {
-                                    callback();
-                                }
-                            },
-                            function(callback) { // stealth block
-                                if (req.session.passport.user.level === 3) {
-                                    new datatable(stealth_block, {database: database, pool:pool}, function(err, data){
-                                        console.log(data)
-                                        handleReturn(data, callback);
-                                    });
-                                } else {
-                                    callback();
-                                }
-                            },
+							function(callback) { // stealth
+								if (req.session.passport.user.level === 3) {
+									new datatable(stealth_conn, {database: database, pool:pool}, function(err, data){
+										console.log(data)
+										handleReturn(data, callback);
+									});
+								} else {
+									callback();
+								}
+							},
+							function(callback) { // stealth block
+								if (req.session.passport.user.level === 3) {
+									new datatable(stealth_block, {database: database, pool:pool}, function(err, data){
+										console.log(data)
+										handleReturn(data, callback);
+									});
+								} else {
+									callback();
+								}
+							},
 							function(callback) { // InfoSQL
 								new query(InfoSQL, {database: database, pool: pool}, function(err,data){
 									info.main = data;
