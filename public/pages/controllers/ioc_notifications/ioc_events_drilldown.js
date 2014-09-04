@@ -24,7 +24,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 	
 	$http({method: 'GET', url: query}).
 	success(function(data) {
-		$scope.data = data;
+		$scope.columns = data.columns;
 		$scope.crossfilterData = crossfilter();
 		// var laneIndex = 0;
 		if ($scope.global.user.level === 3) {
@@ -46,8 +46,8 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 
 
 		$scope.open = function (d, columns) {
-			$scope.mData = d;
-			$scope.columns = columns;
+			var mData = d;
+			var columns = columns[d.type];
 			// $scope.$broadcast('moodal', d);
 			$scope.modalInstance = $modal.open({
 				templateUrl: 'tableModal.html',
@@ -55,7 +55,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 				keyboard: true,
 				resolve: {
 					data: function() {
-						return {data: $scope.mData, columns: $scope.columns};
+						return {data: mData, columns: columns};
 					}
 				},
 				windowClass: 'modalTable'
@@ -170,6 +170,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 			var query = '/ioc_notifications/ioc_events_drilldown?start='+minUnix+'&end='+maxUnix+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc+'&ioc_attrID='+$location.$$search.ioc_attrID+'&type=drill';
 			$http({method: 'GET', url: query}).
 				success(function(data) {
+					$scope.columns = data.columns;
 					$scope.crossfilterDeep = crossfilter();
 					var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
 					data.laneGraph.forEach(function(parent) {

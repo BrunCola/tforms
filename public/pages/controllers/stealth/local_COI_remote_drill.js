@@ -50,7 +50,7 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 
 	$http({method: 'GET', url: query}).
 	success(function(data) {
-		$scope.data = data;
+		$scope.columns = data.columns;
 		$scope.crossfilterData = crossfilter();
 		// var laneIndex = 0;
 		if ($scope.global.user.level === 3) {
@@ -74,10 +74,8 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 
 
 		$scope.open = function (d, columns) {
-			console.log(d);
-			console.log(columns)
-			$scope.mData = d;
-			$scope.columns = columns;
+			var mData = d;
+			var columns = columns[d.type];
 			// $scope.$broadcast('moodal', d);
 			$scope.modalInstance = $modal.open({
 				templateUrl: 'tableModal.html',
@@ -85,7 +83,7 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 				keyboard: true,
 				resolve: {
 					data: function() {
-						return {data: $scope.mData, columns: $scope.columns};
+						return {data: mData, columns: columns};
 					}
 				},
 				windowClass: 'modalTable'
@@ -126,6 +124,7 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 			var query = '/stealth/local_COI_remote_drill?start='+minUnix+'&end='+maxUnix+'&src_ip='+$location.$$search.src_ip+'&type=drill';
 			$http({method: 'GET', url: query}).
 				success(function(data) {
+					$scope.columns = data.columns;
 					$scope.crossfilterDeep = crossfilter();
 					var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
 					data.laneGraph.forEach(function(parent) {
