@@ -94,9 +94,9 @@ module.exports = function(pool) {
 				}
 				var dns = {
 					query: 'SELECT '+
-							'\'dns\' AS type, '+
-							'`time` AS raw_time, '+
-							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+
+							'\'dns\' AS type,'+
+							'`time` AS raw_time,'+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
 							'`ioc_count`,'+
 							'`proto`,'+
 							'`qclass_name`,'+
@@ -113,7 +113,7 @@ module.exports = function(pool) {
 							'`dns` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `lan_ip`= ? ',
+							'AND `lan_ip`= ?',
 					insert: [start, end, req.query.src_ip],
 					params: [
 						{title: "Time", select: "time"},
@@ -627,9 +627,9 @@ module.exports = function(pool) {
 					}
 					var dns = {
 						query: 'SELECT '+
-								'\'dns\' AS type, '+
-								'`time` as raw_time, '+
-								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+								'\'dns\' AS type,'+
+								'`time` AS raw_time,'+
+								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
 								'`ioc_count`,'+
 								'`proto`,'+
 								'`qclass_name`,'+
