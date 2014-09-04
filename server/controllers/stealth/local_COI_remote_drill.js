@@ -874,7 +874,7 @@ module.exports = function(pool) {
 					}
 					var stealth_block = {
 						query: 'SELECT '+
-								'\'stealth_ioc\' AS type, '+
+								'\'stealth_block\' AS type, '+
 								'`time` as raw_time, '+
 								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
 								'`src_ip`, '+
@@ -888,7 +888,7 @@ module.exports = function(pool) {
 							'WHERE '+
 								'time BETWEEN ? AND ? '+
 								'AND `src_ip` = ? '+
-                                'AND (`in_bytes` = 0 OR `out_bytes` = 0)',
+								'AND (`in_bytes` = 0 OR `out_bytes` = 0)',
 						insert: [start, end, req.query.src_ip],
 						params: [
 							{title: "Time", select: "time"},
