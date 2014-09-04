@@ -95,8 +95,8 @@ module.exports = function(pool) {
 				var dns = {
 					query: 'SELECT '+
 							'\'dns\' AS type, '+
-							'`time` as raw_time, '+
-							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+							'`time` AS raw_time, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+
 							'`ioc_count`,'+
 							'`proto`,'+
 							'`qclass_name`,'+
@@ -193,8 +193,6 @@ module.exports = function(pool) {
 							'`server_name`,'+
 							'`subject`,'+
 							'`issuer_subject`,'+
-							'from_unixtime(`not_valid_before`) AS not_valid_before,'+
-							'from_unixtime(`not_valid_after`) AS not_valid_after,'+
 							'`ioc`,'+
 							'`ioc_severity`,'+
 							'`ioc_rule`,'+
@@ -213,8 +211,6 @@ module.exports = function(pool) {
 						{title: "cipher", select: "cipher"},
 						{title: "Subject", select: "subject"},
 						{title: "Issuer Subject", select: "issuer_subject"},
-						{title: "Not Valid Before", select: "not_valid_before"},
-						{title: "Not Valid After", select: "not_valid_after"},
 						{title: "IOC", select: "ioc"},
 						{title: "IOC Severity", select: "ioc_severity"},
 						{title: "IOC Type", select: "ioc_typeIndicator"},
@@ -306,12 +302,12 @@ module.exports = function(pool) {
 				var stealth_conn = {
 					query: 'SELECT '+
 							'\'stealth\' AS type, '+
-							'`time` as raw_time, '+
+							'`time` AS raw_time, '+
 							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
 							'`src_ip`,'+
 							'`dst_ip`,'+
-							'(`in_bytes` / 1048576) as in_bytes,'+
-							'(`out_bytes` / 1048576) as out_bytes,'+
+							'(`in_bytes` / 1048576) AS in_bytes,'+
+							'(`out_bytes` / 1048576) AS out_bytes,'+
 							'`in_packets`,'+
 							'`out_packets` '+
 						'FROM '+
@@ -340,7 +336,7 @@ module.exports = function(pool) {
 				}
 				var stealth_block = {
 					query: 'SELECT '+
-							'\'stealth_ioc\' AS type, '+
+							'\'stealth_block\' AS type, '+
 							'`time` as raw_time, '+
 							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
 							'`src_ip`, '+
@@ -730,8 +726,6 @@ module.exports = function(pool) {
 								'`server_name`,'+
 								'`subject`,'+
 								'`issuer_subject`,'+
-								'from_unixtime(`not_valid_before`) AS not_valid_before,'+
-								'from_unixtime(`not_valid_after`) AS not_valid_after,'+
 								'`ioc`,'+
 								'`ioc_severity`,'+
 								'`ioc_rule`,'+
@@ -750,8 +744,6 @@ module.exports = function(pool) {
 							{title: "cipher", select: "cipher"},
 							{title: "Subject", select: "subject"},
 							{title: "Issuer Subject", select: "issuer_subject"},
-							{title: "Not Valid Before", select: "not_valid_before"},
-							{title: "Not Valid After", select: "not_valid_after"},
 							{title: "IOC", select: "ioc"},
 							{title: "IOC Severity", select: "ioc_severity"},
 							{title: "IOC Type", select: "ioc_typeIndicator"},
@@ -852,7 +844,7 @@ module.exports = function(pool) {
 								'`in_packets`,'+
 								'`out_packets` '+
 							'FROM '+
-								'`stealth_conn` '+
+								'`stealth_conn_meta` '+
 							'WHERE '+
 								'`time` BETWEEN ? AND ? '+
 								'AND `lan_ip`= ? ',
@@ -885,7 +877,7 @@ module.exports = function(pool) {
 								'`in_packets`, '+
 								'`out_packets` '+
 							'FROM '+
-								'`stealth_conn` '+
+								'`stealth_conn_meta` '+
 							'WHERE '+
 								'time BETWEEN ? AND ? '+
 								'AND `src_ip` = ? '+
@@ -907,6 +899,148 @@ module.exports = function(pool) {
 							pageBreakBefore: false
 						}
 					}
+                    var sankeyData;
+                    var info = [];
+                    var sankey_auth1 = {
+                        query: 'SELECT '+
+                                'count(*) AS `count`, '+
+                                'max(date_format(from_unixtime(stealth_conn.time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+                                '`src_ip`, '+
+                                '`dst_ip`, '+
+                                '(sum(in_bytes) / 1048576) as in_bytes, '+
+                                '(sum(out_bytes) / 1048576) as out_bytes, '+
+                                'sum(in_packets) as in_packets, '+
+                                'sum(out_packets) as out_packets '+
+                            'FROM '+
+                                '`stealth_conn` '+
+                            'WHERE '+
+                                'time BETWEEN ? AND ? '+
+                                'AND `dst_ip` = ? '+
+                                // 'AND `out_bytes` > 0 '+
+                                'AND `in_bytes` > 0 '+
+                            'GROUP BY '+
+                                '`src_ip` '+
+                            'ORDER BY `count` DESC ',
+                        insert: [start, end, req.query.src_ip]
+                    }
+                    //from center node to local (center node is the lan) AUTH
+                    var sankey_auth2 = {
+                        query: 'SELECT '+
+                                'count(*) AS `count`, '+
+                                'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+                                '`lan_ip`, '+
+                                '`remote_ip`, '+
+                                '(sum(in_bytes) / 1048576) as in_bytes, '+
+                                '(sum(out_bytes) / 1048576) as out_bytes, '+
+                                'sum(in_packets) as in_packets, '+
+                                'sum(out_packets) as out_packets '+
+                            'FROM '+
+                                '`conn_meta` '+
+                            'WHERE '+
+                                'time BETWEEN ? AND ? '+
+                                // 'AND `in_bytes` > 0 '+
+                                // 'AND ((`remote_ip` = ?) '+
+                                // 'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%")) '+
+                                'AND ((`remote_ip` = ? AND `out_bytes` > 0 ) '+
+                                'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%" AND `in_bytes` > 0 )) '+
+                            'GROUP BY '+
+                                '`lan_ip`, '+
+                                '`remote_ip` '+
+                            'ORDER BY `count` DESC ',
+                        insert: [start, end, req.query.src_ip, req.query.src_ip]
+                    }
+                    //from center to remote (center is the lan) AUTH
+                    var sankey_auth3 = {
+                        query: 'SELECT '+
+                                'count(*) AS `count`, '+
+                                'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+                                '`lan_ip`, '+
+                                '`remote_ip`, '+
+                                '(sum(in_bytes) / 1048576) as in_bytes, '+
+                                '(sum(out_bytes) / 1048576) as out_bytes, '+
+                                'sum(in_packets) as in_packets, '+
+                                'sum(out_packets) as out_packets '+
+                            'FROM '+
+                                '`conn_meta` '+
+                            'WHERE '+
+                                'time BETWEEN ? AND ? '+
+                                'AND `out_bytes` > 0 '+
+                                'AND `lan_ip` = ? '+
+                                // 'AND NOT (remote_ip LIKE "192.168.222.%") '+
+                            'GROUP BY '+
+                                '`remote_ip` '+
+                            'ORDER BY `count` DESC LIMIT 10',
+                        insert: [start, end, req.query.src_ip]
+                    }
+                    var sankey_unauth1 = {
+                        query: 'SELECT '+
+                                'count(*) AS `count`, '+
+                                'max(date_format(from_unixtime(stealth_conn.time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+                                '`src_ip`, '+
+                                '`dst_ip`, '+
+                                '(sum(in_bytes) / 1048576) as in_bytes, '+
+                                '(sum(out_bytes) / 1048576) as out_bytes, '+
+                                'sum(in_packets) as in_packets, '+
+                                'sum(out_packets) as out_packets '+
+                            'FROM '+
+                                '`stealth_conn` '+
+                            'WHERE '+
+                                'time BETWEEN ? AND ? '+
+                                'AND `dst_ip` = ? '+
+                                // 'AND `out_bytes` = 0 '+
+                                'AND `in_bytes` = 0 '+
+                            'GROUP BY '+
+                                '`src_ip` '+
+                            'ORDER BY `count` DESC ',
+                        insert: [start, end, req.query.src_ip]
+                    }
+                    //from center node to local (center node is the lan) AUTH
+                    var sankey_unauth2 = {
+                        query: 'SELECT '+
+                                'count(*) AS `count`, '+
+                                'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+                                '`lan_ip`, '+
+                                '`remote_ip`, '+
+                                '(sum(in_bytes) / 1048576) as in_bytes, '+
+                                '(sum(out_bytes) / 1048576) as out_bytes, '+
+                                'sum(in_packets) as in_packets, '+
+                                'sum(out_packets) as out_packets '+
+                            'FROM '+
+                                '`conn_meta` '+
+                            'WHERE '+
+                                'time BETWEEN ? AND ? '+
+                                // 'AND `in_bytes` = 0 '+
+                                'AND ((`remote_ip` = ? AND `out_bytes` = 0 ) '+
+                                'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%" AND `in_bytes` = 0 )) '+
+                            'GROUP BY '+
+                                '`lan_ip`, '+
+                                '`remote_ip` '+
+                            'ORDER BY `count` DESC ',
+                        insert: [start, end, req.query.src_ip, req.query.src_ip]
+                    }
+                    //from center to remote (center is the lan) AUTH
+                    var sankey_unauth3 = {
+                        query: 'SELECT '+
+                                'count(*) AS `count`, '+
+                                'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+                                '`lan_ip`, '+
+                                '`remote_ip`, '+
+                                '(sum(in_bytes) / 1048576) as in_bytes, '+
+                                '(sum(out_bytes) / 1048576) as out_bytes, '+
+                                'sum(in_packets) as in_packets, '+
+                                'sum(out_packets) as out_packets '+
+                            'FROM '+
+                                '`conn_meta` '+
+                            'WHERE '+
+                                'time BETWEEN ? AND ? '+
+                                'AND `out_bytes` = 0 '+
+                                'AND `lan_ip` = ? '+
+                                // 'AND NOT (remote_ip LIKE "192.168.222.%") '+
+                            'GROUP BY '+
+                                '`remote_ip` '+
+                            'ORDER BY `count` DESC LIMIT 10',
+                        insert: [start, end, req.query.src_ip]
+                    }
 
 					async.parallel([
 						// SWIMLANE	
@@ -959,7 +1093,13 @@ module.exports = function(pool) {
 							} else {
 								callback();
 							}
-						}
+						},
+                        function(callback) {
+                            new sankey(sankey_auth1, sankey_auth2, sankey_auth3, sankey_unauth1, sankey_unauth2, sankey_unauth3, {database: database, pool: pool}, function(err,data){
+                                sankeyData = data;
+                                callback();
+                            });
+                        }
 					], function(err) { //This function gets called after the two tasks have called their "task callbacks"
 						if (err) throw console.log(err)
 						res.json({
