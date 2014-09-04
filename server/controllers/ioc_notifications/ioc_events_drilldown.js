@@ -199,9 +199,8 @@ module.exports = function(pool) {
 				var dns = {
 					query: 'SELECT '+
 							'\'dns\' AS type, '+
-							'`time` as raw_time, '+
-							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-							'`ioc_count`,'+
+							'`time` AS raw_time, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+
 							'`proto`,'+
 							'`qclass_name`,'+
 							'`qtype_name`,'+
@@ -217,8 +216,8 @@ module.exports = function(pool) {
 							'`dns` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `lan_zone`=? '+
-							'AND `lan_ip`=?',
+							'AND `lan_zone`= ? '+
+							'AND `lan_ip`= ?',
 					insert: [start, end, req.query.lan_zone, req.query.lan_ip],
 					params: [
 						{title: "Time", select: "time"},
@@ -368,7 +367,7 @@ module.exports = function(pool) {
 						{title: "Version", select: "version"},
 						{title: "cipher", select: "cipher"},
 						{title: "Subject", select: "subject"},
-						{title: "Issuer Subject", select: "issuer_subject"},
+						{title: "Issuer", select: "issuer_subject"},
 						{title: "IOC", select: "ioc"},
 						{title: "IOC Severity", select: "ioc_severity"},
 						{title: "IOC Type", select: "ioc_typeIndicator"},
@@ -411,7 +410,7 @@ module.exports = function(pool) {
 						{title: "Version", select: "version"},
 						{title: "cipher", select: "cipher"},
 						{title: "Subject", select: "subject"},
-						{title: "Issuer Subject", select: "issuer_subject"},
+						{title: "Issuer", select: "issuer_subject"},
 						{title: "IOC", select: "ioc"},
 						{title: "IOC Severity", select: "ioc_severity"},
 						{title: "IOC Type", select: "ioc_typeIndicator"},
@@ -827,7 +826,6 @@ module.exports = function(pool) {
 									'\'dns_ioc\' AS type, '+
 									'`time` as raw_time, '+
 									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-									'`ioc_count`,'+
 									'`proto`, '+
 									'`qclass_name`, '+
 									'`qtype_name`, '+
@@ -874,7 +872,6 @@ module.exports = function(pool) {
 									'\'dns\' AS type, '+
 									'`time` as raw_time, '+
 									'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-									'`ioc_count`,'+
 									'`proto`,'+
 									'`qclass_name`,'+
 									'`qtype_name`,'+
@@ -890,8 +887,8 @@ module.exports = function(pool) {
 									'`dns_ioc` '+
 								'WHERE '+
 									'`time` BETWEEN ? AND ? '+
-									'AND `lan_zone`=? '+
-									'AND `lan_ip`=?',
+									'AND `lan_zone` = ? '+
+									'AND `lan_ip` = ?',
 							insert: [start, end, req.query.lan_zone, req.query.lan_ip],
 							params: [
 								{title: "Time", select: "time"},
