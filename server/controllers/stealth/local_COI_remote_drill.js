@@ -301,9 +301,9 @@ module.exports = function(pool) {
 				}
 				var stealth_conn = {
 					query: 'SELECT '+
-							'\'stealth\' AS type, '+
-							'`time` AS raw_time, '+
-							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+
+							'\'stealth\' AS type,'+
+							'`time` AS raw_time,'+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
 							'`src_ip`,'+
 							'`dst_ip`,'+
 							'(`in_bytes` / 1048576) AS in_bytes,'+
@@ -847,7 +847,9 @@ module.exports = function(pool) {
 								'`stealth_conn_meta` '+
 							'WHERE '+
 								'`time` BETWEEN ? AND ? '+
-								'AND `lan_ip`= ? ',
+								'AND `src_ip`= ? '+
+                                'AND `in_bytes` > 0 '+
+                                'AND `out_bytes` > 0 ',
 						insert: [start, end, req.query.src_ip],
 						params: [
 							{title: "Time", select: "time"},
