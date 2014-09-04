@@ -95,8 +95,8 @@ module.exports = function(pool) {
 				var dns = {
 					query: 'SELECT '+
 							'\'dns\' AS type, '+
-							'`time` as raw_time, '+
-							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+							'`time` AS raw_time, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+
 							'`ioc_count`,'+
 							'`proto`,'+
 							'`qclass_name`,'+
@@ -193,8 +193,6 @@ module.exports = function(pool) {
 							'`server_name`,'+
 							'`subject`,'+
 							'`issuer_subject`,'+
-							'from_unixtime(`not_valid_before`) AS not_valid_before,'+
-							'from_unixtime(`not_valid_after`) AS not_valid_after,'+
 							'`ioc`,'+
 							'`ioc_severity`,'+
 							'`ioc_rule`,'+
@@ -213,8 +211,6 @@ module.exports = function(pool) {
 						{title: "cipher", select: "cipher"},
 						{title: "Subject", select: "subject"},
 						{title: "Issuer Subject", select: "issuer_subject"},
-						{title: "Not Valid Before", select: "not_valid_before"},
-						{title: "Not Valid After", select: "not_valid_after"},
 						{title: "IOC", select: "ioc"},
 						{title: "IOC Severity", select: "ioc_severity"},
 						{title: "IOC Type", select: "ioc_typeIndicator"},
@@ -340,7 +336,7 @@ module.exports = function(pool) {
 				}
 				var stealth_block = {
 					query: 'SELECT '+
-							'\'stealth_ioc\' AS type, '+
+							'\'stealth_block\' AS type, '+
 							'`time` as raw_time, '+
 							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
 							'`src_ip`, '+
@@ -729,8 +725,6 @@ module.exports = function(pool) {
 								'`server_name`,'+
 								'`subject`,'+
 								'`issuer_subject`,'+
-								'from_unixtime(`not_valid_before`) AS not_valid_before,'+
-								'from_unixtime(`not_valid_after`) AS not_valid_after,'+
 								'`ioc`,'+
 								'`ioc_severity`,'+
 								'`ioc_rule`,'+
@@ -749,8 +743,6 @@ module.exports = function(pool) {
 							{title: "cipher", select: "cipher"},
 							{title: "Subject", select: "subject"},
 							{title: "Issuer Subject", select: "issuer_subject"},
-							{title: "Not Valid Before", select: "not_valid_before"},
-							{title: "Not Valid After", select: "not_valid_after"},
 							{title: "IOC", select: "ioc"},
 							{title: "IOC Severity", select: "ioc_severity"},
 							{title: "IOC Type", select: "ioc_typeIndicator"},
@@ -874,7 +866,7 @@ module.exports = function(pool) {
 					}
 					var stealth_block = {
 						query: 'SELECT '+
-								'\'stealth_ioc\' AS type, '+
+								'\'stealth_block\' AS type, '+
 								'`time` as raw_time, '+
 								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
 								'`src_ip`, '+
