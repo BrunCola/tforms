@@ -1286,7 +1286,7 @@ module.exports = function(pool) {
 								'WHERE '+
 									'time BETWEEN ? AND ? '+
 									'AND `src_ip` = ? '+
-									'AND (`in_bytes` = 0 OR `out_bytes` = 0)',
+									'AND (`in_bytes` = 0 OR `out_bytes` = 0)', 
 							insert: [start, end, req.query.lan_ip],
 							params: [
 								{title: "Time", select: "time"},

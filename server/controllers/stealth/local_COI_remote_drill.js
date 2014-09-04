@@ -340,7 +340,7 @@ module.exports = function(pool) {
 				}
 				var stealth_block = {
 					query: 'SELECT '+
-							'\'stealth_block\' AS type, '+
+							'\'stealth_ioc\' AS type, '+
 							'`time` as raw_time, '+
 							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
 							'`src_ip`, '+
@@ -872,9 +872,9 @@ module.exports = function(pool) {
 							pageBreakBefore: false
 						}
 					}
-					var stealth1 = {
+					var stealth_block = {
 						query: 'SELECT '+
-								'\'stealth_block\' AS type, '+
+								'\'stealth_ioc\' AS type, '+
 								'`time` as raw_time, '+
 								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
 								'`src_ip`, '+
