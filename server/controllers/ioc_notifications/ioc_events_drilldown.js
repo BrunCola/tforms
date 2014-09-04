@@ -217,7 +217,7 @@ module.exports = function(pool) {
 							'`dns` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `lan_zone`=?'+
+							'AND `lan_zone`=? '+
 							'AND `lan_ip`=?',
 					insert: [start, end, req.query.lan_zone, req.query.lan_ip],
 					params: [
