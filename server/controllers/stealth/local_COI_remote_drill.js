@@ -94,9 +94,9 @@ module.exports = function(pool) {
 				}
 				var dns = {
 					query: 'SELECT '+
-							'\'dns\' AS type, '+
-							'`time` AS raw_time, '+
-							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+
+							'\'dns\' AS type,'+
+							'`time` AS raw_time,'+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
 							'`ioc_count`,'+
 							'`proto`,'+
 							'`qclass_name`,'+
@@ -113,7 +113,7 @@ module.exports = function(pool) {
 							'`dns` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
-							'AND `lan_ip`= ? ',
+							'AND `lan_ip`= ?',
 					insert: [start, end, req.query.src_ip],
 					params: [
 						{title: "Time", select: "time"},
@@ -301,9 +301,9 @@ module.exports = function(pool) {
 				}
 				var stealth_conn = {
 					query: 'SELECT '+
-							'\'stealth\' AS type, '+
-							'`time` AS raw_time, '+
-							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+							'\'stealth\' AS type,'+
+							'`time` AS raw_time,'+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
 							'`src_ip`,'+
 							'`dst_ip`,'+
 							'(`in_bytes` / 1048576) AS in_bytes,'+
@@ -337,12 +337,12 @@ module.exports = function(pool) {
 				var stealth_block = {
 					query: 'SELECT '+
 							'\'stealth_block\' AS type, '+
-							'`time` as raw_time, '+
-							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+							'`time` AS raw_time,'+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
 							'`src_ip`, '+
 							'`dst_ip`, '+
-							'(`in_bytes` / 1048576) as in_bytes, '+
-							'(`out_bytes` / 1048576) as out_bytes, '+
+							'(`in_bytes` / 1048576) AS in_bytes,'+
+							'(`out_bytes` / 1048576) AS out_bytes,'+
 							'`in_packets`, '+
 							'`out_packets` '+
 						'FROM '+
@@ -627,9 +627,9 @@ module.exports = function(pool) {
 					}
 					var dns = {
 						query: 'SELECT '+
-								'\'dns\' AS type, '+
-								'`time` as raw_time, '+
-								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+								'\'dns\' AS type,'+
+								'`time` AS raw_time,'+
+								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
 								'`ioc_count`,'+
 								'`proto`,'+
 								'`qclass_name`,'+
@@ -834,20 +834,22 @@ module.exports = function(pool) {
 					}
 					var stealth_conn = {
 						query: 'SELECT '+
-								'\'stealth\' AS type, '+
-								'`time` as raw_time, '+
-								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+								'\'stealth\' AS type,'+
+								'`time` AS raw_time,'+
+								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
 								'`src_ip`,'+
 								'`dst_ip`,'+
-								'(`in_bytes` / 1048576) as in_bytes,'+
-								'(`out_bytes` / 1048576) as out_bytes,'+
+								'(`in_bytes` / 1048576) AS in_bytes,'+
+								'(`out_bytes` / 1048576) AS out_bytes,'+
 								'`in_packets`,'+
 								'`out_packets` '+
 							'FROM '+
 								'`stealth_conn_meta` '+
 							'WHERE '+
 								'`time` BETWEEN ? AND ? '+
-								'AND `lan_ip`= ? ',
+								'AND `src_ip`= ? '+
+                                'AND `in_bytes` > 0 '+
+                                'AND `out_bytes` > 0 ',
 						insert: [start, end, req.query.src_ip],
 						params: [
 							{title: "Time", select: "time"},
@@ -867,14 +869,14 @@ module.exports = function(pool) {
 					}
 					var stealth_block = {
 						query: 'SELECT '+
-								'\'stealth_block\' AS type, '+
-								'`time` as raw_time, '+
-								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-								'`src_ip`, '+
-								'`dst_ip`, '+
-								'(`in_bytes` / 1048576) as in_bytes, '+
-								'(`out_bytes` / 1048576) as out_bytes, '+
-								'`in_packets`, '+
+								'\'stealth_block\' AS type,'+
+								'`time` AS raw_time, '+
+								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+								'`src_ip`,'+
+								'`dst_ip`,'+
+								'(`in_bytes` / 1048576) AS in_bytes,'+
+								'(`out_bytes` / 1048576) AS out_bytes,'+
+								'`in_packets`,'+
 								'`out_packets` '+
 							'FROM '+
 								'`stealth_conn_meta` '+
