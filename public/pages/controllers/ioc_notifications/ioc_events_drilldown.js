@@ -33,12 +33,15 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 			$scope.lanes = ['conn', 'file', 'dns', 'http', 'ssl', 'endpoint'];
 		}
 		var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
+		var id = 0;
 		data.laneGraph.forEach(function(parent) {
 			var index = $scope.lanes.indexOf(parent[0].type.replace('_ioc', ''));
 			parent.forEach(function(child) {
+				child.id = id;
 				child.dd = dateFormat.parse(child.time);
 				child.segment = d3.time.hour(child.dd);
 				child.lane = index;
+				id++;
 			})
 			$scope.crossfilterData.add(parent);
 		});

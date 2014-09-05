@@ -321,7 +321,7 @@ angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '
                     );
                     $('#reportrange').on('apply', function(ev, picker) {
                         // some kind of clear option is needed here
-                        $state.go($state.current, searchObj);
+                        $state.go($state.current.name, searchObj);
                     });
                 }
             }, 0, false);
@@ -2310,6 +2310,25 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
         link: function ($scope, element, attrs) {
             $scope.$on('laneGraph', function() {
 
+                $.fn.scrollTo = function( target, options, callback ){
+                if(typeof options == 'function' && arguments.length == 2){ callback = options; options = target; }
+                var settings = $.extend({
+                scrollTarget  : target,
+                offsetTop     : 0,
+                duration      : 500,
+                easing        : 'swing'
+                }, options);
+                return this.each(function(){
+                var scrollPane = $(this);
+                var scrollTarget = (typeof settings.scrollTarget == "number") ? settings.scrollTarget : $(settings.scrollTarget);
+                var scrollY = (typeof scrollTarget == "number") ? scrollTarget : scrollTarget.offset().top + scrollPane.scrollTop() - parseInt(settings.offsetTop);
+                scrollPane.animate({scrollTop : scrollY }, parseInt(settings.duration), settings.easing, function(){
+                if (typeof callback == 'function') { callback.call(this); }
+                });
+                });
+                }
+
+
                 $scope.$broadcast('spinnerHide')
 
                 // var lanes = $scope.crossfilterData.dimension(function(d){ return d.type }).group().reduceSum(function(d){return null}).top(Infinity).map(function(d){return d.key});
@@ -2674,6 +2693,19 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                         }
                     });
 
+                // info div
+                var infoHeight = element.height()+20;
+                var infoDiv = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
+                infoDiv.selectAll('li')
+                    .data(items)
+                    .enter()
+                    .append('li')
+                    .attr('id', function(d){return d.id })
+                    .html(function(d){
+                        return d.time + ' ' + d.type +  ' position:' + ($('li#'+d.id).offset().top - $('li#'+d.id).parent().offset().top);
+                    });
+
+
                 function redraw() {
                     // nav settings
                     navArray = [];
@@ -2686,6 +2718,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                     currentTime.html('Current Time Slice: <strong>'+$scope.start+'</strong> - <strong>'+$scope.end+'</strong>');
 
                     var visItems = items;
+                    var positionFromTop = 0, differenceFromLast = 0;
+                    var currentMouseover = -1; // current mouseover id, to avoid constant firing of functions
                     x1.domain([new Date($scope.start), new Date($scope.end)]);
                     xAxisBrush.transition().duration(500).call(xAxis);
                     itemRects.selectAll('g').remove();
@@ -2697,6 +2731,19 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                             .attr("class", function(d) {return "mainItem" + d.lane;})
                             .on("click", function (d){
                                 $scope.open(d, $scope.columns);
+                            })
+                            .on("mouseover", function(d){
+                                // $('#lanegraphinfo').scrollTo('li #'+d.id);
+                                if (d.id !== currentMouseover) {
+                                    console.log($('li#'+d.id).offset().top)
+                                    // $('#lanegraphinfo').animate({
+                                    //     scrollTop: $('li#'+d.id).offset().top
+                                    // }, 200);
+                                    differenceFromLast = ($('li#'+d.id).offset().top - $('li#'+d.id).parent().offset().top);
+                                    $('#lanegraphinfo').scrollTo(positionFromTop);
+                                    lastposition = differenceFromLast
+                                }
+                                currentMouseover = d.id;
                             });
                         $scope.point(elm, d.type);
                     })
@@ -2778,6 +2825,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                         icons.exit();
                     }
                 }
+
+                // function listItems
 
             });
         }

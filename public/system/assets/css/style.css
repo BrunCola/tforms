@@ -64,6 +64,18 @@ th {
   font-size: 12px;
 }*/
 
+#lanegraphinfo li {
+  list-style: none;
+  min-height: 30px;
+}
+
+#lanegraphinfo li:nth-child(odd) {
+  background-color: #DEDEDE
+}
+
+
+
+
 .modalTable {
   width: 90%;
   margin-left: -45%;
