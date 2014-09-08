@@ -28,14 +28,17 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 		$scope.crossfilterData = crossfilter();
 		// var laneIndex = 0;
 		if ($scope.global.user.level === 3) {
-			$scope.lanes = ['conn', 'file', 'dns', 'http', 'ssl', 'endpoint', 'stealth'];
+			$scope.lanes = ['ioc', 'conn', 'file', 'dns', 'http', 'ssl', 'endpoint', 'stealth'];
 		} else {
-			$scope.lanes = ['conn', 'file', 'dns', 'http', 'ssl', 'endpoint'];
+			$scope.lanes = ['ioc', 'conn', 'file', 'dns', 'http', 'ssl', 'endpoint'];
 		}
 		var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
 		var id = 0;
 		data.laneGraph.forEach(function(parent) {
-			var index = $scope.lanes.indexOf(parent[0].type.replace('_ioc', ''));
+			var index = $scope.lanes.indexOf(parent[0].type);
+			if (parent[0].type.search('ioc') !== -1) {
+				index = 0;
+			}
 			parent.forEach(function(child) {
 				child.id = id;
 				child.dd = dateFormat.parse(child.time);
@@ -177,7 +180,10 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 					$scope.crossfilterDeep = crossfilter();
 					var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
 					data.laneGraph.forEach(function(parent) {
-						var index = $scope.lanes.indexOf(parent[0].type.replace('_ioc', ''));
+						var index = $scope.lanes.indexOf(parent[0].type);
+						if (parent[0].type.search('ioc') !== -1) {
+							index = 0;
+						}
 						parent.forEach(function(child) {
 							child.dd = dateFormat.parse(child.time);
 							child.segment = d3.time.hour(child.dd);
