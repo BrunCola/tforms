@@ -18,6 +18,145 @@ angular.module('mean.pages').controller('usersLocalController', ['$scope', '$sta
 
 			$scope.data = data;
 
+
+			$scope.json = {"name": "Network",
+				"children": 
+				[
+					{
+						"name": "Stealth",
+						"children": 
+						[
+							{
+								"name": "Windows",
+								"children": 
+								[
+									{
+										"name": "IP",
+										"size": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"size": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"size": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"size": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"size": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"size": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"size": "192.168.222.202"
+									}
+								]
+							}
+						]
+					},
+					{
+						"name": "Corp",
+						"children": 
+						[
+							{
+								"name": "Windows",
+								"children": 
+								[
+									{
+										"name": "IP",
+										"size": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"size": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"size": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"size": "192.168.222.202"
+									}
+								]
+							},
+							{
+								"name": "Mac",
+								"children": 
+								[
+									{
+										"name": "IP",
+										"size": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"size": "192.168.222.202"
+									}
+								]
+							}
+						]
+					},
+					{
+						"name": "Dev",
+						"children": 
+						[
+							{
+								"name": "Windows",
+								"children": 
+								[
+									{
+										"name": "IP",
+										"size": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"size": "192.168.222.202"
+									}
+								]
+							},
+							{
+								"name": "Linux",
+								"children": 
+								[
+									{
+										"name": "IP",
+										"size": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"size": "192.168.222.202"
+									}
+								]
+							},
+							{
+								"name": "Mac",
+								"children": 
+								[
+									{
+										"name": "IP",
+										"size": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"size": "192.168.222.202"
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+
+
+
 			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
 			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
 			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
