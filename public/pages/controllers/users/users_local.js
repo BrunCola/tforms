@@ -18,135 +18,178 @@ angular.module('mean.pages').controller('usersLocalController', ['$scope', '$sta
 
 			$scope.data = data;
 
-
-			$scope.json = {"name": "Network",
+			$scope.json = {"name": " ", "value": "Network",
 				"children": 
 				[
 					{
-						"name": "Stealth",
+						"name": "Zone",
+						"value": "Stealth",
 						"children": 
 						[
 							{
-								"name": "Windows",
+								"name": "OS",
+								"value": "Windows",
 								"children": 
 								[
 									{
 										"name": "IP",
-										"size": "192.168.222.202"
+										"value": "192.168.222.202"
 									},
 									{
 										"name": "IP",
-										"size": "192.168.222.202"
+										"value": "192.168.222.202"
 									},
 									{
 										"name": "IP",
-										"size": "192.168.222.202"
+										"value": "192.168.222.202"
 									},
 									{
 										"name": "IP",
-										"size": "192.168.222.202"
+										"value": "192.168.222.202"
 									},
 									{
 										"name": "IP",
-										"size": "192.168.222.202"
+										"value": "192.168.222.202"
 									},
 									{
 										"name": "IP",
-										"size": "192.168.222.202"
+										"value": "192.168.222.202"
 									},
 									{
 										"name": "IP",
-										"size": "192.168.222.202"
+										"value": "192.168.222.202"
+									}
+								]
+							},
+							{
+								"name": "OS",
+								"value": "Linux",
+								"children": 
+								[
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
 									}
 								]
 							}
 						]
 					},
 					{
-						"name": "Corp",
+						"name": "Zone",
+						"value": "Corp",
 						"children": 
 						[
 							{
-								"name": "Windows",
+								"name": "OS",
+								"value": "Windows",
 								"children": 
 								[
 									{
 										"name": "IP",
-										"size": "192.168.222.202"
+										"value": "192.168.222.202"
 									},
 									{
 										"name": "IP",
-										"size": "192.168.222.202"
+										"value": "192.168.222.202"
 									},
 									{
 										"name": "IP",
-										"size": "192.168.222.202"
+										"value": "192.168.222.202"
 									},
 									{
 										"name": "IP",
-										"size": "192.168.222.202"
+										"value": "192.168.222.202"
 									}
 								]
 							},
 							{
-								"name": "Mac",
+								"name": "OS",
+								"value": "MacOS",
 								"children": 
 								[
 									{
 										"name": "IP",
-										"size": "192.168.222.202"
+										"value": "192.168.222.202"
 									},
 									{
 										"name": "IP",
-										"size": "192.168.222.202"
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
 									}
 								]
 							}
 						]
 					},
 					{
-						"name": "Dev",
+						"name": "Zone",
+						"value": "Dev",
 						"children": 
 						[
 							{
-								"name": "Windows",
+								"name": "OS",
+								"value": "Windows",
 								"children": 
 								[
 									{
 										"name": "IP",
-										"size": "192.168.222.202"
+										"value": "192.168.222.202"
 									},
 									{
 										"name": "IP",
-										"size": "192.168.222.202"
+										"value": "192.168.222.202"
 									}
 								]
 							},
 							{
-								"name": "Linux",
+								"name": "OS",
+								"value": "Linux",
 								"children": 
 								[
 									{
 										"name": "IP",
-										"size": "192.168.222.202"
+										"value": "192.168.222.202"
 									},
 									{
 										"name": "IP",
-										"size": "192.168.222.202"
+										"value": "192.168.222.202"
 									}
 								]
 							},
 							{
-								"name": "Mac",
+								"name": "OS",
+								"value": "MacOS",
 								"children": 
 								[
 									{
 										"name": "IP",
-										"size": "192.168.222.202"
+										"value": "192.168.222.202"
 									},
 									{
 										"name": "IP",
-										"size": "192.168.222.202"
+										"value": "192.168.222.202"
 									}
 								]
 							}
