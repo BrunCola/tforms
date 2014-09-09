@@ -179,15 +179,18 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 					$scope.columns = data.columns;
 					$scope.crossfilterDeep = crossfilter();
 					var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
+					var id = 0;
 					data.laneGraph.forEach(function(parent) {
 						var index = $scope.lanes.indexOf(parent[0].type);
 						if (parent[0].type.search('ioc') !== -1) {
 							index = 0;
 						}
 						parent.forEach(function(child) {
+							child.id = id;
 							child.dd = dateFormat.parse(child.time);
 							child.segment = d3.time.hour(child.dd);
 							child.lane = index;
+							id++;
 						})
 						$scope.crossfilterDeep.add(parent);
 					});
