@@ -1492,15 +1492,22 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
 							var diagonal = d3.svg.diagonal()
 								.projection(function(d) { return [d.y, d.x]; });
 
+//sample code, do not delete
+								// var insert;
+								// if (variable == z) {
+								// 	insert = 'x';
+								// } else {
+								// 	insert = 'y';
+								// }
+								// data[insert]
+
+
 							var svg = d3.select("#networktree").append("svg")
 								.attr("width", width + margin.right + margin.left)
 								.attr("height", height + margin.top + margin.bottom)
 							  .append("g")
 								.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-							// d3.json("../pages/networksample.json", function(error, flare) {
-
-							  // root = flare;
 							  root = $scope.json;
 							  root.x0 = height / 2;
 							  root.y0 = 0;
@@ -1515,7 +1522,6 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
 
 							  root.children.forEach(collapse);
 							  update(root);
-							// });
 
 							d3.select(self.frameElement).style("height", "800px");
 
@@ -1551,7 +1557,6 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
 								var nodeUpdate = node.transition()
 									.duration(duration)
 									.attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
-
 
 								nodeUpdate.select(".points").each(function(d){
 								var elm = d3.select(this);
@@ -1700,8 +1705,11 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
 								  .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
 								  .remove();
 
-							  nodeExit.select("circle")
-								  .attr("r", 1e-6);
+							  nodeExit.select("rect")
+		                                .attr('x', -7)
+		                                .attr('y', -7)
+		                                .attr('height', 0.1)
+		                                .attr('width', 0.1);
 
 							  nodeExit.select("text")
 								  .style("fill-opacity", 1e-6);

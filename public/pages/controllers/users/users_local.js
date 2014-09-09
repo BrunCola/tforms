@@ -33,7 +33,9 @@ angular.module('mean.pages').controller('usersLocalController', ['$scope', '$sta
 								[
 									{
 										"name": "IP",
-										"value": "192.168.222.202"
+										"value": "192.168.222.202",
+										"severity": "severe",
+										"IOChits": "12"
 									},
 									{
 										"name": "IP",
@@ -183,6 +185,74 @@ angular.module('mean.pages').controller('usersLocalController', ['$scope', '$sta
 								"value": "MacOS",
 								"children": 
 								[
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
+									{
+										"name": "IP",
+										"value": "192.168.222.202"
+									},
 									{
 										"name": "IP",
 										"value": "192.168.222.202"
