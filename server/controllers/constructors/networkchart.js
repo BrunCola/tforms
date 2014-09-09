@@ -15,7 +15,7 @@ module.exports = function (sql, conn, callback) {
 	// 	type: "network",
 	// 	width: 0.75
 	// 	//gateway???????????
-	// });
+	// })
 	conn.pool.getConnection(function(err, connection) {
 		connection.changeUser({database : conn.database}, function(err) {
 			if (err) throw err;

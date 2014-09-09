@@ -66,11 +66,25 @@ th {
 
 #lanegraphinfo li {
   list-style: none;
-  min-height: 30px;
+  min-height: 40px;
+  padding: 7px;
+}
+#lanegraphinfo li:hover {
+  cursor: pointer;
 }
 
 #lanegraphinfo li:nth-child(odd) {
   background-color: #DEDEDE
+}
+
+.laneactive {
+  /*background-color: #000;*/
+  background-color: #ffff99 !important;
+}
+.pointactive {
+  stroke-width: 3px;
+  stroke-opacity: 0.2;
+  stroke: #ffff99;
 }
 
 

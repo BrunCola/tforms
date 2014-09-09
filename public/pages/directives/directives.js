@@ -2315,7 +2315,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                 var settings = $.extend({
                 scrollTarget  : target,
                 offsetTop     : 0,
-                duration      : 500,
+                duration      : 200,
                 easing        : 'swing'
                 }, options);
                 return this.each(function(){
@@ -2693,18 +2693,21 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                         }
                     });
 
+                function laneInfo(d) {
+                    switch(d.type) {
+                        case 'http':
+                            return 'test '+d.time+'';
+                        case '':
+                            return '';
+                        default:
+                            return d.time;
+                    }
+                }
+
+                var previousID = -1, previousElm = null;
                 // info div
                 var infoHeight = element.height()+20;
                 var infoDiv = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
-                infoDiv.selectAll('li')
-                    .data(items)
-                    .enter()
-                    .append('li')
-                    .attr('id', function(d){return d.id })
-                    .html(function(d){
-                        return d.time + ' ' + d.type +  ' position:' + ($('li#'+d.id).offset().top - $('li#'+d.id).parent().offset().top);
-                    });
-
 
                 function redraw() {
                     // nav settings
@@ -2719,35 +2722,41 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
 
                     var visItems = items;
                     var positionFromTop = 0, differenceFromLast = 0;
-                    var currentMouseover = -1; // current mouseover id, to avoid constant firing of functions
-                    x1.domain([new Date($scope.start), new Date($scope.end)]);
-                    xAxisBrush.transition().duration(500).call(xAxis);
-                    itemRects.selectAll('g').remove();
-                    var icons = itemRects.selectAll("g").data(visItems);
-                    icons.enter().append("g").each(function(d){
-                        var elm = d3.select(this);
-                        elm
-                            .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
-                            .attr("class", function(d) {return "mainItem" + d.lane;})
-                            .on("click", function (d){
-                                $scope.open(d, $scope.columns);
-                            })
-                            .on("mouseover", function(d){
-                                // $('#lanegraphinfo').scrollTo('li #'+d.id);
-                                if (d.id !== currentMouseover) {
-                                    console.log($('li#'+d.id).offset().top)
-                                    // $('#lanegraphinfo').animate({
-                                    //     scrollTop: $('li#'+d.id).offset().top
-                                    // }, 200);
-                                    differenceFromLast = ($('li#'+d.id).offset().top - $('li#'+d.id).parent().offset().top);
-                                    $('#lanegraphinfo').scrollTo(positionFromTop);
-                                    lastposition = differenceFromLast
+                    var min = new Date($scope.start);
+                    var max = new Date($scope.end);
+                    plot(visItems, min, max);
+
+
+                    infoDiv.selectAll('li').remove();
+                    infoDiv.selectAll('li')
+                        .data(visItems)
+                        .enter()
+                        .append('li')
+                        .attr('id', function(d){return d.id })
+                        .html(function(d){
+                            d.position = ($('li#'+d.id).offset().top - $('li#'+d.id).parent().offset().top);
+                            return laneInfo(d);
+                        })
+                        .on('click', function(){
+                            if (previousElm !== null){
+                                previousElm.attr('class', null);
+                            }
+                            $('#'+previousID).attr('class', null);
+                            var row = d3.select(this);
+                            var id = row.attr('id');  
+                            row.attr('class', 'laneactive');
+                            previousID = id;
+                            itemRects.selectAll('g').each(function(d){
+                                var elm = d3.select(this);
+                                if (d.id.toString() === id.toString()) {
+                                    elm.attr('class', 'pointactive');
+                                    previousElm = d3.select(this);
                                 }
-                                currentMouseover = d.id;
-                            });
-                        $scope.point(elm, d.type);
-                    })
-                    icons.exit();
+                            })
+                        });
+
+
+
                 }
 
                 function mouseup(action) {
@@ -2815,14 +2824,55 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                             elm
                                 .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
                                 .attr("class", function(d) {return "mainItem" + d.lane;})
-                                .on("click", function (d){
-                                    $scope.open(d, $scope.columns);
+                                .on("mouseover", function(d){
+                                    elm.style('cursor', 'pointer');
+                                })
+                                .on("click", function(d){
+                                    if (previousElm !== null){
+                                        previousElm.attr('class', null);
+                                    }
+                                    elm.attr('class', 'pointactive')
+                                    $('#'+previousID).attr('class', null);
+                                    $('#'+d.id).attr('class', 'laneactive');
+                                    previousID = d.id;
+                                    previousElm = elm;
+                                    $('#lanegraphinfo').scrollTo(d.position);
                                 });
                                 // .attr("width", 5)
                                 // .attr("height", function(d) {return .8 * y1(1);});
                             $scope.point(elm, d.type);
                         })
                         icons.exit();
+
+                        // infoDiv.selectAll('li').remove();
+                        // infoDiv.selectAll('li')
+                        //     .data(data)
+                        //     .enter()
+                        //     .append('li')
+                        //     .attr('id', function(d){return d.id })
+                        //     .html(function(d){
+                        //         d.position = ($('li#'+d.id).offset().top - $('li#'+d.id).parent().offset().top);
+                        //         return laneInfo(d);
+                        //     })
+                        //     .on('click', function(){
+                        //         if (previousElm !== null){
+                        //             previousElm.attr('class', null);
+                        //         }
+                        //         $('#'+previousID).attr('class', null);
+                        //         var row = d3.select(this);
+                        //         var id = row.attr('id');  
+                        //         row.attr('class', 'laneactive');
+                        //         previousID = id;
+                        //         itemRects.selectAll('g').each(function(d){
+                        //             var elm = d3.select(this);
+                        //             if (d.id.toString() === id.toString()) {
+                        //                 elm.attr('class', 'pointactive');
+                        //                 previousElm = d3.select(this);
+                        //             }
+                        //         })
+                        //         // $('g #'+id).attr('class', 'pointactive');
+                        //     });
+
                     }
                 }
 
