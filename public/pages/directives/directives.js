@@ -2693,21 +2693,19 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                         }
                     });
 
-                function laneInfo(d) {
-                    switch(d.type) {
-                        case 'http':
-                            return 'test '+d.time+'';
-                        case '':
-                            return '';
-                        default:
-                            return d.time;
+                function laneInfoAppend(d) {
+                    var send = '';
+                    for (var i in d) {
+                        send += '<strong>'+d[i].name+':</strong> '+d[i].value+'<br />';
                     }
+                    return send;
                 }
 
                 var previousID = -1, previousElm = null;
                 // info div
                 var infoHeight = element.height()+20;
                 var infoDiv = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
+
 
                 function redraw() {
                     // nav settings
@@ -2775,6 +2773,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
 
                 function plot(data, min, max) {
                     if (moment(max).unix() !== moment(min).unix()) {
+
+                        var lastExpandedId = null, isOpen = null;
+
                         currentTime.html('Current Time Slice: <strong>'+moment(min).format('MMMM D, YYYY h:mm A')+'</strong> - <strong>'+moment(max).format('MMMM D, YYYY h:mm A')+'</strong>')
                         main.select('g.brush .extent')
                             .transition()
@@ -2797,6 +2798,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                     elm.style('cursor', 'pointer');
                                 })
                                 .on("click", function(d){
+                                    console.log(d)
+                                    // this closes all expanded blocks
+                                    if (lastExpandedId !== null) {
+                                        $('div'+lastExpandedId+'.infoDivExpanded').hide();
+                                    }
                                     if (previousElm !== null){
                                         previousElm.attr('class', null);
                                     }
@@ -2813,34 +2819,74 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                         })
                         icons.exit();
 
+                       
                         infoDiv.selectAll('li').remove();
-                        infoDiv.selectAll('li')
-                            .data(data)
-                            .enter()
-                            .append('li')
-                            .attr('id', function(d){return d.id })
-                            .html(function(d){
-                                d.position = ($('li#'+d.id).offset().top - $('li#'+d.id).parent().offset().top);
-                                return laneInfo(d);
+                        infoDiv.selectAll('li').data(data).enter()
+                            .append('li').each(function(d){
+                                var elm = d3.select(this);
+                                elm
+                                    .attr('id', function(d){return d.id })
+                                    .html(function(d){
+                                        d.position = ($('li#'+d.id).offset().top - $('li#'+d.id).parent().offset().top);
+                                        return d.info;
+                                    })
+                                    .on('click', function(){
+                                        // close all expanded sections
+                                        if (lastExpandedId !== '#'+d.id) {
+                                            $('div'+lastExpandedId+'.infoDivExpanded').hide();
+                                        }
+                                        if (previousElm !== null){
+                                            previousElm.attr('class', null);
+                                        }
+                                        // clear class of previous
+                                        $('#'+previousID).attr('class', null);
+
+                                        // get this id
+                                        var row = d3.select(this);
+                                        var id = row.attr('id'); 
+                                            row.attr('class', 'laneactive');
+                                        
+                                        // iterate through points
+                                        itemRects.selectAll('g').each(function(d){
+                                            var elm = d3.select(this);
+                                            // if id's (of just clicked) match
+                                            if (d.id.toString() === id.toString()) {
+                                                elm.attr('class', 'pointactive');
+                                                previousElm = d3.select(this);
+                                            } else if (d.id.toString() === previousID.toString()){
+                                                elm.attr('class', null);
+                                            }
+                                        })
+
+                                        // set previous id
+                                        previousID = id;
+                                    })
+                                    // append expand buttons to list elements
+                                    .append('div')
+                                    .on('click', function(){
+                                        if (lastExpandedId !== '#'+d.id) {
+                                            $('div'+lastExpandedId+'.infoDivExpanded').hide();
+                                        }
+                                        if (isOpen === '#'+d.id) {
+                                            elm.select('.infoDivExpanded').style('display', 'none');
+                                            isOpen = null;
+                                        } else {
+                                            elm.select('.infoDivExpanded').style('display', 'block');
+                                            lastExpandedId = '#'+d.id;
+                                            isOpen = '#'+d.id;
+
+                                            elm.select('.infoDivExpanded').html(laneInfoAppend(d.expand));
+                                        }
+
+                                    })
+                                    .attr('class', 'infoDivExpandBtn')
+                                    .html('+');
+                                elm
+                                    .append('div')
+                                    .style('display', 'none')
+                                    .attr('class', 'infoDivExpanded')
+                                    .attr('id', d.id);
                             })
-                            .on('click', function(){
-                                if (previousElm !== null){
-                                    previousElm.attr('class', null);
-                                }
-                                $('#'+previousID).attr('class', null);
-                                var row = d3.select(this);
-                                var id = row.attr('id');  
-                                row.attr('class', 'laneactive');
-                                previousID = id;
-                                itemRects.selectAll('g').each(function(d){
-                                    var elm = d3.select(this);
-                                    if (d.id.toString() === id.toString()) {
-                                        elm.attr('class', 'pointactive');
-                                        previousElm = d3.select(this);
-                                    }
-                                })
-                                // $('g #'+id).attr('class', 'pointactive');
-                            });
 
                     }
                 }
