@@ -6,11 +6,23 @@ module.exports = function (sql, conn, callback) {
 	var results = [];
 	function laneInfo(d) {
 		switch(d.type) {
+			case 'conn':
+				return d.time_info+': '+d.lan_ip+' connected to '+d.remote_ip;
+			case 'dns':
+				return d.time_info+': DNS query for '+d.query;
 			case 'http':
-				return 'test '+d.time+'';
-			case '':
-				return '';
-			default:
+                return d.time_info+': HTTP connection to '+d.host+d.uri;
+            case 'ssl':
+                return d.time_info+': SSL connection to '+d.server_name;
+            case 'file':
+                return d.time_info+': File Seen - '+d.name;
+            case 'endpoint':
+                return d.time_info+': '+d.event_type;
+            case 'stealth':
+                return d.time_info+': Stealth securely connected '+d.src_ip+' with '+d.dst_ip;
+            case 'stealth_block':
+                return d.time_info+': Stealth blocked '+d.src_ip+' from connecting to '+d.dst_ip;    
+            default:
 				return d.time;
 		}
 	}
