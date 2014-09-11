@@ -1,7 +1,7 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-networkChart = require('../constructors/networkchart'),
+networkchart = require('../constructors/networkchart'),
 query = require('../constructors/query'),
 config = require('../../config/config'),
 async = require('async');
@@ -93,7 +93,7 @@ module.exports = function(pool) {
 			async.parallel([
 				// Table function(s)
 				function(callback) {
-					new networkChart(table1, {database: database, pool: pool}, function(err,data){
+					new networkchart(table1, {database: database, pool: pool}, function(err,data){
 						network.push(data);
 						callback();
 					});

@@ -64,6 +64,49 @@ th {
   font-size: 12px;
 }*/
 
+#lanegraphinfo li {
+  list-style: none;
+  min-height: 40px;
+  padding: 7px;
+}
+#lanegraphinfo li:hover {
+  cursor: pointer;
+}
+#lanegraphinfo li .infoDivExpandBtn {
+  height: 25px;
+  width: 25px;
+  background-color: #CCC;
+  float: right;
+  top: 0;
+  bottom: 0px;
+  text-align: center;
+  vertical-align: top;
+  font-size: 18px;
+  color: #FFF;
+}
+#lanegraphinfo li .infoDivExpanded {
+  height: 100%;
+  border-top: 1px;
+  padding-top: 10px;
+  border-top-color: #CCC;
+}
+
+#lanegraphinfo li:nth-child(odd) {
+  background-color: #DEDEDE;
+}
+.laneactive {
+  /*background-color: #000;*/
+  background-color: #ffff99 !important;
+}
+.pointactive {
+  stroke-width: 3px;
+  /*stroke-opacity: 0.2;*/
+  stroke: #000;
+}
+
+
+
+
 .modalTable {
   width: 90%;
   margin-left: -45%;
