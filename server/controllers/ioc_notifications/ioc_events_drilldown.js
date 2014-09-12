@@ -1,6 +1,6 @@
 'use strict';
 
-var datatable = require('../constructors/datatable'),
+var lanegraph = require('../constructors/lanegraph'),
 	config = require('../../config/config'),
 	query = require('../constructors/query'),
 	force = require('../constructors/force'),
@@ -10,18 +10,18 @@ var datatable = require('../constructors/datatable'),
 module.exports = function(pool) {
 	return {
 		render: function(req, res) {
-			var result = [];
+
 			var columns = {};
 			function handleReturn(data, callback) {
-				if ((data !== null) && (data.aaData.length > 0)) {
+				if ((data !== null) && (data.length > 0)) {
 					// data.aaData.columns = data.params;
-					columns[data.aaData[0].type] = data.params;
-					result.push(data.aaData);
+					result.data.push(data);
 					return callback();
 				} else {
 					return callback();
 				}
 			}
+
 			var database = req.session.passport.user.database;
 			var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 			var end = Math.round(new Date().getTime() / 1000);
@@ -35,6 +35,17 @@ module.exports = function(pool) {
 			} else {
 				pointGroup = 1;
 			}
+
+			var lanes;
+			if (req.session.passport.user.level === 3) {
+				lanes = ['ioc', 'conn', 'file', 'dns', 'http', 'ssl', 'endpoint', 'stealth'];
+			} else {
+				lanes = ['ioc', 'conn', 'file', 'dns', 'http', 'ssl', 'endpoint'];
+			}
+			var result = {
+				lanes: lanes,
+				data: []
+			};
 
 			if (req.query.type === 'drill') {
 				var conn_ioc = {
@@ -86,13 +97,7 @@ module.exports = function(pool) {
 						{title: "IOC Type", select: "ioc_typeIndicator"},
 						{title: "IOC Stage", select: "ioc_typeInfection"},
 						{title: "IOC Rule", select: "ioc_rule"},
-					],
-					settings: {
-						sort: [[1, 'desc']],
-						div: 'table',
-						title: 'Indicators of Compromise (IOC) Notifications',
-						pageBreakBefore: false
-					}
+					]
 				}
 				var conn = {
 					query: 'SELECT '+
@@ -141,13 +146,7 @@ module.exports = function(pool) {
 						{title: "IOC Type", select: "ioc_typeIndicator"},
 						{title: "IOC Stage", select: "ioc_typeInfection"},
 						{title: "IOC Rule", select: "ioc_rule"},
-					],
-					settings: {
-						sort: [[1, 'desc']],
-						div: 'table',
-						title: 'Indicators of Compromise (IOC) Notifications',
-						pageBreakBefore: false
-					}
+					]
 				}
 				var dns_ioc = {
 					query: 'SELECT '+
@@ -188,13 +187,7 @@ module.exports = function(pool) {
 						{title: "IOC Type", select: "ioc_typeIndicator"},
 						{title: "IOC Stage", select: "ioc_typeInfection"},
 						{title: "IOC Rule", select: "ioc_rule"},
-					],
-					settings: {
-						sort: [[1, 'desc']],
-						div: 'table',
-						title: 'Indicators of Compromise (IOC) Notifications',
-						pageBreakBefore: false
-					}
+					]
 				}
 				var dns = {
 					query: 'SELECT '+
@@ -232,13 +225,7 @@ module.exports = function(pool) {
 						{title: "IOC Type", select: "ioc_typeIndicator"},
 						{title: "IOC Stage", select: "ioc_typeInfection"},
 						{title: "IOC Rule", select: "ioc_rule"},
-					],
-					settings: {
-						sort: [[1, 'desc']],
-						div: 'table',
-						title: 'Indicators of Compromise (IOC) Notifications',
-						pageBreakBefore: false
-					}
+					]
 				}
 				var http_ioc = {
 					query: 'SELECT '+
@@ -281,13 +268,7 @@ module.exports = function(pool) {
 						{title: "IOC Type", select: "ioc_typeIndicator"},
 						{title: "IOC Stage", select: "ioc_typeInfection"},
 						{title: "IOC Rule", select: "ioc_rule"},
-					],
-					settings: {
-						sort: [[1, 'desc']],
-						div: 'table',
-						title: 'Indicators of Compromise (IOC) Notifications',
-						pageBreakBefore: false
-					}
+					]
 				}
 				var http = {
 					query: 'SELECT '+
@@ -328,13 +309,7 @@ module.exports = function(pool) {
 						{title: "IOC Type", select: "ioc_typeIndicator"},
 						{title: "IOC Stage", select: "ioc_typeInfection"},
 						{title: "IOC Rule", select: "ioc_rule"},
-					],
-					settings: {
-						sort: [[1, 'desc']],
-						div: 'table',
-						title: 'Indicators of Compromise (IOC) Notifications',
-						pageBreakBefore: false
-					}
+					]
 				}
 				var ssl_ioc = {
 					query: 'SELECT '+
@@ -373,13 +348,7 @@ module.exports = function(pool) {
 						{title: "IOC Type", select: "ioc_typeIndicator"},
 						{title: "IOC Stage", select: "ioc_typeInfection"},
 						{title: "IOC Rule", select: "ioc_rule"},
-					],
-					settings: {
-						sort: [[1, 'desc']],
-						div: 'table',
-						title: 'Indicators of Compromise (IOC) Notifications',
-						pageBreakBefore: false
-					}
+					]
 				}
 				var ssl = {
 					query: 'SELECT '+
@@ -416,13 +385,7 @@ module.exports = function(pool) {
 						{title: "IOC Type", select: "ioc_typeIndicator"},
 						{title: "IOC Stage", select: "ioc_typeInfection"},
 						{title: "IOC Rule", select: "ioc_rule"},
-					],
-					settings: {
-						sort: [[1, 'desc']],
-						div: 'table',
-						title: 'Indicators of Compromise (IOC) Notifications',
-						pageBreakBefore: false
-					}
+					]
 				}
 				var file_ioc = {
 					query: 'SELECT '+
@@ -461,13 +424,7 @@ module.exports = function(pool) {
 						{title: "IOC Type", select: "ioc_typeIndicator"},
 						{title: "IOC Stage", select: "ioc_typeInfection"},
 						{title: "IOC Rule", select: "ioc_rule"},
-					],
-					settings: {
-						sort: [[1, 'desc']],
-						div: 'table',
-						title: 'Indicators of Compromise (IOC) Notifications',
-						pageBreakBefore: false
-					}
+					]
 				}
 				var file = {
 					query: 'SELECT '+
@@ -504,13 +461,7 @@ module.exports = function(pool) {
 						{title: "IOC Type", select: "ioc_typeIndicator"},
 						{title: "IOC Stage", select: "ioc_typeInfection"},
 						{title: "IOC Rule", select: "ioc_rule"},
-					],
-					settings: {
-						sort: [[1, 'desc']],
-						div: 'table',
-						title: 'Indicators of Compromise (IOC) Notifications',
-						pageBreakBefore: false
-					}
+					]
 				}
 				var endpoint = {
 					query: 'SELECT '+
@@ -537,13 +488,7 @@ module.exports = function(pool) {
 						{title: "Alert Source", select: "alert_source"},
 						{title: "Program Source", select: "program_source"},
 						{title: "Alert Info", select: "alert_info"},
-					],
-					settings: {
-						sort: [[1, 'desc']],
-						div: 'table',
-						title: 'Indicators of Compromise (IOC) Notifications',
-						pageBreakBefore: false
-					}
+					]
 				}
 				var stealth_conn = {
 					query: 'SELECT '+
@@ -572,109 +517,97 @@ module.exports = function(pool) {
 						{title: "MB to Remote", select: "out_bytes"},
 						{title: "Packets from Remote", select: "in_packets"},
 						{title: "Packets to Remote", select: "out_packets"}
-					],
-					settings: {
-						sort: [[1, 'desc']],
-						div: 'table',
-						title: 'Indicators of Compromise (IOC) Notifications',
-						pageBreakBefore: false
-					}
+					]
 				}
-    			var stealth_block = {
-    				query: 'SELECT '+
-    						'\'stealth_block\' AS type, '+
-    						'`time` as raw_time, '+
-    						'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-    						'`src_ip`, '+
-    						'`dst_ip`, '+
-    						'(`in_bytes` / 1048576) as in_bytes, '+
-    						'(`out_bytes` / 1048576) as out_bytes, '+
-    						'`in_packets`, '+
-    						'`out_packets` '+
-    					'FROM '+
-    						'`stealth_conn_meta` '+
-    					'WHERE '+
-    						'time BETWEEN ? AND ? '+
-    						'AND `src_ip` = ? '+
-    						'AND (`in_bytes` = 0 OR `out_bytes` = 0)',
-    				insert: [start, end, req.query.lan_ip],
-    				params: [
-    					{title: "Time", select: "time"},
-    					{title: "Source IP", select: "src_ip"},
-    					{title: "Destination IP", select: "dst_ip"},
-    					{title: "MB from Remote", select: "in_bytes"},
-    					{title: "MB to Remote", select: "out_bytes"},
-    					{title: "Packets from Remote", select: "in_packets"},
-    					{title: "Packets to Remote", select: "out_packets"}
-    				],
-    				settings: {
-    					sort: [[1, 'desc']],
-    					div: 'table',
-    					title: 'Indicators of Compromise (IOC) Notifications',
-    					pageBreakBefore: false
-    				}
-    			}
+				var stealth_block = {
+					query: 'SELECT '+
+							'\'stealth_block\' AS type, '+
+							'`time` as raw_time, '+
+							'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+							'`src_ip`, '+
+							'`dst_ip`, '+
+							'(`in_bytes` / 1048576) as in_bytes, '+
+							'(`out_bytes` / 1048576) as out_bytes, '+
+							'`in_packets`, '+
+							'`out_packets` '+
+						'FROM '+
+							'`stealth_conn_meta` '+
+						'WHERE '+
+							'time BETWEEN ? AND ? '+
+							'AND `src_ip` = ? '+
+							'AND (`in_bytes` = 0 OR `out_bytes` = 0)',
+					insert: [start, end, req.query.lan_ip],
+					params: [
+						{title: "Time", select: "time"},
+						{title: "Source IP", select: "src_ip"},
+						{title: "Destination IP", select: "dst_ip"},
+						{title: "MB from Remote", select: "in_bytes"},
+						{title: "MB to Remote", select: "out_bytes"},
+						{title: "Packets from Remote", select: "in_packets"},
+						{title: "Packets to Remote", select: "out_packets"}
+					]
+				}
 
 				async.parallel([
 					// Table function(s)
 					function(callback) { // conn_ioc
-						new datatable(conn_ioc, {database: database, pool:pool}, function(err, data){
+						new lanegraph(conn_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
 							handleReturn(data, callback);
 						});
 					},
 					function(callback) { // conn
-						new datatable(conn, {database: database, pool:pool}, function(err, data){
+						new lanegraph(conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
 							handleReturn(data, callback);
 						});
 					},
 					function(callback) { // dns_ioc
-						new datatable(dns_ioc, {database: database, pool:pool}, function(err, data){
+						new lanegraph(dns_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
 							handleReturn(data, callback);
 						});
 					},
 					function(callback) { // dns
-						new datatable(dns, {database: database, pool:pool}, function(err, data){
+						new lanegraph(dns, {database: database, pool:pool, lanes: lanes}, function(err, data){
 							handleReturn(data, callback);
 						});
 					},
 					function(callback) { // http_ioc
-						new datatable(http_ioc, {database: database, pool:pool}, function(err, data){
+						new lanegraph(http_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
 							handleReturn(data, callback);
 						});
 					},
 					function(callback) { // http
-						new datatable(http, {database: database, pool:pool}, function(err, data){
+						new lanegraph(http, {database: database, pool:pool, lanes: lanes}, function(err, data){
 							handleReturn(data, callback);
 						});
 					},
 					function(callback) { // ssl_ioc
-						new datatable(ssl_ioc, {database: database, pool:pool}, function(err, data){
+						new lanegraph(ssl_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
 							handleReturn(data, callback);
 						});
 					},
 					function(callback) { // ssl
-						new datatable(ssl, {database: database, pool:pool}, function(err, data){
+						new lanegraph(ssl, {database: database, pool:pool, lanes: lanes}, function(err, data){
 							handleReturn(data, callback);
 						});
 					},
 					function(callback) { // file_ioc
-						new datatable(file_ioc, {database: database, pool:pool}, function(err, data){
+						new lanegraph(file_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
 							handleReturn(data, callback);
 						});
 					},
 					function(callback) { // file
-						new datatable(file, {database: database, pool:pool}, function(err, data){
+						new lanegraph(file, {database: database, pool:pool, lanes: lanes}, function(err, data){
 							handleReturn(data, callback);
 						});
 					},
 					function(callback) { // endpoint
-						new datatable(endpoint, {database: database, pool:pool}, function(err, data){
+						new lanegraph(endpoint, {database: database, pool:pool, lanes: lanes}, function(err, data){
 							handleReturn(data, callback);
 						});
 					},
 					function(callback) { // stealth
 						if (req.session.passport.user.level === 3) {
-							new datatable(stealth_conn, {database: database, pool:pool}, function(err, data){
+							new lanegraph(stealth_conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
 								handleReturn(data, callback);
 							});
 						} else {
@@ -683,7 +616,7 @@ module.exports = function(pool) {
 					},
 					function(callback) { // stealth block
 						if (req.session.passport.user.level === 3) {
-							new datatable(stealth_block, {database: database, pool:pool}, function(err, data){
+							new lanegraph(stealth_block, {database: database, pool:pool, lanes: lanes}, function(err, data){
 								handleReturn(data, callback);
 							});
 						} else {
@@ -693,8 +626,7 @@ module.exports = function(pool) {
 				], function(err) { //This function gets called after the two tasks have called their "task callbacks"
 					if (err) throw console.log(err);
 					res.json({
-						laneGraph: result,
-						columns: columns
+						laneGraph: result
 					});
 				});
 			} else if (req.query.type === 'assets') {
@@ -759,13 +691,7 @@ module.exports = function(pool) {
 								{title: "IOC Type", select: "ioc_typeIndicator"},
 								{title: "IOC Stage", select: "ioc_typeInfection"},
 								{title: "IOC Rule", select: "ioc_rule"},
-							],
-							settings: {
-								sort: [[1, 'desc']],
-								div: 'table',
-								title: 'Indicators of Compromise (IOC) Notifications',
-								pageBreakBefore: false
-							}
+							]
 						}
 						var conn = {
 							query: 'SELECT '+
@@ -814,13 +740,7 @@ module.exports = function(pool) {
 								{title: "IOC Type", select: "ioc_typeIndicator"},
 								{title: "IOC Stage", select: "ioc_typeInfection"},
 								{title: "IOC Rule", select: "ioc_rule"},
-							],
-							settings: {
-								sort: [[1, 'desc']],
-								div: 'table',
-								title: 'Indicators of Compromise (IOC) Notifications',
-								pageBreakBefore: false
-							}
+							]
 						}
 						var dns_ioc = {
 							query: 'SELECT '+
@@ -860,13 +780,7 @@ module.exports = function(pool) {
 								{title: "IOC Type", select: "ioc_typeIndicator"},
 								{title: "IOC Stage", select: "ioc_typeInfection"},
 								{title: "IOC Rule", select: "ioc_rule"},
-							],
-							settings: {
-								sort: [[1, 'desc']],
-								div: 'table',
-								title: 'Indicators of Compromise (IOC) Notifications',
-								pageBreakBefore: false
-							}
+							]
 						}
 						var dns = {
 							query: 'SELECT '+
@@ -904,13 +818,7 @@ module.exports = function(pool) {
 								{title: "IOC Type", select: "ioc_typeIndicator"},
 								{title: "IOC Stage", select: "ioc_typeInfection"},
 								{title: "IOC Rule", select: "ioc_rule"},
-							],
-							settings: {
-								sort: [[1, 'desc']],
-								div: 'table',
-								title: 'Indicators of Compromise (IOC) Notifications',
-								pageBreakBefore: false
-							}
+							]
 						}
 						var http_ioc = {
 							query: 'SELECT '+
@@ -953,13 +861,7 @@ module.exports = function(pool) {
 								{title: "IOC Type", select: "ioc_typeIndicator"},
 								{title: "IOC Stage", select: "ioc_typeInfection"},
 								{title: "IOC Rule", select: "ioc_rule"},
-							],
-							settings: {
-								sort: [[1, 'desc']],
-								div: 'table',
-								title: 'Indicators of Compromise (IOC) Notifications',
-								pageBreakBefore: false
-							}
+							]
 						}
 						var http = {
 							query: 'SELECT '+
@@ -1000,13 +902,7 @@ module.exports = function(pool) {
 								{title: "IOC Type", select: "ioc_typeIndicator"},
 								{title: "IOC Stage", select: "ioc_typeInfection"},
 								{title: "IOC Rule", select: "ioc_rule"},
-							],
-							settings: {
-								sort: [[1, 'desc']],
-								div: 'table',
-								title: 'Indicators of Compromise (IOC) Notifications',
-								pageBreakBefore: false
-							}
+							]
 						}
 						var ssl_ioc = {
 							query: 'SELECT '+
@@ -1045,13 +941,7 @@ module.exports = function(pool) {
 								{title: "IOC Type", select: "ioc_typeIndicator"},
 								{title: "IOC Stage", select: "ioc_typeInfection"},
 								{title: "IOC Rule", select: "ioc_rule"},
-							],
-							settings: {
-								sort: [[1, 'desc']],
-								div: 'table',
-								title: 'Indicators of Compromise (IOC) Notifications',
-								pageBreakBefore: false
-							}
+							]
 						}
 						var ssl = {
 							query: 'SELECT '+
@@ -1083,18 +973,12 @@ module.exports = function(pool) {
 								{title: "cipher", select: "cipher"},
 								{title: "Subject", select: "subject"},
 								{title: "Issuer", select: "issuer_subject"},
-                                {title: "IOC", select: "ioc"},
+								{title: "IOC", select: "ioc"},
 								{title: "IOC Severity", select: "ioc_severity"},
 								{title: "IOC Type", select: "ioc_typeIndicator"},
 								{title: "IOC Stage", select: "ioc_typeInfection"},
 								{title: "IOC Rule", select: "ioc_rule"},
-							],
-							settings: {
-								sort: [[1, 'desc']],
-								div: 'table',
-								title: 'Indicators of Compromise (IOC) Notifications',
-								pageBreakBefore: false
-							}
+							]
 						}
 						var file_ioc = {
 							query: 'SELECT '+
@@ -1133,13 +1017,7 @@ module.exports = function(pool) {
 								{title: "IOC Type", select: "ioc_typeIndicator"},
 								{title: "IOC Stage", select: "ioc_typeInfection"},
 								{title: "IOC Rule", select: "ioc_rule"},
-							],
-							settings: {
-								sort: [[1, 'desc']],
-								div: 'table',
-								title: 'Indicators of Compromise (IOC) Notifications',
-								pageBreakBefore: false
-							}
+							]
 						}
 						var file = {
 							query: 'SELECT '+
@@ -1176,13 +1054,7 @@ module.exports = function(pool) {
 								{title: "IOC Type", select: "ioc_typeIndicator"},
 								{title: "IOC Stage", select: "ioc_typeInfection"},
 								{title: "IOC Rule", select: "ioc_rule"},
-							],
-							settings: {
-								sort: [[1, 'desc']],
-								div: 'table',
-								title: 'Indicators of Compromise (IOC) Notifications',
-								pageBreakBefore: false
-							}
+							]
 						}
 						var endpoint = {
 							query: 'SELECT '+
@@ -1209,13 +1081,7 @@ module.exports = function(pool) {
 								{title: "Alert Source", select: "alert_source"},
 								{title: "Program Source", select: "program_source"},
 								{title: "Alert Info", select: "alert_info"},
-							],
-							settings: {
-								sort: [[1, 'desc']],
-								div: 'table',
-								title: 'Indicators of Compromise (IOC) Notifications',
-								pageBreakBefore: false
-							}
+							]
 						}
 						var stealth_conn = {
 							query: 'SELECT '+
@@ -1244,13 +1110,7 @@ module.exports = function(pool) {
 								{title: "MB to Remote", select: "out_bytes"},
 								{title: "Packets from Remote", select: "in_packets"},
 								{title: "Packets to Remote", select: "out_packets"}
-							],
-							settings: {
-								sort: [[1, 'desc']],
-								div: 'table',
-								title: 'Indicators of Compromise (IOC) Notifications',
-								pageBreakBefore: false
-							}
+							]
 						}
 						var stealth_block = {
 							query: 'SELECT '+
@@ -1278,13 +1138,7 @@ module.exports = function(pool) {
 								{title: "MB to Remote", select: "out_bytes"},
 								{title: "Packets from Remote", select: "in_packets"},
 								{title: "Packets to Remote", select: "out_packets"}
-							],
-							settings: {
-								sort: [[1, 'desc']],
-								div: 'table',
-								title: 'Indicators of Compromise (IOC) Notifications',
-								pageBreakBefore: false
-							}
+							]
 						}
 
 						var info = {};
@@ -1363,63 +1217,63 @@ module.exports = function(pool) {
 						async.parallel([
 							// Table function(s)
 							function(callback) { // conn_ioc
-								new datatable(conn_ioc, {database: database, pool:pool}, function(err, data){
+								new lanegraph(conn_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
 									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // conn
-								new datatable(conn, {database: database, pool:pool}, function(err, data){
+								new lanegraph(conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
 									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // dns_ioc
-								new datatable(dns_ioc, {database: database, pool:pool}, function(err, data){
+								new lanegraph(dns_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
 									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // dns
-								new datatable(dns, {database: database, pool:pool}, function(err, data){
+								new lanegraph(dns, {database: database, pool:pool, lanes: lanes}, function(err, data){
 									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // http_ioc
-								new datatable(http_ioc, {database: database, pool:pool}, function(err, data){
+								new lanegraph(http_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
 									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // http
-								new datatable(http, {database: database, pool:pool}, function(err, data){
+								new lanegraph(http, {database: database, pool:pool, lanes: lanes}, function(err, data){
 									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // ssl_ioc
-								new datatable(ssl_ioc, {database: database, pool:pool}, function(err, data){
+								new lanegraph(ssl_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
 									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // ssl
-								new datatable(ssl, {database: database, pool:pool}, function(err, data){
+								new lanegraph(ssl, {database: database, pool:pool, lanes: lanes}, function(err, data){
 									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // file_ioc
-								new datatable(file_ioc, {database: database, pool:pool}, function(err, data){
+								new lanegraph(file_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
 									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // file
-								new datatable(file, {database: database, pool:pool}, function(err, data){
+								new lanegraph(file, {database: database, pool:pool, lanes: lanes}, function(err, data){
 									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // endpoint
-								new datatable(endpoint, {database: database, pool:pool}, function(err, data){
+								new lanegraph(endpoint, {database: database, pool:pool, lanes: lanes}, function(err, data){
 									handleReturn(data, callback);
 								});
 							},
 							function(callback) { // stealth
 								if (req.session.passport.user.level === 3) {
-									new datatable(stealth_conn, {database: database, pool:pool}, function(err, data){
+									new lanegraph(stealth_conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
 										console.log(data)
 										handleReturn(data, callback);
 									});
@@ -1429,7 +1283,7 @@ module.exports = function(pool) {
 							},
 							function(callback) { // stealth block
 								if (req.session.passport.user.level === 3) {
-									new datatable(stealth_block, {database: database, pool:pool}, function(err, data){
+									new lanegraph(stealth_block, {database: database, pool:pool, lanes: lanes}, function(err, data){
 										console.log(data)
 										handleReturn(data, callback);
 									});
@@ -1469,7 +1323,6 @@ module.exports = function(pool) {
 							// };
 							res.json({
 								info: info,
-								columns: columns,
 								laneGraph: result,
 								start: start,
 								end: end,
