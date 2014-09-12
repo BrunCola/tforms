@@ -889,6 +889,14 @@ module.exports = function(pool) {
                                     });
                                 },
                                 function(callback) {
+                                    new query(tree_dns, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
+                                        }
+                                        callback();
+                                    });
+                                },
+                                function(callback) {
                                     new query(tree_conn_block, {database: database, pool: pool}, function(err,data){
                                         for(var i in data){
                                             treeArray.push(data[i]); 
