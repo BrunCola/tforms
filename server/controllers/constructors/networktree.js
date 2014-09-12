@@ -75,10 +75,11 @@ module.exports = function (sql, conn, callback) {
 					var pushToThird = [];
 					var thirdChildren = mainDim.top(Infinity).filter(function(d){return ((d.lan_zone === lanZoneUnique[i].key) && (d.operating_system === secondChildren[s].operating_system))});
 					for (var t in thirdChildren){
-						pushToThird.push({
-							name: "IP",
-							value: thirdChildren[t].lan_ip
-						});
+						// pushToThird.push({
+						// 	name: "IP",
+						// 	value: thirdChildren[t].lan_ip
+						// });
+						pushToThird.push(thirdChildren[t]);
 					}
 					// push to children of parent lan_ip
 					pushToFirst.push({
