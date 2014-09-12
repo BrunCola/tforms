@@ -430,7 +430,7 @@ module.exports = function(pool) {
             } else {
                 if (req.query.src_ip && (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1)) {
                     var info = [];
-                    //The rest of the queries are for the fisheye visual
+                    // SWIMLANE QUERIES
                     var conn = {
                         query: 'SELECT '+
                                 '\'conn\' AS type, '+
@@ -761,12 +761,13 @@ module.exports = function(pool) {
                             pageBreakBefore: false
                         }
                     }
-                    var sankeyData;
-                    var info = [];
-                    var conn_block = {
+
+                    // USER TREE
+                    var tree_conn_block = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
                                     '\'Connections Drop\' AS traffic, '+
+                                    '\'Connections\' AS type'+
                                     '`remote_ip` '+
                                 'FROM '+
                                     '`conn_meta` '+
@@ -775,242 +776,105 @@ module.exports = function(pool) {
                                     'AND `out_bytes` = 0 '+
                                     'AND `lan_user` = ? '+
                                 'GROUP BY '+
-                                    '`lan_ip`,`remote_ip` '+
-                                'ORDER BY `count` DESC LIMIT 20',
+                                    '`lan_ip`,'+
+                                    '`remote_ip` '+
+                                'ORDER BY '+
+                                    '`count` DESC '+
+                                'LIMIT 20',
                         insert: [start, end, req.query.lan_user]
                     }
-                    // var sankey_auth1 = {
-                    //     query: 'SELECT '+
-                    //             'count(*) AS `count`, '+
-                    //             'max(date_format(from_unixtime(stealth_conn.time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-                    //             '`src_ip`, '+
-                    //             '`dst_ip`, '+
-                    //             '(sum(in_bytes) / 1048576) as in_bytes, '+
-                    //             '(sum(out_bytes) / 1048576) as out_bytes, '+
-                    //             'sum(in_packets) as in_packets, '+
-                    //             'sum(out_packets) as out_packets '+
-                    //         'FROM '+
-                    //             '`stealth_conn` '+
-                    //         'WHERE '+
-                    //             'time BETWEEN ? AND ? '+
-                    //             'AND `dst_ip` = ? '+
-                    //             // 'AND `out_bytes` > 0 '+
-                    //             'AND `in_bytes` > 0 '+
-                    //         'GROUP BY '+
-                    //             '`src_ip` '+
-                    //         'ORDER BY `count` DESC ',
-                    //     insert: [start, end, req.query.src_ip]
-                    // }
-                    // //from center node to local (center node is the lan) AUTH
-                    // var sankey_auth2 = {
-                    //     query: 'SELECT '+
-                    //             'count(*) AS `count`, '+
-                    //             'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-                    //             '`lan_ip`, '+
-                    //             '`remote_ip`, '+
-                    //             '(sum(in_bytes) / 1048576) as in_bytes, '+
-                    //             '(sum(out_bytes) / 1048576) as out_bytes, '+
-                    //             'sum(in_packets) as in_packets, '+
-                    //             'sum(out_packets) as out_packets '+
-                    //         'FROM '+
-                    //             '`conn_meta` '+
-                    //         'WHERE '+
-                    //             'time BETWEEN ? AND ? '+
-                    //             // 'AND `in_bytes` > 0 '+
-                    //             // 'AND ((`remote_ip` = ?) '+
-                    //             // 'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%")) '+
-                    //             'AND ((`remote_ip` = ? AND `out_bytes` > 0 ) '+
-                    //             'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%" AND `in_bytes` > 0 )) '+
-                    //         'GROUP BY '+
-                    //             '`lan_ip`, '+
-                    //             '`remote_ip` '+
-                    //         'ORDER BY `count` DESC ',
-                    //     insert: [start, end, req.query.src_ip, req.query.src_ip]
-                    // }
-                    // //from center to remote (center is the lan) AUTH
-                    // var sankey_auth3 = {
-                    //     query: 'SELECT '+
-                    //             'count(*) AS `count`, '+
-                    //             'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-                    //             '`lan_ip`, '+
-                    //             '`remote_ip`, '+
-                    //             '(sum(in_bytes) / 1048576) as in_bytes, '+
-                    //             '(sum(out_bytes) / 1048576) as out_bytes, '+
-                    //             'sum(in_packets) as in_packets, '+
-                    //             'sum(out_packets) as out_packets '+
-                    //         'FROM '+
-                    //             '`conn_meta` '+
-                    //         'WHERE '+
-                    //             'time BETWEEN ? AND ? '+
-                    //             'AND `out_bytes` > 0 '+
-                    //             'AND `lan_ip` = ? '+
-                    //             // 'AND NOT (remote_ip LIKE "192.168.222.%") '+
-                    //         'GROUP BY '+
-                    //             '`remote_ip` '+
-                    //         'ORDER BY `count` DESC LIMIT 10',
-                    //     insert: [start, end, req.query.src_ip]
-                    // }
-                    // var sankey_unauth1 = {
-                    //     query: 'SELECT '+
-                    //             'count(*) AS `count`, '+
-                    //             'max(date_format(from_unixtime(stealth_conn.time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-                    //             '`src_ip`, '+
-                    //             '`dst_ip`, '+
-                    //             '(sum(in_bytes) / 1048576) as in_bytes, '+
-                    //             '(sum(out_bytes) / 1048576) as out_bytes, '+
-                    //             'sum(in_packets) as in_packets, '+
-                    //             'sum(out_packets) as out_packets '+
-                    //         'FROM '+
-                    //             '`stealth_conn` '+
-                    //         'WHERE '+
-                    //             'time BETWEEN ? AND ? '+
-                    //             'AND `dst_ip` = ? '+
-                    //             // 'AND `out_bytes` = 0 '+
-                    //             'AND `in_bytes` = 0 '+
-                    //         'GROUP BY '+
-                    //             '`src_ip` '+
-                    //         'ORDER BY `count` DESC ',
-                    //     insert: [start, end, req.query.src_ip]
-                    // }
-                    // //from center node to local (center node is the lan) AUTH
-                    // var sankey_unauth2 = {
-                    //     query: 'SELECT '+
-                    //             'count(*) AS `count`, '+
-                    //             'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-                    //             '`lan_ip`, '+
-                    //             '`remote_ip`, '+
-                    //             '(sum(in_bytes) / 1048576) as in_bytes, '+
-                    //             '(sum(out_bytes) / 1048576) as out_bytes, '+
-                    //             'sum(in_packets) as in_packets, '+
-                    //             'sum(out_packets) as out_packets '+
-                    //         'FROM '+
-                    //             '`conn_meta` '+
-                    //         'WHERE '+
-                    //             'time BETWEEN ? AND ? '+
-                    //             // 'AND `in_bytes` = 0 '+
-                    //             'AND ((`remote_ip` = ? AND `out_bytes` = 0 ) '+
-                    //             'OR (`lan_ip` = ? AND remote_ip LIKE "192.168.222.%" AND `in_bytes` = 0 )) '+
-                    //         'GROUP BY '+
-                    //             '`lan_ip`, '+
-                    //             '`remote_ip` '+
-                    //         'ORDER BY `count` DESC ',
-                    //     insert: [start, end, req.query.src_ip, req.query.src_ip]
-                    // }
-                    // //from center to remote (center is the lan) AUTH
-                    // var sankey_unauth3 = {
-                    //     query: 'SELECT '+
-                    //             'count(*) AS `count`, '+
-                    //             'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-                    //             '`lan_ip`, '+
-                    //             '`remote_ip`, '+
-                    //             '(sum(in_bytes) / 1048576) as in_bytes, '+
-                    //             '(sum(out_bytes) / 1048576) as out_bytes, '+
-                    //             'sum(in_packets) as in_packets, '+
-                    //             'sum(out_packets) as out_packets '+
-                    //         'FROM '+
-                    //             '`conn_meta` '+
-                    //         'WHERE '+
-                    //             'time BETWEEN ? AND ? '+
-                    //             'AND `out_bytes` = 0 '+
-                    //             'AND `lan_ip` = ? '+
-                    //             // 'AND NOT (remote_ip LIKE "192.168.222.%") '+
-                    //         'GROUP BY '+
-                    //             '`remote_ip` '+
-                    //         'ORDER BY `count` DESC LIMIT 10',
-                    //     insert: [start, end, req.query.src_ip]
-                    // }
-
+                   
                     var treeArray = [], network = null;
-                    async.parallel([
-                        // SWIMLANE 
-                        function(callback) { // conn
-                            new datatable(conn, {database: database, pool:pool}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // dns
-                            new datatable(dns, {database: database, pool:pool}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // http
-                            new datatable(http, {database: database, pool:pool}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // ssl
-                            new datatable(ssl, {database: database, pool:pool}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // file
-                            new datatable(file, {database: database, pool:pool}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // endpoint
-                            new datatable(endpoint, {database: database, pool:pool}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // stealth
-                            if (req.session.passport.user.level === 3) {
-                                new datatable(stealth_conn, {database: database, pool:pool}, function(err, data){
-                                    console.log(data)
+                        async.parallel([
+                            // SWIMLANE 
+                            function(callback) { // conn
+                                new datatable(conn, {database: database, pool:pool}, function(err, data){
                                     handleReturn(data, callback);
                                 });
-                            } else {
-                                callback();
-                            }
-                        },
-                        function(callback) { // stealth block
-                            if (req.session.passport.user.level === 3) {
-                                new datatable(stealth_block, {database: database, pool:pool}, function(err, data){
-                                    console.log(data)
+                            },
+                            function(callback) { // dns
+                                new datatable(dns, {database: database, pool:pool}, function(err, data){
                                     handleReturn(data, callback);
                                 });
-                            } else {
-                                callback();
-                            }
-                        },
-                        function(callback) {
-                            // TREE CHART
-                            async.parallel([
-                                function(callback) {
-                                    new query(VARIABLE NAME, {database: database, pool: pool}, function(err,data){
-                                        for(var i in data){
-                                            treeArray.push(data[i]); 
-                                        }
-                                        callback();
+                            },
+                            function(callback) { // http
+                                new datatable(http, {database: database, pool:pool}, function(err, data){
+                                    handleReturn(data, callback);
+                                });
+                            },
+                            function(callback) { // ssl
+                                new datatable(ssl, {database: database, pool:pool}, function(err, data){
+                                    handleReturn(data, callback);
+                                });
+                            },
+                            function(callback) { // file
+                                new datatable(file, {database: database, pool:pool}, function(err, data){
+                                    handleReturn(data, callback);
+                                });
+                            },
+                            function(callback) { // endpoint
+                                new datatable(endpoint, {database: database, pool:pool}, function(err, data){
+                                    handleReturn(data, callback);
+                                });
+                            },
+                            function(callback) { // stealth
+                                if (req.session.passport.user.level === 3) {
+                                    new datatable(stealth_conn, {database: database, pool:pool}, function(err, data){
+                                        console.log(data)
+                                        handleReturn(data, callback);
                                     });
-                                },
-                                function(callback) {
-                                    new query(VARIABLE NAME, {database: database, pool: pool}, function(err,data){
-                                        for(var i in data){
-                                            treeArray.push(data[i]); 
-                                        }
-                                        callback();
-                                    });
-                                },
-                            ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
-                                if (err) throw console.log(err);
-                                new networktree(treeArray, {database: database, pool: pool}, function(err,data){
-                                    network = data;
+                                } else {
                                     callback();
-                                });
-                            });
+                                }
+                            },
+                            function(callback) { // stealth block
+                                if (req.session.passport.user.level === 3) {
+                                    new datatable(stealth_block, {database: database, pool:pool}, function(err, data){
+                                        console.log(data)
+                                        handleReturn(data, callback);
+                                    });
+                                } else {
+                                    callback();
+                                }
+                            },
+                            function(callback) { // TREE CHART
+                                async.parallel([
+                                    function(callback) {
+                                        new query(tree_conn_block, {database: database, pool: pool}, function(err,data){
+                                            for(var i in data){
+                                                console.log(data)
+                                                treeArray.push(data[i]); 
+                                            }
+                                            callback();
+                                        });
+                                    },
+                                    // function(callback) {
+                                    //     new query(VARIABLE NAME, {database: database, pool: pool}, function(err,data){
+                                    //         for(var i in data){
+                                    //             treeArray.push(data[i]); 
+                                    //         }
+                                    //         callback();
+                                    //     });
+                                    // },
+                                ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
+                                    if (err) throw console.log(err);
+                                    new networktree(treeArray, {database: database, pool: pool}, function(err,data){
+                                        console.log(data)
+                                        network = data;
+                                        callback();
+                                    });
+                                })
                         }
                     ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                         if (err) throw console.log(err)
                         res.json({
                             network: network,
-                            info: info,
                             columns: columns,
                             laneGraph: result,
                             start: start,
                             end: end
                         });
-                    });
+                    })
                 } else {
                     res.redirect('/');
                 }
