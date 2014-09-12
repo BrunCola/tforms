@@ -763,6 +763,7 @@ module.exports = function(pool) {
                     }
 
                     // USER TREE
+                    
                     var tree_conn_block = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
@@ -774,14 +775,14 @@ module.exports = function(pool) {
                                 'WHERE '+
                                     'time BETWEEN ? AND ? '+
                                     'AND `out_bytes` = 0 '+
-                                    'AND `lan_user` = ? '+
+                                    'AND `lan_ip` = ? '+
                                 'GROUP BY '+
                                     '`lan_ip`,'+
                                     '`remote_ip` '+
                                 'ORDER BY '+
                                     '`count` DESC '+
                                 'LIMIT 20',
-                        insert: [start, end, req.query.lan_user]
+                        insert: [start, end, req.query.src_ip]
                     }
                    
                     async.parallel([
