@@ -12,6 +12,7 @@ module.exports = function (sql, conn, callback) {
 	}
 
 	function format(data) {
+		console.log(data)
 		var crossfilterData = crossfilter(data);
 
 		var mainDim = crossfilterData.dimension(function(d){return d});
