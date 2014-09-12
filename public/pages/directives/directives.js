@@ -1478,95 +1478,83 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
             $scope.$on('networkChart', function (event, data, params) {
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
 
-                            var margin = {top: 20, right: 120, bottom: 20, left: 120},
-                                width = 960 - margin.right - margin.left,
-                                height = 800 - margin.top - margin.bottom;
-                                
-                            var i = 0,
-                                duration = 750,
-                                root;
+                    var margin = {top: 20, right: 120, bottom: 20, left: 120},
+                        width = 960 - margin.right - margin.left,
+                        height = 800 - margin.top - margin.bottom;
 
-                            var tree = d3.layout.tree()
-                                .size([height, width]);
+                    var i = 0,
+                        duration = 750,
+                        root;
 
-                            var diagonal = d3.svg.diagonal()
-                                .projection(function(d) { return [d.y, d.x]; });
+                    var tree = d3.layout.tree()
+                        .size([height, width]);
 
-//sample code, do not delete
-                                // var insert;
-                                // if (variable == z) {
-                                //  insert = 'x';
-                                // } else {
-                                //  insert = 'y';
-                                // }
-                                // data[insert]
+                    var diagonal = d3.svg.diagonal()
+                        .projection(function(d) { return [d.y, d.x]; });
 
+                    var svg = d3.select("#networktree").append("svg")
+                        .attr("width", width + margin.right + margin.left)
+                        .attr("height", height + margin.top + margin.bottom)
+                        .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-                            var svg = d3.select("#networktree").append("svg")
-                                .attr("width", width + margin.right + margin.left)
-                                .attr("height", height + margin.top + margin.bottom)
-                              .append("g")
-                                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                    root = $scope.json;
+                    root.x0 = height / 2;
+                    root.y0 = 0;
 
-                              root = $scope.json;
-                              root.x0 = height / 2;
-                              root.y0 = 0;
+                    function collapse(d) {
+                        if (d.children) {
+                            d._children = d.children;
+                            d._children.forEach(collapse);
+                            d.children = null;
+                        }
+                    }
 
-                              function collapse(d) {
-                                if (d.children) {
-                                  d._children = d.children;
-                                  d._children.forEach(collapse);
-                                  d.children = null;
-                                }
-                              }
-
-                              root.children.forEach(collapse);
-                              update(root);
+                    root.children.forEach(collapse);
+                    update(root);
 
 
-                            d3.select(self.frameElement).style("height", "800px");
+                    d3.select(self.frameElement).style("height", "800px");
 
-                            function update(source) {
+                    function update(source) {
 
-                              // Compute the new tree layout.
-                              var nodes = tree.nodes(root).reverse(),
-                                  links = tree.links(nodes);
+                        // Compute the new tree layout.
+                        var nodes = tree.nodes(root).reverse(),
+                            links = tree.links(nodes);
 
-                              // Normalize for fixed-depth.
-                              nodes.forEach(function(d) { d.y = d.depth * 200; });
+                        // Normalize for fixed-depth.
+                        nodes.forEach(function(d) { d.y = d.depth * 200; });
 
-                              // Update the nodes…
-                              var node = svg.selectAll("g.node")
-                                  .data(nodes, function(d) { return d.id || (d.id = ++i); });
+                        // Update the nodes…
+                        var node = svg.selectAll("g.node")
+                            .data(nodes, function(d) { return d.id || (d.id = ++i); });
 
-                              // Enter any new nodes at the parent's previous position.
-                              var nodeEnter = node.enter().append("g")
-                                    .attr("class", "node")
-                                    .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-                                    .on("click", click);
+                        // Enter any new nodes at the parent's previous position.
+                        var nodeEnter = node.enter().append("g")
+                            .attr("class", "node")
+                            .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+                            .on("click", click);
 
-                              var customNode = nodeEnter.append("g")
-                                    .attr("class", "points");
+                        var customNode = nodeEnter.append("g")
+                            .attr("class", "points");
 
-                                customNode.append("text")
-                                    .attr("x", function(d) { return d.children || d._children ? -35 : 18; })
-                                    .attr("dy", ".35em")
-                                    .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
-                                    .text(function(d) { return d.name + ' - ' + d.value; })
-                                    .style("fill-opacity", 1e-6);
+                        customNode.append("text")
+                            .attr("x", function(d) { return d.children || d._children ? -35 : 18; })
+                            .attr("dy", ".35em")
+                            .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+                            .text(function(d) { return d.name + ' - ' + d.value; })
+                            .style("fill-opacity", 1e-6);
 
-                                // Transition nodes to their new position.
-                                var nodeUpdate = node.transition()
-                                    .duration(duration)
-                                    .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+                        // Transition nodes to their new position.
+                        var nodeUpdate = node.transition()
+                            .duration(duration)
+                            .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
 
-                                nodeUpdate.select(".points").each(function(d){
-                                var elm = d3.select(this);
-                                switch(d.value) {
-                                    case 'Network':
-
+                        nodeUpdate.select(".points").each(function(d){
+                            var elm = d3.select(this);
+                            switch(d.value) {
+                                case 'Network':
                                     //RapidPHIRE logo
-
                                     elm.append('rect')
                                         .attr('x', -30)
                                         .attr('y', -40)
@@ -1579,10 +1567,10 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                                         .attr('d', 'M1.6,21.2l13.4-10.7l13.5,10.7L14.9,5.9L1.6,21.2z')
                                         .attr('fill', '#ED1F24')
                                         .attr('transform', 'translate(-28,-35) scale(2.5,2.5)');
-                                    break;
+                                        break;
 
-                                    case 'Linux':
-                                        elm.append('path')
+                                case 'Linux':
+                                    elm.append('path')
                                         .style('fill', '#000000')
                                         .attr('d', 'M26.3,0c2.2-0.1,5.4,1.9,5.7,4.2c0.3,1.4,0.1,3,0.1,4.4c0,1.6,0,3.3,0.2,4.9'+
                                         'c0.3,2.9,2.4,4.8,3.7,7.2c0.6,1.2,1.4,2.4,1.7,3.8c0.4,1.5,0.7,3.1,1,4.6c0.2,1.5,0.4,2.9,0.3,4.4c0,0.6,0.1,1.3-0.1,2'+
@@ -1595,21 +1583,21 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                                         'c0-1.7,0.3-3,1.7-4.2C22.9,0.9,24.5,0,26.3,0z')
                                         .attr('transform', 'translate(-30,-25)');
 
-                                        elm.append('path')
+                                    elm.append('path')
                                         .style('fill', '#FFF')
                                         .attr('d', 'M28.5,7.6c0.3,0.2,0.8,0.4,0.8,0.8c0,0.4,0,0.9-0.1,1.3'+
                                         'c-0.1,0.3-0.2,0.7-0.5,1c-0.4,0.5-0.9,0.3-1.4,0.1c1.1-0.4,1.7-1.9,0.6-2.7c-0.5-0.4-1.1-0.3-1.5,0.3c-0.4,0.7-0.3,1.4,0.1,2.1'+
                                         'c-0.2-0.2-0.6-0.2-0.7-0.5c-0.2-0.5-0.3-1.1-0.2-1.7c0.1-0.8,0.5-0.8,1.2-0.9C27.4,7.4,28,7.4,28.5,7.6z')
                                         .attr('transform', 'translate(-30,-25)');
 
-                                        elm.append('path')
+                                    elm.append('path')
                                         .style('fill', '#FFF')
                                         .attr('d', 'M22.4,7.6c0.2,0.1,0.5,0.1,0.6,0.3c0.2,0.4,0.2,0.8,0.3,1.3'+
                                         'c0,0.3,0,0.6-0.1,1c-0.1,0-0.4,0.4-0.5,0.2c0.3-0.8,0-2.8-1.2-2.1c-1,0.6-0.6,2.3,0.3,2.7c-0.6,0.3-0.7,0.3-1-0.3'+
                                         'c-0.2-0.6-0.4-1.1-0.3-1.7c0-0.6,0-0.8,0.6-1.2C21.6,7.6,21.9,7.6,22.4,7.6z')
                                         .attr('transform', 'translate(-30,-25)');
 
-                                        elm.append('path')
+                                    elm.append('path')
                                         .style('fill', '#FFF')
                                         .attr('d', 'M28.7,14.3c0.3,0.9,0.4,1.9,0.8,2.9c0.4,1,0.8,1.9,1.3,2.8'+
                                         'c0.9,1.9,1.9,3.9,2.7,5.9c0.7,1.9,1.4,3.8,0.9,5.9c-0.2,0.9-0.4,2-0.9,2.8c-0.1,0.2-0.4,0.3-0.5,0.5c-0.3,0.4-0.4,1-0.4,1.5'+
@@ -1620,14 +1608,14 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                                         'C27.2,15,28.6,14.1,28.7,14.3z')
                                         .attr('transform', 'translate(-30,-25)');
 
-                                        elm.append('path')
+                                    elm.append('path')
                                         .style('fill', '#f5c055')
                                         .attr('d', 'M24.7,9.6c0.9,0.3,1.5,0.9,2.4,1.3c0.9,0.4,2.1,0.2,2.5,1.2'+
                                         'c0.4,1.1-0.7,1.6-1.5,2.1c-1,0.6-2,1-3.1,1.2c-1.2,0.1-2.3,0.2-3.3-0.5c-0.7-0.5-1.5-1.1-1.5-2.1c0.1-1.2,1.1-1.3,2-1.8'+
                                         'C22.9,10.6,23.9,9.4,24.7,9.6z')
                                         .attr('transform', 'translate(-30,-25)');
 
-                                        elm.append('path')
+                                    elm.append('path')
                                         .style('fill', '#f5c055')
                                         .attr('d', 'M13.7,34.6c0.6,0.2,0.9,1.1,1.2,1.7c0.4,1,0.8,2.1,1.1,3.1'+
                                         'c0.6,1.9,1,3.9,1,6c0,1.7-1.3,2.9-3,2.9c-1,0-1.8-0.5-2.6-0.9c-1-0.5-1.8-1.1-2.7-1.7c-1.5-1.1-3.7-2.4-4.3-4.1'+
@@ -1635,17 +1623,17 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                                         'c0.4-0.4,0.6-0.9,0.9-1.4C12.2,35.3,13.6,34.1,13.7,34.6z')
                                         .attr('transform', 'translate(-30,-25)');
 
-                                        elm.append('path')
+                                    elm.append('path')
                                         .style('fill', '#f5c055')
                                         .attr('d', 'M31.6,36.3c0.3,0,0.6,0.3,0.9,0.3c0.1,0.5-0.1,0.9,0.1,1.4'+
                                         'c0.2,0.9,1.2,1.5,2,1.7c2,0.7,2.6-1.1,3.4-2.6c0.5,0.2,0.4,1.1,0.6,1.6c0.3,0.7,1.1,0.7,1.8,0.5c1.5-0.2,3.9-0.1,3.2,2'+
                                         'c-1,1.4-2,2.7-3.1,4c-0.6,0.5-1,1.2-1.6,1.7c-0.6,0.5-1.2,0.9-1.8,1.4c-1.4,1.1-2.7,1.8-4.5,1.3c-2-0.5-2.3-2.6-2.6-4.3'+
                                         'c-0.4-1.9-0.4-3.9-0.3-5.9c0.1-0.9,0.2-1.7,0.3-2.6C30.1,36.2,31,35.8,31.6,36.3z')
                                         .attr('transform', 'translate(-30,-25)');
-                                    break;
+                                        break;
 
-                                    case 'MacOS':
-                                        elm.append('path')
+                                case 'MacOS':
+                                    elm.append('path')
                                         .style('fill', '#828487')
                                         .style('stroke-width', 0.8)
                                         .style('stroke', 'white')
@@ -1654,180 +1642,130 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                                         'c-1.8,0-3.1-1.2-5.3-1.2c-2.1,0-4.3,1.3-5.8,3.5c-0.5,0.8-0.9,1.8-1.1,2.9c-0.5,3.1,0.3,7.2,2.7,10.9c1.2,1.8,2.7,3.8,4.7,3.8'+
                                         'c1.8,0,2.3-1.2,4.8-1.2c2.4,0,2.9,1.2,4.7,1.2c2,0,3.6-2.2,4.8-4c0.8-1.3,1.1-1.9,1.8-3.3C33.5,28.2,32.2,24.6,33.2,21.7z')
                                         .attr('transform', 'translate(-40,-40) scale(1.7)');
+                                        break;
+
+                                case 'Windows':
+                                elm.append('polygon')
+                                    .style('fill', '#fff')
+                                    .attr('points', '9,14 37,9 37,40 9,35 ')
+                                    .attr('transform', 'translate(-40,-40) scale(1.7)');
+
+                                    elm.append('polygon')
+                                    .style('fill', '#00AEEF')
+                                    .attr('points', '36.1,24.4 36.1,11.9 21.7,14 21.7,24.4 ')
+                                    .attr('transform', 'translate(-40,-40) scale(1.7)');
+
+                                    elm.append('polygon')
+                                    .style('fill', '#00AEEF')
+                                    .attr('points', '20.7,14.1 10.2,15.6 10.2,24.4 20.7,24.4 ')
+                                    .attr('transform', 'translate(-40,-40) scale(1.7)');
+
+                                    elm.append('polygon')
+                                    .style('fill', '#00AEEF')
+                                    .attr('points', '10.2,25.4 10.2,34.3 20.7,35.9 20.7,25.4 ')
+                                    .attr('transform', 'translate(-40,-40) scale(1.7)');
+
+                                    elm.append('polygon')
+                                    .style('fill', '#00AEEF')
+                                    .attr('points', '21.7,36 36.1,38.1 36.1,25.4 21.7,25.4 ')
+                                    .attr('transform', 'translate(-40,-40) scale(1.7)');
                                     break;
 
-                                    case 'Windows':
-                                        elm.append('polygon')
-                                            .style('fill', '#fff')
-                                            .attr('points', '9,14 37,9 37,40 9,35 ')
-                                            .attr('transform', 'translate(-40,-40) scale(1.7)');
-
-                                        elm.append('polygon')
-                                            .style('fill', '#00AEEF')
-                                            .attr('points', '36.1,24.4 36.1,11.9 21.7,14 21.7,24.4 ')
-                                            .attr('transform', 'translate(-40,-40) scale(1.7)');
-
-                                        elm.append('polygon')
-                                            .style('fill', '#00AEEF')
-                                            .attr('points', '20.7,14.1 10.2,15.6 10.2,24.4 20.7,24.4 ')
-                                            .attr('transform', 'translate(-40,-40) scale(1.7)');
-
-                                        elm.append('polygon')
-                                            .style('fill', '#00AEEF')
-                                            .attr('points', '10.2,25.4 10.2,34.3 20.7,35.9 20.7,25.4 ')
-                                            .attr('transform', 'translate(-40,-40) scale(1.7)');
-                                            
-                                        elm.append('polygon')
-                                            .style('fill', '#00AEEF')
-                                            .attr('points', '21.7,36 36.1,38.1 36.1,25.4 21.7,25.4 ')
-                                            .attr('transform', 'translate(-40,-40) scale(1.7)');
+                                default:
+                                    elm.append("rect")
+                                    .attr('x', -6)
+                                    .attr('y', -6)
+                                    .attr('height', 12)
+                                    .attr('width', 12)
+                                    .style('fill-opacity', 1)
+                                    .attr("id", function(d) { return d.value; })
+                                    .style("fill", function(d) { return d._children ? "red" : "#000"; });
                                     break;
+                            }
+                        })
 
-                                    default:
-                                        elm.append("rect")
-                                        .attr('x', -6)
-                                        .attr('y', -6)
-                                        .attr('height', 12)
-                                        .attr('width', 12)
-                                        .style('fill-opacity', 1)
-                                        .attr("id", function(d) { return d.value; })
-                                        .style("fill", function(d) { return d._children ? "red" : "#000"; });
-                                    break;
+                        d3.selectAll('.points')
+                            .append('text')
+                            .text(function(d){
+                                if ((d._children !== undefined) && (d._children !== null)) {
+                                    return d._children.length;
+                                } 
+                                else if ((d._children === null) || (d._children === undefined)){
+                                    return '';
                                 }
                             })
-                            
+                            .attr('x', -45)
+                            .attr('y', 30)
+                            .style('font-size', 18)
+                            .attr('fill', 'red')
+                            .style('font-weight', 'bold');
 
+                        nodeUpdate.select("text")
+                            .style("fill-opacity", 1)
+                            .style("font-size", 14);
 
+                        // Transition exiting nodes to the parent's new position.
+                        var nodeExit = node.exit().transition()
+                            .duration(duration)
+                            .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+                            .remove();
 
+                        nodeExit.select("rect")
+                            .attr('x', -6)
+                            .attr('y', -6)
+                            .attr('height', 0.1)
+                            .attr('width', 0.1);
 
-// this renders on the node but data is displayed in the wrong format
+                        nodeExit.select("text")
+                            .style("fill-opacity", 1e-6);
 
-                            // var childcount = function(d) {
-                            //      if ((d.depth === 2) && (d.id === 5)) {
-                            //          d = d.children.length;
-                            //      }
-                            //      return d;                               
-                            //  };
+                        // Update the links…
+                        var link = svg.selectAll("path.link")
+                            .data(links, function(d) { return d.target.id; });
 
-                            // d3.select('.points')
-                            //  .append('text')
-                            //  .text(childcount);
+                        // Enter any new links at the parent's previous position.
+                        link.enter().insert("path", "g")
+                            .attr("class", "link")
+                            .style("fill", "none")
+                            .style("stroke-width", 12)
+                            .style("stroke-opacity", .4)
+                            .attr("d", function(d) {
+                                var o = {x: source.x0, y: source.y0};
+                                return diagonal({source: o, target: o});
+                            });
 
+                        // Transition links to their new position.
+                        link.transition()
+                            .duration(duration)
+                            .attr("d", diagonal);
 
-                            // var childcount = function(d) {
-                            //      if (d.name == 'Zone') {
-                            //          d = 'what the fuck';
-                            //      } else {
-                            //          d = 'nothing here';
-                            //   }
-                            //      return d;                               
-                            //  };
+                        // Transition exiting nodes to the parent's new position.
+                        link.exit().transition()
+                            .duration(duration)
+                            .attr("d", function(d) {
+                            var o = {x: source.x, y: source.y};
+                            return diagonal({source: o, target: o});
+                            })
+                            .remove();
 
+                        // Stash the old positions for transition.
+                        nodes.forEach(function(d) {
+                            d.x0 = d.x;
+                            d.y0 = d.y;
+                        });
+                    }
 
-
-                            // give you the length of the string based on the node structure                            
-                            var treenodes = function(d) {
-                                if ((d.depth === 2) && (d.id > 4)) {
-                                 return d.children.length;
-                                }
-                            };
-
-                            var childcount = function(d) {
-
-                                    if (d.severity === 'severe') {
-                                        d = 'Severe';
-                                    } else {
-                                        d[treenodes];
-                                    }
-
-                                return d;                               
-                            };
-
-                            d3.selectAll('.points').append('text')
-                                .text(childcount)
-                                .attr('x', 15)
-                                .attr('y', 20);
-
-
-
-
-
-                            nodeUpdate.select("text")
-                                .style("fill-opacity", 1)
-                                .style("font-size", 14);
-
-                              // Transition exiting nodes to the parent's new position.
-                              var nodeExit = node.exit().transition()
-                                  .duration(duration)
-                                  .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
-                                  .remove();
-
-                              nodeExit.select("rect")
-                                        .attr('x', -6)
-                                        .attr('y', -6)
-                                        .attr('height', 0.1)
-                                        .attr('width', 0.1);
-
-                              nodeExit.select("text")
-                                  .style("fill-opacity", 1e-6);
-
-                              // Update the links…
-                              var link = svg.selectAll("path.link")
-                                  .data(links, function(d) { return d.target.id; });
-
-                              // Enter any new links at the parent's previous position.
-                              link.enter().insert("path", "g")
-                                  .attr("class", "link")
-                                  .style("fill", "none")
-                                  .style("stroke-width", 12)
-                                  .style("stroke-opacity", .4)
-                                  .attr("d", function(d) {
-                                    var o = {x: source.x0, y: source.y0};
-                                    return diagonal({source: o, target: o});
-                                  });
-
-                              // Transition links to their new position.
-                              link.transition()
-                                  .duration(duration)
-                                  .attr("d", diagonal);
-
-                              // Transition exiting nodes to the parent's new position.
-                              link.exit().transition()
-                                  .duration(duration)
-                                  .attr("d", function(d) {
-                                    var o = {x: source.x, y: source.y};
-                                    return diagonal({source: o, target: o});
-                                  })
-                                  .remove();
-
-                              // Stash the old positions for transition.
-                              nodes.forEach(function(d) {
-                                d.x0 = d.x;
-                                d.y0 = d.y;
-                              });
-                            }
-
-                            // Toggle children on click.
-                            function click(d) {
-
-                              if (d.children) {
-                                d._children = d.children;
-                                d.children = null;
-                              } else {
-                                d.children = d._children;
-                                d._children = null;
-                              }
-                            
-                            // give you the length of the string based on the node structure
-                            
-                            if ((d.depth === 2) && (d.id > 4)) {
-                                console.log(d)
-                                console.log(d.children.length)
-                            }
-
-                              update(d);
-
-                            }
+                    // Toggle children on click.
+                    function click(d) {
+                        if (d.children) {
+                            d._children = d.children;
+                            d.children = null;
+                        } else {
+                            d.children = d._children;
+                            d._children = null;
+                        }
+                        update(d);
+                    }
 
                 }, 0, false);
             })
@@ -1835,6 +1773,7 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
     };
 }]);
 
+// TREECHART ENDS HERE
 
 angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$rootScope', '$location', function ($timeout, $rootScope, $location) {
     return {
