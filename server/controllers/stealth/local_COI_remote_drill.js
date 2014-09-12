@@ -765,9 +765,9 @@ module.exports = function(pool) {
                     // USER TREE
                     var tree_conn = {
                         query: 'SELECT '+
-                                   'count(*) AS `count`, '+
-                                    '\'Connections\' AS traffic, '+
-                                    '\'Connections\' AS type'
+                                   'count(*) AS `count`,'+
+                                    '\'Connections\' AS traffic,'+
+                                    '\'Connections\' AS type,'+
                                     '`remote_ip` '+
                                 'FROM '+
                                     '`conn_ioc` '+
@@ -792,7 +792,6 @@ module.exports = function(pool) {
                                     '`dns` '+
                                 'WHERE '+
                                     'time BETWEEN ? AND ? '+
-                                    'AND `out_bytes` = 0 '+
                                     'AND `lan_ip` = ? '+
                                 'GROUP BY '+
                                     '`lan_ip`,'+
@@ -806,7 +805,7 @@ module.exports = function(pool) {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
                                     '\'Connections Drop\' AS traffic,'+
-                                    '\'Connections\' AS type,' +
+                                    '\'Connections\' AS type,'+
                                     '`remote_ip` '+
                                 'FROM '+
                                     '`conn_meta` '+
