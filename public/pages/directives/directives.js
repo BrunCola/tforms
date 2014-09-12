@@ -1523,6 +1523,7 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
 							  root.children.forEach(collapse);
 							  update(root);
 
+
 							d3.select(self.frameElement).style("height", "800px");
 
 							function update(source) {
@@ -1540,11 +1541,12 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
 
 							  // Enter any new nodes at the parent's previous position.
 							  var nodeEnter = node.enter().append("g")
-								  .attr("class", "node")
-								  .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-								  .on("click", click);
+									.attr("class", "node")
+									.attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+									.on("click", click);
 
-							  var customNode = nodeEnter.append("g").attr("class", "points");
+							  var customNode = nodeEnter.append("g")
+									.attr("class", "points");
 
 								customNode.append("text")
 									.attr("x", function(d) { return d.children || d._children ? -35 : 18; })
@@ -1683,17 +1685,72 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
 
 									default:
 										elm.append("rect")
-		                                .attr('x', -7)
-		                                .attr('y', -7)
-		                                .attr('height', 14)
-		                                .attr('width', 14)
+		                                .attr('x', -6)
+		                                .attr('y', -6)
+		                                .attr('height', 12)
+		                                .attr('width', 12)
 		                                .style('fill-opacity', 1)
 										.attr("id", function(d) { return d.value; })
 										.style("fill", function(d) { return d._children ? "red" : "#000"; });
 									break;
 								}
 							})
-								 
+							
+
+
+
+
+// this renders on the node but data is displayed in the wrong format
+
+							// var childcount = function(d) {
+							// 		if ((d.depth === 2) && (d.id === 5)) {
+							// 			d = d.children.length;
+							// 		}
+							// 		return d;								
+							// 	};
+
+							// d3.select('.points')
+							// 	.append('text')
+							// 	.text(childcount);
+
+
+							// var childcount = function(d) {
+							// 		if (d.name == 'Zone') {
+							// 			d = 'what the fuck';
+							// 		} else {
+							// 			d = 'nothing here';
+							//   }
+							// 		return d;								
+							// 	};
+
+
+
+							// give you the length of the string based on the node structure							
+							var treenodes = function(d)	{
+								if ((d.depth === 2) && (d.id > 4)) {
+								 return d.children.length;
+								}
+							};
+
+							var childcount = function(d) {
+
+									if (d.severity === 'severe') {
+										d = 'Severe';
+									} else {
+										d[treenodes];
+									}
+
+								return d;								
+							};
+
+							d3.selectAll('.points').append('text')
+								.text(childcount)
+								.attr('x', 15)
+								.attr('y', 20);
+
+
+
+
 
 							nodeUpdate.select("text")
 								.style("fill-opacity", 1)
@@ -1706,8 +1763,8 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
 								  .remove();
 
 							  nodeExit.select("rect")
-		                                .attr('x', -7)
-		                                .attr('y', -7)
+		                                .attr('x', -6)
+		                                .attr('y', -6)
 		                                .attr('height', 0.1)
 		                                .attr('width', 0.1);
 
@@ -1722,7 +1779,7 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
 							  link.enter().insert("path", "g")
 								  .attr("class", "link")
 								  .style("fill", "none")
-								  .style("stroke-width", 14)
+								  .style("stroke-width", 12)
 								  .style("stroke-opacity", .4)
 								  .attr("d", function(d) {
 									var o = {x: source.x0, y: source.y0};
@@ -1752,6 +1809,7 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
 
 							// Toggle children on click.
 							function click(d) {
+
 							  if (d.children) {
 								d._children = d.children;
 								d.children = null;
@@ -1759,9 +1817,17 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
 								d.children = d._children;
 								d._children = null;
 							  }
-							  update(d);
+							
+							// give you the length of the string based on the node structure
+							
+							if ((d.depth === 2) && (d.id > 4)) {
+								console.log(d)
+								console.log(d.children.length)
 							}
 
+							  update(d);
+
+							}
 
 				}, 0, false);
 			})
