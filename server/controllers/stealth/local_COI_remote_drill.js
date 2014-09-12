@@ -763,12 +763,30 @@ module.exports = function(pool) {
                     }
 
                     // USER TREE
-                    
+                    var tree_conn = {
+                        query: 'SELECT '+
+                                   'count(*) AS `count`, '+
+                                    '\'Connections Drop\' AS traffic, '+
+                                    '\'Connections\' AS type'
+                                    '`remote_ip` '+
+                                'FROM '+
+                                    '`conn_ioc` '+
+                                'WHERE '+
+                                    '`time` BETWEEN ? AND ? '+
+                                    'AND `lan_ip`= ? '+
+                                'GROUP BY '+
+                                    '`lan_ip`,'+
+                                    '`remote_ip` '+
+                                'ORDER BY '+
+                                    '`count` DESC '+
+                                'LIMIT 20',
+                        insert: [start, end, req.query.src_ip],
+                    }
                     var tree_conn_block = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Connections Drop\' AS traffic, '+
-                                    '\'Connections\' AS type'
+                                    '\'Connections Drop\' AS traffic,'+
+                                    '\'Connections\' AS type,' +
                                     '`remote_ip` '+
                                 'FROM '+
                                     '`conn_meta` '+
@@ -843,6 +861,14 @@ module.exports = function(pool) {
                             function(callback) { // TREE CHART
                             async.parallel([
                                 function(callback) {
+                                    new query(tree_conn, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
+                                        }
+                                        callback();
+                                    });
+                                },
+                                function(callback) {
                                     new query(tree_conn_block, {database: database, pool: pool}, function(err,data){
                                         for(var i in data){
                                             treeArray.push(data[i]); 
@@ -850,14 +876,7 @@ module.exports = function(pool) {
                                         callback();
                                     });
                                 },
-                                // function(callback) {
-                                //     new query(VARIABLE NAME, {database: database, pool: pool}, function(err,data){
-                                //         for(var i in data){
-                                //             treeArray.push(data[i]); 
-                                //         }
-                                //         callback();
-                                //     });
-                                // },
+                                
                             ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                                 if (err) throw console.log(err);
                                 new networktree(treeArray, {database: database, pool: pool}, function(err,data){
