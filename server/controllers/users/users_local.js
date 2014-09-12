@@ -1,7 +1,7 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-networkchart = require('../constructors/networkchart'),
+networkchart = require('../constructors/networktree'),
 query = require('../constructors/query'),
 config = require('../../config/config'),
 async = require('async');
