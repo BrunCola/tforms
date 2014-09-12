@@ -2135,6 +2135,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
             })
         }
     };
+}]);
 
 angular.module('mean.pages').directive('makeTreeChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
     return {
