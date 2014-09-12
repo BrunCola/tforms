@@ -766,7 +766,7 @@ module.exports = function(pool) {
                     var tree_conn = {
                         query: 'SELECT '+
                                    'count(*) AS `count`, '+
-                                    '\'Connections Drop\' AS traffic, '+
+                                    '\'Connections\' AS traffic, '+
                                     '\'Connections\' AS type'
                                     '`remote_ip` '+
                                 'FROM '+
@@ -774,6 +774,26 @@ module.exports = function(pool) {
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_ip`= ? '+
+                                'GROUP BY '+
+                                    '`lan_ip`,'+
+                                    '`remote_ip` '+
+                                'ORDER BY '+
+                                    '`count` DESC '+
+                                'LIMIT 20',
+                        insert: [start, end, req.query.src_ip],
+                    }
+                    var tree_dns = {
+                       query: 'SELECT '+
+                                    'count(*) AS `count`, '+
+                                    '\'Connections\' AS traffic,'+
+                                    '\'DNS\' AS type,' +
+                                    '`remote_ip` '+
+                                'FROM '+
+                                    '`dns` '+
+                                'WHERE '+
+                                    'time BETWEEN ? AND ? '+
+                                    'AND `out_bytes` = 0 '+
+                                    'AND `lan_ip` = ? '+
                                 'GROUP BY '+
                                     '`lan_ip`,'+
                                     '`remote_ip` '+
