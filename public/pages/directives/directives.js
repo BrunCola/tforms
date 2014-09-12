@@ -1527,7 +1527,6 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                             d3.select(self.frameElement).style("height", "800px");
 
                             function update(source) {
-
                               // Compute the new tree layout.
                               var nodes = tree.nodes(root).reverse(),
                                   links = tree.links(nodes);

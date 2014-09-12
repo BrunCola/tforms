@@ -18,7 +18,11 @@ angular.module('mean.pages').controller('usersLocalController', ['$scope', '$sta
 
 			$scope.data = data;
 
-			$scope.json = {"name": " ", "value": "Network",
+			// $scope.json = data.network;
+
+			$scope.json = {
+				"name": " ", 
+				"value": "Network",
 				"children": 
 				[
 					{
@@ -267,8 +271,6 @@ angular.module('mean.pages').controller('usersLocalController', ['$scope', '$sta
 					}
 				]
 			}
-
-
 
 			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
 			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});

@@ -19,39 +19,32 @@ module.exports = function(pool) {
 			var tables = [];
 			var crossfilter = [];
 			var info = [];
-			var network = [];
+			var network;
 			var table1 = {
-				query: 'SELECT '+
-						'`lan_zone`,'+
-						'`machine`,'+
-						'`lan_ip`,'+
-						'`operating_system`,'+
-						'`mac_address`,'+
-						'`endpoint_agent`,'+
-						'`username`,'+
-						'`stealth`,'+
-						'`vendor`,'+
-						'`ioc_count` '+
-					'FROM '+
-						'`users` ',//+
-					// 'WHERE '+
-						// 'conn_local.time BETWEEN ? AND ? '+
-					// 'GROUP BY '+
-						// '`lan_zone`,'+
-						// 'conn_local.lan_ip',
+				query: 'SELECT '+ 
+					'u.* '+ 
+				'FROM `users` u '+ 
+					'INNER JOIN ( '+
+						'SELECT '+
+							'max(`time`) as maxTime, '+ 
+							'`lan_ip`, '+
+							'`operating_system`, '+
+							'`machine`,'+
+							'`mac_address`,'+
+							'`endpoint_agent`,'+
+							'`username`,'+
+							'`stealth`,'+
+							'`vendor`,'+
+							'`ioc_count` '+
+						'FROM '+
+							'`users` '+ 
+						'GROUP BY '+
+							'`lan_ip` '+
+							') GROUPEDU ON '+
+							'u.lan_ip = GROUPEDU.lan_ip '+
+							'AND u.time = GROUPEDU.maxTime',
 				insert: [start, end],
 				params: [
-					// {
-					// 	title: 'Last Seen',
-					// 	select: 'time',
-					// 	dView: true,
-					// 	link: {
-					// 		type: 'local2remote',
-					// 		// val: the pre-evaluated values from the query above
-					// 		val: ['lan_zone','lan_ip'],
-					// 		crumb: false
-					// 	},
-					// },
 					{ title: 'Username', select: 'username' },
 					{ title: 'Zone', select: 'lan_zone' },
 					{ title: 'Machine Name', select: 'machine' },
@@ -94,7 +87,7 @@ module.exports = function(pool) {
 				// Table function(s)
 				function(callback) {
 					new networkchart(table1, {database: database, pool: pool}, function(err,data){
-						network.push(data);
+						network = data;
 						callback();
 					});
 				},
