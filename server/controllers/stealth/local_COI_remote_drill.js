@@ -2,6 +2,7 @@
 
 var sankey = require('../constructors/sankey_new'),
     datatable = require('../constructors/datatable'),
+    networktree = require('../constructors/networktree'),
     query = require('../constructors/query'),
     config = require('../../config/config'),
     async = require('async');
@@ -570,6 +571,7 @@ module.exports = function(pool) {
                             'ORDER BY `count` DESC LIMIT 10',
                         insert: [start, end, req.query.src_ip]
                     }
+<<<<<<< HEAD
                     //The rest of the queries are for the fisheye visual
                     var conn = {
                         query: 'SELECT '+
@@ -1063,6 +1065,9 @@ module.exports = function(pool) {
 
                     async.parallel([
                         // SWIMLANE    
+                    var treeArray = [], network = null;
+                    async.parallel([
+                        // SWIMLANE 
                         function(callback) { // conn
                             new datatable(conn, {database: database, pool:pool}, function(err, data){
                                 handleReturn(data, callback);
@@ -1114,15 +1119,36 @@ module.exports = function(pool) {
                             }
                         },
                         function(callback) {
-                            new sankey(sankey_auth1, sankey_auth2, sankey_auth3, sankey_unauth1, sankey_unauth2, sankey_unauth3, {database: database, pool: pool}, function(err,data){
-                                sankeyData = data;
-                                callback();
+                            // TREE CHART
+                            async.parallel([
+                                function(callback) {
+                                    new query(VARIABLE NAME, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
+                                        }
+                                        callback();
+                                    });
+                                },
+                                function(callback) {
+                                    new query(VARIABLE NAME, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
+                                        }
+                                        callback();
+                                    });
+                                },
+                            ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
+                                if (err) throw console.log(err);
+                                new networktree(treeArray, {database: database, pool: pool}, function(err,data){
+                                    network = data;
+                                    callback();
+                                });
                             });
                         }
                     ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                         if (err) throw console.log(err)
                         res.json({
-                            sankey: sankeyData,
+                            network: network,
                             info: info,
                             columns: columns,
                             laneGraph: result,

@@ -23,7 +23,8 @@ angular.module('mean.pages').controller('usersLocalController', ['$scope', '$sta
 			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 
 			var divHeight = 620;
-			$scope.$broadcast('networkChart', data.network[0], {height: divHeight});
+
+			$scope.$broadcast('networkChart', data.network);
 
 			$scope.$broadcast('spinnerHide');
 
