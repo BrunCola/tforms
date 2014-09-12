@@ -20,22 +20,39 @@ module.exports = function(pool) {
 				var tables = [];
 				var info = [];
 				var table1 = {
-					query: 'SELECT '+
-							'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-							'`src_user`, '+
-							'`src_ip`, '+
-							'`dst_ip`, '+
-							'`alert_source`, '+
-							'`program_source`, '+
-							'`alert_id`, '+
-							'`alert_info`, '+
-							'`full_log` '+
-						'FROM `ossec` '+
-						'WHERE '+
-							'`time` BETWEEN ? AND ? '+
-							'AND `alert_info` = ? '+
-							'AND `src_user` = ?',
-					insert: [start, end, req.query.alert_info, req.query.src_user],
+					 query: 'SELECT '+
+                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+                                '`lan_zone`,'+
+                                '`lan_machine`,'+
+                                '`lan_user`,'+
+                                '`lan_ip`,'+
+                                '`event_src`,'+
+                                '`event_id`,'+
+                                '`event_type`,'+
+                                '`event_detail`,'+
+                                '`stealth` '+
+                            'FROM '+
+                                '`endpoint_events` '+
+                            'WHERE '+
+                                '`time` BETWEEN ? AND ? '+
+                                'AND `event_type` = ? '+
+                                'AND `lan_user` = ? ',
+                        // query: 'SELECT '+
+						// 	'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+						// 	'`src_user`, '+
+						// 	'`src_ip`, '+
+						// 	'`dst_ip`, '+
+						// 	'`alert_source`, '+
+						// 	'`program_source`, '+
+						// 	'`alert_id`, '+
+						// 	'`alert_info`, '+
+						// 	'`full_log` '+
+						// 'FROM `ossec` '+
+						// 'WHERE '+
+						// 	'`time` BETWEEN ? AND ? '+
+						// 	'AND `alert_info` = ? '+
+						// 	'AND `src_user` = ?',
+					insert: [start, end, req.query.event_type, req.query.lan_user],
 					params: [
 						{ title: 'Time', select: 'time' },
 						{ title: 'Full Log', select: 'full_log' },
