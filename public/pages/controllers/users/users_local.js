@@ -33,9 +33,7 @@ angular.module('mean.pages').controller('usersLocalController', ['$scope', '$sta
 								[
 									{
 										"name": "IP",
-										"value": "192.168.222.202",
-										"severity": "severe",
-										"IOChits": "12"
+										"value": "192.168.222.202"
 									},
 									{
 										"name": "IP",
