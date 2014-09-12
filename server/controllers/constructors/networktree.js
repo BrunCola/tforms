@@ -14,9 +14,7 @@ module.exports = function (sql, conn, callback) {
 	function format(data) {
 		console.log(data)
 		var crossfilterData = crossfilter(data);
-
 		var mainDim = crossfilterData.dimension(function(d){return d});
-
 		// get list of unique lan_zones.. this can only be used at top level since children will be affected by available parents
 		var lanZoneDim = crossfilterData.dimension(function(d){return d.lan_zone});
 		var lanZoneUnique = lanZoneDim.group().reduceCount().top(Infinity);
@@ -108,9 +106,10 @@ module.exports = function (sql, conn, callback) {
 	// 		return result;
 
 	// 	}
-
-		
 	// }
+	// 
+	// 
+	
 
 	conn.pool.getConnection(function(err, connection) {
 		connection.changeUser({database : conn.database}, function(err) {
