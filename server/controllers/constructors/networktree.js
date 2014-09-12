@@ -11,8 +11,7 @@ module.exports = function (sql, conn, callback) {
 		'children': []
 	}
 
-	function format(data) {
-		console.log(data)
+	function networkFormat(data) {
 		var crossfilterData = crossfilter(data);
 		var mainDim = crossfilterData.dimension(function(d){return d});
 		// get list of unique lan_zones.. this can only be used at top level since children will be affected by available parents
@@ -31,11 +30,11 @@ module.exports = function (sql, conn, callback) {
 					var pushToThird = [];
 					var thirdChildren = mainDim.top(Infinity).filter(function(d){return ((d.lan_zone === lanZoneUnique[i].key) && (d.operating_system === secondChildren[s].operating_system))});
 					for (var t in thirdChildren){
-						// pushToThird.push({
-						// 	name: "IP",
-						// 	value: thirdChildren[t].lan_ip
-						// });
-						pushToThird.push(thirdChildren[t]);
+						pushToThird.push({
+							name: "IP",
+							value: thirdChildren[t].lan_ip
+						});
+						// pushToThird.push(thirdChildren[t]);
 					}
 					// push to children of parent lan_ip
 					pushToFirst.push({
@@ -56,6 +55,49 @@ module.exports = function (sql, conn, callback) {
 		return result;
 	}
 
+	function usersFormat(data) {
+		var crossfilterData = crossfilter(data);
+		var mainDim = crossfilterData.dimension(function(d){return d});
+		// get list of unique lan_zones.. this can only be used at top level since children will be affected by available parents
+		var trafficTypeDim = crossfilterData.dimension(function(d){return d.traffic_type});
+		var trafficTypeUnique = trafficTypeDim.group().reduceCount().top(Infinity);
+
+		var traffic_types = [];
+		for (var i in trafficTypeUnique) {
+			var pushToFirst = [];
+			var secondChildren = mainDim.top(Infinity).filter(function(d){return (d.traffic_type === trafficTypeUnique[i].key)});
+			var secondChildIndex = [];
+			for (var s in secondChildren) {
+				// if the OS is unique (in our index array), continue
+				if (secondChildIndex.indexOf(secondChildren[s].type) === -1) {
+					// whild matching second, lets start filtering and pushing the third children
+					var pushToThird = [];
+					var thirdChildren = mainDim.top(Infinity).filter(function(d){return ((d.traffic_type === trafficTypeUnique[i].key) && (d.type === secondChildren[s].type))});
+					for (var t in thirdChildren){
+						pushToThird.push({
+							name: "Remote IP",
+							value: thirdChildren[t].remote_ip
+						});
+						// pushToThird.push(thirdChildren[t]);
+					}
+					// push to children of parent lan_ip
+					pushToFirst.push({
+						name: "Type",
+						value: secondChildren[s].type,
+						children: pushToThird
+					})
+					// push the name to our index array
+					secondChildIndex.push(secondChildren[s].type);
+				}
+			}
+			result.children.push({
+				name: "Traffic",
+				value: trafficTypeUnique[i].key,
+				children: pushToFirst // perhaps i should map out the children here before pushing
+			})
+		}
+		return result;
+	}
 
 	// var levels = ['lan_zone', 'operating_system', 'lan_ip'];
 	// var testArrays = [];
@@ -109,19 +151,29 @@ module.exports = function (sql, conn, callback) {
 	// }
 	// 
 	// 
+	// 
+	switch(conn.type) {
+		case 'network':
+			conn.pool.getConnection(function(err, connection) {
+				connection.changeUser({database : conn.database}, function(err) {
+					if (err) throw err;
+				});
+				connection.query(sql.query, sql.insert, function(err, data) {
+					connection.release();
+					if (err) {
+						callback(err, null);
+					} else {
+						callback(null, networkFormat(data));
+					}
+				});
+			})
+			break;
+		case 'users':
+			console.log(sql)
+			console.log(usersFormat(sql))
+			callback(null, usersFormat(sql));
+			break;
+	}
 	
-
-	conn.pool.getConnection(function(err, connection) {
-		connection.changeUser({database : conn.database}, function(err) {
-			if (err) throw err;
-		});
-		connection.query(sql.query, sql.insert, function(err, data) {
-			connection.release();
-			if (err) {
-				callback(err, null);
-			} else {
-				callback(null, format(data));
-			}
-		});
-	})
+	
 };

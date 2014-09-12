@@ -674,7 +674,7 @@ module.exports = function(pool) {
                                 '`ossec` '+
                             'WHERE '+
                                 '`time` BETWEEN ? AND ? '+
-                                'AND `lan_ip`= ? ',
+                                'AND `src_ip`= ? ',
                         insert: [start, end, req.query.src_ip],
                         params: [
                             {title: "Time", select: "time"},
@@ -774,14 +774,14 @@ module.exports = function(pool) {
                                 'WHERE '+
                                     'time BETWEEN ? AND ? '+
                                     'AND `out_bytes` = 0 '+
-                                    'AND `lan_user` = ? '+
+                                    'AND `lan_ip` = ? '+
                                 'GROUP BY '+
                                     '`lan_ip`,'+
                                     '`remote_ip` '+
                                 'ORDER BY '+
                                     '`count` DESC '+
                                 'LIMIT 20',
-                        insert: [start, end, req.query.lan_user]
+                        insert: [start, end, req.query.src_ip]
                     }
                    
                     var treeArray = [], network = null;
@@ -820,7 +820,6 @@ module.exports = function(pool) {
                             function(callback) { // stealth
                                 if (req.session.passport.user.level === 3) {
                                     new datatable(stealth_conn, {database: database, pool:pool}, function(err, data){
-                                        console.log(data)
                                         handleReturn(data, callback);
                                     });
                                 } else {
@@ -830,7 +829,6 @@ module.exports = function(pool) {
                             function(callback) { // stealth block
                                 if (req.session.passport.user.level === 3) {
                                     new datatable(stealth_block, {database: database, pool:pool}, function(err, data){
-                                        console.log(data)
                                         handleReturn(data, callback);
                                     });
                                 } else {
@@ -842,7 +840,6 @@ module.exports = function(pool) {
                                     function(callback) {
                                         new query(tree_conn_block, {database: database, pool: pool}, function(err,data){
                                             for(var i in data){
-                                                console.log(data)
                                                 treeArray.push(data[i]); 
                                             }
                                             callback();
@@ -858,8 +855,7 @@ module.exports = function(pool) {
                                     // },
                                 ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                                     if (err) throw console.log(err);
-                                    new networktree(treeArray, {database: database, pool: pool}, function(err,data){
-                                        console.log(data)
+                                    new networktree(treeArray, {database: database, pool: pool, type: 'users'}, function(err,data){
                                         network = data;
                                         callback();
                                     });

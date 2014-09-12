@@ -86,7 +86,7 @@ module.exports = function(pool) {
 			async.parallel([
 				// Table function(s)
 				function(callback) {
-					new networkchart(table1, {database: database, pool: pool}, function(err,data){
+					new networkchart(table1, {database: database, pool: pool, type: 'network'}, function(err,data){
 						network = data;
 						callback();
 					});
