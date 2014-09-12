@@ -186,66 +186,66 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 				'orphans': ['user_local']
 			}]
 		},
-		{
-			'title': 'Users',
-			'url': '',
-			'icon': 'fa-user',
-			'children':
-			[
-				{
-					'title': 'Users',
-					'url': 'users_local',
-					'icon': 'fa-user',
-					'orphans': []
-				}
-			]
-		},
-		{
-			'title': 'DNS',
-			'url': '',
-			'icon': 'fa-level-up',
-			'children':
-			[
-				{
-					'title': 'Local DNS',
-					'url': 'dns_local',
-					'icon': 'fa-level-down',
-					'orphans': []
-				},
-				{
-					'title': 'Remote DNS',
-					'url': 'dns_remote',
-					'icon': 'fa-level-up',
-					'orphans': []
-				}
-			]
-		},
-		{
-			'title': 'SSL',
-			'url': '',
-			'icon': 'fa-lock',
-			'children':
-			[
-				{
-					'title': 'SSL Server',
-					'url': 'ssl_server',
-					'icon': 'fa-lock',
-					'orphans': []
-				},
-				{
-					'title': 'Local SSL',
-					'url': 'ssl_local',
-					'icon': 'fa-lock',
-					'orphans': []
-				},
-				{
-					'title': 'Remote SSL',
-					'url': 'ssl_remote',
-					'icon': 'fa-lock',
-					'orphans': []
-				}
-			]
-		},
+		// {
+		// 	'title': 'Users',
+		// 	'url': '',
+		// 	'icon': 'fa-user',
+		// 	'children':
+		// 	[
+		// 		{
+		// 			'title': 'Users',
+		// 			'url': 'users_local',
+		// 			'icon': 'fa-user',
+		// 			'orphans': []
+		// 		}
+		// 	]
+		// },
+		// {
+		// 	'title': 'DNS',
+		// 	'url': '',
+		// 	'icon': 'fa-level-up',
+		// 	'children':
+		// 	[
+		// 		{
+		// 			'title': 'Local DNS',
+		// 			'url': 'dns_local',
+		// 			'icon': 'fa-level-down',
+		// 			'orphans': []
+		// 		},
+		// 		{
+		// 			'title': 'Remote DNS',
+		// 			'url': 'dns_remote',
+		// 			'icon': 'fa-level-up',
+		// 			'orphans': []
+		// 		}
+		// 	]
+		// },
+		// {
+		// 	'title': 'SSL',
+		// 	'url': '',
+		// 	'icon': 'fa-lock',
+		// 	'children':
+		// 	[
+		// 		{
+		// 			'title': 'SSL Server',
+		// 			'url': 'ssl_server',
+		// 			'icon': 'fa-lock',
+		// 			'orphans': []
+		// 		},
+		// 		{
+		// 			'title': 'Local SSL',
+		// 			'url': 'ssl_local',
+		// 			'icon': 'fa-lock',
+		// 			'orphans': []
+		// 		},
+		// 		{
+		// 			'title': 'Remote SSL',
+		// 			'url': 'ssl_remote',
+		// 			'icon': 'fa-lock',
+		// 			'orphans': []
+		// 		}
+		// 	]
+		// },
 		{
 			'title': 'Endpoint Events',
 			'url': '',

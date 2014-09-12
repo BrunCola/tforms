@@ -34,7 +34,7 @@ function keepAlive() {
         return;
     });
 }
-setInterval(keepAlive, 1800000); // 30 minutes in miliseconds
+setInterval(keepAlive, 900000); // 15 minutes in miliseconds
 
 /**
  * Main application entry file.
