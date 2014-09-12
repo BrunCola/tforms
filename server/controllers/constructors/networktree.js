@@ -169,8 +169,6 @@ module.exports = function (sql, conn, callback) {
 			})
 			break;
 		case 'users':
-			console.log(sql)
-			console.log(usersFormat(sql))
 			callback(null, usersFormat(sql));
 			break;
 	}
