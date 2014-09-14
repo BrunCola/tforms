@@ -46,7 +46,9 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 	// 	}
 	// });
 
-
+	$scope.clickedNode = function(d) {
+		console.log(d)
+	}
 
 	$http({method: 'GET', url: query}).
 	success(function(data) {
