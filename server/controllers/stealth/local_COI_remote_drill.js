@@ -848,7 +848,7 @@ module.exports = function(pool) {
                                     '`dst_ip` '+
                                 'ORDER BY '+
                                     '`count` DESC '+
-                                'LIMIT 20',,
+                                'LIMIT 20',
                         insert: [start, end, req.query.lan_ip],
                     }
                     var stealth_block = {
