@@ -762,6 +762,38 @@ module.exports = function(pool) {
                                 'LIMIT 20',
                         insert: [start, end, req.query.lan_ip],
                     }
+                    var tree_ftp = {
+                        query: 'SELECT '+
+                                    'count(*) AS `count`, '+
+                                    '\'Connections\' AS traffic,'+
+                                    '\'FTP\' AS type,' +
+                                    '`remote_ip` '+
+                                'FROM '+
+                                    '`ftp` '+
+                                'GROUP BY '+
+                                    '`lan_ip`,'+
+                                    '`remote_ip` '+
+                                'ORDER BY '+
+                                    '`count` DESC '+
+                                'LIMIT 20',
+                        insert: [start, end, req.query.lan_ip],
+                    }
+                    var tree_irc = {
+                        query: 'SELECT '+
+                                    'count(*) AS `count`, '+
+                                    '\'Connections\' AS traffic,'+
+                                    '\'IRC\' AS type,' +
+                                    '`remote_ip` '+
+                                'FROM '+
+                                    '`irc` '+
+                                'GROUP BY '+
+                                    '`lan_ip`,'+
+                                    '`remote_ip` '+
+                                'ORDER BY '+
+                                    '`count` DESC '+
+                                'LIMIT 20',
+                        insert: [start, end, req.query.lan_ip],
+                    }
                     var tree_files = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
@@ -778,10 +810,10 @@ module.exports = function(pool) {
                                 'LIMIT 20',
                         insert: [start, end, req.query.lan_ip],
                     }
-                    var tree_conn_block = {
+                    var tree_drop_conn = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Connections Drop\' AS traffic, '+
+                                    '\'Connections Dropped\' AS traffic, '+
                                     '\'Connections\' AS type, '+
                                     '`remote_ip` '+
                                 'FROM '+
@@ -892,6 +924,22 @@ module.exports = function(pool) {
                                             callback();
                                         });
                                     },
+                                    function(callback) { // ftp
+                                        new query(tree_ftp, {database: database, pool: pool}, function(err,data){
+                                            for(var i in data){
+                                                treeArray.push(data[i]); 
+                                            }
+                                            callback();
+                                        });
+                                    },
+                                    function(callback) { // irc
+                                        new query(tree_irc, {database: database, pool: pool}, function(err,data){
+                                            for(var i in data){
+                                                treeArray.push(data[i]); 
+                                            }
+                                            callback();
+                                        });
+                                    },
                                     function(callback) { // files
                                         new query(tree_files, {database: database, pool: pool}, function(err,data){
                                             for(var i in data){
@@ -900,8 +948,8 @@ module.exports = function(pool) {
                                             callback();
                                         });
                                     },
-                                    function(callback) {
-                                        new query(tree_conn_block, {database: database, pool: pool}, function(err,data){
+                                    function(callback) { // dropped conn
+                                        new query(tree_drop_conn, {database: database, pool: pool}, function(err,data){
                                             for(var i in data){
                                                 treeArray.push(data[i]); 
                                             }
