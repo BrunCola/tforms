@@ -683,7 +683,7 @@ module.exports = function(pool) {
                                     '\'Connections\' AS type,'+
                                     '`remote_ip` '+
                                 'FROM '+
-                                    '`conn_ioc` '+
+                                    '`conn_meta` '+
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_ip`= ? '+
@@ -702,7 +702,7 @@ module.exports = function(pool) {
                                     '\'DNS\' AS type,' +
                                     '`remote_ip` '+
                                 'FROM '+
-                                    '`dns` '+
+                                    '`dns_meta` '+
                                 'WHERE '+
                                     'time BETWEEN ? AND ? '+
                                     'AND `lan_ip` = ? '+
@@ -714,10 +714,106 @@ module.exports = function(pool) {
                                 'LIMIT 20',
                         insert: [start, end, req.query.lan_ip],
                     }
-                    var tree_conn_block = {
+                    var tree_http = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Connections Drop\' AS traffic, '+
+                                    '\'Connections\' AS traffic,'+
+                                    '\'HTTP\' AS type,' +
+                                    '`remote_ip` '+
+                                'FROM '+
+                                    '`http_meta` '+
+                                'GROUP BY '+
+                                    '`lan_ip`,'+
+                                    '`remote_ip` '+
+                                'ORDER BY '+
+                                    '`count` DESC '+
+                                'LIMIT 20',
+                        insert: [start, end, req.query.lan_ip],
+                    }
+                    var tree_ssl = {
+                        query: 'SELECT '+
+                                    'count(*) AS `count`, '+
+                                    '\'Connections\' AS traffic,'+
+                                    '\'SSL\' AS type,' +
+                                    '`remote_ip` '+
+                                'FROM '+
+                                    '`ssl_meta` '+
+                                'GROUP BY '+
+                                    '`lan_ip`,'+
+                                    '`remote_ip` '+
+                                'ORDER BY '+
+                                    '`count` DESC '+
+                                'LIMIT 20',
+                        insert: [start, end, req.query.lan_ip],
+                    }
+                    var tree_ssh = {
+                        query: 'SELECT '+
+                                    'count(*) AS `count`, '+
+                                    '\'Connections\' AS traffic,'+
+                                    '\'SSH\' AS type,' +
+                                    '`remote_ip` '+
+                                'FROM '+
+                                    '`ssh` '+
+                                'GROUP BY '+
+                                    '`lan_ip`,'+
+                                    '`remote_ip` '+
+                                'ORDER BY '+
+                                    '`count` DESC '+
+                                'LIMIT 20',
+                        insert: [start, end, req.query.lan_ip],
+                    }
+                    var tree_ftp = {
+                        query: 'SELECT '+
+                                    'count(*) AS `count`, '+
+                                    '\'Connections\' AS traffic,'+
+                                    '\'FTP\' AS type,' +
+                                    '`remote_ip` '+
+                                'FROM '+
+                                    '`ftp` '+
+                                'GROUP BY '+
+                                    '`lan_ip`,'+
+                                    '`remote_ip` '+
+                                'ORDER BY '+
+                                    '`count` DESC '+
+                                'LIMIT 20',
+                        insert: [start, end, req.query.lan_ip],
+                    }
+                    var tree_irc = {
+                        query: 'SELECT '+
+                                    'count(*) AS `count`, '+
+                                    '\'Connections\' AS traffic,'+
+                                    '\'IRC\' AS type,' +
+                                    '`remote_ip` '+
+                                'FROM '+
+                                    '`irc` '+
+                                'GROUP BY '+
+                                    '`lan_ip`,'+
+                                    '`remote_ip` '+
+                                'ORDER BY '+
+                                    '`count` DESC '+
+                                'LIMIT 20',
+                        insert: [start, end, req.query.lan_ip],
+                    }
+                    var tree_files = {
+                        query: 'SELECT '+
+                                    'count(*) AS `count`, '+
+                                    '\'Connections\' AS traffic,'+
+                                    '\'Files\' AS type,' +
+                                    '`remote_ip` '+
+                                'FROM '+
+                                    '`file_meta` '+
+                                'GROUP BY '+
+                                    '`lan_ip`,'+
+                                    '`remote_ip` '+
+                                'ORDER BY '+
+                                    '`count` DESC '+
+                                'LIMIT 20',
+                        insert: [start, end, req.query.lan_ip],
+                    }
+                    var tree_drop_conn = {
+                        query: 'SELECT '+
+                                    'count(*) AS `count`, '+
+                                    '\'Connections Dropped\' AS traffic, '+
                                     '\'Connections\' AS type, '+
                                     '`remote_ip` '+
                                 'FROM '+
@@ -733,6 +829,44 @@ module.exports = function(pool) {
                                     '`count` DESC '+
                                 'LIMIT 20',
                         insert: [start, end, req.query.lan_ip]
+                    }
+                    var stealth_conn = {
+                        query: 'SELECT '+
+                                    'count(*) AS `count`, '+
+                                    '\'Stealth\' AS traffic, '+
+                                    '\'Stealth\' AS type, '+
+                                    '`dst_ip` AS `remote_ip` '+
+                                'FROM '+
+                                    '`stealth_conn_meta` '+
+                                'WHERE '+
+                                    '`time` BETWEEN ? AND ? '+
+                                    'AND `src_ip`= ? '+
+                                    'AND `in_bytes` > 0 '+
+                                    'AND `out_bytes` > 0 '+
+                                'GROUP BY '+
+                                    '`src_ip`,'+
+                                    '`dst_ip` '+
+                                'ORDER BY '+
+                                    '`count` DESC '+
+                                'LIMIT 20',
+                        insert: [start, end, req.query.lan_ip],
+                    }
+                    var stealth_block = {
+                        query: 'SELECT '+
+                                    'count(*) AS `count`, '+
+                                    '\'Stealth Dropped\' AS traffic, '+
+                                    '\'Stealth\' AS type, '+
+                                    '`dst_ip` AS `remote_ip` '+
+                                'FROM '+
+                                    '`stealth_conn_meta` '+
+                                'GROUP BY '+
+                                    '`src_ip`,'+
+                                    '`dst_ip` '+
+                                'WHERE '+
+                                    'time BETWEEN ? AND ? '+
+                                    'AND `src_ip` = ? '+
+                                    'AND (`in_bytes` = 0 OR `out_bytes` = 0)',
+                        insert: [start, end, req.query.lan_ip],
                     }
                    
                     var treeArray = [], network = null;
@@ -788,7 +922,7 @@ module.exports = function(pool) {
                             },
                             function(callback) { // TREE CHART
                                 async.parallel([
-                                    function(callback) {
+                                    function(callback) { // conn
                                         new query(tree_conn, {database: database, pool: pool}, function(err,data){
                                             for(var i in data){
                                                 treeArray.push(data[i]); 
@@ -796,7 +930,7 @@ module.exports = function(pool) {
                                             callback();
                                         });
                                     },
-                                    function(callback) {
+                                    function(callback) { // dns
                                         new query(tree_dns, {database: database, pool: pool}, function(err,data){
                                             for(var i in data){
                                                 treeArray.push(data[i]); 
@@ -804,8 +938,56 @@ module.exports = function(pool) {
                                             callback();
                                         });
                                     },
-                                    function(callback) {
-                                        new query(tree_conn_block, {database: database, pool: pool}, function(err,data){
+                                    function(callback) { // http
+                                        new query(tree_http, {database: database, pool: pool}, function(err,data){
+                                            for(var i in data){
+                                                treeArray.push(data[i]); 
+                                            }
+                                            callback();
+                                        });
+                                    },
+                                    function(callback) { // ssl
+                                        new query(tree_ssl, {database: database, pool: pool}, function(err,data){
+                                            for(var i in data){
+                                                treeArray.push(data[i]); 
+                                            }
+                                            callback();
+                                        });
+                                    },
+                                    function(callback) { // ssh
+                                        new query(tree_ssh, {database: database, pool: pool}, function(err,data){
+                                            for(var i in data){
+                                                treeArray.push(data[i]); 
+                                            }
+                                            callback();
+                                        });
+                                    },
+                                    function(callback) { // ftp
+                                        new query(tree_ftp, {database: database, pool: pool}, function(err,data){
+                                            for(var i in data){
+                                                treeArray.push(data[i]); 
+                                            }
+                                            callback();
+                                        });
+                                    },
+                                    function(callback) { // irc
+                                        new query(tree_irc, {database: database, pool: pool}, function(err,data){
+                                            for(var i in data){
+                                                treeArray.push(data[i]); 
+                                            }
+                                            callback();
+                                        });
+                                    },
+                                    function(callback) { // files
+                                        new query(tree_files, {database: database, pool: pool}, function(err,data){
+                                            for(var i in data){
+                                                treeArray.push(data[i]); 
+                                            }
+                                            callback();
+                                        });
+                                    },
+                                    function(callback) { // dropped conn
+                                        new query(tree_drop_conn, {database: database, pool: pool}, function(err,data){
                                             for(var i in data){
                                                 treeArray.push(data[i]); 
                                             }

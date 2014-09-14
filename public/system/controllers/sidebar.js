@@ -195,27 +195,27 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 				[{
 					'title': 'Stealth COI Map',
 					'url': 'users_COI_groups',
-					'icon': 'shield',
+					'icon': 'fa-code-fork',
 					'accessLevel': [3],	
 					'orphans': []
 				},
 				{
 					'title': 'Stealth User Conn.',
 					'url': 'local_COI_remote',
-					'icon': 'shield',
+					'icon': 'fa-shield',
 					'accessLevel': [3],	
 					'orphans': []
 				},{
 					'title': 'Local User Conn.',
 					'url': 'local_user_conn',
-					'icon': 'shield',
+					'icon': 'fa-user',
 					'accessLevel': [3],	
 					'orphans': []
 				},
 				{
 					'title': 'Local Network Map',
 					'url': 'users_local',
-					'icon': 'fa-user',
+					'icon': 'fa-sitemap',
 					'accessLevel': [3],	
 					'orphans': []
 				}
