@@ -846,7 +846,7 @@ module.exports = function(pool) {
                                 'LIMIT 20',
                         insert: [start, end, req.query.lan_ip]
                     }
-                    var stealth_conn = {
+                    var tree_stealth_conn = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
                                     '\'Stealth\' AS traffic, '+
@@ -867,7 +867,7 @@ module.exports = function(pool) {
                                 'LIMIT 20',
                         insert: [start, end, req.query.lan_ip],
                     }
-                    var stealth_block = {
+                    var tree_stealth_block = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
                                     '\'Stealth Dropped\' AS traffic, '+
@@ -1009,6 +1009,30 @@ module.exports = function(pool) {
                                             }
                                             callback();
                                         });
+                                    },
+                                    function(callback) { // files
+                                        if (req.session.passport.user.level === 3) {
+                                            new query(tree_stealth_conn, {database: database, pool: pool}, function(err,data){
+                                                for(var i in data){
+                                                    treeArray.push(data[i]); 
+                                                }
+                                                callback();
+                                            });
+                                        } else {
+                                            callback();
+                                        }
+                                    },
+                                    function(callback) { // dropped conn
+                                        if (req.session.passport.user.level === 3) {
+                                            new query(tree_stealth_block, {database: database, pool: pool}, function(err,data){
+                                                for(var i in data){
+                                                    treeArray.push(data[i]); 
+                                                }
+                                                callback();
+                                            });
+                                        } else {
+                                            callback();
+                                        }
                                     },
                                     
                                 ], function(err) { //This function gets called after the two tasks have called their "task callbacks"

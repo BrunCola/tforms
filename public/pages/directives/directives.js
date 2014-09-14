@@ -1534,12 +1534,8 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                             .on("click", click);
 
                         var customNode = nodeEnter.append("g")
-                            .attr("class", "points");
-
-                        customNode.append("text") 
-                            .on('click', function(d){
-                                cosnole.log(d)
-                            })
+                            .attr("class", "points")
+                            .append("text") 
                             .attr("x", function(d) { return d.children || d._children ? -32 : 18; })
                             .attr("dy", ".35em")
                             .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
@@ -1919,7 +1915,7 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                             }
                         })
 
-                        d3.selectAll('.points').each(function(d){
+                        d3.selectAll('g.points').each(function(d){
                             var elm = d3.select(this);
                             elm
                                 .append('g')
