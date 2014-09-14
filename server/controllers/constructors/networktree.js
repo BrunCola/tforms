@@ -59,20 +59,20 @@ module.exports = function (sql, conn, callback) {
 		var crossfilterData = crossfilter(data);
 		var mainDim = crossfilterData.dimension(function(d){return d});
 		// get list of unique lan_zones.. this can only be used at top level since children will be affected by available parents
-		var trafficTypeDim = crossfilterData.dimension(function(d){return d.traffic_type});
+		var trafficTypeDim = crossfilterData.dimension(function(d){return d.traffic});
 		var trafficTypeUnique = trafficTypeDim.group().reduceCount().top(Infinity);
 
 		var traffic_types = [];
 		for (var i in trafficTypeUnique) {
 			var pushToFirst = [];
-			var secondChildren = mainDim.top(Infinity).filter(function(d){return (d.traffic_type === trafficTypeUnique[i].key)});
+			var secondChildren = mainDim.top(Infinity).filter(function(d){return (d.traffic === trafficTypeUnique[i].key)});
 			var secondChildIndex = [];
 			for (var s in secondChildren) {
 				// if the OS is unique (in our index array), continue
 				if (secondChildIndex.indexOf(secondChildren[s].type) === -1) {
 					// whild matching second, lets start filtering and pushing the third children
 					var pushToThird = [];
-					var thirdChildren = mainDim.top(Infinity).filter(function(d){return ((d.traffic_type === trafficTypeUnique[i].key) && (d.type === secondChildren[s].type))});
+					var thirdChildren = mainDim.top(Infinity).filter(function(d){return ((d.traffic === trafficTypeUnique[i].key) && (d.type === secondChildren[s].type))});
 					for (var t in thirdChildren){
 						pushToThird.push({
 							name: "Remote IP",

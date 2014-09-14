@@ -167,39 +167,60 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 				},				
 			]
 		},
-		{
-			'title': 'Stealth',
-			'url': '',
-			'icon': 'fa-shield',	
-			'accessLevel': [3],		
-			'children': [
-			{
-				'title': 'Stealth',
-				'url': 'local_COI_remote',
-				'icon': 'shield',
-				'orphans': ['local_COI_remote_drill']
-			},
-			{
-				'title': 'COI Map',
-				'url': 'users_COI_groups',
-				'icon': 'shield',
-				'orphans': ['user_local']
-			}]
-		},
 		// {
-		// 	'title': 'Users',
+		// 	'title': 'Stealth',
 		// 	'url': '',
-		// 	'icon': 'fa-user',
-		// 	'children':
-		// 	[
-		// 		{
-		// 			'title': 'Users',
-		// 			'url': 'users_local',
-		// 			'icon': 'fa-user',
-		// 			'orphans': []
-		// 		}
-		// 	]
+		// 	'icon': 'fa-shield',	
+		// 	'accessLevel': [3],		
+		// 	'children': [
+		// 	{
+		// 		'title': 'Stealth',
+		// 		'url': 'local_COI_remote',
+		// 		'icon': 'shield',
+		// 		'orphans': []
+		// 	},
+		// 	{
+		// 		'title': 'COI Map',
+		// 		'url': 'users_COI_groups',
+		// 		'icon': 'shield',
+		// 		'orphans': ['user_local']
+		// 	}]
 		// },
+		{
+			'title': 'Users',
+			'url': '',
+			'icon': 'fa-user',
+			'accessLevel': [3],	
+			'children':
+				[{
+					'title': 'Stealth COI Map',
+					'url': 'users_COI_groups',
+					'icon': 'shield',
+					'accessLevel': [3],	
+					'orphans': []
+				},
+				{
+					'title': 'Stealth User Conn.',
+					'url': 'local_COI_remote',
+					'icon': 'shield',
+					'accessLevel': [3],	
+					'orphans': []
+				},{
+					'title': 'Local User Conn.',
+					'url': 'local_user_conn',
+					'icon': 'shield',
+					'accessLevel': [3],	
+					'orphans': []
+				},
+				{
+					'title': 'Local Network Map',
+					'url': 'users_local',
+					'icon': 'fa-user',
+					'accessLevel': [3],	
+					'orphans': []
+				}
+			]
+		},
 		// {
 		// 	'title': 'DNS',
 		// 	'url': '',

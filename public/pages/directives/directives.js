@@ -534,7 +534,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                             $('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-shield fa-stack-1x fa-inverse"></i></span>');
                                         }
                                     } else {
-                                        $('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html(aData.stealth);
+                                        $('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html('');
                                     }
                                     if (aData.receiptto && $scope.r.indexOf('receiptto') !== -1) {
                                         var newVar = aData.receiptto.replace(/[\<\>]/g,'');
@@ -1723,8 +1723,8 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                         link.exit().transition()
                             .duration(duration)
                             .attr("d", function(d) {
-                            var o = {x: source.x, y: source.y};
-                            return diagonal({source: o, target: o});
+                                var o = {x: source.x, y: source.y};
+                                return diagonal({source: o, target: o});
                             })
                             .remove();
 

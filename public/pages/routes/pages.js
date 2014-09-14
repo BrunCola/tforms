@@ -47,8 +47,8 @@ angular.module('mean.pages').config(['$stateProvider',
 						daterange: true
 					}
 				})
-	  			// IOC EVENTS DRILLDOWN
-  				.state('ioc_events_drilldown', {
+				// IOC EVENTS DRILLDOWN
+				.state('ioc_events_drilldown', {
 						url: '/ioc_events_drilldown?start&end&lan_ip&remote_ip&ioc',
 						templateUrl: 'public/pages/views/ioc_notifications/ioc_events_drilldown.html',
 						resolve: {
@@ -1311,6 +1311,21 @@ angular.module('mean.pages').config(['$stateProvider',
 					.state('user_local', {
 						url: '/user_local?start&end&user',
 						templateUrl: 'public/pages/views/stealth/user_local.html',
+						resolve: {
+							loggedin: checkLoggedin
+						},
+						data: {
+							title: 'User IPs',
+							subtitleElm: {
+								'User': 'user'
+							},
+							daterange: true
+						}
+					})
+					//local_user_conn
+					.state('local_user_conn', {
+						url: '/local_user_conn?start&end&user',
+						templateUrl: 'public/pages/views/users/local_user_conn.html',
 						resolve: {
 							loggedin: checkLoggedin
 						},

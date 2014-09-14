@@ -194,6 +194,8 @@ module.exports = function(app, passport, version, io, pool) {
 	//USERS
 		//USERS LOCAL
 		var users_local = require('../controllers/users/users_local')(pool);
+		//USERS LOCAL
+		var local_user_conn = require('../controllers/users/local_user_conn')(pool);
 	//STEALTH
 		//LOCAL COI REMOTE
 		var local_COI_remote = require('../controllers/stealth/local_COI_remote')(pool); 
@@ -513,6 +515,11 @@ module.exports = function(app, passport, version, io, pool) {
 			//USERS LOCAL
 			app.route('/stealth/user_local')
 			.get(authorization.requiresLogin, user_local.render);
+
+		//LOCAL USER CONN
+		app.route('/users/local_user_conn')
+		.get(authorization.requiresLogin, local_user_conn.render);
+
 	//SYSTEM HEALTH
 		//OVERVIEW
 		app.route('/health/overview')

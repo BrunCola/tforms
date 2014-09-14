@@ -25,9 +25,8 @@ module.exports = function(pool) {
 				var table1 = {
 					query: 'SELECT '+
 								'max(date_format(from_unixtime(stealth_src.time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-								'`src_ip`, '+
-								'`user`, '+
-								'`stealth_COIs`, '+
+								'`src_ip` AS lan_ip, '+
+								'`user` AS lan_user, '+
 								'sum(`in_packets`) AS `in_packets`, '+
 								'sum(`out_packets`) AS `out_packets`, '+
 								'(sum(`in_bytes`) / 1048576) AS `in_bytes`, '+
@@ -47,13 +46,12 @@ module.exports = function(pool) {
 							link: {
 								type: 'local_COI_remote_drill',
 								// val: the pre-evaluated values from the query above
-								val: ['src_ip'],
+								val: ['lan_ip','lan_user'],
 								crumb: false
 							}
 						},
-						{ title: 'IP', select: 'src_ip' },
-						{ title: 'User', select: 'user' },
-						{ title: 'COI', select: 'stealth_COIs' },
+						{ title: 'IP', select: 'lan_ip' },
+						{ title: 'User', select: 'lan_user' },
 						{ title: 'MB to Remote', select: 'in_bytes' },
 						{ title: 'MB from Remote', select: 'out_bytes' },
 						{ title: 'Packets to Remote', select: 'in_packets' },
