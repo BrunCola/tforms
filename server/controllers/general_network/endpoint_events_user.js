@@ -56,7 +56,7 @@ module.exports = function(pool) {
                         { title: 'LAN IP', select: 'lan_ip'},
                         { title: 'Event Type', select: 'event_type' },
                         { title: 'Event Details', select: 'event_detail'},
-                        { title: 'Event Source', select: 'event_source'},
+                        { title: 'Event Source', select: 'event_src'},
                         { title: 'Event ID', select: 'event_id'},
                     ],
                     settings: {
