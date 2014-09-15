@@ -220,13 +220,13 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 					'orphans': []
 				},
                 {
-                    'title': 'Endpoint Events By Type',
+                    'title': 'Endpoint By Type',
                     'url': 'endpoint_events',
                     'icon': 'fa-desktop',
                     'orphans': ['endpoint_events_user','endpoint_events_user_drill']
                 },
                 {
-                    'title': 'Endpoint Events By Local IP',
+                    'title': 'Endpoint By Local IP',
                     'url': 'endpoint_events_local',
                     'icon': 'fa-desktop',
                     'orphans': ['endpoint_events_local_by_alert_info', 'endpoint_events_local_alert_info_drill']
