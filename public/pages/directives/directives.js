@@ -1918,8 +1918,14 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                         d3.selectAll('g.points').each(function(d){
                             var elm = d3.select(this);
                             elm
-                                .append('g')
-                                .attr('transform', 'translate(-44,22)')
+                                .append('rect')
+                                .attr('height', 15)
+                                .attr('x', 0)
+                                .attr('y', 0)
+                                .attr('width', 15)
+                                .on('mouseover', function(d){
+                                    console.log(d);
+                                })
                                 .append('text')
                                 .text(function(d){
                                     if ((d._children !== undefined) && (d._children !== null)) {
@@ -1928,6 +1934,7 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                                         return '';
                                     }
                                 })
+                                .attr('transform', 'translate(-44,22)')
                                 .style('font-size', 12)
                                 .attr('fill', 'red')
                                 .style('font-weight', 'bold')
