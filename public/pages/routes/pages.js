@@ -502,7 +502,7 @@ angular.module('mean.pages').config(['$stateProvider',
                             loggedin: checkLoggedin
                         },
                         data: {
-                            title: 'Users',
+                            title: 'Local Network Map',
                             daterange: true
                         }
                     })
@@ -529,7 +529,7 @@ angular.module('mean.pages').config(['$stateProvider',
                             loggedin: checkLoggedin
                         },
                         data: {
-                            title: 'Endpoint Events',
+                            title: 'Endpoint Events By Type',
                             daterange: true
                         }
                     })
@@ -572,7 +572,7 @@ angular.module('mean.pages').config(['$stateProvider',
                             loggedin: checkLoggedin
                         },
                         data: {
-                            title: 'Local Endpoint Events',
+                            title: 'Endpoint Events By Local IP',
                             daterange: true
                         }
                     })
