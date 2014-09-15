@@ -46,7 +46,7 @@ module.exports = function(pool) {
                             select: 'time',
                             link: {
                                 type: 'endpoint_events_user_drill',
-                                val: ['lan_user','event_type'], // pre-evaluated values from the query above
+                                val: ['event_type','lan_user'], // pre-evaluated values from the query above
                                 crumb: false
                             }
                         },

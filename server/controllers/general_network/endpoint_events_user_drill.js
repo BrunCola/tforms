@@ -16,12 +16,13 @@ module.exports = function(pool) {
 				end = req.query.end;
 			}
 			//var results = [];
-			if (req.query.alert_info && req.query.src_user) {
+			if (req.query.event_type && req.query.lan_user) {
 				var tables = [];
 				var info = [];
 				var table1 = {
 					 query: 'SELECT '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+                                '`stealth`,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
                                 '`lan_user`,'+
@@ -30,32 +31,21 @@ module.exports = function(pool) {
                                 '`event_id`,'+
                                 '`event_type`,'+
                                 '`event_detail`,'+
-                                '`stealth` '+
+                                '`event_full` '+
                             'FROM '+
                                 '`endpoint_events` '+
                             'WHERE '+
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `event_type` = ? '+
                                 'AND `lan_user` = ? ',
-                        // query: 'SELECT '+
-						// 	'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
-						// 	'`src_user`, '+
-						// 	'`src_ip`, '+
-						// 	'`dst_ip`, '+
-						// 	'`alert_source`, '+
-						// 	'`program_source`, '+
-						// 	'`alert_id`, '+
-						// 	'`alert_info`, '+
-						// 	'`full_log` '+
-						// 'FROM `ossec` '+
-						// 'WHERE '+
-						// 	'`time` BETWEEN ? AND ? '+
-						// 	'AND `alert_info` = ? '+
-						// 	'AND `src_user` = ?',
 					insert: [start, end, req.query.event_type, req.query.lan_user],
 					params: [
 						{ title: 'Time', select: 'time' },
-						{ title: 'Full Log', select: 'full_log' },
+                        { title: 'Event Full Log', select: 'event_full' },
+						{ title: 'Event ID', select: 'event_id', dView:false },
+                        { title: 'Event Source', select: 'event_src', dView:false },
+                        { title: 'Event Type', select: 'event_type', dView:false },
+                        { title: 'Event Details', select: 'event_detail', dView:false },
 					],
 					settings: {
 						sort: [[0, 'desc']],

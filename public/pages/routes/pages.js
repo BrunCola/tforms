@@ -550,7 +550,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         })
                         // ENPOINT EVENTS USER DRILL
                             .state('endpoint_events_user_drill', {
-                                url: '/endpoint_events_user_drill?start&end&lan_user&lan_',
+                                url: '/endpoint_events_user_drill?start&end&event_type&lan_user',
                                 templateUrl: 'public/pages/views/general_network/endpoint_events_user_drill.html',
                                 resolve: {
                                     loggedin: checkLoggedin
@@ -558,8 +558,8 @@ angular.module('mean.pages').config(['$stateProvider',
                                 data: {
                                     title: 'Endpoint Event Full Logs',
                                     subtitleElm: {
-                                        'Alert Info': 'alert_info',
-                                        'Source User': 'src_user'
+                                        'Event Type': 'event_type',
+                                        'LAN User': 'lan_user'
                                     },
                                     daterange: true
                                 }
@@ -578,7 +578,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
                     // ENPOINT EVENTS LOCAL BY ALERT INFO 
                         .state('endpoint_events_local_by_alert_info', {
-                            url: '/endpoint_events_local_by_alert_info?start&end&src_ip',
+                            url: '/endpoint_events_local_by_alert_info?start&end&lan_zone&lan_user&lan_ip',
                             templateUrl: 'public/pages/views/general_network/endpoint_events_local_by_alert_info.html',
                             resolve: {
                                 loggedin: checkLoggedin
@@ -586,7 +586,9 @@ angular.module('mean.pages').config(['$stateProvider',
                             data: {
                                 title: 'Endpoints Triggering Event',
                                 subtitleElm: {
-                                    'Source IP': 'src_ip'
+                                    'Zone': 'lan_zone',
+                                    'User': 'lan_user',
+                                    'LAN IP': 'lan_ip',
                                 },
                                 daterange: true
                             }
