@@ -56,39 +56,32 @@ module.exports = function (sql, conn, callback) {
 	}
 
 	function usersFormat(data) {
+		function getVal(type) {
+			switch (type) {
+				case 'Connections':
+					return 'remote_ip';
+			}
+		}
 		var crossfilterData = crossfilter(data);
 		var mainDim = crossfilterData.dimension(function(d){return d});
 		// get list of unique lan_zones.. this can only be used at top level since children will be affected by available parents
-		var trafficTypeDim = crossfilterData.dimension(function(d){return d.traffic});
+		var trafficTypeDim = crossfilterData.dimension(function(d){return d.type});
 		var trafficTypeUnique = trafficTypeDim.group().reduceCount().top(Infinity);
 
 		var traffic_types = [];
 		for (var i in trafficTypeUnique) {
 			var pushToFirst = [];
-			var secondChildren = mainDim.top(Infinity).filter(function(d){return (d.traffic === trafficTypeUnique[i].key)});
+			var secondChildren = mainDim.top(Infinity).filter(function(d){return (d.type === trafficTypeUnique[i].key)});
 			var secondChildIndex = [];
 			for (var s in secondChildren) {
 				// if the OS is unique (in our index array), continue
-				if (secondChildIndex.indexOf(secondChildren[s].type) === -1) {
-					// whild matching second, lets start filtering and pushing the third children
-					var pushToThird = [];
-					var thirdChildren = mainDim.top(Infinity).filter(function(d){return ((d.traffic === trafficTypeUnique[i].key) && (d.type === secondChildren[s].type))});
-					for (var t in thirdChildren){
-						pushToThird.push({
-							name: "Remote IP",
-							value: thirdChildren[t].remote_ip
-						});
-						// pushToThird.push(thirdChildren[t]);
-					}
-					// push to children of parent lan_ip
+				if (secondChildIndex.indexOf(secondChildren[s][getVal(secondChildren[s].type)]) === -1) {
 					pushToFirst.push({
-						name: "Type",
-						value: secondChildren[s].type,
-						open: true,
-						children: pushToThird
+						name: secondChildren[s].type,
+						value: secondChildren[s][getVal(secondChildren[s].type)]
 					})
 					// push the name to our index array
-					secondChildIndex.push(secondChildren[s].type);
+					secondChildIndex.push(secondChildren[s][getVal(secondChildren[s].type)]);
 				}
 			}
 			result.children.push({

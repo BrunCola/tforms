@@ -3246,8 +3246,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                 elm
                                     .attr('id', function(d){return d.id })
                                     .html(function(d){
-                                        console.log($('li#'+d.id).offset().top)
-                                        console.log($('li#'+d.id).parent().offset().top)
                                         d.position = ($('li#'+d.id).offset().top - $('li#'+d.id).parent().offset().top);
                                         return d.info;
                                     })
