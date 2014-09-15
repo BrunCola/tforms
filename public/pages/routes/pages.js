@@ -472,7 +472,7 @@ angular.module('mean.pages').config(['$stateProvider',
                             loggedin: checkLoggedin
                         },
                         data: {
-                            title: 'User IPs',
+                            title: 'Local User Connections',
                             subtitleElm: {
                                 'User': 'user'
                             },
@@ -487,7 +487,7 @@ angular.module('mean.pages').config(['$stateProvider',
                                 loggedin: checkLoggedin
                             },
                             data: {
-                                title: 'Local to Remote Traffic through Stealth',
+                                title: 'Local User Event Timeline',
                                 subtitleElm: {
                                     'Local IP': 'ip'
                                 },
