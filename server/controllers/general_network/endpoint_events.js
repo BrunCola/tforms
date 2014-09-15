@@ -23,7 +23,7 @@ module.exports = function(pool) {
                             'count(*) AS count,'+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
                             '`event_src`,'+
-                            '`event_type`,'+
+                            '`event_type` '+
                         'FROM '+
                             '`endpoint_events` '+
                         'WHERE '+
