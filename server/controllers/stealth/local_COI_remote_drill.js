@@ -783,6 +783,9 @@ module.exports = function(pool) {
                                     '`remote_ip` '+
                                 'FROM '+
                                     '`irc` '+
+                                'WHERE '+
+                                    '`time` BETWEEN ? AND ? '+
+                                    'AND `lan_ip` = ? '+   
                                 'GROUP BY '+
                                     '`lan_ip`,'+
                                     '`remote_ip` '+
