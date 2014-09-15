@@ -2,257 +2,257 @@
 
 //Setting up route
 angular.module('mean.pages').config(['$stateProvider',
-	function($stateProvider) {
-		// Check if the user is connected
-		var checkLoggedin = function($q, $timeout, $http, $location) {
-			// Initialize a new promise
-			var deferred = $q.defer();
+    function($stateProvider) {
+        // Check if the user is connected
+        var checkLoggedin = function($q, $timeout, $http, $location) {
+            // Initialize a new promise
+            var deferred = $q.defer();
 
-			// Make an AJAX call to check if the user is logged in
-			$http.get('/loggedin').success(function(user) {
-				// Authenticated
-				if (user !== '0') $timeout(deferred.resolve);
-				// Not Authenticated
-				else {
-					$timeout(deferred.reject);
-					$location.url('/login');
-				}
-			});
-			return deferred.promise;
-		};
-		$stateProvider
+            // Make an AJAX call to check if the user is logged in
+            $http.get('/loggedin').success(function(user) {
+                // Authenticated
+                if (user !== '0') $timeout(deferred.resolve);
+                // Not Authenticated
+                else {
+                    $timeout(deferred.reject);
+                    $location.url('/login');
+                }
+            });
+            return deferred.promise;
+        };
+        $stateProvider
 
-			// LIVE CONNECTIONS
-    			.state('live_connections', {
-    				url: '/live_connections',
-    				templateUrl: 'public/pages/views/live_connections/live_connections.html',
-    				resolve: {
-    					loggedin: checkLoggedin
-    				},
-    				data: {
-    					title: 'Live Connections',
-    					daterange: false
-    				}
-    			})
-			// IOC NOTIFICATIONS
-				// IOC EVENTS
-				.state('ioc_events', {
-					url: '/ioc_events?start&end',
-					templateUrl: 'public/pages/views/ioc_notifications/ioc_events.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'Indicator of Compromise Events',
-						daterange: true
-					}
-				})
-				// IOC EVENTS DRILLDOWN
-				.state('ioc_events_drilldown', {
-						url: '/ioc_events_drilldown?start&end&lan_ip&remote_ip&ioc',
-						templateUrl: 'public/pages/views/ioc_notifications/ioc_events_drilldown.html',
-						resolve: {
-							loggedin: checkLoggedin
-						},
-						data: {
-							title: 'Indicator of Compromise Events',
-							daterange: true
-						}
-					})
-				// IOC REMOTE IPS
-				.state('ioc_remote', {
-					url: '/ioc_remote?start&end',
-					templateUrl: 'public/pages/views/ioc_notifications/ioc_remote.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'Indicator of Compromise Events Sorted by Remote IP',
-						daterange: true
-					}
-				})
-					// IOC REMOTE2LOCAL
-					.state('ioc_remote2local', {
-						url: '/ioc_remote2local?start&end&remote_ip&ioc',
-						templateUrl: 'public/pages/views/ioc_notifications/ioc_remote2local.html',
-						resolve: {
-							loggedin: checkLoggedin
-						},
-						data: {
-							title: 'Indicator of Compromise Events Sorted by Remote IP',
-							daterange: true
-						}
-					})
-				// IOC LOCAL IPS
-				.state('ioc_local', {
-					url: '/ioc_local?start&end',
-					templateUrl: 'public/pages/views/ioc_notifications/ioc_local.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'Indicator of Compromise Events Sorted by Local IP',
-						daterange: true
-					}
-				})
-					// IOC LOCAL IPS DRILL
-					.state('ioc_local_drill', {
-						url: '/ioc_local_drill?start&end&lan_zone&lan_ip',
-						templateUrl: 'public/pages/views/ioc_notifications/ioc_local_drill.html',
-						resolve: {
-							loggedin: checkLoggedin
-						},
-						data: {
-							title: 'Indicator of Compromise Events Sorted by Local IP',
-							daterange: true
-						}
-					})
-			// GENERAL NETWORK
-				// LOCAL IPS
-    				.state('local', {
-    					url: '/local?start&end',
-    					templateUrl: 'public/pages/views/general_network/local.html',
-    					resolve: {
-    						loggedin: checkLoggedin
-    					},
-    					data: {
-    						title: 'Local IP Bandwidth Use',
-    						daterange: true
-    					}
-    				})
-					// REMOTE2LOCAL
-    					.state('local2remote', {
-    						url: '/local2remote?start&end&lan_zone&lan_ip',
-    						templateUrl: 'public/pages/views/general_network/local2remote.html',
-    						resolve: {
-    							loggedin: checkLoggedin
-    						},
-    						data: {
-    							title: 'Local / Remote Bandwidth Use',
-    							subtitleElm: {
-    								'Local IP': 'lan_ip',
-    								'Zone': 'lan_zone'
-    							},
-    							daterange: true
-    						}
-    					})
-						// IPS SHARED
-    						.state('shared', {
-    							url: '/shared?start&end&lan_ip&lan_zone&remote_ip',
-    							templateUrl: 'public/pages/views/general_network/shared.html',
-    							resolve: {
-    								loggedin: checkLoggedin
-    							},
-    							data: {
-    								title: 'Conn Local/Remote Shared',
-    								subtitleElm: {
-    									'Local IP': 'lan_ip',
-    									'Zone': 'lan_zone',
-    									'Remote IP': 'remote_ip'
-    								},
-    								daterange: true
-    							}
-    						})
-				// REMOTE IPS
-    				.state('remote', {
-    					url: '/remote?start&end',
-    					templateUrl: 'public/pages/views/general_network/remote.html',
-    					resolve: {
-    						loggedin: checkLoggedin
-    					},
-    					data: {
-    						title: 'Remote IP Bandwidth Use',
-    						daterange: true
-    					}
-    				})
-					// REMOTE2LOCAL
-    					.state('remote2Local', {
-    						url: '/remote2local?start&end&remote_ip',
-    						templateUrl: 'public/pages/views/general_network/remote2local.html',
-    						resolve: {
-    							loggedin: checkLoggedin
-    						},
-    						data: {
-    							title: 'New Remote IPs Detected',
-    							subtitleElm: {
-    								'Remote IP': 'remote_ip'
-    							},
-    							daterange: true
-    						}
-    					})
-				// LOCAL FTP 
-    				.state('ftp_local`', {
-    					url: '/ftp_local?start&end',
-    					templateUrl: 'public/pages/views/general_network/ftp_local.html',
-    					resolve: {
-    						loggedin: checkLoggedin
-    					},
-    					data: {
-    						title: 'Local FTP',
-    						daterange: true
-    					}
-    				})
-					// LOCAL2REMOTE FTP
-    					.state('ftp_local2remote', {
-    						url: '/ftp_local2remote?start&end&lan_ip&lan_zone',
-    						templateUrl: 'public/pages/views/general_network/ftp_local2remote.html',
-    						resolve: {
-    							loggedin: checkLoggedin
-    						},
-    						data: {
-    							title: 'Local to Remote FTP',
-    							subtitleElm: {
-    								'Local IP': 'lan_ip',
-    								'Zone': 'lan_zone'
-    							},
-    							daterange: true
-    						}
-    					})
-						// FTP SHARED
-    						.state('ftp_shared', {
-    							url: '/ftp_shared?start&end&lan_ip&lan_zone&remote_ip',
-    							templateUrl: 'public/pages/views/general_network/ftp_shared.html',
-    							resolve: {
-    								loggedin: checkLoggedin
-    							},
-    							data: {
-    								title: 'FTP Local/Remote Shared',
-    								subtitleElm: {
-    									'Local IP': 'lan_ip',
-    									'Zone': 'lan_zone',
-    									'Remote IP': 'remote_ip'
-    								},
-    								daterange: true
-    							}
-    						})
-				// REMOTE FTP 
-    				.state('ftp_remote', {
-    					url: '/ftp_remote?start&end',
-    					templateUrl: 'public/pages/views/general_network/ftp_remote.html',
-    					resolve: {
-    						loggedin: checkLoggedin
-    					},
-    					data: {
-    						title: 'Remote FTP',
-    						daterange: true
-    					}
-    				})
-					// REMOTE2LOCAL FTP
-    					.state('ftp_remote2local', {
-    						url: '/ftp_remote2local?start&end&remote_ip',
-    						templateUrl: 'public/pages/views/general_network/ftp_remote2local.html',
-    						resolve: {
-    							loggedin: checkLoggedin
-    						},
-    						data: {
-    							title: 'Remote to Local FTP',
-    							subtitleElm: {
-    								'Remote IP': 'remote_ip'
-    							},
-    							daterange: true
-    						}
-    					})
-				// SSH STATUS
+            // LIVE CONNECTIONS
+                .state('live_connections', {
+                    url: '/live_connections',
+                    templateUrl: 'public/pages/views/live_connections/live_connections.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'Live Connections',
+                        daterange: false
+                    }
+                })
+            // IOC NOTIFICATIONS
+                // IOC EVENTS
+                .state('ioc_events', {
+                    url: '/ioc_events?start&end',
+                    templateUrl: 'public/pages/views/ioc_notifications/ioc_events.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'Indicator of Compromise Events',
+                        daterange: true
+                    }
+                })
+                // IOC EVENTS DRILLDOWN
+                .state('ioc_events_drilldown', {
+                        url: '/ioc_events_drilldown?start&end&lan_ip&remote_ip&ioc',
+                        templateUrl: 'public/pages/views/ioc_notifications/ioc_events_drilldown.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Indicator of Compromise Events',
+                            daterange: true
+                        }
+                    })
+                // IOC REMOTE IPS
+                .state('ioc_remote', {
+                    url: '/ioc_remote?start&end',
+                    templateUrl: 'public/pages/views/ioc_notifications/ioc_remote.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'Indicator of Compromise Events Sorted by Remote IP',
+                        daterange: true
+                    }
+                })
+                    // IOC REMOTE2LOCAL
+                    .state('ioc_remote2local', {
+                        url: '/ioc_remote2local?start&end&remote_ip&ioc',
+                        templateUrl: 'public/pages/views/ioc_notifications/ioc_remote2local.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Indicator of Compromise Events Sorted by Remote IP',
+                            daterange: true
+                        }
+                    })
+                // IOC LOCAL IPS
+                .state('ioc_local', {
+                    url: '/ioc_local?start&end',
+                    templateUrl: 'public/pages/views/ioc_notifications/ioc_local.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'Indicator of Compromise Events Sorted by Local IP',
+                        daterange: true
+                    }
+                })
+                    // IOC LOCAL IPS DRILL
+                    .state('ioc_local_drill', {
+                        url: '/ioc_local_drill?start&end&lan_zone&lan_ip',
+                        templateUrl: 'public/pages/views/ioc_notifications/ioc_local_drill.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Indicator of Compromise Events Sorted by Local IP',
+                            daterange: true
+                        }
+                    })
+            // GENERAL NETWORK
+                // LOCAL IPS
+                    .state('local', {
+                        url: '/local?start&end',
+                        templateUrl: 'public/pages/views/general_network/local.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Local IP Bandwidth Use',
+                            daterange: true
+                        }
+                    })
+                    // REMOTE2LOCAL
+                        .state('local2remote', {
+                            url: '/local2remote?start&end&lan_zone&lan_ip',
+                            templateUrl: 'public/pages/views/general_network/local2remote.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Local / Remote Bandwidth Use',
+                                subtitleElm: {
+                                    'Local IP': 'lan_ip',
+                                    'Zone': 'lan_zone'
+                                },
+                                daterange: true
+                            }
+                        })
+                        // IPS SHARED
+                            .state('shared', {
+                                url: '/shared?start&end&lan_ip&lan_zone&remote_ip',
+                                templateUrl: 'public/pages/views/general_network/shared.html',
+                                resolve: {
+                                    loggedin: checkLoggedin
+                                },
+                                data: {
+                                    title: 'Conn Local/Remote Shared',
+                                    subtitleElm: {
+                                        'Local IP': 'lan_ip',
+                                        'Zone': 'lan_zone',
+                                        'Remote IP': 'remote_ip'
+                                    },
+                                    daterange: true
+                                }
+                            })
+                // REMOTE IPS
+                    .state('remote', {
+                        url: '/remote?start&end',
+                        templateUrl: 'public/pages/views/general_network/remote.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Remote IP Bandwidth Use',
+                            daterange: true
+                        }
+                    })
+                    // REMOTE2LOCAL
+                        .state('remote2Local', {
+                            url: '/remote2local?start&end&remote_ip',
+                            templateUrl: 'public/pages/views/general_network/remote2local.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'New Remote IPs Detected',
+                                subtitleElm: {
+                                    'Remote IP': 'remote_ip'
+                                },
+                                daterange: true
+                            }
+                        })
+                // LOCAL FTP 
+                    .state('ftp_local`', {
+                        url: '/ftp_local?start&end',
+                        templateUrl: 'public/pages/views/general_network/ftp_local.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Local FTP',
+                            daterange: true
+                        }
+                    })
+                    // LOCAL2REMOTE FTP
+                        .state('ftp_local2remote', {
+                            url: '/ftp_local2remote?start&end&lan_ip&lan_zone',
+                            templateUrl: 'public/pages/views/general_network/ftp_local2remote.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Local to Remote FTP',
+                                subtitleElm: {
+                                    'Local IP': 'lan_ip',
+                                    'Zone': 'lan_zone'
+                                },
+                                daterange: true
+                            }
+                        })
+                        // FTP SHARED
+                            .state('ftp_shared', {
+                                url: '/ftp_shared?start&end&lan_ip&lan_zone&remote_ip',
+                                templateUrl: 'public/pages/views/general_network/ftp_shared.html',
+                                resolve: {
+                                    loggedin: checkLoggedin
+                                },
+                                data: {
+                                    title: 'FTP Local/Remote Shared',
+                                    subtitleElm: {
+                                        'Local IP': 'lan_ip',
+                                        'Zone': 'lan_zone',
+                                        'Remote IP': 'remote_ip'
+                                    },
+                                    daterange: true
+                                }
+                            })
+                // REMOTE FTP 
+                    .state('ftp_remote', {
+                        url: '/ftp_remote?start&end',
+                        templateUrl: 'public/pages/views/general_network/ftp_remote.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Remote FTP',
+                            daterange: true
+                        }
+                    })
+                    // REMOTE2LOCAL FTP
+                        .state('ftp_remote2local', {
+                            url: '/ftp_remote2local?start&end&remote_ip',
+                            templateUrl: 'public/pages/views/general_network/ftp_remote2local.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Remote to Local FTP',
+                                subtitleElm: {
+                                    'Remote IP': 'remote_ip'
+                                },
+                                daterange: true
+                            }
+                        })
+                // SSH STATUS
                     .state('ssh_status', {
                         url: '/ssh_status?start&end',
                         templateUrl: 'public/pages/views/general_network/ssh_status.html',
@@ -297,349 +297,345 @@ angular.module('mean.pages').config(['$stateProvider',
                                 }
                             })
                 // SSH LOCAL
-    				.state('ssh_local', {
-    					url: '/ssh_local?start&end',
-    					templateUrl: 'public/pages/views/general_network/ssh_local.html',
-    					resolve: {
-    						loggedin: checkLoggedin
-    					},
-    					data: {
-    						title: 'Local SSH',
-    						daterange: true
-    					}
-    				})
-					// SSH LOCAL2REMOTE
-    					.state('ssh_local2remote', {
-    						url: '/ssh_local2remote?start&end&lan_ip',
-    						templateUrl: 'public/pages/views/general_network/ssh_local2remote.html',
-    						resolve: {
-    							loggedin: checkLoggedin
-    						},
-    						data: {
-    							title: 'SSH Local to Remote',
-    							subtitleElm: {
-    								'Local IP': 'lan_ip'
-    							},
-    							daterange: true
-    						}
-    					})
-						// SSH SHARED
-						.state('ssh_shared', {
-							url: '/ssh_shared?start&end&lan_ip&lan_zone&remote_ip',
-							templateUrl: 'public/pages/views/general_network/ssh_shared.html',
-							resolve: {
-								loggedin: checkLoggedin
-							},
-							data: {
-								title: 'SSH Local/Remote Shared',
-								subtitleElm: {
-									'Local IP': 'lan_ip',
-									'Zone': 'lan_zone',
-									'Remote IP': 'remote_ip'
-								},
-								daterange: true
-							}
-						})
-				// SSH REMOTE
-    				.state('ssh_remote', {
-    					url: '/ssh_remote?start&end',
-    					templateUrl: 'public/pages/views/general_network/ssh_remote.html',
-    					resolve: {
-    						loggedin: checkLoggedin
-    					},
-    					data: {
-    						title: 'Remote SSH',
-    						daterange: true
-    					}
-    				})
-					// SSH REMOTE2LOCAL
-    					.state('ssh_remote2local', {
-    						url: '/ssh_remote2local?start&end&remote_ip',
-    						templateUrl: 'public/pages/views/general_network/ssh_remote2local.html',
-    						resolve: {
-    							loggedin: checkLoggedin
-    						},
-    						data: {
-    							title: 'SSH Remote to Local',
-    							subtitleElm: {
-    								'Remote IP': 'remote_ip'
-    							},
-    							daterange: true
-    						}
-    					})
-				// LOCAL IRC
-    				.state('irc_local', {
-    					url: '/irc_local?start&end',
-    					templateUrl: 'public/pages/views/general_network/irc_local.html',
-    					resolve: {
-    						loggedin: checkLoggedin
-    					},
-    					data: {
-    						title: 'Local IRC',
-    						daterange: true
-    					}
-    				})
-					// LOCAL2REMOTE IRC
-    					.state('irc_local2remote', {
-    						url: '/irc_local2remote?start&end&lan_ip&lan_zone',
-    						templateUrl: 'public/pages/views/general_network/irc_local2remote.html',
-    						resolve: {
-    							loggedin: checkLoggedin
-    						},
-    						data: {
-    							title: 'Local to Remote IRC',
-    							subtitleElm: {
-    								'Local IP': 'lan_ip',
-    								'Zone': 'lan_zone'
-    							},
-    							daterange: true
-    						}
-    					})
-						// IRC SHARED
-    						.state('irc_shared', {
-    							url: '/irc_shared?start&end&lan_ip&lan_zone&remote_ip',
-    							templateUrl: 'public/pages/views/general_network/irc_shared.html',
-    							resolve: {
-    								loggedin: checkLoggedin
-    							},
-    							data: {
-    								title: 'IRC Local/Remote Shared',
-    								subtitleElm: {
-    									'Local IP': 'lan_ip',
-    									'Zone': 'lan_zone',
-    									'Remote IP': 'remote_ip'
-    								},
-    								daterange: true
-    							}
-    						})
-				// REMOTE IRC
-    				.state('irc_remote', {
-    					url: '/irc_remote?start&end',
-    					templateUrl: 'public/pages/views/general_network/irc_remote.html',
-    					resolve: {
-    						loggedin: checkLoggedin
-    					},
-    					data: {
-    						title: 'Remote IRC',
-    						daterange: true
-    					}
-    				})
-					// REMOTE2LOCAL IRC
-    					.state('irc_remote2local', {
-    						url: '/irc_remote2local?start&end&remote_ip',
-    						templateUrl: 'public/pages/views/general_network/irc_remote2local.html',
-    						resolve: {
-    							loggedin: checkLoggedin
-    						},
-    						data: {
-    							title: 'Remote to Local IRC',
-    							subtitleElm: {
-    								'Remote IP': 'remote_ip'
-    							},
-    							daterange: true
-    						}
-    					})
-			// LOCAL EVENTS
-				// USERS LOCAL
-    				.state('users_local', {
-    					url: '/users_local?start&end',
-    					templateUrl: 'public/pages/views/users/users_local.html',
-    					resolve: {
-    						loggedin: checkLoggedin
-    					},
-    					data: {
-    						title: 'Users',
-    						daterange: true
-    					}
-    				})
-    		    // STEALTH
-                    //USERS COI GROUPS
-                        .state('users_COI_groups', {
-                            url: '/users_COI_groups',
-                            templateUrl: 'public/pages/views/stealth/users_COI_groups.html',
+                    .state('ssh_local', {
+                        url: '/ssh_local?start&end',
+                        templateUrl: 'public/pages/views/general_network/ssh_local.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Local SSH',
+                            daterange: true
+                        }
+                    })
+                    // SSH LOCAL2REMOTE
+                        .state('ssh_local2remote', {
+                            url: '/ssh_local2remote?start&end&lan_ip',
+                            templateUrl: 'public/pages/views/general_network/ssh_local2remote.html',
                             resolve: {
                                 loggedin: checkLoggedin
                             },
                             data: {
-                                title: 'Local to Remote Traffic through Stealth',
-                                daterange: true
-                            }
-                        })  
-                    //LOCAL COI REMOTE
-                        .state('local_COI_remote', {
-                            url: '/local_COI_remote?start&end',
-                            templateUrl: 'public/pages/views/stealth/local_COI_remote.html',
-                            resolve: {
-                                loggedin: checkLoggedin
-                            },
-                            data: {
-                                title: 'Local to Remote Traffic through Stealth',
-                                daterange: true
-                            }
-                        })      
-                    //local_user_conn
-                        .state('local_user_conn', {
-                            url: '/local_user_conn?start&end&user',
-                            templateUrl: 'public/pages/views/users/local_user_conn.html',
-                            resolve: {
-                                loggedin: checkLoggedin
-                            },
-                            data: {
-                                title: 'User IPs',
+                                title: 'SSH Local to Remote',
                                 subtitleElm: {
-                                    'User': 'user'
-                                },
-                                daterange: true
-                            }
-                        })    
-                        // LOCAL COI REMOTE DRILL
-                            .state('local_COI_remote_drill', {
-                                url: '/local_COI_remote_drill?start&end&ip',
-                                templateUrl: 'public/pages/views/stealth/local_COI_remote_drill.html',
-                                resolve: {
-                                    loggedin: checkLoggedin
-                                },
-                                data: {
-                                    title: 'Local to Remote Traffic through Stealth',
-                                    subtitleElm: {
-                                        'Local IP': 'ip'
-                                    },
-                                    daterange: true
-                                }
-                            })          
-                    // USERS LOCAL
-                        .state('user_local', {
-                            url: '/user_local?start&end&user',
-                            templateUrl: 'public/pages/views/stealth/user_local.html',
-                            resolve: {
-                                loggedin: checkLoggedin
-                            },
-                            data: {
-                                title: 'User IPs',
-                                subtitleElm: {
-                                    'User': 'user'
+                                    'Local IP': 'lan_ip'
                                 },
                                 daterange: true
                             }
                         })
-                         
-                
-            // ENDPOINT EVENTS	
-				// ENPOINT EVENTS
-				.state('endpoint_events', {
-					url: '/endpoint_events?start&end',
-					templateUrl: 'public/pages/views/general_network/endpoint_events.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'Endpoint Events',
-						daterange: true
-					}
-				})
-					// ENPOINT EVENTS USER
-					.state('endpoint_events_user', {
-						url: '/endpoint_events_user?start&end&alert_info',
-						templateUrl: 'public/pages/views/general_network/endpoint_events_user.html',
-						resolve: {
-							loggedin: checkLoggedin
-						},
-						data: {
-							title: 'Endpoints Triggering Event',
-							subtitleElm: {
-								'Alert Info': 'alert_info'
-							},
-							daterange: true
-						}
-					})
-						// ENPOINT EVENTS USER DRILL
-						.state('endpoint_events_user_drill', {
-							url: '/endpoint_events_user_drill?start&end&alert_info&src_user',
-							templateUrl: 'public/pages/views/general_network/endpoint_events_user_drill.html',
-							resolve: {
-								loggedin: checkLoggedin
-							},
-							data: {
-								title: 'Endpoint Event Full Logs',
-								subtitleElm: {
-									'Alert Info': 'alert_info',
-									'Source User': 'src_user'
-								},
-								daterange: true
-							}
-						})
-				// ENPOINT EVENTS LOCAL
-				.state('endpoint_events_local', {
-					url: '/endpoint_events_local?start&end',
-					templateUrl: 'public/pages/views/general_network/endpoint_events_local.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'Local Endpoint Events',
-						daterange: true
-					}
-				})
-					// ENPOINT EVENTS LOCAL BY ALERT INFO 
-					.state('endpoint_events_local_by_alert_info', {
-						url: '/endpoint_events_local_by_alert_info?start&end&src_ip',
-						templateUrl: 'public/pages/views/general_network/endpoint_events_local_by_alert_info.html',
-						resolve: {
-							loggedin: checkLoggedin
-						},
-						data: {
-							title: 'Endpoints Triggering Event',
-							subtitleElm: {
-								'Source IP': 'src_ip'
-							},
-							daterange: true
-						}
-					})
-						// ENPOINT EVENTS LOCAL ALERT INFO DRILL
-						.state('endpoint_events_local_alert_info_drill', {
-							url: '/endpoint_events_local_alert_info_drill?start&end&alert_info&src_ip',
-							templateUrl: 'public/pages/views/general_network/endpoint_events_local_alert_info_drill.html',
-							resolve: {
-								loggedin: checkLoggedin
-							},
-							data: {
-								title: 'Endpoint Event Full Logs',
-								subtitleElm: {
-									'Alert Info': 'alert_info',
-									'Source IP': 'src_ip'
-								},
-								daterange: true
-							}
-						})
-				// ENPOINT EVENTS SHAREPOINT
-				.state('endpoint_events_sharepoint', {
-					url: '/endpoint_events_sharepoint?start&end',
-					templateUrl: 'public/pages/views/general_network/endpoint_events_sharepoint.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'Endpoint Events',
-						daterange: true
-					}
-				})
-					// ENPOINT EVENTS SHAREPOINT DRILL
-					.state('endpoint_events_sharepoint_drill', {
-						url: '/endpoint_events_sharepoint_drill?start&end&event_id&lan_ip',
-						templateUrl: 'public/pages/views/general_network/endpoint_events_sharepoint_drill.html',
-						resolve: {
-							loggedin: checkLoggedin
-						},
-						data: {
-							title: 'Endpoint Event Full Logs',
-							subtitleElm: {
-								'Event ID': 'event_id',
-								'Local IP': 'lan_ip'
-								//'Zone': 'lan_zone'
-							},
-							daterange: true
-						}
-					})
+                        // SSH SHARED
+                        .state('ssh_shared', {
+                            url: '/ssh_shared?start&end&lan_ip&lan_zone&remote_ip',
+                            templateUrl: 'public/pages/views/general_network/ssh_shared.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'SSH Local/Remote Shared',
+                                subtitleElm: {
+                                    'Local IP': 'lan_ip',
+                                    'Zone': 'lan_zone',
+                                    'Remote IP': 'remote_ip'
+                                },
+                                daterange: true
+                            }
+                        })
+                // SSH REMOTE
+                    .state('ssh_remote', {
+                        url: '/ssh_remote?start&end',
+                        templateUrl: 'public/pages/views/general_network/ssh_remote.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Remote SSH',
+                            daterange: true
+                        }
+                    })
+                    // SSH REMOTE2LOCAL
+                        .state('ssh_remote2local', {
+                            url: '/ssh_remote2local?start&end&remote_ip',
+                            templateUrl: 'public/pages/views/general_network/ssh_remote2local.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'SSH Remote to Local',
+                                subtitleElm: {
+                                    'Remote IP': 'remote_ip'
+                                },
+                                daterange: true
+                            }
+                        })
+                // LOCAL IRC
+                    .state('irc_local', {
+                        url: '/irc_local?start&end',
+                        templateUrl: 'public/pages/views/general_network/irc_local.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Local IRC',
+                            daterange: true
+                        }
+                    })
+                    // LOCAL2REMOTE IRC
+                        .state('irc_local2remote', {
+                            url: '/irc_local2remote?start&end&lan_ip&lan_zone',
+                            templateUrl: 'public/pages/views/general_network/irc_local2remote.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Local to Remote IRC',
+                                subtitleElm: {
+                                    'Local IP': 'lan_ip',
+                                    'Zone': 'lan_zone'
+                                },
+                                daterange: true
+                            }
+                        })
+                        // IRC SHARED
+                            .state('irc_shared', {
+                                url: '/irc_shared?start&end&lan_ip&lan_zone&remote_ip',
+                                templateUrl: 'public/pages/views/general_network/irc_shared.html',
+                                resolve: {
+                                    loggedin: checkLoggedin
+                                },
+                                data: {
+                                    title: 'IRC Local/Remote Shared',
+                                    subtitleElm: {
+                                        'Local IP': 'lan_ip',
+                                        'Zone': 'lan_zone',
+                                        'Remote IP': 'remote_ip'
+                                    },
+                                    daterange: true
+                                }
+                            })
+                // REMOTE IRC
+                    .state('irc_remote', {
+                        url: '/irc_remote?start&end',
+                        templateUrl: 'public/pages/views/general_network/irc_remote.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Remote IRC',
+                            daterange: true
+                        }
+                    })
+                    // REMOTE2LOCAL IRC
+                        .state('irc_remote2local', {
+                            url: '/irc_remote2local?start&end&remote_ip',
+                            templateUrl: 'public/pages/views/general_network/irc_remote2local.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Remote to Local IRC',
+                                subtitleElm: {
+                                    'Remote IP': 'remote_ip'
+                                },
+                                daterange: true
+                            }
+                        })
+            // LOCAL EVENTS
+                // USERS COI GROUPS
+                    .state('users_COI_groups', {
+                        url: '/users_COI_groups',
+                        templateUrl: 'public/pages/views/stealth/users_COI_groups.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Local to Remote Traffic through Stealth',
+                            daterange: true
+                        }
+                    })  
+                // LOCAL COI REMOTE
+                    .state('local_COI_remote', {
+                        url: '/local_COI_remote?start&end',
+                        templateUrl: 'public/pages/views/stealth/local_COI_remote.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Local to Remote Traffic through Stealth',
+                            daterange: true
+                        }
+                    })      
+                // LOCAL USER CONN
+                    .state('local_user_conn', {
+                        url: '/local_user_conn?start&end&user',
+                        templateUrl: 'public/pages/views/users/local_user_conn.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'User IPs',
+                            subtitleElm: {
+                                'User': 'user'
+                            },
+                            daterange: true
+                        }
+                    })    
+                    // LOCAL COI REMOTE DRILL
+                        .state('local_COI_remote_drill', {
+                            url: '/local_COI_remote_drill?start&end&ip',
+                            templateUrl: 'public/pages/views/stealth/local_COI_remote_drill.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Local to Remote Traffic through Stealth',
+                                subtitleElm: {
+                                    'Local IP': 'ip'
+                                },
+                                daterange: true
+                            }
+                        })          
+                // USERS LOCAL
+                    .state('users_local', {
+                        url: '/users_local?start&end',
+                        templateUrl: 'public/pages/views/users/users_local.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Users',
+                            daterange: true
+                        }
+                    })
+                // USER LOCAL
+                    .state('user_local', {
+                        url: '/user_local?start&end&user',
+                        templateUrl: 'public/pages/views/stealth/user_local.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'User IPs',
+                            subtitleElm: {
+                                'User': 'user'
+                            },
+                            daterange: true
+                        }
+                    })
+                // ENPOINT EVENTS
+                    .state('endpoint_events', {
+                        url: '/endpoint_events?start&end',
+                        templateUrl: 'public/pages/views/general_network/endpoint_events.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Endpoint Events',
+                            daterange: true
+                        }
+                    })
+                    // ENPOINT EVENTS USER
+                        .state('endpoint_events_user', {
+                            url: '/endpoint_events_user?start&end&alert_info',
+                            templateUrl: 'public/pages/views/general_network/endpoint_events_user.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Endpoints Triggering Event',
+                                subtitleElm: {
+                                    'Alert Info': 'alert_info'
+                                },
+                                daterange: true
+                            }
+                        })
+                        // ENPOINT EVENTS USER DRILL
+                            .state('endpoint_events_user_drill', {
+                                url: '/endpoint_events_user_drill?start&end&alert_info&src_user',
+                                templateUrl: 'public/pages/views/general_network/endpoint_events_user_drill.html',
+                                resolve: {
+                                    loggedin: checkLoggedin
+                                },
+                                data: {
+                                    title: 'Endpoint Event Full Logs',
+                                    subtitleElm: {
+                                        'Alert Info': 'alert_info',
+                                        'Source User': 'src_user'
+                                    },
+                                    daterange: true
+                                }
+                            })
+                // ENPOINT EVENTS LOCAL
+                    .state('endpoint_events_local', {
+                        url: '/endpoint_events_local?start&end',
+                        templateUrl: 'public/pages/views/general_network/endpoint_events_local.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Local Endpoint Events',
+                            daterange: true
+                        }
+                    })
+                    // ENPOINT EVENTS LOCAL BY ALERT INFO 
+                        .state('endpoint_events_local_by_alert_info', {
+                            url: '/endpoint_events_local_by_alert_info?start&end&src_ip',
+                            templateUrl: 'public/pages/views/general_network/endpoint_events_local_by_alert_info.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Endpoints Triggering Event',
+                                subtitleElm: {
+                                    'Source IP': 'src_ip'
+                                },
+                                daterange: true
+                            }
+                        })
+                        // ENPOINT EVENTS LOCAL ALERT INFO DRILL
+                            .state('endpoint_events_local_alert_info_drill', {
+                                url: '/endpoint_events_local_alert_info_drill?start&end&alert_info&src_ip',
+                                templateUrl: 'public/pages/views/general_network/endpoint_events_local_alert_info_drill.html',
+                                resolve: {
+                                    loggedin: checkLoggedin
+                                },
+                                data: {
+                                    title: 'Endpoint Event Full Logs',
+                                    subtitleElm: {
+                                        'Alert Info': 'alert_info',
+                                        'Source IP': 'src_ip'
+                                    },
+                                    daterange: true
+                                }
+                            })
+                // ENPOINT EVENTS SHAREPOINT
+                    .state('endpoint_events_sharepoint', {
+                        url: '/endpoint_events_sharepoint?start&end',
+                        templateUrl: 'public/pages/views/general_network/endpoint_events_sharepoint.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Endpoint Events',
+                            daterange: true
+                        }
+                    })
+                    // ENPOINT EVENTS SHAREPOINT DRILL
+                        .state('endpoint_events_sharepoint_drill', {
+                            url: '/endpoint_events_sharepoint_drill?start&end&event_id&lan_ip',
+                            templateUrl: 'public/pages/views/general_network/endpoint_events_sharepoint_drill.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Endpoint Event Full Logs',
+                                subtitleElm: {
+                                    'Event ID': 'event_id',
+                                    'Local IP': 'lan_ip'
+                                    //'Zone': 'lan_zone'
+                                },
+                                daterange: true
+                            }
+                        })
             // APPLICATIONS
                 // BY APPLICATION
                 .state('app_by_application', {
@@ -909,7 +905,7 @@ angular.module('mean.pages').config(['$stateProvider',
                                 daterange: true
                             }
                         })
-			// DNS
+            // DNS
                 // LOCAL DNS
                 .state('dns_local', {
                     url: '/dns_local?start&end',
@@ -1265,131 +1261,131 @@ angular.module('mean.pages').config(['$stateProvider',
                                 }
                             })
             // FIRST SEEN
-				// NEW REMOTE IPS
-				.state('new_remote', {
-					url: '/new_remote?start&end',
-					templateUrl: 'public/pages/views/first_seen/new_remote.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'New Remote IPs Detected',
-						daterange: true
-					}
-				})
-				// NEW DNS QUERIES
-				.state('new_dns_queries', {
-					url: '/new_dns_queries?start&end',
-					templateUrl: 'public/pages/views/first_seen/new_dns_queries.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'New DNS Queries Detected',
-						daterange: true
-					}
-				})
-				// NEW HTTP HOSTS
-				.state('new_http_domains', {
-					url: '/new_http_domains?start&end',
-					templateUrl: 'public/pages/views/first_seen/new_http_domains.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'New HTTP Domains Detected',
-						daterange: true
-					}
-				})
-				// NEW SSL HOSTS
-				.state('new_ssl_hosts', {
-					url: '/new_ssl_hosts?start&end',
-					templateUrl: 'public/pages/views/first_seen/new_ssl_hosts.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'New Remote IP Detected Serving SSL Traffic',
-						daterange: true
-					}
-				})
-				// NEW SSL REMOTE IPS
-				.state('new_ssh_remote', {
-					url: '/new_ssh_remote?start&end',
-					templateUrl: 'public/pages/views/first_seen/new_ssh_remote.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'New Remote IP Detected Serving SSH Traffic',
-						daterange: true
-					}
-				})
-				// NEW FTP REMOTE IPS
-				.state('new_ftp_remote', {
-					url: '/new_ftp_remote?start&end',
-					templateUrl: 'public/pages/views/first_seen/new_ftp_remote.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'New Remote IP Detected Serving FTP Traffic',
-						daterange: true
-					}
-				})
-			// SYSTEM HEALTH
-				// OVERVIEW
-				.state('overview', {
-					url: '/overview?start&end',
-					templateUrl: 'public/pages/views/health/overview.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'RapidPHIRE Health',
-						daterange: true
-					}
-				})
-					// HEALTH DRILL
-					.state('health_drill', {
-						url: '/health_drill?start&end&client&zone',
-						templateUrl: 'public/pages/views/health/health_drill.html',
-						resolve: {
-							loggedin: checkLoggedin
-						},
-						data: {
-							title: 'Overall Zone Health',
-							subtitleElm: {
-								'Client': 'client',
-								'Zone': 'zone'
-							},
-							daterange: true
-						}
-					})
-			// REPORTS
-				// IOC EVENTS
-				.state('ioc_events_report', {
-					url: '/ioc_events_report?start&end',
-					templateUrl: 'public/pages/views/reports/ioc_events.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'IOC Events Report',
-						daterange: false
-					}
-				})
-			// ARCHIVE
-				.state('archive', {
-					url: '/archive?start&end',
-					templateUrl: 'public/pages/views/archive.html',
-					resolve: {
-						loggedin: checkLoggedin
-					},
-					data: {
-						title: 'Archive',
-						daterange: false
-					}
-				})
-	}
+                // NEW REMOTE IPS
+                .state('new_remote', {
+                    url: '/new_remote?start&end',
+                    templateUrl: 'public/pages/views/first_seen/new_remote.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'New Remote IPs Detected',
+                        daterange: true
+                    }
+                })
+                // NEW DNS QUERIES
+                .state('new_dns_queries', {
+                    url: '/new_dns_queries?start&end',
+                    templateUrl: 'public/pages/views/first_seen/new_dns_queries.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'New DNS Queries Detected',
+                        daterange: true
+                    }
+                })
+                // NEW HTTP HOSTS
+                .state('new_http_domains', {
+                    url: '/new_http_domains?start&end',
+                    templateUrl: 'public/pages/views/first_seen/new_http_domains.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'New HTTP Domains Detected',
+                        daterange: true
+                    }
+                })
+                // NEW SSL HOSTS
+                .state('new_ssl_hosts', {
+                    url: '/new_ssl_hosts?start&end',
+                    templateUrl: 'public/pages/views/first_seen/new_ssl_hosts.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'New Remote IP Detected Serving SSL Traffic',
+                        daterange: true
+                    }
+                })
+                // NEW SSL REMOTE IPS
+                .state('new_ssh_remote', {
+                    url: '/new_ssh_remote?start&end',
+                    templateUrl: 'public/pages/views/first_seen/new_ssh_remote.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'New Remote IP Detected Serving SSH Traffic',
+                        daterange: true
+                    }
+                })
+                // NEW FTP REMOTE IPS
+                .state('new_ftp_remote', {
+                    url: '/new_ftp_remote?start&end',
+                    templateUrl: 'public/pages/views/first_seen/new_ftp_remote.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'New Remote IP Detected Serving FTP Traffic',
+                        daterange: true
+                    }
+                })
+            // SYSTEM HEALTH
+                // OVERVIEW
+                .state('overview', {
+                    url: '/overview?start&end',
+                    templateUrl: 'public/pages/views/health/overview.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'RapidPHIRE Health',
+                        daterange: true
+                    }
+                })
+                    // HEALTH DRILL
+                    .state('health_drill', {
+                        url: '/health_drill?start&end&client&zone',
+                        templateUrl: 'public/pages/views/health/health_drill.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Overall Zone Health',
+                            subtitleElm: {
+                                'Client': 'client',
+                                'Zone': 'zone'
+                            },
+                            daterange: true
+                        }
+                    })
+            // REPORTS
+                // IOC EVENTS
+                .state('ioc_events_report', {
+                    url: '/ioc_events_report?start&end',
+                    templateUrl: 'public/pages/views/reports/ioc_events.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'IOC Events Report',
+                        daterange: false
+                    }
+                })
+            // ARCHIVE
+                .state('archive', {
+                    url: '/archive?start&end',
+                    templateUrl: 'public/pages/views/archive.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'Archive',
+                        daterange: false
+                    }
+                })
+    }
 ]);
