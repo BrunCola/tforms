@@ -51,9 +51,9 @@ module.exports = function(pool) {
                 var conn_ioc = {
                     query: 'SELECT '+
                             '\'conn_ioc\' AS type, '+
-                            '`time` as raw_time, '+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+                            '`time` AS raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") AS time_info, '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+ // Last Seen
                             '`ioc_count`,'+
                             '`lan_zone`,'+
                             '`machine`,'+
@@ -103,9 +103,9 @@ module.exports = function(pool) {
                 var conn = {
                     query: 'SELECT '+
                             '\'conn\' AS type, '+
-                            '`time` as raw_time, '+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                            '`time` AS raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") AS time_info, '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+
                             '`ioc_count`,'+
                             '`lan_zone`,'+
                             '`machine`,'+
