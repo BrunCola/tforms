@@ -45,17 +45,18 @@ module.exports = function(pool) {
                             select: 'time',
                             link: {
                                 type: 'endpoint_events_user_drill',
-                                val: ['lan_user','endpoint_type'], // pre-evaluated values from the query above
+                                val: ['lan_user','event_type'], // pre-evaluated values from the query above
                                 crumb: false
                             }
                         },
+                        { title: 'stealth', select: 'stealth'},
                         { title: 'Events', select: 'count'},
-                        { title: 'Source User', select: 'src_user'},
-                        { title: 'Source IP', select: 'src_ip'},
-                        { title: 'Destination IP', select: 'dst_ip'},
-                        { title: 'Alert Info', select: 'alert_info' },
-                        { title: 'Alert Source', select: 'alert_source'},
-                        { title: 'Program Source', select: 'program_source'},
+                        { title: 'User', select: 'lan_user'},
+                        { title: 'LAN IP', select: 'lan_ip'},
+                        { title: 'Event Type', select: 'event_type' },
+                        { title: 'Event Details', select: 'event_detail'},
+                        { title: 'Event Source', select: 'event_source'},
+                        { title: 'Event ID', select: 'event_id'},
                     ],
                     settings: {
                         sort: [[1, 'desc']],
