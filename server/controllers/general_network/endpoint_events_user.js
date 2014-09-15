@@ -1,6 +1,6 @@
 'use strict';
 
-var datatable = require('../constructors/datatable'),
+var dataTable = require('../constructors/datatable'),
 config = require('../../config/config'),
 async = require('async');
 
