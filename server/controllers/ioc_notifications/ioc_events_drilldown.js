@@ -78,7 +78,8 @@ module.exports = function(pool) {
                             'AND `lan_zone`= ? '+
                             'AND `lan_ip`= ? '+
                             'AND `remote_ip`= ? '+
-                            'AND `ioc`=? ',
+                            'AND `ioc`=? '+
+                            'LIMIT 250',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                     params: [
                         {title: "Time", select: "time"},
@@ -128,7 +129,8 @@ module.exports = function(pool) {
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
                             'AND `lan_zone`= ? '+
-                            'AND `lan_ip`= ? ',
+                            'AND `lan_ip`= ? '+
+                            'LIMIT 250',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -691,7 +693,8 @@ module.exports = function(pool) {
                                     'AND `lan_zone`= ? '+
                                     'AND `lan_ip`= ? '+
                                     'AND `remote_ip`= ? '+
-                                    'AND `ioc`=? ',
+                                    'AND `ioc`=? '+
+                                    'LIMIT 250',
                             insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                             params: [
                                 {title: "Time", select: "time"},
@@ -741,7 +744,8 @@ module.exports = function(pool) {
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_zone`= ? '+
-                                    'AND `lan_ip`= ? ',
+                                    'AND `lan_ip`= ? '+
+                                    'LIMIT 250',
                             insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                             params: [
                                 {title: "Time", select: "time"},

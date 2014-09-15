@@ -429,7 +429,7 @@ module.exports = function(pool) {
                             'WHERE '+
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_ip` = ? '+
-                            'LIMIT 500',
+                            'LIMIT 250',
                         insert: [start, end, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
