@@ -418,7 +418,7 @@ module.exports = function(pool) {
                                 '`conn_ioc` '+
                             'WHERE '+
                                 '`time` BETWEEN ? AND ? '+
-                                'AND `lan_ip`= ? ',
+                                'AND `lan_ip` = ? ',
                         insert: [start, end, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
@@ -686,7 +686,7 @@ module.exports = function(pool) {
                                     '`conn_meta` '+
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
-                                    'AND `lan_ip`= ? '+
+                                    'AND `lan_ip` = ? '+
                                 'GROUP BY '+
                                     '`lan_ip`,'+
                                     '`remote_ip` '+
@@ -722,6 +722,9 @@ module.exports = function(pool) {
                                     '`remote_ip` '+
                                 'FROM '+
                                     '`http_meta` '+
+                                'WHERE '+
+                                    '`time` BETWEEN ? AND ? '+
+                                    'AND `lan_ip` = ? '+   
                                 'GROUP BY '+
                                     '`lan_ip`,'+
                                     '`remote_ip` '+
@@ -738,6 +741,9 @@ module.exports = function(pool) {
                                     '`remote_ip` '+
                                 'FROM '+
                                     '`ssl_meta` '+
+                                'WHERE '+
+                                    '`time` BETWEEN ? AND ? '+
+                                    'AND `lan_ip` = ? '+
                                 'GROUP BY '+
                                     '`lan_ip`,'+
                                     '`remote_ip` '+
@@ -754,6 +760,9 @@ module.exports = function(pool) {
                                     '`remote_ip` '+
                                 'FROM '+
                                     '`ssh` '+
+                                'WHERE '+
+                                    '`time` BETWEEN ? AND ? '+
+                                    'AND `lan_ip` = ? '+    
                                 'GROUP BY '+
                                     '`lan_ip`,'+
                                     '`remote_ip` '+
@@ -770,6 +779,9 @@ module.exports = function(pool) {
                                     '`remote_ip` '+
                                 'FROM '+
                                     '`ftp` '+
+                                'WHERE '+
+                                    '`time` BETWEEN ? AND ? '+
+                                    'AND `lan_ip` = ? '+    
                                 'GROUP BY '+
                                     '`lan_ip`,'+
                                     '`remote_ip` '+
@@ -802,6 +814,9 @@ module.exports = function(pool) {
                                     '`remote_ip` '+
                                 'FROM '+
                                     '`file_meta` '+
+                                'WHERE '+
+                                    '`time` BETWEEN ? AND ? '+
+                                    'AND `lan_ip` = ? '+    
                                 'GROUP BY '+
                                     '`lan_ip`,'+
                                     '`remote_ip` '+
@@ -817,11 +832,12 @@ module.exports = function(pool) {
                                     '\'Connections\' AS type, '+
                                     '`remote_ip` '+
                                 'FROM '+
-                                    '`conn_meta` '+
+                                    '`conn` '+
                                 'WHERE '+
                                     'time BETWEEN ? AND ? '+
                                     'AND `out_bytes` = 0 '+
                                     'AND `lan_ip` = ? '+
+                                    'AND `proto` = \'tcp\' '+
                                 'GROUP BY '+
                                     '`lan_ip`,'+
                                     '`remote_ip` '+
