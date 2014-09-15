@@ -32,6 +32,7 @@ module.exports = function(pool) {
                             'time BETWEEN ? AND ? '+
                         'GROUP BY '+
                             '`lan_zone`,'+
+                            '`lan_user`,',+
                             '`lan_ip`',
                 insert: [start, end],
                 params: [

@@ -1,6 +1,6 @@
 'use strict';
 
-var datatable_stealth = require('../constructors/datatable_stealth'),
+var dataTable = require('../constructors/datatable'),
 config = require('../../config/config'),
 async = require('async');
 
@@ -33,7 +33,7 @@ module.exports = function(pool) {
                                 '`event_detail`,'+
                                 '`event_full` '+
                             'FROM '+
-                                '`endppoint_events` '+
+                                '`endpoint_events` '+
                             'WHERE '+
                                 'time BETWEEN ? AND ? '+
                                 'AND lan_zone = ? '+
@@ -48,18 +48,18 @@ module.exports = function(pool) {
                             select: 'time',
                             link: {
                                 type: 'endpoint_events_local_alert_info_drill',
-                                // val: the pre-evaluated values from the query above
-                                val: ['alert_info','src_ip'],
+                                val: ['lan_zone','lan_user','lan_ip','event_type'], // val: the pre-evaluated values from the query above
                                 crumb: false
                             }
                         },
+                        { title: 'stealth', select: 'stealth'},
                         { title: 'Events', select: 'count'},
-                        { title: 'User', select: 'src_user'},
-                        { title: 'Source IP', select: 'src_ip'},
-                        { title: 'Destination IP', select: 'dst_ip'},
-                        { title: 'Alert Info', select: 'alert_info' },
-                        { title: 'Alert Source', select: 'alert_source'},
-                        { title: 'Program Source', select: 'program_source'},
+                        { title: 'User', select: 'lan_user'},
+                        { title: 'LAN IP', select: 'lan_ip'},
+                        { title: 'Event Type', select: 'event_type' },
+                        { title: 'Event Details', select: 'event_detail'},
+                        { title: 'Event Source', select: 'event_src'},
+                        { title: 'Event ID', select: 'event_id'},
                     ],
                     settings: {
                         sort: [[1, 'desc']],
@@ -67,31 +67,11 @@ module.exports = function(pool) {
                         title: 'Local Endpoints Triggering Event'
                     }
                 }
-            var table2 = {    
-                query: 'SELECT '+
-                        'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ 
-                        '`stealth_COIs`, ' +
-                        '`stealth`, '+
-                        '`lan_ip`, ' +
-                        '`event`, ' +
-                        '`user` ' +
-                    'FROM ' + 
-                        '`endpoint_tracking` '+
-                    'WHERE ' + 
-                        'stealth > 0 '+
-                        'AND event = "Log On" ',
-                insert: [],
-                params: [
-                    { title: 'Stealth', select: 'stealth' },
-                    { title: 'COI Groups', select: 'stealth_COIs' },
-                    { title: 'User', select: 'user' }
-                ],
-                settings: {}
-            }
-            async.parallel([
-                // Table function(s)
-                function(callback) {
-                    new datatable_stealth(table1, table2, parseInt(req.session.passport.user.level), {database: database, pool: pool}, function(err,data){
+            
+                async.parallel([
+                    // Table function(s)
+                    function(callback) {
+                        new dataTable(table1, {database: database, pool: pool}, function(err,data){
                             tables.push(data);
                             callback();
                         });
