@@ -237,7 +237,7 @@ module.exports = function(pool) {
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
                             'AND `lan_ip`= ? '+
-                            'AND NOT REGEXP \'text\'',
+                            'AND `mime` NOT REGEXP \'text\'',
                     insert: [start, end, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -590,7 +590,7 @@ module.exports = function(pool) {
                             'WHERE '+
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_ip`= ? '+
-                                'AND NOT REGEXP \'text\'',
+                                'AND `mime` NOT REGEXP \'text\'',
                         insert: [start, end, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
