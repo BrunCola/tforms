@@ -1689,7 +1689,7 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                                         .attr('transform', 'translate(-40,-36) scale(1.5)');
 
                                     elm.append('path')
-                                        .style('stroke', 'white')
+                                        .style('fill', '#ccc')
                                         .attr('d', 'M24.9,35.6c-1.8,0-2.8-1.5-4.7-5.1c-1.9-3.6-2.8-7.8-2.8-12.4c4.3-0.5,7.5-3.4,7.5-3.4L24.9,35.6z')
                                         .attr('transform', 'translate(-40,-36) scale(1.5)');
 
@@ -1886,7 +1886,7 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                                         elm.append('polygon')
                                         .style('fill', '#828487')
                                         .attr('points', '24.2,15 12,15 12,36 37.8,36 37.8,17.9 27.2,17.9 ')
-                                        .attr('transform', 'translate(-40,-38) scale(1.3)');
+                                        .attr('transform', 'translate(-38,-34) scale(1.3)');
                                         break;
 
                                 case 'FTP':
@@ -2783,7 +2783,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                         'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
                                         'C28.014,15.545,26.676,21.468,23.587,26.751z');
                                 element.append('svg:path')
-                                    .attr('fill', '#0080CE')
+                                    .attr('fill', '#D8464A')
                                     .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
                                         'C11.076,16.238,11.938,20.26,13.699,23.661z');
                                 return;
