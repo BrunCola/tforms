@@ -1678,7 +1678,7 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                                         .attr('transform', 'translate(-40,-36) scale(1.5)');
                                         break;
 
-                                case 'Stealth dropped':
+                                case 'Stealth Dropped':
                                     elm.append('path')
                                         .style('fill', '#828487')
                                         .style('stroke-width', 0.8)

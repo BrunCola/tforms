@@ -310,9 +310,9 @@ module.exports = function(pool) {
                         {title: "Packets to Remote", select: "out_packets"}
                     ]
                 }
-                var stealth_block = {
+                var stealth_drop = {
                     query: 'SELECT '+
-                            '\'stealth_block\' AS type, '+
+                            '\'stealth_drop\' AS type, '+
                             '`time` AS raw_time,'+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
@@ -633,7 +633,7 @@ module.exports = function(pool) {
                     }
                     var stealth_drop = {
                         query: 'SELECT '+
-                                '\'stealth_block\' AS type, '+
+                                '\'stealth_drop\' AS type, '+
                                 '`time` AS raw_time,'+
                                 'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
@@ -856,7 +856,7 @@ module.exports = function(pool) {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
                                     '\'Stealth Dropped\' AS traffic, '+
-                                    '\'Stealth Drop\' AS type, '+
+                                    '\'Stealth Dropped\' AS type, '+
                                     '`dst_ip` AS `remote_ip` '+
                                 'FROM '+
                                     '`stealth_conn_meta` '+
