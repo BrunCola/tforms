@@ -856,7 +856,7 @@ module.exports = function(pool) {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
                                     '\'Stealth Dropped\' AS traffic, '+
-                                    '\'Stealth\' AS type, '+
+                                    '\'Stealth Drop\' AS type, '+
                                     '`dst_ip` AS `remote_ip` '+
                                 'FROM '+
                                     '`stealth_conn_meta` '+
