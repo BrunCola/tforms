@@ -53,6 +53,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                             '\'conn\' AS type, '+
                             '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                             '`ioc_count`,'+
                             '`lan_zone`,'+
@@ -101,6 +102,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                             '\'dns\' AS type,'+
                             '`time` AS raw_time,'+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
                             '`ioc_count`,'+
                             '`proto`,'+
@@ -139,6 +141,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                             '\'http\' AS type, '+
                             '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                             '`ioc_count`,'+
                             '`host`,'+
@@ -179,6 +182,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                             '\'ssl\' AS type, '+
                             '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                             '`ioc_count`,'+
                             '`version`,'+
@@ -215,6 +219,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                             '\'file\' AS type, '+
                             '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                             '`ioc_count`,'+
                             '`mime`,'+
@@ -251,6 +256,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                             '\'endpoint\' AS type, '+
                             '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                             '`src_ip`,'+
                             '`dst_ip`,'+
@@ -278,6 +284,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                             '\'stealth\' AS type,'+
                             '`time` AS raw_time,'+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
                             '`src_ip`,'+
                             '`dst_ip`,'+
@@ -303,10 +310,11 @@ module.exports = function(pool) {
                         {title: "Packets to Remote", select: "out_packets"}
                     ]
                 }
-                var stealth_block = {
+                var stealth_drop = {
                     query: 'SELECT '+
-                            '\'stealth_block\' AS type, '+
+                            '\'stealth_drop\' AS type, '+
                             '`time` AS raw_time,'+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
                             '`src_ip`, '+
                             '`dst_ip`, '+
@@ -364,7 +372,7 @@ module.exports = function(pool) {
                             handleReturn(data, callback);
                         });
                     },
-                    function(callback) { // stealth
+                    function(callback) { // stealth conn
                         if (req.session.passport.user.level === 3) {
                             new lanegraph(stealth_conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                 handleReturn(data, callback);
@@ -373,9 +381,9 @@ module.exports = function(pool) {
                             callback();
                         }
                     },
-                    function(callback) { // stealth
+                    function(callback) { // stealth block
                         if (req.session.passport.user.level === 3) {
-                            new lanegraph(stealth_block, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                            new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                 handleReturn(data, callback);
                             });
                         } else {
@@ -396,6 +404,7 @@ module.exports = function(pool) {
                         query: 'SELECT '+
                                 '\'conn\' AS type, '+
                                 '`time` as raw_time, '+
+                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                                 '`ioc_count`,'+
                                 '`lan_zone`,'+
@@ -444,6 +453,7 @@ module.exports = function(pool) {
                         query: 'SELECT '+
                                 '\'dns\' AS type,'+
                                 '`time` AS raw_time,'+
+                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
                                 '`ioc_count`,'+
                                 '`proto`,'+
@@ -482,6 +492,7 @@ module.exports = function(pool) {
                         query: 'SELECT '+
                                 '\'http\' AS type, '+
                                 '`time` as raw_time, '+
+                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                                 '`ioc_count`,'+
                                 '`host`,'+
@@ -522,6 +533,7 @@ module.exports = function(pool) {
                         query: 'SELECT '+
                                 '\'ssl \' AS type, '+
                                 '`time` as raw_time, '+
+                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                                 '`ioc_count`,'+
                                 '`version`,'+
@@ -558,6 +570,7 @@ module.exports = function(pool) {
                         query: 'SELECT '+
                                 '\'file\' AS type, '+
                                 '`time` as raw_time, '+
+                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                                 '`ioc_count`,'+
                                 '`mime`,'+
@@ -594,6 +607,7 @@ module.exports = function(pool) {
                         query: 'SELECT '+
                                 '\'endpoint\' AS type, '+
                                 '`time` as raw_time, '+
+                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                                 '`src_ip`,'+
                                 '`dst_ip`,'+
@@ -617,45 +631,17 @@ module.exports = function(pool) {
                             {title: "Alert Info", select: "alert_info"},
                         ]
                     }
-                    var stealth_conn = {
+                    var stealth_drop = {
                         query: 'SELECT '+
-                                '\'stealth\' AS type,'+
+                                '\'stealth_drop\' AS type, '+
                                 '`time` AS raw_time,'+
+                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-                                '`src_ip`,'+
-                                '`dst_ip`,'+
+                                '`src_ip`, '+
+                                '`dst_ip`, '+
                                 '(`in_bytes` / 1048576) AS in_bytes,'+
                                 '(`out_bytes` / 1048576) AS out_bytes,'+
-                                '`in_packets`,'+
-                                '`out_packets` '+
-                            'FROM '+
-                                '`stealth_conn_meta` '+
-                            'WHERE '+
-                                '`time` BETWEEN ? AND ? '+
-                                'AND `src_ip`= ? '+
-                                'AND `in_bytes` > 0 '+
-                                'AND `out_bytes` > 0 ',
-                        insert: [start, end, req.query.lan_ip],
-                        params: [
-                            {title: "Time", select: "time"},
-                            {title: "Source IP", select: "src_ip"},
-                            {title: "Destination IP", select: "dst_ip"},
-                            {title: "MB from Remote", select: "in_bytes"},
-                            {title: "MB to Remote", select: "out_bytes"},
-                            {title: "Packets from Remote", select: "in_packets"},
-                            {title: "Packets to Remote", select: "out_packets"}
-                        ]
-                    }
-                    var stealth_block = {
-                        query: 'SELECT '+
-                                '\'stealth_block\' AS type,'+
-                                '`time` AS raw_time, '+
-                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-                                '`src_ip`,'+
-                                '`dst_ip`,'+
-                                '(`in_bytes` / 1048576) AS in_bytes,'+
-                                '(`out_bytes` / 1048576) AS out_bytes,'+
-                                '`in_packets`,'+
+                                '`in_packets`, '+
                                 '`out_packets` '+
                             'FROM '+
                                 '`stealth_conn_meta` '+
@@ -674,7 +660,6 @@ module.exports = function(pool) {
                             {title: "Packets to Remote", select: "out_packets"}
                         ]
                     }
-
                     // USER TREE
                     var tree_conn = {
                         query: 'SELECT '+
@@ -798,6 +783,9 @@ module.exports = function(pool) {
                                     '`remote_ip` '+
                                 'FROM '+
                                     '`irc` '+
+                                'WHERE '+
+                                    '`time` BETWEEN ? AND ? '+
+                                    'AND `lan_ip` = ? '+   
                                 'GROUP BY '+
                                     '`lan_ip`,'+
                                     '`remote_ip` '+
@@ -825,7 +813,7 @@ module.exports = function(pool) {
                                 'LIMIT 20',
                         insert: [start, end, req.query.lan_ip],
                     }
-                    var tree_drop_conn = {
+                    var tree_conn_drop = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
                                     '\'Connections Dropped\' AS traffic, '+
@@ -846,7 +834,7 @@ module.exports = function(pool) {
                                 'LIMIT 20',
                         insert: [start, end, req.query.lan_ip]
                     }
-                    var stealth_conn = {
+                    var tree_stealth_conn = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
                                     '\'Stealth\' AS traffic, '+
@@ -867,21 +855,21 @@ module.exports = function(pool) {
                                 'LIMIT 20',
                         insert: [start, end, req.query.lan_ip],
                     }
-                    var stealth_block = {
+                    var tree_stealth_drop = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
                                     '\'Stealth Dropped\' AS traffic, '+
-                                    '\'Stealth\' AS type, '+
+                                    '\'Stealth Dropped\' AS type, '+
                                     '`dst_ip` AS `remote_ip` '+
                                 'FROM '+
                                     '`stealth_conn_meta` '+
-                                'GROUP BY '+
-                                    '`src_ip`,'+
-                                    '`dst_ip` '+
                                 'WHERE '+
                                     'time BETWEEN ? AND ? '+
                                     'AND `src_ip` = ? '+
-                                    'AND (`in_bytes` = 0 OR `out_bytes` = 0)',
+                                    'AND (`in_bytes` = 0 OR `out_bytes` = 0) '+
+                                'GROUP BY '+
+                                    '`src_ip`,'+
+                                    '`dst_ip`',
                         insert: [start, end, req.query.lan_ip],
                     }
                    
@@ -918,18 +906,9 @@ module.exports = function(pool) {
                                     handleReturn(data, callback);
                                 });
                             },
-                            function(callback) { // stealth
-                                if (req.session.passport.user.level === 3) {
-                                    new lanegraph(stealth_conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                        handleReturn(data, callback);
-                                    });
-                                } else {
-                                    callback();
-                                }
-                            },
                             function(callback) { // stealth block
                                 if (req.session.passport.user.level === 3) {
-                                    new lanegraph(stealth_block, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                    new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                         handleReturn(data, callback);
                                     });
                                 } else {
@@ -1002,13 +981,37 @@ module.exports = function(pool) {
                                             callback();
                                         });
                                     },
-                                    function(callback) { // dropped conn
-                                        new query(tree_drop_conn, {database: database, pool: pool}, function(err,data){
+                                    function(callback) { // conn drop
+                                        new query(tree_conn_drop, {database: database, pool: pool}, function(err,data){
                                             for(var i in data){
                                                 treeArray.push(data[i]); 
                                             }
                                             callback();
                                         });
+                                    },
+                                    function(callback) { // stealth conn
+                                        if (req.session.passport.user.level === 3) {
+                                            new query(tree_stealth_conn, {database: database, pool: pool}, function(err,data){
+                                                for(var i in data){
+                                                    treeArray.push(data[i]); 
+                                                }
+                                                callback();
+                                            });
+                                        } else {
+                                            callback();
+                                        }
+                                    },
+                                    function(callback) { // stealth drop
+                                        if (req.session.passport.user.level === 3) {
+                                            new query(tree_stealth_drop, {database: database, pool: pool}, function(err,data){
+                                                for(var i in data){
+                                                    treeArray.push(data[i]); 
+                                                }
+                                                callback();
+                                            });
+                                        } else {
+                                            callback();
+                                        }
                                     },
                                     
                                 ], function(err) { //This function gets called after the two tasks have called their "task callbacks"

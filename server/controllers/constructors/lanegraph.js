@@ -20,8 +20,8 @@ module.exports = function (sql, conn, callback) {
                 return d.time_info+': '+d.event_type;
             case 'stealth':
                 return d.time_info+': Stealth securely connected '+d.src_ip+' with '+d.dst_ip;
-            case 'stealth_block':
-                return d.time_info+': Stealth blocked '+d.src_ip+' from connecting to '+d.dst_ip;    
+            case 'stealth_drop':
+                return d.time_info+': Stealth dropped connection attempts between '+d.src_ip+' and '+d.dst_ip;    
             default:
 				return d.time;
 		}

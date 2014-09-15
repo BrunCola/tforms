@@ -1534,14 +1534,26 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                             .on("click", click);
 
                         var customNode = nodeEnter.append("g")
-                            .attr("class", "points");
-
-                        customNode.append("text") 
+                            .attr("class", "points")
+                            .append("text") 
                             .attr("x", function(d) { return d.children || d._children ? -32 : 18; })
                             .attr("dy", ".35em")
                             .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
                             .text(function(d) { return d.name + ' - ' + d.value; })
                             .style("fill-opacity", 1e-6);
+
+                        // nodeEnter.each(function(d) {
+                        //     var elm = d3.select(this).append('g');
+                        //     if (d.open) {
+                        //         elm
+                        //             .append('div')
+                        //             .attr('transform', 'translate(10, -10)')
+                        //             .append('text')
+                        //             .text('[load all]')
+                        //             .style('cursor', 'pointer')
+                        //             .on('click', $scope.clickedNode(d))
+                        //     }
+                        // })
 
                         // Transition nodes to their new position.
                         var nodeUpdate = node.transition()
@@ -1666,7 +1678,7 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                                         .attr('transform', 'translate(-40,-36) scale(1.5)');
                                         break;
 
-                                case 'Stealth dropped':
+                                case 'Stealth Dropped':
                                     elm.append('path')
                                         .style('fill', '#828487')
                                         .style('stroke-width', 0.8)
@@ -1903,22 +1915,24 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                             }
                         })
 
-                        d3.selectAll('.points')
-                            .append('text')
-                            .text(function(d){
-                                if ((d._children !== undefined) && (d._children !== null)) {
-                                    return d._children.length;
-                                } 
-                                else if ((d._children === null) || (d._children === undefined)){
-                                    return '';
-                                }
-                            })
-                            .attr('x', -44)
-                            .attr('y', 22)
-                            .style('font-size', 12)
-                            .attr('fill', 'red')
-                            .style('font-weight', 'bold')
-                            .attr('text-anchor', 'middle');
+                        d3.selectAll('g.points').each(function(d){
+                            var elm = d3.select(this);
+                            elm
+                                .append('g')
+                                .attr('transform', 'translate(-44,22)')
+                                .append('text')
+                                .text(function(d){
+                                    if ((d._children !== undefined) && (d._children !== null)) {
+                                        return d._children.length;
+                                    } else if ((d._children === null) || (d._children === undefined)){
+                                        return '';
+                                    }
+                                })
+                                .style('font-size', 12)
+                                .attr('fill', 'red')
+                                .style('font-weight', 'bold')
+                                .attr('text-anchor', 'middle');
+                        })
 
                         nodeUpdate.select("text")
                             .style("fill-opacity", 1)

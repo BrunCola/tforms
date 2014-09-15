@@ -84,6 +84,7 @@ module.exports = function (sql, conn, callback) {
 					pushToFirst.push({
 						name: "Type",
 						value: secondChildren[s].type,
+						open: true,
 						children: pushToThird
 					})
 					// push the name to our index array
