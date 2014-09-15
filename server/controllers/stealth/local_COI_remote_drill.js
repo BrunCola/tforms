@@ -860,13 +860,13 @@ module.exports = function(pool) {
                                     '`dst_ip` AS `remote_ip` '+
                                 'FROM '+
                                     '`stealth_conn_meta` '+
-                                'GROUP BY '+
-                                    '`src_ip`,'+
-                                    '`dst_ip` '+
                                 'WHERE '+
                                     'time BETWEEN ? AND ? '+
                                     'AND `src_ip` = ? '+
-                                    'AND (`in_bytes` = 0 OR `out_bytes` = 0)',
+                                    'AND (`in_bytes` = 0 OR `out_bytes` = 0) '+
+                                'GROUP BY '+
+                                    '`src_ip`,'+
+                                    '`dst_ip`',
                         insert: [start, end, req.query.lan_ip],
                     }
                    
