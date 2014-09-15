@@ -419,7 +419,8 @@ module.exports = function(pool) {
                             'AND `lan_zone`= ? '+
                             'AND `lan_ip`=? '+
                             'AND `remote_ip`= ? '+
-                            'AND `ioc`=?',
+                            'AND `ioc`= ? '+
+                            'AND NOT REGEXP \'text\'',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                     params: [
                         {title: "Time", select: "time"},
@@ -457,7 +458,8 @@ module.exports = function(pool) {
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
                             'AND `lan_zone`= ?'+
-                            'AND `lan_ip`= ?',
+                            'AND `lan_ip`= ?'+
+                            'AND NOT REGEXP \'text\'',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -1029,7 +1031,8 @@ module.exports = function(pool) {
                                     'AND `lan_zone`= ? '+
                                     'AND `lan_ip`=? '+
                                     'AND `remote_ip`= ? '+
-                                    'AND `ioc`=?',
+                                    'AND `ioc`= ? '+
+                                    'AND NOT REGEXP \'text\'',
                             insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                             params: [
                                 {title: "Time", select: "time"},
@@ -1047,27 +1050,28 @@ module.exports = function(pool) {
                         }
                         var file = {
                             query: 'SELECT '+
-                                    '\'file\' AS type, '+
-                                    '`time` as raw_time, '+
-                                    'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                                    'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-                                    '`ioc_count`,'+
-                                    '`mime`,'+
-                                    '`name`,'+
-                                    '`size`,'+
-                                    '`md5`,'+
-                                    '`sha1`,'+
-                                    '`ioc`,'+
-                                    '`ioc_severity`,'+
-                                    '`ioc_rule`,'+
-                                    '`ioc_typeIndicator`,'+
-                                    '`ioc_typeInfection` '+
-                                'FROM '+
-                                    '`file_ioc` '+
-                                'WHERE '+
-                                    '`time` BETWEEN ? AND ? '+
-                                    'AND `lan_zone`= ?'+
-                                    'AND `lan_ip`= ?',
+                                        '\'file\' AS type, '+
+                                        '`time` as raw_time, '+
+                                        'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                                        'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                                        '`ioc_count`,'+
+                                        '`mime`,'+
+                                        '`name`,'+
+                                        '`size`,'+
+                                        '`md5`,'+
+                                        '`sha1`,'+
+                                        '`ioc`,'+
+                                        '`ioc_severity`,'+
+                                        '`ioc_rule`,'+
+                                        '`ioc_typeIndicator`,'+
+                                        '`ioc_typeInfection` '+
+                                    'FROM '+
+                                        '`file_ioc` '+
+                                    'WHERE '+
+                                        '`time` BETWEEN ? AND ? '+
+                                        'AND `lan_zone`= ?'+
+                                        'AND `lan_ip`= ?'+
+                                        'AND NOT REGEXP \'text\'',
                             insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                             params: [
                                 {title: "Time", select: "time"},
