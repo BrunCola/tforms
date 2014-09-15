@@ -2850,7 +2850,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
 
                 var previousID = -1, previousElm = null;
                 // info div
-                var infoHeight = element.height()+20;
+                var infoHeight = element.height();
+                var infoTitle = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
                 var infoDiv = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
 
 
