@@ -52,6 +52,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                             '\'conn_ioc\' AS type, '+
                             '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
                             '`ioc_count`,'+
                             '`lan_zone`,'+
@@ -153,6 +154,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                             '\'dns_ioc\' AS type, '+
                             '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                             '`ioc_count`,'+
                             '`proto`, '+
@@ -233,6 +235,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                             '\'http_ioc\' AS type, '+
                             '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                             '`ioc_count`,'+
                             '`host`,'+
@@ -318,6 +321,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                             '\'ssl_ioc\' AS type, '+
                             '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                             '`ioc_count`,'+
                             '`version`,'+
@@ -395,6 +399,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                             '\'file_ioc\' AS type, '+
                             '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                             '`ioc_count`,'+
                             '`mime`,'+
@@ -658,6 +663,7 @@ module.exports = function(pool) {
                             query: 'SELECT '+
                                     '\'conn_ioc\' AS type, '+
                                     '`time` as raw_time, '+
+                                    'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                     'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
                                     '`ioc_count`,'+
                                     '`lan_zone`,'+
@@ -709,6 +715,7 @@ module.exports = function(pool) {
                             query: 'SELECT '+
                                     '\'conn\' AS type, '+
                                     '`time` as raw_time, '+
+                                    'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                     'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                                     '`ioc_count`,'+
                                     '`lan_zone`,'+
@@ -758,6 +765,7 @@ module.exports = function(pool) {
                             query: 'SELECT '+
                                     '\'dns_ioc\' AS type, '+
                                     '`time` as raw_time, '+
+                                    'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                     'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                                     '`proto`, '+
                                     '`qclass_name`, '+
@@ -798,6 +806,7 @@ module.exports = function(pool) {
                             query: 'SELECT '+
                                     '\'dns\' AS type, '+
                                     '`time` as raw_time, '+
+                                    'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                     'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                                     '`proto`,'+
                                     '`qclass_name`,'+
@@ -836,6 +845,7 @@ module.exports = function(pool) {
                             query: 'SELECT '+
                                     '\'http_ioc\' AS type, '+
                                     '`time` as raw_time, '+
+                                    'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                     'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                                     '`ioc_count`,'+
                                     '`host`,'+
@@ -879,6 +889,7 @@ module.exports = function(pool) {
                             query: 'SELECT '+
                                     '\'http\' AS type, '+
                                     '`time` as raw_time, '+
+                                    'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                     'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                                     '`ioc_count`,'+
                                     '`host`,'+
@@ -920,6 +931,7 @@ module.exports = function(pool) {
                             query: 'SELECT '+
                                     '\'ssl_ioc\' AS type, '+
                                     '`time` as raw_time, '+
+                                    'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                     'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                                     '`ioc_count`,'+
                                     '`version`,'+
@@ -959,6 +971,7 @@ module.exports = function(pool) {
                             query: 'SELECT '+
                                     '\'ssl\' AS type, '+
                                     '`time` as raw_time, '+
+                                    'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                     'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                                     '`ioc_count`,'+
                                     '`version`,'+
@@ -996,6 +1009,7 @@ module.exports = function(pool) {
                             query: 'SELECT '+
                                     '\'file_ioc\' AS type, '+
                                     '`time` as raw_time, '+
+                                    'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                     'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                                     '`ioc_count`,'+
                                     '`mime`,'+
@@ -1035,6 +1049,7 @@ module.exports = function(pool) {
                             query: 'SELECT '+
                                     '\'file\' AS type, '+
                                     '`time` as raw_time, '+
+                                    'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                     'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                                     '`ioc_count`,'+
                                     '`mime`,'+
@@ -1072,6 +1087,7 @@ module.exports = function(pool) {
                            query: 'SELECT '+
                                 '\'endpoint\' AS type,'+
                                 '`time` AS raw_time,'+
+                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
@@ -1099,63 +1115,6 @@ module.exports = function(pool) {
                                 {title: "Event ID", select: "event_id"},
                             ]
                         }                        
-                        var stealth_conn = {
-                            query: 'SELECT '+
-                                    '\'stealth\' AS type, '+
-                                    '`time` as raw_time, '+
-                                    'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-                                    '`src_ip`,'+
-                                    '`dst_ip`,'+
-                                    '(`in_bytes` / 1048576) as in_bytes,'+
-                                    '(`out_bytes` / 1048576) as out_bytes,'+
-                                    '`in_packets`,'+
-                                    '`out_packets` '+
-                                'FROM '+
-                                    '`stealth_conn_meta` '+
-                                'WHERE '+
-                                    '`time` BETWEEN ? AND ? '+
-                                    'AND `src_ip`= ? '+
-                                    'AND `in_bytes` > 0 '+
-                                    'AND `out_bytes` > 0 ',
-                            insert: [start, end, req.query.lan_ip],
-                            params: [
-                                {title: "Time", select: "time"},
-                                {title: "Source IP", select: "src_ip"},
-                                {title: "Destination IP", select: "dst_ip"},
-                                {title: "MB from Remote", select: "in_bytes"},
-                                {title: "MB to Remote", select: "out_bytes"},
-                                {title: "Packets from Remote", select: "in_packets"},
-                                {title: "Packets to Remote", select: "out_packets"}
-                            ]
-                        }
-                        var stealth_block = {
-                            query: 'SELECT '+
-                                    '\'stealth_block\' AS type, '+
-                                    '`time` as raw_time, '+
-                                    'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-                                    '`src_ip`, '+
-                                    '`dst_ip`, '+
-                                    '(`in_bytes` / 1048576) as in_bytes, '+
-                                    '(`out_bytes` / 1048576) as out_bytes, '+
-                                    '`in_packets`, '+
-                                    '`out_packets` '+
-                                'FROM '+
-                                    '`stealth_conn_meta` '+
-                                'WHERE '+
-                                    'time BETWEEN ? AND ? '+
-                                    'AND `src_ip` = ? '+
-                                    'AND (`in_bytes` = 0 OR `out_bytes` = 0)',
-                            insert: [start, end, req.query.lan_ip],
-                            params: [
-                                {title: "Time", select: "time"},
-                                {title: "Source IP", select: "src_ip"},
-                                {title: "Destination IP", select: "dst_ip"},
-                                {title: "MB from Remote", select: "in_bytes"},
-                                {title: "MB to Remote", select: "out_bytes"},
-                                {title: "Packets from Remote", select: "in_packets"},
-                                {title: "Packets to Remote", select: "out_packets"}
-                            ]
-                        }
 
                         var info = {};
                         var InfoSQL = {
