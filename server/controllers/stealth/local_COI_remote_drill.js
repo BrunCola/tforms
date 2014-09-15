@@ -372,7 +372,7 @@ module.exports = function(pool) {
                             handleReturn(data, callback);
                         });
                     },
-                    function(callback) { // stealth
+                    function(callback) { // stealth conn
                         if (req.session.passport.user.level === 3) {
                             new lanegraph(stealth_conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                 handleReturn(data, callback);
@@ -383,7 +383,7 @@ module.exports = function(pool) {
                     },
                     function(callback) { // stealth block
                         if (req.session.passport.user.level === 3) {
-                            new lanegraph(stealth_block, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                            new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                 handleReturn(data, callback);
                             });
                         } else {
@@ -813,7 +813,7 @@ module.exports = function(pool) {
                                 'LIMIT 20',
                         insert: [start, end, req.query.lan_ip],
                     }
-                    var tree_drop_conn = {
+                    var tree_conn_drop = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
                                     '\'Connections Dropped\' AS traffic, '+
@@ -981,8 +981,8 @@ module.exports = function(pool) {
                                             callback();
                                         });
                                     },
-                                    function(callback) { // dropped conn
-                                        new query(tree_drop_conn, {database: database, pool: pool}, function(err,data){
+                                    function(callback) { // conn drop
+                                        new query(tree_conn_drop, {database: database, pool: pool}, function(err,data){
                                             for(var i in data){
                                                 treeArray.push(data[i]); 
                                             }
