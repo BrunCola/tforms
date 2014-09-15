@@ -448,7 +448,7 @@ angular.module('mean.pages').config(['$stateProvider',
                             loggedin: checkLoggedin
                         },
                         data: {
-                            title: 'Local to Remote Traffic through Stealth',
+                            title: 'Stealth COI Map',
                             daterange: true
                         }
                     })  
@@ -460,7 +460,7 @@ angular.module('mean.pages').config(['$stateProvider',
                             loggedin: checkLoggedin
                         },
                         data: {
-                            title: 'Local to Remote Traffic through Stealth',
+                            title: 'Stealth Secured Connections By User',
                             daterange: true
                         }
                     })      
@@ -550,7 +550,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         })
                         // ENPOINT EVENTS USER DRILL
                             .state('endpoint_events_user_drill', {
-                                url: '/endpoint_events_user_drill?start&end&alert_info&src_user',
+                                url: '/endpoint_events_user_drill?start&end&lan_user&lan_',
                                 templateUrl: 'public/pages/views/general_network/endpoint_events_user_drill.html',
                                 resolve: {
                                     loggedin: checkLoggedin
