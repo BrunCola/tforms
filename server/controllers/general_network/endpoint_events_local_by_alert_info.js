@@ -16,7 +16,7 @@ module.exports = function(pool) {
                 end = req.query.end;
             }
             //var results = [];
-            if (req.query.src_ip) {
+            if (req.query.lan_zone && req.query.lan_user && req.query.lan_ip) {
                 var tables = [];
                 var info = [];
                 var table1 = {
