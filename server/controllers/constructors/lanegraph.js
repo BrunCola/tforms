@@ -27,13 +27,16 @@ module.exports = function (sql, conn, callback) {
 		}
 	}
 
-	var index = null;
+	var index = null; var count = 0; var type = null;
 	conn.pool.getConnection(function(err, connection) {
 		connection.changeUser({database : conn.database}, function(err) {
 			if (err) throw err;
 		});
 		connection.query(sql.query, sql.insert)
 			.on('result', function(data){
+
+				count++;
+				type = data.type;
 
 				if (index === null) {
 					index = conn.lanes.indexOf(data.type);
@@ -58,6 +61,7 @@ module.exports = function (sql, conn, callback) {
 				results.push(data);
 			})
 			.on('end', function(){
+				console.log(type+': '+count)
 				callback(null, results);
 			});
 			connection.release();

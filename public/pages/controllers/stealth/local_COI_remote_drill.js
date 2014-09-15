@@ -94,6 +94,7 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 			var query = '/stealth/local_COI_remote_drill?start='+minUnix+'&end='+maxUnix+'&lan_ip='+$location.$$search.lan_ip+'&lan_user='+$location.$$search.lan_user+'&type=drill';
 			$http({method: 'GET', url: query}).
 				success(function(data) {
+					console.log(data)
 					$scope.crossfilterDeep = crossfilter();
 					var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
 					var id = 0;
@@ -103,7 +104,8 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 							child.id = id;
 							id++;
 						})
-						$scope.crossfilterData.add(parent);
+
+						$scope.crossfilterDeep.add(parent);
 					});
 					var itemsDimension = $scope.crossfilterDeep.dimension(function(d){ return d.time });
 					$scope.deepItems = itemsDimension.top(Infinity);
