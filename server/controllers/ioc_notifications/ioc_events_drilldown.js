@@ -51,9 +51,9 @@ module.exports = function(pool) {
                 var conn_ioc = {
                     query: 'SELECT '+
                             '\'conn_ioc\' AS type, '+
-                            '`time` as raw_time, '+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+                            '`time` AS raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") AS time_info, '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+ // Last Seen
                             '`ioc_count`,'+
                             '`lan_zone`,'+
                             '`machine`,'+
@@ -78,7 +78,8 @@ module.exports = function(pool) {
                             'AND `lan_zone`= ? '+
                             'AND `lan_ip`= ? '+
                             'AND `remote_ip`= ? '+
-                            'AND `ioc`=? ',
+                            'AND `ioc`=? '+
+                            'LIMIT 250',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                     params: [
                         {title: "Time", select: "time"},
@@ -103,9 +104,9 @@ module.exports = function(pool) {
                 var conn = {
                     query: 'SELECT '+
                             '\'conn\' AS type, '+
-                            '`time` as raw_time, '+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                            '`time` AS raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") AS time_info, '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+
                             '`ioc_count`,'+
                             '`lan_zone`,'+
                             '`machine`,'+
@@ -128,7 +129,8 @@ module.exports = function(pool) {
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
                             'AND `lan_zone`= ? '+
-                            'AND `lan_ip`= ? ',
+                            'AND `lan_ip`= ? '+
+                            'LIMIT 250',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -419,7 +421,8 @@ module.exports = function(pool) {
                             'AND `lan_zone`= ? '+
                             'AND `lan_ip`=? '+
                             'AND `remote_ip`= ? '+
-                            'AND `ioc`=?',
+                            'AND `ioc`= ? '+
+                            'AND `mime` NOT REGEXP \'text\'',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                     params: [
                         {title: "Time", select: "time"},
@@ -457,7 +460,8 @@ module.exports = function(pool) {
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
                             'AND `lan_zone`= ?'+
-                            'AND `lan_ip`= ?',
+                            'AND `lan_ip`= ?'+
+                            'AND `mime` NOT REGEXP \'text\'',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -689,7 +693,8 @@ module.exports = function(pool) {
                                     'AND `lan_zone`= ? '+
                                     'AND `lan_ip`= ? '+
                                     'AND `remote_ip`= ? '+
-                                    'AND `ioc`=? ',
+                                    'AND `ioc`=? '+
+                                    'LIMIT 250',
                             insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                             params: [
                                 {title: "Time", select: "time"},
@@ -739,7 +744,8 @@ module.exports = function(pool) {
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_zone`= ? '+
-                                    'AND `lan_ip`= ? ',
+                                    'AND `lan_ip`= ? '+
+                                    'LIMIT 250',
                             insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                             params: [
                                 {title: "Time", select: "time"},
@@ -1029,7 +1035,8 @@ module.exports = function(pool) {
                                     'AND `lan_zone`= ? '+
                                     'AND `lan_ip`=? '+
                                     'AND `remote_ip`= ? '+
-                                    'AND `ioc`=?',
+                                    'AND `ioc`= ? '+
+                                    'AND `mime` NOT REGEXP \'text\'',
                             insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                             params: [
                                 {title: "Time", select: "time"},
@@ -1047,27 +1054,28 @@ module.exports = function(pool) {
                         }
                         var file = {
                             query: 'SELECT '+
-                                    '\'file\' AS type, '+
-                                    '`time` as raw_time, '+
-                                    'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                                    'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-                                    '`ioc_count`,'+
-                                    '`mime`,'+
-                                    '`name`,'+
-                                    '`size`,'+
-                                    '`md5`,'+
-                                    '`sha1`,'+
-                                    '`ioc`,'+
-                                    '`ioc_severity`,'+
-                                    '`ioc_rule`,'+
-                                    '`ioc_typeIndicator`,'+
-                                    '`ioc_typeInfection` '+
-                                'FROM '+
-                                    '`file_ioc` '+
-                                'WHERE '+
-                                    '`time` BETWEEN ? AND ? '+
-                                    'AND `lan_zone`= ?'+
-                                    'AND `lan_ip`= ?',
+                                        '\'file\' AS type, '+
+                                        '`time` as raw_time, '+
+                                        'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                                        'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                                        '`ioc_count`,'+
+                                        '`mime`,'+
+                                        '`name`,'+
+                                        '`size`,'+
+                                        '`md5`,'+
+                                        '`sha1`,'+
+                                        '`ioc`,'+
+                                        '`ioc_severity`,'+
+                                        '`ioc_rule`,'+
+                                        '`ioc_typeIndicator`,'+
+                                        '`ioc_typeInfection` '+
+                                    'FROM '+
+                                        '`file_ioc` '+
+                                    'WHERE '+
+                                        '`time` BETWEEN ? AND ? '+
+                                        'AND `lan_zone`= ?'+
+                                        'AND `lan_ip`= ?'+
+                                        'AND `mime` NOT REGEXP \'text\'',
                             insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                             params: [
                                 {title: "Time", select: "time"},

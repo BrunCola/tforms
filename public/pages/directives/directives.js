@@ -3044,7 +3044,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                     .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
                                         'C11.076,16.238,11.938,20.26,13.699,23.661z');
                                 return;
-                            case 'stealth_block':
+                            case 'stealth_drop':
                                 element.append('circle')
                                     .attr('fill', '#D8464A')
                                     .attr('cx', 18)
@@ -3061,7 +3061,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                         'C11.076,16.238,11.938,20.26,13.699,23.661z');
                                 return;
                             default:
-                                console.log('cannot be drawn');
+                                console.log('cannot draw'+nickname);
                                 return;
                         }
                     }
@@ -3123,7 +3123,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
 
                 var previousID = -1, previousElm = null;
                 // info div
-                var infoHeight = element.height()+20;
+                var infoHeight = element.height();
+                var infoTitle = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
                 var infoDiv = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
 
 
