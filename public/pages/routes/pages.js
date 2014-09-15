@@ -535,7 +535,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
                     // ENPOINT EVENTS USER
                         .state('endpoint_events_user', {
-                            url: '/endpoint_events_user?start&end&alert_info',
+                            url: '/endpoint_events_user?start&end&event_type',
                             templateUrl: 'public/pages/views/general_network/endpoint_events_user.html',
                             resolve: {
                                 loggedin: checkLoggedin
@@ -543,7 +543,7 @@ angular.module('mean.pages').config(['$stateProvider',
                             data: {
                                 title: 'Endpoints Triggering Event',
                                 subtitleElm: {
-                                    'Alert Info': 'alert_info'
+                                    'Event Type': 'event_type'
                                 },
                                 daterange: true
                             }
