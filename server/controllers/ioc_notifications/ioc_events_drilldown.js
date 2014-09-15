@@ -361,7 +361,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                             '\'ssl\' AS type, '+
                             '`time` as raw_time, '+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as timeInfo, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                             '`ioc_count`,'+
                             '`version`,'+
@@ -439,7 +439,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                             '\'file\' AS type, '+
                             '`time` as raw_time, '+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as timeInfo, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                             '`ioc_count`,'+
                             '`mime`,'+
@@ -477,7 +477,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                                 '\'endpoint\' AS type,'+
                                 '`time` AS raw_time,'+
-                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as timeInfo, '+
+                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
@@ -509,7 +509,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                             '\'stealth\' AS type, '+
                             '`time` as raw_time, '+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as timeInfo, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                             '`src_ip`,'+
                             '`dst_ip`,'+
@@ -539,7 +539,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                             '\'stealth_block\' AS type, '+
                             '`time` as raw_time, '+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as timeInfo, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                             '`src_ip`, '+
                             '`dst_ip`, '+
