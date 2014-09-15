@@ -236,7 +236,8 @@ module.exports = function(pool) {
                             '`file` '+
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
-                            'AND `lan_ip`= ? ',
+                            'AND `lan_ip`= ? '+
+                            'AND `mime` NOT REGEXP \'text\'',
                     insert: [start, end, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -428,7 +429,7 @@ module.exports = function(pool) {
                             'WHERE '+
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_ip` = ? '+
-                                'LIMIT 250',
+                            'LIMIT 250',
                         insert: [start, end, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
@@ -588,7 +589,8 @@ module.exports = function(pool) {
                                 '`file_ioc` '+
                             'WHERE '+
                                 '`time` BETWEEN ? AND ? '+
-                                'AND `lan_ip`= ? ',
+                                'AND `lan_ip`= ? '+
+                                'AND `mime` NOT REGEXP \'text\'',
                         insert: [start, end, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},

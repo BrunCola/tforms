@@ -37,7 +37,9 @@ module.exports = function(pool) {
 							'`vendor`,'+
 							'`ioc_count` '+
 						'FROM '+
-							'`users` '+ 
+							'`users` '+
+                        'WHERE '+
+                            '`operating_system` IS NOT NULL '+ 
 						'GROUP BY '+
 							'`lan_ip` '+
 							') GROUPEDU ON '+
