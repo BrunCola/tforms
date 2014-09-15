@@ -535,7 +535,7 @@ module.exports = function(pool) {
                         {title: "Packets to Remote", select: "out_packets"}
                     ]
                 }
-                var stealth_block = {
+                var stealth_drop = {
                     query: 'SELECT '+
                             '\'stealth_block\' AS type, '+
                             '`time` as raw_time, '+
@@ -622,7 +622,7 @@ module.exports = function(pool) {
                             handleReturn(data, callback);
                         });
                     },
-                    function(callback) { // stealth
+                    function(callback) { // stealth conn
                         if (req.session.passport.user.level === 3) {
                             new lanegraph(stealth_conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                 handleReturn(data, callback);
@@ -631,9 +631,9 @@ module.exports = function(pool) {
                             callback();
                         }
                     },
-                    function(callback) { // stealth block
+                    function(callback) { // stealth drop
                         if (req.session.passport.user.level === 3) {
-                            new lanegraph(stealth_block, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                            new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                 handleReturn(data, callback);
                             });
                         } else {
@@ -1246,26 +1246,26 @@ module.exports = function(pool) {
                                     handleReturn(data, callback);
                                 });
                             },
-                            function(callback) { // stealth
-                                if (req.session.passport.user.level === 3) {
-                                    new lanegraph(stealth_conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                        console.log(data)
-                                        handleReturn(data, callback);
-                                    });
-                                } else {
-                                    callback();
-                                }
-                            },
-                            function(callback) { // stealth block
-                                if (req.session.passport.user.level === 3) {
-                                    new lanegraph(stealth_block, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                        console.log(data)
-                                        handleReturn(data, callback);
-                                    });
-                                } else {
-                                    callback();
-                                }
-                            },
+                            // function(callback) { // stealth
+                            //     if (req.session.passport.user.level === 3) {
+                            //         new lanegraph(stealth_conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                            //             console.log(data)
+                            //             handleReturn(data, callback);
+                            //         });
+                            //     } else {
+                            //         callback();
+                            //     }
+                            // },
+                            // function(callback) { // stealth block
+                            //     if (req.session.passport.user.level === 3) {
+                            //         new lanegraph(stealth_block, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                            //             console.log(data)
+                            //             handleReturn(data, callback);
+                            //         });
+                            //     } else {
+                            //         callback();
+                            //     }
+                            // },
                             function(callback) { // InfoSQL
                                 new query(InfoSQL, {database: database, pool: pool}, function(err,data){
                                     info.main = data;
