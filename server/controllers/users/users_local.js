@@ -39,7 +39,7 @@ module.exports = function(pool) {
 						'FROM '+
 							'`users` '+
                         'WHERE '+
-                            '`operating_system` NOT NULL '+ 
+                            '`operating_system` IS NOT NULL '+ 
 						'GROUP BY '+
 							'`lan_ip` '+
 							') GROUPEDU ON '+
