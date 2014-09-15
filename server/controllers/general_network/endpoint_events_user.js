@@ -16,7 +16,7 @@ module.exports = function(pool) {
                 end = req.query.end;
             }
             //var results = [];
-            if (req.query.alert_info) {
+            if (req.query.event_type) {
                 var tables = [];
                 var info = [];
                 var table1 = {
