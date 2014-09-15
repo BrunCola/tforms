@@ -1639,27 +1639,27 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                                 elm.append('polygon')
                                     .style('fill', '#fff')
                                     .attr('points', '9,14 37,9 37,40 9,35 ')
-                                    .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                    .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                     .style('fill', '#00AEEF')
                                     .attr('points', '36.1,24.4 36.1,11.9 21.7,14 21.7,24.4 ')
-                                    .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                    .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                     .style('fill', '#00AEEF')
                                     .attr('points', '20.7,14.1 10.2,15.6 10.2,24.4 20.7,24.4 ')
-                                    .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                    .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                     .style('fill', '#00AEEF')
                                     .attr('points', '10.2,25.4 10.2,34.3 20.7,35.9 20.7,25.4 ')
-                                    .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                    .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                     .style('fill', '#00AEEF')
                                     .attr('points', '21.7,36 36.1,38.1 36.1,25.4 21.7,25.4 ')
-                                    .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                    .attr('transform', 'translate(-40,-32) scale(1.2)');
                                     break;
 
                                 case 'Windows Vista/Server 2008':
@@ -1731,207 +1731,207 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                                         .style('fill', '#000')
                                         .attr('d', 'M41.3,12v25.1c-3.5-2.2-8.2-2.6-12.4-1.8c-1.5,0.4-3,0.7-4.3,1.3V11.7'+
                                         'c4-1.7,9.2-2.4,13.5-1.1C39.3,11,40.3,11.4,41.3,12L41.3,12z')
-                                        .attr('transform', 'translate(-40,-36) scale(1.5)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '24.2,15.4 20.9,16.7 20.9,13.5 24.2,11.9 24.2,15.4 24.2,15.4 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '10.1,14 8.3,14.6 8.3,13.3 10.1,12.7 10.1,14 10.1,14 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '20.4,15.8 17.3,17 17.3,14.5 20.4,13.2 20.4,15.8 20.4,15.8 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '13.9,16.6 13.9,14.6 16.7,13.5 16.7,15.4 13.9,16.6 13.9,16.6 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '13.3,15.1 11,15.9 11,14.5 13.3,13.5 13.3,15.1 13.3,15.1 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '24.2,18.8 20.9,20.3 20.9,17.2 24.2,15.9 24.2,18.8 24.2,18.8 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '24.2,22.3 20.9,23.8 20.9,20.7 24.2,19.3 24.2,22.3 24.2,22.3 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '20.9,27.3 20.9,24.3 24.2,22.7 24.2,25.9 20.9,27.3 20.9,27.3 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '10.1,24.8 8.3,25.4 8.3,24.1 10.1,23.5 10.1,24.8 10.1,24.8 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '20.4,26.5 17.3,27.7 17.3,25.1 20.4,24 20.4,26.5 20.4,26.5 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '16.7,26.2 14.1,27.3 13.9,27.3 13.9,25.4 16.7,24.3 16.7,26.2 16.7,26.2 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '13.3,25.9 11,26.7 11,25.2 13.3,24.3 13.3,25.9 13.3,25.9 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '20.9,30.9 20.9,27.7 24.2,26.4 24.2,29.4 20.9,30.9 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '24.2,33 20.9,34.4 20.9,31.4 24.2,29.9 24.2,33 24.2,33 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '24.2,36.8 20.9,38.1 20.9,34.9 24.2,33.5 24.2,36.8 24.2,36.8 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '10.1,35.5 8.3,36.2 8.3,35.1 10.1,34.3 10.1,35.5 10.1,35.5 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '20.4,37.2 17.3,38.4 17.3,35.9 20.4,34.6 20.4,37.2 20.4,37.2 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '13.9,38 13.9,36 16.7,34.9 16.7,36.8 13.9,38 13.9,38 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '13.3,36.5 11,37.3 11,35.9 13.3,34.9 13.3,36.5 13.3,36.5 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#118ACB')
                                         .attr('points', '9.9,28.3 8.6,28.9 8.6,27.7 9.9,27.2 9.9,28.3 9.9,28.3 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#118ACB')
                                         .attr('points', '20.2,30.1 17.6,31 17.6,28.8 20.2,27.8 20.2,30.1 20.2,30.1 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#118ACB')
                                         .attr('points', '16.5,29.8 14.3,30.7 14.3,28.9 16.5,28 16.5,29.8 16.5,29.8 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#118ACB')
                                         .attr('points', '13.1,29.4 11.2,30.1 11.2,28.8 13.1,28 13.1,29.4 13.1,29.4 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#118ACB')
                                         .attr('points', '9.9,32 8.6,32.5 8.6,31.4 9.9,30.9 9.9,32 9.9,32 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#118ACB')
                                         .attr('points', '20.2,31.4 20.2,33.5 17.6,34.6 17.6,32.3 20.2,31.4 20.2,31.4 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#118ACB')
                                         .attr('points', '16.5,33.3 14.3,34.1 14.3,32.3 16.5,31.5 16.5,33.3 16.5,33.3 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#118ACB')
                                         .attr('points', '13.1,32.8 11.4,33.6 11.2,32.3 13.1,31.5 13.1,32.8 13.1,32.8 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('path')
                                         .style('fill', '#118ACB')
                                         .attr('d', 'M24.6,33.3c1.8-0.6,3.6-1.1,5.5-1.4h0.2l-0.2-8c-1.9,0.3-3.7,1-5.5,1.8V33.3L24.6,33.3z')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#F4793B')
                                         .attr('points', '9.9,17.5 8.6,18.2 8.6,16.9 9.9,16.4 9.9,17.5 9.9,17.5 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#F4793B')
                                         .attr('points', '20.2,19.3 17.6,20.3 17.6,18.2 20.2,17 20.2,19.3 20.2,19.3 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#F4793B')
                                         .attr('points', '16.5,19 14.3,19.9 14.3,18.2 16.5,17.2 16.5,19 16.5,19 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#F4793B')
                                         .attr('points', '13.1,18.6 11.2,19.3 11.2,18 13.1,17.2 13.1,18.6 13.1,18.6 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#F4793B')
                                         .attr('points', '9.9,21.2 8.6,21.7 8.6,20.6 9.9,20.1 9.9,21.2 9.9,21.2 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#F4793B')
                                         .attr('points', '20.2,22.7 17.6,23.8 17.6,21.5 20.2,20.6 20.2,22.7 20.2,22.7 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#F4793B')
                                         .attr('points', '14.3,23.5 14.3,21.7 16.5,20.7 16.5,22.7 14.3,23.5 14.3,23.5 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#F4793B')
                                         .attr('points', '13.1,22.2 11.2,23 11.2,21.5 13.1,20.9 13.1,22.2 13.1,22.2 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#F4793B')
                                         .attr('points', '13.1,22.2 11.2,23 11.2,21.5 13.1,20.9 13.1,22.2 13.1,22.2 ')
-                                        .attr('transform', 'translate(-40,-40) scale(1.3)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('path')
                                         .style('fill', '#F4793B')
                                         .attr('d', 'M24.6,22.8c1.8-0.7,3.6-1.3,5.5-1.4v-0.2v-7.7c-1.9,0.4-3.7,1-5.5,1.8V22.8L24.6,22.8z')
-                                        .attr('transform', 'translate(-40,-36) scale(1.5)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('path')
                                         .style('fill', '#6DC067')
                                         .attr('d', 'M38.2,14.1v7.7c-1.8-0.6-3.7-0.8-5.6-0.8v-7.9 C34.5,13.1,36.5,13.3,38.2,14.1L38.2,14.1z')
-                                        .attr('transform', 'translate(-40,-36) scale(1.5)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     elm.append('path')
                                         .style('fill', '#FFCB05')
                                         .attr('d', 'M38.2,24.4v7.9c-1.8-0.5-3.7-0.7-5.6-0.6v-8 C34.5,23.5,36.5,23.7,38.2,24.4L38.2,24.4z')
-                                        .attr('transform', 'translate(-40,-36) scale(1.5)');
+                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
 
                                     break;
 
@@ -2024,8 +2024,6 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                                 case 'DNS':
                                     elm.append('path')
                                         .style('fill', '#333333')
-                                        .style('stroke-width', 0.8)
-                                        .style('stroke', 'white')
                                         .attr('d', 'M43.1,24.5c0-2.4-1.4-4.4-3.4-5.4c-0.4-2.9-2.9-5.1-5.9-5.1'+
                                         'c-0.6,0-1.1,0.1-1.6,0.2c-1-1.7-2.9-2.8-5.1-2.8c-1.8,0-3.5,0.8-4.6,2.2c-0.9-0.6-2.1-1-3.3-1c-2.8,0-5.2,1.9-5.8,4.6'+
                                         'c-2.9,0.4-5.1,2.9-5.1,5.9c0,0.5,0.1,1,0.2,1.5C8.3,25.4,8,26.4,8,27.4c0,3.1,2.4,5.6,5.4,5.9c1,1.7,2.9,2.9,5.1,2.9'+
