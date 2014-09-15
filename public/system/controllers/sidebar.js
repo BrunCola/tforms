@@ -187,10 +187,10 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		// 	}]
 		// },
 		{
-			'title': 'Users',
+			'title': 'Local Events',
 			'url': '',
 			'icon': 'fa-user',
-			'accessLevel': [3],	
+			// 'accessLevel': [3],	
 			'children':
 				[{
 					'title': 'Stealth COI Map',
@@ -209,16 +209,34 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 					'title': 'Local User Conn.',
 					'url': 'local_user_conn',
 					'icon': 'fa-user',
-					'accessLevel': [3],	
+					// 'accessLevel': [3],	
 					'orphans': []
 				},
 				{
 					'title': 'Local Network Map',
 					'url': 'users_local',
 					'icon': 'fa-sitemap',
-					'accessLevel': [3],	
+					// 'accessLevel': [3],	
 					'orphans': []
-				}
+				},
+                {
+                    'title': 'Endpoint Events By Type',
+                    'url': 'endpoint_events',
+                    'icon': 'fa-desktop',
+                    'orphans': ['endpoint_events_user','endpoint_events_user_drill']
+                },
+                {
+                    'title': 'Endpoint Events By Local IP',
+                    'url': 'endpoint_events_local',
+                    'icon': 'fa-desktop',
+                    'orphans': ['endpoint_events_local_by_alert_info', 'endpoint_events_local_alert_info_drill']
+                },
+                {
+                    'title': 'Sharepoint Access',
+                    'url': 'endpoint_events_sharepoint',
+                    'icon': 'fa-desktop',
+                    'orphans': ['endpoint_events_sharepoint_drill']
+                }
 			]
 		},
 		// {
@@ -267,32 +285,32 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		// 		}
 		// 	]
 		// },
-		{
-			'title': 'Endpoint Events',
-			'url': '',
-			'icon': 'fa-desktop',
-			'children':
-			[
-				{
-					'title': 'By Type',
-					'url': 'endpoint_events',
-					'icon': 'fa-desktop',
-					'orphans': ['endpoint_events_user','endpoint_events_user_drill']
-				},
-				{
-					'title': 'By Local IP',
-					'url': 'endpoint_events_local',
-					'icon': 'fa-desktop',
-					'orphans': ['endpoint_events_local_by_alert_info', 'endpoint_events_local_alert_info_drill']
-				},
-				{
-					'title': 'Sharepoint',
-					'url': 'endpoint_events_sharepoint',
-					'icon': 'fa-desktop',
-					'orphans': ['endpoint_events_sharepoint_drill']
-				}
-			]
-		},
+		// {
+		// 	'title': 'Endpoint Events',
+		// 	'url': '',
+		// 	'icon': 'fa-desktop',
+		// 	'children':
+		// 	[
+		// 		{
+		// 			'title': 'By Type',
+		// 			'url': 'endpoint_events',
+		// 			'icon': 'fa-desktop',
+		// 			'orphans': ['endpoint_events_user','endpoint_events_user_drill']
+		// 		},
+		// 		{
+		// 			'title': 'By Local IP',
+		// 			'url': 'endpoint_events_local',
+		// 			'icon': 'fa-desktop',
+		// 			'orphans': ['endpoint_events_local_by_alert_info', 'endpoint_events_local_alert_info_drill']
+		// 		},
+		// 		{
+		// 			'title': 'Sharepoint',
+		// 			'url': 'endpoint_events_sharepoint',
+		// 			'icon': 'fa-desktop',
+		// 			'orphans': ['endpoint_events_sharepoint_drill']
+		// 		}
+		// 	]
+		// },
 		{
 			'title': 'Applications',
 			'url': '',
