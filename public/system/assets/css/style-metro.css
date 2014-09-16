@@ -427,7 +427,7 @@ select:focus {
 .btn[disabled]**//**,
 .btn.disabled**/ {  
   color: #333333;
-  background-color: #d8d8d8 !important;
+  background-color: #d8d8d8 ;
 }
 /**.btn-alert {
   background-image: none;
@@ -467,12 +467,17 @@ select:focus {
   background-color: #DD122A;
   letter-spacing:0px;
 }
-.btn.alert4:hover, 
-.btn.alert4:focus, 
-.btn.alert4:active/**, 
+.btn.alert4:hover 
+/**.btn.alert4:focus **/
+/**.btn.alert4:active**//**, 
 .btn.alert4.active**//**,
 .btn.alert4[disabled]**//**, 
 .btn.alert4.disabled**/ {    
+  background-color: #bb2413 !important;
+  color: #fff !important;
+}
+.btn.alert4.selected
+ {    
   background-color: #bb2413 !important;
   color: #fff !important;
 }
@@ -482,29 +487,40 @@ select:focus {
   background-color: #F88B12;
   letter-spacing:0px;
 }
-.btn.alert3:hover, 
-.btn.alert3:focus, 
-.btn.alert3:active/**, 
+.btn.alert3:hover 
+/**.btn.alert3:focus **/
+/**.btn.alert3:active**//**, 
 .btn.alert3.active**//**, 
 .btn.alert3.disabled**//**,
 .btn.alert3[disabled]**/ { 
   background-color: #F16515 !important;
   color: #fff !important;
 }
-.btn.alert2 {
-  color: #383E4B; 
+.btn.alert3.selected
+{ 
+  background-color: #F16515 !important;
+  color: #fff !important;
+}
+.btn.alert2
+{
+  color: #383E4B ; 
   text-shadow: none;  
-  background-color: #F5D800;
+  background-color: #F5D800 ;
   letter-spacing:0px;
 }
-.btn.alert2:hover, 
-.btn.alert2:focus, 
-.btn.alert2:active/**, 
+.btn.alert2:hover 
+/**.btn.alert2:focus**/
+/**.btn.alert2:active**//**, 
 .btn.alert2.active**//**, 
-.btn.alert2.disabled**//**,
+.btn.alert2.disabled/**,
 .btn.alert2[disabled]**/ { 
-  background-color: #eca22e !important;
+  background-color: #eca22e  !important;
   color: #fff !important;
+}
+.btn.alert2.selected
+{ 
+  background-color: #eca22e !important ;
+  color: #fff !important ;
 }
 .btn.alert1   
 {
@@ -513,12 +529,17 @@ select:focus {
   background-color: #377FC7;
   letter-spacing:0px;
 }
-.btn.alert1:hover, 
-.btn.alert1:focus, 
-.btn.alert1:active/**,
+.btn.alert1:hover 
+/**.btn.alert1:focus**/
+/**.btn.alert1:active**//**,
 .btn.alert1.active**//**,
 .btn.alert1[disabled]**//**,
 .btn.alert1.disabled**/ {  
+  background-color: #0362fd !important;
+  color: #fff !important;
+}
+.btn.alert1.selected
+{  
   background-color: #0362fd !important;
   color: #fff !important;
 }

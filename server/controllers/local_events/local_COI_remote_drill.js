@@ -22,7 +22,6 @@ module.exports = function(pool) {
                     return callback();
                 }
             }
-
             var database = req.session.passport.user.database;
             var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
             var end = Math.round(new Date().getTime() / 1000);
@@ -36,7 +35,6 @@ module.exports = function(pool) {
             } else {
                 pointGroup = 60;
             }
-
             var lanes;
             if (req.session.passport.user.level === 3) {
                 lanes = ['ioc', 'conn', 'file', 'dns', 'http', 'ssl', 'endpoint', 'stealth'];
@@ -77,6 +75,57 @@ module.exports = function(pool) {
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
                             'AND `lan_ip`= ? ',
+                    insert: [start, end, req.query.lan_ip],
+                    params: [
+                        {title: "Time", select: "time"},
+                        {title: "Zone", select: "lan_zone"},
+                        {title: "Machine", select: "machine"},
+                        {title: "Local IP", select: "lan_ip"},
+                        {title: "Local Port", select: "lan_port"},
+                        {title: "Remote IP", select: "remote_ip"},
+                        {title: "Remote Port", select: "remote_port"},
+                        {title: "Remote Country", select: "remote_country"},
+                        {title: "Remote ASN", select: "remote_asn_name"},
+                        {title: "Application", select: "l7_proto"},
+                        {title: "Bytes to Remote", select: "in_bytes"},
+                        {title: "Bytes from Remote", select: "out_bytes"},
+                        {title: "IOC", select: "ioc"},
+                        {title: "IOC Severity", select: "ioc_severity"},
+                        {title: "IOC Type", select: "ioc_typeIndicator"},
+                        {title: "IOC Stage", select: "ioc_typeInfection"},
+                        {title: "IOC Rule", select: "ioc_rule"},
+                    ]
+                }
+                var l7 = {
+                    query: 'SELECT '+
+                            '\'l7\' AS type, '+
+                            '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                            '`ioc_count`,'+
+                            '`lan_zone`,'+
+                            '`machine`,'+
+                            '`lan_ip`,'+
+                            '`lan_port`,'+
+                            '`remote_ip`,'+
+                            '`remote_port`,'+
+                            '`remote_country`,'+
+                            '`remote_asn_name`,'+
+                            '`in_bytes`,'+
+                            '`out_bytes`,'+
+                            '`l7_proto`,'+
+                            '`ioc`,'+
+                            '`ioc_severity`,'+
+                            '`ioc_rule`,'+
+                            '`ioc_typeIndicator`,'+
+                            '`ioc_typeInfection` '+
+                        'FROM '+
+                            '`conn_ioc` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                            'AND `lan_ip` = ? '+
+                            'AND `l7_proto` != \'-\''+
+                        'LIMIT 250',
                     insert: [start, end, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -451,6 +500,57 @@ module.exports = function(pool) {
                             {title: "IOC Rule", select: "ioc_rule"},
                         ]
                     }
+                    var l7 = {
+                        query: 'SELECT '+
+                                '\'l7\' AS type, '+
+                                '`time` as raw_time, '+
+                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                                '`ioc_count`,'+
+                                '`lan_zone`,'+
+                                '`machine`,'+
+                                '`lan_ip`,'+
+                                '`lan_port`,'+
+                                '`remote_ip`,'+
+                                '`remote_port`,'+
+                                '`remote_country`,'+
+                                '`remote_asn_name`,'+
+                                '`in_bytes`,'+
+                                '`out_bytes`,'+
+                                '`l7_proto`,'+
+                                '`ioc`,'+
+                                '`ioc_severity`,'+
+                                '`ioc_rule`,'+
+                                '`ioc_typeIndicator`,'+
+                                '`ioc_typeInfection` '+
+                            'FROM '+
+                                '`conn_ioc` '+
+                            'WHERE '+
+                                '`time` BETWEEN ? AND ? '+
+                                'AND `lan_ip` = ? '+
+                                'AND `l7_proto` != \'-\''+
+                            'LIMIT 250',
+                        insert: [start, end, req.query.lan_ip],
+                        params: [
+                            {title: "Time", select: "time"},
+                            {title: "Zone", select: "lan_zone"},
+                            {title: "Machine", select: "machine"},
+                            {title: "Local IP", select: "lan_ip"},
+                            {title: "Local Port", select: "lan_port"},
+                            {title: "Remote IP", select: "remote_ip"},
+                            {title: "Remote Port", select: "remote_port"},
+                            {title: "Remote Country", select: "remote_country"},
+                            {title: "Remote ASN", select: "remote_asn_name"},
+                            {title: "Application", select: "l7_proto"},
+                            {title: "Bytes to Remote", select: "in_bytes"},
+                            {title: "Bytes from Remote", select: "out_bytes"},
+                            {title: "IOC", select: "ioc"},
+                            {title: "IOC Severity", select: "ioc_severity"},
+                            {title: "IOC Type", select: "ioc_typeIndicator"},
+                            {title: "IOC Stage", select: "ioc_typeInfection"},
+                            {title: "IOC Rule", select: "ioc_rule"},
+                        ]
+                    }
                     var dns = {
                         query: 'SELECT '+
                                 '\'dns\' AS type,'+
@@ -667,7 +767,6 @@ module.exports = function(pool) {
                     var tree_conn = {
                         query: 'SELECT '+
                                    'count(*) AS `count`,'+
-                                    '\'Connections\' AS traffic,'+
                                     '\'Connections\' AS type,'+
                                     '`remote_ip` '+
                                 'FROM '+
@@ -676,7 +775,6 @@ module.exports = function(pool) {
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_ip` = ? '+
                                 'GROUP BY '+
-                                    '`lan_ip`,'+
                                     '`remote_ip` '+
                                 'ORDER BY '+
                                     '`count` DESC '+
@@ -686,7 +784,6 @@ module.exports = function(pool) {
                     var tree_dns = {
                        query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Connections\' AS traffic,'+
                                     '\'DNS\' AS type,' +
                                     '`remote_ip` '+
                                 'FROM '+
@@ -695,7 +792,6 @@ module.exports = function(pool) {
                                     'time BETWEEN ? AND ? '+
                                     'AND `lan_ip` = ? '+
                                 'GROUP BY '+
-                                    '`lan_ip`,'+
                                     '`remote_ip` '+
                                 'ORDER BY '+
                                     '`count` DESC '+
@@ -705,17 +801,15 @@ module.exports = function(pool) {
                     var tree_http = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Connections\' AS traffic,'+
                                     '\'HTTP\' AS type,' +
-                                    '`remote_ip` '+
+                                    '`host` '+
                                 'FROM '+
                                     '`http_meta` '+
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_ip` = ? '+   
                                 'GROUP BY '+
-                                    '`lan_ip`,'+
-                                    '`remote_ip` '+
+                                    '`host` '+
                                 'ORDER BY '+
                                     '`count` DESC '+
                                 'LIMIT 20',
@@ -724,17 +818,15 @@ module.exports = function(pool) {
                     var tree_ssl = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Connections\' AS traffic,'+
                                     '\'SSL\' AS type,' +
-                                    '`remote_ip` '+
+                                    '`server_name` '+
                                 'FROM '+
                                     '`ssl_meta` '+
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_ip` = ? '+
                                 'GROUP BY '+
-                                    '`lan_ip`,'+
-                                    '`remote_ip` '+
+                                    '`server_name` '+
                                 'ORDER BY '+
                                     '`count` DESC '+
                                 'LIMIT 20',
@@ -743,7 +835,6 @@ module.exports = function(pool) {
                     var tree_ssh = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Connections\' AS traffic,'+
                                     '\'SSH\' AS type,' +
                                     '`remote_ip` '+
                                 'FROM '+
@@ -752,7 +843,6 @@ module.exports = function(pool) {
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_ip` = ? '+    
                                 'GROUP BY '+
-                                    '`lan_ip`,'+
                                     '`remote_ip` '+
                                 'ORDER BY '+
                                     '`count` DESC '+
@@ -762,7 +852,6 @@ module.exports = function(pool) {
                     var tree_ftp = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Connections\' AS traffic,'+
                                     '\'FTP\' AS type,' +
                                     '`remote_ip` '+
                                 'FROM '+
@@ -781,7 +870,6 @@ module.exports = function(pool) {
                     var tree_irc = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Connections\' AS traffic,'+
                                     '\'IRC\' AS type,' +
                                     '`remote_ip` '+
                                 'FROM '+
@@ -790,7 +878,6 @@ module.exports = function(pool) {
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_ip` = ? '+   
                                 'GROUP BY '+
-                                    '`lan_ip`,'+
                                     '`remote_ip` '+
                                 'ORDER BY '+
                                     '`count` DESC '+
@@ -800,17 +887,15 @@ module.exports = function(pool) {
                     var tree_files = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Connections\' AS traffic,'+
                                     '\'Files\' AS type,' +
-                                    '`remote_ip` '+
+                                    '`mime` '+
                                 'FROM '+
                                     '`file_meta` '+
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_ip` = ? '+    
                                 'GROUP BY '+
-                                    '`lan_ip`,'+
-                                    '`remote_ip` '+
+                                    '`mime` '+
                                 'ORDER BY '+
                                     '`count` DESC '+
                                 'LIMIT 20',
@@ -819,8 +904,7 @@ module.exports = function(pool) {
                     var tree_conn_drop = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Connections Dropped\' AS traffic, '+
-                                    '\'Connections\' AS type, '+
+                                    '\'Connections Dropped\' AS type, '+
                                     '`remote_ip` '+
                                 'FROM '+
                                     '`conn` '+
@@ -830,7 +914,6 @@ module.exports = function(pool) {
                                     'AND `lan_ip` = ? '+
                                     'AND `proto` = \'tcp\' '+
                                 'GROUP BY '+
-                                    '`lan_ip`,'+
                                     '`remote_ip` '+
                                 'ORDER BY '+
                                     '`count` DESC '+
@@ -840,7 +923,6 @@ module.exports = function(pool) {
                     var tree_stealth_conn = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Stealth\' AS traffic, '+
                                     '\'Stealth\' AS type, '+
                                     '`dst_ip` AS `remote_ip` '+
                                 'FROM '+
@@ -851,7 +933,6 @@ module.exports = function(pool) {
                                     'AND `in_bytes` > 0 '+
                                     'AND `out_bytes` > 0 '+
                                 'GROUP BY '+
-                                    '`src_ip`,'+
                                     '`dst_ip` '+
                                 'ORDER BY '+
                                     '`count` DESC '+
@@ -861,7 +942,6 @@ module.exports = function(pool) {
                     var tree_stealth_drop = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Stealth Dropped\' AS traffic, '+
                                     '\'Stealth Dropped\' AS type, '+
                                     '`dst_ip` AS `remote_ip` '+
                                 'FROM '+
@@ -871,159 +951,159 @@ module.exports = function(pool) {
                                     'AND `src_ip` = ? '+
                                     'AND (`in_bytes` = 0 OR `out_bytes` = 0) '+
                                 'GROUP BY '+
-                                    '`src_ip`,'+
-                                    '`dst_ip`',
+                                    '`dst_ip`'+
+                                'ORDER BY '+
+                                    '`count` DESC '+
+                                'LIMIT 20'    ,
                         insert: [start, end, req.query.lan_ip],
                     }
-                   
                     var treeArray = [], network = null;
-                        async.parallel([
-                            // SWIMLANE 
-                            function(callback) { // conn
-                                new lanegraph(conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                    async.parallel([
+                        // SWIMLANE 
+                        function(callback) { // conn
+                            new lanegraph(conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // dns
+                            new lanegraph(dns, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // http
+                            new lanegraph(http, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // ssl
+                            new lanegraph(ssl, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // file
+                            new lanegraph(file, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // endpoint
+                            new lanegraph(endpoint, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // stealth block
+                            if (req.session.passport.user.level === 3) {
+                                new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                     handleReturn(data, callback);
                                 });
-                            },
-                            function(callback) { // dns
-                                new lanegraph(dns, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                    handleReturn(data, callback);
-                                });
-                            },
-                            function(callback) { // http
-                                new lanegraph(http, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                    handleReturn(data, callback);
-                                });
-                            },
-                            function(callback) { // ssl
-                                new lanegraph(ssl, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                    handleReturn(data, callback);
-                                });
-                            },
-                            function(callback) { // file
-                                new lanegraph(file, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                    handleReturn(data, callback);
-                                });
-                            },
-                            function(callback) { // endpoint
-                                new lanegraph(endpoint, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                    handleReturn(data, callback);
-                                });
-                            },
-                            function(callback) { // stealth block
-                                if (req.session.passport.user.level === 3) {
-                                    new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                        handleReturn(data, callback);
-                                    });
-                                } else {
-                                    callback();
-                                }
-                            },
-                            function(callback) { // TREE CHART
-                                async.parallel([
-                                    function(callback) { // conn
-                                        new query(tree_conn, {database: database, pool: pool}, function(err,data){
-                                            for(var i in data){
-                                                treeArray.push(data[i]); 
-                                            }
-                                            callback();
-                                        });
-                                    },
-                                    function(callback) { // dns
-                                        new query(tree_dns, {database: database, pool: pool}, function(err,data){
-                                            for(var i in data){
-                                                treeArray.push(data[i]); 
-                                            }
-                                            callback();
-                                        });
-                                    },
-                                    function(callback) { // http
-                                        new query(tree_http, {database: database, pool: pool}, function(err,data){
-                                            for(var i in data){
-                                                treeArray.push(data[i]); 
-                                            }
-                                            callback();
-                                        });
-                                    },
-                                    function(callback) { // ssl
-                                        new query(tree_ssl, {database: database, pool: pool}, function(err,data){
-                                            for(var i in data){
-                                                treeArray.push(data[i]); 
-                                            }
-                                            callback();
-                                        });
-                                    },
-                                    function(callback) { // ssh
-                                        new query(tree_ssh, {database: database, pool: pool}, function(err,data){
-                                            for(var i in data){
-                                                treeArray.push(data[i]); 
-                                            }
-                                            callback();
-                                        });
-                                    },
-                                    function(callback) { // ftp
-                                        new query(tree_ftp, {database: database, pool: pool}, function(err,data){
-                                            for(var i in data){
-                                                treeArray.push(data[i]); 
-                                            }
-                                            callback();
-                                        });
-                                    },
-                                    function(callback) { // irc
-                                        new query(tree_irc, {database: database, pool: pool}, function(err,data){
-                                            for(var i in data){
-                                                treeArray.push(data[i]); 
-                                            }
-                                            callback();
-                                        });
-                                    },
-                                    function(callback) { // files
-                                        new query(tree_files, {database: database, pool: pool}, function(err,data){
-                                            for(var i in data){
-                                                treeArray.push(data[i]); 
-                                            }
-                                            callback();
-                                        });
-                                    },
-                                    function(callback) { // conn drop
-                                        new query(tree_conn_drop, {database: database, pool: pool}, function(err,data){
-                                            for(var i in data){
-                                                treeArray.push(data[i]); 
-                                            }
-                                            callback();
-                                        });
-                                    },
-                                    function(callback) { // stealth conn
-                                        if (req.session.passport.user.level === 3) {
-                                            new query(tree_stealth_conn, {database: database, pool: pool}, function(err,data){
-                                                for(var i in data){
-                                                    treeArray.push(data[i]); 
-                                                }
-                                                callback();
-                                            });
-                                        } else {
-                                            callback();
+                            } else {
+                                callback();
+                            }
+                        },
+                        function(callback) { // TREE CHART
+                            async.parallel([
+                                function(callback) { // conn
+                                    new query(tree_conn, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
                                         }
-                                    },
-                                    function(callback) { // stealth drop
-                                        if (req.session.passport.user.level === 3) {
-                                            new query(tree_stealth_drop, {database: database, pool: pool}, function(err,data){
-                                                for(var i in data){
-                                                    treeArray.push(data[i]); 
-                                                }
-                                                callback();
-                                            });
-                                        } else {
-                                            callback();
-                                        }
-                                    },
-                                    
-                                ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
-                                    if (err) throw console.log(err);
-                                    new networktree(treeArray, {database: database, pool: pool, type: 'users'}, function(err,data){
-                                        network = data;
                                         callback();
                                     });
+                                },
+                                function(callback) { // dns
+                                    new query(tree_dns, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
+                                        }
+                                        callback();
+                                    });
+                                },
+                                function(callback) { // http
+                                    new query(tree_http, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
+                                        }
+                                        callback();
+                                    });
+                                },
+                                function(callback) { // ssl
+                                    new query(tree_ssl, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
+                                        }
+                                        callback();
+                                    });
+                                },
+                                function(callback) { // ssh
+                                    new query(tree_ssh, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
+                                        }
+                                        callback();
+                                    });
+                                },
+                                function(callback) { // ftp
+                                    new query(tree_ftp, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
+                                        }
+                                        callback();
+                                    });
+                                },
+                                function(callback) { // irc
+                                    new query(tree_irc, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
+                                        }
+                                        callback();
+                                    });
+                                },
+                                function(callback) { // files
+                                    new query(tree_files, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
+                                        }
+                                        callback();
+                                    });
+                                },
+                                function(callback) { // conn drop
+                                    new query(tree_conn_drop, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
+                                        }
+                                        callback();
+                                    });
+                                },
+                                function(callback) { // stealth conn
+                                    if (req.session.passport.user.level === 3) {
+                                        new query(tree_stealth_conn, {database: database, pool: pool}, function(err,data){
+                                            for(var i in data){
+                                                treeArray.push(data[i]); 
+                                            }
+                                            callback();
+                                        });
+                                    } else {
+                                        callback();
+                                    }
+                                },
+                                function(callback) { // stealth drop
+                                    if (req.session.passport.user.level === 3) {
+                                        new query(tree_stealth_drop, {database: database, pool: pool}, function(err,data){
+                                            for(var i in data){
+                                                treeArray.push(data[i]); 
+                                            }
+                                            callback();
+                                        });
+                                    } else {
+                                        callback();
+                                    }
+                                },
+                            ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
+                                if (err) throw console.log(err);
+                                new networktree(treeArray, {database: database, pool: pool, type: 'users'}, function(err,data){
+                                    network = data;
+                                    callback();
                                 });
+                            });
                         }
                     ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                         if (err) throw console.log(err)

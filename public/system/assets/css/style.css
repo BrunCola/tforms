@@ -6114,3 +6114,9 @@ Datatables Plugin(in v1.3)
   background-color: #eee !important;
 }**/
 
+#stealthforcechart{
+  height: 90% !important;
+}
+#stealthforcechart svg{
+  height: 90% !important;
+}

@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('mean.pages').controller('usersLocalController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
+angular.module('mean.pages').controller('endpointEventsLocalAlertInfoDrillController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/users/users_local?start='+$location.$$search.start+'&end='+$location.$$search.end;
+		query = '/local_events/endpoint_events_local_alert_info_drill?start='+$location.$$search.start+'&end='+$location.$$search.end+'&alert_info='+$location.$$search.alert_info+'&src_ip='+$location.$$search.src_ip;
 	} else {
-		query = '/users/users_local?';
+		query = '/local_events/endpoint_events_local_alert_info_drill?&alert_info='+$location.$$search.alert_info+'&src_ip='+$location.$$search.src_ip;
 	}
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {
@@ -21,11 +21,6 @@ angular.module('mean.pages').controller('usersLocalController', ['$scope', '$sta
 			$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
 			$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
 			$scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
-
-			var divHeight = 620;
-
-			$scope.$broadcast('networkChart', data.network);
-
 			$scope.$broadcast('spinnerHide');
 
 		}

@@ -1,6 +1,6 @@
 'use strict';
 
-var datatable_stealth = require('../constructors/datatable_stealth'),
+var dataTable = require('../constructors/datatable'),
 config = require('../../config/config'),
 async = require('async');
 
@@ -20,21 +20,20 @@ module.exports = function(pool) {
             var table1 = {
                 query: 'SELECT '+
                             'count(*) AS count,'+
-                            'date_format(max(from_unixtime(ossec.time)), "%Y-%m-%d %H:%i:%s") AS time,'+
-                            '`src_user`,'+
-                            '`src_ip`,'+
-                            '`dst_ip`,'+
-                            '`alert_source`,'+
-                            '`program_source`,'+
-                            '`alert_id`,'+
-                            '`alert_info`,'+
-                            '`full_log` '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+                            '`stealth`,'+
+                            '`lan_zone`,'+
+                            '`lan_machine`, '+
+                            '`lan_user`, '+
+                            '`lan_ip` '+
                         'FROM '+
-                            '`ossec` '+
+                            '`endpoint_events` '+
                         'WHERE '+
-                            'ossec.time BETWEEN ? AND ? '+
+                            'time BETWEEN ? AND ? '+
                         'GROUP BY '+
-                            '`src_ip`',
+                            '`lan_zone`,'+
+                            '`lan_user`,'+
+                            '`lan_ip`',
                 insert: [start, end],
                 params: [
                     {
@@ -42,14 +41,16 @@ module.exports = function(pool) {
                         select: 'time',
                         link: {
                             type: 'endpoint_events_local_by_alert_info',
-                            val: ['src_ip'], // the pre-evaluated values from the query above
+                            val: ['lan_zone','lan_user','lan_ip'], // the pre-evaluated values from the query above
                             crumb: false
                         },
                     },
                     { title: 'Events', select: 'count' },
-                    { title: 'Source IP', select: 'src_ip' },
-                    { title: 'Alert Source', select: 'alert_source'},
-                    { title: 'Program Source', select: 'program_source' },
+                    { title: 'Stealth', select: 'stealth' },
+                    { title: 'Zone', select: 'lan_zone' },
+                    { title: 'Machine', select: 'lan_machine'},
+                    { title: 'User', select: 'lan_user' },
+                    { title: 'LAN IP', select: 'lan_ip' },
                 ],
                 settings: {
                     sort: [[1, 'desc']],
@@ -57,31 +58,10 @@ module.exports = function(pool) {
                     title: 'Local Endpoint Events'
                 }
             }
-            var table2 = {
-                query: 'SELECT '+
-                            'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ 
-                            '`stealth_COIs`, ' +
-                            '`stealth`, '+
-                            '`lan_ip`, ' +
-                            '`event`, ' +
-                            '`user` ' +
-                        'FROM ' + 
-                            '`endpoint_tracking` '+
-                        'WHERE ' + 
-                            'stealth > 0 '+
-                            'AND event = "Log On" ',
-                insert: [],
-                params: [
-                    { title: 'Stealth', select: 'stealth' },
-                    { title: 'COI Groups', select: 'stealth_COIs' },
-                    { title: 'User', select: 'user' }
-                ],
-                settings: {}
-            }
             async.parallel([
                 // Table function(s)
                 function(callback) {
-                    new datatable_stealth(table1, table2, parseInt(req.session.passport.user.level), {database: database, pool: pool}, function(err,data){
+                    new dataTable(table1, {database: database, pool: pool}, function(err,data){
                         tables.push(data);
                         callback();
                     });

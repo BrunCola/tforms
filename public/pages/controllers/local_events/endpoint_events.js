@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('mean.pages').controller('endpointEventsLocalController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
+angular.module('mean.pages').controller('endpointEventsController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/general_network/endpoint_events_local?start='+$location.$$search.start+'&end='+$location.$$search.end;
+		query = '/local_events/endpoint_events?start='+$location.$$search.start+'&end='+$location.$$search.end;
 	} else {
-		query = '/general_network/endpoint_events_local?';
+		query = '/local_events/endpoint_events?';
 	}
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {

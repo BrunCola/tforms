@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/stealth/local_COI_remote_drill?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+$location.$$search.lan_ip+'&lan_user='+$location.$$search.lan_user;
+		query = '/local_events/local_COI_remote_drill?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+$location.$$search.lan_ip+'&lan_user='+$location.$$search.lan_user;
 	} else {
-		query = '/stealth/local_COI_remote_drill?lan_ip='+$location.$$search.lan_ip+'&lan_user='+$location.$$search.lan_user;
+		query = '/local_events/local_COI_remote_drill?lan_ip='+$location.$$search.lan_ip+'&lan_user='+$location.$$search.lan_user;
 	}
 
 	// $http({method: 'GET', url: query}).
