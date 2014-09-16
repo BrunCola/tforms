@@ -8,15 +8,25 @@ module.exports = function (sql, conn, callback) {
 		switch(d.type) {
 			case 'conn':
 				return d.time_info+': '+d.lan_ip+' connected to '+d.remote_ip;
-			case 'dns':
+			case 'conn_ioc':
+                return d.time_info+': IOC - '+d.ioc;
+            case 'dns':
 				return d.time_info+': DNS query for '+d.query;
-			case 'http':
+			case 'dns_ioc':
+                return d.time_info+': IOC - '+d.ioc;
+            case 'http':
 				return d.time_info+': HTTP connection to '+d.host+d.uri;
-			case 'ssl':
+			case 'http_ioc':
+                return d.time_info+': IOC - '+d.ioc;
+            case 'ssl':
 				return d.time_info+': SSL connection to '+d.server_name;
-			case 'file':
+			case 'ssl_ioc':
+                return d.time_info+': IOC - '+d.ioc;
+            case 'file':
 				return d.time_info+': File Seen - '+d.name;
-			case 'endpoint':
+			case 'file_ioc':
+                return d.time_info+': IOC - '+d.ioc;
+            case 'endpoint':
 				return d.time_info+': '+d.event_type;
 			case 'stealth':
 				return d.time_info+': Stealth securely connected '+d.src_ip+' with '+d.dst_ip;
