@@ -16,13 +16,14 @@ module.exports = function(pool) {
                 end = req.query.end;
             }
             //var results = [];
-            if (req.query.event_type) {
+            if (req.query.lan_zone && req.query.lan_user && req.query.lan_ip) {
                 var tables = [];
                 var info = [];
                 var table1 = {
-                     query: 'SELECT '+
+                    query: 'SELECT '+
                                 'count(*) AS count,'+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+                                '`stealth`, '+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
                                 '`lan_user`,'+
@@ -31,22 +32,24 @@ module.exports = function(pool) {
                                 '`event_id`,'+
                                 '`event_type`,'+
                                 '`event_detail`,'+
-                                '`stealth` '+
+                                '`event_full` '+
                             'FROM '+
                                 '`endpoint_events` '+
                             'WHERE '+
-                                '`time` BETWEEN ? AND ? '+
-                                'AND `event_type` = ? '+
-                            'GROUP BY'+
-                                '`lan_user`',
-                    insert: [start, end, req.query.event_type],
+                                'time BETWEEN ? AND ? '+
+                                'AND lan_zone = ? '+
+                                'AND lan_user = ? '+
+                                'AND lan_ip = ? '+
+                            'GROUP BY '+
+                                '`event_type`',
+                    insert: [start, end, req.query.lan_zone, req.query.lan_user, req.query.lan_ip,],
                     params: [
                         {
                             title: 'Last Seen',
                             select: 'time',
                             link: {
-                                type: 'endpoint_events_user_drill',
-                                val: ['event_type','lan_user'], // pre-evaluated values from the query above
+                                type: 'endpoint_events_local_alert_info_drill',
+                                val: ['lan_zone','lan_user','lan_ip','event_type'], // val: the pre-evaluated values from the query above
                                 crumb: false
                             }
                         },
@@ -65,10 +68,10 @@ module.exports = function(pool) {
                         title: 'Local Endpoints Triggering Event'
                     }
                 }
+            
                 async.parallel([
                     // Table function(s)
                     function(callback) {
-                        // new dataTable(table1, table2, parseInt(req.session.passport.user.level), {database: database, pool: pool}, function(err,data){
                         new dataTable(table1, {database: database, pool: pool}, function(err,data){
                             tables.push(data);
                             callback();
