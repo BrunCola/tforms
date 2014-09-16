@@ -1665,8 +1665,8 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                                 case 'Windows Vista/Server 2008':
                                     elm.append('path')
                                         .style('fill', '#FFFFFF')
-                                        .attr('d', 'M15.8,12.1c2.3-1,7.4-2.8,11.9,0.8c-0.6,1.8-2.2,8-3.1,10.8c-3.9-2.9-9-2.2-11.9-0.6'+
-                                        'C13.3,20.6,15.8,12.1,15.8,12.1z')
+                                        .attr('d', 'M42.5,12.8c-4,2.3-9.3,3-13.9-0.4c-5.2-4.1-10.4-2.6-13.6-0.9c0,0-6.7,23-7.5,25.9'+
+                                        'c3.3-2.1,9.2-3.1,13.7,0.3c5.2,4.2,10.8,2.6,13.8,0.9C35.2,38.6,41.8,15.7,42.5,12.8z')
                                         .attr('transform', 'translate(-30,-25)');
 
                                     elm.append('path')
@@ -1697,8 +1697,8 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                                 case 'Windows 7/Server 2008R2':
                                     elm.append('path')
                                         .style('fill', '#FFFFFF')
-                                        .attr('d', 'M15.8,12.1c2.3-1,7.4-2.8,11.9,0.8c-0.6,1.8-2.2,8-3.1,10.8c-3.9-2.9-9-2.2-11.9-0.6'+
-                                        'C13.3,20.6,15.8,12.1,15.8,12.1z')
+                                        .attr('d', 'M42.5,12.8c-4,2.3-9.3,3-13.9-0.4c-5.2-4.1-10.4-2.6-13.6-0.9c0,0-6.7,23-7.5,25.9'+
+                                        'c3.3-2.1,9.2-3.1,13.7,0.3c5.2,4.2,10.8,2.6,13.8,0.9C35.2,38.6,41.8,15.7,42.5,12.8z')
                                         .attr('transform', 'translate(-30,-25)');
 
                                     elm.append('path')
@@ -2132,6 +2132,12 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                                         break;
 
                                 case 'HTTP':
+                                    elm.append('circle')
+                                        .attr('r', 18)
+                                        .attr('cx', -6)
+                                        .attr('cy', -2)
+                                        .style('fill', 'white');
+
                                     elm.append('path')
                                         .style('fill', '#333333')
                                         .attr('d', 'M24,15.9v-4.4c-1,0.1-3.1,0.5-4.4,1.1c-0.5,1.3-1,2.6-1.3,4C20.1,16.2,22,16,24,15.9z'+
