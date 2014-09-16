@@ -3205,9 +3205,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         } else if (currentNavPos === navArray.length-1) {
                             nextButton.attr('disabled', 'disabled');
                         } else {
-                            // otehrwise keep reset button open
+                            // otherwise keep reset button open
                             resetBtn.attr('disabled', null);
                         }
+                    // otherwise if item brushed
                     } else {
                         // get max and min from click/drag
                         minExtent = brush.extent()[0];
@@ -3218,22 +3219,23 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         prevButton.attr('disabled', null);
                         resetBtn.attr('disabled', null);
                     }
-
+                    // convert times returned to unix
                     var minUnix = moment(minExtent).unix();
                     var maxUnix = moment(maxExtent).unix();
                     // should it requery?
                     var msDifference = maxUnix - minUnix;
+                    // if difference is less than threshhold or is not a single time select (resulting in difference being 0)
                     if ((msDifference < queryThreshhold) && (msDifference !== 0)) {
+                        // push to requery and then plot
                         $scope.requery(minExtent, maxExtent, function(data){
-                            visItems = data;
-                            plot(visItems, minExtent, maxExtent);
+                            plot(data, minExtent, maxExtent);
                         })                
                     } else {
                         // reset if not within threshold
                         $scope.inTooDeep.areWe = false;
-                        visItems = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;});
+                        var data = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;});
                         $scope.alert.style('display', 'none');
-                        plot(visItems, minExtent, maxExtent);
+                        plot(data, minExtent, maxExtent);
                     }
                 }
 
