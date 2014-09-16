@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('usersLocalController', ['$scope', '$sta
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/users/users_local?start='+$location.$$search.start+'&end='+$location.$$search.end;
+		query = '/local_events/users_local?start='+$location.$$search.start+'&end='+$location.$$search.end;
 	} else {
-		query = '/users/users_local?';
+		query = '/local_events/users_local?';
 	}
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {

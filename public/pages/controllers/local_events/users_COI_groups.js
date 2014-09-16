@@ -4,7 +4,7 @@ angular.module('mean.pages').controller('usersCoiGroupsController', ['$scope', '
 	$scope.global = Global;
 	var query;
 
-	query = '/stealth/users_COI_groups?';
+	query = '/local_events/users_COI_groups?';
 	
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {

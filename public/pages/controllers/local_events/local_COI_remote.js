@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/stealth/local_COI_remote?start='+$location.$$search.start+'&end='+$location.$$search.end;
+		query = '/local_events/local_COI_remote?start='+$location.$$search.start+'&end='+$location.$$search.end;
 	} else {
-		query = '/stealth/local_COI_remote?';
+		query = '/local_events/local_COI_remote?';
 	}
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {

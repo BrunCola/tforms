@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('userLocalController', ['$scope', '$stat
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/stealth/user_local?start='+$location.$$search.start+'&end='+$location.$$search.end+'&user='+$location.$$search.user;
+		query = '/local_events/user_local?start='+$location.$$search.start+'&end='+$location.$$search.end+'&user='+$location.$$search.user;
 	} else {
-		query = '/stealth/user_local?user='+$location.$$search.user;
+		query = '/local_events/user_local?user='+$location.$$search.user;
 	}
 	$http({method: 'GET', url: query}).
 	success(function(data) {
