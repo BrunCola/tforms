@@ -675,7 +675,6 @@ module.exports = function(pool) {
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_ip` = ? '+
                                 'GROUP BY '+
-                                    '`lan_ip`,'+
                                     '`remote_ip` '+
                                 'ORDER BY '+
                                     '`count` DESC '+
@@ -693,7 +692,6 @@ module.exports = function(pool) {
                                     'time BETWEEN ? AND ? '+
                                     'AND `lan_ip` = ? '+
                                 'GROUP BY '+
-                                    '`lan_ip`,'+
                                     '`remote_ip` '+
                                 'ORDER BY '+
                                     '`count` DESC '+
@@ -704,15 +702,14 @@ module.exports = function(pool) {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
                                     '\'HTTP\' AS type,' +
-                                    '`remote_ip` '+
+                                    '`host` '+
                                 'FROM '+
                                     '`http_meta` '+
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_ip` = ? '+   
                                 'GROUP BY '+
-                                    '`lan_ip`,'+
-                                    '`remote_ip` '+
+                                    '`host` '+
                                 'ORDER BY '+
                                     '`count` DESC '+
                                 'LIMIT 20',
@@ -722,15 +719,14 @@ module.exports = function(pool) {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
                                     '\'SSL\' AS type,' +
-                                    '`remote_ip` '+
+                                    '`server_name` '+
                                 'FROM '+
                                     '`ssl_meta` '+
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_ip` = ? '+
                                 'GROUP BY '+
-                                    '`lan_ip`,'+
-                                    '`remote_ip` '+
+                                    '`server_name`,'+
                                 'ORDER BY '+
                                     '`count` DESC '+
                                 'LIMIT 20',
@@ -747,7 +743,6 @@ module.exports = function(pool) {
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_ip` = ? '+    
                                 'GROUP BY '+
-                                    '`lan_ip`,'+
                                     '`remote_ip` '+
                                 'ORDER BY '+
                                     '`count` DESC '+
@@ -783,7 +778,6 @@ module.exports = function(pool) {
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_ip` = ? '+   
                                 'GROUP BY '+
-                                    '`lan_ip`,'+
                                     '`remote_ip` '+
                                 'ORDER BY '+
                                     '`count` DESC '+
@@ -810,8 +804,7 @@ module.exports = function(pool) {
                     var tree_conn_drop = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Connections Dropped\' AS traffic, '+
-                                    '\'Connections\' AS type, '+
+                                    '\'Connections Dropped\' AS type, '+
                                     '`remote_ip` '+
                                 'FROM '+
                                     '`conn` '+
@@ -821,7 +814,6 @@ module.exports = function(pool) {
                                     'AND `lan_ip` = ? '+
                                     'AND `proto` = \'tcp\' '+
                                 'GROUP BY '+
-                                    '`lan_ip`,'+
                                     '`remote_ip` '+
                                 'ORDER BY '+
                                     '`count` DESC '+
@@ -831,7 +823,6 @@ module.exports = function(pool) {
                     var tree_stealth_conn = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Stealth\' AS traffic, '+
                                     '\'Stealth\' AS type, '+
                                     '`dst_ip` AS `remote_ip` '+
                                 'FROM '+
@@ -842,7 +833,6 @@ module.exports = function(pool) {
                                     'AND `in_bytes` > 0 '+
                                     'AND `out_bytes` > 0 '+
                                 'GROUP BY '+
-                                    '`src_ip`,'+
                                     '`dst_ip` '+
                                 'ORDER BY '+
                                     '`count` DESC '+
@@ -852,7 +842,6 @@ module.exports = function(pool) {
                     var tree_stealth_drop = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Stealth Dropped\' AS traffic, '+
                                     '\'Stealth Dropped\' AS type, '+
                                     '`dst_ip` AS `remote_ip` '+
                                 'FROM '+
@@ -862,7 +851,6 @@ module.exports = function(pool) {
                                     'AND `src_ip` = ? '+
                                     'AND (`in_bytes` = 0 OR `out_bytes` = 0) '+
                                 'GROUP BY '+
-                                    '`src_ip`,'+
                                     '`dst_ip`',
                         insert: [start, end, req.query.lan_ip],
                     }
