@@ -60,7 +60,7 @@ module.exports = function (sql, conn, callback) {
 			switch (type) {
 				case 'Connections':
 					return 'remote_ip';
-                case 'MIME':
+                case 'Files':
                     return 'mime';    
 			}
 		}
