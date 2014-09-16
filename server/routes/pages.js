@@ -148,9 +148,9 @@ module.exports = function(app, passport, version, io, pool) {
             app.route('/local_events/local_user_conn')
             .get(authorization.requiresLogin, local_user_conn.render);
         // LOCAL NETWORK MAP
-            var users_local = require('../controllers/local_events/users_local')(pool);
-            app.route('/local_events/users_local')
-            .get(authorization.requiresLogin, users_local.render);
+            var local_network_map = require('../controllers/local_events/local_network_map')(pool);
+            app.route('/local_events/local_network_map')
+            .get(authorization.requiresLogin, local_network_map.render);
         // ENDPOINT EVENTS
             var endpoint_events = require('../controllers/local_events/endpoint_events')(pool);
             app.route('/local_events/endpoint_events')
