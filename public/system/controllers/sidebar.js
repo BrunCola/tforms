@@ -175,7 +175,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 			'children':
 				[{
 					'title': 'Stealth COI Map',
-					'url': 'users_COI_groups',
+					'url': 'stealth_COI_map',
 					'icon': 'fa-code-fork',
 					'accessLevel': [3],	
 					'orphans': []
