@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('endpointEventsLocalByAlertInfoControlle
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/general_network/endpoint_events_local_by_alert_info?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_zone='+$location.$$search.lan_zone+'&lan_user='+$location.$$search.lan_user+'&lan_ip='+$location.$$search.lan_ip;
+		query = '/local_events/endpoint_events_local_by_alert_info?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_zone='+$location.$$search.lan_zone+'&lan_user='+$location.$$search.lan_user+'&lan_ip='+$location.$$search.lan_ip;
 	} else {
-		query = '/general_network/endpoint_events_local_by_alert_info?&lan_zone='+$location.$$search.lan_zone+'&lan_user='+$location.$$search.lan_user+'&lan_ip='+$location.$$search.lan_ip;
+		query = '/local_events/endpoint_events_local_by_alert_info?&lan_zone='+$location.$$search.lan_zone+'&lan_user='+$location.$$search.lan_user+'&lan_ip='+$location.$$search.lan_ip;
 	}
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {

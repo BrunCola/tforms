@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('endpointEventsUserController', ['$scope
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/general_network/endpoint_events_user?start='+$location.$$search.start+'&end='+$location.$$search.end+'&event_type='+$location.$$search.event_type;
+		query = '/local_events/endpoint_events_user?start='+$location.$$search.start+'&end='+$location.$$search.end+'&event_type='+$location.$$search.event_type;
 	} else {
-		query = '/general_network/endpoint_events_user?&event_type='+$location.$$search.event_type;
+		query = '/local_events/endpoint_events_user?&event_type='+$location.$$search.event_type;
 	}
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {
