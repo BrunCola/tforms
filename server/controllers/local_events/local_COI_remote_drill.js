@@ -849,7 +849,10 @@ module.exports = function(pool) {
                                     'AND `src_ip` = ? '+
                                     'AND (`in_bytes` = 0 OR `out_bytes` = 0) '+
                                 'GROUP BY '+
-                                    '`dst_ip`',
+                                    '`dst_ip`'+
+                                'ORDER BY '+
+                                    '`count` DESC '+
+                                'LIMIT 20'    ,
                         insert: [start, end, req.query.lan_ip],
                     }
                     var treeArray = [], network = null;
