@@ -467,7 +467,7 @@ angular.module('mean.pages').config(['$stateProvider',
             // LOCAL USER CONN
                 .state('local_user_conn', {
                     url: '/local_user_conn?start&end&user',
-                    templateUrl: 'public/pages/views/users/local_user_conn.html',
+                    templateUrl: 'public/pages/views/local_events/local_user_conn.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
