@@ -60,6 +60,8 @@ module.exports = function (sql, conn, callback) {
 			switch (type) {
 				case 'Connections':
 					return 'remote_ip';
+                case 'MIME':
+                    return 'mime';    
 			}
 		}
 		var crossfilterData = crossfilter(data);
