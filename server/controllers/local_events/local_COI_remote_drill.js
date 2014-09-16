@@ -96,6 +96,57 @@ module.exports = function(pool) {
                         {title: "IOC Rule", select: "ioc_rule"},
                     ]
                 }
+                var l7 = {
+                    query: 'SELECT '+
+                            '\'l7\' AS type, '+
+                            '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                            '`ioc_count`,'+
+                            '`lan_zone`,'+
+                            '`machine`,'+
+                            '`lan_ip`,'+
+                            '`lan_port`,'+
+                            '`remote_ip`,'+
+                            '`remote_port`,'+
+                            '`remote_country`,'+
+                            '`remote_asn_name`,'+
+                            '`in_bytes`,'+
+                            '`out_bytes`,'+
+                            '`l7_proto`,'+
+                            '`ioc`,'+
+                            '`ioc_severity`,'+
+                            '`ioc_rule`,'+
+                            '`ioc_typeIndicator`,'+
+                            '`ioc_typeInfection` '+
+                        'FROM '+
+                            '`conn_ioc` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                            'AND `lan_ip` = ? '+
+                            'AND `l7_proto` != \'-\''+
+                        'LIMIT 250',
+                    insert: [start, end, req.query.lan_ip],
+                    params: [
+                        {title: "Time", select: "time"},
+                        {title: "Zone", select: "lan_zone"},
+                        {title: "Machine", select: "machine"},
+                        {title: "Local IP", select: "lan_ip"},
+                        {title: "Local Port", select: "lan_port"},
+                        {title: "Remote IP", select: "remote_ip"},
+                        {title: "Remote Port", select: "remote_port"},
+                        {title: "Remote Country", select: "remote_country"},
+                        {title: "Remote ASN", select: "remote_asn_name"},
+                        {title: "Application", select: "l7_proto"},
+                        {title: "Bytes to Remote", select: "in_bytes"},
+                        {title: "Bytes from Remote", select: "out_bytes"},
+                        {title: "IOC", select: "ioc"},
+                        {title: "IOC Severity", select: "ioc_severity"},
+                        {title: "IOC Type", select: "ioc_typeIndicator"},
+                        {title: "IOC Stage", select: "ioc_typeInfection"},
+                        {title: "IOC Rule", select: "ioc_rule"},
+                    ]
+                }
                 var dns = {
                     query: 'SELECT '+
                             '\'dns\' AS type,'+
@@ -427,6 +478,57 @@ module.exports = function(pool) {
                             'WHERE '+
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_ip` = ? '+
+                            'LIMIT 250',
+                        insert: [start, end, req.query.lan_ip],
+                        params: [
+                            {title: "Time", select: "time"},
+                            {title: "Zone", select: "lan_zone"},
+                            {title: "Machine", select: "machine"},
+                            {title: "Local IP", select: "lan_ip"},
+                            {title: "Local Port", select: "lan_port"},
+                            {title: "Remote IP", select: "remote_ip"},
+                            {title: "Remote Port", select: "remote_port"},
+                            {title: "Remote Country", select: "remote_country"},
+                            {title: "Remote ASN", select: "remote_asn_name"},
+                            {title: "Application", select: "l7_proto"},
+                            {title: "Bytes to Remote", select: "in_bytes"},
+                            {title: "Bytes from Remote", select: "out_bytes"},
+                            {title: "IOC", select: "ioc"},
+                            {title: "IOC Severity", select: "ioc_severity"},
+                            {title: "IOC Type", select: "ioc_typeIndicator"},
+                            {title: "IOC Stage", select: "ioc_typeInfection"},
+                            {title: "IOC Rule", select: "ioc_rule"},
+                        ]
+                    }
+                    var l7 = {
+                        query: 'SELECT '+
+                                '\'l7\' AS type, '+
+                                '`time` as raw_time, '+
+                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                                '`ioc_count`,'+
+                                '`lan_zone`,'+
+                                '`machine`,'+
+                                '`lan_ip`,'+
+                                '`lan_port`,'+
+                                '`remote_ip`,'+
+                                '`remote_port`,'+
+                                '`remote_country`,'+
+                                '`remote_asn_name`,'+
+                                '`in_bytes`,'+
+                                '`out_bytes`,'+
+                                '`l7_proto`,'+
+                                '`ioc`,'+
+                                '`ioc_severity`,'+
+                                '`ioc_rule`,'+
+                                '`ioc_typeIndicator`,'+
+                                '`ioc_typeInfection` '+
+                            'FROM '+
+                                '`conn_ioc` '+
+                            'WHERE '+
+                                '`time` BETWEEN ? AND ? '+
+                                'AND `lan_ip` = ? '+
+                                'AND `l7_proto` != \'-\''+
                             'LIMIT 250',
                         insert: [start, end, req.query.lan_ip],
                         params: [
