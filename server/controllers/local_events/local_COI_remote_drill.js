@@ -724,7 +724,7 @@ module.exports = function(pool) {
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_ip` = ? '+
                                 'GROUP BY '+
-                                    '`server_name`,'+
+                                    '`server_name` '+
                                 'ORDER BY '+
                                     '`count` DESC '+
                                 'LIMIT 20',
