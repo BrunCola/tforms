@@ -167,25 +167,6 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 				},				
 			]
 		},
-		// {
-		// 	'title': 'Stealth',
-		// 	'url': '',
-		// 	'icon': 'fa-shield',	
-		// 	'accessLevel': [3],		
-		// 	'children': [
-		// 	{
-		// 		'title': 'Stealth',
-		// 		'url': 'local_COI_remote',
-		// 		'icon': 'shield',
-		// 		'orphans': []
-		// 	},
-		// 	{
-		// 		'title': 'COI Map',
-		// 		'url': 'users_COI_groups',
-		// 		'icon': 'shield',
-		// 		'orphans': ['user_local']
-		// 	}]
-		// },
 		{
 			'title': 'Local Events',
 			'url': '',
@@ -205,7 +186,8 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 					'icon': 'fa-shield',
 					'accessLevel': [3],	
 					'orphans': []
-				},{
+				},
+                {
 					'title': 'Local User Conn.',
 					'url': 'local_user_conn',
 					'icon': 'fa-user',
@@ -282,32 +264,6 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 		// 			'url': 'ssl_remote',
 		// 			'icon': 'fa-lock',
 		// 			'orphans': []
-		// 		}
-		// 	]
-		// },
-		// {
-		// 	'title': 'Endpoint Events',
-		// 	'url': '',
-		// 	'icon': 'fa-desktop',
-		// 	'children':
-		// 	[
-		// 		{
-		// 			'title': 'By Type',
-		// 			'url': 'endpoint_events',
-		// 			'icon': 'fa-desktop',
-		// 			'orphans': ['endpoint_events_user','endpoint_events_user_drill']
-		// 		},
-		// 		{
-		// 			'title': 'By Local IP',
-		// 			'url': 'endpoint_events_local',
-		// 			'icon': 'fa-desktop',
-		// 			'orphans': ['endpoint_events_local_by_alert_info', 'endpoint_events_local_alert_info_drill']
-		// 		},
-		// 		{
-		// 			'title': 'Sharepoint',
-		// 			'url': 'endpoint_events_sharepoint',
-		// 			'icon': 'fa-desktop',
-		// 			'orphans': ['endpoint_events_sharepoint_drill']
 		// 		}
 		// 	]
 		// },
