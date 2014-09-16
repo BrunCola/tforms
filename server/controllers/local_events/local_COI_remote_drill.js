@@ -667,7 +667,6 @@ module.exports = function(pool) {
                     var tree_conn = {
                         query: 'SELECT '+
                                    'count(*) AS `count`,'+
-                                    '\'Connections\' AS traffic,'+
                                     '\'Connections\' AS type,'+
                                     '`remote_ip` '+
                                 'FROM '+
@@ -686,7 +685,6 @@ module.exports = function(pool) {
                     var tree_dns = {
                        query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Connections\' AS traffic,'+
                                     '\'DNS\' AS type,' +
                                     '`remote_ip` '+
                                 'FROM '+
@@ -705,7 +703,6 @@ module.exports = function(pool) {
                     var tree_http = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Connections\' AS traffic,'+
                                     '\'HTTP\' AS type,' +
                                     '`remote_ip` '+
                                 'FROM '+
@@ -724,7 +721,6 @@ module.exports = function(pool) {
                     var tree_ssl = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Connections\' AS traffic,'+
                                     '\'SSL\' AS type,' +
                                     '`remote_ip` '+
                                 'FROM '+
@@ -743,7 +739,6 @@ module.exports = function(pool) {
                     var tree_ssh = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Connections\' AS traffic,'+
                                     '\'SSH\' AS type,' +
                                     '`remote_ip` '+
                                 'FROM '+
@@ -762,7 +757,6 @@ module.exports = function(pool) {
                     var tree_ftp = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Connections\' AS traffic,'+
                                     '\'FTP\' AS type,' +
                                     '`remote_ip` '+
                                 'FROM '+
@@ -781,7 +775,6 @@ module.exports = function(pool) {
                     var tree_irc = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Connections\' AS traffic,'+
                                     '\'IRC\' AS type,' +
                                     '`remote_ip` '+
                                 'FROM '+
@@ -800,17 +793,15 @@ module.exports = function(pool) {
                     var tree_files = {
                         query: 'SELECT '+
                                     'count(*) AS `count`, '+
-                                    '\'Connections\' AS traffic,'+
                                     '\'Files\' AS type,' +
-                                    '`remote_ip` '+
+                                    '`mime` '+
                                 'FROM '+
                                     '`file_meta` '+
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_ip` = ? '+    
                                 'GROUP BY '+
-                                    '`lan_ip`,'+
-                                    '`remote_ip` '+
+                                    '`mime` '+
                                 'ORDER BY '+
                                     '`count` DESC '+
                                 'LIMIT 20',
