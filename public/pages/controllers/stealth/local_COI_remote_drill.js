@@ -68,6 +68,36 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 		$scope.$broadcast('spinnerHide');
 		$scope.$broadcast('networkChart', data.network);
 
+
+
+		console.log($location.$$search);
+		console.log(data.info.main[0]);
+
+		$scope.lan_zone = data.info.main[0].lan_zone;
+		$scope.lan_ip = $location.$$search.lan_ip;
+
+		$scope.lan_port = data.info.main[0].lan_port;
+		$scope.machine_name = data.info.main[0].machine;
+		$scope.packets_recieved = data.info.main[0].out_packets;
+		$scope.bytes_received = data.info.main[0].out_bytes;
+
+		$scope.countryy = data.info.main[0].remote_country;
+		if (data.info.main[0].remote_cc){
+			$scope.flag = data.info.main[0].remote_cc.toLowerCase();
+		}
+		$scope.remote_ip = $location.$$search.remote_ip;
+		$scope.remote_port = data.info.main[0].remote_port;
+		$scope.in_packets = data.info.main[0].in_packets;
+		$scope.in_bytes = data.info.main[0].in_bytes;
+		$scope.first = data.info.main[0].first;
+		$scope.l7_proto = data.info.main[0].l7_proto;
+		$scope.remote_asn = data.info.main[0].remote_asn;
+		$scope.remote_asn_name = data.info.main[0].remote_asn_name;
+		$scope.last = data.info.main[0].last;
+
+		$scope.iocc = $location.$$search.ioc;
+		$scope.ioc_type = data.info.main[0].ioc_typeIndicator;
+		$scope.ioc_rule = data.info.main[0].ioc_rule;
 	});
 
 

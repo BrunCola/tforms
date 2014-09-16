@@ -876,8 +876,59 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_ip],
                     }
                    
+                        var info = {};
+                        var InfoSQL = {
+                            query: 'SELECT '+
+                                    'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as last, '+
+                                    'date_format(min(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as first, '+
+                                    'sum(`in_packets`) as in_packets, '+
+                                    'sum(`out_packets`) as out_packets, '+
+                                    'sum(`in_bytes`) as in_bytes, '+
+                                    'sum(`out_bytes`) as out_bytes, '+
+                                    '`machine`, '+
+                                    '`lan_zone`, '+
+                                    '`lan_port`, '+
+                                    '`remote_port`, '+
+                                    '`remote_cc`, '+
+                                    '`remote_country`, '+
+                                    '`remote_asn`, '+
+                                    '`remote_asn_name`, '+
+                                    '`l7_proto`, '+
+                                    '`ioc_rule`, '+
+                                    '`ioc_typeIndicator` '+
+                                'FROM `conn_ioc` '+
+                                'WHERE '+
+                                    '`lan_ip` = ? ' +
+                                'LIMIT 1',
+                            insert: [req.query.lan_ip]
+
+                        }
+                        var Info2SQL = {
+                            query: 'SELECT '+
+                                '`description` '+
+                                'FROM `ioc_parent` '+
+                                'WHERE '+
+                                '`ioc_parent` = ? '+
+                                'LIMIT 1',
+                            insert: [req.query.ioc]
+                        }
+
+
                     var treeArray = [], network = null;
                         async.parallel([
+
+                            function(callback) { // InfoSQL
+                                new query(InfoSQL, {database: database, pool: pool}, function(err,data){
+                                    info.main = data;
+                                    callback();
+                                });
+                            },
+                            function(callback) { // Info2SQL
+                                new query(Info2SQL, {database: 'rp_ioc_intel', pool: pool}, function(err,data){
+                                    info.desc = data;
+                                    callback();
+                                });
+                            },
                             // SWIMLANE 
                             function(callback) { // conn
                                 new lanegraph(conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
@@ -1031,6 +1082,7 @@ module.exports = function(pool) {
                             network: network,
                             laneGraph: result,
                             start: start,
+                            info: info,
                             end: end
                         });
                     })
