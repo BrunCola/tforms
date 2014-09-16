@@ -15,42 +15,36 @@ module.exports = function(pool) {
                 start = req.query.start;
                 end = req.query.end;
             }
+            //var results = [];
             var tables = [];
             var info = [];
             var table1 = {
                 query: 'SELECT '+
                             'count(*) AS count,'+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-                            '`stealth`,'+
-                            '`lan_zone`,'+
-                            '`lan_machine`, '+
-                            '`lan_user`, '+
-                            '`lan_ip` '+
+                            '`event_src`,'+
+                            '`event_type` '+
                         'FROM '+
                             '`endpoint_events` '+
                         'WHERE '+
-                            'time BETWEEN ? AND ? '+
+                            '`time` BETWEEN ? AND ? '+
                         'GROUP BY '+
-                            '`lan_zone`,'+
-                            '`lan_user`,'+
-                            '`lan_ip`',
+                            '`event_type`',
                 insert: [start, end],
                 params: [
                     {
                         title: 'Last Seen',
                         select: 'time',
                         link: {
-                            type: 'endpoint_events_local_by_alert_info',
-                            val: ['lan_zone','lan_user','lan_ip'], // the pre-evaluated values from the query above
+                            type: 'endpoint_events_user',
+                            // val: the pre-evaluated values from the query above
+                            val: ['event_type'],
                             crumb: false
                         },
                     },
                     { title: 'Events', select: 'count' },
-                    { title: 'Stealth', select: 'stealth' },
-                    { title: 'Zone', select: 'lan_zone' },
-                    { title: 'Machine', select: 'lan_machine'},
-                    { title: 'User', select: 'lan_user' },
-                    { title: 'LAN IP', select: 'lan_ip' },
+                    { title: 'Event Type', select: 'event_type' },
+                    { title: 'Event Source', select: 'event_src'},
                 ],
                 settings: {
                     sort: [[1, 'desc']],
@@ -66,7 +60,7 @@ module.exports = function(pool) {
                         callback();
                     });
                 },
-            ], function(err) { // This function gets called after the two tasks have called their "task callbacks"
+            ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                 if (err) throw console.log(err);
                 var results = {
                     info: info,

@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('mean.pages').controller('endpointEventsSharepointDrillController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
+angular.module('mean.pages').controller('endpointEventsUserController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/general_network/endpoint_events_sharepoint_drill?start='+$location.$$search.start+'&end='+$location.$$search.end+'&event_id='+$location.$$search.event_id+'&lan_ip='+$location.$$search.lan_ip;//+'&lan_zone='+$location.$$search.lan_zone;
+		query = '/local_events/endpoint_events_user?start='+$location.$$search.start+'&end='+$location.$$search.end+'&event_type='+$location.$$search.event_type;
 	} else {
-		query = '/general_network/endpoint_events_sharepoint_drill?event_id='+$location.$$search.event_id+'&lan_ip='+$location.$$search.lan_ip;//+'&lan_zone='+$location.$$search.lan_zone;
+		query = '/local_events/endpoint_events_user?&event_type='+$location.$$search.event_type;
 	}
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {

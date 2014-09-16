@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('mean.pages').controller('endpointEventsLocalAlertInfoDrillController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
+angular.module('mean.pages').controller('endpointEventsLocalByAlertInfoController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/general_network/endpoint_events_local_alert_info_drill?start='+$location.$$search.start+'&end='+$location.$$search.end+'&alert_info='+$location.$$search.alert_info+'&src_ip='+$location.$$search.src_ip;
+		query = '/local_events/endpoint_events_local_by_alert_info?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_zone='+$location.$$search.lan_zone+'&lan_user='+$location.$$search.lan_user+'&lan_ip='+$location.$$search.lan_ip;
 	} else {
-		query = '/general_network/endpoint_events_local_alert_info_drill?&alert_info='+$location.$$search.alert_info+'&src_ip='+$location.$$search.src_ip;
+		query = '/local_events/endpoint_events_local_by_alert_info?&lan_zone='+$location.$$search.lan_zone+'&lan_user='+$location.$$search.lan_user+'&lan_ip='+$location.$$search.lan_ip;
 	}
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {
