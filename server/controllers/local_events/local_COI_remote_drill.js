@@ -22,7 +22,6 @@ module.exports = function(pool) {
                     return callback();
                 }
             }
-
             var database = req.session.passport.user.database;
             var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
             var end = Math.round(new Date().getTime() / 1000);
@@ -36,7 +35,6 @@ module.exports = function(pool) {
             } else {
                 pointGroup = 60;
             }
-
             var lanes;
             if (req.session.passport.user.level === 3) {
                 lanes = ['ioc', 'conn', 'file', 'dns', 'http', 'ssl', 'endpoint', 'stealth'];
@@ -854,155 +852,153 @@ module.exports = function(pool) {
                                     '`dst_ip`',
                         insert: [start, end, req.query.lan_ip],
                     }
-                   
                     var treeArray = [], network = null;
-                        async.parallel([
-                            // SWIMLANE 
-                            function(callback) { // conn
-                                new lanegraph(conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                    async.parallel([
+                        // SWIMLANE 
+                        function(callback) { // conn
+                            new lanegraph(conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // dns
+                            new lanegraph(dns, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // http
+                            new lanegraph(http, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // ssl
+                            new lanegraph(ssl, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // file
+                            new lanegraph(file, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // endpoint
+                            new lanegraph(endpoint, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // stealth block
+                            if (req.session.passport.user.level === 3) {
+                                new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                     handleReturn(data, callback);
                                 });
-                            },
-                            function(callback) { // dns
-                                new lanegraph(dns, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                    handleReturn(data, callback);
-                                });
-                            },
-                            function(callback) { // http
-                                new lanegraph(http, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                    handleReturn(data, callback);
-                                });
-                            },
-                            function(callback) { // ssl
-                                new lanegraph(ssl, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                    handleReturn(data, callback);
-                                });
-                            },
-                            function(callback) { // file
-                                new lanegraph(file, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                    handleReturn(data, callback);
-                                });
-                            },
-                            function(callback) { // endpoint
-                                new lanegraph(endpoint, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                    handleReturn(data, callback);
-                                });
-                            },
-                            function(callback) { // stealth block
-                                if (req.session.passport.user.level === 3) {
-                                    new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                        handleReturn(data, callback);
-                                    });
-                                } else {
-                                    callback();
-                                }
-                            },
-                            function(callback) { // TREE CHART
-                                async.parallel([
-                                    function(callback) { // conn
-                                        new query(tree_conn, {database: database, pool: pool}, function(err,data){
-                                            for(var i in data){
-                                                treeArray.push(data[i]); 
-                                            }
-                                            callback();
-                                        });
-                                    },
-                                    function(callback) { // dns
-                                        new query(tree_dns, {database: database, pool: pool}, function(err,data){
-                                            for(var i in data){
-                                                treeArray.push(data[i]); 
-                                            }
-                                            callback();
-                                        });
-                                    },
-                                    function(callback) { // http
-                                        new query(tree_http, {database: database, pool: pool}, function(err,data){
-                                            for(var i in data){
-                                                treeArray.push(data[i]); 
-                                            }
-                                            callback();
-                                        });
-                                    },
-                                    function(callback) { // ssl
-                                        new query(tree_ssl, {database: database, pool: pool}, function(err,data){
-                                            for(var i in data){
-                                                treeArray.push(data[i]); 
-                                            }
-                                            callback();
-                                        });
-                                    },
-                                    function(callback) { // ssh
-                                        new query(tree_ssh, {database: database, pool: pool}, function(err,data){
-                                            for(var i in data){
-                                                treeArray.push(data[i]); 
-                                            }
-                                            callback();
-                                        });
-                                    },
-                                    function(callback) { // ftp
-                                        new query(tree_ftp, {database: database, pool: pool}, function(err,data){
-                                            for(var i in data){
-                                                treeArray.push(data[i]); 
-                                            }
-                                            callback();
-                                        });
-                                    },
-                                    function(callback) { // irc
-                                        new query(tree_irc, {database: database, pool: pool}, function(err,data){
-                                            for(var i in data){
-                                                treeArray.push(data[i]); 
-                                            }
-                                            callback();
-                                        });
-                                    },
-                                    function(callback) { // files
-                                        new query(tree_files, {database: database, pool: pool}, function(err,data){
-                                            for(var i in data){
-                                                treeArray.push(data[i]); 
-                                            }
-                                            callback();
-                                        });
-                                    },
-                                    function(callback) { // conn drop
-                                        new query(tree_conn_drop, {database: database, pool: pool}, function(err,data){
-                                            for(var i in data){
-                                                treeArray.push(data[i]); 
-                                            }
-                                            callback();
-                                        });
-                                    },
-                                    function(callback) { // stealth conn
-                                        if (req.session.passport.user.level === 3) {
-                                            new query(tree_stealth_conn, {database: database, pool: pool}, function(err,data){
-                                                for(var i in data){
-                                                    treeArray.push(data[i]); 
-                                                }
-                                                callback();
-                                            });
-                                        } else {
-                                            callback();
+                            } else {
+                                callback();
+                            }
+                        },
+                        function(callback) { // TREE CHART
+                            async.parallel([
+                                function(callback) { // conn
+                                    new query(tree_conn, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
                                         }
-                                    },
-                                    function(callback) { // stealth drop
-                                        if (req.session.passport.user.level === 3) {
-                                            new query(tree_stealth_drop, {database: database, pool: pool}, function(err,data){
-                                                for(var i in data){
-                                                    treeArray.push(data[i]); 
-                                                }
-                                                callback();
-                                            });
-                                        } else {
-                                            callback();
-                                        }
-                                    },
-                                    
-                                ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
-                                    if (err) throw console.log(err);
-                                    new networktree(treeArray, {database: database, pool: pool, type: 'users'}, function(err,data){
-                                        network = data;
                                         callback();
                                     });
+                                },
+                                function(callback) { // dns
+                                    new query(tree_dns, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
+                                        }
+                                        callback();
+                                    });
+                                },
+                                function(callback) { // http
+                                    new query(tree_http, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
+                                        }
+                                        callback();
+                                    });
+                                },
+                                function(callback) { // ssl
+                                    new query(tree_ssl, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
+                                        }
+                                        callback();
+                                    });
+                                },
+                                function(callback) { // ssh
+                                    new query(tree_ssh, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
+                                        }
+                                        callback();
+                                    });
+                                },
+                                function(callback) { // ftp
+                                    new query(tree_ftp, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
+                                        }
+                                        callback();
+                                    });
+                                },
+                                function(callback) { // irc
+                                    new query(tree_irc, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
+                                        }
+                                        callback();
+                                    });
+                                },
+                                function(callback) { // files
+                                    new query(tree_files, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
+                                        }
+                                        callback();
+                                    });
+                                },
+                                function(callback) { // conn drop
+                                    new query(tree_conn_drop, {database: database, pool: pool}, function(err,data){
+                                        for(var i in data){
+                                            treeArray.push(data[i]); 
+                                        }
+                                        callback();
+                                    });
+                                },
+                                function(callback) { // stealth conn
+                                    if (req.session.passport.user.level === 3) {
+                                        new query(tree_stealth_conn, {database: database, pool: pool}, function(err,data){
+                                            for(var i in data){
+                                                treeArray.push(data[i]); 
+                                            }
+                                            callback();
+                                        });
+                                    } else {
+                                        callback();
+                                    }
+                                },
+                                function(callback) { // stealth drop
+                                    if (req.session.passport.user.level === 3) {
+                                        new query(tree_stealth_drop, {database: database, pool: pool}, function(err,data){
+                                            for(var i in data){
+                                                treeArray.push(data[i]); 
+                                            }
+                                            callback();
+                                        });
+                                    } else {
+                                        callback();
+                                    }
+                                },
+                            ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
+                                if (err) throw console.log(err);
+                                new networktree(treeArray, {database: database, pool: pool, type: 'users'}, function(err,data){
+                                    network = data;
+                                    callback();
                                 });
+                            });
                         }
                     ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                         if (err) throw console.log(err)
