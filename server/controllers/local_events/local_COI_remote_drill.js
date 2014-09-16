@@ -37,9 +37,9 @@ module.exports = function(pool) {
             }
             var lanes;
             if (req.session.passport.user.level === 3) {
-                lanes = ['ioc', 'conn', 'file', 'dns', 'http', 'ssl', 'endpoint', 'stealth'];
+                lanes = ['ioc', 'conn', 'l7', 'file', 'dns', 'http', 'ssl', 'endpoint', 'stealth'];
             } else {
-                lanes = ['ioc', 'conn', 'file', 'dns', 'http', 'ssl', 'endpoint'];
+                lanes = ['ioc', 'conn', 'l7', 'file', 'dns', 'http', 'ssl', 'endpoint'];
             }
             var result = {
                 lanes: lanes,
@@ -120,7 +120,7 @@ module.exports = function(pool) {
                             '`ioc_typeIndicator`,'+
                             '`ioc_typeInfection` '+
                         'FROM '+
-                            '`conn_ioc` '+
+                            '`conn` '+
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
                             'AND `lan_ip` = ? '+
@@ -397,6 +397,11 @@ module.exports = function(pool) {
                             handleReturn(data, callback);
                         });
                     },
+                    function(callback) { // conn
+                        new lanegraph(l7, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                            handleReturn(data, callback);
+                        });
+                    },
                     function(callback) { // dns
                         new lanegraph(dns, {database: database, pool:pool, lanes: lanes}, function(err, data){
                             handleReturn(data, callback);
@@ -633,7 +638,7 @@ module.exports = function(pool) {
                     }
                     var ssl = {
                         query: 'SELECT '+
-                                '\'ssl \' AS type, '+
+                                '\'ssl\' AS type, '+
                                 '`time` as raw_time, '+
                                 'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -962,6 +967,11 @@ module.exports = function(pool) {
                         // SWIMLANE 
                         function(callback) { // conn
                             new lanegraph(conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },                        
+                        function(callback) { // conn
+                            new lanegraph(l7, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                 handleReturn(data, callback);
                             });
                         },

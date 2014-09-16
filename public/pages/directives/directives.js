@@ -2722,7 +2722,7 @@ angular.module('mean.pages').directive('makeTreeChart', ['$timeout', '$rootScope
 }]);
 
 
-angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$rootScope', function ($timeout, $location, $rootScope) {
+angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'appIcon', '$rootScope', function ($timeout, $location, appIcon, $rootScope) {
     return {
         link: function ($scope, element, attrs) {
             $scope.$on('laneGraph', function() {
@@ -2763,7 +2763,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
 
                 var m = [5, 15, 15, 120], //top right bottom left
                     w = width - m[1] - m[3],
-                    h = 350 - m[0] - m[2],
+                    h = 390 - m[0] - m[2],
                     miniHeight = 0,
                     mainHeight = h - miniHeight - 50;
 
@@ -2880,7 +2880,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                     }
                 }
 
-                $scope.point = function(element, nickname, title) {
+                $scope.point = function(element, nickname, name) {
                     if (nickname.search("ioc") !== -1) {
                         element.attr('class', 'ioc');
                         element = element.append('g')
@@ -2905,6 +2905,27 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                         element.attr('class', nickname);
                         element = element.append('g').attr('transform', 'translate(-18, -6)scale(0.8)');
                         switch(nickname){
+                            case 'secure':
+                                element.append('circle')
+                                    .attr('fill', function(d){
+                                        if (d.ioc_count > 0) {
+                                            return '#e2a23c';
+                                        } else {
+                                            return '#A0BB71';
+                                        }
+                                    })
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                element.append('svg:path')
+                                    .attr('d', 'M25.518,13.467h-0.002c0-0.003,0.002-0.006,0.002-0.008c0-4.064-3.297-7.359-7.359-7.359'+
+                                        'c-4.064,0-7.359,3.295-7.359,7.359c0,0.002,0,0.005,0,0.008v2.674H9.291V27.9h17.785v-11.76h-1.559V13.467z')
+                                    .attr('fill', '#595A5C');
+                                element.append('svg:path')
+                                    .attr('d', 'M18.184,8.754c-3.191,0-4.661,2.372-4.661,4.967'+
+                                        'c0,0.004,0,0.006,0,0.008v2.412h9.397v-2.412c0-0.002,0-0.004,0-0.008C22.92,11.126,21.315,8.754,18.184,8.754z')
+                                    .attr('fill', '#A0BB71');
+                                return;
                             case 'file':
                                 element.append('circle')
                                     .attr('fill', function(d){
@@ -2992,27 +3013,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                         'l0.959-3.195l-2.882-1.775L24.715,19.976z')
                                     .attr('fill', '#595A5C');
                                 return;
-                            case 'ssl':
-                                element.append('circle')
-                                    .attr('fill', function(d){
-                                        if (d.ioc_count > 0) {
-                                            return '#e2a23c';
-                                        } else {
-                                            return '#A0BB71';
-                                        }
-                                    })
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:path')
-                                    .attr('d', 'M25.518,13.467h-0.002c0-0.003,0.002-0.006,0.002-0.008c0-4.064-3.297-7.359-7.359-7.359'+
-                                        'c-4.064,0-7.359,3.295-7.359,7.359c0,0.002,0,0.005,0,0.008v2.674H9.291V27.9h17.785v-11.76h-1.559V13.467z')
-                                    .attr('fill', '#595A5C');
-                                element.append('svg:path')
-                                    .attr('d', 'M18.184,8.754c-3.191,0-4.661,2.372-4.661,4.967'+
-                                        'c0,0.004,0,0.006,0,0.008v2.412h9.397v-2.412c0-0.002,0-0.004,0-0.008C22.92,11.126,21.315,8.754,18.184,8.754z')
-                                    .attr('fill', '#A0BB71');
-                                return;
                             case 'endpoint':
                                 element.append('circle')
                                     .attr('fill', '#7E9E7B')
@@ -3057,8 +3057,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                     .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
                                         'C11.076,16.238,11.938,20.26,13.699,23.661z');
                                 return;
+                            case 'l7':
+                                var html = appIcon(name);
+                                element.append('g').attr('transform', 'scale(0.85)').html(html[0].innerHTML);
+                                return;
                             default:
-                                console.log('cannot draw'+nickname);
                                 return;
                         }
                     }
@@ -3270,12 +3273,17 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                     $('#'+d.id).attr('class', 'laneactive');
                                     previousID = d.id;
                                     previousElm = elm;
-                                    console.log(d.position)
                                     $('#lanegraphinfo').scrollTo(d.position);
                                 });
                                 // .attr("width", 5)
                                 // .attr("height", function(d) {return .8 * y1(1);});
-                            $scope.point(elm, d.type);
+                            // generate points from point function
+                            if (d.type !== 'l7') {
+                                $scope.point(elm, d.type);
+                            } else {
+                                // push app name to point function if type is l7
+                                $scope.point(elm, d.type, d.l7_proto);
+                            }
                         })
                         icons.exit();
 
