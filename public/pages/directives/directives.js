@@ -3229,7 +3229,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         // push to requery and then plot
                         $scope.requery(minExtent, maxExtent, function(data){
                             plot(data, minExtent, maxExtent);
-                        })                
+                        })
                     } else {
                         // reset if not within threshold
                         $scope.inTooDeep.areWe = false;
