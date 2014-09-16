@@ -2801,7 +2801,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .append("svg")
                     .attr("width", w + m[1] + m[3])
                     .attr("height", h + m[0] + m[2])
-                    .on("dblclick", redraw)
+                    .on("dblclick", draw)
                     .attr("class", "chart");
             
                 chart.append("defs").append("clipPath")
@@ -3089,7 +3089,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .html('Reset')
                     .attr('class', 'resetButton')
                     .on('click', function(){
-                        redraw();
+                        draw();
                     });
                 var prevButton = buttonHolder.append('button')
                     .html('Previous')
@@ -3169,38 +3169,43 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 //     })                
                 // }
 
-                function redraw() {
-                    // nav settings
+                function draw() {
+                    // reset navagation array
                     navArray = [];
+                    // set current position in nav array
                     currentNavPos = 0;
+                    // disable all nav buttons
                     prevButton.attr('disabled', 'disabled');
                     nextButton.attr('disabled', 'disabled');
                     resetBtn.attr('disabled', 'disabled');
+                    // push current time position to nav array
                     navArray.push({'min': new Date($scope.start), 'max': new Date($scope.end)});
-
+                    // push time slice heading t odiv
                     currentTime.html('Current Time Slice: <strong>'+$scope.start+'</strong> - <strong>'+$scope.end+'</strong>');
-
-                    var visItems = items;
-                    var positionFromTop = 0, differenceFromLast = 0;
+                    // convert min and max to date object and send to plot function
                     var min = new Date($scope.start);
                     var max = new Date($scope.end);
-                    plot(visItems, min, max); 
-
+                    plot(items, min, max);
                 }
+                draw();
 
                 function mouseup(action) {
+                    // set variables
                     var rects, labels, minExtent, maxExtent, visItems;
+                    // if a nav button is pressed
                     if (action === 'nav') {
-                            // get max and min from mav array
+                            // get max and min (date objects) from mav array
                             minExtent = navArray[currentNavPos].min;
                             maxExtent = navArray[currentNavPos].max;
                         // disable previous button if all the way back
                         if (currentNavPos === 0) {
                             resetBtn.attr('disabled', 'disabled');
                             prevButton.attr('disabled', 'disabled');
+                        // or disable next button if all the way forward 
                         } else if (currentNavPos === navArray.length-1) {
                             nextButton.attr('disabled', 'disabled');
                         } else {
+                            // otehrwise keep reset button open
                             resetBtn.attr('disabled', null);
                         }
                     } else {
@@ -3231,7 +3236,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         plot(visItems, minExtent, maxExtent);
                     }
                 }
-                redraw();
 
                 function plot(data, min, max) {
                     if (moment(max).unix() !== moment(min).unix()) {
@@ -3260,7 +3264,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     elm.style('cursor', 'pointer');
                                 })
                                 .on("click", function(d){
-                                    console.log(d)
                                     // this closes all expanded blocks
                                     if (lastExpandedId !== null) {
                                         $('div'+lastExpandedId+'.infoDivExpanded').hide();
