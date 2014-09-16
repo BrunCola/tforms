@@ -17,7 +17,6 @@ module.exports = function(app, passport, version, io, pool) {
 		var ioc_local = require('../controllers/ioc_notifications/ioc_local')(pool);
 			// IOC LOCAL DRILL
 			var ioc_local_drill = require('../controllers/ioc_notifications/ioc_local_drill')(pool);
-
 	// EXTRACTED FILES
 		// BY LOCAL IP
 		var by_local_ip = require('../controllers/extracted_files/by_local_ip')(pool);
@@ -43,7 +42,6 @@ module.exports = function(app, passport, version, io, pool) {
 				var by_domain_local_mime = require('../controllers/extracted_files/by_domain_local_mime')(pool);
 					// BY DOMAIN LOCAL MIME DRILL
 					var by_domain_local_mime_drill = require('../controllers/extracted_files/by_domain_local_mime_drill')(pool);
-
 	// FIRST SEEN
 		// NEW REMOTE
 		var new_remote = require('../controllers/first_seen/new_remote')(pool);
@@ -57,7 +55,6 @@ module.exports = function(app, passport, version, io, pool) {
 		var new_ssh_remote = require('../controllers/first_seen/new_ssh_remote')(pool);
 		// NEW FTP REMOTE
 		var new_ftp_remote = require('../controllers/first_seen/new_ftp_remote')(pool);
-
 	// APPLICATIONS
 		// BY APPLICATION
 		var app_by_application = require('../controllers/applications/app_by_application')(pool);
@@ -79,8 +76,7 @@ module.exports = function(app, passport, version, io, pool) {
 			var l7_remote_app = require('../controllers/applications/l7_remote_app')(pool);
 				// l7 REMOTE DRILL
 				var l7_remote_drill = require('../controllers/applications/l7_remote_drill')(pool);
-
-	//EMAIL
+	// EMAIL
 		// LOCAL SMTP
 		var smtp_senders = require('../controllers/email/smtp_senders')(pool);
 			// SMTP SENDER2RECEIVER
@@ -97,8 +93,7 @@ module.exports = function(app, passport, version, io, pool) {
 			var smtp_subject_sender_receiver_pairs = require('../controllers/email/smtp_subject_sender_receiver_pairs')(pool)
 				// SMTP FROM SENDER BY SUBJECT
 				var smtp_from_sender_by_subject = require('../controllers/email/smtp_from_sender_by_subject')(pool)
-
-	//HTTP
+	// HTTP
 		// HTTP BY DOMAIN
 		var http_by_domain = require('../controllers/http/http_by_domain')(pool);
 			// HTTP BY DOMAIN LOCAL
@@ -115,7 +110,6 @@ module.exports = function(app, passport, version, io, pool) {
 			var http_remote2local = require('../controllers/http/http_remote2local')(pool);
 				// HTTP REMOTE2LOCAL DRILL
 				var http_remote2local_drill = require('../controllers/http/http_remote2local_drill')(pool);
-
 	// GENERAL NETWORK
 		// LOCAL
 		var local = require('../controllers/general_network/local')(pool);
@@ -134,7 +128,7 @@ module.exports = function(app, passport, version, io, pool) {
 				// ENDPOINT EVENTS USER DRILL
 				var endpoint_events_user_drill = require('../controllers/general_network/endpoint_events_user_drill')(pool);
 		// ENDPOINT EVENTS LOCAL
-		var endpoint_events_local = require('../controllers/general_network/endpoint_events_local')(pool);
+		var endpoint_events_local = require('../controllers/local_events/endpoint_events_local')(pool);
 			// ENDPOINT EVENTS LOCAL BY ALERT INFO
 			var endpoint_events_local_by_alert_info = require('../controllers/general_network/endpoint_events_local_by_alert_info')(pool);
 				// ENDPOINT EVENTS LOCAL ALERT INFO DRILL
@@ -179,24 +173,24 @@ module.exports = function(app, passport, version, io, pool) {
 		var ftp_remote = require('../controllers/general_network/ftp_remote')(pool);
 			// REMOTE2LOCAL FTP
 			var ftp_remote2local = require('../controllers/general_network/ftp_remote2local')(pool);
-	//DNS
+	// DNS
 		// LOCAL DNS
 		var dns_local = require('../controllers/dns/dns_local')(pool);
 		// REMOTE DNS
 		var dns_remote = require('../controllers/dns/dns_remote')(pool);
-	//SSL
+	// SSL
 		// SSL SERVER
 		var ssl_server = require('../controllers/ssl/ssl_server')(pool);
 		// LOCAL SSL
 		var ssl_local = require('../controllers/ssl/ssl_local')(pool);
 		// REMOTE SSL
 		var ssl_remote = require('../controllers/ssl/ssl_remote')(pool);
-	//USERS
+	// USERS
 		//USERS LOCAL
 		var users_local = require('../controllers/users/users_local')(pool);
 		//USERS LOCAL
 		var local_user_conn = require('../controllers/users/local_user_conn')(pool);
-	//STEALTH
+	// STEALTH
 		//LOCAL COI REMOTE
 		var local_COI_remote = require('../controllers/stealth/local_COI_remote')(pool); 
 			//LOCAL COI REMOTE DRILL
@@ -205,16 +199,14 @@ module.exports = function(app, passport, version, io, pool) {
 		var users_COI_groups = require('../controllers/stealth/users_COI_groups')(pool); 
 			//USERS LOCAL
 			var user_local = require('../controllers/stealth/user_local')(pool); 
-	//HEALTH
+	// HEALTH
 		//OVERVIEW
 		var overview = require('../controllers/health/overview')(pool); 
 			//HEALTH DRILL
 			var health_drill = require('../controllers/health/health_drill')(pool); 
-	
 	// REPORTS
 		// IOC EVENTS REPORT
 		var ioc_events_report = require('../controllers/reports/ioc_events')(pool);
-
 	// ARCHIVE
 		var archive = require('../controllers/archive')(pool);
 	// ARCHIVE
@@ -244,7 +236,6 @@ module.exports = function(app, passport, version, io, pool) {
 			// IOC LOCAL DRILL
 			app.route('/ioc_notifications/ioc_local_drill')
 			.get(authorization.requiresLogin, ioc_local_drill.render);
-
 	// EXTRACTED FILES
 		// BY LOCAL IP
 		app.route('/extracted_files/by_local_ip')
@@ -282,7 +273,6 @@ module.exports = function(app, passport, version, io, pool) {
 					// BY DOMAIN LOCAL MIME DRILL
 					app.route('/extracted_files/by_domain_local_mime_drill')
 					.get(authorization.requiresLogin, by_domain_local_mime_drill.render);
-
 	// FIRST SEEN
 		// NEW REMOTE
 		app.route('/first_seen/new_remote')
@@ -302,7 +292,6 @@ module.exports = function(app, passport, version, io, pool) {
 		// NEW FTP REMOTE
 		app.route('/first_seen/new_ftp_remote')
 		.get(authorization.requiresLogin, new_ftp_remote.render);
-
 	// APPLICATIONS
 		// BY APPLICATION
 		app.route('/applications/app_by_application')
@@ -334,8 +323,7 @@ module.exports = function(app, passport, version, io, pool) {
 				// L7 REMOTE DRILL
 				app.route('/applications/l7_remote_drill')
 				.get(authorization.requiresLogin, l7_remote_drill.render);
-
-	//EMAIL
+	// EMAIL
 		// LOCAL SMTP
 		app.route('/email/smtp_senders')
 		.get(authorization.requiresLogin, smtp_senders.render);
@@ -360,8 +348,7 @@ module.exports = function(app, passport, version, io, pool) {
 				// SMTP FROM SENDER BY SUBJECT
 				app.route('/email/smtp_from_sender_by_subject')
 				.get(authorization.requiresLogin, smtp_from_sender_by_subject.render);
-
-	//HTTP
+	// HTTP
 		// HTTP BY DOMAIN
 		app.route('/http/http_by_domain')
 		.get(authorization.requiresLogin, http_by_domain.render);
@@ -386,7 +373,6 @@ module.exports = function(app, passport, version, io, pool) {
 				// HTTP REMOTE2LOCAL DRILL
 				app.route('/http/http_remote2local_drill')
 				.get(authorization.requiresLogin, http_remote2local_drill.render);
-
 	// GENERAL NETWORK
 		// LOCAL
 		app.route('/general_network/local')
@@ -413,7 +399,7 @@ module.exports = function(app, passport, version, io, pool) {
 				app.route('/general_network/endpoint_events_user_drill')
 				.get(authorization.requiresLogin, endpoint_events_user_drill.render);
 		// ENDPOINT EVENTS LOCAL
-		app.route('/general_network/endpoint_events_local')
+		app.route('/local_events/endpoint_events_local')
 		.get(authorization.requiresLogin, endpoint_events_local.render);
 			// ENDPOINT EVENTS LOCAL BY ALERT INFO
 			app.route('/general_network/endpoint_events_local_by_alert_info')
@@ -481,18 +467,18 @@ module.exports = function(app, passport, version, io, pool) {
 			// REMOTE2LOCAL FTP
 			app.route('/general_network/ftp_remote2local')
 			.get(authorization.requiresLogin, ftp_remote2local.render);
-	//USERS
+	// USERS
 		// USERS LOCAL
 		app.route('/users/users_local')
 		.get(authorization.requiresLogin, users_local.render);
-	//DNS
+	// DNS
 		// LOCAL DNS
 		app.route('/dns/dns_local')
 		.get(authorization.requiresLogin, dns_local.render);
 		// REMOTE DNS
 		app.route('/dns/dns_remote')
 		.get(authorization.requiresLogin, dns_remote.render);
-	//SSL
+	// SSL
 		// SSL SERVER
 		app.route('/ssl/ssl_server')
 		.get(authorization.requiresLogin, ssl_server.render);
@@ -519,8 +505,7 @@ module.exports = function(app, passport, version, io, pool) {
 		//LOCAL USER CONN
 		app.route('/users/local_user_conn')
 		.get(authorization.requiresLogin, local_user_conn.render);
-
-	//SYSTEM HEALTH
+	// SYSTEM HEALTH
 		//OVERVIEW
 		app.route('/health/overview')
 		.get(authorization.requiresLogin, overview.render);
@@ -531,14 +516,11 @@ module.exports = function(app, passport, version, io, pool) {
 		// IOC EVENTS
 		app.route('/reports/ioc_events')
 		.get(authorization.requiresLogin, ioc_events_report.render);
-
 	// ARCHIVE
 		app.route('/archive')
 		.get(authorization.requiresLogin, archive.render);
-
 	// UPLOADS
 		app.route('/uploads')
 			.post(authorization.requiresLogin, upload.render);
-
 
 };
