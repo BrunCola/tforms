@@ -524,7 +524,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 // ENPOINT EVENTS
                     .state('endpoint_events', {
                         url: '/endpoint_events?start&end',
-                        templateUrl: 'public/pages/views/general_network/endpoint_events.html',
+                        templateUrl: 'public/pages/views/local_events/endpoint_events.html',
                         resolve: {
                             loggedin: checkLoggedin
                         },
@@ -536,7 +536,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     // ENPOINT EVENTS USER
                         .state('endpoint_events_user', {
                             url: '/endpoint_events_user?start&end&event_type',
-                            templateUrl: 'public/pages/views/general_network/endpoint_events_user.html',
+                            templateUrl: 'public/pages/views/local_events/endpoint_events_user.html',
                             resolve: {
                                 loggedin: checkLoggedin
                             },
@@ -551,7 +551,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         // ENPOINT EVENTS USER DRILL
                             .state('endpoint_events_user_drill', {
                                 url: '/endpoint_events_user_drill?start&end&event_type&lan_user',
-                                templateUrl: 'public/pages/views/general_network/endpoint_events_user_drill.html',
+                                templateUrl: 'public/pages/views/local_events/endpoint_events_user_drill.html',
                                 resolve: {
                                     loggedin: checkLoggedin
                                 },
@@ -579,7 +579,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     // ENPOINT EVENTS LOCAL BY ALERT INFO 
                         .state('endpoint_events_local_by_alert_info', {
                             url: '/endpoint_events_local_by_alert_info?start&end&lan_zone&lan_user&lan_ip',
-                            templateUrl: 'public/pages/views/general_network/endpoint_events_local_by_alert_info.html',
+                            templateUrl: 'public/pages/views/local_events/endpoint_events_local_by_alert_info.html',
                             resolve: {
                                 loggedin: checkLoggedin
                             },
@@ -596,7 +596,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         // ENPOINT EVENTS LOCAL ALERT INFO DRILL
                             .state('endpoint_events_local_alert_info_drill', {
                                 url: '/endpoint_events_local_alert_info_drill?start&end&alert_info&lan_zone&lan_user&lan_ip&event_type',
-                                templateUrl: 'public/pages/views/general_network/endpoint_events_local_alert_info_drill.html',
+                                templateUrl: 'public/pages/views/local_events/endpoint_events_local_alert_info_drill.html',
                                 resolve: {
                                     loggedin: checkLoggedin
                                 },
@@ -614,7 +614,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 // ENPOINT EVENTS SHAREPOINT
                     .state('endpoint_events_sharepoint', {
                         url: '/endpoint_events_sharepoint?start&end',
-                        templateUrl: 'public/pages/views/general_network/endpoint_events_sharepoint.html',
+                        templateUrl: 'public/pages/views/local_events/endpoint_events_sharepoint.html',
                         resolve: {
                             loggedin: checkLoggedin
                         },
@@ -626,7 +626,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     // ENPOINT EVENTS SHAREPOINT DRILL
                         .state('endpoint_events_sharepoint_drill', {
                             url: '/endpoint_events_sharepoint_drill?start&end&event_id&lan_ip',
-                            templateUrl: 'public/pages/views/general_network/endpoint_events_sharepoint_drill.html',
+                            templateUrl: 'public/pages/views/local_events/endpoint_events_sharepoint_drill.html',
                             resolve: {
                                 loggedin: checkLoggedin
                             },
