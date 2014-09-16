@@ -3110,6 +3110,23 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                         }
                     });
 
+
+                // var timeShiftHolder = d3.select("#lanegraph").append('div').attr('class', 'timeShiftHolder');
+                // var nextTime = timeShiftHolder
+                //     .append('button')
+                //     .html('Prev')
+                //     .attr('class', 'prevButton')
+                //     .on('click', function(){
+                //         timeShift('prev');
+                //     });
+                // var prevTime = timeShiftHolder
+                //     .append('button')
+                //     .html('Next')
+                //     .attr('class', 'navButton')
+                //     .on('click', function(){
+                //         timeShift('next');
+                //     });
+
                 function laneInfoAppend(d) {
                     var send = '';
                     for (var i in d) {
@@ -3124,6 +3141,30 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                 var infoTitle = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
                 var infoDiv = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
 
+
+                // function timeShift(cmd) {
+                //     // calculate what the current time shift would be (forward or back)
+                //     var minExtent = moment(navArray[currentNavPos].min).unix();
+                //     var maxExtent = moment(navArray[currentNavPos].max).unix();
+                //     var difference = maxExtent - minExtent;
+                //     // take a fraction of difference
+                //     var diff = difference * 0.90;
+                //     if (cmd === 'prev') {
+                //         var max = minExtent + (difference - diff);
+                //         var min = max - diff;
+                //     }
+                //     if (cmd === 'next') {
+                //         var min = maxExtent - (difference - diff);
+                //         var max = min + diff;
+                //     }
+                //     var minFormatted = moment(min).format('MMMM D, YYYY h:mm A');
+                //     var maxFormatted = moment(max).format('MMMM D, YYYY h:mm A');
+                //     $scope.requery(maxFormatted, minFormatted, function(data){
+                //         plot(data, maxFormatted, minFormatted);
+                //         navArray.push({'min': minFormatted, 'max': maxFormatted});
+                //         currentNavPos++;
+                //     })                
+                // }
 
                 function redraw() {
                     // nav settings
