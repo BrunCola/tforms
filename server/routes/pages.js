@@ -1,7 +1,7 @@
 'use strict';
 
 // Auth Check
-    var authorization = require('./middlewares/authorization');
+var authorization = require('./middlewares/authorization');
 
 module.exports = function(app, passport, version, io, pool) {
     // LIVE CONNECTIONS
@@ -128,9 +128,9 @@ module.exports = function(app, passport, version, io, pool) {
                 .get(authorization.requiresLogin, ftp_remote2local.render);
     // LOCAL EVENTS        
         // STEALTH COI MAP
-            var users_COI_groups = require('../controllers/local_events/users_COI_groups')(pool); 
-            app.route('/local_events/users_COI_groups')
-            .get(authorization.requiresLogin, users_COI_groups.render);
+            var stealth_COI_map = require('../controllers/local_events/stealth_COI_map')(pool); 
+            app.route('/local_events/stealth_COI_map')
+            .get(authorization.requiresLogin, stealth_COI_map.render);
             // USER LOCAL
                 // var user_local = require('../controllers/local_events/user_local')(pool);
                 // app.route('/local_events/user_local')
@@ -226,88 +226,166 @@ module.exports = function(app, passport, version, io, pool) {
                     .get(authorization.requiresLogin, l7_remote_drill.render);
     // DNS
         // LOCAL DNS
-        var dns_local = require('../controllers/dns/dns_local')(pool);
+            var dns_local = require('../controllers/dns/dns_local')(pool);
+            app.route('/dns/dns_local')
+            .get(authorization.requiresLogin, dns_local.render);
         // REMOTE DNS
-        var dns_remote = require('../controllers/dns/dns_remote')(pool);
+            var dns_remote = require('../controllers/dns/dns_remote')(pool);
+            app.route('/dns/dns_remote')
+            .get(authorization.requiresLogin, dns_remote.render);
     // HTTP
         // HTTP BY DOMAIN
-        var http_by_domain = require('../controllers/http/http_by_domain')(pool);
+            var http_by_domain = require('../controllers/http/http_by_domain')(pool);
+            app.route('/http/http_by_domain')
+            .get(authorization.requiresLogin, http_by_domain.render);
             // HTTP BY DOMAIN LOCAL
-            var http_by_domain_local = require('../controllers/http/http_by_domain_local')(pool);
+                var http_by_domain_local = require('../controllers/http/http_by_domain_local')(pool);
+                app.route('/http/http_by_domain_local')
+                .get(authorization.requiresLogin, http_by_domain_local.render);
                 // HTTP BY DOMAIN LOCAL DRILL
-                var http_by_domain_local_drill = require('../controllers/http/http_by_domain_local_drill')(pool);
+                    var http_by_domain_local_drill = require('../controllers/http/http_by_domain_local_drill')(pool);
+                    app.route('/http/http_by_domain_local_drill')
+                    .get(authorization.requiresLogin, http_by_domain_local_drill.render);
         // HTTP LOCAL
-        var http_local = require('../controllers/http/http_local')(pool);
+            var http_local = require('../controllers/http/http_local')(pool);
+            app.route('/http/http_local')
+            .get(authorization.requiresLogin, http_local.render);    
             // HTTP LOCAL BY DOMAIN
-            var http_local_by_domain = require('../controllers/http/http_local_by_domain')(pool);
+                var http_local_by_domain = require('../controllers/http/http_local_by_domain')(pool);
+                app.route('/http/http_local_by_domain')
+                .get(authorization.requiresLogin, http_local_by_domain.render);
         // HTTP REMOTE
-        var http_remote = require('../controllers/http/http_remote')(pool);
+            var http_remote = require('../controllers/http/http_remote')(pool);
+            app.route('/http/http_remote')
+            .get(authorization.requiresLogin, http_remote.render);
             // HTTP REMOTE2LOCAL
-            var http_remote2local = require('../controllers/http/http_remote2local')(pool);
+                var http_remote2local = require('../controllers/http/http_remote2local')(pool);
+                app.route('/http/http_remote2local')
+                .get(authorization.requiresLogin, http_remote2local.render);
                 // HTTP REMOTE2LOCAL DRILL
-                var http_remote2local_drill = require('../controllers/http/http_remote2local_drill')(pool);
+                    var http_remote2local_drill = require('../controllers/http/http_remote2local_drill')(pool);
+                    app.route('/http/http_remote2local_drill')
+                    .get(authorization.requiresLogin, http_remote2local_drill.render);
     // SSL
         // SSL SERVER
-        var ssl_server = require('../controllers/ssl/ssl_server')(pool);
+            var ssl_server = require('../controllers/ssl/ssl_server')(pool);
+            app.route('/ssl/ssl_server')
+            .get(authorization.requiresLogin, ssl_server.render);       
         // LOCAL SSL
-        var ssl_local = require('../controllers/ssl/ssl_local')(pool);
+            var ssl_local = require('../controllers/ssl/ssl_local')(pool);
+            app.route('/ssl/ssl_local')
+            .get(authorization.requiresLogin, ssl_local.render);
         // REMOTE SSL
-        var ssl_remote = require('../controllers/ssl/ssl_remote')(pool);
+            var ssl_remote = require('../controllers/ssl/ssl_remote')(pool);
+            app.route('/ssl/ssl_remote')
+            .get(authorization.requiresLogin, ssl_remote.render);
     // EMAIL
         // LOCAL SMTP
-        var smtp_senders = require('../controllers/email/smtp_senders')(pool);
+            var smtp_senders = require('../controllers/email/smtp_senders')(pool);
+            app.route('/email/smtp_senders')
+            .get(authorization.requiresLogin, smtp_senders.render);
             // SMTP SENDER2RECEIVER
-            var smtp_sender2receiver = require('../controllers/email/smtp_sender2receiver')(pool);
+                var smtp_sender2receiver = require('../controllers/email/smtp_sender2receiver')(pool);
+                app.route('/email/smtp_sender2receiver')
+                .get(authorization.requiresLogin, smtp_sender2receiver.render);
                 // SMTP FROM SENDER
-                var smtp_from_sender = require('../controllers/email/smtp_from_sender')(pool);
+                    var smtp_from_sender = require('../controllers/email/smtp_from_sender')(pool);
+                    app.route('/email/smtp_from_sender')
+                    .get(authorization.requiresLogin, smtp_from_sender.render);
         // SMTP RECEIVERS
-        var smtp_receivers = require('../controllers/email/smtp_receivers')(pool);
+            var smtp_receivers = require('../controllers/email/smtp_receivers')(pool);
+            app.route('/email/smtp_receivers')
+            .get(authorization.requiresLogin, smtp_receivers.render);
             // SMTP RECEIVER2SENDER
-            var smtp_receiver2sender = require('../controllers/email/smtp_receiver2sender')(pool)
+                var smtp_receiver2sender = require('../controllers/email/smtp_receiver2sender')(pool)
+                app.route('/email/smtp_receiver2sender')
+                .get(authorization.requiresLogin, smtp_receiver2sender.render);
         // SMTP SUBJECTS
-        var smtp_subjects = require('../controllers/email/smtp_subjects')(pool);
+            var smtp_subjects = require('../controllers/email/smtp_subjects')(pool);
+            app.route('/email/smtp_subjects')
+            .get(authorization.requiresLogin, smtp_subjects.render);
             // SMTP SUBJECT SENDER RECEIVER PAIRS
-            var smtp_subject_sender_receiver_pairs = require('../controllers/email/smtp_subject_sender_receiver_pairs')(pool)
+                var smtp_subject_sender_receiver_pairs = require('../controllers/email/smtp_subject_sender_receiver_pairs')(pool)
+                app.route('/email/smtp_subject_sender_receiver_pairs')
+                .get(authorization.requiresLogin, smtp_subject_sender_receiver_pairs.render);
                 // SMTP FROM SENDER BY SUBJECT
-                var smtp_from_sender_by_subject = require('../controllers/email/smtp_from_sender_by_subject')(pool)
+                    var smtp_from_sender_by_subject = require('../controllers/email/smtp_from_sender_by_subject')(pool)
+                    app.route('/email/smtp_from_sender_by_subject')
+                    .get(authorization.requiresLogin, smtp_from_sender_by_subject.render);
     // EXTRACTED FILES
         // BY LOCAL IP
-        var by_local_ip = require('../controllers/extracted_files/by_local_ip')(pool);
+            var by_local_ip = require('../controllers/extracted_files/by_local_ip')(pool);
+            app.route('/extracted_files/by_local_ip')
+            .get(authorization.requiresLogin, by_local_ip.render);
             // BY FILE NAME
-            var by_file_name = require('../controllers/extracted_files/by_file_name')(pool);
+                var by_file_name = require('../controllers/extracted_files/by_file_name')(pool);
+                app.route('/extracted_files/by_file_name')
+                .get(authorization.requiresLogin, by_file_name.render);
                 // FILE LOCAL
-                var file_local = require('../controllers/extracted_files/file_local')(pool);
+                    var file_local = require('../controllers/extracted_files/file_local')(pool);
+                    app.route('/extracted_files/file_local')
+                    .get(authorization.requiresLogin, file_local.render);
         // BY REMOTE IP
-        var by_remote_ip = require('../controllers/extracted_files/by_remote_ip')(pool);
+            var by_remote_ip = require('../controllers/extracted_files/by_remote_ip')(pool);
+            app.route('/extracted_files/by_remote_ip')
+            .get(authorization.requiresLogin, by_remote_ip.render); 
             // BY FILE NAME REMOTE
-            var by_file_name_remote = require('../controllers/extracted_files/by_file_name_remote')(pool);
-                // FILE REMOTE
-                var file_remote = require('../controllers/extracted_files/file_remote')(pool);
+                var by_file_name_remote = require('../controllers/extracted_files/by_file_name_remote')(pool);
+                app.route('/extracted_files/by_file_name_remote')
+                .get(authorization.requiresLogin, by_file_name_remote.render); 
+               // FILE REMOTE
+                    var file_remote = require('../controllers/extracted_files/file_remote')(pool);
+                    app.route('/extracted_files/file_remote')
+                    .get(authorization.requiresLogin, file_remote.render);
         // BY MIME TYPE
-        var by_mime_type = require('../controllers/extracted_files/by_mime_type')(pool);
+            var by_mime_type = require('../controllers/extracted_files/by_mime_type')(pool);
+            app.route('/extracted_files/by_mime_type')
+            .get(authorization.requiresLogin, by_mime_type.render);
             // FILE MIME LOCAL
-            var file_mime_local = require('../controllers/extracted_files/file_mime_local')(pool);
+                var file_mime_local = require('../controllers/extracted_files/file_mime_local')(pool);
+                app.route('/extracted_files/file_mime_local')
+                .get(authorization.requiresLogin, file_mime_local.render);
         // BY DOMAIN
-        var by_domain = require('../controllers/extracted_files/by_domain')(pool);
+            var by_domain = require('../controllers/extracted_files/by_domain')(pool);
+            app.route('/extracted_files/by_domain')
+            .get(authorization.requiresLogin, by_domain.render);
             // BY DOMAIN LOCAL
-            var by_domain_local = require('../controllers/extracted_files/by_domain_local')(pool);
+                var by_domain_local = require('../controllers/extracted_files/by_domain_local')(pool);
+                app.route('/extracted_files/by_domain_local')
+                .get(authorization.requiresLogin, by_domain_local.render);
                 // BY DOMAIN LOCAL MIME
-                var by_domain_local_mime = require('../controllers/extracted_files/by_domain_local_mime')(pool);
+                    var by_domain_local_mime = require('../controllers/extracted_files/by_domain_local_mime')(pool);
+                    app.route('/extracted_files/by_domain_local_mime')
+                    .get(authorization.requiresLogin, by_domain_local_mime.render);
                     // BY DOMAIN LOCAL MIME DRILL
-                    var by_domain_local_mime_drill = require('../controllers/extracted_files/by_domain_local_mime_drill')(pool);
+                        var by_domain_local_mime_drill = require('../controllers/extracted_files/by_domain_local_mime_drill')(pool);
+                        app.route('/extracted_files/by_domain_local_mime_drill')
+                        .get(authorization.requiresLogin, by_domain_local_mime_drill.render);
     // FIRST SEEN
         // NEW REMOTE
-        var new_remote = require('../controllers/first_seen/new_remote')(pool);
+            var new_remote = require('../controllers/first_seen/new_remote')(pool);
+            app.route('/first_seen/new_remote')
+            .get(authorization.requiresLogin, new_remote.render);
         // NEW DNS QUERIES
-        var new_dns_queries = require('../controllers/first_seen/new_dns_queries')(pool);
+            var new_dns_queries = require('../controllers/first_seen/new_dns_queries')(pool);
+            app.route('/first_seen/new_dns_queries')
+            .get(authorization.requiresLogin, new_dns_queries.render);
         // NEW HTTP DOMAINS
-        var new_http_domains = require('../controllers/first_seen/new_http_domains')(pool);
+            var new_http_domains = require('../controllers/first_seen/new_http_domains')(pool);
+            app.route('/first_seen/new_http_domains')
+            .get(authorization.requiresLogin, new_http_domains.render);
         // NEW SSL HOSTS
-        var new_ssl_hosts = require('../controllers/first_seen/new_ssl_hosts')(pool);
+            var new_ssl_hosts = require('../controllers/first_seen/new_ssl_hosts')(pool);
+            app.route('/first_seen/new_ssl_hosts')
+            .get(authorization.requiresLogin, new_ssl_hosts.render);
         // NEW SSH REMOTE
-        var new_ssh_remote = require('../controllers/first_seen/new_ssh_remote')(pool);
+            var new_ssh_remote = require('../controllers/first_seen/new_ssh_remote')(pool);
+            app.route('/first_seen/new_ssh_remote')
+            .get(authorization.requiresLogin, new_ssh_remote.render);
         // NEW FTP REMOTE
-        var new_ftp_remote = require('../controllers/first_seen/new_ftp_remote')(pool);
+            var new_ftp_remote = require('../controllers/first_seen/new_ftp_remote')(pool);
+            app.route('/first_seen/new_ftp_remote')
+            .get(authorization.requiresLogin, new_ftp_remote.render);
     // HEALTH
         //OVERVIEW
             var overview = require('../controllers/health/overview')(pool); 
@@ -330,128 +408,4 @@ module.exports = function(app, passport, version, io, pool) {
         var upload = require('../controllers/upload')(pool);
         app.route('/uploads')
         .post(authorization.requiresLogin, upload.render);   
-    
-    // DNS
-        // LOCAL DNS
-        app.route('/dns/dns_local')
-        .get(authorization.requiresLogin, dns_local.render);
-        // REMOTE DNS
-        app.route('/dns/dns_remote')
-        .get(authorization.requiresLogin, dns_remote.render);
-    // HTTP
-        // HTTP BY DOMAIN
-        app.route('/http/http_by_domain')
-        .get(authorization.requiresLogin, http_by_domain.render);
-            // HTTP BY DOMAIN LOCAL
-            app.route('/http/http_by_domain_local')
-            .get(authorization.requiresLogin, http_by_domain_local.render);
-                // HTTP BY DOMAIN LOCAL DRILL
-                app.route('/http/http_by_domain_local_drill')
-                .get(authorization.requiresLogin, http_by_domain_local_drill.render);
-        // HTTP LOCAL
-        app.route('/http/http_local')
-        .get(authorization.requiresLogin, http_local.render);
-            // HTTP LOCAL2REMOTE
-            app.route('/http/http_local_by_domain')
-            .get(authorization.requiresLogin, http_local_by_domain.render);
-        // HTTP REMOTE
-        app.route('/http/http_remote')
-        .get(authorization.requiresLogin, http_remote.render);
-            // HTTP REMOTE2LOCAL
-            app.route('/http/http_remote2local')
-            .get(authorization.requiresLogin, http_remote2local.render);
-                // HTTP REMOTE2LOCAL DRILL
-                app.route('/http/http_remote2local_drill')
-                .get(authorization.requiresLogin, http_remote2local_drill.render);
-    // SSL
-        // SSL SERVER
-        app.route('/ssl/ssl_server')
-        .get(authorization.requiresLogin, ssl_server.render);
-        // LOCAL SSL
-        app.route('/ssl/ssl_local')
-        .get(authorization.requiresLogin, ssl_local.render);
-        // REMOTE SSL
-        app.route('/ssl/ssl_remote')
-        .get(authorization.requiresLogin, ssl_remote.render);
-    // EMAIL
-        // LOCAL SMTP
-        app.route('/email/smtp_senders')
-        .get(authorization.requiresLogin, smtp_senders.render);
-            // SMTP SENDER2RECEIVER
-            app.route('/email/smtp_sender2receiver')
-            .get(authorization.requiresLogin, smtp_sender2receiver.render);
-                // SMTP FROM SENDER
-                app.route('/email/smtp_from_sender')
-                .get(authorization.requiresLogin, smtp_from_sender.render);
-        // SMTP RECEIVERS
-        app.route('/email/smtp_receivers')
-        .get(authorization.requiresLogin, smtp_receivers.render);
-            // SMTP RECEIVER2SENDER
-            app.route('/email/smtp_receiver2sender')
-            .get(authorization.requiresLogin, smtp_receiver2sender.render);
-        // SMTP SUBJECTS
-        app.route('/email/smtp_subjects')
-        .get(authorization.requiresLogin, smtp_subjects.render);
-            // SMTP SUBJECT SENDER RECEIVER PAIRS
-            app.route('/email/smtp_subject_sender_receiver_pairs')
-            .get(authorization.requiresLogin, smtp_subject_sender_receiver_pairs.render);
-                // SMTP FROM SENDER BY SUBJECT
-                app.route('/email/smtp_from_sender_by_subject')
-                .get(authorization.requiresLogin, smtp_from_sender_by_subject.render);
-    // EXTRACTED FILES
-        // BY LOCAL IP
-        app.route('/extracted_files/by_local_ip')
-        .get(authorization.requiresLogin, by_local_ip.render);
-            // BY FILE NAME
-            app.route('/extracted_files/by_file_name')
-            .get(authorization.requiresLogin, by_file_name.render);
-                // FILE LOCAL
-                app.route('/extracted_files/file_local')
-                .get(authorization.requiresLogin, file_local.render);
-        // BY REMOTE IP
-        app.route('/extracted_files/by_remote_ip')
-        .get(authorization.requiresLogin, by_remote_ip.render);
-            // BY FILE NAME REMOTE
-            app.route('/extracted_files/by_file_name_remote')
-            .get(authorization.requiresLogin, by_file_name_remote.render);
-                // FILE REMOTE
-                app.route('/extracted_files/file_remote')
-                .get(authorization.requiresLogin, file_remote.render);
-        // BY MIME TYPE
-        app.route('/extracted_files/by_mime_type')
-        .get(authorization.requiresLogin, by_mime_type.render);
-            // BY MIME TYPE
-            app.route('/extracted_files/file_mime_local')
-            .get(authorization.requiresLogin, file_mime_local.render);
-        // BY DOMAIN
-        app.route('/extracted_files/by_domain')
-        .get(authorization.requiresLogin, by_domain.render);
-            // BY DOMAIN LOCAL
-            app.route('/extracted_files/by_domain_local')
-            .get(authorization.requiresLogin, by_domain_local.render);
-                // BY DOMAIN LOCAL MIME
-                app.route('/extracted_files/by_domain_local_mime')
-                .get(authorization.requiresLogin, by_domain_local_mime.render);
-                    // BY DOMAIN LOCAL MIME DRILL
-                    app.route('/extracted_files/by_domain_local_mime_drill')
-                    .get(authorization.requiresLogin, by_domain_local_mime_drill.render);
-    // FIRST SEEN
-        // NEW REMOTE
-        app.route('/first_seen/new_remote')
-        .get(authorization.requiresLogin, new_remote.render);
-        // NEW DNS QUERIES
-        app.route('/first_seen/new_dns_queries')
-        .get(authorization.requiresLogin, new_dns_queries.render);
-        // NEW HTTP DOMAINS
-        app.route('/first_seen/new_http_domains')
-        .get(authorization.requiresLogin, new_http_domains.render);
-        // NEW SSL HOSTS
-        app.route('/first_seen/new_ssl_hosts')
-        .get(authorization.requiresLogin, new_ssl_hosts.render);
-        // NEW SSH REMOTE REMOTE
-        app.route('/first_seen/new_ssh_remote')
-        .get(authorization.requiresLogin, new_ssh_remote.render);
-        // NEW FTP REMOTE
-        app.route('/first_seen/new_ftp_remote')
-        .get(authorization.requiresLogin, new_ftp_remote.render);
 };

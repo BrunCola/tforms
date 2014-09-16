@@ -441,9 +441,9 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
         // LOCAL EVENTS
             // STEALTH COI MAP
-                .state('users_COI_groups', {
-                    url: '/users_COI_groups',
-                    templateUrl: 'public/pages/views/local_events/users_COI_groups.html',
+                .state('steath_COI_map', {
+                    url: '/steath_COI_map',
+                    templateUrl: 'public/pages/views/local_events/steath_COI_map.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
