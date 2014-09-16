@@ -1,6 +1,6 @@
 'use strict';
 
-var dataTable = require('../constructors/datatable'),
+var datatable = require('../constructors/datatable'),
 config = require('../../config/config'),
 async = require('async');
 
@@ -68,7 +68,7 @@ module.exports = function(pool) {
                 async.parallel([
                     // Table function(s)
                     function(callback) {
-                        // new dataTable(table1, table2, parseInt(req.session.passport.user.level), {database: database, pool: pool}, function(err,data){
+                        // new datatable(table1, table2, parseInt(req.session.passport.user.level), {database: database, pool: pool}, function(err,data){
                         new datatable(table1, {database: database, pool: pool}, function(err,data){
                             tables.push(data);
                             callback();
