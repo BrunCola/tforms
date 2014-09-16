@@ -1639,34 +1639,34 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                                 elm.append('polygon')
                                     .style('fill', '#fff')
                                     .attr('points', '9,14 37,9 37,40 9,35 ')
-                                    .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                    .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                     .style('fill', '#00AEEF')
                                     .attr('points', '36.1,24.4 36.1,11.9 21.7,14 21.7,24.4 ')
-                                    .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                    .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                     .style('fill', '#00AEEF')
                                     .attr('points', '20.7,14.1 10.2,15.6 10.2,24.4 20.7,24.4 ')
-                                    .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                    .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                     .style('fill', '#00AEEF')
                                     .attr('points', '10.2,25.4 10.2,34.3 20.7,35.9 20.7,25.4 ')
-                                    .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                    .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                     .style('fill', '#00AEEF')
                                     .attr('points', '21.7,36 36.1,38.1 36.1,25.4 21.7,25.4 ')
-                                    .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                    .attr('transform', 'translate(-36,-32) scale(1.2)');
                                     break;
 
                                 case 'Windows Vista/Server 2008':
                                     elm.append('path')
                                         .style('fill', '#FFFFFF')
-                                        .attr('d', 'M15.8,12.1c2.3-1,7.4-2.8,11.9,0.8c-0.6,1.8-2.2,8-3.1,10.8c-3.9-2.9-9-2.2-11.9-0.6'+
-                                        'C13.3,20.6,15.8,12.1,15.8,12.1z')
+                                        .attr('d', 'M42.5,12.8c-4,2.3-9.3,3-13.9-0.4c-5.2-4.1-10.4-2.6-13.6-0.9c0,0-6.7,23-7.5,25.9'+
+                                        'c3.3-2.1,9.2-3.1,13.7,0.3c5.2,4.2,10.8,2.6,13.8,0.9C35.2,38.6,41.8,15.7,42.5,12.8z')
                                         .attr('transform', 'translate(-30,-25)');
 
                                     elm.append('path')
@@ -1697,8 +1697,8 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                                 case 'Windows 7/Server 2008R2':
                                     elm.append('path')
                                         .style('fill', '#FFFFFF')
-                                        .attr('d', 'M15.8,12.1c2.3-1,7.4-2.8,11.9,0.8c-0.6,1.8-2.2,8-3.1,10.8c-3.9-2.9-9-2.2-11.9-0.6'+
-                                        'C13.3,20.6,15.8,12.1,15.8,12.1z')
+                                        .attr('d', 'M42.5,12.8c-4,2.3-9.3,3-13.9-0.4c-5.2-4.1-10.4-2.6-13.6-0.9c0,0-6.7,23-7.5,25.9'+
+                                        'c3.3-2.1,9.2-3.1,13.7,0.3c5.2,4.2,10.8,2.6,13.8,0.9C35.2,38.6,41.8,15.7,42.5,12.8z')
                                         .attr('transform', 'translate(-30,-25)');
 
                                     elm.append('path')
@@ -1731,207 +1731,207 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                                         .style('fill', '#000')
                                         .attr('d', 'M41.3,12v25.1c-3.5-2.2-8.2-2.6-12.4-1.8c-1.5,0.4-3,0.7-4.3,1.3V11.7'+
                                         'c4-1.7,9.2-2.4,13.5-1.1C39.3,11,40.3,11.4,41.3,12L41.3,12z')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '24.2,15.4 20.9,16.7 20.9,13.5 24.2,11.9 24.2,15.4 24.2,15.4 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '10.1,14 8.3,14.6 8.3,13.3 10.1,12.7 10.1,14 10.1,14 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '20.4,15.8 17.3,17 17.3,14.5 20.4,13.2 20.4,15.8 20.4,15.8 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '13.9,16.6 13.9,14.6 16.7,13.5 16.7,15.4 13.9,16.6 13.9,16.6 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '13.3,15.1 11,15.9 11,14.5 13.3,13.5 13.3,15.1 13.3,15.1 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '24.2,18.8 20.9,20.3 20.9,17.2 24.2,15.9 24.2,18.8 24.2,18.8 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '24.2,22.3 20.9,23.8 20.9,20.7 24.2,19.3 24.2,22.3 24.2,22.3 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '20.9,27.3 20.9,24.3 24.2,22.7 24.2,25.9 20.9,27.3 20.9,27.3 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '10.1,24.8 8.3,25.4 8.3,24.1 10.1,23.5 10.1,24.8 10.1,24.8 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '20.4,26.5 17.3,27.7 17.3,25.1 20.4,24 20.4,26.5 20.4,26.5 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '16.7,26.2 14.1,27.3 13.9,27.3 13.9,25.4 16.7,24.3 16.7,26.2 16.7,26.2 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '13.3,25.9 11,26.7 11,25.2 13.3,24.3 13.3,25.9 13.3,25.9 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '20.9,30.9 20.9,27.7 24.2,26.4 24.2,29.4 20.9,30.9 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '24.2,33 20.9,34.4 20.9,31.4 24.2,29.9 24.2,33 24.2,33 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '24.2,36.8 20.9,38.1 20.9,34.9 24.2,33.5 24.2,36.8 24.2,36.8 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '10.1,35.5 8.3,36.2 8.3,35.1 10.1,34.3 10.1,35.5 10.1,35.5 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '20.4,37.2 17.3,38.4 17.3,35.9 20.4,34.6 20.4,37.2 20.4,37.2 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '13.9,38 13.9,36 16.7,34.9 16.7,36.8 13.9,38 13.9,38 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#000')
                                         .attr('points', '13.3,36.5 11,37.3 11,35.9 13.3,34.9 13.3,36.5 13.3,36.5 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#118ACB')
                                         .attr('points', '9.9,28.3 8.6,28.9 8.6,27.7 9.9,27.2 9.9,28.3 9.9,28.3 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#118ACB')
                                         .attr('points', '20.2,30.1 17.6,31 17.6,28.8 20.2,27.8 20.2,30.1 20.2,30.1 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#118ACB')
                                         .attr('points', '16.5,29.8 14.3,30.7 14.3,28.9 16.5,28 16.5,29.8 16.5,29.8 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#118ACB')
                                         .attr('points', '13.1,29.4 11.2,30.1 11.2,28.8 13.1,28 13.1,29.4 13.1,29.4 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#118ACB')
                                         .attr('points', '9.9,32 8.6,32.5 8.6,31.4 9.9,30.9 9.9,32 9.9,32 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#118ACB')
                                         .attr('points', '20.2,31.4 20.2,33.5 17.6,34.6 17.6,32.3 20.2,31.4 20.2,31.4 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#118ACB')
                                         .attr('points', '16.5,33.3 14.3,34.1 14.3,32.3 16.5,31.5 16.5,33.3 16.5,33.3 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#118ACB')
                                         .attr('points', '13.1,32.8 11.4,33.6 11.2,32.3 13.1,31.5 13.1,32.8 13.1,32.8 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('path')
                                         .style('fill', '#118ACB')
                                         .attr('d', 'M24.6,33.3c1.8-0.6,3.6-1.1,5.5-1.4h0.2l-0.2-8c-1.9,0.3-3.7,1-5.5,1.8V33.3L24.6,33.3z')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#F4793B')
                                         .attr('points', '9.9,17.5 8.6,18.2 8.6,16.9 9.9,16.4 9.9,17.5 9.9,17.5 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#F4793B')
                                         .attr('points', '20.2,19.3 17.6,20.3 17.6,18.2 20.2,17 20.2,19.3 20.2,19.3 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#F4793B')
                                         .attr('points', '16.5,19 14.3,19.9 14.3,18.2 16.5,17.2 16.5,19 16.5,19 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#F4793B')
                                         .attr('points', '13.1,18.6 11.2,19.3 11.2,18 13.1,17.2 13.1,18.6 13.1,18.6 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#F4793B')
                                         .attr('points', '9.9,21.2 8.6,21.7 8.6,20.6 9.9,20.1 9.9,21.2 9.9,21.2 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#F4793B')
                                         .attr('points', '20.2,22.7 17.6,23.8 17.6,21.5 20.2,20.6 20.2,22.7 20.2,22.7 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#F4793B')
                                         .attr('points', '14.3,23.5 14.3,21.7 16.5,20.7 16.5,22.7 14.3,23.5 14.3,23.5 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#F4793B')
                                         .attr('points', '13.1,22.2 11.2,23 11.2,21.5 13.1,20.9 13.1,22.2 13.1,22.2 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('polygon')
                                         .style('fill', '#F4793B')
                                         .attr('points', '13.1,22.2 11.2,23 11.2,21.5 13.1,20.9 13.1,22.2 13.1,22.2 ')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('path')
                                         .style('fill', '#F4793B')
                                         .attr('d', 'M24.6,22.8c1.8-0.7,3.6-1.3,5.5-1.4v-0.2v-7.7c-1.9,0.4-3.7,1-5.5,1.8V22.8L24.6,22.8z')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('path')
                                         .style('fill', '#6DC067')
                                         .attr('d', 'M38.2,14.1v7.7c-1.8-0.6-3.7-0.8-5.6-0.8v-7.9 C34.5,13.1,36.5,13.3,38.2,14.1L38.2,14.1z')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     elm.append('path')
                                         .style('fill', '#FFCB05')
                                         .attr('d', 'M38.2,24.4v7.9c-1.8-0.5-3.7-0.7-5.6-0.6v-8 C34.5,23.5,36.5,23.7,38.2,24.4L38.2,24.4z')
-                                        .attr('transform', 'translate(-40,-32) scale(1.2)');
+                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
 
                                     break;
 
@@ -2132,6 +2132,12 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
                                         break;
 
                                 case 'HTTP':
+                                    elm.append('circle')
+                                        .attr('r', 18)
+                                        .attr('cx', -6)
+                                        .attr('cy', -2)
+                                        .style('fill', 'white');
+
                                     elm.append('path')
                                         .style('fill', '#333333')
                                         .attr('d', 'M24,15.9v-4.4c-1,0.1-3.1,0.5-4.4,1.1c-0.5,1.3-1,2.6-1.3,4C20.1,16.2,22,16,24,15.9z'+
@@ -2722,7 +2728,7 @@ angular.module('mean.pages').directive('makeTreeChart', ['$timeout', '$rootScope
 }]);
 
 
-angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$rootScope', function ($timeout, $location, $rootScope) {
+angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'appIcon', '$rootScope', function ($timeout, $location, appIcon, $rootScope) {
     return {
         link: function ($scope, element, attrs) {
             $scope.$on('laneGraph', function() {
@@ -2763,7 +2769,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
 
                 var m = [5, 15, 15, 120], //top right bottom left
                     w = width - m[1] - m[3],
-                    h = 350 - m[0] - m[2],
+                    h = 390 - m[0] - m[2],
                     miniHeight = 0,
                     mainHeight = h - miniHeight - 50;
 
@@ -2801,7 +2807,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                     .append("svg")
                     .attr("width", w + m[1] + m[3])
                     .attr("height", h + m[0] + m[2])
-                    .on("dblclick", redraw)
+                    .on("dblclick", draw)
                     .attr("class", "chart");
             
                 chart.append("defs").append("clipPath")
@@ -2880,7 +2886,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                     }
                 }
 
-                $scope.point = function(element, nickname, title) {
+                $scope.point = function(element, nickname, name) {
                     if (nickname.search("ioc") !== -1) {
                         element.attr('class', 'ioc');
                         element = element.append('g')
@@ -2905,6 +2911,27 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                         element.attr('class', nickname);
                         element = element.append('g').attr('transform', 'translate(-18, -6)scale(0.8)');
                         switch(nickname){
+                            case 'secure':
+                                element.append('circle')
+                                    .attr('fill', function(d){
+                                        if (d.ioc_count > 0) {
+                                            return '#e2a23c';
+                                        } else {
+                                            return '#A0BB71';
+                                        }
+                                    })
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                element.append('svg:path')
+                                    .attr('d', 'M25.518,13.467h-0.002c0-0.003,0.002-0.006,0.002-0.008c0-4.064-3.297-7.359-7.359-7.359'+
+                                        'c-4.064,0-7.359,3.295-7.359,7.359c0,0.002,0,0.005,0,0.008v2.674H9.291V27.9h17.785v-11.76h-1.559V13.467z')
+                                    .attr('fill', '#595A5C');
+                                element.append('svg:path')
+                                    .attr('d', 'M18.184,8.754c-3.191,0-4.661,2.372-4.661,4.967'+
+                                        'c0,0.004,0,0.006,0,0.008v2.412h9.397v-2.412c0-0.002,0-0.004,0-0.008C22.92,11.126,21.315,8.754,18.184,8.754z')
+                                    .attr('fill', '#A0BB71');
+                                return;
                             case 'file':
                                 element.append('circle')
                                     .attr('fill', function(d){
@@ -2992,27 +3019,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                         'l0.959-3.195l-2.882-1.775L24.715,19.976z')
                                     .attr('fill', '#595A5C');
                                 return;
-                            case 'ssl':
-                                element.append('circle')
-                                    .attr('fill', function(d){
-                                        if (d.ioc_count > 0) {
-                                            return '#e2a23c';
-                                        } else {
-                                            return '#A0BB71';
-                                        }
-                                    })
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:path')
-                                    .attr('d', 'M25.518,13.467h-0.002c0-0.003,0.002-0.006,0.002-0.008c0-4.064-3.297-7.359-7.359-7.359'+
-                                        'c-4.064,0-7.359,3.295-7.359,7.359c0,0.002,0,0.005,0,0.008v2.674H9.291V27.9h17.785v-11.76h-1.559V13.467z')
-                                    .attr('fill', '#595A5C');
-                                element.append('svg:path')
-                                    .attr('d', 'M18.184,8.754c-3.191,0-4.661,2.372-4.661,4.967'+
-                                        'c0,0.004,0,0.006,0,0.008v2.412h9.397v-2.412c0-0.002,0-0.004,0-0.008C22.92,11.126,21.315,8.754,18.184,8.754z')
-                                    .attr('fill', '#A0BB71');
-                                return;
                             case 'endpoint':
                                 element.append('circle')
                                     .attr('fill', '#7E9E7B')
@@ -3057,8 +3063,40 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                     .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
                                         'C11.076,16.238,11.938,20.26,13.699,23.661z');
                                 return;
+                            case 'applications':
+                                element.append('circle')
+                                    .attr('fill', '#DEDEDE')
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+
+                                    elm.append('rect')
+                                        .attr('x', 10)
+                                        .attr('y', 10)
+                                        .attr('height', 4)
+                                        .attr('width', 17)
+                                        .style('fill', '#5E5E5E');
+
+                                    elm.append('rect')
+                                        .attr('x', 10)
+                                        .attr('y', 16)
+                                        .attr('height', 4)
+                                        .attr('width', 17)
+                                        .style('fill', '#5E5E5E');
+
+                                    elm.append('rect')
+                                        .attr('x', 10)
+                                        .attr('y', 22)
+                                        .attr('height', 4)
+                                        .attr('width', 17)
+                                        .style('fill', '#5E5E5E');
+
+                                element.append('svg:path')
+                                    .attr('fill', '#D8464A')
+                                    .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
+                                        'C11.076,16.238,11.938,20.26,13.699,23.661z');
+                                return;
                             default:
-                                console.log('cannot draw'+nickname);
                                 return;
                         }
                     }
@@ -3086,7 +3124,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                     .html('Reset')
                     .attr('class', 'resetButton')
                     .on('click', function(){
-                        redraw();
+                        draw();
                     });
                 var prevButton = buttonHolder.append('button')
                     .html('Previous')
@@ -3110,6 +3148,23 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                         }
                     });
 
+
+                // var timeShiftHolder = d3.select("#lanegraph").append('div').attr('class', 'timeShiftHolder');
+                // var nextTime = timeShiftHolder
+                //     .append('button')
+                //     .html('Prev')
+                //     .attr('class', 'prevButton')
+                //     .on('click', function(){
+                //         timeShift('prev');
+                //     });
+                // var prevTime = timeShiftHolder
+                //     .append('button')
+                //     .html('Next')
+                //     .attr('class', 'navButton')
+                //     .on('click', function(){
+                //         timeShift('next');
+                //     });
+
                 function laneInfoAppend(d) {
                     var send = '';
                     for (var i in d) {
@@ -3125,40 +3180,70 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                 var infoDiv = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
 
 
-                function redraw() {
-                    // nav settings
+                // function timeShift(cmd) {
+                //     // calculate what the current time shift would be (forward or back)
+                //     var minExtent = moment(navArray[currentNavPos].min).unix();
+                //     var maxExtent = moment(navArray[currentNavPos].max).unix();
+                //     var difference = maxExtent - minExtent;
+                //     // take a fraction of difference
+                //     var diff = difference * 0.90;
+                //     if (cmd === 'prev') {
+                //         var max = minExtent + (difference - diff);
+                //         var min = max - diff;
+                //     }
+                //     if (cmd === 'next') {
+                //         var min = maxExtent - (difference - diff);
+                //         var max = min + diff;
+                //     }
+                //     var minFormatted = moment(min).format('MMMM D, YYYY h:mm A');
+                //     var maxFormatted = moment(max).format('MMMM D, YYYY h:mm A');
+                //     $scope.requery(maxFormatted, minFormatted, function(data){
+                //         plot(data, maxFormatted, minFormatted);
+                //         navArray.push({'min': minFormatted, 'max': maxFormatted});
+                //         currentNavPos++;
+                //     })                
+                // }
+
+                function draw() {
+                    // reset navagation array
                     navArray = [];
+                    // set current position in nav array
                     currentNavPos = 0;
+                    // disable all nav buttons
                     prevButton.attr('disabled', 'disabled');
                     nextButton.attr('disabled', 'disabled');
                     resetBtn.attr('disabled', 'disabled');
+                    // push current time position to nav array
                     navArray.push({'min': new Date($scope.start), 'max': new Date($scope.end)});
-
+                    // push time slice heading t odiv
                     currentTime.html('Current Time Slice: <strong>'+$scope.start+'</strong> - <strong>'+$scope.end+'</strong>');
-
-                    var visItems = items;
-                    var positionFromTop = 0, differenceFromLast = 0;
+                    // convert min and max to date object and send to plot function
                     var min = new Date($scope.start);
                     var max = new Date($scope.end);
-                    plot(visItems, min, max); 
-
+                    plot(items, min, max);
                 }
+                draw();
 
                 function mouseup(action) {
+                    // set variables
                     var rects, labels, minExtent, maxExtent, visItems;
+                    // if a nav button is pressed
                     if (action === 'nav') {
-                            // get max and min from mav array
+                            // get max and min (date objects) from mav array
                             minExtent = navArray[currentNavPos].min;
                             maxExtent = navArray[currentNavPos].max;
                         // disable previous button if all the way back
                         if (currentNavPos === 0) {
                             resetBtn.attr('disabled', 'disabled');
                             prevButton.attr('disabled', 'disabled');
+                        // or disable next button if all the way forward 
                         } else if (currentNavPos === navArray.length-1) {
                             nextButton.attr('disabled', 'disabled');
                         } else {
+                            // otherwise keep reset button open
                             resetBtn.attr('disabled', null);
                         }
+                    // otherwise if item brushed
                     } else {
                         // get max and min from click/drag
                         minExtent = brush.extent()[0];
@@ -3169,25 +3254,25 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                         prevButton.attr('disabled', null);
                         resetBtn.attr('disabled', null);
                     }
-
+                    // convert times returned to unix
                     var minUnix = moment(minExtent).unix();
                     var maxUnix = moment(maxExtent).unix();
                     // should it requery?
                     var msDifference = maxUnix - minUnix;
+                    // if difference is less than threshhold or is not a single time select (resulting in difference being 0)
                     if ((msDifference < queryThreshhold) && (msDifference !== 0)) {
+                        // push to requery and then plot
                         $scope.requery(minExtent, maxExtent, function(data){
-                            visItems = data;
-                            plot(visItems, minExtent, maxExtent);
-                        })                
+                            plot(data, minExtent, maxExtent);
+                        })
                     } else {
                         // reset if not within threshold
                         $scope.inTooDeep.areWe = false;
-                        visItems = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;});
+                        var data = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;});
                         $scope.alert.style('display', 'none');
-                        plot(visItems, minExtent, maxExtent);
+                        plot(data, minExtent, maxExtent);
                     }
                 }
-                redraw();
 
                 function plot(data, min, max) {
                     if (moment(max).unix() !== moment(min).unix()) {
@@ -3216,7 +3301,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                     elm.style('cursor', 'pointer');
                                 })
                                 .on("click", function(d){
-                                    console.log(d)
                                     // this closes all expanded blocks
                                     if (lastExpandedId !== null) {
                                         $('div'+lastExpandedId+'.infoDivExpanded').hide();
@@ -3229,12 +3313,17 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                     $('#'+d.id).attr('class', 'laneactive');
                                     previousID = d.id;
                                     previousElm = elm;
-                                    console.log(d.position)
                                     $('#lanegraphinfo').scrollTo(d.position);
                                 });
                                 // .attr("width", 5)
                                 // .attr("height", function(d) {return .8 * y1(1);});
-                            $scope.point(elm, d.type);
+                            // generate points from point function
+                            if (d.type !== 'l7') {
+                                $scope.point(elm, d.type);
+                            } else {
+                                // push app name to point function if type is l7
+                                $scope.point(elm, d.type, d.l7_proto);
+                            }
                         })
                         icons.exit();
 
