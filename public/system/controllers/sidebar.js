@@ -196,7 +196,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
 				},
 				{
 					'title': 'Local Network Map',
-					'url': 'users_local',
+					'url': 'local_network_map',
 					'icon': 'fa-sitemap',
 					// 'accessLevel': [3],	
 					'orphans': []

@@ -495,9 +495,9 @@ angular.module('mean.pages').config(['$stateProvider',
                         }
                     })          
             // NETWORK MAP
-                .state('users_local', {
-                    url: '/users_local?start&end',
-                    templateUrl: 'public/pages/views/local_events/users_local.html',
+                .state('local_network_map', {
+                    url: '/local_network_map?start&end',
+                    templateUrl: 'public/pages/views/local_events/local_network_map.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
