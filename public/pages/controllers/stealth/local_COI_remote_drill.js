@@ -70,8 +70,8 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 
 
 
-		console.log($location.$$search);
-		console.log(data.info.main[0]);
+		//console.log($location.$$search);
+		//console.log(data.info.main[0]);
 
 		$scope.lan_zone = data.info.main[0].lan_zone;
 		$scope.lan_ip = $location.$$search.lan_ip;
