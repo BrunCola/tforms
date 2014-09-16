@@ -16,7 +16,7 @@ module.exports = function (sql, conn, callback) {
                 return d.time_info+': IOC - '+d.ioc;
             case 'http':
 				return d.time_info+': HTTP connection to '+d.host+d.uri;
-			 case 'http':
+			case 'http_ioc':
                 return d.time_info+': IOC - '+d.ioc;
             case 'ssl':
 				return d.time_info+': SSL connection to '+d.server_name;
