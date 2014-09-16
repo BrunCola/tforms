@@ -440,10 +440,10 @@ angular.module('mean.pages').config(['$stateProvider',
                             }
                         })
             // LOCAL EVENTS
-                // USERS COI GROUPS
+                // STEALTH COI MAP
                     .state('users_COI_groups', {
                         url: '/users_COI_groups',
-                        templateUrl: 'public/pages/views/stealth/users_COI_groups.html',
+                        templateUrl: 'public/pages/views/local_events/users_COI_groups.html',
                         resolve: {
                             loggedin: checkLoggedin
                         },
@@ -452,10 +452,10 @@ angular.module('mean.pages').config(['$stateProvider',
                             daterange: true
                         }
                     })  
-                // LOCAL COI REMOTE
+                // STEALTH USERS CONN
                     .state('local_COI_remote', {
                         url: '/local_COI_remote?start&end',
-                        templateUrl: 'public/pages/views/stealth/local_COI_remote.html',
+                        templateUrl: 'public/pages/views/local_events/local_COI_remote.html',
                         resolve: {
                             loggedin: checkLoggedin
                         },
@@ -479,10 +479,10 @@ angular.module('mean.pages').config(['$stateProvider',
                             daterange: true
                         }
                     })    
-                    // LOCAL COI REMOTE DRILL
+                    // LOCAL USER CONN DRILL
                         .state('local_COI_remote_drill', {
                             url: '/local_COI_remote_drill?start&end&ip',
-                            templateUrl: 'public/pages/views/stealth/local_COI_remote_drill.html',
+                            templateUrl: 'public/pages/views/local_events/local_COI_remote_drill.html',
                             resolve: {
                                 loggedin: checkLoggedin
                             },
@@ -494,10 +494,10 @@ angular.module('mean.pages').config(['$stateProvider',
                                 daterange: true
                             }
                         })          
-                // USERS LOCAL
+                // NETWORK MAP
                     .state('users_local', {
                         url: '/users_local?start&end',
-                        templateUrl: 'public/pages/views/users/users_local.html',
+                        templateUrl: 'public/pages/views/local_events/users_local.html',
                         resolve: {
                             loggedin: checkLoggedin
                         },
@@ -507,21 +507,21 @@ angular.module('mean.pages').config(['$stateProvider',
                         }
                     })
                 // USER LOCAL
-                    .state('user_local', {
-                        url: '/user_local?start&end&user',
-                        templateUrl: 'public/pages/views/stealth/user_local.html',
-                        resolve: {
-                            loggedin: checkLoggedin
-                        },
-                        data: {
-                            title: 'User IPs',
-                            subtitleElm: {
-                                'User': 'user'
-                            },
-                            daterange: true
-                        }
-                    })
-                // ENPOINT EVENTS
+                    // .state('user_local', {
+                    //     url: '/user_local?start&end&user',
+                    //     templateUrl: 'public/pages/views/local_events/user_local.html',
+                    //     resolve: {
+                    //         loggedin: checkLoggedin
+                    //     },
+                    //     data: {
+                    //         title: 'User IPs',
+                    //         subtitleElm: {
+                    //             'User': 'user'
+                    //         },
+                    //         daterange: true
+                    //     }
+                    // })
+                // ENDPOINT EVENTS
                     .state('endpoint_events', {
                         url: '/endpoint_events?start&end',
                         templateUrl: 'public/pages/views/local_events/endpoint_events.html',
@@ -533,7 +533,7 @@ angular.module('mean.pages').config(['$stateProvider',
                             daterange: true
                         }
                     })
-                    // ENPOINT EVENTS USER
+                    // ENDPOINT EVENTS USER
                         .state('endpoint_events_user', {
                             url: '/endpoint_events_user?start&end&event_type',
                             templateUrl: 'public/pages/views/local_events/endpoint_events_user.html',
@@ -548,7 +548,7 @@ angular.module('mean.pages').config(['$stateProvider',
                                 daterange: true
                             }
                         })
-                        // ENPOINT EVENTS USER DRILL
+                        // ENDPOINT EVENTS USER DRILL
                             .state('endpoint_events_user_drill', {
                                 url: '/endpoint_events_user_drill?start&end&event_type&lan_user',
                                 templateUrl: 'public/pages/views/local_events/endpoint_events_user_drill.html',
@@ -564,7 +564,7 @@ angular.module('mean.pages').config(['$stateProvider',
                                     daterange: true
                                 }
                             })
-                // ENPOINT EVENTS LOCAL
+                // ENDPOINT EVENTS LOCAL
                     .state('endpoint_events_local', {
                         url: '/endpoint_events_local?start&end',
                         templateUrl: 'public/pages/views/local_events/endpoint_events_local.html',
@@ -576,7 +576,7 @@ angular.module('mean.pages').config(['$stateProvider',
                             daterange: true
                         }
                     })
-                    // ENPOINT EVENTS LOCAL BY ALERT INFO 
+                    // ENDPOINT EVENTS LOCAL BY ALERT INFO 
                         .state('endpoint_events_local_by_alert_info', {
                             url: '/endpoint_events_local_by_alert_info?start&end&lan_zone&lan_user&lan_ip',
                             templateUrl: 'public/pages/views/local_events/endpoint_events_local_by_alert_info.html',
@@ -593,7 +593,7 @@ angular.module('mean.pages').config(['$stateProvider',
                                 daterange: true
                             }
                         })
-                        // ENPOINT EVENTS LOCAL ALERT INFO DRILL
+                        // ENDPOINT EVENTS LOCAL ALERT INFO DRILL
                             .state('endpoint_events_local_alert_info_drill', {
                                 url: '/endpoint_events_local_alert_info_drill?start&end&alert_info&lan_zone&lan_user&lan_ip&event_type',
                                 templateUrl: 'public/pages/views/local_events/endpoint_events_local_alert_info_drill.html',
@@ -611,7 +611,7 @@ angular.module('mean.pages').config(['$stateProvider',
                                     daterange: true
                                 }
                             })
-                // ENPOINT EVENTS SHAREPOINT
+                // ENDPOINT EVENTS SHAREPOINT
                     .state('endpoint_events_sharepoint', {
                         url: '/endpoint_events_sharepoint?start&end',
                         templateUrl: 'public/pages/views/local_events/endpoint_events_sharepoint.html',
@@ -623,7 +623,7 @@ angular.module('mean.pages').config(['$stateProvider',
                             daterange: true
                         }
                     })
-                    // ENPOINT EVENTS SHAREPOINT DRILL
+                    // ENDPOINT EVENTS SHAREPOINT DRILL
                         .state('endpoint_events_sharepoint_drill', {
                             url: '/endpoint_events_sharepoint_drill?start&end&event_id&lan_ip',
                             templateUrl: 'public/pages/views/local_events/endpoint_events_sharepoint_drill.html',

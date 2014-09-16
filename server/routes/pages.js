@@ -128,28 +128,28 @@ module.exports = function(app, passport, version, io, pool) {
                 .get(authorization.requiresLogin, ftp_remote2local.render);
     // LOCAL EVENTS        
         // STEALTH COI MAP
-            var users_COI_groups = require('../controllers/stealth/users_COI_groups')(pool); 
-            app.route('/stealth/users_COI_groups')
+            var users_COI_groups = require('../controllers/local_events/users_COI_groups')(pool); 
+            app.route('/local_events/users_COI_groups')
             .get(authorization.requiresLogin, users_COI_groups.render);
-            // USERS LOCAL
-                var user_local = require('../controllers/stealth/user_local')(pool);
-                app.route('/stealth/user_local')
-                .get(authorization.requiresLogin, user_local.render);
+            // USER LOCAL
+                // var user_local = require('../controllers/local_events/user_local')(pool);
+                // app.route('/local_events/user_local')
+                // .get(authorization.requiresLogin, user_local.render);
         // STEALTH USER CONN
-            var local_COI_remote = require('../controllers/stealth/local_COI_remote')(pool); 
-            app.route('/stealth/local_COI_remote')
+            var local_COI_remote = require('../controllers/local_events/local_COI_remote')(pool); 
+            app.route('/local_events/local_COI_remote')
             .get(authorization.requiresLogin, local_COI_remote.render);
             // LOCAL COI REMOTE DRILL
-                var local_COI_remote_drill = require('../controllers/stealth/local_COI_remote_drill')(pool);
-                app.route('/stealth/local_COI_remote_drill')
+                var local_COI_remote_drill = require('../controllers/local_events/local_COI_remote_drill')(pool);
+                app.route('/local_events/local_COI_remote_drill')
                 .get(authorization.requiresLogin, local_COI_remote_drill.render);
         // LOCAL USERS CONN
-            var local_user_conn = require('../controllers/users/local_user_conn')(pool);
-            app.route('/users/local_user_conn')
+            var local_user_conn = require('../controllers/local_events/local_user_conn')(pool);
+            app.route('/local_events/local_user_conn')
             .get(authorization.requiresLogin, local_user_conn.render);
         // LOCAL NETWORK MAP
-            var users_local = require('../controllers/users/users_local')(pool);
-            app.route('/users/users_local')
+            var users_local = require('../controllers/local_events/users_local')(pool);
+            app.route('/local_events/users_local')
             .get(authorization.requiresLogin, users_local.render);
         // ENDPOINT EVENTS
             var endpoint_events = require('../controllers/local_events/endpoint_events')(pool);
