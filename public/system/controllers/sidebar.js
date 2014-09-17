@@ -210,9 +210,9 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                 },
                 {
                     'title': 'Endpoint By Local IP',
-                    'url': 'endpoint_events_local',
+                    'url': 'endpoint_by_user',
                     'icon': 'fa-desktop',
-                    'orphans': ['endpoint_events_local_by_alert_info', 'endpoint_full']
+                    'orphans': ['endpoint_by_user_and_type', 'endpoint_full']
                 },
                 {
                     'title': 'Sharepoint Access',

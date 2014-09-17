@@ -8,15 +8,13 @@ module.exports = function(pool) {
     return {
         render: function(req, res) {
             var database = req.session.passport.user.database;
-            // var database = null;
             var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
             var end = Math.round(new Date().getTime() / 1000);
             if (req.query.start && req.query.end) {
                 start = req.query.start;
                 end = req.query.end;
             }
-            //var results = [];
-            if (req.query.lan_zone && req.query.lan_user && req.query.lan_ip) {
+            if (req.query.lan_zone && req.query.lan_user) {
                 var tables = [];
                 var info = [];
                 var table1 = {
@@ -39,17 +37,16 @@ module.exports = function(pool) {
                                 'time BETWEEN ? AND ? '+
                                 'AND lan_zone = ? '+
                                 'AND lan_user = ? '+
-                                'AND lan_ip = ? '+
                             'GROUP BY '+
                                 '`event_type`',
-                    insert: [start, end, req.query.lan_zone, req.query.lan_user, req.query.lan_ip,],
+                    insert: [start, end, req.query.lan_zone, req.query.lan_user],
                     params: [
                         {
                             title: 'Last Seen',
                             select: 'time',
                             link: {
-                                type: 'endpoint_events_local_alert_info_drill',
-                                val: ['lan_zone','lan_user','lan_ip','event_type'], // val: the pre-evaluated values from the query above
+                                type: 'endpoint_full',
+                                val: ['event_type','lan_zone','lan_user'], // val: the pre-evaluated values from the query above
                                 crumb: false
                             }
                         },

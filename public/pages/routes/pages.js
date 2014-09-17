@@ -542,17 +542,17 @@ angular.module('mean.pages').config(['$stateProvider',
                             data: {
                                 title: 'Endpoint Event Full Logs',
                                 subtitleElm: {
-                                    'Event Type': 'event_type',
                                     'Zone': 'lan_zone',
                                     'User': 'lan_user',
+                                    'Event Type': 'event_type',
                                 },
                                 daterange: true
                             }
                         })
             // ENDPOINT BY LOCAL IP
-                .state('endpoint_events_local', {
-                    url: '/endpoint_events_local?start&end',
-                    templateUrl: 'public/pages/views/local_events/endpoint_events_local.html',
+                .state('endpoint_by_user', {
+                    url: '/endpoint_by_user?start&end',
+                    templateUrl: 'public/pages/views/local_events/endpoint_by_user.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
@@ -562,9 +562,9 @@ angular.module('mean.pages').config(['$stateProvider',
                     }
                 })
                 // ENDPOINT EVENTS LOCAL BY ALERT INFO 
-                    .state('endpoint_events_local_by_alert_info', {
-                        url: '/endpoint_events_local_by_alert_info?start&end&lan_zone&lan_user&lan_ip',
-                        templateUrl: 'public/pages/views/local_events/endpoint_events_local_by_alert_info.html',
+                    .state('endpoint_by_user_and_type', {
+                        url: '/endpoint_by_user_and_type?start&end&lan_zone&lan_user',
+                        templateUrl: 'public/pages/views/local_events/endpoint_by_user_and_type.html',
                         resolve: {
                             loggedin: checkLoggedin
                         },

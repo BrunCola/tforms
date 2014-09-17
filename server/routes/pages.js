@@ -159,14 +159,14 @@ module.exports = function(app, passport, version, io, pool) {
                     var endpoint_full = require('../controllers/local_events/endpoint_full')(pool);
                     app.route('/local_events/endpoint_full')
                     .get(authorization.requiresLogin, endpoint_full.render);
-        // ENDPOINT EVENTS LOCAL
-            var endpoint_events_local = require('../controllers/local_events/endpoint_events_local')(pool);
-            app.route('/local_events/endpoint_events_local')
-            .get(authorization.requiresLogin, endpoint_events_local.render);
+        // ENDPOINT BY LOCAL IP
+            var endpoint_by_user = require('../controllers/local_events/endpoint_by_user')(pool);
+            app.route('/local_events/endpoint_by_user')
+            .get(authorization.requiresLogin, endpoint_by_user.render);
             // ENDPOINT EVENTS LOCAL BY ALERT INFO
-                var endpoint_events_local_by_alert_info = require('../controllers/local_events/endpoint_events_local_by_alert_info')(pool);
-                app.route('/local_events/endpoint_events_local_by_alert_info')
-                .get(authorization.requiresLogin, endpoint_events_local_by_alert_info.render);
+                var endpoint_events_by_user_and_type = require('../controllers/local_events/endpoint_events_by_user_and_type')(pool);
+                app.route('/local_events/endpoint_events_by_user_and_type')
+                .get(authorization.requiresLogin, endpoint_events_by_user_and_type.render);
         // ENDPOINT EVENTS SHAREPOINT
             var endpoint_events_sharepoint = require('../controllers/local_events/endpoint_events_sharepoint')(pool);
             app.route('/local_events/endpoint_events_sharepoint')

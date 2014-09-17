@@ -8,7 +8,6 @@ module.exports = function(pool) {
     return {
         render: function(req, res) {
             var database = req.session.passport.user.database;
-            // var database = null;
             var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
             var end = Math.round(new Date().getTime() / 1000);
             if (req.query.start && req.query.end) {
@@ -40,8 +39,8 @@ module.exports = function(pool) {
                         title: 'Last Seen',
                         select: 'time',
                         link: {
-                            type: 'endpoint_events_local_by_alert_info',
-                            val: ['lan_zone','lan_user','lan_ip'], // the pre-evaluated values from the query above
+                            type: 'endpoint_by_ip_and_type',
+                            val: ['lan_zone','lan_user'], // the pre-evaluated values from the query above
                             crumb: false
                         },
                     },

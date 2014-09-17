@@ -40,6 +40,7 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_user, req.query.event_type],
                     params: [
                         { title: 'Time', select: 'time' },
+                        { title: 'stealth', select: 'stealth', dView:false },
                         { title: 'Event Full Log', select: 'event_full' },
                         { title: 'Event ID', select: 'event_id', dView:false },
                         { title: 'Event Source', select: 'event_src', dView:false },
