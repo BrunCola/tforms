@@ -654,7 +654,7 @@ module.exports = function(pool) {
                         } else {
                             callback();
                         }
-                    }
+                    },
                     function(callback) { // dns
                         new lanegraph(dns, {database: database, pool:pool, lanes: lanes}, function(err, data){
                             handleReturn(data, callback);
