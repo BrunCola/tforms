@@ -1083,66 +1083,65 @@ module.exports = function(pool) {
                     }
 
                     var treeArray = [], network = null;
-                        async.parallel([
-                            function(callback) { // InfoSQL
-                                new query(InfoSQL, {database: database, pool: pool}, function(err,data){
-                                    info.main = data;
-                                    callback();
-                                });
-                            },
-                            function(callback) { // Info2SQL
-                                new query(Info2SQL, {database: 'rp_ioc_intel', pool: pool}, function(err,data){
-                                    info.desc = data;
-                                    callback();
-                                });
-                            },
-                            function(callback) { // InfoSQL
-                                new query(Info3SQL, {database: database, pool: pool}, function(err,data){
-                                    info.main2 = data;
-                                    callback();
-                                });
-                            },
-                            // SWIMLANE 
-                            function(callback) { // conn
-                                new lanegraph(conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                    async.parallel([
+                        function(callback) { // InfoSQL
+                            new query(InfoSQL, {database: database, pool: pool}, function(err,data){
+                                info.main = data;
+                                callback();
+                            });
+                        },
+                        function(callback) { // Info2SQL
+                            new query(Info2SQL, {database: 'rp_ioc_intel', pool: pool}, function(err,data){
+                                info.desc = data;
+                                callback();
+                            });
+                        },
+                        function(callback) { // InfoSQL
+                            new query(Info3SQL, {database: database, pool: pool}, function(err,data){
+                                info.main2 = data;
+                                callback();
+                            });
+                        },
+                        // SWIMLANE 
+                        function(callback) { // conn
+                            new lanegraph(conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // dns
+                            new lanegraph(dns, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // http
+                            new lanegraph(http, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // ssl
+                            new lanegraph(ssl, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // file
+                            new lanegraph(file, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // endpoint
+                            new lanegraph(endpoint, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // stealth conn
+                            if (req.session.passport.user.level === 3) {
+                                new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                     handleReturn(data, callback);
                                 });
-                            },
-                            function(callback) { // dns
-                                new lanegraph(dns, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                    handleReturn(data, callback);
-                                });
-                            },
-                            function(callback) { // http
-                                new lanegraph(http, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                    handleReturn(data, callback);
-                                });
-                            },
-                            function(callback) { // ssl
-                                new lanegraph(ssl, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                    handleReturn(data, callback);
-                                });
-                            },
-                            function(callback) { // file
-                                new lanegraph(file, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                    handleReturn(data, callback);
-                                });
-                            },
-                            function(callback) { // endpoint
-                                new lanegraph(endpoint, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                    handleReturn(data, callback);
-                                });
-                            },
-                            function(callback) { // stealth conn
-                                if (req.session.passport.user.level === 3) {
-                                    new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                        handleReturn(data, callback);
-                                    });
-                                } else {
-                                    callback();
-                                }
-                            },
-                        }
+                            } else {
+                                callback();
+                            }
+                        },
                         function(callback) { // TREE CHART
                             async.parallel([
                                 function(callback) { // conn
@@ -1259,7 +1258,6 @@ module.exports = function(pool) {
                             end: end
                         });
                     })
-
                 break;
                 }
 
