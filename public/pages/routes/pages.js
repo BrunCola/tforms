@@ -573,7 +573,6 @@ angular.module('mean.pages').config(['$stateProvider',
                             subtitleElm: {
                                 'Zone': 'lan_zone',
                                 'User': 'lan_user',
-                                'LAN IP': 'lan_ip',
                             },
                             daterange: true
                         }
