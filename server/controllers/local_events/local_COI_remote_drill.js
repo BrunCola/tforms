@@ -432,27 +432,124 @@ module.exports = function(pool) {
                             new lanegraph(stealth_conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                 handleReturn(data, callback);
                             });
-                        } else {
-                            callback();
-                        }
-                    },
-                    function(callback) { // stealth block
-                        if (req.session.passport.user.level === 3) {
-                            new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                        },
+                        function(callback) { // dns
+                            new lanegraph(dns, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                 handleReturn(data, callback);
                             });
-                        } else {
-                            callback();
-                        }
-                    },
-                ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
-                    if (err) throw console.log(err);
-                    res.json({
-                        laneGraph: result
+                        },
+                        function(callback) { // http
+                            new lanegraph(http, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // ssl
+                            new lanegraph(ssl, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // file
+                            new lanegraph(file, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // endpoint
+                            new lanegraph(endpoint, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // stealth conn
+                            if (req.session.passport.user.level === 3) {
+                                new lanegraph(stealth_conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                    handleReturn(data, callback);
+                                });
+                            } else {
+                                callback();
+                            }
+                        },
+                        function(callback) { // stealth block
+                            if (req.session.passport.user.level === 3) {
+                                new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                    handleReturn(data, callback);
+                                });
+                            } else {
+                                callback();
+                            }
+                        },
+                    ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
+                        if (err) throw console.log(err);
+                        res.json({
+                            laneGraph: result
+                        });
                     });
-                });
+
+                //break;
+                //}
             } else {
                 if (req.query.lan_ip && (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1)) {
+
+                switch (req.query.type) {
+
+                    case 'remote_ip_conn_meta':
+                        new query({query: 'SELECT DISTINCT `remote_ip` FROM `conn_meta` WHERE ( `time` BETWEEN ? AND ? ) AND ( `lan_ip` = ? ) AND ( `lan_zone` = "Stealth") ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data.length);
+                            }
+                        });
+                        break;
+                    case 'remote_country_conn_meta':
+                        new query({query: 'SELECT DISTINCT `remote_country` FROM `conn_meta` WHERE ( `time` BETWEEN ? AND ? ) AND ( `lan_ip` = ? ) AND ( `lan_zone` = "Stealth") AND (`remote_country` <> "-" ) ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data.length);
+                            }
+                        });
+                        break;
+                    ///
+                    case 'bandwidth_in':
+                        new query({query: 'SELECT ROUND(sum(`in_bytes`)) AS `bandwidth` FROM `conn_local`  WHERE ( `time` BETWEEN ? AND ? ) AND ( `lan_ip` = ? ) AND ( `lan_zone` = "Stealth") ', insert: [end, start, start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        });
+                        break;
+                    case 'bandwidth_out':
+                        new query({query: 'SELECT ROUND(sum(`out_bytes`)) AS `bandwidth` FROM `conn_local`  WHERE ( `time` BETWEEN ? AND ? ) AND ( `lan_ip` = ? ) AND ( `lan_zone` = "Stealth") ', insert: [end, start, start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        });
+                        break;
+                    case 'new_ip':
+                        new query({query: 'SELECT DISTINCT `remote_ip` FROM `conn_uniq_remote_ip`  WHERE ( `time` BETWEEN ? AND ? ) AND ( `lan_ip` = ? ) AND ( `lan_zone` = "Stealth") ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data.length);
+                            }
+                        });
+                        break;
+                    case 'new_dns':
+                        new query({query: 'SELECT `query` FROM `dns_uniq_query`  WHERE ( `time` BETWEEN ? AND ? ) AND ( `lan_ip` = ? ) AND ( `lan_zone` = "Stealth") ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        });
+                        break;
+                    case 'new_http':
+                        new query({query: 'SELECT DISTINCT `host` FROM `http_uniq_host`  WHERE ( `time` BETWEEN ? AND ? ) AND ( `lan_ip` = ? ) AND ( `lan_zone` = "Stealth") ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data.length);
+                            }
+                        });
+                        break;
+                    case 'new_ssl':
+                        new query({query: 'SELECT `remote_ip` FROM `ssl_uniq_remote_ip` WHERE ( `time` BETWEEN ? AND ? ) AND ( `lan_ip` = ? ) AND ( `lan_zone` = "Stealth") ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data.length);
+                            }
+                        });
+                        break;
+                    default:
+
+
                     var info = [];
                     // SWIMLANE QUERIES
                     var conn = {
@@ -962,47 +1059,108 @@ module.exports = function(pool) {
                                 'LIMIT 20'    ,
                         insert: [start, end, req.query.lan_ip],
                     }
+                    var info = {};
+                    var InfoSQL = {
+                        query: 'SELECT '+
+                                'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as last, '+
+                                'date_format(min(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as first, '+
+                                'sum(`in_packets`) as in_packets, '+
+                                'sum(`out_packets`) as out_packets, '+
+                                'sum(`in_bytes`) as in_bytes, '+
+                                'sum(`out_bytes`) as out_bytes, '+
+                                '`machine`, '+
+                                '`lan_zone`, '+
+                                '`lan_port`, '+
+                                '`remote_port`, '+
+                                '`remote_cc`, '+
+                                '`remote_country`, '+
+                                '`remote_asn`, '+
+                                '`remote_asn_name`, '+
+                                '`l7_proto`, '+
+                                '`ioc_rule`, '+
+                                '`ioc_typeIndicator` '+
+                            'FROM `conn_ioc` '+
+                            'WHERE '+
+                                '`lan_ip` = ? ' +
+                            'LIMIT 1',
+                        insert: [req.query.lan_ip]
+                    }
+                    var Info2SQL = {
+                        query: 'SELECT '+
+                            '`description` '+
+                            'FROM `ioc_parent` '+
+                            'WHERE '+
+                            '`ioc_parent` = ? '+
+                            'LIMIT 1',
+                        insert: [req.query.ioc]
+                    }
+                    var Info3SQL = {
+                        query: 'SELECT '+
+                            'max(date_format(from_unixtime(stealth_src.time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+                            '`src_ip` AS lan_ip, '+
+                            '`user` AS lan_user, '+
+                            'sum(`in_packets`) AS `in_packets`, '+
+                            'sum(`out_packets`) AS `out_packets`, '+
+                            '(sum(`in_bytes`) / 1048576) AS `in_bytes`, '+
+                            '(sum(`out_bytes`) / 1048576) AS `out_bytes` '+
+                        'FROM '+
+                            '`stealth_src` '+
+                        'JOIN '+
+                            '`endpoint_tracking` ON `src_ip` = `lan_ip` '+
+                        'WHERE '+
+                            'stealth_src.time BETWEEN ? AND ? '+
+                            'AND lan_ip = ? ',
+                        insert: [start, end,req.query.lan_ip]
+                    }
+
                     var treeArray = [], network = null;
-                    async.parallel([
-                        // SWIMLANE 
-                        function(callback) { // conn
-                            new lanegraph(conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },                        
-                        function(callback) { // conn
-                            new lanegraph(l7, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // dns
-                            new lanegraph(dns, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // http
-                            new lanegraph(http, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // ssl
-                            new lanegraph(ssl, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // file
-                            new lanegraph(file, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // endpoint
-                            new lanegraph(endpoint, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // stealth block
-                            if (req.session.passport.user.level === 3) {
-                                new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                        async.parallel([
+                            function(callback) { // InfoSQL
+                                new query(InfoSQL, {database: database, pool: pool}, function(err,data){
+                                    info.main = data;
+                                    callback();
+                                });
+                            },
+                            function(callback) { // Info2SQL
+                                new query(Info2SQL, {database: 'rp_ioc_intel', pool: pool}, function(err,data){
+                                    info.desc = data;
+                                    callback();
+                                });
+                            },
+                            function(callback) { // InfoSQL
+                                new query(Info3SQL, {database: database, pool: pool}, function(err,data){
+                                    info.main2 = data;
+                                    callback();
+                                });
+                            },
+                            // SWIMLANE 
+                            function(callback) { // conn
+                                new lanegraph(conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                    handleReturn(data, callback);
+                                });
+                            },
+                            function(callback) { // dns
+                                new lanegraph(dns, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                    handleReturn(data, callback);
+                                });
+                            },
+                            function(callback) { // http
+                                new lanegraph(http, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                    handleReturn(data, callback);
+                                });
+                            },
+                            function(callback) { // ssl
+                                new lanegraph(ssl, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                    handleReturn(data, callback);
+                                });
+                            },
+                            function(callback) { // file
+                                new lanegraph(file, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                    handleReturn(data, callback);
+                                });
+                            },
+                            function(callback) { // endpoint
+                                new lanegraph(endpoint, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                     handleReturn(data, callback);
                                 });
                             } else {
@@ -1121,9 +1279,17 @@ module.exports = function(pool) {
                             network: network,
                             laneGraph: result,
                             start: start,
+                            info: info,
                             end: end
                         });
                     })
+
+
+
+
+                break;
+                }
+
                 } else {
                     res.redirect('/');
                 }

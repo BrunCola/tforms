@@ -2729,8 +2729,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .html(function(d){
                                         // set d.postion (INIFFICENT!)
                                         d.position = ($('li#'+d.id).offset().top - $('li#'+d.id).parent().offset().top);
-                                        // return description
-                                        return d.info;
+                                        return "<div class='lanegraphlist'>"+d.info+"</div>";
                                     })
                                     .on('click', function(){
                                         // close last expanded sections
