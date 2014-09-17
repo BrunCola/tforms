@@ -2435,7 +2435,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                     // Add tooltip
                     $scope.tip = d3.tip()
                         .attr('class', 't-tip')
-                        .offset([-50, 0])
+                        .offset([-50, -100])
                         .html(function(d) {
 
                             var title = "<strong>Rules: </strong> <br />";
