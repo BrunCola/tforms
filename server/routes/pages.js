@@ -164,9 +164,9 @@ module.exports = function(app, passport, version, io, pool) {
             app.route('/local_events/endpoint_by_user')
             .get(authorization.requiresLogin, endpoint_by_user.render);
             // ENDPOINT EVENTS LOCAL BY ALERT INFO
-                var endpoint_events_by_user_and_type = require('../controllers/local_events/endpoint_events_by_user_and_type')(pool);
-                app.route('/local_events/endpoint_events_by_user_and_type')
-                .get(authorization.requiresLogin, endpoint_events_by_user_and_type.render);
+                var endpoint_by_user_and_type = require('../controllers/local_events/endpoint_by_user_and_type')(pool);
+                app.route('/local_events/endpoint_by_user_and_type')
+                .get(authorization.requiresLogin, endpoint_by_user_and_type.render);
         // ENDPOINT EVENTS SHAREPOINT
             var endpoint_events_sharepoint = require('../controllers/local_events/endpoint_events_sharepoint')(pool);
             app.route('/local_events/endpoint_events_sharepoint')
