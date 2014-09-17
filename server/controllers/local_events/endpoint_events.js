@@ -8,14 +8,12 @@ module.exports = function(pool) {
     return {
         render: function(req, res) {
             var database = req.session.passport.user.database;
-            // var database = null;
             var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
             var end = Math.round(new Date().getTime() / 1000);
             if (req.query.start && req.query.end) {
                 start = req.query.start;
                 end = req.query.end;
             }
-            //var results = [];
             var tables = [];
             var info = [];
             var table1 = {
@@ -37,8 +35,7 @@ module.exports = function(pool) {
                         select: 'time',
                         link: {
                             type: 'endpoint_events_user',
-                            // val: the pre-evaluated values from the query above
-                            val: ['event_type'],
+                            val: ['event_type'], // val: the pre-evaluated values from the query above
                             crumb: false
                         },
                     },

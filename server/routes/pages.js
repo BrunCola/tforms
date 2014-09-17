@@ -131,30 +131,26 @@ module.exports = function(app, passport, version, io, pool) {
             var stealth_COI_map = require('../controllers/local_events/stealth_COI_map')(pool); 
             app.route('/local_events/stealth_COI_map')
             .get(authorization.requiresLogin, stealth_COI_map.render);
-            // USER LOCAL
-                // var user_local = require('../controllers/local_events/user_local')(pool);
-                // app.route('/local_events/user_local')
-                // .get(authorization.requiresLogin, user_local.render);
         // STEALTH USER CONN
             var local_COI_remote = require('../controllers/local_events/local_COI_remote')(pool); 
             app.route('/local_events/local_COI_remote')
             .get(authorization.requiresLogin, local_COI_remote.render);
-            // LOCAL COI REMOTE DRILL
-                var local_COI_remote_drill = require('../controllers/local_events/local_COI_remote_drill')(pool);
-                app.route('/local_events/local_COI_remote_drill')
-                .get(authorization.requiresLogin, local_COI_remote_drill.render);
         // LOCAL USERS CONN
             var local_user_conn = require('../controllers/local_events/local_user_conn')(pool);
             app.route('/local_events/local_user_conn')
             .get(authorization.requiresLogin, local_user_conn.render);
+            // LOCAL COI REMOTE DRILL
+                var local_COI_remote_drill = require('../controllers/local_events/local_COI_remote_drill')(pool);
+                app.route('/local_events/local_COI_remote_drill')
+                .get(authorization.requiresLogin, local_COI_remote_drill.render);
         // LOCAL NETWORK MAP
             var local_network_map = require('../controllers/local_events/local_network_map')(pool);
             app.route('/local_events/local_network_map')
             .get(authorization.requiresLogin, local_network_map.render);
-        // ENDPOINT EVENTS
-            var endpoint_events = require('../controllers/local_events/endpoint_events')(pool);
-            app.route('/local_events/endpoint_events')
-            .get(authorization.requiresLogin, endpoint_events.render);
+        // ENDPOINT BY TYPE
+            var endpoint_events = require('../controllers/local_events/endpoint_by_type')(pool);
+            app.route('/local_events/endpoint_by_type')
+            .get(authorization.requiresLogin, endpoint_by_type.render);
             // ENDPOINT EVENTS USER
                 var endpoint_events_user = require('../controllers/local_events/endpoint_events_user')(pool);
                 app.route('/local_events/endpoint_events_user')
