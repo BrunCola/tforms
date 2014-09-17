@@ -2649,6 +2649,17 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                 }
 
+                function scrollSide(id) {
+                    // console.log(id)
+                    // console.log($('li#'+id).offset().top - $('li#'+id).parent().offset().top)
+                    // console.log($('li#'+id).parent().offset())
+                    var elm = $('li#'+id);
+                    var pos = elm.position().top;
+                    var pos2 = elm.parent().position().top;
+                    console.log(pos - pos2)
+                    $('#lanegraphinfo').scrollTo(pos);
+                }
+
                 function plot(data, min, max) {
                     if (moment(max).unix() !== moment(min).unix()) {
                         //////////////////
@@ -2699,7 +2710,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // set class for active description
                                     $('#'+d.id).attr('class', 'laneactive');
                                     // scroll to position
-                                    $('#lanegraphinfo').scrollTo(d.position);
+                                    scrollSide(d.id);
                                     // set ids for cross-refrence
                                     previousID = d.id;
                                     previousElm = elm;
@@ -2728,11 +2739,13 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .attr('id', function(d){return d.id })
                                     .html(function(d){
                                         // set d.postion (INIFFICENT!)
-                                        d.position = ($('li#'+d.id).offset().top - $('li#'+d.id).parent().offset().top);
+                                        // d.position = ($('li#'+d.id).offset().top - $('li#'+d.id).parent().offset().top);
                                         // return description
+                                        return $('li#'+d.id).offset().top - $('li#'+d.id).parent().offset().top
                                         return d.info;
                                     })
                                     .on('click', function(){
+                                        scrollSide(d.id)
                                         // close last expanded sections
                                         if (lastExpandedId !== '#'+d.id) {
                                             $('div'+lastExpandedId+'.infoDivExpanded').hide();
