@@ -37,9 +37,9 @@ module.exports = function(pool) {
             }
             var lanes;
             if (req.session.passport.user.level === 3) {
-                lanes = ['ioc', 'conn', 'applications', 'file', 'dns', 'http', 'ssl', 'endpoint', 'stealth'];
+                lanes = ['ioc', 'conn', 'applications', 'stealth', 'dns', 'http', 'ssl', 'file', 'endpoint'];
             } else {
-                lanes = ['ioc', 'conn', 'applications', 'file', 'dns', 'http', 'ssl', 'endpoint'];
+                lanes = ['ioc', 'conn', 'applications', 'dns', 'http', 'ssl', 'file', 'endpoint'];
             }
             var result = {
                 lanes: lanes,

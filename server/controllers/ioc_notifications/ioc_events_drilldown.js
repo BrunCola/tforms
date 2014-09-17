@@ -38,9 +38,9 @@ module.exports = function(pool) {
 
             var lanes;
             if (req.session.passport.user.level === 3) {
-                lanes = ['ioc', 'conn', 'file', 'dns', 'http', 'ssl', 'endpoint', 'stealth'];
+                lanes = ['ioc', 'conn', 'applications', 'stealth', 'dns', 'http', 'ssl', 'file', 'endpoint'];
             } else {
-                lanes = ['ioc', 'conn', 'file', 'dns', 'http', 'ssl', 'endpoint'];
+                lanes = ['ioc', 'conn', 'applications', 'dns', 'http', 'ssl', 'file', 'endpoint'];
             }
             var result = {
                 lanes: lanes,
@@ -48,6 +48,57 @@ module.exports = function(pool) {
             };
 
             if (req.query.type === 'drill') {
+                var conn = {
+                    query: 'SELECT '+
+                            '\'conn\' AS type, '+
+                            '`time` AS raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") AS time_info, '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+
+                            '`ioc_count`,'+
+                            '`lan_zone`,'+
+                            '`machine`,'+
+                            '`lan_ip`,'+
+                            '`lan_port`,'+
+                            '`remote_ip`,'+
+                            '`remote_port`,'+
+                            '`remote_country`,'+
+                            '`remote_asn_name`,'+
+                            '`in_bytes`,'+
+                            '`out_bytes`,'+
+                            '`l7_proto`,'+
+                            '`ioc`,'+
+                            '`ioc_severity`,'+
+                            '`ioc_rule`,'+
+                            '`ioc_typeIndicator`,'+
+                            '`ioc_typeInfection` '+
+                        'FROM '+
+                            '`conn` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                            'AND `lan_zone`= ? '+
+                            'AND `lan_ip`= ? '+
+                            'LIMIT 250',
+                    insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+                    params: [
+                        {title: "Time", select: "time"},
+                        {title: "Zone", select: "lan_zone"},
+                        {title: "Machine", select: "machine"},
+                        {title: "Local IP", select: "lan_ip"},
+                        {title: "Local Port", select: "lan_port"},
+                        {title: "Remote IP", select: "remote_ip"},
+                        {title: "Remote Port", select: "remote_port"},
+                        {title: "Remote Country", select: "remote_country"},
+                        {title: "Remote ASN", select: "remote_asn_name"},
+                        {title: "Application", select: "l7_proto"},
+                        {title: "Bytes to Remote", select: "in_bytes"},
+                        {title: "Bytes from Remote", select: "out_bytes"},
+                        {title: "IOC", select: "ioc"},
+                        {title: "IOC Severity", select: "ioc_severity"},
+                        {title: "IOC Type", select: "ioc_typeIndicator"},
+                        {title: "IOC Stage", select: "ioc_typeInfection"},
+                        {title: "IOC Rule", select: "ioc_rule"},
+                    ]
+                }
                 var conn_ioc = {
                     query: 'SELECT '+
                             '\'conn_ioc\' AS type, '+
@@ -101,12 +152,12 @@ module.exports = function(pool) {
                         {title: "IOC Rule", select: "ioc_rule"},
                     ]
                 }
-                var conn = {
+                var application = {
                     query: 'SELECT '+
-                            '\'conn\' AS type, '+
-                            '`time` AS raw_time, '+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") AS time_info, '+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+
+                            '\'applications\' AS type, '+
+                            '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                             '`ioc_count`,'+
                             '`lan_zone`,'+
                             '`machine`,'+
@@ -128,10 +179,10 @@ module.exports = function(pool) {
                             '`conn` '+
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
-                            'AND `lan_zone`= ? '+
-                            'AND `lan_ip`= ? '+
-                            'LIMIT 250',
-                    insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+                            'AND `lan_ip` = ? '+
+                            'AND `l7_proto` != \'-\''+
+                        'LIMIT 250',
+                    insert: [start, end, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
                         {title: "Zone", select: "lan_zone"},
@@ -150,363 +201,6 @@ module.exports = function(pool) {
                         {title: "IOC Type", select: "ioc_typeIndicator"},
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
-                    ]
-                }
-                var dns_ioc = {
-                    query: 'SELECT '+
-                            '\'dns_ioc\' AS type, '+
-                            '`time` as raw_time, '+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-                            '`ioc_count`,'+
-                            '`proto`, '+
-                            '`qclass_name`, '+
-                            '`qtype_name`, '+
-                            '`query`, '+
-                            '`answers`, '+
-                            '`TTLs`, '+
-                            '`ioc`, '+
-                            '`ioc_severity`, '+
-                            '`ioc_rule`,'+
-                            '`ioc_typeIndicator`, '+
-                            '`ioc_typeInfection` '+
-                        'FROM '+
-                            '`dns` '+
-                        'WHERE '+
-                            '`time` BETWEEN ? AND ? '+
-                            'AND `lan_zone`= ? '+
-                            'AND `lan_ip`= ? '+
-                            'AND `remote_ip`= ? '+
-                            'AND `ioc`=?',
-                    insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
-                    params: [
-                        {title: "Time", select: "time"},
-                        {title: "Protocol", select: "proto"},
-                        {title: "Query Class", select: "qclass_name"},
-                        {title: "Query Type", select: "qtype_name"},
-                        {title: "Query", select: "query"},
-                        {title: "Answers", select: "answers"},
-                        {title: "TTLs", select: "TTLs"},
-                        {title: "IOC", select: "ioc"},
-                        {title: "IOC Severity", select: "ioc_severity"},
-                        {title: "IOC Type", select: "ioc_typeIndicator"},
-                        {title: "IOC Stage", select: "ioc_typeInfection"},
-                        {title: "IOC Rule", select: "ioc_rule"},
-                    ]
-                }
-                var dns = {
-                    query: 'SELECT '+
-                            '\'dns\' AS type,'+
-                            '`time` AS raw_time,'+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-                            '`proto`,'+
-                            '`qclass_name`,'+
-                            '`qtype_name`,'+
-                            '`query`,'+
-                            '`answers`,'+
-                            '`TTLs`,'+
-                            '`ioc`,'+
-                            '`ioc_severity`,'+
-                            '`ioc_rule`,'+
-                            '`ioc_typeIndicator`,'+
-                            '`ioc_typeInfection` '+
-                        'FROM '+
-                            '`dns` '+
-                        'WHERE '+
-                            '`time` BETWEEN ? AND ? '+
-                            'AND `lan_zone` = ? '+
-                            'AND `lan_ip` = ?',
-                    insert: [start, end, req.query.lan_zone, req.query.lan_ip],
-                    params: [
-                        {title: "Time", select: "time"},
-                        {title: "Protocol", select: "proto"},
-                        {title: "Query Class", select: "qclass_name"},
-                        {title: "Query Type", select: "qtype_name"},
-                        {title: "Query", select: "query"},
-                        {title: "Answers", select: "answers"},
-                        {title: "TTLs", select: "TTLs"},
-                        {title: "IOC", select: "ioc"},
-                        {title: "IOC Severity", select: "ioc_severity"},
-                        {title: "IOC Type", select: "ioc_typeIndicator"},
-                        {title: "IOC Stage", select: "ioc_typeInfection"},
-                        {title: "IOC Rule", select: "ioc_rule"},
-                    ]
-                }
-                var http_ioc = {
-                    query: 'SELECT '+
-                            '\'http_ioc\' AS type, '+
-                            '`time` as raw_time, '+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-                            '`ioc_count`,'+
-                            '`host`,'+
-                            '`uri`,'+
-                            '`referrer`,'+
-                            '`user_agent`,'+
-                            '`request_body_len`,'+
-                            '`response_body_len`,'+
-                            '`status_code`,'+
-                            '`status_msg`,'+
-                            '`info_code`,'+
-                            '`info_msg`,'+
-                            '`ioc`,'+
-                            '`ioc_severity`,'+
-                            '`ioc_rule`,'+
-                            '`ioc_typeIndicator`,'+
-                            '`ioc_typeInfection` '+
-                        'FROM '+
-                            '`http` '+
-                        'WHERE '+
-                            '`time` BETWEEN ? AND ? '+
-                            'AND `lan_zone`= ? '+
-                            'AND `lan_ip`= ? '+
-                            'AND `remote_ip`= ? '+
-                            'AND `ioc`=?',
-                    insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
-                    params: [
-                        {title: "Time", select: "time"},
-                        {title: "Host", select: "host"},
-                        {title: "URI", select: "uri"},
-                        {title: "Referrer", select: "referrer"},
-                        {title: "User Agent", select: "user_agent"},
-                        {title: "IOC", select: "ioc"},
-                        {title: "IOC Severity", select: "ioc_severity"},
-                        {title: "IOC Type", select: "ioc_typeIndicator"},
-                        {title: "IOC Stage", select: "ioc_typeInfection"},
-                        {title: "IOC Rule", select: "ioc_rule"},
-                    ]
-                }
-                var http = {
-                    query: 'SELECT '+
-                            '\'http\' AS type, '+
-                            '`time` as raw_time, '+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-                            '`ioc_count`,'+
-                            '`host`,'+
-                            '`uri`,'+
-                            '`referrer`,'+
-                            '`user_agent`,'+
-                            '`request_body_len`,'+
-                            '`response_body_len`,'+
-                            '`status_code`,'+
-                            '`status_msg`,'+
-                            '`info_code`,'+
-                            '`info_msg`,'+
-                            '`ioc`,'+
-                            '`ioc_severity`,'+
-                            '`ioc_rule`,'+
-                            '`ioc_typeIndicator`,'+
-                            '`ioc_typeInfection` '+
-                        'FROM '+
-                            '`http` '+
-                        'WHERE '+
-                            '`time` BETWEEN ? AND ? '+
-                            'AND `lan_zone`= ?'+
-                            'AND `lan_ip`= ?',
-                    insert: [start, end, req.query.lan_zone, req.query.lan_ip],
-                    params: [
-                        {title: "Time", select: "time"},
-                        {title: "Host", select: "host"},
-                        {title: "URI", select: "uri"},
-                        {title: "Referrer", select: "referrer"},
-                        {title: "User Agent", select: "user_agent"},
-                        {title: "IOC", select: "ioc"},
-                        {title: "IOC Severity", select: "ioc_severity"},
-                        {title: "IOC Type", select: "ioc_typeIndicator"},
-                        {title: "IOC Stage", select: "ioc_typeInfection"},
-                        {title: "IOC Rule", select: "ioc_rule"},
-                    ]
-                }
-                var ssl_ioc = {
-                    query: 'SELECT '+
-                            '\'ssl_ioc\' AS type, '+
-                            '`time` as raw_time, '+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-                            '`ioc_count`,'+
-                            '`version`,'+
-                            '`cipher`,'+
-                            '`server_name`,'+
-                            '`subject`,'+
-                            '`issuer_subject`,'+
-                            '`ioc`,'+
-                            '`ioc_severity`,'+
-                            '`ioc_rule`,'+
-                            '`ioc_typeIndicator`,'+
-                            '`ioc_typeInfection` '+    
-                        'FROM '+
-                            '`ssl` '+
-                        'WHERE '+
-                            '`time` BETWEEN ? AND ? '+
-                            'AND `lan_zone`= ? '+
-                            'AND `lan_ip`= ? '+
-                            'AND `remote_ip`= ? '+
-                            'AND `ioc`=?',
-                    insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
-                    params: [
-                        {title: "Time", select: "time"},
-                        {title: "Server Name", select: "server_name"},
-                        {title: "Version", select: "version"},
-                        {title: "Cipher", select: "cipher"},
-                        {title: "Subject", select: "subject"},
-                        {title: "Issuer", select: "issuer_subject"},
-                        {title: "IOC", select: "ioc"},
-                        {title: "IOC Severity", select: "ioc_severity"},
-                        {title: "IOC Type", select: "ioc_typeIndicator"},
-                        {title: "IOC Stage", select: "ioc_typeInfection"},
-                        {title: "IOC Rule", select: "ioc_rule"},
-                    ]
-                }
-                var ssl = {
-                    query: 'SELECT '+
-                            '\'ssl\' AS type, '+
-                            '`time` as raw_time, '+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-                            '`ioc_count`,'+
-                            '`version`,'+
-                            '`cipher`,'+
-                            '`server_name`,'+
-                            '`subject`,'+
-                            '`issuer_subject`,'+
-                            '`ioc`,'+
-                            '`ioc_severity`,'+
-                            '`ioc_rule`,'+
-                            '`ioc_typeIndicator`,'+
-                            '`ioc_typeInfection` '+    
-                        'FROM '+
-                            '`ssl` '+
-                        'WHERE '+
-                            '`time` BETWEEN ? AND ? '+
-                            'AND `lan_zone`= ?'+
-                            'AND `lan_ip`= ?',
-                    insert: [start, end, req.query.lan_zone, req.query.lan_ip],
-                    params: [
-                        {title: "Time", select: "time"},
-                        {title: "Server Name", select: "server_name"},
-                        {title: "Version", select: "version"},
-                        {title: "Cipher", select: "cipher"},
-                        {title: "Subject", select: "subject"},
-                        {title: "Issuer", select: "issuer_subject"},
-                        {title: "IOC", select: "ioc"},
-                        {title: "IOC Severity", select: "ioc_severity"},
-                        {title: "IOC Type", select: "ioc_typeIndicator"},
-                        {title: "IOC Stage", select: "ioc_typeInfection"},
-                        {title: "IOC Rule", select: "ioc_rule"},
-                    ]
-                }
-                var file_ioc = {
-                    query: 'SELECT '+
-                            '\'file_ioc\' AS type, '+
-                            '`time` as raw_time, '+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-                            '`ioc_count`,'+
-                            '`mime`,'+
-                            '`name`,'+
-                            '`size`,'+
-                            '`md5`,'+
-                            '`sha1`,'+
-                            '`ioc`,'+
-                            '`ioc_severity`,'+
-                            '`ioc_rule`,'+
-                            '`ioc_typeIndicator`,'+
-                            '`ioc_typeInfection` '+
-                        'FROM '+
-                            '`file` '+
-                        'WHERE '+
-                            '`time` BETWEEN ? AND ? '+
-                            'AND `lan_zone`= ? '+
-                            'AND `lan_ip`=? '+
-                            'AND `remote_ip`= ? '+
-                            'AND `ioc`= ? '+
-                            'AND `mime` NOT REGEXP \'text\'',
-                    insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
-                    params: [
-                        {title: "Time", select: "time"},
-                        {title: "File Type", select: "mime"},
-                        {title: "Name", select: "name"},
-                        {title: "Size", select: "size"},
-                        {title: "MD5", select: "md5"},
-                        {title: "SHA1", select: "sha1"},
-                        {title: "IOC", select: "ioc"},
-                        {title: "IOC Severity", select: "ioc_severity"},
-                        {title: "IOC Type", select: "ioc_typeIndicator"},
-                        {title: "IOC Stage", select: "ioc_typeInfection"},
-                        {title: "IOC Rule", select: "ioc_rule"},
-                    ]
-                }
-                var file = {
-                    query: 'SELECT '+
-                            '\'file\' AS type, '+
-                            '`time` as raw_time, '+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-                            '`ioc_count`,'+
-                            '`mime`,'+
-                            '`name`,'+
-                            '`size`,'+
-                            '`md5`,'+
-                            '`sha1`,'+
-                            '`ioc`,'+
-                            '`ioc_severity`,'+
-                            '`ioc_rule`,'+
-                            '`ioc_typeIndicator`,'+
-                            '`ioc_typeInfection` '+
-                        'FROM '+
-                            '`file` '+
-                        'WHERE '+
-                            '`time` BETWEEN ? AND ? '+
-                            'AND `lan_zone`= ?'+
-                            'AND `lan_ip`= ?'+
-                            'AND `mime` NOT REGEXP \'text\'',
-                    insert: [start, end, req.query.lan_zone, req.query.lan_ip],
-                    params: [
-                        {title: "Time", select: "time"},
-                        {title: "File Type", select: "mime"},
-                        {title: "Name", select: "name"},
-                        {title: "Size", select: "size"},
-                        {title: "MD5", select: "md5"},
-                        {title: "SHA1", select: "sha1"},
-                        {title: "IOC", select: "ioc"},
-                        {title: "IOC Severity", select: "ioc_severity"},
-                        {title: "IOC Type", select: "ioc_typeIndicator"},
-                        {title: "IOC Stage", select: "ioc_typeInfection"},
-                        {title: "IOC Rule", select: "ioc_rule"},
-                    ]
-                }
-                var endpoint = {
-                    query: 'SELECT '+
-                                '\'endpoint\' AS type,'+
-                                '`time` AS raw_time,'+
-                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-                                '`lan_zone`,'+
-                                '`lan_machine`,'+
-                                '`lan_user`,'+
-                                '`lan_ip`,'+
-                                '`event_src`,'+
-                                '`event_id`,'+
-                                '`event_type`,'+
-                                '`event_detail` '+
-                            'FROM '+
-                                '`endpoint_events` '+
-                            'WHERE '+
-                                '`time` BETWEEN ? AND ? '+
-                                'AND `lan_ip` = ? ',
-                    insert: [start, end, req.query.lan_ip],
-                    params: [
-                        {title: "Time", select: "time"},
-                        {title: "Zone", select: "lan_zone"},
-                        {title: "Machine Name", select: "lan_machine"},
-                        {title: "User", select: "lan_user"},
-                        {title: "Lan IP", select: "lan_ip"},
-                        {title: "Event Type", select: "event_type"},
-                        {title: "Event Detail", select: "event_detail"},
-                        {title: "Event Source", select: "event_src"},
-                        {title: "Event ID", select: "event_id"},
                     ]
                 }
                 var stealth_conn = {
@@ -568,61 +262,378 @@ module.exports = function(pool) {
                         {title: "Packets to Remote", select: "out_packets"}
                     ]
                 }
+                var dns = {
+                    query: 'SELECT '+
+                            '\'dns\' AS type,'+
+                            '`time` AS raw_time,'+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+                            '`proto`,'+
+                            '`qclass_name`,'+
+                            '`qtype_name`,'+
+                            '`query`,'+
+                            '`answers`,'+
+                            '`TTLs`,'+
+                            '`ioc`,'+
+                            '`ioc_severity`,'+
+                            '`ioc_rule`,'+
+                            '`ioc_typeIndicator`,'+
+                            '`ioc_typeInfection` '+
+                        'FROM '+
+                            '`dns` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                            'AND `lan_zone` = ? '+
+                            'AND `lan_ip` = ?',
+                    insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+                    params: [
+                        {title: "Time", select: "time"},
+                        {title: "Protocol", select: "proto"},
+                        {title: "Query Class", select: "qclass_name"},
+                        {title: "Query Type", select: "qtype_name"},
+                        {title: "Query", select: "query"},
+                        {title: "Answers", select: "answers"},
+                        {title: "TTLs", select: "TTLs"},
+                        {title: "IOC", select: "ioc"},
+                        {title: "IOC Severity", select: "ioc_severity"},
+                        {title: "IOC Type", select: "ioc_typeIndicator"},
+                        {title: "IOC Stage", select: "ioc_typeInfection"},
+                        {title: "IOC Rule", select: "ioc_rule"},
+                    ]
+                }
+                var dns_ioc = {
+                    query: 'SELECT '+
+                            '\'dns_ioc\' AS type, '+
+                            '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                            '`ioc_count`,'+
+                            '`proto`, '+
+                            '`qclass_name`, '+
+                            '`qtype_name`, '+
+                            '`query`, '+
+                            '`answers`, '+
+                            '`TTLs`, '+
+                            '`ioc`, '+
+                            '`ioc_severity`, '+
+                            '`ioc_rule`,'+
+                            '`ioc_typeIndicator`, '+
+                            '`ioc_typeInfection` '+
+                        'FROM '+
+                            '`dns` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                            'AND `lan_zone`= ? '+
+                            'AND `lan_ip`= ? '+
+                            'AND `remote_ip`= ? '+
+                            'AND `ioc`=?',
+                    insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
+                    params: [
+                        {title: "Time", select: "time"},
+                        {title: "Protocol", select: "proto"},
+                        {title: "Query Class", select: "qclass_name"},
+                        {title: "Query Type", select: "qtype_name"},
+                        {title: "Query", select: "query"},
+                        {title: "Answers", select: "answers"},
+                        {title: "TTLs", select: "TTLs"},
+                        {title: "IOC", select: "ioc"},
+                        {title: "IOC Severity", select: "ioc_severity"},
+                        {title: "IOC Type", select: "ioc_typeIndicator"},
+                        {title: "IOC Stage", select: "ioc_typeInfection"},
+                        {title: "IOC Rule", select: "ioc_rule"},
+                    ]
+                }
+                var http = {
+                    query: 'SELECT '+
+                            '\'http\' AS type, '+
+                            '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                            '`ioc_count`,'+
+                            '`host`,'+
+                            '`uri`,'+
+                            '`referrer`,'+
+                            '`user_agent`,'+
+                            '`request_body_len`,'+
+                            '`response_body_len`,'+
+                            '`status_code`,'+
+                            '`status_msg`,'+
+                            '`info_code`,'+
+                            '`info_msg`,'+
+                            '`ioc`,'+
+                            '`ioc_severity`,'+
+                            '`ioc_rule`,'+
+                            '`ioc_typeIndicator`,'+
+                            '`ioc_typeInfection` '+
+                        'FROM '+
+                            '`http` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                            'AND `lan_zone`= ?'+
+                            'AND `lan_ip`= ?',
+                    insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+                    params: [
+                        {title: "Time", select: "time"},
+                        {title: "Host", select: "host"},
+                        {title: "URI", select: "uri"},
+                        {title: "Referrer", select: "referrer"},
+                        {title: "User Agent", select: "user_agent"},
+                        {title: "IOC", select: "ioc"},
+                        {title: "IOC Severity", select: "ioc_severity"},
+                        {title: "IOC Type", select: "ioc_typeIndicator"},
+                        {title: "IOC Stage", select: "ioc_typeInfection"},
+                        {title: "IOC Rule", select: "ioc_rule"},
+                    ]
+                }
+                var http_ioc = {
+                    query: 'SELECT '+
+                            '\'http_ioc\' AS type, '+
+                            '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                            '`ioc_count`,'+
+                            '`host`,'+
+                            '`uri`,'+
+                            '`referrer`,'+
+                            '`user_agent`,'+
+                            '`request_body_len`,'+
+                            '`response_body_len`,'+
+                            '`status_code`,'+
+                            '`status_msg`,'+
+                            '`info_code`,'+
+                            '`info_msg`,'+
+                            '`ioc`,'+
+                            '`ioc_severity`,'+
+                            '`ioc_rule`,'+
+                            '`ioc_typeIndicator`,'+
+                            '`ioc_typeInfection` '+
+                        'FROM '+
+                            '`http` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                            'AND `lan_zone`= ? '+
+                            'AND `lan_ip`= ? '+
+                            'AND `remote_ip`= ? '+
+                            'AND `ioc`=?',
+                    insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
+                    params: [
+                        {title: "Time", select: "time"},
+                        {title: "Host", select: "host"},
+                        {title: "URI", select: "uri"},
+                        {title: "Referrer", select: "referrer"},
+                        {title: "User Agent", select: "user_agent"},
+                        {title: "IOC", select: "ioc"},
+                        {title: "IOC Severity", select: "ioc_severity"},
+                        {title: "IOC Type", select: "ioc_typeIndicator"},
+                        {title: "IOC Stage", select: "ioc_typeInfection"},
+                        {title: "IOC Rule", select: "ioc_rule"},
+                    ]
+                }
+                var ssl = {
+                    query: 'SELECT '+
+                            '\'ssl\' AS type, '+
+                            '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                            '`ioc_count`,'+
+                            '`version`,'+
+                            '`cipher`,'+
+                            '`server_name`,'+
+                            '`subject`,'+
+                            '`issuer_subject`,'+
+                            '`ioc`,'+
+                            '`ioc_severity`,'+
+                            '`ioc_rule`,'+
+                            '`ioc_typeIndicator`,'+
+                            '`ioc_typeInfection` '+    
+                        'FROM '+
+                            '`ssl` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                            'AND `lan_zone`= ?'+
+                            'AND `lan_ip`= ?',
+                    insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+                    params: [
+                        {title: "Time", select: "time"},
+                        {title: "Server Name", select: "server_name"},
+                        {title: "Version", select: "version"},
+                        {title: "Cipher", select: "cipher"},
+                        {title: "Subject", select: "subject"},
+                        {title: "Issuer", select: "issuer_subject"},
+                        {title: "IOC", select: "ioc"},
+                        {title: "IOC Severity", select: "ioc_severity"},
+                        {title: "IOC Type", select: "ioc_typeIndicator"},
+                        {title: "IOC Stage", select: "ioc_typeInfection"},
+                        {title: "IOC Rule", select: "ioc_rule"},
+                    ]
+                }
+                var ssl_ioc = {
+                    query: 'SELECT '+
+                            '\'ssl_ioc\' AS type, '+
+                            '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                            '`ioc_count`,'+
+                            '`version`,'+
+                            '`cipher`,'+
+                            '`server_name`,'+
+                            '`subject`,'+
+                            '`issuer_subject`,'+
+                            '`ioc`,'+
+                            '`ioc_severity`,'+
+                            '`ioc_rule`,'+
+                            '`ioc_typeIndicator`,'+
+                            '`ioc_typeInfection` '+    
+                        'FROM '+
+                            '`ssl` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                            'AND `lan_zone`= ? '+
+                            'AND `lan_ip`= ? '+
+                            'AND `remote_ip`= ? '+
+                            'AND `ioc`=?',
+                    insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
+                    params: [
+                        {title: "Time", select: "time"},
+                        {title: "Server Name", select: "server_name"},
+                        {title: "Version", select: "version"},
+                        {title: "Cipher", select: "cipher"},
+                        {title: "Subject", select: "subject"},
+                        {title: "Issuer", select: "issuer_subject"},
+                        {title: "IOC", select: "ioc"},
+                        {title: "IOC Severity", select: "ioc_severity"},
+                        {title: "IOC Type", select: "ioc_typeIndicator"},
+                        {title: "IOC Stage", select: "ioc_typeInfection"},
+                        {title: "IOC Rule", select: "ioc_rule"},
+                    ]
+                }
+                var file = {
+                    query: 'SELECT '+
+                            '\'file\' AS type, '+
+                            '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                            '`ioc_count`,'+
+                            '`mime`,'+
+                            '`name`,'+
+                            '`size`,'+
+                            '`md5`,'+
+                            '`sha1`,'+
+                            '`ioc`,'+
+                            '`ioc_severity`,'+
+                            '`ioc_rule`,'+
+                            '`ioc_typeIndicator`,'+
+                            '`ioc_typeInfection` '+
+                        'FROM '+
+                            '`file` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                            'AND `lan_zone`= ?'+
+                            'AND `lan_ip`= ?'+
+                            'AND `mime` NOT REGEXP \'text\'',
+                    insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+                    params: [
+                        {title: "Time", select: "time"},
+                        {title: "File Type", select: "mime"},
+                        {title: "Name", select: "name"},
+                        {title: "Size", select: "size"},
+                        {title: "MD5", select: "md5"},
+                        {title: "SHA1", select: "sha1"},
+                        {title: "IOC", select: "ioc"},
+                        {title: "IOC Severity", select: "ioc_severity"},
+                        {title: "IOC Type", select: "ioc_typeIndicator"},
+                        {title: "IOC Stage", select: "ioc_typeInfection"},
+                        {title: "IOC Rule", select: "ioc_rule"},
+                    ]
+                }
+                var file_ioc = {
+                    query: 'SELECT '+
+                            '\'file_ioc\' AS type, '+
+                            '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                            '`ioc_count`,'+
+                            '`mime`,'+
+                            '`name`,'+
+                            '`size`,'+
+                            '`md5`,'+
+                            '`sha1`,'+
+                            '`ioc`,'+
+                            '`ioc_severity`,'+
+                            '`ioc_rule`,'+
+                            '`ioc_typeIndicator`,'+
+                            '`ioc_typeInfection` '+
+                        'FROM '+
+                            '`file` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                            'AND `lan_zone`= ? '+
+                            'AND `lan_ip`=? '+
+                            'AND `remote_ip`= ? '+
+                            'AND `ioc`= ? '+
+                            'AND `mime` NOT REGEXP \'text\'',
+                    insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
+                    params: [
+                        {title: "Time", select: "time"},
+                        {title: "File Type", select: "mime"},
+                        {title: "Name", select: "name"},
+                        {title: "Size", select: "size"},
+                        {title: "MD5", select: "md5"},
+                        {title: "SHA1", select: "sha1"},
+                        {title: "IOC", select: "ioc"},
+                        {title: "IOC Severity", select: "ioc_severity"},
+                        {title: "IOC Type", select: "ioc_typeIndicator"},
+                        {title: "IOC Stage", select: "ioc_typeInfection"},
+                        {title: "IOC Rule", select: "ioc_rule"},
+                    ]
+                }
+                var endpoint = {
+                    query: 'SELECT '+
+                                '\'endpoint\' AS type,'+
+                                '`time` AS raw_time,'+
+                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+                                '`lan_zone`,'+
+                                '`lan_machine`,'+
+                                '`lan_user`,'+
+                                '`lan_ip`,'+
+                                '`event_src`,'+
+                                '`event_id`,'+
+                                '`event_type`,'+
+                                '`event_detail` '+
+                            'FROM '+
+                                '`endpoint_events` '+
+                            'WHERE '+
+                                '`time` BETWEEN ? AND ? '+
+                                'AND `lan_ip` = ? ',
+                    insert: [start, end, req.query.lan_ip],
+                    params: [
+                        {title: "Time", select: "time"},
+                        {title: "Zone", select: "lan_zone"},
+                        {title: "Machine Name", select: "lan_machine"},
+                        {title: "User", select: "lan_user"},
+                        {title: "Lan IP", select: "lan_ip"},
+                        {title: "Event Type", select: "event_type"},
+                        {title: "Event Detail", select: "event_detail"},
+                        {title: "Event Source", select: "event_src"},
+                        {title: "Event ID", select: "event_id"},
+                    ]
+                }
 
                 async.parallel([
                     // Table function(s)
-                    function(callback) { // conn_ioc
-                        new lanegraph(conn_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                            handleReturn(data, callback);
-                        });
-                    },
                     function(callback) { // conn
                         new lanegraph(conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
                             handleReturn(data, callback);
                         });
                     },
-                    function(callback) { // dns_ioc
-                        new lanegraph(dns_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                    function(callback) { // conn_ioc
+                        new lanegraph(conn_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
                             handleReturn(data, callback);
                         });
                     },
-                    function(callback) { // dns
-                        new lanegraph(dns, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                            handleReturn(data, callback);
-                        });
-                    },
-                    function(callback) { // http_ioc
-                        new lanegraph(http_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                            handleReturn(data, callback);
-                        });
-                    },
-                    function(callback) { // http
-                        new lanegraph(http, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                            handleReturn(data, callback);
-                        });
-                    },
-                    function(callback) { // ssl_ioc
-                        new lanegraph(ssl_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                            handleReturn(data, callback);
-                        });
-                    },
-                    function(callback) { // ssl
-                        new lanegraph(ssl, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                            handleReturn(data, callback);
-                        });
-                    },
-                    function(callback) { // file_ioc
-                        new lanegraph(file_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                            handleReturn(data, callback);
-                        });
-                    },
-                    function(callback) { // file
-                        new lanegraph(file, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                            handleReturn(data, callback);
-                        });
-                    },
-                    function(callback) { // endpoint
-                        new lanegraph(endpoint, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                    function(callback) { // application
+                        new lanegraph(application, {database: database, pool:pool, lanes: lanes}, function(err, data){
                             handleReturn(data, callback);
                         });
                     },
@@ -643,7 +654,52 @@ module.exports = function(pool) {
                         } else {
                             callback();
                         }
-                    }
+                    },
+                    function(callback) { // dns
+                        new lanegraph(dns, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                            handleReturn(data, callback);
+                        });
+                    },
+                    function(callback) { // dns_ioc
+                        new lanegraph(dns_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                            handleReturn(data, callback);
+                        });
+                    },
+                    function(callback) { // http
+                        new lanegraph(http, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                            handleReturn(data, callback);
+                        });
+                    },
+                    function(callback) { // http_ioc
+                        new lanegraph(http_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                            handleReturn(data, callback);
+                        });
+                    },
+                    function(callback) { // ssl
+                        new lanegraph(ssl, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                            handleReturn(data, callback);
+                        });
+                    },
+                    function(callback) { // ssl_ioc
+                        new lanegraph(ssl_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                            handleReturn(data, callback);
+                        });
+                    },
+                    function(callback) { // file
+                        new lanegraph(file, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                            handleReturn(data, callback);
+                        });
+                    },
+                    function(callback) { // file_ioc
+                        new lanegraph(file_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                            handleReturn(data, callback);
+                        });
+                    },
+                    function(callback) { // endpoint
+                        new lanegraph(endpoint, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                            handleReturn(data, callback);
+                        });
+                    },
                 ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                     if (err) throw console.log(err);
                     res.json({
@@ -663,6 +719,57 @@ module.exports = function(pool) {
             } else {
                 if (req.query.lan_zone && req.query.lan_ip && req.query.remote_ip && req.query.ioc && req.query.ioc_attrID) {
                     var crossfilter;
+                    var conn = {
+                        query: 'SELECT '+
+                                '\'conn\' AS type, '+
+                                '`time` as raw_time, '+
+                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                                '`ioc_count`,'+
+                                '`lan_zone`,'+
+                                '`machine`,'+
+                                '`lan_ip`,'+
+                                '`lan_port`,'+
+                                '`remote_ip`,'+
+                                '`remote_port`,'+
+                                '`remote_country`,'+
+                                '`remote_asn_name`,'+
+                                '`in_bytes`,'+
+                                '`out_bytes`,'+
+                                '`l7_proto`,'+
+                                '`ioc`,'+
+                                '`ioc_severity`,'+
+                                '`ioc_rule`,'+
+                                '`ioc_typeIndicator`,'+
+                                '`ioc_typeInfection` '+
+                            'FROM '+
+                                '`conn_ioc` '+
+                            'WHERE '+
+                                '`time` BETWEEN ? AND ? '+
+                                'AND `lan_zone`= ? '+
+                                'AND `lan_ip`= ? '+
+                                'LIMIT 250',
+                        insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+                        params: [
+                            {title: "Time", select: "time"},
+                            {title: "Zone", select: "lan_zone"},
+                            {title: "Machine", select: "machine"},
+                            {title: "Local IP", select: "lan_ip"},
+                            {title: "Local Port", select: "lan_port"},
+                            {title: "Remote IP", select: "remote_ip"},
+                            {title: "Remote Port", select: "remote_port"},
+                            {title: "Remote Country", select: "remote_country"},
+                            {title: "Remote ASN", select: "remote_asn_name"},
+                            {title: "Application", select: "l7_proto"},
+                            {title: "Bytes to Remote", select: "in_bytes"},
+                            {title: "Bytes from Remote", select: "out_bytes"},
+                            {title: "IOC", select: "ioc"},
+                            {title: "IOC Severity", select: "ioc_severity"},
+                            {title: "IOC Type", select: "ioc_typeIndicator"},
+                            {title: "IOC Stage", select: "ioc_typeInfection"},
+                            {title: "IOC Rule", select: "ioc_rule"},
+                        ]
+                    }
                     var conn_ioc = {
                         query: 'SELECT '+
                                 '\'conn_ioc\' AS type, '+
@@ -716,9 +823,9 @@ module.exports = function(pool) {
                             {title: "IOC Rule", select: "ioc_rule"},
                         ]
                     }
-                    var conn = {
+                    var application = {
                         query: 'SELECT '+
-                                '\'conn\' AS type, '+
+                                '\'applications\' AS type, '+
                                 '`time` as raw_time, '+
                                 'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -743,10 +850,10 @@ module.exports = function(pool) {
                                 '`conn_ioc` '+
                             'WHERE '+
                                 '`time` BETWEEN ? AND ? '+
-                                'AND `lan_zone`= ? '+
-                                'AND `lan_ip`= ? '+
-                                'LIMIT 250',
-                        insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+                                'AND `lan_ip` = ? '+
+                                'AND `l7_proto` != \'-\''+
+                            'LIMIT 250',
+                        insert: [start, end, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
                             {title: "Zone", select: "lan_zone"},
@@ -760,6 +867,74 @@ module.exports = function(pool) {
                             {title: "Application", select: "l7_proto"},
                             {title: "Bytes to Remote", select: "in_bytes"},
                             {title: "Bytes from Remote", select: "out_bytes"},
+                            {title: "IOC", select: "ioc"},
+                            {title: "IOC Severity", select: "ioc_severity"},
+                            {title: "IOC Type", select: "ioc_typeIndicator"},
+                            {title: "IOC Stage", select: "ioc_typeInfection"},
+                            {title: "IOC Rule", select: "ioc_rule"},
+                        ]
+                    }
+                    var stealth_drop = {
+                        query: 'SELECT '+
+                                '\'stealth_drop\' AS type, '+
+                                '`time` AS raw_time,'+
+                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+                                '`src_ip`, '+
+                                '`dst_ip`, '+
+                                '(`in_bytes` / 1048576) AS in_bytes,'+
+                                '(`out_bytes` / 1048576) AS out_bytes,'+
+                                '`in_packets`, '+
+                                '`out_packets` '+
+                            'FROM '+
+                                '`stealth_conn_meta` '+
+                            'WHERE '+
+                                'time BETWEEN ? AND ? '+
+                                'AND `src_ip` = ? '+
+                                'AND (`in_bytes` = 0 OR `out_bytes` = 0)',
+                        insert: [start, end, req.query.lan_ip],
+                        params: [
+                            {title: "Time", select: "time"},
+                            {title: "Source IP", select: "src_ip"},
+                            {title: "Destination IP", select: "dst_ip"},
+                            {title: "MB from Remote", select: "in_bytes"},
+                            {title: "MB to Remote", select: "out_bytes"},
+                            {title: "Packets from Remote", select: "in_packets"},
+                            {title: "Packets to Remote", select: "out_packets"}
+                        ]
+                    } 
+                    var dns = {
+                        query: 'SELECT '+
+                                '\'dns\' AS type, '+
+                                '`time` as raw_time, '+
+                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                                '`proto`,'+
+                                '`qclass_name`,'+
+                                '`qtype_name`,'+
+                                '`query`,'+
+                                '`answers`,'+
+                                '`TTLs`,'+
+                                '`ioc`,'+
+                                '`ioc_severity`,'+
+                                '`ioc_rule`,'+
+                                '`ioc_typeIndicator`,'+
+                                '`ioc_typeInfection` '+
+                            'FROM '+
+                                '`dns_ioc` '+
+                            'WHERE '+
+                                '`time` BETWEEN ? AND ? '+
+                                'AND `lan_zone` = ? '+
+                                'AND `lan_ip` = ?',
+                        insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+                        params: [
+                            {title: "Time", select: "time"},
+                            {title: "Protocol", select: "proto"},
+                            {title: "Query Class", select: "qclass_name"},
+                            {title: "Query Type", select: "qtype_name"},
+                            {title: "Query", select: "query"},
+                            {title: "Answers", select: "answers"},
+                            {title: "TTLs", select: "TTLs"},
                             {title: "IOC", select: "ioc"},
                             {title: "IOC Severity", select: "ioc_severity"},
                             {title: "IOC Type", select: "ioc_typeIndicator"},
@@ -808,38 +983,41 @@ module.exports = function(pool) {
                             {title: "IOC Rule", select: "ioc_rule"},
                         ]
                     }
-                    var dns = {
+                    var http = {
                         query: 'SELECT '+
-                                '\'dns\' AS type, '+
+                                '\'http\' AS type, '+
                                 '`time` as raw_time, '+
                                 'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-                                '`proto`,'+
-                                '`qclass_name`,'+
-                                '`qtype_name`,'+
-                                '`query`,'+
-                                '`answers`,'+
-                                '`TTLs`,'+
+                                '`ioc_count`,'+
+                                '`host`,'+
+                                '`uri`,'+
+                                '`referrer`,'+
+                                '`user_agent`,'+
+                                '`request_body_len`,'+
+                                '`response_body_len`,'+
+                                '`status_code`,'+
+                                '`status_msg`,'+
+                                '`info_code`,'+
+                                '`info_msg`,'+
                                 '`ioc`,'+
                                 '`ioc_severity`,'+
                                 '`ioc_rule`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection` '+
                             'FROM '+
-                                '`dns_ioc` '+
+                                '`http_ioc` '+
                             'WHERE '+
                                 '`time` BETWEEN ? AND ? '+
-                                'AND `lan_zone` = ? '+
-                                'AND `lan_ip` = ?',
+                                'AND `lan_zone`= ?'+
+                                'AND `lan_ip`= ?',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
-                            {title: "Protocol", select: "proto"},
-                            {title: "Query Class", select: "qclass_name"},
-                            {title: "Query Type", select: "qtype_name"},
-                            {title: "Query", select: "query"},
-                            {title: "Answers", select: "answers"},
-                            {title: "TTLs", select: "TTLs"},
+                            {title: "Host", select: "host"},
+                            {title: "URI", select: "uri"},
+                            {title: "Referrer", select: "referrer"},
+                            {title: "User Agent", select: "user_agent"},
                             {title: "IOC", select: "ioc"},
                             {title: "IOC Severity", select: "ioc_severity"},
                             {title: "IOC Type", select: "ioc_typeIndicator"},
@@ -890,31 +1068,26 @@ module.exports = function(pool) {
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
                         ]
-                    }
-                    var http = {
+                    }                    
+                    var ssl = {
                         query: 'SELECT '+
-                                '\'http\' AS type, '+
+                                '\'ssl\' AS type, '+
                                 '`time` as raw_time, '+
                                 'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                                 '`ioc_count`,'+
-                                '`host`,'+
-                                '`uri`,'+
-                                '`referrer`,'+
-                                '`user_agent`,'+
-                                '`request_body_len`,'+
-                                '`response_body_len`,'+
-                                '`status_code`,'+
-                                '`status_msg`,'+
-                                '`info_code`,'+
-                                '`info_msg`,'+
+                                '`version`,'+
+                                '`cipher`,'+
+                                '`server_name`,'+
+                                '`subject`,'+
+                                '`issuer_subject`,'+
                                 '`ioc`,'+
                                 '`ioc_severity`,'+
                                 '`ioc_rule`,'+
                                 '`ioc_typeIndicator`,'+
-                                '`ioc_typeInfection` '+
+                                '`ioc_typeInfection` '+    
                             'FROM '+
-                                '`http_ioc` '+
+                                '`ssl_ioc` '+
                             'WHERE '+
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_zone`= ?'+
@@ -922,10 +1095,11 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
-                            {title: "Host", select: "host"},
-                            {title: "URI", select: "uri"},
-                            {title: "Referrer", select: "referrer"},
-                            {title: "User Agent", select: "user_agent"},
+                            {title: "Server Name", select: "server_name"},
+                            {title: "Version", select: "version"},
+                            {title: "cipher", select: "cipher"},
+                            {title: "Subject", select: "subject"},
+                            {title: "Issuer", select: "issuer_subject"},
                             {title: "IOC", select: "ioc"},
                             {title: "IOC Severity", select: "ioc_severity"},
                             {title: "IOC Type", select: "ioc_typeIndicator"},
@@ -973,37 +1147,38 @@ module.exports = function(pool) {
                             {title: "IOC Rule", select: "ioc_rule"},
                         ]
                     }
-                    var ssl = {
+                    var file = {
                         query: 'SELECT '+
-                                '\'ssl\' AS type, '+
-                                '`time` as raw_time, '+
-                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-                                '`ioc_count`,'+
-                                '`version`,'+
-                                '`cipher`,'+
-                                '`server_name`,'+
-                                '`subject`,'+
-                                '`issuer_subject`,'+
-                                '`ioc`,'+
-                                '`ioc_severity`,'+
-                                '`ioc_rule`,'+
-                                '`ioc_typeIndicator`,'+
-                                '`ioc_typeInfection` '+    
-                            'FROM '+
-                                '`ssl_ioc` '+
-                            'WHERE '+
-                                '`time` BETWEEN ? AND ? '+
-                                'AND `lan_zone`= ?'+
-                                'AND `lan_ip`= ?',
+                                    '\'file\' AS type, '+
+                                    '`time` as raw_time, '+
+                                    'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                                    'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                                    '`ioc_count`,'+
+                                    '`mime`,'+
+                                    '`name`,'+
+                                    '`size`,'+
+                                    '`md5`,'+
+                                    '`sha1`,'+
+                                    '`ioc`,'+
+                                    '`ioc_severity`,'+
+                                    '`ioc_rule`,'+
+                                    '`ioc_typeIndicator`,'+
+                                    '`ioc_typeInfection` '+
+                                'FROM '+
+                                    '`file_ioc` '+
+                                'WHERE '+
+                                    '`time` BETWEEN ? AND ? '+
+                                    'AND `lan_zone`= ?'+
+                                    'AND `lan_ip`= ?'+
+                                    'AND `mime` NOT REGEXP \'text\'',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
-                            {title: "Server Name", select: "server_name"},
-                            {title: "Version", select: "version"},
-                            {title: "cipher", select: "cipher"},
-                            {title: "Subject", select: "subject"},
-                            {title: "Issuer", select: "issuer_subject"},
+                            {title: "File Type", select: "mime"},
+                            {title: "Name", select: "name"},
+                            {title: "Size", select: "size"},
+                            {title: "MD5", select: "md5"},
+                            {title: "SHA1", select: "sha1"},
                             {title: "IOC", select: "ioc"},
                             {title: "IOC Severity", select: "ioc_severity"},
                             {title: "IOC Type", select: "ioc_typeIndicator"},
@@ -1052,45 +1227,6 @@ module.exports = function(pool) {
                             {title: "IOC Rule", select: "ioc_rule"},
                         ]
                     }
-                    var file = {
-                        query: 'SELECT '+
-                                    '\'file\' AS type, '+
-                                    '`time` as raw_time, '+
-                                    'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                                    'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-                                    '`ioc_count`,'+
-                                    '`mime`,'+
-                                    '`name`,'+
-                                    '`size`,'+
-                                    '`md5`,'+
-                                    '`sha1`,'+
-                                    '`ioc`,'+
-                                    '`ioc_severity`,'+
-                                    '`ioc_rule`,'+
-                                    '`ioc_typeIndicator`,'+
-                                    '`ioc_typeInfection` '+
-                                'FROM '+
-                                    '`file_ioc` '+
-                                'WHERE '+
-                                    '`time` BETWEEN ? AND ? '+
-                                    'AND `lan_zone`= ?'+
-                                    'AND `lan_ip`= ?'+
-                                    'AND `mime` NOT REGEXP \'text\'',
-                        insert: [start, end, req.query.lan_zone, req.query.lan_ip],
-                        params: [
-                            {title: "Time", select: "time"},
-                            {title: "File Type", select: "mime"},
-                            {title: "Name", select: "name"},
-                            {title: "Size", select: "size"},
-                            {title: "MD5", select: "md5"},
-                            {title: "SHA1", select: "sha1"},
-                            {title: "IOC", select: "ioc"},
-                            {title: "IOC Severity", select: "ioc_severity"},
-                            {title: "IOC Type", select: "ioc_typeIndicator"},
-                            {title: "IOC Stage", select: "ioc_typeInfection"},
-                            {title: "IOC Rule", select: "ioc_rule"},
-                        ]
-                    }
                     var endpoint = {
                        query: 'SELECT '+
                             '\'endpoint\' AS type,'+
@@ -1123,36 +1259,6 @@ module.exports = function(pool) {
                             {title: "Event ID", select: "event_id"},
                         ]
                     }
-                    var stealth_drop = {
-                        query: 'SELECT '+
-                                '\'stealth_drop\' AS type, '+
-                                '`time` AS raw_time,'+
-                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-                                '`src_ip`, '+
-                                '`dst_ip`, '+
-                                '(`in_bytes` / 1048576) AS in_bytes,'+
-                                '(`out_bytes` / 1048576) AS out_bytes,'+
-                                '`in_packets`, '+
-                                '`out_packets` '+
-                            'FROM '+
-                                '`stealth_conn_meta` '+
-                            'WHERE '+
-                                'time BETWEEN ? AND ? '+
-                                'AND `src_ip` = ? '+
-                                'AND (`in_bytes` = 0 OR `out_bytes` = 0)',
-                        insert: [start, end, req.query.lan_ip],
-                        params: [
-                            {title: "Time", select: "time"},
-                            {title: "Source IP", select: "src_ip"},
-                            {title: "Destination IP", select: "dst_ip"},
-                            {title: "MB from Remote", select: "in_bytes"},
-                            {title: "MB to Remote", select: "out_bytes"},
-                            {title: "Packets from Remote", select: "in_packets"},
-                            {title: "Packets to Remote", select: "out_packets"}
-                        ]
-                    }                    
-
                     var info = {};
                     var InfoSQL = {
                         query: 'SELECT '+
@@ -1228,71 +1334,21 @@ module.exports = function(pool) {
                     var attrID = req.query.ioc_attrID;
                     async.parallel([
                         // Table function(s)
-                        function(callback) { // conn_ioc
-                            new lanegraph(conn_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
                         function(callback) { // conn
                             new lanegraph(conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                 handleReturn(data, callback);
                             });
                         },
-                        function(callback) { // dns_ioc
-                            new lanegraph(dns_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                        function(callback) { // conn_ioc
+                            new lanegraph(conn_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                 handleReturn(data, callback);
                             });
                         },
-                        function(callback) { // dns
-                            new lanegraph(dns, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                        function(callback) { // application
+                            new lanegraph(application, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                 handleReturn(data, callback);
                             });
                         },
-                        function(callback) { // http_ioc
-                            new lanegraph(http_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // http
-                            new lanegraph(http, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // ssl_ioc
-                            new lanegraph(ssl_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // ssl
-                            new lanegraph(ssl, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // file_ioc
-                            new lanegraph(file_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // file
-                            new lanegraph(file, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // endpoint
-                            new lanegraph(endpoint, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        // function(callback) { // stealth
-                        //     if (req.session.passport.user.level === 3) {
-                        //         new lanegraph(stealth_conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                        //             console.log(data)
-                        //             handleReturn(data, callback);
-                        //         });
-                        //     } else {
-                        //         callback();
-                        //     }
-                        // },
                         function(callback) { // stealth block
                             if (req.session.passport.user.level === 3) {
                                 new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
@@ -1302,6 +1358,51 @@ module.exports = function(pool) {
                             } else {
                                 callback();
                             }
+                        },
+                        function(callback) { // dns
+                            new lanegraph(dns, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // dns_ioc
+                            new lanegraph(dns_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // http
+                            new lanegraph(http, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // http_ioc
+                            new lanegraph(http_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // ssl
+                            new lanegraph(ssl, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // ssl_ioc
+                            new lanegraph(ssl_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },                        
+                        function(callback) { // file
+                            new lanegraph(file, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // file_ioc
+                            new lanegraph(file_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // endpoint
+                            new lanegraph(endpoint, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
                         },
                         function(callback) { // InfoSQL
                             new query(InfoSQL, {database: database, pool: pool}, function(err,data){
@@ -1329,10 +1430,6 @@ module.exports = function(pool) {
                         },
                     ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                         if (err) throw console.log(err);
-                        // var results = {
-                        //     info: info,
-                        //     tables: tables
-                        // };
                         res.json({
                             info: info,
                             laneGraph: result,
