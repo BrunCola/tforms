@@ -570,7 +570,6 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                                     });
                                                     if ($scope.e[c].mData === 'time') {
                                                         $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+aData[$scope.e[c].mData]+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
-                                                        console.log(aData);
                                                     } else {
                                                         $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+aData[$scope.e[c].mData]+"</button>");
                                                     }
@@ -3247,7 +3246,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', '$
                                     .attr('id', function(d){return d.id })
                                     .html(function(d){
                                         d.position = ($('li#'+d.id).offset().top - $('li#'+d.id).parent().offset().top);
-                                        return d.info;
+                                        return "<div class='lanegraphlist'>"+d.info+"</div>";
                                     })
                                     .on('click', function(){
                                         // close all expanded sections

@@ -68,6 +68,7 @@ th {
   list-style: none;
   min-height: 40px;
   padding: 7px;
+  line-height: 20px;
 }
 #lanegraphinfo li:hover {
   cursor: pointer;
@@ -83,9 +84,14 @@ th {
   vertical-align: top;
   font-size: 18px;
   color: #FFF;
+  line-height: 25px;
+}
+#lanegraphinfo li .lanegraphlist{
+  width: 85%;
+  display: inline-block;
 }
 #lanegraphinfo li .infoDivExpanded {
-  height: 100%;
+  height: 00%;
   border-top: 1px;
   padding-top: 10px;
   border-top-color: #CCC;

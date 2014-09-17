@@ -98,7 +98,46 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 		$scope.iocc = $location.$$search.ioc;
 		$scope.ioc_type = data.info.main[0].ioc_typeIndicator;
 		$scope.ioc_rule = data.info.main[0].ioc_rule;
+
+		$scope.in_packets = data.info.main2[0].in_packets;
+		$scope.out_packets = data.info.main2[0].out_packets;
+		$scope.in_bytes = data.info.main2[0].in_bytes;
+		$scope.out_bytes = data.info.main2[0].out_bytes;
 	});
+
+
+	
+	$http({method: 'GET', url: query+'&type=remote_ip_conn_meta'}).
+	success(function(data) {
+		$scope.remote_ip_conn_meta = data;
+	});
+	$http({method: 'GET', url: query+'&type=remote_country_conn_meta'}).
+	success(function(data) {
+		$scope.remote_country_conn_meta = data;
+	});
+	$http({method: 'GET', url: query+'&type=bandwidth_in'}).
+	success(function(data) {
+		$scope.bandwidth_in = data[0].bandwidth+' Kb/s';
+	});
+	$http({method: 'GET', url: query+'&type=bandwidth_out'}).
+	success(function(data) {
+		$scope.bandwidth_out = data[0].bandwidth+' Kb/s';
+	});
+	$http({method: 'GET', url: query+'&type=new_ip'}).
+	success(function(data) {
+		$scope.new_ip = data;
+	});
+	$http({method: 'GET', url: query+'&type=new_http'}).
+	success(function(data) {
+		$scope.new_http = data;
+	});
+	$http({method: 'GET', url: query+'&type=new_ssl'}).
+	success(function(data) {
+		$scope.new_ssl = data;
+	});
+
+
+
 
 
 	$scope.requery = function(min, max, callback) {
