@@ -1142,7 +1142,7 @@ module.exports = function(pool) {
                                     callback();
                                 }
                             },
-                        },
+                        }
                         function(callback) { // TREE CHART
                             async.parallel([
                                 function(callback) { // conn
