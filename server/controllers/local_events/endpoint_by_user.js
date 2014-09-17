@@ -39,7 +39,7 @@ module.exports = function(pool) {
                         title: 'Last Seen',
                         select: 'time',
                         link: {
-                            type: 'endpoint_by_ip_and_type',
+                            type: 'endpoint_by_user_and_type',
                             val: ['lan_zone','lan_user'], // the pre-evaluated values from the query above
                             crumb: false
                         },
