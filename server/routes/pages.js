@@ -148,7 +148,7 @@ module.exports = function(app, passport, version, io, pool) {
             app.route('/local_events/local_network_map')
             .get(authorization.requiresLogin, local_network_map.render);
         // ENDPOINT BY TYPE
-            var endpoint_events = require('../controllers/local_events/endpoint_by_type')(pool);
+            var endpoint_by_type = require('../controllers/local_events/endpoint_by_type')(pool);
             app.route('/local_events/endpoint_by_type')
             .get(authorization.requiresLogin, endpoint_by_type.render);
             // ENDPOINT EVENTS USER
