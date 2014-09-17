@@ -505,7 +505,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         daterange: true
                     }
                 })
-            // ENDPOINT EVENTS
+            // ENDPOINT BY TYPE
                 .state('endpoint_by_type', {
                     url: '/endpoint_by_type?start&end',
                     templateUrl: 'public/pages/views/local_events/endpoint_by_type.html',
@@ -533,9 +533,9 @@ angular.module('mean.pages').config(['$stateProvider',
                         }
                     })
                     // ENDPOINT EVENTS USER DRILL
-                        .state('endpoint_events_user_drill', {
-                            url: '/endpoint_events_user_drill?start&end&event_type&lan_user',
-                            templateUrl: 'public/pages/views/local_events/endpoint_events_user_drill.html',
+                        .state('endpoint_full', {
+                            url: '/endpoint_full?start&end&event_type&lan_zone&lan_user',
+                            templateUrl: 'public/pages/views/local_events/endpoint_full.html',
                             resolve: {
                                 loggedin: checkLoggedin
                             },
@@ -543,12 +543,13 @@ angular.module('mean.pages').config(['$stateProvider',
                                 title: 'Endpoint Event Full Logs',
                                 subtitleElm: {
                                     'Event Type': 'event_type',
-                                    'LAN User': 'lan_user'
+                                    'Zone': 'lan_zone',
+                                    'User': 'lan_user',
                                 },
                                 daterange: true
                             }
                         })
-            // ENDPOINT EVENTS LOCAL
+            // ENDPOINT BY LOCAL IP
                 .state('endpoint_events_local', {
                     url: '/endpoint_events_local?start&end',
                     templateUrl: 'public/pages/views/local_events/endpoint_events_local.html',
@@ -577,24 +578,6 @@ angular.module('mean.pages').config(['$stateProvider',
                             daterange: true
                         }
                     })
-                    // ENDPOINT EVENTS LOCAL ALERT INFO DRILL
-                        .state('endpoint_events_local_alert_info_drill', {
-                            url: '/endpoint_events_local_alert_info_drill?start&end&alert_info&lan_zone&lan_user&lan_ip&event_type',
-                            templateUrl: 'public/pages/views/local_events/endpoint_events_local_alert_info_drill.html',
-                            resolve: {
-                                loggedin: checkLoggedin
-                            },
-                            data: {
-                                title: 'Endpoint Event Full Logs',
-                                subtitleElm: {
-                                    'Zone': 'lan_zone',
-                                    'User': 'lan_user',
-                                    'LAN IP': 'lan_ip',
-                                    'Event Type': 'event_type',
-                                },
-                                daterange: true
-                            }
-                        })
             // ENDPOINT EVENTS SHAREPOINT
                 .state('endpoint_events_sharepoint', {
                     url: '/endpoint_events_sharepoint?start&end',

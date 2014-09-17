@@ -206,13 +206,13 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'title': 'Endpoint By Type',
                     'url': 'endpoint_by_type',
                     'icon': 'fa-desktop',
-                    'orphans': ['endpoint_by_type_and_user','endpoint_events_user_drill']
+                    'orphans': ['endpoint_by_type_and_user','endpoint_full']
                 },
                 {
                     'title': 'Endpoint By Local IP',
                     'url': 'endpoint_events_local',
                     'icon': 'fa-desktop',
-                    'orphans': ['endpoint_events_local_by_alert_info', 'endpoint_events_local_alert_info_drill']
+                    'orphans': ['endpoint_events_local_by_alert_info', 'endpoint_full']
                 },
                 {
                     'title': 'Sharepoint Access',

@@ -156,9 +156,9 @@ module.exports = function(app, passport, version, io, pool) {
                 app.route('/local_events/endpoint_by_type_and_user')
                 .get(authorization.requiresLogin, endpoint_by_type_and_user.render);
                 // ENDPOINT EVENTS USER DRILL
-                    var endpoint_events_user_drill = require('../controllers/local_events/endpoint_events_user_drill')(pool);
-                    app.route('/local_events/endpoint_events_user_drill')
-                    .get(authorization.requiresLogin, endpoint_events_user_drill.render);
+                    var endpoint_full = require('../controllers/local_events/endpoint_full')(pool);
+                    app.route('/local_events/endpoint_full')
+                    .get(authorization.requiresLogin, endpoint_full.render);
         // ENDPOINT EVENTS LOCAL
             var endpoint_events_local = require('../controllers/local_events/endpoint_events_local')(pool);
             app.route('/local_events/endpoint_events_local')
@@ -167,10 +167,6 @@ module.exports = function(app, passport, version, io, pool) {
                 var endpoint_events_local_by_alert_info = require('../controllers/local_events/endpoint_events_local_by_alert_info')(pool);
                 app.route('/local_events/endpoint_events_local_by_alert_info')
                 .get(authorization.requiresLogin, endpoint_events_local_by_alert_info.render);
-                // ENDPOINT EVENTS LOCAL ALERT INFO DRILL
-                    var endpoint_events_local_alert_info_drill = require('../controllers/local_events/endpoint_events_local_alert_info_drill')(pool);
-                    app.route('/local_events/endpoint_events_local_alert_info_drill')
-                    .get(authorization.requiresLogin, endpoint_events_local_alert_info_drill.render);
         // ENDPOINT EVENTS SHAREPOINT
             var endpoint_events_sharepoint = require('../controllers/local_events/endpoint_events_sharepoint')(pool);
             app.route('/local_events/endpoint_events_sharepoint')
