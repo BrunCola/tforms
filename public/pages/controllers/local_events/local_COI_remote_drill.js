@@ -66,6 +66,12 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 		});
 		$scope.$broadcast('laneGraph');
 		$scope.$broadcast('spinnerHide');
+
+		// data.netowrk.forEach(function(parent){
+		// 	parent.children.forEach(function(e){
+		// 		e.value = 10;
+		// 	})
+		// })
 		$scope.$broadcast('networkChart', data.network);
 
 	});

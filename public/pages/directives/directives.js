@@ -1576,20 +1576,20 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
 
                         d3.selectAll('g.points').each(function(d){
                             var elm = d3.select(this);
-                                elm
-                                    .append('text')
-                                    .text(function(d){
-                                        if ((d._children !== undefined) && (d._children !== null)) {
-                                            return d._children.length;
-                                        } else if ((d._children === null) || (d._children === undefined)){
-                                            return '';
-                                        }
-                                    })
-                                    .attr('transform', 'translate(-44,22)')
-                                    .style('font-size', 12)
-                                    .attr('fill', 'red')
-                                    .style('font-weight', 'bold')
-                                    .attr('text-anchor', 'middle');
+                            elm
+                                .append('text')
+                                .text(function(d){
+                                    if ((d._children !== undefined) && (d._children !== null)) {
+                                        return d._children.length;
+                                    } else if ((d._children === null) || (d._children === undefined)){
+                                        return '';
+                                    }
+                                })
+                                .attr('transform', 'translate(-44,22)')
+                                .style('font-size', 12)
+                                .attr('fill', 'red')
+                                .style('font-weight', 'bold')
+                                .attr('text-anchor', 'middle');
                         })
 
                         nodeUpdate.select("text")
@@ -2268,7 +2268,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                 }
 
-                $scope.point = function(element, nickname, name) {
+                $scope.point = function(element, nickname, name, id) {
                     if (nickname.search("ioc") !== -1) {
                         element.attr('class', 'ioc');
                         element = element.append('g')
@@ -2290,7 +2290,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .attr('height', 2.448);
                         return;
                     } else {
-                        element.attr('class', nickname);
+                        element.attr('class', id);
                         element = element.append('g').attr('transform', 'translate(-18, -6)scale(0.8)');
                         switch(nickname){
                             case 'secure':
@@ -2549,8 +2549,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                     return send;
                 }
-
-                var previousID = -1, previousElm = null;
                 // info div
                 var infoHeight = element.height();
                 var infoTitle = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
@@ -2653,7 +2651,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 
                 function plot(data, min, max) {
                     if (moment(max).unix() !== moment(min).unix()) {
+                        //////////////////
+                        /// LANE NODES ///
+                        //////////////////
                         // set variables for info sidebar
+                        var previousID = -1, previousElm = null;
                         var lastExpandedId = null, isOpen = null;
                         // update time slice above chart
                         currentTime.html('Current Time Slice: <strong>'+moment(min).format('MMMM D, YYYY h:mm A')+'</strong> - <strong>'+moment(max).format('MMMM D, YYYY h:mm A')+'</strong>')
@@ -2682,70 +2684,98 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     elm.style('cursor', 'pointer');
                                 })
                                 .on("click", function(d){
-                                    // this closes all expanded blocks
+                                    // un-highlight previous box
+                                    $('#'+previousID).attr('class', null);
+                                    // this closes the last expanded block if there is one
                                     if (lastExpandedId !== null) {
                                         $('div'+lastExpandedId+'.infoDivExpanded').hide();
                                     }
+                                    // deselect previous element if there is one
                                     if (previousElm !== null) {
                                         previousElm.attr('class', null);
                                     }
-                                    elm.attr('class', 'pointactive')
-                                    $('#'+previousID).attr('class', null);
+                                    // make current node active
+                                    elm.attr('class', 'pointactive');
+                                    // set class for active description
                                     $('#'+d.id).attr('class', 'laneactive');
+                                    // scroll to position
+                                    $('#lanegraphinfo').scrollTo(d.position);
+                                    // set ids for cross-refrence
                                     previousID = d.id;
                                     previousElm = elm;
-                                    $('#lanegraphinfo').scrollTo(d.position);
                                 });
                                 // .attr("width", 5)
                                 // .attr("height", function(d) {return .8 * y1(1);});
                             // generate points from point function
                             if (d.type !== 'l7') {
-                                $scope.point(elm, d.type);
+                                $scope.point(elm, d.type, null, d.id);
                             } else {
                                 // push app name to point function if type is l7
-                                $scope.point(elm, d.type, d.l7_proto);
+                                $scope.point(elm, d.type, d.l7_proto, d.id);
                             }
                         })
                         icons.exit();
 
-                       
+                        ////////////////////
+                        /// SIDEBAR LIST ///
+                        ////////////////////
                         infoDiv.selectAll('li').remove();
                         infoDiv.selectAll('li').data(data).enter()
                             .append('li').each(function(d){
                                 var elm = d3.select(this);
                                 elm
+                                    // append id to li from data object
                                     .attr('id', function(d){return d.id })
                                     .html(function(d){
+                                        // set d.postion (INIFFICENT!)
                                         d.position = ($('li#'+d.id).offset().top - $('li#'+d.id).parent().offset().top);
+                                        // return description
                                         return d.info;
                                     })
                                     .on('click', function(){
-                                        // close all expanded sections
+                                        // close last expanded sections
                                         if (lastExpandedId !== '#'+d.id) {
                                             $('div'+lastExpandedId+'.infoDivExpanded').hide();
                                         }
+                                        // clear previous node
                                         if (previousElm !== null){
                                             previousElm.attr('class', null);
                                         }
-                                        // clear class of previous
+                                        // clear class of previous li item
                                         $('#'+previousID).attr('class', null);
+
+                                        // console.log(d.id)
+                                        // var thisNode = itemRects.select('g.'+d.id);
+                                         
+                                        itemRects.selectAll('g').each(function(c){
+                                            var elm = d3.select(this);
+                                            if (c.id === d.id) {
+                                                previousElm.attr('class', null);
+                                                elm.attr('class', 'pointactive');
+                                                previousElm = elm;
+                                            }        
+                                        })
+
+
+
+                                        console.log(thisNode)
+                                        // todo: select the current node somehow so i can apply style to it and creat e previousNode refrence
 
                                         // get this id
                                         var row = d3.select(this);
                                         var id = row.attr('id'); 
                                             row.attr('class', 'laneactive');
-                                        
-                                        // iterate through points
-                                        itemRects.selectAll('g').each(function(d){
-                                            var elm = d3.select(this);
-                                            // if id's (of just clicked) match
-                                            if (d.id.toString() === id.toString()) {
-                                                elm.attr('class', 'pointactive');
-                                                previousElm = d3.select(this);
-                                            } else if (d.id.toString() === previousID.toString()){
-                                                elm.attr('class', null);
-                                            }
-                                        })
+                                        // // iterate through points
+                                        // itemRects.selectAll('g').each(function(d){
+                                        //     var elm = d3.select(this);
+                                        //     // if id's (of just clicked) match
+                                        //     if (d.id.toString() === id.toString()) {
+                                        //         elm.attr('class', 'pointactive');
+                                        //         previousElm = d3.select(this);
+                                        //     } else {
+                                        //         elm.attr('class', null);
+                                        //     }
+                                        // })
 
                                         // set previous id
                                         previousID = id;
