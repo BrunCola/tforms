@@ -206,7 +206,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'title': 'Endpoint By Type',
                     'url': 'endpoint_by_type',
                     'icon': 'fa-desktop',
-                    'orphans': ['endpoint_events_user','endpoint_events_user_drill']
+                    'orphans': ['endpoint_by_type_and_user','endpoint_events_user_drill']
                 },
                 {
                     'title': 'Endpoint By Local IP',

@@ -518,9 +518,9 @@ angular.module('mean.pages').config(['$stateProvider',
                     }
                 })
                 // ENDPOINT EVENTS USER
-                    .state('endpoint_events_user', {
-                        url: '/endpoint_events_user?start&end&event_type',
-                        templateUrl: 'public/pages/views/local_events/endpoint_events_user.html',
+                    .state('endpoint_by_type_and_user', {
+                        url: '/endpoint_by_type_and_user?start&end&event_type',
+                        templateUrl: 'public/pages/views/local_events/endpoint_by_type_and_user.html',
                         resolve: {
                             loggedin: checkLoggedin
                         },

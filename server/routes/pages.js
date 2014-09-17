@@ -152,9 +152,9 @@ module.exports = function(app, passport, version, io, pool) {
             app.route('/local_events/endpoint_by_type')
             .get(authorization.requiresLogin, endpoint_by_type.render);
             // ENDPOINT EVENTS USER
-                var endpoint_events_user = require('../controllers/local_events/endpoint_events_user')(pool);
-                app.route('/local_events/endpoint_events_user')
-                .get(authorization.requiresLogin, endpoint_events_user.render);
+                var endpoint_by_type_and_user = require('../controllers/local_events/endpoint_by_type_and_user')(pool);
+                app.route('/local_events/endpoint_by_type_and_user')
+                .get(authorization.requiresLogin, endpoint_by_type_and_user.render);
                 // ENDPOINT EVENTS USER DRILL
                     var endpoint_events_user_drill = require('../controllers/local_events/endpoint_events_user_drill')(pool);
                     app.route('/local_events/endpoint_events_user_drill')
