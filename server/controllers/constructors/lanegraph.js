@@ -10,6 +10,12 @@ module.exports = function (sql, conn, callback) {
 				return d.time_info+': '+d.lan_ip+' connected to '+d.remote_ip;
 			case 'conn_ioc':
                 return d.time_info+': IOC - '+d.ioc;
+            case 'applications':
+                return d.time_info+': Application - '+d.l7_proto;
+            case 'stealth':
+                return d.time_info+': Stealth securely connected '+d.src_ip+' with '+d.dst_ip;
+            case 'stealth_drop':
+                return d.time_info+': Stealth dropped connection attempts between '+d.src_ip+' and '+d.dst_ip;
             case 'dns':
 				return d.time_info+': DNS query for '+d.query;
 			case 'dns_ioc':
@@ -28,10 +34,6 @@ module.exports = function (sql, conn, callback) {
                 return d.time_info+': IOC - '+d.ioc;
             case 'endpoint':
 				return d.time_info+': '+d.event_type;
-			case 'stealth':
-				return d.time_info+': Stealth securely connected '+d.src_ip+' with '+d.dst_ip;
-			case 'stealth_drop':
-				return d.time_info+': Stealth dropped connection attempts between '+d.src_ip+' and '+d.dst_ip;    
 			default:
 				return d.time;
 		}
