@@ -34,7 +34,7 @@ module.exports = function(pool) {
                         title: 'Last Seen',
                         select: 'time',
                         link: {
-                            type: 'endpoint_events_user',
+                            type: 'endpoint_by_type_and_user',
                             val: ['event_type'], // val: the pre-evaluated values from the query above
                             crumb: false
                         },
