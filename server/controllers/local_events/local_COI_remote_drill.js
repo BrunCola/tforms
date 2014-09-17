@@ -37,9 +37,9 @@ module.exports = function(pool) {
             }
             var lanes;
             if (req.session.passport.user.level === 3) {
-                lanes = ['ioc', 'conn', 'l7', 'file', 'dns', 'http', 'ssl', 'endpoint', 'stealth'];
+                lanes = ['ioc', 'conn', 'applications', 'file', 'dns', 'http', 'ssl', 'endpoint', 'stealth'];
             } else {
-                lanes = ['ioc', 'conn', 'l7', 'file', 'dns', 'http', 'ssl', 'endpoint'];
+                lanes = ['ioc', 'conn', 'applications', 'file', 'dns', 'http', 'ssl', 'endpoint'];
             }
             var result = {
                 lanes: lanes,
@@ -98,7 +98,7 @@ module.exports = function(pool) {
                 }
                 var l7 = {
                     query: 'SELECT '+
-                            '\'l7\' AS type, '+
+                            '\'applications\' AS type, '+
                             '`time` as raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -507,7 +507,7 @@ module.exports = function(pool) {
                     }
                     var l7 = {
                         query: 'SELECT '+
-                                '\'l7\' AS type, '+
+                                '\'applications\' AS type, '+
                                 '`time` as raw_time, '+
                                 'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+

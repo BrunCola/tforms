@@ -3070,31 +3070,26 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .attr('cy', 18)
                                     .attr('r', 18);
 
-                                    elm.append('rect')
-                                        .attr('x', 10)
-                                        .attr('y', 10)
-                                        .attr('height', 4)
-                                        .attr('width', 17)
-                                        .style('fill', '#5E5E5E');
+                                element.append('rect')
+                                    .attr('x', 10)
+                                    .attr('y', 10)
+                                    .attr('height', 4)
+                                    .attr('width', 17)
+                                    .style('fill', '#5E5E5E');
 
-                                    elm.append('rect')
-                                        .attr('x', 10)
-                                        .attr('y', 16)
-                                        .attr('height', 4)
-                                        .attr('width', 17)
-                                        .style('fill', '#5E5E5E');
+                                element.append('rect')
+                                    .attr('x', 10)
+                                    .attr('y', 16)
+                                    .attr('height', 4)
+                                    .attr('width', 17)
+                                    .style('fill', '#5E5E5E');
 
-                                    elm.append('rect')
-                                        .attr('x', 10)
-                                        .attr('y', 22)
-                                        .attr('height', 4)
-                                        .attr('width', 17)
-                                        .style('fill', '#5E5E5E');
-
-                                element.append('svg:path')
-                                    .attr('fill', '#D8464A')
-                                    .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
-                                        'C11.076,16.238,11.938,20.26,13.699,23.661z');
+                                element.append('rect')
+                                    .attr('x', 10)
+                                    .attr('y', 22)
+                                    .attr('height', 4)
+                                    .attr('width', 17)
+                                    .style('fill', '#5E5E5E');
                                 return;
                             default:
                                 return;
