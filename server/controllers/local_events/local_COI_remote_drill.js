@@ -1132,9 +1132,16 @@ module.exports = function(pool) {
                                 new lanegraph(endpoint, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                     handleReturn(data, callback);
                                 });
-                            } else {
-                                callback();
-                            }
+                            },
+                            function(callback) { // stealth conn
+                                if (req.session.passport.user.level === 3) {
+                                    new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                        handleReturn(data, callback);
+                                    });
+                                } else {
+                                    callback();
+                                }
+                            },
                         },
                         function(callback) { // TREE CHART
                             async.parallel([
