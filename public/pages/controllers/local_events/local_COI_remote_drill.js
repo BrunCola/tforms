@@ -66,6 +66,12 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 		});
 		$scope.$broadcast('laneGraph');
 		$scope.$broadcast('spinnerHide');
+
+		// data.netowrk.forEach(function(parent){
+		// 	parent.children.forEach(function(e){
+		// 		e.value = 10;
+		// 	})
+		// })
 		$scope.$broadcast('networkChart', data.network);
 
 	});
@@ -91,7 +97,7 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 				max: maxUnix
 			};
 			//  grab more from api
-			var query = '/stealth/local_COI_remote_drill?start='+minUnix+'&end='+maxUnix+'&lan_ip='+$location.$$search.lan_ip+'&lan_user='+$location.$$search.lan_user+'&type=drill';
+			var query = '/local_events/local_COI_remote_drill?start='+minUnix+'&end='+maxUnix+'&lan_ip='+$location.$$search.lan_ip+'&lan_user='+$location.$$search.lan_user+'&type=drill';
 			$http({method: 'GET', url: query}).
 				success(function(data) {
 					console.log(data)

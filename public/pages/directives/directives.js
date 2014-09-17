@@ -1,6 +1,7 @@
 'use strict';
 
 angular.module('mean.pages').directive('head', function() {
+    // This appends the page head (title and calendar) to all pages, so they can have their own controller
     return {
         restrict: 'A',
         scope : {
@@ -11,15 +12,24 @@ angular.module('mean.pages').directive('head', function() {
     };
 });
 
-angular.module('mean.system').directive('iocDesc', function() {
+angular.module('mean.pages').directive('iocDesc', function() {
     return {
         link: function($scope, element, attrs) {
             $scope.$on('iocDesc', function (event, description) {
-                console.log(description)
-                $(element).html('... <a href="javascript:void(0);"><strong ng-click="open">Read More</strong></a>');
-                $(element).on('click', function(){
-                    $scope.description(description);
-                })
+                if (!description) { return }
+                var maxLength = 200;
+                // if the string is less then our max length..
+                if (description.length < 200) {
+                    $(element).html(description);
+                // otherwise, trim and add link to modal
+                // NOTE: MODAL SETTINGS ARE CUSTOM IN EACH CONTROLLER
+                } else {
+                    var subString = description.substring(0, maxLength);
+                    $(element).html(subString+'... <a href="javascript:void(0);"><strong ng-click="open">Read More</strong></a>');
+                    $(element).on('click', function(){
+                        $scope.description(description);
+                    });
+                }
             });
         }
     };
@@ -1462,7 +1472,6 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                             .attr("x2", function(d)   { return d.target.x; })
                             .attr("y2", function(d)   { return d.target.y; })
                     });
-
                     force.start();
                 }, 0, false);
             })
@@ -1472,7 +1481,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
 
 //NETWORK TREE STARTS HERE
 
-angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
+angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootScope', 'treeIcon', function ($timeout, $rootScope, treeIcon) {
     return {
         link: function ($scope, element, attrs) {
             $scope.$on('networkChart', function (event, data) {
@@ -1562,652 +1571,25 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
 
                         nodeUpdate.select(".points").each(function(d){
                             var elm = d3.select(this);
-                            switch(d.value) {
-                                case 'Network':
-                                    //RapidPHIRE logo
-                                    elm.append('rect')
-                                        .attr('x', -30)
-                                        .attr('y', -40)
-                                        .attr('height', 80)
-                                        .attr('width', 80)
-                                        .style('fill', '#383E4D')
-                                        .style('fill-opacity', 1);
-
-                                    elm.append('path') //chevron
-                                        .attr('d', 'M1.6,21.2l13.4-10.7l13.5,10.7L14.9,5.9L1.6,21.2z')
-                                        .attr('fill', '#ED1F24')
-                                        .attr('transform', 'translate(-28,-35) scale(2.5,2.5)');
-                                        break;
-
-                                case 'Linux':
-                                    elm.append('path')
-                                        .style('fill', '#000000')
-                                        .attr('d', 'M26.3,0c2.2-0.1,5.4,1.9,5.7,4.2c0.3,1.4,0.1,3,0.1,4.4c0,1.6,0,3.3,0.2,4.9'+
-                                        'c0.3,2.9,2.4,4.8,3.7,7.2c0.6,1.2,1.4,2.4,1.7,3.8c0.4,1.5,0.7,3.1,1,4.6c0.2,1.5,0.4,2.9,0.3,4.4c0,0.6,0.1,1.3-0.1,2'+
-                                        'c-0.2,0.8-0.6,1.3-0.3,2.1c0.2,0.7,0.1,1.2,0.9,1.3c0.7,0.1,1.3-0.2,2-0.1c1.4,0.1,2.8,0.7,2.3,2.3c-1.6,2.3-3.3,4.8-5.6,6.5'+
-                                        'c-0.9,0.7-1.8,1.9-3,2.1c-1.2,0.4-2.8,0.3-3.9-0.6c-0.4-0.3-0.7-0.7-0.9-1.1c-0.1-0.3-0.2-0.5-0.3-0.8c0-0.5,0-0.5-0.5-0.5'+
-                                        'c-1.7,0.1-3.4,0.2-5,0c-1.5-0.2-3-0.4-4.5-0.9c-0.6-0.3-1.2-0.5-1.8-0.8c-0.5-0.2-1,1.1-1.2,1.5c-0.5,0.9-1.3,1.9-2.4,2'+
-                                        'c-0.6,0-1.1,0.1-1.7-0.1c-0.8-0.3-1.4-0.7-2.2-1.1c-1.3-0.7-2.5-1.6-3.6-2.6c-1.2-1-2.8-1.9-3.1-3.5c0.4-1.1,0.9-1.6,2.1-1.7'+
-                                        'c0.4,0,1.1-0.1,1.4-0.5c0.2-0.2,0.1-0.5,0.1-0.8c-0.1-0.5,0-0.8,0.2-1.3c0.5-1.2,2.3-0.3,3.1-0.2c0.4-0.3,0.6-0.9,0.9-1.3'+
-                                        'c0.4-0.6,0.7-0.6,0.6-1.4c-0.6-6.4,3-11.9,5.9-17.3c0.4-0.8,0.9-1.6,1.4-2.4c0.4-0.6,0.3-1.6,0.3-2.3c0-2-0.1-4-0.1-6'+
-                                        'c0-1.7,0.3-3,1.7-4.2C22.9,0.9,24.5,0,26.3,0z')
-                                        .attr('transform', 'translate(-30,-25)');
-
-                                    elm.append('path')
-                                        .style('fill', '#FFF')
-                                        .attr('d', 'M28.5,7.6c0.3,0.2,0.8,0.4,0.8,0.8c0,0.4,0,0.9-0.1,1.3'+
-                                        'c-0.1,0.3-0.2,0.7-0.5,1c-0.4,0.5-0.9,0.3-1.4,0.1c1.1-0.4,1.7-1.9,0.6-2.7c-0.5-0.4-1.1-0.3-1.5,0.3c-0.4,0.7-0.3,1.4,0.1,2.1'+
-                                        'c-0.2-0.2-0.6-0.2-0.7-0.5c-0.2-0.5-0.3-1.1-0.2-1.7c0.1-0.8,0.5-0.8,1.2-0.9C27.4,7.4,28,7.4,28.5,7.6z M22.4,7.6c0.2,0.1,0.5,0.1'+
-                                        ',0.6,0.3c0.2,0.4,0.2,0.8,0.3,1.3'+
-                                        'c0,0.3,0,0.6-0.1,1c-0.1,0-0.4,0.4-0.5,0.2c0.3-0.8,0-2.8-1.2-2.1c-1,0.6-0.6,2.3,0.3,2.7c-0.6,0.3-0.7,0.3-1-0.3'+
-                                        'c-0.2-0.6-0.4-1.1-0.3-1.7c0-0.6,0-0.8,0.6-1.2C21.6,7.6,21.9,7.6,22.4,7.6z M28.7,14.3c0.3,0.9,0.4,1.9,0.8,2.9c0.4,1,0.8,1.9,1.3,2.8'+
-                                        'c0.9,1.9,1.9,3.9,2.7,5.9c0.7,1.9,1.4,3.8,0.9,5.9c-0.2,0.9-0.4,2-0.9,2.8c-0.1,0.2-0.4,0.3-0.5,0.5c-0.3,0.4-0.4,1-0.4,1.5'+
-                                        'c-0.7-0.1-1.3-0.7-2.1-0.5c-0.8,0.2-0.8,1.6-0.9,2.2c-0.1,1.1-0.1,2.2-0.2,3.3c0,0.2,0,0.5,0,0.7c-0.3,0.2-0.6,0.3-0.9,0.5'+
-                                        'c-0.5,0.2-1,0.4-1.4,0.5c-2,0.5-4.4,0.4-6.3-0.1c-0.4-0.1-0.9-0.2-1.3-0.4c-0.6-0.2-1-0.3-0.8-1c0.2-1-0.7-2.3-1.1-3.2'+
-                                        'c-1-2.1-1.6-4.3-2.5-6.5c-0.2-0.5-0.4-0.9-0.5-1.4c-0.2-0.3,0.1-1,0.2-1.2c0.3-1.1,0.8-2.1,1.3-3.2c0.5-0.9,1.1-1.9,1.5-2.8'+
-                                        'c0.4-1,0.5-2.1,1-3.1c0.4-0.9,0.9-1.8,1.4-2.7c0.5-0.9,0.8-2,1.3-2.9c1.2,1.1,2.2,1.1,3.8,1.1c0.7-0.1,1.3-0.3,1.9-0.5'+
-                                        'C27.2,15,28.6,14.1,28.7,14.3z')
-                                        .attr('transform', 'translate(-30,-25)');
-
-                                    elm.append('path')
-                                        .style('fill', '#f5c055')
-                                        .attr('d', 'M24.7,9.6c0.9,0.3,1.5,0.9,2.4,1.3c0.9,0.4,2.1,0.2,2.5,1.2'+
-                                        'c0.4,1.1-0.7,1.6-1.5,2.1c-1,0.6-2,1-3.1,1.2c-1.2,0.1-2.3,0.2-3.3-0.5c-0.7-0.5-1.5-1.1-1.5-2.1c0.1-1.2,1.1-1.3,2-1.8'+
-                                        'C22.9,10.6,23.9,9.4,24.7,9.6z M13.7,34.6c0.6,0.2,0.9,1.1,1.2,1.7c0.4,1,0.8,2.1,1.1,3.1'+
-                                        'c0.6,1.9,1,3.9,1,6c0,1.7-1.3,2.9-3,2.9c-1,0-1.8-0.5-2.6-0.9c-1-0.5-1.8-1.1-2.7-1.7c-1.5-1.1-3.7-2.4-4.3-4.1'+
-                                        'C4,40.8,5,39.9,5.9,39.9c0.7-0.2,1.5,0,1.9-0.8c0.3-0.5-0.1-1.3,0.2-1.9c0.4-0.8,1.5-0.4,2.2-0.2c0.4,0.1,0.6,0.3,0.9-0.1'+
-                                        'c0.4-0.4,0.6-0.9,0.9-1.4C12.2,35.3,13.6,34.1,13.7,34.6z M31.6,36.3c0.3,0,0.6,0.3,0.9,0.3c0.1,0.5-0.1,0.9,0.1,1.4'+
-                                        'c0.2,0.9,1.2,1.5,2,1.7c2,0.7,2.6-1.1,3.4-2.6c0.5,0.2,0.4,1.1,0.6,1.6c0.3,0.7,1.1,0.7,1.8,0.5c1.5-0.2,3.9-0.1,3.2,2'+
-                                        'c-1,1.4-2,2.7-3.1,4c-0.6,0.5-1,1.2-1.6,1.7c-0.6,0.5-1.2,0.9-1.8,1.4c-1.4,1.1-2.7,1.8-4.5,1.3c-2-0.5-2.3-2.6-2.6-4.3'+
-                                        'c-0.4-1.9-0.4-3.9-0.3-5.9c0.1-0.9,0.2-1.7,0.3-2.6C30.1,36.2,31,35.8,31.6,36.3z')
-                                        .attr('transform', 'translate(-30,-25)');
-                                        break;
-
-                                case 'MacOS':
-                                    elm.append('path')
-                                        .style('fill', '#828487')
-                                        .style('stroke-width', 0.8)
-                                        .style('stroke', 'white')
-                                        .attr('d', 'M28.8,13.7c0.9-1.2,1.6-2.8,1.3-4.5c-1.5,0.1-3.2,1-4.2,2.3c-0.9,1.1-1.7,2.8-1.4,4.4'+
-                                        'C26.2,15.9,27.9,15,28.8,13.7z M33.2,21.7c0.4-1.3,1.4-2.4,2.7-3.2c-1.4-1.8-3.4-2.8-5.3-2.8c-2.5,0-3.5,1.2-5.2,1.2'+
-                                        'c-1.8,0-3.1-1.2-5.3-1.2c-2.1,0-4.3,1.3-5.8,3.5c-0.5,0.8-0.9,1.8-1.1,2.9c-0.5,3.1,0.3,7.2,2.7,10.9c1.2,1.8,2.7,3.8,4.7,3.8'+
-                                        'c1.8,0,2.3-1.2,4.8-1.2c2.4,0,2.9,1.2,4.7,1.2c2,0,3.6-2.2,4.8-4c0.8-1.3,1.1-1.9,1.8-3.3C33.5,28.2,32.2,24.6,33.2,21.7z')
-                                        .attr('transform', 'translate(-40,-40) scale(1.5)');
-                                        break;
-
-                                case 'Windows':
-                                elm.append('polygon')
-                                    .style('fill', '#fff')
-                                    .attr('points', '9,14 37,9 37,40 9,35 ')
-                                    .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                    .style('fill', '#00AEEF')
-                                    .attr('points', '36.1,24.4 36.1,11.9 21.7,14 21.7,24.4 ')
-                                    .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                    .style('fill', '#00AEEF')
-                                    .attr('points', '20.7,14.1 10.2,15.6 10.2,24.4 20.7,24.4 ')
-                                    .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                    .style('fill', '#00AEEF')
-                                    .attr('points', '10.2,25.4 10.2,34.3 20.7,35.9 20.7,25.4 ')
-                                    .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                    .style('fill', '#00AEEF')
-                                    .attr('points', '21.7,36 36.1,38.1 36.1,25.4 21.7,25.4 ')
-                                    .attr('transform', 'translate(-36,-32) scale(1.2)');
-                                    break;
-
-                                case 'Windows Vista/Server 2008':
-                                    elm.append('path')
-                                        .style('fill', '#FFFFFF')
-                                        .attr('d', 'M42.5,12.8c-4,2.3-9.3,3-13.9-0.4c-5.2-4.1-10.4-2.6-13.6-0.9c0,0-6.7,23-7.5,25.9'+
-                                        'c3.3-2.1,9.2-3.1,13.7,0.3c5.2,4.2,10.8,2.6,13.8,0.9C35.2,38.6,41.8,15.7,42.5,12.8z')
-                                        .attr('transform', 'translate(-30,-25)');
-
-                                    elm.append('path')
-                                        .style('fill', '#D76D27')
-                                        .attr('d', 'M15.8,12.1c2.3-1,7.4-2.8,11.9,0.8c-0.6,1.8-2.2,8-3.1,10.8c-3.9-2.9-9-2.2-11.9-0.6'+
-                                        'C13.3,20.6,15.8,12.1,15.8,12.1z')
-                                        .attr('transform', 'translate(-30,-25)');
-
-                                    elm.append('path')
-                                        .style('fill', '#0891C9')
-                                        .attr('d', 'M12.2,24.7c2.3-1,7.4-2.8,11.9,0.8c-0.6,1.8-2.2,8-3.1,10.8c-3.9-2.9-9-2.2-11.9-0.6'+
-                                        'C9.7,33.2,12.2,24.7,12.2,24.7z')
-                                        .attr('transform', 'translate(-30,-25)');
-
-                                    elm.append('path')
-                                        .style('fill', '#88B33F')
-                                        .attr('d', 'M37.8,25.6c-2.3,1-7.4,2.8-11.9-0.8c0.6-1.8,2.2-8,3.1-10.8c3.9,2.9,9,2.2,11.9,0.6'+
-                                        'C40.3,17.1,37.8,25.6,37.8,25.6z')
-                                        .attr('transform', 'translate(-30,-25)');
-
-                                    elm.append('path')
-                                        .style('fill', '#FDCF33')
-                                        .attr('d', 'M34.4,37.9c-2.3,1-7.4,2.8-11.9-0.8c0.6-1.8,2.2-8,3.1-10.8c3.9,2.9,9,2.2,11.9,0.6'+
-                                        'C36.8,29.4,34.4,37.9,34.4,37.9z')
-                                        .attr('transform', 'translate(-30,-25)');
-                                    break;
-
-                                case 'Windows 7/Server 2008R2':
-                                    elm.append('path')
-                                        .style('fill', '#FFFFFF')
-                                        .attr('d', 'M42.5,12.8c-4,2.3-9.3,3-13.9-0.4c-5.2-4.1-10.4-2.6-13.6-0.9c0,0-6.7,23-7.5,25.9'+
-                                        'c3.3-2.1,9.2-3.1,13.7,0.3c5.2,4.2,10.8,2.6,13.8,0.9C35.2,38.6,41.8,15.7,42.5,12.8z')
-                                        .attr('transform', 'translate(-30,-25)');
-
-                                    elm.append('path')
-                                        .style('fill', '#D76D27')
-                                        .attr('d', 'M15.8,12.1c2.3-1,7.4-2.8,11.9,0.8c-0.6,1.8-2.2,8-3.1,10.8c-3.9-2.9-9-2.2-11.9-0.6'+
-                                        'C13.3,20.6,15.8,12.1,15.8,12.1z')
-                                        .attr('transform', 'translate(-30,-25)');
-
-                                    elm.append('path')
-                                        .style('fill', '#0891C9')
-                                        .attr('d', 'M12.2,24.7c2.3-1,7.4-2.8,11.9,0.8c-0.6,1.8-2.2,8-3.1,10.8c-3.9-2.9-9-2.2-11.9-0.6'+
-                                        'C9.7,33.2,12.2,24.7,12.2,24.7z')
-                                        .attr('transform', 'translate(-30,-25)');
-
-                                    elm.append('path')
-                                        .style('fill', '#88B33F')
-                                        .attr('d', 'M37.8,25.6c-2.3,1-7.4,2.8-11.9-0.8c0.6-1.8,2.2-8,3.1-10.8c3.9,2.9,9,2.2,11.9,0.6'+
-                                        'C40.3,17.1,37.8,25.6,37.8,25.6z')
-                                        .attr('transform', 'translate(-30,-25)');
-
-                                    elm.append('path')
-                                        .style('fill', '#FDCF33')
-                                        .attr('d', 'M34.4,37.9c-2.3,1-7.4,2.8-11.9-0.8c0.6-1.8,2.2-8,3.1-10.8c3.9,2.9,9,2.2,11.9,0.6'+
-                                        'C36.8,29.4,34.4,37.9,34.4,37.9z')
-                                        .attr('transform', 'translate(-30,-25)');
-                                    break;
-
-                                case 'Windows 95':
-                                    elm.append('path')
-                                        .style('fill', '#000')
-                                        .attr('d', 'M41.3,12v25.1c-3.5-2.2-8.2-2.6-12.4-1.8c-1.5,0.4-3,0.7-4.3,1.3V11.7'+
-                                        'c4-1.7,9.2-2.4,13.5-1.1C39.3,11,40.3,11.4,41.3,12L41.3,12z')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#000')
-                                        .attr('points', '24.2,15.4 20.9,16.7 20.9,13.5 24.2,11.9 24.2,15.4 24.2,15.4 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#000')
-                                        .attr('points', '10.1,14 8.3,14.6 8.3,13.3 10.1,12.7 10.1,14 10.1,14 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#000')
-                                        .attr('points', '20.4,15.8 17.3,17 17.3,14.5 20.4,13.2 20.4,15.8 20.4,15.8 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#000')
-                                        .attr('points', '13.9,16.6 13.9,14.6 16.7,13.5 16.7,15.4 13.9,16.6 13.9,16.6 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#000')
-                                        .attr('points', '13.3,15.1 11,15.9 11,14.5 13.3,13.5 13.3,15.1 13.3,15.1 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#000')
-                                        .attr('points', '24.2,18.8 20.9,20.3 20.9,17.2 24.2,15.9 24.2,18.8 24.2,18.8 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#000')
-                                        .attr('points', '24.2,22.3 20.9,23.8 20.9,20.7 24.2,19.3 24.2,22.3 24.2,22.3 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#000')
-                                        .attr('points', '20.9,27.3 20.9,24.3 24.2,22.7 24.2,25.9 20.9,27.3 20.9,27.3 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#000')
-                                        .attr('points', '10.1,24.8 8.3,25.4 8.3,24.1 10.1,23.5 10.1,24.8 10.1,24.8 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#000')
-                                        .attr('points', '20.4,26.5 17.3,27.7 17.3,25.1 20.4,24 20.4,26.5 20.4,26.5 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#000')
-                                        .attr('points', '16.7,26.2 14.1,27.3 13.9,27.3 13.9,25.4 16.7,24.3 16.7,26.2 16.7,26.2 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#000')
-                                        .attr('points', '13.3,25.9 11,26.7 11,25.2 13.3,24.3 13.3,25.9 13.3,25.9 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#000')
-                                        .attr('points', '20.9,30.9 20.9,27.7 24.2,26.4 24.2,29.4 20.9,30.9 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#000')
-                                        .attr('points', '24.2,33 20.9,34.4 20.9,31.4 24.2,29.9 24.2,33 24.2,33 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#000')
-                                        .attr('points', '24.2,36.8 20.9,38.1 20.9,34.9 24.2,33.5 24.2,36.8 24.2,36.8 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#000')
-                                        .attr('points', '10.1,35.5 8.3,36.2 8.3,35.1 10.1,34.3 10.1,35.5 10.1,35.5 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#000')
-                                        .attr('points', '20.4,37.2 17.3,38.4 17.3,35.9 20.4,34.6 20.4,37.2 20.4,37.2 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#000')
-                                        .attr('points', '13.9,38 13.9,36 16.7,34.9 16.7,36.8 13.9,38 13.9,38 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#000')
-                                        .attr('points', '13.3,36.5 11,37.3 11,35.9 13.3,34.9 13.3,36.5 13.3,36.5 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#118ACB')
-                                        .attr('points', '9.9,28.3 8.6,28.9 8.6,27.7 9.9,27.2 9.9,28.3 9.9,28.3 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#118ACB')
-                                        .attr('points', '20.2,30.1 17.6,31 17.6,28.8 20.2,27.8 20.2,30.1 20.2,30.1 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#118ACB')
-                                        .attr('points', '16.5,29.8 14.3,30.7 14.3,28.9 16.5,28 16.5,29.8 16.5,29.8 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#118ACB')
-                                        .attr('points', '13.1,29.4 11.2,30.1 11.2,28.8 13.1,28 13.1,29.4 13.1,29.4 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#118ACB')
-                                        .attr('points', '9.9,32 8.6,32.5 8.6,31.4 9.9,30.9 9.9,32 9.9,32 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#118ACB')
-                                        .attr('points', '20.2,31.4 20.2,33.5 17.6,34.6 17.6,32.3 20.2,31.4 20.2,31.4 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#118ACB')
-                                        .attr('points', '16.5,33.3 14.3,34.1 14.3,32.3 16.5,31.5 16.5,33.3 16.5,33.3 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#118ACB')
-                                        .attr('points', '13.1,32.8 11.4,33.6 11.2,32.3 13.1,31.5 13.1,32.8 13.1,32.8 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('path')
-                                        .style('fill', '#118ACB')
-                                        .attr('d', 'M24.6,33.3c1.8-0.6,3.6-1.1,5.5-1.4h0.2l-0.2-8c-1.9,0.3-3.7,1-5.5,1.8V33.3L24.6,33.3z')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#F4793B')
-                                        .attr('points', '9.9,17.5 8.6,18.2 8.6,16.9 9.9,16.4 9.9,17.5 9.9,17.5 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#F4793B')
-                                        .attr('points', '20.2,19.3 17.6,20.3 17.6,18.2 20.2,17 20.2,19.3 20.2,19.3 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#F4793B')
-                                        .attr('points', '16.5,19 14.3,19.9 14.3,18.2 16.5,17.2 16.5,19 16.5,19 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#F4793B')
-                                        .attr('points', '13.1,18.6 11.2,19.3 11.2,18 13.1,17.2 13.1,18.6 13.1,18.6 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#F4793B')
-                                        .attr('points', '9.9,21.2 8.6,21.7 8.6,20.6 9.9,20.1 9.9,21.2 9.9,21.2 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#F4793B')
-                                        .attr('points', '20.2,22.7 17.6,23.8 17.6,21.5 20.2,20.6 20.2,22.7 20.2,22.7 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#F4793B')
-                                        .attr('points', '14.3,23.5 14.3,21.7 16.5,20.7 16.5,22.7 14.3,23.5 14.3,23.5 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#F4793B')
-                                        .attr('points', '13.1,22.2 11.2,23 11.2,21.5 13.1,20.9 13.1,22.2 13.1,22.2 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('polygon')
-                                        .style('fill', '#F4793B')
-                                        .attr('points', '13.1,22.2 11.2,23 11.2,21.5 13.1,20.9 13.1,22.2 13.1,22.2 ')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('path')
-                                        .style('fill', '#F4793B')
-                                        .attr('d', 'M24.6,22.8c1.8-0.7,3.6-1.3,5.5-1.4v-0.2v-7.7c-1.9,0.4-3.7,1-5.5,1.8V22.8L24.6,22.8z')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('path')
-                                        .style('fill', '#6DC067')
-                                        .attr('d', 'M38.2,14.1v7.7c-1.8-0.6-3.7-0.8-5.6-0.8v-7.9 C34.5,13.1,36.5,13.3,38.2,14.1L38.2,14.1z')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('path')
-                                        .style('fill', '#FFCB05')
-                                        .attr('d', 'M38.2,24.4v7.9c-1.8-0.5-3.7-0.7-5.6-0.6v-8 C34.5,23.5,36.5,23.7,38.2,24.4L38.2,24.4z')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    break;
-
-                                case 'Stealth':
-                                    elm.append('path')
-                                        .style('fill', '#828487')
-                                        .style('stroke-width', 0.8)
-                                        .style('stroke', 'white')
-                                        .attr('d', 'M34.7,15.7c-6.5,0.2-9.8-4.7-9.8-4.7c0,0-2.8,4.7-9.8,4.7c-0.6,7.8,1.4,13.2,4.3,18.3'+
-                                        'c0.2,0.3,2,4,5.6,4c3.7,0,5.3-3.7,5.7-4.3C33.9,28.1,35.3,21.8,34.7,15.7z M24.9,35.6c-1.8,0-2.8-1.5-4.7-5.1'+
-                                        'c-1.9-3.6-2.8-7.8-2.8-12.4c4.3-0.5,7.5-3.4,7.5-3.4L24.9,35.6z')
-                                        .attr('transform', 'translate(-40,-36) scale(1.5)');
-
-                                    elm.append('path')
-                                        .style('fill', '#ccc')
-                                        .attr('d', 'M24.9,35.6c-1.8,0-2.8-1.5-4.7-5.1c-1.9-3.6-2.8-7.8-2.8-12.4c4.3-0.5,7.5-3.4,7.5-3.4L24.9,35.6z')
-                                        .attr('transform', 'translate(-40,-36) scale(1.5)');
-                                        break;
-
-                                case 'Stealth Dropped':
-                                    elm.append('path')
-                                        .style('fill', '#828487')
-                                        .style('stroke-width', 0.8)
-                                        .style('stroke', 'white')
-                                        .attr('d', 'M34.7,15.7c-6.5,0.2-9.8-4.7-9.8-4.7c0,0-2.8,4.7-9.8,4.7c-0.6,7.8,1.4,13.2,4.3,18.3'+
-                                        'c0.2,0.3,2,4,5.6,4c3.7,0,5.3-3.7,5.7-4.3C33.9,28.1,35.3,21.8,34.7,15.7z M24.9,35.6c-1.8,0-2.8-1.5-4.7-5.1'+
-                                        'c-1.9-3.6-2.8-7.8-2.8-12.4c4.3-0.5,7.5-3.4,7.5-3.4L24.9,35.6z')
-                                        .attr('transform', 'translate(-40,-36) scale(1.5)');
-
-                                    elm.append('path')
-                                        .style('fill', '#ccc')
-                                        .attr('d', 'M24.9,35.6c-1.8,0-2.8-1.5-4.7-5.1c-1.9-3.6-2.8-7.8-2.8-12.4c4.3-0.5,7.5-3.4,7.5-3.4L24.9,35.6z')
-                                        .attr('transform', 'translate(-40,-36) scale(1.5)');
-
-                                        elm.append('polygon')
-                                        .style('fill', '#828487')
-                                        .attr('points', '42.4,36.5 39.7,33.7 36.8,36.7 33.8,33.7 31.1,36.5 34,39.4 31.1,42.4 33.8,45.1 36.8,42.2'+
-                                        ' 39.7,45.1 42.4,42.4 39.5,39.4 ')
-                                        .attr('transform', 'translate(-40,-36) scale(1.5)');
-                                        break;
-
-                                case 'Connections':
-                                    elm.append('path')
-                                        .style('fill', '#828487')
-                                        .style('stroke-width', 0.8)
-                                        .style('stroke', 'white')
-                                        .attr('d', 'M37.8,35.3c-1.1,0-2.1,0.7-2.5,1.7h-9v-6.5'+
-                                        'c1.4-0.2,2.6-1.1,3.3-2.2c0.8,0.6,1.8,0.9,2.8,0.9c2.7,0,4.8-2.2,4.8-4.8c1.2-0.9,1.9-2.3,1.9-3.8c0-1.9-1.1-3.6-2.7-4.3'+
-                                        'c-0.3-2.3-2.3-4.1-4.8-4.1c-0.4,0-0.9,0.1-1.3,0.2c-0.8-1.4-2.4-2.3-4.1-2.3c-1.5,0-2.8,0.7-3.7,1.7c-0.8-0.5-1.7-0.8-2.6-0.8'+
-                                        'c-2.3,0-4.2,1.6-4.7,3.7C12.8,15,11,17,11,19.4c0,0.4,0.1,0.8,0.2,1.2c-0.3,0.7-0.5,1.4-0.5,2.2c0,2.5,1.9,4.5,4.3,4.8'+
-                                        'c0.8,1.4,2.4,2.3,4.1,2.3c1.1,0,2-0.3,2.8-0.9c0.5,0.5,1.2,0.9,1.9,1.2V37h-9.1c-0.4-1-1.4-1.7-2.5-1.7c-1.5,0-2.8,1.2-2.8,2.8'+
-                                        's1.2,2.8,2.8,2.8c1.2,0,2.2-0.8,2.6-1.8h20.4c0.4,1.1,1.4,1.8,2.6,1.8c1.5,0,2.8-1.2,2.8-2.8S39.3,35.3,37.8,35.3z')
-                                        .attr('transform', 'translate(-40,-36) scale(1.5)');
-                                        break;
-
-                                case 'Connections Dropped':
-                                    elm.append('path')
-                                        .style('fill', '#828487')
-                                        .style('stroke-width', 0.8)
-                                        .style('stroke', 'white')
-                                        .attr('d', 'M37.8,35.3c-1.1,0-2.1,0.7-2.5,1.7h-9v-6.5'+
-                                        'c1.4-0.2,2.6-1.1,3.3-2.2c0.8,0.6,1.8,0.9,2.8,0.9c2.7,0,4.8-2.2,4.8-4.8c1.2-0.9,1.9-2.3,1.9-3.8c0-1.9-1.1-3.6-2.7-4.3'+
-                                        'c-0.3-2.3-2.3-4.1-4.8-4.1c-0.4,0-0.9,0.1-1.3,0.2c-0.8-1.4-2.4-2.3-4.1-2.3c-1.5,0-2.8,0.7-3.7,1.7c-0.8-0.5-1.7-0.8-2.6-0.8'+
-                                        'c-2.3,0-4.2,1.6-4.7,3.7C12.8,15,11,17,11,19.4c0,0.4,0.1,0.8,0.2,1.2c-0.3,0.7-0.5,1.4-0.5,2.2c0,2.5,1.9,4.5,4.3,4.8'+
-                                        'c0.8,1.4,2.4,2.3,4.1,2.3c1.1,0,2-0.3,2.8-0.9c0.5,0.5,1.2,0.9,1.9,1.2V37h-9.1c-0.4-1-1.4-1.7-2.5-1.7c-1.5,0-2.8,1.2-2.8,2.8'+
-                                        's1.2,2.8,2.8,2.8c1.2,0,2.2-0.8,2.6-1.8h20.4c0.4,1.1,1.4,1.8,2.6,1.8c1.5,0,2.8-1.2,2.8-2.8S39.3,35.3,37.8,35.3z')
-                                        .attr('transform', 'translate(-40,-36) scale(1.5)');
-
-                                        elm.append('polygon')
-                                        .style('fill', '#828487')
-                                        .attr('points', '42.4,36.5 39.7,33.7 36.8,36.7 33.8,33.7 31.1,36.5 34,39.4 31.1,42.4 33.8,45.1 36.8,42.2'+
-                                        ' 39.7,45.1 42.4,42.4 39.5,39.4 ')
-                                        .attr('transform', 'translate(-40,-38) scale(1.5)');
-                                        break;
-
-                                case 'Network Connections':
-                                    elm.append('path')
-                                        .style('fill', '#333333')
-                                        .style('stroke-width', 0.8)
-                                        .style('stroke', 'white')
-                                        .attr('d', 'M37.8,35.3c-1.1,0-2.1,0.7-2.5,1.7h-9v-6.5'+
-                                        'c1.4-0.2,2.6-1.1,3.3-2.2c0.8,0.6,1.8,0.9,2.8,0.9c2.7,0,4.8-2.2,4.8-4.8c1.2-0.9,1.9-2.3,1.9-3.8c0-1.9-1.1-3.6-2.7-4.3'+
-                                        'c-0.3-2.3-2.3-4.1-4.8-4.1c-0.4,0-0.9,0.1-1.3,0.2c-0.8-1.4-2.4-2.3-4.1-2.3c-1.5,0-2.8,0.7-3.7,1.7c-0.8-0.5-1.7-0.8-2.6-0.8'+
-                                        'c-2.3,0-4.2,1.6-4.7,3.7C12.8,15,11,17,11,19.4c0,0.4,0.1,0.8,0.2,1.2c-0.3,0.7-0.5,1.4-0.5,2.2c0,2.5,1.9,4.5,4.3,4.8'+
-                                        'c0.8,1.4,2.4,2.3,4.1,2.3c1.1,0,2-0.3,2.8-0.9c0.5,0.5,1.2,0.9,1.9,1.2V37h-9.1c-0.4-1-1.4-1.7-2.5-1.7c-1.5,0-2.8,1.2-2.8,2.8'+
-                                        's1.2,2.8,2.8,2.8c1.2,0,2.2-0.8,2.6-1.8h20.4c0.4,1.1,1.4,1.8,2.6,1.8c1.5,0,2.8-1.2,2.8-2.8S39.3,35.3,37.8,35.3z')
-                                        .attr('transform', 'translate(-40,-36) scale(1.5)');
-                                        break;
-
-                                case 'DNS':
-                                    elm.append('path')
-                                        .style('fill', '#333333')
-                                        .attr('d', 'M43.1,24.5c0-2.4-1.4-4.4-3.4-5.4c-0.4-2.9-2.9-5.1-5.9-5.1'+
-                                        'c-0.6,0-1.1,0.1-1.6,0.2c-1-1.7-2.9-2.8-5.1-2.8c-1.8,0-3.5,0.8-4.6,2.2c-0.9-0.6-2.1-1-3.3-1c-2.8,0-5.2,1.9-5.8,4.6'+
-                                        'c-2.9,0.4-5.1,2.9-5.1,5.9c0,0.5,0.1,1,0.2,1.5C8.3,25.4,8,26.4,8,27.4c0,3.1,2.4,5.6,5.4,5.9c1,1.7,2.9,2.9,5.1,2.9'+
-                                        'c1.3,0,2.5-0.4,3.5-1.2c1.1,1.1,2.6,1.9,4.3,1.9c2.1,0,4-1.1,5-2.8c1,0.7,2.2,1.1,3.5,1.1c3.3,0,5.9-2.7,5.9-5.9'+
-                                        'C42.2,28.2,43.1,26.4,43.1,24.5z')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('path')
-                                        .style('fill', '#9D9D9D')
-                                        .attr('d', 'M12.3,20h3.2c1.3,0,3.1,0.1,4.3,1.7c0.7,0.9,1,2,1,3.3c0,2.8-1.5,5.1-5.2,5.1h-3.3V20z M14.4,28.3'+
-                                        'h1.4c2.2,0,3-1.4,3-3.2c0-0.8-0.2-1.6-0.7-2.3c-0.4-0.5-1.1-1-2.3-1h-1.4V28.3z '+
-                                        'M28.7,26.9l0-7h1.9V30h-1.8l-4.6-7l0,7h-1.9V20h1.8L28.7,26.9z'+
-                                        'M34,26.9c0.1,1.4,1,1.6,1.4,1.6c0.8,0,1.4-0.6,1.4-1.3c0-0.9-0.7-1.1-2.1-1.6'+
-                                        'c-0.8-0.3-2.5-0.9-2.5-2.8c0-1.9,1.7-3,3.3-3c1.3,0,3.1,0.7,3.2,2.9h-2c-0.1-0.5-0.3-1.2-1.3-1.2c-0.7,0-1.2,0.5-1.2,1.1'+
-                                        'c0,0.7,0.5,0.9,2.2,1.6c1.5,0.7,2.4,1.4,2.4,2.8c0,1.6-1,3.1-3.4,3.1c-2.3,0-3.5-1.4-3.5-3.3H34z')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-                                        break;
-
-                                case 'SSL':
-                                    elm.append('path')
-                                        .style('fill', '#333333')
-                                        .attr('d', 'M43.1,24.5c0-2.4-1.4-4.4-3.4-5.4c-0.4-2.9-2.9-5.1-5.9-5.1'+
-                                        'c-0.6,0-1.1,0.1-1.6,0.2c-1-1.7-2.9-2.8-5.1-2.8c-1.8,0-3.5,0.8-4.6,2.2c-0.9-0.6-2.1-1-3.3-1c-2.8,0-5.2,1.9-5.8,4.6'+
-                                        'c-2.9,0.4-5.1,2.9-5.1,5.9c0,0.5,0.1,1,0.2,1.5C8.3,25.4,8,26.4,8,27.4c0,3.1,2.4,5.6,5.4,5.9c1,1.7,2.9,2.9,5.1,2.9'+
-                                        'c1.3,0,2.5-0.4,3.5-1.2c1.1,1.1,2.6,1.9,4.3,1.9c2.1,0,4-1.1,5-2.8c1,0.7,2.2,1.1,3.5,1.1c3.3,0,5.9-2.7,5.9-5.9'+
-                                        'C42.2,28.2,43.1,26.4,43.1,24.5z')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('path')
-                                        .style('fill', '#9D9D9D')
-                                        .attr('d', 'M16.5,27.3c0.1,1.4,1,1.7,1.5,1.7c0.8,0,1.4-0.6,1.4-1.4c0-0.9-0.7-1.1-2.2-1.7'+
-                                        'c-0.8-0.3-2.6-0.9-2.6-2.9c0-2,1.8-3.1,3.4-3.1c1.4,0,3.2,0.7,3.3,3h-2.1c-0.1-0.5-0.3-1.3-1.3-1.3c-0.7,0-1.3,0.5-1.3,1.2'+
-                                        'c0,0.8,0.5,1,2.3,1.7c1.6,0.7,2.5,1.4,2.5,2.9c0,1.7-1,3.2-3.5,3.2c-2.4,0-3.6-1.4-3.6-3.4H16.5z')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('path')
-                                        .style('fill', '#9D9D9D')
-                                        .attr('d', 'M24.3,27.3c0.1,1.4,1,1.7,1.5,1.7c0.8,0,1.4-0.6,1.4-1.4c0-0.9-0.7-1.1-2.2-1.7'+
-                                        'c-0.8-0.3-2.6-0.9-2.6-2.9c0-2,1.8-3.1,3.4-3.1c1.4,0,3.2,0.7,3.3,3h-2.1c-0.1-0.5-0.3-1.3-1.3-1.3c-0.7,0-1.3,0.5-1.3,1.2'+
-                                        'c0,0.8,0.5,1,2.3,1.7c1.6,0.7,2.5,1.4,2.5,2.9c0,1.7-1,3.2-3.5,3.2c-2.4,0-3.6-1.4-3.6-3.4H24.3z')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('path')
-                                        .style('fill', '#9D9D9D')
-                                        .attr('d', 'M30.7,20.1h2.1v8.5h3.4v1.8h-5.5V20.1z')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-                                        break;
-
-                                case 'SSH':
-                                    elm.append('path')
-                                        .style('fill', '#333333')
-                                        .attr('d', 'M43.1,24.5c0-2.4-1.4-4.4-3.4-5.4c-0.4-2.9-2.9-5.1-5.9-5.1'+
-                                        'c-0.6,0-1.1,0.1-1.6,0.2c-1-1.7-2.9-2.8-5.1-2.8c-1.8,0-3.5,0.8-4.6,2.2c-0.9-0.6-2.1-1-3.3-1c-2.8,0-5.2,1.9-5.8,4.6'+
-                                        'c-2.9,0.4-5.1,2.9-5.1,5.9c0,0.5,0.1,1,0.2,1.5C8.3,25.4,8,26.4,8,27.4c0,3.1,2.4,5.6,5.4,5.9c1,1.7,2.9,2.9,5.1,2.9'+
-                                        'c1.3,0,2.5-0.4,3.5-1.2c1.1,1.1,2.6,1.9,4.3,1.9c2.1,0,4-1.1,5-2.8c1,0.7,2.2,1.1,3.5,1.1c3.3,0,5.9-2.7,5.9-5.9'+
-                                        'C42.2,28.2,43.1,26.4,43.1,24.5z')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('path')
-                                        .style('fill', '#9D9D9D')
-                                        .attr('d', 'M14.5,27.3c0.1,1.4,1,1.7,1.5,1.7c0.8,0,1.4-0.6,1.4-1.4c0-0.9-0.7-1.1-2.2-1.7'+
-                                        'c-0.8-0.3-2.6-0.9-2.6-2.9c0-2,1.8-3.1,3.4-3.1c1.4,0,3.2,0.7,3.3,3h-2.1c-0.1-0.5-0.3-1.3-1.3-1.3c-0.7,0-1.3,0.5-1.3,1.2'+
-                                        'c0,0.8,0.5,1,2.3,1.7c1.6,0.7,2.5,1.4,2.5,2.9c0,1.7-1,3.2-3.5,3.2c-2.4,0-3.6-1.4-3.6-3.4H14.5z')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('path')
-                                        .style('fill', '#9D9D9D')
-                                        .attr('d', 'M22.5,27.3c0.1,1.4,1,1.7,1.5,1.7c0.8,0,1.4-0.6,1.4-1.4c0-0.9-0.7-1.1-2.2-1.7'+
-                                        'c-0.8-0.3-2.6-0.9-2.6-2.9c0-2,1.8-3.1,3.4-3.1c1.4,0,3.2,0.7,3.3,3h-2.1c-0.1-0.5-0.3-1.3-1.3-1.3c-0.7,0-1.3,0.5-1.3,1.2'+
-                                        'c0,0.8,0.5,1,2.3,1.7c1.6,0.7,2.5,1.4,2.5,2.9c0,1.7-1,3.2-3.5,3.2c-2.4,0-3.6-1.4-3.6-3.4H22.5z')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('path')
-                                        .style('fill', '#9D9D9D')
-                                        .attr('d', 'M28.9,30.5V20.1H31v4.2h4v-4.2h2.1v10.4H35v-4.4h-4v4.4H28.9z')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-                                        break;
-
-                                case 'IRC':
-                                    elm.append('path')
-                                        .style('fill', '#333333')
-                                        .attr('d', 'M43.1,24.5c0-2.4-1.4-4.4-3.4-5.4c-0.4-2.9-2.9-5.1-5.9-5.1'+
-                                        'c-0.6,0-1.1,0.1-1.6,0.2c-1-1.7-2.9-2.8-5.1-2.8c-1.8,0-3.5,0.8-4.6,2.2c-0.9-0.6-2.1-1-3.3-1c-2.8,0-5.2,1.9-5.8,4.6'+
-                                        'c-2.9,0.4-5.1,2.9-5.1,5.9c0,0.5,0.1,1,0.2,1.5C8.3,25.4,8,26.4,8,27.4c0,3.1,2.4,5.6,5.4,5.9c1,1.7,2.9,2.9,5.1,2.9'+
-                                        'c1.3,0,2.5-0.4,3.5-1.2c1.1,1.1,2.6,1.9,4.3,1.9c2.1,0,4-1.1,5-2.8c1,0.7,2.2,1.1,3.5,1.1c3.3,0,5.9-2.7,5.9-5.9'+
-                                        'C42.2,28.2,43.1,26.4,43.1,24.5z')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('path')
-                                        .style('fill', '#9D9D9D')
-                                        .attr('d', 'M14,20.1h2.1v10.4H14V20.1z')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('path')
-                                        .style('fill', '#9D9D9D')
-                                        .attr('d', 'M18.1,20.1h3.1c1.6,0,2.5,0.3,3.1,0.7c0.9,0.6,1.3,1.7,1.3,2.8c0,0.8-0.2,1.4-0.6,1.9'+
-                                        'c-0.4,0.7-1,1-1.7,1.1l2.3,3.8h-2.2l-2.8-4.8h0.4c0.7,0,1.4,0,1.9-0.4c0.4-0.3,0.7-0.9,0.7-1.5s-0.3-1.2-0.8-1.5'+
-                                        'c-0.4-0.2-0.9-0.3-1.5-0.3h-1.2v8.5h-2.1V20.1z')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-
-                                    elm.append('path')
-                                        .style('fill', '#9D9D9D')
-                                        .attr('d', 'M37.2,27c-0.6,2.1-2.6,3.7-5.1,3.7c-3.2,0-5.4-2.5-5.4-5.4c0-2.8,2.1-5.4,5.4-5.4'+
-                                        'c3,0,4.7,2.2,5.1,3.7H35c-0.3-0.7-1.2-1.9-2.9-1.9c-2,0-3.3,1.7-3.3,3.5c0,1.9,1.4,3.6,3.3,3.6c1.8,0,2.7-1.5,2.9-1.8H37.2z')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-                                        break;
-
-                                case 'HTTP':
-                                    elm.append('circle')
-                                        .attr('r', 18)
-                                        .attr('cx', -6)
-                                        .attr('cy', -2)
-                                        .style('fill', 'white');
-
-                                    elm.append('path')
-                                        .style('fill', '#333333')
-                                        .attr('d', 'M24,15.9v-4.4c-1,0.1-3.1,0.5-4.4,1.1c-0.5,1.3-1,2.6-1.3,4C20.1,16.2,22,16,24,15.9z'+
-                                        'M16.4,14.6c-1.1,0.9-2,2-2.8,3.2c0.7-0.2,1.4-0.5,2.1-0.7C15.9,16.3,16.1,15.5,16.4,14.6z'+
-                                        'M18.5,34c0.4,1.2,0.8,2.4,1.3,3.5c1.3,0.5,3.2,0.9,4.2,1v-3.9C22,34.5,20.2,34.3,18.5,34z'+
-                                        'M15.9,33.4c-0.6-0.2-1.2-0.4-1.9-0.6c0.7,1,1.6,1.9,2.5,2.7C16.3,34.8,16.1,34.1,15.9,33.4z'+
-                                        'M26,11.5V16c2,0.1,3.6,0.3,5.4,0.6c-0.4-1.4-0.9-2.8-1.4-4.1C28.7,11.9,28,11.6,26,11.5z'+
-                                        'M34,17.1c0.9,0.2,1.8,0.5,2.7,0.8c-0.9-1.5-2.1-2.8-3.5-3.8C33.5,15.2,33.7,16.1,34,17.1z'+
-                                        'M26,34.6v3.9c2-0.1,2.6-0.4,3.8-0.8c0.5-1.2,0.9-2.4,1.3-3.6C29.4,34.3,28,34.5,26,34.6z'+
-                                        'M33,36c1.2-0.9,2.3-2,3.2-3.2c-0.8,0.3-1.6,0.5-2.4,0.7C33.5,34.3,33.3,35.1,33,36z'+
-                                        'M38.5,25c0-2-0.2-2.6-0.5-3.8c-1.1-0.5-2.3-0.8-3.5-1.2c0.2,1.6,0.4,2.9,0.4,4.9H38.5z'+
-                                        'M34.8,27c-0.1,1-0.2,2.7-0.5,4c1.2-0.4,2.3-0.7,3.4-1.2c0.3-0.9,0.6-1.8,0.7-2.8H34.8z'+
-                                        'M32.6,25c0-2-0.3-3.9-0.7-5.7c-1.9-0.4-3.9-0.9-5.9-1V25H32.6z'+
-                                        'M26,27v5.3c2-0.1,3.9-0.2,5.7-0.6c0.3-1.6,0.7-2.7,0.8-4.7H26z'+
-                                        'M24,25v-6.8c-2,0.1-4.3,0.6-6.3,1.1c-0.3,1.8-0.5,3.7-0.5,5.7H24z'+
-                                        'M17.3,27c0.1,2,0.3,3.1,0.6,4.6c1.9,0.4,4.1,0.6,6.1,0.6V27H17.3z'+
-                                        'M14.9,25c0-2,0.1-3.5,0.4-5c-1,0.3-2.1,0.8-3.1,1.3c-0.4,1.2-0.6,1.8-0.7,3.8H14.9z'+
-                                        'M11.6,27c0.1,1,0.4,1.9,0.8,2.9c1,0.4,2,0.8,3,1.2c-0.2-1.3-0.4-3-0.5-4H11.6z')
-                                        .attr('transform', 'translate(-36,-32) scale(1.2)');
-                                        break;
-
-                                case 'Files':
-                                        elm.append('polygon')
-                                        .style('fill', '#828487')
-                                        .attr('points', '24.2,15 12,15 12,36 37.8,36 37.8,17.9 27.2,17.9 ')
-                                        .attr('transform', 'translate(-38,-34) scale(1.3)');
-                                        break;
-
-                                case 'FTP':
-                                        elm.append('polygon')
-                                        .style('fill', '#828487')
-                                        .attr('points', '24.2,15 12,15 12,36 37.8,36 37.8,17.9 27.2,17.9 ')
-                                        .attr('transform', 'translate(-40,-38) scale(1.3)');
-
-                                    elm.append('path')
-                                        .style('fill', '#333333')
-                                        .attr('d', 'M23,27.7l-3-1.9V32h-2v-6.2l-3,1.9v-2.8l4-2.6l4,2.6V27.7z'+
-                                        'M34,29.1l-4,2.6l-4-2.6v-2.8l3,1.9V23h2v5.1l3-1.9V29.1z')
-                                        .attr('transform', 'translate(-40,-38) scale(1.3)');
-                                        break;
-
-                                default:
-                                    elm.append("rect")
-                                        .attr('x', -6)
-                                        .attr('y', -6)
-                                        .attr('height', 12)
-                                        .attr('width', 12)
-                                        .style('fill-opacity', 1)
-                                        .attr("id", function(d) { return d.value; })
-                                        .style("fill", function(d) { return d._children ? "red" : "#000"; });
-                                        break;
-                            }
+                            treeIcon(d.value, elm);
                         })
 
                         d3.selectAll('g.points').each(function(d){
                             var elm = d3.select(this);
-                                elm
-                                    .append('text')
-                                    .text(function(d){
-                                        if ((d._children !== undefined) && (d._children !== null)) {
-                                            return d._children.length;
-                                        } else if ((d._children === null) || (d._children === undefined)){
-                                            return '';
-                                        }
-                                    })
-                                    .attr('transform', 'translate(-44,22)')
-                                    .style('font-size', 12)
-                                    .attr('fill', 'red')
-                                    .style('font-weight', 'bold')
-                                    .attr('text-anchor', 'middle');
+                            elm
+                                .append('text')
+                                .text(function(d){
+                                    if ((d._children !== undefined) && (d._children !== null)) {
+                                        return d._children.length;
+                                    } else if ((d._children === null) || (d._children === undefined)){
+                                        return '';
+                                    }
+                                })
+                                .attr('transform', 'translate(-44,22)')
+                                .style('font-size', 12)
+                                .attr('fill', 'red')
+                                .style('font-weight', 'bold')
+                                .attr('text-anchor', 'middle');
                         })
 
                         nodeUpdate.select("text")
@@ -2886,7 +2268,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                 }
 
-                $scope.point = function(element, nickname, name) {
+                $scope.point = function(element, nickname, name, id) {
                     if (nickname.search("ioc") !== -1) {
                         element.attr('class', 'ioc');
                         element = element.append('g')
@@ -2908,7 +2290,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .attr('height', 2.448);
                         return;
                     } else {
-                        element.attr('class', nickname);
+                        element.attr('class', id);
                         element = element.append('g').attr('transform', 'translate(-18, -6)scale(0.8)');
                         switch(nickname){
                             case 'secure':
@@ -3167,8 +2549,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                     return send;
                 }
-
-                var previousID = -1, previousElm = null;
                 // info div
                 var infoHeight = element.height();
                 var infoTitle = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
@@ -3271,10 +2651,15 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 
                 function plot(data, min, max) {
                     if (moment(max).unix() !== moment(min).unix()) {
-
+                        //////////////////
+                        /// LANE NODES ///
+                        //////////////////
+                        // set variables for info sidebar
+                        var previousID = -1, previousElm = null;
                         var lastExpandedId = null, isOpen = null;
-
+                        // update time slice above chart
                         currentTime.html('Current Time Slice: <strong>'+moment(min).format('MMMM D, YYYY h:mm A')+'</strong> - <strong>'+moment(max).format('MMMM D, YYYY h:mm A')+'</strong>')
+                        // create transition effect of slider
                         main.select('g.brush .extent')
                             .transition()
                             .duration(150)
@@ -3283,10 +2668,13 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .transition()
                             .duration(50)
                             .attr('width', 0);
+                        // set new domain and transition x-axis
                         x1.domain([min, max]);
                         xAxisBrush.transition().duration(500).call(xAxis);
+                        // remove existing elements (perhaps this is innificent and should be modified to just transition)
                         itemRects.selectAll('g').remove();
                         var icons = itemRects.selectAll("g").data(data);
+                        // re-enter an append nodes (innificent as well)
                         icons.enter().append("g").each(function(d){
                             var elm = d3.select(this);
                             elm
@@ -3296,70 +2684,98 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     elm.style('cursor', 'pointer');
                                 })
                                 .on("click", function(d){
-                                    // this closes all expanded blocks
+                                    // un-highlight previous box
+                                    $('#'+previousID).attr('class', null);
+                                    // this closes the last expanded block if there is one
                                     if (lastExpandedId !== null) {
                                         $('div'+lastExpandedId+'.infoDivExpanded').hide();
                                     }
-                                    if (previousElm !== null){
+                                    // deselect previous element if there is one
+                                    if (previousElm !== null) {
                                         previousElm.attr('class', null);
                                     }
-                                    elm.attr('class', 'pointactive')
-                                    $('#'+previousID).attr('class', null);
+                                    // make current node active
+                                    elm.attr('class', 'pointactive');
+                                    // set class for active description
                                     $('#'+d.id).attr('class', 'laneactive');
+                                    // scroll to position
+                                    $('#lanegraphinfo').scrollTo(d.position);
+                                    // set ids for cross-refrence
                                     previousID = d.id;
                                     previousElm = elm;
-                                    $('#lanegraphinfo').scrollTo(d.position);
                                 });
                                 // .attr("width", 5)
                                 // .attr("height", function(d) {return .8 * y1(1);});
                             // generate points from point function
                             if (d.type !== 'l7') {
-                                $scope.point(elm, d.type);
+                                $scope.point(elm, d.type, null, d.id);
                             } else {
                                 // push app name to point function if type is l7
-                                $scope.point(elm, d.type, d.l7_proto);
+                                $scope.point(elm, d.type, d.l7_proto, d.id);
                             }
                         })
                         icons.exit();
 
-                       
+                        ////////////////////
+                        /// SIDEBAR LIST ///
+                        ////////////////////
                         infoDiv.selectAll('li').remove();
                         infoDiv.selectAll('li').data(data).enter()
                             .append('li').each(function(d){
                                 var elm = d3.select(this);
                                 elm
+                                    // append id to li from data object
                                     .attr('id', function(d){return d.id })
                                     .html(function(d){
+                                        // set d.postion (INIFFICENT!)
                                         d.position = ($('li#'+d.id).offset().top - $('li#'+d.id).parent().offset().top);
+                                        // return description
                                         return d.info;
                                     })
                                     .on('click', function(){
-                                        // close all expanded sections
+                                        // close last expanded sections
                                         if (lastExpandedId !== '#'+d.id) {
                                             $('div'+lastExpandedId+'.infoDivExpanded').hide();
                                         }
+                                        // clear previous node
                                         if (previousElm !== null){
                                             previousElm.attr('class', null);
                                         }
-                                        // clear class of previous
+                                        // clear class of previous li item
                                         $('#'+previousID).attr('class', null);
+
+                                        // console.log(d.id)
+                                        // var thisNode = itemRects.select('g.'+d.id);
+                                         
+                                        itemRects.selectAll('g').each(function(c){
+                                            var elm = d3.select(this);
+                                            if (c.id === d.id) {
+                                                previousElm.attr('class', null);
+                                                elm.attr('class', 'pointactive');
+                                                previousElm = elm;
+                                            }        
+                                        })
+
+
+
+                                        console.log(thisNode)
+                                        // todo: select the current node somehow so i can apply style to it and creat e previousNode refrence
 
                                         // get this id
                                         var row = d3.select(this);
                                         var id = row.attr('id'); 
                                             row.attr('class', 'laneactive');
-                                        
-                                        // iterate through points
-                                        itemRects.selectAll('g').each(function(d){
-                                            var elm = d3.select(this);
-                                            // if id's (of just clicked) match
-                                            if (d.id.toString() === id.toString()) {
-                                                elm.attr('class', 'pointactive');
-                                                previousElm = d3.select(this);
-                                            } else if (d.id.toString() === previousID.toString()){
-                                                elm.attr('class', null);
-                                            }
-                                        })
+                                        // // iterate through points
+                                        // itemRects.selectAll('g').each(function(d){
+                                        //     var elm = d3.select(this);
+                                        //     // if id's (of just clicked) match
+                                        //     if (d.id.toString() === id.toString()) {
+                                        //         elm.attr('class', 'pointactive');
+                                        //         previousElm = d3.select(this);
+                                        //     } else {
+                                        //         elm.attr('class', null);
+                                        //     }
+                                        // })
 
                                         // set previous id
                                         previousID = id;
