@@ -397,7 +397,7 @@ module.exports = function(pool) {
                             handleReturn(data, callback);
                         });
                     },
-                    function(callback) { // conn
+                    function(callback) { // application
                         new lanegraph(l7, {database: database, pool:pool, lanes: lanes}, function(err, data){
                             handleReturn(data, callback);
                         });
@@ -434,56 +434,23 @@ module.exports = function(pool) {
                             });
                         } else {
                             callback();
-                        },                       
-                        function(callback) { // dns
-                            new lanegraph(dns, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                        }
+                    },
+                    function(callback) { // stealth block
+                        if (req.session.passport.user.level === 3) {
+                            new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                 handleReturn(data, callback);
                             });
-                        },
-                        function(callback) { // http
-                            new lanegraph(http, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // ssl
-                            new lanegraph(ssl, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // file
-                            new lanegraph(file, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // endpoint
-                            new lanegraph(endpoint, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                handleReturn(data, callback);
-                            });
-                        },
-                        function(callback) { // stealth conn
-                            if (req.session.passport.user.level === 3) {
-                                new lanegraph(stealth_conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                    handleReturn(data, callback);
-                                });
-                            } else {
-                                callback();
-                            }
-                        },
-                        function(callback) { // stealth block
-                            if (req.session.passport.user.level === 3) {
-                                new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                    handleReturn(data, callback);
-                                });
-                            } else {
-                                callback();
-                            }
-                        },
-                    ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
-                        if (err) throw console.log(err);
-                        res.json({
-                            laneGraph: result
-                        });
+                        } else {
+                            callback();
+                        }
+                    },
+                ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
+                    if (err) throw console.log(err);
+                    res.json({
+                        laneGraph: result
                     });
+                });
 
                 //break;
                 //}
