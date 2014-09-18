@@ -25,7 +25,7 @@ angular.module('mean.pages').directive('iocDesc', function() {
                 // NOTE: MODAL SETTINGS ARE CUSTOM IN EACH CONTROLLER
                 } else {
                     var subString = description.substring(0, maxLength);
-                    $(element).html(subString+'... <a href="javascript:void(0);"><strong ng-click="open">Read More</strong></a>');
+                    $(element).html(subString+'... <a href="javascript:void(0);"><strong>Read More</strong></a>');
                     $(element).on('click', function(){
                         $scope.description(description);
                     });
