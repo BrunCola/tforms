@@ -73,7 +73,8 @@ module.exports = function(pool) {
                             '`conn` '+
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
-                            'AND `lan_ip`= ? ',
+                            'AND `lan_ip`= ? '+
+                        'LIMIT 250',
                     insert: [start, end, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -113,7 +114,8 @@ module.exports = function(pool) {
                             '`time` BETWEEN ? AND ? '+
                             'AND `src_ip`= ? '+
                             'AND `in_bytes` > 0 '+
-                            'AND `out_bytes` > 0 ',
+                            'AND `out_bytes` > 0 '+
+                        'LIMIT 250',
                     insert: [start, end, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -142,7 +144,8 @@ module.exports = function(pool) {
                         'WHERE '+
                             'time BETWEEN ? AND ? '+
                             'AND `src_ip` = ? '+
-                            'AND (`in_bytes` = 0 OR `out_bytes` = 0)',
+                            'AND (`in_bytes` = 0 OR `out_bytes` = 0)'+
+                        'LIMIT 250',
                     insert: [start, end, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -183,7 +186,7 @@ module.exports = function(pool) {
                             '`time` BETWEEN ? AND ? '+
                             'AND `lan_ip` = ? '+
                             'AND `l7_proto` != \'-\''+
-                        'LIMIT 250',
+                            'LIMIT 250',
                     insert: [start, end, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -227,7 +230,8 @@ module.exports = function(pool) {
                             '`dns` '+
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
-                            'AND `lan_ip`= ?',
+                            'AND `lan_ip`= ?'+
+                        'LIMIT 250',
                     insert: [start, end, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -270,7 +274,8 @@ module.exports = function(pool) {
                             '`http` '+
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
-                            'AND `lan_ip`= ? ',
+                            'AND `lan_ip`= ? '+
+                        'LIMIT 250',
                     insert: [start, end, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -306,7 +311,8 @@ module.exports = function(pool) {
                             '`ssl` '+
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
-                            'AND `lan_ip`= ? ',
+                            'AND `lan_ip`= ? '+
+                        'LIMIT 250',
                     insert: [start, end, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -344,7 +350,8 @@ module.exports = function(pool) {
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
                             'AND `lan_ip`= ? '+
-                            'AND `mime` NOT REGEXP \'text\'',
+                            'AND `mime` NOT REGEXP \'text\''+
+                        'LIMIT 250',
                     insert: [start, end, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -376,7 +383,8 @@ module.exports = function(pool) {
                             '`ossec` '+
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
-                            'AND `src_ip`= ? ',
+                            'AND `src_ip`= ? '+
+                        'LIMIT 250',
                     insert: [start, end, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -388,6 +396,68 @@ module.exports = function(pool) {
                         {title: "Alert Info", select: "alert_info"},
                     ]
                 }
+                var stealth_conn = {
+                    query: 'SELECT '+
+                            '\'stealth\' AS type,'+
+                            '`time` AS raw_time,'+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+                            '`src_ip`,'+
+                            '`dst_ip`,'+
+                            '(`in_bytes` / 1048576) AS in_bytes,'+
+                            '(`out_bytes` / 1048576) AS out_bytes,'+
+                            '`in_packets`,'+
+                            '`out_packets` '+
+                        'FROM '+
+                            '`stealth_conn_meta` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                            'AND `src_ip`= ? '+
+                            'AND `in_bytes` > 0 '+
+                            'AND `out_bytes` > 0 '+
+                            'LIMIT 250',
+                    insert: [start, end, req.query.lan_ip],
+                    params: [
+                        {title: "Time", select: "time"},
+                        {title: "Source IP", select: "src_ip"},
+                        {title: "Destination IP", select: "dst_ip"},
+                        {title: "MB from Remote", select: "in_bytes"},
+                        {title: "MB to Remote", select: "out_bytes"},
+                        {title: "Packets from Remote", select: "in_packets"},
+                        {title: "Packets to Remote", select: "out_packets"}
+                    ]
+                }
+                var stealth_drop = {
+                    query: 'SELECT '+
+                            '\'stealth_drop\' AS type, '+
+                            '`time` AS raw_time,'+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+                            '`src_ip`, '+
+                            '`dst_ip`, '+
+                            '(`in_bytes` / 1048576) AS in_bytes,'+
+                            '(`out_bytes` / 1048576) AS out_bytes,'+
+                            '`in_packets`, '+
+                            '`out_packets` '+
+                        'FROM '+
+                            '`stealth_conn_meta` '+
+                        'WHERE '+
+                            'time BETWEEN ? AND ? '+
+                            'AND `src_ip` = ? '+
+                            'AND (`in_bytes` = 0 OR `out_bytes` = 0)'+
+                            'LIMIT 250',
+                    insert: [start, end, req.query.lan_ip],
+                    params: [
+                        {title: "Time", select: "time"},
+                        {title: "Source IP", select: "src_ip"},
+                        {title: "Destination IP", select: "dst_ip"},
+                        {title: "MB from Remote", select: "in_bytes"},
+                        {title: "MB to Remote", select: "out_bytes"},
+                        {title: "Packets from Remote", select: "in_packets"},
+                        {title: "Packets to Remote", select: "out_packets"}
+                    ]
+                }
+
                 async.parallel([
                     // Table function(s)
                     function(callback) { // conn
@@ -635,7 +705,8 @@ module.exports = function(pool) {
                                     '`dns_ioc` '+
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
-                                    'AND `lan_ip`= ? ',
+                                    'AND `lan_ip`= ? '+
+                                'LIMIT 250',
                             insert: [start, end, req.query.lan_ip],
                             params: [
                                 {title: "Time", select: "time"},
@@ -678,7 +749,8 @@ module.exports = function(pool) {
                                     '`http_ioc` '+
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
-                                    'AND `lan_ip`= ? ',
+                                    'AND `lan_ip`= ? '+
+                                'LIMIT 250',
                             insert: [start, end, req.query.lan_ip],
                             params: [
                                 {title: "Time", select: "time"},
@@ -714,7 +786,8 @@ module.exports = function(pool) {
                                     '`ssl_ioc` '+
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
-                                    'AND `lan_ip`= ? ',
+                                    'AND `lan_ip`= ? '+
+                                'LIMIT 250',
                             insert: [start, end, req.query.lan_ip],
                             params: [
                                 {title: "Time", select: "time"},
@@ -752,7 +825,8 @@ module.exports = function(pool) {
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_ip`= ? '+
-                                    'AND `mime` NOT REGEXP \'text\'',
+                                    'AND `mime` NOT REGEXP \'text\''+
+                                'LIMIT 250',
                             insert: [start, end, req.query.lan_ip],
                             params: [
                                 {title: "Time", select: "time"},
@@ -784,7 +858,8 @@ module.exports = function(pool) {
                                     '`ossec` '+
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
-                                    'AND `src_ip`= ? ',
+                                    'AND `src_ip`= ? '+
+                                'LIMIT 250',
                             insert: [start, end, req.query.lan_ip],
                             params: [
                                 {title: "Time", select: "time"},
@@ -813,7 +888,8 @@ module.exports = function(pool) {
                                 'WHERE '+
                                     'time BETWEEN ? AND ? '+
                                     'AND `src_ip` = ? '+
-                                    'AND (`in_bytes` = 0 OR `out_bytes` = 0)',
+                                    'AND (`in_bytes` = 0 OR `out_bytes` = 0)'+
+                                'LIMIT 250',
                             insert: [start, end, req.query.lan_ip],
                             params: [
                                 {title: "Time", select: "time"},

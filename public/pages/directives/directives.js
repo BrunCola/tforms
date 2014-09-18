@@ -17,7 +17,7 @@ angular.module('mean.pages').directive('iocDesc', function() {
         link: function($scope, element, attrs) {
             $scope.$on('iocDesc', function (event, description) {
                 if (!description) { return }
-                var maxLength = 200;
+                    var maxLength = 200;
                 // if the string is less then our max length..
                 if (description.length < 200) {
                     $(element).html(description);
@@ -29,7 +29,7 @@ angular.module('mean.pages').directive('iocDesc', function() {
                     $(element).on('click', function(){
                         $scope.description(description);
                     });
-                }
+                }                                
             });
         }
     };
@@ -1766,7 +1766,8 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .enter().append("line")
                         .attr("class", "link")
                         .attr("stroke", "#CCC")
-                        .attr("fill", "#000");
+                        .attr("fill", "#000")
+                        .style("stroke-width", "5");
 
                     var node = vis.selectAll("circle.node")
                         .data(data.nodes)
@@ -1871,19 +1872,21 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                             elm.append("rect")
                             .attr("width", 22)
                             .attr("height", 22)
+                            .attr("x", -11)
+                            .attr("y", -11)
                             .attr("cx", function(d) { return d.x; })
                             .attr("cy", function(d) { return d.y; })
                             .attr("fill", function(d, i) { return  color(d.group, d.type); })
-                            .style("stroke-width", "1.5px")
-                            .style("stroke", "#fff");
+                            //.style("stroke-width", "1.5px");
+                            //.style("stroke", "#fff");
                         } else {
                             elm.append("svg:circle")
                             .attr("cx", function(d) { return d.x; })
                             .attr("cy", function(d) { return d.y; })
                             .attr("r", function (d) {return logslider(d["width"]); })
                             .attr("fill", function(d, i) { return  color(d.group, d.type); })
-                            .style("stroke-width", "1.5px")
-                            .style("stroke", "#fff")
+                           // .style("stroke-width", "1.5px")
+                           // .style("stroke", "#fff")
                         }
                         
                         if(d.type === "user") {
@@ -2526,6 +2529,23 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     });
 
 
+                var qMarkButton = buttonHolder
+                    .append('button')
+                    .html('?')
+                    .attr('class', 'qMarkButton')
+                    .on('click', function(){
+                        $scope.description(
+                            "Here is an example of the text to be shown here Here is an example of the text to be shown here " +
+                            "Here is an example of the text to be shown here Here is an example of the text to be shown here " +
+                            "Here is an example of the text to be shown here Here is an example of the text to be shown here " +
+                            "Here is an example of the text to be shown here Here is an example of the text to be shown here " +
+                            "Here is an example of the text to be shown here Here is an example of the text to be shown here " +
+                            "Here is an example of the text to be shown here",
+                            "Title goes here");
+                    });
+
+
+
                 // var timeShiftHolder = d3.select("#lanegraph").append('div').attr('class', 'timeShiftHolder');
                 // var nextTime = timeShiftHolder
                 //     .append('button')
@@ -2694,7 +2714,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         var previousID = -1, previousElm = null;
                         var lastExpandedId = null, isOpen = null;
                         // update time slice above chart
-                        currentTime.html('Current Time Slice: <strong>'+moment(min).format('MMMM D, YYYY h:mm A')+'</strong> - <strong>'+moment(max).format('MMMM D, YYYY h:mm A')+'</strong>')
+                        currentTime.html('Current Time Slice: <strong>'+moment(min).format('MMMM D, YYYY HH:MM A')+'</strong> - <strong>'+moment(max).format('MMMM D, YYYY HH:MM A')+'</strong>')
                         // create transition effect of slider
                         main.select('g.brush .extent')
                             .transition()
