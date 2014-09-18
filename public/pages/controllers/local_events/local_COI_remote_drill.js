@@ -72,6 +72,7 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 		// 		e.value = 10;
 		// 	})
 		// })
+
 		$scope.$broadcast('networkChart', data.network);
 
 		$scope.description = function (d, e) {
