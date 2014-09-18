@@ -39,7 +39,9 @@ angular.module('mean.pages').factory('treeIcon', [
     function() {
         // this accepts an element parameter because the icons are used soley in a d3 chart
         var treeIcon = function(val, elm) {
-            var val = val.toLowerCase();
+            if (val !== null) {
+                var val = val.toLowerCase();
+            }
             switch(val) {
                 case 'network':
                     //RapidPHIRE logo
