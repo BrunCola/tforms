@@ -2654,10 +2654,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     // console.log($('li#'+id).offset().top - $('li#'+id).parent().offset().top)
                     // console.log($('li#'+id).parent().offset())
                     var elm = $('li#'+id);
-                    var pos = elm.position().top;
-                    var pos2 = elm.parent().position().top;
-                    console.log(pos - pos2)
-                    $('#lanegraphinfo').scrollTo(pos);
+                    console.log(elm.position().top - 295)
+                    // var pos = elm.position().top;
+                    // var pos2 = elm.parent().position().top;
+                    // console.log(pos - pos2)
+                    // $('#lanegraphinfo').scrollTo(pos);
                 }
 
                 function plot(data, min, max) {
