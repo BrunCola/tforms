@@ -63,6 +63,9 @@ th {
 .report-table td {
   font-size: 12px;
 }*/
+.node{
+  border: #f0f solid 1px !important;
+}
 
 #lanegraphinfo li {
   list-style: none;
@@ -89,6 +92,9 @@ th {
 #lanegraphinfo li .lanegraphlist{
   width: 85%;
   display: inline-block;
+  overflow: auto;
+  word-wrap:break-word;
+
 }
 #lanegraphinfo li .infoDivExpanded {
   height: 00%;
@@ -6125,4 +6131,8 @@ Datatables Plugin(in v1.3)
 }
 #stealthforcechart svg{
   height: 90% !important;
+}
+.qMarkButton{
+  margin: 0px 20px;
+  padding: 0px 8px;
 }
