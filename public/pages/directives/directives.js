@@ -25,7 +25,7 @@ angular.module('mean.pages').directive('iocDesc', function() {
                 // NOTE: MODAL SETTINGS ARE CUSTOM IN EACH CONTROLLER
                 } else {
                     var subString = description.substring(0, maxLength);
-                    $(element).html(subString+'... <a href="javascript:void(0);"><strong ng-click="open">Read More</strong></a>');
+                    $(element).html(subString+'... <a href="javascript:void(0);"><strong>Read More</strong></a>');
                     $(element).on('click', function(){
                         $scope.description(description);
                     });
@@ -2677,6 +2677,17 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                 }
 
+                function scrollSide(id) {
+                    // console.log(id)
+                    // console.log($('li#'+id).offset().top - $('li#'+id).parent().offset().top)
+                    // console.log($('li#'+id).parent().offset())
+                    var elm = $('li#'+id);
+                    var pos = elm.position().top;
+                    var pos2 = elm.parent().position().top;
+                    console.log(pos - pos2)
+                    $('#lanegraphinfo').scrollTo(pos);
+                }
+
                 function plot(data, min, max) {
                     if (moment(max).unix() !== moment(min).unix()) {
                         //////////////////
@@ -2727,7 +2738,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // set class for active description
                                     $('#'+d.id).attr('class', 'laneactive');
                                     // scroll to position
-                                    $('#lanegraphinfo').scrollTo(d.position);
+                                    scrollSide(d.id);
                                     // set ids for cross-refrence
                                     previousID = d.id;
                                     previousElm = elm;
@@ -2760,6 +2771,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         return "<div class='lanegraphlist'>"+d.info+"</div>";
                                     })
                                     .on('click', function(){
+                                        scrollSide(d.id)
                                         // close last expanded sections
                                         if (lastExpandedId !== '#'+d.id) {
                                             $('div'+lastExpandedId+'.infoDivExpanded').hide();
