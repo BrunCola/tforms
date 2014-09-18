@@ -17,6 +17,8 @@ module.exports = function(pool) {
 			}
 			var tables = [];
 			var crossfilter = [];
+			var cf_stealth_conn = [];
+			var cf_stealth_drop = [];
 			var info = [];
 			var table1 = {
 				query: 'SELECT '+
@@ -103,6 +105,41 @@ module.exports = function(pool) {
 						'hour(from_unixtime(`time`))',
 				insert: [start, end]
 			}
+
+                var stealth_conn = {
+                    query: 'SELECT '+
+                            '\'stealth\' AS type,'+
+                            '`time` AS raw_time,'+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+                            '`src_ip`,'+
+                            '(`in_bytes` / 1048576) AS in_bytes,'+
+                            '(`out_bytes` / 1048576) AS out_bytes '+
+                        'FROM '+
+                            '`stealth_conn_meta` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                            'AND `in_bytes` > 0 '+
+                            'AND `out_bytes` > 0 '+
+                            'LIMIT 250',
+                    insert: [start, end, req.query.lan_ip]
+                }
+                var stealth_drop = {
+                    query: 'SELECT '+
+                            '\'stealth_drop\' AS type, '+
+                            '`time` AS raw_time,'+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+                            '`src_ip`, '+
+                            '`dst_ip`, '+
+                            '(`in_bytes` / 1048576) AS in_bytes,'+
+                            '(`out_bytes` / 1048576) AS out_bytes '+
+                        'FROM '+
+                            '`stealth_conn_meta` '+
+                        'WHERE '+
+                            'time BETWEEN ? AND ? '+
+                            'AND (`in_bytes` = 0 OR `out_bytes` = 0)'+
+                            'LIMIT 250',
+                    insert: [start, end, req.query.lan_ip]
+                }
 			async.parallel([
 				// Table function(s)
 				function(callback) {
@@ -117,13 +154,27 @@ module.exports = function(pool) {
 						crossfilter = data;
 						callback();
 					});
-				}
+				},
+                function(callback) { // stealth conn
+					new query(stealth_conn, {database: database, pool: pool}, function(err,data){
+						cf_stealth_conn = data;
+						callback();
+					});
+                },
+                function(callback) { // stealth block
+					new query(stealth_drop, {database: database, pool: pool}, function(err,data){
+						cf_stealth_drop = data;
+						callback();
+					});
+                }
 			], function(err) { //This function gets called after the two tasks have called their "task callbacks"
 				if (err) throw console.log(err);
 				var results = {
 					info: info,
 					tables: tables,
-					crossfilter: crossfilter
+					crossfilter: crossfilter,
+					cf_stealth_conn: cf_stealth_conn,
+					cf_stealth_drop: cf_stealth_drop
 				};
 				res.json(results);
 			});
