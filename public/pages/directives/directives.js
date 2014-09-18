@@ -2678,7 +2678,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         var previousID = -1, previousElm = null;
                         var lastExpandedId = null, isOpen = null;
                         // update time slice above chart
-                        currentTime.html('Current Time Slice: <strong>'+moment(min).format('MMMM D, YYYY h:mm A')+'</strong> - <strong>'+moment(max).format('MMMM D, YYYY h:mm A')+'</strong>')
+                        currentTime.html('Current Time Slice: <strong>'+moment(min).format('MMMM D, YYYY HH:MM A')+'</strong> - <strong>'+moment(max).format('MMMM D, YYYY HH:MM A')+'</strong>')
                         // create transition effect of slider
                         main.select('g.brush .extent')
                             .transition()

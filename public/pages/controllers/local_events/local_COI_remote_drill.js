@@ -199,7 +199,7 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 				success(function(data) {
 					console.log(data)
 					$scope.crossfilterDeep = crossfilter();
-					var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
+					var dateFormat = d3.time.format('%Y-%m-%d %HH:%M:%S');
 					var id = 0;
 					data.laneGraph.data.forEach(function(parent) {
 						parent.forEach(function(child) {
