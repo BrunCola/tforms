@@ -99,7 +99,9 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 		$scope.ioc_type = data.info.main[0].ioc_typeIndicator;
 		$scope.ioc_rule = data.info.main[0].ioc_rule;
 
-		$scope.$broadcast('iocDesc', data.info.desc[0].description)
+		if (data.info.desc[0] !== undefined) {
+			$scope.$broadcast('iocDesc', data.info.desc[0].description)
+		}
 		
 		// // draw chart
 		// fishchart(data);
