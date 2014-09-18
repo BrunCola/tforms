@@ -74,8 +74,36 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 		// })
 		$scope.$broadcast('networkChart', data.network);
 
+		$scope.description = function (d, e) {
+			$scope.mData = d;
+			$scope.mTitle = e;
+			// $scope.$broadcast('moodal', d);
+			$scope.modalInstance = $modal.open({
+				templateUrl: 'descModal.html',
+				controller: descInstanceCtrl,
+				keyboard: true,
+				resolve: {
+					data: function() {
+						return $scope.mData;
+					},
+					ioc: function() {
+						if(e){
+							return $scope.mTitle
+						}else{
+							return $location.$$search.ioc;
+						}
+					}
+				}
+			});
+		};
 
-
+		var descInstanceCtrl = function ($scope, $modalInstance, data, ioc) {
+			$scope.ok = function () {
+				$modalInstance.close();
+			};
+			$scope.data = data;
+			$scope.iocc = ioc;
+		};
 		//console.log($location.$$search);
 		//console.log(data.info.main[0]);
 

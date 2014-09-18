@@ -39,8 +39,9 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 
 		$scope.$broadcast('laneGraph');
 
-		$scope.description = function (d) {
+		$scope.description = function (d, e) {
 			$scope.mData = d;
+			$scope.mTitle = e;
 			// $scope.$broadcast('moodal', d);
 			$scope.modalInstance = $modal.open({
 				templateUrl: 'descModal.html',
@@ -51,11 +52,18 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 						return $scope.mData;
 					},
 					ioc: function() {
-						return $location.$$search.ioc;
+						if(e){
+							return $scope.mTitle
+						}else{
+							return $location.$$search.ioc;
+						}
 					}
 				}
 			});
 		};
+
+			
+
 		var descInstanceCtrl = function ($scope, $modalInstance, data, ioc) {
 			$scope.ok = function () {
 				$modalInstance.close();
@@ -99,7 +107,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 		$scope.ioc_type = data.info.main[0].ioc_typeIndicator;
 		$scope.ioc_rule = data.info.main[0].ioc_rule;
 
-		$scope.$broadcast('iocDesc', data.info.desc[0].description)
+		$scope.$broadcast('iocDesc', data.info.desc[0].description);
 		
 		// // draw chart
 		// fishchart(data);
