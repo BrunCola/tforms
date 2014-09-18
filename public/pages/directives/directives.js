@@ -2535,13 +2535,21 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr('class', 'qMarkButton')
                     .on('click', function(){
                         $scope.description(
-                            "Here is an example of the text to be shown here Here is an example of the text to be shown here " +
-                            "Here is an example of the text to be shown here Here is an example of the text to be shown here " +
-                            "Here is an example of the text to be shown here Here is an example of the text to be shown here " +
-                            "Here is an example of the text to be shown here Here is an example of the text to be shown here " +
-                            "Here is an example of the text to be shown here Here is an example of the text to be shown here " +
-                            "Here is an example of the text to be shown here",
-                            "Title goes here");
+                            "This chart represents discrete events deemed significant to the IOC being examined "+
+                            "(i.e. it is related to the 3-tuple which includes local, remote and IOC information)."+
+                            "Discrete event categories available are: IOC - describing the indicator, conn - the "+
+                            "raw IP connection information, applications that were used by the use, DNS queries, "+
+                            "HTTP queries, SSL connections, File metadata, and Endpoint events)."+
+                            "To view details of any event, click the icon in the chart and details will be "+
+                            "highlighted in the table to the left.  Further information will be displayed by "+
+                            "clicking the \"+\" sign for each record."+
+                            "To view ALL event data in the chart, left mouse click and drag over the area to zoom."+
+                            "If the zoom area covers a time slice less than 60 minutes, an \"Enhanced View\" will "+
+                            "be displayed on the screen, showing every event triggered by the local endpoint within"+
+                            "the time slice.  This query can take a few seconds to display, depending on the amount"+
+                            "of information.  Once the enhanced view data is presented, you can continue to zoom as "+
+                            "needed.",
+                            "Event Timeline Navigation");
                     });
 
 
