@@ -2729,8 +2729,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .html(function(d){
                                         // set d.postion (INIFFICENT!)
                                         d.position = ($('li#'+d.id).offset().top - $('li#'+d.id).parent().offset().top);
-                                        // return description
-                                        return d.info;
+                                        return "<div class='lanegraphlist'>"+d.info+"</div>";
                                     })
                                     .on('click', function(){
                                         // close last expanded sections
@@ -2745,37 +2744,35 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         $('#'+previousID).attr('class', null);
 
                                         // console.log(d.id)
-                                        // var thisNode = itemRects.select('g.'+d.id);
+                                        // // var thisNode = itemRects.select('g.'+d.id);
                                          
-                                        itemRects.selectAll('g').each(function(c){
-                                            var elm = d3.select(this);
-                                            if (c.id === d.id) {
-                                                previousElm.attr('class', null);
-                                                elm.attr('class', 'pointactive');
-                                                previousElm = elm;
-                                            }        
-                                        })
+                                        // itemRects.selectAll('g').each(function(c){
+                                        //     var elm = d3.select(this);
+                                        //     if (c.id === d.id) {
+                                        //         previousElm.attr('class', null);
+                                        //         elm.attr('class', 'pointactive');
+                                        //         previousElm = elm;
+                                        //     }        
+                                        // })
 
+                                        // console.log(thisNode)
+                                        // // todo: select the current node somehow so i can apply style to it and creat e previousNode refrence
+                                        // // get this id
 
-
-                                        console.log(thisNode)
-                                        // todo: select the current node somehow so i can apply style to it and creat e previousNode refrence
-
-                                        // get this id
                                         var row = d3.select(this);
                                         var id = row.attr('id'); 
                                             row.attr('class', 'laneactive');
-                                        // // iterate through points
-                                        // itemRects.selectAll('g').each(function(d){
-                                        //     var elm = d3.select(this);
-                                        //     // if id's (of just clicked) match
-                                        //     if (d.id.toString() === id.toString()) {
-                                        //         elm.attr('class', 'pointactive');
-                                        //         previousElm = d3.select(this);
-                                        //     } else {
-                                        //         elm.attr('class', null);
-                                        //     }
-                                        // })
+                                        // iterate through points
+                                        itemRects.selectAll('g').each(function(d){
+                                            var elm = d3.select(this);
+                                            // if id's (of just clicked) match
+                                            if (d.id.toString() === id.toString()) {
+                                                elm.attr('class', 'pointactive');
+                                                previousElm = elm;
+                                            } else {
+                                                elm.attr('class', null);
+                                            }
+                                        })
 
                                         // set previous id
                                         previousID = id;
