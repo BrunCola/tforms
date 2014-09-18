@@ -36,7 +36,8 @@ module.exports = function(pool) {
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_zone` = ? '+
                                 'AND `lan_user` = ? '+
-                                'AND `event_type` = ? ',
+                                'AND `event_type` = ? '+
+                            'LIMIT 250',
                     insert: [start, end, req.query.lan_zone, req.query.lan_user, req.query.event_type],
                     params: [
                         { title: 'Time', select: 'time' },
