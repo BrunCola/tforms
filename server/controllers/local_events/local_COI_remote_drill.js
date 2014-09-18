@@ -458,7 +458,6 @@ module.exports = function(pool) {
                     ]
                 }
 
->>>>>>> internal/brunowebapp
                 async.parallel([
                     // Table function(s)
                     function(callback) { // conn
