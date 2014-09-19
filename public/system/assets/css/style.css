@@ -66,6 +66,9 @@ th {
 .node{
   border: #f0f solid 1px !important;
 }
+#lanegraphinfo{
+  /*overflow: hidden !important;*/
+}
 
 #lanegraphinfo li {
   list-style: none;

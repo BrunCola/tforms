@@ -106,40 +106,39 @@ module.exports = function(pool) {
 				insert: [start, end]
 			}
 
-                var stealth_conn = {
-                    query: 'SELECT '+
-                            '\'stealth\' AS type,'+
-                            '`time` AS raw_time,'+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-                            '`src_ip`,'+
-                            '(`in_bytes` / 1048576) AS in_bytes,'+
-                            '(`out_bytes` / 1048576) AS out_bytes '+
-                        'FROM '+
-                            '`stealth_conn_meta` '+
-                        'WHERE '+
-                            '`time` BETWEEN ? AND ? '+
-                            'AND `in_bytes` > 0 '+
-                            'AND `out_bytes` > 0 '+
-                            'LIMIT 250',
-                    insert: [start, end, req.query.lan_ip]
-                }
-                var stealth_drop = {
-                    query: 'SELECT '+
-                            '\'stealth_drop\' AS type, '+
-                            '`time` AS raw_time,'+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-                            '`src_ip`, '+
-                            '`dst_ip`, '+
-                            '(`in_bytes` / 1048576) AS in_bytes,'+
-                            '(`out_bytes` / 1048576) AS out_bytes '+
-                        'FROM '+
-                            '`stealth_conn_meta` '+
-                        'WHERE '+
-                            'time BETWEEN ? AND ? '+
-                            'AND (`in_bytes` = 0 OR `out_bytes` = 0)'+
-                            'LIMIT 250',
-                    insert: [start, end, req.query.lan_ip]
-                }
+            var stealth_conn = {
+                query: 'SELECT '+
+						'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time,'+
+                        '(sum(`in_bytes`)  / 1048576) AS in_bytes2,'+
+                        '(sum(`out_bytes`) / 1048576) AS out_bytes2 '+
+                    'FROM '+
+                        '`stealth_conn_meta` '+
+                    'WHERE '+
+                        '`time` BETWEEN ? AND ? '+
+                        'AND `in_bytes` > 0 '+
+                        'AND `out_bytes` > 0 '+
+					'GROUP BY '+
+						'month(from_unixtime(`time`)),'+
+						'day(from_unixtime(`time`)),'+
+						'hour(from_unixtime(`time`))',
+                insert: [start, end]
+            }
+            var stealth_drop = {
+                query: 'SELECT '+
+						'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time,'+
+                        '(`in_bytes`  / 1048576) AS in_bytes3,'+
+                        '(`out_bytes` / 1048576) AS out_bytes3 '+
+                    'FROM '+
+                        '`stealth_conn_meta` '+
+                    'WHERE '+
+                        'time BETWEEN ? AND ? '+
+                        'AND (`in_bytes` = 0 OR `out_bytes` = 0) '+
+					'GROUP BY '+
+						'month(from_unixtime(`time`)),'+
+						'day(from_unixtime(`time`)),'+
+						'hour(from_unixtime(`time`))',
+                insert: [start, end]
+            }
 			async.parallel([
 				// Table function(s)
 				function(callback) {
