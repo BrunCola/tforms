@@ -17,7 +17,7 @@ angular.module('mean.pages').directive('iocDesc', function() {
         link: function($scope, element, attrs) {
             $scope.$on('iocDesc', function (event, description) {
                 if (!description) { return }
-                var maxLength = 200;
+                    var maxLength = 200;
                 // if the string is less then our max length..
                 if (description.length < 200) {
                     $(element).html(description);
@@ -25,11 +25,11 @@ angular.module('mean.pages').directive('iocDesc', function() {
                 // NOTE: MODAL SETTINGS ARE CUSTOM IN EACH CONTROLLER
                 } else {
                     var subString = description.substring(0, maxLength);
-                    $(element).html(subString+'... <a href="javascript:void(0);"><strong ng-click="open">Read More</strong></a>');
+                    $(element).html(subString+'... <a href="javascript:void(0);"><strong>Read More</strong></a>');
                     $(element).on('click', function(){
                         $scope.description(description);
                     });
-                }
+                }                                
             });
         }
     };
@@ -868,6 +868,30 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                         return $('#barchart').parent().width();
                     }
                     switch (chartType){
+                        case 'stealthtraffic':
+                            var setNewSize = function(width) {
+                                $scope.barChart
+                                    .width(width)
+                                    .height(width/3.5)
+                                    .margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+                                // $('#barchart').parent().height(width/3.5);
+                                d3.select('#barchart svg').attr('width', width).attr('height', width/3.5);
+                                $scope.barChart.redraw();
+                            }
+                            $scope.barChart
+                                .group(group, "MB To Remote")
+                                .valueAccessor(function(d) {
+                                    return d.value.in_bytes;
+                                })
+                                .stack(group, "MB From Remote", function(d){return d.value.out_bytes;})
+                                .stack(group, "MB To Remote (Conn)", function(d){return d.value.in_bytes2;})
+                                .stack(group, "MB From Remote (Conn)", function(d){return d.value.out_bytes2;})
+                                .stack(group, "MB To Remote (Drop)", function(d){return d.value.in_bytes3;})
+                                .stack(group, "MB From Remote (Drop)", function(d){return d.value.out_bytes3;})
+                                .legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
+                                .colors(d3.scale.ordinal().domain(["in_bytes","out_bytes","in_bytes2","out_bytes2","in_bytes3","out_bytes3"]).range(["#034142","#068587","#1A4569","#3FA8FF","#73100A","#FF3628"]));
+                            filter = true;
+                            break;
                         case 'bandwidth':
                             var setNewSize = function(width) {
                                 $scope.barChart
@@ -1766,7 +1790,8 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .enter().append("line")
                         .attr("class", "link")
                         .attr("stroke", "#CCC")
-                        .attr("fill", "#000");
+                        .attr("fill", "#000")
+                        .style("stroke-width", "5");
 
                     var node = vis.selectAll("circle.node")
                         .data(data.nodes)
@@ -1871,19 +1896,21 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                             elm.append("rect")
                             .attr("width", 22)
                             .attr("height", 22)
+                            .attr("x", -11)
+                            .attr("y", -11)
                             .attr("cx", function(d) { return d.x; })
                             .attr("cy", function(d) { return d.y; })
                             .attr("fill", function(d, i) { return  color(d.group, d.type); })
-                            .style("stroke-width", "1.5px")
-                            .style("stroke", "#fff");
+                            //.style("stroke-width", "1.5px");
+                            //.style("stroke", "#fff");
                         } else {
                             elm.append("svg:circle")
                             .attr("cx", function(d) { return d.x; })
                             .attr("cy", function(d) { return d.y; })
                             .attr("r", function (d) {return logslider(d["width"]); })
                             .attr("fill", function(d, i) { return  color(d.group, d.type); })
-                            .style("stroke-width", "1.5px")
-                            .style("stroke", "#fff")
+                           // .style("stroke-width", "1.5px")
+                           // .style("stroke", "#fff")
                         }
                         
                         if(d.type === "user") {
@@ -2126,7 +2153,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     return this.each(function(){
                         var scrollPane = $(this);
                         var scrollTarget = (typeof settings.scrollTarget == "number") ? settings.scrollTarget : $(settings.scrollTarget);
-                        var scrollY = (typeof scrollTarget == "number") ? scrollTarget : scrollTarget.offset().top + scrollPane.scrollTop() - parseInt(settings.offsetTop);
+                        var scrollY = (typeof scrollTarget == "number") ? scrollTarget + scrollPane.scrollTop() : scrollTarget.offset().top + scrollPane.scrollTop() - parseInt(settings.offsetTop);
                         scrollPane.animate({scrollTop : scrollY }, parseInt(settings.duration), settings.easing, function(){
                             if (typeof callback == 'function') { callback.call(this); }
                         });
@@ -2473,6 +2500,38 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .attr('width', 17)
                                     .style('fill', '#5E5E5E');
                                 return;
+                            case 'ssl':
+                                element.append('circle')
+                                    .attr('fill', '#A0BB71')
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                element.append('svg:path')
+                                    .attr('fill', '#58595B')
+                                    .attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
+                                        'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
+                                        'C28.014,15.545,26.676,21.468,23.587,26.751z');
+                                element.append('svg:path')
+                                    .attr('fill', '#A0BB71')
+                                    .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
+                                        'C11.076,16.238,11.938,20.26,13.699,23.661z');
+                                return;
+                            case 'ssl_ioc':
+                                element.append('circle')
+                                    .attr('fill', '#D97373')
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                element.append('svg:path')
+                                    .attr('fill', '#58595B')
+                                    .attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
+                                        'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
+                                        'C28.014,15.545,26.676,21.468,23.587,26.751z');
+                                element.append('svg:path')
+                                    .attr('fill', '#D97373')
+                                    .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
+                                        'C11.076,16.238,11.938,20.26,13.699,23.661z');
+                                return;
                             default:
                                 return;
                         }
@@ -2524,6 +2583,23 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             mouseup('nav');
                         }
                     });
+
+
+                var qMarkButton = buttonHolder
+                    .append('button')
+                    .html('?')
+                    .attr('class', 'qMarkButton')
+                    .on('click', function(){
+                        $scope.description(
+                            "Here is an example of the text to be shown here Here is an example of the text to be shown here " +
+                            "Here is an example of the text to be shown here Here is an example of the text to be shown here " +
+                            "Here is an example of the text to be shown here Here is an example of the text to be shown here " +
+                            "Here is an example of the text to be shown here Here is an example of the text to be shown here " +
+                            "Here is an example of the text to be shown here Here is an example of the text to be shown here " +
+                            "Here is an example of the text to be shown here",
+                            "Title goes here");
+                    });
+
 
 
                 // var timeShiftHolder = d3.select("#lanegraph").append('div').attr('class', 'timeShiftHolder');
@@ -2649,16 +2725,36 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                 }
 
+                function scrollSide(id) {
+                  
+                    var elm = $('li#'+id);
+
+                    var ept  = elm.position().top;
+                    var eppt = elm.parent().position().top;
+
+                    var offset = ept - eppt;
+                    var totalHeight = $('#lanegraphinfo')[0].scrollHeight;
+                    var windowHeight = $('#lanegraphinfo').height();
+
+                    if(offset>(totalHeight-windowHeight)){
+                        offset = totalHeight-windowHeight;
+                    }
+
+                    $('#lanegraphinfo').scrollTo(offset);
+                }
+
                 function plot(data, min, max) {
                     if (moment(max).unix() !== moment(min).unix()) {
                         //////////////////
                         /// LANE NODES ///
                         //////////////////
                         // set variables for info sidebar
+                        var prevPos = 0;
                         var previousID = -1, previousElm = null;
                         var lastExpandedId = null, isOpen = null;
+                        //console.log("plot");
                         // update time slice above chart
-                        currentTime.html('Current Time Slice: <strong>'+moment(min).format('MMMM D, YYYY h:mm A')+'</strong> - <strong>'+moment(max).format('MMMM D, YYYY h:mm A')+'</strong>')
+                        currentTime.html('Current Time Slice: <strong>'+moment(min).format('MMMM D, YYYY HH:MM A')+'</strong> - <strong>'+moment(max).format('MMMM D, YYYY HH:MM A')+'</strong>')
                         // create transition effect of slider
                         main.select('g.brush .extent')
                             .transition()
@@ -2699,7 +2795,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // set class for active description
                                     $('#'+d.id).attr('class', 'laneactive');
                                     // scroll to position
-                                    $('#lanegraphinfo').scrollTo(d.position);
+
+                                    scrollSide(d.id);
+                                   // prevPos = currPos;
+
                                     // set ids for cross-refrence
                                     previousID = d.id;
                                     previousElm = elm;
@@ -2732,6 +2831,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         return "<div class='lanegraphlist'>"+d.info+"</div>";
                                     })
                                     .on('click', function(){
+
+                                        scrollSide(d.id);
                                         // close last expanded sections
                                         if (lastExpandedId !== '#'+d.id) {
                                             $('div'+lastExpandedId+'.infoDivExpanded').hide();

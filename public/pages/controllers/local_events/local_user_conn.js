@@ -8,6 +8,7 @@ angular.module('mean.pages').controller('localUserConnController', ['$scope', '$
 	} else {
 		query = '/local_events/local_user_conn?';
 	}
+
 	$http({method: 'GET', url: query}).
 		//success(function(data, status, headers, config) {
 		success(function(data) {
@@ -15,19 +16,16 @@ angular.module('mean.pages').controller('localUserConnController', ['$scope', '$
 				$scope.$broadcast('loadError');
 			} else {
 				var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
-				data.crossfilter.forEach(function(d) {
+
+				var crossfilterconcat = data.crossfilter.concat(data.cf_stealth_conn,data.cf_stealth_drop);
+				
+				crossfilterconcat.forEach(function(d) {
 					d.dd = dateFormat.parse(d.time);
 					d.hour = d3.time.hour(d.dd);
-					d.count = +d.count;
 				});
-				$scope.crossfilterData = crossfilter(data.crossfilter);
-				$scope.data = data;
+				$scope.crossfilterData = crossfilter(crossfilterconcat);
 
-				var geoDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
-				var geoGroup = geoDimension.group().reduceSum(function (d) {
-					return d.count;
-				});
-				$scope.$broadcast('geoChart', geoDimension, geoGroup);
+				$scope.data = data;
 
 				$scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
 				$scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
@@ -37,23 +35,59 @@ angular.module('mean.pages').controller('localUserConnController', ['$scope', '$
 				var barGroupPre = barDimension.group();
 				var barGroup = barGroupPre.reduce(
 					function(p, v) {
-						p.in_bytes += v.in_bytes;
-						p.out_bytes += v.out_bytes;
+						if(v.in_bytes!==undefined){
+							p.in_bytes += v.in_bytes;
+						}
+						if(v.out_bytes!==undefined){
+							p.out_bytes += v.out_bytes;
+						}
+						if(v.in_bytes2!==undefined){
+							p.in_bytes2 += v.in_bytes2;
+						}
+						if(v.out_bytes2!==undefined){
+							p.out_bytes2 += v.out_bytes2;
+						}
+						if(v.in_bytes3!==undefined){
+							p.in_bytes3 += v.in_bytes3;
+						}
+						if(v.out_bytes3!==undefined){
+							p.out_bytes3 += v.out_bytes3;
+						}
 						return p;
 					},
 					function(p, v) {
-						p.in_bytes -= v.in_bytes;
-						p.out_bytes -= v.out_bytes;
+						if(v.in_bytes!==undefined){
+							p.in_bytes -= v.in_bytes;
+						}
+						if(v.out_bytes!==undefined){
+							p.out_bytes -= v.out_bytes;
+						}
+						if(v.in_bytes2!==undefined){
+							p.in_bytes2 -= v.in_bytes2;
+						}
+						if(v.out_bytes2!==undefined){
+							p.out_bytes2 -= v.out_bytes2;
+						}
+						if(v.in_bytes3!==undefined){
+							p.in_bytes3 -= v.in_bytes3;
+						}
+						if(v.out_bytes3!==undefined){
+							p.out_bytes3 -= v.out_bytes3;
+						}
 						return p;
 					},
 					function() {
 						return {
 							in_bytes: 0,
-							out_bytes: 0
+							out_bytes: 0,
+							in_bytes2: 0,
+							out_bytes2: 0,
+							in_bytes3: 0,
+							out_bytes3: 0
 						};
 					}
 				);
-				$scope.$broadcast('barChart', barDimension, barGroup, 'bandwidth');
+				$scope.$broadcast('barChart', barDimension, barGroup, 'stealthtraffic');
 				$scope.barChartxAxis = '';
 				$scope.barChartyAxis = '# MB / Hour';
 			}

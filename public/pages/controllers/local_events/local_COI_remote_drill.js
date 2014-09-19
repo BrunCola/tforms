@@ -72,10 +72,39 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 		// 		e.value = 10;
 		// 	})
 		// })
+
 		$scope.$broadcast('networkChart', data.network);
 
+		$scope.description = function (d, e) {
+			$scope.mData = d;
+			$scope.mTitle = e;
+			// $scope.$broadcast('moodal', d);
+			$scope.modalInstance = $modal.open({
+				templateUrl: 'descModal.html',
+				controller: descInstanceCtrl,
+				keyboard: true,
+				resolve: {
+					data: function() {
+						return $scope.mData;
+					},
+					ioc: function() {
+						if(e){
+							return $scope.mTitle
+						}else{
+							return $location.$$search.ioc;
+						}
+					}
+				}
+			});
+		};
 
-
+		var descInstanceCtrl = function ($scope, $modalInstance, data, ioc) {
+			$scope.ok = function () {
+				$modalInstance.close();
+			};
+			$scope.data = data;
+			$scope.iocc = ioc;
+		};
 		//console.log($location.$$search);
 		//console.log(data.info.main[0]);
 
@@ -171,7 +200,7 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
 				success(function(data) {
 					console.log(data)
 					$scope.crossfilterDeep = crossfilter();
-					var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
+					var dateFormat = d3.time.format('%Y-%m-%d %HH:%M:%S');
 					var id = 0;
 					data.laneGraph.data.forEach(function(parent) {
 						parent.forEach(function(child) {
