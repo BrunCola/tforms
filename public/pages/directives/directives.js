@@ -2153,7 +2153,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     return this.each(function(){
                         var scrollPane = $(this);
                         var scrollTarget = (typeof settings.scrollTarget == "number") ? settings.scrollTarget : $(settings.scrollTarget);
-                        var scrollY = (typeof scrollTarget == "number") ? scrollTarget : scrollTarget.offset().top + scrollPane.scrollTop() - parseInt(settings.offsetTop);
+                        var scrollY = (typeof scrollTarget == "number") ? scrollTarget + scrollPane.scrollTop() : scrollTarget.offset().top + scrollPane.scrollTop() - parseInt(settings.offsetTop);
                         scrollPane.animate({scrollTop : scrollY }, parseInt(settings.duration), settings.easing, function(){
                             if (typeof callback == 'function') { callback.call(this); }
                         });
@@ -2694,39 +2694,21 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
 
                 function scrollSide(id) {
-                    // console.log(id)
-                    // console.log($('li#'+id).offset().top - $('li#'+id).parent().offset().top)
-                    // console.log($('li#'+id).parent().offset())
+                  
                     var elm = $('li#'+id);
-                    // var lipos = elm.position().top - 295;
-                    // var scrollPos = elm.parent().scrollTop();
-                    // var pos = elm.position().top;
-                    // var pos2 = elm.parent().position().top;
-                    // console.log(pos - pos2)
-                    // $('#lanegraphinfo').scrollTop();
-                    // var divheight = $('#lanegraphinfo')[0].scrollHeight;
-                    // console.log('div inner height: '+divheight)
-                    // // console.log('scroll position: '+scrollPos)
-                    // console.log('position from last scroll: '+lipos)
-                    // console.log('difference '+(lipos - scrollPos))
-                    // var test = ($('li#'+id).offset().top - $("#lanegraphinfo").offset().top)
-                    // $('#lanegraphinfo').animate({
-                    //     scrollTop: test
-                    // }, 2000);
-                    // console.log(test)
-                    // $('#lanegraphinfo').scrollTop($('li#'+id).offset().top);
-                    // $('#lanegraphinfo').scrollTo('li#'+id);
-                    // console.log($('li#'+id).offset().top)
-                    // $('#lanegraphinfo').scrollTop($('li#'+id).offset().top);
-                    // 
-                    // var target = $(this.hash);
-                    // target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
-                    // if (target.length) {
-                        // $('#lanegraphinfo').animate({
-                        //     scrollTop: elm.offset().top
-                        // }, 1000);
-                        // return false;
-                    // }
+
+                    var ept  = elm.position().top;
+                    var eppt = elm.parent().position().top;
+
+                    var offset = ept - eppt;
+                    var totalHeight = $('#lanegraphinfo')[0].scrollHeight;
+                    var windowHeight = $('#lanegraphinfo').height();
+
+                    if(offset>(totalHeight-windowHeight)){
+                        offset = totalHeight-windowHeight;
+                    }
+
+                    $('#lanegraphinfo').scrollTo(offset);
                 }
 
                 function plot(data, min, max) {
@@ -2735,8 +2717,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         /// LANE NODES ///
                         //////////////////
                         // set variables for info sidebar
+                        var prevPos = 0;
                         var previousID = -1, previousElm = null;
                         var lastExpandedId = null, isOpen = null;
+                        //console.log("plot");
                         // update time slice above chart
                         currentTime.html('Current Time Slice: <strong>'+moment(min).format('MMMM D, YYYY HH:MM A')+'</strong> - <strong>'+moment(max).format('MMMM D, YYYY HH:MM A')+'</strong>')
                         // create transition effect of slider
@@ -2764,7 +2748,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     elm.style('cursor', 'pointer');
                                 })
                                 .on("click", function(d){
-                                    console.log('circle id:'+d.id)
                                     // un-highlight previous box
                                     $('#'+previousID).attr('class', null);
                                     // this closes the last expanded block if there is one
@@ -2780,7 +2763,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // set class for active description
                                     $('#'+d.id).attr('class', 'laneactive');
                                     // scroll to position
+
                                     scrollSide(d.id);
+                                   // prevPos = currPos;
+
                                     // set ids for cross-refrence
                                     previousID = d.id;
                                     previousElm = elm;
@@ -2813,7 +2799,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         return "<div class='lanegraphlist'>"+d.info+"</div>";
                                     })
                                     .on('click', function(){
-                                        scrollSide(d.id)
+
+                                        scrollSide(d.id);
                                         // close last expanded sections
                                         if (lastExpandedId !== '#'+d.id) {
                                             $('div'+lastExpandedId+'.infoDivExpanded').hide();
