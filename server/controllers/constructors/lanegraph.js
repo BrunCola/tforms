@@ -57,10 +57,10 @@ module.exports = function (sql, conn, callback) {
                 if (index === null) {
                     index = conn.lanes.indexOf(data.type);
                     if (data.type.search('IOC') !== -1) {
-                        index = conn.lanes.indexOf('ioc');
+                        index = conn.lanes.indexOf('IOC');
                     }
                     if (data.type.search('Stealth') !== -1) {
-                        index = conn.lanes.indexOf('stealth');
+                        index = conn.lanes.indexOf('Stealth');
                     }
                 }
                 data.lane = index;
