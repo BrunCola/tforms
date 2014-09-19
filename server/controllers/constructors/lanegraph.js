@@ -56,10 +56,10 @@ module.exports = function (sql, conn, callback) {
 
                 if (index === null) {
                     index = conn.lanes.indexOf(data.type);
-                    if (data.type.search('ioc') !== -1) {
+                    if (data.type.search('IOC') !== -1) {
                         index = conn.lanes.indexOf('ioc');
                     }
-                    if (data.type.search('stealth') !== -1) {
+                    if (data.type.search('Stealth') !== -1) {
                         index = conn.lanes.indexOf('stealth');
                     }
                 }
