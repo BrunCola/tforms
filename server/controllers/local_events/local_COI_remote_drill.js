@@ -37,9 +37,9 @@ module.exports = function(pool) {
             }
             var lanes;
             if (req.session.passport.user.level === 3) {
-                lanes = ['ioc', 'conn', 'stealth', 'applications', 'dns', 'http', 'ssl', 'file', 'endpoint'];
+                lanes = ['IOC', 'Conn', 'Stealth', 'Applications', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
             } else {
-                lanes = ['ioc', 'conn', 'applications', 'dns', 'http', 'ssl', 'file', 'endpoint'];
+                lanes = ['IOC', 'Conn', 'Applications', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
             }
             var result = {
                 lanes: lanes,
@@ -48,7 +48,7 @@ module.exports = function(pool) {
             if (req.query.type === 'drill') {
                 var conn = {
                     query: 'SELECT '+
-                            '\'conn\' AS type, '+
+                            '\'Conn\' AS type, '+
                             '`time` as raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -98,7 +98,7 @@ module.exports = function(pool) {
                 }
                 var stealth_conn = {
                     query: 'SELECT '+
-                            '\'stealth\' AS type,'+
+                            '\'Stealth\' AS type,'+
                             '`time` AS raw_time,'+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
@@ -129,7 +129,7 @@ module.exports = function(pool) {
                 }
                 var stealth_drop = {
                     query: 'SELECT '+
-                            '\'stealth_drop\' AS type, '+
+                            '\'Stealth_drop\' AS type, '+
                             '`time` AS raw_time,'+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
@@ -159,7 +159,7 @@ module.exports = function(pool) {
                 }
                 var application = {
                     query: 'SELECT '+
-                            '\'applications\' AS type, '+
+                            '\'Applications\' AS type, '+
                             '`time` as raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -210,7 +210,7 @@ module.exports = function(pool) {
                 }
                 var dns = {
                     query: 'SELECT '+
-                            '\'dns\' AS type,'+
+                            '\'DNS\' AS type,'+
                             '`time` AS raw_time,'+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
@@ -250,7 +250,7 @@ module.exports = function(pool) {
                 }
                 var http = {
                     query: 'SELECT '+
-                            '\'http\' AS type, '+
+                            '\'HTTP\' AS type, '+
                             '`time` as raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -292,7 +292,7 @@ module.exports = function(pool) {
                 }
                 var ssl = {
                     query: 'SELECT '+
-                            '\'ssl\' AS type, '+
+                            '\'SSL\' AS type, '+
                             '`time` as raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -328,9 +328,59 @@ module.exports = function(pool) {
                         {title: "IOC Rule", select: "ioc_rule"},
                     ]
                 }
+                var email = {
+                    query: 'SELECT '+
+                            '\'Email\' AS type, '+
+                            '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                            '`machine`,'+
+                            '`lan_zone`,'+
+                            '`lan_ip`,'+
+                            '`remote_ip`,'+
+                            '`remote_country`,'+
+                            '`mailfrom`,'+
+                            '`receiptto`,'+
+                            '`reply_to`,'+
+                            '`in_reply_to`,'+
+                            '`subject`,'+
+                            '`ioc`,'+
+                            '`ioc_typeIndicator`,'+
+                            '`ioc_typeInfection`, '+    
+                            '`ioc_rule`,'+
+                            '`ioc_severity`,'+
+                            '`ioc_count` '+
+                        'FROM '+
+                            '`smtp` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                            'AND `lan_zone`= ?'+
+                            'AND `lan_ip`= ?'+
+                        'LIMIT 250',
+                    insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+                    params: [
+                        {title: "Time", select: "time"},
+                        {title: 'Zone', select: 'lan_zone' },
+                        {title: 'Machine Name', select: 'machine' },
+                        {title: 'Local IP', select: 'lan_ip' },
+                        {title: 'Remote IP', select: 'remote_ip' },
+                        {title: 'Remote Country', select: 'remote_country' },
+                        {title: 'From', select: 'mailfrom' },
+                        {title: 'To', select: 'receiptto' },
+                        {title: 'Reply To', select: 'reply_to' },
+                        {title: 'In Reply To', select: 'in_reply_to' },
+                        {title: 'Subject', select: 'subject' },
+                        {title: "IOC", select: "ioc"},
+                        {title: "IOC Type", select: "ioc_typeIndicator"},
+                        {title: "IOC Stage", select: "ioc_typeInfection"},
+                        {title: "IOC Rule", select: "ioc_rule"},
+                        {title: "IOC Severity", select: "ioc_severity"},
+                        {title: "IOC Count", select: "ioc_count"},
+                    ]
+                }
                 var file = {
                     query: 'SELECT '+
-                            '\'file\' AS type, '+
+                            '\'File\' AS type, '+
                             '`time` as raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -369,7 +419,7 @@ module.exports = function(pool) {
                 }
                 var endpoint = {
                     query: 'SELECT '+
-                            '\'endpoint\' AS type, '+
+                            '\'Endpoint\' AS type, '+
                             '`time` as raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -396,68 +446,6 @@ module.exports = function(pool) {
                         {title: "Alert Info", select: "alert_info"},
                     ]
                 }
-                var stealth_conn = {
-                    query: 'SELECT '+
-                            '\'stealth\' AS type,'+
-                            '`time` AS raw_time,'+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-                            '`src_ip`,'+
-                            '`dst_ip`,'+
-                            '(`in_bytes` / 1048576) AS in_bytes,'+
-                            '(`out_bytes` / 1048576) AS out_bytes,'+
-                            '`in_packets`,'+
-                            '`out_packets` '+
-                        'FROM '+
-                            '`stealth_conn_meta` '+
-                        'WHERE '+
-                            '`time` BETWEEN ? AND ? '+
-                            'AND `src_ip`= ? '+
-                            'AND `in_bytes` > 0 '+
-                            'AND `out_bytes` > 0 '+
-                            'LIMIT 250',
-                    insert: [start, end, req.query.lan_ip],
-                    params: [
-                        {title: "Time", select: "time"},
-                        {title: "Source IP", select: "src_ip"},
-                        {title: "Destination IP", select: "dst_ip"},
-                        {title: "MB from Remote", select: "in_bytes"},
-                        {title: "MB to Remote", select: "out_bytes"},
-                        {title: "Packets from Remote", select: "in_packets"},
-                        {title: "Packets to Remote", select: "out_packets"}
-                    ]
-                }
-                var stealth_drop = {
-                    query: 'SELECT '+
-                            '\'stealth_drop\' AS type, '+
-                            '`time` AS raw_time,'+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-                            '`src_ip`, '+
-                            '`dst_ip`, '+
-                            '(`in_bytes` / 1048576) AS in_bytes,'+
-                            '(`out_bytes` / 1048576) AS out_bytes,'+
-                            '`in_packets`, '+
-                            '`out_packets` '+
-                        'FROM '+
-                            '`stealth_conn_meta` '+
-                        'WHERE '+
-                            'time BETWEEN ? AND ? '+
-                            'AND `src_ip` = ? '+
-                            'AND (`in_bytes` = 0 OR `out_bytes` = 0)'+
-                            'LIMIT 250',
-                    insert: [start, end, req.query.lan_ip],
-                    params: [
-                        {title: "Time", select: "time"},
-                        {title: "Source IP", select: "src_ip"},
-                        {title: "Destination IP", select: "dst_ip"},
-                        {title: "MB from Remote", select: "in_bytes"},
-                        {title: "MB to Remote", select: "out_bytes"},
-                        {title: "Packets from Remote", select: "in_packets"},
-                        {title: "Packets to Remote", select: "out_packets"}
-                    ]
-                }
-
                 async.parallel([
                     // Table function(s)
                     function(callback) { // conn
@@ -500,6 +488,11 @@ module.exports = function(pool) {
                     },
                     function(callback) { // ssl
                         new lanegraph(ssl, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                            handleReturn(data, callback);
+                        });
+                    },
+                    function(callback) { // email
+                        new lanegraph(email, {database: database, pool:pool, lanes: lanes}, function(err, data){
                             handleReturn(data, callback);
                         });
                     },
@@ -584,7 +577,7 @@ module.exports = function(pool) {
                         // SWIMLANE QUERIES
                         var conn = {
                             query: 'SELECT '+
-                                    '\'conn\' AS type, '+
+                                    '\'Conn\' AS type, '+
                                     '`time` as raw_time, '+
                                     'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                     'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -632,9 +625,39 @@ module.exports = function(pool) {
                                 {title: "IOC Rule", select: "ioc_rule"},
                             ]
                         }
+                        var stealth_drop = {
+                            query: 'SELECT '+
+                                    '\'Stealth_drop\' AS type, '+
+                                    '`time` AS raw_time,'+
+                                    'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                                    'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+                                    '`src_ip`, '+
+                                    '`dst_ip`, '+
+                                    '(`in_bytes` / 1048576) AS in_bytes,'+
+                                    '(`out_bytes` / 1048576) AS out_bytes,'+
+                                    '`in_packets`, '+
+                                    '`out_packets` '+
+                                'FROM '+
+                                    '`stealth_conn_meta` '+
+                                'WHERE '+
+                                    'time BETWEEN ? AND ? '+
+                                    'AND `src_ip` = ? '+
+                                    'AND (`in_bytes` = 0 OR `out_bytes` = 0)'+
+                                'LIMIT 250',
+                            insert: [start, end, req.query.lan_ip],
+                            params: [
+                                {title: "Time", select: "time"},
+                                {title: "Source IP", select: "src_ip"},
+                                {title: "Destination IP", select: "dst_ip"},
+                                {title: "MB from Remote", select: "in_bytes"},
+                                {title: "MB to Remote", select: "out_bytes"},
+                                {title: "Packets from Remote", select: "in_packets"},
+                                {title: "Packets to Remote", select: "out_packets"}
+                            ]
+                        }
                         var application = {
                             query: 'SELECT '+
-                                    '\'applications\' AS type, '+
+                                    '\'Applications\' AS type, '+
                                     '`time` as raw_time, '+
                                     'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                     'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -685,7 +708,7 @@ module.exports = function(pool) {
                         }
                         var dns = {
                             query: 'SELECT '+
-                                    '\'dns\' AS type,'+
+                                    '\'DNS\' AS type,'+
                                     '`time` AS raw_time,'+
                                     'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                     'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
@@ -725,7 +748,7 @@ module.exports = function(pool) {
                         }
                         var http = {
                             query: 'SELECT '+
-                                    '\'http\' AS type, '+
+                                    '\'HTTP\' AS type, '+
                                     '`time` as raw_time, '+
                                     'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                     'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -767,7 +790,7 @@ module.exports = function(pool) {
                         }
                         var ssl = {
                             query: 'SELECT '+
-                                    '\'ssl\' AS type, '+
+                                    '\'SSL\' AS type, '+
                                     '`time` as raw_time, '+
                                     'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                     'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -803,9 +826,59 @@ module.exports = function(pool) {
                                 {title: "IOC Rule", select: "ioc_rule"},
                             ]
                         }
+                        var email = {
+                            query: 'SELECT '+
+                                    '\'Email\' AS type, '+
+                                    '`time` as raw_time, '+
+                                    'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                                    'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                                    '`machine`,'+
+                                    '`lan_zone`,'+
+                                    '`lan_ip`,'+
+                                    '`remote_ip`,'+
+                                    '`remote_country`,'+
+                                    '`mailfrom`,'+
+                                    '`receiptto`,'+
+                                    '`reply_to`,'+
+                                    '`in_reply_to`,'+
+                                    '`subject`,'+
+                                    '`ioc`,'+
+                                    '`ioc_typeIndicator`,'+
+                                    '`ioc_typeInfection`, '+    
+                                    '`ioc_rule`,'+
+                                    '`ioc_severity`,'+
+                                    '`ioc_count` '+
+                                'FROM '+
+                                    '`smtp_ioc` '+
+                                'WHERE '+
+                                    '`time` BETWEEN ? AND ? '+
+                                    'AND `lan_zone`= ?'+
+                                    'AND `lan_ip`= ?'+
+                                'LIMIT 250',
+                            insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+                            params: [
+                                {title: "Time", select: "time"},
+                                {title: 'Zone', select: 'lan_zone' },
+                                {title: 'Machine Name', select: 'machine' },
+                                {title: 'Local IP', select: 'lan_ip' },
+                                {title: 'Remote IP', select: 'remote_ip' },
+                                {title: 'Remote Country', select: 'remote_country' },
+                                {title: 'From', select: 'mailfrom' },
+                                {title: 'To', select: 'receiptto' },
+                                {title: 'Reply To', select: 'reply_to' },
+                                {title: 'In Reply To', select: 'in_reply_to' },
+                                {title: 'Subject', select: 'subject' },
+                                {title: "IOC", select: "ioc"},
+                                {title: "IOC Type", select: "ioc_typeIndicator"},
+                                {title: "IOC Stage", select: "ioc_typeInfection"},
+                                {title: "IOC Rule", select: "ioc_rule"},
+                                {title: "IOC Severity", select: "ioc_severity"},
+                                {title: "IOC Count", select: "ioc_count"},
+                            ]
+                        }
                         var file = {
                             query: 'SELECT '+
-                                    '\'file\' AS type, '+
+                                    '\'File\' AS type, '+
                                     '`time` as raw_time, '+
                                     'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                     'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -844,7 +917,7 @@ module.exports = function(pool) {
                         }
                         var endpoint = {
                             query: 'SELECT '+
-                                    '\'endpoint\' AS type, '+
+                                    '\'Endpoint\' AS type, '+
                                     '`time` as raw_time, '+
                                     'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                     'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -869,36 +942,6 @@ module.exports = function(pool) {
                                 {title: "Alert Source", select: "alert_source"},
                                 {title: "Program Source", select: "program_source"},
                                 {title: "Alert Info", select: "alert_info"},
-                            ]
-                        }
-                        var stealth_drop = {
-                            query: 'SELECT '+
-                                    '\'stealth_drop\' AS type, '+
-                                    '`time` AS raw_time,'+
-                                    'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                                    'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-                                    '`src_ip`, '+
-                                    '`dst_ip`, '+
-                                    '(`in_bytes` / 1048576) AS in_bytes,'+
-                                    '(`out_bytes` / 1048576) AS out_bytes,'+
-                                    '`in_packets`, '+
-                                    '`out_packets` '+
-                                'FROM '+
-                                    '`stealth_conn_meta` '+
-                                'WHERE '+
-                                    'time BETWEEN ? AND ? '+
-                                    'AND `src_ip` = ? '+
-                                    'AND (`in_bytes` = 0 OR `out_bytes` = 0)'+
-                                'LIMIT 250',
-                            insert: [start, end, req.query.lan_ip],
-                            params: [
-                                {title: "Time", select: "time"},
-                                {title: "Source IP", select: "src_ip"},
-                                {title: "Destination IP", select: "dst_ip"},
-                                {title: "MB from Remote", select: "in_bytes"},
-                                {title: "MB to Remote", select: "out_bytes"},
-                                {title: "Packets from Remote", select: "in_packets"},
-                                {title: "Packets to Remote", select: "out_packets"}
                             ]
                         }
                         // USER TREE
@@ -1204,8 +1247,13 @@ module.exports = function(pool) {
                                     handleReturn(data, callback);
                                 });
                             },
-                            function(callback) { // file
+                            function(callback) { // email
                                 new lanegraph(file, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                    handleReturn(data, callback);
+                                });
+                            },
+                            function(callback) { // file
+                                new lanegraph(email, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                     handleReturn(data, callback);
                                 });
                             },
