@@ -2234,7 +2234,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 var xAxis = d3.svg.axis()
                     .scale(x1)
                     .orient('bottom')
-                    // .tickFormat(d3.time.format('%a %d'))
+                     .tickFormat(d3.time.format('%H:%M'))
                     .tickSize(1)
                     .tickPadding(8);
                 
@@ -2749,6 +2749,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     elm.style('cursor', 'pointer');
                                 })
                                 .on("click", function(d){
+
+                                    itemRects.selectAll('g').each(function(d){
+                                        var elm = d3.select(this);
+                                        
+                                        elm.attr('class', null);
+                                    })
                                     // un-highlight previous box
                                     $('#'+previousID).attr('class', null);
                                     // this closes the last expanded block if there is one
@@ -2766,7 +2772,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // scroll to position
 
                                     scrollSide(d.id);
-                                   // prevPos = currPos;
+                                    // prevPos = currPos;
 
                                     // set ids for cross-refrence
                                     previousID = d.id;
@@ -2787,6 +2793,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         ////////////////////
                         /// SIDEBAR LIST ///
                         ////////////////////
+
+
                         infoDiv.selectAll('li').remove();
                         infoDiv.selectAll('li').data(data).enter()
                             .append('li').each(function(d){
@@ -2872,11 +2880,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .style('display', 'none')
                                     .attr('class', 'infoDivExpanded')
                                     .attr('id', d.id);
-                            })
-
+                            });
+                        //infoDiv.selectAll('li')[0].reverse();
+                            //[0].reverse();
                     }
                 }
-
+                
                 // function listItems
 
             });
