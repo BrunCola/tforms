@@ -19,6 +19,13 @@ module.exports = function (sql, conn, callback) {
 					if (sql.params[d].dView === undefined) {
 						sql.params[d].dView = true;
 					}
+					if ((sql.params[d].access !== undefined) && (typeof sql.params[d].access === 'array')) {
+						if (sql.settings.access.indexOf(sql.params[d].access) !== -1) {
+							sql.params[d].dView = true;
+						} else {
+							sql.params[d].dView = false;
+						}
+					}
 					if (sql.params[d].select === 'Archive') {
 						sql.params[d].select = null;
 					}

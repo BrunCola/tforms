@@ -1,6 +1,6 @@
 'use strict';
 
-var datatable_stealth = require('../constructors/datatable_stealth'),
+var datatable = require('../constructors/datatable'),
     query = require('../constructors/query'),
     config = require('../../config/config'),
     async = require('async');
@@ -176,6 +176,8 @@ module.exports = function(pool) {
                                 '`remote_asn_name`,'+
                                 '`remote_country`,'+
                                 '`remote_cc`,'+
+                                'lan_user, '+ // STEALTH FIX
+                                'stealth, '+ // STEALTH FIX
                                 'sum(`in_packets`) AS in_packets,'+
                                 'sum(`out_packets`) AS out_packets,'+
                                 'sum(`in_bytes`) AS in_bytes,'+
@@ -210,6 +212,8 @@ module.exports = function(pool) {
                                 crumb: false
                             },
                         },
+                        { title: 'Stealth', select: 'stealth', access: [3] },
+                        { title: 'User', select: 'lan_user', access: [3] },
                         { title: 'Severity', select: 'ioc_severity' },
                         { title: 'IOC Hits', select: 'ioc_count' },
                         { title: 'IOC', select: 'ioc' },
@@ -239,29 +243,9 @@ module.exports = function(pool) {
                     settings: {
                         sort: [[1, 'desc']],
                         div: 'table',
-                        title: 'Indicators of Compromise (IOC) Notifications'
+                        title: 'Indicators of Compromise (IOC) Notifications',
+                        access: req.session.passport.user.level // NOTE: THIS IS IF ACCESS IS DEFINED IN COLUMNS ABOVE
                     }
-                }
-                var table2 = {
-                    query: 'SELECT '+
-                                'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ 
-                                '`stealth_COIs`, ' +
-                                '`stealth`, '+
-                                '`lan_ip`, ' +
-                                '`event`, ' +
-                                '`user` ' +
-                            'FROM ' + 
-                                '`endpoint_tracking` '+
-                            'WHERE ' + 
-                                'stealth > 0 '+
-                                'AND event = "Log On" ',
-                    insert: [],
-                    params: [
-                        { title: 'Stealth', select: 'stealth' },
-                        { title: 'COI Groups', select: 'stealth_COIs' },
-                        { title: 'User', select: 'user' }
-                    ],
-                    settings: {}
                 }
                 var crossfilterQ = {
                     query: 'SELECT '+
@@ -290,7 +274,7 @@ module.exports = function(pool) {
                 async.parallel([
                     // Table function(s)
                     function(callback) {
-                        new datatable_stealth(table1, table2, parseInt(req.session.passport.user.level), {database: database, pool: pool}, function(err,data){
+                        new datatable(table1, {database: database, pool: pool}, function(err,data){
                             tables.push(data);
                             callback();
                         });
