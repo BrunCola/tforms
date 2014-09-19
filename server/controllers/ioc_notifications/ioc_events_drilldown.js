@@ -515,6 +515,108 @@ module.exports = function(pool) {
                         {title: "IOC Rule", select: "ioc_rule"},
                     ]
                 }
+                var email = {
+                    query: 'SELECT '+
+                            '\'Email\' AS type, '+
+                            '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                            '`machine`,'+
+                            '`lan_zone`,'+
+                            '`lan_ip`,'+
+                            '`remote_ip`,'+
+                            '`remote_country`,'+
+                            '`mailfrom`,'+
+                            '`receiptto`,'+
+                            '`reply_to`,'+
+                            '`in_reply_to`,'+
+                            '`subject`,'+
+                            '`ioc`,'+
+                            '`ioc_typeIndicator`,'+
+                            '`ioc_typeInfection`, '+    
+                            '`ioc_rule`,'+
+                            '`ioc_severity`,'+
+                            '`ioc_count` '+
+                        'FROM '+
+                            '`smtp` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                            'AND `lan_zone`= ?'+
+                            'AND `lan_ip`= ?'+
+                        'LIMIT 250',
+                    insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+                    params: [
+                        {title: "Time", select: "time"},
+                        {title: 'Zone', select: 'lan_zone' },
+                        {title: 'Machine Name', select: 'machine' },
+                        {title: 'Local IP', select: 'lan_ip' },
+                        {title: 'Remote IP', select: 'remote_ip' },
+                        {title: 'Remote Country', select: 'remote_country' },
+                        {title: 'From', select: 'mailfrom' },
+                        {title: 'To', select: 'receiptto' },
+                        {title: 'Reply To', select: 'reply_to' },
+                        {title: 'In Reply To', select: 'in_reply_to' },
+                        {title: 'Subject', select: 'subject' },
+                        {title: "IOC", select: "ioc"},
+                        {title: "IOC Type", select: "ioc_typeIndicator"},
+                        {title: "IOC Stage", select: "ioc_typeInfection"},
+                        {title: "IOC Rule", select: "ioc_rule"},
+                        {title: "IOC Severity", select: "ioc_severity"},
+                        {title: "IOC Count", select: "ioc_count"},
+                    ]
+                }
+                var email_ioc = {
+                    query: 'SELECT '+
+                            '\'Email_ioc\' AS type, '+
+                            '`time` as raw_time, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                            '`machine`,'+
+                            '`lan_zone`,'+
+                            '`lan_ip`,'+
+                            '`remote_ip`,'+
+                            '`remote_country`,'+
+                            '`mailfrom`,'+
+                            '`receiptto`,'+
+                            '`reply_to`,'+
+                            '`in_reply_to`,'+
+                            '`subject`,'+
+                            '`ioc`,'+
+                            '`ioc_typeIndicator`,'+
+                            '`ioc_typeInfection`, '+    
+                            '`ioc_rule`,'+
+                            '`ioc_severity`,'+
+                            '`ioc_count` '+
+                        'FROM '+
+                            '`smtp_ioc` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                            'AND `lan_zone`= ? '+
+                            'AND `lan_ip`=? '+
+                            'AND `remote_ip`= ? '+
+                            'AND `ioc`= ? '++
+                        'LIMIT 250',
+                    insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+                    params: [
+                        {title: "Time", select: "time"},
+                        {title: 'Zone', select: 'lan_zone' },
+                        {title: 'Machine Name', select: 'machine' },
+                        {title: 'Local IP', select: 'lan_ip' },
+                        {title: 'Remote IP', select: 'remote_ip' },
+                        {title: 'Remote Country', select: 'remote_country' },
+                        {title: 'From', select: 'mailfrom' },
+                        {title: 'To', select: 'receiptto' },
+                        {title: 'Reply To', select: 'reply_to' },
+                        {title: 'In Reply To', select: 'in_reply_to' },
+                        {title: 'Subject', select: 'subject' },
+                        {title: "IOC", select: "ioc"},
+                        {title: "IOC Type", select: "ioc_typeIndicator"},
+                        {title: "IOC Stage", select: "ioc_typeInfection"},
+                        {title: "IOC Rule", select: "ioc_rule"},
+                        {title: "IOC Severity", select: "ioc_severity"},
+                        {title: "IOC Count", select: "ioc_count"},
+                    ]
+                }
                 var file = {
                     query: 'SELECT '+
                             '\'file\' AS type, '+
@@ -693,6 +795,16 @@ module.exports = function(pool) {
                     },
                     function(callback) { // ssl_ioc
                         new lanegraph(ssl_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                            handleReturn(data, callback);
+                        });
+                    },
+                    function(callback) { // email
+                        new lanegraph(email, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                            handleReturn(data, callback);
+                        });
+                    },
+                    function(callback) { // email ioc
+                        new lanegraph(email_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
                             handleReturn(data, callback);
                         });
                     },
@@ -1165,6 +1277,108 @@ module.exports = function(pool) {
                             {title: "IOC Rule", select: "ioc_rule"},
                         ]
                     }
+                    var email = {
+                        query: 'SELECT '+
+                                '\'Email\' AS type, '+
+                                '`time` as raw_time, '+
+                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                                '`machine`,'+
+                                '`lan_zone`,'+
+                                '`lan_ip`,'+
+                                '`remote_ip`,'+
+                                '`remote_country`,'+
+                                '`mailfrom`,'+
+                                '`receiptto`,'+
+                                '`reply_to`,'+
+                                '`in_reply_to`,'+
+                                '`subject`,'+
+                                '`ioc`,'+
+                                '`ioc_typeIndicator`,'+
+                                '`ioc_typeInfection`, '+    
+                                '`ioc_rule`,'+
+                                '`ioc_severity`,'+
+                                '`ioc_count` '+
+                            'FROM '+
+                                '`smtp_ioc` '+
+                            'WHERE '+
+                                '`time` BETWEEN ? AND ? '+
+                                'AND `lan_zone`= ?'+
+                                'AND `lan_ip`= ?'+
+                            'LIMIT 250',
+                        insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+                        params: [
+                            {title: "Time", select: "time"},
+                            {title: 'Zone', select: 'lan_zone' },
+                            {title: 'Machine Name', select: 'machine' },
+                            {title: 'Local IP', select: 'lan_ip' },
+                            {title: 'Remote IP', select: 'remote_ip' },
+                            {title: 'Remote Country', select: 'remote_country' },
+                            {title: 'From', select: 'mailfrom' },
+                            {title: 'To', select: 'receiptto' },
+                            {title: 'Reply To', select: 'reply_to' },
+                            {title: 'In Reply To', select: 'in_reply_to' },
+                            {title: 'Subject', select: 'subject' },
+                            {title: "IOC", select: "ioc"},
+                            {title: "IOC Type", select: "ioc_typeIndicator"},
+                            {title: "IOC Stage", select: "ioc_typeInfection"},
+                            {title: "IOC Rule", select: "ioc_rule"},
+                            {title: "IOC Severity", select: "ioc_severity"},
+                            {title: "IOC Count", select: "ioc_count"},
+                        ]
+                    }
+                    var email_ioc = {
+                        query: 'SELECT '+
+                                '\'Email_ioc\' AS type, '+
+                                '`time` as raw_time, '+
+                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                                '`machine`,'+
+                                '`lan_zone`,'+
+                                '`lan_ip`,'+
+                                '`remote_ip`,'+
+                                '`remote_country`,'+
+                                '`mailfrom`,'+
+                                '`receiptto`,'+
+                                '`reply_to`,'+
+                                '`in_reply_to`,'+
+                                '`subject`,'+
+                                '`ioc`,'+
+                                '`ioc_typeIndicator`,'+
+                                '`ioc_typeInfection`, '+    
+                                '`ioc_rule`,'+
+                                '`ioc_severity`,'+
+                                '`ioc_count` '+
+                            'FROM '+
+                                '`smtp_ioc` '+
+                            'WHERE '+
+                                '`time` BETWEEN ? AND ? '+
+                                'AND `lan_zone`= ? '+
+                                'AND `lan_ip`=? '+
+                                'AND `remote_ip`= ? '+
+                                'AND `ioc`= ? '++
+                            'LIMIT 250',
+                        insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+                        params: [
+                            {title: "Time", select: "time"},
+                            {title: 'Zone', select: 'lan_zone' },
+                            {title: 'Machine Name', select: 'machine' },
+                            {title: 'Local IP', select: 'lan_ip' },
+                            {title: 'Remote IP', select: 'remote_ip' },
+                            {title: 'Remote Country', select: 'remote_country' },
+                            {title: 'From', select: 'mailfrom' },
+                            {title: 'To', select: 'receiptto' },
+                            {title: 'Reply To', select: 'reply_to' },
+                            {title: 'In Reply To', select: 'in_reply_to' },
+                            {title: 'Subject', select: 'subject' },
+                            {title: "IOC", select: "ioc"},
+                            {title: "IOC Type", select: "ioc_typeIndicator"},
+                            {title: "IOC Stage", select: "ioc_typeInfection"},
+                            {title: "IOC Rule", select: "ioc_rule"},
+                            {title: "IOC Severity", select: "ioc_severity"},
+                            {title: "IOC Count", select: "ioc_count"},
+                        ]
+                    }
                     var file = {
                         query: 'SELECT '+
                                     '\'file\' AS type, '+
@@ -1409,7 +1623,17 @@ module.exports = function(pool) {
                             new lanegraph(ssl_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                 handleReturn(data, callback);
                             });
-                        },                        
+                        },
+                        function(callback) { // email
+                            new lanegraph(email, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },
+                        function(callback) { // email ioc
+                            new lanegraph(email_ioc, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                handleReturn(data, callback);
+                            });
+                        },                   
                         function(callback) { // file
                             new lanegraph(file, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                 handleReturn(data, callback);
