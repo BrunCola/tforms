@@ -2296,7 +2296,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
 
                 $scope.point = function(element, nickname, name, id) {
-                    if (nickname.search("IOC") !== -1) {
+                    if (nickname.search("ioc") !== -1) {
                         element.attr('class', 'IOC');
                         element = element.append('g')
                             .attr('transform', 'translate(-18, -6)scale(0.8)');

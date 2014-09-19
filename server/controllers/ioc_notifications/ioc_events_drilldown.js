@@ -101,7 +101,7 @@ module.exports = function(pool) {
                 }
                 var conn_ioc = {
                     query: 'SELECT '+
-                            '\'Conn_ioc\' AS type, '+
+                            '\'Conn_IOC\' AS type, '+
                             '`time` AS raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") AS time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+ // Last Seen
