@@ -594,7 +594,7 @@ module.exports = function(pool) {
                             'AND `lan_zone`= ? '+
                             'AND `lan_ip`=? '+
                             'AND `remote_ip`= ? '+
-                            'AND `ioc`= ? '++
+                            'AND `ioc`= ? '+
                         'LIMIT 250',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
@@ -1356,7 +1356,7 @@ module.exports = function(pool) {
                                 'AND `lan_zone`= ? '+
                                 'AND `lan_ip`=? '+
                                 'AND `remote_ip`= ? '+
-                                'AND `ioc`= ? '++
+                                'AND `ioc`= ? '+
                             'LIMIT 250',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
