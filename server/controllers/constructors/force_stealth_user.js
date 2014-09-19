@@ -5,15 +5,12 @@ var config = require('../../config/config');
 module.exports = function (sql, conn, callback) {
     var nodes = [], uniqueNodes = [];
     var links = [], uniqueLinks = {};
-    var count = 0;
-    var crossfilterData = crossfilter();
     conn.pool.getConnection(function(err, connection) {
         connection.changeUser({database : conn.database}, function(err) {
             if (err) throw err;
         });
         connection.query(sql.query)
             .on('result', function(data){
-                count++;
                 // SETTING UP UNIQUE NODES
                 // if coi is not in uniqe coi array
                 if (uniqueNodes.indexOf(data.group) === -1) {
@@ -61,29 +58,73 @@ module.exports = function (sql, conn, callback) {
                 // SETTING UP LINKS
                 // for every item that is in 'uniqueLinks' object, with more than one children in 'nodesIn', push links
                 for (var i in uniqueLinks) {
+                    // console.log(i)
                     // continue if item is in more than 1 node
-                    if (uniqueLinks[i].nodesIn.length > 1) {
+                    if (Object.keys(uniqueLinks[i].nodesIn).length > 1) {
                         // get keys in 'nodesIn'
-                        var arr = Object.keys(uniqueLinks[i].nodesIn);
+                        var arr = Object.keys(uniqueLinks[i].nodesIn).sort();
                         // set source of link ALSO REMEMBER THE FIRST NODE FOR LOOPING THE CONNECTIONS
-                        var source = uniqueLinks[i].nodesIn[0];
-                        for (var o = 0; o < uniqueLinks[i].nodesIn; o++) {
-
+                        // set first node in case of more than 2 children
+                        var source = uniqueNodes.indexOf(arr[0]), target;
+                        for (var o = 1; o < arr.length; o++) {
+                             // if index (o) is at the end of the array AND the array is greater than 2
+                            if ((o === arr.length-1) && (arr.length > 2)) {
+                                // set source back to begining
+                                source = uniqueNodes.indexOf(arr[arr.length-1]);
+                                target = uniqueNodes.indexOf(arr[0]);
+                            } else {
+                                target = uniqueNodes.indexOf(arr[o])
+                            }
+                            // push values to links
+                            links.push({
+                                "source": source,
+                                "target": target,
+                                "value": 1
+                            })
+                            // set source to current target
+                            source = uniqueNodes.indexOf(arr[o]);
                         }
                     }
                 }
-                console.log(count)
-                console.log(uniqueLinks)
+                // REDUCE GENERATED LINKS 
+                var uniqueSources = {};
+                for (var i in links) {
+                    // for every value in links, check if it is in our unique obj
+                    if (!(links[i].source in uniqueSources)) {
+                        // if not, create a new source parent and push in the target with value
+                        uniqueSources[links[i].source] = {};
+                        uniqueSources[links[i].source][links[i].target] = links[i].value;
+                    } else {
+                        // do the same thing if just the target doesnt exist in the source
+                        if (!(links[i].target in uniqueSources[links[i].source])) {
+                            uniqueSources[links[i].source] = {};
+                            uniqueSources[links[i].source][links[i].target] = links[i].value;
+                        // otherwise just increase the existing value
+                        } else {
+                            uniqueSources[links[i].source][links[i].target] += links[i].value;
+                        }
+                    }
+                }
+                // clear original links array
+                links = [];
+                // push in the values of our reduce object
+                for (var s in uniqueSources) {
+                    for (var t in uniqueSources[s]) {
+                        links.push({
+                            "source": parseInt(s),
+                            "target": parseInt(t),
+                            "value": uniqueSources[s][t]
+                        })
+                    }
+                }
                 connection.release();
                 var results = {
-                    links: uniqueLinks,
-                    nodes: nodes
+                    nodes: nodes,
+                    links: links
                 };
                 callback(null, results);
             }); 
-            connection.release();
-            //group by type and push a main and sub-group for each time slice
-            
+            connection.release();            
         
     })
 };
