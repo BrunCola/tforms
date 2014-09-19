@@ -38,9 +38,9 @@ module.exports = function(pool) {
 
             var lanes;
             if (req.session.passport.user.level === 3) {
-                lanes = ['ioc', 'conn', 'applications', 'stealth', 'dns', 'http', 'ssl', 'Email', 'file', 'endpoint'];
+                lanes = ['IOC', 'Conn', 'Applications', 'Stealth', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
             } else {
-                lanes = ['ioc', 'conn', 'applications', 'dns', 'http', 'ssl', 'Email', 'file', 'endpoint'];
+                lanes = ['IOC', 'Conn', 'Applications', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
             }
             var result = {
                 lanes: lanes,
@@ -50,7 +50,7 @@ module.exports = function(pool) {
             if (req.query.type === 'drill') {
                 var conn = {
                     query: 'SELECT '+
-                            '\'conn\' AS type, '+
+                            '\'Conn\' AS type, '+
                             '`time` AS raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") AS time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+
@@ -101,7 +101,7 @@ module.exports = function(pool) {
                 }
                 var conn_ioc = {
                     query: 'SELECT '+
-                            '\'conn_ioc\' AS type, '+
+                            '\'Conn_ioc\' AS type, '+
                             '`time` AS raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") AS time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+ // Last Seen
@@ -154,7 +154,7 @@ module.exports = function(pool) {
                 }
                 var application = {
                     query: 'SELECT '+
-                            '\'applications\' AS type, '+
+                            '\'Applications\' AS type, '+
                             '`time` as raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -205,7 +205,7 @@ module.exports = function(pool) {
                 }
                 var stealth_conn = {
                     query: 'SELECT '+
-                            '\'stealth\' AS type, '+
+                            '\'Stealth\' AS type, '+
                             '`time` as raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -236,7 +236,7 @@ module.exports = function(pool) {
                 }
                 var stealth_drop = {
                     query: 'SELECT '+
-                            '\'stealth_drop\' AS type, '+
+                            '\'Stealth_drop\' AS type, '+
                             '`time` as raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -266,7 +266,7 @@ module.exports = function(pool) {
                 }
                 var dns = {
                     query: 'SELECT '+
-                            '\'dns\' AS type,'+
+                            '\'DNS\' AS type,'+
                             '`time` AS raw_time,'+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
@@ -306,7 +306,7 @@ module.exports = function(pool) {
                 }
                 var dns_ioc = {
                     query: 'SELECT '+
-                            '\'dns_ioc\' AS type, '+
+                            '\'DNS_ioc\' AS type, '+
                             '`time` as raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -349,7 +349,7 @@ module.exports = function(pool) {
                 }
                 var http = {
                     query: 'SELECT '+
-                            '\'http\' AS type, '+
+                            '\'HTTP\' AS type, '+
                             '`time` as raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -389,10 +389,10 @@ module.exports = function(pool) {
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
                     ]
-                }
+                }   
                 var http_ioc = {
                     query: 'SELECT '+
-                            '\'http_ioc\' AS type, '+
+                            '\'HTTP_ioc\' AS type, '+
                             '`time` as raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -437,7 +437,7 @@ module.exports = function(pool) {
                 }
                 var ssl = {
                     query: 'SELECT '+
-                            '\'ssl\' AS type, '+
+                            '\'SSL\' AS type, '+
                             '`time` as raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -476,7 +476,7 @@ module.exports = function(pool) {
                 }
                 var ssl_ioc = {
                     query: 'SELECT '+
-                            '\'ssl_ioc\' AS type, '+
+                            '\'SSL_ioc\' AS type, '+
                             '`time` as raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -619,7 +619,7 @@ module.exports = function(pool) {
                 }
                 var file = {
                     query: 'SELECT '+
-                            '\'file\' AS type, '+
+                            '\'File\' AS type, '+
                             '`time` as raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -659,7 +659,7 @@ module.exports = function(pool) {
                 }
                 var file_ioc = {
                     query: 'SELECT '+
-                            '\'file_ioc\' AS type, '+
+                            '\'File_ioc\' AS type, '+
                             '`time` as raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -701,7 +701,7 @@ module.exports = function(pool) {
                 }
                 var endpoint = {
                     query: 'SELECT '+
-                                '\'endpoint\' AS type,'+
+                                '\'Endpoint\' AS type,'+
                                 '`time` AS raw_time,'+
                                 'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
@@ -844,7 +844,7 @@ module.exports = function(pool) {
                     var crossfilter;
                     var conn = {
                         query: 'SELECT '+
-                                '\'conn\' AS type, '+
+                                '\'Conn\' AS type, '+
                                 '`time` as raw_time, '+
                                 'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -895,7 +895,7 @@ module.exports = function(pool) {
                     }
                     var conn_ioc = {
                         query: 'SELECT '+
-                                '\'conn_ioc\' AS type, '+
+                                '\'Conn_ioc\' AS type, '+
                                 '`time` as raw_time, '+
                                 'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
@@ -948,7 +948,7 @@ module.exports = function(pool) {
                     }
                     var application = {
                         query: 'SELECT '+
-                                '\'applications\' AS type, '+
+                                '\'Applications\' AS type, '+
                                 '`time` as raw_time, '+
                                 'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -999,7 +999,7 @@ module.exports = function(pool) {
                     }
                     var stealth_drop = {
                         query: 'SELECT '+
-                                '\'stealth_drop\' AS type, '+
+                                '\'Stealth_drop\' AS type, '+
                                 '`time` AS raw_time,'+
                                 'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
@@ -1029,7 +1029,7 @@ module.exports = function(pool) {
                     } 
                     var dns = {
                         query: 'SELECT '+
-                                '\'dns\' AS type, '+
+                                '\'DNS\' AS type, '+
                                 '`time` as raw_time, '+
                                 'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -1069,7 +1069,7 @@ module.exports = function(pool) {
                     }
                     var dns_ioc = {
                         query: 'SELECT '+
-                                '\'dns_ioc\' AS type, '+
+                                '\'DNS_ioc\' AS type, '+
                                 '`time` as raw_time, '+
                                 'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -1111,7 +1111,7 @@ module.exports = function(pool) {
                     }
                     var http = {
                         query: 'SELECT '+
-                                '\'http\' AS type, '+
+                                '\'HTTP\' AS type, '+
                                 '`time` as raw_time, '+
                                 'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -1154,7 +1154,7 @@ module.exports = function(pool) {
                     }
                     var http_ioc = {
                         query: 'SELECT '+
-                                '\'http_ioc\' AS type, '+
+                                '\'HTTP_ioc\' AS type, '+
                                 '`time` as raw_time, '+
                                 'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -1199,7 +1199,7 @@ module.exports = function(pool) {
                     }                    
                     var ssl = {
                         query: 'SELECT '+
-                                '\'ssl\' AS type, '+
+                                '\'SSL\' AS type, '+
                                 '`time` as raw_time, '+
                                 'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -1238,7 +1238,7 @@ module.exports = function(pool) {
                     }
                     var ssl_ioc = {
                         query: 'SELECT '+
-                                '\'ssl_ioc\' AS type, '+
+                                '\'SSL_ioc\' AS type, '+
                                 '`time` as raw_time, '+
                                 'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -1381,7 +1381,7 @@ module.exports = function(pool) {
                     }
                     var file = {
                         query: 'SELECT '+
-                                    '\'file\' AS type, '+
+                                    '\'File\' AS type, '+
                                     '`time` as raw_time, '+
                                     'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                     'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -1421,7 +1421,7 @@ module.exports = function(pool) {
                     }
                     var file_ioc = {
                         query: 'SELECT '+
-                                '\'file_ioc\' AS type, '+
+                                '\'File_ioc\' AS type, '+
                                 '`time` as raw_time, '+
                                 'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
@@ -1463,7 +1463,7 @@ module.exports = function(pool) {
                     }
                     var endpoint = {
                        query: 'SELECT '+
-                                '\'endpoint\' AS type,'+
+                                '\'Endpoint\' AS type,'+
                                 '`time` AS raw_time,'+
                                 'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+

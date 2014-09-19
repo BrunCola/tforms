@@ -6,37 +6,37 @@ module.exports = function (sql, conn, callback) {
     var results = [];
     function laneInfo(d) {
         switch(d.type) {
-            case 'conn':
+            case 'Conn':
                 return d.time_info+': '+d.lan_ip+' connected to '+d.remote_ip;
-            case 'conn_ioc':
+            case 'Conn_ioc':
                 return d.time_info+': IOC - '+d.ioc;
-            case 'applications':
+            case 'Applications':
                 return d.time_info+': Application - '+d.l7_proto;
-            case 'stealth':
+            case 'Stealth':
                 return d.time_info+': Stealth securely connected '+d.src_ip+' with '+d.dst_ip;
-            case 'stealth_drop':
+            case 'Stealth_drop':
                 return d.time_info+': Stealth dropped connection attempts between '+d.src_ip+' and '+d.dst_ip;
-            case 'dns':
+            case 'DNS':
                 return d.time_info+': DNS query for '+d.query;
-            case 'dns_ioc':
+            case 'DNS_ioc':
                 return d.time_info+': IOC - '+d.ioc;
-            case 'http':
+            case 'HTTP':
                 return d.time_info+': HTTP connection to '+d.host+d.uri;
-            case 'http_ioc':
+            case 'HTTP_ioc':
                 return d.time_info+': IOC - '+d.ioc;
-            case 'ssl':
+            case 'SSL':
                 return d.time_info+': SSL connection to '+d.server_name;
-            case 'ssl_ioc':
+            case 'SSL_ioc':
                 return d.time_info+': IOC - '+d.ioc;
             case 'Email':
                 return d.time_info+': Email - '+d.subject;
             case 'Email_ioc':
                 return d.time_info+': IOC - '+d.ioc;
-            case 'file':
+            case 'File':
                 return d.time_info+': File Seen - '+d.name;
-            case 'file_ioc':
+            case 'File_ioc':
                 return d.time_info+': IOC - '+d.ioc;
-            case 'endpoint':
+            case 'Endpoint':
                 return d.time_info+': '+d.event_type;
             default:
                 return d.time;
