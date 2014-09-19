@@ -2296,6 +2296,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
 
                 $scope.point = function(element, nickname, name, id) {
+                    //console.log(nickname);
                     if (nickname.search("ioc") !== -1) {
                         element.attr('class', 'ioc');
                         element = element.append('g')
@@ -2362,6 +2363,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .attr('d', 'M29.697,13.898c0,0-14.47-0.037-14.68-0.037c-1.021,0-1.435,0.647-1.562,1.289l-2.414,10.508h16.716'+
                                         'c1.146,0,2.19-0.821,2.383-1.871l1.399-7.859C31.778,14.706,31.227,13.848,29.697,13.898z')
                                     .attr('fill', '#595A5C');
+                                return;
+                            case 'conn_ioc':
+                                console.log("test");
                                 return;
                             case 'conn':
                                 element.append('circle')

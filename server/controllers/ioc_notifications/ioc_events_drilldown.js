@@ -1343,7 +1343,7 @@ module.exports = function(pool) {
                                 '`remote_ip`, '+
                                 'count(*) as count '+
                             'FROM '+
-                                '`conn_ioc '+
+                                '`conn_ioc` '+
                             'WHERE '+
                                 'time BETWEEN ? AND ? '+
                                 'AND `lan_ip`= ? '+
