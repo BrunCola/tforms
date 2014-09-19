@@ -418,31 +418,35 @@ module.exports = function(pool) {
                 }
                 var endpoint = {
                     query: 'SELECT '+
-                            '\'Endpoint\' AS type, '+
-                            '`time` as raw_time, '+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-                            '`src_ip`,'+
-                            '`dst_ip`,'+
-                            '`src_user`,'+
-                            '`alert_source`,'+
-                            '`program_source`,'+
-                            '`alert_info` '+
-                        'FROM '+
-                            '`ossec` '+
-                        'WHERE '+
-                            '`time` BETWEEN ? AND ? '+
-                            'AND `src_ip`= ? '+
+                                '\'Endpoint\' AS type,'+
+                                '`time` AS raw_time,'+
+                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+                                '`lan_zone`,'+
+                                '`lan_machine`,'+
+                                '`lan_user`,'+
+                                '`lan_ip`,'+
+                                '`event_src`,'+
+                                '`event_id`,'+
+                                '`event_type`,'+
+                                '`event_detail` '+
+                            'FROM '+
+                                '`endpoint_events` '+
+                            'WHERE '+
+                                '`time` BETWEEN ? AND ? '+
+                                'AND `lan_ip` = ? '+
                         'LIMIT 250',
                     insert: [start, end, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
-                        {title: "User", select: "src_user"},
-                        {title: "Source IP", select: "src_ip"},
-                        {title: "Destination IP", select: "dst_ip"},
-                        {title: "Alert Source", select: "alert_source"},
-                        {title: "Program Source", select: "program_source"},
-                        {title: "Alert Info", select: "alert_info"},
+                        {title: "Zone", select: "lan_zone"},
+                        {title: "Machine Name", select: "lan_machine"},
+                        {title: "User", select: "lan_user"},
+                        {title: "Lan IP", select: "lan_ip"},
+                        {title: "Event Type", select: "event_type"},
+                        {title: "Event Detail", select: "event_detail"},
+                        {title: "Event Source", select: "event_src"},
+                        {title: "Event ID", select: "event_id"},
                     ]
                 }
                 async.parallel([
@@ -914,32 +918,36 @@ module.exports = function(pool) {
                             ]
                         }
                         var endpoint = {
-                            query: 'SELECT '+
-                                    '\'Endpoint\' AS type, '+
-                                    '`time` as raw_time, '+
+                           query: 'SELECT '+
+                                    '\'Endpoint\' AS type,'+
+                                    '`time` AS raw_time,'+
                                     'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                                    'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-                                    '`src_ip`,'+
-                                    '`dst_ip`,'+
-                                    '`src_user`,'+
-                                    '`alert_source`,'+
-                                    '`program_source`,'+
-                                    '`alert_info` '+
+                                    'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+                                    '`lan_zone`,'+
+                                    '`lan_machine`,'+
+                                    '`lan_user`,'+
+                                    '`lan_ip`,'+
+                                    '`event_src`,'+
+                                    '`event_id`,'+
+                                    '`event_type`,'+
+                                    '`event_detail` '+
                                 'FROM '+
-                                    '`ossec` '+
+                                    '`endpoint_events` '+
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
-                                    'AND `src_ip`= ? '+
+                                    'AND `lan_ip` = ? '+
                                 'LIMIT 250',
                             insert: [start, end, req.query.lan_ip],
                             params: [
                                 {title: "Time", select: "time"},
-                                {title: "User", select: "src_user"},
-                                {title: "Source IP", select: "src_ip"},
-                                {title: "Destination IP", select: "dst_ip"},
-                                {title: "Alert Source", select: "alert_source"},
-                                {title: "Program Source", select: "program_source"},
-                                {title: "Alert Info", select: "alert_info"},
+                                {title: "Zone", select: "lan_zone"},
+                                {title: "Machine Name", select: "lan_machine"},
+                                {title: "User", select: "lan_user"},
+                                {title: "Lan IP", select: "lan_ip"},
+                                {title: "Event Type", select: "event_type"},
+                                {title: "Event Detail", select: "event_detail"},
+                                {title: "Event Source", select: "event_src"},
+                                {title: "Event ID", select: "event_id"},
                             ]
                         }
                         // USER TREE
