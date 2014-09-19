@@ -37,9 +37,9 @@ module.exports = function(pool) {
             }
             var lanes;
             if (req.session.passport.user.level === 3) {
-                lanes = ['IOC', 'Conn', 'Stealth', 'Applications', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
+                lanes = ['Conn', 'Stealth', 'Applications', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
             } else {
-                lanes = ['IOC', 'Conn', 'Applications', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
+                lanes = ['Conn', 'Applications', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
             }
             var result = {
                 lanes: lanes,
@@ -50,7 +50,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                             '\'Conn\' AS type, '+
                             '`time` as raw_time, '+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s.%f") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                             '`ioc_count`,'+
                             '`lan_zone`,'+
