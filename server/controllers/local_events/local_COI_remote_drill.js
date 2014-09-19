@@ -50,7 +50,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                             '\'Conn\' AS type, '+
                             '`time` as raw_time, '+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s.%f") as time_info, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                             '`ioc_count`,'+
                             '`lan_zone`,'+
