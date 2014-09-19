@@ -354,10 +354,9 @@ module.exports = function(pool) {
                             '`smtp` '+
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
-                            'AND `lan_zone`= ?'+
                             'AND `lan_ip`= ?'+
                         'LIMIT 250',
-                    insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+                    insert: [start, end, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
                         {title: 'Zone', select: 'lan_zone' },
@@ -852,10 +851,9 @@ module.exports = function(pool) {
                                     '`smtp_ioc` '+
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
-                                    'AND `lan_zone`= ?'+
                                     'AND `lan_ip`= ?'+
                                 'LIMIT 250',
-                            insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+                            insert: [start, end, req.query.lan_ip],
                             params: [
                                 {title: "Time", select: "time"},
                                 {title: 'Zone', select: 'lan_zone' },
