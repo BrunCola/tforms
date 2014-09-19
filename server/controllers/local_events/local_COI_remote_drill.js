@@ -1246,12 +1246,12 @@ module.exports = function(pool) {
                                 });
                             },
                             function(callback) { // email
-                                new lanegraph(file, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                new lanegraph(email, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                     handleReturn(data, callback);
                                 });
                             },
                             function(callback) { // file
-                                new lanegraph(email, {database: database, pool:pool, lanes: lanes}, function(err, data){
+                                new lanegraph(file, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                     handleReturn(data, callback);
                                 });
                             },
@@ -1260,7 +1260,8 @@ module.exports = function(pool) {
                                     handleReturn(data, callback);
                                 });
                             },
-                            function(callback) { // TREE CHART
+                            // TREE CHART
+                            function(callback) { 
                                 async.parallel([
                                     function(callback) { // conn
                                         new query(tree_conn, {database: database, pool: pool}, function(err,data){

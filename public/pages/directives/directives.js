@@ -642,6 +642,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
         }
     };
 }]);
+
 angular.module('mean.pages').directive('universalSearch', function() {
     return {
         link: function($scope, element, attrs) {
@@ -2136,7 +2137,6 @@ angular.module('mean.pages').directive('makeTreeChart', ['$timeout', '$rootScope
     };
 }]);
 
-
 angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'appIcon', '$rootScope', function ($timeout, $location, appIcon, $rootScope) {
     return {
         link: function ($scope, element, attrs) {
@@ -2159,7 +2159,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         });
                     });
                 }
-
 
                 $scope.$broadcast('spinnerHide')
 
@@ -2261,8 +2260,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr("y", function(d, i) {return y1(i + .5);})
                     .attr("dy", ".5ex")
                     .attr("text-anchor", "end");
-
-                
 
                 function colors(title) {
                     switch(title){
@@ -2509,7 +2506,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr("y", 1)
                     .attr("height", mainHeight);
 
-                
                 var itemRects = main.append("g")
                     .attr("clip-path", "url(#clip)");
                 
@@ -2544,8 +2540,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             mouseup('nav');
                         }
                     });
-
-
                 var qMarkButton = buttonHolder
                     .append('button')
                     .html('?')
@@ -2568,8 +2562,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             "needed.",
                             "Event Timeline Navigation");
                     });
-
-
 
                 // var timeShiftHolder = d3.select("#lanegraph").append('div').attr('class', 'timeShiftHolder');
                 // var nextTime = timeShiftHolder
@@ -2598,7 +2590,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 var infoHeight = element.height();
                 var infoTitle = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
                 var infoDiv = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
-
 
                 // function timeShift(cmd) {
                 //     // calculate what the current time shift would be (forward or back)
