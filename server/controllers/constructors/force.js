@@ -10,12 +10,14 @@ module.exports = function (sql, conn, lanIP, callback) {
 		name: lanIP,
 		group: 1
 	});
-	conn.pool.getConnection(function(err, connection) {
+
+
+conn.pool.getConnection(function(err, connection) {
 		connection.changeUser({database : conn.database}, function(err) {
 			if (err) throw err;
 		});
 		connection.query(sql.query, sql.insert)
-			.on('result', function(data){
+			.on('result', function(data){			
 				if (data.remote_ip.match(/(^192\.168|^10|^172\.16)\.(\d+)/g) === true) {
 					node.push({
 						name: data.remote_ip,
@@ -34,6 +36,19 @@ module.exports = function (sql, conn, lanIP, callback) {
 					source: count++,
 					value: data.count
 				});
+
+			node.push({
+				name: data.remote_ip,
+				group: 2,
+				width: data.count
+			});
+
+			link.push({
+				target: 0,
+				source: count++,
+				value: data.count
+			});
+
 			})
 			.on('end', function(){
 				connection.release();

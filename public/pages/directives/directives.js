@@ -2293,6 +2293,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
 
                 $scope.point = function(element, nickname, name, id) {
+                    //console.log(nickname);
                     if (nickname.search("ioc") !== -1) {
                         element.attr('class', 'IOC');
                         element = element.append('g')
