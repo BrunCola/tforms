@@ -1577,7 +1577,13 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                             if (d.class === 'child') {
                                 return  170;
                             } else {
-                                return  width/2;
+                                var w;
+                                if (width/2 > 600) {
+                                    w = 600;
+                                } else {
+                                    w = width/2;
+                                }
+                                return w;
                             }
                         })
                         .charge(-500)
