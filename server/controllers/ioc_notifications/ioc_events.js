@@ -1,6 +1,6 @@
 'use strict';
 
-var datatable = require('../constructors/datatable'),
+var dataTable = require('../constructors/datatable'),
     query = require('../constructors/query'),
     config = require('../../config/config'),
     async = require('async');
@@ -274,7 +274,7 @@ module.exports = function(pool) {
                 async.parallel([
                     // Table function(s)
                     function(callback) {
-                        new datatable(table1, {database: database, pool: pool}, function(err,data){
+                        new dataTable(table1, {database: database, pool: pool}, function(err,data){
                             tables.push(data);
                             callback();
                         });
