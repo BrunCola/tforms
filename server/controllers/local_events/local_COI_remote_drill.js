@@ -49,9 +49,9 @@ module.exports = function(pool) {
                 var conn = {
                     query: 'SELECT '+
                                 '\'Conn\' AS type, '+
-                                '`time` as raw_time, '+
-                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                                '`time` AS raw_time, '+
+                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") AS time_info, '+
+                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+
                                 '`ioc_count`,'+
                                 '`lan_zone`,'+
                                 '`machine`,'+
@@ -473,7 +473,6 @@ module.exports = function(pool) {
                     ]
                 }
                 async.parallel([
-                    // Table function(s)
                     function(callback) { // conn
                         new lanegraph(conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
                             handleReturn(data, callback);
@@ -1196,7 +1195,7 @@ module.exports = function(pool) {
                                         '`stealth_conn_meta` '+
                                     'WHERE '+
                                         '`time` BETWEEN ? AND ? '+
-                                        'AND `src_ip`= ? '+
+                                        'AND `lan_ip`= ? '+
                                         'AND `in_bytes` > 0 '+
                                         'AND `out_bytes` > 0 '+
                                     'GROUP BY '+
@@ -1215,7 +1214,7 @@ module.exports = function(pool) {
                                         '`stealth_conn_meta` '+
                                     'WHERE '+
                                         'time BETWEEN ? AND ? '+
-                                        'AND `src_ip` = ? '+
+                                        'AND `lan_ip` = ? '+
                                         'AND (`in_bytes` = 0 OR `out_bytes` = 0) '+
                                     'GROUP BY '+
                                         '`remote_ip`'+
