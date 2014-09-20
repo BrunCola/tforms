@@ -1,6 +1,6 @@
 'use strict';
 
-var datatable_stealth = require('../constructors/datatable_stealth'),
+var dataTable = require('../constructors/datatable'),
 config = require('../../config/config'),
 async = require('async');
 
@@ -8,31 +8,31 @@ module.exports = function(pool) {
 	return {
 		render: function(req, res) {
 			var database = req.session.passport.user.database;
-			// var database = null;
 			var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 			var end = Math.round(new Date().getTime() / 1000);
 			if (req.query.start && req.query.end) {
 				start = req.query.start;
 				end = req.query.end;
 			}
-			//var results = [];
 			if (req.query.lan_zone && req.query.lan_ip && req.query.remote_ip && req.query.l7_proto) {
 				var tables = [];
 				var info = [];
 				var table1 = {
 					query: 'SELECT '+
 							'date_format(from_unixtime(conn.time), "%Y-%m-%d %H:%i:%s") AS time,'+
+                            '`stealth`,'+
+                            '`lan_zone`,'+
 							'`machine`,'+
-							'`l7_proto`,'+
-							'`lan_zone`,'+
-							'conn.lan_ip,'+
-							'`lan_port`,'+
-							'`remote_ip`,'+
-							'`remote_port`,'+
-							'`remote_cc`,'+
-							'`remote_country`,'+
-							'`remote_asn`,'+
-							'`remote_asn_name`,'+
+                            '`lan_user`,'+
+                            '`lan_ip`,'+
+                            '`lan_port`,'+
+                            '`remote_ip`,'+
+                            '`remote_port`,'+
+                            '`remote_cc`,'+
+                            '`remote_country`,'+
+                            '`remote_asn`,'+
+                            '`remote_asn_name`,'+
+                            '`l7_proto`,'+
 							'(`in_bytes` / 1024) AS `in_bytes`,'+
 							'(`out_bytes` / 1024) AS `out_bytes`,'+
 							'`in_packets`,'+
@@ -62,8 +62,10 @@ module.exports = function(pool) {
 					params: [
 						{ title: 'Time', select: 'time' },
 						{ title: 'Applications', select: 'l7_proto' },
-						{ title: 'Zone', select: 'lan_zone' },
-						{ title: 'Machine Name', select: 'machine' },
+						{ title: 'Stealth', select: 'stealth', access: [3] },
+                        { title: 'Zone', select: 'lan_zone' },
+						{ title: 'Machine', select: 'machine' },
+                        { title: 'Local User', select: 'lan_user' },
 						{ title: 'Local IP', select: 'lan_ip' },
 						{ title: 'Local port', select: 'lan_port' },
 						{ title: 'Remote IP', select: 'remote_ip'},
@@ -96,32 +98,11 @@ module.exports = function(pool) {
 						title: 'Common IP Connections between Remote and Local Host'
 					}
 				}
-				var table2 = {
-					query: 'SELECT '+
-							'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ 
-							'`stealth_COIs`, ' +
-							'`stealth`, '+
-							'`lan_ip`, ' +
-							'`event`, ' +
-							'`user` ' +
-						'FROM ' + 
-							'`endpoint_tracking` '+
-						'WHERE ' + 
-							'stealth > 0 '+
-							'AND event = "Log On" ',
-					insert: [],
-					params: [
-						{ title: 'Stealth', select: 'stealth' },
-						{ title: 'COI Groups', select: 'stealth_COIs' },
-						{ title: 'User', select: 'user' }
-					],
-					settings: {}
-				}
 				async.parallel([
 					// Table function(s)
 					function(callback) {
-						new datatable_stealth(table1, table2, parseInt(req.session.passport.user.level), {database: database, pool: pool}, function(err,data){
-							tables.push(data);
+						new dataTable(table1, {database: database, pool: pool}, function(err,data){
+                    		tables.push(data);
 							callback();
 						});
 					},

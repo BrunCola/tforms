@@ -541,7 +541,16 @@ module.exports = function(pool) {
                 if (req.query.lan_ip && (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1)) {
                     switch (req.query.type) {
                         case 'remote_ip_conn_meta':
-                            new query({query: 'SELECT DISTINCT `remote_ip` FROM `conn_meta` WHERE ( `time` BETWEEN ? AND ? ) AND ( `lan_ip` = ? ) AND ( `lan_zone` = "Stealth") ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                            new query({
+                                    query:  'SELECT DISTINCT '+
+                                                '`remote_ip` '+
+                                            'FROM '+
+                                                '`conn_meta` '+
+                                            'WHERE '+
+                                                '`time` BETWEEN ? AND ? '+
+                                                'AND `lan_ip` = ? '+
+                                                'AND `lan_zone` = "Stealth" ', 
+                                    insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
                                 if (data) {
                                     res.json(data.length);
                                 }

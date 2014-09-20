@@ -9,7 +9,6 @@ module.exports = function(pool) {
 	return {
 		render: function(req, res) {
 			var database = req.session.passport.user.database;
-			// var database = null;
 			var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 			var end = Math.round(new Date().getTime() / 1000);
 			if (req.query.start && req.query.end) {
@@ -17,13 +16,11 @@ module.exports = function(pool) {
 				end = req.query.end;
 			}
 			if (req.query.remote_ip) {
-				//var results = [];
 				var tables = [];
 				var crossfilter = [];
 				var info = [];
 				var table1 = {
 					query: 'SELECT '+
-							// SELECTS
 							'sum(`count`) AS `count`,'+
 							'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time,'+
 							'`l7_proto`,'+
@@ -43,7 +40,6 @@ module.exports = function(pool) {
 							'sum(`smtp`) AS `smtp`,'+
 							'sum(`file`) AS `file`,'+
 							'sum(`ioc_count`) AS `ioc_count` '+
-							// !SELECTS
 						'FROM `conn_l7_meta` '+
 						'WHERE '+
 							'`time` BETWEEN ? AND ? '+
