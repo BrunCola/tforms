@@ -1374,8 +1374,6 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                         var scale = (maxv-minv) / (maxp-minp);
                         return Math.exp(minv + scale*(x-minp));
                     }
-
-                    var circleWidth = 2;
                     
                     var vis = d3.select("#forcechart")
                         .append("svg:svg")
@@ -1399,7 +1397,9 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
 
                     var link = vis.selectAll(".link")
                         .data(data.links)
-                        .enter().append("line")
+                        .enter().append('g')
+                        .attr('class', 'linkgroup')
+                        .append("line")
                         .attr("class", "link")
                         .style("stroke", "#259286")
                         .attr('stroke-width', function(d){
@@ -1488,11 +1488,41 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                                 //     .attr("fill", '#fff')
                                 //     .style("stroke-width", "14px")
                                 //     .style("stroke", "#259286")
+
                         }
-                    })
+                    });
+
+                    //TEXT appends value
+
+                    // link.each(function(d){
+                    //     var elm = d3.select(this)
+                    //     elm.append("text")
+                    //         .text(function(d, i) { return d.value; })
+                    //         .attr("x", 100)
+                    //         .attr("y", 100)
+                    //         .attr("fill", '#000')
+                    //         .style("font-size", '2em')
+                    //         // .attr("text-anchor", 'middle')
+                    // })
+
+
+                    var linktext = d3.selectAll('.linkgroup')
+                        // .append('g')
+                    linktext.append('text')
+                        .attr("x", 100)
+                        .attr("y", 100)
+                        .attr("fill", '#000')
+                        .style('font-size', '4em')
+                        .attr("text-anchor", 'middle')
+                        .text(function(d) { return d.value; });
 
 
                     force.on("tick", function(e) {
+
+                        // linktext.attr("transform", function(d, i) {
+                        //     return "translate(" + (d.source.x) + "," + (d.target.y) + ")";
+                        // });
+
                         node.attr("transform", function(d, i) {
                             return "translate(" + d.x + "," + d.y + ")";
                         });
