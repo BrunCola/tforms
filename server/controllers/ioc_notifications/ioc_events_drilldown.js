@@ -57,6 +57,7 @@ module.exports = function(pool) {
                             '`ioc_count`,'+
                             '`lan_zone`,'+
                             '`machine`,'+
+                            '`lan_user`,'+
                             '`lan_ip`,'+
                             '`lan_port`,'+
                             '`remote_ip`,'+
@@ -83,6 +84,7 @@ module.exports = function(pool) {
                         {title: "Time", select: "time"},
                         {title: "Zone", select: "lan_zone"},
                         {title: "Machine", select: "machine"},
+                        {title: "Local User", select: "lan_user"},
                         {title: "Local IP", select: "lan_ip"},
                         {title: "Local Port", select: "lan_port"},
                         {title: "Remote IP", select: "remote_ip"},
@@ -108,6 +110,7 @@ module.exports = function(pool) {
                             '`ioc_count`,'+
                             '`lan_zone`,'+
                             '`machine`,'+
+                            '`lan_user`,'+
                             '`lan_ip`,'+
                             '`lan_port`,'+
                             '`remote_ip`,'+
@@ -136,6 +139,7 @@ module.exports = function(pool) {
                         {title: "Time", select: "time"},
                         {title: "Zone", select: "lan_zone"},
                         {title: "Machine", select: "machine"},
+                        {title: "Local User", select: "lan_user"},
                         {title: "Local IP", select: "lan_ip"},
                         {title: "Local Port", select: "lan_port"},
                         {title: "Remote IP", select: "remote_ip"},
@@ -866,6 +870,7 @@ module.exports = function(pool) {
                                 '`ioc_count`,'+
                                 '`lan_zone`,'+
                                 '`machine`,'+
+                                '`lan_user`,'+
                                 '`lan_ip`,'+
                                 '`lan_port`,'+
                                 '`remote_ip`,'+
@@ -892,6 +897,7 @@ module.exports = function(pool) {
                             {title: "Time", select: "time"},
                             {title: "Zone", select: "lan_zone"},
                             {title: "Machine", select: "machine"},
+                            {title: "Local User", select: "lan_user"},
                             {title: "Local IP", select: "lan_ip"},
                             {title: "Local Port", select: "lan_port"},
                             {title: "Remote IP", select: "remote_ip"},
@@ -917,6 +923,7 @@ module.exports = function(pool) {
                                 '`ioc_count`,'+
                                 '`lan_zone`,'+
                                 '`machine`,'+
+                                '`lan_user`,'+
                                 '`lan_ip`,'+
                                 '`lan_port`,'+
                                 '`remote_ip`,'+
@@ -945,6 +952,7 @@ module.exports = function(pool) {
                             {title: "Time", select: "time"},
                             {title: "Zone", select: "lan_zone"},
                             {title: "Machine", select: "machine"},
+                            {title: "Local User", select: "lan_user"},
                             {title: "Local IP", select: "lan_ip"},
                             {title: "Local Port", select: "lan_port"},
                             {title: "Remote IP", select: "remote_ip"},
@@ -997,7 +1005,7 @@ module.exports = function(pool) {
                             {title: "Time", select: "time"},
                             {title: "Zone", select: "lan_zone"},
                             {title: "Machine", select: "machine"},
-                            {title: "User", select: "lan_user"},
+                            {title: "Local User", select: "lan_user"},
                             {title: "Local IP", select: "lan_ip"},
                             {title: "Local Port", select: "lan_port"},
                             {title: "Remote IP", select: "remote_ip"},
@@ -1142,7 +1150,6 @@ module.exports = function(pool) {
                                     '`time` as raw_time, '+
                                     'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                     'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-                                    '`ioc_count`,'+
                                     '`host`,'+
                                     '`uri`,'+
                                     '`referrer`,'+
@@ -1157,7 +1164,8 @@ module.exports = function(pool) {
                                     '`ioc_severity`,'+
                                     '`ioc_rule`,'+
                                     '`ioc_typeIndicator`,'+
-                                    '`ioc_typeInfection` '+
+                                    '`ioc_typeInfection`,'+
+                                    '`ioc_count` '+
                                 'FROM '+
                                     '`http_ioc` '+
                                 'WHERE '+
@@ -1524,72 +1532,74 @@ module.exports = function(pool) {
                     var info = {};
                     var InfoSQL = {
                         query: 'SELECT '+
-                                'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as last, '+
-                                'date_format(min(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as first, '+
-                                'sum(`in_packets`) as in_packets, '+
-                                'sum(`out_packets`) as out_packets, '+
-                                'sum(`in_bytes`) as in_bytes, '+
-                                'sum(`out_bytes`) as out_bytes, '+
-                                '`machine`, '+
-                                '`lan_zone`, '+
-                                '`lan_port`, '+
-                                '`remote_port`, '+
-                                '`remote_cc`, '+
-                                '`remote_country`, '+
-                                '`remote_asn`, '+
-                                '`remote_asn_name`, '+
-                                '`l7_proto`, '+
-                                '`ioc_rule`, '+
-                                '`ioc_typeIndicator` '+
-                            'FROM `conn_ioc` '+
-                            'WHERE '+
-                                '`lan_ip` = ? AND '+
-                                '`remote_ip` = ? AND '+
-                                '`ioc` = ? '+
-                            'LIMIT 1',
+                                    'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as last, '+
+                                    'date_format(min(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as first, '+
+                                    'sum(`in_packets`) as in_packets, '+
+                                    'sum(`out_packets`) as out_packets, '+
+                                    'sum(`in_bytes`) as in_bytes, '+
+                                    'sum(`out_bytes`) as out_bytes, '+
+                                    '`machine`, '+
+                                    '`lan_zone`, '+
+                                    '`lan_port`, '+
+                                    '`remote_port`, '+
+                                    '`remote_cc`, '+
+                                    '`remote_country`, '+
+                                    '`remote_asn`, '+
+                                    '`remote_asn_name`, '+
+                                    '`l7_proto`, '+
+                                    '`ioc_rule`, '+
+                                    '`ioc_typeIndicator` '+
+                                'FROM '+
+                                    '`conn_ioc` '+
+                                'WHERE '+
+                                    '`lan_ip` = ? '+
+                                    'AND `remote_ip` = ? '+
+                                    'AND `ioc` = ? '+
+                                'LIMIT 1',
                         insert: [req.query.lan_ip, req.query.remote_ip, req.query.ioc]
                     }
                     var Info2SQL = {
                         query: 'SELECT '+
-                            '`description` '+
-                            'FROM `ioc_parent` '+
-                            'WHERE '+
-                            '`ioc_parent` = ? '+
-                            'LIMIT 1',
+                                    '`description` '+
+                                'FROM '+
+                                    '`ioc_parent` '+
+                                'WHERE '+
+                                    '`ioc_parent` = ? '+
+                                'LIMIT 1',
                         insert: [req.query.ioc]
                     }
                     var treereturn = [];
                     var treeSQL = {
                         query: 'SELECT '+
-                                'ioc_attrID, '+
-                                'ioc_childID, '+
-                                'ioc_parentID, '+
-                                'ioc_typeIndicator, '+
-                                'ioc_severity, '+
-                                'conn_ioc.ioc '+
-                            'FROM '+
-                                '`conn_ioc` '+
-                            'WHERE '+
-                                'time BETWEEN ? AND ? '+
-                                'AND `lan_ip`= ? '+
-                            'GROUP BY '+
-                                ' ioc_parentID, '+
-                                'ioc_childID, '+
-                                'ioc_attrID',
+                                    'ioc_attrID, '+
+                                    'ioc_childID, '+
+                                    'ioc_parentID, '+
+                                    'ioc_typeIndicator, '+
+                                    'ioc_severity, '+
+                                    'conn_ioc.ioc '+
+                                'FROM '+
+                                    '`conn_ioc` '+
+                                'WHERE '+
+                                    'time BETWEEN ? AND ? '+
+                                    'AND `lan_ip` = ? '+
+                                'GROUP BY '+
+                                    'ioc_parentID, '+
+                                    'ioc_childID, '+
+                                    'ioc_attrID',
                         insert: [start, end, req.query.lan_ip]
                     }
                     var forcereturn = [];
                     var forceSQL = {
                         query: 'SELECT '+
-                                '`remote_ip`, '+
-                                'count(*) as count '+
-                            'FROM '+
-                                '`conn_ioc` '+
-                            'WHERE '+
-                                'time BETWEEN ? AND ? '+
-                                'AND `lan_ip`= ? '+
-                            'GROUP BY '+
-                                'remote_ip',
+                                    '`remote_ip`, '+
+                                    'count(*) as count '+
+                                'FROM '+
+                                    '`conn_ioc` '+
+                                'WHERE '+
+                                    'time BETWEEN ? AND ? '+
+                                    'AND `lan_ip`= ? '+
+                                'GROUP BY '+
+                                    'remote_ip',
                         insert: [start, end, req.query.lan_ip]
                     }
                     var lanIP = req.query.lan_ip;

@@ -48,38 +48,40 @@ module.exports = function(pool) {
             if (req.query.type === 'drill') {
                 var conn = {
                     query: 'SELECT '+
-                            '\'Conn\' AS type, '+
-                            '`time` as raw_time, '+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-                            '`ioc_count`,'+
-                            '`lan_zone`,'+
-                            '`machine`,'+
-                            '`lan_ip`,'+
-                            '`lan_port`,'+
-                            '`remote_ip`,'+
-                            '`remote_port`,'+
-                            '`remote_country`,'+
-                            '`remote_asn_name`,'+
-                            '`in_bytes`,'+
-                            '`out_bytes`,'+
-                            '`l7_proto`,'+
-                            '`ioc`,'+
-                            '`ioc_severity`,'+
-                            '`ioc_rule`,'+
-                            '`ioc_typeIndicator`,'+
-                            '`ioc_typeInfection` '+
-                        'FROM '+
-                            '`conn` '+
-                        'WHERE '+
-                            '`time` BETWEEN ? AND ? '+
-                            'AND `lan_ip`= ? '+
-                        'LIMIT 250',
+                                '\'Conn\' AS type, '+
+                                '`time` as raw_time, '+
+                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
+                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                                '`ioc_count`,'+
+                                '`lan_zone`,'+
+                                '`machine`,'+
+                                '`lan_user`,'+
+                                '`lan_ip`,'+
+                                '`lan_port`,'+
+                                '`remote_ip`,'+
+                                '`remote_port`,'+
+                                '`remote_country`,'+
+                                '`remote_asn_name`,'+
+                                '`in_bytes`,'+
+                                '`out_bytes`,'+
+                                '`l7_proto`,'+
+                                '`ioc`,'+
+                                '`ioc_severity`,'+
+                                '`ioc_rule`,'+
+                                '`ioc_typeIndicator`,'+
+                                '`ioc_typeInfection` '+
+                            'FROM '+
+                                '`conn` '+
+                            'WHERE '+
+                                '`time` BETWEEN ? AND ? '+
+                                'AND `lan_ip`= ? '+
+                            'LIMIT 250',
                     insert: [start, end, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
                         {title: "Zone", select: "lan_zone"},
                         {title: "Machine", select: "machine"},
+                        {title: "Local User", select: "lan_user"},
                         {title: "Local IP", select: "lan_ip"},
                         {title: "Local Port", select: "lan_port"},
                         {title: "Remote IP", select: "remote_ip"},
