@@ -145,7 +145,9 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 				max: maxUnix
 			};
 			//  grab more from api
+
 			var query = '/ioc_notifications/ioc_events_drilldown?start='+minUnix+'&end='+maxUnix+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc+'&ioc_attrID='+$location.$$search.ioc_attrID+'&type=drill';
+
 			$http({method: 'GET', url: query}).
 				success(function(data) {
 					$scope.crossfilterDeep = crossfilter();

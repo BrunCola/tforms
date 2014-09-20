@@ -23,10 +23,27 @@ module.exports = function(pool) {
                     query: 'SELECT `lan_user`, `group` FROM `stealth_user',
                     insert: []
                 }
+                var q1 = {
+                    query: 'SELECT '+
+                        '`lan_zone`, '+
+                        '`lan_user`, '+
+                        '`lan_ip`, '+
+                        '`remote_user`, '+
+                        '`remote_ip` '+
+                    'FROM '+
+                        '`stealth_conn_meta` '+
+                    'WHERE '+
+                        'time BETWEEN ? AND ? '+
+                        'AND (`in_bytes` = 0 OR `out_bytes` = 0) '+
+                    'GROUP BY'+
+                        '`lan_user`,'+
+                        '`remote_ip`',
+                    insert: [start, end]
+                }
                 async.parallel([
                     // Crossfilter function
                     function(callback) {
-                        new force_stealth_user(sql, {database: database, pool: pool}, function(err,data){
+                        new force_stealth_user(sql, [q1], {database: database, pool: pool}, function(err,data){
                             console.log(data)
                             force = data;
                             callback();

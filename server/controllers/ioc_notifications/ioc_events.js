@@ -169,35 +169,35 @@ module.exports = function(pool) {
                 var table1 = {
                     query: 'SELECT '+
                                 'max(date_format(from_unixtime(conn_ioc.time), "%Y-%m-%d %H:%i:%s")) AS time,'+
+                                '`stealth`,'+
                                 '`lan_zone`,'+
                                 '`machine`,'+
-                                'conn_ioc.lan_ip,'+
+                                '`lan_user`,'+
+                                '`lan_ip`,'+
                                 '`remote_ip`,'+
                                 '`remote_asn_name`,'+
                                 '`remote_country`,'+
                                 '`remote_cc`,'+
-                                'lan_user, '+ // STEALTH FIX
-                                'stealth, '+ // STEALTH FIX
                                 'sum(`in_packets`) AS in_packets,'+
                                 'sum(`out_packets`) AS out_packets,'+
                                 'sum(`in_bytes`) AS in_bytes,'+
                                 'sum(`out_bytes`) AS out_bytes,'+
-                                '`ioc_severity`,'+
                                 '`ioc`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`,'+
-                                '`ioc_attrID`,'+
                                 '`ioc_rule`,'+
+                                '`ioc_severity`,'+
+                                '`ioc_attrID`,'+
                                 'sum(`ioc_count`) AS ioc_count '+
                             'FROM '+
                                 '`conn_ioc` '+
                             'WHERE '+
-                                'conn_ioc.time BETWEEN ? AND ? '+
+                                '`time` BETWEEN ? AND ? '+
                                 'AND `ioc_count` > 0 '+
                                 'AND `trash` IS NULL '+
                             'GROUP BY '+
                                 '`lan_zone`,'+
-                                'conn_ioc.lan_ip,'+
+                                '`lan_ip`,'+
                                 '`remote_ip`,'+
                                 '`ioc`',
                     insert: [start, end],
@@ -213,7 +213,6 @@ module.exports = function(pool) {
                             },
                         },
                         { title: 'Stealth', select: 'stealth', access: [3] },
-                        { title: 'User', select: 'lan_user', access: [3] },
                         { title: 'Severity', select: 'ioc_severity' },
                         { title: 'IOC Hits', select: 'ioc_count' },
                         { title: 'IOC', select: 'ioc' },
@@ -222,6 +221,7 @@ module.exports = function(pool) {
                         { title: 'IOC Rule', select: 'ioc_rule' },
                         { title: 'Zone', select: 'lan_zone' },
                         { title: 'Machine', select: 'machine' },
+                        { title: 'Local User', select: 'lan_user' },
                         { title: 'Local IP', select: 'lan_ip' },
                         { title: 'Remote IP', select: 'remote_ip' },
                         { title: 'Remote Country', select: 'remote_country' },

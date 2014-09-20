@@ -642,6 +642,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
         }
     };
 }]);
+
 angular.module('mean.pages').directive('universalSearch', function() {
     return {
         link: function($scope, element, attrs) {
@@ -1384,7 +1385,13 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                         .nodes(data.nodes)
                         .links(data.links)
                         .gravity(0.1)
-                        .linkDistance(width/2)
+                        .linkDistance(function(d) { 
+                            if (d.class === 'child') {
+                                return  150;
+                            } else {
+                                return  width/2;
+                            }
+                        })
                         .charge(-500)
                         .size([width-50, height]);
 
@@ -1395,8 +1402,13 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                         .append("line")
                         .attr("class", "link")
                         .style("stroke", "#259286")
-                        .style('stroke-opacity', '0.3')
-                        .attr('stroke-width', '100');
+                        .attr('stroke-width', function(d){
+                            if (d.class === 'child'){
+                                return '15';
+                            } else {
+                                return '100';
+                            }
+                        });
 
                     var node = vis.selectAll("circle.node")
                         .data(data.nodes)
@@ -1407,62 +1419,75 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                     .call(force.drag);
 
                     node.each(function(d){
-                        var elm = d3.select(this)
-                        //CIRCLE
-                        elm.append("svg:circle")
-                            .attr("cx", function(d) { return d.x; })
-                            .attr("cy", function(d) { return d.y; })
-                            .attr("r", function (d) {return logslider(d["width"]); })
-                            // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
-                            .attr("fill", '#fff')
-                            .style("stroke-width", "14px")
-                            .style("stroke", "#259286")
+                        var elm = d3.select(this);
+                        // set force link width
+                        // force.attr('stroke-width', '100');
+                        switch(d.group) {
+                            case 'coi':
+                                //CIRCLE
+                                elm.append("svg:circle")
+                                    .attr("cx", function(d) { return d.x; })
+                                    .attr("cy", function(d) { return d.y; })
+                                    .attr("r", function (d) {return logslider(d["width"]); })
+                                    // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
+                                    .attr("fill", '#fff')
+                                    .style("stroke-width", "14px")
+                                    .style("stroke", "#259286")
 
-                        //TEXT appends name
-                        elm.append("text")
-                            // .text(function(d, i) { return d.name + '(' + count(d.width) + ')'; })
-                            .text(function(d, i) { return d.name; })
-                            .attr("x", 0)
-                            // .attr("y", function(d, i) { if (i>0) { return circleWidth + 40 }    else { return 8 } })
-                            // .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth - 70 } else { return 90 } })
-                            .attr("y", 90)
-                            .attr("font-family",  "Bree Serif")
-                            .attr("fill", '#c61c6f')
-                            .style("font-size", '2em')
-                            .attr("text-anchor", 'middle')
+                                //TEXT appends name
+                                elm.append("text")
+                                    // .text(function(d, i) { return d.name + '(' + count(d.width) + ')'; })
+                                    .text(function(d, i) { return d.name; })
+                                    .attr("x", function() { return circleWidth; })
+                                    // .attr("y", function(d, i) { if (i>0) { return circleWidth + 40 }    else { return 8 } })
 
-                        //TEXT appends count
-                        elm.append("text")
-                            .text(function(d, i) { return d.count; })
-                            .attr("x", 0)
-                            // .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth + 2 } else { return 40 } })
-                            .attr("y", 40)
-                            .attr("fill", '#515151')
-                            // .style("font-size", function(d, i) { if (d.name === 'ClearText') { return '5em' } else { return '10em'} })
-                            .style("font-size", '9em')
-                            .attr("text-anchor", 'middle')
+                                    .attr("y", function(d) { 
+                                        if (d.name === 'ClearText') { return circleWidth - 70 } else { return 90 } 
+                                    })
 
-                        // ICONS
-                        switch(d.name){
-                            case 'ClearText':
-                                elm.append('path')
-                                    .style('fill', '#259286')
-                                    .attr('d', 'M36.8,12.2L19.6,15l4.4-12L36.8,0V12.2z M3.8,20.8l9.2-3.7l5.4-11.4L3.8,20.8z M36.8,16.5l-18.6,3.8'+
-                                    'L17.5,37h19.3V16.5z M12.2,21.6l-9.8,3.6L0,37h10.3L12.2,21.6z M42.8,12.2L59.9,15l-4.6-12L42.8,0V12.2z M60.4,5.8l5.4,11.4l9.2,3.7'+
-                                    'L60.4,5.8z M42.8,37h20.4L61,20.3l-18.2-3.8V37z M68.6,37h10.3l-2.4-11.8l-9.8-3.6L68.6,37z M36.8,67.2l-17.3-2.8l4.4,12l12.8,3.1'+
-                                    'V67.2z M18.5,73.6l-5.4-11.4l-9.2-3.7L18.5,73.6z M36.8,42H17.5l0.7,16.8l18.6,2.1V42z M10.3,42H0l2.4,11.9l9.8,3.7L10.3,42z'+
-                                    ' M42.8,79.4l12.4-3.1l4.6-12l-17.1,2.8V79.4z M75.1,58.6l-9.2,3.7l-5.4,11.4L75.1,58.6z M42.8,60.9L61,58.8L63.2,42H42.8V60.9z'+
-                                    ' M66.7,57.5l9.8-3.7L78.9,42H68.6L66.7,57.5z')
-                                    .attr('transform', 'translate(-25,-115) scale(0.7)')
-                                break;
-                            default:
-                                elm.append('polygon')
-                                    .style('fill', '#515151')
-                                    .attr('points', '53,18 53,10 60,10 60,0 44,0 44,10 51,10 51,16 31,16 31,10 38,10 38,0 22,0 22,10 29,10 '+
-                                    '29,16 9,16 9,10 16,10 16,0 0,0 0,10 7,10 7,18 29,18 29,26 7,26 7,35 0,35 0,45 16,45 16,35 9,35 9,28 29,28 29,35 22,35 22,45 '+
-                                    '38,45 38,35 31,35 31,28 51,28 51,35 44,35 44,45 60,45 60,35 53,35 53,26 31,26 31,18 ')
-                                    .attr('transform', 'translate(-25,-110) scale(0.9)')
-                                break;
+                                    // .attr("font-family",  "Bree Serif")
+                                    .attr("fill", '#c61c6f')
+                                    .style("font-size",    function(d, i) {  return  "2em"; })
+                                    // .attr("text-anchor",  function(d, i) { if (i>0) { return  "beginning"; } else { return "end" } })
+                                    .attr("text-anchor", 'middle')
+
+
+                                //TEXT appends count
+                                elm.append("text")
+                                    .text(function(d, i) { return d.count; })
+                                    .attr("x", function() { return circleWidth; })
+                                    .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth + 2 } else { return 40 } })
+                                    .attr("fill", '#515151')
+                                    .style("font-size", function(d, i) { if (d.name === 'ClearText') { return '5em' } else { return '10em'} })
+                                    .attr("text-anchor", 'middle')
+
+                                // ICONS
+                                switch(d.name){
+                                    case 'ClearText':
+                                        elm.append('polygon')
+                                            .style('fill', '#ccc')
+                                            .attr('points', '36.8,0 24,3.1 19.6,15 36.8,12.2 ')
+                                            .attr('transform', 'translate(-25,40) scale(0.9)')
+                                        break;
+                                    default:
+                                        elm.append('polygon')
+                                            .style('fill', '#515151')
+                                            .attr('points', '53,18 53,10 60,10 60,0 44,0 44,10 51,10 51,16 31,16 31,10 38,10 38,0 22,0 22,10 29,10 '+
+                                            '29,16 9,16 9,10 16,10 16,0 0,0 0,10 7,10 7,18 29,18 29,26 7,26 7,35 0,35 0,45 16,45 16,35 9,35 9,28 29,28 29,35 22,35 22,45 '+
+                                            '38,45 38,35 31,35 31,28 51,28 51,35 44,35 44,45 60,45 60,35 53,35 53,26 31,26 31,18 ')
+                                            .attr('transform', 'translate(-25,-110) scale(0.9)')
+                                        break;
+                                }
+                            break;
+                            case 'child':
+                                // elm.append("svg:circle")
+                                //     .attr("cx", function(d) { return d.x; })
+                                //     .attr("cy", function(d) { return d.y; })
+                                //     .attr("r", function (d) {return 10; })
+                                //     // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
+                                //     .attr("fill", '#fff')
+                                //     .style("stroke-width", "14px")
+                                //     .style("stroke", "#259286")
                         }
                     });
 
@@ -2152,7 +2177,6 @@ angular.module('mean.pages').directive('makeTreeChart', ['$timeout', '$rootScope
     };
 }]);
 
-
 angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'appIcon', '$rootScope', function ($timeout, $location, appIcon, $rootScope) {
     return {
         link: function ($scope, element, attrs) {
@@ -2175,7 +2199,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         });
                     });
                 }
-
 
                 $scope.$broadcast('spinnerHide')
 
@@ -2250,7 +2273,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 var xAxis = d3.svg.axis()
                     .scale(x1)
                     .orient('bottom')
-                    // .tickFormat(d3.time.format('%a %d'))
+                     .tickFormat(d3.time.format('%H:%M'))
                     .tickSize(1)
                     .tickPadding(8);
                 
@@ -2277,8 +2300,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr("y", function(d, i) {return y1(i + .5);})
                     .attr("dy", ".5ex")
                     .attr("text-anchor", "end");
-
-                
 
                 function colors(title) {
                     switch(title){
@@ -2312,8 +2333,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
 
                 $scope.point = function(element, nickname, name, id) {
+                    //console.log(nickname);
                     if (nickname.search("ioc") !== -1) {
-                        element.attr('class', 'ioc');
+                        element.attr('class', 'IOC');
                         element = element.append('g')
                             .attr('transform', 'translate(-18, -6)scale(0.8)');
                         element.append('svg:path')
@@ -2338,13 +2360,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         switch(nickname){
                             case 'secure':
                                 element.append('circle')
-                                    .attr('fill', function(d){
-                                        if (d.ioc_count > 0) {
-                                            return '#e2a23c';
-                                        } else {
-                                            return '#A0BB71';
-                                        }
-                                    })
+                                    .attr('fill', function(d){ return '#A0BB71'; })
                                     .attr('cx', 18)
                                     .attr('cy', 18)
                                     .attr('r', 18);
@@ -2357,37 +2373,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         'c0,0.004,0,0.006,0,0.008v2.412h9.397v-2.412c0-0.002,0-0.004,0-0.008C22.92,11.126,21.315,8.754,18.184,8.754z')
                                     .attr('fill', '#A0BB71');
                                 return;
-                            case 'file':
+                            case 'Conn':
                                 element.append('circle')
-                                    .attr('fill', function(d){
-                                        if (d.ioc_count > 0) {
-                                            return '#d67636';
-                                        } else {
-                                            return '#B572AB';
-                                        }
-                                    })
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:path')
-                                    .attr('d', 'M13.702,12.807h13.189c-0.436-0.655-1.223-1.104-2.066-1.104c0,0-7.713,0-8.361,0'+
-                                        'c-0.386-0.796-1.278-1.361-2.216-1.361H7.562c-1.625,0-1.968,0.938-1.839,2.025l2.104,11.42c0.146,0.797,0.791,1.461,1.594,1.735'+
-                                        'c0,0,2.237-10.702,2.378-11.308C12.005,13.334,12.403,12.807,13.702,12.807z')
-                                    .attr('fill', '#595A5C');
-                                element.append('svg:path')
-                                    .attr('d', 'M29.697,13.898c0,0-14.47-0.037-14.68-0.037c-1.021,0-1.435,0.647-1.562,1.289l-2.414,10.508h16.716'+
-                                        'c1.146,0,2.19-0.821,2.383-1.871l1.399-7.859C31.778,14.706,31.227,13.848,29.697,13.898z')
-                                    .attr('fill', '#595A5C');
-                                return;
-                            case 'conn':
-                                element.append('circle')
-                                    .attr('fill', function(d){
-                                        if (d.ioc_count > 0) {
-                                            return '#d19d41';
-                                        } else {
-                                            return '#6FBF9B';
-                                        }
-                                    })
+                                    .attr('fill', function(d){ return '#6FBF9B'; })
                                     .attr('cx', 18)
                                     .attr('cy', 18)
                                     .attr('r', 18);
@@ -2398,15 +2386,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .attr('points', '10.99,17.822 3.916,23.166 10.99,28.51 10.99,25.744 24.287,25.744 24.287,20.59 10.99,20.59 ')
                                     .attr('fill', '#595A5C');
                                 return;
-                            case 'dns':
+                            case 'DNS':
                                 element.append('circle')
-                                    .attr('fill', function(d){
-                                        if (d.ioc_count > 0) {
-                                            return '#bf7d39';
-                                        } else {
-                                            return '#708EBC';
-                                        }
-                                    })
+                                    .attr('fill', function(d){ return '#708EBC'; })
                                     .attr('cx', 18)
                                     .attr('cy', 18)
                                     .attr('r', 18);
@@ -2421,15 +2403,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         'c-1.948,0-3.259,1.451-3.259,2.938C14.391,9.611,15.949,10.921,17.473,10.921z')
                                     .attr('fill', '#595A5C');
                                 return;
-                            case 'http':
+                            case 'HTTP':
                                 element.append('circle')
-                                    .attr('fill', function(d){
-                                        if (d.ioc_count > 0) {
-                                            return '#67AAB5';
-                                        } else {
-                                            return '#67AAB5';
-                                        }
-                                    })
+                                    .attr('fill', function(d){ return '#67AAB5'; })
                                     .attr('cx', 18)
                                     .attr('cy', 18)
                                     .attr('r', 18);
@@ -2444,7 +2420,19 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         'l0.959-3.195l-2.882-1.775L24.715,19.976z')
                                     .attr('fill', '#595A5C');
                                 return;
-                            case 'endpoint':
+                            case 'SSL':
+                                element.append('circle')
+                                    .attr('fill', function(d){ return '#A0BB71'; })
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                element.append('svg:path')
+                                    .attr('fill', '#58595B')
+                                    .attr('d', 'M25.5,16.1v-2.7h0c0,0,0,0,0,0c0-4.1-3.3-7.4-7.4-7.4c-4.1,0-7.4,3.3-7.4,7.4c0,0,0,0,0,0v2.7H9.3'+
+                                    'v11.8h17.8V16.1H25.5z M22.9,13.7v2.4h-9.4v-2.4c0,0,0,0,0,0c0-2.6,1.5-5,4.7-5C21.3,8.8,22.9,11.1,22.9,13.7'+
+                                    'C22.9,13.7,22.9,13.7,22.9,13.7z');
+                                return;
+                            case 'Endpoint':
                                 element.append('circle')
                                     .attr('fill', '#7E9E7B')
                                     .attr('cx', 18)
@@ -2456,7 +2444,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         'M28.477,22.072H7.635V10.074h20.842V22.072z')
                                     .attr('fill', '#595A5C');
                                 return;
-                            case 'stealth':
+                            case 'Stealth':
                                 element.append('circle')
                                     .attr('fill', '#0080CE')
                                     .attr('cx', 18)
@@ -2472,7 +2460,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
                                         'C11.076,16.238,11.938,20.26,13.699,23.661z');
                                 return;
-                            case 'stealth_drop':
+                            case 'Stealth_drop':
                                 element.append('circle')
                                     .attr('fill', '#D8464A')
                                     .attr('cx', 18)
@@ -2488,43 +2476,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
                                         'C11.076,16.238,11.938,20.26,13.699,23.661z');
                                 return;
-                            case 'applications':
+                            case 'Email':
                                 element.append('circle')
-                                    .attr('fill', '#DEDEDE')
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-
-                                element.append('rect')
-                                    .attr('x', 10)
-                                    .attr('y', 10)
-                                    .attr('height', 4)
-                                    .attr('width', 17)
-                                    .style('fill', '#5E5E5E');
-
-                                element.append('rect')
-                                    .attr('x', 10)
-                                    .attr('y', 16)
-                                    .attr('height', 4)
-                                    .attr('width', 17)
-                                    .style('fill', '#5E5E5E');
-
-                                element.append('rect')
-                                    .attr('x', 10)
-                                    .attr('y', 22)
-                                    .attr('height', 4)
-                                    .attr('width', 17)
-                                    .style('fill', '#5E5E5E');
-                                return;
-                            case 'email':
-                                element.append('circle')
-                                    .attr('fill', function(d){
-                                        if (d.ioc_count > 0) {
-                                            return '#A0BB71';
-                                        } else {
-                                            return '#39BFC1';
-                                        }
-                                    })
+                                    .attr('fill', function(d){ return '#39BFC1'; })
                                     .attr('cx', 18)
                                     .attr('cy', 18)
                                     .attr('r', 18);
@@ -2536,23 +2490,46 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .style('fill', '#58595B')
                                     .attr('points', '28.4,24.4 7.6,24.4 7.6,13.1 18,19.7 28.4,13.1 ')
                                     .attr('transform', 'translate(-36,-32) scale(1.2)');
-                            case 'ssl':
+                            case 'File':
                                 element.append('circle')
-                                    .attr('fill', function(d){
-                                        if (d.ioc_count > 0) {
-                                            return '#D97373';
-                                        } else {
-                                            return '#A0BB71';
-                                        }
-                                    })
+                                    .attr('fill', function(d){ return '#B572AB'; })
                                     .attr('cx', 18)
                                     .attr('cy', 18)
                                     .attr('r', 18);
                                 element.append('svg:path')
-                                    .attr('fill', '#58595B')
-                                    .attr('d', 'M25.5,16.1v-2.7h0c0,0,0,0,0,0c0-4.1-3.3-7.4-7.4-7.4c-4.1,0-7.4,3.3-7.4,7.4c0,0,0,0,0,0v2.7H9.3'+
-                                    'v11.8h17.8V16.1H25.5z M22.9,13.7v2.4h-9.4v-2.4c0,0,0,0,0,0c0-2.6,1.5-5,4.7-5C21.3,8.8,22.9,11.1,22.9,13.7'+
-                                    'C22.9,13.7,22.9,13.7,22.9,13.7z');
+                                    .attr('d', 'M13.702,12.807h13.189c-0.436-0.655-1.223-1.104-2.066-1.104c0,0-7.713,0-8.361,0'+
+                                        'c-0.386-0.796-1.278-1.361-2.216-1.361H7.562c-1.625,0-1.968,0.938-1.839,2.025l2.104,11.42c0.146,0.797,0.791,1.461,1.594,1.735'+
+                                        'c0,0,2.237-10.702,2.378-11.308C12.005,13.334,12.403,12.807,13.702,12.807z')
+                                    .attr('fill', '#595A5C');
+                                element.append('svg:path')
+                                    .attr('d', 'M29.697,13.898c0,0-14.47-0.037-14.68-0.037c-1.021,0-1.435,0.647-1.562,1.289l-2.414,10.508h16.716'+
+                                        'c1.146,0,2.19-0.821,2.383-1.871l1.399-7.859C31.778,14.706,31.227,13.848,29.697,13.898z')
+                                    .attr('fill', '#595A5C');
+                                return;
+                            case 'Applications':
+                                element.append('circle')
+                                    .attr('fill', '#DEDEDE')
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                element.append('rect')
+                                    .attr('x', 10)
+                                    .attr('y', 10)
+                                    .attr('height', 4)
+                                    .attr('width', 17)
+                                    .style('fill', '#5E5E5E');
+                                element.append('rect')
+                                    .attr('x', 10)
+                                    .attr('y', 16)
+                                    .attr('height', 4)
+                                    .attr('width', 17)
+                                    .style('fill', '#5E5E5E');
+                                element.append('rect')
+                                    .attr('x', 10)
+                                    .attr('y', 22)
+                                    .attr('height', 4)
+                                    .attr('width', 17)
+                                    .style('fill', '#5E5E5E');
                                 return;
                             default:
                                 return;
@@ -2570,7 +2547,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr("y", 1)
                     .attr("height", mainHeight);
 
-                
                 var itemRects = main.append("g")
                     .attr("clip-path", "url(#clip)");
                 
@@ -2605,8 +2581,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             mouseup('nav');
                         }
                     });
-
-
                 var qMarkButton = buttonHolder
                     .append('button')
                     .html('?')
@@ -2629,8 +2603,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             "needed.",
                             "Event Timeline Navigation");
                     });
-
-
 
                 // var timeShiftHolder = d3.select("#lanegraph").append('div').attr('class', 'timeShiftHolder');
                 // var nextTime = timeShiftHolder
@@ -2659,7 +2631,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 var infoHeight = element.height();
                 var infoTitle = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
                 var infoDiv = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
-
 
                 // function timeShift(cmd) {
                 //     // calculate what the current time shift would be (forward or back)
@@ -2810,6 +2781,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     elm.style('cursor', 'pointer');
                                 })
                                 .on("click", function(d){
+
+                                    itemRects.selectAll('g').each(function(d){
+                                        var elm = d3.select(this);
+                                        
+                                        elm.attr('class', null);
+                                    })
                                     // un-highlight previous box
                                     $('#'+previousID).attr('class', null);
                                     // this closes the last expanded block if there is one
@@ -2827,7 +2804,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // scroll to position
 
                                     scrollSide(d.id);
-                                   // prevPos = currPos;
+                                    // prevPos = currPos;
 
                                     // set ids for cross-refrence
                                     previousID = d.id;
@@ -2848,6 +2825,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         ////////////////////
                         /// SIDEBAR LIST ///
                         ////////////////////
+
+
                         infoDiv.selectAll('li').remove();
                         infoDiv.selectAll('li').data(data).enter()
                             .append('li').each(function(d){
@@ -2933,11 +2912,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .style('display', 'none')
                                     .attr('class', 'infoDivExpanded')
                                     .attr('id', d.id);
-                            })
-
+                            });
+                        //infoDiv.selectAll('li')[0].reverse();
+                            //[0].reverse();
                     }
                 }
-
+                
                 // function listItems
 
             });
