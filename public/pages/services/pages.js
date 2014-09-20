@@ -20,6 +20,31 @@ angular.module('mean.pages').factory('iocIcon', [
     }
 ]);
 
+
+angular.module('mean.pages').factory('dictionary', [
+    function() {
+        var dictionary = function(word) {
+            switch(word){
+                case 'lan_zone':
+                    return 'LAN Zone';
+                case 'lan_user':
+                    return 'LAN User';
+                case 'lan_ip':
+                    return 'LAN IP';
+                case 'remote_user':
+                    return 'Remote User';
+                case 'remote_ip':
+                    return 'Remote IP';
+                case 'type':
+                    return 'Type';
+                default:
+                    return '';
+            }
+        };
+        return dictionary;
+    }
+]);
+
 // angular.module('mean.pages').factory('appIcon', [
 //  function() {
 //      var appIcon = function(app) {

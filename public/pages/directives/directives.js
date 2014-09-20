@@ -1318,7 +1318,7 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
 }]);
 
 // STEALTH FORCE CHART STARTS HERE
-angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
+angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScope', 'dictionary', function ($timeout, $rootScope, dictionary) {
     return {
         link: function ($scope, element, attrs) {
             $scope.$on('forceChart', function (event, data, params) {
@@ -1415,9 +1415,10 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                         .data(data.nodes)
                         .enter().append("g")
                         .attr("class", "node")
+                        .call(force.drag);
 
+                    var tableDiv = d3.select('#force-table');
 
-                    .call(force.drag);
                     var circleWidth = 5;
                     node.each(function(d){
                         var elm = d3.select(this);
@@ -1433,7 +1434,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                                     // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
                                     .attr("fill", '#fff')
                                     .style("stroke-width", "14px")
-                                    .style("stroke", "#259286")
+                                    .style("stroke", "#259286");
 
                                 //TEXT appends name
                                 elm.append("text")
@@ -1446,7 +1447,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                                     .attr("font-family",  "Bree Serif")
                                     .attr("fill", '#c61c6f')
                                     .style("font-size", '2em')
-                                    .attr("text-anchor", 'middle')
+                                    .attr("text-anchor", 'middle');
 
                                 //TEXT appends count
                                 elm.append("text")
@@ -1457,7 +1458,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                                     .attr("fill", '#515151')
                                     // .style("font-size", function(d, i) { if (d.name === 'ClearText') { return '5em' } else { return '10em'} })
                                     .style("font-size", '9em')
-                                    .attr("text-anchor", 'middle')
+                                    .attr("text-anchor", 'middle');
 
                                 // ICONS
                                 switch(d.name){
@@ -1483,33 +1484,46 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                                 }
                             break;
                             case 'child':
-
-                            var linktext = d3.selectAll('.link').append('g');
-                            if (d.value.type === 'stealth') {
-                                elm.append("svg:circle")
-                                    .attr("cx", function(d) { return d.x; })
-                                    .attr("cy", function(d) { return d.y; })
-                                    .attr("r", function (d) {return 10; })
-                                    // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
-                                    .attr("fill", '#fff')
-                                    .style("stroke-width", "4px")
-                                    .style("stroke", "#259286")
-                            } else if('outside') {
-                                elm.append("svg:circle")
-                                    .attr("cx", function(d) { return d.x; })
-                                    .attr("cy", function(d) { return d.y; })
-                                    .attr("r", function (d) {return 10; })
-                                    // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
-                                    .attr("fill", '#fff')
-                                    .style("stroke-width", "4px")
-                                    .style("stroke", "#259286")
-                            }
+                                elm.on('mouseover', function(d){
+                                    for (var i in d.value) {
+                                        var row = tableDiv.append('tr');
+                                        row
+                                            .append('td')
+                                            .html('<strong>'+dictionary(i)+'</strong>');
+                                        row
+                                            .append('td')
+                                            .text(d.value[i]);
+                                    }
+                                    elm.style('cursor', 'pointer');
+                                })
+                                elm.on('mouseout', function(d) {
+                                    tableDiv.selectAll('tr').remove();
+                                })
+                                if (d.value.type === 'stealth') {
+                                    elm.append("svg:circle")
+                                        .attr("cx", function(d) { return d.x; })
+                                        .attr("cy", function(d) { return d.y; })
+                                        .attr("r", function (d) {return 10; })
+                                        // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
+                                        .attr("fill", '#fff')
+                                        .style("stroke-width", "4px")
+                                        .style("stroke", "#259286")
+                                } else if ('outside') {
+                                    elm.append("svg:circle")
+                                        .attr("cx", function(d) { return d.x; })
+                                        .attr("cy", function(d) { return d.y; })
+                                        .attr("r", function (d) {return 10; })
+                                        // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
+                                        .attr("fill", '#fff')
+                                        .style("stroke-width", "4px")
+                                        .style("stroke", "#259286")
+                                }
+                            break;
                         }
                     });
-
+                    
+                    var linktext = d3.selectAll('.link').append('g');
                     linktext.append('text')
-                        // .attr("x", 100)
-                        // .attr("y", 100)
                         .attr("fill", '#000')
                         .style('font-size', '4em')
                         .attr("text-anchor", 'middle')

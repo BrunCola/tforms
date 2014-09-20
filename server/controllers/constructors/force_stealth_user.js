@@ -7,6 +7,7 @@ module.exports = function (sql, queries, conn, callback) {
     var nodes = [], uniqueNodes = [];
     var links = [], uniqueLinks = {};
     var usersList = [], userLinks = [];
+    var clearTextIndex = -1;
 
     function uniqueUsers(user, group) {
         // if lan_user is not in unique object
@@ -36,25 +37,27 @@ module.exports = function (sql, queries, conn, callback) {
         var user = obj.lan_user;
         if (user in uniqueLinks) {
             for (var i in uniqueLinks[user].nodesIn) {
-                var arr = Object.keys(uniqueLinks[user].nodesIn)
+                var arr = Object.keys(uniqueLinks[user].nodesIn);
                 for (var o = 0; o < arr.length; o++) {
-                    // push a new entry for every single node
-                    nodes.push({
-                        "name": obj.lan_user,
-                        "group": 'child', // type goes here at some point
-                        "count": 1,
-                        "value": obj
-                    });
-                    // source should be at the end of the 'nodes' array (since we just pushed it in)
-                    var source = nodes.length-1;
-                    // target is the index of the corresponding main node
-                    var target = uniqueNodes.indexOf(arr[o])
-                    // push links to its own array
-                    userLinks.push({
-                        "source": source,
-                        "target": target,
-                        "class": 'child'
-                    })
+                    if (arr[o] !== 'ClearText') {
+                        // push a new entry for every single node
+                        nodes.push({
+                            "name": obj.lan_user,
+                            "group": 'child', // type goes here at some point
+                            "count": 1,
+                            "value": obj
+                        });
+                        // source should be at the end of the 'nodes' array (since we just pushed it in)
+                        var source = nodes.length-1;
+                        // target is the index of the corresponding main node
+                        var target = uniqueNodes.indexOf(arr[o])
+                        // push links to its own array
+                        userLinks.push({
+                            "source": source,
+                            "target": target,
+                            "class": 'child'
+                        })
+                    }
                 }
             }
         }
@@ -69,7 +72,7 @@ module.exports = function (sql, queries, conn, callback) {
             function(callback) {
                 connection.query(sql.query)
                     .on('result', function(data){
-                        if (data.group.toLowerCase().indexOf('clear') !== -1)  {return }
+                        // if (data.group.toLowerCase().indexOf('clear') !== -1)  {return }
                         // SETTING UP UNIQUE NODES
                         // if coi is not in uniqe coi array
                         if (uniqueNodes.indexOf(data.group) === -1) {
