@@ -69,6 +69,7 @@ module.exports = function (sql, queries, conn, callback) {
             function(callback) {
                 connection.query(sql.query)
                     .on('result', function(data){
+                        if (data.group.toLowerCase().indexOf('clear') !== -1)  {return }
                         // SETTING UP UNIQUE NODES
                         // if coi is not in uniqe coi array
                         if (uniqueNodes.indexOf(data.group) === -1) {
@@ -94,6 +95,8 @@ module.exports = function (sql, queries, conn, callback) {
                         callback();
                     });
             },
+            // PLACE ALL EXTRA QUERIES HERE, IN ASYNC FORMAT
+            // also, increase the index of the array being queried
             function(callback) {
                 connection.query(queries[0].query, queries[0].insert)
                     .on('result', function(data){
@@ -102,7 +105,16 @@ module.exports = function (sql, queries, conn, callback) {
                     .on('end', function(){
                         callback();
                     });
-            }
+            },
+            // function(callback) {
+            //     connection.query(queries[1].query, queries[1].insert)
+            //         .on('result', function(data){
+            //             usersList.push(data);
+            //         })
+            //         .on('end', function(){
+            //             callback();
+            //         });
+            // }
         ], function(err) {
             if (err) throw console.log(err);
             connection.release();

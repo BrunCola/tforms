@@ -25,6 +25,7 @@ module.exports = function(pool) {
                 }
                 var q1 = {
                     query: 'SELECT '+
+                        '\'Stealth\' AS type, '+
                         '`lan_zone`, '+
                         '`lan_user`, '+
                         '`lan_ip`, '+
