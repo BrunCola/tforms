@@ -1,6 +1,6 @@
 'use strict';
 
-var dataTable = require('../constructors/datatable'),
+var force_stealth_user = require('../constructors/force_stealth_user'),
 query = require('../constructors/query'),
 config = require('../../config/config'),
 async = require('async');
@@ -17,91 +17,42 @@ module.exports = function(pool) {
                 start = req.query.start;
                 end = req.query.end;
             }
-            var crossfilter;
+            var force;
             if (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1) {
-                var tables = [];
-                var info = [];
-                var crossfilter = [];
-                var table1 = {
-                    query: 'SELECT '+
-                                'max(date_format(from_unixtime(stealth_src.time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-                                '`lan_zone`, '+
-                                '`lan_machine`, '+
-                                '`lan_user`, '+
-                                '`lan_ip`, '+
-                                'sum(`in_packets`) AS `in_packets`, '+
-                                'sum(`out_packets`) AS `out_packets`, '+
-                                '(sum(`in_bytes`) / 1048576) AS `in_bytes`, '+
-                                '(sum(`out_bytes`) / 1048576) AS `out_bytes` '+
-                            'FROM '+
-                                '`stealth_local` '+
-                            'WHERE '+
-                                '`time` BETWEEN ? AND ? '+
-                            'GROUP BY '+
-                                '`lan_user`,'+
-                                '`lan_ip`',
-                    insert: [start, end],
-                    params: [
-                        {
-                            title: 'Last Seen',
-                            select: 'time',
-                            link: {
-                                type: 'local_COI_remote_drill',
-                                // val: the pre-evaluated values from the query above
-                                val: ['lan_ip','lan_user'],
-                                crumb: false
-                            }
-                        },
-                        { title: 'Zone', select: 'lan_zone' },
-                        { title: 'Source Machine', select: 'lan_machine' },
-                        { title: 'Source User', select: 'lan_user' },
-                        { title: 'Source IP', select: 'lan_ip' },
-                        { title: 'MB to Remote', select: 'in_bytes' },
-                        { title: 'MB from Remote', select: 'out_bytes' },
-                        { title: 'Packets to Remote', select: 'in_packets' },
-                        { title: 'Packets from Remote', select: 'out_packets' }
-                    ],
-                    settings: {
-                        sort: [[0, 'desc']],
-                        div: 'table',
-                        title: 'Stealth IPs'
-                    }
+                var sql = {
+                    query: 'SELECT `lan_user`, `group` FROM `stealth_user',
+                    insert: []
                 }
-                var crossfilterQ = {
+                var q1 = {
                     query: 'SELECT '+
-                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-                                '(sum(in_bytes + out_bytes) / 1048576) AS count '+
-                            'FROM '+
-                                '`stealth_conn_meta` '+
-                            'WHERE '+
-                                '`time` BETWEEN ? AND ? '+
-                            'GROUP BY '+
-                                'month(from_unixtime(time)),'+
-                                'day(from_unixtime(time)),'+
-                                'hour(from_unixtime(time))',
+                        '`lan_zone`, '+
+                        '`lan_user`, '+
+                        '`lan_ip`, '+
+                        '`remote_user`, '+
+                        '`remote_ip` '+
+                    'FROM '+
+                        '`stealth_conn_meta` '+
+                    'WHERE '+
+                        'time BETWEEN ? AND ? '+
+                        'AND (`in_bytes` = 0 OR `out_bytes` = 0) '+
+                    'GROUP BY'+
+                        '`lan_user`,'+
+                        '`remote_ip`',
                     insert: [start, end]
                 }
                 async.parallel([
-                    // Table function(s)
-                    function(callback) {
-                        new dataTable(table1, {database: database, pool: pool}, function(err,data){
-                            tables.push(data);
-                            callback();
-                        });
-                    },
                     // Crossfilter function
                     function(callback) {
-                        new query(crossfilterQ, {database: database, pool: pool}, function(err,data){
-                            crossfilter = data;
+                        new force_stealth_user(sql, [q1], {database: database, pool: pool}, function(err,data){
+                            console.log(data)
+                            force = data;
                             callback();
                         });
                     }
                 ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                     if (err) throw console.log(err);
                     var results = {
-                        info: info,
-                        tables: tables,
-                        crossfilter: crossfilter
+                        force: force
                     };
                     res.json(results);
                 });
