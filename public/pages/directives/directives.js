@@ -1332,24 +1332,12 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
 
                     // var color = d3.scale.category20();
                     var palette = {
-                        "lightgray": "#819090",
-                        "gray": "#708284",
-                        "mediumgray": "#536870",
-                        "darkgray": "#475B62",
+                        "lightgray": "#819090","gray": "#708284","mediumgray": "#536870","darkgray": "#3a3a3a",
 
-                        "darkblue": "#0A2933",
-                        "darkerblue": "#042029",
+                        "darkblue": "#0A2933","darkerblue": "#042029",
 
-                        "paleryellow": "#FCF4DC",
-                        "paleyellow": "#EAE3CB",
-                        "yellow": "#A57706",
-                        "orange": "#BD3613",
-                        "red": "#D11C24",
-                        "pink": "#C61C6F",
-                        "purple": "#595AB7",
-                        "blue": "#2176C7",
-                        "green": "#259286",
-                        "yellowgreen": "#738A05"
+                        "paleryellow": "#FCF4DC","paleyellow": "#EAE3CB","yellow": "#A57706","orange": "#BD3613","red": "#D11C24",
+                        "pink": "#C61C6F","purple": "#595AB7","blue": "#2176C7","green": "#259286","yellowgreen": "#738A05"
                     }
                     var count = function(size) {
                         if (size === undefined) {
@@ -1386,7 +1374,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                         return Math.exp(minv + scale*(x-minp));
                     }
 
-                    var circleWidth = 5;
+                    var circleWidth = 2;
                     
                     var vis = d3.select("#forcechart")
                         .append("svg:svg")
@@ -1417,38 +1405,70 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
 
                     .call(force.drag);
 
+                    node.each(function(d){
+                        var elm = d3.select(this)
+                        //CIRCLE
+                        elm.append("svg:circle")
+                            .attr("cx", function(d) { return d.x; })
+                            .attr("cy", function(d) { return d.y; })
+                            .attr("r", function (d) {return logslider(d["width"]); })
+                            // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
+                            .attr("fill", '#fff')
+                            .style("stroke-width", "14px")
+                            .style("stroke", "#259286")
 
-                    //CIRCLE
-                    node.append("svg:circle")
-                        .attr("cx", function(d) { return d.x; })
-                        .attr("cy", function(d) { return d.y; })
-                        .attr("r", function (d) {return logslider(d["width"]); })
-                        // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
-                        .attr("fill", '#fff')
-                        .style("stroke-width", "14px")
-                        .style("stroke", "#259286")
+                        //TEXT appends name
+                        elm.append("text")
+                            // .text(function(d, i) { return d.name + '(' + count(d.width) + ')'; })
+                            .text(function(d, i) { return d.name; })
+                            .attr("x", function() { return circleWidth; })
+                            // .attr("y", function(d, i) { if (i>0) { return circleWidth + 40 }    else { return 8 } })
 
-                    //TEXT
-                    node.append("text")
-                        // .text(function(d, i) { return d.name + '(' + count(d.width) + ')'; })
-                        .text(function(d, i) { return d.name + d.count; })
-                        .attr("x", function() { return circleWidth; })
-                        // .attr("y", function(d, i) { if (i>0) { return circleWidth + 40 }    else { return 8 } })
+                            .attr("y", function(d) { 
+                                if (d.name === 'ClearText') { return circleWidth - 70 } else { return 90 } 
+                            })
 
-                        .attr("y", function(d) { 
-                            if (d.name === 'ClearText') { return circleWidth - 40 } else { return 80 } 
-                        })
+                            // .attr("font-family",  "Bree Serif")
+                            .attr("fill", '#c61c6f')
+                            .style("font-size",    function(d, i) {  return  "2em"; })
+                            // .attr("text-anchor",  function(d, i) { if (i>0) { return  "beginning"; } else { return "end" } })
+                            .attr("text-anchor", 'middle')
 
-                        // .attr("font-family",  "Bree Serif")
-                        // .attr("fill",         function(d, i) {  return  palette.paleryellow;  })
-                        .style("font-size",    function(d, i) {  return  "2em"; })
-                        // .attr("text-anchor",  function(d, i) { if (i>0) { return  "beginning"; } else { return "end" } })
-                        .attr("text-anchor", 'middle')
+
+                        //TEXT appends count
+                        elm.append("text")
+                            .text(function(d, i) { return d.count; })
+                            .attr("x", function() { return circleWidth; })
+                            .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth + 2 } else { return 40 } })
+                            .attr("fill", '#515151')
+                            .style("font-size", function(d, i) { if (d.name === 'ClearText') { return '5em' } else { return '10em'} })
+                            .attr("text-anchor", 'middle')
+
+                        // ICONS
+                        switch(d.name){
+                            case 'ClearText':
+                                elm.append('polygon')
+                                    .style('fill', '#ccc')
+                                    .attr('points', '36.8,0 24,3.1 19.6,15 36.8,12.2 ')
+                                    .attr('transform', 'translate(-25,40) scale(0.9)')
+                                break;
+                            default:
+                                elm.append('polygon')
+                                    .style('fill', '#515151')
+                                    .attr('points', '53,18 53,10 60,10 60,0 44,0 44,10 51,10 51,16 31,16 31,10 38,10 38,0 22,0 22,10 29,10 '+
+                                    '29,16 9,16 9,10 16,10 16,0 0,0 0,10 7,10 7,18 29,18 29,26 7,26 7,35 0,35 0,45 16,45 16,35 9,35 9,28 29,28 29,35 22,35 22,45 '+
+                                    '38,45 38,35 31,35 31,28 51,28 51,35 44,35 44,45 60,45 60,35 53,35 53,26 31,26 31,18 ')
+                                    .attr('transform', 'translate(-25,-110) scale(0.9)')
+                                break;
+                        }
+                    })
+
 
                     force.on("tick", function(e) {
                         node.attr("transform", function(d, i) {
                             return "translate(" + d.x + "," + d.y + ")";
                         });
+
 
                         link.attr("x1", function(d)   { return d.source.x; })
                             .attr("y1", function(d)   { return d.source.y; })
