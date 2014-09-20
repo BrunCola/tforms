@@ -126,7 +126,7 @@ module.exports = function(pool) {
                             '`ioc_rule`,'+
                             '`ioc_severity` '+
                         'FROM '+
-                            '`conn` '+
+                            '`conn_ioc` '+
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
                             'AND `lan_zone` = ? '+
@@ -343,7 +343,7 @@ module.exports = function(pool) {
                             '`ioc_typeIndicator`, '+
                             '`ioc_typeInfection` '+
                         'FROM '+
-                            '`dns` '+
+                            '`dns_ioc` '+
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
                             'AND `lan_zone` = ? '+
@@ -433,7 +433,7 @@ module.exports = function(pool) {
                             '`ioc_severity`,'+
                             '`ioc_rule` '+
                         'FROM '+
-                            '`http` '+
+                            '`http_ioc` '+
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
                             'AND `lan_zone` = ? '+
@@ -476,7 +476,7 @@ module.exports = function(pool) {
                             '`ssl` '+
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
-                            'AND `lan_zone` = ?'+
+                            'AND `lan_zone` = ? '+
                             'AND `lan_ip` = ? '+
                         'LIMIT 250',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
@@ -500,7 +500,6 @@ module.exports = function(pool) {
                             '`time` as raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-                            '`ioc_count`,'+
                             '`version`,'+
                             '`cipher`,'+
                             '`server_name`,'+
@@ -510,9 +509,10 @@ module.exports = function(pool) {
                             '`ioc_typeIndicator`,'+
                             '`ioc_typeInfection`,'+    
                             '`ioc_rule`,'+
-                            '`ioc_severity` '+
+                            '`ioc_severity`,'+
+                            '`ioc_count` '+
                         'FROM '+
-                            '`ssl` '+
+                            '`ssl_ioc` '+
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
                             'AND `lan_zone` = ? '+
@@ -696,7 +696,7 @@ module.exports = function(pool) {
                             '`ioc_severity`,'+
                             '`ioc_count` '+
                         'FROM '+
-                            '`file` '+
+                            '`file_ioc` '+
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
                             'AND `lan_zone` = ? '+
