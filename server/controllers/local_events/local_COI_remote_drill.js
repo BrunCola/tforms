@@ -74,7 +74,7 @@ module.exports = function(pool) {
                                 '`conn` '+
                             'WHERE '+
                                 '`time` BETWEEN ? AND ? '+
-                                'AND `lan_ip`= ? '+
+                                'AND `lan_ip` = ? '+
                             'LIMIT 250',
                     insert: [start, end, req.query.lan_ip],
                     params: [
@@ -640,14 +640,15 @@ module.exports = function(pool) {
                         var Info3SQL = {
                             query: 'SELECT '+
                                         'max(date_format(from_unixtime(stealth_src.time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
-                                        '`lan_ip`,'+
+                                        '`lan_zone`,'+
                                         '`lan_user`,'+
+                                        '`lan_ip`,'+
                                         'sum(`in_packets`) AS `in_packets`, '+
                                         'sum(`out_packets`) AS `out_packets`, '+
                                         '(sum(`in_bytes`) / 1048576) AS `in_bytes`, '+
                                         '(sum(`out_bytes`) / 1048576) AS `out_bytes` '+
                                     'FROM '+
-                                        '`stealth_local` '+
+                                        '`stealth_conn_meta` '+
                                     'WHERE '+
                                         '`time` BETWEEN ? AND ? '+
                                         'AND `lan_ip` = ? ',
