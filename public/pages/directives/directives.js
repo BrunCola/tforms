@@ -1387,7 +1387,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                         .gravity(0.1)
                         .linkDistance(function(d) { 
                             if (d.class === 'child') {
-                                return  150;
+                                return  170;
                             } else {
                                 return  width/2;
                             }
@@ -1405,7 +1405,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                         .style('stroke-opacity', '1')
                         .attr('stroke-width', function(d){
                             if (d.class === 'child'){
-                                return '15';
+                                return '4';
                             } else {
                                 return '100';
                             }
@@ -1483,33 +1483,30 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                                 }
                             break;
                             case 'child':
-                                // elm.append("svg:circle")
-                                //     .attr("cx", function(d) { return d.x; })
-                                //     .attr("cy", function(d) { return d.y; })
-                                //     .attr("r", function (d) {return 10; })
-                                //     // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
-                                //     .attr("fill", '#fff')
-                                //     .style("stroke-width", "14px")
-                                //     .style("stroke", "#259286")
 
+                            var linktext = d3.selectAll('.link').append('g');
+                            if (d.value.type === 'stealth') {
+                                elm.append("svg:circle")
+                                    .attr("cx", function(d) { return d.x; })
+                                    .attr("cy", function(d) { return d.y; })
+                                    .attr("r", function (d) {return 10; })
+                                    // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
+                                    .attr("fill", '#fff')
+                                    .style("stroke-width", "4px")
+                                    .style("stroke", "#259286")
+                            } else if('outside') {
+                                elm.append("svg:circle")
+                                    .attr("cx", function(d) { return d.x; })
+                                    .attr("cy", function(d) { return d.y; })
+                                    .attr("r", function (d) {return 10; })
+                                    // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
+                                    .attr("fill", '#fff')
+                                    .style("stroke-width", "4px")
+                                    .style("stroke", "#259286")
+                            }
                         }
                     });
 
-                    //TEXT appends value
-
-                    // link.each(function(d){
-                    //     var elm = d3.select(this)
-                    //     elm.append("text")
-                    //         .text(function(d, i) { return d.value; })
-                    //         .attr("x", 100)
-                    //         .attr("y", 100)
-                    //         .attr("fill", '#000')
-                    //         .style("font-size", '2em')
-                    //         // .attr("text-anchor", 'middle')
-                    // })
-
-
-                    var linktext = d3.selectAll('.link').append('g');
                     linktext.append('text')
                         // .attr("x", 100)
                         // .attr("y", 100)
