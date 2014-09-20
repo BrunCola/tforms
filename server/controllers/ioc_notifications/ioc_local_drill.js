@@ -31,7 +31,7 @@ module.exports = function(pool) {
                                 '`ioc_typeInfection`,'+
                                 '`stealth`,'+
                                 '`lan_zone`,'+
-                                '`machine`,'
+                                '`machine`,'+
                                 '`lan_user`,'+
                                 '`lan_ip`,'+
                                 '`remote_ip`,'+
