@@ -85,40 +85,45 @@ module.exports = function (sql, conn, callback) {
                         }
                     }
                 }
-                // // REDUCE GENERATED LINKS 
-                // var uniqueSources = {};
-                // for (var i in links) {
-                //     // for every value in links, check if it is in our unique obj
-                //     if (!(links[i].source in uniqueSources)) {
-                //         // if not, create a new source parent and push in the target with value
-                //         uniqueSources[links[i].source] = {};
-                //         uniqueSources[links[i].source][links[i].target] = links[i].value;
-                //     } else {
-                //         // do the same thing if just the target doesnt exist in the source
-                //         if (!(links[i].target in uniqueSources[links[i].source])) {
-                //             uniqueSources[links[i].source] = {};
-                //             uniqueSources[links[i].source][links[i].target] = links[i].value;
-                //         // otherwise just increase the existing value
-                //         } else {
-                //             uniqueSources[links[i].source][links[i].target] += links[i].value;
-                //         }
-                //     }
-                // }
-                // // clear original links array
-                // links = [];
-                // // push in the values of our reduce object
-                // for (var s in uniqueSources) {
-                //     for (var t in uniqueSources[s]) {
-                //         links.push({
-                //             "source": parseInt(s),
-                //             "target": parseInt(t),
-                //             "value": uniqueSources[s][t]
-                //         })
-                //     }
-                // }
+                // REDUCE GENERATED LINKS 
+                var uniqueSources = {};
+                for (var i in links) {
+                    var target = links[i].target;
+                    var source = links[i].source;
+                    var value = links[i].value;
+                    // first check for a previously existing inverse
+                    if ((target in uniqueSources) && (source in uniqueSources[target])) {
+                        uniqueSources[target][source] += value;
+                    // then for every value in links, check if it is in our unique obj
+                    } else if (!(source in uniqueSources)) {
+                        // if not, create a new source parent and push in the target with value
+                        uniqueSources[source] = {};
+                        uniqueSources[source][target] = value;
+                    // otherwise, continue
+                    } else {
+                        // do the same thing if just the target doesnt exist in the source
+                        if (!(target in uniqueSources[source])) {
+                            uniqueSources[source][target] = value;
+                        // otherwise just increase the existing value
+                        } else {
+                            uniqueSources[source][target] += value;
+                        }
+                    }
+                }
+                // clear original links array
+                links = [];
+                // push in the values of our reduce object
+                for (var s in uniqueSources) {
+                    for (var t in uniqueSources[s]) {
+                        links.push({
+                            "source": parseInt(s),
+                            "target": parseInt(t),
+                            "value": uniqueSources[s][t]
+                        })
+                    }
+                }
                 connection.release();
                 var results = {
-                    unique: uniqueLinks,
                     nodes: nodes,
                     links: links
                 };
