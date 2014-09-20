@@ -1417,7 +1417,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
 
 
                     .call(force.drag);
-
+                    var circleWidth = 5;
                     node.each(function(d){
                         var elm = d3.select(this);
                         // set force link width
