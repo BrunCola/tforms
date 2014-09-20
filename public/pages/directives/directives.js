@@ -868,6 +868,30 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                         return $('#barchart').parent().width();
                     }
                     switch (chartType){
+                        case 'stealthtraffic':
+                            var setNewSize = function(width) {
+                                $scope.barChart
+                                    .width(width)
+                                    .height(width/3.5)
+                                    .margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+                                // $('#barchart').parent().height(width/3.5);
+                                d3.select('#barchart svg').attr('width', width).attr('height', width/3.5);
+                                $scope.barChart.redraw();
+                            }
+                            $scope.barChart
+                                .group(group, "MB To Remote")
+                                .valueAccessor(function(d) {
+                                    return d.value.in_bytes;
+                                })
+                                .stack(group, "MB From Remote", function(d){return d.value.out_bytes;})
+                                .stack(group, "MB To Remote (Conn)", function(d){return d.value.in_bytes2;})
+                                .stack(group, "MB From Remote (Conn)", function(d){return d.value.out_bytes2;})
+                                .stack(group, "MB To Remote (Drop)", function(d){return d.value.in_bytes3;})
+                                .stack(group, "MB From Remote (Drop)", function(d){return d.value.out_bytes3;})
+                                .legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
+                                .colors(d3.scale.ordinal().domain(["in_bytes","out_bytes","in_bytes2","out_bytes2","in_bytes3","out_bytes3"]).range(["#034142","#068587","#1A4569","#3FA8FF","#73100A","#FF3628"]));
+                            filter = true;
+                            break;
                         case 'bandwidth':
                             var setNewSize = function(width) {
                                 $scope.barChart
@@ -1292,6 +1316,7 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
     };
 }]);
 
+// STEALTH FORCE CHART STARTS HERE
 angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
     return {
         link: function ($scope, element, attrs) {
@@ -1307,24 +1332,12 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
 
                     // var color = d3.scale.category20();
                     var palette = {
-                        "lightgray": "#819090",
-                        "gray": "#708284",
-                        "mediumgray": "#536870",
-                        "darkgray": "#475B62",
+                        "lightgray": "#819090","gray": "#708284","mediumgray": "#536870","darkgray": "#3a3a3a",
 
-                        "darkblue": "#0A2933",
-                        "darkerblue": "#042029",
+                        "darkblue": "#0A2933","darkerblue": "#042029",
 
-                        "paleryellow": "#FCF4DC",
-                        "paleyellow": "#EAE3CB",
-                        "yellow": "#A57706",
-                        "orange": "#BD3613",
-                        "red": "#D11C24",
-                        "pink": "#C61C6F",
-                        "purple": "#595AB7",
-                        "blue": "#2176C7",
-                        "green": "#259286",
-                        "yellowgreen": "#738A05"
+                        "paleryellow": "#FCF4DC","paleyellow": "#EAE3CB","yellow": "#A57706","orange": "#BD3613","red": "#D11C24",
+                        "pink": "#C61C6F","purple": "#595AB7","blue": "#2176C7","green": "#259286","yellowgreen": "#738A05"
                     }
                     var count = function(size) {
                         if (size === undefined) {
@@ -1345,7 +1358,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                     }
                     function logslider(x) {
                         if (x === undefined) {
-                            return 18;
+                            return 140;
                         }
                         // position will be between 0 and 100
                         // if(x > 50) {
@@ -1355,13 +1368,13 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                         var maxp = maxNum;
                         // The result should be between 100 an 10000000
                         var minv = Math.log(5);
-                        var maxv = Math.log(50);
+                        var maxv = Math.log(40);
                         // calculate adjustment factor
                         var scale = (maxv-minv) / (maxp-minp);
                         return Math.exp(minv + scale*(x-minp));
                     }
 
-                    var circleWidth = 5;
+                    var circleWidth = 2;
                     
                     var vis = d3.select("#forcechart")
                         .append("svg:svg")
@@ -1373,7 +1386,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                         .nodes(data.nodes)
                         .links(data.links)
                         .gravity(0.1)
-                        .linkDistance(width/6)
+                        .linkDistance(width/2)
                         .charge(-500)
                         .size([width-50, height]);
 
@@ -1381,91 +1394,81 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                         .data(data.links)
                         .enter().append("line")
                         .attr("class", "link")
-                        .attr("stroke", "#CCC")
-                        .attr("fill", "#000");
+                        .style("stroke", "#259286")
+                        .attr('stroke-width', '100');
 
                     var node = vis.selectAll("circle.node")
                         .data(data.nodes)
                         .enter().append("g")
                         .attr("class", "node")
 
-                    //MOUSEOVER
-                    .on("mouseover", function(d,i) {
-                        if (i>0) {
-                            //CIRCLE
-                            d3.select(this).selectAll("circle")
-                                .transition()
-                                .duration(250)
-                                .style("cursor", "none")
-                                .attr("r", function (d) {return logslider(d["width"])+4; })
-                                .attr("fill",function(d){ return color(d.group); });
-
-                            //TEXT
-                            d3.select(this).select("text")
-                                .transition()
-                                .style("cursor", "none")
-                                .duration(250)
-                                .style("cursor", "none")
-                                .attr("font-size","1.5em")
-                                .attr("x", 15 )
-                                .attr("y", 5 )
-                        } else {
-                        //CIRCLE
-                            d3.select(this).selectAll("circle")
-                                .style("cursor", "none")
-
-                            //TEXT
-                            d3.select(this).select("text")
-                                .style("cursor", "none")
-                        }
-                    })
-
-                    //MOUSEOUT
-                    .on("mouseout", function(d,i) {
-                        if (i>0) {
-                        //CIRCLE
-                        d3.select(this).selectAll("circle")
-                            .transition()
-                            .duration(250)
-                            .attr("r", function (d) {return logslider(d["width"]); })
-                            .attr("fill",function(d){ return color(d.group); } );
-
-                        //TEXT
-                        d3.select(this).select("text")
-                            .transition()
-                            .duration(250)
-                            .attr("font-size","1em")
-                            .attr("x", 8 )
-                            .attr("y", 4 )
-                        }
-                    })
 
                     .call(force.drag);
 
+                    node.each(function(d){
+                        var elm = d3.select(this)
+                        //CIRCLE
+                        elm.append("svg:circle")
+                            .attr("cx", function(d) { return d.x; })
+                            .attr("cy", function(d) { return d.y; })
+                            .attr("r", function (d) {return logslider(d["width"]); })
+                            // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
+                            .attr("fill", '#fff')
+                            .style("stroke-width", "14px")
+                            .style("stroke", "#259286")
 
-                    //CIRCLE
-                    node.append("svg:circle")
-                        .attr("cx", function(d) { return d.x; })
-                        .attr("cy", function(d) { return d.y; })
-                        .attr("r", function (d) {return logslider(d["width"]); })
-                        .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.gray } } )
-                        .style("stroke-width", "1.5px")
-                        .style("stroke", "#fff")
+                        //TEXT appends name
+                        elm.append("text")
+                            // .text(function(d, i) { return d.name + '(' + count(d.width) + ')'; })
+                            .text(function(d, i) { return d.name; })
+                            .attr("x", function() { return circleWidth; })
+                            // .attr("y", function(d, i) { if (i>0) { return circleWidth + 40 }    else { return 8 } })
 
-                    //TEXT
-                    node.append("text")
-                        .text(function(d, i) { return d.name+'('+count(d.width)+')'; })
-                        .attr("x",    function(d, i) { return circleWidth + 5; })
-                        .attr("y",            function(d, i) { if (i>0) { return circleWidth + 0 }    else { return 8 } })
-                        // .attr("font-family",  "Bree Serif")
-                        // .attr("fill",         function(d, i) {  return  palette.paleryellow;  })
-                        .attr("font-size",    function(d, i) {  return  "1em"; })
-                        .attr("text-anchor",  function(d, i) { if (i>0) { return  "beginning"; }      else { return "end" } })
+                            .attr("y", function(d) { 
+                                if (d.name === 'ClearText') { return circleWidth - 70 } else { return 90 } 
+                            })
+
+                            // .attr("font-family",  "Bree Serif")
+                            .attr("fill", '#c61c6f')
+                            .style("font-size",    function(d, i) {  return  "2em"; })
+                            // .attr("text-anchor",  function(d, i) { if (i>0) { return  "beginning"; } else { return "end" } })
+                            .attr("text-anchor", 'middle')
+
+
+                        //TEXT appends count
+                        elm.append("text")
+                            .text(function(d, i) { return d.count; })
+                            .attr("x", function() { return circleWidth; })
+                            .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth + 2 } else { return 40 } })
+                            .attr("fill", '#515151')
+                            .style("font-size", function(d, i) { if (d.name === 'ClearText') { return '5em' } else { return '10em'} })
+                            .attr("text-anchor", 'middle')
+
+                        // ICONS
+                        switch(d.name){
+                            case 'ClearText':
+                                elm.append('polygon')
+                                    .style('fill', '#ccc')
+                                    .attr('points', '36.8,0 24,3.1 19.6,15 36.8,12.2 ')
+                                    .attr('transform', 'translate(-25,40) scale(0.9)')
+                                break;
+                            default:
+                                elm.append('polygon')
+                                    .style('fill', '#515151')
+                                    .attr('points', '53,18 53,10 60,10 60,0 44,0 44,10 51,10 51,16 31,16 31,10 38,10 38,0 22,0 22,10 29,10 '+
+                                    '29,16 9,16 9,10 16,10 16,0 0,0 0,10 7,10 7,18 29,18 29,26 7,26 7,35 0,35 0,45 16,45 16,35 9,35 9,28 29,28 29,35 22,35 22,45 '+
+                                    '38,45 38,35 31,35 31,28 51,28 51,35 44,35 44,45 60,45 60,35 53,35 53,26 31,26 31,18 ')
+                                    .attr('transform', 'translate(-25,-110) scale(0.9)')
+                                break;
+                        }
+                    })
+
 
                     force.on("tick", function(e) {
                         node.attr("transform", function(d, i) {
                             return "translate(" + d.x + "," + d.y + ")";
                         });
+
 
                         link.attr("x1", function(d)   { return d.source.x; })
                             .attr("y1", function(d)   { return d.source.y; })
@@ -1478,6 +1481,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
         }
     };
 }]);
+// STEALTH FORCE CHART ENDS HERE
 
 //NETWORK TREE STARTS HERE
 
@@ -2129,7 +2133,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     return this.each(function(){
                         var scrollPane = $(this);
                         var scrollTarget = (typeof settings.scrollTarget == "number") ? settings.scrollTarget : $(settings.scrollTarget);
-                        var scrollY = (typeof scrollTarget == "number") ? scrollTarget : scrollTarget.offset().top + scrollPane.scrollTop() - parseInt(settings.offsetTop);
+                        var scrollY = (typeof scrollTarget == "number") ? scrollTarget + scrollPane.scrollTop() : scrollTarget.offset().top + scrollPane.scrollTop() - parseInt(settings.offsetTop);
                         scrollPane.animate({scrollTop : scrollY }, parseInt(settings.duration), settings.easing, function(){
                             if (typeof callback == 'function') { callback.call(this); }
                         });
@@ -2476,6 +2480,44 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .attr('width', 17)
                                     .style('fill', '#5E5E5E');
                                 return;
+                            case 'email':
+                                element.append('circle')
+                                    .attr('fill', function(d){
+                                        if (d.ioc_count > 0) {
+                                            return '#A0BB71';
+                                        } else {
+                                            return '#39BFC1';
+                                        }
+                                    })
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                element.append('polygon')
+                                    .style('fill', '#58595B')
+                                    .attr('points', '18,17.3 8.7,11.6 27.3,11.6 ')
+                                    .attr('transform', 'translate(-36,-32) scale(1.2)');
+                                element.append('polygon')
+                                    .style('fill', '#58595B')
+                                    .attr('points', '28.4,24.4 7.6,24.4 7.6,13.1 18,19.7 28.4,13.1 ')
+                                    .attr('transform', 'translate(-36,-32) scale(1.2)');
+                            case 'ssl':
+                                element.append('circle')
+                                    .attr('fill', function(d){
+                                        if (d.ioc_count > 0) {
+                                            return '#D97373';
+                                        } else {
+                                            return '#A0BB71';
+                                        }
+                                    })
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                element.append('svg:path')
+                                    .attr('fill', '#58595B')
+                                    .attr('d', 'M25.5,16.1v-2.7h0c0,0,0,0,0,0c0-4.1-3.3-7.4-7.4-7.4c-4.1,0-7.4,3.3-7.4,7.4c0,0,0,0,0,0v2.7H9.3'+
+                                    'v11.8h17.8V16.1H25.5z M22.9,13.7v2.4h-9.4v-2.4c0,0,0,0,0,0c0-2.6,1.5-5,4.7-5C21.3,8.8,22.9,11.1,22.9,13.7'+
+                                    'C22.9,13.7,22.9,13.7,22.9,13.7z');
+                                return;
                             default:
                                 return;
                         }
@@ -2678,39 +2720,21 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
 
                 function scrollSide(id) {
-                    // console.log(id)
-                    // console.log($('li#'+id).offset().top - $('li#'+id).parent().offset().top)
-                    // console.log($('li#'+id).parent().offset())
+                  
                     var elm = $('li#'+id);
-                    // var lipos = elm.position().top - 295;
-                    // var scrollPos = elm.parent().scrollTop();
-                    // var pos = elm.position().top;
-                    // var pos2 = elm.parent().position().top;
-                    // console.log(pos - pos2)
-                    // $('#lanegraphinfo').scrollTop();
-                    // var divheight = $('#lanegraphinfo')[0].scrollHeight;
-                    // console.log('div inner height: '+divheight)
-                    // // console.log('scroll position: '+scrollPos)
-                    // console.log('position from last scroll: '+lipos)
-                    // console.log('difference '+(lipos - scrollPos))
-                    // var test = ($('li#'+id).offset().top - $("#lanegraphinfo").offset().top)
-                    // $('#lanegraphinfo').animate({
-                    //     scrollTop: test
-                    // }, 2000);
-                    // console.log(test)
-                    // $('#lanegraphinfo').scrollTop($('li#'+id).offset().top);
-                    // $('#lanegraphinfo').scrollTo('li#'+id);
-                    // console.log($('li#'+id).offset().top)
-                    // $('#lanegraphinfo').scrollTop($('li#'+id).offset().top);
-                    // 
-                    // var target = $(this.hash);
-                    // target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
-                    // if (target.length) {
-                        // $('#lanegraphinfo').animate({
-                        //     scrollTop: elm.offset().top
-                        // }, 1000);
-                        // return false;
-                    // }
+
+                    var ept  = elm.position().top;
+                    var eppt = elm.parent().position().top;
+
+                    var offset = ept - eppt;
+                    var totalHeight = $('#lanegraphinfo')[0].scrollHeight;
+                    var windowHeight = $('#lanegraphinfo').height();
+
+                    if(offset>(totalHeight-windowHeight)){
+                        offset = totalHeight-windowHeight;
+                    }
+
+                    $('#lanegraphinfo').scrollTo(offset);
                 }
 
                 function plot(data, min, max) {
@@ -2719,8 +2743,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         /// LANE NODES ///
                         //////////////////
                         // set variables for info sidebar
+                        var prevPos = 0;
                         var previousID = -1, previousElm = null;
                         var lastExpandedId = null, isOpen = null;
+                        //console.log("plot");
                         // update time slice above chart
                         currentTime.html('Current Time Slice: <strong>'+moment(min).format('MMMM D, YYYY HH:MM A')+'</strong> - <strong>'+moment(max).format('MMMM D, YYYY HH:MM A')+'</strong>')
                         // create transition effect of slider
@@ -2748,7 +2774,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     elm.style('cursor', 'pointer');
                                 })
                                 .on("click", function(d){
-                                    console.log('circle id:'+d.id)
                                     // un-highlight previous box
                                     $('#'+previousID).attr('class', null);
                                     // this closes the last expanded block if there is one
@@ -2764,7 +2789,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // set class for active description
                                     $('#'+d.id).attr('class', 'laneactive');
                                     // scroll to position
+
                                     scrollSide(d.id);
+                                   // prevPos = currPos;
+
                                     // set ids for cross-refrence
                                     previousID = d.id;
                                     previousElm = elm;
@@ -2797,7 +2825,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         return "<div class='lanegraphlist'>"+d.info+"</div>";
                                     })
                                     .on('click', function(){
-                                        scrollSide(d.id)
+
+                                        scrollSide(d.id);
                                         // close last expanded sections
                                         if (lastExpandedId !== '#'+d.id) {
                                             $('div'+lastExpandedId+'.infoDivExpanded').hide();
