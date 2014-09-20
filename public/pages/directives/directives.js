@@ -1723,15 +1723,26 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         }
                     });
 
-                    var linktext = d3.selectAll('.link');
-                    linktext.append('text')
-                        .attr('transform', 'translate(-15,-15)')
+                    var linktext = d3.selectAll('.linkgroup');
+                    var text = linktext
+                        .append('text')
+                        // .attr('transform', 'translate(-15,-15)')
                         .attr("fill", '#000')
                         .style('font-size', '4em')
                         .attr("text-anchor", 'middle')
                         .text(function(d) { return d.value; });
 
                     force.on("tick", function(e) {
+                    
+                        text.attr("transform", function(d, i) {
+                            var x1 = d.source.x;
+                            var x2 = d.target.x;
+                            var y1 = d.source.y;
+                            var y2 = d.target.y;
+                            var x = (x1+x2)/2;
+                            var y = (y1+y2)/2;
+                            return "translate(" + x + "," + y + ")";
+                        });
 
                         node.attr("transform", function(d, i) {
                             return "translate(" + d.x + "," + d.y + ")";
@@ -1741,15 +1752,6 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                             .attr("y1", function(d)   { return d.source.y; })
                             .attr("x2", function(d)   { return d.target.x; })
                             .attr("y2", function(d)   { return d.target.y; })
-
-                        // linktext.attr("x1", function(d)   { return d.source.x; })
-                        //     .attr("y1", function(d)   { return d.source.y; })
-                        //     .attr("x2", function(d)   { return d.target.x; })
-                        //     .attr("y2", function(d)   { return d.target.y; })
-
-                        // linktext.attr("transform", function(d) {
-                        //     return "translate(" + ((d.source.y + d.target.y)/2) + "," + ((d.source.x + d.target.x)/2) + ")";
-                        // })
 
                     });
 
