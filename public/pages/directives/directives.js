@@ -1499,31 +1499,39 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                                 elm.on('mouseout', function(d) {
                                     tableDiv.selectAll('tr').remove();
                                 })
+
                                 if (d.value.type === 'stealth') {
-                                    elm.append("svg:circle")
+                                    elm.append("path")
+                                        .attr('d', 'M14,3.1C9.4,3.3,7,0,7,0c0,0-2,3.1-7,3.1C-0.4,8.3,2.7,18,7,18C11.2,18,14.4,7.2,14,3.1z')
+                                        .attr('transform', 'translate(-25,-115) scale(0.7)')
+                                        .style('fill', '#333')
+                                        .attr('transform', 'translate(-8,-8) scale(1.1)')
+
+                                } else if(d.value.type === 'outside') {
+                                    elm.append("circle")
                                         .attr("cx", function(d) { return d.x; })
                                         .attr("cy", function(d) { return d.y; })
-                                        .attr("r", function (d) {return 10; })
-                                        // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
-                                        .attr("fill", '#fff')
-                                        .style("stroke-width", "4px")
-                                        .style("stroke", "#259286")
-                                } else if ('outside') {
-                                    elm.append("svg:circle")
-                                        .attr("cx", function(d) { return d.x; })
-                                        .attr("cy", function(d) { return d.y; })
-                                        .attr("r", function (d) {return 10; })
-                                        // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
-                                        .attr("fill", '#fff')
-                                        .style("stroke-width", "4px")
-                                        .style("stroke", "#259286")
+                                        .attr("r", 8)
+                                        .attr("fill", '#333')
+
+                                } else if(d.value.type === 'inside') {
+
+                                    elm.append('rect')
+                                        .attr('x', function(d) { return d.x; })
+                                        .attr('y', function(d) { return d.y; })
+                                        .attr('height', 14)
+                                        .attr('width', 14)
+                                        .style('fill', '#333')
+                                        .attr('transform', 'translate(-8,-8)')
+                                        .style('fill-opacity', '1')
                                 }
                             break;
                         }
                     });
-                    
-                    var linktext = d3.selectAll('.link').append('g');
+
+                    var linktext = d3.selectAll('.link');
                     linktext.append('text')
+                        .attr('transform', 'translate(-15,-15)')
                         .attr("fill", '#000')
                         .style('font-size', '4em')
                         .attr("text-anchor", 'middle')
@@ -1540,10 +1548,10 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                             .attr("x2", function(d)   { return d.target.x; })
                             .attr("y2", function(d)   { return d.target.y; })
 
-                        linktext.attr("x1", function(d)   { return d.source.x; })
-                            .attr("y1", function(d)   { return d.source.y; })
-                            .attr("x2", function(d)   { return d.target.x; })
-                            .attr("y2", function(d)   { return d.target.y; })
+                        // linktext.attr("x1", function(d)   { return d.source.x; })
+                        //     .attr("y1", function(d)   { return d.source.y; })
+                        //     .attr("x2", function(d)   { return d.target.x; })
+                        //     .attr("y2", function(d)   { return d.target.y; })
 
                         // linktext.attr("transform", function(d) {
                         //     return "translate(" + ((d.source.y + d.target.y)/2) + "," + ((d.source.x + d.target.x)/2) + ")";
