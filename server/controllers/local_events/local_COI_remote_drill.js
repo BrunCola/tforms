@@ -601,7 +601,7 @@ module.exports = function(pool) {
 
                         var info = [];
                         var info = {};
-                        var InfoSQL = {
+                        var InfoSQL1 = {
                             query: 'SELECT '+
                                         'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as last, '+
                                         'date_format(min(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as first, '+
@@ -627,17 +627,7 @@ module.exports = function(pool) {
                                     'LIMIT 1',
                             insert: [req.query.lan_ip]
                         }
-                        var Info2SQL = {
-                            query: 'SELECT '+
-                                        '`description` '+
-                                    'FROM '+
-                                        '`ioc_parent` '+
-                                    'WHERE '+
-                                        '`ioc_parent` = ? '+
-                                    'LIMIT 1',
-                            insert: [req.query.ioc]
-                        }
-                        var Info3SQL = {
+                        var InfoSQL2 = {
                             query: 'SELECT '+
                                         'max(date_format(from_unixtime(stealth_src.time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
                                         '`lan_zone`,'+
@@ -1236,20 +1226,14 @@ module.exports = function(pool) {
                         }
                         var treeArray = [], network = null;
                         async.parallel([
-                            function(callback) { // InfoSQL
-                                new query(InfoSQL, {database: database, pool: pool}, function(err,data){
-                                    info.main = data;
+                            function(callback) { // InfoSQL1
+                                new query(InfoSQL1, {database: database, pool: pool}, function(err,data){
+                                    info.main1 = data;
                                     callback();
                                 });
                             },
-                            function(callback) { // Info2SQL
-                                new query(Info2SQL, {database: 'rp_ioc_intel', pool: pool}, function(err,data){
-                                    info.desc = data;
-                                    callback();
-                                });
-                            },
-                            function(callback) { // InfoSQL
-                                new query(Info3SQL, {database: database, pool: pool}, function(err,data){
+                            function(callback) { // InfoSQL2
+                                new query(InfoSQL2, {database: database, pool: pool}, function(err,data){
                                     info.main2 = data;
                                     callback();
                                 });
