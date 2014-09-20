@@ -1,9 +1,9 @@
 'use strict';
 
-var datatable_stealth = require('../constructors/datatable_stealth'),
-query = require('../constructors/query'),
-config = require('../../config/config'),
-async = require('async');
+var dataTable = require('../constructors/datatable'),
+    query = require('../constructors/query'),
+    config = require('../../config/config'),
+    async = require('async');
 
 module.exports = function(pool) {
     return {
@@ -29,9 +29,11 @@ module.exports = function(pool) {
                                 '`ioc_rule`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`,'+
+                                '`stealth`,'+
                                 '`lan_zone`,'+
-                                '`machine`,'+
-                                'conn_ioc.lan_ip,'+
+                                '`machine`,'
+                                '`lan_user`,'++
+                                '`lan_ip`,'+
                                 '`remote_ip`,'+
                                 '`remote_country`,'+
                                 '`remote_cc`,'+
@@ -45,7 +47,7 @@ module.exports = function(pool) {
                             'WHERE '+
                                 'conn_ioc.time BETWEEN ? AND ? '+
                                 'AND `lan_zone` = ? '+
-                                'AND conn_ioc.lan_ip = ? '+
+                                'AND `lan_ip` = ? '+
                                 'AND `ioc_count` > 0 '+
                                 'AND `trash` IS NULL '+
                             'GROUP BY '+
@@ -69,8 +71,10 @@ module.exports = function(pool) {
                         { title: 'IOC Type', select: 'ioc_typeIndicator' },
                         { title: 'IOC Stage', select: 'ioc_typeInfection' },
                         { title: 'IOC Rule', select: 'ioc_rule' },
+                        { title: 'Stealth', select: 'stealth', access: [3] },
                         { title: 'Zone', select: 'lan_zone' },
                         { title: 'Machine', select: 'machine' },
+                        { title: 'Local User', select: 'lan_user' },
                         { title: 'Local IP', select: 'lan_ip' },
                         { title: 'Remote IP', select: 'remote_ip' },
                         { title: 'Remote Country', select: 'remote_country' },
@@ -87,27 +91,6 @@ module.exports = function(pool) {
                         title: 'Indicators of Compromise (IOC) Notifications'
                     }
                 }
-                var table2 = {
-                    query: 'SELECT '+
-                                'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ 
-                                '`stealth_COIs`, ' +
-                                '`stealth`, '+
-                                '`lan_ip`, ' +
-                                '`event`, ' +
-                                '`user` ' +
-                            'FROM ' + 
-                                '`endpoint_tracking` '+
-                            'WHERE ' + 
-                                'stealth > 0 '+
-                                'AND event = "Log On" ',
-                    insert: [],
-                    params: [
-                        { title: 'Stealth', select: 'stealth' },
-                        { title: 'COI Groups', select: 'stealth_COIs' },
-                        { title: 'User', select: 'user' }
-                    ],
-                    settings: {}
-                }    
                 var crossfilterQ = {
                     query: 'SELECT '+
                                 'count(*) as count,'+
@@ -154,7 +137,7 @@ module.exports = function(pool) {
                     // Table function(s)
                     function(callback) {
                         console.log(table1.query);
-                        new datatable_stealth(table1, table2, parseInt(req.session.passport.user.level), {database: database, pool: pool}, function(err,data){
+                        new dataTable(table1, {database: database, pool: pool}, function(err,data){
                             tables.push(data);
                             callback();
                         });
