@@ -1387,7 +1387,13 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                         .nodes(data.nodes)
                         .links(data.links)
                         .gravity(0.1)
-                        .linkDistance(width/2)
+                        .linkDistance(function(d) { 
+                            if (d.class === 'child') {
+                                return  150;
+                            } else {
+                                return  width/2;
+                            }
+                        })
                         .charge(-500)
                         .size([width-50, height]);
 
@@ -1396,7 +1402,13 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                         .enter().append("line")
                         .attr("class", "link")
                         .style("stroke", "#259286")
-                        .attr('stroke-width', '100');
+                        .attr('stroke-width', function(d){
+                            if (d.class === 'child'){
+                                return '15';
+                            } else {
+                                return '100';
+                            }
+                        });
 
                     var node = vis.selectAll("circle.node")
                         .data(data.nodes)
@@ -1407,60 +1419,75 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                     .call(force.drag);
 
                     node.each(function(d){
-                        var elm = d3.select(this)
-                        //CIRCLE
-                        elm.append("svg:circle")
-                            .attr("cx", function(d) { return d.x; })
-                            .attr("cy", function(d) { return d.y; })
-                            .attr("r", function (d) {return logslider(d["width"]); })
-                            // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
-                            .attr("fill", '#fff')
-                            .style("stroke-width", "14px")
-                            .style("stroke", "#259286")
+                        var elm = d3.select(this);
+                        // set force link width
+                        // force.attr('stroke-width', '100');
+                        switch(d.group) {
+                            case 'coi':
+                                //CIRCLE
+                                elm.append("svg:circle")
+                                    .attr("cx", function(d) { return d.x; })
+                                    .attr("cy", function(d) { return d.y; })
+                                    .attr("r", function (d) {return logslider(d["width"]); })
+                                    // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
+                                    .attr("fill", '#fff')
+                                    .style("stroke-width", "14px")
+                                    .style("stroke", "#259286")
 
-                        //TEXT appends name
-                        elm.append("text")
-                            // .text(function(d, i) { return d.name + '(' + count(d.width) + ')'; })
-                            .text(function(d, i) { return d.name; })
-                            .attr("x", function() { return circleWidth; })
-                            // .attr("y", function(d, i) { if (i>0) { return circleWidth + 40 }    else { return 8 } })
+                                //TEXT appends name
+                                elm.append("text")
+                                    // .text(function(d, i) { return d.name + '(' + count(d.width) + ')'; })
+                                    .text(function(d, i) { return d.name; })
+                                    .attr("x", function() { return circleWidth; })
+                                    // .attr("y", function(d, i) { if (i>0) { return circleWidth + 40 }    else { return 8 } })
 
-                            .attr("y", function(d) { 
-                                if (d.name === 'ClearText') { return circleWidth - 70 } else { return 90 } 
-                            })
+                                    .attr("y", function(d) { 
+                                        if (d.name === 'ClearText') { return circleWidth - 70 } else { return 90 } 
+                                    })
 
-                            // .attr("font-family",  "Bree Serif")
-                            .attr("fill", '#c61c6f')
-                            .style("font-size",    function(d, i) {  return  "2em"; })
-                            // .attr("text-anchor",  function(d, i) { if (i>0) { return  "beginning"; } else { return "end" } })
-                            .attr("text-anchor", 'middle')
+                                    // .attr("font-family",  "Bree Serif")
+                                    .attr("fill", '#c61c6f')
+                                    .style("font-size",    function(d, i) {  return  "2em"; })
+                                    // .attr("text-anchor",  function(d, i) { if (i>0) { return  "beginning"; } else { return "end" } })
+                                    .attr("text-anchor", 'middle')
 
 
-                        //TEXT appends count
-                        elm.append("text")
-                            .text(function(d, i) { return d.count; })
-                            .attr("x", function() { return circleWidth; })
-                            .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth + 2 } else { return 40 } })
-                            .attr("fill", '#515151')
-                            .style("font-size", function(d, i) { if (d.name === 'ClearText') { return '5em' } else { return '10em'} })
-                            .attr("text-anchor", 'middle')
+                                //TEXT appends count
+                                elm.append("text")
+                                    .text(function(d, i) { return d.count; })
+                                    .attr("x", function() { return circleWidth; })
+                                    .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth + 2 } else { return 40 } })
+                                    .attr("fill", '#515151')
+                                    .style("font-size", function(d, i) { if (d.name === 'ClearText') { return '5em' } else { return '10em'} })
+                                    .attr("text-anchor", 'middle')
 
-                        // ICONS
-                        switch(d.name){
-                            case 'ClearText':
-                                elm.append('polygon')
-                                    .style('fill', '#ccc')
-                                    .attr('points', '36.8,0 24,3.1 19.6,15 36.8,12.2 ')
-                                    .attr('transform', 'translate(-25,40) scale(0.9)')
-                                break;
-                            default:
-                                elm.append('polygon')
-                                    .style('fill', '#515151')
-                                    .attr('points', '53,18 53,10 60,10 60,0 44,0 44,10 51,10 51,16 31,16 31,10 38,10 38,0 22,0 22,10 29,10 '+
-                                    '29,16 9,16 9,10 16,10 16,0 0,0 0,10 7,10 7,18 29,18 29,26 7,26 7,35 0,35 0,45 16,45 16,35 9,35 9,28 29,28 29,35 22,35 22,45 '+
-                                    '38,45 38,35 31,35 31,28 51,28 51,35 44,35 44,45 60,45 60,35 53,35 53,26 31,26 31,18 ')
-                                    .attr('transform', 'translate(-25,-110) scale(0.9)')
-                                break;
+                                // ICONS
+                                switch(d.name){
+                                    case 'ClearText':
+                                        elm.append('polygon')
+                                            .style('fill', '#ccc')
+                                            .attr('points', '36.8,0 24,3.1 19.6,15 36.8,12.2 ')
+                                            .attr('transform', 'translate(-25,40) scale(0.9)')
+                                        break;
+                                    default:
+                                        elm.append('polygon')
+                                            .style('fill', '#515151')
+                                            .attr('points', '53,18 53,10 60,10 60,0 44,0 44,10 51,10 51,16 31,16 31,10 38,10 38,0 22,0 22,10 29,10 '+
+                                            '29,16 9,16 9,10 16,10 16,0 0,0 0,10 7,10 7,18 29,18 29,26 7,26 7,35 0,35 0,45 16,45 16,35 9,35 9,28 29,28 29,35 22,35 22,45 '+
+                                            '38,45 38,35 31,35 31,28 51,28 51,35 44,35 44,45 60,45 60,35 53,35 53,26 31,26 31,18 ')
+                                            .attr('transform', 'translate(-25,-110) scale(0.9)')
+                                        break;
+                                }
+                            break;
+                            case 'child':
+                                // elm.append("svg:circle")
+                                //     .attr("cx", function(d) { return d.x; })
+                                //     .attr("cy", function(d) { return d.y; })
+                                //     .attr("r", function (d) {return 10; })
+                                //     // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
+                                //     .attr("fill", '#fff')
+                                //     .style("stroke-width", "14px")
+                                //     .style("stroke", "#259286")
                         }
                     })
 
@@ -1469,7 +1496,6 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                         node.attr("transform", function(d, i) {
                             return "translate(" + d.x + "," + d.y + ")";
                         });
-
 
                         link.attr("x1", function(d)   { return d.source.x; })
                             .attr("y1", function(d)   { return d.source.y; })
