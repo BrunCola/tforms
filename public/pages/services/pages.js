@@ -38,7 +38,7 @@ angular.module('mean.pages').factory('dictionary', [
                 case 'type':
                     return 'Type';
                 default:
-                    return '';
+                    return word;
             }
         };
         return dictionary;

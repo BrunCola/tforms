@@ -1317,8 +1317,196 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
     };
 }]);
 
+angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
+    return {
+        link: function ($scope, element, attrs) {
+            $scope.$on('forceChart', function (event, data, params) {
+                $timeout(function () { // You might need this timeout to be sure its run after DOM render
+                    var width = $("#forcechart").parent().width(),
+                        height = params["height"];
+                    var tCount = [];
+                    data.links.forEach(function(d) {
+                        tCount.push(d.value);
+                    });
+                    var maxNum = Math.max.apply(Math, tCount);
+
+                    // var color = d3.scale.category20();
+                    var palette = {
+                        "lightgray": "#819090",
+                        "gray": "#708284",
+                        "mediumgray": "#536870",
+                        "darkgray": "#475B62",
+
+                        "darkblue": "#0A2933",
+                        "darkerblue": "#042029",
+
+                        "paleryellow": "#FCF4DC",
+                        "paleyellow": "#EAE3CB",
+                        "yellow": "#A57706",
+                        "orange": "#BD3613",
+                        "red": "#D11C24",
+                        "pink": "#C61C6F",
+                        "purple": "#595AB7",
+                        "blue": "#2176C7",
+                        "green": "#259286",
+                        "yellowgreen": "#738A05"
+                    }
+                    var count = function(size) {
+                        if (size === undefined) {
+                            size = 1;
+                        }
+                        return size;
+                    }
+                    var color = function(group) {
+                        if (group === 1) {
+                            return palette.pink
+                        } else if (group === 2) {
+                            return palette.pink
+                        } else if (group === 3) {
+                            return palette.orange
+                        } else {
+
+                        }
+                    }
+                    function logslider(x) {
+                        if (x === undefined) {
+                            return 18;
+                        }
+                        // position will be between 0 and 100
+                        // if(x > 50) {
+                        //  x = 50;
+                        // }
+                        var minp = 0;
+                        var maxp = maxNum;
+                        // The result should be between 100 an 10000000
+                        var minv = Math.log(5);
+                        var maxv = Math.log(50);
+                        // calculate adjustment factor
+                        var scale = (maxv-minv) / (maxp-minp);
+                        return Math.exp(minv + scale*(x-minp));
+                    }
+
+                    var circleWidth = 5;
+                    
+                    var vis = d3.select("#forcechart")
+                        .append("svg:svg")
+                        .attr("class", "stage")
+                        .attr("width", width)
+                        .attr("height", height);
+
+                    var force = d3.layout.force()
+                        .nodes(data.nodes)
+                        .links(data.links)
+                        .gravity(0.1)
+                        .linkDistance(width/6)
+                        .charge(-500)
+                        .size([width-50, height]);
+
+                    var link = vis.selectAll(".link")
+                        .data(data.links)
+                        .enter().append("line")
+                        .attr("class", "link")
+                        .attr("stroke", "#CCC")
+                        .attr("fill", "#000");
+
+                    var node = vis.selectAll("circle.node")
+                        .data(data.nodes)
+                        .enter().append("g")
+                        .attr("class", "node")
+
+                    //MOUSEOVER
+                    .on("mouseover", function(d,i) {
+                        if (i>0) {
+                            //CIRCLE
+                            d3.select(this).selectAll("circle")
+                                .transition()
+                                .duration(250)
+                                .style("cursor", "none")
+                                .attr("r", function (d) {return logslider(d["width"])+4; })
+                                .attr("fill",function(d){ return color(d.group); });
+
+                            //TEXT
+                            d3.select(this).select("text")
+                                .transition()
+                                .style("cursor", "none")
+                                .duration(250)
+                                .style("cursor", "none")
+                                .attr("font-size","1.5em")
+                                .attr("x", 15 )
+                                .attr("y", 5 )
+                        } else {
+                        //CIRCLE
+                            d3.select(this).selectAll("circle")
+                                .style("cursor", "none")
+
+                            //TEXT
+                            d3.select(this).select("text")
+                                .style("cursor", "none")
+                        }
+                    })
+
+                    //MOUSEOUT
+                    .on("mouseout", function(d,i) {
+                        if (i>0) {
+                        //CIRCLE
+                        d3.select(this).selectAll("circle")
+                            .transition()
+                            .duration(250)
+                            .attr("r", function (d) {return logslider(d["width"]); })
+                            .attr("fill",function(d){ return color(d.group); } );
+
+                        //TEXT
+                        d3.select(this).select("text")
+                            .transition()
+                            .duration(250)
+                            .attr("font-size","1em")
+                            .attr("x", 8 )
+                            .attr("y", 4 )
+                        }
+                    })
+
+                    .call(force.drag);
+
+
+                    //CIRCLE
+                    node.append("svg:circle")
+                        .attr("cx", function(d) { return d.x; })
+                        .attr("cy", function(d) { return d.y; })
+                        .attr("r", function (d) {return logslider(d["width"]); })
+                        .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.gray } } )
+                        .style("stroke-width", "1.5px")
+                        .style("stroke", "#fff")
+
+                    //TEXT
+                    node.append("text")
+                        .text(function(d, i) { return d.name+'('+count(d.width)+')'; })
+                        .attr("x",    function(d, i) { return circleWidth + 5; })
+                        .attr("y",            function(d, i) { if (i>0) { return circleWidth + 0 }    else { return 8 } })
+                        // .attr("font-family",  "Bree Serif")
+                        // .attr("fill",         function(d, i) {  return  palette.paleryellow;  })
+                        .attr("font-size",    function(d, i) {  return  "1em"; })
+                        .attr("text-anchor",  function(d, i) { if (i>0) { return  "beginning"; }      else { return "end" } })
+
+                    force.on("tick", function(e) {
+                        node.attr("transform", function(d, i) {
+                            return "translate(" + d.x + "," + d.y + ")";
+                        });
+
+                        link.attr("x1", function(d)   { return d.source.x; })
+                            .attr("y1", function(d)   { return d.source.y; })
+                            .attr("x2", function(d)   { return d.target.x; })
+                            .attr("y2", function(d)   { return d.target.y; })
+                    });
+
+                    force.start();
+                }, 0, false);
+            })
+        }
+    };
+}]);
+
 // STEALTH FORCE CHART STARTS HERE
-angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScope', 'dictionary', function ($timeout, $rootScope, dictionary) {
+angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope', 'dictionary', function ($timeout, $rootScope, dictionary) {
     return {
         link: function ($scope, element, attrs) {
             $scope.$on('forceChart', function (event, data, params) {
