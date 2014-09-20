@@ -62,9 +62,9 @@ module.exports = function(pool) {
                             crumb: false
                         },
                     },
-                    { title: 'Zone', select: 'lan_zone' },
                     { title: 'Stealth', select: 'stealth' },
-                    { title: 'Machine Name', select: 'machine' },
+                    { title: 'Zone', select: 'lan_zone' },
+                    { title: 'Machine', select: 'machine' },
                     { title: 'Local User', select: 'lan_user' },
                     { title: 'Local IP', select: 'lan_ip' },
                     { title: 'MB to Remote', select: 'in_bytes' },
@@ -88,7 +88,6 @@ module.exports = function(pool) {
                     title: 'Local IP Traffic'
                 }
             }
-
             var crossfilterQ = {
                 query: 'SELECT '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time,'+
@@ -105,7 +104,6 @@ module.exports = function(pool) {
                             'hour(from_unixtime(`time`))',
                 insert: [start, end]
             }
-
             var stealth_conn = {
                 query: 'SELECT '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time,'+

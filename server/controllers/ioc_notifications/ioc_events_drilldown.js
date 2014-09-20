@@ -658,9 +658,10 @@ module.exports = function(pool) {
                                 '`file` '+
                             'WHERE '+
                                 '`time` BETWEEN ? AND ? '+
-                                'AND `lan_zone`= ? '+
-                                'AND `lan_ip`= ? '+
+                                'AND `lan_zone` = ? '+
+                                'AND `lan_ip` = ? '+
                                 'AND `mime` NOT REGEXP \'text\' '+
+                                'AND `mime` != \'-\' '+
                             'LIMIT 250',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
@@ -683,7 +684,6 @@ module.exports = function(pool) {
                             '`time` as raw_time, '+
                             'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
-                            '`ioc_count`,'+
                             '`mime`,'+
                             '`name`,'+
                             '`size`,'+
@@ -693,7 +693,8 @@ module.exports = function(pool) {
                             '`ioc_typeIndicator`,'+
                             '`ioc_typeInfection`,'+
                             '`ioc_rule`,'+
-                            '`ioc_severity` '+
+                            '`ioc_severity`,'+
+                            '`ioc_count` '+
                         'FROM '+
                             '`file` '+
                         'WHERE '+
@@ -703,6 +704,7 @@ module.exports = function(pool) {
                             'AND `remote_ip` = ? '+
                             'AND `ioc` = ? '+
                             'AND `mime` NOT REGEXP \'text\' '+
+                            'AND `mime` != \'-\' '+
                         'LIMIT 250',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                     params: [
@@ -851,7 +853,13 @@ module.exports = function(pool) {
             } else if (req.query.type === 'assets') {
                 if (req.query.lan_ip && req.query.lan_zone) {
                     var sql = {
-                        query: 'SELECT `file` FROM assets where lan_ip = ? AND lan_zone = ?',
+                        query: 'SELECT '+
+                                    '`file` '+
+                                'FROM '+
+                                    '`assets` '+
+                                'WHERE '+
+                                    '`lan_ip` = ? '+
+                                    'AND `lan_zone` = ?',
                         insert: [req.query.lan_ip, req.query.lan_zone]
                     }
                     new query(sql, {database: database, pool: pool}, function(err,data){

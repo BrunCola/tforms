@@ -221,7 +221,7 @@ module.exports = function(pool) {
                         { title: 'IOC Rule', select: 'ioc_rule' },
                         { title: 'Zone', select: 'lan_zone' },
                         { title: 'Machine', select: 'machine' },
-                        { title: 'User', select: 'lan_user' },
+                        { title: 'Local User', select: 'lan_user' },
                         { title: 'Local IP', select: 'lan_ip' },
                         { title: 'Remote IP', select: 'remote_ip' },
                         { title: 'Remote Country', select: 'remote_country' },
