@@ -32,7 +32,7 @@ module.exports = function(pool) {
                                 '`stealth`,'+
                                 '`lan_zone`,'+
                                 '`machine`,'
-                                '`lan_user`,'++
+                                '`lan_user`,'+
                                 '`lan_ip`,'+
                                 '`remote_ip`,'+
                                 '`remote_country`,'+
