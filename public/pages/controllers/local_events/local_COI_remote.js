@@ -14,12 +14,8 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
         if (data.force === null) {
             $scope.$broadcast('loadError');
         } else {
-            data.force.nodes.forEach(function(d) {
-                d.group = 0
-            });
             $scope.$broadcast('forceChart', data.force, {height: 1000});
             $scope.$broadcast('spinnerHide');
-            
         }
     });
 }]);
