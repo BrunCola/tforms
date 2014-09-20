@@ -69,6 +69,7 @@ module.exports = function (sql, queries, conn, callback) {
             function(callback) {
                 connection.query(sql.query)
                     .on('result', function(data){
+                        if (data.group.toLowerCase().indexOf('clear') !== -1)  {return }
                         // SETTING UP UNIQUE NODES
                         // if coi is not in uniqe coi array
                         if (uniqueNodes.indexOf(data.group) === -1) {

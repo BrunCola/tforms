@@ -1509,7 +1509,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                     // })
 
 
-                    var linktext = d3.selectAll('.linkgroup')
+                    var linktext = d3.selectAll('.link').append('g');
                     linktext.append('text')
                         // .attr("x", 100)
                         // .attr("y", 100)
