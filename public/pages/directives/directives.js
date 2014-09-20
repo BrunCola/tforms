@@ -1402,6 +1402,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                         .append("line")
                         .attr("class", "link")
                         .style("stroke", "#259286")
+                        .style('stroke-opacity', '1')
                         .attr('stroke-width', function(d){
                             if (d.class === 'child'){
                                 return '15';
@@ -1438,36 +1439,38 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                                 elm.append("text")
                                     // .text(function(d, i) { return d.name + '(' + count(d.width) + ')'; })
                                     .text(function(d, i) { return d.name; })
-                                    .attr("x", function() { return circleWidth; })
+                                    .attr("x", 0)
                                     // .attr("y", function(d, i) { if (i>0) { return circleWidth + 40 }    else { return 8 } })
-
-                                    .attr("y", function(d) { 
-                                        if (d.name === 'ClearText') { return circleWidth - 70 } else { return 90 } 
-                                    })
-
-                                    // .attr("font-family",  "Bree Serif")
+                                    // .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth - 70 } else { return 90 } })
+                                    .attr("y", 90)
+                                    .attr("font-family",  "Bree Serif")
                                     .attr("fill", '#c61c6f')
-                                    .style("font-size",    function(d, i) {  return  "2em"; })
-                                    // .attr("text-anchor",  function(d, i) { if (i>0) { return  "beginning"; } else { return "end" } })
+                                    .style("font-size", '2em')
                                     .attr("text-anchor", 'middle')
-
 
                                 //TEXT appends count
                                 elm.append("text")
                                     .text(function(d, i) { return d.count; })
-                                    .attr("x", function() { return circleWidth; })
-                                    .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth + 2 } else { return 40 } })
+                                    .attr("x", 0)
+                                    // .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth + 2 } else { return 40 } })
+                                    .attr("y", 40)
                                     .attr("fill", '#515151')
-                                    .style("font-size", function(d, i) { if (d.name === 'ClearText') { return '5em' } else { return '10em'} })
+                                    // .style("font-size", function(d, i) { if (d.name === 'ClearText') { return '5em' } else { return '10em'} })
+                                    .style("font-size", '9em')
                                     .attr("text-anchor", 'middle')
 
                                 // ICONS
                                 switch(d.name){
                                     case 'ClearText':
-                                        elm.append('polygon')
-                                            .style('fill', '#ccc')
-                                            .attr('points', '36.8,0 24,3.1 19.6,15 36.8,12.2 ')
-                                            .attr('transform', 'translate(-25,40) scale(0.9)')
+                                        elm.append('path')
+                                            .style('fill', '#259286')
+                                            .attr('d', 'M36.8,12.2L19.6,15l4.4-12L36.8,0V12.2z M3.8,20.8l9.2-3.7l5.4-11.4L3.8,20.8z M36.8,16.5l-18.6,3.8'+
+                                            'L17.5,37h19.3V16.5z M12.2,21.6l-9.8,3.6L0,37h10.3L12.2,21.6z M42.8,12.2L59.9,15l-4.6-12L42.8,0V12.2z M60.4,5.8l5.4,11.4l9.2,3.7'+
+                                            'L60.4,5.8z M42.8,37h20.4L61,20.3l-18.2-3.8V37z M68.6,37h10.3l-2.4-11.8l-9.8-3.6L68.6,37z M36.8,67.2l-17.3-2.8l4.4,12l12.8,3.1'+
+                                            'V67.2z M18.5,73.6l-5.4-11.4l-9.2-3.7L18.5,73.6z M36.8,42H17.5l0.7,16.8l18.6,2.1V42z M10.3,42H0l2.4,11.9l9.8,3.7L10.3,42z'+
+                                            ' M42.8,79.4l12.4-3.1l4.6-12l-17.1,2.8V79.4z M75.1,58.6l-9.2,3.7l-5.4,11.4L75.1,58.6z M42.8,60.9L61,58.8L63.2,42H42.8V60.9z'+
+                                            ' M66.7,57.5l9.8-3.7L78.9,42H68.6L66.7,57.5z')
+                                            .attr('transform', 'translate(-25,-115) scale(0.7)')
                                         break;
                                     default:
                                         elm.append('polygon')
