@@ -887,10 +887,10 @@ module.exports = function(pool) {
                             {title: "Bytes to Remote", select: "in_bytes"},
                             {title: "Bytes from Remote", select: "out_bytes"},
                             {title: "IOC", select: "ioc"},
-                            {title: "IOC Severity", select: "ioc_severity"},
                             {title: "IOC Type", select: "ioc_typeIndicator"},
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
+                            {title: "IOC Severity", select: "ioc_severity"},
                         ]
                     }
                     var conn_ioc = {
@@ -940,10 +940,10 @@ module.exports = function(pool) {
                             {title: "Bytes to Remote", select: "in_bytes"},
                             {title: "Bytes from  Remote", select: "out_bytes"},
                             {title: "IOC", select: "ioc"},
-                            {title: "IOC Severity", select: "ioc_severity"},
                             {title: "IOC Type", select: "ioc_typeIndicator"},
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
+                            {title: "IOC Severity", select: "ioc_severity"},
                         ]
                     }
                     var application = {
@@ -955,6 +955,7 @@ module.exports = function(pool) {
                                 '`ioc_count`,'+
                                 '`lan_zone`,'+
                                 '`machine`,'+
+                                '`lan_user`,'+
                                 '`lan_ip`,'+
                                 '`lan_port`,'+
                                 '`remote_ip`,'+
@@ -981,6 +982,7 @@ module.exports = function(pool) {
                             {title: "Time", select: "time"},
                             {title: "Zone", select: "lan_zone"},
                             {title: "Machine", select: "machine"},
+                            {title: "User", select: "lan_user"},
                             {title: "Local IP", select: "lan_ip"},
                             {title: "Local Port", select: "lan_port"},
                             {title: "Remote IP", select: "remote_ip"},
@@ -1003,8 +1005,11 @@ module.exports = function(pool) {
                                 '`time` AS raw_time,'+
                                 'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
-                                '`src_ip`, '+
-                                '`dst_ip`, '+
+                                '`lan_zone`,'+
+                                '`lan_machine`,'+
+                                '`lan_user`,'+
+                                '`src_ip`,'+
+                                '`dst_ip`,'+
                                 '(`in_bytes` / 1048576) AS in_bytes,'+
                                 '(`out_bytes` / 1048576) AS out_bytes,'+
                                 '`in_packets`, '+
@@ -1019,6 +1024,9 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
+                            {title: "Zone", select: "lan_zone"},
+                            {title: "Machine", select: "lan_machine"},
+                            {title: "User", select: "lan_user"},
                             {title: "Source IP", select: "src_ip"},
                             {title: "Destination IP", select: "dst_ip"},
                             {title: "MB from Remote", select: "in_bytes"},
