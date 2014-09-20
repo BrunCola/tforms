@@ -629,7 +629,7 @@ module.exports = function(pool) {
                         }
                         var InfoSQL2 = {
                             query: 'SELECT '+
-                                        'max(date_format(from_unixtime(stealth_src.time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+                                        'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time,'+ // Last Seen
                                         '`lan_zone`,'+
                                         '`lan_user`,'+
                                         '`lan_ip`,'+
@@ -1191,7 +1191,7 @@ module.exports = function(pool) {
                             query: 'SELECT '+
                                         'count(*) AS `count`, '+
                                         '\'Stealth\' AS type, '+
-                                        '`dst_ip` AS `remote_ip` '+
+                                        '`remote_ip` '+
                                     'FROM '+
                                         '`stealth_conn_meta` '+
                                     'WHERE '+
@@ -1200,7 +1200,7 @@ module.exports = function(pool) {
                                         'AND `in_bytes` > 0 '+
                                         'AND `out_bytes` > 0 '+
                                     'GROUP BY '+
-                                        '`dst_ip` '+
+                                        '`remote_ip` '+
                                     'ORDER BY '+
                                         '`count` DESC '+
                                     'LIMIT 20',
@@ -1210,7 +1210,7 @@ module.exports = function(pool) {
                             query: 'SELECT '+
                                         'count(*) AS `count`, '+
                                         '\'Stealth Dropped\' AS type, '+
-                                        '`dst_ip` AS `remote_ip` '+
+                                        '`remote_ip` '+
                                     'FROM '+
                                         '`stealth_conn_meta` '+
                                     'WHERE '+
@@ -1218,7 +1218,7 @@ module.exports = function(pool) {
                                         'AND `src_ip` = ? '+
                                         'AND (`in_bytes` = 0 OR `out_bytes` = 0) '+
                                     'GROUP BY '+
-                                        '`dst_ip`'+
+                                        '`remote_ip`'+
                                     'ORDER BY '+
                                         '`count` DESC '+
                                     'LIMIT 20'    ,
