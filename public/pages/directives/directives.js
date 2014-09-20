@@ -1481,21 +1481,15 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
 
 
                     var linktext = d3.selectAll('.linkgroup')
-                        // .append('g')
                     linktext.append('text')
-                        .attr("x", 100)
-                        .attr("y", 100)
+                        // .attr("x", 100)
+                        // .attr("y", 100)
                         .attr("fill", '#000')
                         .style('font-size', '4em')
                         .attr("text-anchor", 'middle')
                         .text(function(d) { return d.value; });
 
-
                     force.on("tick", function(e) {
-
-                        // linktext.attr("transform", function(d, i) {
-                        //     return "translate(" + (d.source.x) + "," + (d.target.y) + ")";
-                        // });
 
                         node.attr("transform", function(d, i) {
                             return "translate(" + d.x + "," + d.y + ")";
@@ -1505,7 +1499,18 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                             .attr("y1", function(d)   { return d.source.y; })
                             .attr("x2", function(d)   { return d.target.x; })
                             .attr("y2", function(d)   { return d.target.y; })
+
+                        linktext.attr("x1", function(d)   { return d.source.x; })
+                            .attr("y1", function(d)   { return d.source.y; })
+                            .attr("x2", function(d)   { return d.target.x; })
+                            .attr("y2", function(d)   { return d.target.y; })
+
+                        // linktext.attr("transform", function(d) {
+                        //     return "translate(" + ((d.source.y + d.target.y)/2) + "," + ((d.source.x + d.target.x)/2) + ")";
+                        // })
+
                     });
+
                     force.start();
                 }, 0, false);
             })
