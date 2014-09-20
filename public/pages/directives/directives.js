@@ -1316,6 +1316,7 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
     };
 }]);
 
+// STEALTH FORCE CHART STARTS HERE
 angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
     return {
         link: function ($scope, element, attrs) {
@@ -1369,7 +1370,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                     }
                     function logslider(x) {
                         if (x === undefined) {
-                            return 18;
+                            return 140;
                         }
                         // position will be between 0 and 100
                         // if(x > 50) {
@@ -1379,7 +1380,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                         var maxp = maxNum;
                         // The result should be between 100 an 10000000
                         var minv = Math.log(5);
-                        var maxv = Math.log(50);
+                        var maxv = Math.log(40);
                         // calculate adjustment factor
                         var scale = (maxv-minv) / (maxp-minp);
                         return Math.exp(minv + scale*(x-minp));
@@ -1397,7 +1398,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                         .nodes(data.nodes)
                         .links(data.links)
                         .gravity(0.1)
-                        .linkDistance(width/6)
+                        .linkDistance(width/2)
                         .charge(-500)
                         .size([width-50, height]);
 
@@ -1405,64 +1406,14 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                         .data(data.links)
                         .enter().append("line")
                         .attr("class", "link")
-                        .attr("stroke", "#CCC")
-                        .attr("fill", "#000");
+                        .style("stroke", "#259286")
+                        .attr('stroke-width', '100');
 
                     var node = vis.selectAll("circle.node")
                         .data(data.nodes)
                         .enter().append("g")
                         .attr("class", "node")
 
-                    //MOUSEOVER
-                    .on("mouseover", function(d,i) {
-                        if (i>0) {
-                            //CIRCLE
-                            d3.select(this).selectAll("circle")
-                                .transition()
-                                .duration(250)
-                                .style("cursor", "none")
-                                .attr("r", function (d) {return logslider(d["width"])+4; })
-                                .attr("fill",function(d){ return color(d.group); });
-
-                            //TEXT
-                            d3.select(this).select("text")
-                                .transition()
-                                .style("cursor", "none")
-                                .duration(250)
-                                .style("cursor", "none")
-                                .attr("font-size","1.5em")
-                                .attr("x", 15 )
-                                .attr("y", 5 )
-                        } else {
-                        //CIRCLE
-                            d3.select(this).selectAll("circle")
-                                .style("cursor", "none")
-
-                            //TEXT
-                            d3.select(this).select("text")
-                                .style("cursor", "none")
-                        }
-                    })
-
-                    //MOUSEOUT
-                    .on("mouseout", function(d,i) {
-                        if (i>0) {
-                        //CIRCLE
-                        d3.select(this).selectAll("circle")
-                            .transition()
-                            .duration(250)
-                            .attr("r", function (d) {return logslider(d["width"]); })
-                            .attr("fill",function(d){ return color(d.group); } );
-
-                        //TEXT
-                        d3.select(this).select("text")
-                            .transition()
-                            .duration(250)
-                            .attr("font-size","1em")
-                            .attr("x", 8 )
-                            .attr("y", 4 )
-                        }
-                    })
 
                     .call(force.drag);
 
@@ -1472,19 +1423,27 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                         .attr("cx", function(d) { return d.x; })
                         .attr("cy", function(d) { return d.y; })
                         .attr("r", function (d) {return logslider(d["width"]); })
-                        .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.gray } } )
-                        .style("stroke-width", "1.5px")
-                        .style("stroke", "#fff")
+                        // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
+                        .attr("fill", '#fff')
+                        .style("stroke-width", "14px")
+                        .style("stroke", "#259286")
 
                     //TEXT
                     node.append("text")
-                        .text(function(d, i) { return d.name+'('+count(d.width)+')'; })
-                        .attr("x",    function(d, i) { return circleWidth + 5; })
-                        .attr("y",            function(d, i) { if (i>0) { return circleWidth + 0 }    else { return 8 } })
+                        // .text(function(d, i) { return d.name + '(' + count(d.width) + ')'; })
+                        .text(function(d, i) { return d.name + d.count; })
+                        .attr("x", function() { return circleWidth; })
+                        // .attr("y", function(d, i) { if (i>0) { return circleWidth + 40 }    else { return 8 } })
+
+                        .attr("y", function(d) { 
+                            if (d.name === 'ClearText') { return circleWidth - 40 } else { return 80 } 
+                        })
+
                         // .attr("font-family",  "Bree Serif")
                         // .attr("fill",         function(d, i) {  return  palette.paleryellow;  })
-                        .attr("font-size",    function(d, i) {  return  "1em"; })
-                        .attr("text-anchor",  function(d, i) { if (i>0) { return  "beginning"; }      else { return "end" } })
+                        .style("font-size",    function(d, i) {  return  "2em"; })
+                        // .attr("text-anchor",  function(d, i) { if (i>0) { return  "beginning"; } else { return "end" } })
+                        .attr("text-anchor", 'middle')
 
                     force.on("tick", function(e) {
                         node.attr("transform", function(d, i) {
@@ -1502,6 +1461,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
         }
     };
 }]);
+// STEALTH FORCE CHART ENDS HERE
 
 //NETWORK TREE STARTS HERE
 
