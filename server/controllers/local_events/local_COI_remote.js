@@ -25,12 +25,14 @@ module.exports = function(pool) {
                 }
                 var q1 = {
                     query: 'SELECT '+
-                        '\'stealth\' AS type, '+
-                        '`lan_zone`, '+
-                        '`lan_user`, '+
-                        '`lan_ip`, '+
-                        '`remote_user`, '+
-                        '`remote_ip` '+
+                        '\'Stealth COI Mismatch\' AS type, '+
+                        '`lan_zone`AS `Victim Zone`,'+
+                        '`lan_machine` AS `Victim Machine`, '+
+                        '`lan_user` AS `Victim User`, '+
+                        '`lan_ip` AS `Victim IP`, '+
+                        '`remote_machine` AS `Attacker Machine`, '+
+                        '`remote_user` AS `Attacker User`, '+
+                        '`remote_ip` AS `Attacker IP`'+
                     'FROM '+
                         '`stealth_conn_meta` '+
                     'WHERE '+

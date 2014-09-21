@@ -1694,7 +1694,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     tableDiv.selectAll('tr').remove();
                                 })
 
-                                if (d.value.type === 'stealth') {
+                                if (d.value.type === 'Stealth COI Mismatch') {
                                     elm.append("path")
                                         .attr('d', 'M14,3.1C9.4,3.3,7,0,7,0c0,0-2,3.1-7,3.1C-0.4,8.3,2.7,18,7,18C11.2,18,14.4,7.2,14,3.1z')
                                         .attr('transform', 'translate(-25,-115) scale(0.7)')
