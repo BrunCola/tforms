@@ -28,6 +28,7 @@ module.exports = function(pool) {
                         '\'Stealth COI Mismatch\' AS type,'+
                         '`lan_zone`AS `Victim Zone`,'+
                         '`lan_machine` AS `Victim Machine`,'+
+                        '`lan_user`,'+
                         '`lan_user` AS `Victim User`,'+
                         '`lan_ip` AS `Victim IP`,'+
                         '`remote_machine` AS `Attacker Machine`,'+
