@@ -1726,9 +1726,8 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                     var linktext = d3.selectAll('.linkgroup');
                     var text = linktext
                         .append('text')
-                        // .attr('transform', 'translate(-15,-15)')
-                        .attr("fill", '#000')
-                        .style('font-size', '4em')
+                        .attr("fill", '#fff')
+                        .style('font-size', '3em')
                         .attr("text-anchor", 'middle')
                         .text(function(d) { return d.value; });
 
