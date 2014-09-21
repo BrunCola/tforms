@@ -1317,8 +1317,196 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
     };
 }]);
 
-// STEALTH FORCE CHART STARTS HERE
 angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
+    return {
+        link: function ($scope, element, attrs) {
+            $scope.$on('forceChart', function (event, data, params) {
+                $timeout(function () { // You might need this timeout to be sure its run after DOM render
+                    var width = $("#forcechart").parent().width(),
+                        height = params["height"];
+                    var tCount = [];
+                    data.links.forEach(function(d) {
+                        tCount.push(d.value);
+                    });
+                    var maxNum = Math.max.apply(Math, tCount);
+
+                    // var color = d3.scale.category20();
+                    var palette = {
+                        "lightgray": "#819090",
+                        "gray": "#708284",
+                        "mediumgray": "#536870",
+                        "darkgray": "#475B62",
+
+                        "darkblue": "#0A2933",
+                        "darkerblue": "#042029",
+
+                        "paleryellow": "#FCF4DC",
+                        "paleyellow": "#EAE3CB",
+                        "yellow": "#A57706",
+                        "orange": "#BD3613",
+                        "red": "#D11C24",
+                        "pink": "#C61C6F",
+                        "purple": "#595AB7",
+                        "blue": "#2176C7",
+                        "green": "#259286",
+                        "yellowgreen": "#738A05"
+                    }
+                    var count = function(size) {
+                        if (size === undefined) {
+                            size = 1;
+                        }
+                        return size;
+                    }
+                    var color = function(group) {
+                        if (group === 1) {
+                            return palette.pink
+                        } else if (group === 2) {
+                            return palette.pink
+                        } else if (group === 3) {
+                            return palette.orange
+                        } else {
+
+                        }
+                    }
+                    function logslider(x) {
+                        if (x === undefined) {
+                            return 18;
+                        }
+                        // position will be between 0 and 100
+                        // if(x > 50) {
+                        //  x = 50;
+                        // }
+                        var minp = 0;
+                        var maxp = maxNum;
+                        // The result should be between 100 an 10000000
+                        var minv = Math.log(5);
+                        var maxv = Math.log(50);
+                        // calculate adjustment factor
+                        var scale = (maxv-minv) / (maxp-minp);
+                        return Math.exp(minv + scale*(x-minp));
+                    }
+
+                    var circleWidth = 5;
+                    
+                    var vis = d3.select("#forcechart")
+                        .append("svg:svg")
+                        .attr("class", "stage")
+                        .attr("width", width)
+                        .attr("height", height);
+
+                    var force = d3.layout.force()
+                        .nodes(data.nodes)
+                        .links(data.links)
+                        .gravity(0.1)
+                        .linkDistance(width/6)
+                        .charge(-500)
+                        .size([width-50, height]);
+
+                    var link = vis.selectAll(".link")
+                        .data(data.links)
+                        .enter().append("line")
+                        .attr("class", "link")
+                        .attr("stroke", "#CCC")
+                        .attr("fill", "#000");
+
+                    var node = vis.selectAll("circle.node")
+                        .data(data.nodes)
+                        .enter().append("g")
+                        .attr("class", "node")
+
+                    //MOUSEOVER
+                    .on("mouseover", function(d,i) {
+                        if (i>0) {
+                            //CIRCLE
+                            d3.select(this).selectAll("circle")
+                                .transition()
+                                .duration(250)
+                                .style("cursor", "none")
+                                .attr("r", function (d) {return logslider(d["width"])+4; })
+                                .attr("fill",function(d){ return color(d.group); });
+
+                            //TEXT
+                            d3.select(this).select("text")
+                                .transition()
+                                .style("cursor", "none")
+                                .duration(250)
+                                .style("cursor", "none")
+                                .attr("font-size","1.5em")
+                                .attr("x", 15 )
+                                .attr("y", 5 )
+                        } else {
+                        //CIRCLE
+                            d3.select(this).selectAll("circle")
+                                .style("cursor", "none")
+
+                            //TEXT
+                            d3.select(this).select("text")
+                                .style("cursor", "none")
+                        }
+                    })
+
+                    //MOUSEOUT
+                    .on("mouseout", function(d,i) {
+                        if (i>0) {
+                        //CIRCLE
+                        d3.select(this).selectAll("circle")
+                            .transition()
+                            .duration(250)
+                            .attr("r", function (d) {return logslider(d["width"]); })
+                            .attr("fill",function(d){ return color(d.group); } );
+
+                        //TEXT
+                        d3.select(this).select("text")
+                            .transition()
+                            .duration(250)
+                            .attr("font-size","1em")
+                            .attr("x", 8 )
+                            .attr("y", 4 )
+                        }
+                    })
+
+                    .call(force.drag);
+
+
+                    //CIRCLE
+                    node.append("svg:circle")
+                        .attr("cx", function(d) { return d.x; })
+                        .attr("cy", function(d) { return d.y; })
+                        .attr("r", function (d) {return logslider(d["width"]); })
+                        .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.gray } } )
+                        .style("stroke-width", "1.5px")
+                        .style("stroke", "#fff")
+
+                    //TEXT
+                    node.append("text")
+                        .text(function(d, i) { return d.name+'('+count(d.width)+')'; })
+                        .attr("x",    function(d, i) { return circleWidth + 5; })
+                        .attr("y",            function(d, i) { if (i>0) { return circleWidth + 0 }    else { return 8 } })
+                        // .attr("font-family",  "Bree Serif")
+                        // .attr("fill",         function(d, i) {  return  palette.paleryellow;  })
+                        .attr("font-size",    function(d, i) {  return  "1em"; })
+                        .attr("text-anchor",  function(d, i) { if (i>0) { return  "beginning"; }      else { return "end" } })
+
+                    force.on("tick", function(e) {
+                        node.attr("transform", function(d, i) {
+                            return "translate(" + d.x + "," + d.y + ")";
+                        });
+
+                        link.attr("x1", function(d)   { return d.source.x; })
+                            .attr("y1", function(d)   { return d.source.y; })
+                            .attr("x2", function(d)   { return d.target.x; })
+                            .attr("y2", function(d)   { return d.target.y; })
+                    });
+
+                    force.start();
+                }, 0, false);
+            })
+        }
+    };
+}]);
+
+// STEALTH FORCE CHART STARTS HERE
+angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope', 'dictionary', function ($timeout, $rootScope, dictionary) {
     return {
         link: function ($scope, element, attrs) {
             $scope.$on('forceChart', function (event, data, params) {
@@ -1387,9 +1575,15 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                         .gravity(0.1)
                         .linkDistance(function(d) { 
                             if (d.class === 'child') {
-                                return  150;
+                                return  170;
                             } else {
-                                return  width/2;
+                                var w;
+                                if (width/2 > 600) {
+                                    w = 600;
+                                } else {
+                                    w = width/2;
+                                }
+                                return w;
                             }
                         })
                         .charge(-500)
@@ -1402,9 +1596,10 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                         .append("line")
                         .attr("class", "link")
                         .style("stroke", "#259286")
+                        .style('stroke-opacity', '1')
                         .attr('stroke-width', function(d){
                             if (d.class === 'child'){
-                                return '15';
+                                return '4';
                             } else {
                                 return '100';
                             }
@@ -1414,9 +1609,10 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                         .data(data.nodes)
                         .enter().append("g")
                         .attr("class", "node")
+                        .call(force.drag);
 
+                    var tableDiv = d3.select('#force-table');
 
-                    .call(force.drag);
                     var circleWidth = 5;
                     node.each(function(d){
                         var elm = d3.select(this);
@@ -1432,42 +1628,44 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                                     // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
                                     .attr("fill", '#fff')
                                     .style("stroke-width", "14px")
-                                    .style("stroke", "#259286")
+                                    .style("stroke", "#259286");
 
                                 //TEXT appends name
                                 elm.append("text")
                                     // .text(function(d, i) { return d.name + '(' + count(d.width) + ')'; })
                                     .text(function(d, i) { return d.name; })
-                                    .attr("x", function() { return circleWidth; })
+                                    .attr("x", 0)
                                     // .attr("y", function(d, i) { if (i>0) { return circleWidth + 40 }    else { return 8 } })
-
-                                    .attr("y", function(d) { 
-                                        if (d.name === 'ClearText') { return circleWidth - 70 } else { return 90 } 
-                                    })
-
-                                    // .attr("font-family",  "Bree Serif")
+                                    // .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth - 70 } else { return 90 } })
+                                    .attr("y", 90)
+                                    .attr("font-family",  "Bree Serif")
                                     .attr("fill", '#c61c6f')
-                                    .style("font-size",    function(d, i) {  return  "2em"; })
-                                    // .attr("text-anchor",  function(d, i) { if (i>0) { return  "beginning"; } else { return "end" } })
-                                    .attr("text-anchor", 'middle')
-
+                                    .style("font-size", '2em')
+                                    .attr("text-anchor", 'middle');
 
                                 //TEXT appends count
                                 elm.append("text")
                                     .text(function(d, i) { return d.count; })
-                                    .attr("x", function() { return circleWidth; })
-                                    .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth + 2 } else { return 40 } })
+                                    .attr("x", 0)
+                                    // .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth + 2 } else { return 40 } })
+                                    .attr("y", 40)
                                     .attr("fill", '#515151')
-                                    .style("font-size", function(d, i) { if (d.name === 'ClearText') { return '5em' } else { return '10em'} })
-                                    .attr("text-anchor", 'middle')
+                                    // .style("font-size", function(d, i) { if (d.name === 'ClearText') { return '5em' } else { return '10em'} })
+                                    .style("font-size", '9em')
+                                    .attr("text-anchor", 'middle');
 
                                 // ICONS
                                 switch(d.name){
                                     case 'ClearText':
-                                        elm.append('polygon')
-                                            .style('fill', '#ccc')
-                                            .attr('points', '36.8,0 24,3.1 19.6,15 36.8,12.2 ')
-                                            .attr('transform', 'translate(-25,40) scale(0.9)')
+                                        elm.append('path')
+                                            .style('fill', '#259286')
+                                            .attr('d', 'M36.8,12.2L19.6,15l4.4-12L36.8,0V12.2z M3.8,20.8l9.2-3.7l5.4-11.4L3.8,20.8z M36.8,16.5l-18.6,3.8'+
+                                            'L17.5,37h19.3V16.5z M12.2,21.6l-9.8,3.6L0,37h10.3L12.2,21.6z M42.8,12.2L59.9,15l-4.6-12L42.8,0V12.2z M60.4,5.8l5.4,11.4l9.2,3.7'+
+                                            'L60.4,5.8z M42.8,37h20.4L61,20.3l-18.2-3.8V37z M68.6,37h10.3l-2.4-11.8l-9.8-3.6L68.6,37z M36.8,67.2l-17.3-2.8l4.4,12l12.8,3.1'+
+                                            'V67.2z M18.5,73.6l-5.4-11.4l-9.2-3.7L18.5,73.6z M36.8,42H17.5l0.7,16.8l18.6,2.1V42z M10.3,42H0l2.4,11.9l9.8,3.7L10.3,42z'+
+                                            ' M42.8,79.4l12.4-3.1l4.6-12l-17.1,2.8V79.4z M75.1,58.6l-9.2,3.7l-5.4,11.4L75.1,58.6z M42.8,60.9L61,58.8L63.2,42H42.8V60.9z'+
+                                            ' M66.7,57.5l9.8-3.7L78.9,42H68.6L66.7,57.5z')
+                                            .attr('transform', 'translate(-25,-115) scale(0.7)')
                                         break;
                                     default:
                                         elm.append('polygon')
@@ -1480,48 +1678,71 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                                 }
                             break;
                             case 'child':
-                                // elm.append("svg:circle")
-                                //     .attr("cx", function(d) { return d.x; })
-                                //     .attr("cy", function(d) { return d.y; })
-                                //     .attr("r", function (d) {return 10; })
-                                //     // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
-                                //     .attr("fill", '#fff')
-                                //     .style("stroke-width", "14px")
-                                //     .style("stroke", "#259286")
+                                elm.on('mouseover', function(d){
+                                    for (var i in d.value) {
+                                        var row = tableDiv.append('tr');
+                                        row
+                                            .append('td')
+                                            .html('<strong>'+dictionary(i)+'</strong>');
+                                        row
+                                            .append('td')
+                                            .text(d.value[i]);
+                                    }
+                                    elm.style('cursor', 'pointer');
+                                })
+                                elm.on('mouseout', function(d) {
+                                    tableDiv.selectAll('tr').remove();
+                                })
 
+                                if (d.value.type === 'stealth') {
+                                    elm.append("path")
+                                        .attr('d', 'M14,3.1C9.4,3.3,7,0,7,0c0,0-2,3.1-7,3.1C-0.4,8.3,2.7,18,7,18C11.2,18,14.4,7.2,14,3.1z')
+                                        .attr('transform', 'translate(-25,-115) scale(0.7)')
+                                        .style('fill', '#333')
+                                        .attr('transform', 'translate(-8,-8) scale(1.1)')
+
+                                } else if(d.value.type === 'outside') {
+                                    elm.append("circle")
+                                        .attr("cx", function(d) { return d.x; })
+                                        .attr("cy", function(d) { return d.y; })
+                                        .attr("r", 8)
+                                        .attr("fill", '#333')
+
+                                } else if(d.value.type === 'inside') {
+
+                                    elm.append('rect')
+                                        .attr('x', function(d) { return d.x; })
+                                        .attr('y', function(d) { return d.y; })
+                                        .attr('height', 14)
+                                        .attr('width', 14)
+                                        .style('fill', '#333')
+                                        .attr('transform', 'translate(-8,-8)')
+                                        .style('fill-opacity', '1')
+                                }
+                            break;
                         }
                     });
 
-                    //TEXT appends value
-
-                    // link.each(function(d){
-                    //     var elm = d3.select(this)
-                    //     elm.append("text")
-                    //         .text(function(d, i) { return d.value; })
-                    //         .attr("x", 100)
-                    //         .attr("y", 100)
-                    //         .attr("fill", '#000')
-                    //         .style("font-size", '2em')
-                    //         // .attr("text-anchor", 'middle')
-                    // })
-
-
-                    var linktext = d3.selectAll('.linkgroup')
-                        // .append('g')
-                    linktext.append('text')
-                        .attr("x", 100)
-                        .attr("y", 100)
+                    var linktext = d3.selectAll('.linkgroup');
+                    var text = linktext
+                        .append('text')
+                        // .attr('transform', 'translate(-15,-15)')
                         .attr("fill", '#000')
                         .style('font-size', '4em')
                         .attr("text-anchor", 'middle')
                         .text(function(d) { return d.value; });
 
-
                     force.on("tick", function(e) {
-
-                        // linktext.attr("transform", function(d, i) {
-                        //     return "translate(" + (d.source.x) + "," + (d.target.y) + ")";
-                        // });
+                    
+                        text.attr("transform", function(d, i) {
+                            var x1 = d.source.x;
+                            var x2 = d.target.x;
+                            var y1 = d.source.y;
+                            var y2 = d.target.y;
+                            var x = (x1+x2)/2;
+                            var y = (y1+y2)/2;
+                            return "translate(" + x + "," + y + ")";
+                        });
 
                         node.attr("transform", function(d, i) {
                             return "translate(" + d.x + "," + d.y + ")";
@@ -1531,7 +1752,9 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                             .attr("y1", function(d)   { return d.source.y; })
                             .attr("x2", function(d)   { return d.target.x; })
                             .attr("y2", function(d)   { return d.target.y; })
+
                     });
+
                     force.start();
                 }, 0, false);
             })
