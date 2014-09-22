@@ -1575,14 +1575,14 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                             } else {
                                 var w;
                                 if (width/2 > 600) {
-                                    w = 600;
+                                    w = 600*0.7;
                                 } else {
                                     w = width/2;
                                 }
                                 return w;
                             }
                         })
-                        .charge(-500)
+                        .charge(-700)
                         .size([width-50, height]);
 
                     var link = vis.selectAll(".link")
@@ -1591,7 +1591,13 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         .attr('class', 'linkgroup')
                         .append("line")
                         .attr("class", "link")
-                        .style("stroke", "#259286")
+                        .style('stroke', function(d){
+                            if (d.class === 'child'){
+                                return '#CC0000';
+                            } else {
+                                return '#259286';
+                            }
+                        })
                         .style('stroke-opacity', '1')
                         .attr('stroke-width', function(d){
                             if (d.class === 'child'){
@@ -1632,7 +1638,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     // .attr("y", function(d, i) { if (i>0) { return circleWidth + 40 }    else { return 8 } })
                                     // .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth - 70 } else { return 90 } })
                                     .attr("y", 90)
-                                    .attr("font-family",  "Bree Serif")
+                                    .attr("font-family",  "FontAwesome")
                                     .attr("fill", '#c61c6f')
                                     .style("font-size", '2em')
                                     .attr("text-anchor", 'middle');
