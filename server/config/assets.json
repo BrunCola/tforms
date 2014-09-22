@@ -11,7 +11,6 @@
 		    "public/system/assets/css/buttons.css",
 		    "public/system/assets/css/views/articles.css",
 		    "public/system/lib/dcjs/dc.css",
-		    "public/system/lib/datatables/media/css/jquery.dataTables.css",
 		    "public/system/assets/css/flags32.css",
 		    "public/system/lib/bootstrap-daterangepicker/daterangepicker-bs2.css",
 		    "public/**/assets/css/*.css"

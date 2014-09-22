@@ -1644,7 +1644,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     // .attr("y", function(d, i) { if (i>0) { return circleWidth + 40 }    else { return 8 } })
                                     // .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth - 70 } else { return 90 } })
                                     .attr("y", 90)
-                                    .attr("font-family",  "FontAwesome")
+                                    .attr("font-family",  "Helvetica Neue")
                                     .attr("fill", '#c61c6f')
                                     .style("font-size", '2em')
                                     .attr("text-anchor", 'middle');
