@@ -168,40 +168,46 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
             ]
         },
         {
-            'title': 'Local Events',
+            'title': 'Stealth',
+            'accessLevel': [3],    
             'url': '',
-            'icon': 'fa-user',
-            // 'accessLevel': [3],    
+            'icon': 'fa-sitemap',
             'children':
             [
                 {
-                    'title': 'Stealth COI Map',
+                    'title': 'Stealth Deployment Config',
                     'url': 'stealth_COI_map',
                     'icon': 'fa-code-fork',
                     'accessLevel': [3],    
                     'orphans': []
                 },
                 {
-                    'title': 'Stealth User Conn.',
+                    'title': 'Stealth COI Conn',
                     'url': 'local_COI_remote',
                     'icon': 'fa-shield',
                     'accessLevel': [3],    
                     'orphans': []
                 },
-                {
-                    'title': 'Local User Conn.',
-                    'url': 'local_user_conn',
-                    'icon': 'fa-user',
-                    // 'accessLevel': [3],    
-                    'orphans': []
-                },
-                {
-                    'title': 'Local Network Map',
-                    'url': 'local_network_map',
-                    'icon': 'fa-sitemap',
-                    // 'accessLevel': [3],    
-                    'orphans': []
-                },
+            ]
+        },
+        {
+            'title': 'Local Events',
+            'url': '',
+            'icon': 'fa-user',
+            'children':
+            [
+                // {
+                //     'title': 'Local User Conn.',
+                //     'url': 'local_user_conn',
+                //     'icon': 'fa-user',
+                //     'orphans': []
+                // },
+                // {
+                //     'title': 'Local Network Map',
+                //     'url': 'local_network_map',
+                //     'icon': 'fa-sitemap',
+                //     'orphans': []
+                // },
                 {
                     'title': 'Endpoint By Type',
                     'url': 'endpoint_by_type',

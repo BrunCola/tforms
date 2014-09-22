@@ -1699,7 +1699,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                         .attr("cy", function(d) { return d.y; })
                                         .attr("r", 8)
                                         .attr("fill", '#333')
-                                } else if(d.value.type === 'inside') {
+                                } else if(d.value.type === 'Non-Stealth Internal Attack') {
                                     elm.append('rect')
                                         .attr('x', function(d) { return d.x; })
                                         .attr('y', function(d) { return d.y; })
