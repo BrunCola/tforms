@@ -1645,7 +1645,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     // .attr("y", function(d, i) { if (i>0) { return circleWidth + 40 }    else { return 8 } })
                                     // .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth - 70 } else { return 90 } })
                                     .attr("y", 10)
-                                    .attr("font-family",  "Helvetica Neue")
+                                    .attr("font-family",  "Helvetica Neue, Arial")
                                     .attr("fill", '#c61c6f')
                                     .style("font-size", '2em')
                                     .attr("text-anchor", 'middle');
@@ -2527,7 +2527,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 
                 var m = [5, 15, 15, 120], //top right bottom left
                     w = width - m[1] - m[3],
-                    h = 390 - m[0] - m[2],
+                    h = 470 - m[0] - m[2],
                     miniHeight = 0,
                     mainHeight = h - miniHeight - 50;
 
@@ -2643,6 +2643,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
 
                 $scope.point = function(element, nickname, name, id) {
+
                     //console.log(nickname);
                     if (nickname.search("ioc") !== -1) {
                         element.attr('class', 'IOC');
@@ -2664,7 +2665,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .attr('width', 2.838)
                             .attr('height', 2.448);
                         return;
-                    } else {
+                    } else { 
                         element.attr('class', id);
                         element = element.append('g').attr('transform', 'translate(-18, -6)scale(0.8)');
                         switch(nickname){
@@ -2695,6 +2696,43 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 element.append('svg:polygon')
                                     .attr('points', '10.99,17.822 3.916,23.166 10.99,28.51 10.99,25.744 24.287,25.744 24.287,20.59 10.99,20.59 ')
                                     .attr('fill', '#595A5C');
+                                return;
+
+                            case 'IOC Severity':
+                                var color;
+                                element.append('circle')
+                                    .attr('fill', function(d){ 
+                                        if(d.ioc_severity === 1){
+                                            color = '#377FC7'; 
+                                        }else if(d.ioc_severity === 2){
+                                            color = '#F5D800'; 
+                                        }else if(d.ioc_severity === 3){
+                                            color = '#F88B12'; 
+                                        }else if(d.ioc_severity === 4){
+                                            color = '#DD122A'; 
+                                        }else{
+                                            color = '#6FBF9B'; 
+                                        }
+                                        return color;
+                                    })
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                element.append('svg:path')
+                                    .attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
+                                    .attr('fill', color);
+                                element.append('svg:polygon')
+                                    .attr('points', '18.155,3.067 5.133,26.932 31.178,26.932 ')
+                                    .attr('fill', '#595A5C');
+                                element.append('svg:polygon')
+                                    .attr('points', '19.037,21.038 19.626,12.029 15.888,12.029 16.477,21.038 ')
+                                    .attr('fill', color);
+                                element.append('rect')
+                                    .attr('x', 16.376)
+                                    .attr('y', 22.045)
+                                    .attr('fill', color)
+                                    .attr('width', 2.838)
+                                    .attr('height', 2.448);
                                 return;
                             case 'DNS':
                                 element.append('circle')
@@ -2794,12 +2832,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .attr('r', 18);
                                 element.append('polygon')
                                     .style('fill', '#58595B')
-                                    .attr('points', '18,17.3 8.7,11.6 27.3,11.6 ')
-                                    .attr('transform', 'translate(-36,-32) scale(1.2)');
+                                    .attr('points', '18,17.3 8.7,11.6 27.3,11.6 ');
                                 element.append('polygon')
                                     .style('fill', '#58595B')
-                                    .attr('points', '28.4,24.4 7.6,24.4 7.6,13.1 18,19.7 28.4,13.1 ')
-                                    .attr('transform', 'translate(-36,-32) scale(1.2)');
+                                    .attr('points', '28.4,24.4 7.6,24.4 7.6,13.1 18,19.7 28.4,13.1 ');
+                                return;
                             case 'File':
                                 element.append('circle')
                                     .attr('fill', function(d){ return '#B572AB'; })
