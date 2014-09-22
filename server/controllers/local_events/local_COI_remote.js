@@ -41,11 +41,14 @@ module.exports = function(pool) {
                         'AND `in_bytes` = 0 ',
                     insert: [start, end]
                 }
+
                 var local_drop = {
+                   // query: 'SELECT * '+
+
                     query: 'SELECT DISTINCT '+
                         '\'Non-Stealth Internal Attack\' AS type,'+
                         '`lan_zone` AS `Attacker Zone`,'+
-                        '`lan_machine` AS `Attacker Machine`,'+
+                        '`machine` AS `Attacker Machine`,'+
                         '`lan_user` AS `Attacker_User`,'+
                         '`lan_ip` AS `Attacker IP`,'+
                         '`remote_machine` AS `Victim Machine`,'+
@@ -53,7 +56,7 @@ module.exports = function(pool) {
                         '`remote_user` AS `Victim User`,'+
                         '`remote_ip` AS `Victim IP` '+
                     'FROM '+
-                        '`conn` '+
+                        ' `conn` '+
                     'WHERE '+
                         'time BETWEEN ? AND ? '+
                         'AND `proto` != \'udp\' '+

@@ -109,6 +109,7 @@ module.exports = function (sql, queries, conn, callback) {
                         callback();
                     });
             },
+
             function(callback) {
                 connection.query(queries[1].query, queries[1].insert)
                     .on('result', function(data){
