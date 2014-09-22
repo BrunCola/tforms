@@ -1637,7 +1637,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     .attr("x", 0)
                                     // .attr("y", function(d, i) { if (i>0) { return circleWidth + 40 }    else { return 8 } })
                                     // .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth - 70 } else { return 90 } })
-                                    .attr("y", 90)
+                                    .attr("y", 10)
                                     .attr("font-family",  "Bree Serif")
                                     .attr("fill", '#c61c6f')
                                     .style("font-size", '2em')
@@ -1648,13 +1648,43 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     .text(function(d, i) { return d.count; })
                                     .attr("x", 0)
                                     // .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth + 2 } else { return 40 } })
-                                    .attr("y", 40)
+                                    .attr("y", 110)
                                     .attr("fill", '#515151')
                                     // .style("font-size", function(d, i) { if (d.name === 'ClearText') { return '5em' } else { return '10em'} })
-                                    .style("font-size", '9em')
-                                    .attr("text-anchor", 'middle');
+                                    .style("font-size", '5em')
+                                    .attr("text-anchor", 'middle')
+                                    .on('mouseover', function(d){
+                                        d3.select(this).style('cursor', 'pointer');
+                                    })
+                                    .on('click', function(d){
+                                        $scope.requery(d, 'bottom');
+                                    });
 
                                 // ICONS
+                                // right button
+                                elm.append('rect')
+                                    .attr('width', 50)
+                                    .attr('height', 50)
+                                    .attr('x', 60)
+                                    .attr('y', -20)
+                                    .on('mouseover', function(d){
+                                        d3.select(this).style('cursor', 'pointer');
+                                    })
+                                    .on('click', function(d){
+                                        $scope.requery(d, 'right');
+                                    })
+                                // left button
+                                elm.append('rect')
+                                    .attr('width', 50)
+                                    .attr('height', 50)
+                                    .attr('x', -110)
+                                    .attr('y', -20)
+                                    .on('mouseover', function(d){
+                                        d3.select(this).style('cursor', 'pointer');
+                                    })
+                                    .on('click', function(d){
+                                        $scope.requery(d, 'left');
+                                    })
                                 switch(d.name){
                                     case 'ClearText':
                                         elm.append('path')
@@ -1666,6 +1696,12 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                             ' M42.8,79.4l12.4-3.1l4.6-12l-17.1,2.8V79.4z M75.1,58.6l-9.2,3.7l-5.4,11.4L75.1,58.6z M42.8,60.9L61,58.8L63.2,42H42.8V60.9z'+
                                             ' M66.7,57.5l9.8-3.7L78.9,42H68.6L66.7,57.5z')
                                             .attr('transform', 'translate(-25,-115) scale(0.7)')
+                                            .on('mouseover', function(d){
+                                                d3.select(this).style('cursor', 'pointer');
+                                            })
+                                            .on('click', function(d){
+                                                $scope.requery(d, 'top');
+                                            });
                                         break;
                                     default:
                                         elm.append('polygon')
@@ -1674,6 +1710,12 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                             '29,16 9,16 9,10 16,10 16,0 0,0 0,10 7,10 7,18 29,18 29,26 7,26 7,35 0,35 0,45 16,45 16,35 9,35 9,28 29,28 29,35 22,35 22,45 '+
                                             '38,45 38,35 31,35 31,28 51,28 51,35 44,35 44,45 60,45 60,35 53,35 53,26 31,26 31,18 ')
                                             .attr('transform', 'translate(-25,-110) scale(0.9)')
+                                            .on('mouseover', function(d){
+                                                d3.select(this).style('cursor', 'pointer');
+                                            })
+                                            .on('click', function(d){
+                                                $scope.requery(d, 'top');
+                                            })
                                         break;
                                 }
                             break;

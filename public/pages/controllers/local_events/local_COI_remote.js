@@ -18,4 +18,8 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
             $scope.$broadcast('spinnerHide');
         }
     });
+
+    $scope.requery = function(data, button) {
+        console.log(data);
+    }
 }]);
