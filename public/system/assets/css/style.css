@@ -119,16 +119,12 @@ th {
   stroke: #000;
 }
 
-
 #force-table {
   right: 30px;
   margin-bottom: -100%;
   position: relative;
   float: right;
 }
-
-
-
 
 .modalTable {
   width: 90%;

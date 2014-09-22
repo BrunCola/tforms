@@ -13,9 +13,9 @@ module.exports = function (sql, conn, callback) {
             case 'Applications':
                 return d.time_info+': Application - '+d.l7_proto;
             case 'Stealth':
-                return d.time_info+': Stealth securely connected '+d.src_ip+' with '+d.dst_ip;
+                return d.time_info+': Stealth securely connected '+d.lan_ip+' with '+d.remote_ip;
             case 'Stealth_drop':
-                return d.time_info+': Stealth dropped connection attempts between '+d.src_ip+' and '+d.dst_ip;
+                return d.time_info+': Stealth dropped connection attempts between '+d.lan_ip+' and '+d.remote_ip;
             case 'DNS':
                 return d.time_info+': DNS query for '+d.query;
             case 'DNS_ioc':

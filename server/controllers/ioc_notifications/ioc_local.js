@@ -1,6 +1,6 @@
 'use strict';
 
-var datatable_stealth = require('../constructors/datatable_stealth'),
+var dataTable = require('../constructors/datatable'),
     query = require('../constructors/query'),
     config = require('../../config/config'),
     async = require('async');
@@ -21,27 +21,29 @@ module.exports = function(pool) {
             var table1 = {
                 query: 'SELECT '+
                             'count(*) AS count,'+
-                            'max(date_format(from_unixtime(conn_ioc.time), "%Y-%m-%d %H:%i:%s")) AS time,'+ // Last Seen
-                            '`ioc_severity`,'+
-                            '`ioc`,'+
-                            '`ioc_rule`,'+
-                            '`ioc_typeIndicator`,'+
-                            '`ioc_typeInfection`,'+
+                            'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time,'+ // Last Seen
+                            '`stealth`,'+
                             '`lan_zone`,'+
                             '`machine`,'+
-                            'conn_ioc.lan_ip,'+
+                            '`lan_user`,'+
+                            '`lan_ip`,'+
                             'sum(`in_packets`) AS in_packets,'+
                             'sum(`out_packets`) AS out_packets,'+
                             'sum(`in_bytes`) AS in_bytes,'+
-                            'sum(`out_bytes`) AS out_bytes '+
+                            'sum(`out_bytes`) AS out_bytes,'+
+                            '`ioc`,'+
+                            '`ioc_typeIndicator`,'+
+                            '`ioc_typeInfection`,'+
+                            '`ioc_rule`,'+
+                            '`ioc_severity` '+
                         'FROM '+
                             '`conn_ioc` '+
                         'WHERE '+
-                            'conn_ioc.time BETWEEN ? AND ? '+
+                            '`time` BETWEEN ? AND ? '+
                             'AND `ioc_count` > 0 '+
                             'AND `trash` IS NULL '+
                         'GROUP BY '+
-                            'conn_ioc.lan_ip,'+
+                            '`lan_ip`,'+
                             '`ioc`',
                 insert: [start, end],
                 params: [
@@ -51,8 +53,7 @@ module.exports = function(pool) {
                         dView: true,
                         link: {
                             type: 'ioc_local_drill',
-                            // val: the pre-evaluated values from the query above
-                            val: ['lan_zone','lan_ip'],
+                            val: ['lan_zone','lan_ip'], // val: the pre-evaluated values from the query above
                             crumb: false
                         },
                     },
@@ -62,8 +63,10 @@ module.exports = function(pool) {
                     { title: 'IOC Type', select: 'ioc_typeIndicator' },
                     { title: 'IOC Stage', select: 'ioc_typeInfection' },
                     { title: 'IOC Rule', select: 'ioc_rule' },
+                    { title: 'Stealth', select: 'stealth', access: [3] },
                     { title: 'Zone', select: 'lan_zone' },
                     { title: 'Machine', select: 'machine' },
+                    { title: 'Local User', select: 'lan_user' },
                     { title: 'Local IP', select: 'lan_ip' },
                     { title: 'Bytes to Remote', select: 'in_bytes'},
                     { title: 'Bytes from Remote', select: 'out_bytes'},
@@ -76,27 +79,6 @@ module.exports = function(pool) {
                     title: 'Indicators of Compromise (IOC) Notifications'
                 }
             }
-            var table2 = {
-                query: 'SELECT '+
-                            'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ 
-                            '`stealth_COIs`, ' +
-                            '`stealth`, '+
-                            '`lan_ip`, ' +
-                            '`event`, ' +
-                            '`user` ' +
-                        'FROM ' + 
-                            '`endpoint_tracking` '+
-                        'WHERE ' + 
-                            'stealth > 0 '+
-                            'AND event = "Log On" ',
-                insert: [],
-                params: [
-                    { title: 'Stealth', select: 'stealth' },
-                    { title: 'COI Groups', select: 'stealth_COIs' },
-                    { title: 'User', select: 'user' }
-                ],
-                settings: {}
-            }            
             var crossfilterQ = {
                 query: 'SELECT '+
                             'count(*) as count,'+
@@ -120,9 +102,8 @@ module.exports = function(pool) {
             async.parallel([
                 // Table function(s)
                 function(callback) {
-                    new datatable_stealth(table1, table2, parseInt(req.session.passport.user.level), {database: database, pool: pool}, function(err,data){
+                    new dataTable(table1, {database: database, pool: pool}, function(err,data){
                         tables.push(data);
-
                         callback();
                     });
                 },

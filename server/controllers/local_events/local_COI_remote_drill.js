@@ -49,9 +49,9 @@ module.exports = function(pool) {
                 var conn = {
                     query: 'SELECT '+
                                 '\'Conn\' AS type, '+
-                                '`time` as raw_time, '+
-                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
-                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                                '`time` AS raw_time, '+
+                                'date_format(from_unixtime(time), "%m-%d %H:%i:%s") AS time_info, '+
+                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+
                                 '`ioc_count`,'+
                                 '`lan_zone`,'+
                                 '`machine`,'+
@@ -473,7 +473,6 @@ module.exports = function(pool) {
                     ]
                 }
                 async.parallel([
-                    // Table function(s)
                     function(callback) { // conn
                         new lanegraph(conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
                             handleReturn(data, callback);
@@ -542,7 +541,16 @@ module.exports = function(pool) {
                 if (req.query.lan_ip && (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1)) {
                     switch (req.query.type) {
                         case 'remote_ip_conn_meta':
-                            new query({query: 'SELECT DISTINCT `remote_ip` FROM `conn_meta` WHERE ( `time` BETWEEN ? AND ? ) AND ( `lan_ip` = ? ) AND ( `lan_zone` = "Stealth") ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                            new query({
+                                    query:  'SELECT DISTINCT '+
+                                                '`remote_ip` '+
+                                            'FROM '+
+                                                '`conn_meta` '+
+                                            'WHERE '+
+                                                '`time` BETWEEN ? AND ? '+
+                                                'AND `lan_ip` = ? '+
+                                                'AND `lan_zone` = "Stealth" ', 
+                                    insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
                                 if (data) {
                                     res.json(data.length);
                                 }
@@ -629,7 +637,7 @@ module.exports = function(pool) {
                         }
                         var InfoSQL2 = {
                             query: 'SELECT '+
-                                        'max(date_format(from_unixtime(stealth_src.time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+                                        'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time,'+ // Last Seen
                                         '`lan_zone`,'+
                                         '`lan_user`,'+
                                         '`lan_ip`,'+
@@ -1191,16 +1199,16 @@ module.exports = function(pool) {
                             query: 'SELECT '+
                                         'count(*) AS `count`, '+
                                         '\'Stealth\' AS type, '+
-                                        '`dst_ip` AS `remote_ip` '+
+                                        '`remote_ip` '+
                                     'FROM '+
                                         '`stealth_conn_meta` '+
                                     'WHERE '+
                                         '`time` BETWEEN ? AND ? '+
-                                        'AND `src_ip`= ? '+
+                                        'AND `lan_ip`= ? '+
                                         'AND `in_bytes` > 0 '+
                                         'AND `out_bytes` > 0 '+
                                     'GROUP BY '+
-                                        '`dst_ip` '+
+                                        '`remote_ip` '+
                                     'ORDER BY '+
                                         '`count` DESC '+
                                     'LIMIT 20',
@@ -1210,15 +1218,15 @@ module.exports = function(pool) {
                             query: 'SELECT '+
                                         'count(*) AS `count`, '+
                                         '\'Stealth Dropped\' AS type, '+
-                                        '`dst_ip` AS `remote_ip` '+
+                                        '`remote_ip` '+
                                     'FROM '+
                                         '`stealth_conn_meta` '+
                                     'WHERE '+
                                         'time BETWEEN ? AND ? '+
-                                        'AND `src_ip` = ? '+
+                                        'AND `lan_ip` = ? '+
                                         'AND (`in_bytes` = 0 OR `out_bytes` = 0) '+
                                     'GROUP BY '+
-                                        '`dst_ip`'+
+                                        '`remote_ip`'+
                                     'ORDER BY '+
                                         '`count` DESC '+
                                     'LIMIT 20'    ,

@@ -14,12 +14,21 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
         if (data.force === null) {
             $scope.$broadcast('loadError');
         } else {
+            $scope.forcedata = data.force;
             $scope.$broadcast('forceChart', data.force, {height: 1000});
             $scope.$broadcast('spinnerHide');
         }
     });
 
     $scope.requery = function(data, button) {
-        console.log(data);
+        console.log(data)
+        var results = $scope.forcedata.links.filter(function(d){
+            if ((d.class !== undefined) && ((d.source.index === data.index) || (d.target.index === data.index))) {
+                return d.target;
+            }
+        })
+        console.log(results)
+        console.log($scope.forcedata)
+        $scope.appendInfo({'test': 'test'})
     }
 }]);

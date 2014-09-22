@@ -38,7 +38,8 @@ module.exports = function(pool) {
                                 'AND lan_zone = ? '+
                                 'AND lan_user = ? '+
                             'GROUP BY '+
-                                '`event_type`',
+                                '`event_type`,'+
+                                '`lan_ip`',
                     insert: [start, end, req.query.lan_zone, req.query.lan_user],
                     params: [
                         {
