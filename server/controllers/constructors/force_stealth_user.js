@@ -34,7 +34,7 @@ module.exports = function (sql, queries, conn, callback) {
         }
     }
     function compareUsers(obj) {
-        var user = obj.Victim_User;
+        var user = obj.lan_user;
         if (user in uniqueLinks) {
             for (var i in uniqueLinks[user].nodesIn) {
                 var arr = Object.keys(uniqueLinks[user].nodesIn);
@@ -42,7 +42,7 @@ module.exports = function (sql, queries, conn, callback) {
                     if (arr[o] !== 'ClearText') {
                         // push a new entry for every single node
                         nodes.push({
-                            "name": obj.Victim_User,
+                            "name": obj.lan_user,
                             "group": 'child', // type goes here at some point
                             "count": 1,
                             "value": obj
@@ -92,7 +92,7 @@ module.exports = function (sql, queries, conn, callback) {
                             nodes[index].count++;
                         }
                         // SETTING UP LOGIC FOR LINK RELATIONSHIPS
-                        uniqueUsers(data.Victim_User, data.group);
+                        uniqueUsers(data.lan_user, data.group);
                     })
                     .on('end', function(){
                         callback();
