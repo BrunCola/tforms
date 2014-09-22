@@ -131,7 +131,7 @@ module.exports = function(pool) {
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_zone`= ? '+
                                 'AND `lan_ip`= ? '+
-                                'AND `ioc_severity` > 1 ' + 
+                                'AND `ioc_severity` >= 1 ' + 
                             'LIMIT 250',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
@@ -1011,7 +1011,7 @@ module.exports = function(pool) {
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_zone`= ? '+
                                 'AND `lan_ip`= ? '+
-                                'AND `ioc_severity` > 1 ' +  
+                                'AND `ioc_severity` >= 1 ' +  
                             'LIMIT 250',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [

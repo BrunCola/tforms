@@ -2602,29 +2602,40 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 return;
 
                             case 'IOC Severity':
+                                var color;
                                 element.append('circle')
                                     .attr('fill', function(d){ 
                                         if(d.ioc_severity === 1){
-                                            return '#377FC7'; 
+                                            color = '#377FC7'; 
                                         }else if(d.ioc_severity === 2){
-                                            return '#F5D800'; 
+                                            color = '#F5D800'; 
                                         }else if(d.ioc_severity === 3){
-                                            return '#F88B12'; 
+                                            color = '#F88B12'; 
                                         }else if(d.ioc_severity === 4){
-                                            return '#DD122A'; 
+                                            color = '#DD122A'; 
                                         }else{
-                                            return '#6FBF9B'; 
+                                            color = '#6FBF9B'; 
                                         }
+                                        return color;
                                     })
                                     .attr('cx', 18)
                                     .attr('cy', 18)
                                     .attr('r', 18);
+                                element.append('svg:path')
+                                    .attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
+                                    .attr('fill', color);
                                 element.append('svg:polygon')
-                                    .attr('points', '24.585,6.299 24.585,9.064 11.195,9.064 11.195,14.221 24.585,14.221 24.585,16.986 31.658,11.643 ')
+                                    .attr('points', '18.155,3.067 5.133,26.932 31.178,26.932 ')
                                     .attr('fill', '#595A5C');
                                 element.append('svg:polygon')
-                                    .attr('points', '10.99,17.822 3.916,23.166 10.99,28.51 10.99,25.744 24.287,25.744 24.287,20.59 10.99,20.59 ')
-                                    .attr('fill', '#595A5C');
+                                    .attr('points', '19.037,21.038 19.626,12.029 15.888,12.029 16.477,21.038 ')
+                                    .attr('fill', color);
+                                element.append('rect')
+                                    .attr('x', 16.376)
+                                    .attr('y', 22.045)
+                                    .attr('fill', color)
+                                    .attr('width', 2.838)
+                                    .attr('height', 2.448);
                                 return;
                             case 'DNS':
                                 element.append('circle')
@@ -2724,12 +2735,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .attr('r', 18);
                                 element.append('polygon')
                                     .style('fill', '#58595B')
-                                    .attr('points', '18,17.3 8.7,11.6 27.3,11.6 ')
-                                    .attr('transform', 'translate(-36,-32) scale(1.2)');
+                                    .attr('points', '18,17.3 8.7,11.6 27.3,11.6 ');
                                 element.append('polygon')
                                     .style('fill', '#58595B')
-                                    .attr('points', '28.4,24.4 7.6,24.4 7.6,13.1 18,19.7 28.4,13.1 ')
-                                    .attr('transform', 'translate(-36,-32) scale(1.2)');
+                                    .attr('points', '28.4,24.4 7.6,24.4 7.6,13.1 18,19.7 28.4,13.1 ');
+                                return;
                             case 'File':
                                 element.append('circle')
                                     .attr('fill', function(d){ return '#B572AB'; })
