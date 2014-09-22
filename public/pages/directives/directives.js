@@ -1568,7 +1568,13 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                     var force = d3.layout.force()
                         .nodes(data.nodes)
                         .links(data.links)
-                        .gravity(0.1)
+                        .gravity(function(d) { 
+                            if (d.class === 'child') {
+                                return  -0.1;
+                            } else {
+                                return  0.1;
+                            }
+                        })
                         .linkDistance(function(d) { 
                             if (d.class === 'child') {
                                 return  170;
