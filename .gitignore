@@ -7,7 +7,7 @@ public/uploads/*
 test/coverage/
 ssl/*
 temp/*.pdf
-npm-dedug.log
+npm-debug.log
 ._*
 .DS_Store
 .DS_Store?

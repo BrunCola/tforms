@@ -72,13 +72,13 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
     // $scope.adminItems = [];
 
     $scope.sidebaritems = [
-        {
+        { // LIVE CONNECTIONS
             'title': 'Live Connections',
             'url': 'live_connections',
             'icon': 'fa-map-marker',
             'children': []
         },
-        {
+        { // IOC NOTIFICATIONS
             'title': 'IOC Notifications',
             'url': '',
             'icon': 'fa-warning',
@@ -105,7 +105,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                 }
             ]
         },
-        {
+        { // GENERAL NETWORK
             'title': 'General Network',
             'url': '',
             'icon': 'fa-sitemap',
@@ -167,7 +167,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                 },                
             ]
         },
-        {
+        { // STEALTH
             'title': 'Stealth',
             'accessLevel': [3],    
             'url': '',
@@ -175,22 +175,20 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
             'children':
             [
                 {
-                    'title': 'Stealth Deployment Config',
+                    'title': 'Stealth Deploy Config',
                     'url': 'stealth_COI_map',
                     'icon': 'fa-code-fork',
-                    'accessLevel': [3],    
                     'orphans': []
                 },
                 {
                     'title': 'Stealth COI Conn',
                     'url': 'local_COI_remote',
                     'icon': 'fa-shield',
-                    'accessLevel': [3],    
                     'orphans': []
                 },
             ]
         },
-        {
+        { // LOCAL EVENTS
             'title': 'Local Events',
             'url': '',
             'icon': 'fa-user',
@@ -274,7 +272,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
         //         }
         //     ]
         // },
-        {
+        { // APPLICATIONS
             'title': 'Applications',
             'url': '',
             'icon': 'fa-bars',
@@ -300,7 +298,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                 }
             ]
         },
-        {
+        { // HTTP
             'title': 'HTTP',
             'url': '',
             'icon': 'fa-globe',
@@ -326,7 +324,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                 }
             ]
         },
-        {
+        { // EMAIL
             'title': 'Email',
             'url': '',
             'icon': 'fa-envelope',
@@ -352,7 +350,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                 }
             ]
         },
-        {
+        { // EXTRACTED FILES
             'title': 'Extracted Files',
             'url': '',
             'icon': 'fa-folder',
@@ -384,7 +382,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                 }
             ]
         },
-        {
+        { // FIRST SEEN
             'title': 'First Seen',
             'url': '',
             'icon': 'fa-asterisk',
@@ -428,7 +426,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                 }
             ]
         },
-        {
+        { // HEALTH
             'title': 'Health',
             'url': '',
             'icon': 'fa-plus-square',        

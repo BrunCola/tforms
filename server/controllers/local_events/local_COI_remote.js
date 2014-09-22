@@ -26,7 +26,7 @@ module.exports = function(pool) {
                 var stealth_drop = {
                     query: 'SELECT DISTINCT '+
                         '\'Stealth COI Mismatch\' AS type,'+
-                        '`lan_zone`AS `Victim Zone`,'+
+                        '`lan_zone` AS `Victim Zone`,'+
                         '`lan_machine` AS `Victim Machine`,'+
                         '`lan_user`,'+
                         '`lan_user` AS `Victim_User`,'+
@@ -44,19 +44,17 @@ module.exports = function(pool) {
                 var local_drop = {
                     query: 'SELECT DISTINCT '+
                         '\'Non-Stealth Internal Attack\' AS type,'+
-                        '`lan_zone`AS `Victim Zone`,'+
-                        '`lan_machine` AS `Victim Machine`,'+
+                        '`lan_zone` AS `Attacker Zone`,'+
+                        '`lan_machine` AS `Attacker Machine`,'+
                         '`lan_user`,'+
-                        '`lan_user` AS `Victim_User`,'+
-                        '`lan_ip` AS `Victim IP`,'+
-                        '`remote_machine` AS `Attacker Machine`,'+
-                        '`remote_user` AS `Attacker User`,'+
-                        '`remote_ip` AS `Attacker IP` '+
+                        '`lan_user` AS `Attacher_User`,'+
+                        '`lan_ip` AS `Attacker IP`,'+
+                        '`remote_ip` AS `Victim IP` '+
                     'FROM '+
                         '`conn` '+
                     'WHERE '+
                         'time BETWEEN ? AND ? '+
-                        '`proto` = \'tcp\' '+
+                        'AND `proto` = \'tcp\' '+
                         'AND `lan_ip` REGEXP \'192.168.222\' '+
                         'AND `in_bytes` = 0 ',
                     insert: [start, end]
