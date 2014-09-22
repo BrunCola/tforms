@@ -2171,6 +2171,13 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                             elm.on('mouseover', function(d){
                                 elm.style('cursor', 'pointer')
                             })
+                            .on("click", function (d){
+                                // Do nothing (no link from group/role for now)
+                            });
+
+
+
+
                             // .on("click", function (d){
                             //     var link = {user: d.name};
                             //     if ($location.$$search.start && $location.$$search.end) {
@@ -2183,9 +2190,6 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                             elm.on('mouseover', function(d){
                                 elm.style('cursor', 'pointer')
                             }).on("click", function (d){
-                           /* if(d.children){
-                                console.log("has children");
-                            }*/
                                 // Do nothing (no link from rule for now)
                             }).on('mouseover', $scope.tip.show)
                                 .on('mouseout', $scope.tip.hide);
