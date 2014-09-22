@@ -1693,7 +1693,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                         d3.select(this).style('cursor', 'pointer');
                                     })
                                     .on('click', function(d){
-                                        $scope.requery(d, 'right');
+                                        $scope.requery(d, 'blocked');
                                     })
                                 // left button
                                 elm
@@ -1708,7 +1708,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                         d3.select(this).style('cursor', 'pointer');
                                     })
                                     .on('click', function(d){
-                                        $scope.requery(d, 'blocked');
+                                        $scope.requery(d, 'right');
                                     })
                                 // elm.append('rect')
                                 //     .attr('width', 50)
