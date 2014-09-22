@@ -1687,12 +1687,14 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                 elm.on('mouseover', function(d){
                                     for (var i in d.value) {
                                         var row = tableDiv.append('tr');
-                                        row
-                                            .append('td')
-                                            .html('<strong>'+dictionary(i)+'</strong>');
-                                        row
-                                            .append('td')
-                                            .text(d.value[i]);
+                                        if(dictionary(i)!=="LAN User"){
+                                            row
+                                                .append('td')
+                                                .html('<strong>'+dictionary(i)+'</strong>');
+                                            row
+                                                .append('td')
+                                                .text(d.value[i]);
+                                        }
                                     }
                                     elm.style('cursor', 'pointer');
                                 })

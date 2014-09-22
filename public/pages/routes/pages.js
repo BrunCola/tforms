@@ -447,7 +447,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         loggedin: checkLoggedin
                     },
                     data: {
-                        title: 'Stealth COI Map',
+                        title: 'Stealth Deployment Configuration',
                         daterange: true
                     }
                 })  
@@ -459,7 +459,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         loggedin: checkLoggedin
                     },
                     data: {
-                        title: 'Stealth Secured Connections By User',
+                        title: 'Stealth Operational View',
                         daterange: true
                     }
                 })       

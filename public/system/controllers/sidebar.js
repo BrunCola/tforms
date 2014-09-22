@@ -177,7 +177,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'orphans': []
                 },
                 {
-                    'title': 'Stealth COI Conn',
+                    'title': 'Stealth Ops View',
                     'url': 'local_COI_remote',
                     'icon': 'fa-shield',
                     'orphans': []
