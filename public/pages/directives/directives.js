@@ -2050,7 +2050,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                     var node = vis.selectAll("circle.node")
                         .data(data.nodes)
                         .enter().append("g")
-                        .attr("class", "node")
+                        .attr("class", "node")                    
 
                     //MOUSEOVER
                     .on("mouseover", function(d,i) {
@@ -2183,6 +2183,9 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                             elm.on('mouseover', function(d){
                                 elm.style('cursor', 'pointer')
                             }).on("click", function (d){
+                           /* if(d.children){
+                                console.log("has children");
+                            }*/
                                 // Do nothing (no link from rule for now)
                             }).on('mouseover', $scope.tip.show)
                                 .on('mouseout', $scope.tip.hide);

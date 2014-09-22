@@ -38,9 +38,9 @@ module.exports = function(pool) {
 
             var lanes;
             if (req.session.passport.user.level === 3) {
-                lanes = ['IOC', 'IOC Severity', 'Conn', 'Applications', 'Stealth', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
+                lanes = ['IOC', 'Conn', 'IOC Severity', 'Applications', 'Stealth', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
             } else {
-                lanes = ['IOC', 'IOC Severity', 'Conn', 'Applications', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
+                lanes = ['IOC', 'Conn', 'Applications', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
             }
             var result = {
                 lanes: lanes,
@@ -101,6 +101,7 @@ module.exports = function(pool) {
                         {title: "IOC Severity", select: "ioc_severity"},
                     ]
                 }
+
                 var iocseverity = {
                     query: 'SELECT '+
                                 '\'IOC Severity\' AS type, '+
@@ -186,7 +187,7 @@ module.exports = function(pool) {
                                 'AND `lan_zone` = ? '+
                                 'AND `lan_ip` = ? '+
                                 'AND `remote_ip` = ? '+
-                                'AND `ioc` = ? '+
+                                'AND `ioc`= ? '+
                             'LIMIT 250',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                     params: [
@@ -425,7 +426,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                             '\'HTTP\' AS type, '+
                             '`time` as raw_time, '+
-                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") AS time_info, '+
+                            'date_format(from_unixtime(time), "%m-%d %H:%i:%s") as time_info, '+
                             'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
                             '`ioc_count`,'+
                             '`host`,'+
@@ -981,6 +982,7 @@ module.exports = function(pool) {
                             {title: "IOC Severity", select: "ioc_severity"},
                         ]
                     }
+
                     var iocseverity = {
                         query: 'SELECT '+
                                 '\'IOC Severity\' AS type, '+
