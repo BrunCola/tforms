@@ -10,12 +10,14 @@ module.exports = function (sql, conn, callback) {
                 return d.time_info+': '+d.lan_ip+' connected to '+d.remote_ip;
             case 'Conn_ioc':
                 return d.time_info+': IOC - '+d.ioc;
-            case 'Applications':
-                return d.time_info+': Application - '+d.l7_proto;
+            case 'IOC Severity':
+                return d.time_info+': IOC - '+d.ioc;
             case 'Stealth':
                 return d.time_info+': Stealth securely connected '+d.lan_ip+' with '+d.remote_ip;
             case 'Stealth_drop':
                 return d.time_info+': Stealth dropped connection attempts between '+d.lan_ip+' and '+d.remote_ip;
+            case 'Applications':
+                return d.time_info+': Application - '+d.l7_proto;
             case 'DNS':
                 return d.time_info+': DNS query for '+d.query;
             case 'DNS_ioc':
