@@ -7,37 +7,58 @@ module.exports = function (sql, queries, conn, callback) {
     var nodes = [], uniqueNodes = [];
     var links = [], uniqueLinks = {};
     var usersList = [], userLinks = [];
+    var nodesObject = {}; // for use on the front
     var clearTextIndex = -1;
 
     function uniqueUsers(user, group) {
         // if lan_user is not in unique object
         if (!(user in uniqueLinks)) {
             // add user to object and add value to unique nodes
-            uniqueLinks[user] = {
-                nodesIn: {}
-            }
+            uniqueLinks[user] = {};
             // place the current node into the nodesIn object
-            uniqueLinks[user].nodesIn[group] = {
+            uniqueLinks[user][group] = {
                 count: 1
             }
         // if lan_user is already in unique object
         } else {
             // if coi is not already in nodesIn, place it in
-            if (!(group in uniqueLinks[user].nodesIn)) {
-                uniqueLinks[user].nodesIn[group] = {
+            if (!(group in uniqueLinks[user])) {
+                uniqueLinks[user][group] = {
                     count: 1
                 }
             // otherwise increase value by 1
             } else {
-                uniqueLinks[user].nodesIn[group].count++;
+                uniqueLinks[user][group].count++;
             }
         }
     }
+
+    function uniqueNodesCompare(user, group) {
+        // if lan_user is not in unique object
+        if (!(group in nodesObject)) {
+            // add user to object and add value to unique nodes
+            nodesObject[group] = {};
+            // place the current node into the nodesIn object
+            nodesObject[group][user] = [];
+            nodesObject[group][user].push(group);
+        // if lan_user is already in unique object
+        } else {
+            // if coi is not already in nodesIn, place it in
+            if (!(user in nodesObject[group])) {
+                nodesObject[group][user] = [];
+                nodesObject[group][user].push(group);
+            // otherwise increase value by 1
+            } else {
+                nodesObject[group][user].push(group);
+            }
+        }
+    }
+
     function compareUsers(obj) {
         var user = obj.lan_user;
         if (user in uniqueLinks) {
-            for (var i in uniqueLinks[user].nodesIn) {
-                var arr = Object.keys(uniqueLinks[user].nodesIn);
+            for (var i in uniqueLinks[user]) {
+                var arr = Object.keys(uniqueLinks[user]);
                 for (var o = 0; o < arr.length; o++) {
                     if (arr[o] !== 'ClearText') {
                         // push a new entry for every single node
@@ -93,6 +114,7 @@ module.exports = function (sql, queries, conn, callback) {
                         }
                         // SETTING UP LOGIC FOR LINK RELATIONSHIPS
                         uniqueUsers(data.lan_user, data.group);
+                        uniqueNodesCompare(data.lan_user, data.group);
                     })
                     .on('end', function(){
                         callback();
@@ -140,9 +162,9 @@ module.exports = function (sql, queries, conn, callback) {
             for (var i in uniqueLinks) {
                 // console.log(i)
                 // continue if item is in more than 1 node
-                if (Object.keys(uniqueLinks[i].nodesIn).length > 1) {
+                if (Object.keys(uniqueLinks[i]).length > 1) {
                     // get keys in 'nodesIn'
-                    var arr = Object.keys(uniqueLinks[i].nodesIn)
+                    var arr = Object.keys(uniqueLinks[i])
                     // set source of link ALSO REMEMBER THE FIRST NODE FOR LOOPING THE CONNECTIONS
                     // set first node in case of more than 2 children
                     var source = uniqueNodes.indexOf(arr[0]), target;
@@ -205,6 +227,8 @@ module.exports = function (sql, queries, conn, callback) {
             // add userLinks to end of current link array
             links = links.concat(userLinks);
             var results = {
+                uniqueUsers: uniqueLinks,
+                uniqueNodes: nodesObject,
                 links: links,
                 nodes: nodes
             }

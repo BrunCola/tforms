@@ -126,6 +126,21 @@ th {
   float: right;
 }
 
+#forcechartinfo {
+  overflow: scroll;
+  height: 600px;
+  margin-left: 0;
+}
+#forcechartinfo table{
+  width: 100%;
+}
+#forcechartinfo table tr:nth-child(odd){
+  background-color: #EDEDED;
+}
+#forcechartinfo table tr td{
+  padding: 7px;
+}
+
 .modalTable {
   width: 90%;
   margin-left: -45%;
