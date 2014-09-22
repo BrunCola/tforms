@@ -1505,7 +1505,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
     };
 }]);
 
-// STEALTH FORCE CHART STARTS HERE
+// STEALTH FORCE CHART
 angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope', 'dictionary', function ($timeout, $rootScope, dictionary) {
     return {
         link: function ($scope, element, attrs) {
@@ -1518,13 +1518,9 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         tCount.push(d.value);
                     });
                     var maxNum = Math.max.apply(Math, tCount);
-
-                    // var color = d3.scale.category20();
                     var palette = {
                         "lightgray": "#819090","gray": "#708284","mediumgray": "#536870","darkgray": "#3a3a3a",
-
                         "darkblue": "#0A2933","darkerblue": "#042029",
-
                         "paleryellow": "#FCF4DC","paleyellow": "#EAE3CB","yellow": "#A57706","orange": "#BD3613","red": "#D11C24",
                         "pink": "#C61C6F","purple": "#595AB7","blue": "#2176C7","green": "#259286","yellowgreen": "#738A05"
                     }
@@ -1616,8 +1612,6 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                     var circleWidth = 5;
                     node.each(function(d){
                         var elm = d3.select(this);
-                        // set force link width
-                        // force.attr('stroke-width', '100');
                         switch(d.group) {
                             case 'coi':
                                 //CIRCLE
@@ -1693,23 +1687,19 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                 elm.on('mouseout', function(d) {
                                     tableDiv.selectAll('tr').remove();
                                 })
-
                                 if (d.value.type === 'Stealth COI Mismatch') {
                                     elm.append("path")
                                         .attr('d', 'M14,3.1C9.4,3.3,7,0,7,0c0,0-2,3.1-7,3.1C-0.4,8.3,2.7,18,7,18C11.2,18,14.4,7.2,14,3.1z')
                                         .attr('transform', 'translate(-25,-115) scale(0.7)')
                                         .style('fill', '#333')
                                         .attr('transform', 'translate(-8,-8) scale(1.1)')
-
                                 } else if(d.value.type === 'outside') {
                                     elm.append("circle")
                                         .attr("cx", function(d) { return d.x; })
                                         .attr("cy", function(d) { return d.y; })
                                         .attr("r", 8)
                                         .attr("fill", '#333')
-
                                 } else if(d.value.type === 'inside') {
-
                                     elm.append('rect')
                                         .attr('x', function(d) { return d.x; })
                                         .attr('y', function(d) { return d.y; })
@@ -1732,7 +1722,6 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         .text(function(d) { return d.value; });
 
                     force.on("tick", function(e) {
-                    
                         text.attr("transform", function(d, i) {
                             var x1 = d.source.x;
                             var x2 = d.target.x;
@@ -1742,28 +1731,22 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                             var y = (y1+y2)/2;
                             return "translate(" + x + "," + y + ")";
                         });
-
                         node.attr("transform", function(d, i) {
                             return "translate(" + d.x + "," + d.y + ")";
                         });
-
-                        link.attr("x1", function(d)   { return d.source.x; })
-                            .attr("y1", function(d)   { return d.source.y; })
-                            .attr("x2", function(d)   { return d.target.x; })
-                            .attr("y2", function(d)   { return d.target.y; })
-
+                        link.attr("x1", function(d) { return d.source.x; })
+                            .attr("y1", function(d) { return d.source.y; })
+                            .attr("x2", function(d) { return d.target.x; })
+                            .attr("y2", function(d) { return d.target.y; })
                     });
-
                     force.start();
                 }, 0, false);
             })
         }
     };
 }]);
-// STEALTH FORCE CHART ENDS HERE
 
-//NETWORK TREE STARTS HERE
-
+//NETWORK TREE
 angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootScope', 'treeIcon', function ($timeout, $rootScope, treeIcon) {
     return {
         link: function ($scope, element, attrs) {
@@ -1947,8 +1930,6 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
         }
     };
 }]);
-
-// TREECHART ENDS HERE
 
 angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$rootScope', '$location', function ($timeout, $rootScope, $location) {
     return {
