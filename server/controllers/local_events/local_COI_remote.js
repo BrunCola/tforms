@@ -46,17 +46,19 @@ module.exports = function(pool) {
                         '\'Non-Stealth Internal Attack\' AS type,'+
                         '`lan_zone` AS `Attacker Zone`,'+
                         '`lan_machine` AS `Attacker Machine`,'+
-                        '`lan_user`,'+
-                        '`lan_user` AS `Attacher_User`,'+
+                        '`lan_user` AS `Attacker_User`,'+
                         '`lan_ip` AS `Attacker IP`,'+
+                        '`remote_machine` AS `Victim Machine`,'+
+                        '`remote_user` AS `lan_user`,'+
+                        '`remote_user` AS `Victim User`,'+
                         '`remote_ip` AS `Victim IP` '+
                     'FROM '+
                         '`conn` '+
                     'WHERE '+
                         'time BETWEEN ? AND ? '+
-                        'AND `proto` = \'tcp\' '+
-                        'AND `lan_ip` REGEXP \'192.168.222\' '+
-                        'AND `in_bytes` = 0 ',
+                        'AND `proto` != \'udp\' '+
+                        'AND `remote_ip` REGEXP \'192.168.222\' '+
+                        'AND `out_bytes` = 0 ',
                     insert: [start, end]
                 }
                 async.parallel([

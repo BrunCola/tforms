@@ -2,7 +2,6 @@
 
 angular.module('mean.system').controller('sidebarController', ['$scope', 'Global', '$location', function ($scope, Global, $location) {
     $scope.global = Global;
-
     $scope.select = function(url){
         if (url !== '') {
             if ($location.$$search.start && $location.$$search.end) {
@@ -68,9 +67,6 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
         }
         return linkClass;
     };
-
-    // $scope.adminItems = [];
-
     $scope.sidebaritems = [
         { // LIVE CONNECTIONS
             'title': 'Live Connections',
