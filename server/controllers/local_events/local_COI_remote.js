@@ -24,7 +24,7 @@ module.exports = function(pool) {
                     insert: []
                 }
                 var stealth_drop = {
-                    query: 'SELECT DISTINCT'+
+                    query: 'SELECT DISTINCT '+
                         '\'Stealth COI Mismatch\' AS type,'+
                         '`lan_zone`AS `Victim Zone`,'+
                         '`lan_machine` AS `Victim Machine`,'+
@@ -42,7 +42,7 @@ module.exports = function(pool) {
                     insert: [start, end]
                 }
                 var local_drop = {
-                    query: 'SELECT DISTINCT'+
+                    query: 'SELECT DISTINCT '+
                         '\'Non-Stealth Internal Attack\' AS type,'+
                         '`lan_zone`AS `Victim Zone`,'+
                         '`lan_machine` AS `Victim Machine`,'+
