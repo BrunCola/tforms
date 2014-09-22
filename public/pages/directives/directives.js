@@ -1644,13 +1644,11 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     .attr("x", 0)
                                     // .attr("y", function(d, i) { if (i>0) { return circleWidth + 40 }    else { return 8 } })
                                     // .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth - 70 } else { return 90 } })
-<<<<<<< HEAD
-                                    .attr("y", 90)
-                                    .attr("font-family",  "Helvetica Neue, Arial")
-=======
+   
+
                                     .attr("y", 10)
-                                    .attr("font-family",  "Helvetica Neue")
->>>>>>> origin/page2visual
+                                    .attr("font-family",  "Helvetica Neue, Arial")
+
                                     .attr("fill", '#c61c6f')
                                     .style("font-size", '2em')
                                     .attr("text-anchor", 'middle');
@@ -1753,41 +1751,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                 }
                             break;
                             case 'child':
-<<<<<<< HEAD
-                                elm.on('mouseover', function(d){
-                                    for (var i in d.value) {
-                                        var row = tableDiv.append('tr');
-                                        if(dictionary(i)!=="LAN User"){
-                                            row
-                                                .append('td')
-                                                .html('<strong>'+dictionary(i)+'</strong>');
-                                            row
-                                                .append('td')
-                                                .text(d.value[i]);
-                                        }
-                                    }
-                                    elm.style('cursor', 'pointer');
-                                })
-                                elm.on('mouseout', function(d) {
-                                    tableDiv.selectAll('tr').remove();
-                                })
-=======
-                                // elm.on('mouseover', function(d){
-                                //     for (var i in d.value) {
-                                //         var row = tableDiv.append('tr');
-                                //         row
-                                //             .append('td')
-                                //             .html('<strong>'+dictionary(i)+'</strong>');
-                                //         row
-                                //             .append('td')
-                                //             .text(d.value[i]);
-                                //     }
-                                //     elm.style('cursor', 'pointer');
-                                // })
-                                // elm.on('mouseout', function(d) {
-                                //     tableDiv.selectAll('tr').remove();
-                                // })
->>>>>>> origin/page2visual
+
                                 if (d.value.type === 'Stealth COI Mismatch') {
                                     elm.append("path")
                                         .attr('d', 'M14,3.1C9.4,3.3,7,0,7,0c0,0-2,3.1-7,3.1C-0.4,8.3,2.7,18,7,18C11.2,18,14.4,7.2,14,3.1z')
