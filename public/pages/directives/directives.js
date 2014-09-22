@@ -2430,7 +2430,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 
                 var m = [5, 15, 15, 120], //top right bottom left
                     w = width - m[1] - m[3],
-                    h = 390 - m[0] - m[2],
+                    h = 470 - m[0] - m[2],
                     miniHeight = 0,
                     mainHeight = h - miniHeight - 50;
 
@@ -2546,6 +2546,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
 
                 $scope.point = function(element, nickname, name, id) {
+
                     //console.log(nickname);
                     if (nickname.search("ioc") !== -1) {
                         element.attr('class', 'IOC');
@@ -2567,7 +2568,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .attr('width', 2.838)
                             .attr('height', 2.448);
                         return;
-                    } else {
+                    } else { 
                         element.attr('class', id);
                         element = element.append('g').attr('transform', 'translate(-18, -6)scale(0.8)');
                         switch(nickname){
@@ -2589,6 +2590,32 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             case 'Conn':
                                 element.append('circle')
                                     .attr('fill', function(d){ return '#6FBF9B'; })
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                element.append('svg:polygon')
+                                    .attr('points', '24.585,6.299 24.585,9.064 11.195,9.064 11.195,14.221 24.585,14.221 24.585,16.986 31.658,11.643 ')
+                                    .attr('fill', '#595A5C');
+                                element.append('svg:polygon')
+                                    .attr('points', '10.99,17.822 3.916,23.166 10.99,28.51 10.99,25.744 24.287,25.744 24.287,20.59 10.99,20.59 ')
+                                    .attr('fill', '#595A5C');
+                                return;
+
+                            case 'IOC Severity':
+                                element.append('circle')
+                                    .attr('fill', function(d){ 
+                                        if(d.ioc_severity === 1){
+                                            return '#377FC7'; 
+                                        }else if(d.ioc_severity === 2){
+                                            return '#F5D800'; 
+                                        }else if(d.ioc_severity === 3){
+                                            return '#F88B12'; 
+                                        }else if(d.ioc_severity === 4){
+                                            return '#DD122A'; 
+                                        }else{
+                                            return '#6FBF9B'; 
+                                        }
+                                    })
                                     .attr('cx', 18)
                                     .attr('cy', 18)
                                     .attr('r', 18);
