@@ -6163,5 +6163,5 @@ Datatables Plugin(in v1.3)
 }
 #autoExpand{
   display: inline-block;
-  float: right;
+  margin-left: 20px;
 }
