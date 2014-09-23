@@ -96,7 +96,10 @@ module.exports = function(pool) {
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
 
                 var iocseverity = {
@@ -151,7 +154,10 @@ module.exports = function(pool) {
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var conn_ioc = {
                     query: 'SELECT '+
@@ -208,7 +214,10 @@ module.exports = function(pool) {
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var application = {
                     query: 'SELECT '+
@@ -259,7 +268,10 @@ module.exports = function(pool) {
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var stealth_conn = {
                     query: 'SELECT '+
@@ -298,7 +310,10 @@ module.exports = function(pool) {
                         {title: "MB to Remote", select: "out_bytes"},
                         {title: "Packets from Remote", select: "in_packets"},
                         {title: "Packets to Remote", select: "out_packets"}
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var stealth_drop = {
                     query: 'SELECT '+
@@ -336,7 +351,10 @@ module.exports = function(pool) {
                         {title: "MB to Remote", select: "out_bytes"},
                         {title: "Packets from Remote", select: "in_packets"},
                         {title: "Packets to Remote", select: "out_packets"}
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var dns = {
                     query: 'SELECT '+
@@ -376,7 +394,10 @@ module.exports = function(pool) {
                         {title: "IOC Type", select: "ioc_typeIndicator"},
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var dns_ioc = {
                     query: 'SELECT '+
@@ -419,7 +440,10 @@ module.exports = function(pool) {
                         {title: "IOC Type", select: "ioc_typeIndicator"},
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var http = {
                     query: 'SELECT '+
@@ -464,7 +488,10 @@ module.exports = function(pool) {
                         {title: "IOC Type", select: "ioc_typeIndicator"},
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }   
                 var http_ioc = {
                     query: 'SELECT '+
@@ -511,7 +538,10 @@ module.exports = function(pool) {
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var ssl = {
                     query: 'SELECT '+
@@ -552,7 +582,10 @@ module.exports = function(pool) {
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var ssl_ioc = {
                     query: 'SELECT '+
@@ -595,7 +628,10 @@ module.exports = function(pool) {
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var email = {
                     query: 'SELECT '+
@@ -645,7 +681,10 @@ module.exports = function(pool) {
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
                         {title: "IOC Count", select: "ioc_count"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var email_ioc = {
                     query: 'SELECT '+
@@ -697,7 +736,10 @@ module.exports = function(pool) {
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
                         {title: "IOC Count", select: "ioc_count"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var file = {
                     query: 'SELECT '+
@@ -738,7 +780,10 @@ module.exports = function(pool) {
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var file_ioc = {
                     query: 'SELECT '+
@@ -781,7 +826,10 @@ module.exports = function(pool) {
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var endpoint = {
                     query: 'SELECT '+
@@ -814,7 +862,10 @@ module.exports = function(pool) {
                         {title: "Event Detail", select: "event_detail"},
                         {title: "Event Source", select: "event_src"},
                         {title: "Event ID", select: "event_id"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 async.parallel([
                     // Table function(s)
@@ -989,7 +1040,10 @@ module.exports = function(pool) {
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
 
                     var iocseverity = {
@@ -1044,7 +1098,10 @@ module.exports = function(pool) {
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var conn_ioc = {
                         query: 'SELECT '+
@@ -1101,7 +1158,10 @@ module.exports = function(pool) {
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var application = {
                         query: 'SELECT '+
@@ -1154,7 +1214,10 @@ module.exports = function(pool) {
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var stealth_drop = {
                         query: 'SELECT '+
@@ -1194,7 +1257,10 @@ module.exports = function(pool) {
                             {title: "MB to Remote", select: "out_bytes"},
                             {title: "Packets from Remote", select: "in_packets"},
                             {title: "Packets to Remote", select: "out_packets"}
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     } 
                     var dns = {
                         query: 'SELECT '+
@@ -1234,7 +1300,10 @@ module.exports = function(pool) {
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var dns_ioc = {
                         query: 'SELECT '+
@@ -1276,7 +1345,10 @@ module.exports = function(pool) {
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var http = {
                         query: 'SELECT '+
@@ -1321,7 +1393,10 @@ module.exports = function(pool) {
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var http_ioc = {
                         query: 'SELECT '+
@@ -1368,7 +1443,10 @@ module.exports = function(pool) {
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }                    
                     var ssl = {
                         query: 'SELECT '+
@@ -1409,7 +1487,10 @@ module.exports = function(pool) {
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var ssl_ioc = {
                         query: 'SELECT '+
@@ -1452,7 +1533,10 @@ module.exports = function(pool) {
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var email = {
                         query: 'SELECT '+
@@ -1502,7 +1586,10 @@ module.exports = function(pool) {
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
                             {title: "IOC Count", select: "ioc_count"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var email_ioc = {
                         query: 'SELECT '+
@@ -1554,7 +1641,10 @@ module.exports = function(pool) {
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
                             {title: "IOC Count", select: "ioc_count"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var file = {
                         query: 'SELECT '+
@@ -1594,7 +1684,10 @@ module.exports = function(pool) {
                             {title: "IOC Type", select: "ioc_typeIndicator"},
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var file_ioc = {
                         query: 'SELECT '+
@@ -1636,7 +1729,10 @@ module.exports = function(pool) {
                             {title: "IOC Type", select: "ioc_typeIndicator"},
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var endpoint = {
                        query: 'SELECT '+
@@ -1669,7 +1765,10 @@ module.exports = function(pool) {
                             {title: "Event Detail", select: "event_detail"},
                             {title: "Event Source", select: "event_src"},
                             {title: "Event ID", select: "event_id"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var info = {};
                     var InfoSQL = {
