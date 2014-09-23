@@ -10,18 +10,15 @@ var lanegraph = require('../constructors/lanegraph'),
 module.exports = function(pool) {
     return {
         render: function(req, res) {
-
             var columns = {};
             function handleReturn(data, callback) {
                 if ((data !== null) && (data.length > 0)) {
-                    // data.aaData.columns = data.params;
                     result.data.push(data);
                     return callback();
                 } else {
                     return callback();
                 }
             }
-
             var database = req.session.passport.user.database;
             var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
             var end = Math.round(new Date().getTime() / 1000);
@@ -35,18 +32,16 @@ module.exports = function(pool) {
             } else {
                 pointGroup = 1;
             }
-
             var lanes;
             if (req.session.passport.user.level === 3) {
-                lanes = ['IOC', 'Conn', 'IOC Severity', 'Applications', 'Stealth', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
+                lanes = ['IOC', 'IOC Severity', 'Conn', 'Stealth', 'Applications', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
             } else {
-                lanes = ['IOC', 'Conn', 'Applications', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
+                lanes = ['IOC', 'IOC Severity', 'Conn', 'Applications', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
             }
             var result = {
                 lanes: lanes,
                 data: []
             };
-
             if (req.query.type === 'drill') {
                 var conn = {
                     query: 'SELECT '+

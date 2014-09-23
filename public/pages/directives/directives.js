@@ -1651,8 +1651,11 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     .attr("x", 0)
                                     // .attr("y", function(d, i) { if (i>0) { return circleWidth + 40 }    else { return 8 } })
                                     // .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth - 70 } else { return 90 } })
+   
+
                                     .attr("y", 10)
                                     .attr("font-family",  "Helvetica Neue, Arial")
+
                                     .attr("fill", '#c61c6f')
                                     .style("font-size", '2em')
                                     .attr("text-anchor", 'middle');
@@ -1755,21 +1758,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                 }
                             break;
                             case 'child':
-                                // elm.on('mouseover', function(d){
-                                //     for (var i in d.value) {
-                                //         var row = tableDiv.append('tr');
-                                //         row
-                                //             .append('td')
-                                //             .html('<strong>'+dictionary(i)+'</strong>');
-                                //         row
-                                //             .append('td')
-                                //             .text(d.value[i]);
-                                //     }
-                                //     elm.style('cursor', 'pointer');
-                                // })
-                                // elm.on('mouseout', function(d) {
-                                //     tableDiv.selectAll('tr').remove();
-                                // })
+
                                 if (d.value.type === 'Stealth COI Mismatch') {
                                     elm.append("path")
                                         .attr('d', 'M14,3.1C9.4,3.3,7,0,7,0c0,0-2,3.1-7,3.1C-0.4,8.3,2.7,18,7,18C11.2,18,14.4,7.2,14,3.1z')
@@ -2128,6 +2117,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         return Math.exp(minv + scale*(x-minp));
                     }
 
+
                     var circleWidth = 5;
                     var vis = d3.select("#stealthforcechart")
                         .append("svg:svg")
@@ -2153,7 +2143,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                     var node = vis.selectAll("circle.node")
                         .data(data.nodes)
                         .enter().append("g")
-                        .attr("class", "node")
+                        .attr("class", "node")                    
 
                     //MOUSEOVER
                     .on("mouseover", function(d,i) {
@@ -2230,75 +2220,89 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 
                     vis.call($scope.tip);
 
-                    //CIRCLE
-                    node.each(function(d){
-                        var elm = d3.select(this)
-                        if (d.gateway === 1) {
-                            elm.append('svg:path')
-                                .attr('transform', 'translate(-18,-18)')
-                                .attr('d', 'M18,0C8.059,0,0,8.06,0,18.001C0,27.941,8.059,36,18,36c9.94,0,18-8.059,18-17.999C36,8.06,27.94,0,18,0z')
-                                .attr('fill', '#67AAB5');
-                            elm.append('svg:path')
-                                .attr('transform', 'translate(-18,-18)')
-                                .attr('d', 'M24.715,19.976l-2.057-1.122l-1.384-0.479l-1.051,0.857l-1.613-0.857l0.076-0.867l-1.062-0.325l0.31-1.146'+
-                                    'l-1.692,0.593l-0.724-1.616l0.896-1.049l1.108,0.082l0.918-0.511l0.806,1.629l0.447,0.087l-0.326-1.965l0.855-0.556l0.496-1.458'+
-                                    'l1.395-1.011l1.412-0.155l-0.729-0.7L22.06,9.039l1.984-0.283l0.727-0.568L22.871,6.41l-0.912,0.226L21.63,6.109l-1.406-0.352'+
-                                    'l-0.406,0.596l0.436,0.957l-0.485,1.201L18.636,7.33l-2.203-0.934l1.97-1.563L17.16,3.705l-2.325,0.627L8.91,3.678L6.39,6.285'+
-                                    'l2.064,1.242l1.479,1.567l0.307,2.399l1.009,1.316l1.694,2.576l0.223,0.177l-0.69-1.864l1.58,2.279l0.869,1.03'+
-                                    'c0,0,1.737,0.646,1.767,0.569c0.027-0.07,1.964,1.598,1.964,1.598l1.084,0.52L19.456,21.1l-0.307,1.775l1.17,1.996l0.997,1.242'+
-                                    'l-0.151,2.002L20.294,32.5l0.025,2.111l1.312-0.626c0,0,2.245-3.793,2.368-3.554c0.122,0.238,2.129-2.76,2.129-2.76l1.666-1.26'+
-                                    'l0.959-3.195l-2.882-1.775L24.715,19.976z')
-                                .attr('fill', '#595A5C');
-                        } else if(d.type === "user") {
-                            elm.append("rect")
-                            .attr("width", 22)
-                            .attr("height", 22)
-                            .attr("x", -11)
-                            .attr("y", -11)
-                            .attr("cx", function(d) { return d.x; })
-                            .attr("cy", function(d) { return d.y; })
-                            .attr("fill", function(d, i) { return  color(d.group, d.type); })
-                            //.style("stroke-width", "1.5px");
-                            //.style("stroke", "#fff");
-                        } else {
-                            elm.append("svg:circle")
-                            .attr("cx", function(d) { return d.x; })
-                            .attr("cy", function(d) { return d.y; })
-                            .attr("r", function (d) {return logslider(d["width"]); })
-                            .attr("fill", function(d, i) { return  color(d.group, d.type); })
-                           // .style("stroke-width", "1.5px")
-                           // .style("stroke", "#fff")
-                        }
-                        
-                        if(d.type === "user") {
-                            elm.on('mouseover', function(d){
-                                elm.style('cursor', 'pointer')
-                            })
-                            // .on("click", function (d){
-                            //     var link = {user: d.name};
-                            //     if ($location.$$search.start && $location.$$search.end) {
-                            //         link.start = $location.$$search.start;
-                            //         link.end = $location.$$search.end;
-                            //     }
-                            //     $scope.$apply($location.path('user_local').search(link));
-                            // });
-                        } else if(d.type === "coi") {
-                            elm.on('mouseover', function(d){
-                                elm.style('cursor', 'pointer')
-                            }).on("click", function (d){
-                                // Do nothing (no link from rule for now)
-                            }).on('mouseover', $scope.tip.show)
-                                .on('mouseout', $scope.tip.hide);
-                        } else {
-                            elm.on('mouseover', function(d){
-                                elm.style('cursor', 'pointer')
-                            })
-                            .on('mouseout', "")
-                            .on("click", function (d){
-                                // Do nothing (no link from group/role for now)
-                            });
-                        }
-                    })
+
+                    //$cope.update = function() {
+                       // console.log("test");
+                        var cldr;
+                        //CIRCLE
+                        var n = node.each(function(d){
+                            //console.log(d);
+                            var elm = d3.select(this)
+                            if (d.gateway === 1) {
+                                elm.append('svg:path')
+                                    .attr('transform', 'translate(-18,-18)')
+                                    .attr('d', 'M18,0C8.059,0,0,8.06,0,18.001C0,27.941,8.059,36,18,36c9.94,0,18-8.059,18-17.999C36,8.06,27.94,0,18,0z')
+                                    .attr('fill', '#67AAB5');
+                                elm.append('svg:path')
+                                    .attr('transform', 'translate(-18,-18)')
+                                    .attr('d', 'M24.715,19.976l-2.057-1.122l-1.384-0.479l-1.051,0.857l-1.613-0.857l0.076-0.867l-1.062-0.325l0.31-1.146'+
+                                        'l-1.692,0.593l-0.724-1.616l0.896-1.049l1.108,0.082l0.918-0.511l0.806,1.629l0.447,0.087l-0.326-1.965l0.855-0.556l0.496-1.458'+
+                                        'l1.395-1.011l1.412-0.155l-0.729-0.7L22.06,9.039l1.984-0.283l0.727-0.568L22.871,6.41l-0.912,0.226L21.63,6.109l-1.406-0.352'+
+                                        'l-0.406,0.596l0.436,0.957l-0.485,1.201L18.636,7.33l-2.203-0.934l1.97-1.563L17.16,3.705l-2.325,0.627L8.91,3.678L6.39,6.285'+
+                                        'l2.064,1.242l1.479,1.567l0.307,2.399l1.009,1.316l1.694,2.576l0.223,0.177l-0.69-1.864l1.58,2.279l0.869,1.03'+
+                                        'c0,0,1.737,0.646,1.767,0.569c0.027-0.07,1.964,1.598,1.964,1.598l1.084,0.52L19.456,21.1l-0.307,1.775l1.17,1.996l0.997,1.242'+
+                                        'l-0.151,2.002L20.294,32.5l0.025,2.111l1.312-0.626c0,0,2.245-3.793,2.368-3.554c0.122,0.238,2.129-2.76,2.129-2.76l1.666-1.26'+
+                                        'l0.959-3.195l-2.882-1.775L24.715,19.976z')
+                                    .attr('fill', '#595A5C');
+                            } else if(d.type === "user") {
+                                elm.append("rect")
+                                .attr("width", 22)
+                                .attr("height", 22)
+                                .attr("x", -11)
+                                .attr("y", -11)
+                                .attr("cx", function(d) { return d.x; })
+                                .attr("cy", function(d) { return d.y; })
+                                .attr("fill", function(d, i) { return  color(d.group, d.type); })
+                                //.style("stroke-width", "1.5px");
+                                //.style("stroke", "#fff");
+                            } else {
+                                elm.append("svg:circle")
+                                .attr("cx", function(d) { return d.x; })
+                                .attr("cy", function(d) { return d.y; })
+                                .attr("r", function (d) {return logslider(d["width"]); })
+                                .attr("fill", function(d, i) { return  color(d.group, d.type); })
+                               // .style("stroke-width", "1.5px")
+                               // .style("stroke", "#fff")
+                            }
+                            
+                            if(d.type === "user") {
+                                elm.on('mouseover', function(d){
+                                    elm.style('cursor', 'pointer')
+                                })
+                                .on('click', function (d){
+                                   // cldr = $scope.requery(d);
+                                  //  $scope.update();     
+                                });
+
+                                // .on("click", function (d){
+                                //     var link = {user: d.name};
+                                //     if ($location.$$search.start && $location.$$search.end) {
+                                //         link.start = $location.$$search.start;
+                                //         link.end = $location.$$search.end;
+                                //     }
+                                //     $scope.$apply($location.path('user_local').search(link));
+                                // });
+                            } else if(d.type === "coi") {
+                                elm.on('mouseover', function(d){
+                                    elm.style('cursor', 'pointer')
+                                }).on('click', function (d){
+                                    //cldr = $scope.requery(d);   
+                                   // $scope.update();
+                                }).on('mouseover', $scope.tip.show)
+                                    .on('mouseout', $scope.tip.hide);
+                            } else {
+                                elm.on('mouseover', function(d){
+                                    elm.style('cursor', 'pointer')
+                                })
+                                .on('mouseout', "")
+                                .on('click', function (d){
+                                    //cldr = $scope.requery(d);   
+                                  //  $scope.update();                               
+                                });
+                            }
+                        })
+                   // };
+                   // $scope.update();
 
                     //LEGEND
 
@@ -3122,6 +3126,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         // re-enter an append nodes (innificent as well)
                         icons.enter().append("g").each(function(d){
                             var elm = d3.select(this);
+
                             elm
                                 .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
                                 .attr("class", function(d) {return "mainItem" + d.lane;})
@@ -3132,7 +3137,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 
                                     itemRects.selectAll('g').each(function(d){
                                         var elm = d3.select(this);
-                                        
                                         elm.attr('class', null);
                                     })
                                     // un-highlight previous box
@@ -3140,6 +3144,19 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // this closes the last expanded block if there is one
                                     if (lastExpandedId !== null) {
                                         $('div'+lastExpandedId+'.infoDivExpanded').hide();
+                                    }
+
+                                    if($('#autoexpand').is(':checked')){
+                                        if (isOpen === '#'+d.id) {
+                                            $('#'+d.id+' .infoDivExpanded').css('display', 'none');
+                                            isOpen = null;
+                                        } else {
+                                            $('#'+d.id+' .infoDivExpanded').css('display', 'block');
+                                            lastExpandedId = '#'+d.id;
+                                            isOpen = '#'+d.id;
+
+                                            $('#'+d.id+' .infoDivExpanded').html(laneInfoAppend(d.expand));
+                                        }
                                     }
                                     // deselect previous element if there is one
                                     if (previousElm !== null) {
@@ -3234,6 +3251,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 
                                         // set previous id
                                         previousID = id;
+
                                     })
                                     // append expand buttons to list elements
                                     .append('div')

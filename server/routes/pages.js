@@ -159,7 +159,7 @@ module.exports = function(app, passport, version, io, pool) {
                     var endpoint_full = require('../controllers/local_events/endpoint_full')(pool);
                     app.route('/local_events/endpoint_full')
                     .get(authorization.requiresLogin, endpoint_full.render);
-        // ENDPOINT BY LOCAL IP
+        // ENDPOINT BY USER
             var endpoint_by_user = require('../controllers/local_events/endpoint_by_user')(pool);
             app.route('/local_events/endpoint_by_user')
             .get(authorization.requiresLogin, endpoint_by_user.render);
@@ -258,6 +258,18 @@ module.exports = function(app, passport, version, io, pool) {
                     var http_remote2local_drill = require('../controllers/http/http_remote2local_drill')(pool);
                     app.route('/http/http_remote2local_drill')
                     .get(authorization.requiresLogin, http_remote2local_drill.render);
+        // HTTP LOCAL BLOCKED
+            var http_local_blocked = require('../controllers/http/http_local_blocked')(pool);
+            app.route('/http/http_local_blocked')
+            .get(authorization.requiresLogin, http_local_blocked.render);    
+            // HTTP LOCAL BY DOMAIN BLOCKED
+                var http_local_by_domain_blocked = require('../controllers/http/http_local_by_domain_blocked')(pool);
+                app.route('/http/http_local_by_domain_blocked')
+                .get(authorization.requiresLogin, http_local_by_domain_blocked.render);
+                // HTTP BY DOMAIN LOCAL DRILL BLOCKED
+                    var http_by_domain_local_drill_blocked = require('../controllers/http/http_by_domain_local_drill_blocked')(pool);
+                    app.route('/http/http_by_domain_local_drill_blocked')
+                    .get(authorization.requiresLogin, http_by_domain_local_drill_blocked.render);
     // SSL
         // SSL SERVER
             var ssl_server = require('../controllers/ssl/ssl_server')(pool);

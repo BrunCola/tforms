@@ -10,12 +10,14 @@ module.exports = function (sql, conn, callback) {
                 return d.time_info+': '+d.lan_ip+' connected to '+d.remote_ip;
             case 'Conn_ioc':
                 return d.time_info+': IOC - '+d.ioc;
-            case 'Applications':
-                return d.time_info+': Application - '+d.l7_proto;
+            case 'IOC Severity':
+                return d.time_info+': IOC - '+d.ioc;
             case 'Stealth':
                 return d.time_info+': Stealth securely connected '+d.lan_ip+' with '+d.remote_ip;
             case 'Stealth_drop':
                 return d.time_info+': Stealth dropped connection attempts between '+d.lan_ip+' and '+d.remote_ip;
+            case 'Applications':
+                return d.time_info+': Application - '+d.l7_proto;
             case 'DNS':
                 return d.time_info+': DNS query for '+d.query;
             case 'DNS_ioc':
@@ -42,7 +44,6 @@ module.exports = function (sql, conn, callback) {
                 return d.time;
         }
     }
-
     var index = null; var count = 0; var type = null;
     conn.pool.getConnection(function(err, connection) {
         connection.changeUser({database : conn.database}, function(err) {
@@ -50,10 +51,8 @@ module.exports = function (sql, conn, callback) {
         });
         connection.query(sql.query, sql.insert)
             .on('result', function(data){
-
                 count++;
                 type = data.type;
-
                 if (index === null) {
                     index = conn.lanes.indexOf(data.type);
                     if (data.type.search('ioc') !== -1) {
@@ -64,7 +63,6 @@ module.exports = function (sql, conn, callback) {
                     }
                 }
                 data.lane = index;
-
                 var expand = [];
                 for (var d in sql.params) {
                     expand.push({
@@ -80,6 +78,6 @@ module.exports = function (sql, conn, callback) {
                 console.log(type+': '+count)
                 callback(null, results);
             });
-            connection.release();
+        connection.release();
     });
 };

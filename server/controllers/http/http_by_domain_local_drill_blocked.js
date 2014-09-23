@@ -14,15 +14,15 @@ module.exports = function(pool) {
                 start = req.query.start;
                 end = req.query.end;
             }
-            if (req.query.lan_zone && req.query.lan_ip && req.query.remote_ip) {
+            if (req.query.lan_zone && req.query.lan_ip && req.query.host) {
                 var tables = [];
                 var info = [];
                 var table1 = {
                     query: 'SELECT ' +
                                 'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
                                 '`stealth`, ' +
-                                '`lan_zone`, ' +
                                 '`machine`, ' +
+                                '`lan_zone`, ' +
                                 '`lan_user`, ' +
                                 '`lan_ip`, ' +
                                 '`remote_ip`, ' +
@@ -48,17 +48,19 @@ module.exports = function(pool) {
                                 '`proxied`, ' +
                                 '`local_mime_types`, ' +
                                 '`remote_mime_types`, ' +
+                                '`proxy_blocked`, '+
                                 '`ioc_count` ' +
                             'FROM ' +
                                 '`http` ' +
-                            'WHERE '+
+                            'WHERE '+ 
                                 'time BETWEEN ? AND ? ' +
                                 'AND `lan_zone` = ? '+
                                 'AND `lan_ip` = ? ' +
-                                'AND `remote_ip` = ? ',
-                    insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip],
+                                'AND proxy_blocked > 0 '+
+                                'AND `host` = ?',
+                    insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.host],
                     params: [
-                        { title: 'Time',  select: 'time' },
+                        { title: 'Time', select: 'time' },
                         { title: 'Stealth', select: 'stealth', access: [3] },
                         { title: 'ABP', select: 'proxy_blocked', access: [2] },
                         { title: 'Domain', select: 'host' },
@@ -68,8 +70,8 @@ module.exports = function(pool) {
                         { title: 'User Agent', select: 'user_agent' },
                         { title: 'Depth', select: 'depth' },
                         { title: 'Method', select: 'method' },
-                        { title: 'Machine Name', select: 'machine' },
                         { title: 'Zone', select: 'lan_zone' },
+                        { title: 'Machine', select: 'machine' },
                         { title: 'Local User', select: 'lan_user' },
                         { title: 'Local IP', select: 'lan_ip' },
                         { title: 'Remote IP', select: 'remote_ip'},
@@ -87,13 +89,13 @@ module.exports = function(pool) {
                         { title: 'Tags', select: 'tags', dView:false },
                         { title: 'Proxied', select: 'proxied', dView:false },
                         { title: 'Local File Type', select: 'local_mime_types', dView:false },
-                        { title: 'Reemote File Type', select: 'remote_mime_types', dView:false },
+                        { title: 'Remote File Type', select: 'remote_mime_types', dView:false },
                         { title: 'IOC Count', select: 'ioc_count' }
                     ],
                     settings: {
                         sort: [[0, 'desc']],
                         div: 'table',
-                        title: 'Common HTTP Connections between Remote and Local Host'
+                        title: 'Blocked HTTP Connections between Domain and Local Host'
                     }
                 }
                 async.parallel([
