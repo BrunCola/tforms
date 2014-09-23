@@ -62,6 +62,7 @@ module.exports = function(pool) {
                                 '`in_bytes`,'+
                                 '`out_bytes`,'+
                                 '`l7_proto`,'+
+                                '`proxy_blocked`,'+
                                 '`ioc`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`,'+
@@ -77,6 +78,7 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
+                        {title: 'ABP', select: 'proxy_blocked'},
                         {title: "Zone", select: "lan_zone"},
                         {title: "Machine", select: "machine"},
                         {title: "Local User", select: "lan_user"},
@@ -170,6 +172,7 @@ module.exports = function(pool) {
                                 '`in_bytes`,'+
                                 '`out_bytes`,'+
                                 '`l7_proto`,'+
+                                '`proxy_blocked`,'+
                                 '`ioc`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`,'+
@@ -187,6 +190,7 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                     params: [
                         {title: "Time", select: "time"},
+                        {title: 'ABP', select: 'proxy_blocked'},
                         {title: "Zone", select: "lan_zone"},
                         {title: "Machine", select: "machine"},
                         {title: "Local User", select: "lan_user"},
@@ -434,6 +438,7 @@ module.exports = function(pool) {
                             '`status_msg`,'+
                             '`info_code`,'+
                             '`info_msg`,'+
+                            '`proxy_blocked`,'+
                             '`ioc`,'+
                             '`ioc_severity`,'+
                             '`ioc_rule`,'+
@@ -449,6 +454,7 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
+                        {title: 'ABP', select: 'proxy_blocked'},
                         {title: "Host", select: "host"},
                         {title: "URI", select: "uri"},
                         {title: "Referrer", select: "referrer"},
@@ -477,6 +483,7 @@ module.exports = function(pool) {
                             '`status_msg`,'+
                             '`info_code`,'+
                             '`info_msg`,'+
+                            '`proxy_blocked`,'+
                             '`ioc`,'+
                             '`ioc_typeIndicator`,'+
                             '`ioc_typeInfection`,'+
@@ -494,6 +501,7 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                     params: [
                         {title: "Time", select: "time"},
+                        {title: 'ABP', select: 'proxy_blocked'},
                         {title: "Host", select: "host"},
                         {title: "URI", select: "uri"},
                         {title: "Referrer", select: "referrer"},
@@ -517,6 +525,7 @@ module.exports = function(pool) {
                             '`server_name`,'+
                             '`subject`,'+
                             '`issuer_subject`,'+
+                            '`proxy_blocked`,'+
                             '`ioc`,'+
                             '`ioc_typeIndicator`,'+
                             '`ioc_typeInfection`,'+    
@@ -532,6 +541,7 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
+                        {title: 'ABP', select: 'proxy_blocked'},
                         {title: "Server Name", select: "server_name"},
                         {title: "Version", select: "version"},
                         {title: "Cipher", select: "cipher"},
@@ -555,6 +565,7 @@ module.exports = function(pool) {
                             '`server_name`,'+
                             '`subject`,'+
                             '`issuer_subject`,'+
+                            '`proxy_blocked`,'+
                             '`ioc`,'+
                             '`ioc_typeIndicator`,'+
                             '`ioc_typeInfection`,'+    
@@ -573,6 +584,7 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                     params: [
                         {title: "Time", select: "time"},
+                        {title: 'ABP', select: 'proxy_blocked'},
                         {title: "Server Name", select: "server_name"},
                         {title: "Version", select: "version"},
                         {title: "Cipher", select: "cipher"},
@@ -943,6 +955,7 @@ module.exports = function(pool) {
                                 '`in_bytes`,'+
                                 '`out_bytes`,'+
                                 '`l7_proto`,'+
+                                '`proxy_blocked`,'+
                                 '`ioc`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`,'+
@@ -958,6 +971,7 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
+                            {title: 'ABP', select: 'proxy_blocked'},
                             {title: "Zone", select: "lan_zone"},
                             {title: "Machine", select: "machine"},
                             {title: "Local User", select: "lan_user"},
@@ -1051,6 +1065,7 @@ module.exports = function(pool) {
                                 '`in_bytes`,'+
                                 '`out_bytes`,'+
                                 '`l7_proto`,'+
+                                '`proxy_blocked`,'+
                                 '`ioc`,'+
                                 '`ioc_severity`,'+
                                 '`ioc_rule`,'+
@@ -1068,6 +1083,7 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                         params: [
                             {title: "Time", select: "time"},
+                            {title: 'ABP', select: 'proxy_blocked'},
                             {title: "Zone", select: "lan_zone"},
                             {title: "Machine", select: "machine"},
                             {title: "Local User", select: "lan_user"},
@@ -1278,6 +1294,7 @@ module.exports = function(pool) {
                                     '`status_msg`,'+
                                     '`info_code`,'+
                                     '`info_msg`,'+
+                                    '`proxy_blocked`,'+
                                     '`ioc`,'+
                                     '`ioc_severity`,'+
                                     '`ioc_rule`,'+
@@ -1294,6 +1311,7 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
+                            {title: 'ABP', select: 'proxy_blocked'},
                             {title: "Host", select: "host"},
                             {title: "URI", select: "uri"},
                             {title: "Referrer", select: "referrer"},
@@ -1322,6 +1340,7 @@ module.exports = function(pool) {
                                     '`status_msg`,'+
                                     '`info_code`,'+
                                     '`info_msg`,'+
+                                    '`proxy_blocked`,'+
                                     '`ioc`,'+
                                     '`ioc_severity`,'+
                                     '`ioc_rule`,'+
@@ -1339,6 +1358,7 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                         params: [
                             {title: "Time", select: "time"},
+                            {title: 'ABP', select: 'proxy_blocked'},
                             {title: "Host", select: "host"},
                             {title: "URI", select: "uri"},
                             {title: "Referrer", select: "referrer"},
@@ -1362,6 +1382,7 @@ module.exports = function(pool) {
                                     '`server_name`,'+
                                     '`subject`,'+
                                     '`issuer_subject`,'+
+                                    '`proxy_blocked`,'+
                                     '`ioc`,'+
                                     '`ioc_typeIndicator`,'+
                                     '`ioc_typeInfection`,'+    
@@ -1377,6 +1398,7 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
+                            {title: 'ABP', select: 'proxy_blocked'},
                             {title: "Server Name", select: "server_name"},
                             {title: "Version", select: "version"},
                             {title: "cipher", select: "cipher"},
@@ -1401,6 +1423,7 @@ module.exports = function(pool) {
                                     '`server_name`,'+
                                     '`subject`,'+
                                     '`issuer_subject`,'+
+                                    '`proxy_blocked`,'+
                                     '`ioc`,'+
                                     '`ioc_typeIndicator`,'+
                                     '`ioc_typeInfection`,'+    
@@ -1418,6 +1441,7 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                         params: [
                             {title: "Time", select: "time"},
+                            {title: 'ABP', select: 'proxy_blocked'},
                             {title: "Server Name", select: "server_name"},
                             {title: "Version", select: "version"},
                             {title: "cipher", select: "cipher"},
