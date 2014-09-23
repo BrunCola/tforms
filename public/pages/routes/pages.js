@@ -897,29 +897,29 @@ angular.module('mean.pages').config(['$stateProvider',
                         data: {
                             title: 'Local HTTP by Domain Blocked By Web Proxy',
                             subtitleElm: {
-                                'Zone': 'lan_zone'
-                                'Local IP': 'lan_ip',
-                            },
+                                    'Zone': 'lan_zone',
+                                    'Local IP': 'lan_ip'
+                                },
                             daterange: true
                         }
                     })
                     // HTTP BY DOMAIN LOCAL DRILL BLOCKED
-                        .state('http_by_domain_local_drill_blocked', {
-                            url: '/http_by_domain_local_drill_blocked?start&end&lan_zone&lan_ip&host',
-                            templateUrl: 'public/pages/views/http/http_by_domain_local_drill_blocked.html',
-                            resolve: {
-                                loggedin: checkLoggedin
+                    .state('http_by_domain_local_drill_blocked', {
+                        url: '/http_by_domain_local_drill_blocked?start&end&lan_zone&lan_ip&host',
+                        templateUrl: 'public/pages/views/http/http_by_domain_local_drill_blocked.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Local HTTP By Domain Blocked By Web Proxy',
+                            subtitleElm: {
+                                'Zone': 'lan_zone',
+                                'LAN IP': 'lan_ip',
+                                'Domain': 'host'
                             },
-                            data: {
-                                title: 'Local HTTP By Domain Blocked By Web Proxy',
-                                subtitleElm: {
-                                    'Zone': 'lan_zone'
-                                    'LAN IP': 'lan_ip',
-                                    'Domain': 'host',
-                                },
-                                daterange: true
-                            }
-                        })
+                            daterange: true
+                        }
+                    })
 
         // DNS
             // LOCAL DNS
