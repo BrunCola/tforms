@@ -45,12 +45,30 @@ module.exports = function (sql, conn, callback) {
         }
     }
     var index = null; var count = 0; var type = null;
+
+    var denied = [];
+    (function() {
+        if (sql.settings === undefined) {return}
+        if (sql.settings.access === undefined) {return}
+        sql.params.forEach(function(item){
+            if (item.access === undefined) {return}
+            if (item.access.indexOf(sql.settings.access) === -1) {
+                denied.push(item.select);
+            }
+        })
+    })();
+
     conn.pool.getConnection(function(err, connection) {
         connection.changeUser({database : conn.database}, function(err) {
             if (err) throw err;
         });
         connection.query(sql.query, sql.insert)
             .on('result', function(data){
+                for (var i in data){
+                    if (denied.indexOf(i) !== -1){
+                        delete data[i];
+                    }
+                }
                 count++;
                 type = data.type;
                 if (index === null) {
@@ -65,10 +83,13 @@ module.exports = function (sql, conn, callback) {
                 data.lane = index;
                 var expand = [];
                 for (var d in sql.params) {
-                    expand.push({
-                        name: sql.params[d].title,
-                        value: data[sql.params[d].select]
-                    })
+                    // check if value is undefined... it may be because of our veriable denial process above 
+                    if (data[sql.params[d].select] !== undefined) {
+                        expand.push({
+                            name: sql.params[d].title,
+                            value: data[sql.params[d].select]
+                        })
+                    }
                 }
                 data.info = laneInfo(data);
                 data.expand = expand;
