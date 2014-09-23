@@ -1607,7 +1607,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         .style('stroke-opacity', '1')
                         .attr('stroke-width', function(d){
                             if (d.class === 'child'){
-                                return '4';
+                                return '3';
                             } else {
                                 return '70';
                             }
@@ -1632,23 +1632,16 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     .attr("cx", function(d) { return d.x; })
                                     .attr("cy", function(d) { return d.y; })
                                     .attr("r", function (d) {return logslider(d["width"]); })
-                                    // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
                                     .attr("fill", '#fff')
                                     .style("stroke-width", "14px")
                                     .style("stroke", "#259286");
 
                                 //TEXT appends name
                                 elm.append("text")
-                                    // .text(function(d, i) { return d.name + '(' + count(d.width) + ')'; })
                                     .text(function(d, i) { return d.name; })
                                     .attr("x", 0)
-                                    // .attr("y", function(d, i) { if (i>0) { return circleWidth + 40 }    else { return 8 } })
-                                    // .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth - 70 } else { return 90 } })
-   
-
                                     .attr("y", 10)
                                     .attr("font-family",  "Helvetica Neue, Arial")
-
                                     .attr("fill", '#c61c6f')
                                     .style("font-size", '2em')
                                     .attr("text-anchor", 'middle');
@@ -1658,25 +1651,27 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     .attr('transform', 'translate(0, 110)');
                                 text.append('text')
                                     .html(function(d, i) { return d.count; })
-                                    // .attr("x", 0)
-                                    // // .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth + 2 } else { return 40 } })
-                                    // .attr("y", 110)
-                                    .attr("fill", '#515151')
-                                    // .style("font-size", function(d, i) { if (d.name === 'ClearText') { return '5em' } else { return '10em'} })
+                                    .attr("fill", '#000')
                                     .style("font-size", '5em')
                                     .attr("text-anchor", 'middle');
+
                                 // append a rectangle on top for click events
                                 text.append('rect')
-                                    .attr('x', -25)
-                                    .attr('y', -49)
-                                    .style('fill-opacity', 0)
-                                    .attr('width', 50)
+                                    .attr('x', -34)
+                                    .attr('y', -45)
+                                    .style('fill-opacity', '0.4')
+                                    .style('fill', '#fff')
+                                    .attr('width', 70)
                                     .attr('height', 50)
-                                    .on('mouseover', function(d){
-                                        d3.select(this).style('cursor', 'pointer');
+                                    .on('mouseover', function(){
+                                        d3.select(this).style('cursor', 'pointer')
+                                        .style('fill-opacity', '0');
                                     })
                                     .on('click', function(d){
                                         $scope.requery(d, 'users');
+                                    })
+                                    .on('mouseout', function(){d3.select(this)
+                                    .style('fill-opacity', '0.4');
                                     });
 
                                 // ICONS
@@ -1710,12 +1705,6 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     .on('click', function(d){
                                         $scope.requery(d, 'right');
                                     })
-                                // elm.append('rect')
-                                //     .attr('width', 50)
-                                //     .attr('height', 50)
-                                //     .attr('x', -110)
-                                //     .attr('y', -20)
-                                //     
                                 switch(d.name){
                                     case 'ClearText':
                                         elm.append('path')
@@ -1727,11 +1716,23 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                             ' M42.8,79.4l12.4-3.1l4.6-12l-17.1,2.8V79.4z M75.1,58.6l-9.2,3.7l-5.4,11.4L75.1,58.6z M42.8,60.9L61,58.8L63.2,42H42.8V60.9z'+
                                             ' M66.7,57.5l9.8-3.7L78.9,42H68.6L66.7,57.5z')
                                             .attr('transform', 'translate(-25,-115) scale(0.7)')
-                                            .on('mouseover', function(d){
-                                                d3.select(this).style('cursor', 'pointer');
+
+
+                                        elm.append("svg:circle")
+                                            .attr("cx", 2)
+                                            .attr("cy", -88)
+                                            .attr("r", 32)
+                                            .attr("fill", '#fff')
+                                            .style('fill-opacity', '0.3')
+                                            .on('mouseover', function(){
+                                                d3.select(this).style('cursor', 'pointer')
+                                                .style('fill-opacity', '0');
                                             })
                                             .on('click', function(d){
                                                 $scope.requery(d, 'top');
+                                            })
+                                            .on('mouseout', function(){d3.select(this)
+                                            .style('fill-opacity', '0.3');
                                             });
                                         break;
                                     default:
@@ -1740,12 +1741,23 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                             .attr('points', '53,18 53,10 60,10 60,0 44,0 44,10 51,10 51,16 31,16 31,10 38,10 38,0 22,0 22,10 29,10 '+
                                             '29,16 9,16 9,10 16,10 16,0 0,0 0,10 7,10 7,18 29,18 29,26 7,26 7,35 0,35 0,45 16,45 16,35 9,35 9,28 29,28 29,35 22,35 22,45 '+
                                             '38,45 38,35 31,35 31,28 51,28 51,35 44,35 44,45 60,45 60,35 53,35 53,26 31,26 31,18 ')
-                                            .attr('transform', 'translate(-25,-110) scale(0.9)')
-                                            .on('mouseover', function(d){
-                                                d3.select(this).style('cursor', 'pointer');
+                                            .attr('transform', 'translate(-25,-110) scale(0.9)');
+
+                                        elm.append("svg:circle")
+                                            .attr("cx", 2)
+                                            .attr("cy", -88)
+                                            .attr("r", 40)
+                                            .attr("fill", '#fff')
+                                            .style('fill-opacity', '0.3')
+                                            .on('mouseover', function(){
+                                                d3.select(this).style('cursor', 'pointer')
+                                                .style('fill-opacity', '0');
                                             })
                                             .on('click', function(d){
                                                 $scope.requery(d, 'top');
+                                            })
+                                            .on('mouseout', function(){d3.select(this)
+                                            .style('fill-opacity', '0.3');
                                             })
                                         break;
                                 }
@@ -1816,7 +1828,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         .append('text')
                         .attr("fill", '#fff')
                         .style('font-size', '3em')
-                        .attr("text-anchor", 'middle')
+                        .attr('text-anchor', 'middle')
                         .text(function(d) { return d.value; });
 
                     force.on("tick", function(e) {
@@ -1826,14 +1838,14 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                             var y1 = d.source.y;
                             var y2 = d.target.y;
                             var x = (x1+x2)/2;
-                            var y = (y1+y2)/2;
+                            var y = ((y1+y2)*1.027)/2;
                             return "translate(" + x + "," + y + ")";
                         });
                         node.attr("transform", function(d, i) {
                             return "translate(" + d.x + "," + d.y + ")";
                         });
-                        node[0].x = width / 2;
-                        node[0].y = height / 3;
+                        node[0].x = width;
+                        node[0].y = height;
                         link.attr("x1", function(d) { return d.source.x; })
                             .attr("y1", function(d) { return d.source.y; })
                             .attr("x2", function(d) { return d.target.x; })
