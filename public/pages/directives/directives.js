@@ -2112,6 +2112,39 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                     }
 
 
+
+                    // Toggle children on click.
+                    function click(d, connections) {
+                        console.log(d.index);
+                        console.log(d);
+                        console.log(" ");
+                        if (d.target) {
+                            d._target = d.target;
+                            d.target = null;
+                        } else {
+                            d.target = d._target;
+                            d._target = null;
+                        }
+
+                        if (d.source) {
+                            d._source = d.source;
+                            d.source = null;
+                        } else {
+                            d.source = d._source;
+                            d._source = null;
+                        }
+                        console.log(d);
+
+                        //.hide();
+                        for(var i = 0; i<connections.length; i++){
+                            console.log(data.nodes[connections[i]].index);
+                            console.log(data.nodes[connections[i]]);
+                        }
+                        //$scope.update();
+                    }
+
+
+
                     var circleWidth = 5;
                     var vis = d3.select("#stealthforcechart")
                         .append("svg:svg")
@@ -2215,7 +2248,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                     vis.call($scope.tip);
 
 
-                    //$cope.update = function() {
+                    $scope.update = function() {
                        // console.log("test");
                         var cldr;
                         //CIRCLE
@@ -2242,6 +2275,9 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                                 elm.append("rect")
                                 .attr("width", 22)
                                 .attr("height", 22)
+                               // .attr("connections", $scope.requery(d))
+                               // .attr("connections", $scope.requery(d))
+                                .attr("connections", "test1")
                                 .attr("x", -11)
                                 .attr("y", -11)
                                 .attr("cx", function(d) { return d.x; })
@@ -2254,6 +2290,8 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                                 .attr("cx", function(d) { return d.x; })
                                 .attr("cy", function(d) { return d.y; })
                                 .attr("r", function (d) {return logslider(d["width"]); })
+                               // .attr("connections", $scope.requery(d))
+                                .attr("connections", "test2")
                                 .attr("fill", function(d, i) { return  color(d.group, d.type); })
                                // .style("stroke-width", "1.5px")
                                // .style("stroke", "#fff")
@@ -2265,7 +2303,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                                 })
                                 .on('click', function (d){
                                    // cldr = $scope.requery(d);
-                                  //  $scope.update();     
+                                  //  $scope.update();    
                                 });
 
                                 // .on("click", function (d){
@@ -2290,13 +2328,15 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                                 })
                                 .on('mouseout', "")
                                 .on('click', function (d){
-                                    //cldr = $scope.requery(d);   
-                                  //  $scope.update();                               
+                                    cldr = $scope.requery(d);   
+                                   // $scope.update();
+                                   return click(d,cldr);
                                 });
                             }
                         })
-                   // };
-                   // $scope.update();
+                    //;
+                     };
+                    $scope.update();
 
                     //LEGEND
 

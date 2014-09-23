@@ -45,8 +45,9 @@ angular.module('mean.pages').controller('stealthCoiMapController', ['$scope', '$
             results.push($scope.data.force.nodes[rSource[i].source.index].index)
         	//console.log($scope.data.force.nodes[rSource[i].source.index].index);
         }
-        console.log(results);
+        //console.log(results);
         //$scope.appendInfo(results);
+
         return results;
     }
 
