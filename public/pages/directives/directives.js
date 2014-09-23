@@ -546,6 +546,13 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                     } else {
                                         $('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html('');
                                     }
+                                    if (aData.proxy_blocked !== undefined && $scope.r.indexOf('proxy_blocked') !== -1) {
+                                        if (aData.proxy_blocked == 0){
+                                            $('td:eq('+$scope.r.indexOf("proxy_blocked")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-check fa-stack-1x fa-inverse"></i></span>');
+                                        } else if(aData.proxy_blocked > 0) {
+                                            $('td:eq('+$scope.r.indexOf("proxy_blocked")+')', nRow).html('<span style="color:#E71010 " class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-times fa-stack-1x fa-inverse"></i></span>');
+                                        }
+                                    }
                                     if (aData.receiptto && $scope.r.indexOf('receiptto') !== -1) {
                                         var newVar = aData.receiptto.replace(/[\<\>]/g,'');
                                         $('td:eq('+$scope.r.indexOf("receiptto")+')', nRow).html(newVar);
@@ -1789,21 +1796,14 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         }
                     });
                     
-                    $scope.appendInfo = function(data) {
+                    $scope.appendInfo = function(data, type) {
+                        console.log(type)
                         infoDiv.selectAll('tr').remove();
                         for (var i in data) {
                             if (typeof data[i] === 'object') {
                                 var divInfo = '';
                                 for (var e in data[i]) {
-                                    var dat = '';
-                                    if (typeof data[i][e] === 'array') {
-                                        for (var a in data[i][e]) {
-                                            dat += data[i][e][a]+', ';
-                                        }
-                                    } else {
-                                        dat = data[i][e];
-                                    }
-                                    divInfo += '<div><strong>'+e+': </strong>'+dat+'</div>';
+                                    divInfo += '<div><strong>'+e+': </strong>'+data[i][e]+'</div>';
                                 }
                                 var row = infoDiv.append('tr');
                                     row
@@ -1820,8 +1820,10 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                         .text(data[i]);
                             }
                         }
-                    }
+                        // switch(type) {
 
+                        // }
+                    }
                     var linktext = d3.selectAll('.linkgroup');
                     var text = linktext
                         .append('text')
@@ -1843,8 +1845,12 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         node.attr("transform", function(d, i) {
                             return "translate(" + d.x + "," + d.y + ")";
                         });
-                        node[0].x = width / 2;
-                        node[0].y = height / 3;
+
+                        // node[0].x = width / 2;
+                        // node[0].y = height / 3;
+                        node[0].fixed = true;
+                        node[0].x = 20;
+                        node[0].y = 30;
                         link.attr("x1", function(d) { return d.source.x; })
                             .attr("y1", function(d) { return d.source.y; })
                             .attr("x2", function(d) { return d.target.x; })
@@ -3074,20 +3080,15 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
 
                 function scrollSide(id) {
-                  
                     var elm = $('li#'+id);
-
                     var ept  = elm.position().top;
                     var eppt = elm.parent().position().top;
-
                     var offset = ept - eppt;
                     var totalHeight = $('#lanegraphinfo')[0].scrollHeight;
                     var windowHeight = $('#lanegraphinfo').height();
-
                     if(offset>(totalHeight-windowHeight)){
                         offset = totalHeight-windowHeight;
                     }
-
                     $('#lanegraphinfo').scrollTo(offset);
                 }
 
