@@ -51,8 +51,8 @@ module.exports = function(pool) {
                                 crumb: false
                             }
                         },
-                        { title: 'stealth', select: 'stealth', access: [3] },
                         { title: 'Events', select: 'count'},
+                        { title: 'Stealth', select: 'stealth', access: [3] },
                         { title: 'Zone', select: 'lan_zone'},
                         { title: 'Machine', select: 'lan_machine'},
                         { title: 'Local User', select: 'lan_user'},
@@ -84,7 +84,6 @@ module.exports = function(pool) {
                         info: info,
                         tables: tables
                     };
-                    //console.log(results);
                     res.json(results);
                 });
             } else {

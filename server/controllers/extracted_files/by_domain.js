@@ -18,17 +18,17 @@ module.exports = function(pool) {
 			var tables = [];
 			var table1 = {
 				query: 'SELECT '+
-						'count(*) as count, '+
-						'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time,'+
-						'`http_host`,'+
-						'(sum(`size`) / 1048576) AS size,'+
-						'sum(`ioc_count`) AS ioc_count '+
-					'FROM '+
-						'`file` '+
-					'WHERE '+
-						'`time` BETWEEN ? AND ? '+
-					'GROUP BY '+
-						'`http_host`',
+    						'count(*) as count, '+
+    						'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time,'+
+    						'`http_host`,'+
+    						'(sum(`size`) / 1048576) AS size,'+
+    						'sum(`ioc_count`) AS ioc_count '+
+    					'FROM '+
+    						'`file` '+
+    					'WHERE '+
+    						'`time` BETWEEN ? AND ? '+
+    					'GROUP BY '+
+    						'`http_host`',
 				insert: [start, end],
 				params: [
 					{

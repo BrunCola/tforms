@@ -1,22 +1,20 @@
 'use strict';
 
-var datatable_stealth = require('../constructors/datatable_stealth'),
-query = require('../constructors/query'),
-config = require('../../config/config'),
-async = require('async');
+var dataTable = require('../constructors/datatable'),
+    query = require('../constructors/query'),
+    config = require('../../config/config'),
+    async = require('async');
 
 module.exports = function(pool) {
 	return {
 		render: function(req, res) {
 			var database = req.session.passport.user.database;
-			// var database = null;
 			var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 			var end = Math.round(new Date().getTime() / 1000);
 			if (req.query.start && req.query.end) {
 				start = req.query.start;
 				end = req.query.end;
 			}
-			//var results = [];
 			if (req.query.http_host) {
 				var tables = [];
 				var table1 = {
@@ -87,7 +85,7 @@ module.exports = function(pool) {
 				async.parallel([
 					// Table function(s)
 					function(callback) {
-						new datatable_stealth(table1, table2, parseInt(req.session.passport.user.level), {database: database, pool: pool}, function(err,data){
+						new dataTable(table1, {database: database, pool: pool}, function(err,data){
 							tables.push(data);
 							callback();
 						});
@@ -97,7 +95,6 @@ module.exports = function(pool) {
 					var results = {
 						tables: tables
 					};
-					//console.log(results);
 					res.json(results);
 				});
 			} else {

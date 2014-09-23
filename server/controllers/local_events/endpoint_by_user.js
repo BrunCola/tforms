@@ -1,8 +1,8 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-config = require('../../config/config'),
-async = require('async');
+    config = require('../../config/config'),
+    async = require('async');
 
 module.exports = function(pool) {
     return {
@@ -48,13 +48,14 @@ module.exports = function(pool) {
                     { title: 'Stealth', select: 'stealth', access: [3] },
                     { title: 'Zone', select: 'lan_zone' },
                     { title: 'Machine', select: 'lan_machine'},
-                    { title: 'User', select: 'lan_user' },
-                    { title: 'LAN IP', select: 'lan_ip' },
+                    { title: 'Local User', select: 'lan_user' },
+                    { title: 'Local IP', select: 'lan_ip' },
                 ],
                 settings: {
                     sort: [[1, 'desc']],
                     div: 'table',
-                    title: 'Local Endpoint Events'
+                    title: 'Local Endpoint Events',
+                    access: req.session.passport.user.level
                 }
             }
             async.parallel([
@@ -71,7 +72,6 @@ module.exports = function(pool) {
                     info: info,
                     tables: tables
                 };
-                //console.log(results);
                 res.json(results);
             });
         }

@@ -35,7 +35,8 @@ module.exports = function(pool) {
                             '`ioc_typeIndicator`,'+
                             '`ioc_typeInfection`,'+
                             '`ioc_rule`,'+
-                            '`ioc_severity` '+
+                            '`ioc_severity`,'+
+                            'sum(`proxy_blocked`) AS proxy_blocked '+
                         'FROM '+
                             '`conn_ioc` '+
                         'WHERE '+
@@ -58,6 +59,7 @@ module.exports = function(pool) {
                         },
                     },
                     { title: 'Stealth', select: 'stealth', access: [3] },
+                    { title: 'ABP', select: 'proxy_blocked', access: [2] },
                     { title: 'Severity', select: 'ioc_severity' },
                     { title: 'IOC Hits', select: 'count' },
                     { title: 'IOC', select: 'ioc' },
