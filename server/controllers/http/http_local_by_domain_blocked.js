@@ -65,7 +65,8 @@ module.exports = function(pool) {
                         div: 'table',
                         title: 'Blocked HTTP by Domain'
                     }
-                }async.parallel([
+                }
+                async.parallel([
                     // Table function(s)
                     function(callback) {
                         new dataTable(table1, {database: database, pool: pool}, function(err,data){
