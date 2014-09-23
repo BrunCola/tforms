@@ -47,14 +47,14 @@ module.exports = function(pool) {
                                 '`ioc_typeInfection`, ' +
                                 '`ioc_typeIndicator`, ' +
                                 '`ioc_rule`, ' +
-                                '`ioc_count,' +
+                                '`ioc_count`,' +
                                 '`proxy_blocked` '+
                             'FROM '+
                                 '`conn` ' +
                             'WHERE '+ 
-                                'conn.time BETWEEN ? AND ? ' +
+                                '`time` BETWEEN ? AND ? ' +
                                 'AND `lan_zone` = ? '+
-                                'AND conn.lan_ip = ? ' +
+                                'AND `lan_ip` = ? ' +
                                 'AND `remote_ip` = ? ',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip],
                     params: [

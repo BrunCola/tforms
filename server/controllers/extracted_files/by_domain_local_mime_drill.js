@@ -23,7 +23,7 @@ module.exports = function(pool) {
     							'`stealth`,'+
                                 '`lan_zone`,'+
                                 '`machine`,'+
-                                '`lan_user,`,'+
+                                '`lan_user`,'+
                                 '`lan_ip`,'+
                                 '`lan_port`,'+
     							'`remote_ip`,'+
