@@ -39,6 +39,7 @@ module.exports = function(pool) {
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`,'+
                                 '`ioc_rule`,'+
+                                'sum(`proxy_blocked`) AS proxy_blocked,'+
                                 'sum(`ioc_count`) AS ioc_count '+
                             'FROM '+
                                 '`conn_ioc` '+
@@ -63,13 +64,14 @@ module.exports = function(pool) {
                                 crumb: false
                             },
                         },
+                        { title: 'Stealth', select: 'stealth', access: [3] },
+                        { title: 'ABP', select: 'proxy_blocked', access: [2] },
                         { title: 'Severity', select: 'ioc_severity' },
                         { title: 'IOC Hits', select: 'ioc_count' },
                         { title: 'IOC', select: 'ioc' },
                         { title: 'IOC Type', select: 'ioc_typeIndicator' },
                         { title: 'IOC Stage', select: 'ioc_typeInfection' },
                         { title: 'IOC Rule', select: 'ioc_rule' },
-                        { title: 'Stealth', select: 'stealth', access: [3] },
                         { title: 'Zone', select: 'lan_zone' },
                         { title: 'Machine', select: 'machine' },
                         { title: 'Local User', select: 'lan_user' },
@@ -86,7 +88,8 @@ module.exports = function(pool) {
                     settings: {
                         sort: [[1, 'desc']],
                         div: 'table',
-                        title: 'Indicators of Compromise (IOC) Notifications'
+                        title: 'Indicators of Compromise (IOC) Notifications',
+                        access: req.session.passport.user.level
                     }
                 }
                 async.parallel([

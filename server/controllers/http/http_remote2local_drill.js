@@ -48,6 +48,7 @@ module.exports = function(pool) {
                                 '`proxied`, ' +
                                 '`local_mime_types`, ' +
                                 '`remote_mime_types`, ' +
+                                '`proxy_blocked`, '+
                                 '`ioc_count` ' +
                             'FROM ' +
                                 '`http` ' +
@@ -93,7 +94,8 @@ module.exports = function(pool) {
                     settings: {
                         sort: [[0, 'desc']],
                         div: 'table',
-                        title: 'Common HTTP Connections between Remote and Local Host'
+                        title: 'Common HTTP Connections between Remote and Local Host',
+                        access: req.session.passport.user.level
                     }
                 }
                 async.parallel([

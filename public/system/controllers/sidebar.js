@@ -323,7 +323,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'title': 'Local Blocked HTTP',
                     'accessLevel': [2],   
                     'url': 'http_local_blocked',
-                    'icon': 'fa-long-arrow-left',
+                    'icon': 'fa-times',
                     'orphans': ['http_local_by_domain_blocked', 'http_by_domain_local_drill_blocked']
                 },
             ]
