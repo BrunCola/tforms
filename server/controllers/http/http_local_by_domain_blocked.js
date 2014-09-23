@@ -63,7 +63,8 @@ module.exports = function(pool) {
                     settings: {
                         sort: [[0, 'desc']],
                         div: 'table',
-                        title: 'Blocked HTTP by Domain'
+                        title: 'Blocked HTTP by Domain',
+                        access: req.session.passport.user.level
                     }
                 }
                 async.parallel([

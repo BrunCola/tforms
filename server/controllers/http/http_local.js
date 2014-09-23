@@ -57,7 +57,8 @@ module.exports = function(pool) {
                 settings: {
                     sort: [[1, 'desc']],
                     div: 'table',
-                    title: 'Local HTTP'
+                    title: 'Local HTTP',
+                    access: req.session.passport.user.level
                 }
             }
             async.parallel([

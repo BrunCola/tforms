@@ -51,10 +51,12 @@ module.exports = function(pool) {
                                 crumb: false
                             }
                         },
-                        { title: 'stealth', select: 'stealth'},
                         { title: 'Events', select: 'count'},
-                        { title: 'User', select: 'lan_user'},
-                        { title: 'LAN IP', select: 'lan_ip'},
+                        { title: 'Stealth', select: 'stealth', access: [3] },
+                        { title: 'Zone', select: 'lan_zone'},
+                        { title: 'Machine', select: 'lan_machine'},
+                        { title: 'Local User', select: 'lan_user'},
+                        { title: 'Local IP', select: 'lan_ip'},
                         { title: 'Event Type', select: 'event_type' },
                         { title: 'Event Details', select: 'event_detail'},
                         { title: 'Event Source', select: 'event_src'},
@@ -63,7 +65,8 @@ module.exports = function(pool) {
                     settings: {
                         sort: [[1, 'desc']],
                         div: 'table',
-                        title: 'Local Endpoints Triggering Event'
+                        title: 'Local Endpoints Triggering Event',
+                        access: req.session.passport.user.level
                     }
                 }
             
@@ -81,7 +84,6 @@ module.exports = function(pool) {
                         info: info,
                         tables: tables
                     };
-                    //console.log(results);
                     res.json(results);
                 });
             } else {

@@ -95,7 +95,8 @@ module.exports = function(pool) {
                     settings: {
                         sort: [[0, 'desc']],
                         div: 'table',
-                        title: 'Blocked HTTP Connections between Domain and Local Host'
+                        title: 'Blocked HTTP Connections between Domain and Local Host',
+                        access: req.session.passport.user.level
                     }
                 }
                 async.parallel([

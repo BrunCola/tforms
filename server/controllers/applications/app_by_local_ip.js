@@ -81,7 +81,8 @@ module.exports = function(pool) {
                 settings: {
                     sort: [[1, 'desc']],
                     div: 'table',
-                    title: 'Application Bandwidth Usage'
+                    title: 'Application Bandwidth Usage',
+                    access: req.session.passport.user.level
                 }
             }
             var crossfilterQ = {

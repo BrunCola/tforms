@@ -41,7 +41,8 @@ module.exports = function(pool) {
                                 'sum(`in_packets`) AS in_packets,'+
                                 'sum(`out_packets`) AS out_packets,'+
                                 'sum(`in_bytes`) AS in_bytes,'+
-                                'sum(`out_bytes`) AS out_bytes '+
+                                'sum(`out_bytes`) AS out_bytes,'+
+                                'sum(`proxy_blocked`) AS proxy_blocked '+
                             'FROM '+
                                 '`conn_ioc` '+
                             'WHERE '+
@@ -66,6 +67,7 @@ module.exports = function(pool) {
                             },
                         },
                         { title: 'Stealth', select: 'stealth', access: [3] },
+                        { title: 'ABP', select: 'proxy_blocked', access: [2] },
                         { title: 'Severity', select: 'ioc_severity' },
                         { title: 'IOC Hits', select: 'count' },
                         { title: 'IOC', select: 'ioc' },
@@ -88,7 +90,8 @@ module.exports = function(pool) {
                     settings: {
                         sort: [[1, 'desc']],
                         div: 'table',
-                        title: 'Indicators of Compromise (IOC) Notifications'
+                        title: 'Indicators of Compromise (IOC) Notifications',
+                        access: req.session.passport.user.level
                     }
                 }
                 var crossfilterQ = {
