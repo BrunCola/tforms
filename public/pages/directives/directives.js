@@ -3125,6 +3125,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         // re-enter an append nodes (innificent as well)
                         icons.enter().append("g").each(function(d){
                             var elm = d3.select(this);
+
                             elm
                                 .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
                                 .attr("class", function(d) {return "mainItem" + d.lane;})
@@ -3135,7 +3136,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 
                                     itemRects.selectAll('g').each(function(d){
                                         var elm = d3.select(this);
-                                        
                                         elm.attr('class', null);
                                     })
                                     // un-highlight previous box
@@ -3143,6 +3143,19 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // this closes the last expanded block if there is one
                                     if (lastExpandedId !== null) {
                                         $('div'+lastExpandedId+'.infoDivExpanded').hide();
+                                    }
+
+                                    if($('#autoexpand').is(':checked')){
+                                        if (isOpen === '#'+d.id) {
+                                            $('#'+d.id+' .infoDivExpanded').css('display', 'none');
+                                            isOpen = null;
+                                        } else {
+                                            $('#'+d.id+' .infoDivExpanded').css('display', 'block');
+                                            lastExpandedId = '#'+d.id;
+                                            isOpen = '#'+d.id;
+
+                                            $('#'+d.id+' .infoDivExpanded').html(laneInfoAppend(d.expand));
+                                        }
                                     }
                                     // deselect previous element if there is one
                                     if (previousElm !== null) {

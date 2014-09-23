@@ -6161,3 +6161,7 @@ Datatables Plugin(in v1.3)
 #table_wrapper #table_length{
   float: left;
 }
+#autoExpand{
+  display: inline-block;
+  float: right;
+}
