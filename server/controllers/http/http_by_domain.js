@@ -48,7 +48,8 @@ module.exports = function(pool) {
                 settings: {
                     sort: [[1, 'desc']],
                     div: 'table',
-                    title: 'HTTP by Domain'
+                    title: 'HTTP by Domain',
+                    access: req.session.passport.user.level
                 }
             }
             async.parallel([

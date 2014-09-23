@@ -86,7 +86,8 @@ module.exports = function(pool) {
                     settings: {
                         sort: [[1, 'desc']],
                         div: 'table',
-                        title: 'Indicators of Compromise (IOC) Notifications'
+                        title: 'Indicators of Compromise (IOC) Notifications',
+                        access: req.session.passport.user.level
                     }
                 }
                 async.parallel([

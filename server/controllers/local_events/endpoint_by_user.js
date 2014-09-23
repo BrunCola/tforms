@@ -45,7 +45,7 @@ module.exports = function(pool) {
                         },
                     },
                     { title: 'Events', select: 'count' },
-                    { title: 'Stealth', select: 'stealth' },
+                    { title: 'Stealth', select: 'stealth', access: [3] },
                     { title: 'Zone', select: 'lan_zone' },
                     { title: 'Machine', select: 'lan_machine'},
                     { title: 'User', select: 'lan_user' },

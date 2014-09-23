@@ -94,7 +94,8 @@ module.exports = function(pool) {
                     settings: {
                         sort: [[0, 'desc']],
                         div: 'table',
-                        title: 'Common HTTP Connections between Remote and Local Host'
+                        title: 'Common HTTP Connections between Remote and Local Host',
+                        access: req.session.passport.user.level
                     }
                 }
                 async.parallel([

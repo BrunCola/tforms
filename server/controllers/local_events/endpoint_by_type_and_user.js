@@ -23,6 +23,7 @@ module.exports = function(pool) {
                      query: 'SELECT '+
                                 'count(*) AS count,'+
                                 'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+                                '`stealth`,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
                                 '`lan_user`,'+
@@ -30,14 +31,14 @@ module.exports = function(pool) {
                                 '`event_src`,'+
                                 '`event_id`,'+
                                 '`event_type`,'+
-                                '`event_detail`,'+
-                                '`stealth` '+
+                                '`event_detail` '+
                             'FROM '+
                                 '`endpoint_events` '+
                             'WHERE '+
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `event_type` = ? '+
-                            'GROUP BY'+
+                            'GROUP BY '+
+                                '`lan_zone,`'+
                                 '`lan_user`',
                     insert: [start, end, req.query.event_type],
                     params: [
@@ -50,10 +51,12 @@ module.exports = function(pool) {
                                 crumb: false
                             }
                         },
-                        { title: 'stealth', select: 'stealth'},
+                        { title: 'stealth', select: 'stealth', access: [3] },
                         { title: 'Events', select: 'count'},
-                        { title: 'User', select: 'lan_user'},
-                        { title: 'LAN IP', select: 'lan_ip'},
+                        { title: 'Zone', select: 'lan_zone'},
+                        { title: 'Machine', select: 'lan_machine'},
+                        { title: 'Local User', select: 'lan_user'},
+                        { title: 'Local IP', select: 'lan_ip'},
                         { title: 'Event Type', select: 'event_type' },
                         { title: 'Event Details', select: 'event_detail'},
                         { title: 'Event Source', select: 'event_src'},
@@ -62,7 +65,8 @@ module.exports = function(pool) {
                     settings: {
                         sort: [[1, 'desc']],
                         div: 'table',
-                        title: 'Local Endpoints Triggering Event'
+                        title: 'Local Endpoints Triggering Event',
+                        access: req.session.passport.user.level
                     }
                 }
                 async.parallel([

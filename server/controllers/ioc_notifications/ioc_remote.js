@@ -74,7 +74,8 @@ module.exports = function(pool) {
                 settings: {
                     sort: [[2, 'desc']],
                     div: 'table',
-                    title: 'Indicators of Compromise (IOC) Notifications'
+                    title: 'Indicators of Compromise (IOC) Notifications',
+                    access: req.session.passport.user.level
                 }
             }
             var crossfilterQ = {

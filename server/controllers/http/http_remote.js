@@ -56,7 +56,8 @@ module.exports = function(pool) {
                 settings: {
                     sort: [[1, 'desc']],
                     div: 'table',
-                    title: 'Remote HTTP'
+                    title: 'Remote HTTP',
+                    access: req.session.passport.user.level
                 }
             }
             async.parallel([
