@@ -3029,6 +3029,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     // convert min and max to date object and send to plot function
                     var min = new Date($scope.start);
                     var max = new Date($scope.end);
+                    items.reverse()
                     plot(items, min, max);
                 }
                 draw();
@@ -3072,12 +3073,13 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     if ((msDifference < queryThreshhold) && (msDifference !== 0)) {
                         // push to requery and then plot
                         $scope.requery(minExtent, maxExtent, function(data){
+                            data.reverse();
                             plot(data, minExtent, maxExtent);
                         })
                     } else {
                         // reset if not within threshold
                         $scope.inTooDeep.areWe = false;
-                        var data = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;});
+                        var data = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;}).reverse();
                         $scope.alert.style('display', 'none');
                         plot(data, minExtent, maxExtent);
                     }

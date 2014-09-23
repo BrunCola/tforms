@@ -318,7 +318,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'url': 'http_remote',
                     'icon': 'fa-long-arrow-right',
                     'orphans': ['http_remote2local', 'http_remote2local_drill']
-                }
+                },
                 {
                     'title': 'Local Blocked HTTP',
                     'accessLevel': [2],   
