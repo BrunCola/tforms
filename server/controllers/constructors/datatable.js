@@ -19,6 +19,8 @@ module.exports = function (sql, conn, callback) {
 					if (sql.params[d].dView === undefined) {
 						sql.params[d].dView = true;
 					}
+					console.log(sql.params[d].access)
+					console.log(typeof sql.params[d].access === 'array')
 					if ((sql.params[d].access !== undefined) && (typeof sql.params[d].access === 'array')) {
 						if (sql.settings.access.indexOf(sql.params[d].access) !== -1) {
 							sql.params[d].dView = true;
