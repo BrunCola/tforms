@@ -772,37 +772,37 @@ angular.module('mean.pages').config(['$stateProvider',
                     }
                 })
                 // HTTP BY DOMAIN LOCAL
-                .state('http_by_domain_local', {
-                    url: '/http_by_domain_local?start&end&host',
-                    templateUrl: 'public/pages/views/http/http_by_domain_local.html',
-                    resolve: {
-                        loggedin: checkLoggedin
-                    },
-                    data: {
-                        title: 'Local HTTP By Domain',
-                        subtitleElm: {
-                            'Domain': 'host'
-                        },
-                        daterange: true
-                    }
-                })
-                    // HTTP BY DOMAIN LOCAL DRILL
-                    .state('http_by_domain_local_drill', {
-                        url: '/http_by_domain_local_drill?start&end&host&lan_zone&lan_ip',
-                        templateUrl: 'public/pages/views/http/http_by_domain_local_drill.html',
+                    .state('http_by_domain_local', {
+                        url: '/http_by_domain_local?start&end&host',
+                        templateUrl: 'public/pages/views/http/http_by_domain_local.html',
                         resolve: {
                             loggedin: checkLoggedin
                         },
                         data: {
                             title: 'Local HTTP By Domain',
                             subtitleElm: {
-                                'Domain': 'host',
-                                'LAN IP': 'lan_ip',
-                                'Zone': 'lan_zone'
+                                'Domain': 'host'
                             },
                             daterange: true
                         }
                     })
+                    // HTTP BY DOMAIN LOCAL DRILL
+                        .state('http_by_domain_local_drill', {
+                            url: '/http_by_domain_local_drill?start&end&host&lan_zone&lan_ip',
+                            templateUrl: 'public/pages/views/http/http_by_domain_local_drill.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Local HTTP By Domain',
+                                subtitleElm: {
+                                    'Domain': 'host',
+                                    'LAN IP': 'lan_ip',
+                                    'Zone': 'lan_zone'
+                                },
+                                daterange: true
+                            }
+                        })
             // HTTP LOCAL
                 .state('http_local', {
                     url: '/http_local?start&end',
@@ -844,37 +844,83 @@ angular.module('mean.pages').config(['$stateProvider',
                     }
                 })
                 // HTTP REMOTE2LOCAL
-                .state('http_remote2local', {
-                    url: '/http_remote2local?start&end&remote_ip',
-                    templateUrl: 'public/pages/views/http/http_remote2local.html',
-                    resolve: {
-                        loggedin: checkLoggedin
-                    },
-                    data: {
-                        title: 'Remote to Local HTTP',
-                        subtitleElm: {
-                            'Remote IP': 'remote_ip'
-                        },
-                        daterange: true
-                    }
-                })
-                    // HTTP REMOTE2LOCAL DRILL
-                    .state('http_remote2local_drill', {
-                        url: '/http_remote2local_drill?start&end&lan_ip&lan_zone&remote_ip',
-                        templateUrl: 'public/pages/views/http/http_remote2local_drill.html',
+                    .state('http_remote2local', {
+                        url: '/http_remote2local?start&end&remote_ip',
+                        templateUrl: 'public/pages/views/http/http_remote2local.html',
                         resolve: {
                             loggedin: checkLoggedin
                         },
                         data: {
-                            title: 'Local/Remote HTTP',
+                            title: 'Remote to Local HTTP',
                             subtitleElm: {
-                                'LAN IP': 'lan_ip',
-                                'Zone': 'lan_zone',
                                 'Remote IP': 'remote_ip'
                             },
                             daterange: true
                         }
                     })
+                    // HTTP REMOTE2LOCAL DRILL
+                        .state('http_remote2local_drill', {
+                            url: '/http_remote2local_drill?start&end&lan_ip&lan_zone&remote_ip',
+                            templateUrl: 'public/pages/views/http/http_remote2local_drill.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Local/Remote HTTP',
+                                subtitleElm: {
+                                    'LAN IP': 'lan_ip',
+                                    'Zone': 'lan_zone',
+                                    'Remote IP': 'remote_ip'
+                                },
+                                daterange: true
+                            }
+                        })
+            // HTTP LOCAL BLOCKED
+                .state('http_local_blocked', {
+                    url: '/http_local_blocked?start&end',
+                    templateUrl: 'public/pages/views/http/http_local_blocked.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'Local HTTP Blocked By Web Proxy',
+                        daterange: true
+                    }
+                })
+                // HTTP LOCAL BY DOMAIN BLOCKED
+                    .state('http_local_by_domain_blocked', {
+                        url: '/http_local_by_domain_blocked?start&end&lan_ip&lan_zone',
+                        templateUrl: 'public/pages/views/http/http_local_by_domain_blocked.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Local HTTP by Domain Blocked By Web Proxy',
+                            subtitleElm: {
+                                'Zone': 'lan_zone'
+                                'Local IP': 'lan_ip',
+                            },
+                            daterange: true
+                        }
+                    })
+                    // HTTP BY DOMAIN LOCAL DRILL BLOCKED
+                        .state('http_by_domain_local_drill_blocked', {
+                            url: '/http_by_domain_local_drill_blocked?start&end&lan_zone&lan_ip&host',
+                            templateUrl: 'public/pages/views/http/http_by_domain_local_drill_blocked.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Local HTTP By Domain Blocked By Web Proxy',
+                                subtitleElm: {
+                                    'Zone': 'lan_zone'
+                                    'LAN IP': 'lan_ip',
+                                    'Domain': 'host',
+                                },
+                                daterange: true
+                            }
+                        })
+
         // DNS
             // LOCAL DNS
                 .state('dns_local', {

@@ -165,7 +165,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
         },
         { // STEALTH
             'title': 'Stealth',
-            'accessLevel': [3],    
+            'accessLevel': [3], 
             'url': '',
             'icon': 'fa-sitemap',
             'children':
@@ -222,52 +222,53 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                 }
             ]
         },
-        // {
-        //     'title': 'DNS',
-        //     'url': '',
-        //     'icon': 'fa-level-up',
-        //     'children':
-        //     [
-        //         {
-        //             'title': 'Local DNS',
-        //             'url': 'dns_local',
-        //             'icon': 'fa-level-down',
-        //             'orphans': []
-        //         },
-        //         {
-        //             'title': 'Remote DNS',
-        //             'url': 'dns_remote',
-        //             'icon': 'fa-level-up',
-        //             'orphans': []
-        //         }
-        //     ]
-        // },
-        // {
-        //     'title': 'SSL',
-        //     'url': '',
-        //     'icon': 'fa-lock',
-        //     'children':
-        //     [
-        //         {
-        //             'title': 'SSL Server',
-        //             'url': 'ssl_server',
-        //             'icon': 'fa-lock',
-        //             'orphans': []
-        //         },
-        //         {
-        //             'title': 'Local SSL',
-        //             'url': 'ssl_local',
-        //             'icon': 'fa-lock',
-        //             'orphans': []
-        //         },
-        //         {
-        //             'title': 'Remote SSL',
-        //             'url': 'ssl_remote',
-        //             'icon': 'fa-lock',
-        //             'orphans': []
-        //         }
-        //     ]
-        // },
+        //
+            // {
+            //     'title': 'DNS',
+            //     'url': '',
+            //     'icon': 'fa-level-up',
+            //     'children':
+            //     [
+            //         {
+            //             'title': 'Local DNS',
+            //             'url': 'dns_local',
+            //             'icon': 'fa-level-down',
+            //             'orphans': []
+            //         },
+            //         {
+            //             'title': 'Remote DNS',
+            //             'url': 'dns_remote',
+            //             'icon': 'fa-level-up',
+            //             'orphans': []
+            //         }
+            //     ]
+            // },
+            // {
+            //     'title': 'SSL',
+            //     'url': '',
+            //     'icon': 'fa-lock',
+            //     'children':
+            //     [
+            //         {
+            //             'title': 'SSL Server',
+            //             'url': 'ssl_server',
+            //             'icon': 'fa-lock',
+            //             'orphans': []
+            //         },
+            //         {
+            //             'title': 'Local SSL',
+            //             'url': 'ssl_local',
+            //             'icon': 'fa-lock',
+            //             'orphans': []
+            //         },
+            //         {
+            //             'title': 'Remote SSL',
+            //             'url': 'ssl_remote',
+            //             'icon': 'fa-lock',
+            //             'orphans': []
+            //         }
+            //     ]
+            // },
         { // APPLICATIONS
             'title': 'Applications',
             'url': '',
@@ -318,6 +319,13 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'icon': 'fa-long-arrow-right',
                     'orphans': ['http_remote2local', 'http_remote2local_drill']
                 }
+                {
+                    'title': 'Local Blocked HTTP',
+                    'accessLevel': [2],   
+                    'url': 'http_local_blocked',
+                    'icon': 'fa-long-arrow-left',
+                    'orphans': ['http_local_by_domain_blocked', 'http_by_domain_local_drill_blocked']
+                },
             ]
         },
         { // EMAIL
