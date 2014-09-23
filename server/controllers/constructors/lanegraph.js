@@ -44,7 +44,6 @@ module.exports = function (sql, conn, callback) {
                 return d.time;
         }
     }
-
     var index = null; var count = 0; var type = null;
     conn.pool.getConnection(function(err, connection) {
         connection.changeUser({database : conn.database}, function(err) {
@@ -52,10 +51,8 @@ module.exports = function (sql, conn, callback) {
         });
         connection.query(sql.query, sql.insert)
             .on('result', function(data){
-
                 count++;
                 type = data.type;
-
                 if (index === null) {
                     index = conn.lanes.indexOf(data.type);
                     if (data.type.search('ioc') !== -1) {
@@ -66,7 +63,6 @@ module.exports = function (sql, conn, callback) {
                     }
                 }
                 data.lane = index;
-
                 var expand = [];
                 for (var d in sql.params) {
                     expand.push({
@@ -82,6 +78,6 @@ module.exports = function (sql, conn, callback) {
                 console.log(type+': '+count)
                 callback(null, results);
             });
-            connection.release();
+        connection.release();
     });
 };

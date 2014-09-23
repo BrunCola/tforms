@@ -14,49 +14,51 @@ module.exports = function(pool) {
                 start = req.query.start;
                 end = req.query.end;
             }
-            var tables = [];
             var info = [];
+            var tables = [];
             var table1 = {
                 query: 'SELECT '+
-                        'sum(`count`) AS `count`,'+
-                        'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time,'+
-                        '`remote_ip`,'+
-                        '`remote_port`,'+
-                        '`remote_cc`,'+
-                        '`remote_country`,'+
-                        '`remote_asn_name`,'+
-                        'sum(`proxy_blocked`) AS proxy_blocked,'+
-                        'sum(`ioc_count`) AS `ioc_count` ' +
-                    'FROM ' +
-                        '`http_remote` '+
-                    'WHERE ' +
-                        'time BETWEEN ? AND ? '+
-                    'GROUP BY '+
-                        '`remote_ip`',
+                            'sum(`count`) AS `count`, '+
+                            'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+                            '`stealth`,'+
+                            '`lan_zone`,'+
+                            '`machine`,'+
+                            '`lan_user`,'+
+                            '`lan_ip`,'+
+                            'sum(`proxy_blocked`) AS proxy_blocked,'+
+                            'sum(`ioc_count`) AS `ioc_count` ' +
+                        'FROM ' + 
+                            '`http_local` '+
+                        'WHERE ' + 
+                            'time BETWEEN ? AND ? '+
+                            'AND proxy_blocked > 0 '+
+                        'GROUP BY '+
+                            '`lan_zone`, '+
+                            '`lan_ip`',
                 insert: [start, end],
                 params: [
                     {
                         title: 'Last Seen',
                         select: 'time',
                          link: {
-                             type: 'http_remote2local',
-                             val: ['remote_ip'],
+                             type: 'http_local_by_domain_blocked', 
+                             val: ['lan_zone','lan_ip'],
                              crumb: false
                         },
                     },
                     { title: 'Connections', select: 'count' },
-                    { title: 'ABP', select: 'proxy_blocked', access: [2] },
-                    { title: 'Remote IP', select: 'remote_ip'},
-                    { title: 'Remote port', select: 'remote_port' },
-                    { title: 'Flag', select: 'remote_cc' },
-                    { title: 'Remote Country', select: 'remote_country' },
-                    { title: 'Remote ASN Name', select: 'remote_asn_name' },
-                    { title: 'IOC Count', select: 'ioc_count' },
+                    { title: 'Stealth', select: 'stealth', access: [3] },
+                    { title: 'ABP', select: 'proxy_blocked' },
+                    { title: 'Zone', select: 'lan_zone' },
+                    { title: 'Machine', select: 'machine' },
+                    { title: 'Local User', select: 'lan_user' },
+                    { title: 'Local IP', select: 'lan_ip' },
+                    { title: 'IOC Count', select: 'ioc_count' }
                 ],
                 settings: {
                     sort: [[1, 'desc']],
                     div: 'table',
-                    title: 'Remote HTTP'
+                    title: 'Blocked HTTP'
                 }
             }
             async.parallel([
@@ -65,7 +67,7 @@ module.exports = function(pool) {
                     new dataTable(table1, {database: database, pool: pool}, function(err,data){
                         tables.push(data);
                         callback();
-                    });
+                    });                    
                 },
             ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                 if (err) throw console.log(err);

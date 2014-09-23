@@ -15,17 +15,17 @@ module.exports = function(pool) {
                 start = req.query.start;
                 end = req.query.end;
             }
-            if (req.query.host) {
+            if (req.query.lan_zone && req.query.lan_ip) {
                 var tables = [];
                 var info = [];
                 var table1 = {
                     query: 'SELECT '+
                                 'sum(`count`) AS `count`, '+
-                                'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ 
+                                'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
                                 '`stealth`,'+
                                 '`lan_zone`, ' +
                                 '`machine`, '+
-                                '`lan_user`,'+
+                                '`lan_user`, ' +
                                 '`lan_ip`, ' +
                                 '`host`, ' +
                                 'sum(`proxy_blocked`) AS proxy_blocked,'+
@@ -34,17 +34,19 @@ module.exports = function(pool) {
                                 '`http_meta` '+
                             'WHERE ' +
                                 'time BETWEEN ? AND ? '+
-                                'AND `host` = ? '+
+                                'AND `lan_zone` = ? '+
+                                'AND `lan_ip` = ? '+
+                                'AND proxy_blocked > 0 '+
                             'GROUP BY '+
-                                '`lan_ip`',
-                    insert: [start, end, req.query.host],
+                                '`host`',
+                    insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {
                             title: 'Last Seen',
                             select: 'time',
                             link: {
-                                type: 'http_by_domain_local_drill',
-                                val: ['lan_ip','lan_zone','host'],
+                                type: 'http_by_domain_local_drill_blocked',
+                                val: ['lan_zone','lan_ip','host'],
                                 crumb: false
                             }
                         },
@@ -52,19 +54,18 @@ module.exports = function(pool) {
                         { title: 'Stealth', select: 'stealth', access: [3] },
                         { title: 'ABP', select: 'proxy_blocked', access: [2] },
                         { title: 'Zone', select: 'lan_zone' },
-                        { title: 'Machine', select: 'machine' },
+                        { title: 'Machine Name', select: 'machine' },
                         { title: 'Local User', select: 'lan_user' },
                         { title: 'Local IP', select: 'lan_ip' },
-                        { title: 'Domain', select: 'host' },
+                        { title: 'Domain', select: 'host'},
                         { title: 'IOC Count', select: 'ioc_count' }
                     ],
                     settings: {
-                        sort: [[1, 'desc']],
+                        sort: [[0, 'desc']],
                         div: 'table',
-                        title: 'Local HTTP By Domain'
+                        title: 'Blocked HTTP by Domain'
                     }
-                }
-                async.parallel([
+                }async.parallel([
                     // Table function(s)
                     function(callback) {
                         new dataTable(table1, {database: database, pool: pool}, function(err,data){
