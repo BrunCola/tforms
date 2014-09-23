@@ -48,6 +48,7 @@ module.exports = function(pool) {
                                 '`proxied`, ' +
                                 '`local_mime_types`, ' +
                                 '`remote_mime_types`, ' +
+                                '`proxy_blocked`, '+
                                 '`ioc_count` ' +
                             'FROM ' +
                                 '`http` ' +
