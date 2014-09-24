@@ -19,7 +19,7 @@ module.exports = function(pool) {
             var table1 = {
                 query: 'SELECT '+
                         'sum(`count`) AS `count`,'+
-                        'time,'+
+                        'max(`time`) AS `time`,'+
                         '`remote_ip`,'+
                         '`remote_port`,'+
                         '`remote_cc`,'+
@@ -30,7 +30,7 @@ module.exports = function(pool) {
                     'FROM ' +
                         '`http_remote` '+
                     'WHERE ' +
-                        'time BETWEEN ? AND ? '+
+                        '`time` BETWEEN ? AND ? '+
                     'GROUP BY '+
                         '`remote_ip`',
                 insert: [start, end],

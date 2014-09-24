@@ -21,7 +21,7 @@ module.exports = function(pool) {
                 var table1 = {
                     query: 'SELECT '+
                                 'sum(`count`) AS `count`, '+
-                                'time, '+ 
+                                'max(`time`) AS `time`, '+ 
                                 '`stealth`,'+
                                 '`lan_zone`, ' +
                                 '`machine`, '+
@@ -33,7 +33,7 @@ module.exports = function(pool) {
                             'FROM ' +
                                 '`http_meta` '+
                             'WHERE ' +
-                                'time BETWEEN ? AND ? '+
+                                '`time` BETWEEN ? AND ? '+
                                 'AND `host` = ? '+
                             'GROUP BY '+
                                 '`lan_ip`',
