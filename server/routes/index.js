@@ -24,4 +24,7 @@ module.exports = function(app, passport, version, io, pool) {
 	app.route('/actions/update')
 		.post(authorization.requiresLogin, actions.update);
 
+	app.route('/actions/lan_ip')
+		.get(authorization.requiresLogin, actions.lan_ip);
+
 };
