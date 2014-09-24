@@ -38,7 +38,7 @@ module.exports = function(pool) {
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `event_type` = ? '+
                             'GROUP BY '+
-                                '`lan_zone,`'+
+                                '`lan_zone`,'+
                                 '`lan_user`',
                     insert: [start, end, req.query.event_type],
                     params: [
