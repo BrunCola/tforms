@@ -81,7 +81,7 @@ module.exports = function(pool) {
 			var zone = req.body.zone;
 			if (zone !== undefined) {
 				var clear = {
-					query: "SELECT zone_cc FROM zone WHERE client = ? AND zone = ?",
+					query: "SELECT zone_cc, zone_country FROM zone WHERE `database` = ? AND zone = ?",
 					insert: [req.session.passport.user.database, zone]
 				}
 				new query(clear, {database: 'rp_users', pool: pool}, function(err,data){

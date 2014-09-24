@@ -113,7 +113,8 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 
         $http({method: 'POST', url: '/actions/local_cc', data: {zone: $scope.lan_zone}}).
             success(function(data) {
-                console.log(data);
+                $scope.zone_cc = data.zone_cc.toLowerCase();
+                $scope.zone_country = data.zone_country;
             })
 
         // get user image
