@@ -1,7 +1,6 @@
 'use strict';
 
 angular.module('mean.pages').controller('stealthCoiMapController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
-<<<<<<< HEAD
     $scope.global = Global;
     var query;
     query = '/local_events/stealth_COI_map?';

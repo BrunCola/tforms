@@ -31,6 +31,12 @@ angular.module('mean.pages').factory('timeFormat', [
                 case 'tables':
                     return moment(time*1000).format('YYYY-M-DD HH:m:ss');
                 break;
+                case 'laneGraphExpanded':
+                    return moment(time*1000).format('YYYY-M-DD HH:m:ss');
+                break;
+                case 'laneGraphPreview':
+                    return moment(time*1000).format('YYYY-M-DD HH:m:ss');
+                break;
             }
         };
         return timeFormat;
