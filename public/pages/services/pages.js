@@ -32,10 +32,10 @@ angular.module('mean.pages').factory('timeFormat', [
                     return moment(time*1000).format('YYYY/MM/DD HH:mm:ss');
                 break;
                 case 'laneGraphExpanded':
-                    return moment(time*1000).format('YYYY/MM/DD HH:mm:ss');
+                    return moment(time*1000).format('YYYY/MM/DD HH:mm:ss.SS');
                 break;
                 case 'laneGraphPreview':
-                    return moment(time*1000).format('YYYY/MM/DD HH:mm:ss');
+                    return moment(time*1000).format('YYYY/MM/DD HH:mm:ss.SS');
                 break;
             }
         };
