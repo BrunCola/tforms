@@ -19,7 +19,7 @@ module.exports = function(pool) {
 				var tables = [];
 				var table1 = {
 					query: 'SELECT '+
-								'file.time AS time,'+
+								'file.time AS `time`,'+
 								'`stealth`,'+
 								'`lan_zone`,'+
 								'`machine`,'+

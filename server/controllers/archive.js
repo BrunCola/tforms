@@ -23,7 +23,7 @@ module.exports = function(pool) {
 			var table1 = {
 				query: 'SELECT '+
 					// SELECTS
-					'max(time) as time, '+ // Last Seen
+                    'max(`time`) AS `time`,'+ // Last Seen
 					'`ioc_severity`, '+
 					'count(*) AS count, '+
 					'`ioc`, '+

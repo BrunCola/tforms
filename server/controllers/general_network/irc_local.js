@@ -21,7 +21,7 @@ module.exports = function(pool) {
 			var table1 = {
 				query: 'SELECT '+
 						'count(*) AS count, ' +
-						'max(irc.time) as time, '+ // Last Seen
+						'max(irc.time) as `time`, '+ // Last Seen
 						'`machine`, ' +
 						'`lan_zone`, ' +
 						'irc.lan_ip, ' +

@@ -19,7 +19,7 @@ module.exports = function(pool) {
             var table1 = {
                 query: 'SELECT '+
                             'sum(`count`) AS `count`, '+
-                            'time, '+
+                            'max(`time`) AS `time`,'+
                             '`host`, ' +
                             'sum(`proxy_blocked`) AS proxy_blocked,'+
                             'sum(`ioc_count`) AS `ioc_count` ' +

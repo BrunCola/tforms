@@ -20,7 +20,7 @@ module.exports = function(pool) {
 			var info = [];
 			var table1 = {
 				query: 'SELECT '+
-						'ssh_uniq_remote_ip.time AS time,'+
+						'ssh_uniq_remote_ip.time AS `time`,'+
 						'`lan_zone`,'+
 						'`machine`,'+
 						'ssh_uniq_remote_ip.lan_ip,'+

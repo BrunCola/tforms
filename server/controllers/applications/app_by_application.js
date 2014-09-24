@@ -22,7 +22,7 @@ module.exports = function(pool) {
             var table1 = {
                 query: 'SELECT '+
                             'sum(`count`) AS `count`, '+
-                            'max(time) AS time, '+ // LASt Seen
+                            'max(`time`) AS `time`,'+ // LASt Seen
                             '`l7_proto`, '+
                             '(sum(`in_bytes`) / 1048576) AS in_bytes, '+
                             '(sum(`out_bytes`) / 1048576) AS out_bytes, '+

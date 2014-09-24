@@ -21,7 +21,7 @@ module.exports = function(pool) {
 				var info = [];
 				var table1 = {
 					query: 'SELECT ' +
-							'irc.time as time, '+ // Last Seen
+							'irc.time as `time`, '+ // Last Seen
 							'`machine`, ' +
 							'`lan_zone`, ' +
 							'irc.lan_ip, ' +

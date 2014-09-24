@@ -19,7 +19,7 @@ module.exports = function(pool) {
 			var table1 = {
 				query: 'SELECT '+
 							'count(*) as count, '+
-							'time,'+
+                            'max(`time`) AS `time`,'+
 							'`http_host`,'+
 							'(sum(`size`) / 1048576) AS size,'+
 							'sum(`ioc_count`) AS ioc_count '+

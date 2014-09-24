@@ -22,7 +22,7 @@ module.exports = function(pool) {
 			var info = [];
 			var table1 = {
 				query: 'SELECT '+
-						'dns_uniq_query.time AS time,'+
+						'dns_uniq_query.time AS `time`,'+
 						'`lan_zone`,'+
 						'`machine`,'+
 						'dns_uniq_query.lan_ip,'+

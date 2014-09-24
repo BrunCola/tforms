@@ -20,7 +20,7 @@ module.exports = function(pool) {
                 var table1 = {
                     query: 'SELECT '+
                                 'sum(`count`) AS `count`, '+
-                                'time,'+
+                                'max(`time`) AS `time`,'+
                                 '`mime`,'+
                                 '`remote_ip`,'+
                                 '`remote_asn`,'+

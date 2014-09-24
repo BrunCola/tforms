@@ -19,7 +19,7 @@ module.exports = function(pool) {
 	var table1 = {
 		query: 'SELECT '+
 				'count(*) AS count,' +
-				'time, '+ // Last Seen
+                'max(`time`) AS `time`,'+ // Last Seen
 				'`remote_ip`, ' +
 				'`remote_cc`, ' +
 				'`remote_country`, ' +

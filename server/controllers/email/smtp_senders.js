@@ -19,7 +19,7 @@ module.exports = function(pool) {
             var table1 = {
                 query: 'SELECT '+
                             'count(*) AS count,'+
-                            'max(`time`) AS time,'+
+                            'max(`time`) AS `time`,'+
                             '`mailfrom`,'+
                             'sum(`ioc_count`) AS `ioc_count` '+
                         'FROM '+
