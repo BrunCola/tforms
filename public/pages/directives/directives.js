@@ -1514,7 +1514,6 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
     };
 }]);
 
-// STEALTH FORCE CHART
 angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope', 'dictionary', function ($timeout, $rootScope, dictionary) {
     return {
         link: function ($scope, element, attrs) {
@@ -1854,7 +1853,6 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
     };
 }]);
 
-//NETWORK TREE
 angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootScope', 'treeIcon', function ($timeout, $rootScope, treeIcon) {
     return {
         link: function ($scope, element, attrs) {
@@ -2542,7 +2540,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 
                 $scope.$broadcast('spinnerHide')
 
-                // var lanes = $scope.crossfilterData.dimension(function(d){ return d.type }).group().reduceSum(function(d){return null}).top(Infinity).map(function(d){return d.key});
                 var itemsDimension = $scope.crossfilterData.dimension(function(d){ return d.time });
                 var items = itemsDimension.top(Infinity);
                 $scope.inTooDeep = {
@@ -2551,7 +2548,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     max: null
                 };
 
-                // var lanes = ["Chinese","Japanese","Korean"],
                 var laneLength = $scope.lanes.length;
                 var width = element.width();
 
@@ -2578,7 +2574,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 var currentTimeSlice = d3.select("#lanegraph").append('div').attr('class', 'timeslice');
                 var currentTime = currentTimeSlice.append('div').style('float', 'left');
 
-                  // enhanced view alert
+                // enhanced view alert
                 $scope.alert = currentTimeSlice.append('div')
                     .attr('class', 'laneAlert')
                     .style('background-color', '#CC0000')
@@ -2641,64 +2637,64 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr("dy", ".5ex")
                     .attr("text-anchor", "end");
 
-                function colors(title) {
-                    switch(title){
-                        case 'http':
+                function colors(type) {
+                    switch(type){
+                        case 'HTTP':
                             return "#67AAB5";
-                        case 'ssl':
+                        case 'SSL':
                             return "#A0BB71";
-                        case 'file': // extracted files
+                        case 'File': // extracted files
                             return "#B572AB";
-                        case 'dns': // new dns
+                        case 'DNS': // new dns
                             return "#708EBC";
-                        case 'conn': //first seen
+                        case 'Conn': //first seen
                             return "#6FBF9B";
-                        case 'conn_ioc':
+                        case 'Conn_ioc':
                             return "#EFAA86";
-                        case 'http_ioc':
+                        case 'HTTP_ioc':
                             return "#FFF2A0";
-                        case 'ssl_ioc':
+                        case 'SSL_ioc':
                             return "#D97373";
-                        case 'file_ioc':
+                        case 'File_ioc':
                             return "#F68D55";
-                        case 'dns_ioc':
+                        case 'DNS_ioc':
                             return "#F3BD5D";
-                        case 'endpoint':
+                        case 'Endpoint':
                             return "#7E9E7B";
-                        case 'stealth':
+                        case 'Stealth':
                             return "#0080CE";
-                        default: //endpoint events
+                        default:
                             return "#D8464A";
                     }
                 }
 
-                $scope.point = function(element, nickname, name, id) {
+                $scope.point = function(element, type, name, id) {
 
-                    //console.log(nickname);
-                    if (nickname.search("ioc") !== -1) {
+                    //console.log(type);
+                    if (type.search("ioc") !== -1) {
                         element.attr('class', 'IOC');
                         element = element.append('g')
                             .attr('transform', 'translate(-18, -6)scale(0.8)');
                         element.append('svg:path')
                             .attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
-                            .attr('fill', colors(nickname));
+                            .attr('fill', colors(type));
                         element.append('svg:polygon')
                             .attr('points', '18.155,3.067 5.133,26.932 31.178,26.932 ')
                             .attr('fill', '#595A5C');
                         element.append('svg:polygon')
                             .attr('points', '19.037,21.038 19.626,12.029 15.888,12.029 16.477,21.038 ')
-                            .attr('fill', colors(nickname));
+                            .attr('fill', colors(type));
                         element.append('rect')
                             .attr('x', 16.376)
                             .attr('y', 22.045)
-                            .attr('fill', colors(nickname))
+                            .attr('fill', colors(type))
                             .attr('width', 2.838)
                             .attr('height', 2.448);
                         return;
                     } else { 
                         element.attr('class', id);
                         element = element.append('g').attr('transform', 'translate(-18, -6)scale(0.8)');
-                        switch(nickname){
+                        switch(type){
                             case 'secure':
                                 element.append('circle')
                                     .attr('fill', function(d){ return '#A0BB71'; })
