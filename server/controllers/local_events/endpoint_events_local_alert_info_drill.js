@@ -19,7 +19,7 @@ module.exports = function(pool) {
                 var info = [];
                 var table1 = {
                     query: 'SELECT '+
-                                'max(`time`) AS `time`, '+ // Last Seen
+                                '`time`, '+
                                 '`src_user`, '+
                                 '`src_ip`, '+
                                 '`dst_ip`, '+
