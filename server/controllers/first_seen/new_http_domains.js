@@ -30,7 +30,7 @@ module.exports = function(pool) {
                             '`remote_country`,'+
                             '`remote_cc`,'+
                             '`remote_asn`,'+
-                            '`remote_asn_name` '+
+                            '`remote_asn_name`, '+
                             '`host`, '+
                             '`proxy_blocked` '+
                         'FROM '+
