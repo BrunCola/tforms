@@ -20,7 +20,7 @@ module.exports = function(pool) {
             var info = [];
             var table1 = {
                 query: 'SELECT '+
-                            'date_format(from_unixtime(http_uniq_host.time), "%Y-%m-%d %H:%i:%s") AS time,'+
+                            'from_unixtime(http_uniq_host.time) AS time,'+
                             '`stealth`,'+
                             '`lan_zone`,'+
                             '`machine`,'+
@@ -62,7 +62,7 @@ module.exports = function(pool) {
             var crossfilterQ = {
                 query: 'SELECT '+
                             'count(*) AS count,'+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time, '+
+                            'time, '+
                             '`remote_country` '+
                         'FROM '+
                             '`http_uniq_host` '+

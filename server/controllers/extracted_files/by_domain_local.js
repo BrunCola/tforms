@@ -1,9 +1,9 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-    query = require('../constructors/query'),
-    config = require('../../config/config'),
-    async = require('async');
+	query = require('../constructors/query'),
+	config = require('../../config/config'),
+	async = require('async');
 
 module.exports = function(pool) {
 	return {
@@ -20,7 +20,7 @@ module.exports = function(pool) {
 				var table1 = {
 					query: 'SELECT '+
 							'count(*) as count, '+
-							'date_format(max(from_unixtime(file.time)), "%Y-%m-%d %H:%i:%s") AS time,'+
+							'max(from_unixtime(file.time) AS time,'+
 							'file.lan_ip,'+
 							'`lan_zone`,'+
 							'`http_host`,'+
@@ -63,7 +63,7 @@ module.exports = function(pool) {
 				}
 				var table2 = {
 					query: 'SELECT '+
-							'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ 
+							'time, '+ 
 							'`stealth_COIs`, ' +
 							'`stealth`, '+
 							'`lan_ip`, ' +

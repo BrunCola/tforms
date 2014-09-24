@@ -23,7 +23,7 @@ module.exports = function(pool) {
             var table1 = {
                 query: 'SELECT '+
                             'sum(`count`) AS `count`,'+
-                            'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time,'+
+                            'max(time) AS time,'+
                             '`stealth`,'+
                             '`lan_zone`,'+
                             '`machine`,'+
@@ -90,7 +90,7 @@ module.exports = function(pool) {
             }
             var crossfilterQ = {
                 query: 'SELECT '+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time,'+
+                            'time,'+
                             '(sum(`in_bytes` + `out_bytes`) / 1048576) AS count, '+
                             '(sum(`in_bytes`) / 1048576) AS in_bytes, '+
                             '(sum(`out_bytes`) / 1048576) AS out_bytes '+
@@ -106,7 +106,7 @@ module.exports = function(pool) {
             }
             var stealth_conn = {
                 query: 'SELECT '+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time,'+
+                            'time,'+
                             '(sum(`in_bytes`)  / 1048576) AS in_bytes2,'+
                             '(sum(`out_bytes`) / 1048576) AS out_bytes2 '+
                         'FROM '+
@@ -123,7 +123,7 @@ module.exports = function(pool) {
             }
             var stealth_drop = {
                 query: 'SELECT '+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time,'+
+                            'time,'+
                             '(`in_bytes`  / 1048576) AS in_bytes3,'+
                             '(`out_bytes` / 1048576) AS out_bytes3 '+
                         'FROM '+

@@ -165,7 +165,7 @@ module.exports = function(pool) {
                 default:
                 var table1 = {
                     query: 'SELECT '+
-                                // 'max(date_format(from_unixtime(conn_ioc.time), "%Y-%m-%d %H:%i:%s")) AS time,'+
+                                // 'max(from_unixtime(conn_ioc.time)) AS time,'+
                                 'time,'+
                                 '`stealth`,'+
                                 '`lan_zone`,'+

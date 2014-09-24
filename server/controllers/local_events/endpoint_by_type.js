@@ -19,7 +19,7 @@ module.exports = function(pool) {
             var table1 = {
                 query: 'SELECT '+
                             'count(*) AS count,'+
-                            'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+                            'time,'+
                             '`event_src`,'+
                             '`event_type` '+
                         'FROM '+

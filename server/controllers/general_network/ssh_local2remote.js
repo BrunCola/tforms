@@ -20,7 +20,7 @@ module.exports = function(pool) {
 				var table1 = {
 					query: 'SELECT '+
 							'count(*) AS count,'+
-							'date_format(max(from_unixtime(ssh.time)), "%Y-%m-%d %H:%i:%s") AS time,'+
+							'max(from_unixtime(ssh.time)) AS time,'+
 							'`lan_zone`,'+
 							'`machine`,'+
 							'ssh.lan_ip,'+
@@ -68,7 +68,7 @@ module.exports = function(pool) {
 				}
 				var table2 = {
 					query: 'SELECT '+
-							'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ 
+							'time, '+ 
 							'`stealth_COIs`, ' +
 							'`stealth`, '+
 							'`lan_ip`, ' +

@@ -182,7 +182,7 @@ module.exports = function(pool) {
 					var table1 = {
 						query: 'SELECT '+
 								'count(*) AS count,'+
-								'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time,'+
+								'max(time) AS time,'+
 								'ioc,'+
 								'ioc_severity,'+
 								'ioc_typeIndicator,'+
@@ -229,7 +229,7 @@ module.exports = function(pool) {
 					var table2SQL = {
 						query: 'SELECT '+
 								'count(*) AS count,'+
-								'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time,'+
+								'max(time) AS time,'+
 								'ioc,'+
 								'ioc_severity,'+
 								'ioc_typeIndicator,'+
@@ -276,7 +276,7 @@ module.exports = function(pool) {
 					var table3SQL = {
 						query: 'SELECT '+
 								'count(*) AS count,'+
-								'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) AS time,'+
+								'max(time) AS time,'+
 								'`l7_proto`,'+
 								'`l7_proto` AS `l7_description`, '+
 								'(sum(`in_bytes`) / 1048576) AS `in_bytes`,'+
@@ -309,7 +309,7 @@ module.exports = function(pool) {
 					var crossfilterQ = {
 						query: 'SELECT '+
 								'count(*) AS count,'+
-								'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
+								'time,'+
 								'`remote_country`,'+
 								'`ioc`,'+
 								'`ioc_severity` '+
@@ -331,7 +331,7 @@ module.exports = function(pool) {
 					var glossarySQL = {
 						query: 'SELECT '+
 								'count(*) AS `count`,'+
-								'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS `time`,'+
+								'time AS `time`,'+
 								'`remote_country`,'+
 								'`ioc`,'+
 								'`ioc_severity` '+

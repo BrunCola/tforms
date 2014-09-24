@@ -19,7 +19,7 @@ module.exports = function(pool) {
 			var table1 = {
 				query: 'SELECT '+
 						'count(*) AS count,'+
-						'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time,'+
+						'time,'+
 						'`subject`,'+
 						'sum(`ioc_count`) AS ioc_count '+
 					'FROM '+
@@ -34,9 +34,9 @@ module.exports = function(pool) {
 						title: 'Last Seen',
 						select: 'time',
 						 link: {
-						 	type: 'smtp_subject_sender_receiver_pairs',
-						 	val: ['subject'],
-						 	crumb: false
+							type: 'smtp_subject_sender_receiver_pairs',
+							val: ['subject'],
+							crumb: false
 						},
 					},
 					{ title: 'Connections', select: 'count' },

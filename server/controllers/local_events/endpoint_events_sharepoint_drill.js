@@ -21,7 +21,7 @@ module.exports = function(pool) {
 				var info = [];
 				var table1 = {
 					query: 'SELECT '+
-						'date_format(from_unixtime(`timestamp`), "%Y-%m-%d %H:%i:%s") as time,'+
+						'from_unixtime(`timestamp`) as time,'+
 						'`sharepoint_user`,'+
 						'`lan_ip`,'+
 						'`machine`, ' +

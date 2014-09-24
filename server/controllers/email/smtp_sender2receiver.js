@@ -24,7 +24,7 @@ module.exports = function(pool) {
 				var table1 = {
 					query: 'SELECT '+
 							'count(*) AS count, ' +
-							'date_format(max(from_unixtime(smtp.time)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+							'max(from_unixtime(smtp.time) as time, '+ // Last Seen
 							'`machine`,'+
 							'`lan_zone`,'+
 							'smtp.lan_ip,'+
@@ -98,7 +98,7 @@ module.exports = function(pool) {
 				}
 				var table2 = {
 					query: 'SELECT '+
-							'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ 
+							'time, '+ 
 							'`stealth_COIs`, ' +
 							'`stealth`, '+
 							'`lan_ip`, ' +

@@ -19,7 +19,7 @@ module.exports = function(pool) {
 	var table1 = {
 		query: 'SELECT '+
 				'count(*) AS count,' +
-				'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+				'time, '+ // Last Seen
 				'`remote_ip`, ' +
 				'`remote_cc`, ' +
 				'`remote_country`, ' +
@@ -38,10 +38,10 @@ module.exports = function(pool) {
 				title: 'Last Seen',
 				select: 'time',
 				 link: {
-				 	type: 'ssh_remote2local',
-				 	// val: the pre-evaluated values from the query above
-				 	val: ['remote_ip'],
-				 	crumb: false
+					type: 'ssh_remote2local',
+					// val: the pre-evaluated values from the query above
+					val: ['remote_ip'],
+					crumb: false
 				},
 			},
 			{ title: 'Connections', select: 'count' },

@@ -19,7 +19,7 @@ module.exports = function(pool) {
 				var info = [];
 				var table1 = {
 					query: 'SELECT '+
-							'date_format(from_unixtime(ssh.time), "%Y-%m-%d %H:%i:%s") AS time,'+
+							'from_unixtime(ssh.time) AS time,'+
 							'`machine`,'+
 							'`lan_zone`,'+
 							'ssh.lan_ip,'+
@@ -78,7 +78,7 @@ module.exports = function(pool) {
 				}
 				var table2 = {
 					query: 'SELECT '+
-							'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ 
+							'time, '+ 
 							'`stealth_COIs`, ' +
 							'`stealth`, '+
 							'`lan_ip`, ' +

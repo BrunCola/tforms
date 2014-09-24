@@ -19,7 +19,7 @@ module.exports = function(pool) {
 			var table1 = {
 				query: 'SELECT '+
 						'count(*) AS count,'+
-						'date_format(max(from_unixtime(ssh.time)), "%Y-%m-%d %H:%i:%s") AS time, '+
+						'max(from_unixtime(ssh.time)) AS time, '+
 						'`machine`,'+
 						'`lan_zone`,'+
 						'ssh.lan_ip,'+
@@ -37,9 +37,9 @@ module.exports = function(pool) {
 						title: 'Last Seen',
 						select: 'time',
 						link: {
-						 	type: 'ssh_local2remote', 
-						 	val: ['lan_zone','lan_ip'],
-						 	crumb: false
+							type: 'ssh_local2remote', 
+							val: ['lan_zone','lan_ip'],
+							crumb: false
 						},
 					},
 					{ title: 'Connections', select: 'count' },
@@ -56,7 +56,7 @@ module.exports = function(pool) {
 			}
 			var table2 = {
 				query: 'SELECT '+
-						'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ 
+						'time, '+ 
 						'`stealth_COIs`, ' +
 						'`stealth`, '+
 						'`lan_ip`, ' +

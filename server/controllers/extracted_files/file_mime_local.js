@@ -20,7 +20,7 @@ module.exports = function(pool) {
                 var table1 = {
                     query: 'SELECT '+
                             'sum(`count`) AS `count`,'+
-                            'date_format(max(from_unixtime(file_meta.time)), "%Y-%m-%d %H:%i:%s") AS time,'+
+                            'max(from_unixtime(file_meta.time)) AS time,'+
                             '`mime`,'+
                             '`stealth`,'+
                             '`lan_zone`,'+

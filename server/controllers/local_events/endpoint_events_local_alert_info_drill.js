@@ -21,7 +21,7 @@ module.exports = function(pool) {
 				var info = [];
 				var table1 = {
 					query: 'SELECT '+
-						'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+						'time, '+ // Last Seen
 						'`src_user`, '+
 						'`src_ip`, '+
 						'`dst_ip`, '+

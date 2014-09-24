@@ -22,7 +22,7 @@ module.exports = function(pool) {
                 var table1 = {
                     query: 'SELECT '+
                                 'sum(`count`) AS `count`, '+
-                                'max(date_format(from_unixtime(conn_meta.time), "%Y-%m-%d %H:%i:%s")) AS time,'+
+                                'max(from_unixtime(conn_meta.time)) AS time,'+
                                 '`stealth`,'+
                                 '`lan_zone`,'+
                                 '`machine`,'+
@@ -100,7 +100,7 @@ module.exports = function(pool) {
                 }
                 var table2 = {
                     query: 'SELECT '+
-                            'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") as time, '+ 
+                            'time, '+ 
                             '`stealth_COIs`, ' +
                             '`stealth`, '+
                             '`lan_ip`, ' +
@@ -121,7 +121,7 @@ module.exports = function(pool) {
                 }
                 var crossfilterQ = {
                     query: 'SELECT '+
-                            'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
+                            'time,'+
                             '(sum(`in_bytes` + `out_bytes`) / 1048576) AS count,'+
                             '`remote_country`, '+
                             '(sum(`in_bytes`) / 1048576) AS in_bytes, '+

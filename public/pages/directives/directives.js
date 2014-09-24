@@ -449,6 +449,9 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                             var newVar = aData.receiptto.replace(/[\<\>]/g,'');
                                             $('td:eq('+$scope.r.indexOf("receiptto")+')', nRow).html(newVar);
                                         }
+                                        if (aData.time && $scope.r.indexOf('time') !== -1) {
+                                            $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html(timeFormat(aData.time, 'tables'));
+                                        }
                                         if (!notReport) {
                                             if (aData.icon_in_bytes !== undefined){
                                                 var bIndex = $scope.r.indexOf("icon_in_bytes");
