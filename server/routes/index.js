@@ -24,4 +24,7 @@ module.exports = function(app, passport, version, io, pool) {
 	app.route('/actions/update')
 		.post(authorization.requiresLogin, actions.update);
 
+	app.route('/actions/local_cc')
+		.post(authorization.requiresLogin, actions.local_cc);
+
 };

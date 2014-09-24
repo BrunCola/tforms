@@ -497,9 +497,9 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                 'aaData': tableData.top(Infinity),
                                 'aoColumns': params[t].params,
                                 'bDeferRender': bDeferRender,
-                                // 'bDestroy': true,
+                                'bDestroy': true,
                                 //'bProcessing': true,
-                                // 'bRebuild': true,
+                                //'bRebuild': true,
                                 'aaSorting': params[t].sort,
                                 //'bFilter': true,
                                 //'bPaginate': true,
@@ -518,6 +518,11 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         if (oSettings.aoColumns[a].link) {
                                             $scope.e.push(oSettings.aoColumns[a]);
                                         }
+                                    }
+                                    for (var i=0; i<5; i++) {
+                                        // find the index of column rows so they can me modified below
+                                        $scope.r.push("test"+i);
+                                        //console.log($scope.r);
                                     }
                                 },
                                 'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
@@ -565,6 +570,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         $('td:eq('+$scope.r.indexOf("time")+')', nRow).html('<div style="min-width:100px">'+timeFormat(aData.time, 'tables')+'</div>');
                                     }
                                     if (notReport) {
+
                                         // url builder
                                         for (var c in $scope.e) {
                                             var type = $scope.e[c].link.type;

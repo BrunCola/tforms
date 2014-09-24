@@ -44,6 +44,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                 }
             });
         };
+
         var descInstanceCtrl = function ($scope, $modalInstance, data, ioc) {
             $scope.ok = function () {
                 $modalInstance.close();
@@ -51,6 +52,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             $scope.data = data;
             $scope.iocc = ioc;
         };
+
         if (data.tree.childCount >= 35) {
             var divHeight = data.tree.childCount*12;
         } else {
@@ -85,9 +87,17 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
         $scope.iocc = $location.$$search.ioc;
         $scope.ioc_type = data.info.main[0].ioc_typeIndicator;
         $scope.ioc_rule = data.info.main[0].ioc_rule;
+
         if (data.info.desc[0] !== undefined) {
             $scope.$broadcast('iocDesc', data.info.desc[0].description)
         }
+
+        $http({method: 'POST', url: '/actions/local_cc', data: {zone: $scope.lan_zone}}).
+        success(function(data) {
+            $scope.zone_cc = data.zone_cc.toLowerCase();
+            $scope.zone_country = data.zone_country;
+        })
+
         // get user image
         if ($scope.lan_ip !== '-') {
             $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?lan_zone='+$scope.lan_zone+'&lan_ip='+$scope.lan_ip+'&type=assets'}).

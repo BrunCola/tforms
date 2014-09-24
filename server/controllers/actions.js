@@ -76,6 +76,24 @@ module.exports = function(pool) {
 					}
 				});
 			}
+		},
+		local_cc: function(req, res) {
+			var zone = req.body.zone;
+			if (zone !== undefined) {
+				var clear = {
+					query: "SELECT zone_cc, zone_country FROM zone WHERE `database` = ? AND zone = ?",
+					insert: [req.session.passport.user.database, zone]
+				}
+				new query(clear, {database: 'rp_users', pool: pool}, function(err,data){
+					if (err) {
+						res.send(500);
+					} else {
+						res.json(data[0]);
+					}
+				});
+			} else {
+				res.send(500);
+			}
 		}
 	}
 }
