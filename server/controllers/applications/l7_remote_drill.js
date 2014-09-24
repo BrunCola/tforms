@@ -22,7 +22,7 @@ module.exports = function(pool) {
                 var table1 = {
                     query: 'SELECT '+
                                 'sum(`count`) AS `count`,'+
-                                'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time,'+
+                                'max(time) AS time,'+
                                 '`stealth`,'+
                                 '`lan_zone`,'+
                                 '`machine`,'+
@@ -98,7 +98,7 @@ module.exports = function(pool) {
                 }
                 var crossfilterQ = {
                     query: 'SELECT '+
-                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+
+                                'time, '+
                                 'count(*) as count, '+
                                 '`remote_country`, '+
                                 '(sum(`in_bytes`) / 1048576) AS in_bytes, '+

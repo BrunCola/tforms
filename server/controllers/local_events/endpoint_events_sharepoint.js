@@ -19,7 +19,7 @@ module.exports = function(pool) {
             var table1 = {
                 query: 'SELECT '+
                         'count(*) AS count,'+
-                        'max(date_format(from_unixtime(`timestamp`), "%Y-%m-%d %H:%i:%s")) as time,'+
+                        'max(`timestamp`) as time,'+
                         '`sharepoint_user`,'+
                         '`lan_ip`,'+
                         '`machine`, ' +

@@ -19,7 +19,7 @@ module.exports = function(pool) {
             var table1 = {
                 query: 'SELECT '+
                             'count(*) AS count,'+
-                            'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time,'+
+                            'max(`time`) as time,'+
                             '`receiptto`,'+
                             'sum(`ioc_count`) AS ioc_count '+
                         'FROM '+

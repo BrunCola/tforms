@@ -7,39 +7,39 @@ module.exports = function (sql, conn, callback) {
     function laneInfo(d) {
         switch(d.type) {
             case 'Conn':
-                return d.time_info+': '+d.lan_ip+' connected to '+d.remote_ip;
+                return d.lan_ip+' connected to '+d.remote_ip;
             case 'Conn_ioc':
-                return d.time_info+': IOC - '+d.ioc;
+                return 'IOC - '+d.ioc;
             case 'IOC Severity':
-                return d.time_info+': IOC - '+d.ioc;
+                return'IOC - '+d.ioc;
             case 'Stealth':
-                return d.time_info+': Stealth securely connected '+d.lan_ip+' with '+d.remote_ip;
+                return 'Stealth securely connected '+d.lan_ip+' with '+d.remote_ip;
             case 'Stealth_drop':
-                return d.time_info+': Stealth dropped connection attempts between '+d.lan_ip+' and '+d.remote_ip;
+                return 'Stealth dropped connection attempts between '+d.lan_ip+' and '+d.remote_ip;
             case 'Applications':
-                return d.time_info+': Application - '+d.l7_proto;
+                return 'Application - '+d.l7_proto;
             case 'DNS':
-                return d.time_info+': DNS query for '+d.query;
+                return 'DNS query for '+d.query;
             case 'DNS_ioc':
-                return d.time_info+': IOC - '+d.ioc;
+                return 'IOC - '+d.ioc;
             case 'HTTP':
-                return d.time_info+': HTTP connection to '+d.host+d.uri;
+                return 'HTTP connection to '+d.host+d.uri;
             case 'HTTP_ioc':
-                return d.time_info+': IOC - '+d.ioc;
+                return 'IOC - '+d.ioc;
             case 'SSL':
-                return d.time_info+': SSL connection to '+d.server_name;
+                return 'SSL connection to '+d.server_name;
             case 'SSL_ioc':
-                return d.time_info+': IOC - '+d.ioc;
+                return 'IOC - '+d.ioc;
             case 'Email':
-                return d.time_info+': Email - '+d.subject;
+                return 'Email - '+d.subject;
             case 'Email_ioc':
-                return d.time_info+': IOC - '+d.ioc;
+                return 'IOC - '+d.ioc;
             case 'File':
-                return d.time_info+': File Seen - '+d.name;
+                return 'File Seen - '+d.name;
             case 'File_ioc':
-                return d.time_info+': IOC - '+d.ioc;
+                return 'IOC - '+d.ioc;
             case 'Endpoint':
-                return d.time_info+': '+d.event_type;
+                return ''+d.event_type;
             default:
                 return d.time;
         }
@@ -60,6 +60,7 @@ module.exports = function (sql, conn, callback) {
 
     conn.pool.getConnection(function(err, connection) {
         connection.changeUser({database : conn.database}, function(err) {
+            console.log(err);
             if (err) throw err;
         });
         connection.query(sql.query, sql.insert)

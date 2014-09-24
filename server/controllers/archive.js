@@ -23,7 +23,7 @@ module.exports = function(pool) {
 			var table1 = {
 				query: 'SELECT '+
 					// SELECTS
-					'max(date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s")) as time, '+ // Last Seen
+					'max(time) as time, '+ // Last Seen
 					'`ioc_severity`, '+
 					'count(*) AS count, '+
 					'`ioc`, '+
@@ -97,7 +97,7 @@ module.exports = function(pool) {
 			var crossfilterQ = {
 				query: 'SELECT '+
 					// SELECTS
-					'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+					'time, '+ // Last Seen
 					'`remote_country`, '+
 					'ioc_severity, '+
 					'count(*) as count, '+

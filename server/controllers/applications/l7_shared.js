@@ -19,20 +19,20 @@ module.exports = function(pool) {
 				var info = [];
 				var table1 = {
 					query: 'SELECT '+
-							'date_format(from_unixtime(conn.time), "%Y-%m-%d %H:%i:%s") AS time,'+
-                            '`stealth`,'+
-                            '`lan_zone`,'+
+							'time,'+
+							'`stealth`,'+
+							'`lan_zone`,'+
 							'`machine`,'+
-                            '`lan_user`,'+
-                            '`lan_ip`,'+
-                            '`lan_port`,'+
-                            '`remote_ip`,'+
-                            '`remote_port`,'+
-                            '`remote_cc`,'+
-                            '`remote_country`,'+
-                            '`remote_asn`,'+
-                            '`remote_asn_name`,'+
-                            '`l7_proto`,'+
+							'`lan_user`,'+
+							'`lan_ip`,'+
+							'`lan_port`,'+
+							'`remote_ip`,'+
+							'`remote_port`,'+
+							'`remote_cc`,'+
+							'`remote_country`,'+
+							'`remote_asn`,'+
+							'`remote_asn_name`,'+
+							'`l7_proto`,'+
 							'(`in_bytes` / 1024) AS `in_bytes`,'+
 							'(`out_bytes` / 1024) AS `out_bytes`,'+
 							'`in_packets`,'+
@@ -63,9 +63,9 @@ module.exports = function(pool) {
 						{ title: 'Time', select: 'time' },
 						{ title: 'Applications', select: 'l7_proto' },
 						{ title: 'Stealth', select: 'stealth', access: [3] },
-                        { title: 'Zone', select: 'lan_zone' },
+						{ title: 'Zone', select: 'lan_zone' },
 						{ title: 'Machine', select: 'machine' },
-                        { title: 'Local User', select: 'lan_user' },
+						{ title: 'Local User', select: 'lan_user' },
 						{ title: 'Local IP', select: 'lan_ip' },
 						{ title: 'Local port', select: 'lan_port' },
 						{ title: 'Remote IP', select: 'remote_ip'},
@@ -102,7 +102,7 @@ module.exports = function(pool) {
 					// Table function(s)
 					function(callback) {
 						new dataTable(table1, {database: database, pool: pool}, function(err,data){
-                    		tables.push(data);
+							tables.push(data);
 							callback();
 						});
 					},

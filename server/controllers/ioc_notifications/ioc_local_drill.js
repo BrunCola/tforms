@@ -22,7 +22,7 @@ module.exports = function(pool) {
                 var table1 = {
                     query: 'SELECT '+
                                 'count(*) AS count,'+
-                                'max(date_format(from_unixtime(conn_ioc.time), "%Y-%m-%d %H:%i:%s")) AS time,'+
+                                'max(conn_ioc.time) AS time,'+
                                 '`ioc_severity`,'+
                                 '`ioc`,'+
                                 '`ioc_attrID`,'+
@@ -97,7 +97,7 @@ module.exports = function(pool) {
                 var crossfilterQ = {
                     query: 'SELECT '+
                                 'count(*) as count,'+
-                                'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
+                                'time,'+
                                 '`ioc_severity`,'+
                                 '`ioc` '+
                             'FROM '+
@@ -117,7 +117,7 @@ module.exports = function(pool) {
                 var crossfilterQ = {
                     query: 'SELECT '+
                                 'count(*) as count,'+
-                                'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
+                                'time,'+
                                 '`ioc`,'+
                                 '`ioc_severity` '+
                             'FROM '+

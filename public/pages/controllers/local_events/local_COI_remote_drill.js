@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal) {
+angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', 'timeFormat', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, timeFormat) {
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
@@ -8,57 +8,18 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
     } else {
         query = '/local_events/local_COI_remote_drill?lan_ip='+$location.$$search.lan_ip+'&lan_user='+$location.$$search.lan_user;
     }
-
-    // $http({method: 'GET', url: query}).
-    // //success(function(data, status, headers, config) {
-    // success(function(data) {
-    //     if (data.sankey === null) {
-    //         $scope.$broadcast('loadError');
-    //     } else {
-    //         $scope.open = function (d) {
-    //             $scope.mData = d;
-    //             // $scope.$broadcast('moodal', d);
-    //             $scope.modalInstance = $modal.open({
-    //                 templateUrl: 'tableModal.html',
-    //                 controller: ModalInstanceCtrl,
-    //                 keyboard: true,
-    //                 resolve: {
-    //                     data: function() {
-    //                         return $scope.mData;
-    //                     }
-    //                 },
-    //                 windowClass: 'modalTable'
-    //             });
-    //         };
-    //         var ModalInstanceCtrl = function ($scope, $modalInstance, data) {
-    //             $scope.ok = function () {
-    //                 $modalInstance.close();
-    //             };
-    //             $scope.data = data;
-    //         }
-    //         var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
-
-    //         $scope.data = data;
-    //         $scope.$broadcast('sankey_new', data.sankey, null);
-    //         fishchart(data);
-
-    //         $scope.$broadcast('spinnerHide');
-    //     }
-    // });
-
     $scope.clickedNode = function(d) {
         console.log(d)
     }
-
     $http({method: 'GET', url: query}).
     success(function(data) {
         $scope.crossfilterData = crossfilter();
         $scope.lanes = data.laneGraph.lanes;
-        var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
+        
         var id = 0;
         data.laneGraph.data.forEach(function(parent) {
             parent.forEach(function(child) {
-                child.dd = dateFormat.parse(child.time);
+                child.dd = timeFormat(child.time, 'strdDateObj');
                 child.id = id;
                 id++;
             })
@@ -198,7 +159,7 @@ angular.module('mean.pages').controller('localCoiRemoteDrillController', ['$scop
                 var id = 0;
                 data.laneGraph.data.forEach(function(parent) {
                     parent.forEach(function(child) {
-                        child.dd = dateFormat.parse(child.time);
+                        child.dd = timeFormat(child.time, 'strdDateObj');
                         child.id = id;
                         id++;
                     })

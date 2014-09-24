@@ -22,7 +22,7 @@ module.exports = function(pool) {
                 var table1 = {
                     query: 'SELECT '+
                             'sum(`count`) AS `count`, '+
-                            'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") as time, '+ // Last Seen
+                            'time, '+ // Last Seen
                             '`stealth`,'+
                             '`lan_zone`, ' +
                             '`machine`, '+

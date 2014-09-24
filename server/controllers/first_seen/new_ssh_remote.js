@@ -20,7 +20,7 @@ module.exports = function(pool) {
 			var info = [];
 			var table1 = {
 				query: 'SELECT '+
-						'date_format(from_unixtime(ssh_uniq_remote_ip.time), "%Y-%m-%d %H:%i:%s") AS time,'+
+						'ssh_uniq_remote_ip.time AS time,'+
 						'`lan_zone`,'+
 						'`machine`,'+
 						'ssh_uniq_remote_ip.lan_ip,'+
@@ -57,7 +57,7 @@ module.exports = function(pool) {
 			var crossfilterQ = {
 				query: 'SELECT '+
 						'count(*) AS count,'+
-						'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+						'time,'+
 						'`remote_country` '+
 					'FROM '+
 						'`ssh_uniq_remote_ip` '+

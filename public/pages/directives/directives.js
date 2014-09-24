@@ -339,7 +339,7 @@ angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '
     };
 }]);
 
-angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$rootScope', 'iocIcon', 'appIcon', 'mimeIcon', 'socket', '$http', function ($timeout, $location, $rootScope, iocIcon, appIcon, mimeIcon, socket, $http) {
+angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$rootScope', 'iocIcon', 'appIcon', 'mimeIcon', 'socket', '$http', 'timeFormat', function ($timeout, $location, $rootScope, iocIcon, appIcon, mimeIcon, socket, $http, timeFormat) {
     return {
         link: function ($scope, element, attrs) {
             $scope.socket = socket;
@@ -349,7 +349,6 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                     $('#table').dataTable().fnAddData(tableData.top(Infinity));
                     $('#table').dataTable().fnDraw();
                 }
-
                 for (var t in params) {
                     if (params[t] != null) {
                         if ($location.$$absUrl.search('/report#!/') === -1) {
@@ -449,6 +448,9 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         if (aData.receiptto && $scope.r.indexOf('receiptto') !== -1) {
                                             var newVar = aData.receiptto.replace(/[\<\>]/g,'');
                                             $('td:eq('+$scope.r.indexOf("receiptto")+')', nRow).html(newVar);
+                                        }
+                                        if (aData.time && $scope.r.indexOf('time') !== -1) {
+                                            $('td:eq('+$scope.r.indexOf("time")+')', nRow).html('<div style="min-width:100px">'+timeFormat(aData.time, 'tables')+'</div>');
                                         }
                                         if (!notReport) {
                                             if (aData.icon_in_bytes !== undefined){
@@ -564,6 +566,9 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         var newVar = aData.receiptto.replace(/[\<\>]/g,'');
                                         $('td:eq('+$scope.r.indexOf("receiptto")+')', nRow).html(newVar);
                                     }
+                                    if (aData.time && $scope.r.indexOf('time') !== -1) {
+                                        $('td:eq('+$scope.r.indexOf("time")+')', nRow).html('<div style="min-width:100px">'+timeFormat(aData.time, 'tables')+'</div>');
+                                    }
                                     if (notReport) {
 
                                         // url builder
@@ -594,9 +599,9 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                                         objlink: obj
                                                     });
                                                     if ($scope.e[c].mData === 'time') {
-                                                        $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+aData[$scope.e[c].mData]+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
+                                                        $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
                                                     } else {
-                                                       // $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+aData[$scope.e[c].mData]+"</button>");
+                                                        $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button>");
                                                     }
                                                 break;
                                             }
@@ -1618,10 +1623,16 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                 return '#259286';
                             }
                         })
-                        .style('stroke-opacity', '1')
+                        .style('stroke-opacity', function(d){
+                            if (d.class === 'child'){
+                                return '.7';
+                            } else {
+                                return '1';
+                            }
+                        })
                         .attr('stroke-width', function(d){
                             if (d.class === 'child'){
-                                return '4';
+                                return '3';
                             } else {
                                 return '70';
                             }
@@ -1646,23 +1657,16 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     .attr("cx", function(d) { return d.x; })
                                     .attr("cy", function(d) { return d.y; })
                                     .attr("r", function (d) {return logslider(d["width"]); })
-                                    // .attr("fill", function(d, i) { if (i>0) { return  color(d.group); } else { return palette.red } } )
                                     .attr("fill", '#fff')
                                     .style("stroke-width", "14px")
                                     .style("stroke", "#259286");
 
                                 //TEXT appends name
                                 elm.append("text")
-                                    // .text(function(d, i) { return d.name + '(' + count(d.width) + ')'; })
                                     .text(function(d, i) { return d.name; })
                                     .attr("x", 0)
-                                    // .attr("y", function(d, i) { if (i>0) { return circleWidth + 40 }    else { return 8 } })
-                                    // .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth - 70 } else { return 90 } })
-   
-
                                     .attr("y", 10)
                                     .attr("font-family",  "Helvetica Neue, Arial")
-
                                     .attr("fill", '#c61c6f')
                                     .style("font-size", '2em')
                                     .attr("text-anchor", 'middle');
@@ -1672,64 +1676,93 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     .attr('transform', 'translate(0, 110)');
                                 text.append('text')
                                     .html(function(d, i) { return d.count; })
-                                    // .attr("x", 0)
-                                    // // .attr("y", function(d) { if (d.name === 'ClearText') { return circleWidth + 2 } else { return 40 } })
-                                    // .attr("y", 110)
-                                    .attr("fill", '#515151')
-                                    // .style("font-size", function(d, i) { if (d.name === 'ClearText') { return '5em' } else { return '10em'} })
+                                    .attr("fill", '#000')
                                     .style("font-size", '5em')
                                     .attr("text-anchor", 'middle');
+
                                 // append a rectangle on top for click events
                                 text.append('rect')
-                                    .attr('x', -25)
-                                    .attr('y', -49)
-                                    .style('fill-opacity', 0)
-                                    .attr('width', 50)
+                                    .attr('x', -34)
+                                    .attr('y', -45)
+                                    .style('fill-opacity', '0.4')
+                                    .style('fill', '#fff')
+                                    .attr('width', 70)
                                     .attr('height', 50)
-                                    .on('mouseover', function(d){
-                                        d3.select(this).style('cursor', 'pointer');
+                                    .on('mouseover', function(){
+                                        d3.select(this).style('cursor', 'pointer')
+                                        .style('fill-opacity', '0');
                                     })
                                     .on('click', function(d){
                                         $scope.requery(d, 'users');
+                                    })
+                                    .on('mouseout', function(){d3.select(this)
+                                    .style('fill-opacity', '0.4');
                                     });
 
                                 // ICONS
-                                // right button
+                                // right button red x
                                 elm
                                     .append('g')
-                                    .attr('transform', 'scale(0.05)')
+                                    .attr('transform', 'scale(.8)')
                                     .append('g')
-                                    .attr('transform', 'translate(1400, -250)')
+                                    .attr('transform', 'translate(98, -15)')
                                     .append('path')
-                                        .attr('d', 'M 3.2256306,500.60601 C 3.2256306,491.25372 43.758136,444.29477 93.297856,396.25279 C 142.83758,348.21081 190.58002,301.56316 199.39218,292.59134 C 208.20433,283.61953 199.05159,231.54121 179.05273,176.86176 C 137.62307,63.587785 133.84657,25.920941 162.44557,11.22195 C 201.53416,-8.8683761 255.17957,20.811156 300.20945,87.440355 L 345.82828,154.94098 L 431.49626,85.021183 C 487.8258,39.04656 528.03591,18.570758 548.9095,25.231984 C 590.2087,38.411479 614.04278,89.982978 582.83295,98.634538 C 547.40845,108.45442 400.79201,294.00339 401.07018,328.6626 C 401.20186,345.07435 422.03434,388.63634 447.36457,425.46705 C 465.23081,451.44496 489.24604,471.94435 479.71274,486.03505 L 428.75193,561.35761 C 418.86818,575.96632 382.36042,537.01753 339.11325,499.2103 L 263.67191,433.25848 L 180.03742,515.74309 C 134.03845,561.10962 91.093734,597.99391 84.60471,597.70816 C 78.115704,597.42239 3.2256306,509.95831 3.2256306,500.60601 z ')
-                                        .attr('style', 'fill:#f60000;fill-opacity:1;stroke:none;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1')
-                                    .on('mouseover', function(d){
-                                        d3.select(this).style('cursor', 'pointer');
+                                    .attr('d', 'M0,29.9c0-0.6,11.3-12,11.8-12.6c0.5-0.5-3.3-13-3.3-14.6C8.4,1.5,10.7,0,11.2,0'+
+                                    'c2.1,0,9.4,9.1,9.4,9.1s11-8.2,12.3-7.8c2.5,0.8,3.5,3,2,4.4c-2.3,2.5-11,11.8-11,13.9c0,1,5.3,8.7,4.7,9.5l-3.1,4.5'+
+                                    'c-0.6,0.9-10-7.7-10-7.7S5.3,35.8,4.9,35.8C4.5,35.8,0,30.5,0,29.9z')
+                                    .attr('style', 'fill:#f60000;fill-opacity:1;stroke:none;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1')
+
+                                elm.append("svg:circle")
+                                    .attr("cx", 92)
+                                    .attr("cy", 0)
+                                    .attr("r", 24)
+                                    .attr("fill", '#fff')
+                                    .style('fill-opacity', '0.3')
+                                    .on('mouseover', function(){
+                                        d3.select(this).style('cursor', 'pointer')
+                                        .style('fill-opacity', '0');
                                     })
                                     .on('click', function(d){
                                         $scope.requery(d, 'blocked');
                                     })
-                                // left button
+                                    .on('mouseout', function(){d3.select(this)
+                                    .style('fill-opacity', '0.3');
+                                    })
+
+                                // left button check mark
                                 elm
                                     .append('g')
-                                    .attr('transform', 'scale(2)')
+                                    .attr('transform', 'scale(.9)')
                                     .append('g')
-                                    .attr('transform', 'translate(-242.905,-523.4064)')
+                                    .attr('transform', 'translate(-300,-525)')
                                     .append('path')
                                         .style('fill', '#000000')
-                                        .attr('d', 'M 197.67968,534.31563 C 197.40468,534.31208 196.21788,532.53719 195.04234,530.37143 L 192.905,526.43368 L 193.45901,525.87968 C 193.76371,525.57497 194.58269,525.32567 195.27896,525.32567 L 196.5449,525.32567 L 197.18129,527.33076 L 197.81768,529.33584 L 202.88215,523.79451 C 205.66761,520.74678 208.88522,517.75085 210.03239,517.13691 L 212.11815,516.02064 L 207.90871,520.80282 C 205.59351,523.43302 202.45735,527.55085 200.93947,529.95355 C 199.42159,532.35625 197.95468,534.31919 197.67968,534.31563 z ')
+                                        .attr('d', 'M193.6,542.1c-0.5,0-8.8-14.6-8.8-14.6l8-3.6l1.6,8.4c0,0,19.9-22.3,21.7-23.9l4.3-0.2'+
+                                        'C220.3,508.2,194.1,542.1,193.6,542.1z')
                                     .on('mouseover', function(d){
                                         d3.select(this).style('cursor', 'pointer');
                                     })
                                     .on('click', function(d){
                                         $scope.requery(d, 'right');
                                     })
-                                // elm.append('rect')
-                                //     .attr('width', 50)
-                                //     .attr('height', 50)
-                                //     .attr('x', -110)
-                                //     .attr('y', -20)
-                                //     
+
+                                elm.append("svg:circle")
+                                    .attr("cx", -90)
+                                    .attr("cy", 0)
+                                    .attr("r", 24)
+                                    .attr("fill", '#fff')
+                                    .style('fill-opacity', '0.3')
+                                    .on('mouseover', function(){
+                                        d3.select(this).style('cursor', 'pointer')
+                                        .style('fill-opacity', '0');
+                                    })
+                                    .on('click', function(d){
+                                        $scope.requery(d, 'blocked');
+                                    })
+                                    .on('mouseout', function(){d3.select(this)
+                                    .style('fill-opacity', '0.3');
+                                    })
+
                                 switch(d.name){
                                     case 'ClearText':
                                         elm.append('path')
@@ -1741,11 +1774,23 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                             ' M42.8,79.4l12.4-3.1l4.6-12l-17.1,2.8V79.4z M75.1,58.6l-9.2,3.7l-5.4,11.4L75.1,58.6z M42.8,60.9L61,58.8L63.2,42H42.8V60.9z'+
                                             ' M66.7,57.5l9.8-3.7L78.9,42H68.6L66.7,57.5z')
                                             .attr('transform', 'translate(-25,-115) scale(0.7)')
-                                            .on('mouseover', function(d){
-                                                d3.select(this).style('cursor', 'pointer');
+
+
+                                        elm.append("svg:circle")
+                                            .attr("cx", 2)
+                                            .attr("cy", -88)
+                                            .attr("r", 32)
+                                            .attr("fill", '#fff')
+                                            .style('fill-opacity', '0.3')
+                                            .on('mouseover', function(){
+                                                d3.select(this).style('cursor', 'pointer')
+                                                .style('fill-opacity', '0');
                                             })
                                             .on('click', function(d){
                                                 $scope.requery(d, 'top');
+                                            })
+                                            .on('mouseout', function(){d3.select(this)
+                                            .style('fill-opacity', '0.3');
                                             });
                                         break;
                                     default:
@@ -1754,12 +1799,23 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                             .attr('points', '53,18 53,10 60,10 60,0 44,0 44,10 51,10 51,16 31,16 31,10 38,10 38,0 22,0 22,10 29,10 '+
                                             '29,16 9,16 9,10 16,10 16,0 0,0 0,10 7,10 7,18 29,18 29,26 7,26 7,35 0,35 0,45 16,45 16,35 9,35 9,28 29,28 29,35 22,35 22,45 '+
                                             '38,45 38,35 31,35 31,28 51,28 51,35 44,35 44,45 60,45 60,35 53,35 53,26 31,26 31,18 ')
-                                            .attr('transform', 'translate(-25,-110) scale(0.9)')
-                                            .on('mouseover', function(d){
-                                                d3.select(this).style('cursor', 'pointer');
+                                            .attr('transform', 'translate(-25,-110) scale(0.9)');
+
+                                        elm.append("svg:circle")
+                                            .attr("cx", 2)
+                                            .attr("cy", -88)
+                                            .attr("r", 40)
+                                            .attr("fill", '#fff')
+                                            .style('fill-opacity', '0.3')
+                                            .on('mouseover', function(){
+                                                d3.select(this).style('cursor', 'pointer')
+                                                .style('fill-opacity', '0');
                                             })
                                             .on('click', function(d){
                                                 $scope.requery(d, 'top');
+                                            })
+                                            .on('mouseout', function(){d3.select(this)
+                                            .style('fill-opacity', '0.3');
                                             })
                                         break;
                                 }
@@ -1825,7 +1881,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         .append('text')
                         .attr("fill", '#fff')
                         .style('font-size', '3em')
-                        .attr("text-anchor", 'middle')
+                        .attr('text-anchor', 'middle')
                         .text(function(d) { return d.value; });
 
                     force.on("tick", function(e) {
@@ -1835,18 +1891,14 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                             var y1 = d.source.y;
                             var y2 = d.target.y;
                             var x = (x1+x2)/2;
-                            var y = (y1+y2)/2;
+                            var y = ((y1+y2)*1.027)/2;
                             return "translate(" + x + "," + y + ")";
                         });
                         node.attr("transform", function(d, i) {
                             return "translate(" + d.x + "," + d.y + ")";
                         });
-
-                        // node[0].x = width / 2;
-                        // node[0].y = height / 3;
-                        node[0].fixed = true;
-                        node[0].x = 20;
-                        node[0].y = 30;
+                        node[0].x = width;
+                        node[0].y = height;
                         link.attr("x1", function(d) { return d.source.x; })
                             .attr("y1", function(d) { return d.source.y; })
                             .attr("x2", function(d) { return d.target.x; })
@@ -2521,7 +2573,7 @@ angular.module('mean.pages').directive('makeTreeChart', ['$timeout', '$rootScope
     };
 }]);
 
-angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'appIcon', '$rootScope', function ($timeout, $location, appIcon, $rootScope) {
+angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'appIcon', '$rootScope', 'timeFormat', function ($timeout, $location, appIcon, $rootScope, timeFormat) {
     return {
         link: function ($scope, element, attrs) {
             $scope.$on('laneGraph', function() {
@@ -2632,7 +2684,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr("y1", function(d, i) { return y1(i);})
                     .attr("x2", w)
                     .attr("y2", function(d, i) {return y1(i);})
-                    .attr("stroke", "lightgray");
+                    .attr("stroke", "#666");
 
                 main.append("g").selectAll(".laneText")
                     .data($scope.lanes)
@@ -2828,21 +2880,35 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         'C11.076,16.238,11.938,20.26,13.699,23.661z');
                                 return;
                             case 'Stealth_drop':
-                                element.append('circle')
-                                    .attr('fill', '#D8464A')
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
                                 element.append('svg:path')
-                                    .attr('fill', '#58595B')
+                                    .attr('fill', '#D8464A')
+                                    .attr('transform', 'translate (0,-8) scale (1.4)')
                                     .attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
                                         'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
                                         'C28.014,15.545,26.676,21.468,23.587,26.751z');
                                 element.append('svg:path')
-                                    .attr('fill', '#D8464A')
+                                    .attr('fill', '#58595B')
+                                    .attr('transform', 'translate (0,-8) scale (1.4)')
                                     .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
                                         'C11.076,16.238,11.938,20.26,13.699,23.661z');
                                 return;
+                            // case 'Stealth_drop':
+                            //     element.append('circle')
+                            //         .attr('fill', '#D8464A')
+                            //         .attr('fill-opacity', '.5')
+                            //         .attr('cx', 18)
+                            //         .attr('cy', 18)
+                            //         .attr('r', 18);
+                            //     element.append('svg:path')
+                            //         .attr('fill', '#58595B')
+                            //         .attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
+                            //             'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
+                            //             'C28.014,15.545,26.676,21.468,23.587,26.751z');
+                            //     element.append('svg:path')
+                            //         .attr('fill', '#D8464A')
+                            //         .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
+                            //             'C11.076,16.238,11.938,20.26,13.699,23.661z');
+                            //     return;
                             case 'Email':
                                 element.append('circle')
                                     .attr('fill', function(d){ return '#39BFC1'; })

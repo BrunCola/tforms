@@ -21,7 +21,7 @@ module.exports = function(pool) {
             var table1 = {
                 query: 'SELECT '+
                             'count(*) AS count,'+
-                            'max(date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s")) AS time,'+ // Last Seen
+                            'max(time) AS time,'+ // Last Seen
                             '`stealth`,'+
                             '`lan_zone`,'+
                             '`machine`,'+
@@ -85,7 +85,7 @@ module.exports = function(pool) {
             var crossfilterQ = {
                 query: 'SELECT '+
                             'count(*) as count,'+
-                            'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
+                            'time,'+
                             '`ioc_severity`,'+
                             '`ioc` '+
                         'FROM '+

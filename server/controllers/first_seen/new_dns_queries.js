@@ -22,7 +22,7 @@ module.exports = function(pool) {
 			var info = [];
 			var table1 = {
 				query: 'SELECT '+
-						'date_format(from_unixtime(dns_uniq_query.time), "%Y-%m-%d %H:%i:%s") AS time,'+
+						'dns_uniq_query.time AS time,'+
 						'`lan_zone`,'+
 						'`machine`,'+
 						'dns_uniq_query.lan_ip,'+
@@ -66,7 +66,7 @@ module.exports = function(pool) {
 			var crossfilterQ = {
 				query: 'SELECT '+
 						'count(*) AS count,'+
-						'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
+						'time,'+
 						'`remote_country` '+
 					'FROM '+
 						'`dns_uniq_query` '+

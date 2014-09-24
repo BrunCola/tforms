@@ -19,7 +19,7 @@ module.exports = function(pool) {
                 var tables = [];
                 var table1 = {
                     query: 'SELECT '+
-                                'date_format(from_unixtime(file.time), "%Y-%m-%d %H:%i:%s") AS time,'+
+                                'file.time AS time,'+
                                 '`stealth`,'+
                                 '`lan_zone`,'+
                                 '`machine`,'+

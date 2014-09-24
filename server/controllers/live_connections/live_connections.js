@@ -14,7 +14,7 @@ module.exports = function(pool) {
 			var queryResult;
 			var mapSQL = {
 				query: 'SELECT '+
-						'date_format(from_unixtime(`time`), "%Y-%m-%d %H:%i:%s") AS time,'+
+						'time,'+
 						'`remote_country`,'+
 						'`remote_cc`,'+
 						'`ioc_severity`,'+

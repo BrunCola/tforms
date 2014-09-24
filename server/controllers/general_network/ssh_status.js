@@ -19,7 +19,7 @@ module.exports = function(pool) {
 			var table1 = {
 				query: 'SELECT '+
 						'count(*) AS count,'+
-						'date_format(max(from_unixtime(`time`)), "%Y-%m-%d %H:%i:%s") AS time, '+
+						'time, '+
 						'`status_code`,'+
 						'sum(`ioc_count`) AS ioc_count '+
 					'FROM '+
@@ -34,9 +34,9 @@ module.exports = function(pool) {
 						title: 'Last Seen',
 						select: 'time',
 						link: {
-						 	type: 'ssh_status_local', 
-						 	val: ['status_code'],
-						 	crumb: false
+							type: 'ssh_status_local', 
+							val: ['status_code'],
+							crumb: false
 						},
 					},
 					{ title: 'Connections', select: 'count' },

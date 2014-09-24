@@ -22,7 +22,7 @@ module.exports = function(pool) {
                 var table1 = {
                      query: 'SELECT '+
                                 'count(*) AS count,'+
-                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") AS time,'+
+                                'time,'+
                                 '`stealth`,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+

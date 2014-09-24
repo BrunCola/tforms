@@ -1,9 +1,9 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-    query = require('../constructors/query'),
-    config = require('../../config/config'),
-    async = require('async');
+	query = require('../constructors/query'),
+	config = require('../../config/config'),
+	async = require('async');
 
 module.exports = function(pool) {
 	return {
@@ -19,38 +19,38 @@ module.exports = function(pool) {
 				var tables = [];
 				var table1 = {
 					query: 'SELECT '+
-    							'date_format(from_unixtime(file.time), "%Y-%m-%d %H:%i:%s") AS time,'+
-    							'`stealth`,'+
-                                '`lan_zone`,'+
-                                '`machine`,'+
-                                '`lan_user`,'+
-                                '`lan_ip`,'+
-                                '`lan_port`,'+
-    							'`remote_ip`,'+
-    							'`remote_port`,'+
-    							'`remote_asn`,'+
-    							'`remote_asn_name`,'+
-    							'`remote_country`,'+
-    							'`remote_cc`,'+
-    							'`proto`,'+
-    							'`http_host`,'+
-    							'`mime`,'+
-    							'`name`,'+
-    							'(`size` / 1024) AS `size`, '+	
-    							'`md5`,'+
-    							'`sha1`,'+
-    							'`ioc`,'+
-    							'`ioc_rule`,'+
-    							'`ioc_typeIndicator`,'+
-    							'`ioc_typeInfection` '+
-    						'FROM '+ 
-    							'`file` '+
-    						'WHERE '+
-    							'file.time BETWEEN ? AND ? '+
-    							'AND `lan_zone` = ? '+
-    							'AND `lan_ip` = ? '+
-    							'AND `mime` = ? '+
-    							'AND `http_host` = ?',
+								'file.time AS time,'+
+								'`stealth`,'+
+								'`lan_zone`,'+
+								'`machine`,'+
+								'`lan_user`,'+
+								'`lan_ip`,'+
+								'`lan_port`,'+
+								'`remote_ip`,'+
+								'`remote_port`,'+
+								'`remote_asn`,'+
+								'`remote_asn_name`,'+
+								'`remote_country`,'+
+								'`remote_cc`,'+
+								'`proto`,'+
+								'`http_host`,'+
+								'`mime`,'+
+								'`name`,'+
+								'(`size` / 1024) AS `size`, '+	
+								'`md5`,'+
+								'`sha1`,'+
+								'`ioc`,'+
+								'`ioc_rule`,'+
+								'`ioc_typeIndicator`,'+
+								'`ioc_typeInfection` '+
+							'FROM '+ 
+								'`file` '+
+							'WHERE '+
+								'file.time BETWEEN ? AND ? '+
+								'AND `lan_zone` = ? '+
+								'AND `lan_ip` = ? '+
+								'AND `mime` = ? '+
+								'AND `http_host` = ?',
 					insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.mime, req.query.http_host],
 					params: [
 						{ title: 'Last Seen', select: 'time' },
@@ -58,10 +58,10 @@ module.exports = function(pool) {
 						{ title: 'Name', select: 'name', sClass:'file'},
 						{ title: 'Size (KB)', select: 'size' },
 						{ title: 'Stealth', select: 'stealth', access: [3] },
-                        { title: 'Zone', select: 'lan_zone' },
+						{ title: 'Zone', select: 'lan_zone' },
 						{ title: 'Machine', select: 'machine' },
 						{ title: 'Local User', select: 'lan_user' },
-                        { title: 'Local IP', select: 'lan_ip' },
+						{ title: 'Local IP', select: 'lan_ip' },
 						{ title: 'Local Port', select: 'lan_port' },
 						{ title: 'Remote IP', select: 'remote_ip' },
 						{ title: 'Remote Port', select: 'remote_port' },
@@ -82,10 +82,10 @@ module.exports = function(pool) {
 						sort: [[1, 'desc']],
 						div: 'table',
 						title: 'Extracted Files by Local IP, Domain, Type',
-                        access: req.session.passport.user.level
+						access: req.session.passport.user.level
 					}
 				}
-                async.parallel([
+				async.parallel([
 					// Table function(s)
 					function(callback) {
 						new dataTable(table1, {database: database, pool: pool}, function(err,data){

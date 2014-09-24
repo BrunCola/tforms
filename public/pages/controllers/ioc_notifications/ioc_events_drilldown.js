@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal) {
+angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', 'timeFormat', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, timeFormat) {
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
@@ -8,37 +8,20 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
     } else {
         query = '/ioc_notifications/ioc_events_drilldown?lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc+'&ioc_attrID='+$location.$$search.ioc_attrID;
     }
-    // $scope.$on('grouping', function (event, grouping){
-    //  var get = query + '&group='+grouping;
-    //  $http({method: 'GET', url: get}).
-    //      success(function(data) {
-    //          fishchart(data);
-    //      });
-    // })
-    // max time grouping by minute
-    // $scope.minslider = 1;
-    // $scope.number = 60;
-    // $scope.getNumber = function(num) {
-    //  return new Array(num);
-    // };
-    
     $http({method: 'GET', url: query}).
     success(function(data) {
         $scope.crossfilterData = crossfilter();
         $scope.lanes = data.laneGraph.lanes;
-        var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
         var id = 0;
         data.laneGraph.data.forEach(function(parent) {
             parent.forEach(function(child) {
-                child.dd = dateFormat.parse(child.time);
+                child.dd = timeFormat(child.time, 'strdDateObj');
                 child.id = id;
                 id++;
             })
             $scope.crossfilterData.add(parent);
         });
-
         $scope.$broadcast('laneGraph');
-
         $scope.description = function (d, e) {
             $scope.mData = d;
             $scope.mTitle = e;
@@ -61,8 +44,6 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                 }
             });
         };
-
-            
 
         var descInstanceCtrl = function ($scope, $modalInstance, data, ioc) {
             $scope.ok = function () {
@@ -112,20 +93,20 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
         }
 
         $http({method: 'POST', url: '/actions/local_cc', data: {zone: $scope.lan_zone}}).
-            success(function(data) {
-                $scope.zone_cc = data.zone_cc.toLowerCase();
-                $scope.zone_country = data.zone_country;
-            })
+        success(function(data) {
+            $scope.zone_cc = data.zone_cc.toLowerCase();
+            $scope.zone_country = data.zone_country;
+        })
 
         // get user image
-     if ($scope.lan_ip !== '-') {
-        $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?lan_zone='+$scope.lan_zone+'&lan_ip='+$scope.lan_ip+'&type=assets'}).
-        success(function(data) {
-            if (data[0] !== undefined) {
-                $scope.userImage = 'public/pages/assets/img/staff/'+data[0].file;
-            }
-        });
-     }
+        if ($scope.lan_ip !== '-') {
+            $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?lan_zone='+$scope.lan_zone+'&lan_ip='+$scope.lan_ip+'&type=assets'}).
+            success(function(data) {
+                if (data[0] !== undefined) {
+                    $scope.userImage = 'public/pages/assets/img/staff/'+data[0].file;
+                }
+            });
+        }
     });
 
     $scope.requery = function(min, max, callback) {
@@ -148,17 +129,15 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                 max: maxUnix
             };
             //  grab more from api
-
             var query = '/ioc_notifications/ioc_events_drilldown?start='+minUnix+'&end='+maxUnix+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc+'&ioc_attrID='+$location.$$search.ioc_attrID+'&type=drill';
-
             $http({method: 'GET', url: query}).
                 success(function(data) {
                     $scope.crossfilterDeep = crossfilter();
-                    var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
+                    
                     var id = 0;
                     data.laneGraph.data.forEach(function(parent) {
                         parent.forEach(function(child) {
-                            child.dd = dateFormat.parse(child.time);
+                            child.dd = timeFormat(child.time, 'strdDateObj');
                             child.id = id;
                             id++;
                         })
