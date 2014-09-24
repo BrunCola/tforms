@@ -2520,7 +2520,7 @@ angular.module('mean.pages').directive('makeTreeChart', ['$timeout', '$rootScope
     };
 }]);
 
-angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'appIcon', '$rootScope', function ($timeout, $location, appIcon, $rootScope) {
+angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'appIcon', '$rootScope', 'timeFormat', function ($timeout, $location, appIcon, $rootScope, timeFormat) {
     return {
         link: function ($scope, element, attrs) {
             $scope.$on('laneGraph', function() {

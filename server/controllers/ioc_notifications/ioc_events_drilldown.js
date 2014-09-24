@@ -46,8 +46,6 @@ module.exports = function(pool) {
                 var conn = {
                     query: 'SELECT '+
                                 '\'Conn\' AS type, '+
-                                '`time` AS raw_time, '+
-                                'time_info, '+
                                 'time, '+
                                 '`ioc_count`,'+
                                 '`lan_zone`,'+
@@ -105,8 +103,6 @@ module.exports = function(pool) {
                 var iocseverity = {
                     query: 'SELECT '+
                                 '\'IOC Severity\' AS type, '+
-                                '`time` AS raw_time, '+
-                                'time_info, '+
                                 'time, '+
                                 '`ioc_count`,'+
                                 '`lan_zone`,'+
@@ -162,8 +158,6 @@ module.exports = function(pool) {
                 var conn_ioc = {
                     query: 'SELECT '+
                                 '\'Conn_ioc\' AS type, '+
-                                '`time` AS raw_time, '+
-                                'time_info, '+
                                 'time, '+ // Last Seen
                                 '`ioc_count`,'+
                                 '`lan_zone`,'+
@@ -222,8 +216,6 @@ module.exports = function(pool) {
                 var application = {
                     query: 'SELECT '+
                                 '\'Applications\' AS type, '+
-                                '`time` as raw_time, '+
-                                'time_info, '+
                                 'time, '+
                                 '`ioc_count`,'+
                                 '`lan_zone`,'+
@@ -276,8 +268,6 @@ module.exports = function(pool) {
                 var stealth_conn = {
                     query: 'SELECT '+
                             '\'Stealth\' AS type, '+
-                            '`time` as raw_time, '+
-                            'time_info, '+
                             'time, '+
                             '`lan_machine`,'+
                             '`lan_user`,'+
@@ -318,8 +308,6 @@ module.exports = function(pool) {
                 var stealth_drop = {
                     query: 'SELECT '+
                             '\'Stealth_drop\' AS type, '+
-                            '`time` as raw_time, '+
-                            'time_info, '+
                             'time, '+
                             '`lan_machine`, '+
                             '`lan_user`, '+
@@ -359,8 +347,6 @@ module.exports = function(pool) {
                 var dns = {
                     query: 'SELECT '+
                             '\'DNS\' AS type,'+
-                            '`time` AS raw_time,'+
-                            'time_info, '+
                             'time,'+
                             '`proto`,'+
                             '`qclass_name`,'+
@@ -402,8 +388,6 @@ module.exports = function(pool) {
                 var dns_ioc = {
                     query: 'SELECT '+
                             '\'DNS_ioc\' AS type, '+
-                            '`time` as raw_time, '+
-                            'time_info, '+
                             'time, '+
                             '`ioc_count`,'+
                             '`proto`, '+
@@ -448,8 +432,6 @@ module.exports = function(pool) {
                 var http = {
                     query: 'SELECT '+
                             '\'HTTP\' AS type, '+
-                            '`time` as raw_time, '+
-                            'time_info, '+
                             'time, '+
                             '`ioc_count`,'+
                             '`host`,'+
@@ -496,8 +478,6 @@ module.exports = function(pool) {
                 var http_ioc = {
                     query: 'SELECT '+
                             '\'HTTP_ioc\' AS type, '+
-                            '`time` as raw_time, '+
-                            'time_info, '+
                             'time, '+
                             '`ioc_count`,'+
                             '`host`,'+
@@ -546,8 +526,6 @@ module.exports = function(pool) {
                 var ssl = {
                     query: 'SELECT '+
                             '\'SSL\' AS type, '+
-                            '`time` as raw_time, '+
-                            'time_info, '+
                             'time, '+
                             '`ioc_count`,'+
                             '`version`,'+
@@ -590,8 +568,6 @@ module.exports = function(pool) {
                 var ssl_ioc = {
                     query: 'SELECT '+
                             '\'SSL_ioc\' AS type, '+
-                            '`time` as raw_time, '+
-                            'time_info, '+
                             'time, '+
                             '`version`,'+
                             '`cipher`,'+
@@ -636,8 +612,6 @@ module.exports = function(pool) {
                 var email = {
                     query: 'SELECT '+
                             '\'Email\' AS type, '+
-                            '`time` as raw_time, '+
-                            'time_info, '+
                             'time, '+
                             '`machine`,'+
                             '`lan_zone`,'+
@@ -689,8 +663,6 @@ module.exports = function(pool) {
                 var email_ioc = {
                     query: 'SELECT '+
                             '\'Email_ioc\' AS type, '+
-                            '`time` as raw_time, '+
-                            'time_info, '+
                             'time, '+
                             '`machine`,'+
                             '`lan_zone`,'+
@@ -744,8 +716,6 @@ module.exports = function(pool) {
                 var file = {
                     query: 'SELECT '+
                                 '\'File\' AS type, '+
-                                '`time` as raw_time, '+
-                                'time_info, '+
                                 'time, '+
                                 '`ioc_count`,'+
                                 '`mime`,'+
@@ -788,8 +758,6 @@ module.exports = function(pool) {
                 var file_ioc = {
                     query: 'SELECT '+
                             '\'File_ioc\' AS type, '+
-                            '`time` as raw_time, '+
-                            'time_info, '+
                             'time, '+
                             '`mime`,'+
                             '`name`,'+
@@ -834,8 +802,6 @@ module.exports = function(pool) {
                 var endpoint = {
                     query: 'SELECT '+
                                 '\'Endpoint\' AS type,'+
-                                '`time` AS raw_time,'+
-                                'time_info, '+
                                 'time,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
@@ -990,8 +956,6 @@ module.exports = function(pool) {
                     var conn = {
                         query: 'SELECT '+
                                 '\'Conn\' AS type, '+
-                                '`time` as raw_time, '+
-                                'time_info, '+
                                 'time, '+
                                 '`ioc_count`,'+
                                 '`lan_zone`,'+
@@ -1049,8 +1013,6 @@ module.exports = function(pool) {
                     var iocseverity = {
                         query: 'SELECT '+
                                 '\'IOC Severity\' AS type, '+
-                                '`time` as raw_time, '+
-                                'time_info, '+
                                 'time, '+
                                 '`ioc_count`,'+
                                 '`lan_zone`,'+
@@ -1106,8 +1068,6 @@ module.exports = function(pool) {
                     var conn_ioc = {
                         query: 'SELECT '+
                                 '\'Conn_ioc\' AS type, '+
-                                '`time` as raw_time, '+
-                                'time_info, '+
                                 'time, '+ // Last Seen
                                 '`ioc_count`,'+
                                 '`lan_zone`,'+
@@ -1166,8 +1126,6 @@ module.exports = function(pool) {
                     var application = {
                         query: 'SELECT '+
                                     '\'Applications\' AS type, '+
-                                    '`time` as raw_time, '+
-                                    'time_info, '+
                                     'time, '+
                                     '`ioc_count`,'+
                                     '`lan_zone`,'+
@@ -1222,8 +1180,6 @@ module.exports = function(pool) {
                     var stealth_drop = {
                         query: 'SELECT '+
                                 '\'Stealth_drop\' AS type, '+
-                                '`time` AS raw_time,'+
-                                'time_info, '+
                                 'time,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
@@ -1265,8 +1221,6 @@ module.exports = function(pool) {
                     var dns = {
                         query: 'SELECT '+
                                     '\'DNS\' AS type, '+
-                                    '`time` as raw_time, '+
-                                    'time_info, '+
                                     'time, '+
                                     '`proto`,'+
                                     '`qclass_name`,'+
@@ -1308,8 +1262,6 @@ module.exports = function(pool) {
                     var dns_ioc = {
                         query: 'SELECT '+
                                     '\'DNS_ioc\' AS type, '+
-                                    '`time` as raw_time, '+
-                                    'time_info, '+
                                     'time, '+
                                     '`proto`, '+
                                     '`qclass_name`, '+
@@ -1353,8 +1305,6 @@ module.exports = function(pool) {
                     var http = {
                         query: 'SELECT '+
                                     '\'HTTP\' AS type, '+
-                                    '`time` as raw_time, '+
-                                    'time_info, '+
                                     'time, '+
                                     '`host`,'+
                                     '`uri`,'+
@@ -1401,8 +1351,6 @@ module.exports = function(pool) {
                     var http_ioc = {
                         query: 'SELECT '+
                                     '\'HTTP_ioc\' AS type, '+
-                                    '`time` as raw_time, '+
-                                    'time_info, '+
                                     'time, '+
                                     '`ioc_count`,'+
                                     '`host`,'+
@@ -1451,8 +1399,6 @@ module.exports = function(pool) {
                     var ssl = {
                         query: 'SELECT '+
                                     '\'SSL\' AS type, '+
-                                    '`time` as raw_time, '+
-                                    'time_info, '+
                                     'time, '+
                                     '`ioc_count`,'+
                                     '`version`,'+
@@ -1495,8 +1441,6 @@ module.exports = function(pool) {
                     var ssl_ioc = {
                         query: 'SELECT '+
                                     '\'SSL_ioc\' AS type, '+
-                                    '`time` as raw_time, '+
-                                    'time_info, '+
                                     'time, '+
                                     '`ioc_count`,'+
                                     '`version`,'+
@@ -1541,8 +1485,6 @@ module.exports = function(pool) {
                     var email = {
                         query: 'SELECT '+
                                     '\'Email\' AS type, '+
-                                    '`time` as raw_time, '+
-                                    'time_info, '+
                                     'time, '+
                                     '`machine`,'+
                                     '`lan_zone`,'+
@@ -1594,8 +1536,6 @@ module.exports = function(pool) {
                     var email_ioc = {
                         query: 'SELECT '+
                                     '\'Email_ioc\' AS type, '+
-                                    '`time` as raw_time, '+
-                                    'time_info, '+
                                     'time, '+
                                     '`machine`,'+
                                     '`lan_zone`,'+
@@ -1649,8 +1589,6 @@ module.exports = function(pool) {
                     var file = {
                         query: 'SELECT '+
                                     '\'File\' AS type, '+
-                                    '`time` as raw_time, '+
-                                    'time_info, '+
                                     'time, '+
                                     '`ioc_count`,'+
                                     '`mime`,'+
@@ -1692,8 +1630,6 @@ module.exports = function(pool) {
                     var file_ioc = {
                         query: 'SELECT '+
                                     '\'File_ioc\' AS type, '+
-                                    '`time` as raw_time, '+
-                                    'time_info, '+
                                     'time, '+
                                     '`ioc_count`,'+
                                     '`mime`,'+
@@ -1737,8 +1673,6 @@ module.exports = function(pool) {
                     var endpoint = {
                        query: 'SELECT '+
                                     '\'Endpoint\' AS type,'+
-                                    '`time` AS raw_time,'+
-                                    'time_info, '+
                                     'time,'+
                                     '`lan_zone`,'+
                                     '`lan_machine`,'+
