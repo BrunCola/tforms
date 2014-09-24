@@ -3,9 +3,7 @@
 angular.module('mean.pages').controller('stealthCoiMapController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
     $scope.global = Global;
     var query;
-
     query = '/local_events/stealth_COI_map?';
-    
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {
     success(function(data) {
@@ -18,7 +16,6 @@ angular.module('mean.pages').controller('stealthCoiMapController', ['$scope', '$
         }
     });
     $scope.requery = function(data) {
-        //console.log(data);
         var results = [];
         // get children hanging off of parent nodes
         var rTargets = $scope.data.force.links.filter(function(d){
