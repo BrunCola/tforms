@@ -3055,7 +3055,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 function laneInfoAppend(d) {
                     var send = '';
                     for (var i in d) {
-                        send += '<strong>'+d[i].name+':</strong> '+d[i].value+'<br />';
+                        if (d[i].name === 'Time') {
+                            send += '<strong>'+d[i].name+':</strong> '+timeFormat(d[i].value, 'laneGraphExpanded')+'<br />';      
+                        } else {
+                            send += '<strong>'+d[i].name+':</strong> '+d[i].value+'<br />';
+                        }
                     }
                     return send;
                 }
@@ -3279,7 +3283,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .html(function(d){
                                         // set d.postion (INIFFICENT!)
                                         d.position = ($('li#'+d.id).offset().top - $('li#'+d.id).parent().offset().top);
-                                        return "<div class='lanegraphlist'>"+d.info+"</div>";
+                                        return "<div class='lanegraphlist'><strong>"+timeFormat(d.time, 'laneGraphPreview')+':</strong> '+d.info+"</div>";
                                     })
                                     .on('click', function(){
 
