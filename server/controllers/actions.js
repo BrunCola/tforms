@@ -82,13 +82,13 @@ module.exports = function(pool) {
 			if (zone !== undefined) {
 				var clear = {
 					query: "SELECT zone_cc FROM zone WHERE client = ? AND zone = ?",
-					insert: [database, zone]
+					insert: [req.session.passport.user.database, zone]
 				}
 				new query(clear, {database: 'rp_users', pool: pool}, function(err,data){
 					if (err) {
 						res.send(500);
 					} else {
-						res.json(data);
+						res.json(data[0]);
 					}
 				});
 			} else {
