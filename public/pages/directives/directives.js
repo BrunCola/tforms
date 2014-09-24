@@ -495,9 +495,9 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                 'aaData': tableData.top(Infinity),
                                 'aoColumns': params[t].params,
                                 'bDeferRender': bDeferRender,
-                                // 'bDestroy': true,
+                                'bDestroy': true,
                                 //'bProcessing': true,
-                                // 'bRebuild': true,
+                                //'bRebuild': true,
                                 'aaSorting': params[t].sort,
                                 //'bFilter': true,
                                 //'bPaginate': true,
@@ -516,6 +516,11 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         if (oSettings.aoColumns[a].link) {
                                             $scope.e.push(oSettings.aoColumns[a]);
                                         }
+                                    }
+                                    for (var i=0; i<5; i++) {
+                                        // find the index of column rows so they can me modified below
+                                        $scope.r.push("test"+i);
+                                        //console.log($scope.r);
                                     }
                                 },
                                 'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
@@ -560,6 +565,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         $('td:eq('+$scope.r.indexOf("receiptto")+')', nRow).html(newVar);
                                     }
                                     if (notReport) {
+
                                         // url builder
                                         for (var c in $scope.e) {
                                             var type = $scope.e[c].link.type;
@@ -590,7 +596,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                                     if ($scope.e[c].mData === 'time') {
                                                         $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+aData[$scope.e[c].mData]+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
                                                     } else {
-                                                        $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+aData[$scope.e[c].mData]+"</button>");
+                                                       // $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+aData[$scope.e[c].mData]+"</button>");
                                                     }
                                                 break;
                                             }

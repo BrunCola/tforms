@@ -1782,6 +1782,7 @@ module.exports = function(pool) {
                                     '`machine`, '+
                                     '`lan_zone`, '+
                                     '`lan_port`, '+
+                                    //'`lan_cc`, '+
                                     '`remote_port`, '+
                                     '`remote_cc`, '+
                                     '`remote_country`, '+
@@ -1843,6 +1844,7 @@ module.exports = function(pool) {
                                     'remote_ip',
                         insert: [start, end, req.query.lan_ip]
                     }
+
                     var lanIP = req.query.lan_ip;
                     var attrID = req.query.ioc_attrID;
                     async.parallel([
@@ -1959,6 +1961,7 @@ module.exports = function(pool) {
                     ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                         if (err) throw console.log(err);
                         res.json({
+                            infocountry: infocountry,
                             info: info,
                             laneGraph: result,
                             start: start,

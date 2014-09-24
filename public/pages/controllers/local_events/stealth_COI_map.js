@@ -24,7 +24,7 @@ angular.module('mean.pages').controller('stealthCoiMapController', ['$scope', '$
 	});
 
 	 $scope.requery = function(data) {
-	 	console.log("asdasd = "+data.index);
+	 	//console.log("asdasd = "+data.index);
         var results = [];
     	// get children hanging off of parent nodes
         var rTargets = $scope.data.force.links.filter(function(d){
