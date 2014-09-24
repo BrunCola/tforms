@@ -77,18 +77,24 @@ module.exports = function(pool) {
 				});
 			}
 		},
-		lan_ip: function(req, res) {
-			var clear = {
-				query: "DELETE FROM `conn_ioc` WHERE `trash` IS NOT NULL",
-				insert: []
-			}
-			new query(clear, {database: 'rp_users', pool: pool}, function(err,data){
-				if (err) {
-					res.send(500);
-				} else {
-					res.json(data);
+		local_cc: function(req, res) {
+			var zone = req.body.zone;
+			if (zone !== undefined) {
+				var database = req.session.passport.user.database;
+				var clear = {
+					query: "SELECT zone_cc FROM zone WHERE client = ? AND zone = ?",
+					insert: [database, zone]
 				}
-			});
+				new query(clear, {database: 'rp_users', pool: pool}, function(err,data){
+					if (err) {
+						res.send(500);
+					} else {
+						res.json(data);
+					}
+				});
+			} else {
+				res.send(500);
+			}
 		}
 	}
 }
