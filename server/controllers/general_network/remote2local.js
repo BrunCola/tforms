@@ -1,6 +1,6 @@
 'use strict';
 
-var datatable_stealth = require('../constructors/datatable_stealth'),
+var dataTable = require('../constructors/datatable'),
     query = require('../constructors/query'),
     config = require('../../config/config'),
     async = require('async');
@@ -22,7 +22,7 @@ module.exports = function(pool) {
                 var table1 = {
                     query: 'SELECT '+
                                 'sum(`count`) AS `count`, '+
-                                'max(conn_meta.time) AS `time`,'+
+                                'max(`time`) AS `time`,'+
                                 '`stealth`,'+
                                 '`lan_zone`,'+
                                 '`machine`,'+
@@ -49,7 +49,7 @@ module.exports = function(pool) {
                             'FROM '+
                                 '`conn_meta` '+
                             'WHERE '+
-                                'conn_meta.time BETWEEN ? AND ? '+
+                                '`time` BETWEEN ? AND ? '+
                                 'AND `remote_ip` = ? '+
                             'GROUP BY '+
                                 '`lan_zone`,'+
@@ -98,50 +98,29 @@ module.exports = function(pool) {
                         access: req.session.passport.user.level
                     }
                 }
-                var table2 = {
-                    query: 'SELECT '+
-                            'time, '+ 
-                            '`stealth_COIs`, ' +
-                            '`stealth`, '+
-                            '`lan_ip`, ' +
-                            '`event`, ' +
-                            '`user` ' +
-                        'FROM ' + 
-                            '`endpoint_tracking` '+
-                        'WHERE ' + 
-                            'stealth > 0 '+
-                            'AND event = "Log On" ',
-                    insert: [],
-                    params: [
-                        { title: 'Stealth', select: 'stealth' },
-                        { title: 'COI Groups', select: 'stealth_COIs' },
-                        { title: 'User', select: 'user' }
-                    ],
-                    settings: {}
-                }
                 var crossfilterQ = {
                     query: 'SELECT '+
-                            'time,'+
-                            '(sum(`in_bytes` + `out_bytes`) / 1048576) AS count,'+
-                            '`remote_country`, '+
-                            '(sum(`in_bytes`) / 1048576) AS in_bytes, '+
-                            '(sum(`out_bytes`) / 1048576) AS out_bytes '+
-                        'FROM '+
-                            '`conn_meta` '+
-                        'WHERE '+
-                            '`time` BETWEEN ? AND ? '+
-                            'AND `remote_ip` = ? '+
-                        'GROUP BY '+
-                            'month(from_unixtime(`time`)),'+
-                            'day(from_unixtime(`time`)),'+
-                            'hour(from_unixtime(`time`)),'+
-                            '`remote_country`',
+                                'time,'+
+                                '(sum(`in_bytes` + `out_bytes`) / 1048576) AS count,'+
+                                '`remote_country`, '+
+                                '(sum(`in_bytes`) / 1048576) AS in_bytes, '+
+                                '(sum(`out_bytes`) / 1048576) AS out_bytes '+
+                            'FROM '+
+                                '`conn_meta` '+
+                            'WHERE '+
+                                '`time` BETWEEN ? AND ? '+
+                                'AND `remote_ip` = ? '+
+                            'GROUP BY '+
+                                'month(from_unixtime(`time`)),'+
+                                'day(from_unixtime(`time`)),'+
+                                'hour(from_unixtime(`time`)),'+
+                                '`remote_country`',
                     insert: [start, end, req.query.remote_ip]
                 }
                 async.parallel([
                     // Table function(s)
                     function(callback) {
-                        new datatable_stealth(table1, table2, parseInt(req.session.passport.user.level), {database: database, pool: pool}, function(err,data){
+                        new dataTable(table1, {database: database, pool: pool}, function(err,data){
                             tables.push(data);
                             callback();
                         });

@@ -56,7 +56,8 @@ module.exports = function(pool) {
 				settings: {
 					sort: [[1, 'desc']],
 					div: 'table',
-					title: 'New Remote IP Addresses Detected'
+					title: 'New Remote IP Addresses Detected',
+                    access: req.session.passport.user.level
 				}
 			}
 			var crossfilterQ = {
