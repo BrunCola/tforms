@@ -147,7 +147,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
 	});
 	$http({method: 'GET', url: query+'&type=l7_proto'}).
 	success(function(data) {
-		$scope.l7_proto = data;
+		$scope.l7_protoo = data;
 	});
 	$http({method: 'GET', url: query+'&type=remote_country'}).
 	success(function(data) {
