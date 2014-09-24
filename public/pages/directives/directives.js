@@ -539,12 +539,14 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         var newVar = aData.mailfrom.replace(/[\<\>]/g,'');
                                         $('td:eq('+$scope.r.indexOf("mailfrom")+')', nRow).html(newVar);
                                     }
-                                    if (aData.stealth && $scope.r.indexOf('stealth') !== -1) {
-                                        if (aData.stealth > 0){
-                                            $('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-shield fa-stack-1x fa-inverse"></i></span>');
+                                    if(aData.stealth !== undefined){                                        
+                                        if (aData.stealth && $scope.r.indexOf('stealth') !== -1) {
+                                            if (aData.stealth > 0){
+                                                $('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-shield fa-stack-1x fa-inverse"></i></span>');
+                                            }
+                                        } else {
+                                            $('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html('');
                                         }
-                                    } else {
-                                        $('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html('');
                                     }
                                     if (aData.proxy_blocked !== undefined && $scope.r.indexOf('proxy_blocked') !== -1) {
                                         if (aData.proxy_blocked == 0){
@@ -2044,7 +2046,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
                     var width = $('#stealthforcechart').width();
                     var height = width/1.5;
-                    var tCount = [];
+                    var tCount = [], link, node;
                     data.links.forEach(function(d) {
                         tCount.push(d.value);
                     });
@@ -2118,80 +2120,41 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                     }
 
 
+
+                    // Toggle children on click.
+                    function click(connections) {
+                        //.hide()
+                        // console.log(" ");
+                        // console.log(" ");
+                        for(var i = 0; i<connections.length; i++){
+                            // console.log(data.nodes[connections[i]].index);
+                           if (data.nodes[connections[i]].hide) {
+                                data.nodes[connections[i]]._hide= data.nodes[connections[i]].hide;
+                                data.nodes[connections[i]].hide = null;
+                            } else {
+                                data.nodes[connections[i]].hide = "true";
+                                data.nodes[connections[i]]._hide = null;
+                            }
+                        }
+                        // console.log(" ");
+                        // console.log(" ");
+                        $scope.update();
+                    }
+
+
+
                     var circleWidth = 5;
                     var vis = d3.select("#stealthforcechart")
                         .append("svg:svg")
                         .attr("class", "stage")
                         .attr("width", width)
                         .attr("height", height);
-                    var force = d3.layout.force()
-                        .nodes(data.nodes)
-                        .links(data.links)
-                        .gravity(0.20)
-                        .linkDistance(20)
-                        .charge(-2000)
-                        .size([width-50, height]);
-
-                    var link = vis.selectAll(".link")
-                        .data(data.links)
-                        .enter().append("line")
-                        .attr("class", "link")
-                        .attr("stroke", "#CCC")
-                        .attr("fill", "#000")
-                        .style("stroke-width", "5");
-
-                    var node = vis.selectAll("circle.node")
-                        .data(data.nodes)
-                        .enter().append("g")
-                        .attr("class", "node")                    
-
-                    //MOUSEOVER
-                    .on("mouseover", function(d,i) {
-                        //CIRCLE
-                        d3.select(this).selectAll("circle")
-                            .transition()
-                            .duration(250)
-                            .style("cursor", "none")
-                            .attr("r", function (d) {return logslider(d["width"])+4; })
-                            .attr("fill",function(d){ return color(d.group); });
-
-                        //TEXT
-                        d3.select(this).select("text")
-                            .transition()
-                            .style("cursor", "none")
-                            .duration(250)
-                            .style("cursor", "none")
-                            .attr("font-size","1.5em")
-                            .attr("x", 15 )
-                            .attr("y", 5 )
-                    })
-
-                    //MOUSEOUT
-                    .on("mouseout", function(d,i) {
-                        //CIRCLE
-                        d3.select(this).selectAll("circle")
-                            .transition()
-                            .duration(250)
-                            .attr("r", function (d) {return logslider(d["width"]); })
-                            .attr("fill",function(d){ return color(d.group); } );
-
-                        //TEXT
-                        d3.select(this).select("text")
-                            .transition()
-                            .duration(250)
-                            .attr("font-size","1em")
-                            .attr("x", 8 )
-                            .attr("y", 4 )
-                    })
-
-                    .call(force.drag);
 
                     // Add tooltip
                     $scope.tip = d3.tip()
                         .attr('class', 't-tip')
                         .offset([-50, -100])
                         .html(function(d) {
-
                             var title = "<strong>Rules: </strong> <br />";
                             var rules = "";
                             for(var i = 0; i < d.rules.length; i++) {
@@ -2217,92 +2180,170 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                             }
                             
                         });
+                        vis.call($scope.tip);
+                   
+                    var force = d3.layout.force()
+                        
+                        .on("tick", tick)
+                        .gravity(0.20)
+                        .linkDistance(20)
+                        .charge(-1500)
+                        .size([width-50, height]);
 
-                    vis.call($scope.tip);
+                    $scope.update = function() {
+                        force
+                            .nodes(data.nodes)
+                            .links(data.links)
+                            .start();
 
+                        link = vis.selectAll(".link")
+                            .data(data.links);
+                            
+                        link.enter().append("line")
+                            .attr("class", "link")
+                            .attr("stroke", "#CCC")
+                            .attr("fill", "#000")
+                            .style("stroke-width", "5");
+                        link.exit().remove();
 
-                    //$cope.update = function() {
+                        node = vis.selectAll(".node")
+                            .data(data.nodes);    
+                        node
+                            .enter()
+                            .append("g")
+                            .attr("class", "node")
+                            .call(force.drag);
+
                        // console.log("test");
                         var cldr;
                         //CIRCLE
                         var n = node.each(function(d){
                             //console.log(d);
                             var elm = d3.select(this)
-                            if (d.gateway === 1) {
-                                elm.append('svg:path')
-                                    .attr('transform', 'translate(-18,-18)')
-                                    .attr('d', 'M18,0C8.059,0,0,8.06,0,18.001C0,27.941,8.059,36,18,36c9.94,0,18-8.059,18-17.999C36,8.06,27.94,0,18,0z')
-                                    .attr('fill', '#67AAB5');
-                                elm.append('svg:path')
-                                    .attr('transform', 'translate(-18,-18)')
-                                    .attr('d', 'M24.715,19.976l-2.057-1.122l-1.384-0.479l-1.051,0.857l-1.613-0.857l0.076-0.867l-1.062-0.325l0.31-1.146'+
-                                        'l-1.692,0.593l-0.724-1.616l0.896-1.049l1.108,0.082l0.918-0.511l0.806,1.629l0.447,0.087l-0.326-1.965l0.855-0.556l0.496-1.458'+
-                                        'l1.395-1.011l1.412-0.155l-0.729-0.7L22.06,9.039l1.984-0.283l0.727-0.568L22.871,6.41l-0.912,0.226L21.63,6.109l-1.406-0.352'+
-                                        'l-0.406,0.596l0.436,0.957l-0.485,1.201L18.636,7.33l-2.203-0.934l1.97-1.563L17.16,3.705l-2.325,0.627L8.91,3.678L6.39,6.285'+
-                                        'l2.064,1.242l1.479,1.567l0.307,2.399l1.009,1.316l1.694,2.576l0.223,0.177l-0.69-1.864l1.58,2.279l0.869,1.03'+
-                                        'c0,0,1.737,0.646,1.767,0.569c0.027-0.07,1.964,1.598,1.964,1.598l1.084,0.52L19.456,21.1l-0.307,1.775l1.17,1.996l0.997,1.242'+
-                                        'l-0.151,2.002L20.294,32.5l0.025,2.111l1.312-0.626c0,0,2.245-3.793,2.368-3.554c0.122,0.238,2.129-2.76,2.129-2.76l1.666-1.26'+
-                                        'l0.959-3.195l-2.882-1.775L24.715,19.976z')
-                                    .attr('fill', '#595A5C');
-                            } else if(d.type === "user") {
-                                elm.append("rect")
-                                .attr("width", 22)
-                                .attr("height", 22)
-                                .attr("x", -11)
-                                .attr("y", -11)
-                                .attr("cx", function(d) { return d.x; })
-                                .attr("cy", function(d) { return d.y; })
-                                .attr("fill", function(d, i) { return  color(d.group, d.type); })
-                                //.style("stroke-width", "1.5px");
-                                //.style("stroke", "#fff");
-                            } else {
-                                elm.append("svg:circle")
-                                .attr("cx", function(d) { return d.x; })
-                                .attr("cy", function(d) { return d.y; })
-                                .attr("r", function (d) {return logslider(d["width"]); })
-                                .attr("fill", function(d, i) { return  color(d.group, d.type); })
-                               // .style("stroke-width", "1.5px")
-                               // .style("stroke", "#fff")
-                            }
-                            
-                            if(d.type === "user") {
-                                elm.on('mouseover', function(d){
-                                    elm.style('cursor', 'pointer')
-                                })
-                                .on('click', function (d){
-                                   // cldr = $scope.requery(d);
-                                  //  $scope.update();     
-                                });
 
-                                // .on("click", function (d){
-                                //     var link = {user: d.name};
-                                //     if ($location.$$search.start && $location.$$search.end) {
-                                //         link.start = $location.$$search.start;
-                                //         link.end = $location.$$search.end;
-                                //     }
-                                //     $scope.$apply($location.path('user_local').search(link));
-                                // });
-                            } else if(d.type === "coi") {
-                                elm.on('mouseover', function(d){
-                                    elm.style('cursor', 'pointer')
-                                }).on('click', function (d){
-                                    //cldr = $scope.requery(d);   
-                                   // $scope.update();
-                                }).on('mouseover', $scope.tip.show)
-                                    .on('mouseout', $scope.tip.hide);
-                            } else {
-                                elm.on('mouseover', function(d){
-                                    elm.style('cursor', 'pointer')
-                                })
-                                .on('mouseout', "")
-                                .on('click', function (d){
-                                    //cldr = $scope.requery(d);   
-                                  //  $scope.update();                               
-                                });
+                            if(d.hide !== "true"){
+                               //console.log(d.index);
+                               /* elm
+                                    .attr('style', 'display:block');*/
+
+                                if (d.gateway === 1) {
+                                    elm
+                                        .append('svg:path')
+                                        .attr('transform', 'translate(-18,-18)')
+                                        .attr('d', 'M18,0C8.059,0,0,8.06,0,18.001C0,27.941,8.059,36,18,36c9.94,0,18-8.059,18-17.999C36,8.06,27.94,0,18,0z')
+                                        .attr('fill', '#67AAB5');
+                                    elm
+                                        .append('svg:path')
+                                        .attr('transform', 'translate(-18,-18)')
+                                        .attr('d', 'M24.715,19.976l-2.057-1.122l-1.384-0.479l-1.051,0.857l-1.613-0.857l0.076-0.867l-1.062-0.325l0.31-1.146'+
+                                            'l-1.692,0.593l-0.724-1.616l0.896-1.049l1.108,0.082l0.918-0.511l0.806,1.629l0.447,0.087l-0.326-1.965l0.855-0.556l0.496-1.458'+
+                                            'l1.395-1.011l1.412-0.155l-0.729-0.7L22.06,9.039l1.984-0.283l0.727-0.568L22.871,6.41l-0.912,0.226L21.63,6.109l-1.406-0.352'+
+                                            'l-0.406,0.596l0.436,0.957l-0.485,1.201L18.636,7.33l-2.203-0.934l1.97-1.563L17.16,3.705l-2.325,0.627L8.91,3.678L6.39,6.285'+
+                                            'l2.064,1.242l1.479,1.567l0.307,2.399l1.009,1.316l1.694,2.576l0.223,0.177l-0.69-1.864l1.58,2.279l0.869,1.03'+
+                                            'c0,0,1.737,0.646,1.767,0.569c0.027-0.07,1.964,1.598,1.964,1.598l1.084,0.52L19.456,21.1l-0.307,1.775l1.17,1.996l0.997,1.242'+
+                                            'l-0.151,2.002L20.294,32.5l0.025,2.111l1.312-0.626c0,0,2.245-3.793,2.368-3.554c0.122,0.238,2.129-2.76,2.129-2.76l1.666-1.26'+
+                                            'l0.959-3.195l-2.882-1.775L24.715,19.976z')
+                                        .attr('fill', '#595A5C');
+                                } else if (d.type === "user") {
+                                elm
+                                    .append("rect")
+                                    .attr("width", 22)
+                                    .attr("height", 22)
+                                   // .attr("connections", $scope.requery(d))
+                                   // .attr("connections", $scope.requery(d))
+                                    .attr("x", -11)
+                                    .attr("y", -11)
+                                    .attr("cx", function(d) { return d.x; })
+                                    .attr("cy", function(d) { return d.y; })
+                                    .attr("fill", function(d, i) { return  color(d.group, d.type); })
+                                    //.style("stroke-width", "1.5px");
+                                    //.style("stroke", "#fff");
+                                } else {
+                                    elm
+                                        .append("svg:circle")
+                                        .attr("r", function (d) {return logslider(d["width"]); })
+                                       // .attr("connections", $scope.requery(d))
+                                        .attr("fill", function(d, i) { return  color(d.group, d.type); })
+                                       // .style("stroke-width", "1.5px")
+                                       // .style("stroke", "#fff")
+                                }
+                                if(d.type === "user") {
+                                    elm
+                                        .on('mouseover', function(d){
+                                            elm.style('cursor', 'pointer')
+                                        })
+                                        .on('click', function (d){
+                                            cldr = $scope.requery(d);   
+                                           // $scope.update();
+                                           return click(cldr);   
+                                        });
+                                        // .on("click", function (d){
+                                        //     var link = {user: d.name};
+                                        //     if ($location.$$search.start && $location.$$search.end) {
+                                        //         link.start = $location.$$search.start;
+                                        //         link.end = $location.$$search.end;
+                                        //     }
+                                        //     $scope.$apply($location.path('user_local').search(link));
+                                        // });
+                                } else if (d.type === "coi") {
+                                    elm
+                                        .on('mouseover', function(d){
+                                            elm.style('cursor', 'pointer')
+                                        })
+                                        .on('click', function (d){
+                                            cldr = $scope.requery(d);   
+                                           // $scope.update();
+                                           return click(cldr);
+                                        })
+                                        .on('mouseover', $scope.tip.show)
+                                        .on('mouseout', $scope.tip.hide);
+                                } else {
+                                    elm
+                                        .on('mouseover', function(d){
+                                            elm.style('cursor', 'pointer')
+                                        })
+                                        .on('mouseout', "")
+                                        .on('click', function (d){
+                                            cldr = $scope.requery(d);   
+                                           // $scope.update();
+                                           return click(cldr);
+                                        });
+                                }
+                            }else{
+                                // console.log(d.hide);
+                                /*elm
+                                    .attr('style', 'display:none');*/
                             }
                         })
-                   // };
-                   // $scope.update();
+                        //TEXT
+                        node.append("text")
+                            .text(function(d, i) { return d.name })
+                            .attr("x",    function(d, i) { return circleWidth + 5; })
+                            .attr("y",            function(d, i) { return circleWidth + 0 })
+                            // .attr("font-family",  "Bree Serif")
+                            // .attr("fill",         function(d, i) {  return  palette.paleryellow;  })
+                            .attr("font-size",    function(d, i) {  return  "1em"; })
+                            .attr("text-anchor",  function(d, i) { return  "beginning"; })  
+                        // node.transition()
+                        //     .attr("r", function(d) { return 10; });
+                        node.exit().remove();
+
+
+                    };
+                    $scope.update();
+
+
+                    function tick() {
+                        node.attr("transform", function(d, i) {
+                            return "translate(" + d.x + "," + d.y + ")";
+                        });
+
+                        link.attr("x1", function(d)   { return d.source.x; })
+                            .attr("y1", function(d)   { return d.source.y; })
+                            .attr("x2", function(d)   { return d.target.x; })
+                            .attr("y2", function(d)   { return d.target.y; })
+                    }
+
 
                     //LEGEND
 
@@ -2392,28 +2433,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .attr("dy", ".35em")
                         .text(function(d) { return d; });
 
-                    //TEXT
-                    node.append("text")
-                        .text(function(d, i) { return d.name })
-                        .attr("x",    function(d, i) { return circleWidth + 5; })
-                        .attr("y",            function(d, i) { return circleWidth + 0 })
-                        // .attr("font-family",  "Bree Serif")
-                        // .attr("fill",         function(d, i) {  return  palette.paleryellow;  })
-                        .attr("font-size",    function(d, i) {  return  "1em"; })
-                        .attr("text-anchor",  function(d, i) { return  "beginning"; })  
-
-                    force.on("tick", function(e) {
-                        node.attr("transform", function(d, i) {
-                            return "translate(" + d.x + "," + d.y + ")";
-                        });
-
-                        link.attr("x1", function(d)   { return d.source.x; })
-                            .attr("y1", function(d)   { return d.source.y; })
-                            .attr("x2", function(d)   { return d.target.x; })
-                            .attr("y2", function(d)   { return d.target.y; })
-                    });
-
-                    force.start();
+                    
                 }, 0, false);
             })
         }

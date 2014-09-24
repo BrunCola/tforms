@@ -24,7 +24,7 @@ angular.module('mean.pages').controller('stealthCoiMapController', ['$scope', '$
 	});
 
 	 $scope.requery = function(data) {
-	 	//console.log(data);
+	 	console.log("asdasd = "+data.index);
         var results = [];
     	// get children hanging off of parent nodes
         var rTargets = $scope.data.force.links.filter(function(d){
@@ -37,15 +37,23 @@ angular.module('mean.pages').controller('stealthCoiMapController', ['$scope', '$
                 return true;
             }
         })
-        for (var i in rTargets) {
-            results.push($scope.data.force.nodes[rTargets[i].target.index].index)
-        	//console.log($scope.data.force.nodes[rTargets[i].target.index].index);
+        for (var i in rTargets) {    
+            results.push($scope.data.force.nodes[rTargets[i].target.index].index);
+           /* if(results.contains("4")){
+                console.log("yes");
+            }         
+            */
+            //console.log($scope.data.force.nodes[rTargets[i].target.index].index);
         }
         for (var i in rSource) {
-            results.push($scope.data.force.nodes[rSource[i].source.index].index)
+           
+            results.push($scope.data.force.nodes[rSource[i].source.index].index);
+          /*  if(results.contains("4")){
+                console.log("yes");
+            }*/ 
         	//console.log($scope.data.force.nodes[rSource[i].source.index].index);
         }
-        console.log(results);
+        //console.log(results);
         //$scope.appendInfo(results);
         return results;
     }

@@ -23,7 +23,8 @@ module.exports = function(pool) {
 						'date_format(from_unixtime(conn_uniq_remote_ip.time), "%Y-%m-%d %H:%i:%s") AS time,'+
 						'`lan_zone`,'+
 						'`machine`,'+
-						'conn_uniq_remote_ip.lan_ip,'+
+						'conn_uniq_remote_ip.lan_ip AS lan_ip,'+
+						//'`lan_ip`,'+
 						'`remote_ip`,'+
 						'`remote_asn_name`,'+
 						'`remote_country`,'+
