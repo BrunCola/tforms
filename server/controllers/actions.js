@@ -80,7 +80,6 @@ module.exports = function(pool) {
 		local_cc: function(req, res) {
 			var zone = req.body.zone;
 			if (zone !== undefined) {
-				var database = req.session.passport.user.database;
 				var clear = {
 					query: "SELECT zone_cc FROM zone WHERE client = ? AND zone = ?",
 					insert: [database, zone]

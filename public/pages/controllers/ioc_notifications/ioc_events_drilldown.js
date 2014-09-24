@@ -116,7 +116,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 	 		success(function(data) {
 	 			console.log(data);
 	 		});
-
+ 
 		
 		// // draw chart
 		// fishchart(data);
