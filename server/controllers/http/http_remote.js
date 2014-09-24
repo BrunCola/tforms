@@ -30,7 +30,7 @@ module.exports = function(pool) {
                     'FROM ' +
                         '`http_remote` '+
                     'WHERE ' +
-                        'time BETWEEN ? AND ? '+
+                        '`time` BETWEEN ? AND ? '+
                     'GROUP BY '+
                         '`remote_ip`',
                 insert: [start, end],

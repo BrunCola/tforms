@@ -20,7 +20,7 @@ module.exports = function(pool) {
             var info = [];
             var table1 = {
                 query: 'SELECT '+
-                            'max(time) AS time,'+
+                            'max(`time`) AS time,'+
                             '`ioc_severity`,'+
                             '`ioc`,'+
                             '`ioc_typeIndicator`,'+
@@ -39,7 +39,7 @@ module.exports = function(pool) {
                         'FROM '+
                             '`conn_ioc` '+
                         'WHERE '+
-                            'time BETWEEN ? AND ? '+
+                            '`time` BETWEEN ? AND ? '+
                             'AND `ioc_count` > 0 '+
                             'AND `trash` IS NULL '+
                         'GROUP BY '+
@@ -83,7 +83,7 @@ module.exports = function(pool) {
             var crossfilterQ = {
                 query: 'SELECT '+
                             'count(*) as count,'+
-                            'time,'+
+                            '`time`,'+
                             '`remote_country`,'+
                             '`ioc`,'+
                             '`ioc_severity` '+

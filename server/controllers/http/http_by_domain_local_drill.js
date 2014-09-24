@@ -53,7 +53,7 @@ module.exports = function(pool) {
                             'FROM ' +
                                 '`http` ' +
                             'WHERE '+ 
-                                'time BETWEEN ? AND ? ' +
+                                '`time` BETWEEN ? AND ? ' +
                                 'AND `lan_zone` = ? '+
                                 'AND `lan_ip` = ? ' +
                                 'AND `host` = ?',

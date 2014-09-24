@@ -19,7 +19,7 @@ module.exports = function(pool) {
             var table1 = {
                 query: 'SELECT '+
                             'count(*) AS count,'+
-                            'time,'+
+                            'max(`time`) AS `time`,'+
                             '`event_src`,'+
                             '`event_type` '+
                         'FROM '+

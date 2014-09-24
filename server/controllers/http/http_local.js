@@ -30,7 +30,7 @@ module.exports = function(pool) {
                         'FROM '+ 
                             '`http_local` '+
                         'WHERE ' + 
-                            'time BETWEEN ? AND ? '+
+                            '`time` BETWEEN ? AND ? '+
                         'GROUP BY '+
                             '`lan_zone`, '+
                             '`lan_ip`',

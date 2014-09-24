@@ -19,14 +19,14 @@ module.exports = function(pool) {
             var table1 = {
                 query: 'SELECT '+
                             'sum(`count`) AS `count`, '+
-                            'max(`time`) AS `time`,'+
+                            'max(`time`) AS `time`, '+
                             '`host`, ' +
                             'sum(`proxy_blocked`) AS proxy_blocked,'+
                             'sum(`ioc_count`) AS `ioc_count` ' +
                         'FROM ' +
                             '`http_host` '+
                         'WHERE ' +
-                            'time BETWEEN ? AND ? '+
+                            '`time` BETWEEN ? AND ? '+
                         'GROUP BY '+
                             '`host`',
                 insert: [start, end],

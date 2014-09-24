@@ -20,7 +20,7 @@ module.exports = function(pool) {
                 var info = [];
                 var table1 = {
                     query: 'SELECT '+
-                                'max(time) AS time,'+
+                                'max(`time`) AS time,'+
                                 '`stealth`.'+
                                 '`lan_zone`,'+
                                 '`machine`,'+

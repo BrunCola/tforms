@@ -46,7 +46,7 @@ module.exports = function(pool) {
                 var conn = {
                     query: 'SELECT '+
                                 '\'Conn\' AS type, '+
-                                'time, '+
+                                '`time`, '+
                                 '`ioc_count`,'+
                                 '`lan_zone`,'+
                                 '`machine`,'+
@@ -76,7 +76,7 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
-                        {title: 'ABP', select: 'proxy_blocked'},
+                        {title: 'ABP', select: 'proxy_blocked', access: [2] },
                         {title: "Zone", select: "lan_zone"},
                         {title: "Machine", select: "machine"},
                         {title: "Local User", select: "lan_user"},
@@ -99,7 +99,6 @@ module.exports = function(pool) {
                         access: req.session.passport.user.level
                     }
                 }
-
                 var iocseverity = {
                     query: 'SELECT '+
                                 '\'IOC Severity\' AS type, '+
@@ -158,7 +157,7 @@ module.exports = function(pool) {
                 var conn_ioc = {
                     query: 'SELECT '+
                                 '\'Conn_ioc\' AS type, '+
-                                'time, '+ // Last Seen
+                                'time, '+
                                 '`ioc_count`,'+
                                 '`lan_zone`,'+
                                 '`machine`,'+

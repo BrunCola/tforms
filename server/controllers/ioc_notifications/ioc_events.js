@@ -165,8 +165,7 @@ module.exports = function(pool) {
                 default:
                 var table1 = {
                     query: 'SELECT '+
-                                // 'max(from_unixtime(conn_ioc.time)) AS time,'+
-                                'time,'+
+                                'max(`time`) AS `time`,'+
                                 '`stealth`,'+
                                 '`lan_zone`,'+
                                 '`machine`,'+
@@ -250,7 +249,7 @@ module.exports = function(pool) {
                 var crossfilterQ = {
                     query: 'SELECT '+
                                 'count(*) as count,'+
-                                'time,'+
+                                '`time`,'+
                                 '`remote_country`,'+
                                 '`ioc_severity`,'+
                                 '`ioc`, '+
