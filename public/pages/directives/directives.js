@@ -1604,7 +1604,13 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                 return '#259286';
                             }
                         })
-                        .style('stroke-opacity', '1')
+                        .style('stroke-opacity', function(d){
+                            if (d.class === 'child'){
+                                return '.7';
+                            } else {
+                                return '1';
+                            }
+                        })
                         .attr('stroke-width', function(d){
                             if (d.class === 'child'){
                                 return '3';
@@ -1675,36 +1681,69 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     });
 
                                 // ICONS
-                                // right button
+                                // right button red x
                                 elm
                                     .append('g')
-                                    .attr('transform', 'scale(0.05)')
+                                    .attr('transform', 'scale(.8)')
                                     .append('g')
-                                    .attr('transform', 'translate(1400, -250)')
+                                    .attr('transform', 'translate(98, -15)')
                                     .append('path')
-                                        .attr('d', 'M 3.2256306,500.60601 C 3.2256306,491.25372 43.758136,444.29477 93.297856,396.25279 C 142.83758,348.21081 190.58002,301.56316 199.39218,292.59134 C 208.20433,283.61953 199.05159,231.54121 179.05273,176.86176 C 137.62307,63.587785 133.84657,25.920941 162.44557,11.22195 C 201.53416,-8.8683761 255.17957,20.811156 300.20945,87.440355 L 345.82828,154.94098 L 431.49626,85.021183 C 487.8258,39.04656 528.03591,18.570758 548.9095,25.231984 C 590.2087,38.411479 614.04278,89.982978 582.83295,98.634538 C 547.40845,108.45442 400.79201,294.00339 401.07018,328.6626 C 401.20186,345.07435 422.03434,388.63634 447.36457,425.46705 C 465.23081,451.44496 489.24604,471.94435 479.71274,486.03505 L 428.75193,561.35761 C 418.86818,575.96632 382.36042,537.01753 339.11325,499.2103 L 263.67191,433.25848 L 180.03742,515.74309 C 134.03845,561.10962 91.093734,597.99391 84.60471,597.70816 C 78.115704,597.42239 3.2256306,509.95831 3.2256306,500.60601 z ')
-                                        .attr('style', 'fill:#f60000;fill-opacity:1;stroke:none;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1')
-                                    .on('mouseover', function(d){
-                                        d3.select(this).style('cursor', 'pointer');
+                                    .attr('d', 'M0,29.9c0-0.6,11.3-12,11.8-12.6c0.5-0.5-3.3-13-3.3-14.6C8.4,1.5,10.7,0,11.2,0'+
+                                    'c2.1,0,9.4,9.1,9.4,9.1s11-8.2,12.3-7.8c2.5,0.8,3.5,3,2,4.4c-2.3,2.5-11,11.8-11,13.9c0,1,5.3,8.7,4.7,9.5l-3.1,4.5'+
+                                    'c-0.6,0.9-10-7.7-10-7.7S5.3,35.8,4.9,35.8C4.5,35.8,0,30.5,0,29.9z')
+                                    .attr('style', 'fill:#f60000;fill-opacity:1;stroke:none;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1')
+
+                                elm.append("svg:circle")
+                                    .attr("cx", 92)
+                                    .attr("cy", 0)
+                                    .attr("r", 24)
+                                    .attr("fill", '#fff')
+                                    .style('fill-opacity', '0.3')
+                                    .on('mouseover', function(){
+                                        d3.select(this).style('cursor', 'pointer')
+                                        .style('fill-opacity', '0');
                                     })
                                     .on('click', function(d){
                                         $scope.requery(d, 'blocked');
                                     })
-                                // left button
+                                    .on('mouseout', function(){d3.select(this)
+                                    .style('fill-opacity', '0.3');
+                                    })
+
+                                // left button check mark
                                 elm
                                     .append('g')
-                                    .attr('transform', 'scale(2)')
+                                    .attr('transform', 'scale(.9)')
                                     .append('g')
-                                    .attr('transform', 'translate(-242.905,-523.4064)')
+                                    .attr('transform', 'translate(-300,-525)')
                                     .append('path')
                                         .style('fill', '#000000')
-                                        .attr('d', 'M 197.67968,534.31563 C 197.40468,534.31208 196.21788,532.53719 195.04234,530.37143 L 192.905,526.43368 L 193.45901,525.87968 C 193.76371,525.57497 194.58269,525.32567 195.27896,525.32567 L 196.5449,525.32567 L 197.18129,527.33076 L 197.81768,529.33584 L 202.88215,523.79451 C 205.66761,520.74678 208.88522,517.75085 210.03239,517.13691 L 212.11815,516.02064 L 207.90871,520.80282 C 205.59351,523.43302 202.45735,527.55085 200.93947,529.95355 C 199.42159,532.35625 197.95468,534.31919 197.67968,534.31563 z ')
+                                        .attr('d', 'M193.6,542.1c-0.5,0-8.8-14.6-8.8-14.6l8-3.6l1.6,8.4c0,0,19.9-22.3,21.7-23.9l4.3-0.2'+
+                                        'C220.3,508.2,194.1,542.1,193.6,542.1z')
                                     .on('mouseover', function(d){
                                         d3.select(this).style('cursor', 'pointer');
                                     })
                                     .on('click', function(d){
                                         $scope.requery(d, 'right');
                                     })
+
+                                elm.append("svg:circle")
+                                    .attr("cx", -90)
+                                    .attr("cy", 0)
+                                    .attr("r", 24)
+                                    .attr("fill", '#fff')
+                                    .style('fill-opacity', '0.3')
+                                    .on('mouseover', function(){
+                                        d3.select(this).style('cursor', 'pointer')
+                                        .style('fill-opacity', '0');
+                                    })
+                                    .on('click', function(d){
+                                        $scope.requery(d, 'blocked');
+                                    })
+                                    .on('mouseout', function(){d3.select(this)
+                                    .style('fill-opacity', '0.3');
+                                    })
+
                                 switch(d.name){
                                     case 'ClearText':
                                         elm.append('path')
