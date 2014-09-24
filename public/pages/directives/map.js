@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$rootScope', '$http', function ($timeout, $location, $rootScope, $http) {
+angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$rootScope', '$http', 'timeFormat', function ($timeout, $location, $rootScope, $http, timeFormat) {
 	return {
 		link: function ($scope, element, attrs) {
 
@@ -128,7 +128,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 				var step = 1000; // 1 second
 				var timer, percent;
 				data.features.forEach(function(d){
-					d.time = moment(d.properties.date_filed,"YYYY-MM-DD hh:mm:ss").unix()*1000;
+					d.time = moment(timeFormat(d.properties.date_filed, 'strdDateObj')).unix()*1000;
 					if (d.properties.country === 'United States of America') {
 						d.properties.country = 'United States';
 					}
