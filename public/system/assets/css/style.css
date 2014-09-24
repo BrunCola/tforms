@@ -114,8 +114,8 @@ th {
   background-color: #ffff99 !important;
 }
 .pointactive {
-  stroke-width: 3px;
-  /*stroke-opacity: 0.2;*/
+  stroke-width: 2px;
+/*  stroke-dasharray: 5,2;*/
   stroke: #000;
 }
 
@@ -128,16 +128,18 @@ th {
 
 #forcechartinfo {
   overflow: scroll;
-  height: 600px;
+  height: 650px;
   margin-left: 0;
+  border-radius: 18px;
 }
 #forcechartinfo table{
   width: 100%;
 }
 #forcechartinfo table tr:nth-child(odd){
-  background-color: #EDEDED;
+  background-color: #93d1c8;
 }
 #forcechartinfo table tr td{
+  margin: 7px 7px 11px 7px;
   padding: 7px;
 }
 

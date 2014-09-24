@@ -2655,7 +2655,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr("y1", function(d, i) { return y1(i);})
                     .attr("x2", w)
                     .attr("y2", function(d, i) {return y1(i);})
-                    .attr("stroke", "lightgray");
+                    .attr("stroke", "#666");
 
                 main.append("g").selectAll(".laneText")
                     .data($scope.lanes)
@@ -2864,21 +2864,35 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         'C11.076,16.238,11.938,20.26,13.699,23.661z');
                                 return;
                             case 'Stealth_drop':
-                                element.append('circle')
-                                    .attr('fill', '#D8464A')
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
                                 element.append('svg:path')
-                                    .attr('fill', '#58595B')
+                                    .attr('fill', '#D8464A')
+                                    .attr('transform', 'translate (0,-8) scale (1.4)')
                                     .attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
                                         'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
                                         'C28.014,15.545,26.676,21.468,23.587,26.751z');
                                 element.append('svg:path')
-                                    .attr('fill', '#D8464A')
+                                    .attr('fill', '#58595B')
+                                    .attr('transform', 'translate (0,-8) scale (1.4)')
                                     .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
                                         'C11.076,16.238,11.938,20.26,13.699,23.661z');
                                 return;
+                            // case 'Stealth_drop':
+                            //     element.append('circle')
+                            //         .attr('fill', '#D8464A')
+                            //         .attr('fill-opacity', '.5')
+                            //         .attr('cx', 18)
+                            //         .attr('cy', 18)
+                            //         .attr('r', 18);
+                            //     element.append('svg:path')
+                            //         .attr('fill', '#58595B')
+                            //         .attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
+                            //             'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
+                            //             'C28.014,15.545,26.676,21.468,23.587,26.751z');
+                            //     element.append('svg:path')
+                            //         .attr('fill', '#D8464A')
+                            //         .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
+                            //             'C11.076,16.238,11.938,20.26,13.699,23.661z');
+                            //     return;
                             case 'Email':
                                 element.append('circle')
                                     .attr('fill', function(d){ return '#39BFC1'; })
