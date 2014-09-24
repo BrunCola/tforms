@@ -82,11 +82,11 @@ module.exports = function(pool) {
 				query: "DELETE FROM `conn_ioc` WHERE `trash` IS NOT NULL",
 				insert: []
 			}
-			new query(clear, {database: 'DATABASE', pool: pool}, function(err,data){
+			new query(clear, {database: 'rp_users', pool: pool}, function(err,data){
 				if (err) {
 					res.send(500);
 				} else {
-					res.send(200);
+					res.json(data);
 				}
 			});
 		}
