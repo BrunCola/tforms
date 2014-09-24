@@ -20,7 +20,7 @@ module.exports = function(pool) {
             var info = [];
             var table1 = {
                 query: 'SELECT '+
-                            'from_unixtime(http_uniq_host.time) AS time,'+
+                            'http_uniq_host.time AS time,'+
                             '`stealth`,'+
                             '`lan_zone`,'+
                             '`machine`,'+

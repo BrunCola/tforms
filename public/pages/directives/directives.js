@@ -450,7 +450,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                             $('td:eq('+$scope.r.indexOf("receiptto")+')', nRow).html(newVar);
                                         }
                                         if (aData.time && $scope.r.indexOf('time') !== -1) {
-                                            $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html(timeFormat(aData.time, 'tables'));
+                                            $('td:eq('+$scope.r.indexOf("time")+')', nRow).html('<div style="min-width:100px">'+timeFormat(aData.time, 'tables')+'</div>');
                                         }
                                         if (!notReport) {
                                             if (aData.icon_in_bytes !== undefined){
@@ -560,6 +560,9 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                     if (aData.receiptto && $scope.r.indexOf('receiptto') !== -1) {
                                         var newVar = aData.receiptto.replace(/[\<\>]/g,'');
                                         $('td:eq('+$scope.r.indexOf("receiptto")+')', nRow).html(newVar);
+                                    }
+                                    if (aData.time && $scope.r.indexOf('time') !== -1) {
+                                        $('td:eq('+$scope.r.indexOf("time")+')', nRow).html('<div style="min-width:100px">'+timeFormat(aData.time, 'tables')+'</div>');
                                     }
                                     if (notReport) {
                                         // url builder

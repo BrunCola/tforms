@@ -22,7 +22,7 @@ module.exports = function(pool) {
                 var table1 = {
                     query: 'SELECT '+
                                 'count(*) AS count,'+
-                                'max(from_unixtime(conn_ioc.time)) AS time,'+
+                                'max(conn_ioc.time) AS time,'+
                                 '`ioc_severity`,'+
                                 '`ioc`,'+
                                 '`ioc_attrID`,'+

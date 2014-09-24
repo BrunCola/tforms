@@ -21,7 +21,7 @@ module.exports = function(pool) {
 				var info = [];
 				var table1 = {
 					query: 'SELECT ' +
-							'from_unixtime(ftp.time) as time, '+ // Last Seen
+							'ftp.time as time, '+ // Last Seen
 							'`machine`, ' +
 							'`lan_zone`, ' +
 							'ftp.lan_ip, ' +

@@ -24,7 +24,7 @@ module.exports = function(pool) {
 				var table1 = {
 					query: 'SELECT '+
 							'count(*) AS count, ' +
-							'max(from_unixtime(smtp.time) as time, '+ // Last Seen
+							'max(smtp.time) as time, '+ // Last Seen
 							'`machine`,'+
 							'`lan_zone`,'+
 							'smtp.lan_ip,'+

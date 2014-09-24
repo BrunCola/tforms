@@ -20,7 +20,7 @@ module.exports = function(pool) {
             var info = [];
             var table1 = {
                 query: 'SELECT '+
-                            'from_unixtime(ssl_uniq_remote_ip.time) as time,'+
+                            'ssl_uniq_remote_ip.time as time,'+
                             '`stealth`,'+
                             '`lan_zone`,'+
                             '`machine`,'+

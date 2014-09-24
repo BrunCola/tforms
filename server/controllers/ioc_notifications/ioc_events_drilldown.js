@@ -1774,7 +1774,7 @@ module.exports = function(pool) {
                     var InfoSQL = {
                         query: 'SELECT '+
                                     'time as last, '+
-                                    'min(from_unixtime(`time`)) as first, '+
+                                    'min(`time`) as first, '+
                                     'sum(`in_packets`) as in_packets, '+
                                     'sum(`out_packets`) as out_packets, '+
                                     'sum(`in_bytes`) as in_bytes, '+

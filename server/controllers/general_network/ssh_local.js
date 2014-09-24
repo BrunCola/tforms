@@ -19,7 +19,7 @@ module.exports = function(pool) {
 			var table1 = {
 				query: 'SELECT '+
 						'count(*) AS count,'+
-						'max(from_unixtime(ssh.time)) AS time, '+
+						'max(ssh.time) AS time, '+
 						'`machine`,'+
 						'`lan_zone`,'+
 						'ssh.lan_ip,'+
