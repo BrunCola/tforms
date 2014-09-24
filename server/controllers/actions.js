@@ -78,12 +78,11 @@ module.exports = function(pool) {
 			}
 		},
 		lan_ip: function(req, res) {
-			var database = '';
 			var clear = {
 				query: "DELETE FROM `conn_ioc` WHERE `trash` IS NOT NULL",
 				insert: []
 			}
-			new query(clear, {database: database, pool: pool}, function(err,data){
+			new query(clear, {database: 'DATABASE', pool: pool}, function(err,data){
 				if (err) {
 					res.send(500);
 				} else {
