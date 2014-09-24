@@ -2644,30 +2644,18 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 
                 function colors(type) {
                     switch(type){
-                        case 'HTTP':
-                            return "#67AAB5";
-                        case 'SSL':
-                            return "#A0BB71";
-                        case 'File': // extracted files
-                            return "#B572AB";
-                        case 'DNS': // new dns
-                            return "#708EBC";
-                        case 'Conn': //first seen
-                            return "#6FBF9B";
                         case 'Conn_ioc':
                             return "#EFAA86";
+                        case 'DNS_ioc':
+                            return "#F3BD5D";
                         case 'HTTP_ioc':
                             return "#FFF2A0";
                         case 'SSL_ioc':
                             return "#D97373";
+                        case 'Email_ioc': 
+                            return "#F3BD5D";
                         case 'File_ioc':
                             return "#F68D55";
-                        case 'DNS_ioc':
-                            return "#F3BD5D";
-                        case 'Endpoint':
-                            return "#7E9E7B";
-                        case 'Stealth':
-                            return "#0080CE";
                         default:
                             return "#D8464A";
                     }
@@ -2728,7 +2716,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .attr('points', '10.99,17.822 3.916,23.166 10.99,28.51 10.99,25.744 24.287,25.744 24.287,20.59 10.99,20.59 ')
                                     .attr('fill', '#595A5C');
                                 return;
-
                             case 'IOC Severity':
                                 var color;
                                 element.append('circle')

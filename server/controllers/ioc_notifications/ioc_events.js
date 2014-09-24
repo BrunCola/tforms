@@ -244,7 +244,7 @@ module.exports = function(pool) {
                         sort: [[1, 'desc']],
                         div: 'table',
                         title: 'Indicators of Compromise (IOC) Notifications',
-                        access: req.session.passport.user.level // NOTE: THIS IS IF ACCESS IS DEFINED IN COLUMNS ABOVE
+                        access: req.session.passport.user.level
                     }
                 }
                 var crossfilterQ = {

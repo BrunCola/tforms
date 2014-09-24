@@ -1,40 +1,38 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-config = require('../../config/config'),
-async = require('async');
+    config = require('../../config/config'),
+    async = require('async');
 
 module.exports = function(pool) {
     return {
         render: function(req, res) {
             var database = req.session.passport.user.database;
-            // var database = null;
             var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
             var end = Math.round(new Date().getTime() / 1000);
             if (req.query.start && req.query.end) {
                 start = req.query.start;
                 end = req.query.end;
             }
-            //var results = [];
             var tables = [];
             var info = [];
             var table1 = {
                 query: 'SELECT '+
-                        'sum(`count`) AS `count`,'+
-                        'time, '+ // Last Seen
-                        '`remote_ip`, ' +
-                        '`remote_port`, '  +
-                        '`remote_cc`, ' +
-                        '`remote_country`, ' +
-                        '`remote_asn`, ' +
-                        '`remote_asn_name`, ' +
-                        'sum(`ioc_count`) AS `ioc_count` ' +
-                    'FROM ' + 
-                        '`dns_remote` '+
-                    'WHERE ' + 
-                        '`time` BETWEEN ? AND ? '+
-                    'GROUP BY '+
-                        '`remote_ip`',
+                            'sum(`count`) AS `count`,'+
+                            'max(`time`) as time, '+ // Last Seen
+                            '`remote_ip`, ' +
+                            '`remote_port`, '  +
+                            '`remote_cc`, ' +
+                            '`remote_country`, ' +
+                            '`remote_asn`, ' +
+                            '`remote_asn_name`, ' +
+                            'sum(`ioc_count`) AS `ioc_count` ' +
+                        'FROM ' + 
+                            '`dns_remote` '+
+                        'WHERE ' + 
+                            '`time` BETWEEN ? AND ? '+
+                        'GROUP BY '+
+                            '`remote_ip`',
                 insert: [start, end],
                 params: [
                     {
@@ -76,7 +74,6 @@ module.exports = function(pool) {
                     info: info,
                     tables: tables
                 };
-                //console.log(results);
                 res.json(results);
             });
         }
