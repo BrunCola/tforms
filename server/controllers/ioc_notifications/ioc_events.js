@@ -8,16 +8,13 @@ var dataTable = require('../constructors/datatable'),
 module.exports = function(pool) {
     return {
         render: function(req, res) {
-            // var pool = req.app.get('pool');
             var database = req.session.passport.user.database;
-            // var database = null;
             var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
             var end = Math.round(new Date().getTime() / 1000);
             if (req.query.start && req.query.end) {
                 start = req.query.start;
                 end = req.query.end;
             }
-            //var results = [];
             var tables = [];
             var crossfilter = [];
             var info = [];
@@ -188,6 +185,7 @@ module.exports = function(pool) {
                                 '`ioc_rule`,'+
                                 '`ioc_severity`,'+
                                 '`ioc_attrID`,'+
+                                'sum(`proxy_blocked`) AS proxy_blocked,'+
                                 'sum(`ioc_count`) AS ioc_count '+
                             'FROM '+
                                 '`conn_ioc` '+
@@ -213,6 +211,7 @@ module.exports = function(pool) {
                             },
                         },
                         { title: 'Stealth', select: 'stealth', access: [3] },
+                        { title: 'ABP', select: 'proxy_blocked', access: [2] },
                         { title: 'Severity', select: 'ioc_severity' },
                         { title: 'IOC Hits', select: 'ioc_count' },
                         { title: 'IOC', select: 'ioc' },

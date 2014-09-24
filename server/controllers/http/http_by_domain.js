@@ -46,9 +46,10 @@ module.exports = function(pool) {
                     { title: 'IOC Count', select: 'ioc_count' }
                 ],
                 settings: {
+                    access: req.session.passport.user.level, // NOTE: THIS IS IF ACCESS IS DEFINED IN COLUMNS ABOVE
                     sort: [[1, 'desc']],
                     div: 'table',
-                    title: 'HTTP by Domain'
+                    title: 'HTTP by Domain',
                 }
             }
             async.parallel([

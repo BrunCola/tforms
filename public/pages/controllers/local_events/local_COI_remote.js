@@ -24,6 +24,7 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
         var results = [];
         switch(button) {
             case 'blocked':
+            console.log(data)
             // get children hanging off of parent nodes
                 var rTargets = $scope.forcedata.links.filter(function(d){
                     if ((d.class !== undefined) && (d.source.index === data.index)) {
@@ -41,6 +42,7 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
                 for (var i in rSource) {
                     results.push($scope.forcedata.nodes[rSource[i].source.index].value)
                 }
+                $scope.appendInfo(results, 'blocked');
             break;
             case 'users':
                 var thisObj = $scope.forcedata.uniqueNodes[data.name];
@@ -49,11 +51,12 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
                     obj[i] = Object.keys($scope.forcedata.uniqueUsers[i]);
                     results.push(obj)
                 }
+                $scope.appendInfo(results, 'users');
             break;
             case 'top':
                 // clear the div (replace with loading thing later)
-                $scope.appendInfo({});
-                query += '&type=top'
+                // $scope.appendInfo({});
+                query += '&type=top';
                 $http({method: 'GET', url: query}).
                 //success(function(data, status, headers, config) {
                 success(function(data) {
@@ -66,8 +69,8 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
                         console.log(data)
                     }
                 });
+                $scope.appendInfo(results, 'top');
             break;
         }
-        $scope.appendInfo(results);
     }
 }]);

@@ -61,7 +61,8 @@ module.exports = function(pool) {
                     settings: {
                         sort: [[1, 'desc']],
                         div: 'table',
-                        title: 'Local HTTP By Domain'
+                        title: 'Local HTTP By Domain',
+                        access: req.session.passport.user.level
                     }
                 }
                 async.parallel([

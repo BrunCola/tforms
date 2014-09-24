@@ -62,6 +62,7 @@ module.exports = function(pool) {
                                 '`in_bytes`,'+
                                 '`out_bytes`,'+
                                 '`l7_proto`,'+
+                                '`proxy_blocked`,'+
                                 '`ioc`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`,'+
@@ -77,6 +78,7 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
+                        {title: 'ABP', select: 'proxy_blocked'},
                         {title: "Zone", select: "lan_zone"},
                         {title: "Machine", select: "machine"},
                         {title: "Local User", select: "lan_user"},
@@ -94,7 +96,10 @@ module.exports = function(pool) {
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
 
                 var iocseverity = {
@@ -149,7 +154,10 @@ module.exports = function(pool) {
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var conn_ioc = {
                     query: 'SELECT '+
@@ -170,6 +178,7 @@ module.exports = function(pool) {
                                 '`in_bytes`,'+
                                 '`out_bytes`,'+
                                 '`l7_proto`,'+
+                                '`proxy_blocked`,'+
                                 '`ioc`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`,'+
@@ -187,6 +196,7 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                     params: [
                         {title: "Time", select: "time"},
+                        {title: 'ABP', select: 'proxy_blocked'},
                         {title: "Zone", select: "lan_zone"},
                         {title: "Machine", select: "machine"},
                         {title: "Local User", select: "lan_user"},
@@ -204,7 +214,10 @@ module.exports = function(pool) {
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var application = {
                     query: 'SELECT '+
@@ -255,7 +268,10 @@ module.exports = function(pool) {
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var stealth_conn = {
                     query: 'SELECT '+
@@ -294,7 +310,10 @@ module.exports = function(pool) {
                         {title: "MB to Remote", select: "out_bytes"},
                         {title: "Packets from Remote", select: "in_packets"},
                         {title: "Packets to Remote", select: "out_packets"}
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var stealth_drop = {
                     query: 'SELECT '+
@@ -332,7 +351,10 @@ module.exports = function(pool) {
                         {title: "MB to Remote", select: "out_bytes"},
                         {title: "Packets from Remote", select: "in_packets"},
                         {title: "Packets to Remote", select: "out_packets"}
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var dns = {
                     query: 'SELECT '+
@@ -372,7 +394,10 @@ module.exports = function(pool) {
                         {title: "IOC Type", select: "ioc_typeIndicator"},
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var dns_ioc = {
                     query: 'SELECT '+
@@ -415,7 +440,10 @@ module.exports = function(pool) {
                         {title: "IOC Type", select: "ioc_typeIndicator"},
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var http = {
                     query: 'SELECT '+
@@ -434,6 +462,7 @@ module.exports = function(pool) {
                             '`status_msg`,'+
                             '`info_code`,'+
                             '`info_msg`,'+
+                            '`proxy_blocked`,'+
                             '`ioc`,'+
                             '`ioc_severity`,'+
                             '`ioc_rule`,'+
@@ -449,6 +478,7 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
+                        {title: 'ABP', select: 'proxy_blocked'},
                         {title: "Host", select: "host"},
                         {title: "URI", select: "uri"},
                         {title: "Referrer", select: "referrer"},
@@ -458,7 +488,10 @@ module.exports = function(pool) {
                         {title: "IOC Type", select: "ioc_typeIndicator"},
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }   
                 var http_ioc = {
                     query: 'SELECT '+
@@ -477,6 +510,7 @@ module.exports = function(pool) {
                             '`status_msg`,'+
                             '`info_code`,'+
                             '`info_msg`,'+
+                            '`proxy_blocked`,'+
                             '`ioc`,'+
                             '`ioc_typeIndicator`,'+
                             '`ioc_typeInfection`,'+
@@ -494,6 +528,7 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                     params: [
                         {title: "Time", select: "time"},
+                        {title: 'ABP', select: 'proxy_blocked'},
                         {title: "Host", select: "host"},
                         {title: "URI", select: "uri"},
                         {title: "Referrer", select: "referrer"},
@@ -503,7 +538,10 @@ module.exports = function(pool) {
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var ssl = {
                     query: 'SELECT '+
@@ -517,6 +555,7 @@ module.exports = function(pool) {
                             '`server_name`,'+
                             '`subject`,'+
                             '`issuer_subject`,'+
+                            '`proxy_blocked`,'+
                             '`ioc`,'+
                             '`ioc_typeIndicator`,'+
                             '`ioc_typeInfection`,'+    
@@ -532,6 +571,7 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
+                        {title: 'ABP', select: 'proxy_blocked'},
                         {title: "Server Name", select: "server_name"},
                         {title: "Version", select: "version"},
                         {title: "Cipher", select: "cipher"},
@@ -542,7 +582,10 @@ module.exports = function(pool) {
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var ssl_ioc = {
                     query: 'SELECT '+
@@ -555,6 +598,7 @@ module.exports = function(pool) {
                             '`server_name`,'+
                             '`subject`,'+
                             '`issuer_subject`,'+
+                            '`proxy_blocked`,'+
                             '`ioc`,'+
                             '`ioc_typeIndicator`,'+
                             '`ioc_typeInfection`,'+    
@@ -573,6 +617,7 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                     params: [
                         {title: "Time", select: "time"},
+                        {title: 'ABP', select: 'proxy_blocked'},
                         {title: "Server Name", select: "server_name"},
                         {title: "Version", select: "version"},
                         {title: "Cipher", select: "cipher"},
@@ -583,7 +628,10 @@ module.exports = function(pool) {
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var email = {
                     query: 'SELECT '+
@@ -633,7 +681,10 @@ module.exports = function(pool) {
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
                         {title: "IOC Count", select: "ioc_count"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var email_ioc = {
                     query: 'SELECT '+
@@ -685,7 +736,10 @@ module.exports = function(pool) {
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
                         {title: "IOC Count", select: "ioc_count"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var file = {
                     query: 'SELECT '+
@@ -726,7 +780,10 @@ module.exports = function(pool) {
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var file_ioc = {
                     query: 'SELECT '+
@@ -769,7 +826,10 @@ module.exports = function(pool) {
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 var endpoint = {
                     query: 'SELECT '+
@@ -802,7 +862,10 @@ module.exports = function(pool) {
                         {title: "Event Detail", select: "event_detail"},
                         {title: "Event Source", select: "event_src"},
                         {title: "Event ID", select: "event_id"},
-                    ]
+                    ],
+                    settings: {
+                        access: req.session.passport.user.level
+                    }
                 }
                 async.parallel([
                     // Table function(s)
@@ -943,6 +1006,7 @@ module.exports = function(pool) {
                                 '`in_bytes`,'+
                                 '`out_bytes`,'+
                                 '`l7_proto`,'+
+                                '`proxy_blocked`,'+
                                 '`ioc`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`,'+
@@ -958,6 +1022,7 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
+                            {title: 'ABP', select: 'proxy_blocked'},
                             {title: "Zone", select: "lan_zone"},
                             {title: "Machine", select: "machine"},
                             {title: "Local User", select: "lan_user"},
@@ -975,7 +1040,10 @@ module.exports = function(pool) {
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
 
                     var iocseverity = {
@@ -1030,7 +1098,10 @@ module.exports = function(pool) {
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var conn_ioc = {
                         query: 'SELECT '+
@@ -1051,6 +1122,7 @@ module.exports = function(pool) {
                                 '`in_bytes`,'+
                                 '`out_bytes`,'+
                                 '`l7_proto`,'+
+                                '`proxy_blocked`,'+
                                 '`ioc`,'+
                                 '`ioc_severity`,'+
                                 '`ioc_rule`,'+
@@ -1068,6 +1140,7 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                         params: [
                             {title: "Time", select: "time"},
+                            {title: 'ABP', select: 'proxy_blocked'},
                             {title: "Zone", select: "lan_zone"},
                             {title: "Machine", select: "machine"},
                             {title: "Local User", select: "lan_user"},
@@ -1085,7 +1158,10 @@ module.exports = function(pool) {
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var application = {
                         query: 'SELECT '+
@@ -1138,7 +1214,10 @@ module.exports = function(pool) {
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var stealth_drop = {
                         query: 'SELECT '+
@@ -1178,7 +1257,10 @@ module.exports = function(pool) {
                             {title: "MB to Remote", select: "out_bytes"},
                             {title: "Packets from Remote", select: "in_packets"},
                             {title: "Packets to Remote", select: "out_packets"}
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     } 
                     var dns = {
                         query: 'SELECT '+
@@ -1218,7 +1300,10 @@ module.exports = function(pool) {
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var dns_ioc = {
                         query: 'SELECT '+
@@ -1260,7 +1345,10 @@ module.exports = function(pool) {
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var http = {
                         query: 'SELECT '+
@@ -1278,6 +1366,7 @@ module.exports = function(pool) {
                                     '`status_msg`,'+
                                     '`info_code`,'+
                                     '`info_msg`,'+
+                                    '`proxy_blocked`,'+
                                     '`ioc`,'+
                                     '`ioc_severity`,'+
                                     '`ioc_rule`,'+
@@ -1294,6 +1383,7 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
+                            {title: 'ABP', select: 'proxy_blocked'},
                             {title: "Host", select: "host"},
                             {title: "URI", select: "uri"},
                             {title: "Referrer", select: "referrer"},
@@ -1303,7 +1393,10 @@ module.exports = function(pool) {
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var http_ioc = {
                         query: 'SELECT '+
@@ -1322,6 +1415,7 @@ module.exports = function(pool) {
                                     '`status_msg`,'+
                                     '`info_code`,'+
                                     '`info_msg`,'+
+                                    '`proxy_blocked`,'+
                                     '`ioc`,'+
                                     '`ioc_severity`,'+
                                     '`ioc_rule`,'+
@@ -1339,6 +1433,7 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                         params: [
                             {title: "Time", select: "time"},
+                            {title: 'ABP', select: 'proxy_blocked'},
                             {title: "Host", select: "host"},
                             {title: "URI", select: "uri"},
                             {title: "Referrer", select: "referrer"},
@@ -1348,7 +1443,10 @@ module.exports = function(pool) {
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }                    
                     var ssl = {
                         query: 'SELECT '+
@@ -1362,6 +1460,7 @@ module.exports = function(pool) {
                                     '`server_name`,'+
                                     '`subject`,'+
                                     '`issuer_subject`,'+
+                                    '`proxy_blocked`,'+
                                     '`ioc`,'+
                                     '`ioc_typeIndicator`,'+
                                     '`ioc_typeInfection`,'+    
@@ -1377,6 +1476,7 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
+                            {title: 'ABP', select: 'proxy_blocked'},
                             {title: "Server Name", select: "server_name"},
                             {title: "Version", select: "version"},
                             {title: "cipher", select: "cipher"},
@@ -1387,7 +1487,10 @@ module.exports = function(pool) {
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var ssl_ioc = {
                         query: 'SELECT '+
@@ -1401,6 +1504,7 @@ module.exports = function(pool) {
                                     '`server_name`,'+
                                     '`subject`,'+
                                     '`issuer_subject`,'+
+                                    '`proxy_blocked`,'+
                                     '`ioc`,'+
                                     '`ioc_typeIndicator`,'+
                                     '`ioc_typeInfection`,'+    
@@ -1418,6 +1522,7 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                         params: [
                             {title: "Time", select: "time"},
+                            {title: 'ABP', select: 'proxy_blocked'},
                             {title: "Server Name", select: "server_name"},
                             {title: "Version", select: "version"},
                             {title: "cipher", select: "cipher"},
@@ -1428,7 +1533,10 @@ module.exports = function(pool) {
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var email = {
                         query: 'SELECT '+
@@ -1478,7 +1586,10 @@ module.exports = function(pool) {
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
                             {title: "IOC Count", select: "ioc_count"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var email_ioc = {
                         query: 'SELECT '+
@@ -1530,7 +1641,10 @@ module.exports = function(pool) {
                             {title: "IOC Rule", select: "ioc_rule"},
                             {title: "IOC Severity", select: "ioc_severity"},
                             {title: "IOC Count", select: "ioc_count"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var file = {
                         query: 'SELECT '+
@@ -1570,7 +1684,10 @@ module.exports = function(pool) {
                             {title: "IOC Type", select: "ioc_typeIndicator"},
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var file_ioc = {
                         query: 'SELECT '+
@@ -1612,7 +1729,10 @@ module.exports = function(pool) {
                             {title: "IOC Type", select: "ioc_typeIndicator"},
                             {title: "IOC Stage", select: "ioc_typeInfection"},
                             {title: "IOC Rule", select: "ioc_rule"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var endpoint = {
                        query: 'SELECT '+
@@ -1645,7 +1765,10 @@ module.exports = function(pool) {
                             {title: "Event Detail", select: "event_detail"},
                             {title: "Event Source", select: "event_src"},
                             {title: "Event ID", select: "event_id"},
-                        ]
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
                     }
                     var info = {};
                     var InfoSQL = {
