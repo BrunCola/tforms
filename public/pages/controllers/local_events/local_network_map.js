@@ -14,20 +14,13 @@ angular.module('mean.pages').controller('localNetworkMapController', ['$scope', 
         if (data.tables[0] === null) {
             $scope.$broadcast('loadError');
         } else {
-            var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
-
             $scope.data = data;
-
             $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
             $scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
             $scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
-
             var divHeight = 620;
-
             $scope.$broadcast('networkChart', data.network);
-
             $scope.$broadcast('spinnerHide');
-
         }
     });
 }]);

@@ -165,7 +165,8 @@ module.exports = function(pool) {
                 default:
                 var table1 = {
                     query: 'SELECT '+
-                                'max(date_format(from_unixtime(conn_ioc.time), "%Y-%m-%d %H:%i:%s")) AS time,'+
+                                // 'max(date_format(from_unixtime(conn_ioc.time), "%Y-%m-%d %H:%i:%s")) AS time,'+
+                                'time,'+
                                 '`stealth`,'+
                                 '`lan_zone`,'+
                                 '`machine`,'+
@@ -249,7 +250,7 @@ module.exports = function(pool) {
                 var crossfilterQ = {
                     query: 'SELECT '+
                                 'count(*) as count,'+
-                                'date_format(from_unixtime(time), "%Y-%m-%d %H:%i:%s") as time,'+
+                                'time,'+
                                 '`remote_country`,'+
                                 '`ioc_severity`,'+
                                 '`ioc`, '+

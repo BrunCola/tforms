@@ -20,6 +20,22 @@ angular.module('mean.pages').factory('iocIcon', [
     }
 ]);
 
+angular.module('mean.pages').factory('timeFormat', [
+    function() {
+        var timeFormat = function(time, format) {
+            // console.log(moment().unix(time))
+            switch(format){
+                case 'strdDateObj':
+                    return new Date(time*1000);
+                break;
+                case 'tables':
+                    return moment(time*1000).format('YYYY-M-DD HH:m:ss');
+                break;
+            }
+        };
+        return timeFormat;
+    }
+]);
 
 angular.module('mean.pages').factory('dictionary', [
     function() {

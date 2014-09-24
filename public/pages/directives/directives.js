@@ -339,7 +339,7 @@ angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '
     };
 }]);
 
-angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$rootScope', 'iocIcon', 'appIcon', 'mimeIcon', 'socket', '$http', function ($timeout, $location, $rootScope, iocIcon, appIcon, mimeIcon, socket, $http) {
+angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$rootScope', 'iocIcon', 'appIcon', 'mimeIcon', 'socket', '$http', 'timeFormat', function ($timeout, $location, $rootScope, iocIcon, appIcon, mimeIcon, socket, $http, timeFormat) {
     return {
         link: function ($scope, element, attrs) {
             $scope.socket = socket;
@@ -349,7 +349,6 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                     $('#table').dataTable().fnAddData(tableData.top(Infinity));
                     $('#table').dataTable().fnDraw();
                 }
-
                 for (var t in params) {
                     if (params[t] != null) {
                         if ($location.$$absUrl.search('/report#!/') === -1) {
@@ -586,9 +585,9 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                                         objlink: obj
                                                     });
                                                     if ($scope.e[c].mData === 'time') {
-                                                        $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+aData[$scope.e[c].mData]+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
+                                                        $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
                                                     } else {
-                                                        $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+aData[$scope.e[c].mData]+"</button>");
+                                                        $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button>");
                                                     }
                                                 break;
                                             }
@@ -2672,33 +2671,33 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                 }
 
-                $scope.point = function(element, nickname, name, id) {
+                $scope.point = function(element, type, name, id) {
 
-                    //console.log(nickname);
-                    if (nickname.search("ioc") !== -1) {
+                    //console.log(type);
+                    if (type.search("ioc") !== -1) {
                         element.attr('class', 'IOC');
                         element = element.append('g')
                             .attr('transform', 'translate(-18, -6)scale(0.8)');
                         element.append('svg:path')
                             .attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
-                            .attr('fill', colors(nickname));
+                            .attr('fill', colors(type));
                         element.append('svg:polygon')
                             .attr('points', '18.155,3.067 5.133,26.932 31.178,26.932 ')
                             .attr('fill', '#595A5C');
                         element.append('svg:polygon')
                             .attr('points', '19.037,21.038 19.626,12.029 15.888,12.029 16.477,21.038 ')
-                            .attr('fill', colors(nickname));
+                            .attr('fill', colors(type));
                         element.append('rect')
                             .attr('x', 16.376)
                             .attr('y', 22.045)
-                            .attr('fill', colors(nickname))
+                            .attr('fill', colors(type))
                             .attr('width', 2.838)
                             .attr('height', 2.448);
                         return;
                     } else { 
                         element.attr('class', id);
                         element = element.append('g').attr('transform', 'translate(-18, -6)scale(0.8)');
-                        switch(nickname){
+                        switch(type){
                             case 'secure':
                                 element.append('circle')
                                     .attr('fill', function(d){ return '#A0BB71'; })

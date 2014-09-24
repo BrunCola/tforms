@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.pages').controller('sslLocalController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
+angular.module('mean.pages').controller('sslLocalController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', 'timeFormat', function ($scope, $stateParams, $location, Global, $rootScope, $http, timeFormat) {
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
@@ -14,7 +14,7 @@ angular.module('mean.pages').controller('sslLocalController', ['$scope', '$state
 		if (data.tables[0] === null) {
 			$scope.$broadcast('loadError');
 		} else {
-			var dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
+			
 
 			$scope.data = data;
 
