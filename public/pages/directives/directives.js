@@ -539,12 +539,14 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         var newVar = aData.mailfrom.replace(/[\<\>]/g,'');
                                         $('td:eq('+$scope.r.indexOf("mailfrom")+')', nRow).html(newVar);
                                     }
-                                    if (aData.stealth && $scope.r.indexOf('stealth') !== -1) {
-                                        if (aData.stealth > 0){
-                                            $('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-shield fa-stack-1x fa-inverse"></i></span>');
+                                    if(aData.stealth !== undefined){                                        
+                                        if (aData.stealth && $scope.r.indexOf('stealth') !== -1) {
+                                            if (aData.stealth > 0){
+                                                $('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-shield fa-stack-1x fa-inverse"></i></span>');
+                                            }
+                                        } else {
+                                            $('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html('');
                                         }
-                                    } else {
-                                        $('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html('');
                                     }
                                     if (aData.receiptto && $scope.r.indexOf('receiptto') !== -1) {
                                         var newVar = aData.receiptto.replace(/[\<\>]/g,'');
@@ -2116,10 +2118,10 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                     // Toggle children on click.
                     function click(connections) {
                         //.hide()
-                        console.log(" ");
-                        console.log(" ");
+                        // console.log(" ");
+                        // console.log(" ");
                         for(var i = 0; i<connections.length; i++){
-                            console.log(data.nodes[connections[i]].index);
+                            // console.log(data.nodes[connections[i]].index);
                            if (data.nodes[connections[i]].hide) {
                                 data.nodes[connections[i]]._hide= data.nodes[connections[i]].hide;
                                 data.nodes[connections[i]].hide = null;
@@ -2128,8 +2130,8 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                                 data.nodes[connections[i]]._hide = null;
                             }
                         }
-                        console.log(" ");
-                        console.log(" ");
+                        // console.log(" ");
+                        // console.log(" ");
                         $scope.update();
                     }
 
@@ -2214,7 +2216,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                             var elm = d3.select(this)
 
                             if(d.hide !== "true"){
-                                console.log(d.index);
+                               //console.log(d.index);
                                /* elm
                                     .attr('style', 'display:block');*/
 
@@ -2302,7 +2304,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                                         });
                                 }
                             }else{
-                                console.log(d.hide);
+                                // console.log(d.hide);
                                 /*elm
                                     .attr('style', 'display:none');*/
                             }
