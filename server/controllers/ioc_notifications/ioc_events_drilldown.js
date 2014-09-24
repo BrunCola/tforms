@@ -1782,7 +1782,6 @@ module.exports = function(pool) {
                                     '`machine`, '+
                                     '`lan_zone`, '+
                                     '`lan_port`, '+
-                                    //'`lan_cc`, '+
                                     '`remote_port`, '+
                                     '`remote_cc`, '+
                                     '`remote_country`, '+
@@ -1845,6 +1844,18 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_ip]
                     }
 
+                    var infocountry = [];
+                    var InfoCountry = {
+                        query: 'SELECT * '+
+                                'FROM '+
+                                    '`conn_ioc` '+
+                                'WHERE '+
+                                    '`lan_ip` = ? '+
+                                    'AND `remote_ip` = ? '+
+                                    'AND `ioc` = ? '+
+                                'LIMIT 1',
+                        insert: [req.query.lan_ip, req.query.remote_ip, req.query.ioc]
+                    }
                     var lanIP = req.query.lan_ip;
                     var attrID = req.query.ioc_attrID;
                     async.parallel([
@@ -1955,6 +1966,12 @@ module.exports = function(pool) {
                         function(callback) { // treeSQL
                             new treechart(treeSQL, {database: database, pool: pool}, lanIP, attrID, function(err,data){
                                 treereturn = data;
+                                callback();
+                            });
+                        },
+                        function(callback) { // InfoSQL
+                            new query(InfoCountry, {database: database, pool: pool}, function(err,data){
+                                infocountry = data;
                                 callback();
                             });
                         },

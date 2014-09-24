@@ -110,6 +110,13 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 		if (data.info.desc[0] !== undefined) {
 			$scope.$broadcast('iocDesc', data.info.desc[0].description)
 		}
+
+
+		$http({method: 'GET', url: '/actions/local_cc?zone='+$scope.lan_zone}).
+	 		success(function(data) {
+	 			console.log(data);
+	 		});
+
 		
 		// // draw chart
 		// fishchart(data);
