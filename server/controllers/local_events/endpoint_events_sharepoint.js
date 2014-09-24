@@ -18,29 +18,29 @@ module.exports = function(pool) {
             var info = [];
             var table1 = {
                 query: 'SELECT '+
-                        'count(*) AS count,'+
-                        'max(`timestamp`) as time,'+
-                        '`sharepoint_user`,'+
-                        '`lan_ip`,'+
-                        '`machine`, ' +
-                        '`lan_zone`, ' +
-                        '`remote_ip`, ' +
-                        '`remote_port`, '  +
-                        '`remote_cc`, ' +
-                        '`remote_country`, ' +
-                        '`remote_asn_name`, ' +
-                        '`location`,'+
-                        '`event`,'+
-                        '`event_id`,'+
-                        '`event_location` '+
-                    'FROM '+
-                        '`sharepoint` '+
-                    'WHERE '+
-                        '`timestamp` BETWEEN ? AND ? '+
-                    'GROUP BY '+
-                        '`event`, '+
-                        '`lan_ip`, '+
-                        '`lan_zone`', 
+                            'count(*) AS count,'+
+                            'max(`timestamp`) as time,'+
+                            '`sharepoint_user`,'+
+                            '`lan_ip`,'+
+                            '`machine`, ' +
+                            '`lan_zone`, ' +
+                            '`remote_ip`, ' +
+                            '`remote_port`, '  +
+                            '`remote_cc`, ' +
+                            '`remote_country`, ' +
+                            '`remote_asn_name`, ' +
+                            '`location`,'+
+                            '`event`,'+
+                            '`event_id`,'+
+                            '`event_location` '+
+                        'FROM '+
+                            '`sharepoint` '+
+                        'WHERE '+
+                            '`timestamp` BETWEEN ? AND ? '+
+                        'GROUP BY '+
+                            '`event`, '+
+                            '`lan_ip`, '+
+                            '`lan_zone`', 
                 insert: [start, end],
                 params: [
                     {

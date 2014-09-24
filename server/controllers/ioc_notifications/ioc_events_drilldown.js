@@ -99,7 +99,6 @@ module.exports = function(pool) {
                         access: req.session.passport.user.level
                     }
                 }
-
                 var iocseverity = {
                     query: 'SELECT '+
                                 '\'IOC Severity\' AS type, '+
@@ -158,7 +157,7 @@ module.exports = function(pool) {
                 var conn_ioc = {
                     query: 'SELECT '+
                                 '\'Conn_ioc\' AS type, '+
-                                'time, '+ // Last Seen
+                                'time, '+
                                 '`ioc_count`,'+
                                 '`lan_zone`,'+
                                 '`machine`,'+

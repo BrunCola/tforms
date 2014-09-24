@@ -1,8 +1,8 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-config = require('../../config/config'),
-async = require('async');
+    config = require('../../config/config'),
+    async = require('async');
 
 module.exports = function(pool) {
     return {
@@ -22,7 +22,7 @@ module.exports = function(pool) {
                 var table1 = {
                      query: 'SELECT '+
                                 'count(*) AS count,'+
-                                'time,'+
+                                'max(`time`) AS `time`,'+
                                 '`stealth`,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
@@ -72,7 +72,6 @@ module.exports = function(pool) {
                 async.parallel([
                     // Table function(s)
                     function(callback) {
-                        // new dataTable(table1, table2, parseInt(req.session.passport.user.level), {database: database, pool: pool}, function(err,data){
                         new dataTable(table1, {database: database, pool: pool}, function(err,data){
                             tables.push(data);
                             callback();
