@@ -2,7 +2,8 @@
 
 var dataTable = require('../constructors/datatable'),
 	config = require('../../config/config'),
-	async = require('async');
+	async = require('async'),
+    query = require('../constructors/query');
 
 module.exports = function(pool) {
 	return {
