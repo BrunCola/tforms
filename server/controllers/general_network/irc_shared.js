@@ -1,52 +1,50 @@
 'use strict';
 
-var datatable_stealth = require('../constructors/datatable_stealth'),
-config = require('../../config/config'),
-async = require('async');
+var dataTable = require('../constructors/datatable'),
+    config = require('../../config/config'),
+    async = require('async');
 
 module.exports = function(pool) {
 	return {
 		render: function(req, res) {
 			var database = req.session.passport.user.database;
-			// var database = null;
 			var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 			var end = Math.round(new Date().getTime() / 1000);
 			if (req.query.start && req.query.end) {
 				start = req.query.start;
 				end = req.query.end;
 			}
-			//var results = [];
 			if (req.query.lan_zone && req.query.lan_ip && req.query.remote_ip) {
 				var tables = [];
 				var info = [];
 				var table1 = {
 					query: 'SELECT ' +
-							'irc.time as `time`, '+ // Last Seen
-							'`machine`, ' +
-							'`lan_zone`, ' +
-							'irc.lan_ip, ' +
-							'`lan_port`, ' +
-							'`remote_ip`, ' +
-							'`remote_port`, '  +
-							'`remote_cc`, ' +
-							'`remote_country`, ' +
-							'`remote_asn_name`, ' +
-							'`nick`, ' +
-							'irc.user AS irc_user, ' +
-							'`command`, ' +
-							'`value`, ' +
-							'`addl`, ' +
-							'`dcc_file_name`, ' +
-							'`dcc_file_size`, ' +
-							'`dcc_mime_type`, ' +
-							'`fuid` ' +
-						'FROM ' +
-							'`irc` ' +
-						'WHERE '+
-							'irc.time BETWEEN ? AND ? ' +
-							'AND `lan_zone` = ? '+
-							'AND irc.lan_ip = ? ' +
-							'AND `remote_ip` = ? ',
+    							'irc.time as `time`, '+ // Last Seen
+    							'`machine`, ' +
+    							'`lan_zone`, ' +
+    							'irc.lan_ip, ' +
+    							'`lan_port`, ' +
+    							'`remote_ip`, ' +
+    							'`remote_port`, '  +
+    							'`remote_cc`, ' +
+    							'`remote_country`, ' +
+    							'`remote_asn_name`, ' +
+    							'`nick`, ' +
+    							'irc.user AS irc_user, ' +
+    							'`command`, ' +
+    							'`value`, ' +
+    							'`addl`, ' +
+    							'`dcc_file_name`, ' +
+    							'`dcc_file_size`, ' +
+    							'`dcc_mime_type`, ' +
+    							'`fuid` ' +
+    						'FROM ' +
+    							'`irc` ' +
+    						'WHERE '+
+    							'irc.time BETWEEN ? AND ? ' +
+    							'AND `lan_zone` = ? '+
+    							'AND irc.lan_ip = ? ' +
+    							'AND `remote_ip` = ? ',
 					insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip],
 					params: [
 						{
@@ -78,31 +76,10 @@ module.exports = function(pool) {
 						title: 'Common IRC Connections between Remote and Local Host'
 					}
 				}
-				var table2 = {
-					query: 'SELECT '+
-							'time, '+ 
-							'`stealth_COIs`, ' +
-							'`stealth`, '+
-							'`lan_ip`, ' +
-							'`event`, ' +
-							'`user` ' +
-						'FROM ' + 
-							'`endpoint_tracking` '+
-						'WHERE ' + 
-							'stealth > 0 '+
-							'AND event = "Log On" ',
-					insert: [],
-					params: [
-						{ title: 'Stealth', select: 'stealth' },
-						{ title: 'COI Groups', select: 'stealth_COIs' },
-						{ title: 'User', select: 'user' }
-					],
-					settings: {}
-				}
 				async.parallel([
 					// Table function(s)
 					function(callback) {
-						new datatable_stealth(table1, table2, parseInt(req.session.passport.user.level), {database: database, pool: pool}, function(err,data){
+						new dataTable(table1, {database: database, pool: pool}, function(err,data){
 							tables.push(data);
 							callback();
 						});
@@ -113,7 +90,6 @@ module.exports = function(pool) {
 						info: info,
 						tables: tables
 					};
-					//console.log(results);
 					res.json(results);
 				});
 			} else {
