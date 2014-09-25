@@ -85,7 +85,8 @@ module.exports = function(pool) {
                     settings: {
                         sort: [[1, 'desc']],
                         div: 'table',
-                        title: 'Remote IRC/Local IRC Traffic'
+                        title: 'Remote IRC/Local IRC Traffic',
+                        access: req.session.passport.user.level
                     }
                 }
                 async.parallel([

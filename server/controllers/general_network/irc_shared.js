@@ -19,25 +19,27 @@ module.exports = function(pool) {
 				var info = [];
 				var table1 = {
 					query: 'SELECT ' +
-    							'irc.time as `time`, '+ // Last Seen
-    							'`machine`, ' +
-    							'`lan_zone`, ' +
-    							'irc.lan_ip, ' +
-    							'`lan_port`, ' +
-    							'`remote_ip`, ' +
-    							'`remote_port`, '  +
-    							'`remote_cc`, ' +
-    							'`remote_country`, ' +
-    							'`remote_asn_name`, ' +
-    							'`nick`, ' +
-    							'irc.user AS irc_user, ' +
-    							'`command`, ' +
-    							'`value`, ' +
-    							'`addl`, ' +
-    							'`dcc_file_name`, ' +
-    							'`dcc_file_size`, ' +
-    							'`dcc_mime_type`, ' +
-    							'`fuid` ' +
+    							'irc.time as `time`,'+
+    							'`stealth`,'+
+                                '`lan_zone`,'+
+                                '`machine`,'+
+                                '`lan_user`,'+
+    							'`lan_ip`,'+
+    							'`lan_port`,'+
+    							'`remote_ip`,'+
+    							'`remote_port`,'+
+    							'`remote_cc`,'+
+    							'`remote_country`,'+
+    							'`remote_asn_name`,'+
+    							'`nick`,'+
+    							'irc.user AS irc_user,'+
+    							'`command`,'+
+    							'`value`,'+
+    							'`addl`,'+
+    							'`dcc_file_name`,'+
+    							'`dcc_file_size`,'+
+    							'`dcc_mime_type`,'+
+    							'`fuid` '+
     						'FROM ' +
     							'`irc` ' +
     						'WHERE '+
@@ -51,12 +53,14 @@ module.exports = function(pool) {
 							title: 'Time',
 							select: 'time'
 						},
+                        { title: 'Stealth', select: 'stealth', access: [3] },
+                        { title: 'Zone', select: 'lan_zone' },
 						{ title: 'Machine', select: 'machine' },
-						{ title: 'Zone', select: 'lan_zone' },
+                        { title: 'Local User', select: 'lan_user' },
 						{ title: 'Local IP', select: 'lan_ip' },
-						{ title: 'Local port', select: 'lan_port' },
+						{ title: 'Local Port', select: 'lan_port' },
 						{ title: 'Remote IP', select: 'remote_ip'},
-						{ title: 'Remote port', select: 'remote_port' },
+						{ title: 'Remote Port', select: 'remote_port' },
 						{ title: 'Flag', select: 'remote_cc' },
 						{ title: 'Remote Country', select: 'remote_country' },
 						{ title: 'Remote ASN Name', select: 'remote_asn_name' },
@@ -73,7 +77,8 @@ module.exports = function(pool) {
 					settings: {
 						sort: [[0, 'desc']],
 						div: 'table',
-						title: 'Common IRC Connections between Remote and Local Host'
+						title: 'Common IRC Connections between Remote and Local Host',
+                        access: req.session.passport.user.level
 					}
 				}
 				async.parallel([

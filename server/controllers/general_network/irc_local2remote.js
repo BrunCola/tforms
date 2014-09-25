@@ -93,7 +93,7 @@ module.exports = function(pool) {
                 async.parallel([
                     // Table function(s)
                     function(callback) {
-                        new datatable_stealth(table1, table2, parseInt(req.session.passport.user.level), {database: database, pool: pool}, function(err,data){
+                        new dataTable(table1, {database: database, pool: pool}, function(err,data){
                             tables.push(data);
                             callback();
                         });
