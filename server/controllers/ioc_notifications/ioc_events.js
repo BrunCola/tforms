@@ -228,7 +228,7 @@ module.exports = function(pool) {
                         { title: 'Remote ASN', select: 'remote_asn_name' },
                         { title: 'Bytes to Remote', select: 'in_bytes'},
                         { title: 'Bytes from Remote', select: 'out_bytes'},
-                        { title: 'Packets to Remote', select: 'in_packets', dView: false  },
+                        { title: 'Packets to Remote', select: 'in_packets', dView: true  },
                         { title: 'Packets from Remote', select: 'out_packets', dView: false  },
                         {
                             title: '',
