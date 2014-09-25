@@ -1480,7 +1480,7 @@ Page content
   margin-top: 0px;
   padding: 0px;
     background:#F5F5F5;
-  background-image:url('../assets/img/);
+  background-image:url('../assets/img/');
   background-repeat:no-repeat;
   background-attachment:fixed;
   background-position:400px 80%;
@@ -1490,7 +1490,7 @@ Page content
   padding: 0px !important;
  position: relative;
   background:#fdfdfd !important;
-  background-image:url('../assets/img/) !important;
+  background-image:url('../assets/img/') !important;
   background-repeat:no-repeat !important;
   background-attachment:fixed !important;
   background-position:400px 80% !important;
@@ -1910,7 +1910,7 @@ Form stuff
   padding-left: 190px;
 }
 **/
-.box {
+.box{
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
     border-radius: 2px;

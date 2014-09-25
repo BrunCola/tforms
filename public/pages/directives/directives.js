@@ -355,7 +355,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                             $(element).prepend('<div class="row-fluid"> '+
                             '<div class="span12"> '+
                                     '<div class="jdash-header">'+params[t].title+'</div> '+
-                                    '<div  style="background-color:#FFF;" class="box"> '+
+                                    '<div class="box"> '+
                                         '<div class="box-content"> '+
                                             '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="'+params[t].div+'" ></table>'+
                                         '</div> '+
@@ -367,7 +367,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                 '<div class="row-fluid"> '+
                                     '<div class="span12"> '+
                                         '<div class="jdash-header">'+params[t].title+'</div> '+
-                                        '<div  style="background-color:#FFF;" class="box"> '+
+                                        '<div  class="box"> '+
                                             '<div class="box-content"> '+
                                                 '<table class="table report-table" id="'+params[t].div+'" ></table>'+
                                             '</div> '+
