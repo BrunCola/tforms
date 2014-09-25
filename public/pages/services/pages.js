@@ -38,7 +38,7 @@ angular.module('mean.pages').factory('timeFormat', [
                     return moment(time*1000).format('YYYY/MM/DD HH:mm:ss.SS');
                 break;
                 case 'iochits':
-                    return moment(time*1000).format('YYYY-MM-DD HH:MM:SS');
+                    return moment(time*1000).format('YYYY-MM-DD HH:mm:ss');
                 break;
             }
         };
