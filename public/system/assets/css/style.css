@@ -585,7 +585,11 @@ td.file {
 /**.dc-data-table td {
   word-wrap: break-word !important;
 }
-**/.table_overflow {
+**/
+#table_wrapper{
+    overflow: hidden;
+}
+.table_overflow {
     overflow: auto;
     width:100%;
 }

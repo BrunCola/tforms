@@ -574,6 +574,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         // url builder
                                         for (var c in $scope.e) {
                                             var type = $scope.e[c].link.type;
+                                            console.log(type);
                                             switch(type) {
                                                 case 'Archive':
                                                     $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
