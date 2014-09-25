@@ -78,11 +78,12 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
         $scope.remote_port = data.info.main[0].remote_port;
         $scope.in_packets = data.info.main[0].in_packets;
         $scope.in_bytes = data.info.main[0].in_bytes;
-        $scope.first = data.info.main[0].first;
         $scope.l7_proto = data.info.main[0].l7_proto;
         $scope.remote_asn = data.info.main[0].remote_asn;
         $scope.remote_asn_name = data.info.main[0].remote_asn_name;
-        $scope.last = data.info.main[0].last;
+
+        $scope.first = timeFormat(data.info.main[0].first, 'iochits');
+        $scope.last = timeFormat(data.info.main[0].last, 'iochits');
 
         $scope.iocc = $location.$$search.ioc;
         $scope.ioc_type = data.info.main[0].ioc_typeIndicator;

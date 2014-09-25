@@ -1706,8 +1706,9 @@ module.exports = function(pool) {
                     var info = {};
                     var InfoSQL = {
                         query: 'SELECT '+
-                                    'time as last, '+
+                                    '`time`, '+
                                     'min(`time`) as first, '+
+                                    'max(`time`) as last, '+
                                     'sum(`in_packets`) as in_packets, '+
                                     'sum(`out_packets`) as out_packets, '+
                                     'sum(`in_bytes`) as in_bytes, '+
@@ -1776,19 +1777,7 @@ module.exports = function(pool) {
                                     'remote_ip',
                         insert: [start, end, req.query.lan_ip]
                     }
-
-                    var infocountry = [];
-                    var InfoCountry = {
-                        query: 'SELECT * '+
-                                'FROM '+
-                                    '`conn_ioc` '+
-                                'WHERE '+
-                                    '`lan_ip` = ? '+
-                                    'AND `remote_ip` = ? '+
-                                    'AND `ioc` = ? '+
-                                'LIMIT 1',
-                        insert: [req.query.lan_ip, req.query.remote_ip, req.query.ioc]
-                    }
+                   
                     var lanIP = req.query.lan_ip;
                     var attrID = req.query.ioc_attrID;
                     async.parallel([
@@ -1902,16 +1891,9 @@ module.exports = function(pool) {
                                 callback();
                             });
                         },
-                        function(callback) { // InfoSQL
-                            new query(InfoCountry, {database: database, pool: pool}, function(err,data){
-                                infocountry = data;
-                                callback();
-                            });
-                        },
                     ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                         if (err) throw console.log(err);
                         res.json({
-                            infocountry: infocountry,
                             info: info,
                             laneGraph: result,
                             start: start,

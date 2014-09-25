@@ -37,6 +37,9 @@ angular.module('mean.pages').factory('timeFormat', [
                 case 'laneGraphPreview':
                     return moment(time*1000).format('YYYY/MM/DD HH:mm:ss.SS');
                 break;
+                case 'iochits':
+                    return moment(time*1000).format('YYYY-MM-DD HH:MM:SS');
+                break;
             }
         };
         return timeFormat;
