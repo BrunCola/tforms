@@ -2,7 +2,8 @@
 
 var dataTable = require('../constructors/datatable'),
 	config = require('../../config/config'),
-	async = require('async');
+	async = require('async'),
+    query = require('../constructors/query');
 
 module.exports = function(pool) {
 	return {
@@ -19,7 +20,7 @@ module.exports = function(pool) {
 			var table1 = {
 				query: 'SELECT '+
 							'count(*) AS count,'+
-							'max(ssh.time) AS time, '+
+							'max(ssh.time) AS `time`, '+
 							'`stealth`,'+
 							'`lan_zone`,'+
 							'`machine`,'+

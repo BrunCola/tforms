@@ -105,7 +105,7 @@ th {
   border-top: 1px;
   padding-top: 10px;
   border-top-color: #CCC;
-  color: #ff0000;
+  color: #ccc;
   font-weight: normal;
 }
 
@@ -589,7 +589,11 @@ td.file {
 /**.dc-data-table td {
   word-wrap: break-word !important;
 }
-**/.table_overflow {
+**/
+#table_wrapper{
+    overflow: hidden;
+}
+.table_overflow {
     overflow: auto;
     width:100%;
 }
@@ -1484,7 +1488,7 @@ Page content
   margin-top: 0px;
   padding: 0px;
     background:#F5F5F5;
-  background-image:url('../assets/img/);
+  background-image:url('../assets/img/');
   background-repeat:no-repeat;
   background-attachment:fixed;
   background-position:400px 80%;
@@ -1494,7 +1498,7 @@ Page content
   padding: 0px !important;
  position: relative;
   background:#fdfdfd !important;
-  background-image:url('../assets/img/) !important;
+  background-image:url('../assets/img/') !important;
   background-repeat:no-repeat !important;
   background-attachment:fixed !important;
   background-position:400px 80% !important;
@@ -1914,7 +1918,7 @@ Form stuff
   padding-left: 190px;
 }
 **/
-.box {
+.box{
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
     border-radius: 2px;
@@ -1981,7 +1985,6 @@ Form stuff
     padding: 10px;
     background: #fff;
 }
-
 
 /**.portlet.box .form .form-actions,
 .portlet.solid .form .form-actions {

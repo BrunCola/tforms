@@ -49,7 +49,7 @@ angular.module('mean.pages').directive('modalWindow', function() {
                     "bFilter": true,
                     "bRebuild": true,
                     "aoColumns": $scope.columns,
-                    "iDisplayLength": 4,
+                    "iDisplayLength": 10,
                 });
             }
         }
@@ -355,7 +355,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                             $(element).prepend('<div class="row-fluid"> '+
                             '<div class="span12"> '+
                                     '<div class="jdash-header">'+params[t].title+'</div> '+
-                                    '<div  style="background-color:#FFF;" class="box"> '+
+                                    '<div class="box"> '+
                                         '<div class="box-content"> '+
                                             '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="'+params[t].div+'" ></table>'+
                                         '</div> '+
@@ -367,7 +367,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                 '<div class="row-fluid"> '+
                                     '<div class="span12"> '+
                                         '<div class="jdash-header">'+params[t].title+'</div> '+
-                                        '<div  style="background-color:#FFF;" class="box"> '+
+                                        '<div  class="box"> '+
                                             '<div class="box-content"> '+
                                                 '<table class="table report-table" id="'+params[t].div+'" ></table>'+
                                             '</div> '+
@@ -519,11 +519,6 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                             $scope.e.push(oSettings.aoColumns[a]);
                                         }
                                     }
-                                    for (var i=0; i<5; i++) {
-                                        // find the index of column rows so they can me modified below
-                                        $scope.r.push("test"+i);
-                                        //console.log($scope.r);
-                                    }
                                 },
                                 'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
                                     if (aData.ioc_severity && $scope.r.indexOf('ioc_severity') !== -1) {
@@ -570,41 +565,42 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         $('td:eq('+$scope.r.indexOf("time")+')', nRow).html('<div style="min-width:100px">'+timeFormat(aData.time, 'tables')+'</div>');
                                     }
                                     if (notReport) {
-
                                         // url builder
                                         for (var c in $scope.e) {
                                             var type = $scope.e[c].link.type;
-                                            switch(type) {
-                                                case 'Archive':
-                                                    $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
-                                                break;
-                                                case 'Restore':
-                                                    $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bRestore button-success pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Restore</button>");
-                                                break;
-                                                default:
-                                                    var obj = new Object();
-                                                    //var all = new Object();
-                                                    if ($location.$$search.start && $location.$$search.end) {
-                                                        obj.start = $location.$$search.start;
-                                                        obj.end = $location.$$search.end;
-                                                    }
-                                                    for (var l in $scope.e[c].link.val) {
-                                                        if (aData[$scope.e[c].link.val[l]] !== null) {
-                                                            var newVar = aData[$scope.e[c].link.val[l]].toString();
-                                                            obj[$scope.e[c].link.val[l]] = newVar.replace("'", "&#39;");
+                                            if($scope.e[c].bVisible){
+                                                switch(type) {
+                                                    case 'Archive':
+                                                        $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
+                                                    break;
+                                                    case 'Restore':
+                                                        $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bRestore button-success pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Restore</button>");
+                                                    break;
+                                                    default:
+                                                        var obj = new Object();
+                                                        //var all = new Object();
+                                                        if ($location.$$search.start && $location.$$search.end) {
+                                                            obj.start = $location.$$search.start;
+                                                            obj.end = $location.$$search.end;
                                                         }
-                                                    }
-                                                    var links = JSON.stringify({
-                                                        type: $scope.e[c].link.type,
-                                                        objlink: obj
-                                                    });
-                                                    if ($scope.e[c].mData === 'time') {
-                                                        $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
-                                                    } else {
-                                                        $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button>");
-                                                    }
-                                                break;
-                                            }
+                                                        for (var l in $scope.e[c].link.val) {
+                                                            if (aData[$scope.e[c].link.val[l]] !== null) {
+                                                                var newVar = aData[$scope.e[c].link.val[l]].toString();
+                                                                obj[$scope.e[c].link.val[l]] = newVar.replace("'", "&#39;");
+                                                            }
+                                                        }
+                                                        var links = JSON.stringify({
+                                                            type: $scope.e[c].link.type,
+                                                            objlink: obj
+                                                        });
+                                                        if ($scope.e[c].mData === 'time') {
+                                                            $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
+                                                        } else {
+                                                            $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button>");
+                                                        }
+                                                    break;
+                                                }  
+                                            }                                            
                                         }
                                     }
                                 },
@@ -3055,7 +3051,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 function laneInfoAppend(d) {
                     var send = '';
                     for (var i in d) {
-                        send += '<em>'+d[i].name+':</em> '+d[i].value+'<br />';
+                        if (d[i].name === 'Time') {
+                            send += '<em>'+d[i].name+':</em> '+timeFormat(d[i].value, 'laneGraphExpanded')+'<br />';      
+                        } else {
+                            send += '<em>'+d[i].name+':</em> '+d[i].value+'<br />';
+                        }
                     }
                     return send;
                 }
@@ -3301,7 +3301,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .html(function(d){
                                         // set d.postion (INIFFICENT!)
                                         d.position = ($('li#'+d.id).offset().top - $('li#'+d.id).parent().offset().top);
-                                        return "<div class='lanegraphlist'>"+d.info+"</div>";
+                                        return "<div class='lanegraphlist'><strong>"+timeFormat(d.time, 'laneGraphPreview')+':</strong> '+d.info+"</div>";
                                     })
                                     .on('click', function(){
 

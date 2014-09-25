@@ -20,7 +20,7 @@ module.exports = function(pool) {
 			var info = [];
 			var table1 = {
 				query: 'SELECT '+
-						'conn_uniq_remote_ip.time AS time,'+
+						'conn_uniq_remote_ip.time AS `time`,'+
 						'`lan_zone`,'+
 						'`machine`,'+
 						'conn_uniq_remote_ip.lan_ip AS lan_ip,'+
@@ -56,7 +56,8 @@ module.exports = function(pool) {
 				settings: {
 					sort: [[1, 'desc']],
 					div: 'table',
-					title: 'New Remote IP Addresses Detected'
+					title: 'New Remote IP Addresses Detected',
+                    access: req.session.passport.user.level
 				}
 			}
 			var crossfilterQ = {

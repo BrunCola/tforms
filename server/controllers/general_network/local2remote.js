@@ -1,9 +1,9 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-    query = require('../constructors/query'),
     config = require('../../config/config'),
-    async = require('async');
+    async = require('async'),
+    query = require('../constructors/query');
 
 module.exports = function(pool) {
     return {
@@ -21,21 +21,21 @@ module.exports = function(pool) {
                 var info = [];
                 var table1 = {
                     query: 'SELECT '+
-                                'sum(`count`) AS `count`, '+
-                                'max(conn_meta.time) as time, '+ // Last Seen
-                                '`stealth`, '+
-                                '`lan_zone`, '+
-                                '`machine`, '+
-                                '`lan_user`, '+
-                                '`lan_ip`, '+
-                                '`remote_ip`, '+
-                                '`remote_asn_name`, '+
-                                '`remote_country`, '+
-                                '`remote_cc`, '+
-                                '(sum(in_bytes) / 1048576) as in_bytes, '+
-                                '(sum(out_bytes) / 1048576) as out_bytes, '+
-                                'sum(in_packets) as in_packets, '+
-                                'sum(out_packets) as out_packets, '+
+                                'sum(`count`) AS `count`,'+
+                                'max(`time`) as `time`,'+
+                                '`stealth`,'+
+                                '`lan_zone`,'+
+                                '`machine`,'+
+                                '`lan_user`,'+
+                                '`lan_ip`,'+
+                                '`remote_ip`,'+
+                                '`remote_asn_name`,'+
+                                '`remote_country`,'+
+                                '`remote_cc`,'+
+                                '(sum(in_bytes) / 1048576) as in_bytes,'+
+                                '(sum(out_bytes) / 1048576) as out_bytes,'+
+                                'sum(in_packets) as in_packets,'+
+                                'sum(out_packets) as out_packets,'+
                                 'sum(`dns`) AS `dns`,'+
                                 'sum(`http`) AS `http`,'+
                                 'sum(`ssl`) AS `ssl`,'+
@@ -49,9 +49,9 @@ module.exports = function(pool) {
                             'FROM '+
                                 '`conn_meta` '+
                             'WHERE '+
-                                'conn_meta.time BETWEEN ? AND ? '+
+                                '`time` BETWEEN ? AND ? '+
                                 'AND `lan_zone` = ? '+
-                                'AND conn_meta.lan_ip = ? '+
+                                'AND `lan_ip` = ? '+
                             'GROUP BY '+
                                 '`remote_ip`',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
@@ -97,30 +97,9 @@ module.exports = function(pool) {
                         access: req.session.passport.user.level
                     }
                 }
-                var table2 = {
-                    query: 'SELECT '+
-                                'time, '+ 
-                                '`stealth_COIs`, ' +
-                                '`stealth`, '+
-                                '`lan_ip`, ' +
-                                '`event`, ' +
-                                '`user` ' +
-                            'FROM ' + 
-                                '`endpoint_tracking` '+
-                            'WHERE ' + 
-                                'stealth > 0 '+
-                                'AND event = "Log On" ',
-                    insert: [],
-                    params: [
-                        { title: 'Stealth', select: 'stealth' },
-                        { title: 'COI Groups', select: 'stealth_COIs' },
-                        { title: 'User', select: 'user' }
-                    ],
-                    settings: {}
-                }
                 var crossfilterQ = {
                     query: 'SELECT '+
-                                'time, '+ // Last Seen
+                                '`time`,'+
                                 '(sum(`in_bytes` + `out_bytes`) / 1048576) AS count,'+
                                 '`remote_country`, '+
                                 '(sum(`in_bytes`) / 1048576) AS in_bytes, '+

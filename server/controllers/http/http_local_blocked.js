@@ -19,7 +19,7 @@ module.exports = function(pool) {
             var table1 = {
                 query: 'SELECT '+
                             'sum(`count`) AS `count`, '+
-                            'time, '+ // Last Seen
+                            'max(`time`) AS `time`, '+ // Last Seen
                             '`stealth`,'+
                             '`lan_zone`,'+
                             '`machine`,'+
@@ -30,7 +30,7 @@ module.exports = function(pool) {
                         'FROM ' + 
                             '`http_local` '+
                         'WHERE ' + 
-                            'time BETWEEN ? AND ? '+
+                            '`time` BETWEEN ? AND ? '+
                             'AND proxy_blocked > 0 '+
                         'GROUP BY '+
                             '`lan_zone`, '+

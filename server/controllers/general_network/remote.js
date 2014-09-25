@@ -1,9 +1,9 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-query = require('../constructors/query'),
-config = require('../../config/config'),
-async = require('async');
+    config = require('../../config/config'),
+    async = require('async'),
+    query = require('../constructors/query');
 
 module.exports = function(pool) {
     return {
@@ -21,7 +21,7 @@ module.exports = function(pool) {
             var table1 = {
                 query: 'SELECT '+
                             'sum(`count`) AS `count`,'+
-                            'max(time) AS time,'+
+                            'max(`time`) AS `time`,'+
                             '`remote_ip`,'+
                             '`remote_asn_name`,'+
                             '`remote_country`,'+

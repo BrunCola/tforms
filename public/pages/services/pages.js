@@ -29,7 +29,16 @@ angular.module('mean.pages').factory('timeFormat', [
                     return new Date(time*1000);
                 break;
                 case 'tables':
-                    return moment(time*1000).format('YYYY-M-DD HH:m:ss');
+                    return moment(time*1000).format('YYYY/MM/DD HH:mm:ss');
+                break;
+                case 'laneGraphExpanded':
+                    return moment(time*1000).format('YYYY/MM/DD HH:mm:ss.SS');
+                break;
+                case 'laneGraphPreview':
+                    return moment(time*1000).format('YYYY/MM/DD HH:mm:ss.SS');
+                break;
+                case 'iochits':
+                    return moment(time*1000).format('YYYY-MM-DD HH:mm:ss');
                 break;
             }
         };

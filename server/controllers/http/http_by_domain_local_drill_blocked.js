@@ -19,7 +19,7 @@ module.exports = function(pool) {
                 var info = [];
                 var table1 = {
                     query: 'SELECT ' +
-                                'time, '+ // Last Seen
+                                '`time`, '+ // Last Seen
                                 '`stealth`, ' +
                                 '`machine`, ' +
                                 '`lan_zone`, ' +
@@ -53,7 +53,7 @@ module.exports = function(pool) {
                             'FROM ' +
                                 '`http` ' +
                             'WHERE '+ 
-                                'time BETWEEN ? AND ? ' +
+                                '`time` BETWEEN ? AND ? ' +
                                 'AND `lan_zone` = ? '+
                                 'AND `lan_ip` = ? ' +
                                 'AND proxy_blocked > 0 '+

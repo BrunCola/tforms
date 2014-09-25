@@ -1,4 +1,4 @@
-angular.module('mean.system').controller('archiveController', ['$scope', 'Global', '$http', '$rootScope', 'socket', '$location', function ($scope, Global, $http, $rootScope, socket, $location) {
+angular.module('mean.system').controller('archiveController', ['$scope', 'Global', '$http', '$rootScope', 'socket', '$location', 'timeFormat', function ($scope, Global, $http, $rootScope, socket, $location, timeFormat) {
     $scope.global = Global;
     $scope.socket = socket;
     var query;

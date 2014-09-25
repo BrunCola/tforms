@@ -19,7 +19,7 @@ module.exports = function(pool) {
 				var info = [];
 				var table1 = {
 					query: 'SELECT '+
-								'smtp.time AS time,'+
+								'smtp.time AS `time`,'+
 								'`stealth`,'+
 								'`lan_zone`,'+
 								'`machine`,'+

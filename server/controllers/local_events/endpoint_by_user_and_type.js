@@ -20,7 +20,7 @@ module.exports = function(pool) {
                 var table1 = {
                     query: 'SELECT '+
                                 'count(*) AS count,'+
-                                'time,'+
+                                'max(`time`) AS `time`,'+
                                 '`stealth`, '+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
@@ -34,7 +34,7 @@ module.exports = function(pool) {
                             'FROM '+
                                 '`endpoint_events` '+
                             'WHERE '+
-                                'time BETWEEN ? AND ? '+
+                                '`time` BETWEEN ? AND ? '+
                                 'AND lan_zone = ? '+
                                 'AND lan_user = ? '+
                             'GROUP BY '+

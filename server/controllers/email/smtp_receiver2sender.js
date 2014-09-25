@@ -22,7 +22,7 @@ module.exports = function(pool) {
 				var table1 = {
 					query: 'SELECT '+
 								'count(*) AS count,'+
-								'max(smtp.time) as time,'+
+								'max(smtp.time) as `time`,'+
 								'`stealth`,'+
 								'`machine`,'+
 								'`lan_zone`,'+
