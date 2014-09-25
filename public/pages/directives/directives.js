@@ -3055,7 +3055,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 function laneInfoAppend(d) {
                     var send = '';
                     for (var i in d) {
-                        send += '<strong>'+d[i].name+':</strong> '+d[i].value+'<br />';
+                        send += '<em>'+d[i].name+':</em> '+d[i].value+'<br />';
                     }
                     return send;
                 }
@@ -3368,7 +3368,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 
                                             elm.select('.infoDivExpanded').html(laneInfoAppend(d.expand));
                                         }
-
                                     })
                                     .attr('class', 'infoDivExpandBtn')
                                     .html('+');
