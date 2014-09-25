@@ -434,7 +434,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
             'title': 'Health',
             'url': '',
             'icon': 'fa-plus-square',        
-            'accessLevel': [3],    
+            'accessLevel': [4],    
             'children':
             [
                 {
