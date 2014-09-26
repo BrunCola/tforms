@@ -23,7 +23,7 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
         var results = [];
         switch(button) {
             case 'blocked':
-            console.log(data)
+           // console.log(data)
             // get children hanging off of parent nodes
                 var rTargets = $scope.forcedata.links.filter(function(d){
                     if ((d.class !== undefined) && (d.source.index === data.index)) {

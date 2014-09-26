@@ -6173,3 +6173,21 @@ Datatables Plugin(in v1.3)
 #zenbox_tab{
   margin-top: 25%;
 }
+#table_paginate a{
+  margin: 0px 3px;
+  cursor: pointer;
+}
+#table_paginate a.disabled{
+  text-decoration: none;
+  cursor: text !important;
+  color:#999 !important;
+}
+#table_paginate a.previous{
+  margin:0px 5px 0px 0px;
+}
+#table_paginate a.next{
+  margin: 0px 0px 0px 5px;
+}
+#table_paginate a.current{
+  text-decoration: underline;
+}

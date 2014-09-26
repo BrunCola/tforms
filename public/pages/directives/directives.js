@@ -1845,29 +1845,48 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                     });
                     
                     $scope.appendInfo = function(data, type) {
-                        console.log(type)
                         infoDiv.selectAll('tr').remove();
-                        for (var i in data) {
-                            if (typeof data[i] === 'object') {
+
+                        /*if(type === "linkBetween"){
+                            for (var i in data) {                                    
                                 var divInfo = '';
-                                for (var e in data[i]) {
-                                    divInfo += '<div><strong>'+e+': </strong>'+data[i][e]+'</div>';
+                                var cnt = 0;
+                                for (var e in data[i].value) {
+                                    if(e === "Attacker IP" || e === "Victim IP"){
+                                        cnt++;
+                                        divInfo += '<div><strong>'+e+': </strong>'+data[i].value[e]+'</div>';
+                                    }
                                 }
-                                var row = infoDiv.append('tr');
+                                if(cnt>0){
+                                    var row = infoDiv.append('tr');
                                     row
                                         .append('td')
                                         .html(divInfo);
-                            } else {
-                                console.log('other')
-                                var row = infoDiv.append('tr');
-                                    row
-                                        .append('td')
-                                        .html('<strong>'+dictionary(i)+'</strong>');
-                                    row
-                                        .append('td')
-                                        .text(data[i]);
+                                }
                             }
-                        }
+                        }else{*/
+                            for (var i in data) {
+                                if (typeof data[i] === 'object') {
+                                    var divInfo = '';
+                                    for (var e in data[i]) {
+                                        divInfo += '<div><strong>'+e+': </strong>'+data[i][e]+'</div>';
+                                    }
+                                    var row = infoDiv.append('tr');
+                                        row
+                                            .append('td')
+                                            .html(divInfo);
+                                } else {
+                                    console.log('other')
+                                    var row = infoDiv.append('tr');
+                                        row
+                                            .append('td')
+                                            .html('<strong>'+dictionary(i)+'</strong>');
+                                        row
+                                            .append('td')
+                                            .text(data[i]);
+                                }
+                            }                            
+                        // }  
                         // switch(type) {
 
                         // }
@@ -1877,8 +1896,12 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         .append('text')
                         .attr("fill", '#fff')
                         .style('font-size', '3em')
+                        .style('cursor', 'pointer')
                         .attr('text-anchor', 'middle')
-                        .text(function(d) { return d.value; });
+                        .text(function(d) { return d.value; })
+                        /*.on('click', function(d){
+                            $scope.appendInfo($scope.forcedata.nodes, 'linkBetween');
+                        });*/
 
                     force.on("tick", function(e) {
                         text.attr("transform", function(d, i) {
