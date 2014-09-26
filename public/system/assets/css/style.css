@@ -63,6 +63,7 @@ th {
 .report-table td {
   font-size: 12px;
 }*/
+
 .node{
   border: #f0f solid 1px !important;
 }
@@ -104,6 +105,8 @@ th {
   border-top: 1px;
   padding-top: 10px;
   border-top-color: #CCC;
+  color: #ccc;
+  font-weight: normal;
 }
 
 #lanegraphinfo li:nth-child(odd) {
@@ -111,7 +114,8 @@ th {
 }
 .laneactive {
   /*background-color: #000;*/
-  background-color: #ffff99 !important;
+  background-color: #191919 !important;
+  color: #ccc;
 }
 .pointactive {
   stroke-width: 2px;
@@ -130,7 +134,6 @@ th {
   overflow: scroll;
   height: 650px;
   margin-left: 0;
-  border-radius: 18px;
 }
 #forcechartinfo table{
   width: 100%;
@@ -361,7 +364,7 @@ td.file {
     font-size: 10px;
 }
 .axis text{ /* axis labels */
-    fill: #000;
+    fill: #999;
     font-family: sans-serif;
     font-size: 10px;
 }
@@ -415,6 +418,7 @@ td.file {
 
 .chart {
     fill: #EEEEEE;
+    margin-top: 20px;
 }
 
 .interval {
@@ -1922,7 +1926,7 @@ Form stuff
     -moz-box-shadow: 0 1px 0 1px #e4e6eb;
     box-shadow: 0 1px 0 1px #e4e6eb;
     overflow: hidden;
-    padding:5px;
+    padding: 20px;
 }
 /**.box .box-header {
     background: #CC0000;
