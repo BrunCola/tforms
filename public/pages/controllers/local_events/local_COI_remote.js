@@ -22,6 +22,9 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
     $scope.requery = function(data, button) {
         var results = [];
         switch(button) {
+            case 'rules':
+                $scope.appendInfo(data, 'rules');
+            break;
             case 'blocked':
            // console.log(data)
             // get children hanging off of parent nodes
@@ -44,7 +47,7 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
                 $scope.appendInfo(results, 'blocked');
             break;
             case 'users':
-                var thisObj = $scope.forcedata.uniqueNodes[data.name];
+                var thisObj = $scope.forcedata.uniqueNodes[""+data.name];
                 for (var i in thisObj) {
                     var obj = {};
                     obj[i] = Object.keys($scope.forcedata.uniqueUsers[i]);

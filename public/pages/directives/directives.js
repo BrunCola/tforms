@@ -1720,6 +1720,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     })
                                     .on('click', function(d){
                                         $scope.requery(d, 'blocked');
+                                        console.log("big X");
                                     })
                                     .on('mouseout', function(){d3.select(this)
                                     .style('fill-opacity', '0.3');
@@ -1754,6 +1755,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     })
                                     .on('click', function(d){
                                         $scope.requery(d, 'blocked');
+                                        console.log("check mark");
                                     })
                                     .on('mouseout', function(){d3.select(this)
                                     .style('fill-opacity', '0.3');
@@ -1783,8 +1785,8 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                                 .style('fill-opacity', '0');
                                             })
                                             .on('click', function(d){
-                                                $scope.requery(d, 'top');
-                                                $scope.appendInfo(d, 'rules');
+                                               //$scope.requery(d, 'top');
+                                               $scope.requery(d, 'rules');
                                             })
                                             .on('mouseout', function(){d3.select(this)
                                             .style('fill-opacity', '0.3');
@@ -1809,8 +1811,8 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                                 .style('fill-opacity', '0');
                                             })
                                             .on('click', function(d){
-                                                $scope.requery(d, 'top');
-                                                $scope.appendInfo(d, 'rules');
+                                                //$scope.requery(d, 'top');
+                                                $scope.requery(d, 'rules');
                                             })
                                             .on('mouseout', function(){d3.select(this)
                                             .style('fill-opacity', '0.3');
@@ -1846,9 +1848,10 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         }
                     });
                     
-                    $scope.appendInfo = function(data, type) {
+                    $scope.appendInfo = function(data, type) { // ---- most of this should go into the controller...... (bruno) TODO
                         infoDiv.selectAll('tr').remove();
 
+                        var divInfo = '';
                         if(type === "linkBetween"){
                             var uniqueNodes = $scope.forcedata.uniqueNodes;
                             var uniqueUsers = $scope.forcedata.uniqueUsers;
@@ -3119,8 +3122,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 
                 var setNewSize = function(width) {
                     chart
-                        .attr("width", width)
-                        .scale(width);
+                        .attr("width", width);
                     main
                         .attr("width", width-135);                  
                 }
