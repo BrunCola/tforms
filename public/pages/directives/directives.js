@@ -1784,6 +1784,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                             })
                                             .on('click', function(d){
                                                 $scope.requery(d, 'top');
+                                                $scope.appendInfo(d, 'rules');
                                             })
                                             .on('mouseout', function(){d3.select(this)
                                             .style('fill-opacity', '0.3');
@@ -1809,6 +1810,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                             })
                                             .on('click', function(d){
                                                 $scope.requery(d, 'top');
+                                                $scope.appendInfo(d, 'rules');
                                             })
                                             .on('mouseout', function(){d3.select(this)
                                             .style('fill-opacity', '0.3');
@@ -1852,8 +1854,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                             var uniqueUsers = $scope.forcedata.uniqueUsers;
                             var unique = [];
                             var source = data.source.name;
-                            var target = data.target.name;
-             
+                            var target = data.target.name;             
                             
                             for (var i in uniqueNodes[source]) {
                                 for (var j in uniqueNodes[target]) {
@@ -1872,13 +1873,27 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                         }
                                     }
                                 }
-
                                 var row = infoDiv.append('tr');
                                 row
                                     .append('td')
                                     .html(divInfo);
                             }
-
+                        }else if (type === "rules"){
+                                var divInfo = '';
+                                divInfo += '<div><strong>Rules: </strong><br />';
+                                var rules = "";
+                                for(var i = 0; i < data.rules.length; i++) {
+                                    if(data.rules[i].rule !== "-"){
+                                        var ruleString = data.rules[i].rule.replace(/Except/g , "<br />Except");
+                                        divInfo += data.rules[i].order  + "<br />" + " " + ruleString + "<br />";
+                                    }else{
+                                        divInfo += "none <br />";
+                                    }                                    
+                                }
+                                var row = infoDiv.append('tr');
+                                    row
+                                        .append('td')
+                                        .html(divInfo);
                         }else{
                             for (var i in data) {
                                 if (typeof data[i] === 'object') {
@@ -1891,7 +1906,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                             .append('td')
                                             .html(divInfo);
                                 } else {
-                                    console.log('other')
+                                    //console.log('other')
                                     var row = infoDiv.append('tr');
                                         row
                                             .append('td')
@@ -1903,7 +1918,6 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                             }                            
                         }  
                         // switch(type) {
-
                         // }
                     }
                     var linktext = d3.selectAll('.linkgroup');
@@ -2630,6 +2644,19 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     });
                 }
 
+                var waitForFinalEvent = (function () {
+                    var timers = {};
+                    return function (callback, ms, uniqueId) {
+                        if (!uniqueId) {
+                            uniqueId = "laneGraphWait"; //Don't call this twice without a uniqueId
+                        }
+                        if (timers[uniqueId]) {
+                            clearTimeout (timers[uniqueId]);
+                        }
+                    timers[uniqueId] = setTimeout(callback, ms);
+                    };
+                })();
+
                 $scope.$broadcast('spinnerHide')
 
                 var itemsDimension = $scope.crossfilterData.dimension(function(d){ return d.time });
@@ -3085,6 +3112,24 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 //     .on('click', function(){
                 //         timeShift('next');
                 //     });
+
+                $scope.laneGraphWidth = function() {
+                    return $('#lanegraph').parent()[0].clientWidth;
+                }
+                
+                var setNewSize = function(width) {
+                    chart
+                        .attr("width", width)
+                        .scale(width);
+                    main
+                        .attr("width", width-135);                  
+                }
+
+                 $(window).bind('resize', function() {
+                    setTimeout(function(){
+                        setNewSize($scope.laneGraphWidth());
+                    }, 150);
+                });
 
                 function laneInfoAppend(d) {
                     var send = '';
