@@ -649,6 +649,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                 $('#table').dataTable().fnAddData(tableData.top(Infinity));
                                 $('#table').dataTable().fnDraw();
                             });
+
                             // new $.fn.dataTable.FixedHeader( params[t].div );
                             $.fn.dataTableExt.sErrMode = 'throw';
                         }
@@ -669,7 +670,6 @@ angular.module('mean.pages').directive('universalSearch', function() {
                     }
                 }
             });
-
         }
     };
 });
@@ -1836,7 +1836,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                         .attr('y', function(d) { return d.y; })
                                         .attr('height', 14)
                                         .attr('width', 14)
-                                        .style('fill', '#333')
+                                        .style('fill', '#497eb5')
                                         .attr('transform', 'translate(-8,-8)')
                                         .style('fill-opacity', '1')
                                 }
@@ -1847,24 +1847,40 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                     $scope.appendInfo = function(data, type) {
                         infoDiv.selectAll('tr').remove();
 
-                        /*if(type === "linkBetween"){
-                            for (var i in data) {                                    
+                        if(type === "linkBetween"){
+                            var uniqueNodes = $scope.forcedata.uniqueNodes;
+                            var uniqueUsers = $scope.forcedata.uniqueUsers;
+                            var unique = [];
+                            var source = data.source.name;
+                            var target = data.target.name;
+             
+                            
+                            for (var i in uniqueNodes[source]) {
+                                for (var j in uniqueNodes[target]) {
+                                    if(i === j){ 
+                                        unique.push(i);
+                                        //divInfo += '<div><strong>'+i+'</strong></div>';
+                                    }
+                                }         
+                            }
+                            for(var x=0; x<unique.length; x++){
                                 var divInfo = '';
-                                var cnt = 0;
-                                for (var e in data[i].value) {
-                                    if(e === "Attacker IP" || e === "Victim IP"){
-                                        cnt++;
-                                        divInfo += '<div><strong>'+e+': </strong>'+data[i].value[e]+'</div>';
+                                divInfo += '<div><strong>'+unique[x]+'</strong></div>';
+                                for(var k in uniqueUsers){
+                                    if(k === unique[x]){
+                                        for(var z in uniqueUsers[k]){
+                                            divInfo += '<div>'+z+'</div>';
+                                        }
                                     }
                                 }
-                                if(cnt>0){
-                                    var row = infoDiv.append('tr');
-                                    row
-                                        .append('td')
-                                        .html(divInfo);
-                                }
+
+                                var row = infoDiv.append('tr');
+                                row
+                                    .append('td')
+                                    .html(divInfo);
                             }
-                        }else{*/
+
+                        }else{
                             for (var i in data) {
                                 if (typeof data[i] === 'object') {
                                     var divInfo = '';
@@ -1886,7 +1902,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                             .text(data[i]);
                                 }
                             }                            
-                        // }  
+                        }  
                         // switch(type) {
 
                         // }
@@ -1899,9 +1915,9 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         .style('cursor', 'pointer')
                         .attr('text-anchor', 'middle')
                         .text(function(d) { return d.value; })
-                        /*.on('click', function(d){
-                            $scope.appendInfo($scope.forcedata.nodes, 'linkBetween');
-                        });*/
+                        .on('click', function(d){
+                            $scope.appendInfo(d, 'linkBetween');
+                        });
 
                     force.on("tick", function(e) {
                         text.attr("transform", function(d, i) {
