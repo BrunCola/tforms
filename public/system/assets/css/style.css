@@ -144,6 +144,7 @@ th {
 #forcechartinfo table tr td{
   margin: 7px 7px 11px 7px;
   padding: 7px;
+  font-size:12px;
 }
 
 .modalTable {
