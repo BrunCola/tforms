@@ -3261,15 +3261,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 function plot(data, min, max) {
                     if (moment(max).unix() !== moment(min).unix()) {
 
-
-
-
-                        console.log("-----");
-                    console.log(data);
-                    console.log(infoDiv);
-                    console.log("^^^^^");
-
-
                         //////////////////
                         /// LANE NODES ///
                         //////////////////
@@ -3796,7 +3787,7 @@ angular.module('mean.pages').directive('droppable', function() {
                     var binId = this.id;
                     var item = document.getElementById(e.dataTransfer.getData('Text'));
 
-                    if(e.srcElement===document.getElementById('floorplan')){
+                    //if(e.srcElement===document.getElementById('floorplan')){
                         item.setAttribute('x',e.offsetX);
                         item.setAttribute('y',e.offsetY);
                         item.setAttribute('style', 'top:'+e.offsetY+'px; left:'+e.offsetX+'px; position:absolute;');
@@ -3808,8 +3799,7 @@ angular.module('mean.pages').directive('droppable', function() {
                               fn(item.id, binId);
                             }
                         });
-                    }
-
+                    // }
                     return false;
                 },
                 false
