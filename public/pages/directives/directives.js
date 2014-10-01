@@ -3489,8 +3489,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                 }
                 // info div
                 var width = element.width();
-                var infoHeight = element.height();
-                var userDiv = d3.select("#listlocalusers").style('height', infoHeight+'px').style('overflow', 'scroll');
+                var infoHeight = element.height()+1000;
+                var userDiv = d3.select("#listlocalusers").style('height', infoHeight+'px').style('overflow', 'auto');
                 var infoDiv = d3.select("#localuserinformation").style('height', infoHeight+'px').style('overflow', 'scroll');
 
                 function draw() {
@@ -3617,7 +3617,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     .attr('fill', '#595A5C');
 
 */
-                                    return "<div class='localuserlisticon'>"+count+"</div><div class='localuserlisttext'><strong>"+d.lan_machine+':</strong> '+d.lan_ip+"</div>";
+                                    return "<div class='localuserlisticon'>"+count+"</div><div class='localuserlisttext'>"+d.lan_machine+"</div>";
                                 })
 
                             var el = elel[0];
@@ -3776,25 +3776,23 @@ angular.module('mean.pages').directive('droppable', function() {
 
                     this.classList.remove('over');
 
-                    var item = document.getElementById(e.dataTransfer.getData('Text'));
-                    this.appendChild(item);
-
                     // call the drop passed drop function
                     var binId = this.id;
                     var item = document.getElementById(e.dataTransfer.getData('Text'));
-                    console.log(e);
-                    item.setAttribute('x',e.offsetX);
-                    item.setAttribute('y',e.offsetY);
-                    item.setAttribute('style', 'top:'+e.offsetY+'px; left:'+e.offsetX+'px; position:absolute;');
-                    console.log(item);
-                    this.appendChild(item);
-                    // call the passed drop function
-                    scope.$apply(function(scope) {
-                        var fn = scope.drop();
-                        if ('undefined' !== typeof fn) {
-                          fn(item.id, binId);
-                        }
-                    });
+
+                    if(e.srcElement===document.getElementById('floorplan')){
+                        item.setAttribute('x',e.offsetX);
+                        item.setAttribute('y',e.offsetY);
+                        item.setAttribute('style', 'top:'+e.offsetY+'px; left:'+e.offsetX+'px; position:absolute;');
+                        this.appendChild(item);
+                        // call the passed drop function
+                        scope.$apply(function(scope) {
+                            var fn = scope.drop();
+                            if ('undefined' !== typeof fn) {
+                              fn(item.id, binId);
+                            }
+                        });
+                    }
 
                     return false;
                 },
