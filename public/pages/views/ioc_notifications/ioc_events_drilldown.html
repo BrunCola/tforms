@@ -1,126 +1,126 @@
 <section head></section>
 <div data-ng-controller="iocEventsDrilldownController">
-	<section id="loading-error" loading-error></section>
-	<section id="loading-spinner" loading-spinner></section>
-	<script type="text/ng-template" id="tableModal.html">
-	  <div class="modal-header">
-		<h3>{{data.class.toUpperCase()}}</h3>
-	  </div>
-		<div class="modal-body">
-			<div id="mTable"></div>
-		</div>
-	  <div class="modal-footer">
-		<button class="btn btn-primary" ng-click="ok()">Close</button>
-	  </div>
-	</script>
-	<script type="text/ng-template" id="descModal.html">
-		<div class="modal-header">
-			<h3>{{iocc}}</h3>
-		</div>
-		<div class="modal-body">
-			{{data}}
-		</div>
-		<div class="modal-footer">
-			<button class="btn btn-primary" ng-click="ok()">Close</button>
-		</div>
-	</script>
-	
-	<section severity-levels></section>
-	<div class="row-fluid">
-		<div class="span12">
-			<!-- <div class="jdash-header">Link IOC Information</div> -->
-			<div style="background-color:#FFF;" class="box">
-				<!-- <div class="box-content"  style="min-height:195px !important"> -->
-				<div class="box-content">
-					<div class="span4" style="border-right:1px solid #ccc;margin-bottom:10px">
-						<h4 style="margin-top:-5px">Local IP</h4>
-						<div class="row-fluid">
-							<div class="span6">
-								<div class="row-fluid">
-									<strong style="float:left" >Country: </strong><div style="float:left; margin-top:-8px;padding-left:10px;" class="f32"><span class="flag {{zone_cc}}"></span></div><span style="float:left"></span>
-								</div>
-								{{zone_country}}<br /> 
-								<strong>Zone: </strong>{{lan_zone}}<br />
-								<strong>Local IP: </strong>{{lan_ip}}<br />
-							</div>
-							<div class="span6">
-								<img class="logo" width="48" ng-src="{{userImage || 'public/system/assets/img/userplaceholder.jpg'}}" alt=""/> <br/> 
-								<strong>Machine name: </strong>{{machine_name}}<br />
-							</div>
-						</div>
-					</div>
+    <section id="loading-error" loading-error></section>
+    <section id="loading-spinner" loading-spinner></section>
+    <script type="text/ng-template" id="tableModal.html">
+      <div class="modal-header">
+        <h3>{{data.class.toUpperCase()}}</h3>
+      </div>
+        <div class="modal-body">
+            <div id="mTable"></div>
+        </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">Close</button>
+      </div>
+    </script>
+    <script type="text/ng-template" id="descModal.html">
+        <div class="modal-header">
+            <h3>{{iocc}}</h3>
+        </div>
+        <div class="modal-body">
+            {{data}}
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">Close</button>
+        </div>
+    </script>
+    
+    <section severity-levels></section>
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- <div class="jdash-header">Link IOC Information</div> -->
+            <div style="background-color:#FFF;" class="box">
+                <!-- <div class="box-content"  style="min-height:195px !important"> -->
+                <div class="box-content">
+                    <div class="span4" style="border-right:1px solid #ccc;margin-bottom:10px">
+                        <h4 style="margin-top:-5px">Local IP</h4>
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="row-fluid">
+                                    <strong style="float:left" >Country: </strong><div style="float:left; margin-top:-8px;padding-left:10px;" class="f32"><span class="flag {{zone_cc}}"></span></div><span style="float:left"></span>
+                                </div>
+                                {{zone_country}}<br /> 
+                                <strong>Zone: </strong>{{lan_zone}}<br />
+                                <strong>Local IP: </strong>{{lan_ip}}<br />
+                            </div>
+                            <div class="span6">
+                                <img class="logo" width="48" ng-src="{{userImage || 'public/system/assets/img/userplaceholder.jpg'}}" alt=""/> <br/> 
+                                <strong>Machine name: </strong>{{machine_name}}<br />
+                            </div>
+                        </div>
+                    </div>
 
-					<div class="span4" style="border-right:1px solid #ccc;margin-bottom:10px">
-						<h4 style="margin-top:-5px">Remote IP</h4>
-						<div class="row-fluid">
-							<div class="span6">
-								<div class="row-fluid">
-									<strong style="float:left" >Country: </strong><div style="float:left; margin-top:-8px;padding-left:10px;" class="f32"><span class="flag {{flag}}"></span></div><span style="float:left"></span>
-								</div>
-								{{countryy}}<br />
-								<strong>Remote IP: </strong>{{remote_ip}}<br />
-								<strong>Remote ASN Name: </strong>{{remote_asn_name}}<br />
-							</div>
-							<div class="span6">
-								<strong>First IOC Hit: </strong>{{first}}<br />
-								<strong>Last IOC Hit: </strong>{{last}}<br />
-							</div>
-						</div>
-					</div>
+                    <div class="span4" style="border-right:1px solid #ccc;margin-bottom:10px">
+                        <h4 style="margin-top:-5px">Remote IP</h4>
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <div class="row-fluid">
+                                    <strong style="float:left" >Country: </strong><div style="float:left; margin-top:-8px;padding-left:10px;" class="f32"><span class="flag {{flag}}"></span></div><span style="float:left"></span>
+                                </div>
+                                {{countryy}}<br />
+                                <strong>Remote IP: </strong>{{remote_ip}}<br />
+                                <strong>Remote ASN Name: </strong>{{remote_asn_name}}<br />
+                            </div>
+                            <div class="span6">
+                                <strong>First IOC Hit: </strong>{{first}}<br />
+                                <strong>Last IOC Hit: </strong>{{last}}<br />
+                            </div>
+                        </div>
+                    </div>
 
-					<div class="span4">
-						<h4 style="margin-top:-5px">IOC Information</h4>
-						<div class="row-fluid">
-							<strong>IOC: </strong>{{iocc}}<br />
-							<strong>IOC Type: </strong>{{ioc_type}}<br />
-							<strong>IOC Info: </strong>{{desc}}<span ioc-desc><br />
-							<!-- <strong>IOC Rule: </strong>{{ioc_rule}}<span ioc-desc><br /> -->
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<br />
+                    <div class="span4">
+                        <h4 style="margin-top:-5px">IOC Information</h4>
+                        <div class="row-fluid">
+                            <strong>IOC: </strong>{{iocc}}<br />
+                            <strong>IOC Type: </strong>{{ioc_type}}<br />
+                            <strong>IOC Info: </strong>{{desc}}<span ioc-desc><br />
+                            <!-- <strong>IOC Rule: </strong>{{ioc_rule}}<span ioc-desc><br /> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
 
-	<div class="row-fluid">
-		<div class="span8">
-			<div class="row-fluid">
-				<div id="box">
-					<div class="box-content">
-						<div id="lanegraph" lane-graph></div>
-					</div>
-				</div>
-			</div>			
-		</div>
-		<div class="span4">
-			<div id="box">
-				<div class="box-content">
-					<div class="lanegraphtitle"><strong>Event Info</strong> <form action="" id="autoExpand"><input type="checkbox" id="autoexpand" name="autoexpand" value="autoexpand" checked=""> Auto Expand</form></div>
-					<div id="lanegraphinfo"></div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<br />
-	<div class="row-fluid">
-		<div class="span6">
-			<div class="jdash-header">Connections to Remote Servers (# Connections) Involving IOCs</div>
-			<div  style="background-color:#FFF;" class="box">
-				<div class="box-content">
-					<div id="forcechart" make-force-chart></div>
-				</div>
-			</div>
-		</div>
-		<div class="span6">
-			<div class="jdash-header">IOC Threat Chain (Local System IP, IOC Category, IOC Child ID, IOC Attribute Type)</div>
-			<div  style="background-color:#FFF;" class="box">
-				<div class="box-content">
-					<div id="treechart" make-tree-chart></div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<br />
+    <div class="row-fluid">
+        <div class="span8">
+            <div class="row-fluid">
+                <div id="box">
+                    <div class="box-content">
+                        <div id="lanegraph" lane-graph></div>
+                    </div>
+                </div>
+            </div>          
+        </div>
+        <div class="span4">
+            <div id="box">
+                <div class="box-content">
+                    <div class="lanegraphtitle"><strong>Event Info</strong> <form action="" id="autoExpand"><input type="checkbox" id="autoexpand" name="autoexpand" value="autoexpand" checked=""> Auto Expand</form></div>
+                    <div id="lanegraphinfo"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row-fluid">
+        <div class="span6">
+            <div class="jdash-header">Connections to Remote Servers (# Connections) Involving IOCs</div>
+            <div  style="background-color:#FFF;" class="box">
+                <div class="box-content">
+                    <div id="forcechart" make-force-chart></div>
+                </div>
+            </div>
+        </div>
+        <div class="span6">
+            <div class="jdash-header">IOC Threat Chain (Local System IP, IOC Category, IOC Child ID, IOC Attribute Type)</div>
+            <div  style="background-color:#FFF;" class="box">
+                <div class="box-content">
+                    <div id="treechart" make-tree-chart></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
 
 </div>

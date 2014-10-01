@@ -101,14 +101,32 @@ module.exports = function(pool) {
                                     'AND `out_bytes` = 0 ',
                         insert: [start, end]
                     }
+
+                    var rules = {
+                        query: 'SELECT '+
+                                    '`role`, '+
+                                    '`cois`, '+
+                                    '`rule`, '+
+                                    '`rule_order` '+
+                                'FROM '+
+                                    '`stealth_role_coi` '+
+                                'WHERE '+
+                                    '`archive` = 0 ' +
+                                'ORDER BY '+
+                                    '`cois`, `rule_order` ASC',
+                        insert: []
+                    }
+
                     async.parallel([
                         // Crossfilter function
                         function(callback) {
-                            new force_stealth_user(sql, [stealth_drop, local_drop], {database: database, pool: pool}, function(err,data){
+                            new force_stealth_user(sql, [stealth_drop, local_drop, rules], {database: database, pool: pool}, function(err,data){
                                 force = data;
                                 callback();
                             });
                         }
+                    
+
                     ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                         if (err) throw console.log(err);
                         var results = {

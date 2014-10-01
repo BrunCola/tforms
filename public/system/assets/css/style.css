@@ -144,6 +144,7 @@ th {
 #forcechartinfo table tr td{
   margin: 7px 7px 11px 7px;
   padding: 7px;
+  font-size:12px;
 }
 
 .modalTable {
@@ -6194,4 +6195,92 @@ Datatables Plugin(in v1.3)
 }
 #table_paginate a.current{
   text-decoration: underline;
+}
+
+#floorplan{
+  width:800px;
+  height: 600px;
+  border: #0f0 solid 1px;
+}
+
+#listlocalusers{
+   /*overflow: hidden !important;*/
+}
+#listlocalusers li {
+  list-style: none;
+  min-height: 22px;
+  line-height: 30px;
+  padding: 4px 0px;
+
+}
+#listlocalusers li:hover {
+  cursor: pointer;
+}
+#listlocalusers li.localuserlist{
+  width: 100%;
+  display: inline-block;
+  border-bottom: #DEDEDE solid 1px;
+  font-weight: bold;
+  background-color: none;
+}
+#listlocalusers li.set{
+  font-weight: normal !important;
+}
+#listlocalusers .localuserlisticon{
+  border: #ff0 solid 1px;
+  width: 15%;
+  height: 30px;
+  display: inline-block;
+  float: left;
+}
+#listlocalusers .localuserlisttext{
+  display: inline-block;
+  width: 70%;
+  text-align: center;
+}
+
+
+
+
+#localuserinformation{
+   /*overflow: hidden !important;*/
+}
+#localuserinformation li {
+  list-style: none;
+  min-height: 30px;
+  line-height: 20px;
+}
+#localuserinformation li:hover {
+  cursor: pointer;
+}
+#localuserinformation li .userinfolist{
+  width: 100%;
+  display: inline-block;
+}
+#localuserinformation li:nth-child(odd) {
+  background-color: #DEDEDE;
+}
+
+
+
+
+#floorplan li{
+  list-style: none !important;
+}
+
+#floorplan .localuserlist{
+}
+
+#floorplan .localuserlisticon{
+  border: #ff0 solid 1px;
+  width: 30px;
+  display: inline-block;
+  float: none;
+}
+#floorplan .localuserlisttext{
+  display: none;
+}
+
+.drag {
+  opacity: 0.5;
 }

@@ -27,4 +27,14 @@ module.exports = function(app, passport, version, io, pool) {
 	app.route('/actions/local_cc')
 		.post(authorization.requiresLogin, actions.local_cc);
 
+	//other actions
+	app.route('/actions/add_map_image')
+		.post(authorization.requiresLogin, actions.add_map_image);
+
+	app.route('/actions/add_user_image')
+		.post(authorization.requiresLogin, actions.add_user_image);
+
+	app.route('/actions/add_user_to_map')
+		.post(authorization.requiresLogin, actions.add_user_to_map);
+
 };
