@@ -175,6 +175,10 @@ module.exports = function(app, passport, version, io, pool) {
                 var endpoint_events_sharepoint_drill = require('../controllers/local_events/endpoint_events_sharepoint_drill')(pool);
                 app.route('/local_events/endpoint_events_sharepoint_drill')
                 .get(authorization.requiresLogin, endpoint_events_sharepoint_drill.render); 
+            // LOCAL FLOOR PLANS
+                var local_floor_plan = require('../controllers/local_events/local_floor_plan')(pool);
+                app.route('/local_events/local_floor_plan')
+                .get(authorization.requiresLogin, local_floor_plan.render); 
     // APPLICATIONS
         // BY APPLICATION
             var app_by_application = require('../controllers/applications/app_by_application')(pool);

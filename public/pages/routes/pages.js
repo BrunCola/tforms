@@ -606,6 +606,19 @@ angular.module('mean.pages').config(['$stateProvider',
                             daterange: true
                         }
                     })
+                // LOCAL FLOOR PLAN
+                    .state('local_floor_plan', {
+                        url: '/local_floor_plan?start&end&event_id&lan_ip',
+                        templateUrl: 'public/pages/views/local_events/local_floor_plan.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Local Floor Events',
+                            daterange: false
+                        }
+                    })
+
         // APPLICATIONS
             // BY APPLICATION
                 .state('app_by_application', {

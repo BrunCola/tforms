@@ -3260,6 +3260,16 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 
                 function plot(data, min, max) {
                     if (moment(max).unix() !== moment(min).unix()) {
+
+
+
+
+                        console.log("-----");
+                    console.log(data);
+                    console.log(infoDiv);
+                    console.log("^^^^^");
+
+
                         //////////////////
                         /// LANE NODES ///
                         //////////////////
@@ -3452,3 +3462,327 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
         }
     };
 }]);
+
+angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
+    return {
+        link: function ($scope, element, attrs) {
+            $scope.$on('floorPlan', function() {      
+                $scope.$broadcast('spinnerHide');
+                // nav
+               /* var navArray = [], currentNavPos = 0;
+                var buttonHolder = d3.select("#lanegraph").append('div').attr('class', 'buttonHolder');
+                var resetBtn = buttonHolder
+                    .append('button')
+                    .html('Reset')
+                    .attr('class', 'resetButton')
+                    .on('click', function(){
+                        draw();
+                    });*/
+
+
+                function laneInfoAppend(d) {
+                    var send = '';
+                    for (var i in d) {
+                        send += '<strong>'+i+':</strong> '+d[i]+'<br />';      
+                    }
+                    return send;
+                }
+                // info div
+                var width = element.width();
+                var infoHeight = element.height();
+                var userDiv = d3.select("#listlocalusers").style('height', infoHeight+'px').style('overflow', 'hidden');
+                var infoDiv = d3.select("#localuserinformation").style('height', infoHeight+'px').style('overflow', 'scroll');
+
+                function draw() {
+                    // disable all nav buttons
+                    //resetBtn.attr('disabled', 'disabled');
+
+                    //items.reverse()
+                    plot($scope.data.force);
+                }
+                draw();
+
+                function mouseup(action) {
+                    /*// set variables
+                    var rects, labels, minExtent, maxExtent, visItems;
+                    // if a nav button is pressed
+                    if (action === 'nav') {
+                            // get max and min (date objects) from mav array
+                            minExtent = navArray[currentNavPos].min;
+                            maxExtent = navArray[currentNavPos].max;
+                        // disable previous button if all the way back
+                        if (currentNavPos === 0) {
+                            resetBtn.attr('disabled', 'disabled');
+                            prevButton.attr('disabled', 'disabled');
+                        // or disable next button if all the way forward 
+                        } else if (currentNavPos === navArray.length-1) {
+                            nextButton.attr('disabled', 'disabled');
+                        } else {
+                            // otherwise keep reset button open
+                            resetBtn.attr('disabled', null);
+                        }
+                    // otherwise if item brushed
+                    } else {
+                        // get max and min from click/drag
+                        minExtent = brush.extent()[0];
+                        maxExtent = brush.extent()[1];
+                        // step up nav array pos and push new values in;
+                        currentNavPos++;
+                        navArray.push({'min': minExtent, 'max': maxExtent});
+                        prevButton.attr('disabled', null);
+                        resetBtn.attr('disabled', null);
+                    }
+                    // convert times returned to unix
+                    var minUnix = moment(minExtent).unix();
+                    var maxUnix = moment(maxExtent).unix();
+                    // should it requery?
+                    var msDifference = maxUnix - minUnix;
+                    // if difference is less than threshhold or is not a single time select (resulting in difference being 0)
+                    if ((msDifference < queryThreshhold) && (msDifference !== 0)) {
+                        // push to requery and then plot
+                        $scope.requery(minExtent, maxExtent, function(data){
+                            data.reverse();
+                            plot(data, minExtent, maxExtent);
+                        })
+                    } else {
+                        // reset if not within threshold
+                        $scope.inTooDeep.areWe = false;
+                        var data = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;}).reverse();
+                        $scope.alert.style('display', 'none');
+                        plot(data, minExtent, maxExtent);
+                    }*/
+
+                    console.log("mouseup");
+                }
+
+                function scrollSide(id) {
+                    /*var elm = $('li#'+id);
+                    var ept  = elm.position().top;
+                    var eppt = elm.parent().position().top;
+                    var offset = ept - eppt;
+                    var totalHeight = $('#lanegraphinfo')[0].scrollHeight;
+                    var windowHeight = $('#lanegraphinfo').height();
+                    if(offset>(totalHeight-windowHeight)){
+                        offset = totalHeight-windowHeight;
+                    }
+                    $('#lanegraphinfo').scrollTo(offset);*/
+                    console.log("scrollside");
+                }
+
+                function plot(data) {
+                    //////////////////
+                    /// LANE NODES ///
+                    //////////////////
+                    // set variables for info sidebar
+                    var prevPos = 0;
+                    var previousID = -1, previousElm = null;
+                    var lastExpandedId = null, isOpen = null;
+                    //console.log("plot");
+                    // update time slice above chart
+                    // create transition effect of slider
+
+
+                    ////////////////////
+                    ///  LIST USERS  ///
+                    ////////////////////
+                    var count = 0;
+                    userDiv.selectAll('li').remove();
+                    userDiv.selectAll('li').data(data).enter()
+                        .append('li').each(function(d){
+                            count++;
+                            var id = d.id;
+                            var elm = d3.select(this);
+                            var elel = elm[0];
+                            elm
+                                // append id to li from data object
+                                .attr('id', count)
+                                .attr('class', 'localuserlist')
+                                .attr('draggable','true')
+                                .html(function(d){
+                                    return "<div class='localuserlist'><strong>"+d.lan_machine+':</strong> '+d.lan_ip+"</div>";
+                                })
+                                .on('mouseevent', function(e) {
+                                    console.log(e);
+                                    e.dataTransfer.effectAllowed = 'move';
+                                    e.dataTransfer.setData('Text', this.id);
+                                    this.classList.add('drag');
+                                    return false;
+                                });
+
+                            var el = elel[0];
+
+                            el.draggable = true;
+                            el.addEventListener(
+                                'dragstart',
+                                function(e) {
+                                    console.log(e);
+                                    e.dataTransfer.effectAllowed = 'move';
+                                    e.dataTransfer.setData('Text', this.id);
+                                    this.classList.add('drag');
+                                    return false;
+                                },
+                                false
+                            );
+
+                            el.addEventListener(
+                                'dragend',
+                                function(e) {
+                                    this.classList.remove('drag');
+                                    return false;
+                                },
+                                false
+                            );
+                        });
+
+
+
+
+
+                    //////////////////////
+                    /// LIST USER INFO ///
+                    //////////////////////
+                    infoDiv.selectAll('li').remove();
+                    infoDiv.selectAll('li').data(data).enter()
+                        .append('li').each(function(d){
+                            var elm = d3.select(this);
+                            elm
+                                // append id to li from data object
+                                .attr('id', function(d){return d.id })
+                                .html(function(d){
+                                    return "<div class='userinfolist'>"+laneInfoAppend(d)+"</div>";
+                                })
+                                .on('click', function(){
+                                  
+                                })
+                                // append expand buttons to list elements
+                                .append('div')
+                                .on('click', function(){
+                                   /* if (lastExpandedId !== '#'+d.id) {
+                                        $('div'+lastExpandedId+'.infoDivExpanded').hide();
+                                    }
+                                    if (isOpen === '#'+d.id) {
+                                        elm.select('.infoDivExpanded').style('display', 'none');
+                                        isOpen = null;
+                                    } else {
+                                        elm.select('.infoDivExpanded').style('display', 'block');
+                                        lastExpandedId = '#'+d.id;
+                                        isOpen = '#'+d.id;
+
+                                        elm.select('.infoDivExpanded').html(laneInfoAppend(d.expand));
+                                    }*/
+
+                                })
+                               /* .attr('class', 'infoDivExpandBtn')
+                                .html('+');*/
+                           /* elm
+                                .append('div')
+                                .style('display', 'none')
+                                .attr('class', 'infoDivExpanded')
+                                .attr('id', d.id);*/
+                        });                    
+                }                
+                // function listItems
+            });
+        }
+    };
+}]);
+
+
+/*angular.module('mean.pages').directive('draggable', function() {
+        return function(scope, element) {
+            // this gives us the native JS object
+            var el = element[0];
+            el.draggable = true;
+
+            el.addEventListener(
+                'dragstart',
+                function(e) {
+                    console.log(e);
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('Text', this.id);
+                    this.classList.add('drag');
+                    return false;
+                },
+                false
+            );
+
+            el.addEventListener(
+                'dragend',
+                function(e) {
+                    this.classList.remove('drag');
+                    return false;
+                },
+                false
+            );
+        }
+});*/
+
+angular.module('mean.pages').directive('droppable', function() {
+    return {
+        scope: {
+            drop: '&',
+            bin: '=' // bi-directional scope
+        },
+        link: function(scope, element) {
+            // again we need the native object
+            var el = element[0];
+
+            el.addEventListener(
+                'dragover',
+                function(e) {
+                    e.dataTransfer.dropEffect = 'move';
+                    // allows us to drop
+                    if (e.preventDefault) e.preventDefault();
+                    this.classList.add('over');
+                    return false;
+                },
+                false
+            );
+            el.addEventListener(
+                'dragenter',
+                function(e) {
+                    this.classList.add('over');
+                    return false;
+                },
+                false
+            );
+
+            el.addEventListener(
+                'dragleave',
+                function(e) {
+                    this.classList.remove('over');
+                    return false;
+                },
+                false
+            );
+
+            el.addEventListener(
+                'drop',
+                function(e) {
+                    // Stops some browsers from redirecting.
+                    if (e.stopPropagation) e.stopPropagation();
+
+                    this.classList.remove('over');
+
+                    var item = document.getElementById(e.dataTransfer.getData('Text'));
+                    this.appendChild(item);
+
+                    // call the drop passed drop function
+                    var binId = this.id;
+                    var item = document.getElementById(e.dataTransfer.getData('Text'));
+                    this.appendChild(item);
+                    // call the passed drop function
+                    scope.$apply(function(scope) {
+                        var fn = scope.drop();
+                        if ('undefined' !== typeof fn) {
+                          fn(item.id, binId);
+                        }
+                    });
+
+                    return false;
+                },
+                false
+            );
+        }
+    }
+});

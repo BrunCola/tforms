@@ -6196,3 +6196,47 @@ Datatables Plugin(in v1.3)
 #table_paginate a.current{
   text-decoration: underline;
 }
+
+#floorplan{
+  width:750px;
+  height: 550px;
+  border: #0f0 solid 1px;
+}
+
+#listlocalusers{
+   /*overflow: hidden !important;*/
+}
+#listlocalusers li {
+  list-style: none;
+  min-height: 30px;
+  line-height: 20px;
+}
+#listlocalusers li:hover {
+  cursor: pointer;
+}
+#listlocalusers li .localuserlist{
+  width: 100%;
+  display: inline-block;
+}
+#listlocalusers li:nth-child(odd) {
+  background-color: #DEDEDE;
+}
+
+#localuserinformation{
+   /*overflow: hidden !important;*/
+}
+#localuserinformation li {
+  list-style: none;
+  min-height: 30px;
+  line-height: 20px;
+}
+#localuserinformation li:hover {
+  cursor: pointer;
+}
+#localuserinformation li .userinfolist{
+  width: 100%;
+  display: inline-block;
+}
+#localuserinformation li:nth-child(odd) {
+  background-color: #DEDEDE;
+}
