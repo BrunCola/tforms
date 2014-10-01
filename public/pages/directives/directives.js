@@ -3294,7 +3294,14 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
                                 .attr("class", function(d) {return "mainItem" + d.lane;})
                                 .on("mouseover", function(d){
-                                    elm.style('cursor', 'pointer');
+                                    elm
+                                        .style('cursor', 'pointer')
+                                        .transition()
+                                        .delay(3)
+                                        .attr('fill-opacity', '1')
+                                        .attr('stroke', '#ccc')
+                                        .attr('transform', 'scale(1.4) translate(' + x1(d.dd)/1.4 + ',' + y1(d.lane)/1.35 + ')');
+                                    // elm.style('cursor', 'pointer');
                                 })
                                 .on("click", function(d){
 
@@ -3337,6 +3344,15 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // set ids for cross-refrence
                                     previousID = d.id;
                                     previousElm = elm;
+                                })
+                                .on("mouseout", function(d){
+                                    elm
+                                        .style('cursor', 'pointer')
+                                        .transition()
+                                        .delay(150)
+                                        .attr('fill-opacity', '1')
+                                        .attr('stroke', 'none')
+                                        .attr('transform', 'scale(1) translate(' + x1(d.dd) + ',' + (y1(d.lane)+10) + ')');
                                 });
                                 // .attr("width", 5)
                                 // .attr("height", function(d) {return .8 * y1(1);});
