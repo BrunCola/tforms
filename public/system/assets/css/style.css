@@ -1927,7 +1927,7 @@ Form stuff
     -moz-box-shadow: 0 1px 0 1px #e4e6eb;
     box-shadow: 0 1px 0 1px #e4e6eb;
     overflow: hidden;
-    padding: 20px;
+    padding: 12px;
 }
 /**.box .box-header {
     background: #CC0000;
@@ -6198,8 +6198,8 @@ Datatables Plugin(in v1.3)
 }
 
 #floorplan{
-  width:800px;
-  height: 600px;
+/*  width:800px;
+  height: 600px;*/
   border: #0f0 solid 1px;
 }
 

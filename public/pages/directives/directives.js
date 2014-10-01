@@ -3787,7 +3787,7 @@ angular.module('mean.pages').directive('droppable', function() {
                     var item = document.getElementById(e.dataTransfer.getData('Text'));
                     item.setAttribute('x',e.offsetX);
                     item.setAttribute('y',e.offsetY);
-                    item.setAttribute('style', 'top:'+e.offsetY+'px; left:'+e.offsetX+'px; position:relative;');
+                    item.setAttribute('style', 'top:'+e.offsetY+'px; left:'+e.offsetX+'px; position:absolute;');
                     console.log(item);
                     this.appendChild(item);
                     // call the passed drop function
