@@ -3303,7 +3303,14 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
                                 .attr("class", function(d) {return "mainItem" + d.lane;})
                                 .on("mouseover", function(d){
-                                    elm.style('cursor', 'pointer');
+                                    elm
+                                        .style('cursor', 'pointer')
+                                        .transition()
+                                        .delay(3)
+                                        .attr('fill-opacity', '1')
+                                        .attr('stroke', '#ccc')
+                                        .attr('transform', 'scale(1.4) translate(' + x1(d.dd)/1.4 + ',' + y1(d.lane)/1.35 + ')');
+                                    // elm.style('cursor', 'pointer');
                                 })
                                 .on("click", function(d){
 
@@ -3346,6 +3353,15 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // set ids for cross-refrence
                                     previousID = d.id;
                                     previousElm = elm;
+                                })
+                                .on("mouseout", function(d){
+                                    elm
+                                        .style('cursor', 'pointer')
+                                        .transition()
+                                        .delay(150)
+                                        .attr('fill-opacity', '1')
+                                        .attr('stroke', 'none')
+                                        .attr('transform', 'scale(1) translate(' + x1(d.dd) + ',' + (y1(d.lane)+10) + ')');
                                 });
                                 // .attr("width", 5)
                                 // .attr("height", function(d) {return .8 * y1(1);});
@@ -3489,8 +3505,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                 }
                 // info div
                 var width = element.width();
-                var infoHeight = element.height();
-                var userDiv = d3.select("#listlocalusers").style('height', infoHeight+'px').style('overflow', 'scroll');
+                var infoHeight = element.height()+1000;
+                var userDiv = d3.select("#listlocalusers").style('height', infoHeight+'px').style('overflow', 'auto');
                 var infoDiv = d3.select("#localuserinformation").style('height', infoHeight+'px').style('overflow', 'scroll');
 
                 function draw() {
@@ -3617,10 +3633,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     .attr('fill', '#595A5C');
 
 */
-
-
-
-                                    return "<div class='localuserlisticon'>"+count+"</div><div class='localuserlisttext'><strong>"+d.lan_machine+':</strong> '+d.lan_ip+"</div>";
+                                    return "<div class='localuserlisticon'>"+count+"</div><div class='localuserlisttext'>"+d.lan_machine+"</div>";
                                 })
 
                             var el = elel[0];
@@ -3779,24 +3792,23 @@ angular.module('mean.pages').directive('droppable', function() {
 
                     this.classList.remove('over');
 
-                    var item = document.getElementById(e.dataTransfer.getData('Text'));
-                    this.appendChild(item);
-
                     // call the drop passed drop function
                     var binId = this.id;
                     var item = document.getElementById(e.dataTransfer.getData('Text'));
-                    item.setAttribute('x',e.offsetX);
-                    item.setAttribute('y',e.offsetY);
-                    item.setAttribute('style', 'top:'+e.offsetY+'px; left:'+e.offsetX+'px; position:absolute;');
-                    console.log(item);
-                    this.appendChild(item);
-                    // call the passed drop function
-                    scope.$apply(function(scope) {
-                        var fn = scope.drop();
-                        if ('undefined' !== typeof fn) {
-                          fn(item.id, binId);
-                        }
-                    });
+
+                    if(e.srcElement===document.getElementById('floorplan')){
+                        item.setAttribute('x',e.offsetX);
+                        item.setAttribute('y',e.offsetY);
+                        item.setAttribute('style', 'top:'+e.offsetY+'px; left:'+e.offsetX+'px; position:absolute;');
+                        this.appendChild(item);
+                        // call the passed drop function
+                        scope.$apply(function(scope) {
+                            var fn = scope.drop();
+                            if ('undefined' !== typeof fn) {
+                              fn(item.id, binId);
+                            }
+                        });
+                    }
 
                     return false;
                 },

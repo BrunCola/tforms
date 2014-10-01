@@ -45,9 +45,10 @@ module.exports = function(pool) {
             if (req.query.type === 'drill') {
                 var conn = {
                     query: 'SELECT '+
-                                '\'Conn\' AS type, '+
-                                '`time`, '+
-                                '`ioc_count`,'+
+                                '\'Conn\' AS type,'+
+                                '`time`,'+
+                                '`stealth`,'+
+                                '`proxy_blocked`,'+
                                 '`lan_zone`,'+
                                 '`machine`,'+
                                 '`lan_user`,'+
@@ -57,25 +58,26 @@ module.exports = function(pool) {
                                 '`remote_port`,'+
                                 '`remote_country`,'+
                                 '`remote_asn_name`,'+
+                                '`l7_proto`,'+
                                 '`in_bytes`,'+
                                 '`out_bytes`,'+
-                                '`l7_proto`,'+
-                                '`proxy_blocked`,'+
                                 '`ioc`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`,'+
                                 '`ioc_rule`,'+
-                                '`ioc_severity` '+
+                                '`ioc_severity`,'+
+                                '`ioc_count` '+
                             'FROM '+
                                 '`conn` '+
                             'WHERE '+
                                 '`time` BETWEEN ? AND ? '+
-                                'AND `lan_zone`= ? '+
-                                'AND `lan_ip`= ? '+
+                                'AND `lan_zone` = ? '+
+                                'AND `lan_ip` = ? '+
                             'LIMIT 250',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
+                        {title: 'Stealth', select: 'stealth', access: [3] },
                         {title: 'ABP', select: 'proxy_blocked', access: [2] },
                         {title: "Zone", select: "lan_zone"},
                         {title: "Machine", select: "machine"},
@@ -94,6 +96,7 @@ module.exports = function(pool) {
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
+                        {title: "IOC Count", select: "ioc_count"},
                     ],
                     settings: {
                         access: req.session.passport.user.level
@@ -101,9 +104,10 @@ module.exports = function(pool) {
                 }
                 var iocseverity = {
                     query: 'SELECT '+
-                                '\'IOC Severity\' AS type, '+
-                                'time, '+
-                                '`ioc_count`,'+
+                                '\'IOC Severity\' AS type,'+
+                                '`time`,'+
+                                '`stealth`,'+
+                                '`proxy_blocked`,'+
                                 '`lan_zone`,'+
                                 '`machine`,'+
                                 '`lan_user`,'+
@@ -113,25 +117,28 @@ module.exports = function(pool) {
                                 '`remote_port`,'+
                                 '`remote_country`,'+
                                 '`remote_asn_name`,'+
+                                '`l7_proto`,'+
                                 '`in_bytes`,'+
                                 '`out_bytes`,'+
-                                '`l7_proto`,'+
                                 '`ioc`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`,'+
                                 '`ioc_rule`,'+
-                                '`ioc_severity` '+
+                                '`ioc_severity`,'+
+                                '`ioc_count` '+
                             'FROM '+
                                 '`conn` '+
                             'WHERE '+
                                 '`time` BETWEEN ? AND ? '+
-                                'AND `lan_zone`= ? '+
-                                'AND `lan_ip`= ? '+
+                                'AND `lan_zone` = ? '+
+                                'AND `lan_ip` = ? '+
                                 'AND `ioc_severity` >= 1 ' + 
                             'LIMIT 250',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
+                        {title: 'Stealth', select: 'stealth', access: [3] },
+                        {title: 'ABP', select: 'proxy_blocked', access: [2] },
                         {title: "Zone", select: "lan_zone"},
                         {title: "Machine", select: "machine"},
                         {title: "Local User", select: "lan_user"},
@@ -149,6 +156,7 @@ module.exports = function(pool) {
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
                         {title: "IOC Severity", select: "ioc_severity"},
+                        {title: "IOC Count", select: "ioc_count"},
                     ],
                     settings: {
                         access: req.session.passport.user.level
@@ -156,9 +164,10 @@ module.exports = function(pool) {
                 }
                 var conn_ioc = {
                     query: 'SELECT '+
-                                '\'Conn_ioc\' AS type, '+
-                                'time, '+
-                                '`ioc_count`,'+
+                                '\'Conn_ioc\' AS type,'+
+                                '`time`,'+
+                                '`stealth`,'+
+                                '`proxy_blocked`,'+
                                 '`lan_zone`,'+
                                 '`machine`,'+
                                 '`lan_user`,'+
@@ -168,15 +177,15 @@ module.exports = function(pool) {
                                 '`remote_port`,'+
                                 '`remote_country`,'+
                                 '`remote_asn_name`,'+
+                                '`l7_proto`,'+
                                 '`in_bytes`,'+
                                 '`out_bytes`,'+
-                                '`l7_proto`,'+
-                                '`proxy_blocked`,'+
                                 '`ioc`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`,'+
                                 '`ioc_rule`,'+
-                                '`ioc_severity` '+
+                                '`ioc_severity`,'+
+                                '`ioc_count` '+
                             'FROM '+
                                 '`conn_ioc` '+
                             'WHERE '+
@@ -184,12 +193,13 @@ module.exports = function(pool) {
                                 'AND `lan_zone` = ? '+
                                 'AND `lan_ip` = ? '+
                                 'AND `remote_ip` = ? '+
-                                'AND `ioc`= ? '+
+                                'AND `ioc` = ? '+
                             'LIMIT 250',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                     params: [
                         {title: "Time", select: "time"},
-                        {title: 'ABP', select: 'proxy_blocked'},
+                        {title: 'Stealth', select: 'stealth', access: [3] },
+                        {title: 'ABP', select: 'proxy_blocked', access: [2] },
                         {title: "Zone", select: "lan_zone"},
                         {title: "Machine", select: "machine"},
                         {title: "Local User", select: "lan_user"},
@@ -214,9 +224,8 @@ module.exports = function(pool) {
                 }
                 var application = {
                     query: 'SELECT '+
-                                '\'Applications\' AS type, '+
-                                'time, '+
-                                '`ioc_count`,'+
+                                '\'Applications\' AS type,'+
+                                '`time`,'+
                                 '`lan_zone`,'+
                                 '`machine`,'+
                                 '`lan_ip`,'+
@@ -225,14 +234,15 @@ module.exports = function(pool) {
                                 '`remote_port`,'+
                                 '`remote_country`,'+
                                 '`remote_asn_name`,'+
+                                '`l7_proto`,'+
                                 '`in_bytes`,'+
                                 '`out_bytes`,'+
-                                '`l7_proto`,'+
                                 '`ioc`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`,'+
                                 '`ioc_rule`,'+
-                                '`ioc_severity` '+
+                                '`ioc_severity`,'+
+                                '`ioc_count` '+
                             'FROM '+
                                 '`conn` '+
                             'WHERE '+
@@ -354,10 +364,10 @@ module.exports = function(pool) {
                             '`answers`,'+
                             '`TTLs`,'+
                             '`ioc`,'+
-                            '`ioc_severity`,'+
-                            '`ioc_rule`,'+
                             '`ioc_typeIndicator`,'+
-                            '`ioc_typeInfection` '+
+                            '`ioc_typeInfection`,'+
+                            '`ioc_rule`,'+
+                            '`ioc_severity` '+
                         'FROM '+
                             '`dns` '+
                         'WHERE '+
@@ -375,10 +385,10 @@ module.exports = function(pool) {
                         {title: "Answers", select: "answers"},
                         {title: "TTLs", select: "TTLs"},
                         {title: "IOC", select: "ioc"},
-                        {title: "IOC Severity", select: "ioc_severity"},
                         {title: "IOC Type", select: "ioc_typeIndicator"},
                         {title: "IOC Stage", select: "ioc_typeInfection"},
                         {title: "IOC Rule", select: "ioc_rule"},
+                        {title: "IOC Severity", select: "ioc_severity"},
                     ],
                     settings: {
                         access: req.session.passport.user.level
@@ -386,20 +396,20 @@ module.exports = function(pool) {
                 }
                 var dns_ioc = {
                     query: 'SELECT '+
-                            '\'DNS_ioc\' AS type, '+
-                            'time, '+
+                            '\'DNS_ioc\' AS type,'+
+                            '`time`,'+
                             '`ioc_count`,'+
-                            '`proto`, '+
-                            '`qclass_name`, '+
-                            '`qtype_name`, '+
-                            '`query`, '+
-                            '`answers`, '+
-                            '`TTLs`, '+
-                            '`ioc`, '+
-                            '`ioc_severity`, '+
+                            '`proto`,'+
+                            '`qclass_name`,'+
+                            '`qtype_name`,'+
+                            '`query`,'+
+                            '`answers`,'+
+                            '`TTLs`,'+
+                            '`ioc`,'+
+                            '`ioc_typeIndicator`,'+
+                            '`ioc_typeInfection`,'+
                             '`ioc_rule`,'+
-                            '`ioc_typeIndicator`, '+
-                            '`ioc_typeInfection` '+
+                            '`ioc_severity` '+
                         'FROM '+
                             '`dns_ioc` '+
                         'WHERE '+
