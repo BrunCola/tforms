@@ -3596,7 +3596,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             elm
                                 // append id to li from data object
                                 .attr('id', count)
-                                .attr('class', 'localuserlist')
                                 .attr('draggable','true')
                                 .html(function(d){
                                     return "<div class='localuserlist'><strong>"+d.lan_machine+':</strong> '+d.lan_ip+"</div>";
