@@ -16,4 +16,17 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.$broadcast('draggable');
         }
     });  
+
+    // $scope.uploadFile = function(files) {
+    //     console.log("IN FUNCTION");
+    //     $http({method: 'POST', url: '/upload/render', data: files}).
+    //         success( console.log("UPLOADED");
+    //             // function(data, status, headers, config) {
+    //             // var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
+    //             // $scope.tableCrossfitler.remove(fil);
+    //             // tableData.filterAll();
+    //             // redrawTable();
+    //         })
+
+    // };
 }]);
