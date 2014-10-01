@@ -3489,8 +3489,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                 }
                 // info div
                 var width = element.width();
-                var infoHeight = element.height();
-                var userDiv = d3.select("#listlocalusers").style('height', infoHeight+'px').style('overflow', 'scroll');
+                var infoHeight = element.height()+1000;
+                var userDiv = d3.select("#listlocalusers").style('height', infoHeight+'px').style('overflow', 'auto');
                 var infoDiv = d3.select("#localuserinformation").style('height', infoHeight+'px').style('overflow', 'scroll');
 
                 function draw() {
@@ -3596,17 +3596,29 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             elm
                                 // append id to li from data object
                                 .attr('id', count)
-                                .attr('draggable','true')
+                                //.attr('draggable','')
+                                .attr('class', 'localuserlist')
                                 .html(function(d){
-                                    return "<div class='localuserlist'><strong>"+d.lan_machine+':</strong> '+d.lan_ip+"</div>";
+                                    /*var icon = '<path style="fill-rule:evenodd;clip-rule:evenodd;fill:#29ABE2 ;" d="M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0
+                                                 c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4
+                                                c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z"/>
+                                            <circle style="fill-rule:evenodd;clip-rule:evenodd;fill:#29ABE2 ;" cx="11.1" cy="4.9" r="4.9"/>'
+
+
+                                element.append('circle')
+                                    .attr('fill', '#7E9E7B')
+                                    .attr('cx', 18)
+                                    .attr('cy', 18)
+                                    .attr('r', 18);
+                                element.append('svg:path')
+                                    .attr('d', 'M28.649,8.6H7.351c-0.684,0-1.238,0.554-1.238,1.238v14.363c0,0.684,0.554,1.238,1.238,1.238h7.529'+
+                                        'l-1.09,3.468v0.495h8.419v-0.495l-1.09-3.468h7.529c0.684,0,1.237-0.555,1.237-1.238V9.838C29.887,9.153,29.333,8.6,28.649,8.6z'+
+                                        'M28.477,22.072H7.635V10.074h20.842V22.072z')
+                                    .attr('fill', '#595A5C');
+
+*/
+                                    return "<div class='localuserlisticon'>"+count+"</div><div class='localuserlisttext'>"+d.lan_machine+"</div>";
                                 })
-                                .on('mouseevent', function(e) {
-                                    console.log(e);
-                                    e.dataTransfer.effectAllowed = 'move';
-                                    e.dataTransfer.setData('Text', this.id);
-                                    this.classList.add('drag');
-                                    return false;
-                                });
 
                             var el = elel[0];
 
@@ -3614,7 +3626,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             el.addEventListener(
                                 'dragstart',
                                 function(e) {
-                                    console.log(e);
                                     e.dataTransfer.effectAllowed = 'move';
                                     e.dataTransfer.setData('Text', this.id);
                                     this.classList.add('drag');
@@ -3758,25 +3769,30 @@ angular.module('mean.pages').directive('droppable', function() {
             el.addEventListener(
                 'drop',
                 function(e) {
+                    console.log("x = " +  e.offsetX + " ... y = " +  e.offsetY);
+
                     // Stops some browsers from redirecting.
                     if (e.stopPropagation) e.stopPropagation();
 
                     this.classList.remove('over');
 
-                    var item = document.getElementById(e.dataTransfer.getData('Text'));
-                    this.appendChild(item);
-
                     // call the drop passed drop function
                     var binId = this.id;
                     var item = document.getElementById(e.dataTransfer.getData('Text'));
-                    this.appendChild(item);
-                    // call the passed drop function
-                    scope.$apply(function(scope) {
-                        var fn = scope.drop();
-                        if ('undefined' !== typeof fn) {
-                          fn(item.id, binId);
-                        }
-                    });
+
+                    if(e.srcElement===document.getElementById('floorplan')){
+                        item.setAttribute('x',e.offsetX);
+                        item.setAttribute('y',e.offsetY);
+                        item.setAttribute('style', 'top:'+e.offsetY+'px; left:'+e.offsetX+'px; position:absolute;');
+                        this.appendChild(item);
+                        // call the passed drop function
+                        scope.$apply(function(scope) {
+                            var fn = scope.drop();
+                            if ('undefined' !== typeof fn) {
+                              fn(item.id, binId);
+                            }
+                        });
+                    }
 
                     return false;
                 },

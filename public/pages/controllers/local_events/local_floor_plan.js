@@ -13,7 +13,6 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.data = data;
             $scope.$broadcast('floorPlan', data.force, {height: 1000});
             $scope.$broadcast('spinnerHide');
-            $scope.$broadcast('draggable');
         }
     });  
 
