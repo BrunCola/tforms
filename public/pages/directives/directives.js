@@ -3261,15 +3261,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 function plot(data, min, max) {
                     if (moment(max).unix() !== moment(min).unix()) {
 
-
-
-
-                        console.log("-----");
-                    console.log(data);
-                    console.log(infoDiv);
-                    console.log("^^^^^");
-
-
                         //////////////////
                         /// LANE NODES ///
                         //////////////////
