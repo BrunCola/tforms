@@ -3786,8 +3786,7 @@ angular.module('mean.pages').directive('droppable', function() {
                     // call the drop passed drop function
                     var binId = this.id;
                     var item = document.getElementById(e.dataTransfer.getData('Text'));
-
-                    if(e.srcElement===document.getElementById('floorplan')){
+                    //if(e.srcElement===document.getElementById('floorplan')){
                         item.setAttribute('x',e.offsetX);
                         item.setAttribute('y',e.offsetY);
                         item.setAttribute('style', 'top:'+e.offsetY+'px; left:'+e.offsetX+'px; position:absolute;');
@@ -3799,8 +3798,7 @@ angular.module('mean.pages').directive('droppable', function() {
                               fn(item.id, binId);
                             }
                         });
-                    }
-
+                    // }
                     return false;
                 },
                 false
