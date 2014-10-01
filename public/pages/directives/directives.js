@@ -3617,9 +3617,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     .attr('fill', '#595A5C');
 
 */
-
-
-
                                     return "<div class='localuserlisticon'>"+count+"</div><div class='localuserlisttext'><strong>"+d.lan_machine+':</strong> '+d.lan_ip+"</div>";
                                 })
 
@@ -3785,9 +3782,10 @@ angular.module('mean.pages').directive('droppable', function() {
                     // call the drop passed drop function
                     var binId = this.id;
                     var item = document.getElementById(e.dataTransfer.getData('Text'));
+                    console.log(e);
                     item.setAttribute('x',e.offsetX);
                     item.setAttribute('y',e.offsetY);
-                    item.setAttribute('style', 'top:'+e.offsetY+'px; left:'+e.offsetX+'px; position:relative;');
+                    item.setAttribute('style', 'top:'+e.offsetY+'px; left:'+e.offsetX+'px; position:absolute;');
                     console.log(item);
                     this.appendChild(item);
                     // call the passed drop function

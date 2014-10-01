@@ -6218,7 +6218,6 @@ Datatables Plugin(in v1.3)
   width: 100%;
   display: inline-block;
   border: #00f solid 1px;
-  clear: both;
 }
 #listlocalusers li:nth-child(odd) {
   background-color: #DEDEDE;
@@ -6260,10 +6259,6 @@ Datatables Plugin(in v1.3)
 
 #floorplan .localuserlist{
 }
-
-#floorplan .localuserlist{
-}
-
 
 #floorplan .localuserlisticon{
   border: #ff0 solid 1px;
