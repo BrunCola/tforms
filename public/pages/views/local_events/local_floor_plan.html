@@ -1,0 +1,28 @@
+<div data-ng-controller="floorPlanController">
+    <section id="loading-error" loading-error></section>
+    <section id="loading-spinner" loading-spinner></section>
+    <div id="floorplanpage">
+        <div class="span3">
+            <div class="jdash-header">Local Users</div>
+            <div  style="background-color:#FFF;" class="box">
+                <div id="listlocalusers"></div>
+            </div>
+        </div>
+
+        <div class="span9">
+            <div class="jdash-header">Floor Plan</div>
+            <div  style="background-color:#FFF;" class="box">
+                <div class="box-content">
+                   <div id="floorplan" make-floor-plan class="bin" droppable drop="handleDrop"><img src="public/uploads/floorPlan/2ndfloor.jpg" style="border:#f0f solid 1px;"></div>                    
+                </div>
+            </div>
+        </div>
+
+        <div class="span3">
+            <div class="jdash-header">User Information</div>
+            <div  style="background-color:#FFF;" class="box">
+                <div id="localuserinformation"></div>
+            </div>
+        </div>
+    </div>
+</div>
