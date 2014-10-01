@@ -203,6 +203,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                 //     'orphans': []
                 // },
                 {
+                    'title': 'Local Floor Plan',
+                    'url': 'local_floor_plan',
+                    'icon': 'fa-user',
+                    'orphans': []
+                },
+                {
                     'title': 'Endpoint By Type',
                     'url': 'endpoint_by_type',
                     'icon': 'fa-desktop',

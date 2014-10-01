@@ -3490,7 +3490,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                 // info div
                 var width = element.width();
                 var infoHeight = element.height();
-                var userDiv = d3.select("#listlocalusers").style('height', infoHeight+'px').style('overflow', 'hidden');
+                var userDiv = d3.select("#listlocalusers").style('height', infoHeight+'px').style('overflow', 'scroll');
                 var infoDiv = d3.select("#localuserinformation").style('height', infoHeight+'px').style('overflow', 'scroll');
 
                 function draw() {
