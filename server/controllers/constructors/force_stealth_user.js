@@ -141,6 +141,30 @@ module.exports = function (sql, queries, conn, callback) {
                         callback();
                     });
             },
+
+
+
+
+            function(callback) {
+                connection.query(queries[2].query, queries[2].insert, function(err, result) {
+                    if (err) {
+                        callback(err, null);
+                    } else {
+                        result.forEach(function(data){
+                            for(var i = 0; i < nodes.length; i++) {
+                                if(nodes[i].name+"COI" === data.cois){
+                                    nodes[i].rules = [{
+                                                    rule: data.rule, 
+                                                    order: data.rule_order
+                                                }];                                       
+                                }
+                            }
+                        })
+                        callback();
+                    }
+                })
+            },
+
             // function(callback) {
             //     connection.query(queries[1].query, queries[1].insert)
             //         .on('result', function(data){
