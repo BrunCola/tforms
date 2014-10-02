@@ -3488,9 +3488,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
 
                 $scope.appendInfo = function(user,data,type) { 
-                    console.log(user);
-                    console.log(user.length);
-
                     if(type==="clear"){
                         infoDiv.selectAll('tr').remove(); 
                     }else if(type ==="userinfo"){
@@ -3696,7 +3693,6 @@ angular.module('mean.pages').directive('droppable', function() {
             el.addEventListener(
                 'drop',
                 function(e) {
-                    console.log("x = " +  e.offsetX + " ... y = " +  e.offsetY);
 
                     // Stops some browsers from redirecting.
                     if (e.stopPropagation) e.stopPropagation();
@@ -3709,6 +3705,7 @@ angular.module('mean.pages').directive('droppable', function() {
                     var item = document.getElementById(data);
 
                 if(e.srcElement===document.getElementById('svgFloorPlan')){
+                    console.log("x = " +  e.offsetX + " ... y = " +  e.offsetY);
                     item.classList.add('set');
                     item.setAttribute('x',e.offsetX);
                     item.setAttribute('y',e.offsetY);
