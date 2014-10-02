@@ -1,8 +1,7 @@
 <div data-ng-controller="floorPlanController">
     <section id="loading-error" loading-error></section>
     <section id="loading-spinner" loading-spinner></section>
-    <div id="floorplanpage">
-
+    <section id="floorplanpage">
         <input type="file" name="file" onchange="angular.element(this).scope().uploadFile(this.files)"/>
 
         <div class="span3">
@@ -13,8 +12,155 @@
         <div class="span9">
             <div class="jdash-header">Floor Plan</div>
             <div  style="background-color:#FFF;" class="box">
-                <div class="box-content">
-                   <div id="floorplan" make-floor-plan class="bin" droppable drop="handleDrop" style="background:url('public/uploads/floorPlan/2ndfloor.jpg') no-repeat; position:relative;"></div>                    
+                   <div id="floorplan" make-floor-plan class="bin" droppable drop="handleDrop" style="position: relative">
+                        <svg width="910" height="600">
+                            <polygon style="fill-rule:evenodd;clip-rule:evenodd;fill:#666666;" points="5,5 5,91 15,91 15,23 177,23 177,96 187,96 187,15 
+                                338,15 338,114 348,114 348,15 576,15 576,96 586,96 586,15 812,15 812,341 663.6,341 649.7,325.5 642.2,332.2 659.2,351 812,351 
+                                812,499 645,499 645,507 812,507 812,563 586,563 586,440 737,440 737,432 668,432 668,398 660,398 660,432 586,432 586,271.1 
+                                596.3,282.5 603.8,275.8 586,256.1 586,192 576,192 576,256 348,256 348,166 338,166 338,266 576,266 576,326 405,326 405,336 
+                                576,336 576,563 348,563 348,336 352,336 352,326 338,326 338,563 246,563 246,409 280,409 290,409 293,409 293,399 290,399 
+                                290,387 280,387 280,399 246,399 246,336 290,336 290,326 246,326 246,319 239,319 239,326 236,326 236,399 236,409 236,563 15,563 
+                                15,266 124,266 124,256 95,256 95,212 177,212 177,256 166,256 166,266 239,266 239,269 246,269 246,266 292,266 292,256 187,256 
+                                187,148 177,148 177,202 57,202 57,212 85,212 85,256 15,256 15,143 5,143 5,573 822,573 822,5 "/>
+                            <rect x="186.5" y="15.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="151" height="45"/>
+                            <rect x="245.5" y="450.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="44" height="56"/>
+                            <rect x="0.5" y="330.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="19" height="104"/>
+                            <rect x="806.5" y="74.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="19" height="166"/>
+                            <rect x="248.5" y="0.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="59" height="19"/>
+                            <rect x="423.5" y="559.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="59" height="19"/>
+                            <path style="fill-rule:evenodd;clip-rule:evenodd;fill:none;stroke:#666666;stroke-miterlimit:10;" d="M634.9,98
+                                c0,11.8-10.8,47-49,47c38.2,0,49,36.8,49,45.9"/>
+                            <path style="fill-rule:evenodd;clip-rule:evenodd;fill:none;stroke:#666666;stroke-miterlimit:10;" d="M292.2,117
+                                c0,23.1,15.2,47.4,51.6,47.4"/>
+                            <path style="fill-rule:evenodd;clip-rule:evenodd;fill:none;stroke:#666666;stroke-miterlimit:10;" d="M355.6,378.6
+                                c23.1,0,47.4-15.2,47.4-51.6"/>
+                            <path style="fill-rule:evenodd;clip-rule:evenodd;fill:none;stroke:#666666;stroke-miterlimit:10;" d="M190.4,270.6
+                                c0,23.1,15.2,47.4,51.6,47.4"/>
+                            <path style="fill-rule:evenodd;clip-rule:evenodd;fill:none;stroke:#666666;stroke-miterlimit:10;" d="M293.4,258.4
+                                c0-22.8,13.4-46.8,45.4-46.8"/>
+                            <path style="fill-rule:evenodd;clip-rule:evenodd;fill:none;stroke:#666666;stroke-miterlimit:10;" d="M132.4,144.9
+                                c0-23.1,15.2-47.4,51.6-47.4"/>
+                            <rect x="291.5" y="115.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="52" height="3"/>
+                            <path style="fill-rule:evenodd;clip-rule:evenodd;fill:none;stroke:#666666;stroke-miterlimit:10;" d="M63.4,139.6
+                                c0-23.3-15.3-47.7-51.9-47.7"/>
+                            <rect x="11.5" y="138.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="52" height="3"/>
+                            <path style="fill-rule:evenodd;clip-rule:evenodd;fill:none;stroke:#666666;stroke-miterlimit:10;" d="M54.9,165.5
+                                c-18.8,0-38.6,12.4-38.6,42"/>
+                            <rect x="53.5" y="165.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="3" height="42"/>
+                            <rect x="132.5" y="143.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="51" height="3"/>
+                            <path style="fill-rule:evenodd;clip-rule:evenodd;fill:none;stroke:#666666;stroke-miterlimit:10;" d="M613.4,395.9
+                                c0-23.1,15.2-47.4,51.6-47.4"/>
+                            <rect x="612.5" y="394.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="52" height="3"/>
+                            <path style="fill-rule:evenodd;clip-rule:evenodd;fill:none;stroke:#666666;stroke-miterlimit:10;" d="M164.7,304.9
+                                c-20.1,0-41.3-12.7-41.3-43.1"/>
+                            <rect x="163.5" y="260.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="3" height="46"/>
+                            <path style="fill-rule:evenodd;clip-rule:evenodd;fill:none;stroke:#666666;stroke-miterlimit:10;" d="M334.7,453.2
+                                c-20.5,0-42-13-42-43.9"/>
+                            <rect x="333.5" y="411.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="3" height="43"/>
+                            <rect x="189.5" y="269.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="52" height="3"/>
+                            <rect x="353.5" y="327.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="3" height="52"/>
+                            <rect x="334.5" y="209.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="3" height="49"/>
+                            <rect x="586.5" y="96.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="50" height="3"/>
+                            <path style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" d="M272.7,417.3
+                                c-2.7,0-5.2,0.2-7.4,1.2h-11.2c-2.2-1-4.8-1.2-7.4-1.2c-0.4,0-0.8,0-1.2,0.1v25.1c0.4,0,0.8,0,1.2,0c2.4,0,4.6,0,6.6-1H266
+                                c2,1,4.3,1,6.6,1c9.6,0,17.3-5.6,17.3-12.6S282.3,417.3,272.7,417.3z"/>
+                            <rect x="586.5" y="189.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="50" height="3"/>
+                            <ellipse style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" cx="272.7" cy="429.9" rx="11.2" ry="8.1"/>
+                            <ellipse style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" cx="269" cy="477.3" rx="16.4" ry="15.9"/>
+                            <path style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" d="M282.5,477.3
+                                c0,7.2-6.1,13.1-13.5,13.1c-2.9,0-5.5-0.9-7.7-2.3c0-1.9,0.1-20.5,0.1-21.6c2.2-1.4,4.8-2.2,7.6-2.2
+                                C276.4,464.2,282.5,470,282.5,477.3z"/>
+                            <rect x="245.5" y="515.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="92" height="47"/>
+                            <rect x="255.5" y="475.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="13" height="4"/>
+                            <ellipse style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" cx="277.8" cy="41" rx="15.9" ry="16.4"/>
+                            <path style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" d="M277.8,54.5
+                                c-7.2,0-13.1-6.1-13.1-13.5c0-2.9,0.9-5.5,2.3-7.7c1.9,0,20.5,0.1,21.6,0.1c1.4,2.2,2.2,4.8,2.2,7.6C290.8,48.5,285,54.5,277.8,54.5
+                                z"/>
+                            <rect x="275.5" y="27.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="13"/>
+                            <path style="fill-rule:evenodd;clip-rule:evenodd;fill:none;stroke:#666666;stroke-miterlimit:10;" d="M335.2,538.6
+                                c0-8.4-5.6-19.1-10.7-19.1h-66c-2.2,0-4,1.8-4,4v30c0,2.2,1.8,4,4,4h66C330.9,557.5,335.2,547.4,335.2,538.6z"/>
+                            <rect x="249.5" y="535.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="14" height="7"/>
+                            <rect x="278.5" y="559.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="59" height="19"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="732.5" y1="440" x2="732.5" y2="499"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="714.5" y1="440" x2="714.5" y2="499"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="698.5" y1="440" x2="698.5" y2="499"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="680.5" y1="440" x2="680.5" y2="499"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="108.5" y1="23" x2="108.5" y2="72"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="126.5" y1="23" x2="126.5" y2="72"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="144.5" y1="23" x2="144.5" y2="72"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="91.5" y1="23" x2="91.5" y2="72"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="73.5" y1="23" x2="73.5" y2="72"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="67.5" y1="23" x2="67.5" y2="72"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="645.5" y1="440" x2="645.5" y2="499"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="732.5" y1="507" x2="732.5" y2="563"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="752.5" y1="507" x2="752.5" y2="563"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="714.5" y1="507" x2="714.5" y2="563"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="696.5" y1="507" x2="696.5" y2="563"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="678.5" y1="507" x2="678.5" y2="563"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="661.5" y1="507" x2="661.5" y2="563"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="645.5" y1="507" x2="645.5" y2="563"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="614" y1="440" x2="645" y2="502.6"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="586" y1="473.2" x2="645" y2="502.6"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="586" y1="502.5" x2="645" y2="502.5"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="586" y1="532.9" x2="645" y2="502.6"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="615.9" y1="563.4" x2="645" y2="502.6"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="752.5" y1="507" x2="780.3" y2="563.4"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="752.5" y1="507" x2="812" y2="536.6"/>
+                            <rect x="66" y="72" style="fill-rule:evenodd;clip-rule:evenodd;fill:#666666;" width="74" height="8"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:none;stroke:#666666;stroke-miterlimit:10;" x1="15" y1="23" x2="40.5" y2="79"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:none;stroke:#666666;stroke-miterlimit:10;" x1="15" y1="23" x2="67.5" y2="52.3"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="162.3" y1="23" x2="144.5" y2="72"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="177" y1="52.3" x2="144.5" y2="72"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="15" y1="78.5" x2="66" y2="78.5"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="126" y1="72.5" x2="177" y2="72.5"/>
+                            <path style="fill-rule:evenodd;clip-rule:evenodd;fill:none;stroke:#666666;stroke-miterlimit:10;" d="M175.9,38.9
+                                c-17.8,0-36.4,11.7-36.4,39.6"/>
+                            <rect x="174.5" y="38.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="3" height="40"/>
+                            <rect x="812.5" y="236.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="7" height="4"/>
+                            <rect x="814.5" y="232.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="3" height="4"/>
+                            <rect x="812.5" y="74.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="7" height="4"/>
+                            <rect x="814.5" y="78.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="3" height="4"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="815.5" y1="83" x2="815.5" y2="233"/>
+                            <rect x="6.5" y="430.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="7" height="4"/>
+                            <rect x="8.5" y="426.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="3" height="4"/>
+                            <rect x="6.5" y="330.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="7" height="4"/>
+                            <rect x="8.5" y="334.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="3" height="4"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="10.5" y1="339" x2="10.5" y2="427"/>
+                            <rect x="278.5" y="565.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="7"/>
+                            <rect x="282.5" y="567.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="3"/>
+                            <rect x="333.5" y="565.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="7"/>
+                            <rect x="329.5" y="567.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="3"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="329" y1="569.5" x2="286" y2="569.5"/>
+                            <rect x="423.5" y="565.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="7"/>
+                            <rect x="427.5" y="567.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="3"/>
+                            <rect x="478.5" y="565.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="7"/>
+                            <rect x="474.5" y="567.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="3"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="474" y1="569.5" x2="431" y2="569.5"/>
+                            <rect x="402.5" y="0.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="59" height="19"/>
+                            <rect x="402.5" y="6.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="7"/>
+                            <rect x="406.5" y="8.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="3"/>
+                            <rect x="457.5" y="6.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="7"/>
+                            <rect x="453.5" y="8.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="3"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="453" y1="9.5" x2="410" y2="9.5"/>
+                            <rect x="597.5" y="0.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="59" height="19"/>
+                            <rect x="597.5" y="6.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="7"/>
+                            <rect x="601.5" y="8.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="3"/>
+                            <rect x="652.5" y="6.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="7"/>
+                            <rect x="648.5" y="8.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="3"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="648" y1="9.5" x2="605" y2="9.5"/>
+                            <rect x="745.5" y="0.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="59" height="19"/>
+                            <rect x="745.5" y="6.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="7"/>
+                            <rect x="749.5" y="8.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="3"/>
+                            <rect x="800.5" y="6.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="7"/>
+                            <rect x="796.5" y="8.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="3"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="796" y1="9.5" x2="753" y2="9.5"/>
+                            <rect x="248.5" y="6.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="7"/>
+                            <rect x="252.5" y="8.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="3"/>
+                            <rect x="303.5" y="6.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="7"/>
+                            <rect x="299.5" y="8.5" style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" width="4" height="3"/>
+                            <line style="fill-rule:evenodd;clip-rule:evenodd;fill:#F2F2F2;stroke:#666666;stroke-miterlimit:10;" x1="299" y1="9.5" x2="256" y2="9.5"/>
+                        </svg>
+                   </div>
                 </div>
             </div>
         </div>
@@ -25,5 +171,5 @@
                 <div id="localuserinformation"></div>
             </div>
         </div>
-    </div>
+    </section>
 </div>

@@ -3261,15 +3261,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 function plot(data, min, max) {
                     if (moment(max).unix() !== moment(min).unix()) {
 
-
-
-
-                        console.log("-----");
-                    console.log(data);
-                    console.log(infoDiv);
-                    console.log("^^^^^");
-
-
                         //////////////////
                         /// LANE NODES ///
                         //////////////////
@@ -3303,7 +3294,14 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
                                 .attr("class", function(d) {return "mainItem" + d.lane;})
                                 .on("mouseover", function(d){
-                                    elm.style('cursor', 'pointer');
+                                    elm
+                                        .style('cursor', 'pointer')
+                                        .transition()
+                                        .delay(3)
+                                        .attr('fill-opacity', '1')
+                                        .attr('stroke', '#ccc')
+                                        .attr('transform', 'scale(1.4) translate(' + x1(d.dd)/1.4 + ',' + y1(d.lane)/1.35 + ')');
+                                    // elm.style('cursor', 'pointer');
                                 })
                                 .on("click", function(d){
 
@@ -3346,6 +3344,15 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // set ids for cross-refrence
                                     previousID = d.id;
                                     previousElm = elm;
+                                })
+                                .on("mouseout", function(d){
+                                    elm
+                                        .style('cursor', 'pointer')
+                                        .transition()
+                                        .delay(150)
+                                        .attr('fill-opacity', '1')
+                                        .attr('stroke', 'none')
+                                        .attr('transform', 'scale(1) translate(' + x1(d.dd) + ',' + (y1(d.lane)+10) + ')');
                                 });
                                 // .attr("width", 5)
                                 // .attr("height", function(d) {return .8 * y1(1);});
@@ -3779,8 +3786,7 @@ angular.module('mean.pages').directive('droppable', function() {
                     // call the drop passed drop function
                     var binId = this.id;
                     var item = document.getElementById(e.dataTransfer.getData('Text'));
-
-                    if(e.srcElement===document.getElementById('floorplan')){
+                    //if(e.srcElement===document.getElementById('floorplan')){
                         item.setAttribute('x',e.offsetX);
                         item.setAttribute('y',e.offsetY);
                         item.setAttribute('style', 'top:'+e.offsetY+'px; left:'+e.offsetX+'px; position:absolute;');
@@ -3792,8 +3798,7 @@ angular.module('mean.pages').directive('droppable', function() {
                               fn(item.id, binId);
                             }
                         });
-                    }
-
+                    // }
                     return false;
                 },
                 false
