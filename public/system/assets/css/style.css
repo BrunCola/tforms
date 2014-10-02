@@ -296,66 +296,6 @@ td.file {
     font-size: 12px;
     cursor: pointer;
 }
-/*previous sim chart css*/
-/*.chart {
-  shape-rendering: crispEdges;
-}
-
-.mini text {
-  font: 9px sans-serif;
-}
-
-.main text {
-  font: 12px sans-serif;
-}
-
-.month text {
-  text-anchor: start;
-}
-
-.todayLine {
-  stroke: blue;
-  stroke-width: 1.5;
-}
-
-.axis line, .axis path {
-  stroke: black;
-}
-
-.miniItem {
-  stroke-width: 6;
-}
-
-.future {
-  stroke: gray;
-  fill: #ddd;
-}
-
-.range {
-  stroke: green;
-  fill: lightgreen;
-}*/
-
-/*.point {
-  cx:50;
-  cy:50;
-  r:40;
-  stroke:black;
-  stroke-width:3;
-  fill:red;
-}*/
-
-/*.point {
-   stroke: green;
-  fill: lightgreen;
-}
-
-.brush .extent {
-  stroke: gray;
-  fill: blue;
-  fill-opacity: .165;
-}*/
-
 
 /* axis */
 
@@ -1632,7 +1572,7 @@ input[multiple] {
 button {
   padding: 1px 5px;
   font-size: smaller;
-  margin: 0 3px; 
+  margin: 0 0px; 
 }
 
 .ng-v {
@@ -5826,124 +5766,7 @@ Responsive tables(new in v1.2.3)
   width: 100%;
 }
 **/
-@media only screen and (max-width: 800px) {
 
-  /* Force table to not be like tables anymore */
-/**  .no-more-tables table,
-  .no-more-tables thead,
-  .no-more-tables tbody,
-  .no-more-tables th,
-  .no-more-tables td,
-  .no-more-tables tr {
-    display: block;
-  }
-**/
-  /* Hide table headers (but not display: none;, for accessibility) */
-/**  .no-more-tables thead tr {
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-  }
-**/
-/**  .no-more-tables tr {
-    border-left: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-  }
-**/
-/**  .no-more-tables tr:last-child {
-    border-bottom: 0;
-  }
-**/
-/**  .no-more-tables td {
-    /* Behave  like a "row" *\/
-    border: none;
-    border-bottom: 1px solid #eee;
-    position: relative;
-    padding-left: 50%;
-    white-space: normal;
-    text-align:left;
-  }
-**/
-/**  .no-more-tables td:before {
-    /* Now like a table header *\/
-    position: absolute;
-    /* Top/left values mimic padding *\/
-    top: 6px;
-    left: 6px;
-    width: 45%;
-    padding-right: 10px;
-    white-space: nowrap;
-    text-align:left;
-    font-weight: bold;
-  }
-**/
-  /*
-  Label the data
-  */
-/**  .no-more-tables td:before { content: attr(data-title); }
-**/}
-
-/***
-Fancy box fix overlay fix(in v1.2.4)
-***/
-/**.fancybox-overlay {
-  z-index: 10000 !important;
-}
-**/
-/***
-Bootstrap Datetimepickers Restyle(in v1.2.4)
-***/
-/**.modal-open .datetimepicker {
-  z-index: 10060 !Important;
-}
-**/
-/**.datetimepicker table .active {
-  background-image: none !important;
-  background-color: #4b8df8 !important;
-  filter: none !important;
-}
-**/
-/**.datetimepicker table td {
-  font-weight: 300 !important;
-  font-family: 'Open Sans' !important;
-}
-**/
-/**.datetimepicker table th {
-  font-family: 'Open Sans' !important;
-  font-weight: 400 !important;
-}
-**/
-/***
-Bootstrap Datepickers Restyle(in v1.2.4)
-***/
-/**.modal-open .datepicker {
-  z-index: 10060 !Important;
-}
-**/
-/**.datepicker table .active {
-  background-image: none !important;
-  background-color: #4b8df8 !important;
-  filter: none !important;
-}
-**/
-/**.datepicker table td {
-  font-weight: 300 !important;
-  font-family: 'Open Sans' !important;
-}
-**/
-/**.datepicker table th {
-  font-family: 'Open Sans' !important;
-  font-weight: 400 !important;
-}
-**/
-
-/***
-Bootstrap Colorpicker (in v1.3)
-***/
-/**.modal-open .colorpicker {
-  z-index: 10060 !important;
-}
-**/
 /***
 Dropdown Checkboxes (in v1.3)
 ***/
@@ -5969,48 +5792,6 @@ Datatables Plugin(in v1.3)
 .dataTables_filter label {
   line-height: 32px !important;
 }
-
-/**.dataTable .row-details {
-  margin-top: 3px;
-  display: inline-block;
-  cursor: pointer;
-  width: 14px;
-  height: 14px;
-}
-**/
-/**.dataTable .row-details.row-details-close {
-  background: url("../assets/img/le-row-openclose.png") no-repeat 0 0;
-}
-**/
-/**.dataTable .row-details.row-details-open {
-  background: url("../assets/img/le-row-openclose.png") no-repeat 0 -23px !important;
-}
-**/
-/**.dataTable .details {
-  background-color: #eee !important;
-}
-**/
-/**.dataTable .details td,
-.dataTable .details th {
-  padding: 4px;
-  background-color: none !important;
-  border: 0;
-}
-**/
-/**.dataTable .details tr:hover td,
-.dataTable .details tr:hover th {
-  background-color: none !important;
-}
-**/
-/**.dataTable .details tr:nth-child(odd) td,
-.dataTable .details tr:nth-child(odd) th {
-  background-color: #eee !important;
-}
-**/
-/**.dataTable .details tr:nth-child(even) td,
-.dataTable .details tr:nth-child(even) th {
-  background-color: #eee !important;
-}**/
 
 #stealthforcechart{
   height: 90% !important;
@@ -6092,10 +5873,6 @@ Datatables Plugin(in v1.3)
   width: 70%;
   text-align: center;
 }
-
-#localuserinformation{
-   /*overflow: hidden !important;*/
-}
 #localuserinformation li {
   list-style: none;
   min-height: 30px;
@@ -6132,12 +5909,9 @@ Datatables Plugin(in v1.3)
 .drag {
   opacity: 0.5;
 }
-.quarantine-icon{
-  fill: #ff0000;
-  width: 35px;
-  height: 35px;
-  float: left;
+.action-icon{
+  fill: #fff; width: 35px; height: 35px; float: left; border-radius: 20px;  
 }
 .action-text{
-  border-style: solid; border-width: 1px; display:table-cell; vertical-align: middle; height: 47px; color: red; font-size: 16px;
+  display:table-cell; vertical-align: middle; height: 47px; color: red; font-size: 16px; padding-left: 5px;
 }
