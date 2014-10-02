@@ -15,4 +15,37 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.$broadcast('spinnerHide');
         }
     });  
+
+    $scope.requery = function(d) {       
+        var userInfo = [];
+
+        $scope.appendInfo("","","clear");
+        $scope.appendInfo(d,"","userinfo");
+
+        var query = '/local_events/local_floor_plan?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser';                        
+
+        $http({method: 'GET', url: query+'&typeinfo=localioc'}).
+            success(function(data) {
+                $scope.appendInfo(d,data[0],"localioc");
+            });
+
+        $http({method: 'GET', url: query+'&typeinfo=localapp'}).
+            success(function(data) {
+                $scope.appendInfo(d,data[0],"localapp");
+            });
+
+        $http({method: 'GET', url: query+'&typeinfo=localhttp'}).
+            success(function(data) {
+                $scope.appendInfo(d,data[0],"localhttp");
+            });
+
+        $http({method: 'GET', url: query+'&typeinfo=localfiles'}).
+            success(function(data) {
+                userInfo.push(data);
+                $scope.appendInfo(d,data[0],"localfiles");
+            });
+
+
+                $scope.appendInfo(userInfo);
+    }
 }]);

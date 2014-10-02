@@ -3487,18 +3487,60 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     });*/
 
 
-                function laneInfoAppend(d) {
-                    var send = '';
-                    for (var i in d) {
-                        send += '<strong>'+i+':</strong> '+d[i]+'<br />';      
+                $scope.appendInfo = function(user,data,type) { 
+                    console.log(user);
+                    console.log(user.length);
+
+                    if(type==="clear"){
+                        infoDiv.selectAll('tr').remove(); 
+                    }else if(type ==="userinfo"){
+                        for(var b in user){
+                            var row = infoDiv.append('tr');
+                            if(user[b]!==null){
+                                row
+                                    .append('td')
+                                    .html('<strong>'+b+'</strong>');
+                                row
+                                    .append('td')
+                                    .text(user[b]);
+                            }
+                        }
+                    }else{
+                        var title = "", link = "";
+                            if(type==="localioc"){
+                                title = "IOC Hits: ";
+                                link = "#!/ioc_local?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            }else if(type==="localapp"){
+                                title = "App Hits: ";
+                                link = "#!/l7_local_app?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            }else if(type==="localhttp"){
+                                title = "HTTP Hits: ";
+                                link = "#!/http_local_by_domain?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            }else if(type==="localfiles"){
+                                title = "File Hits: ";
+                                link = "#!/by_file_name?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            }else{
+                                title = "NO TITLE HITS";
+                                link = "#!/ioc_events?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            }
+
+                        for(var i in data){
+                            var row = infoDiv.append('tr');
+                            row
+                                .append('td')
+                                .html('<strong>'+title+'</strong>');
+                            row
+                                .append('td')
+                                .html('<a href="'+link+'"]>'+data[i]+'</a>');
+                        }
                     }
-                    return send;
                 }
+
                 // info div
                 var width = element.width();
                 var infoHeight = element.height()+1000;
-                var userDiv = d3.select("#listlocalusers").style('height', infoHeight+'px').style('overflow', 'auto');
-                var infoDiv = d3.select("#localuserinformation").style('height', infoHeight+'px').style('overflow', 'scroll');
+                var userDiv = d3.select("#listlocalusers").style('overflow', 'auto');
+                var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
 
                 function draw() {
                     // disable all nav buttons
@@ -3509,84 +3551,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                 }
                 draw();
 
-                function mouseup(action) {
-                    /*// set variables
-                    var rects, labels, minExtent, maxExtent, visItems;
-                    // if a nav button is pressed
-                    if (action === 'nav') {
-                            // get max and min (date objects) from mav array
-                            minExtent = navArray[currentNavPos].min;
-                            maxExtent = navArray[currentNavPos].max;
-                        // disable previous button if all the way back
-                        if (currentNavPos === 0) {
-                            resetBtn.attr('disabled', 'disabled');
-                            prevButton.attr('disabled', 'disabled');
-                        // or disable next button if all the way forward 
-                        } else if (currentNavPos === navArray.length-1) {
-                            nextButton.attr('disabled', 'disabled');
-                        } else {
-                            // otherwise keep reset button open
-                            resetBtn.attr('disabled', null);
-                        }
-                    // otherwise if item brushed
-                    } else {
-                        // get max and min from click/drag
-                        minExtent = brush.extent()[0];
-                        maxExtent = brush.extent()[1];
-                        // step up nav array pos and push new values in;
-                        currentNavPos++;
-                        navArray.push({'min': minExtent, 'max': maxExtent});
-                        prevButton.attr('disabled', null);
-                        resetBtn.attr('disabled', null);
-                    }
-                    // convert times returned to unix
-                    var minUnix = moment(minExtent).unix();
-                    var maxUnix = moment(maxExtent).unix();
-                    // should it requery?
-                    var msDifference = maxUnix - minUnix;
-                    // if difference is less than threshhold or is not a single time select (resulting in difference being 0)
-                    if ((msDifference < queryThreshhold) && (msDifference !== 0)) {
-                        // push to requery and then plot
-                        $scope.requery(minExtent, maxExtent, function(data){
-                            data.reverse();
-                            plot(data, minExtent, maxExtent);
-                        })
-                    } else {
-                        // reset if not within threshold
-                        $scope.inTooDeep.areWe = false;
-                        var data = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;}).reverse();
-                        $scope.alert.style('display', 'none');
-                        plot(data, minExtent, maxExtent);
-                    }*/
-
-                    console.log("mouseup");
-                }
-
-                function scrollSide(id) {
-                    /*var elm = $('li#'+id);
-                    var ept  = elm.position().top;
-                    var eppt = elm.parent().position().top;
-                    var offset = ept - eppt;
-                    var totalHeight = $('#lanegraphinfo')[0].scrollHeight;
-                    var windowHeight = $('#lanegraphinfo').height();
-                    if(offset>(totalHeight-windowHeight)){
-                        offset = totalHeight-windowHeight;
-                    }
-                    $('#lanegraphinfo').scrollTo(offset);*/
-                    console.log("scrollside");
-                }
-
                 function plot(data) {
-                    //////////////////
-                    /// LANE NODES ///
-                    //////////////////
-                    // set variables for info sidebar
                     var prevPos = 0;
                     var previousID = -1, previousElm = null;
                     var lastExpandedId = null, isOpen = null;
-                    //console.log("plot");
-                    // update time slice above chart
-                    // create transition effect of slider
 
 
                     ////////////////////
@@ -3611,7 +3579,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z"/>
                                             <circle style="fill-rule:evenodd;clip-rule:evenodd;fill:#29ABE2 ;" cx="11.1" cy="4.9" r="4.9"/>'
 
-
                                 element.append('circle')
                                     .attr('fill', '#7E9E7B')
                                     .attr('cx', 18)
@@ -3621,10 +3588,11 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     .attr('d', 'M28.649,8.6H7.351c-0.684,0-1.238,0.554-1.238,1.238v14.363c0,0.684,0.554,1.238,1.238,1.238h7.529'+
                                         'l-1.09,3.468v0.495h8.419v-0.495l-1.09-3.468h7.529c0.684,0,1.237-0.555,1.237-1.238V9.838C29.887,9.153,29.333,8.6,28.649,8.6z'+
                                         'M28.477,22.072H7.635V10.074h20.842V22.072z')
-                                    .attr('fill', '#595A5C');
-
-*/
+                                    .attr('fill', '#595A5C'); */
                                     return "<div class='localuserlisticon'>"+count+"</div><div class='localuserlisttext'>"+d.lan_machine+"</div>";
+                                })
+                                .on('click', function(e){
+                                    $scope.requery(d, 'flooruser');
                                 })
 
                             var el = elel[0];
@@ -3650,55 +3618,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 false
                             );
                         });
-
-
-
-
-
-                    //////////////////////
-                    /// LIST USER INFO ///
-                    //////////////////////
-                    infoDiv.selectAll('li').remove();
-                    infoDiv.selectAll('li').data(data).enter()
-                        .append('li').each(function(d){
-                            var elm = d3.select(this);
-                            elm
-                                // append id to li from data object
-                                .attr('id', function(d){return d.id })
-                                .html(function(d){
-                                    return "<div class='userinfolist'>"+laneInfoAppend(d)+"</div>";
-                                })
-                                .on('click', function(){
-                                  
-                                })
-                                // append expand buttons to list elements
-                                .append('div')
-                                .on('click', function(){
-                                   /* if (lastExpandedId !== '#'+d.id) {
-                                        $('div'+lastExpandedId+'.infoDivExpanded').hide();
-                                    }
-                                    if (isOpen === '#'+d.id) {
-                                        elm.select('.infoDivExpanded').style('display', 'none');
-                                        isOpen = null;
-                                    } else {
-                                        elm.select('.infoDivExpanded').style('display', 'block');
-                                        lastExpandedId = '#'+d.id;
-                                        isOpen = '#'+d.id;
-
-                                        elm.select('.infoDivExpanded').html(laneInfoAppend(d.expand));
-                                    }*/
-
-                                })
-                               /* .attr('class', 'infoDivExpandBtn')
-                                .html('+');*/
-                           /* elm
-                                .append('div')
-                                .style('display', 'none')
-                                .attr('class', 'infoDivExpanded')
-                                .attr('id', d.id);*/
-                        });                    
                 }                
-                // function listItems
             });
         }
     };
@@ -3785,21 +3705,24 @@ angular.module('mean.pages').directive('droppable', function() {
 
                     // call the drop passed drop function
                     var binId = this.id;
-                    var item = document.getElementById(e.dataTransfer.getData('Text'));
+                    var data = e.dataTransfer.getData("Text");
+                    var item = document.getElementById(data);
 
-                    //if(e.srcElement===document.getElementById('floorplan')){
-                        item.setAttribute('x',e.offsetX);
-                        item.setAttribute('y',e.offsetY);
-                        item.setAttribute('style', 'top:'+e.offsetY+'px; left:'+e.offsetX+'px; position:absolute;');
-                        this.appendChild(item);
-                        // call the passed drop function
-                        scope.$apply(function(scope) {
-                            var fn = scope.drop();
-                            if ('undefined' !== typeof fn) {
-                              fn(item.id, binId);
-                            }
-                        });
-                    // }
+                if(e.srcElement===document.getElementById('svgFloorPlan')){
+                    item.classList.add('set');
+                    item.setAttribute('x',e.offsetX);
+                    item.setAttribute('y',e.offsetY);
+                    item.setAttribute('style', 'top:'+e.offsetY+'px; left:'+e.offsetX+'px; position:absolute;');
+                    this.appendChild(item);
+                    // call the passed drop function
+                    scope.$apply(function(scope) {
+                        var fn = scope.drop();
+                        if ('undefined' !== typeof fn) {
+                          fn(item.id, binId);
+                        }
+                    });
+                 }
+
                     return false;
                 },
                 false
