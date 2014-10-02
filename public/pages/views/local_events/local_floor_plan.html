@@ -2,6 +2,8 @@
     <section id="loading-error" loading-error></section>
     <section id="loading-spinner" loading-spinner></section>
     <section id="floorplanpage">
+        <input type="file" name="file" onchange="angular.element(this).scope().uploadFile(this.files)"/>
+
         <div class="span3">
             <div class="jdash-header">Local Users</div>
             <div id="listlocalusers"></div>

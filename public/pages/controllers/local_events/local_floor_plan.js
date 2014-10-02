@@ -48,4 +48,18 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
 
                 $scope.appendInfo(userInfo);
     }
+
+    $scope.uploadFile = function(files) {
+        var fd = new FormData();
+        //Take the first selected file
+
+        fd.append("file", files[0]);
+        console.log(fd);
+        var uploadUrl = '../../../uploads/'; //TODO Different folders per client? Diff folders for User photos and floor plans?
+        $http.post(uploadUrl, fd, {
+            withCredentials: true,
+            headers: {'Content-Type': undefined },
+            transformRequest: angular.identity
+        });//.success( console.log("UPLOADED");).error( console.log("error!"); );
+    };  
 }]);
