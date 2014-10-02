@@ -301,66 +301,6 @@ td.file {
     font-size: 12px;
     cursor: pointer;
 }
-/*previous sim chart css*/
-/*.chart {
-  shape-rendering: crispEdges;
-}
-
-.mini text {
-  font: 9px sans-serif;
-}
-
-.main text {
-  font: 12px sans-serif;
-}
-
-.month text {
-  text-anchor: start;
-}
-
-.todayLine {
-  stroke: blue;
-  stroke-width: 1.5;
-}
-
-.axis line, .axis path {
-  stroke: black;
-}
-
-.miniItem {
-  stroke-width: 6;
-}
-
-.future {
-  stroke: gray;
-  fill: #ddd;
-}
-
-.range {
-  stroke: green;
-  fill: lightgreen;
-}*/
-
-/*.point {
-  cx:50;
-  cy:50;
-  r:40;
-  stroke:black;
-  stroke-width:3;
-  fill:red;
-}*/
-
-/*.point {
-   stroke: green;
-  fill: lightgreen;
-}
-
-.brush .extent {
-  stroke: gray;
-  fill: blue;
-  fill-opacity: .165;
-}*/
-
 
 /* axis */
 
@@ -581,21 +521,7 @@ td.file {
     }
 **/
     /* Style northward tooltips differently */
-/**    .d3-tip.n:after {
-      margin: -1px 0 0 0;
-      top: 100%;
-      left: 0;
-    }
-**/
-/**    .campusLabel {
-      font: 300 18px "Helvetica Neue";
-      color: #525252;
-    }
-**/
-/**.dc-data-table td {
-  word-wrap: break-word !important;
-}
-**/
+
 #table_wrapper{
     overflow: hidden;
 }
@@ -605,113 +531,19 @@ td.file {
 }
 .container-fluid {
 }
-/**#page-content {
-  min-height:1000px !important;
-}
-**//**.file_width
-{
-  max-width: 300px;
-}
-**//***
-General typography
-***/
+
 h3 small/**, h4 small**//**, h5 small**/ {
   color: #444;
 }
-/**.clickable { cursor: pointer;}
-**//**td.clickable:hover {text-decoration: underline !important; }
-**/
+
 h1, h2, h3, h4, h5, h6 {
   font-weight: 300;
 }
 
-/**h1.block, h2.block, h3.block, h4.block, h5.block, h6.block {
-  padding-bottom: 10px;
-}
-**/
 a {
   text-shadow: none !important;
  color: #383e4b;}
 
-/***
-General backgrounds
-***/
-/**.bg-blue {
-  background-image: none !important;
-  background-color: #4b8df8 !important;
-}
-**/
-/**.bg-red {
-  background-image: none !important;
-  background-color: #CC0000 !important;
-}
-**/
-/**.bg-yellow {
-  background-image: none !important;
-  background-color: #ffb848 !important;
-}
-**/
-/**.bg-green {
-  background-image: none !important;
-  background-color: #35aa47 !important;
-}
-**/
-/**.bg-purple {
-  background-image: none !important;
-  background-color: #852b99 !important;
-}
-**/
-/**.bg-grey {
-  background-image: none !important;
-  background-color: #2D323D !important;
-}
-**//**.node {
-stroke: #fff;
-stroke-width: 1.5px;
-}
-**/
-/**.link {
-stroke: #999;
-stroke-opacity: .6;
-}
-**//***
-Apply fix for font awesome icons.
-***/
-[class^="icon-"],
-/**[class*=" icon-"],
-**/[class^="icon-"]:hover/**,
-[class*=" icon-"]:hover**/ {
-  background: none !important;
-}
-
-/***
-Make font awesome icons fixed width(latest version issue)
-***/
-/**li [class^="icon-"],
-li [class*=" icon-"] {
-  display: inline-block;
-  width: 1.25em;
-  text-align: center;
-}
-**//**li [class^="icon-"].icon-large,
-li [class*=" icon-"].icon-large {
-  /* increased font size for icon-large *\/
-  width: 1.5625em;
-}
-**/
-/***
-Close icon used for modal dialog and other UI element close buttons
-***/
-/**.close {
-  display: inline-block;
-  margin-top: 0px;
-  margin-right: 0px;
-  width: 9px;
-  height: 9px;
-  background-repeat: no-repeat !important;
-  background-image: url("../assets/img/icon-small.png") !important;
-}
-**/
 /***
 ie8 & ie9 modes
 ***/
@@ -719,34 +551,10 @@ ie8 & ie9 modes
   display: none;
 }
 
-/**.ie8 .visible-ie8 {
-  display: inherit !important;
-}
-**/
 .visible-ie9 {
   display: none;
 }
 
-/**.ie9 .visible-ie9 {
-  display: inherit !important;
-}
-**/
-/**.hidden-ie8 {
-  display: inherit;
-}
-**/
-/**.ie8 .hidden-ie8 {
-  display: none !important;
-}
-**/
-/**.hidden-ie9 {
-  display: inherit;
-}
-**/
-/**.ie9 .hidden-ie9 {
-  display: none !important;
-}
-**/
 /***
 Fix link outlines after click
 ***/
@@ -754,20 +562,6 @@ a,a:focus, a:hover, a:active {
   outline: 0;
 }
 
-/***
-IE8 fix for form input height in fluid rows
-***/
-/**.ie8 .row-fluid [class*="span"] {
-    min-height: 20px !important;
-}
-**/
-/***
-Fix grid offset used for reponsive layout handling(refer app.js=>handleResponsive)
-***/
-/**.fix-offset {
-  margin-left: 0px !important;
-}
-**/
 /***
 Misc tools
 ***/
@@ -1783,7 +1577,7 @@ input[multiple] {
 button {
   padding: 1px 5px;
   font-size: smaller;
-  margin: 0 3px; 
+  margin: 0 0px; 
 }
 
 .ng-v {
@@ -5977,124 +5771,7 @@ Responsive tables(new in v1.2.3)
   width: 100%;
 }
 **/
-@media only screen and (max-width: 800px) {
 
-  /* Force table to not be like tables anymore */
-/**  .no-more-tables table,
-  .no-more-tables thead,
-  .no-more-tables tbody,
-  .no-more-tables th,
-  .no-more-tables td,
-  .no-more-tables tr {
-    display: block;
-  }
-**/
-  /* Hide table headers (but not display: none;, for accessibility) */
-/**  .no-more-tables thead tr {
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-  }
-**/
-/**  .no-more-tables tr {
-    border-left: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-  }
-**/
-/**  .no-more-tables tr:last-child {
-    border-bottom: 0;
-  }
-**/
-/**  .no-more-tables td {
-    /* Behave  like a "row" *\/
-    border: none;
-    border-bottom: 1px solid #eee;
-    position: relative;
-    padding-left: 50%;
-    white-space: normal;
-    text-align:left;
-  }
-**/
-/**  .no-more-tables td:before {
-    /* Now like a table header *\/
-    position: absolute;
-    /* Top/left values mimic padding *\/
-    top: 6px;
-    left: 6px;
-    width: 45%;
-    padding-right: 10px;
-    white-space: nowrap;
-    text-align:left;
-    font-weight: bold;
-  }
-**/
-  /*
-  Label the data
-  */
-/**  .no-more-tables td:before { content: attr(data-title); }
-**/}
-
-/***
-Fancy box fix overlay fix(in v1.2.4)
-***/
-/**.fancybox-overlay {
-  z-index: 10000 !important;
-}
-**/
-/***
-Bootstrap Datetimepickers Restyle(in v1.2.4)
-***/
-/**.modal-open .datetimepicker {
-  z-index: 10060 !Important;
-}
-**/
-/**.datetimepicker table .active {
-  background-image: none !important;
-  background-color: #4b8df8 !important;
-  filter: none !important;
-}
-**/
-/**.datetimepicker table td {
-  font-weight: 300 !important;
-  font-family: 'Open Sans' !important;
-}
-**/
-/**.datetimepicker table th {
-  font-family: 'Open Sans' !important;
-  font-weight: 400 !important;
-}
-**/
-/***
-Bootstrap Datepickers Restyle(in v1.2.4)
-***/
-/**.modal-open .datepicker {
-  z-index: 10060 !Important;
-}
-**/
-/**.datepicker table .active {
-  background-image: none !important;
-  background-color: #4b8df8 !important;
-  filter: none !important;
-}
-**/
-/**.datepicker table td {
-  font-weight: 300 !important;
-  font-family: 'Open Sans' !important;
-}
-**/
-/**.datepicker table th {
-  font-family: 'Open Sans' !important;
-  font-weight: 400 !important;
-}
-**/
-
-/***
-Bootstrap Colorpicker (in v1.3)
-***/
-/**.modal-open .colorpicker {
-  z-index: 10060 !important;
-}
-**/
 /***
 Dropdown Checkboxes (in v1.3)
 ***/
@@ -6120,48 +5797,6 @@ Datatables Plugin(in v1.3)
 .dataTables_filter label {
   line-height: 32px !important;
 }
-
-/**.dataTable .row-details {
-  margin-top: 3px;
-  display: inline-block;
-  cursor: pointer;
-  width: 14px;
-  height: 14px;
-}
-**/
-/**.dataTable .row-details.row-details-close {
-  background: url("../assets/img/le-row-openclose.png") no-repeat 0 0;
-}
-**/
-/**.dataTable .row-details.row-details-open {
-  background: url("../assets/img/le-row-openclose.png") no-repeat 0 -23px !important;
-}
-**/
-/**.dataTable .details {
-  background-color: #eee !important;
-}
-**/
-/**.dataTable .details td,
-.dataTable .details th {
-  padding: 4px;
-  background-color: none !important;
-  border: 0;
-}
-**/
-/**.dataTable .details tr:hover td,
-.dataTable .details tr:hover th {
-  background-color: none !important;
-}
-**/
-/**.dataTable .details tr:nth-child(odd) td,
-.dataTable .details tr:nth-child(odd) th {
-  background-color: #eee !important;
-}
-**/
-/**.dataTable .details tr:nth-child(even) td,
-.dataTable .details tr:nth-child(even) th {
-  background-color: #eee !important;
-}**/
 
 #stealthforcechart{
   height: 90% !important;
@@ -6246,13 +5881,6 @@ Datatables Plugin(in v1.3)
   width: 70%;
   text-align: center;
 }
-
-
-
-
-#localuserinformation{
-   /*overflow: hidden !important;*/
-}
 #localuserinformation li {
   list-style: none;
   min-height: 30px;
@@ -6268,6 +5896,7 @@ Datatables Plugin(in v1.3)
 #localuserinformation li:nth-child(odd) {
   background-color: #DEDEDE;
 }
+
 
 #floorplan button{
  /* background: none !important;
@@ -6292,4 +5921,10 @@ Datatables Plugin(in v1.3)
 
 .drag {
   opacity: 0.5;
+}
+.action-icon{
+  fill: #fff; width: 35px; height: 35px; float: left; border-radius: 20px;  
+}
+.action-text{
+  display:table-cell; vertical-align: middle; height: 47px; color: red; font-size: 16px; padding-left: 5px;
 }
