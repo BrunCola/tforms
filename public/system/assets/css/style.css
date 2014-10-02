@@ -6132,9 +6132,12 @@ Datatables Plugin(in v1.3)
 .drag {
   opacity: 0.5;
 }
-.quarantine-bttn{
+.quarantine-icon{
   fill: #ff0000;
-  width: 55px;
-  height: 50px;
-  padding: 10px 5px 0px 0px;
+  width: 35px;
+  height: 35px;
+  float: left;
+}
+.action-text{
+  border-style: solid; border-width: 1px; display:table-cell; vertical-align: middle; height: 47px; color: red; font-size: 16px;
 }
