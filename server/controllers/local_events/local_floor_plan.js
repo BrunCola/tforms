@@ -58,6 +58,7 @@ module.exports = function(pool) {
 
                 var floor_plan_users = {
                     query: 'SELECT '+
+                            'u.id, '+
                             'u.lan_user, '+
                             'u.lan_ip, '+
                             'u.lan_zone, '+
@@ -66,7 +67,9 @@ module.exports = function(pool) {
                             'u.lan_mac, '+
                             'u.endpoint_agent, '+
                             'u.endpoint_agent_name, '+
-                            'u.stealth '+
+                            'u.x, '+
+                            'u.y, '+
+                            'u.map '+
                             'FROM '+
                                 'users u '+
                             'INNER JOIN '+

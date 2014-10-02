@@ -6211,24 +6211,27 @@ Datatables Plugin(in v1.3)
 #listlocalusers{
    /*overflow: hidden !important;*/
 }
-#listlocalusers li {
-  list-style: none;
-  min-height: 22px;
+#listlocalusers button {
+  /*min-height: 22px;*/\
+  background: none !important;
   line-height: 30px;
-  padding: 4px 0px;
+  padding: 0px;
+  border:none;
+  border-bottom: #000 solid 1px;
+  margin: 0px;
+  /*padding: 4px 0px;*/
 
 }
-#listlocalusers li:hover {
-  cursor: pointer;
-}
-#listlocalusers li.localuserlist{
+#listlocalusers button.localuserlist{
   width: 100%;
   display: inline-block;
   border-bottom: #DEDEDE solid 1px;
   font-weight: bold;
-  background-color: none;
+  background: none !important;
+  background-color: none !important;
+  padding: 0px;
 }
-#listlocalusers li.set{
+#listlocalusers button.set{
   font-weight: normal !important;
 }
 #listlocalusers .localuserlisticon{
@@ -6266,19 +6269,20 @@ Datatables Plugin(in v1.3)
   background-color: #DEDEDE;
 }
 
-
-
-
-#floorplan li{
-  list-style: none !important;
+#floorplan button{
+ /* background: none !important;
+  border:none !important;*/
+  padding: 0px;
+  border:none;
+  margin: 0px;
 }
-
-#floorplan .localuserlist{
+#floorplan button.localuserlist{
+ /* background: none !important;
+  border:none !important;*/
 }
 
 #floorplan .localuserlisticon{
   border: #ff0 solid 1px;
-  width: 30px;
   display: inline-block;
   float: none;
 }

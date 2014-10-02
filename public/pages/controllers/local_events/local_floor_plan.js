@@ -46,7 +46,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             });
 
 
-                $scope.appendInfo(userInfo);
+        $scope.appendInfo(userInfo);
     }
 
     $scope.uploadFile = function(files) {
