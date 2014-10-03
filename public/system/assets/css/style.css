@@ -5844,21 +5844,6 @@ Datatables Plugin(in v1.3)
    /*overflow: hidden !important;*/
 }
 
-#listlocalusers .localuserlist{
-  width: 100%;
-  display: inline-block;
-  border-bottom: #DEDEDE solid 1px;
-  font-weight: bold;
-  background: none ;
-  background-color: none !important;
-  padding: 0px;
-  line-height: 25px;
-  padding: 0px;
-  border:none;
-  border-bottom: #000 solid 1px;
-  margin: 3px 0px;
-  border-radius: 8px;
-}
 #listlocalusers button {
   line-height: 25px;
   padding: 0px;
@@ -5866,6 +5851,7 @@ Datatables Plugin(in v1.3)
   border-bottom: #000 solid 1px;
   margin: 3px 0px;
   border-radius: 8px;
+  outline:none;
 }
 #listlocalusers button.localuserlist{
   width: 100%;
@@ -5876,7 +5862,7 @@ Datatables Plugin(in v1.3)
   background-color: none !important;
   padding: 0px;
 }
-#listlocalusers button.localuserlist:hover {
+#listlocalusers button.localuserlist:hover, #listlocalusers button.selected {
   background: #ccc !important;
 }
 #listlocalusers button.set{
@@ -5909,12 +5895,15 @@ Datatables Plugin(in v1.3)
 #localuserinformation li:nth-child(odd) {
   background-color: #DEDEDE;
 }
+#localuserinformation a{
+  color:#f00;
+}
 
 
 #floorplan button{
   background: none ;
   border:none ;
-  padding: 4px 6px;
+  padding: 0px;
   border:none;
   margin: 0px;
   border-radius: 8px;
@@ -5924,7 +5913,7 @@ Datatables Plugin(in v1.3)
   background: #ccc;
   border-radius: 8px;
   border:none !important;
-    outline:none;
+  outline:none;
   /*border:#000 solid 1px;*/
 }
 
@@ -5936,13 +5925,13 @@ Datatables Plugin(in v1.3)
 #floorplan .localuserlisticon{
   display: inline-block;
   text-align: center;
-  margin: 0px auto;
+  margin: 3px auto 0px auto;
   height: auto;
   width: 22px;
   height: 23px;
 }
 #floorplan .localuserlisttext{
-  margin: 0px;
+  margin: 0px 6px 3px 6px;
   line-height: 10px;
   text-align: top;
 }

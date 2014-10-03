@@ -618,6 +618,22 @@ angular.module('mean.pages').config(['$stateProvider',
                             daterange: false
                         }
                     })
+                // ENDPOINT EVENTS LOCAL BY IP 
+                    .state('endpoint_by_user_and_ip', {
+                        url: '/endpoint_by_user_and_ip?start&end&lan_zone&lan_ip',
+                        templateUrl: 'public/pages/views/local_events/endpoint_by_user_and_ip.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Endpoints Triggering Event',
+                            subtitleElm: {
+                                'Zone': 'lan_zone',
+                                'Local IP': 'lan_ip'
+                            },
+                            daterange: true
+                        }
+                    })
 
         // APPLICATIONS
             // BY APPLICATION

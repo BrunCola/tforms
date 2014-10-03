@@ -179,6 +179,10 @@ module.exports = function(app, passport, version, io, pool) {
                 var local_floor_plan = require('../controllers/local_events/local_floor_plan')(pool);
                 app.route('/local_events/local_floor_plan')
                 .get(authorization.requiresLogin, local_floor_plan.render); 
+            // ENDPOINT BY LOCAL BY IP
+                var endpoint_by_user_and_ip = require('../controllers/local_events/endpoint_by_user_and_ip')(pool);
+                app.route('/local_events/endpoint_by_user_and_ip')
+                .get(authorization.requiresLogin, endpoint_by_user_and_ip.render); 
     // APPLICATIONS
         // BY APPLICATION
             var app_by_application = require('../controllers/applications/app_by_application')(pool);
