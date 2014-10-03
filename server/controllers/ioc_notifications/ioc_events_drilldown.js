@@ -535,19 +535,19 @@ module.exports = function(pool) {
                 var ssl = {
                     query: 'SELECT '+
                             '\'SSL\' AS type, '+
-                            'time, '+
-                            '`ioc_count`,'+
+                            '`time`,'+
+                            '`proxy_blocked`,'+
+                            '`server_name`,'+
                             '`version`,'+
                             '`cipher`,'+
-                            '`server_name`,'+
                             '`subject`,'+
                             '`issuer_subject`,'+
-                            '`proxy_blocked`,'+
                             '`ioc`,'+
                             '`ioc_typeIndicator`,'+
                             '`ioc_typeInfection`,'+    
                             '`ioc_rule`,'+
-                            '`ioc_severity` '+
+                            '`ioc_severity`,'+
+                            '`ioc_count` '+
                         'FROM '+
                             '`ssl` '+
                         'WHERE '+
@@ -557,18 +557,18 @@ module.exports = function(pool) {
                         'LIMIT 250',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
-                        {title: "Time", select: "time"},
+                        {title: 'Time', select: 'time'},
                         {title: 'ABP', select: 'proxy_blocked'},
-                        {title: "Server Name", select: "server_name"},
-                        {title: "Version", select: "version"},
-                        {title: "Cipher", select: "cipher"},
-                        {title: "Subject", select: "subject"},
-                        {title: "Issuer", select: "issuer_subject"},
-                        {title: "IOC", select: "ioc"},
-                        {title: "IOC Type", select: "ioc_typeIndicator"},
-                        {title: "IOC Stage", select: "ioc_typeInfection"},
-                        {title: "IOC Rule", select: "ioc_rule"},
-                        {title: "IOC Severity", select: "ioc_severity"},
+                        {title: 'Server Name', select: 'server_name'},
+                        {title: 'Version', select: 'version'},
+                        {title: 'Cipher', select: 'cipher'},
+                        {title: 'Subject', select: 'subject'},
+                        {title: 'Issuer', select: 'issuer_subject'},
+                        {title: 'IOC', select: 'ioc'},
+                        {title: 'IOC Type', select: 'ioc_typeIndicator'},
+                        {title: 'IOC Stage', select: 'ioc_typeInfection'},
+                        {title: 'IOC Rule', select: 'ioc_rule'},
+                        {title: 'IOC Severity', select: 'ioc_severity'},
                     ],
                     settings: {
                         access: req.session.passport.user.level
@@ -578,12 +578,12 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                             '\'SSL_ioc\' AS type, '+
                             'time, '+
+                            '`proxy_blocked`,'+
+                            '`server_name`,'+
                             '`version`,'+
                             '`cipher`,'+
-                            '`server_name`,'+
                             '`subject`,'+
                             '`issuer_subject`,'+
-                            '`proxy_blocked`,'+
                             '`ioc`,'+
                             '`ioc_typeIndicator`,'+
                             '`ioc_typeInfection`,'+    
@@ -725,18 +725,18 @@ module.exports = function(pool) {
                 var file = {
                     query: 'SELECT '+
                                 '\'File\' AS type, '+
-                                'time, '+
-                                '`ioc_count`,'+
+                                '`time`, '+
                                 '`mime`,'+
                                 '`name`,'+
                                 '`size`,'+
                                 '`md5`,'+
                                 '`sha1`,'+
                                 '`ioc`,'+
-                                '`ioc_severity`,'+
-                                '`ioc_rule`,'+
                                 '`ioc_typeIndicator`,'+
-                                '`ioc_typeInfection` '+
+                                '`ioc_typeInfection`,'+
+                                '`ioc_rule`,'+
+                                '`ioc_severity`,'+
+                                '`ioc_count` '+
                             'FROM '+
                                 '`file` '+
                             'WHERE '+
@@ -766,8 +766,8 @@ module.exports = function(pool) {
                 }
                 var file_ioc = {
                     query: 'SELECT '+
-                            '\'File_ioc\' AS type, '+
-                            'time, '+
+                            '\'File_ioc\' AS type,'+
+                            '`time`,'+
                             '`mime`,'+
                             '`name`,'+
                             '`size`,'+
