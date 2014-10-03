@@ -147,6 +147,11 @@ th {
   font-size:12px;
 }
 
+div#descModalID.modal-body {
+  white-space: pre-wrap;
+  float: left;
+}
+
 .modalTable {
   width: 90%;
   margin-left: -45%;
@@ -2016,40 +2021,40 @@ Datatables Plugin(in v1.3)
 }
 
 #floorplan{
-/*  width:800px;
-  height: 600px;*/
-  border: #0f0 solid 1px;
 }
 
 #listlocalusers{
    /*overflow: hidden !important;*/
 }
-#listlocalusers li {
-  list-style: none;
-  min-height: 22px;
-  line-height: 30px;
-  padding: 4px 0px;
-
+#listlocalusers button {
+  line-height: 25px;
+  padding: 0px;
+  border:none;
+  border-bottom: #000 solid 1px;
+  margin: 3px 0px;
+  border-radius: 8px;
 }
-#listlocalusers li:hover {
-  cursor: pointer;
-}
-#listlocalusers li.localuserlist{
+#listlocalusers button.localuserlist{
   width: 100%;
   display: inline-block;
   border-bottom: #DEDEDE solid 1px;
   font-weight: bold;
-  background-color: none;
+  background: none ;
+  background-color: none !important;
+  padding: 0px;
 }
-#listlocalusers li.set{
+#listlocalusers button.localuserlist:hover {
+  background: #ccc !important;
+}
+#listlocalusers button.set{
   font-weight: normal !important;
 }
 #listlocalusers .localuserlisticon{
-  border: #ff0 solid 1px;
   width: 15%;
-  height: 30px;
+  height: 27px;
   display: inline-block;
   float: left;
+  margin: 3px 0px 0px 5px;
 }
 #listlocalusers .localuserlisttext{
   display: inline-block;
@@ -2072,21 +2077,46 @@ Datatables Plugin(in v1.3)
   background-color: #DEDEDE;
 }
 
-#floorplan li{
-  list-style: none !important;
+
+#floorplan button{
+  background: none ;
+  border:none ;
+  padding: 4px 6px;
+  border:none;
+  margin: 0px;
+  border-radius: 8px;
+    outline:none;
+}
+#floorplan button:hover, #floorplan button.selected{
+  background: #ccc;
+  border-radius: 8px;
+  border:none !important;
+    outline:none;
+  /*border:#000 solid 1px;*/
 }
 
-#floorplan .localuserlist{
+#floorplan button.localuserlist{
+ /* background: none !important;
+  border:none !important;*/
 }
 
 #floorplan .localuserlisticon{
-  border: #ff0 solid 1px;
-  width: 30px;
   display: inline-block;
-  float: none;
+  text-align: center;
+  margin: 0px auto;
+  height: auto;
+  width: 22px;
+  height: 23px;
 }
+<<<<<<< HEAD
+#floorplan .localuserlisttext{
+  margin: 0px;
+  line-height: 10px;
+  text-align: top;
+=======
 #floorplan .localuserlisttex18
   display: none;
+>>>>>>> origin/15_frank
 }
 
 .drag {

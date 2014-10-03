@@ -3545,235 +3545,265 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
     };
 }]);
 
-angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
+angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', '$http', function ($timeout, $rootScope, $http) {
     return {
         link: function ($scope, element, attrs) {
             $scope.$on('floorPlan', function() {      
                 $scope.$broadcast('spinnerHide');
-                // nav
-               /* var navArray = [], currentNavPos = 0;
-                var buttonHolder = d3.select("#lanegraph").append('div').attr('class', 'buttonHolder');
-                var resetBtn = buttonHolder
-                    .append('button')
-                    .html('Reset')
-                    .attr('class', 'resetButton')
-                    .on('click', function(){
-                        draw();
-                    });*/
 
+                $scope.appendInfo = function(user,data,type) { 
+                    /*console.log(user);
+                    console.log(user.length);*/
+                    if(type==="clear"){
+                        infoDiv.selectAll('tr').remove(); 
+                    }else if(type ==="userinfo"){
+                        for(var b in user){
+                            var row = infoDiv.append('tr');
+                            if(user[b]!==null){
+                                row
+                                    .append('td')
+                                    .html('<strong>'+b+'</strong>');
+                                row
+                                    .append('td')
+                                    .text(user[b]);
+                            }
+                        }
+                    }else{
+                        var title = "", link = "";
+                            if(type==="localioc"){
+                                title = "IOC Hits: ";
+                                link = "#!/ioc_local?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            }else if(type==="localapp"){
+                                title = "App Hits: ";
+                                link = "#!/l7_local_app?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            }else if(type==="localhttp"){
+                                title = "HTTP Hits: ";
+                                link = "#!/http_local_by_domain?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            }else if(type==="localfiles"){
+                                title = "File Hits: ";
+                                link = "#!/by_file_name?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            }else{
+                                title = "NO TITLE HITS";
+                                link = "#!/ioc_events?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            }
 
-                function laneInfoAppend(d) {
-                    var send = '';
-                    for (var i in d) {
-                        send += '<strong>'+i+':</strong> '+d[i]+'<br />';      
+                        for(var i in data){
+                            var row = infoDiv.append('tr');
+                            row
+                                .append('td')
+                                .html('<strong>'+title+'</strong>');
+                            row
+                                .append('td')
+                                .html('<a href="'+link+'"]>'+data[i]+'</a>');
+                        }
                     }
-                    return send;
                 }
+
                 // info div
                 var width = element.width();
                 var infoHeight = element.height()+1000;
-                var userDiv = d3.select("#listlocalusers").style('height', infoHeight+'px').style('overflow', 'auto');
-                var infoDiv = d3.select("#localuserinformation").style('height', infoHeight+'px').style('overflow', 'scroll');
+                var userDiv = d3.select("#listlocalusers").style('overflow', 'auto');
+                var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
+                var floorDiv = d3.select('#floorplan');
+                //console.log(floorDiv);
 
                 function draw() {
-                    // disable all nav buttons
-                    //resetBtn.attr('disabled', 'disabled');
-
-                    //items.reverse()
                     plot($scope.data.force);
                 }
                 draw();
 
-                function mouseup(action) {
-                    /*// set variables
-                    var rects, labels, minExtent, maxExtent, visItems;
-                    // if a nav button is pressed
-                    if (action === 'nav') {
-                            // get max and min (date objects) from mav array
-                            minExtent = navArray[currentNavPos].min;
-                            maxExtent = navArray[currentNavPos].max;
-                        // disable previous button if all the way back
-                        if (currentNavPos === 0) {
-                            resetBtn.attr('disabled', 'disabled');
-                            prevButton.attr('disabled', 'disabled');
-                        // or disable next button if all the way forward 
-                        } else if (currentNavPos === navArray.length-1) {
-                            nextButton.attr('disabled', 'disabled');
-                        } else {
-                            // otherwise keep reset button open
-                            resetBtn.attr('disabled', null);
-                        }
-                    // otherwise if item brushed
-                    } else {
-                        // get max and min from click/drag
-                        minExtent = brush.extent()[0];
-                        maxExtent = brush.extent()[1];
-                        // step up nav array pos and push new values in;
-                        currentNavPos++;
-                        navArray.push({'min': minExtent, 'max': maxExtent});
-                        prevButton.attr('disabled', null);
-                        resetBtn.attr('disabled', null);
-                    }
-                    // convert times returned to unix
-                    var minUnix = moment(minExtent).unix();
-                    var maxUnix = moment(maxExtent).unix();
-                    // should it requery?
-                    var msDifference = maxUnix - minUnix;
-                    // if difference is less than threshhold or is not a single time select (resulting in difference being 0)
-                    if ((msDifference < queryThreshhold) && (msDifference !== 0)) {
-                        // push to requery and then plot
-                        $scope.requery(minExtent, maxExtent, function(data){
-                            data.reverse();
-                            plot(data, minExtent, maxExtent);
-                        })
-                    } else {
-                        // reset if not within threshold
-                        $scope.inTooDeep.areWe = false;
-                        var data = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;}).reverse();
-                        $scope.alert.style('display', 'none');
-                        plot(data, minExtent, maxExtent);
-                    }*/
-
-                    console.log("mouseup");
-                }
-
-                function scrollSide(id) {
-                    /*var elm = $('li#'+id);
-                    var ept  = elm.position().top;
-                    var eppt = elm.parent().position().top;
-                    var offset = ept - eppt;
-                    var totalHeight = $('#lanegraphinfo')[0].scrollHeight;
-                    var windowHeight = $('#lanegraphinfo').height();
-                    if(offset>(totalHeight-windowHeight)){
-                        offset = totalHeight-windowHeight;
-                    }
-                    $('#lanegraphinfo').scrollTo(offset);*/
-                    console.log("scrollside");
-                }
-
                 function plot(data) {
-                    //////////////////
-                    /// LANE NODES ///
-                    //////////////////
-                    // set variables for info sidebar
                     var prevPos = 0;
                     var previousID = -1, previousElm = null;
                     var lastExpandedId = null, isOpen = null;
-                    //console.log("plot");
-                    // update time slice above chart
-                    // create transition effect of slider
 
 
                     ////////////////////
                     ///  LIST USERS  ///
                     ////////////////////
                     var count = 0;
-                    userDiv.selectAll('li').remove();
-                    userDiv.selectAll('li').data(data).enter()
-                        .append('li').each(function(d){
+                    userDiv.selectAll('button').remove();
+                    userDiv.selectAll('button').data(data).enter()
+                        .append('button').each(function(d){
                             count++;
-                            var id = d.id;
-                            var elm = d3.select(this);
-                            var elel = elm[0];
-                            elm
-                                // append id to li from data object
-                                .attr('id', count)
-                                //.attr('draggable','')
-                                .attr('class', 'localuserlist')
-                                .html(function(d){
-                                    /*var icon = '<path style="fill-rule:evenodd;clip-rule:evenodd;fill:#29ABE2 ;" d="M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0
-                                                 c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4
-                                                c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z"/>
-                                            <circle style="fill-rule:evenodd;clip-rule:evenodd;fill:#29ABE2 ;" cx="11.1" cy="4.9" r="4.9"/>'
+                            if(d.x===0 && d.y===0){
 
+                                var val = "{";
 
-                                element.append('circle')
-                                    .attr('fill', '#7E9E7B')
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:path')
-                                    .attr('d', 'M28.649,8.6H7.351c-0.684,0-1.238,0.554-1.238,1.238v14.363c0,0.684,0.554,1.238,1.238,1.238h7.529'+
-                                        'l-1.09,3.468v0.495h8.419v-0.495l-1.09-3.468h7.529c0.684,0,1.237-0.555,1.237-1.238V9.838C29.887,9.153,29.333,8.6,28.649,8.6z'+
-                                        'M28.477,22.072H7.635V10.074h20.842V22.072z')
-                                    .attr('fill', '#595A5C');
+                                for(var i in d){
+                                    if(i==="map"){
+                                        val+='"'+i+'":"'+d[i]+'"';
+                                    }else{                                        
+                                        if(!isNaN(d[i])){
+                                            val+='"'+i+'":'+d[i]+',';
+                                        }else{
+                                            val+='"'+i+'":"'+d[i]+'",';
+                                        }
+                                    }
+                                }
+                                val+= "}";
+                                var id = d.id;
+                                var elm = d3.select(this);
+                                var elel = elm[0];
+                                elm
+                                    // append id to li from data object
+                                    .attr('id', count)
+                                    .attr('class', 'localuserlist')
+                                    .attr('value', val)
+                                    .on('click', function(e){
+                                        $scope.requery(d, 'flooruser');
+                                    });
+                                var element = elm
+                                                .append('div')
+                                                .attr('class', 'localuserlisticon')
+                                                .append('svg');     
+                                        element
+                                            .attr('height', '23')
+                                            .attr('width', '23')
+                                        .append('svg:path')
+                                            .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('fill', '#67AAB5');
+                                        element.append('circle')
+                                            .attr('fill', '#7E9E7B')
+                                            .attr('cx', 11.1)
+                                            .attr('cy', 4.9)
+                                            .attr('r', 4.9)
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('fill', '#67AAB5');
 
-*/
-                                    return "<div class='localuserlisticon'>"+count+"</div><div class='localuserlisttext'>"+d.lan_machine+"</div>";
-                                })
+                                    elm
+                                        .append('div')
+                                        .attr('class', 'localuserlisttext')
+                                        .html(d.lan_machine+"");
+    
+                                var el = elel[0];
 
-                            var el = elel[0];
+                                el.draggable = true;
+                                el.addEventListener(
+                                    'dragstart',
+                                    function(e) {
+                                        e.dataTransfer.effectAllowed = 'move';
+                                        e.dataTransfer.setData('Text', this.id);
+                                        this.classList.add('drag');
+                                        return false;
+                                    },
+                                    false
+                                );
 
-                            el.draggable = true;
-                            el.addEventListener(
-                                'dragstart',
-                                function(e) {
-                                    e.dataTransfer.effectAllowed = 'move';
-                                    e.dataTransfer.setData('Text', this.id);
-                                    this.classList.add('drag');
-                                    return false;
-                                },
-                                false
-                            );
-
-                            el.addEventListener(
-                                'dragend',
-                                function(e) {
-                                    this.classList.remove('drag');
-                                    return false;
-                                },
-                                false
-                            );
+                                el.addEventListener(
+                                    'dragend',
+                                    function(e) {
+                                        this.classList.remove('drag');
+                                        $scope.requery(d, 'flooruser');
+                                        return false;
+                                    },
+                                    false
+                                );
+                            }
                         });
 
+                
 
 
+                    floorDiv.selectAll('button').remove();
+                    floorDiv.selectAll('button').data(data).enter()
+                        .append('button').each(function(d){
+                            count++;
+                            if(d.x>0 || d.y>0){
 
+                                var val = "{";
 
-                    //////////////////////
-                    /// LIST USER INFO ///
-                    //////////////////////
-                    infoDiv.selectAll('li').remove();
-                    infoDiv.selectAll('li').data(data).enter()
-                        .append('li').each(function(d){
-                            var elm = d3.select(this);
-                            elm
-                                // append id to li from data object
-                                .attr('id', function(d){return d.id })
-                                .html(function(d){
-                                    return "<div class='userinfolist'>"+laneInfoAppend(d)+"</div>";
-                                })
-                                .on('click', function(){
-                                  
-                                })
-                                // append expand buttons to list elements
-                                .append('div')
-                                .on('click', function(){
-                                   /* if (lastExpandedId !== '#'+d.id) {
-                                        $('div'+lastExpandedId+'.infoDivExpanded').hide();
+                                for(var i in d){
+                                    if(i==="map"){
+                                        val+='"'+i+'":"'+d[i]+'"';
+                                    }else{                                        
+                                        if(!isNaN(d[i])){
+                                            val+='"'+i+'":'+d[i]+',';
+                                        }else{
+                                            val+='"'+i+'":"'+d[i]+'",';
+                                        }
                                     }
-                                    if (isOpen === '#'+d.id) {
-                                        elm.select('.infoDivExpanded').style('display', 'none');
-                                        isOpen = null;
-                                    } else {
-                                        elm.select('.infoDivExpanded').style('display', 'block');
-                                        lastExpandedId = '#'+d.id;
-                                        isOpen = '#'+d.id;
+                                }
+                                val+= "}";
 
-                                        elm.select('.infoDivExpanded').html(laneInfoAppend(d.expand));
-                                    }*/
 
-                                })
-                               /* .attr('class', 'infoDivExpandBtn')
-                                .html('+');*/
-                           /* elm
-                                .append('div')
-                                .style('display', 'none')
-                                .attr('class', 'infoDivExpanded')
-                                .attr('id', d.id);*/
-                        });                    
-                }                
-                // function listItems
+                                var elm = d3.select(this);
+                                var elel = elm[0];
+                                var el = elel[0];
+                                elm
+                                    // append id to li from data object
+                                    .attr('id', count)
+                                    //.attr('draggable','')
+                                    .attr('class', 'localuserlist set')
+                                    .attr('x', d.x)
+                                    .attr('y', d.y)
+                                    .style('top', d.y+"px")
+                                    .style('left', d.x+"px")
+                                    .style('position', "absolute")
+                                    .attr('value', val)
+                                    .on('click', function(e){
+                                        floorDiv.selectAll('button').each(function(d){
+                                            var elm = d3.select(this);
+                                            elm[0][0].classList.remove('selected');
+                                        })
+                                        el.classList.add('selected');
+                                        $scope.requery(d, 'flooruser');
+                                    });
+                                var element = elm
+                                                .append('div')
+                                                .attr('class', 'localuserlisticon')
+                                                .append('svg');     
+                                        element
+                                            .attr('height', '23')
+                                            .attr('width', '23')
+                                        .append('svg:path')
+                                            .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('fill', '#67AAB5');
+                                        element.append('circle')
+                                            .attr('fill', '#7E9E7B')
+                                            .attr('cx', 11.1)
+                                            .attr('cy', 4.9)
+                                            .attr('r', 4.9)
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('fill', '#67AAB5');
+
+                                    elm
+                                        .append('div')
+                                        .attr('class', 'localuserlisttext')
+                                        .html(d.lan_machine+"");
+                                    
+
+
+                                el.draggable = true;
+                                el.addEventListener(
+                                    'dragstart',
+                                    function(e) {
+                                        e.dataTransfer.effectAllowed = 'move';
+                                        e.dataTransfer.setData('Text', this.id);
+                                        this.classList.add('drag');
+                                        return false;
+                                    },
+                                    false
+                                );
+
+                                el.addEventListener(
+                                    'dragend',
+                                    function(e) {
+                                        this.classList.remove('drag');
+                                        $scope.requery(d, 'flooruser');
+                                        return false;
+                                    },
+                                    false
+                                );
+                            }
+                        });
+                }   
             });
         }
     };
@@ -3809,13 +3839,13 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
         }
 });*/
 
-angular.module('mean.pages').directive('droppable', function() {
+angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
     return {
         scope: {
             drop: '&',
             bin: '=' // bi-directional scope
         },
-        link: function(scope, element) {
+        link: function($scope, element) {
             // again we need the native object
             var el = element[0];
 
@@ -3851,7 +3881,6 @@ angular.module('mean.pages').directive('droppable', function() {
             el.addEventListener(
                 'drop',
                 function(e) {
-                    console.log("x = " +  e.offsetX + " ... y = " +  e.offsetY);
 
                     // Stops some browsers from redirecting.
                     if (e.stopPropagation) e.stopPropagation();
@@ -3860,25 +3889,36 @@ angular.module('mean.pages').directive('droppable', function() {
 
                     // call the drop passed drop function
                     var binId = this.id;
-                    var item = document.getElementById(e.dataTransfer.getData('Text'));
+                    var data = e.dataTransfer.getData("Text");
+                    var item = document.getElementById(data);
 
-                    //if(e.srcElement===document.getElementById('floorplan')){
-                        item.setAttribute('x',e.offsetX);
-                        item.setAttribute('y',e.offsetY);
-                        item.setAttribute('style', 'top:'+e.offsetY+'px; left:'+e.offsetX+'px; position:absolute;');
-                        this.appendChild(item);
-                        // call the passed drop function
-                        scope.$apply(function(scope) {
-                            var fn = scope.drop();
-                            if ('undefined' !== typeof fn) {
-                              fn(item.id, binId);
-                            }
-                        });
-                    // }
-                    return false;
+                if(e.srcElement===document.getElementById('svgFloorPlan')){
+                    console.log("x = " +  e.offsetX + " ... y = " +  e.offsetY);
+                    item.classList.add('set');
+                    item.setAttribute('x',e.offsetX);
+                    item.setAttribute('y',e.offsetY);
+                    item.setAttribute('style', 'top:'+e.offsetY+'px; left:'+e.offsetX+'px; position:absolute;');
+                    this.appendChild(item);
+                    // call the passed drop function
+                    $scope.$apply(function(scope) {
+                        var fn = scope.drop();
+                        if ('undefined' !== typeof fn) {
+                          fn(item.id, binId);
+                        }
+                    });
+
+                    var rowData = JSON.parse(item.value);
+                    $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: e.offsetX, y_coord: e.offsetY, map_name: rowData.map, lan_ip: rowData.lan_ip, lan_zone: rowData.lan_zone}}).
+                    success(function(data) {
+                        //console.log("successfully saved Coordinates");
+                        //$scope.requery(rowData, 'flooruser');
+                    })
+                //$scope.requery(rowData, 'flooruser');
+                }
+                return false;
                 },
                 false
             );
         }
     }
-});
+}]);

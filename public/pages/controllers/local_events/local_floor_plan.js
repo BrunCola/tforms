@@ -15,4 +15,49 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.$broadcast('spinnerHide');
         }
     });  
+
+    $scope.requery = function(d) {       
+        var userInfo = [];
+        $scope.appendInfo("","","clear");
+        $scope.appendInfo(d,"","userinfo");
+
+        var query = '/local_events/local_floor_plan?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser';                        
+
+        $http({method: 'GET', url: query+'&typeinfo=localioc'}).
+            success(function(data) {
+                $scope.appendInfo(d,data[0],"localioc");
+            });
+
+        $http({method: 'GET', url: query+'&typeinfo=localapp'}).
+            success(function(data) {
+                $scope.appendInfo(d,data[0],"localapp");
+            });
+
+        $http({method: 'GET', url: query+'&typeinfo=localhttp'}).
+            success(function(data) {
+                $scope.appendInfo(d,data[0],"localhttp");
+            });
+
+        $http({method: 'GET', url: query+'&typeinfo=localfiles'}).
+            success(function(data) {
+                userInfo.push(data);
+                $scope.appendInfo(d,data[0],"localfiles");
+            });
+
+        $scope.appendInfo(userInfo);
+    }
+
+    $scope.uploadFile = function(files) {
+        var fd = new FormData();
+        //Take the first selected file
+
+        fd.append("file", files[0]);
+        console.log(fd);
+        var uploadUrl = '../../../uploads/'; //TODO Different folders per client? Diff folders for User photos and floor plans?
+        $http.post(uploadUrl, fd, {
+            withCredentials: true,
+            headers: {'Content-Type': undefined },
+            transformRequest: angular.identity
+        });//.success( console.log("UPLOADED");).error( console.log("error!"); );
+    };  
 }]);

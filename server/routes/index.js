@@ -7,6 +7,7 @@ module.exports = function(app, passport, version, io, pool) {
 	// Home route
 	var index = require('../controllers/index')(version);
 	var actions = require('../controllers/actions')(pool);
+	var upload = require('../controllers/upload')(pool);
 
 	app.route('/')
 		.get(index.render);
@@ -36,5 +37,9 @@ module.exports = function(app, passport, version, io, pool) {
 
 	app.route('/actions/add_user_to_map')
 		.post(authorization.requiresLogin, actions.add_user_to_map);
+
+	//upload file
+	app.route('/upload/render')
+		.post(authorization.requiresLogin, upload.render);
 
 };

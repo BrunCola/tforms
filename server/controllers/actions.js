@@ -136,11 +136,12 @@ module.exports = function(pool) {
 		},
 		add_user_to_map: function(req, res) {
 			var database = req.session.passport.user.database;
-			var zone = req.body.zone;
-			if (zone !== undefined) {
+			var lan_ip = req.body.lan_ip;
+			var lan_zone = req.body.lan_zone;
+			if (lan_ip !== undefined && lan_zone !== undefined) {
 				var update_user_ref = {
-					query: "UPDATE `users` SET `x`= ?, `y`=?, `map`=? WHERE `lan_user` = ?",
-					insert: [req.body.x_coord, req.body.y_coord, req.body.map_name, req.body.lan_user]
+					query: "UPDATE `users` SET `x`= ?, `y`=?, `map`=? WHERE `lan_ip` = ? AND `lan_zone` = ?",
+					insert: [req.body.x_coord, req.body.y_coord, req.body.map_name, req.body.lan_ip, req.body.lan_zone]
 				}
 				new query(update_user_ref, {database: database, pool: pool}, function(err,data){
 					if (err) {
@@ -149,7 +150,7 @@ module.exports = function(pool) {
 						res.send(200);
 					}
 				});
-			} else {
+			}else{
 				res.send(500);
 			}
 		}
