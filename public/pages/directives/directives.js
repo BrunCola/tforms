@@ -3720,6 +3720,11 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 el.addEventListener(
                                     'dragend',
                                     function(e) {
+                                        floorDiv.selectAll('button').each(function(d){
+                                            var elm = d3.select(this);
+                                            elm[0][0].classList.remove('selected');
+                                        })
+                                        el.classList.add('selected');
                                         this.classList.remove('drag');
                                         $scope.requery(d, 'flooruser');
                                         return false;
@@ -3818,7 +3823,8 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
                     var item = document.getElementById(data);
 
                 if(e.srcElement===document.getElementById('svgFloorPlan')){
-                    console.log("x = " +  e.offsetX + " ... y = " +  e.offsetY);
+                    //console.log("x = " +  e.offsetX + " ... y = " +  e.offsetY);
+                    console.log(item);
                     item.classList.add('set');
                     item.setAttribute('x',e.offsetX);
                     item.setAttribute('y',e.offsetY);
@@ -3839,6 +3845,27 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
                         //$scope.requery(rowData, 'flooruser');
                     })
                 //$scope.requery(rowData, 'flooruser');
+                }else{
+                    item.classList.remove('set');
+                    item.classList.remove('selected');
+                    item.setAttribute('x', 0);
+                    item.setAttribute('y',0);
+                    item.setAttribute('style', 'top:0px; left:0px; position:relative; ');
+                    this.appendChild(item);
+                    // call the passed drop function
+                    $scope.$apply(function(scope) {
+                        var fn = scope.drop();
+                        if ('undefined' !== typeof fn) {
+                          fn(item.id, binId);
+                        }
+                    });
+
+                    var rowData = JSON.parse(item.value);
+                    $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: 0, y_coord: 0, map_name: rowData.map, lan_ip: rowData.lan_ip, lan_zone: rowData.lan_zone}}).
+                    success(function(data) {
+                        //console.log("successfully saved Coordinates");
+                        //$scope.requery(rowData, 'flooruser');
+                    })
                 }
                 return false;
                 },
