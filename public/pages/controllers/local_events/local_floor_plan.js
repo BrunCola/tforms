@@ -76,6 +76,12 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             withCredentials: true,
             headers: {'Content-Type': undefined },
             transformRequest: angular.identity
-        });//.success( console.log("UPLOADED");).error( console.log("error!"); );
+        });
+
+        // $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: e.offsetX, y_coord: e.offsetY, map_name: rowData.map, lan_ip: rowData.lan_ip, lan_zone: rowData.lan_zone}}).
+        //             success(function(data) {
+        //                 //console.log("successfully saved Coordinates");
+        //                 //$scope.requery(rowData, 'flooruser');
+        //             })
     };  
 }]);
