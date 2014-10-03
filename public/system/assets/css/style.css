@@ -2021,6 +2021,7 @@ Datatables Plugin(in v1.3)
 }
 
 #floorplan{
+  height: 600px;
 }
 
 #listlocalusers{
@@ -2084,13 +2085,13 @@ Datatables Plugin(in v1.3)
 
 
 #floorplan button{
-  background: none ;
+  background: none;
   border:none ;
   padding: 0px;
   border:none;
   margin: 0px;
   border-radius: 8px;
-    outline:none;
+  outline:none;
 }
 #floorplan button:hover, #floorplan button.selected{
   background: #ccc;
@@ -2113,17 +2114,11 @@ Datatables Plugin(in v1.3)
   width: 22px;
   height: 23px;
 }
-<<<<<<< HEAD
 #floorplan .localuserlisttext{
   margin: 0px 6px 3px 6px;
   line-height: 10px;
   text-align: top;
-=======
-#floorplan .localuserlisttex18
-  display: none;
->>>>>>> origin/15_frank
 }
-
 .drag {
   opacity: 0.5;
 }

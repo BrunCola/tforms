@@ -3628,8 +3628,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                 // info div
                 var width = element.width();
-                var infoHeight = element.height()+1000;
-                var userDiv = d3.select("#listlocalusers").style('overflow', 'auto');
+                var infoHeight = element.height();
+                var userDiv = d3.select("#listlocalusers").style('height', infoHeight+25+'px').style('overflow', 'auto');
                 var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
                 var floorDiv = d3.select('#floorplan');
                 //console.log(floorDiv);
