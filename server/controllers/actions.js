@@ -100,8 +100,8 @@ module.exports = function(pool) {
 			var zone = req.body.zone;
 			if (zone !== undefined) {
 				var insert_map_image = {
-					query: "INSERT INTO `assets` (`type`, `asset_name`, `lan_zone`, `path`) VALUES ('map',?,?,?)",
-					insert: [req.body.image_name, zone, req.body.image_path]
+					query: "INSERT INTO `assets` (`type`, `asset_name`, `path`) VALUES ('map',?,?)",
+					insert: [req.body.image_name, req.body.image_path]
 				}
 				new query(insert_map_image, {database: database, pool: pool}, function(err,data){
 					if (err) {
