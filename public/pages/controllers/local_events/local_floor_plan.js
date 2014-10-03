@@ -18,7 +18,6 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
 
     $scope.requery = function(d) {       
         var userInfo = [];
-
         $scope.appendInfo("","","clear");
         $scope.appendInfo(d,"","userinfo");
 
@@ -44,7 +43,6 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 userInfo.push(data);
                 $scope.appendInfo(d,data[0],"localfiles");
             });
-
 
         $scope.appendInfo(userInfo);
     }

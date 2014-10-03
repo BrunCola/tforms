@@ -135,9 +135,10 @@ module.exports = function(pool) {
 			}
 		},
 		add_user_to_map: function(req, res) {
-			console.log("test");
-			console.log(req.body);
 			var database = req.session.passport.user.database;
+			var lan_ip = req.body.lan_ip;
+			var lan_zone = req.body.lan_zone;
+			if (lan_ip !== undefined && lan_zone !== undefined) {
 				var update_user_ref = {
 					query: "UPDATE `users` SET `x`= ?, `y`=?, `map`=? WHERE `lan_ip` = ? AND `lan_zone` = ?",
 					insert: [req.body.x_coord, req.body.y_coord, req.body.map_name, req.body.lan_ip, req.body.lan_zone]
@@ -149,6 +150,9 @@ module.exports = function(pool) {
 						res.send(200);
 					}
 				});
+			}else{
+				res.send(500);
 			}
+		}
 	}
 }

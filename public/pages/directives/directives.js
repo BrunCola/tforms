@@ -3477,6 +3477,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                 $scope.$broadcast('spinnerHide');
 
                 $scope.appendInfo = function(user,data,type) { 
+                    /*console.log(user);
+                    console.log(user.length);*/
                     if(type==="clear"){
                         infoDiv.selectAll('tr').remove(); 
                     }else if(type ==="userinfo"){
@@ -3572,17 +3574,36 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     // append id to li from data object
                                     .attr('id', count)
                                     .attr('class', 'localuserlist')
-                                    .style('width', '50')
-                                    .style('height', '50')
                                     .attr('value', val)
-                                    .html(function(d){
-
-                                        return '<div class="localuserlisticon">'+count+'</div><div class="localuserlisttext">'+d.lan_machine+'</div>';
-                                    })
                                     .on('click', function(e){
                                         $scope.requery(d, 'flooruser');
-                                    })
+                                    });
+                                var element = elm
+                                                .append('div')
+                                                .attr('class', 'localuserlisticon')
+                                                .append('svg');     
+                                        element
+                                            .attr('height', '23')
+                                            .attr('width', '23')
+                                        .append('svg:path')
+                                            .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('fill', '#67AAB5');
+                                        element.append('circle')
+                                            .attr('fill', '#7E9E7B')
+                                            .attr('cx', 11.1)
+                                            .attr('cy', 4.9)
+                                            .attr('r', 4.9)
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('fill', '#67AAB5');
 
+                                    elm
+                                        .append('div')
+                                        .attr('class', 'localuserlisttext')
+                                        .html(d.lan_machine+"");
+    
                                 var el = elel[0];
 
                                 el.draggable = true;
@@ -3636,6 +3657,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                                 var elm = d3.select(this);
                                 var elel = elm[0];
+                                var el = elel[0];
                                 elm
                                     // append id to li from data object
                                     .attr('id', count)
@@ -3647,29 +3669,41 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     .style('left', d.x+"px")
                                     .style('position', "absolute")
                                     .attr('value', val)
-                                    .html(function(d){
-                                        /*var icon = '<path style="fill-rule:evenodd;clip-rule:evenodd;fill:#29ABE2 ;" d="M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0
-                                                     c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4
-                                                    c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z"/>
-                                                <circle style="fill-rule:evenodd;clip-rule:evenodd;fill:#29ABE2 ;" cx="11.1" cy="4.9" r="4.9"/>'
-
-                                    element.append('circle')
-                                        .attr('fill', '#7E9E7B')
-                                        .attr('cx', 18)
-                                        .attr('cy', 18)
-                                        .attr('r', 18);
-                                    element.append('svg:path')
-                                        .attr('d', 'M28.649,8.6H7.351c-0.684,0-1.238,0.554-1.238,1.238v14.363c0,0.684,0.554,1.238,1.238,1.238h7.529'+
-                                            'l-1.09,3.468v0.495h8.419v-0.495l-1.09-3.468h7.529c0.684,0,1.237-0.555,1.237-1.238V9.838C29.887,9.153,29.333,8.6,28.649,8.6z'+
-                                            'M28.477,22.072H7.635V10.074h20.842V22.072z')
-                                        .attr('fill', '#595A5C'); */
-                                        return "<div class='localuserlisticon'>"+count+" "+d.lan_machine+"</div><div class='localuserlisttext'>"+d.lan_machine+"</div>";
-                                    })
                                     .on('click', function(e){
-                                        $scope.requery(d, 'flooruser');                                           
-                                    })
+                                        floorDiv.selectAll('button').each(function(d){
+                                            var elm = d3.select(this);
+                                            elm[0][0].classList.remove('selected');
+                                        })
+                                        el.classList.add('selected');
+                                        $scope.requery(d, 'flooruser');
+                                    });
+                                var element = elm
+                                                .append('div')
+                                                .attr('class', 'localuserlisticon')
+                                                .append('svg');     
+                                        element
+                                            .attr('height', '23')
+                                            .attr('width', '23')
+                                        .append('svg:path')
+                                            .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('fill', '#67AAB5');
+                                        element.append('circle')
+                                            .attr('fill', '#7E9E7B')
+                                            .attr('cx', 11.1)
+                                            .attr('cy', 4.9)
+                                            .attr('r', 4.9)
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('fill', '#67AAB5');
 
-                                var el = elel[0];
+                                    elm
+                                        .append('div')
+                                        .attr('class', 'localuserlisttext')
+                                        .html(d.lan_machine+"");
+                                    
+
 
                                 el.draggable = true;
                                 el.addEventListener(
@@ -3730,7 +3764,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
         }
 });*/
 
-angular.module('mean.pages').directive('droppable', ['$http', function ( $http) {
+angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
     return {
         scope: {
             drop: '&',
@@ -3804,9 +3838,8 @@ angular.module('mean.pages').directive('droppable', ['$http', function ( $http) 
                         //console.log("successfully saved Coordinates");
                         //$scope.requery(rowData, 'flooruser');
                     })
-
-                }
                 //$scope.requery(rowData, 'flooruser');
+                }
                 return false;
                 },
                 false
