@@ -5838,43 +5838,40 @@ Datatables Plugin(in v1.3)
 }
 
 #floorplan{
-/*  width:800px;
-  height: 600px;*/
-  border: #0f0 solid 1px;
 }
 
 #listlocalusers{
    /*overflow: hidden !important;*/
 }
 #listlocalusers button {
-  /*min-height: 22px;*/\
-  background: none !important;
-  line-height: 30px;
+  line-height: 25px;
   padding: 0px;
   border:none;
   border-bottom: #000 solid 1px;
-  margin: 0px;
-  /*padding: 4px 0px;*/
-
+  margin: 3px 0px;
+  border-radius: 8px;
 }
 #listlocalusers button.localuserlist{
   width: 100%;
   display: inline-block;
   border-bottom: #DEDEDE solid 1px;
   font-weight: bold;
-  background: none !important;
+  background: none ;
   background-color: none !important;
   padding: 0px;
+}
+#listlocalusers button.localuserlist:hover {
+  background: #ccc !important;
 }
 #listlocalusers button.set{
   font-weight: normal !important;
 }
 #listlocalusers .localuserlisticon{
-  border: #ff0 solid 1px;
   width: 15%;
-  height: 30px;
+  height: 27px;
   display: inline-block;
   float: left;
+  margin: 3px 0px 0px 5px;
 }
 #listlocalusers .localuserlisttext{
   display: inline-block;
@@ -5899,24 +5896,39 @@ Datatables Plugin(in v1.3)
 
 
 #floorplan button{
- /* background: none !important;
-  border:none !important;*/
-  padding: 0px;
+  background: none ;
+  border:none ;
+  padding: 4px 6px;
   border:none;
   margin: 0px;
+  border-radius: 8px;
+    outline:none;
 }
+#floorplan button:hover, #floorplan button.selected{
+  background: #ccc;
+  border-radius: 8px;
+  border:none !important;
+    outline:none;
+  /*border:#000 solid 1px;*/
+}
+
 #floorplan button.localuserlist{
  /* background: none !important;
   border:none !important;*/
 }
 
 #floorplan .localuserlisticon{
-  border: #ff0 solid 1px;
   display: inline-block;
-  float: none;
+  text-align: center;
+  margin: 0px auto;
+  height: auto;
+  width: 22px;
+  height: 23px;
 }
 #floorplan .localuserlisttext{
-  display: none;
+  margin: 0px;
+  line-height: 10px;
+  text-align: top;
 }
 
 .drag {
