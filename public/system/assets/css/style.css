@@ -2063,6 +2063,27 @@ Datatables Plugin(in v1.3)
   display: inline-block;
   width: 70%;
   text-align: center;
+  line-height: 30px;
+}
+#listlocalusers form{
+  max-height: 30px;
+  margin: 0px;
+  padding: 0px;
+}
+#listlocalusers form.usernameform{
+  max-height: 30px;
+  margin: 2px 0px 0px 0px;
+  padding: 0px;
+}
+#listlocalusers form.usernameform input{
+  max-height: 30px;
+  padding: 0px;
+  margin: 0px;
+  font-size: 11px;
+  font-family: sans-serif;
+  text-align: center;
+  font-weight: bold;
+  width: 100%;
 }
 #localuserinformation li {
   list-style: none;

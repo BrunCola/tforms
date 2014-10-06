@@ -37,6 +37,9 @@ module.exports = function(app, passport, version, io, pool) {
 
 	app.route('/actions/add_user_to_map')
 		.post(authorization.requiresLogin, actions.add_user_to_map);
+		
+	app.route('/actions/change_custom_user')
+		.post(authorization.requiresLogin, actions.change_custom_user);
 
 	//upload file
 	app.route('/upload/render')

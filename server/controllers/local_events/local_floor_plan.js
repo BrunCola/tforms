@@ -83,7 +83,7 @@ module.exports = function(pool) {
                             'u.x, '+
                             'u.y, '+
                             'u.map, '+
-                            'u.username '+
+                            'u.custom_user '+
                             'FROM '+
                                 'users u '+
                             'INNER JOIN '+

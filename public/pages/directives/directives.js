@@ -3548,7 +3548,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', '$http', function ($timeout, $rootScope, $http) {
     return {
         link: function ($scope, element, attrs) {
-            $scope.$on('floorPlan', function (event, data) {      
+            $scope.$on('floorPlan', function (event, data) {   
+
+                $scope.userList = data;
+
                 $scope.$broadcast('spinnerHide');
 
                 $scope.appendInfo = function(user,data,type) { 
@@ -3639,12 +3642,20 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     plot(data);
                 }
                 draw();
+  
+                function doneEditing(elm, item, value) {
+                    $scope.change_customuser(item,value);
+                    elm[0][0].children[1].children[0].innerHTML = value;
+
+                    $('.usernametext').each(function(e){
+                        this.classList.remove('ng-hide');
+                    });
+                    $('.usernameform').each(function(e){
+                        this.classList.add('ng-hide');
+                    });
+                }
 
                 function plot(data) {
-                    // var prevPos = 0;
-                    // var previousID = -1, previousElm = null;
-                    // var lastExpandedId = null, isOpen = null;
-                    // 
                     ////////////////////
                     ///  LIST USERS  ///
                     ////////////////////
@@ -3655,14 +3666,14 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .append('button').each(function(d){
                             count++;
                             var name = d.lan_machine;
-                            if ((d.username != null) || (d.username !== '')){
-                                name = d.username;
+                            if (d.custom_user != null){
+                                name = d.custom_user;
                             }
                             if ((d.x === 0) && (d.y === 0)) {
                                 // THIS CAN JUST BE SELECTED USING D3
                                 var val = "{";
                                 for(var i in d){
-                                    if(i==="username"){
+                                    if(i==="custom_user"){
                                         val+='"'+i+'":"'+d[i]+'"';
                                     }else{                                        
                                         if(!isNaN(d[i])){
@@ -3681,13 +3692,21 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     .attr('id', id)
                                     .attr('class', 'localuserlist')
                                     .attr('value', val)
-                                  /*  .on('dblclick', function(e){
-                                        console.log("test");
-                                        name = '<form ng-submit="doneEditing(item)" ng-show="item.editing"><input ng-model="item.name" ng-blur="doneEditing(item)" ng-focus="item == editedItem">';
-                                        elm
-                                            .append('div')
-                                            .html(name+"");
-                                    })*/
+                                    .on('dblclick', function(e){
+
+                                        $('.usernametext').each(function(e){
+                                            this.classList.remove('ng-hide');
+                                        });
+                                        $('.usernameform').each(function(e){
+                                            this.classList.add('ng-hide');
+                                        });
+
+
+                                        var iconText = $(this).find('.usernametext')[0];
+                                        var iconInput = $(this).find('.usernameform')[0];
+                                        iconText.classList.add('ng-hide');
+                                        iconInput.classList.remove('ng-hide');
+                                    })
                                     .on('click', function(e){
                                         userDiv.selectAll('button').each(function(d){
                                             var elm = d3.select(this);
@@ -3701,9 +3720,9 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                         $scope.requery(d, 'flooruser');
                                     });
                                 var element = elm
-                                                .append('div')
-                                                .attr('class', 'localuserlisticon')
-                                                .append('svg');     
+                                        .append('div')
+                                            .attr('class', 'localuserlisticon')
+                                            .append('svg');     
                                         element
                                             .attr('height', '23')
                                             .attr('width', '23')
@@ -3720,12 +3739,23 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             .style('fill-rule', '#evenodd')
                                             .style('clip-rule', '#evenodd')
                                             .style('fill', '#67AAB5');
+                                    var elm2 = elm.append('div')
+                                                .attr('class', 'localuserlisttext');
+                                        elm2.append('span')
+                                            .attr('class', 'usernametext')
+                                            .html(name+"")
+                                        elm2.append('form')
+                                            .attr('class', 'ng-hide usernameform')
+                                            .append('input')
+                                                .html(name)
+                                                .attr('type', 'text')
+                                                .attr('value', name+"")
+                                                .attr('ng-model', name)
+                                                .on('blur', function(e){
+                                                    doneEditing(elm, e, this.value)
+                                                })
 
-                                    elm
-                                        .append('div')
-                                        .attr('class', 'localuserlisttext')
-                                        .attr('ng-hide', "item.editing")
-                                        .html(name+"");
+                                        //.html(name+"");
     
                                 var el = elel[0];
 
@@ -3761,15 +3791,15 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .append('button').each(function(d){
                             count++;
                             var name = d.lan_machine;
-                            if(d.username!==null){
-                                name = d.username;
+                            if(d.custom_user!==null){
+                                name = d.custom_user;
                             }
                             if(d.x>0 || d.y>0){
 
                                 var val = "{";
 
                                 for(var i in d){
-                                    if(i==="username"){
+                                    if(i==="custom_user"){
                                         val+='"'+i+'":"'+d[i]+'"';
                                     }else{                                        
                                         if(!isNaN(d[i])){
