@@ -3558,16 +3558,31 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         infoDiv.selectAll('tr').remove(); 
                     }else if(type ==="userinfo"){
                         for(var b in user){
-                            var row = infoDiv.append('tr');
-                            if(user[b]!==null){
-                                row
-                                    .append('td')
-                                    .html('<strong>'+b+'</strong>');
-                                row
-                                    .append('td')
-                                    .text(user[b]);
+                            if(b==="x" || b==="y" || b==="map" ){
+                            }else{
+                                var row = infoDiv.append('tr');
+                                if(user[b]!==null){
+                                    row
+                                        .append('td')
+                                        .html('<strong>'+b+'</strong>');
+                                    row
+                                        .append('td')
+                                        .text(user[b]);
+                                }
                             }
                         }
+                    }else if(type==="assets"){
+                        var image="public/system/assets/img/userplaceholder.jpg";
+                        if(data!==''){
+                            image=data;
+                        }
+                        var row = infoDiv.append('tr');
+                        row
+                            .append('td')
+                            .html('<strong>User Image: </strong>');
+                        row
+                            .append('td')
+                            .html('<img src="'+image+'" width="48"/>');
                     }else{
                         var title = "", link = "";
                             if(type==="localioc"){
@@ -3582,6 +3597,9 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             }else if(type==="localfiles"){
                                 title = "File Hits: ";
                                 link = "#!/by_file_name?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            }else if(type==="endpoint"){
+                                title = "Endpoints Hits: ";
+                                link = "#!/endpoint_by_user_and_ip?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
                             }else{
                                 title = "NO TITLE HITS";
                                 link = "#!/ioc_events?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
@@ -3589,20 +3607,29 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                         for(var i in data){
                             var row = infoDiv.append('tr');
-                            row
-                                .append('td')
-                                .html('<strong>'+title+'</strong>');
-                            row
-                                .append('td')
-                                .html('<a href="'+link+'"]>'+data[i]+'</a>');
+                            if(data[i]===0){
+                                row
+                                    .append('td')
+                                    .html('<strong>'+title+'</strong>');
+                                row
+                                    .append('td')
+                                    .html(data[i]+'');
+                            }else{
+                                row
+                                    .append('td')
+                                    .html('<strong>'+title+'</strong>');
+                                row
+                                    .append('td')
+                                    .html('<a href="'+link+'"]>'+data[i]+'</a>');
+                            }
                         }
                     }
                 }
 
                 // info div
                 var width = element.width();
-                var infoHeight = element.height()+1000;
-                var userDiv = d3.select("#listlocalusers").style('overflow', 'auto');
+                var infoHeight = element.height();
+                var userDiv = d3.select("#listlocalusers").style('height', infoHeight+25+'px').style('overflow', 'auto');
                 var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
                 var floorDiv = d3.select('#floorplan');
                 //console.log(floorDiv);
@@ -3626,12 +3653,16 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     userDiv.selectAll('button').data(data).enter()
                         .append('button').each(function(d){
                             count++;
+                            var name = d.lan_machine;
+                            if(d.username!==null){
+                                name = d.username;
+                            }
                             if(d.x===0 && d.y===0){
 
                                 var val = "{";
 
                                 for(var i in d){
-                                    if(i==="map"){
+                                    if(i==="username"){
                                         val+='"'+i+'":"'+d[i]+'"';
                                     }else{                                        
                                         if(!isNaN(d[i])){
@@ -3650,7 +3681,23 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     .attr('id', count)
                                     .attr('class', 'localuserlist')
                                     .attr('value', val)
+                                  /*  .on('dblclick', function(e){
+                                        console.log("test");
+                                        name = '<form ng-submit="doneEditing(item)" ng-show="item.editing"><input ng-model="item.name" ng-blur="doneEditing(item)" ng-focus="item == editedItem">';
+                                        elm
+                                            .append('div')
+                                            .html(name+"");
+                                    })*/
                                     .on('click', function(e){
+                                        userDiv.selectAll('button').each(function(d){
+                                            var elm = d3.select(this);
+                                            elm[0][0].classList.remove('selected');
+                                        })
+                                        floorDiv.selectAll('button').each(function(d){
+                                            var elm = d3.select(this);
+                                            elm[0][0].classList.remove('selected');
+                                        })
+                                        el.classList.add('selected');
                                         $scope.requery(d, 'flooruser');
                                     });
                                 var element = elm
@@ -3677,7 +3724,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     elm
                                         .append('div')
                                         .attr('class', 'localuserlisttext')
-                                        .html(d.lan_machine+"");
+                                        .attr('ng-hide', "item.editing")
+                                        .html(name+"");
     
                                 var el = elel[0];
 
@@ -3712,12 +3760,16 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     floorDiv.selectAll('button').data(data).enter()
                         .append('button').each(function(d){
                             count++;
+                            var name = d.lan_machine;
+                            if(d.username!==null){
+                                name = d.username;
+                            }
                             if(d.x>0 || d.y>0){
 
                                 var val = "{";
 
                                 for(var i in d){
-                                    if(i==="map"){
+                                    if(i==="username"){
                                         val+='"'+i+'":"'+d[i]+'"';
                                     }else{                                        
                                         if(!isNaN(d[i])){
@@ -3745,6 +3797,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     .style('position', "absolute")
                                     .attr('value', val)
                                     .on('click', function(e){
+                                        userDiv.selectAll('button').each(function(d){
+                                            var elm = d3.select(this);
+                                            elm[0][0].classList.remove('selected');
+                                        })
                                         floorDiv.selectAll('button').each(function(d){
                                             var elm = d3.select(this);
                                             elm[0][0].classList.remove('selected');
@@ -3776,7 +3832,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     elm
                                         .append('div')
                                         .attr('class', 'localuserlisttext')
-                                        .html(d.lan_machine+"");
+                                        .html(name+"");
                                     
 
 
@@ -3795,6 +3851,11 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 el.addEventListener(
                                     'dragend',
                                     function(e) {
+                                        floorDiv.selectAll('button').each(function(d){
+                                            var elm = d3.select(this);
+                                            elm[0][0].classList.remove('selected');
+                                        })
+                                        el.classList.add('selected');
                                         this.classList.remove('drag');
                                         $scope.requery(d, 'flooruser');
                                         return false;
@@ -3893,7 +3954,8 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
                     var item = document.getElementById(data);
 
                 if(e.srcElement===document.getElementById('svgFloorPlan')){
-                    console.log("x = " +  e.offsetX + " ... y = " +  e.offsetY);
+                    //console.log(e.srcElement);
+                    //console.log("x = " +  e.offsetX + " ... y = " +  e.offsetY);
                     item.classList.add('set');
                     item.setAttribute('x',e.offsetX);
                     item.setAttribute('y',e.offsetY);
@@ -3914,6 +3976,27 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
                         //$scope.requery(rowData, 'flooruser');
                     })
                 //$scope.requery(rowData, 'flooruser');
+                }else {
+                    item.classList.remove('set');
+                    item.classList.remove('selected');
+                    item.setAttribute('x', 0);
+                    item.setAttribute('y',0);
+                    item.setAttribute('style', 'top:0px; left:0px; position:relative; ');
+                    this.appendChild(item);
+                    // call the passed drop function
+                    $scope.$apply(function(scope) {
+                        var fn = scope.drop();
+                        if ('undefined' !== typeof fn) {
+                          fn(item.id, binId);
+                        }
+                    });
+
+                    var rowData = JSON.parse(item.value);
+                    $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: 0, y_coord: 0, map_name: rowData.map, lan_ip: rowData.lan_ip, lan_zone: rowData.lan_zone}}).
+                    success(function(data) {
+                        //console.log("successfully saved Coordinates");
+                        //$scope.requery(rowData, 'flooruser');
+                    })
                 }
                 return false;
                 },

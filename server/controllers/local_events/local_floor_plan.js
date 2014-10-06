@@ -51,6 +51,20 @@ module.exports = function(pool) {
                             }
                         });  
                         break;
+                    case 'endpoint':
+                        new query({query: 'SELECT count(*) AS localfiles FROM `endpoint_events` WHERE (time between ? AND ?) AND  `lan_ip` = ? AND `lan_zone` = ?', insert: [start, end, req.query.lan_ip, req.query.lan_zone]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        });  
+                        break;
+                    case 'assets':
+                        new query({query: 'SELECT `file` FROM `assets` WHERE `lan_ip` = ? AND `lan_zone` = ?', insert: [req.query.lan_ip, req.query.lan_zone]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        });  
+                        break;
                 }     
 
             }else{    
@@ -58,7 +72,6 @@ module.exports = function(pool) {
 
                 var floor_plan_users = {
                     query: 'SELECT '+
-                            'u.id, '+
                             'u.lan_user, '+
                             'u.lan_ip, '+
                             'u.lan_zone, '+
@@ -69,7 +82,8 @@ module.exports = function(pool) {
                             'u.endpoint_agent_name, '+
                             'u.x, '+
                             'u.y, '+
-                            'u.map '+
+                            'u.map, '+
+                            'u.username '+
                             'FROM '+
                                 'users u '+
                             'INNER JOIN '+
@@ -79,8 +93,8 @@ module.exports = function(pool) {
                             'AND '+
                                 'u.id = groupedu.maxID '+
                             'WHERE '+
-                                'u.lan_ip IS NOT NULL AND '+
-                                'u.lan_mac IS NOT NULL '+
+                                'u.lan_ip IS NOT NULL AND'+
+                                '(u.lan_mac IS NOT NULL OR u.lan_machine IS NOT NULL) '+
                             'ORDER BY '+
                                 'lan_ip ',
                     insert: []
