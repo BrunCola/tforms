@@ -3550,7 +3550,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
         link: function ($scope, element, attrs) {
             $scope.$on('floorPlan', function (event, data) {      
                 $scope.$broadcast('spinnerHide');
-
                 $scope.appendInfo = function(user,data,type) { 
                     /*console.log(user);
                     console.log(user.length);*/
@@ -3637,6 +3636,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                 function draw() {
                     plot(data);
+                    // plot(data, floorDiv);
                 }
                 draw();
 
@@ -3648,31 +3648,15 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     ////////////////////
                     ///  LIST USERS  ///
                     ////////////////////
-                    var count = 0;
                     // MAKE LIST ELEMENTS
                     userDiv.selectAll('button').remove();
                     userDiv.selectAll('button').data(data).enter()
                         .append('button').each(function(d){
-                            count++;
                             var name = d.lan_machine;
-                            if ((d.username != null) || (d.username !== '')){
-                                name = d.username;
+                            if (d.custom_user != null){
+                                name = d.custom_user;
                             }
                             if ((d.x === 0) && (d.y === 0)) {
-                                // THIS CAN JUST BE SELECTED USING D3
-                                var val = "{";
-                                for(var i in d){
-                                    if(i==="username"){
-                                        val+='"'+i+'":"'+d[i]+'"';
-                                    }else{                                        
-                                        if(!isNaN(d[i])){
-                                            val+='"'+i+'":'+d[i]+',';
-                                        }else{
-                                            val+='"'+i+'":"'+d[i]+'",';
-                                        }
-                                    }
-                                }
-                                val+= "}";
                                 var id = d.id;
                                 var elm = d3.select(this);
                                 var elel = elm[0];
@@ -3680,7 +3664,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     // append id to li from data object
                                     .attr('id', id)
                                     .attr('class', 'localuserlist')
-                                    .attr('value', val)
                                   /*  .on('dblclick', function(e){
                                         console.log("test");
                                         name = '<form ng-submit="doneEditing(item)" ng-show="item.editing"><input ng-model="item.name" ng-blur="doneEditing(item)" ng-focus="item == editedItem">';
@@ -3701,9 +3684,9 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                         $scope.requery(d, 'flooruser');
                                     });
                                 var element = elm
-                                                .append('div')
-                                                .attr('class', 'localuserlisticon')
-                                                .append('svg');     
+                                    .append('div')
+                                    .attr('class', 'localuserlisticon')
+                                    .append('svg');     
                                         element
                                             .attr('height', '23')
                                             .attr('width', '23')
@@ -3753,41 +3736,22 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             }
                         });
 
-                
-
-
                     floorDiv.selectAll('button').remove();
                     floorDiv.selectAll('button').data(data).enter()
                         .append('button').each(function(d){
-                            count++;
+                            // count++;
                             var name = d.lan_machine;
-                            if(d.username!==null){
-                                name = d.username;
+                            if (d.custom_user!==null){
+                                name = d.custom_user;
                             }
-                            if(d.x>0 || d.y>0){
-
-                                var val = "{";
-
-                                for(var i in d){
-                                    if(i==="username"){
-                                        val+='"'+i+'":"'+d[i]+'"';
-                                    }else{                                        
-                                        if(!isNaN(d[i])){
-                                            val+='"'+i+'":'+d[i]+',';
-                                        }else{
-                                            val+='"'+i+'":"'+d[i]+'",';
-                                        }
-                                    }
-                                }
-                                val+= "}";
-
-
+                            if ((d.x > 0) || (d.y > 0)){
+                                var id = d.id;
                                 var elm = d3.select(this);
                                 var elel = elm[0];
                                 var el = elel[0];
                                 elm
                                     // append id to li from data object
-                                    .attr('id', count)
+                                    .attr('id', id)
                                     //.attr('draggable','')
                                     .attr('class', 'localuserlist set')
                                     .attr('x', d.x)
@@ -3795,7 +3759,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     .style('top', d.y+"px")
                                     .style('left', d.x+"px")
                                     .style('position', "absolute")
-                                    .attr('value', val)
                                     .on('click', function(e){
                                         userDiv.selectAll('button').each(function(d){
                                             var elm = d3.select(this);
@@ -3809,9 +3772,9 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                         $scope.requery(d, 'flooruser');
                                     });
                                 var element = elm
-                                                .append('div')
-                                                .attr('class', 'localuserlisticon')
-                                                .append('svg');     
+                                            .append('div')
+                                            .attr('class', 'localuserlisticon')
+                                            .append('svg');     
                                         element
                                             .attr('height', '23')
                                             .attr('width', '23')
@@ -3834,8 +3797,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                         .attr('class', 'localuserlisttext')
                                         .html(name+"");
                                     
-
-
                                 el.draggable = true;
                                 el.addEventListener(
                                     'dragstart',
@@ -3916,7 +3877,7 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
                     e.dataTransfer.dropEffect = 'move';
                     // allows us to drop
                     if (e.preventDefault) e.preventDefault();
-                    this.classList.add('over');
+                    $(this).addClass('over');
                     return false;
                 },
                 false
@@ -3924,7 +3885,7 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
             el.addEventListener(
                 'dragenter',
                 function(e) {
-                    this.classList.add('over');
+                    $(this).addClass('over');
                     return false;
                 },
                 false
@@ -3933,70 +3894,56 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
             el.addEventListener(
                 'dragleave',
                 function(e) {
-                    this.classList.remove('over');
+                    $(this).removeClass('over');
                     return false;
                 },
                 false
             );
 
-            el.addEventListener(
-                'drop',
-                function(e) {
+            el.addEventListener('drop', function(e) {
+                // console.log(d3.select(el));
+                // Stops some browsers from redirecting.
+                if (e.stopPropagation) e.stopPropagation();
 
-                    // Stops some browsers from redirecting.
-                    if (e.stopPropagation) e.stopPropagation();
+                $(this).removeClass('over');
 
-                    this.classList.remove('over');
-
-                    // call the drop passed drop function
-                    var binId = this.id;
-                    var data = e.dataTransfer.getData("Text");
-                    var item = document.getElementById(data);
-
-                if(e.srcElement===document.getElementById('svgFloorPlan')){
-                    //console.log(e.srcElement);
-                    //console.log("x = " +  e.offsetX + " ... y = " +  e.offsetY);
-                    item.classList.add('set');
-                    item.setAttribute('x',e.offsetX);
-                    item.setAttribute('y',e.offsetY);
-                    item.setAttribute('style', 'top:'+e.offsetY+'px; left:'+e.offsetX+'px; position:absolute;');
-                    this.appendChild(item);
+                // call the drop passed drop function
+                var destinationId = $(this).attr('id');
+                var itemId = e.dataTransfer.getData("Text");
+                var item = $(document).find('#'+itemId);
+                var itemData = item[0]['__data__'];
+                // var sourceElm = d3.select(e.srcElement).attr('id');
+                // var floorPlanElm = d3.select(el).attr('id');
+                if (destinationId === 'floorplan'){
+                    var divPos = {
+                        left: e.pageX - $(el).offset().left,
+                        top: e.pageY - $(el).offset().top
+                    };
+                    item.addClass('set');
+                    item.attr('style', 'top:'+divPos.top+'px; left:'+divPos.left+'px; position:absolute;');
+                    $(this).append(item[0]);
                     // call the passed drop function
                     $scope.$apply(function(scope) {
                         var fn = scope.drop();
                         if ('undefined' !== typeof fn) {
-                          fn(item.id, binId);
+                          fn(item.id, destinationId);
                         }
                     });
-
-                    var rowData = JSON.parse(item.value);
-                    $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: e.offsetX, y_coord: e.offsetY, map_name: rowData.map, lan_ip: rowData.lan_ip, lan_zone: rowData.lan_zone}}).
-                    success(function(data) {
-                        //console.log("successfully saved Coordinates");
-                        //$scope.requery(rowData, 'flooruser');
-                    })
-                //$scope.requery(rowData, 'flooruser');
-                }else {
-                    item.classList.remove('set');
-                    item.classList.remove('selected');
-                    item.setAttribute('x', 0);
-                    item.setAttribute('y',0);
-                    item.setAttribute('style', 'top:0px; left:0px; position:relative; ');
-                    this.appendChild(item);
+                    $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: itemData.map, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
+                } else {
+                    console.log('test')
+                    item.removeClass('set');
+                    item.removeClass('selected');
+                    item.attr('style', 'top:0px; left:0px; position:relative; ');
+                    $(this).append(item[0]);
                     // call the passed drop function
                     $scope.$apply(function(scope) {
                         var fn = scope.drop();
                         if ('undefined' !== typeof fn) {
-                          fn(item.id, binId);
+                          fn(item.id, destinationId);
                         }
                     });
-
-                    var rowData = JSON.parse(item.value);
-                    $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: 0, y_coord: 0, map_name: rowData.map, lan_ip: rowData.lan_ip, lan_zone: rowData.lan_zone}}).
-                    success(function(data) {
-                        //console.log("successfully saved Coordinates");
-                        //$scope.requery(rowData, 'flooruser');
-                    })
+                    $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: 0, y_coord: 0, map_name: itemData.map, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
                 }
                 return false;
                 },
