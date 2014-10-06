@@ -3938,7 +3938,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             .style('fill', '#29ABE2');
                                         break;
                                 }  
-
                                 elm
                                     .append('div')
                                     .attr('class', 'localuserlisttext')
