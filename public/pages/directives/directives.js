@@ -3548,15 +3548,15 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', '$http', function ($timeout, $rootScope, $http) {
     return {
         link: function ($scope, element, attrs) {
-            $scope.$on('floorPlan', function() {      
+            $scope.$on('floorPlan', function (event, data) {      
                 $scope.$broadcast('spinnerHide');
 
                 $scope.appendInfo = function(user,data,type) { 
                     /*console.log(user);
                     console.log(user.length);*/
-                    if(type==="clear"){
+                    if (type==="clear"){
                         infoDiv.selectAll('tr').remove(); 
-                    }else if(type ==="userinfo"){
+                    } else if (type ==="userinfo"){
                         for(var b in user){
                             if(b==="x" || b==="y" || b==="map" ){
                             }else{
@@ -3571,7 +3571,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 }
                             }
                         }
-                    }else if(type==="assets"){
+                    } else if(type==="assets"){
                         var image="public/system/assets/img/userplaceholder.jpg";
                         if(data!==''){
                             image=data;
@@ -3583,27 +3583,28 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         row
                             .append('td')
                             .html('<img src="'+image+'" width="48"/>');
-                    }else{
+                    } else {
                         var title = "", link = "";
-                            if(type==="localioc"){
-                                title = "IOC Hits: ";
-                                link = "#!/ioc_local?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                            }else if(type==="localapp"){
-                                title = "App Hits: ";
-                                link = "#!/l7_local_app?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                            }else if(type==="localhttp"){
-                                title = "HTTP Hits: ";
-                                link = "#!/http_local_by_domain?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                            }else if(type==="localfiles"){
-                                title = "File Hits: ";
-                                link = "#!/by_file_name?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                            }else if(type==="endpoint"){
-                                title = "Endpoints Hits: ";
-                                link = "#!/endpoint_by_user_and_ip?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                            }else{
-                                title = "NO TITLE HITS";
-                                link = "#!/ioc_events?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                            }
+                        // GOOD PLACE FOR SWITCH
+                        if(type==="localioc"){
+                            title = "IOC Hits: ";
+                            link = "#!/ioc_local?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                        }else if(type==="localapp"){
+                            title = "App Hits: ";
+                            link = "#!/l7_local_app?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                        }else if(type==="localhttp"){
+                            title = "HTTP Hits: ";
+                            link = "#!/http_local_by_domain?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                        }else if(type==="localfiles"){
+                            title = "File Hits: ";
+                            link = "#!/by_file_name?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                        }else if(type==="endpoint"){
+                            title = "Endpoints Hits: ";
+                            link = "#!/endpoint_by_user_and_ip?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                        }else{
+                            title = "NO TITLE HITS";
+                            link = "#!/ioc_events?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                        }
 
                         for(var i in data){
                             var row = infoDiv.append('tr');
@@ -3635,32 +3636,31 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                 //console.log(floorDiv);
 
                 function draw() {
-                    plot($scope.data.force);
+                    plot(data);
                 }
                 draw();
 
                 function plot(data) {
-                    var prevPos = 0;
-                    var previousID = -1, previousElm = null;
-                    var lastExpandedId = null, isOpen = null;
-
-
+                    // var prevPos = 0;
+                    // var previousID = -1, previousElm = null;
+                    // var lastExpandedId = null, isOpen = null;
+                    // 
                     ////////////////////
                     ///  LIST USERS  ///
                     ////////////////////
                     var count = 0;
+                    // MAKE LIST ELEMENTS
                     userDiv.selectAll('button').remove();
                     userDiv.selectAll('button').data(data).enter()
                         .append('button').each(function(d){
                             count++;
                             var name = d.lan_machine;
-                            if(d.username!==null){
+                            if ((d.username != null) || (d.username !== '')){
                                 name = d.username;
                             }
-                            if(d.x===0 && d.y===0){
-
+                            if ((d.x === 0) && (d.y === 0)) {
+                                // THIS CAN JUST BE SELECTED USING D3
                                 var val = "{";
-
                                 for(var i in d){
                                     if(i==="username"){
                                         val+='"'+i+'":"'+d[i]+'"';
@@ -3678,7 +3678,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 var elel = elm[0];
                                 elm
                                     // append id to li from data object
-                                    .attr('id', count)
+                                    .attr('id', id)
                                     .attr('class', 'localuserlist')
                                     .attr('value', val)
                                   /*  .on('dblclick', function(e){
