@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
+angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal) {
     $scope.global = Global;
     var query;
     query = '/local_events/local_floor_plan?';
@@ -47,17 +47,85 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         $scope.appendInfo(userInfo);
     }
 
-    $scope.uploadFile = function(files) {
-        var fd = new FormData();
-        //Take the first selected file
+    // $scope.uploadFile = function(files) {
+    //     var fd = new FormData();
+    //     //Take the first selected file
 
-        fd.append("file", files[0]);
-        console.log(fd);
-        var uploadUrl = '../../../uploads/'; //TODO Different folders per client? Diff folders for User photos and floor plans?
-        $http.post(uploadUrl, fd, {
-            withCredentials: true,
-            headers: {'Content-Type': undefined },
-            transformRequest: angular.identity
-        });//.success( console.log("UPLOADED");).error( console.log("error!"); );
-    };  
+    //     fd.append("file", files[0]);
+    //     console.log(fd);
+    //     var uploadUrl = '../../../uploads/'; //TODO Different folders per client? Diff folders for User photos and floor plans?
+    //     $http.post(uploadUrl, fd, {
+    //         withCredentials: true,
+    //         headers: {'Content-Type': undefined },
+    //         transformRequest: angular.identity
+    //     });//.success( console.log("UPLOADED");).error( console.log("error!"); );
+    // };  
+
+
+    $scope.uploadOpen = function () {
+        $scope.modalInstance = $modal.open({
+            templateUrl: 'uploadModal.html',
+            controller: uploadInstanceCtrl,
+            keyboard: true
+        });
+    };
+    var uploadInstanceCtrl = function ($scope, $modalInstance, $upload) {
+        $scope.ok = function () {
+            $modalInstance.close();
+        };
+        $scope.onFileSelect = function($files) {
+            $scope.selectedFiles = [];
+            $scope.progress = [];
+            if ($scope.upload && $scope.upload.length > 0) {
+                for (var i = 0; i < $scope.upload.length; i++) {
+                    if ($scope.upload[i] != null) {
+                        $scope.upload[i].abort();
+                    }
+                }
+            }
+            $scope.upload = [];
+            $scope.uploadResult = [];
+            $scope.selectedFiles = $files;
+            $scope.dataUrls = [];
+            for ( var i = 0; i < $files.length; i++) {
+                var $file = $files[i];
+                if (window.FileReader && $file.type.indexOf('image') > -1) {
+                    var fileReader = new FileReader();
+                    fileReader.readAsDataURL($files[i]);
+                    var loadFile = function(fileReader, index) {
+                        fileReader.onload = function(e) {
+                            $timeout(function() {
+                                $scope.dataUrls[index] = e.target.result;
+                            });
+                        }
+                    }(fileReader, i);
+                }
+                $scope.progress[i] = -1;
+                $scope.start(i);
+            }
+        };
+        $scope.start = function(index) {
+            $scope.progress[index] = 0;
+            $scope.errorMsg = null;
+            $scope.upload[index] = $upload.upload({
+                url : '/uploads',
+                method: 'POST',
+                data : {
+                    myModel : $scope.myModel
+                },
+                file: $scope.selectedFiles[index],
+            }).then(function(response) {
+                $scope.uploadResult.push(response.data);
+            }, function(response) {
+                if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
+            }, function(evt) {
+                // Math.min is to fix IE which reports 200% sometimes
+                $scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+            }).xhr(function(xhr){
+                xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
+            });
+        };
+    };
+
+
 }]);
