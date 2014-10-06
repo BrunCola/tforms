@@ -29,9 +29,6 @@ module.exports = function(app, passport, version, io, pool) {
 		.post(authorization.requiresLogin, actions.local_cc);
 
 	//other actions
-	app.route('/actions/add_map_image')
-		.post(authorization.requiresLogin, actions.add_map_image);
-
 	app.route('/actions/add_user_image')
 		.post(authorization.requiresLogin, actions.add_user_image);
 

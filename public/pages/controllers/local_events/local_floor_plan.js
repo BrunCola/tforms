@@ -67,21 +67,16 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
 
     $scope.uploadFile = function(files) {
         var fd = new FormData();
-        //Take the first selected file
+        //Use native angular upload to get the file to the 
+        //serverside uploads.js function, which handles the rest of the upload from there
 
         fd.append("file", files[0]);
         console.log(fd);
-        var uploadUrl = '../../../uploads/'; //TODO Different folders per client? Diff folders for User photos and floor plans?
+        var uploadUrl = '../../../uploads/'; //This is the 
         $http.post(uploadUrl, fd, {
             withCredentials: true,
             headers: {'Content-Type': undefined },
             transformRequest: angular.identity
         });
-
-        // $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: e.offsetX, y_coord: e.offsetY, map_name: rowData.map, lan_ip: rowData.lan_ip, lan_zone: rowData.lan_zone}}).
-        //             success(function(data) {
-        //                 //console.log("successfully saved Coordinates");
-        //                 //$scope.requery(rowData, 'flooruser');
-        //             })
     };  
 }]);
