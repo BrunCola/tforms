@@ -3952,10 +3952,10 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
                     var binId = this.id;
                     var data = e.dataTransfer.getData("Text");
                     var item = document.getElementById(data);
+                    console.log(e.srcElement);
+                    console.log("x = " +  e.offsetX + " ... y = " +  e.offsetY);
 
                 if(e.srcElement===document.getElementById('svgFloorPlan')){
-                    //console.log(e.srcElement);
-                    //console.log("x = " +  e.offsetX + " ... y = " +  e.offsetY);
                     item.classList.add('set');
                     item.setAttribute('x',e.offsetX);
                     item.setAttribute('y',e.offsetY);
