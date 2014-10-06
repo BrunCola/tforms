@@ -3587,25 +3587,31 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             .html('<img src="'+image+'" width="48"/>');
                     } else {
                         var title = "", link = "";
-                        // GOOD PLACE FOR SWITCH
-                        if(type==="localioc"){
-                            title = "IOC Hits: ";
-                            link = "#!/ioc_local?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                        }else if(type==="localapp"){
-                            title = "App Hits: ";
-                            link = "#!/l7_local_app?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                        }else if(type==="localhttp"){
-                            title = "HTTP Hits: ";
-                            link = "#!/http_local_by_domain?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                        }else if(type==="localfiles"){
-                            title = "File Hits: ";
-                            link = "#!/by_file_name?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                        }else if(type==="endpoint"){
-                            title = "Endpoints Hits: ";
-                            link = "#!/endpoint_by_user_and_ip?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                        }else{
-                            title = "NO TITLE HITS";
-                            link = "#!/ioc_events?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                        switch(type){                           
+                            case "localioc":
+                                title = "IOC Hits: ";
+                                link = "#!/ioc_local?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                                break;
+                            case "localapp":
+                                title = "App Hits: ";
+                                link = "#!/l7_local_app?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                                break;
+                            case "localhttp":
+                                title = "HTTP Hits: ";
+                                link = "#!/http_local_by_domain?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                                break;
+                            case "localfiles":
+                                title = "File Hits: ";
+                                link = "#!/by_file_name?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                                break;
+                            case "endpoint":
+                                title = "Endpoints Hits: ";
+                                link = "#!/endpoint_by_user_and_ip?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                                break;
+                            default:
+                                title = "NO TITLE HITS";
+                                link = "#!/ioc_events?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                                break;                
                         }
 
                         for(var i in data){
@@ -3675,14 +3681,12 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     .attr('id', id)
                                     .attr('class', 'localuserlist')
                                     .on('dblclick', function(e){
-
                                         $('.usernametext').each(function(e){
                                             this.classList.remove('ng-hide');
                                         });
                                         $('.usernameform').each(function(e){
                                             this.classList.add('ng-hide');
                                         });
-
 
                                         var iconText = $(this).find('.usernametext')[0];
                                         var iconInput = $(this).find('.usernameform')[0];
@@ -3781,19 +3785,19 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 }
                                 
                                 var elm2 = elm.append('div')
-                                            .attr('class', 'localuserlisttext');
-                                    elm2.append('span')
-                                        .attr('class', 'usernametext')
-                                        .html(name+"")
-                                    elm2.append('form')
-                                        .attr('class', 'ng-hide usernameform')
-                                        .append('input')
-                                            .html(name)
-                                            .attr('type', 'text')
-                                            .attr('value', name+"")
-                                            .on('blur', function(e){
-                                                doneEditing(elm, e, this.value)
-                                            })
+                                    .attr('class', 'localuserlisttext');
+                                elm2.append('span')
+                                    .attr('class', 'usernametext')
+                                    .html(name+"")
+                                elm2.append('form')
+                                    .attr('class', 'ng-hide usernameform')
+                                    .append('input')
+                                        .html(name)
+                                        .attr('type', 'text')
+                                        .attr('value', name+"")
+                                        .on('blur', function(e){
+                                            doneEditing(elm, e, this.value)
+                                        })
 
                                         //.html(name+"");
     
@@ -3846,6 +3850,19 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     .style('top', d.y+"px")
                                     .style('left', d.x+"px")
                                     .style('position', "absolute")
+                                    .on('dblclick', function(e){
+                                        $('.usernametext').each(function(e){
+                                            this.classList.remove('ng-hide');
+                                        });
+                                        $('.usernameform').each(function(e){
+                                            this.classList.add('ng-hide');
+                                        });
+
+                                        var iconText = $(this).find('.usernametext')[0];
+                                        var iconInput = $(this).find('.usernameform')[0];
+                                        iconText.classList.add('ng-hide');
+                                        iconInput.classList.remove('ng-hide');
+                                    })
                                     .on('click', function(e){
                                         userDiv.selectAll('button').each(function(d){
                                             var elm = d3.select(this);
@@ -3938,10 +3955,20 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             .style('fill', '#29ABE2');
                                         break;
                                 }  
-                                elm
-                                    .append('div')
-                                    .attr('class', 'localuserlisttext')
-                                    .html(name+"");
+                                var elm2 = elm.append('div')
+                                    .attr('class', 'localuserlisttext');
+                                elm2.append('span')
+                                    .attr('class', 'usernametext')
+                                    .html(name+"")
+                                elm2.append('form')
+                                    .attr('class', 'ng-hide usernameform')
+                                    .append('input')
+                                        .html(name)
+                                        .attr('type', 'text')
+                                        .attr('value', name+"")
+                                        .on('blur', function(e){
+                                            doneEditing(elm, e, this.value)
+                                        })
                                     
                                 el.draggable = true;
                                 el.addEventListener(
