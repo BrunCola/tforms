@@ -3561,7 +3561,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         infoDiv.selectAll('tr').remove(); 
                     } else if (type ==="userinfo"){
                         for(var b in user){
-                            if(b==="x" || b==="y" || b==="map" ){
+                            if ( b==="x" || b==="y" || b==="map" || b==="id" ){
                             }else{
                                 var row = infoDiv.append('tr');
                                 if(user[b]!==null){
@@ -3723,6 +3723,9 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                         .append('div')
                                             .attr('class', 'localuserlisticon')
                                             .append('svg');     
+
+                                switch(d.lan_type){
+                                    case 'endpoint':
                                         element
                                             .attr('height', '23')
                                             .attr('width', '23')
@@ -3730,30 +3733,86 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
                                             .style('fill-rule', '#evenodd')
                                             .style('clip-rule', '#evenodd')
-                                            .style('fill', '#67AAB5');
+                                            .style('fill', '#29ABE2');
                                         element.append('circle')
-                                            .attr('fill', '#7E9E7B')
                                             .attr('cx', 11.1)
                                             .attr('cy', 4.9)
                                             .attr('r', 4.9)
                                             .style('fill-rule', '#evenodd')
                                             .style('clip-rule', '#evenodd')
-                                            .style('fill', '#67AAB5');
-                                    var elm2 = elm.append('div')
-                                                .attr('class', 'localuserlisttext');
-                                        elm2.append('span')
-                                            .attr('class', 'usernametext')
-                                            .html(name+"")
-                                        elm2.append('form')
-                                            .attr('class', 'ng-hide usernameform')
-                                            .append('input')
-                                                .html(name)
-                                                .attr('type', 'text')
-                                                .attr('value', name+"")
-                                                .attr('ng-model', name)
-                                                .on('blur', function(e){
-                                                    doneEditing(elm, e, this.value)
-                                                })
+                                            .style('fill', '#29ABE2');
+                                        break;
+                                    case 'server':
+                                        element
+                                            .attr('height', '21')
+                                            .attr('width', '19')
+                                        .append('svg:polygon')
+                                            .attr('points', '10,17 9,17 9,18 6,18 6,21 13,21 13,18 10,18') 
+                                            .style('fill', '#29ABE2');
+                                        element.append('rect')
+                                            .attr('x', 14)
+                                            .attr('y', 19)
+                                            .attr('width', 5)
+                                            .attr('height', 1)
+                                            .style('fill', '#29ABE2');
+                                        element.append('rect')
+                                            .attr('y', 19)
+                                            .attr('width', 5)
+                                            .attr('height', 1)
+                                            .style('fill', '#29ABE2');
+                                        element.append('path')
+                                            .style('fill', '#29ABE2')
+                                            .attr('d', 'M19,12H0v4h19V12z M3,15H1v-2h2V15z');
+                                        element.append('path')
+                                            .style('fill', '#29ABE2')
+                                            .attr('d', 'M19,6H0v4h19V6z M3,9H1V7h2V9z');
+                                        element.append('path')
+                                            .style('fill', '#29ABE2')
+                                            .attr('d', 'M19,0H0v4h19V0z M3,3H1V1h2V3z');
+                                        break;
+                                    case 'mobile':
+                                        element
+                                            .attr('height', '22')
+                                            .attr('width', '14')
+                                        .append('svg:path')
+                                            .attr('d', 'M0,0v22h14V0H0z M7,20c-0.6,0-1-0.4-1-1c0-0.6,0.4-1,1-1c0.6,0,1,0.4,1,1C8,19.6,7.6,20,7,20z M12,17H2V2h10V17z')
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('fill', '#29ABE2');
+                                        break;
+                                    default:
+                                        element
+                                            .attr('height', '23')
+                                            .attr('width', '23')
+                                        .append('svg:path')
+                                            .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('fill', '#29ABE2');
+                                        element.append('circle')
+                                            .attr('cx', 11.1)
+                                            .attr('cy', 4.9)
+                                            .attr('r', 4.9)
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('fill', '#29ABE2');
+                                        break;
+                                }
+                                
+                                var elm2 = elm.append('div')
+                                            .attr('class', 'localuserlisttext');
+                                    elm2.append('span')
+                                        .attr('class', 'usernametext')
+                                        .html(name+"")
+                                    elm2.append('form')
+                                        .attr('class', 'ng-hide usernameform')
+                                        .append('input')
+                                            .html(name)
+                                            .attr('type', 'text')
+                                            .attr('value', name+"")
+                                            .on('blur', function(e){
+                                                doneEditing(elm, e, this.value)
+                                            })
 
                                         //.html(name+"");
     
@@ -3841,7 +3900,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 var element = elm
                                                 .append('div')
                                                 .attr('class', 'localuserlisticon')
-                                                .append('svg');     
+                                                .append('svg'); 
+
+                                switch(d.lan_type){
+                                    case 'endpoint':
                                         element
                                             .attr('height', '23')
                                             .attr('width', '23')
@@ -3849,20 +3911,77 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
                                             .style('fill-rule', '#evenodd')
                                             .style('clip-rule', '#evenodd')
-                                            .style('fill', '#67AAB5');
+                                            .style('fill', '#29ABE2');
                                         element.append('circle')
-                                            .attr('fill', '#7E9E7B')
                                             .attr('cx', 11.1)
                                             .attr('cy', 4.9)
                                             .attr('r', 4.9)
                                             .style('fill-rule', '#evenodd')
                                             .style('clip-rule', '#evenodd')
-                                            .style('fill', '#67AAB5');
+                                            .style('fill', '#29ABE2');
+                                        break;
+                                    case 'server':
+                                        element
+                                            .attr('height', '21')
+                                            .attr('width', '19')
+                                        .append('svg:polygon')
+                                            .attr('points', '10,17 9,17 9,18 6,18 6,21 13,21 13,18 10,18') 
+                                            .style('fill', '#29ABE2');
+                                        element.append('rect')
+                                            .attr('x', 14)
+                                            .attr('y', 19)
+                                            .attr('width', 5)
+                                            .attr('height', 1)
+                                            .style('fill', '#29ABE2');
+                                        element.append('rect')
+                                            .attr('y', 19)
+                                            .attr('width', 5)
+                                            .attr('height', 1)
+                                            .style('fill', '#29ABE2');
+                                        element.append('path')
+                                            .style('fill', '#29ABE2')
+                                            .attr('d', 'M19,12H0v4h19V12z M3,15H1v-2h2V15z');
+                                        element.append('path')
+                                            .style('fill', '#29ABE2')
+                                            .attr('d', 'M19,6H0v4h19V6z M3,9H1V7h2V9z');
+                                        element.append('path')
+                                            .style('fill', '#29ABE2')
+                                            .attr('d', 'M19,0H0v4h19V0z M3,3H1V1h2V3z');
+                                        break;
+                                    case 'mobile':
+                                        element
+                                            .attr('height', '22')
+                                            .attr('width', '14')
+                                        .append('svg:path')
+                                            .attr('d', 'M0,0v22h14V0H0z M7,20c-0.6,0-1-0.4-1-1c0-0.6,0.4-1,1-1c0.6,0,1,0.4,1,1C8,19.6,7.6,20,7,20z M12,17H2V2h10V17z')
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('fill', '#29ABE2');
+                                        break;
+                                    default:
+                                        element
+                                            .attr('height', '23')
+                                            .attr('width', '23')
+                                        .append('svg:path')
+                                            .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('fill', '#29ABE2');
+                                        element.append('circle')
+                                            .attr('cx', 11.1)
+                                            .attr('cy', 4.9)
+                                            .attr('r', 4.9)
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('fill', '#29ABE2');
+                                        break;
+                                }
+                                        
 
-                                    elm
-                                        .append('div')
-                                        .attr('class', 'localuserlisttext')
-                                        .html(name+"");
+                                elm
+                                    .append('div')
+                                    .attr('class', 'localuserlisttext')
+                                    .html(name+"");
                                     
 
 
