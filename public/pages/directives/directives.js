@@ -3641,14 +3641,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                 var floorDiv = d3.select('#floorplan');
                 //console.log(floorDiv);
 
-                function draw() {
-                    plot(data);
-                    // plot(data, floorDiv);
-                }
-                draw();
-
-                $scope.setSelected = function(data) { 
-                    console.log(d3.select(data));
+                $scope.setSelected = function(selected) { 
+                    $('#'+selected.id).addClass('selected');
                 }
   
                 function doneEditing(elm, item, value) {
@@ -4000,7 +3994,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 );
                             }
                         });
-                }   
+                }
+                plot(data);   
             });
         }
     };
