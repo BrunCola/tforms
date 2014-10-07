@@ -146,7 +146,8 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 url : '/uploads',
                 method: 'POST',
                 data : {
-                    myModel : $scope.myModel
+                    myModel : $scope.myModel,
+                    imageType: 'map'
                 },
                 file: $scope.selectedFiles[index],
             }).then(function(response) {

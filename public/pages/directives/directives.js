@@ -1585,14 +1585,14 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         .links(data.links)
                         .gravity(function(d) { 
                             if (d.class === 'child') {
-                               return  0.2;
+                               return  10;
                             } else {
-                               return  0.5;
+                               return  5;
                             }
                         })
                         .linkDistance(function(d) { 
                             if (d.class === 'child') {
-                                return  90;
+                                return  120;
                             } else {
                                 var w;
                                 if (width/2 > 400) {
@@ -1603,7 +1603,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                 return w;
                             }
                         })
-                        .charge(-50)
+                        .charge(-30)
                         .size([width-50, height]);
 
                     var link = vis.selectAll(".link")
@@ -1984,7 +1984,6 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         });
 
                     force.on("tick", function(e) {
-
                         text.attr("transform", function(d, i) {
                             var x1 = d.source.x;
                             var x2 = d.target.x;
@@ -1998,10 +1997,8 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         node[0].x = width;
                         node[0].y = height;
 
-
                         node.attr("cx", function(d) { return d.x = Math.max(120, Math.min(width - 120, d.x)); })
                             .attr("cy", function(d) { return d.y = Math.max(120, Math.min(height - 120, d.y)); });
-
 
                         link.attr("x1", function(d) { return d.source.x; })
                             .attr("y1", function(d) { return d.source.y; })
@@ -2011,25 +2008,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         node.attr("transform", function(d, i) {
                             return "translate(" + d.x + "," + d.y + ")";
                         });
-
                     });
-
-
-//sample code
-
-                        // node.attr("cx", function(d) { return d.x = Math.max(15, Math.min(width - 15, d.x)); })
-                        //     .attr("cy", function(d) { return d.y = Math.max(15, Math.min(height - 15, d.y)); });
-
-                        // link.attr("x1", function(d) { return d.source.x; })
-                        //     .attr("y1", function(d) { return d.source.y; })
-                        //     .attr("x2", function(d) { return d.target.x; })
-                        //     .attr("y2", function(d) { return d.target.y; });
-
-                        // node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-
-
-//end of sample code
-
                     force.start();
                 }, 0, false);
             })
@@ -3018,19 +2997,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
                                         'C11.076,16.238,11.938,20.26,13.699,23.661z');
                                 return;
-                            // case 'Stealth_drop':
-                            //     element.append('svg:path')
-                            //         .attr('fill', '#D8464A')
-                            //         .attr('transform', 'translate (0,-8) scale (1.4)')
-                            //         .attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
-                            //             'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
-                            //             'C28.014,15.545,26.676,21.468,23.587,26.751z');
-                            //     element.append('svg:path')
-                            //         .attr('fill', '#58595B')
-                            //         .attr('transform', 'translate (0,-8) scale (1.4)')
-                            //         .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
-                            //             'C11.076,16.238,11.938,20.26,13.699,23.661z');
-                            //     return;
                             case 'Stealth_drop':
                                 element.append('circle')
                                     .attr('fill', '#D8464A')

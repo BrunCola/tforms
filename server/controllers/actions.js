@@ -95,45 +95,6 @@ module.exports = function(pool) {
 				res.send(500);
 			}
 		},
-		add_map_image: function(req, res) {
-			var database = req.session.passport.user.database;
-			var zone = req.body.zone;
-			if (zone !== undefined) {
-				var insert_map_image = {
-					query: "INSERT INTO `assets` (`type`, `asset_name`, `path`) VALUES ('map',?,?)",
-					insert: [req.body.image_name, req.body.image_path]
-				}
-				new query(insert_map_image, {database: database, pool: pool}, function(err,data){
-					if (err) {
-						res.send(500);
-					} else {
-						res.send(200);
-					}
-				}); 
-			} else {
-				res.send(500);
-			}
-		},
-		add_user_image: function(req, res) {
-			//need to get the client name or ID here...
-			var database = req.session.passport.user.database;
-			var zone = req.body.zone;
-			if (zone !== undefined) {
-				var update_user_image = {
-					query: "INSERT INTO `assets` (`type`, `asset_name`, `lan_zone`, `lan_user`, `path`) VALUES ('user',?,?,?,?)",
-					insert: [req.body.image_name, zone, req.body.lan_user, req.body.image_path]
-				}
-				new query(update_user_image, {database: database, pool: pool}, function(err,data){
-					if (err) {
-						res.send(500);
-					} else {
-						res.send(200);
-					}
-				});
-			} else {
-				res.send(500);
-			}
-		},
 		add_user_to_map: function(req, res) {
 			var database = req.session.passport.user.database;
 			var lan_ip = req.body.lan_ip;
