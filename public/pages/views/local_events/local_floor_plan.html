@@ -50,7 +50,13 @@
 
         <div class="span2">
             <div class="jdash-header">Local Users</div>
-            <div id="listlocalusers" class="bin" droppable drop="handleDrop" style="position: relative"></div>
+            <div id="listlocalusers" class="bin" droppable drop="handleDrop" style="position: relative">
+               <!--  <ul>                    
+                    <li data-ng-repeat="user in userList" ng-show="display(user.editing)" ng-class="childClass(user)">
+                        <span ng-show="display(user.editing)" ng-class="childClass(user)"></span>
+                    </li>
+                </ul> -->
+            </div>
         </div>
 
         <div class="span9">

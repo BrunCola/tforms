@@ -95,26 +95,6 @@ module.exports = function(pool) {
 				res.send(500);
 			}
 		},
-		add_user_image: function(req, res) {
-			//need to get the client name or ID here...
-			var database = req.session.passport.user.database;
-			var zone = req.body.zone;
-			if (zone !== undefined) {
-				var update_user_image = {
-					query: "INSERT INTO `assets` (`type`, `asset_name`, `lan_zone`, `lan_user`, `path`) VALUES ('user',?,?,?,?)",
-					insert: [req.body.image_name, zone, req.body.lan_user, req.body.image_path]
-				}
-				new query(update_user_image, {database: database, pool: pool}, function(err,data){
-					if (err) {
-						res.send(500);
-					} else {
-						res.send(200);
-					}
-				});
-			} else {
-				res.send(500);
-			}
-		},
 		add_user_to_map: function(req, res) {
 			var database = req.session.passport.user.database;
 			var lan_ip = req.body.lan_ip;
@@ -123,6 +103,26 @@ module.exports = function(pool) {
 				var update_user_ref = {
 					query: "UPDATE `users` SET `x`= ?, `y`=?, `map`=? WHERE `lan_ip` = ? AND `lan_zone` = ?",
 					insert: [req.body.x_coord, req.body.y_coord, req.body.map_name, req.body.lan_ip, req.body.lan_zone]
+				}
+				new query(update_user_ref, {database: database, pool: pool}, function(err,data){
+					if (err) {
+						res.send(500);
+					} else {
+						res.send(200);
+					}
+				});
+			}else{
+				res.send(500);
+			}
+		},
+		change_custom_user: function(req, res) {
+			var database = req.session.passport.user.database;
+			var lan_ip = req.body.lan_ip;
+			var lan_zone = req.body.lan_zone;
+			if (lan_ip !== undefined && lan_zone !== undefined) {
+				var update_user_ref = {
+					query: "UPDATE `users` SET `custom_user`= ? WHERE `lan_ip` = ? AND `lan_zone` = ?",
+					insert: [req.body.custom_user, req.body.lan_ip, req.body.lan_zone]
 				}
 				new query(update_user_ref, {database: database, pool: pool}, function(err,data){
 					if (err) {

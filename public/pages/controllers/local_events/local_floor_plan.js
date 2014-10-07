@@ -68,6 +68,10 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         }
     }
 
+    $scope.change_customuser = function(item,value) {
+        $http({method: 'POST', url: '/actions/change_custom_user', data: {custom_user: value, lan_ip: item.lan_ip, lan_zone: item.lan_zone}});
+    }
+
     // $scope.uploadFile = function(files) {
     //     var fd = new FormData();
     //     //Take the first selected file
@@ -132,7 +136,8 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 url : '/uploads',
                 method: 'POST',
                 data : {
-                    myModel : $scope.myModel
+                    myModel : $scope.myModel,
+                    imageType: 'map'
                 },
                 file: $scope.selectedFiles[index],
             }).then(function(response) {
