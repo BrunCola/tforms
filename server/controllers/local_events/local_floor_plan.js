@@ -65,6 +65,38 @@ module.exports = function(pool) {
                             }
                         });  
                         break;
+                    case 'userinfoload':
+                        new query({query: 'SELECT '+
+                            'u.lan_user, '+
+                            'u.lan_ip, '+
+                            'u.lan_zone, '+
+                            'u.lan_machine, '+
+                            'u.lan_type, '+
+                            'u.lan_os, '+
+                            'u.lan_mac, '+
+                            'u.endpoint_agent, '+
+                            'u.endpoint_agent_name, '+
+                            'u.x, '+
+                            'u.y, '+
+                            'u.map, '+
+                            'u.custom_user '+
+                            'FROM '+
+                                'users u '+
+                            'INNER JOIN '+
+                                '( SELECT lan_ip, max(id) AS maxID FROM users GROUP BY lan_ip) groupedu '+
+                            'ON '+
+                                'u.lan_ip = groupedu.lan_ip '+
+                            'AND '+
+                                'u.id = groupedu.maxID '+
+                            'WHERE '+
+                                'u.lan_ip = ? '+
+                                'AND u.lan_zone = ?', 
+                            insert: [req.query.lan_ip, req.query.lan_zone]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        });  
+                        break;
                 }     
 
             }else{    
