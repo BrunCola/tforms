@@ -3554,8 +3554,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                 $scope.$broadcast('spinnerHide');
                 $scope.appendInfo = function(user,data,type) { 
-                    /*console.log(user);
-                    console.log(user.length);*/
                     if (type==="clear"){
                         infoDiv.selectAll('tr').remove(); 
                     } else if (type ==="userinfo"){
@@ -3648,6 +3646,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     // plot(data, floorDiv);
                 }
                 draw();
+
+                $scope.setSelected = function(data) { 
+                    console.log(d3.select(data));
+                }
   
                 function doneEditing(elm, item, value) {
                     $scope.change_customuser(item,value);
