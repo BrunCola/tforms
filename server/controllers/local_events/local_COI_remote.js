@@ -117,10 +117,19 @@ module.exports = function(pool) {
                         insert: []
                     }
 
+                    var coordinates = {
+                        query: 'SELECT * '+
+                                'FROM '+
+                                    '`stealth_view_coordinates`'+
+                                'WHERE '+
+                                '`user_login` = ?',
+                        insert: [req.session.passport.user.email]
+                    }
+
                     async.parallel([
                         // Crossfilter function
                         function(callback) {
-                            new force_stealth_user(sql, [stealth_drop, local_drop, rules], {database: database, pool: pool}, function(err,data){
+                            new force_stealth_user(sql, [stealth_drop, local_drop, rules, coordinates], {database: database, pool: pool}, function(err,data){
                                 force = data;
                                 callback();
                             });
@@ -138,6 +147,22 @@ module.exports = function(pool) {
             } else {
                 res.redirect('/');
             }
+        },
+
+        set_coordinates: function(req, res) {
+            console.log(req.body);
+            var database = req.session.passport.user.database;
+            var update_coordinates = {
+                query: "UPDATE `stealth_view_coordinates` SET `x`= ?, `y` = ?, `user_login` = ? WHERE `name` =  ?",
+                insert: [req.body.x, req.body.y, req.body.user_login, req.body.name]
+            }
+            new query(update_coordinates, {database: database, pool: pool}, function(err,data){
+                if (err) {
+                    res.send(500);
+                } else {
+                    res.send(200);
+                }
+            });
         }
     }
 };

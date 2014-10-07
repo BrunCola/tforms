@@ -1521,7 +1521,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
     };
 }]);
 
-angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope', 'dictionary', function ($timeout, $rootScope, dictionary) {
+angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope', 'dictionary', '$http', function ($timeout, $rootScope, dictionary, $http) {
     return {
         link: function ($scope, element, attrs) {
             $scope.$on('forceChart', function (event, data, params) {
@@ -1585,9 +1585,9 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         .links(data.links)
                         .gravity(function(d) { 
                             if (d.class === 'child') {
-                               return  10;
+                               return  0.2;
                             } else {
-                               return  5;
+                               return  0;
                             }
                         })
                         .linkDistance(function(d) { 
@@ -1605,6 +1605,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         })
                         .charge(-30)
                         .size([width-50, height]);
+
 
                     var link = vis.selectAll(".link")
                         .data(data.links)
@@ -1634,11 +1635,38 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                             }
                         });
 
+                  var node_drag = d3.behavior.drag()
+                        .on("dragstart", dragstart)
+                        .on("drag", dragmove)
+                        .on("dragend", dragend);
+
                     var node = vis.selectAll("circle.node")
                         .data(data.nodes)
                         .enter().append("g")
                         .attr("class", "node")
-                        .call(force.drag);
+                        .call(node_drag);
+                        //.call(force.drag);
+
+                    function dragstart(d, i) {
+                        d.fixed = true; 
+                        force.stop();
+                    }
+
+                    function dragmove(d, i) {
+                        d.fixed = true; 
+                        d.px += d3.event.dx;
+                        d.py += d3.event.dy;
+                        d.x += d3.event.dx;
+                        d.y += d3.event.dy;
+                        tick(); 
+                    }
+
+                    function dragend(d, i) {
+                        d.fixed = true; 
+                        $http({method: 'POST', url: '/local_events/local_COI_remote', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name}});
+                        tick();
+                        force.resume();
+                    }
 
                     var tableDiv = d3.select('#force-table');
                     var infoDiv = d3.select('#forcechartinfo').append('table');
@@ -1646,12 +1674,16 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                     var circleWidth = 5;
                     node.each(function(d){
                         var elm = d3.select(this).append('g').attr('transform', 'scale(0.7)');
+                        if(d.group==="child"){
+                        }else{
+                            d.fixed = true;
+                        }
                         switch(d.group) {
                             case 'coi':
                                 //CIRCLE
                                 elm.append("svg:circle")
-                                    .attr("cx", function(d) { return d.x; })
-                                    .attr("cy", function(d) { return d.y; })
+                                    /*.attr("cx", function(d) { return d.x; })
+                                    .attr("cy", function(d) { return d.y; })*/
                                     .attr("r", function (d) {return logslider(d["width"]); })
                                     .attr("fill", '#fff')
                                     .style("stroke-width", "14px")
@@ -1896,7 +1928,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         }
                     });
                     
-                    $scope.appendInfo = function(data, type) { // ---- most of this should go into the controller...... (bruno) TODO
+                    $scope.appendInfo = function(data, type) { 
                         infoDiv.selectAll('tr').remove();
 
                         var divInfo = '';
@@ -1983,7 +2015,34 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                             $scope.appendInfo(d, 'linkBetween');
                         });
 
-                    force.on("tick", function(e) {
+                    function tick() {
+
+                        node[0].x = width;
+                        node[0].y = height;
+                        var value = 120; 
+
+                        node.attr("cx", function(d) { 
+                                if(d.group==="child"){
+                                    value = 0;
+                                }else{
+                                    value = 120;
+                                }
+                                return d.x = Math.max(value, Math.min(width - value, d.x)); 
+                            })
+                            .attr("cy", function(d) { 
+                                if(d.group==="child"){
+                                    value = 0;
+                                }else{
+                                    value = 120;
+                                }
+                                return d.y = Math.max(value, Math.min(height - value, d.y)); });
+
+                        link.attr("x1", function(d) { return d.source.x; })
+                            .attr("y1", function(d) { return d.source.y; })
+                            .attr("x2", function(d) { return d.target.x; })
+                            .attr("y2", function(d) { return d.target.y; });
+
+
                         text.attr("transform", function(d, i) {
                             var x1 = d.source.x;
                             var x2 = d.target.x;
@@ -1994,21 +2053,12 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                             return "translate(" + x + "," + y + ")";
                         });
 
-                        node[0].x = width;
-                        node[0].y = height;
-
-                        node.attr("cx", function(d) { return d.x = Math.max(120, Math.min(width - 120, d.x)); })
-                            .attr("cy", function(d) { return d.y = Math.max(120, Math.min(height - 120, d.y)); });
-
-                        link.attr("x1", function(d) { return d.source.x; })
-                            .attr("y1", function(d) { return d.source.y; })
-                            .attr("x2", function(d) { return d.target.x; })
-                            .attr("y2", function(d) { return d.target.y; })
-
                         node.attr("transform", function(d, i) {
                             return "translate(" + d.x + "," + d.y + ")";
                         });
-                    });
+                    };
+
+                    force.on("tick", tick);
                     force.start();
                 }, 0, false);
             })
@@ -3156,7 +3206,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 //     .on('click', function(){
                 //         timeShift('next');
                 //     });
-
                 $scope.laneGraphWidth = function() {
                     return $('#lanegraph').parent()[0].clientWidth;
                 }
@@ -3403,46 +3452,45 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // elm.style('cursor', 'pointer');
                                 })
                                 .on("click", function(d){
-
-                                    itemRects.selectAll('g').each(function(d){
-                                        var elm = d3.select(this);
-                                        elm.attr('class', null);
-                                    })
-                                    // un-highlight previous box
-                                    $('#'+previousID).attr('class', null);
-                                    // this closes the last expanded block if there is one
-                                    if (lastExpandedId !== null) {
-                                        $('div'+lastExpandedId+'.infoDivExpanded').hide();
-                                    }
-
-                                    if($('#autoexpand').is(':checked')){
-                                        if (isOpen === '#'+d.id) {
-                                            $('#'+d.id+' .infoDivExpanded').css('display', 'none');
-                                            isOpen = null;
-                                        } else {
-                                            $('#'+d.id+' .infoDivExpanded').css('display', 'block');
-                                            lastExpandedId = '#'+d.id;
-                                            isOpen = '#'+d.id;
-
-                                            $('#'+d.id+' .infoDivExpanded').html(laneInfoAppend(d.expand));
+                                        itemRects.selectAll('g').each(function(d){
+                                            var elm = d3.select(this);
+                                            elm.attr('class', null);
+                                        })
+                                        // un-highlight previous box
+                                        $('#'+previousID).attr('class', null);
+                                        // this closes the last expanded block if there is one
+                                        if (lastExpandedId !== null) {
+                                            $('div'+lastExpandedId+'.infoDivExpanded').hide();
                                         }
-                                    }
-                                    // deselect previous element if there is one
-                                    if (previousElm !== null) {
-                                        previousElm.attr('class', null);
-                                    }
-                                    // make current node active
-                                    elm.attr('class', 'pointactive');
-                                    // set class for active description
-                                    $('#'+d.id).attr('class', 'laneactive');
-                                    // scroll to position
 
-                                    scrollSide(d.id);
-                                    // prevPos = currPos;
+                                        if($('#autoexpand').is(':checked')){
+                                            if (isOpen === '#'+d.id) {
+                                                $('#'+d.id+' .infoDivExpanded').css('display', 'none');
+                                                isOpen = null;
+                                            } else {
+                                                $('#'+d.id+' .infoDivExpanded').css('display', 'block');
+                                                lastExpandedId = '#'+d.id;
+                                                isOpen = '#'+d.id;
 
-                                    // set ids for cross-refrence
-                                    previousID = d.id;
-                                    previousElm = elm;
+                                                $('#'+d.id+' .infoDivExpanded').html(laneInfoAppend(d.expand));
+                                            }
+                                        }
+                                        // deselect previous element if there is one
+                                        if (previousElm !== null) {
+                                            previousElm.attr('class', null);
+                                        }
+                                        // make current node active
+                                        elm.attr('class', 'pointactive');
+                                        // set class for active description
+                                        $('#'+d.id).attr('class', 'laneactive');
+                                        // scroll to position
+
+                                        scrollSide(d.id);
+                                        // prevPos = currPos;
+
+                                        // set ids for cross-refrence
+                                        previousID = d.id;
+                                        previousElm = elm;
                                 })
                                 .on("mouseout", function(d){
                                     elm
@@ -3612,7 +3660,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         switch(type){                           
                             case "localioc":
                                 title = "IOC Hits: ";
-                                link = "#!/ioc_local?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                                link = "#!/ioc_local_drill?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
                                 break;
                             case "localapp":
                                 title = "App Hits: ";
