@@ -3156,6 +3156,17 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 //     .on('click', function(){
                 //         timeShift('next');
                 //     });
+    
+                function tellStory(){
+                    
+                    var icons = itemRects.selectAll("g").data(data);
+                    // re-enter an append nodes (innificent as well)
+                    icons.enter().append("g").each(function(d){
+                        var elm = d3.select(this);
+
+                    }
+                }
+                
 
                 $scope.laneGraphWidth = function() {
                     return $('#lanegraph').parent()[0].clientWidth;
@@ -3345,46 +3356,45 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // elm.style('cursor', 'pointer');
                                 })
                                 .on("click", function(d){
-
-                                    itemRects.selectAll('g').each(function(d){
-                                        var elm = d3.select(this);
-                                        elm.attr('class', null);
-                                    })
-                                    // un-highlight previous box
-                                    $('#'+previousID).attr('class', null);
-                                    // this closes the last expanded block if there is one
-                                    if (lastExpandedId !== null) {
-                                        $('div'+lastExpandedId+'.infoDivExpanded').hide();
-                                    }
-
-                                    if($('#autoexpand').is(':checked')){
-                                        if (isOpen === '#'+d.id) {
-                                            $('#'+d.id+' .infoDivExpanded').css('display', 'none');
-                                            isOpen = null;
-                                        } else {
-                                            $('#'+d.id+' .infoDivExpanded').css('display', 'block');
-                                            lastExpandedId = '#'+d.id;
-                                            isOpen = '#'+d.id;
-
-                                            $('#'+d.id+' .infoDivExpanded').html(laneInfoAppend(d.expand));
+                                        itemRects.selectAll('g').each(function(d){
+                                            var elm = d3.select(this);
+                                            elm.attr('class', null);
+                                        })
+                                        // un-highlight previous box
+                                        $('#'+previousID).attr('class', null);
+                                        // this closes the last expanded block if there is one
+                                        if (lastExpandedId !== null) {
+                                            $('div'+lastExpandedId+'.infoDivExpanded').hide();
                                         }
-                                    }
-                                    // deselect previous element if there is one
-                                    if (previousElm !== null) {
-                                        previousElm.attr('class', null);
-                                    }
-                                    // make current node active
-                                    elm.attr('class', 'pointactive');
-                                    // set class for active description
-                                    $('#'+d.id).attr('class', 'laneactive');
-                                    // scroll to position
 
-                                    scrollSide(d.id);
-                                    // prevPos = currPos;
+                                        if($('#autoexpand').is(':checked')){
+                                            if (isOpen === '#'+d.id) {
+                                                $('#'+d.id+' .infoDivExpanded').css('display', 'none');
+                                                isOpen = null;
+                                            } else {
+                                                $('#'+d.id+' .infoDivExpanded').css('display', 'block');
+                                                lastExpandedId = '#'+d.id;
+                                                isOpen = '#'+d.id;
 
-                                    // set ids for cross-refrence
-                                    previousID = d.id;
-                                    previousElm = elm;
+                                                $('#'+d.id+' .infoDivExpanded').html(laneInfoAppend(d.expand));
+                                            }
+                                        }
+                                        // deselect previous element if there is one
+                                        if (previousElm !== null) {
+                                            previousElm.attr('class', null);
+                                        }
+                                        // make current node active
+                                        elm.attr('class', 'pointactive');
+                                        // set class for active description
+                                        $('#'+d.id).attr('class', 'laneactive');
+                                        // scroll to position
+
+                                        scrollSide(d.id);
+                                        // prevPos = currPos;
+
+                                        // set ids for cross-refrence
+                                        previousID = d.id;
+                                        previousElm = elm;
                                 })
                                 .on("mouseout", function(d){
                                     elm
