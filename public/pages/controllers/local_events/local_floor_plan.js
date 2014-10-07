@@ -23,7 +23,8 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $http({method: 'GET', url: query+'&typeinfo=userinfoload'}).
                 success(function(data) {
                     $scope.requery(data[0]);
-                    $scope.setSelected(data[0]);
+                    var selected = $scope.data.force.filter(function(d){ if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ return true }});
+                    if (selected[0] !== undefined) { $scope.setSelected(selected[0]); }
                 });
         }
     }); 
@@ -42,7 +43,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 success(function(data) {
                     if (data[0] !== undefined) {
                         $scope.appendInfo(d,'public/pages/assets/img/staff/'+data[0].file,"assets");
-                    }else{
+                    } else {
                         $scope.appendInfo(d,'',"assets");
                     }
                 });
