@@ -1613,6 +1613,13 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         .attr('class', 'linkgroup')
                         .append("line")
                         .attr("class", "link")
+                        .style("display", function(d){
+                             if (d.allowed==="authorized") {
+                                return 'none';
+                            } else {
+                                return 'inline-block';
+                            }
+                        })
                         .style('stroke', function(d){
                             if (d.class === 'child'){
                                 if (d.allowed==="authorized") {
@@ -1639,7 +1646,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                             }
                         });
 
-                  var node_drag = d3.behavior.drag()
+                    var node_drag = d3.behavior.drag()
                         .on("dragstart", dragstart)
                         .on("drag", dragmove)
                         .on("dragend", dragend);
@@ -1908,31 +1915,25 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                 }
                             break;
                             case 'child':
-                                var color1 = "#333";
-                                var color2 = "#497eb5";
-                                if (d.value.allow === "authorized") {
-                                    color1 = "#ccc";
-                                    color2 = "#5550B5";
-                                } 
-                                if ((d.value.type === 'Stealth COI Mismatch') || (d.value.type === 'Stealth COI Allow')) {
+                                if (d.value.type === 'Stealth COI Mismatch') {
                                     elm.append("path")
                                         .attr('d', 'M14,3.1C9.4,3.3,7,0,7,0c0,0-2,3.1-7,3.1C-0.4,8.3,2.7,18,7,18C11.2,18,14.4,7.2,14,3.1z')
                                         .attr('transform', 'translate(-25,-115) scale(0.7)')
-                                        .style('fill', color1)
+                                        .style('fill', "#333")
                                         .attr('transform', 'translate(-8,-8) scale(1.1)')
                                 } else if (d.value.type === 'outside') {
                                     elm.append("circle")
                                         .attr("cx", function(d) { return d.x; })
                                         .attr("cy", function(d) { return d.y; })
                                         .attr("r", 8)
-                                        .attr("fill", color1)
-                                } else if ((d.value.type === 'Non-Stealth Internal Attack') || (d.value.type === 'Non-Stealth Internal Connection')) {
+                                        .attr("fill", "#333")
+                                } else if (d.value.type === 'Non-Stealth Internal Attack') {
                                     elm.append('rect')
                                         .attr('x', function(d) { return d.x; })
                                         .attr('y', function(d) { return d.y; })
                                         .attr('height', 14)
                                         .attr('width', 14)
-                                        .style('fill', color2)
+                                        .style('fill', "#497eb5")
                                         .attr('transform', 'translate(-8,-8)')
                                         .style('fill-opacity', '1')
                                 }
