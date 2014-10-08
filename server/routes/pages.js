@@ -130,7 +130,8 @@ module.exports = function(app, passport, version, io, pool) {
         // STEALTH COI MAP
             var stealth_COI_map = require('../controllers/local_events/stealth_COI_map')(pool); 
             app.route('/local_events/stealth_COI_map')
-            .get(authorization.requiresLogin, stealth_COI_map.render);
+            .get(authorization.requiresLogin, stealth_COI_map.render)
+            .post(authorization.requiresLogin, stealth_COI_map.set_coordinates);
         // STEALTH USER CONN
             var local_COI_remote = require('../controllers/local_events/local_COI_remote')(pool); 
             app.route('/local_events/local_COI_remote')
