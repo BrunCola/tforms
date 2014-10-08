@@ -493,6 +493,30 @@ angular.module('mean.pages').config(['$stateProvider',
                             daterange: true
                         }
                     })          
+            // STEALTH QUARANTINE
+                .state('stealth_quarantine', {
+                    url: '/stealth_quarantine?start&end',
+                    templateUrl: 'public/pages/views/local_events/stealth_quarantine.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'Quarantined Endpoints',
+                        daterange: true
+                    }
+                }) 
+            // FIREWALL
+                .state('firewall', {
+                    url: '/firewall?start&end',
+                    templateUrl: 'public/pages/views/local_events/firewall.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'Firewall Rules',
+                        daterange: true
+                    }
+                })    
             // NETWORK MAP
                 .state('local_network_map', {
                     url: '/local_network_map?start&end',

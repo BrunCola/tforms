@@ -136,6 +136,14 @@ module.exports = function(app, passport, version, io, pool) {
             app.route('/local_events/local_COI_remote')
             .get(authorization.requiresLogin, local_COI_remote.render)
             .post(authorization.requiresLogin, local_COI_remote.set_coordinates);
+        // STEALTH QUARANTINE
+            var stealth_quarantine = require('../controllers/local_events/stealth_quarantine')(pool); 
+            app.route('/local_events/stealth_quarantine')
+            .get(authorization.requiresLogin, stealth_quarantine.render);
+        // FIREWALL
+            var firewall = require('../controllers/local_events/firewall')(pool); 
+            app.route('/local_events/firewall')
+            .get(authorization.requiresLogin, firewall.render);
         // LOCAL USERS CONN
             var local_user_conn = require('../controllers/local_events/local_user_conn')(pool);
             app.route('/local_events/local_user_conn')

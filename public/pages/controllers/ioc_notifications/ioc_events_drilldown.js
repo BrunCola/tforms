@@ -167,4 +167,14 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
         }
     }
 
+    $scope.quarantineLink = function() {
+        // console.log("test button");
+        $scope.$apply($location.path("stealth_quarantine").search());
+    }
+
+    $scope.firewallLink = function() {
+        // console.log("test button");
+        $scope.$apply($location.path("firewall").search());
+    }
+
 }]);
