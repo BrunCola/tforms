@@ -32,7 +32,6 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                 keyboard: true,
                 resolve: {
                     data: function() {
-                        
                         var sentences = $scope.mData.split(". ");
                         var finalData = "";
                         //add a line break after every 3 sentences, for readability
@@ -45,8 +44,6 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                                 finalData += sentences[i] + ". ";
                             }
                         }
-
-                        
                         return finalData;
                     },
                     ioc: function() {

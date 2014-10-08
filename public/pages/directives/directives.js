@@ -2836,7 +2836,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 $scope.$broadcast('spinnerHide');
 
                 $.fn.scrollTo = function( target, options, callback ){
-                if (typeof options == 'function' && arguments.length == 2) { callback = options; options = target; }
+                if ((typeof options == 'function') && (arguments.length == 2)) { callback = options; options = target; }
                     var settings = $.extend({
                         scrollTarget  : target,
                         offsetTop     : 0,
@@ -2864,7 +2864,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 // toggle for turning on/off unit multiselecting
                 $scope.pattern = {
                     searching: false,
-                    selected: {}
+                    selected: {},
+                    // last elm clicked, for throwing in object after an item is clicked when and our button is toggled
+                    last: null
                 }
 
                 var laneLength = $scope.lanes.length;
@@ -3287,11 +3289,17 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr('class', 'saveToggle')
                     .on('click', function(){
                         if ($scope.pattern.searching === false) {
+                            if ($scope.pattern.last !== null) {
+                                $scope.pattern.selected[$scope.pattern.last.id] = $scope.pattern.last;
+                            }
                             // set searching to true
                             $scope.pattern.searching = true;
                             // change class (so we know its on)
                         } else {
-                            
+                            // make a call to save restults
+                            // clear our object & set it back to false
+                            $scope.pattern.searching = false;
+                            $scope.pattern.selected = {};
                         }
                     });
 
@@ -3553,6 +3561,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 })
                                 .on("click", function(d){
                                     if ($scope.pattern.searching === false) {
+                                        // throw clicked element into out last object
+                                        $scope.pattern.last = d;
                                         itemRects.selectAll('g').each(function(d){
                                             var elm = d3.select(this);
                                             elm.attr('class', null);
@@ -3591,6 +3601,15 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         previousElm = elm;
                                     } else {
                                         // have every d element push to our store array as well as contued highlighting of selected points
+                                        if (!(d.id in $scope.pattern.selected)) {
+                                            $scope.pattern.selected[d.id] = d;
+                                            // make current node active
+                                            elm.attr('class', 'pointactive');
+                                        } else {
+                                            // make current node inactive
+                                            elm.attr('class', null);
+                                            delete $scope.pattern.selected[d.id];
+                                        }
                                     }
                                 })
                                 .on("mouseout", function(d){
