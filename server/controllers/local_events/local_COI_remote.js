@@ -21,9 +21,6 @@ module.exports = function(pool) {
             if (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1) {
                 if (req.query.type === 'checkCoor') {
                     var database = req.session.passport.user.database;
-
-                    console.log(req.query);
-
                     var select_coordinates = {
                         query: "SELECT * from `stealth_view_coordinates` WHERE `user_login` = ? AND name = ? ",
                         insert: [req.query.user_login, req.query.name]
@@ -179,7 +176,6 @@ module.exports = function(pool) {
             var database = req.session.passport.user.database;
 
             if (req.query.type === 'insert') {
-                console.log("ionsert");
                 var update_coordinates = {
                     query: "INSERT into `stealth_view_coordinates` VALUES (?,?,?,?)",
                     insert: [req.body.name, req.body.user_login, req.body.x, req.body.y]
@@ -192,7 +188,6 @@ module.exports = function(pool) {
                     }
                 });
             } else {
-                console.log("update");
                 var update_coordinates = {
                     query: "UPDATE `stealth_view_coordinates` SET `x`= ?, `y` = ? WHERE `name` = ? AND `user_login` = ?",
                     insert: [req.body.x, req.body.y, req.body.name, req.body.user_login]
