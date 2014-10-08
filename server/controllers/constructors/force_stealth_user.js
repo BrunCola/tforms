@@ -142,9 +142,6 @@ module.exports = function (sql, queries, conn, callback) {
                     });
             },
 
-
-
-
             function(callback) {
                 connection.query(queries[2].query, queries[2].insert, function(err, result) {
                     if (err) {
@@ -154,10 +151,28 @@ module.exports = function (sql, queries, conn, callback) {
                             for(var i = 0; i < nodes.length; i++) {
                                 if(nodes[i].name+"COI" === data.cois){
                                     nodes[i].rules = [{
-                                                    rule: data.rule, 
-                                                    order: data.rule_order
-                                                }];                                       
+                                        rule: data.rule, 
+                                        order: data.rule_order
+                                    }];                                       
                                 }
+                            }
+                        })
+                        callback();
+                    }
+                })
+            },
+
+            function(callback) {
+                connection.query(queries[3].query, queries[3].insert, function(err, result) {
+                    if (err) {
+                        callback(err, null);
+                    } else {
+                        result.forEach(function(data){
+                            for(var i = 0; i < nodes.length; i++) {
+                                if(nodes[i].name === data.name){
+                                    nodes[i].x = data.x;
+                                    nodes[i].y = data.y;
+                                }                       
                             }
                         })
                         callback();
