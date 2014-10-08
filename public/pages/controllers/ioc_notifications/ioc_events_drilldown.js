@@ -167,4 +167,22 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
         }
     }
 
+    $scope.quarantineLink = function() {
+        var url = 'stealth_quarantine';
+        if ($location.$$search.start && $location.$$search.end) {
+            $location.path(url).search({'start':$location.$$search.start, 'end':$location.$$search.end});
+        } else {
+            $location.path(url);
+        }
+    }
+
+    $scope.firewallLink = function() {
+        var url = 'firewall';
+        if ($location.$$search.start && $location.$$search.end) {
+            $location.path(url).search({'start':$location.$$search.start, 'end':$location.$$search.end});
+        } else {
+            $location.path(url);
+        }
+    }
+
 }]);
