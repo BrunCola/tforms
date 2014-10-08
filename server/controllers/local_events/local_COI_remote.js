@@ -22,8 +22,8 @@ module.exports = function(pool) {
                 if (req.query.type === 'checkCoor') {
                     var database = req.session.passport.user.database;
                     var select_coordinates = {
-                        query: "SELECT * from `stealth_view_coordinates` WHERE `user_login` = ? AND name = ? ",
-                        insert: [req.query.user_login, req.query.name]
+                        query: "SELECT * from `stealth_view_coordinates` WHERE `user_login` = ? AND name = ? AND `page_title` = ? ",
+                        insert: [req.query.user_login, req.query.name, req.query.page_title]
                     }            
 
                      async.parallel([
@@ -145,7 +145,8 @@ module.exports = function(pool) {
                                 'FROM '+
                                     '`stealth_view_coordinates`'+
                                 'WHERE '+
-                                '`user_login` = ?',
+                                '`user_login` = ? '+
+                                'AND `page_title` = "local_COI_remote"',
                         insert: [req.session.passport.user.email]
                     }
 
@@ -174,11 +175,10 @@ module.exports = function(pool) {
 
         set_coordinates: function(req, res) {
             var database = req.session.passport.user.database;
-
             if (req.query.type === 'insert') {
                 var update_coordinates = {
-                    query: "INSERT into `stealth_view_coordinates` VALUES (?,?,?,?)",
-                    insert: [req.body.name, req.body.user_login, req.body.x, req.body.y]
+                    query: "INSERT into `stealth_view_coordinates` VALUES (?,?,?,?,?)",
+                    insert: [req.body.name, req.body.user_login, req.body.x, req.body.y, req.body.page_title]
                 }                
                 new query(update_coordinates, {database: database, pool: pool}, function(err,data){
                     if (err) {
@@ -189,8 +189,8 @@ module.exports = function(pool) {
                 });
             } else {
                 var update_coordinates = {
-                    query: "UPDATE `stealth_view_coordinates` SET `x`= ?, `y` = ? WHERE `name` = ? AND `user_login` = ?",
-                    insert: [req.body.x, req.body.y, req.body.name, req.body.user_login]
+                    query: "UPDATE `stealth_view_coordinates` SET `x`= ?, `y` = ? WHERE `name` = ? AND `user_login` = ? AND `page_title` = ?",
+                    insert: [req.body.x, req.body.y, req.body.name, req.body.user_login, req.body.page_title]
                 }                
                 new query(update_coordinates, {database: database, pool: pool}, function(err,data){
                     if (err) {
@@ -200,6 +200,6 @@ module.exports = function(pool) {
                     }
                 });
             }
-        },
+        }
     }
 };

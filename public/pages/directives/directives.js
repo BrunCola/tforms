@@ -541,7 +541,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         var newVar = aData.mailfrom.replace(/[\<\>]/g,'');
                                         $('td:eq('+$scope.r.indexOf("mailfrom")+')', nRow).html(newVar);
                                     }
-                                    if(aData.stealth !== undefined){                                        
+                                    if (aData.stealth !== undefined) {                                        
                                         if (aData.stealth && $scope.r.indexOf('stealth') !== -1) {
                                             if (aData.stealth > 0){
                                                 $('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-shield fa-stack-1x fa-inverse"></i></span>');
@@ -553,7 +553,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                     if (aData.proxy_blocked !== undefined && $scope.r.indexOf('proxy_blocked') !== -1) {
                                         if (aData.proxy_blocked == 0){
                                             $('td:eq('+$scope.r.indexOf("proxy_blocked")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-check fa-stack-1x fa-inverse"></i></span>');
-                                        } else if(aData.proxy_blocked > 0) {
+                                        } else if (aData.proxy_blocked > 0) {
                                             $('td:eq('+$scope.r.indexOf("proxy_blocked")+')', nRow).html('<span style="color:#E71010 " class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-times fa-stack-1x fa-inverse"></i></span>');
                                         }
                                     }
@@ -568,7 +568,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         // url builder
                                         for (var c in $scope.e) {
                                             var type = $scope.e[c].link.type;
-                                            if($scope.e[c].bVisible){
+                                            if ($scope.e[c].bVisible) {
                                                 switch(type) {
                                                     case 'Archive':
                                                         $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
@@ -834,7 +834,7 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                     // var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
                     $rootScope.$watch('search', function(){
 
-                        if($rootScope.search === null) {
+                        if ($rootScope.search === null) {
                             $scope.appDimension.filterAll();
                         } else {
                             $scope.appDimension.filterAll();
@@ -1201,7 +1201,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                         var rowFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
                         $rootScope.$watch('search', function(){
                             $scope.tableToRowChart = function () {
-                                if($rootScope.search === null) {
+                                if ($rootScope.search === null) {
                                     rowFilterDimension.filterAll();
                                 } else {
                                     rowFilterDimension.filterAll();
@@ -1316,7 +1316,7 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
                     });
                     var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
                     $rootScope.$watch('search', function(){
-                        if($rootScope.search === null) {
+                        if ($rootScope.search === null) {
                                 geoFilterDimension.filterAll();
                             } else {
                                 geoFilterDimension.filterAll();
@@ -1663,12 +1663,12 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
 
                     function dragend(d, i) {
                         d.fixed = true; 
-                        $http({method: 'GET', url: '/local_events/local_COI_remote?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name}).
+                        $http({method: 'GET', url: '/local_events/local_COI_remote?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name+'&page_title=local_COI_remote'}).
                             success(function(data) { 
                                 if (data["result"].length>0) {
-                                    $http({method: 'POST', url: '/local_events/local_COI_remote', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name}});
+                                    $http({method: 'POST', url: '/local_events/local_COI_remote', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "local_COI_remote"}});
                                 }else{
-                                    $http({method: 'POST', url: '/local_events/local_COI_remote?type=insert', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name}});
+                                    $http({method: 'POST', url: '/local_events/local_COI_remote?type=insert', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "local_COI_remote"}});
                                 }
                             });
                         tick();
@@ -1914,13 +1914,13 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                         .attr('transform', 'translate(-25,-115) scale(0.7)')
                                         .style('fill', '#333')
                                         .attr('transform', 'translate(-8,-8) scale(1.1)')
-                                } else if(d.value.type === 'outside') {
+                                } else if (d.value.type === 'outside') {
                                     elm.append("circle")
                                         .attr("cx", function(d) { return d.x; })
                                         .attr("cy", function(d) { return d.y; })
                                         .attr("r", 8)
                                         .attr("fill", '#333')
-                                } else if(d.value.type === 'Non-Stealth Internal Attack') {
+                                } else if (d.value.type === 'Non-Stealth Internal Attack') {
                                     elm.append('rect')
                                         .attr('x', function(d) { return d.x; })
                                         .attr('y', function(d) { return d.y; })
@@ -2022,23 +2022,22 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         });
 
                     function tick() {
-
                         node[0].x = width;
                         node[0].y = height;
                         var value = 120; 
 
                         node.attr("cx", function(d) { 
-                                if(d.group==="child"){
+                                if (d.group === "child") {
                                     value = 0;
-                                }else{
+                                } else {
                                     value = 120;
                                 }
                                 return d.x = Math.max(value, Math.min(width - value, d.x)); 
                             })
                             .attr("cy", function(d) { 
-                                if(d.group==="child"){
+                                if (d.group === "child") {
                                     value = 0;
-                                }else{
+                                } else {
                                     value = 120;
                                 }
                                 return d.y = Math.max(value, Math.min(height - value, d.y)); });
@@ -2416,7 +2415,7 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
     };
 }]);
 
-angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$rootScope', '$location', function ($timeout, $rootScope, $location) {
+angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$rootScope', '$location', '$http', function ($timeout, $rootScope, $location, $http) {
     return {
         link: function ($scope, element, attrs) {
             $scope.$on('stealthForceChart', function (event, data, params) {
@@ -2458,11 +2457,11 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                     }
                     var color = function(group, type) {
                         if (group === 0) { //stealth role/group/coi node
-                            if(type === "role") {
+                            if (type === "role") {
                                 return palette.pink;
-                            } else if(type === "group") {
+                            } else if (type === "group") {
                                 return palette.purple;
-                            } else if(type === "coi") {
+                            } else if (type === "coi") {
                                 return palette.green;
                             } 
                             
@@ -2534,7 +2533,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .html(function(d) {
                             var title = "<strong>Rules: </strong> <br />";
                             var rules = "";
-                            for(var i = 0; i < d.rules.length; i++) {
+                            for (var i = 0; i < d.rules.length; i++) {
                             //     if(d.rules[i].order === 1) {
                             //         if(d.rules[i].rule !== "-"){
                             //             ret += d.cois[i] + ":<br />" +
@@ -2543,13 +2542,13 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                             //             ret += d.cois[i] + "<br />";
                             //         }
                             //     } else {
-                                if(d.rules[i].rule !== "-"){
+                                if (d.rules[i].rule !== "-") {
                                     rules += "&nbsp&nbsp&nbsp" + d.rules[i].order + " " + d.rules[i].rule + "<br />";
                                 }
                             //     }
                                 
                             }
-                            if(rules === "") {
+                            if (rules === "") {
                                 return title + "None";
                             }
                             else {
@@ -2559,13 +2558,53 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         });
                         vis.call($scope.tip);
                    
-                    var force = d3.layout.force()
-                        
+                    var force = d3.layout.force()                        
                         .on("tick", tick)
-                        .gravity(0.20)
+                        .gravity(0.05)
+                        /*.gravity(function(d) { 
+                           console.log(d);
+                            if ((d.type === "role") || (d.type === "group")) {
+                               return  0.3;
+                            } else if (d.type === "user")  {
+                               return  0.3;
+                            } else {
+                               return  0;
+                            }
+                        })*/
                         .linkDistance(20)
                         .charge(-1500)
                         .size([width-50, height]);
+
+
+                    function dragstart(d, i) {
+                        d.fixed = true; 
+                        force.stop();
+                    }
+
+                    function dragmove(d, i) {
+                        d.fixed = true; 
+                        d.px += d3.event.dx;
+                        d.py += d3.event.dy;
+                        d.x += d3.event.dx;
+                        d.y += d3.event.dy;
+                        tick(); 
+                    }
+
+                    function dragend(d, i) {
+                        console.log(d);
+                        d.fixed = true; 
+                        $http({method: 'GET', url: '/local_events/stealth_COI_map?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name+'&page_title=stealth_COI_map'}).
+                            success(function(data) { 
+                                if (data["force"].length>0) {
+                                    $http({method: 'POST', url: '/local_events/stealth_COI_map', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_COI_map"}});
+                                }else{
+                                    $http({method: 'POST', url: '/local_events/stealth_COI_map?type=insert', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_COI_map"}});
+                                }
+                            });
+                        tick();
+                        force.resume();
+                    }
+
 
                     $scope.update = function() {
                         force
@@ -2583,22 +2622,31 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                             .style("stroke-width", "5");
                         link.exit().remove();
 
+
+                        var node_drag = d3.behavior.drag()
+                            .on("dragstart", dragstart)
+                            .on("drag", dragmove)
+                            .on("dragend", dragend);       
+
                         node = vis.selectAll(".node")
                             .data(data.nodes);    
                         node
                             .enter()
                             .append("g")
                             .attr("class", "node")
-                            .call(force.drag);
+                            .call(node_drag);
 
                        // console.log("test");
                         var cldr;
                         //CIRCLE
                         var n = node.each(function(d){
+                            if ((d.type === "role") || (d.type === "group")) {
+                                d.fixed = true;
+                            } 
                             //console.log(d);
                             var elm = d3.select(this)
 
-                            if(d.hide !== "true"){
+                            if (d.hide !== "true") {
                                //console.log(d.index);
                                /* elm
                                     .attr('style', 'display:block');*/
@@ -2644,7 +2692,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                                        // .style("stroke-width", "1.5px")
                                        // .style("stroke", "#fff")
                                 }
-                                if(d.type === "user") {
+                                if (d.type === "user") {
                                     elm
                                         .on('mouseover', function(d){
                                             elm.style('cursor', 'pointer')
@@ -2709,16 +2757,26 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                     };
                     $scope.update();
 
-
                     function tick() {
+                        node[0].x = width;
+                        node[0].y = height;
+                        var value = 40; 
+
+                        node.attr("cx", function(d) { 
+                                return d.x = Math.max(value, Math.min(width - value, d.x)); 
+                            })
+                            .attr("cy", function(d) { 
+                                return d.y = Math.max(value, Math.min(height - (value*5.6), d.y)); });
+
+                        link.attr("x1", function(d) { return d.source.x; })
+                            .attr("y1", function(d) { return d.source.y; })
+                            .attr("x2", function(d) { return d.target.x; })
+                            .attr("y2", function(d) { return d.target.y; });
+
+
                         node.attr("transform", function(d, i) {
                             return "translate(" + d.x + "," + d.y + ")";
                         });
-
-                        link.attr("x1", function(d)   { return d.source.x; })
-                            .attr("y1", function(d)   { return d.source.y; })
-                            .attr("x2", function(d)   { return d.target.x; })
-                            .attr("y2", function(d)   { return d.target.y; })
                     }
 
 
@@ -3096,15 +3154,15 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 var color;
                                 element.append('circle')
                                     .attr('fill', function(d){ 
-                                        if(d.ioc_severity === 1){
+                                        if (d.ioc_severity === 1) {
                                             color = '#377FC7'; 
-                                        }else if(d.ioc_severity === 2){
+                                        } else if (d.ioc_severity === 2) {
                                             color = '#F5D800'; 
-                                        }else if(d.ioc_severity === 3){
+                                        } else if (d.ioc_severity === 3) {
                                             color = '#F88B12'; 
-                                        }else if(d.ioc_severity === 4){
+                                        } else if (d.ioc_severity === 4) {
                                             color = '#DD122A'; 
-                                        }else{
+                                        } else {
                                             color = '#6FBF9B'; 
                                         }
                                         return color;
@@ -3560,7 +3618,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     var offset = ept - eppt;
                     var totalHeight = $('#lanegraphinfo')[0].scrollHeight;
                     var windowHeight = $('#lanegraphinfo').height();
-                    if(offset>(totalHeight-windowHeight)){
+                    if (offset>(totalHeight-windowHeight)) {
                         offset = totalHeight-windowHeight;
                     }
                     $('#lanegraphinfo').scrollTo(offset);
@@ -3622,7 +3680,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                             $('div'+lastExpandedId+'.infoDivExpanded').hide();
                                         }
 
-                                        if($('#autoexpand').is(':checked')){
+                                        if ($('#autoexpand').is(':checked')) {
                                             if (isOpen === '#'+d.id) {
                                                 $('#'+d.id+' .infoDivExpanded').css('display', 'none');
                                                 isOpen = null;
