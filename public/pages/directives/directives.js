@@ -3318,7 +3318,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         .attr("width", width-135);                  
                 }
 
-                 $(window).bind('resize', function() {
+                $(window).bind('resize', function() {
                     setTimeout(function(){
                         setNewSize($scope.laneGraphWidth());
                     }, 150);
@@ -3385,6 +3385,62 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
                 draw();
 
+                // GRAPH BLUR FILTER
+                var blurFilter = chart
+                    .append('filter')
+                    .attr('id', 'blur-effect-1')
+                    .append('feGaussianBlur')
+                var blur = blurFilter.attr('class', 'graphBlur')
+                    .attr('stdDeviation', 0);
+                var height = element.height();
+                var load = chart.append('g')
+                    .style('display', 'none')
+                    .attr('transform', 'translate('+((width/2)-20)+','+((height/2)-80)+')')
+                // loading svg
+                load.append('svg')
+                    .attr('version', 1.1)
+                    .attr('id', 'loader-1')
+                    .attr('x', '0px')
+                    .attr('y', '0px')
+                    .attr('width', '40px')
+                    .attr('height', '40px')
+                    .attr('viewBox', '0 0 50 50')
+                    .attr('style', 'enable-background:new 0 0 50 50;')
+                    .attr('xml:space', 'preserve')
+                // spinner
+                load.append('path')
+                    .attr('fill', '#FF6700')
+                    .attr('d', 'M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z')
+                    .append('animateTransform')
+                        .attr('attributeType', 'xml')
+                        .attr('attributeName', 'transform')
+                        .attr('type', 'rotate')
+                        .attr('from', '0 25 25')
+                        .attr('to', '360 25 25')
+                        .attr('dur', '0.6s')
+                        .attr('repeatCount', 'indefinite');
+                // loading actions
+                function loading(action) {
+                    if (action === 'start') {
+                        load.style('display', 'block');
+                        main.select('.brush').style('display', 'none');
+                        blurFilter
+                            .transition()
+                            .duration(500)
+                            .attr('stdDeviation', 3);
+                        main
+                            .style('filter', 'url(#blur-effect-1)');
+                    } else {
+                        load.style('display', 'none');
+                        main.select('.brush').style('display', 'block');
+                        blurFilter
+                            .transition()
+                            .duration(2000)
+                            .attr('stdDeviation', 0);
+                        main.style('filter', 'url(#blur-effect-1)')
+                    }
+                }
+
                 function mouseup(action) {
                     // set variables
                     var rects, labels, minExtent, maxExtent, visItems;
@@ -3423,7 +3479,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     // if difference is less than threshhold or is not a single time select (resulting in difference being 0)
                     if ((msDifference < queryThreshhold) && (msDifference !== 0)) {
                         // push to requery and then plot
+                        loading('start');
                         $scope.requery(minExtent, maxExtent, function(data){
+                            loading('end');
                             data.reverse();
                             plot(data, minExtent, maxExtent);
                         })
