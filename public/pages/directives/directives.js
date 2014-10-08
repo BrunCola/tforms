@@ -1663,7 +1663,14 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
 
                     function dragend(d, i) {
                         d.fixed = true; 
-                        $http({method: 'POST', url: '/local_events/local_COI_remote', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name}});
+                        $http({method: 'GET', url: '/local_events/local_COI_remote?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name}).
+                            success(function(data) { 
+                                if (data["result"].length>0) {
+                                    $http({method: 'POST', url: '/local_events/local_COI_remote', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name}});
+                                }else{
+                                    $http({method: 'POST', url: '/local_events/local_COI_remote?type=insert', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name}});
+                                }
+                            });
                         tick();
                         force.resume();
                     }
@@ -1674,8 +1681,8 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                     var circleWidth = 5;
                     node.each(function(d){
                         var elm = d3.select(this).append('g').attr('transform', 'scale(0.7)');
-                        if(d.group==="child"){
-                        }else{
+                        if (d.group === "child") {
+                        } else {
                             d.fixed = true;
                         }
                         switch(d.group) {
@@ -1901,7 +1908,6 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                 }
                             break;
                             case 'child':
-
                                 if (d.value.type === 'Stealth COI Mismatch') {
                                     elm.append("path")
                                         .attr('d', 'M14,3.1C9.4,3.3,7,0,7,0c0,0-2,3.1-7,3.1C-0.4,8.3,2.7,18,7,18C11.2,18,14.4,7.2,14,3.1z')
@@ -1932,7 +1938,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         infoDiv.selectAll('tr').remove();
 
                         var divInfo = '';
-                        if(type === "linkBetween"){
+                        if (type === "linkBetween") {
                             var uniqueNodes = $scope.forcedata.uniqueNodes;
                             var uniqueUsers = $scope.forcedata.uniqueUsers;
                             var unique = [];
@@ -1941,17 +1947,17 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                             
                             for (var i in uniqueNodes[source]) {
                                 for (var j in uniqueNodes[target]) {
-                                    if(i === j){ 
+                                    if (i === j) { 
                                         unique.push(i);
                                     }
                                 }         
                             }
-                            for(var x=0; x<unique.length; x++){
+                            for (var x=0; x<unique.length; x++) {
                                 var divInfo = '';
                                 divInfo += '<div><strong>'+unique[x]+'</strong></div>';
-                                for(var k in uniqueUsers){
-                                    if(k === unique[x]){
-                                        for(var z in uniqueUsers[k]){
+                                for (var k in uniqueUsers) {
+                                    if (k === unique[x]) {
+                                        for (var z in uniqueUsers[k]) {
                                             divInfo += '<div>'+z+'</div>';
                                         }
                                     }
@@ -1961,15 +1967,15 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     .append('td')
                                     .html(divInfo);
                             }
-                        }else if (type === "rules"){
+                        } else if (type === "rules"){
                                 var divInfo = '';
                                 divInfo += '<div><strong>Rules: </strong><br />';
                                 var rules = "";
-                                for(var i = 0; i < data.rules.length; i++) {
-                                    if(data.rules[i].rule !== "-"){
+                                for (var i = 0; i < data.rules.length; i++) {
+                                    if (data.rules[i].rule !== "-"){
                                         var ruleString = data.rules[i].rule.replace(/Except/g , "<br />Except");
                                         divInfo += data.rules[i].order  + "<br />" + " " + ruleString + "<br />";
-                                    }else{
+                                    } else {
                                         divInfo += "none <br />";
                                     }                                    
                                 }
@@ -1977,7 +1983,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     row
                                         .append('td')
                                         .html(divInfo);
-                        }else{
+                        } else {
                             for (var i in data) {
                                 if (typeof data[i] === 'object') {
                                     var divInfo = '';
@@ -2060,6 +2066,101 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
 
                     force.on("tick", tick);
                     force.start();
+
+
+                   /* //LEGEND
+
+                    var legend_color = function(legend_item) {
+                        if (legend_item === "Stealth Role") { 
+                            return palette.pink;
+                        } else if (legend_item === "AD Group") { 
+                            return palette.purple;
+                        } else if (legend_item === "Stealth COI") { 
+                            return palette.green;
+                        } else if (legend_item === "User with one COI") { //IP node with 1 COI group
+                            return palette.blue;
+                        } else if (legend_item === "User with two COIs") { //IP node with 2 COI groups
+                            return palette.gray;
+                        } else if (legend_item === "User with three COIs") { //etc...
+                            return palette.yellow;
+                        } else if (legend_item === "User with four COIs") {
+                            return palette.orange;
+                        } else {
+                            return palette.red;
+                        }
+                    }
+
+                    var circle_legend_data = ["Stealth Role", "AD Group", "Stealth COI"];
+                    var circle_legend = vis.selectAll(".circle_legend")
+                        .data(circle_legend_data)
+                        .enter().append("g")
+                        .attr("class", "circle_legend")
+                        .attr("transform", function(d, i) { return "translate(11," + (i+5) * 23 + ")"; });
+
+                    circle_legend.append("circle")
+                        .attr("r", function (d) {return logslider(d["width"]) - 7; })
+                        .style("fill", function(d) { return legend_color(d) });
+
+                    circle_legend.append("text")
+                        .attr("x",15)
+                        .attr("y", -1)
+                        .attr("dy", ".35em")
+                        .text(function(d) { return d; });
+
+                    var legend_data = ["User with one COI", "User with two COIs", 
+                        "User with three COIs", "User with four COIs", "User with five or more COIs"];
+
+                    var legend = vis.selectAll(".legend")
+                        .data(legend_data)
+                        .enter().append("g")
+                        .attr("class", "legend")
+                        .attr("transform", function(d, i) { return "translate(2," + i * 20 + ")"; });
+
+                    legend.append("rect")
+                        .attr("width", 18)
+                        .attr("height", 18)
+                        .style("fill", function(d) { return legend_color(d) });
+
+                    legend.append("text")
+                        .attr("x", 23)
+                        .attr("y", 9)
+                        .attr("dy", ".35em")
+                        .text(function(d) { return d; });
+
+                    var gateway_legend = vis.selectAll(".gateway_legend")
+                        .data(["Cleartext COI"])
+                        .enter().append("g")
+                        .attr("class", "gateway_legend")
+                        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+                    gateway_legend.append('svg:path')
+                        .attr('transform', 'translate(0,176)')
+                        .attr('d', 'M18,0C8.059,0,0,8.06,0,18.001C0,27.941,8.059,36,18,36c9.94,0,18-8.059,18-17.999C36,8.06,27.94,0,18,0z')
+                        .attr('fill', '#67AAB5');
+
+                    gateway_legend.append('svg:path')
+                        .attr('transform', 'translate(0,176)')
+                        .attr('d', 'M24.715,19.976l-2.057-1.122l-1.384-0.479l-1.051,0.857l-1.613-0.857l0.076-0.867l-1.062-0.325l0.31-1.146'+
+                            'l-1.692,0.593l-0.724-1.616l0.896-1.049l1.108,0.082l0.918-0.511l0.806,1.629l0.447,0.087l-0.326-1.965l0.855-0.556l0.496-1.458'+
+                            'l1.395-1.011l1.412-0.155l-0.729-0.7L22.06,9.039l1.984-0.283l0.727-0.568L22.871,6.41l-0.912,0.226L21.63,6.109l-1.406-0.352'+
+                            'l-0.406,0.596l0.436,0.957l-0.485,1.201L18.636,7.33l-2.203-0.934l1.97-1.563L17.16,3.705l-2.325,0.627L8.91,3.678L6.39,6.285'+
+                            'l2.064,1.242l1.479,1.567l0.307,2.399l1.009,1.316l1.694,2.576l0.223,0.177l-0.69-1.864l1.58,2.279l0.869,1.03'+
+                            'c0,0,1.737,0.646,1.767,0.569c0.027-0.07,1.964,1.598,1.964,1.598l1.084,0.52L19.456,21.1l-0.307,1.775l1.17,1.996l0.997,1.242'+
+                            'l-0.151,2.002L20.294,32.5l0.025,2.111l1.312-0.626c0,0,2.245-3.793,2.368-3.554c0.122,0.238,2.129-2.76,2.129-2.76l1.666-1.26'+
+                            'l0.959-3.195l-2.882-1.775L24.715,19.976z')
+                        .attr('fill', '#595A5C');
+
+                    gateway_legend.append("text")
+                        .attr("x", 40)
+                        .attr("y", 194)
+                        .attr("dy", ".35em")
+                        .text(function(d) { return d; });
+*/
+
+
+
+
+
                 }, 0, false);
             })
         }
@@ -3217,7 +3318,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         .attr("width", width-135);                  
                 }
 
-                 $(window).bind('resize', function() {
+                $(window).bind('resize', function() {
                     setTimeout(function(){
                         setNewSize($scope.laneGraphWidth());
                     }, 150);
@@ -3284,6 +3385,62 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
                 draw();
 
+                // GRAPH BLUR FILTER
+                var blurFilter = chart
+                    .append('filter')
+                    .attr('id', 'blur-effect-1')
+                    .append('feGaussianBlur')
+                var blur = blurFilter.attr('class', 'graphBlur')
+                    .attr('stdDeviation', 0);
+                var height = element.height();
+                var load = chart.append('g')
+                    .style('display', 'none')
+                    .attr('transform', 'translate('+((width/2)-20)+','+((height/2)-80)+')')
+                // loading svg
+                load.append('svg')
+                    .attr('version', 1.1)
+                    .attr('id', 'loader-1')
+                    .attr('x', '0px')
+                    .attr('y', '0px')
+                    .attr('width', '40px')
+                    .attr('height', '40px')
+                    .attr('viewBox', '0 0 50 50')
+                    .attr('style', 'enable-background:new 0 0 50 50;')
+                    .attr('xml:space', 'preserve')
+                // spinner
+                load.append('path')
+                    .attr('fill', '#FF6700')
+                    .attr('d', 'M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z')
+                    .append('animateTransform')
+                        .attr('attributeType', 'xml')
+                        .attr('attributeName', 'transform')
+                        .attr('type', 'rotate')
+                        .attr('from', '0 25 25')
+                        .attr('to', '360 25 25')
+                        .attr('dur', '0.6s')
+                        .attr('repeatCount', 'indefinite');
+                // loading actions
+                function loading(action) {
+                    if (action === 'start') {
+                        load.style('display', 'block');
+                        main.select('.brush').style('display', 'none');
+                        blurFilter
+                            .transition()
+                            .duration(500)
+                            .attr('stdDeviation', 3);
+                        main
+                            .style('filter', 'url(#blur-effect-1)');
+                    } else {
+                        load.style('display', 'none');
+                        main.select('.brush').style('display', 'block');
+                        blurFilter
+                            .transition()
+                            .duration(2000)
+                            .attr('stdDeviation', 0);
+                        main.style('filter', 'url(#blur-effect-1)')
+                    }
+                }
+
                 function mouseup(action) {
                     // set variables
                     var rects, labels, minExtent, maxExtent, visItems;
@@ -3322,7 +3479,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     // if difference is less than threshhold or is not a single time select (resulting in difference being 0)
                     if ((msDifference < queryThreshhold) && (msDifference !== 0)) {
                         // push to requery and then plot
+                        loading('start');
                         $scope.requery(minExtent, maxExtent, function(data){
+                            loading('end');
                             data.reverse();
                             plot(data, minExtent, maxExtent);
                         })
