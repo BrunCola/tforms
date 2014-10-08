@@ -25,16 +25,37 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
             case 'rules':
                 $scope.appendInfo(data, 'rules');
             break;
-            case 'blocked':
-           // console.log(data)
+            case 'authorized':
             // get children hanging off of parent nodes
                 var rTargets = $scope.forcedata.links.filter(function(d){
-                    if ((d.class !== undefined) && (d.source.index === data.index)) {
+                    if ((d.class !== undefined) && (d.source.index === data.index) && (d.source.value.allow === "authorized")) {
                         return true;
                     }
                 })
                 var rSource = $scope.forcedata.links.filter(function(d){
-                    if ((d.class !== undefined) && (d.target.index === data.index)) {
+                    if ((d.class !== undefined) && (d.target.index === data.index) && (d.source.value.allow === "authorized")) {
+                        console.log("rSource");
+                        return true;
+                    }
+                })
+                for (var i in rTargets) {
+                    results.push($scope.forcedata.nodes[rTargets[i].target.index].value)
+                }
+                for (var i in rSource) {
+                    results.push($scope.forcedata.nodes[rSource[i].source.index].value)
+                }
+                $scope.appendInfo(results, 'authorized');
+            break;
+            case 'blocked':
+           // console.log(data)
+            // get children hanging off of parent nodes
+                var rTargets = $scope.forcedata.links.filter(function(d){
+                    if ((d.class !== undefined) && (d.source.index === data.index) && (d.source.value.allow === "blocked")) {
+                        return true;
+                    }
+                })
+                var rSource = $scope.forcedata.links.filter(function(d){
+                    if ((d.class !== undefined) && (d.target.index === data.index) && (d.source.value.allow === "blocked")) {
                         return true;
                     }
                 })
@@ -73,6 +94,15 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
                 });
                 $scope.appendInfo(results, 'top');
             break;
+           /* case 'pageload':
+                var thisObj = $scope.forcedata.uniqueNodes[""+data.name];
+                for (var i in thisObj) {
+                    var obj = {};
+                    obj[i] = Object.keys($scope.forcedata.uniqueUsers[i]);
+                    results.push(obj)
+                }
+                $scope.appendInfo(results, 'users');
+            break;*/
         }
     }
 }]);

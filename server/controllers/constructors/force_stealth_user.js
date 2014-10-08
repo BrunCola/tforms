@@ -73,11 +73,20 @@ module.exports = function (sql, queries, conn, callback) {
                         // target is the index of the corresponding main node
                         var target = uniqueNodes.indexOf(arr[o])
                         // push links to its own array
-                        userLinks.push({
-                            "source": source,
-                            "target": target,
-                            "class": 'child'
-                        })
+                        if ( obj.allow ){
+                            userLinks.push({
+                                "source": source,
+                                "target": target,
+                                "class": 'child',
+                                "allowed": obj.allow
+                            })
+                        } else {
+                            userLinks.push({
+                                "source": source,
+                                "target": target,
+                                "class": 'child'
+                            })
+                        }
                     }
                 }
             }
@@ -134,6 +143,26 @@ module.exports = function (sql, queries, conn, callback) {
 
             function(callback) {
                 connection.query(queries[1].query, queries[1].insert)
+                    .on('result', function(data){
+                        usersList.push(data);
+                    })
+                    .on('end', function(){
+                        callback();
+                    });
+            },
+
+            function(callback) {
+                connection.query(queries[4].query, queries[4].insert)
+                    .on('result', function(data){
+                        usersList.push(data);
+                    })
+                    .on('end', function(){
+                        callback();
+                    });
+            },
+
+            function(callback) {
+                connection.query(queries[5].query, queries[5].insert)
                     .on('result', function(data){
                         usersList.push(data);
                     })

@@ -95,7 +95,8 @@ module.exports = function(pool) {
                                     '`lan_ip` AS `Victim IP`,'+
                                     '`remote_machine` AS `Attacker Machine`,'+
                                     '`remote_user` AS `Attacker User`,'+
-                                    '`remote_ip` AS `Attacker IP` '+
+                                    '`remote_ip` AS `Attacker IP`, '+
+                                    '\'blocked\' AS `allow` '+
                                 'FROM '+
                                     '`stealth_conn_meta` '+
                                 'WHERE '+
@@ -114,7 +115,8 @@ module.exports = function(pool) {
                                     '`remote_machine` AS `Victim Machine`,'+
                                     '`remote_user` AS `lan_user`,'+
                                     '`remote_user` AS `Victim User`,'+
-                                    '`remote_ip` AS `Victim IP` '+
+                                    '`remote_ip` AS `Victim IP`, '+
+                                    '\'blocked\' AS `allow` '+
                                 'FROM '+
                                     ' `conn` '+
                                 'WHERE '+
@@ -122,6 +124,51 @@ module.exports = function(pool) {
                                     'AND `proto` != \'udp\' '+
                                     'AND `remote_ip` REGEXP \'192.168.222\' '+
                                     'AND `out_bytes` = 0 ',
+                        insert: [start, end]
+                    }
+
+
+                    var stealth_authorized = {
+                        query: 'SELECT DISTINCT '+
+                                    '\'Stealth COI Allow\' AS type,'+
+                                    '`lan_zone` AS `Victim Zone`,'+
+                                    '`lan_machine` AS `Victim Machine`,'+
+                                    '`lan_user`,'+
+                                    '`lan_user` AS `Victim_User`,'+
+                                    '`lan_ip` AS `Victim IP`,'+
+                                    '`remote_machine` AS `Attacker Machine`,'+
+                                    '`remote_user` AS `Attacker User`,'+
+                                    '`remote_ip` AS `Attacker IP`, '+
+                                    '\'authorized\' AS `allow` '+
+                                'FROM '+
+                                    '`stealth_conn_meta` '+
+                                'WHERE '+
+                                    'time BETWEEN ? AND ? '+
+                                    'AND `out_bytes` > 0 '+
+                                    'AND `in_bytes` > 0 ',
+                        insert: [start, end]
+                    }
+                    var local_authorized = {
+                       // query: 'SELECT * '+
+                        query: 'SELECT DISTINCT '+
+                                    '\'Non-Stealth Internal Connection\' AS type,'+
+                                    '`lan_zone` AS `Attacker Zone`,'+
+                                    '`machine` AS `Attacker Machine`,'+
+                                    '`lan_user` AS `Attacker_User`,'+
+                                    '`lan_ip` AS `Attacker IP`,'+
+                                    '`remote_machine` AS `Victim Machine`,'+
+                                    '`remote_user` AS `lan_user`,'+
+                                    '`remote_user` AS `Victim User`,'+
+                                    '`remote_ip` AS `Victim IP`, '+
+                                    '\'authorized\' AS `allow` '+
+                                'FROM '+
+                                    ' `conn` '+
+                                'WHERE '+
+                                    'time BETWEEN ? AND ? '+
+                                    'AND `proto` != \'udp\' '+
+                                    'AND `remote_ip` REGEXP \'192.168.222\' '+
+                                    'AND `out_bytes` > 0 '+
+                                    'AND `in_bytes` > 0 ',
                         insert: [start, end]
                     }
 
@@ -153,7 +200,7 @@ module.exports = function(pool) {
                     async.parallel([
                         // Crossfilter function
                         function(callback) {
-                            new force_stealth_user(sql, [stealth_drop, local_drop, rules, coordinates], {database: database, pool: pool}, function(err,data){
+                            new force_stealth_user(sql, [stealth_drop, local_drop, rules, coordinates, stealth_authorized, local_authorized], {database: database, pool: pool}, function(err,data){
                                 force = data;
                                 callback();
                             });
