@@ -60,8 +60,8 @@ module.exports = function (sql, conn, callback) {
 
     conn.pool.getConnection(function(err, connection) {
         connection.changeUser({database : conn.database}, function(err) {
-            console.log(err);
-            if (err) throw err;
+            // console.log(err);
+            if (err) { console.log(err); throw err; }
         });
         connection.query(sql.query, sql.insert)
             .on('result', function(data){
