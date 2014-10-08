@@ -46,6 +46,28 @@ th {
   font-size: 12px !important;
   /*word-break:break-all; */
 }
+
+/*
+h1{
+  margin: 1em 0;
+  border-bottom: 1px dashed;
+  padding-bottom: 1em;
+  font-weight: lighter;
+}
+p{
+  font-style: italic;
+}
+.loader{
+  margin: 0 0 2em;
+  height: 100px;
+  width: 20%;
+  text-align: center;
+  padding: 1em;
+  margin: 0 auto 1em;
+  display: inline-block;
+  vertical-align: top;
+}*/
+
 /*force diagram*/
 /*.node {
   stroke: #fff;
