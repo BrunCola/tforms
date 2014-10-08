@@ -3283,25 +3283,25 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             "Event Timeline Navigation");
                     });
 
-                var saveToggle = buttonHolder
-                    .append('button')
-                    .html('Create pattern')
-                    .attr('class', 'saveToggle')
-                    .on('click', function(){
-                        if ($scope.pattern.searching === false) {
-                            if ($scope.pattern.last !== null) {
-                                $scope.pattern.selected[$scope.pattern.last.id] = $scope.pattern.last;
-                            }
-                            // set searching to true
-                            $scope.pattern.searching = true;
-                            // change class (so we know its on)
-                        } else {
-                            // make a call to save restults
-                            // clear our object & set it back to false
-                            $scope.pattern.searching = false;
-                            $scope.pattern.selected = {};
-                        }
-                    });
+                // var saveToggle = buttonHolder
+                //     .append('button')
+                //     .html('Create pattern')
+                //     .attr('class', 'saveToggle')
+                //     .on('click', function(){
+                //         if ($scope.pattern.searching === false) {
+                //             if ($scope.pattern.last !== null) {
+                //                 $scope.pattern.selected[$scope.pattern.last.id] = $scope.pattern.last;
+                //             }
+                //             // set searching to true
+                //             $scope.pattern.searching = true;
+                //             // change class (so we know its on)
+                //         } else {
+                //             // make a call to save restults
+                //             // clear our object & set it back to false
+                //             $scope.pattern.searching = false;
+                //             $scope.pattern.selected = {};
+                //         }
+                //     });
 
                 // var timeShiftHolder = d3.select("#lanegraph").append('div').attr('class', 'timeShiftHolder');
                 // var nextTime = timeShiftHolder

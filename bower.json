@@ -9,7 +9,7 @@
         "angular-route": "latest",
         "ng-file-upload": "1.4.0",
         "bootstrap": "3.0.3",
-        "angular-bootstrap": "0.11.0",
+        "angular-bootstrap": "0.11.2",
         "angular-ui-router": "#master",
         "jquery": "1.10.2",
         "crossfilter": "1.3.7",
