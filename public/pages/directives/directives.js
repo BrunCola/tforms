@@ -2732,6 +2732,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
     return {
         link: function ($scope, element, attrs) {
             $scope.$on('laneGraph', function() {
+                $scope.$broadcast('spinnerHide');
 
                 $.fn.scrollTo = function( target, options, callback ){
                 if (typeof options == 'function' && arguments.length == 2) { callback = options; options = target; }
@@ -2751,32 +2752,22 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     });
                 }
 
-                var waitForFinalEvent = (function () {
-                    var timers = {};
-                    return function (callback, ms, uniqueId) {
-                        if (!uniqueId) {
-                            uniqueId = "laneGraphWait"; //Don't call this twice without a uniqueId
-                        }
-                        if (timers[uniqueId]) {
-                            clearTimeout (timers[uniqueId]);
-                        }
-                    timers[uniqueId] = setTimeout(callback, ms);
-                    };
-                })();
-
-                $scope.$broadcast('spinnerHide')
-
                 var itemsDimension = $scope.crossfilterData.dimension(function(d){ return d.time });
                 var items = itemsDimension.top(Infinity);
+                // set our in-to-deep variable
                 $scope.inTooDeep = {
                     areWe: false,
                     min: null,
                     max: null
                 };
+                // toggle for turning on/off unit multiselecting
+                $scope.patterns = {
+                    searching: false,
+                    selected: {}
+                }
 
                 var laneLength = $scope.lanes.length;
                 var width = element.width();
-
                 var m = [5, 15, 15, 120], //top right bottom left
                     w = width - m[1] - m[3],
                     h = 470 - m[0] - m[2],
@@ -2883,8 +2874,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
 
                 $scope.point = function(element, type, name, id) {
-
-                    //console.log(type);
                     if (type.search("ioc") !== -1) {
                         element.attr('class', 'IOC');
                         element = element.append('g')
@@ -3191,6 +3180,14 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             "Event Timeline Navigation");
                     });
 
+                var saveToggle = buttonHolder
+                    .append('button')
+                    .html('Create pattern')
+                    .attr('class', 'saveToggle')
+                    .on('click', function(){
+                        
+                    });
+
                 // var timeShiftHolder = d3.select("#lanegraph").append('div').attr('class', 'timeShiftHolder');
                 // var nextTime = timeShiftHolder
                 //     .append('button')
@@ -3211,10 +3208,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
                 
                 var setNewSize = function(width) {
-                    chart
-                        .attr("width", width);
-                    main
-                        .attr("width", width-135);                  
+                    chart.attr("width", width);
+                    main.attr("width", width-135);                  
                 }
 
                 $(window).bind('resize', function() {
@@ -3291,10 +3286,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .append('feGaussianBlur')
                 var blur = blurFilter.attr('class', 'graphBlur')
                     .attr('stdDeviation', 0);
-                var height = element.height();
                 var load = chart.append('g')
                     .style('display', 'none')
-                    .attr('transform', 'translate('+((width/2)-20)+','+((height/2)-80)+')')
+                    .attr('transform', 'translate('+((width/2)-20)+','+((infoHeight/2)-80)+')')
                 // loading svg
                 load.append('svg')
                     .attr('version', 1.1)
@@ -3387,7 +3381,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     } else {
                         // reset if not within threshold
                         $scope.inTooDeep.areWe = false;
-                        var data = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;}).reverse();
+                        var data = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true};}).reverse();
                         $scope.alert.style('display', 'none');
                         plot(data, minExtent, maxExtent);
                     }
@@ -3437,7 +3431,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         // re-enter an append nodes (innificent as well)
                         icons.enter().append("g").each(function(d){
                             var elm = d3.select(this);
-
                             elm
                                 .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
                                 .attr("class", function(d) {return "mainItem" + d.lane;})
@@ -3484,10 +3477,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         // set class for active description
                                         $('#'+d.id).attr('class', 'laneactive');
                                         // scroll to position
-
                                         scrollSide(d.id);
                                         // prevPos = currPos;
-
                                         // set ids for cross-refrence
                                         previousID = d.id;
                                         previousElm = elm;
@@ -3516,8 +3507,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         ////////////////////
                         /// SIDEBAR LIST ///
                         ////////////////////
-
-
                         infoDiv.selectAll('li').remove();
                         infoDiv.selectAll('li').data(data).enter()
                             .append('li').each(function(d){
@@ -3526,12 +3515,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // append id to li from data object
                                     .attr('id', function(d){return d.id })
                                     .html(function(d){
-                                        // set d.postion (INIFFICENT!)
-                                        d.position = ($('li#'+d.id).offset().top - $('li#'+d.id).parent().offset().top);
                                         return "<div class='lanegraphlist'><strong>"+timeFormat(d.time, 'laneGraphPreview')+':</strong> '+d.info+"</div>";
                                     })
                                     .on('click', function(){
-
                                         scrollSide(d.id);
                                         // close last expanded sections
                                         if (lastExpandedId !== '#'+d.id) {
@@ -3543,23 +3529,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         }
                                         // clear class of previous li item
                                         $('#'+previousID).attr('class', null);
-
-                                        // console.log(d.id)
-                                        // // var thisNode = itemRects.select('g.'+d.id);
-                                         
-                                        // itemRects.selectAll('g').each(function(c){
-                                        //     var elm = d3.select(this);
-                                        //     if (c.id === d.id) {
-                                        //         previousElm.attr('class', null);
-                                        //         elm.attr('class', 'pointactive');
-                                        //         previousElm = elm;
-                                        //     }        
-                                        // })
-
-                                        // console.log(thisNode)
-                                        // // todo: select the current node somehow so i can apply style to it and creat e previousNode refrence
-                                        // // get this id
-
+                                        // get this id
                                         var row = d3.select(this);
                                         var id = row.attr('id'); 
                                             row.attr('class', 'laneactive');
@@ -3574,10 +3544,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                                 elm.attr('class', null);
                                             }
                                         })
-
                                         // set previous id
                                         previousID = id;
-
                                     })
                                     // append expand buttons to list elements
                                     .append('div')
@@ -3592,10 +3560,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                             elm.select('.infoDivExpanded').style('display', 'block');
                                             lastExpandedId = '#'+d.id;
                                             isOpen = '#'+d.id;
-
                                             elm.select('.infoDivExpanded').html(laneInfoAppend(d.expand));
                                         }
-
                                     })
                                     .attr('class', 'infoDivExpandBtn')
                                     .html('+');
@@ -3605,13 +3571,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .attr('class', 'infoDivExpanded')
                                     .attr('id', d.id);
                             });
-                        //infoDiv.selectAll('li')[0].reverse();
-                            //[0].reverse();
                     }
                 }
-                
-                // function listItems
-
             });
         }
     };
@@ -3626,14 +3587,14 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                 $scope.$broadcast('spinnerHide');
                 $scope.appendInfo = function(user,data,type) { 
-                    if (type==="clear"){
+                    if (type === "clear"){
                         infoDiv.selectAll('tr').remove(); 
-                    } else if (type ==="userinfo"){
-                        for(var b in user){
-                            if ( b==="x" || b==="y" || b==="map" || b==="id" ){
-                            }else{
+                    } else if (type === "userinfo"){
+                        for (var b in user) {
+                            if ((b === "x") || (b === "y") || (b === "map") || (b === "id")) {
+                            } else {
                                 var row = infoDiv.append('tr');
-                                if(user[b]!==null){
+                                if (user[b] !== null) {
                                     row
                                         .append('td')
                                         .html('<strong>'+b+'</strong>');
@@ -3643,10 +3604,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 }
                             }
                         }
-                    } else if(type==="assets"){
-                        var image="public/system/assets/img/userplaceholder.jpg";
-                        if(data!==''){
-                            image=data;
+                    } else if (type === "assets"){
+                        var image = "public/system/assets/img/userplaceholder.jpg";
+                        if (data !== '') {
+                            image = data;
                         }
                         var row = infoDiv.append('tr');
                         row
@@ -3684,16 +3645,16 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 break;                
                         }
 
-                        for(var i in data){
+                        for (var i in data){
                             var row = infoDiv.append('tr');
-                            if(data[i]===0){
+                            if (data[i] === 0){
                                 row
                                     .append('td')
                                     .html('<strong>'+title+'</strong>');
                                 row
                                     .append('td')
                                     .html(data[i]+'');
-                            }else{
+                            } else {
                                 row
                                     .append('td')
                                     .html('<strong>'+title+'</strong>');
@@ -3718,8 +3679,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                 }
   
                 function doneEditing(elm, item, value) {
-                    $scope.change_customuser(item,value);
-                    elm[0][0].children[1].children[0].innerHTML = value;
+                    $scope.change_customuser(item, value);
+                    $(elm[0]).find('.usernametext').html(value);
                     $('.usernametext').each(function(e){
                         this.classList.remove('ng-hide');
                     });
@@ -3764,11 +3725,11 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     .on('click', function(e){
                                         userDiv.selectAll('button').each(function(d){
                                             var elm = d3.select(this);
-                                            elm[0][0].classList.remove('selected');
+                                            $(elm[0]).removeClass('selected');
                                         })
                                         floorDiv.selectAll('button').each(function(d){
                                             var elm = d3.select(this);
-                                            elm[0][0].classList.remove('selected');
+                                            $(elm[0]).removeClass('selected');
                                         })
                                         el.classList.add('selected');
                                         $scope.requery(d, 'flooruser');
@@ -3777,7 +3738,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                         .append('div')
                                             .attr('class', 'localuserlisticon')
                                             .append('svg');     
-                                switch(d.lan_type){
+                                switch (d.lan_type) {
                                     case 'endpoint':
                                         element
                                             .attr('height', '23')
@@ -3866,7 +3827,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                         .on('blur', function(e){
                                             doneEditing(elm, e, this.value)
                                         })
-
                                         //.html(name+"");
     
                                 var el = elel[0];
@@ -3900,7 +3860,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .append('button').each(function(d){
                             // count++;
                             var name = d.lan_machine;
-                            if (d.custom_user!==null){
+                            if (d.custom_user !== null){
                                 name = d.custom_user;
                             }
                             if ((d.x > 0) || (d.y > 0)){
@@ -3934,11 +3894,11 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     .on('click', function(e){
                                         userDiv.selectAll('button').each(function(d){
                                             var elm = d3.select(this);
-                                            elm[0][0].classList.remove('selected');
+                                            $(elm[0]).removeClass('selected');
                                         })
                                         floorDiv.selectAll('button').each(function(d){
                                             var elm = d3.select(this);
-                                            elm[0][0].classList.remove('selected');
+                                            $(elm[0]).removeClass('selected');
                                         })
                                         el.classList.add('selected');
                                         $scope.requery(d, 'flooruser');
@@ -3949,7 +3909,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     .attr('class', 'localuserlisticon')
                                     .append('svg'); 
 
-                                switch(d.lan_type){
+                                switch (d.lan_type){
                                     case 'endpoint':
                                         element
                                             .attr('height', '23')
@@ -4055,7 +4015,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     function(e) {
                                         floorDiv.selectAll('button').each(function(d){
                                             var elm = d3.select(this);
-                                            elm[0][0].classList.remove('selected');
+                                            $(elm[0]).removeClass('selected');
                                         })
                                         el.classList.add('selected');
                                         this.classList.remove('drag');
@@ -4072,36 +4032,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
         }
     };
 }]);
-
-
-/*angular.module('mean.pages').directive('draggable', function() {
-        return function(scope, element) {
-            // this gives us the native JS object
-            var el = element[0];
-            el.draggable = true;
-
-            el.addEventListener(
-                'dragstart',
-                function(e) {
-                    console.log(e);
-                    e.dataTransfer.effectAllowed = 'move';
-                    e.dataTransfer.setData('Text', this.id);
-                    this.classList.add('drag');
-                    return false;
-                },
-                false
-            );
-
-            el.addEventListener(
-                'dragend',
-                function(e) {
-                    this.classList.remove('drag');
-                    return false;
-                },
-                false
-            );
-        }
-});*/
 
 angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
     return {
