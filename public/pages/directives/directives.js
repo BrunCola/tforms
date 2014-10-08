@@ -541,7 +541,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         var newVar = aData.mailfrom.replace(/[\<\>]/g,'');
                                         $('td:eq('+$scope.r.indexOf("mailfrom")+')', nRow).html(newVar);
                                     }
-                                    if(aData.stealth !== undefined){                                        
+                                    if (aData.stealth !== undefined) {                                        
                                         if (aData.stealth && $scope.r.indexOf('stealth') !== -1) {
                                             if (aData.stealth > 0){
                                                 $('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-shield fa-stack-1x fa-inverse"></i></span>');
@@ -553,7 +553,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                     if (aData.proxy_blocked !== undefined && $scope.r.indexOf('proxy_blocked') !== -1) {
                                         if (aData.proxy_blocked == 0){
                                             $('td:eq('+$scope.r.indexOf("proxy_blocked")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-check fa-stack-1x fa-inverse"></i></span>');
-                                        } else if(aData.proxy_blocked > 0) {
+                                        } else if (aData.proxy_blocked > 0) {
                                             $('td:eq('+$scope.r.indexOf("proxy_blocked")+')', nRow).html('<span style="color:#E71010 " class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-times fa-stack-1x fa-inverse"></i></span>');
                                         }
                                     }
@@ -568,7 +568,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         // url builder
                                         for (var c in $scope.e) {
                                             var type = $scope.e[c].link.type;
-                                            if($scope.e[c].bVisible){
+                                            if ($scope.e[c].bVisible) {
                                                 switch(type) {
                                                     case 'Archive':
                                                         $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
@@ -834,7 +834,7 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                     // var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
                     $rootScope.$watch('search', function(){
 
-                        if($rootScope.search === null) {
+                        if ($rootScope.search === null) {
                             $scope.appDimension.filterAll();
                         } else {
                             $scope.appDimension.filterAll();
@@ -1201,7 +1201,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                         var rowFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
                         $rootScope.$watch('search', function(){
                             $scope.tableToRowChart = function () {
-                                if($rootScope.search === null) {
+                                if ($rootScope.search === null) {
                                     rowFilterDimension.filterAll();
                                 } else {
                                     rowFilterDimension.filterAll();
@@ -1316,7 +1316,7 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
                     });
                     var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
                     $rootScope.$watch('search', function(){
-                        if($rootScope.search === null) {
+                        if ($rootScope.search === null) {
                                 geoFilterDimension.filterAll();
                             } else {
                                 geoFilterDimension.filterAll();
@@ -1663,12 +1663,12 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
 
                     function dragend(d, i) {
                         d.fixed = true; 
-                        $http({method: 'GET', url: '/local_events/local_COI_remote?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name}).
+                        $http({method: 'GET', url: '/local_events/local_COI_remote?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name+'&page_title=local_COI_remote'}).
                             success(function(data) { 
                                 if (data["result"].length>0) {
-                                    $http({method: 'POST', url: '/local_events/local_COI_remote', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name}});
+                                    $http({method: 'POST', url: '/local_events/local_COI_remote', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "local_COI_remote"}});
                                 }else{
-                                    $http({method: 'POST', url: '/local_events/local_COI_remote?type=insert', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name}});
+                                    $http({method: 'POST', url: '/local_events/local_COI_remote?type=insert', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "local_COI_remote"}});
                                 }
                             });
                         tick();
@@ -1914,13 +1914,13 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                         .attr('transform', 'translate(-25,-115) scale(0.7)')
                                         .style('fill', '#333')
                                         .attr('transform', 'translate(-8,-8) scale(1.1)')
-                                } else if(d.value.type === 'outside') {
+                                } else if (d.value.type === 'outside') {
                                     elm.append("circle")
                                         .attr("cx", function(d) { return d.x; })
                                         .attr("cy", function(d) { return d.y; })
                                         .attr("r", 8)
                                         .attr("fill", '#333')
-                                } else if(d.value.type === 'Non-Stealth Internal Attack') {
+                                } else if (d.value.type === 'Non-Stealth Internal Attack') {
                                     elm.append('rect')
                                         .attr('x', function(d) { return d.x; })
                                         .attr('y', function(d) { return d.y; })
@@ -2022,23 +2022,22 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         });
 
                     function tick() {
-
                         node[0].x = width;
                         node[0].y = height;
                         var value = 120; 
 
                         node.attr("cx", function(d) { 
-                                if(d.group==="child"){
+                                if (d.group === "child") {
                                     value = 0;
-                                }else{
+                                } else {
                                     value = 120;
                                 }
                                 return d.x = Math.max(value, Math.min(width - value, d.x)); 
                             })
                             .attr("cy", function(d) { 
-                                if(d.group==="child"){
+                                if (d.group === "child") {
                                     value = 0;
-                                }else{
+                                } else {
                                     value = 120;
                                 }
                                 return d.y = Math.max(value, Math.min(height - value, d.y)); });
@@ -2068,98 +2067,163 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                     force.start();
 
 
-                   /* //LEGEND
-
-                    var legend_color = function(legend_item) {
-                        if (legend_item === "Stealth Role") { 
-                            return palette.pink;
-                        } else if (legend_item === "AD Group") { 
-                            return palette.purple;
-                        } else if (legend_item === "Stealth COI") { 
-                            return palette.green;
-                        } else if (legend_item === "User with one COI") { //IP node with 1 COI group
-                            return palette.blue;
-                        } else if (legend_item === "User with two COIs") { //IP node with 2 COI groups
-                            return palette.gray;
-                        } else if (legend_item === "User with three COIs") { //etc...
-                            return palette.yellow;
-                        } else if (legend_item === "User with four COIs") {
-                            return palette.orange;
-                        } else {
-                            return palette.red;
-                        }
-                    }
-
-                    var circle_legend_data = ["Stealth Role", "AD Group", "Stealth COI"];
+                    //LEGEND
                     var circle_legend = vis.selectAll(".circle_legend")
-                        .data(circle_legend_data)
+                        .data(["Stealth COIs"])
                         .enter().append("g")
                         .attr("class", "circle_legend")
-                        .attr("transform", function(d, i) { return "translate(11," + (i+5) * 23 + ")"; });
-
-                    circle_legend.append("circle")
-                        .attr("r", function (d) {return logslider(d["width"]) - 7; })
-                        .style("fill", function(d) { return legend_color(d) });
-
-                    circle_legend.append("text")
-                        .attr("x",15)
-                        .attr("y", -1)
-                        .attr("dy", ".35em")
-                        .text(function(d) { return d; });
-
-                    var legend_data = ["User with one COI", "User with two COIs", 
-                        "User with three COIs", "User with four COIs", "User with five or more COIs"];
-
-                    var legend = vis.selectAll(".legend")
-                        .data(legend_data)
-                        .enter().append("g")
-                        .attr("class", "legend")
-                        .attr("transform", function(d, i) { return "translate(2," + i * 20 + ")"; });
-
-                    legend.append("rect")
-                        .attr("width", 18)
-                        .attr("height", 18)
-                        .style("fill", function(d) { return legend_color(d) });
-
-                    legend.append("text")
-                        .attr("x", 23)
-                        .attr("y", 9)
-                        .attr("dy", ".35em")
-                        .text(function(d) { return d; });
-
-                    var gateway_legend = vis.selectAll(".gateway_legend")
-                        .data(["Cleartext COI"])
-                        .enter().append("g")
-                        .attr("class", "gateway_legend")
                         .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
-                    gateway_legend.append('svg:path')
-                        .attr('transform', 'translate(0,176)')
-                        .attr('d', 'M18,0C8.059,0,0,8.06,0,18.001C0,27.941,8.059,36,18,36c9.94,0,18-8.059,18-17.999C36,8.06,27.94,0,18,0z')
-                        .attr('fill', '#67AAB5');
+                    circle_legend.append('svg:circle')
+                        .attr('transform', 'translate(15,15) scale(0.5)')
+                        .attr('r', 25)
+                        .style('fill', '#fff')
+                        .style("stroke-width", "8px")
+                        .style("stroke" , "#259286");
 
-                    gateway_legend.append('svg:path')
-                        .attr('transform', 'translate(0,176)')
-                        .attr('d', 'M24.715,19.976l-2.057-1.122l-1.384-0.479l-1.051,0.857l-1.613-0.857l0.076-0.867l-1.062-0.325l0.31-1.146'+
-                            'l-1.692,0.593l-0.724-1.616l0.896-1.049l1.108,0.082l0.918-0.511l0.806,1.629l0.447,0.087l-0.326-1.965l0.855-0.556l0.496-1.458'+
-                            'l1.395-1.011l1.412-0.155l-0.729-0.7L22.06,9.039l1.984-0.283l0.727-0.568L22.871,6.41l-0.912,0.226L21.63,6.109l-1.406-0.352'+
-                            'l-0.406,0.596l0.436,0.957l-0.485,1.201L18.636,7.33l-2.203-0.934l1.97-1.563L17.16,3.705l-2.325,0.627L8.91,3.678L6.39,6.285'+
-                            'l2.064,1.242l1.479,1.567l0.307,2.399l1.009,1.316l1.694,2.576l0.223,0.177l-0.69-1.864l1.58,2.279l0.869,1.03'+
-                            'c0,0,1.737,0.646,1.767,0.569c0.027-0.07,1.964,1.598,1.964,1.598l1.084,0.52L19.456,21.1l-0.307,1.775l1.17,1.996l0.997,1.242'+
-                            'l-0.151,2.002L20.294,32.5l0.025,2.111l1.312-0.626c0,0,2.245-3.793,2.368-3.554c0.122,0.238,2.129-2.76,2.129-2.76l1.666-1.26'+
-                            'l0.959-3.195l-2.882-1.775L24.715,19.976z')
-                        .attr('fill', '#595A5C');
+                    circle_legend.append("text")
+                        .attr("x", 38)
+                        .attr("y", 17)
+                        .attr("dy", ".35em")
+                        .text(function(d) { return d; });
 
-                    gateway_legend.append("text")
-                        .attr("x", 40)
+
+                    var link_legend = vis.selectAll(".link_legend")
+                        .data(["User with Shared Access"])
+                        .enter().append("g")
+                        .attr("class", "link_legend")
+                        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+                    link_legend.append('svg:rect')
+                        .attr('transform', 'translate(0,35)')
+                        .style('fill', '#259286')
+                        .attr('width', 30)
+                        .attr('height', 20);
+
+                    link_legend.append("text")
+                        .attr("x", 38)
+                        .attr("y", 44)
+                        .attr("dy", ".35em")
+                        .text(function(d) { return d; });
+
+
+                    var standard_legend = vis.selectAll(".standard_legend")
+                        .data(["Standard"])
+                        .enter().append("g")
+                        .attr("class", "standard_legend")
+                        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+                    standard_legend.append('svg:polygon')
+                        .attr('transform', 'translate(0,61) scale(0.5)')
+                        .style('fill', '#515151')
+                        .attr('points', '53,18 53,10 60,10 60,0 44,0 44,10 51,10 51,16 31,16 31,10 38,10 38,0 22,0 22,10 29,10 '+
+                        '29,16 9,16 9,10 16,10 16,0 0,0 0,10 7,10 7,18 29,18 29,26 7,26 7,35 0,35 0,45 16,45 16,35 9,35 9,28 29,28 29,35 22,35 22,45 '+
+                        '38,45 38,35 31,35 31,28 51,28 51,35 44,35 44,45 60,45 60,35 53,35 53,26 31,26 31,18');
+
+                    standard_legend.append("text")
+                        .attr("x", 38)
+                        .attr("y", 74)
+                        .attr("dy", ".35em")
+                        .text(function(d) { return d; });
+
+
+                    var ct_legend = vis.selectAll(".ct_legend")
+                        .data(["ClearText"])
+                        .enter().append("g")
+                        .attr("class", "ct_legend")
+                        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+                    ct_legend.append('svg:path')
+                        .attr('transform', 'translate(0,90) scale(0.4)')
+                        .style('fill', '#259286')
+                        .attr('d', 'M36.8,12.2L19.6,15l4.4-12L36.8,0V12.2z M3.8,20.8l9.2-3.7l5.4-11.4L3.8,20.8z M36.8,16.5l-18.6,3.8'+
+                        'L17.5,37h19.3V16.5z M12.2,21.6l-9.8,3.6L0,37h10.3L12.2,21.6z M42.8,12.2L59.9,15l-4.6-12L42.8,0V12.2z M60.4,5.8l5.4,11.4l9.2,3.7'+
+                        'L60.4,5.8z M42.8,37h20.4L61,20.3l-18.2-3.8V37z M68.6,37h10.3l-2.4-11.8l-9.8-3.6L68.6,37z M36.8,67.2l-17.3-2.8l4.4,12l12.8,3.1'+
+                        'V67.2z M18.5,73.6l-5.4-11.4l-9.2-3.7L18.5,73.6z M36.8,42H17.5l0.7,16.8l18.6,2.1V42z M10.3,42H0l2.4,11.9l9.8,3.7L10.3,42z'+
+                        ' M42.8,79.4l12.4-3.1l4.6-12l-17.1,2.8V79.4z M75.1,58.6l-9.2,3.7l-5.4,11.4L75.1,58.6z M42.8,60.9L61,58.8L63.2,42H42.8V60.9z'+
+                        ' M66.7,57.5l9.8-3.7L78.9,42H68.6L66.7,57.5z');
+
+                    ct_legend.append("text")
+                        .attr("x", 38)
+                        .attr("y", 107)
+                        .attr("dy", ".35em")
+                        .text(function(d) { return d; });
+
+
+                    var quar_legend = vis.selectAll(".quar_legend")
+                        .data(["Quarantine"])
+                        .enter().append("g")
+                        .attr("class", "quar_legend")
+                        .attr("transform", function(d, i) { return "translate(0, " + i * 20 + ")"; });
+
+                    quar_legend.append('svg:path')
+                        .attr('transform', 'translate(3,140) scale(0.25)')
+                        .style('fill', '#ff0000')
+                        .attr('d', 'M36.6,32.1c1.4-2.2,2.4-4.7,2.9-7.3c-8.1-3.3-13.8-11.2-13.8-20.5c0-1.1,0.1-2.1,0.2-3.1 C23.7,0.4,21.3,0,18.8,0c-0.2,0-0.4,0-0.6,0'+
+                        'c-0.2,1.4-0.3,2.9-0.3,4.3C17.9,16.9,25.6,27.7,36.6,32.1z M94.3,36.2c-4.3,5-10.6,8.1-17.7,8.1c-12.9,0-23.4-10.4-23.4-23.3c0-3.8,0.9-7.5,2.6-10.7'+
+                        'l-2.8-1.6 c-1.2,1.4-3.1,2.4-5.1,2.4c-2.1,0-3.9-0.9-5.1-2.4l-3,1.8c1.6,3.2,2.5,6.8,2.5,10.6c0,12.9-10.5,23.3-23.4,23.3 c-7,0-13.3-3.1-17.6-7.9'+
+                        'L0,37.1c6.2,8,15.9,13.1,26.7,13.1c8,0,15.3-2.8,21.1-7.4c5.8,4.6,13.1,7.4,21.1,7.4 c10.9,0,20.6-5.2,26.7-13.1L94.3,36.2z');
+
+                    quar_legend.append('svg:path')
+                        .attr('transform', 'rotate(120,-27,71.5) scale(0.25)')
+                        .style('fill', '#ff0000')
+                        .attr('d', 'M36.6,32.1c1.4-2.2,2.4-4.7,2.9-7.3c-8.1-3.3-13.8-11.2-13.8-20.5c0-1.1,0.1-2.1,0.2-3.1 C23.7,0.4,21.3,0,18.8,0c-0.2,0-0.4,0-0.6,0'+
+                        'c-0.2,1.4-0.3,2.9-0.3,4.3C17.9,16.9,25.6,27.7,36.6,32.1z M94.3,36.2c-4.3,5-10.6,8.1-17.7,8.1c-12.9,0-23.4-10.4-23.4-23.3c0-3.8,0.9-7.5,2.6-10.7'+
+                        'l-2.8-1.6 c-1.2,1.4-3.1,2.4-5.1,2.4c-2.1,0-3.9-0.9-5.1-2.4l-3,1.8c1.6,3.2,2.5,6.8,2.5,10.6c0,12.9-10.5,23.3-23.4,23.3 c-7,0-13.3-3.1-17.6-7.9'+
+                        'L0,37.1c6.2,8,15.9,13.1,26.7,13.1c8,0,15.3-2.8,21.1-7.4c5.8,4.6,13.1,7.4,21.1,7.4 c10.9,0,20.6-5.2,26.7-13.1L94.3,36.2z');   
+
+                    quar_legend.append('svg:path')
+                        .attr('transform', 'rotate(240,54,70) scale(0.25)')
+                        .style('fill', '#ff0000')
+                        .attr('d', 'M36.6,32.1c1.4-2.2,2.4-4.7,2.9-7.3c-8.1-3.3-13.8-11.2-13.8-20.5c0-1.1,0.1-2.1,0.2-3.1 C23.7,0.4,21.3,0,18.8,0c-0.2,0-0.4,0-0.6,0'+
+                        'c-0.2,1.4-0.3,2.9-0.3,4.3C17.9,16.9,25.6,27.7,36.6,32.1z M94.3,36.2c-4.3,5-10.6,8.1-17.7,8.1c-12.9,0-23.4-10.4-23.4-23.3c0-3.8,0.9-7.5,2.6-10.7'+
+                        'l-2.8-1.6 c-1.2,1.4-3.1,2.4-5.1,2.4c-2.1,0-3.9-0.9-5.1-2.4l-3,1.8c1.6,3.2,2.5,6.8,2.5,10.6c0,12.9-10.5,23.3-23.4,23.3 c-7,0-13.3-3.1-17.6-7.9'+
+                        'L0,37.1c6.2,8,15.9,13.1,26.7,13.1c8,0,15.3-2.8,21.1-7.4c5.8,4.6,13.1,7.4,21.1,7.4 c10.9,0,20.6-5.2,26.7-13.1L94.3,36.2z');                  
+
+                    quar_legend.append("text")
+                        .attr("x", 38)
+                        .attr("y", 140)
+                        .attr("dy", ".35em")
+                        .text(function(d) { return d; });
+
+
+
+                    var checkmark_legend = vis.selectAll(".checkmark_legend")
+                        .data(["Allowed Connections"])
+                        .enter().append("g")
+                        .attr("class", "checkmark_legend")
+                        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+                    checkmark_legend.append('svg:path')
+                        .attr('transform', 'translate(-85 -93) scale(0.5)')
+                        .attr('d', 'M193.6,542.1c-0.5,0-8.8-14.6-8.8-14.6l8-3.6l1.6,8.4c0,0,19.9-22.3,21.7-23.9l4.3-0.2'+
+                                        'C220.3,508.2,194.1,542.1,193.6,542.1z')
+                        .style('fill', '#000000');                
+
+                    checkmark_legend.append("text")
+                        .attr("x", 38)
+                        .attr("y", 170)
+                        .attr("dy", ".35em")
+                        .text(function(d) { return d; });
+
+                    var redx_legend = vis.selectAll(".redx_legend")
+                        .data(["Dropped Connections"])
+                        .enter().append("g")
+                        .attr("class", "redx_legend")
+                        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+                    redx_legend.append('svg:path')
+                        .attr('transform', 'translate(7,185) scale(0.5)')
+                        .attr('d', 'M0,29.9c0-0.6,11.3-12,11.8-12.6c0.5-0.5-3.3-13-3.3-14.6C8.4,1.5,10.7,0,11.2,0'+
+                                    'c2.1,0,9.4,9.1,9.4,9.1s11-8.2,12.3-7.8c2.5,0.8,3.5,3,2,4.4c-2.3,2.5-11,11.8-11,13.9c0,1,5.3,8.7,4.7,9.5l-3.1,4.5'+
+                                    'c-0.6,0.9-10-7.7-10-7.7S5.3,35.8,4.9,35.8C4.5,35.8,0,30.5,0,29.9z')
+                        .attr('style', 'fill:#f60000;fill-opacity:1;stroke:none;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1');    
+
+                    redx_legend.append("text")
+                        .attr("x", 38)
                         .attr("y", 194)
                         .attr("dy", ".35em")
                         .text(function(d) { return d; });
-*/
-
-
-
-
 
                 }, 0, false);
             })
@@ -2351,7 +2415,7 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
     };
 }]);
 
-angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$rootScope', '$location', function ($timeout, $rootScope, $location) {
+angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$rootScope', '$location', '$http', function ($timeout, $rootScope, $location, $http) {
     return {
         link: function ($scope, element, attrs) {
             $scope.$on('stealthForceChart', function (event, data, params) {
@@ -2393,11 +2457,11 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                     }
                     var color = function(group, type) {
                         if (group === 0) { //stealth role/group/coi node
-                            if(type === "role") {
+                            if (type === "role") {
                                 return palette.pink;
-                            } else if(type === "group") {
+                            } else if (type === "group") {
                                 return palette.purple;
-                            } else if(type === "coi") {
+                            } else if (type === "coi") {
                                 return palette.green;
                             } 
                             
@@ -2469,7 +2533,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .html(function(d) {
                             var title = "<strong>Rules: </strong> <br />";
                             var rules = "";
-                            for(var i = 0; i < d.rules.length; i++) {
+                            for (var i = 0; i < d.rules.length; i++) {
                             //     if(d.rules[i].order === 1) {
                             //         if(d.rules[i].rule !== "-"){
                             //             ret += d.cois[i] + ":<br />" +
@@ -2478,13 +2542,13 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                             //             ret += d.cois[i] + "<br />";
                             //         }
                             //     } else {
-                                if(d.rules[i].rule !== "-"){
+                                if (d.rules[i].rule !== "-") {
                                     rules += "&nbsp&nbsp&nbsp" + d.rules[i].order + " " + d.rules[i].rule + "<br />";
                                 }
                             //     }
                                 
                             }
-                            if(rules === "") {
+                            if (rules === "") {
                                 return title + "None";
                             }
                             else {
@@ -2494,13 +2558,53 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         });
                         vis.call($scope.tip);
                    
-                    var force = d3.layout.force()
-                        
+                    var force = d3.layout.force()                        
                         .on("tick", tick)
-                        .gravity(0.20)
+                        .gravity(0.05)
+                        /*.gravity(function(d) { 
+                           console.log(d);
+                            if ((d.type === "role") || (d.type === "group")) {
+                               return  0.3;
+                            } else if (d.type === "user")  {
+                               return  0.3;
+                            } else {
+                               return  0;
+                            }
+                        })*/
                         .linkDistance(20)
                         .charge(-1500)
                         .size([width-50, height]);
+
+
+                    function dragstart(d, i) {
+                        d.fixed = true; 
+                        force.stop();
+                    }
+
+                    function dragmove(d, i) {
+                        d.fixed = true; 
+                        d.px += d3.event.dx;
+                        d.py += d3.event.dy;
+                        d.x += d3.event.dx;
+                        d.y += d3.event.dy;
+                        tick(); 
+                    }
+
+                    function dragend(d, i) {
+                        console.log(d);
+                        d.fixed = true; 
+                        $http({method: 'GET', url: '/local_events/stealth_COI_map?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name+'&page_title=stealth_COI_map'}).
+                            success(function(data) { 
+                                if (data["force"].length>0) {
+                                    $http({method: 'POST', url: '/local_events/stealth_COI_map', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_COI_map"}});
+                                }else{
+                                    $http({method: 'POST', url: '/local_events/stealth_COI_map?type=insert', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_COI_map"}});
+                                }
+                            });
+                        tick();
+                        force.resume();
+                    }
+
 
                     $scope.update = function() {
                         force
@@ -2518,22 +2622,31 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                             .style("stroke-width", "5");
                         link.exit().remove();
 
+
+                        var node_drag = d3.behavior.drag()
+                            .on("dragstart", dragstart)
+                            .on("drag", dragmove)
+                            .on("dragend", dragend);       
+
                         node = vis.selectAll(".node")
                             .data(data.nodes);    
                         node
                             .enter()
                             .append("g")
                             .attr("class", "node")
-                            .call(force.drag);
+                            .call(node_drag);
 
                        // console.log("test");
                         var cldr;
                         //CIRCLE
                         var n = node.each(function(d){
+                            if ((d.type === "role") || (d.type === "group")) {
+                                d.fixed = true;
+                            } 
                             //console.log(d);
                             var elm = d3.select(this)
 
-                            if(d.hide !== "true"){
+                            if (d.hide !== "true") {
                                //console.log(d.index);
                                /* elm
                                     .attr('style', 'display:block');*/
@@ -2579,7 +2692,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                                        // .style("stroke-width", "1.5px")
                                        // .style("stroke", "#fff")
                                 }
-                                if(d.type === "user") {
+                                if (d.type === "user") {
                                     elm
                                         .on('mouseover', function(d){
                                             elm.style('cursor', 'pointer')
@@ -2644,16 +2757,26 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                     };
                     $scope.update();
 
-
                     function tick() {
+                        node[0].x = width;
+                        node[0].y = height;
+                        var value = 40; 
+
+                        node.attr("cx", function(d) { 
+                                return d.x = Math.max(value, Math.min(width - value, d.x)); 
+                            })
+                            .attr("cy", function(d) { 
+                                return d.y = Math.max(value, Math.min(height - (value*5.6), d.y)); });
+
+                        link.attr("x1", function(d) { return d.source.x; })
+                            .attr("y1", function(d) { return d.source.y; })
+                            .attr("x2", function(d) { return d.target.x; })
+                            .attr("y2", function(d) { return d.target.y; });
+
+
                         node.attr("transform", function(d, i) {
                             return "translate(" + d.x + "," + d.y + ")";
                         });
-
-                        link.attr("x1", function(d)   { return d.source.x; })
-                            .attr("y1", function(d)   { return d.source.y; })
-                            .attr("x2", function(d)   { return d.target.x; })
-                            .attr("y2", function(d)   { return d.target.y; })
                     }
 
 
@@ -3033,15 +3156,15 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 var color;
                                 element.append('circle')
                                     .attr('fill', function(d){ 
-                                        if(d.ioc_severity === 1){
+                                        if (d.ioc_severity === 1) {
                                             color = '#377FC7'; 
-                                        }else if(d.ioc_severity === 2){
+                                        } else if (d.ioc_severity === 2) {
                                             color = '#F5D800'; 
-                                        }else if(d.ioc_severity === 3){
+                                        } else if (d.ioc_severity === 3) {
                                             color = '#F88B12'; 
-                                        }else if(d.ioc_severity === 4){
+                                        } else if (d.ioc_severity === 4) {
                                             color = '#DD122A'; 
-                                        }else{
+                                        } else {
                                             color = '#6FBF9B'; 
                                         }
                                         return color;
@@ -3509,7 +3632,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     var offset = ept - eppt;
                     var totalHeight = $('#lanegraphinfo')[0].scrollHeight;
                     var windowHeight = $('#lanegraphinfo').height();
-                    if(offset>(totalHeight-windowHeight)){
+                    if (offset>(totalHeight-windowHeight)) {
                         offset = totalHeight-windowHeight;
                     }
                     $('#lanegraphinfo').scrollTo(offset);
