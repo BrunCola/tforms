@@ -2862,7 +2862,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     max: null
                 };
                 // toggle for turning on/off unit multiselecting
-                $scope.patterns = {
+                $scope.pattern = {
                     searching: false,
                     selected: {}
                 }
@@ -3286,7 +3286,13 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .html('Create pattern')
                     .attr('class', 'saveToggle')
                     .on('click', function(){
-                        
+                        if ($scope.pattern.searching === false) {
+                            // set searching to true
+                            $scope.pattern.searching = true;
+                            // change class (so we know its on)
+                        } else {
+                            
+                        }
                     });
 
                 // var timeShiftHolder = d3.select("#lanegraph").append('div').attr('class', 'timeShiftHolder');
@@ -3546,6 +3552,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // elm.style('cursor', 'pointer');
                                 })
                                 .on("click", function(d){
+                                    if ($scope.pattern.searching === false) {
                                         itemRects.selectAll('g').each(function(d){
                                             var elm = d3.select(this);
                                             elm.attr('class', null);
@@ -3556,7 +3563,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         if (lastExpandedId !== null) {
                                             $('div'+lastExpandedId+'.infoDivExpanded').hide();
                                         }
-
                                         if($('#autoexpand').is(':checked')){
                                             if (isOpen === '#'+d.id) {
                                                 $('#'+d.id+' .infoDivExpanded').css('display', 'none');
@@ -3583,6 +3589,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         // set ids for cross-refrence
                                         previousID = d.id;
                                         previousElm = elm;
+                                    } else {
+                                        // have every d element push to our store array as well as contued highlighting of selected points
+                                    }
                                 })
                                 .on("mouseout", function(d){
                                     elm
