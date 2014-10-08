@@ -2174,3 +2174,8 @@ Datatables Plugin(in v1.3)
 .action-bttns{
   float: left; background-color: red; border-radius: 12px; padding: 3px 6px 3px 6px; border-width: 0px;
 }
+a.epmap{
+  color: #4b8df8;
+  text-decoration: underline;
+  font-weight: bold;
+}
