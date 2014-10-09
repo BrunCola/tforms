@@ -183,7 +183,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'orphans': []
                 },
                 {
-                    'title': 'Local User Conn.',
+                    'title': 'Local User Connections',
                     'url': 'local_user_conn',
                     'icon': 'fa-user',
                     'orphans': []
@@ -203,7 +203,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                 //     'orphans': []
                 // },
                 {
-                    'title': 'Local Floor Plan',
+                    'title': 'Endpoint Map',
                     'url': 'local_floor_plan',
                     'icon': 'fa-user',
                     'orphans': []
