@@ -2021,6 +2021,32 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         }  
                     }
 
+
+                    $scope.pageLoadInfo = function(data, type) {
+                        for (var i in data) {
+                            if (typeof data[i] === 'object') {
+                                var divInfo = '';
+                                for (var e in data[i]) {
+                                    if (e !==  "index"){
+                                        divInfo += '<div><strong>'+e+': </strong>'+data[i][e]+'</div>';
+                                    }
+                                }
+                                var row = infoDiv.append('tr');
+                                    row
+                                        .append('td')
+                                        .html(divInfo);
+                            } else {
+                                var row = infoDiv.append('tr');
+                                    row
+                                        .append('td')
+                                        .html('<strong>'+dictionary(i)+'</strong>');
+                                    row
+                                        .append('td')
+                                        .text(data[i]);
+                            }
+                        }                       
+                    }
+
                     var linktext = d3.selectAll('.linkgroup');
                     var text = linktext
                         .append('text')
@@ -2077,7 +2103,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
 
                     force.on("tick", tick);
                     force.start();
-
+                    $scope.onloadInfo();
 
                     //LEGEND
                     var circle_legend = vis.selectAll(".circle_legend")
