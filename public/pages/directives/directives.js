@@ -3052,7 +3052,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 var xAxis = d3.svg.axis()
                     .scale(x1)
                     .orient('bottom')
-                     .tickFormat(d3.time.format('%H:%M'))
+                     // .tickFormat(d3.time.format('%H:%M'))
                     .tickSize(1)
                     .tickPadding(8);
                 
@@ -3833,13 +3833,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', '$http', function ($timeout, $rootScope, $http) {
     return {
         link: function ($scope, element, attrs) {
-            $scope.$on('floorPlan', function (event, data) {   
+            $scope.$on('floorPlan', function (event) {   
+                var data = $scope.data.force;
                 var floorName = element.attr('floor-name');
-
                 $scope.userList = data;
-
-                $scope.$broadcast('spinnerHide');
                 $scope.appendInfo = function(user,data,type) { 
+                    console.log('run')
                     if (type === "clear"){
                         infoDiv.selectAll('tr').remove(); 
                     } else if (type === "userinfo"){
@@ -3943,7 +3942,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                 }
 
                 function plot(data, floor) {
-                    console.log(floor)
+                    var filtered = data.filter(function(d){if (d.map === floorName){ return true; }});
                     ////////////////////
                     ///  LIST USERS  ///
                     ////////////////////
@@ -4110,10 +4109,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         });
 
                     floorDiv.selectAll('button').remove();
-                    floorDiv.selectAll('button').data(data).enter()
+                    floorDiv.selectAll('button').data(filtered).enter()
                         .append('button').each(function(d){
-                            if (d.map === floor) {
-                                console.log(d.map+','+floor)
+                            // if (d.map === 'floor1') {
+                                // console.log(d.map+','+floor)
                                 // if ((d.map === null) || (d.map === '-')) { return };
                                 // if (d.map !== floorName) { return } else {console.log(d); console.log(floorName)};
                                 // console.log('test')
@@ -4122,10 +4121,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 if (d.custom_user !== null){
                                     name = d.custom_user;
                                 }
-                                if ((d.x > 0) || (d.y > 0)){
-                                    console.log(d.map)
-                                    console.log(floor)
-
+                                // if ((d.x > 0) || (d.y > 0)){
+                                    console.log(d.map+', '+floor);
                                     var id = d.id;
                                     var elm = d3.select(this);
                                     var elel = elm[0];
@@ -4287,8 +4284,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                         },
                                         false
                                     );
-                                }
-                            }
+                                // }
+                            // }
                         });
                 }
                 plot(data, floorName);   

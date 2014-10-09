@@ -14,7 +14,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.data.force.forEach(function(d){
                 d.id = count++;
             })
-            $scope.$broadcast('floorPlan', $scope.data.force);
+            $scope.$broadcast('floorPlan');
             $scope.$broadcast('spinnerHide');
         }
         if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
