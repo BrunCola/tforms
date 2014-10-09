@@ -113,13 +113,26 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 
         // get user image
         if ($scope.lan_ip !== '-') {
-            $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?lan_zone='+$scope.lan_zone+'&lan_ip='+$scope.lan_ip+'&type=assets'}).
+            $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?lan_zone='+$scope.lan_zone+'&lan_ip='+$scope.lan_ip+'&type=custom_user'}).
             success(function(data) {
                 if (data[0] !== undefined) {
-                    $scope.userImage = 'public/pages/assets/img/staff/'+data[0].file;
+                    $scope.custom_user = data[0].custom_user;
                 }
             });
         }
+
+        if ($scope.lan_ip !== '-') {
+            $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?lan_zone='+$scope.lan_zone+'&lan_ip='+$scope.lan_ip+'&type=assets'}).
+            success(function(data) {
+                if (data[0] !== undefined) {
+                    //$scope.userImage = 'public/pages/assets/img/staff/'+data[0].file;
+                    $scope.userImage = 'public/uploads/phirelight/'+data[0].file;
+                }
+            });
+        }
+
+
+
     });
 
     $scope.requery = function(min, max, callback) {
@@ -161,6 +174,24 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                     callback($scope.deepItems);
                     $scope.alert.style('display', 'block');
                 });
+        }
+    }
+
+    $scope.quarantineLink = function() {
+        var url = 'stealth_quarantine';
+        if ($location.$$search.start && $location.$$search.end) {
+            $location.path(url).search({'start':$location.$$search.start, 'end':$location.$$search.end});
+        } else {
+            $location.path(url);
+        }
+    }
+
+    $scope.firewallLink = function() {
+        var url = 'firewall';
+        if ($location.$$search.start && $location.$$search.end) {
+            $location.path(url).search({'start':$location.$$search.start, 'end':$location.$$search.end});
+        } else {
+            $location.path(url);
         }
     }
 

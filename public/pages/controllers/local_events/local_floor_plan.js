@@ -39,7 +39,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $http({method: 'GET', url: query+'&typeinfo=assets'}).
                 success(function(data) {
                     if (data[0] !== undefined) {
-                        $scope.appendInfo(d, 'public/pages/assets/img/staff/'+data[0].file, "assets");
+                        $scope.appendInfo(d, data[0].path, "assets");
                     } else {
                         $scope.appendInfo(d, '', "assets");
                     }
@@ -102,6 +102,17 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             keyboard: true
         });
     };
+
+    $scope.uploadUser = function (rowData) {
+        $rootScope.modalRowData = rowData;
+        $scope.modalInstance = $modal.open({
+            templateUrl: 'uploadModal.html',
+            controller: uploadInstanceCtrl,
+            keyboard: true,
+            modalRowData: rowData
+        });
+    };
+
     var uploadInstanceCtrl = function ($scope, $modalInstance, $upload) {
         $scope.ok = function () {
             $modalInstance.close();
@@ -137,28 +148,59 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 $scope.start(i);
             }
         };
-        $scope.start = function(index) {
-            $scope.progress[index] = 0;
-            $scope.errorMsg = null;
-            $scope.upload[index] = $upload.upload({
-                url : '/uploads',
-                method: 'POST',
-                data : {
-                    myModel : $scope.myModel,
-                    imageType: 'map'
-                },
-                file: $scope.selectedFiles[index],
-            }).then(function(response) {
-                $scope.uploadResult.push(response.data);
-            }, function(response) {
-                if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
-            }, function(evt) {
-                // Math.min is to fix IE which reports 200% sometimes
-                $scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-            }).xhr(function(xhr){
-                xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
-            });
-        };
+
+
+
+        if ($rootScope.modalRowData.lan_ip) {
+            $scope.start = function(index) {
+                $scope.progress[index] = 0;
+                $scope.errorMsg = null;
+                $scope.upload[index] = $upload.upload({
+                    url : '/uploads',
+                    method: 'POST',
+                    data : {
+                        myModel : $scope.myModel,
+                        imageType: 'user',
+                        lan_user: $rootScope.modalRowData.lan_user,
+                        lan_zone: $rootScope.modalRowData.lan_zone,
+                        lan_ip: $rootScope.modalRowData.lan_ip
+                    },
+                    file: $scope.selectedFiles[index],
+                }).then(function(response) {
+                    $scope.uploadResult.push(response.data);
+                }, function(response) {
+                    if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
+                }, function(evt) {
+                    // Math.min is to fix IE which reports 200% sometimes
+                    $scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+                }).xhr(function(xhr){
+                    xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
+                });
+            };
+        } else {
+            $scope.start = function(index) {
+                $scope.progress[index] = 0;
+                $scope.errorMsg = null;
+                $scope.upload[index] = $upload.upload({
+                    url : '/uploads',
+                    method: 'POST',
+                    data : {
+                        myModel : $scope.myModel,
+                        imageType: 'map'
+                    },
+                    file: $scope.selectedFiles[index],
+                }).then(function(response) {
+                    $scope.uploadResult.push(response.data);
+                }, function(response) {
+                    if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
+                }, function(evt) {
+                    // Math.min is to fix IE which reports 200% sometimes
+                    $scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+                }).xhr(function(xhr){
+                    xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
+                });
+            };
+        }
     };
 
 }]);

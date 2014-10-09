@@ -59,7 +59,7 @@ module.exports = function(pool) {
                         });  
                         break;
                     case 'assets':
-                        new query({query: 'SELECT `file` FROM `assets` WHERE `lan_ip` = ? AND `lan_zone` = ?', insert: [req.query.lan_ip, req.query.lan_zone]}, {database: database, pool: pool}, function(err,data){
+                        new query({query: 'SELECT `file`, `path` FROM `assets` WHERE `lan_ip` = ? AND `lan_zone` = ?', insert: [req.query.lan_ip, req.query.lan_zone]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
                             }
