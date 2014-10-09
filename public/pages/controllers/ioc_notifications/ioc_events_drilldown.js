@@ -125,7 +125,8 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?lan_zone='+$scope.lan_zone+'&lan_ip='+$scope.lan_ip+'&type=assets'}).
             success(function(data) {
                 if (data[0] !== undefined) {
-                    $scope.userImage = 'public/pages/assets/img/staff/'+data[0].file;
+                    //$scope.userImage = 'public/pages/assets/img/staff/'+data[0].file;
+                    $scope.userImage = 'public/uploads/phirelight/'+data[0].file;
                 }
             });
         }
