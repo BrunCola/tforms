@@ -10,6 +10,8 @@ module.exports = function (sql, queries, conn, callback) {
     var nodesObject = {}; // for use on the front
     var clearTextIndex = -1;
 
+
+
     function uniqueUsers(user, group) {
         // if lan_user is not in unique object
         if (!(user in uniqueLinks)) {
@@ -73,20 +75,13 @@ module.exports = function (sql, queries, conn, callback) {
                         // target is the index of the corresponding main node
                         var target = uniqueNodes.indexOf(arr[o])
                         // push links to its own array
-                        if ( obj.allow ){
-                            userLinks.push({
-                                "source": source,
-                                "target": target,
-                                "class": 'child',
-                                "allowed": obj.allow
-                            })
-                        } else {
-                            userLinks.push({
-                                "source": source,
-                                "target": target,
-                                "class": 'child'
-                            })
-                        }
+                        userLinks.push({
+                            "source": source,
+                            "target": target,
+                            "class": 'child',
+                            "allowed": obj.allow
+                        })
+                        
                     }
                 }
             }
@@ -134,6 +129,8 @@ module.exports = function (sql, queries, conn, callback) {
             function(callback) {
                 connection.query(queries[0].query, queries[0].insert)
                     .on('result', function(data){
+                        console.log(data);
+                        console.log(" ");
                         usersList.push(data);
                     })
                     .on('end', function(){
@@ -143,26 +140,6 @@ module.exports = function (sql, queries, conn, callback) {
 
             function(callback) {
                 connection.query(queries[1].query, queries[1].insert)
-                    .on('result', function(data){
-                        usersList.push(data);
-                    })
-                    .on('end', function(){
-                        callback();
-                    });
-            },
-
-            function(callback) {
-                connection.query(queries[4].query, queries[4].insert)
-                    .on('result', function(data){
-                        usersList.push(data);
-                    })
-                    .on('end', function(){
-                        callback();
-                    });
-            },
-
-            function(callback) {
-                connection.query(queries[5].query, queries[5].insert)
                     .on('result', function(data){
                         usersList.push(data);
                     })
@@ -209,15 +186,25 @@ module.exports = function (sql, queries, conn, callback) {
                 })
             },
 
-            // function(callback) {
-            //     connection.query(queries[1].query, queries[1].insert)
-            //         .on('result', function(data){
-            //             usersList.push(data);
-            //         })
-            //         .on('end', function(){
-            //             callback();
-            //         });
-            // }
+            function(callback) {
+                connection.query(queries[4].query, queries[4].insert)
+                    .on('result', function(data){
+                        usersList.push(data);
+                    })
+                    .on('end', function(){
+                        callback();
+                    });
+            },
+
+            function(callback) {
+                connection.query(queries[5].query, queries[5].insert)
+                    .on('result', function(data){
+                        usersList.push(data);
+                    })
+                    .on('end', function(){
+                        callback();
+                    });
+            },
         ], function(err) {
             if (err) throw console.log(err);
             connection.release();

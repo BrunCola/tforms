@@ -19,6 +19,7 @@ module.exports = function(pool) {
             }
             var force;
             if (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1) {
+                console.log("TESSST");
                 if (req.query.type === 'checkCoor') {
                     var database = req.session.passport.user.database;
                     var select_coordinates = {
@@ -81,7 +82,6 @@ module.exports = function(pool) {
                         res.json(results);
                     });
                 } else {
-                    console.log("test");
                     var sql = {
                         query: 'SELECT `lan_user`, `group` FROM `stealth_user',
                         insert: []
@@ -205,9 +205,7 @@ module.exports = function(pool) {
                                 force = data;
                                 callback();
                             });
-                        }
-                    
-
+                        }   
                     ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                         if (err) throw console.log(err);
                         var results = {

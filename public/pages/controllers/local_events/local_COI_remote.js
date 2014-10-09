@@ -22,7 +22,6 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
 
 
     $scope.onloadInfo = function (){
-        console.log($scope.forcedata);
         var nodeInfo = [];
         var nodeName = [];
         for(var i in $scope.forcedata.uniqueNodes){
@@ -85,7 +84,6 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
                 $scope.appendInfo(results, 'authorized');
             break;
             case 'blocked':
-                        console.log("test1");
            // console.log(data)
             // get children hanging off of parent nodes
                 var rTargets = $scope.forcedata.links.filter(function(d){
@@ -96,7 +94,6 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
                 })
                 var rSource = $scope.forcedata.links.filter(function(d){
                     if ((d.class !== undefined) && (d.target.index === data.index) && (d.source.value.allow === "blocked")) {
-                        console.log("test3");
                         return true;
                     }
                 })

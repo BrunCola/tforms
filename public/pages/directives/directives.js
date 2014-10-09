@@ -3844,7 +3844,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         }
                     } else if (type === "assets"){
                         var image = "public/system/assets/img/userplaceholder.jpg";
-                        console.log(data);
                         if ((data !== '') && (data !== '-')) {
                             image = data;
                         }
