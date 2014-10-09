@@ -18,7 +18,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.$broadcast('spinnerHide');
         }
 
-        if($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
+        if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
             var query = '/local_events/local_floor_plan?lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&type=flooruser';
             $http({method: 'GET', url: query+'&typeinfo=userinfoload'}).
                 success(function(data) {
@@ -29,12 +29,10 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         }
     }); 
     
-
-
     $scope.requery = function(d) {
          // get user image
         if ($scope.lan_ip !== '-') {
-            $scope.appendInfo("","","clear");
+            $scope.appendInfo("", "", "clear");
 
             var userInfo = [];
             var query = '/local_events/local_floor_plan?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser'; 
@@ -42,9 +40,9 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $http({method: 'GET', url: query+'&typeinfo=assets'}).
                 success(function(data) {
                     if (data[0] !== undefined) {
-                        $scope.appendInfo(d,'public/pages/assets/img/staff/'+data[0].file,"assets");
+                        $scope.appendInfo(d, 'public/pages/assets/img/staff/'+data[0].file, "assets");
                     } else {
-                        $scope.appendInfo(d,'',"assets");
+                        $scope.appendInfo(d, '', "assets");
                     }
                 });
 
