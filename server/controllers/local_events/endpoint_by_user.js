@@ -50,6 +50,14 @@ module.exports = function(pool) {
                     { title: 'Machine', select: 'lan_machine'},
                     { title: 'Local User', select: 'lan_user' },
                     { title: 'Local IP', select: 'lan_ip' },
+                    {
+                        title: '',
+                        select: null,
+                        dView: true,
+                        link: {
+                            type: 'Upload Image',
+                        },
+                    },
                 ],
                 settings: {
                     sort: [[1, 'desc']],

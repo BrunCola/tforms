@@ -576,6 +576,9 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                                     case 'Restore':
                                                         $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bRestore button-success pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Restore</button>");
                                                     break;
+                                                    case 'Upload Image':
+                                                        $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bUpload button-success pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Upload Image</button>");
+                                                    break;
                                                     default:
                                                         var obj = new Object();
                                                         //var all = new Object();
@@ -629,6 +632,10 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                                     tableData.filterAll();
                                                     redrawTable();
                                                 })
+                                        });
+                                        $('table .bUpload').on('click',function(){
+                                            var rowData = JSON.parse(this.value);
+                                            $scope.uploadOpen(rowData);
                                         });
                                         $scope.country = [];
                                         $scope.ioc = [];
