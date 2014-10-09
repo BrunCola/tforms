@@ -959,6 +959,22 @@ module.exports = function(pool) {
                         res.json(data)
                     });
                 }
+            } else if (req.query.type === 'custom_user') {
+                if (req.query.lan_ip && req.query.lan_zone) {
+                    var sql = {
+                        query: 'SELECT '+
+                                    '`custom_user` '+
+                                'FROM '+
+                                    '`users` '+
+                                'WHERE '+
+                                    '`lan_ip` = ? '+
+                                    'AND `lan_zone` = ?',
+                        insert: [req.query.lan_ip, req.query.lan_zone]
+                    }
+                    new query(sql, {database: database, pool: pool}, function(err,data){
+                        res.json(data)
+                    });
+                }
             } else {
                 if (req.query.lan_zone && req.query.lan_ip && req.query.remote_ip && req.query.ioc && req.query.ioc_attrID) {
                     var crossfilter;
