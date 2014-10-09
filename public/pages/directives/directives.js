@@ -4186,7 +4186,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         });
                 }
 
-                $scope.appendInfo = function(user,data,type) { 
+                $scope.$on('appendInfo', function (event,user,data,type) { 
                     if (type === "clear"){
                         infoDiv.selectAll('tr').remove(); 
                     } else if (type === "userinfo"){
@@ -4206,7 +4206,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         }
                     } else if (type === "assets"){
                         var image = "public/system/assets/img/userplaceholder.jpg";
-                        console.log(data);
                         if ((data !== '') && (data !== '-')) {
                             image = data;
                         }
@@ -4270,7 +4269,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             }
                         }
                     }
-                }
+                })
 
                 plot(data, floorName);   
             });

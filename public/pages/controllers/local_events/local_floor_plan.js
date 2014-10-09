@@ -31,8 +31,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     $scope.requery = function(d) {
          // get user image
         if ($scope.lan_ip !== '-') {
-            console.log($scope.appendInfo)
-            $scope.appendInfo("", "", "clear");
+            $scope.$broadcast('appendInfo', "", "", "clear")
 
             var userInfo = [];
             var query = '/local_events/local_floor_plan?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser'; 
@@ -40,40 +39,40 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $http({method: 'GET', url: query+'&typeinfo=assets'}).
                 success(function(data) {
                     if (data[0] !== undefined) {
-                        $scope.appendInfo(d, data[0].path, "assets");
+                        $scope.$broadcast('appendInfo', d, data[0].path, "assets");
                     } else {
-                        $scope.appendInfo(d, '', "assets");
+                        $scope.$broadcast('appendInfo', d, '', "assets");
                     }
                 });
 
-            $scope.appendInfo(d,"","userinfo");                       
+            $scope.$broadcast('appendInfo', d,"","userinfo");                       
 
             $http({method: 'GET', url: query+'&typeinfo=localioc'}).
                 success(function(data) {
-                    $scope.appendInfo(d,data[0],"localioc");
+                    $scope.$broadcast('appendInfo', d,data[0],"localioc");
                 });
 
             $http({method: 'GET', url: query+'&typeinfo=localapp'}).
                 success(function(data) {
-                    $scope.appendInfo(d,data[0],"localapp");
+                    $scope.$broadcast('appendInfo', d,data[0],"localapp");
                 });
 
             $http({method: 'GET', url: query+'&typeinfo=localhttp'}).
                 success(function(data) {
-                    $scope.appendInfo(d,data[0],"localhttp");
+                    $scope.$broadcast('appendInfo', d,data[0],"localhttp");
                 });
 
             $http({method: 'GET', url: query+'&typeinfo=localfiles'}).
                 success(function(data) {
-                    $scope.appendInfo(d,data[0],"localfiles");
+                    $scope.$broadcast('appendInfo', d,data[0],"localfiles");
                 });
 
             $http({method: 'GET', url: query+'&typeinfo=endpoint'}).
                 success(function(data) {
-                    $scope.appendInfo(d,data[0],"endpoint");
+                    $scope.$broadcast('appendInfo', d,data[0],"endpoint");
                 });
           
-            //$scope.appendInfo(userInfo);
+            //$scope.$broadcast('appendInfo', userInfo);
         }
     }
 
