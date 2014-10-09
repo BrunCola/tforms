@@ -108,6 +108,7 @@ module.exports = function(pool) {
                             'u.lan_ip, '+
                             'u.lan_zone, '+
                             'u.lan_machine, '+
+                            'u.map, '+
                             'u.lan_type, '+
                             'u.lan_os, '+
                             'u.lan_mac, '+
