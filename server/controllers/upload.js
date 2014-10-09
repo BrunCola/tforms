@@ -33,8 +33,8 @@ module.exports = function(pool) {
 						var newName = "floor_plan." + nameSplit[1];
 					} else if (req.body.imageType === 'user') { //if this is a user image
 						//rename to <username>_<zone>.<extension>
-						var newName = req.body.lan_user + "_" + req.body.lan_zone + nameSplit[1];
-					} else { //neither floor plan, nor user image, don't rename
+						var newName = req.body.lan_user + "_" + req.body.lan_zone + "." + nameSplit[1];
+					} else { //neither floor plan, nor user image, don't rename (keep randomly generated name)
 						var newName = req.files[i].name;
 					}
 					
@@ -67,7 +67,7 @@ module.exports = function(pool) {
 							} else if(req.body.imageType === 'user') {
 								var update_user_image = {
 									query: "INSERT INTO `assets` (`type`, `file`, `asset_name`, `lan_zone`, `lan_ip`, `lan_user`, `path`) VALUES ('user',?,?,?,?,?,?)",
-									insert: [newName, req.session.passport.user.client + "/" + newName, req.body.zone, req.body.lan_ip, req.body.lan_user, newPath]
+									insert: [newName, req.session.passport.user.client + "/" + newName, req.body.lan_zone, req.body.lan_ip, req.body.lan_user, newPath]
 								}
 								new query(update_user_image, {database: database, pool: pool}, function(err,data){
 									res.send(200);
