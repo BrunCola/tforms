@@ -3834,6 +3834,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
     return {
         link: function ($scope, element, attrs) {
             $scope.$on('floorPlan', function (event, data) {   
+                var floorName = element.attr('floor-name');
 
                 $scope.userList = data;
 
@@ -3941,7 +3942,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     });
                 }
 
-                function plot(data) {
+                function plot(data, floor) {
+                    console.log(floor)
                     ////////////////////
                     ///  LIST USERS  ///
                     ////////////////////
@@ -4110,176 +4112,186 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     floorDiv.selectAll('button').remove();
                     floorDiv.selectAll('button').data(data).enter()
                         .append('button').each(function(d){
-                            // count++;
-                            var name = d.lan_machine;
-                            if (d.custom_user !== null){
-                                name = d.custom_user;
-                            }
-                            if ((d.x > 0) || (d.y > 0)){
-                                var id = d.id;
-                                var elm = d3.select(this);
-                                var elel = elm[0];
-                                var el = elel[0];
-                                elm
-                                    // append id to li from data object
-                                    .attr('id', id)
-                                    //.attr('draggable','')
-                                    .attr('class', 'localuserlist set')
-                                    .attr('x', d.x)
-                                    .attr('y', d.y)
-                                    .style('top', d.y+"px")
-                                    .style('left', d.x+"px")
-                                    .style('position', "absolute")
-                                    .on('dblclick', function(e){
-                                        $('.usernametext').each(function(e){
-                                            this.classList.remove('ng-hide');
+                            if (d.map === floor) {
+                                console.log(d.map+','+floor)
+                                // if ((d.map === null) || (d.map === '-')) { return };
+                                // if (d.map !== floorName) { return } else {console.log(d); console.log(floorName)};
+                                // console.log('test')
+                                // count++;
+                                var name = d.lan_machine;
+                                if (d.custom_user !== null){
+                                    name = d.custom_user;
+                                }
+                                if ((d.x > 0) || (d.y > 0)){
+                                    console.log(d.map)
+                                    console.log(floor)
+
+                                    var id = d.id;
+                                    var elm = d3.select(this);
+                                    var elel = elm[0];
+                                    var el = elel[0];
+                                    elm
+                                        // append id to li from data object
+                                        .attr('id', id)
+                                        //.attr('draggable','')
+                                        .attr('class', 'localuserlist set')
+                                        .attr('x', d.x)
+                                        .attr('y', d.y)
+                                        .style('top', d.y+"px")
+                                        .style('left', d.x+"px")
+                                        .style('position', "absolute")
+                                        .on('dblclick', function(e){
+                                            $('.usernametext').each(function(e){
+                                                this.classList.remove('ng-hide');
+                                            });
+                                            $('.usernameform').each(function(e){
+                                                this.classList.add('ng-hide');
+                                            });
+
+                                            var iconText = $(this).find('.usernametext')[0];
+                                            var iconInput = $(this).find('.usernameform')[0];
+                                            iconText.classList.add('ng-hide');
+                                            iconInput.classList.remove('ng-hide');
+                                        })
+                                        .on('click', function(e){
+                                            console.log(e)
+                                            userDiv.selectAll('button').each(function(d){
+                                                var elm = d3.select(this);
+                                                $(elm[0]).removeClass('selected');
+                                            })
+                                            floorDiv.selectAll('button').each(function(d){
+                                                var elm = d3.select(this);
+                                                $(elm[0]).removeClass('selected');
+                                            })
+                                            el.classList.add('selected');
+                                            $scope.requery(d, 'flooruser');
                                         });
-                                        $('.usernameform').each(function(e){
-                                            this.classList.add('ng-hide');
-                                        });
 
-                                        var iconText = $(this).find('.usernametext')[0];
-                                        var iconInput = $(this).find('.usernameform')[0];
-                                        iconText.classList.add('ng-hide');
-                                        iconInput.classList.remove('ng-hide');
-                                    })
-                                    .on('click', function(e){
-                                        userDiv.selectAll('button').each(function(d){
-                                            var elm = d3.select(this);
-                                            $(elm[0]).removeClass('selected');
-                                        })
-                                        floorDiv.selectAll('button').each(function(d){
-                                            var elm = d3.select(this);
-                                            $(elm[0]).removeClass('selected');
-                                        })
-                                        el.classList.add('selected');
-                                        $scope.requery(d, 'flooruser');
-                                    });
+                                    var element = elm
+                                        .append('div')
+                                        .attr('class', 'localuserlisticon')
+                                        .append('svg'); 
 
-                                var element = elm
-                                    .append('div')
-                                    .attr('class', 'localuserlisticon')
-                                    .append('svg'); 
+                                    switch (d.lan_type){
+                                        case 'endpoint':
+                                            element
+                                                .attr('height', '23')
+                                                .attr('width', '23')
+                                                .append('svg:path')
+                                                .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
+                                                .style('fill-rule', '#evenodd')
+                                                .style('clip-rule', '#evenodd')
+                                                .style('fill', '#29ABE2');
+                                            element.append('circle')
+                                                .attr('cx', 11.1)
+                                                .attr('cy', 4.9)
+                                                .attr('r', 4.9)
+                                                .style('fill-rule', '#evenodd')
+                                                .style('clip-rule', '#evenodd')
+                                                .style('fill', '#29ABE2');
+                                            break;
+                                        case 'server':
+                                            element
+                                                .attr('height', '21')
+                                                .attr('width', '19')
+                                            .append('svg:polygon')
+                                                .attr('points', '10,17 9,17 9,18 6,18 6,21 13,21 13,18 10,18') 
+                                                .style('fill', '#29ABE2');
+                                            element.append('rect')
+                                                .attr('x', 14)
+                                                .attr('y', 19)
+                                                .attr('width', 5)
+                                                .attr('height', 1)
+                                                .style('fill', '#29ABE2');
+                                            element.append('rect')
+                                                .attr('y', 19)
+                                                .attr('width', 5)
+                                                .attr('height', 1)
+                                                .style('fill', '#29ABE2');
+                                            element.append('path')
+                                                .style('fill', '#29ABE2')
+                                                .attr('d', 'M19,12H0v4h19V12z M3,15H1v-2h2V15z');
+                                            element.append('path')
+                                                .style('fill', '#29ABE2')
+                                                .attr('d', 'M19,6H0v4h19V6z M3,9H1V7h2V9z');
+                                            element.append('path')
+                                                .style('fill', '#29ABE2')
+                                                .attr('d', 'M19,0H0v4h19V0z M3,3H1V1h2V3z');
+                                            break;
+                                        case 'mobile':
+                                            element
+                                                .attr('height', '22')
+                                                .attr('width', '14')
+                                            .append('svg:path')
+                                                .attr('d', 'M0,0v22h14V0H0z M7,20c-0.6,0-1-0.4-1-1c0-0.6,0.4-1,1-1c0.6,0,1,0.4,1,1C8,19.6,7.6,20,7,20z M12,17H2V2h10V17z')
+                                                .style('fill-rule', '#evenodd')
+                                                .style('clip-rule', '#evenodd')
+                                                .style('fill', '#29ABE2');
+                                            break;
+                                        default:
+                                            element
+                                                .attr('height', '23')
+                                                .attr('width', '23')
+                                            .append('svg:path')
+                                                .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
+                                                .style('fill-rule', '#evenodd')
+                                                .style('clip-rule', '#evenodd')
+                                                .style('fill', '#29ABE2');
+                                            element.append('circle')
+                                                .attr('cx', 11.1)
+                                                .attr('cy', 4.9)
+                                                .attr('r', 4.9)
+                                                .style('fill-rule', '#evenodd')
+                                                .style('clip-rule', '#evenodd')
+                                                .style('fill', '#29ABE2');
+                                            break;
+                                    }  
+                                    var elm2 = elm.append('div')
+                                        .attr('class', 'localuserlisttext');
+                                    elm2.append('span')
+                                        .attr('class', 'usernametext')
+                                        .html(name+"")
+                                    elm2.append('form')
+                                        .attr('class', 'ng-hide usernameform')
+                                        .append('input')
+                                            .html(name)
+                                            .attr('type', 'text')
+                                            .attr('value', name+"")
+                                            .on('blur', function(e){
+                                                doneEditing(elm, e, this.value)
+                                            })
+                                        
+                                    el.draggable = true;
+                                    el.addEventListener(
+                                        'dragstart',
+                                        function(e) {
+                                            e.dataTransfer.effectAllowed = 'move';
+                                            e.dataTransfer.setData('Text', this.id);
+                                            this.classList.add('drag');
+                                            return false;
+                                        },
+                                        false
+                                    );
 
-                                switch (d.lan_type){
-                                    case 'endpoint':
-                                        element
-                                            .attr('height', '23')
-                                            .attr('width', '23')
-                                        .append('svg:path')
-                                            .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
-                                            .style('fill-rule', '#evenodd')
-                                            .style('clip-rule', '#evenodd')
-                                            .style('fill', '#29ABE2');
-                                        element.append('circle')
-                                            .attr('cx', 11.1)
-                                            .attr('cy', 4.9)
-                                            .attr('r', 4.9)
-                                            .style('fill-rule', '#evenodd')
-                                            .style('clip-rule', '#evenodd')
-                                            .style('fill', '#29ABE2');
-                                        break;
-                                    case 'server':
-                                        element
-                                            .attr('height', '21')
-                                            .attr('width', '19')
-                                        .append('svg:polygon')
-                                            .attr('points', '10,17 9,17 9,18 6,18 6,21 13,21 13,18 10,18') 
-                                            .style('fill', '#29ABE2');
-                                        element.append('rect')
-                                            .attr('x', 14)
-                                            .attr('y', 19)
-                                            .attr('width', 5)
-                                            .attr('height', 1)
-                                            .style('fill', '#29ABE2');
-                                        element.append('rect')
-                                            .attr('y', 19)
-                                            .attr('width', 5)
-                                            .attr('height', 1)
-                                            .style('fill', '#29ABE2');
-                                        element.append('path')
-                                            .style('fill', '#29ABE2')
-                                            .attr('d', 'M19,12H0v4h19V12z M3,15H1v-2h2V15z');
-                                        element.append('path')
-                                            .style('fill', '#29ABE2')
-                                            .attr('d', 'M19,6H0v4h19V6z M3,9H1V7h2V9z');
-                                        element.append('path')
-                                            .style('fill', '#29ABE2')
-                                            .attr('d', 'M19,0H0v4h19V0z M3,3H1V1h2V3z');
-                                        break;
-                                    case 'mobile':
-                                        element
-                                            .attr('height', '22')
-                                            .attr('width', '14')
-                                        .append('svg:path')
-                                            .attr('d', 'M0,0v22h14V0H0z M7,20c-0.6,0-1-0.4-1-1c0-0.6,0.4-1,1-1c0.6,0,1,0.4,1,1C8,19.6,7.6,20,7,20z M12,17H2V2h10V17z')
-                                            .style('fill-rule', '#evenodd')
-                                            .style('clip-rule', '#evenodd')
-                                            .style('fill', '#29ABE2');
-                                        break;
-                                    default:
-                                        element
-                                            .attr('height', '23')
-                                            .attr('width', '23')
-                                        .append('svg:path')
-                                            .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
-                                            .style('fill-rule', '#evenodd')
-                                            .style('clip-rule', '#evenodd')
-                                            .style('fill', '#29ABE2');
-                                        element.append('circle')
-                                            .attr('cx', 11.1)
-                                            .attr('cy', 4.9)
-                                            .attr('r', 4.9)
-                                            .style('fill-rule', '#evenodd')
-                                            .style('clip-rule', '#evenodd')
-                                            .style('fill', '#29ABE2');
-                                        break;
-                                }  
-                                var elm2 = elm.append('div')
-                                    .attr('class', 'localuserlisttext');
-                                elm2.append('span')
-                                    .attr('class', 'usernametext')
-                                    .html(name+"")
-                                elm2.append('form')
-                                    .attr('class', 'ng-hide usernameform')
-                                    .append('input')
-                                        .html(name)
-                                        .attr('type', 'text')
-                                        .attr('value', name+"")
-                                        .on('blur', function(e){
-                                            doneEditing(elm, e, this.value)
-                                        })
-                                    
-                                el.draggable = true;
-                                el.addEventListener(
-                                    'dragstart',
-                                    function(e) {
-                                        e.dataTransfer.effectAllowed = 'move';
-                                        e.dataTransfer.setData('Text', this.id);
-                                        this.classList.add('drag');
-                                        return false;
-                                    },
-                                    false
-                                );
-
-                                el.addEventListener(
-                                    'dragend',
-                                    function(e) {
-                                        floorDiv.selectAll('button').each(function(d){
-                                            var elm = d3.select(this);
-                                            $(elm[0]).removeClass('selected');
-                                        })
-                                        el.classList.add('selected');
-                                        this.classList.remove('drag');
-                                        $scope.requery(d, 'flooruser');
-                                        return false;
-                                    },
-                                    false
-                                );
+                                    el.addEventListener(
+                                        'dragend',
+                                        function(e) {
+                                            floorDiv.selectAll('button').each(function(d){
+                                                var elm = d3.select(this);
+                                                $(elm[0]).removeClass('selected');
+                                            })
+                                            el.classList.add('selected');
+                                            this.classList.remove('drag');
+                                            $scope.requery(d, 'flooruser');
+                                            return false;
+                                        },
+                                        false
+                                    );
+                                }
                             }
                         });
                 }
-                plot(data);   
+                plot(data, floorName);   
             });
         }
     };
@@ -4325,6 +4337,7 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
             );
 
             el.addEventListener('drop', function(e) {
+                var floorName = d3.select(el).attr('floor-name');
                 // console.log(d3.select(el));
                 // Stops some browsers from redirecting.
                 if (e.stopPropagation) e.stopPropagation();
@@ -4353,7 +4366,7 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
                           fn(item.id, destinationId);
                         }
                     });
-                    $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: itemData.map, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
+                    $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: floorName, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
                 } else {
                     console.log('test')
                     item.removeClass('set');
@@ -4367,7 +4380,7 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
                           fn(item.id, destinationId);
                         }
                     });
-                    $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: 0, y_coord: 0, map_name: itemData.map, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
+                    $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: 0, y_coord: 0, map_name: null, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
                 }
                 return false;
                 },

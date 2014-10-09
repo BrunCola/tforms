@@ -17,7 +17,6 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.$broadcast('floorPlan', $scope.data.force);
             $scope.$broadcast('spinnerHide');
         }
-
         if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
             var query = '/local_events/local_floor_plan?lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&type=flooruser';
             $http({method: 'GET', url: query+'&typeinfo=userinfoload'}).
