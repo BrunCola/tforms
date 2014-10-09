@@ -85,15 +85,18 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
                 $scope.appendInfo(results, 'authorized');
             break;
             case 'blocked':
+                        console.log("test1");
            // console.log(data)
             // get children hanging off of parent nodes
                 var rTargets = $scope.forcedata.links.filter(function(d){
                     if ((d.class !== undefined) && (d.source.index === data.index) && (d.source.value.allow === "blocked")) {
+                        console.log("test2");
                         return true;
                     }
                 })
                 var rSource = $scope.forcedata.links.filter(function(d){
                     if ((d.class !== undefined) && (d.target.index === data.index) && (d.source.value.allow === "blocked")) {
+                        console.log("test3");
                         return true;
                     }
                 })

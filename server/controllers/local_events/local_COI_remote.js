@@ -81,6 +81,7 @@ module.exports = function(pool) {
                         res.json(results);
                     });
                 } else {
+                    console.log("test");
                     var sql = {
                         query: 'SELECT `lan_user`, `group` FROM `stealth_user',
                         insert: []

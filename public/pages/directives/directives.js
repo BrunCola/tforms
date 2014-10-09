@@ -3844,7 +3844,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         }
                     } else if (type === "assets"){
                         var image = "public/system/assets/img/userplaceholder.jpg";
-                        if (data !== '') {
+                        console.log(data);
+                        if ((data !== '') && (data !== '-')) {
                             image = data;
                         }
                         var row = infoDiv.append('tr');
@@ -3853,7 +3854,12 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             .html('<strong>User Image: </strong>');
                         row
                             .append('td')
-                            .html('<img src="'+image+'" width="48"/>');
+                            .html("<button class='uUpload userfloorbutton' type='button' value='"+JSON.stringify(user)+"' href=''><img src='"+image+"' width='48'/></button>");
+
+                        $('.uUpload').on('dblclick',function(){
+                            var rowData = JSON.parse(this.value);
+                            $scope.uploadUser(rowData);
+                        });
                     } else {
                         var title = "", link = "";
                         switch(type){                           
@@ -3975,7 +3981,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 var element = elm
                                         .append('div')
                                             .attr('class', 'localuserlisticon')
-                                            .append('svg');     
+                                            .append('svg');   
                                 switch (d.lan_type) {
                                     case 'endpoint':
                                         element
@@ -4341,7 +4347,7 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
                     });
                     $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: itemData.map, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
                 } else {
-                    console.log('test')
+                    // console.log('test')
                     item.removeClass('set');
                     item.removeClass('selected');
                     item.attr('style', 'top:0px; left:0px; position:relative; ');
