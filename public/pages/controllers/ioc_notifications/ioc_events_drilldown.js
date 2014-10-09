@@ -113,6 +113,15 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 
         // get user image
         if ($scope.lan_ip !== '-') {
+            $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?lan_zone='+$scope.lan_zone+'&lan_ip='+$scope.lan_ip+'&type=custom_user'}).
+            success(function(data) {
+                if (data[0] !== undefined) {
+                    $scope.custom_user = data[0].custom_user;
+                }
+            });
+        }
+
+        if ($scope.lan_ip !== '-') {
             $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?lan_zone='+$scope.lan_zone+'&lan_ip='+$scope.lan_ip+'&type=assets'}).
             success(function(data) {
                 if (data[0] !== undefined) {
@@ -120,6 +129,9 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                 }
             });
         }
+
+
+
     });
 
     $scope.requery = function(min, max, callback) {
