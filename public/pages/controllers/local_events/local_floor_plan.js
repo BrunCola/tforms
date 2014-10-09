@@ -31,6 +31,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     $scope.requery = function(d) {
          // get user image
         if ($scope.lan_ip !== '-') {
+            console.log($scope.appendInfo)
             $scope.appendInfo("", "", "clear");
 
             var userInfo = [];
