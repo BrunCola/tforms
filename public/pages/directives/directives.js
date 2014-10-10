@@ -2449,7 +2449,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                     var trigger_leggend = trig.selectAll(".trigger_leggend")
                         .data(["test"])
                         .enter().append("button")
-                        .text("Trigger Script")
+                        .text("Redraw")
                         .style("display","block")
                         .attr("class", "sUpload button-success pure-button")
                         .style("fill", "#000");
@@ -2671,19 +2671,24 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                                             'l0.959-3.195l-2.882-1.775L24.715,19.976z')
                                         .attr('fill', '#595A5C');
                                 } else if (d.type === "user") {
-                                elm
-                                    .append("rect")
-                                    .attr("width", 22)
-                                    .attr("height", 22)
-                                   // .attr("connections", $scope.requery(d))
-                                   // .attr("connections", $scope.requery(d))
-                                    .attr("x", -11)
-                                    .attr("y", -11)
-                                    .attr("cx", function(d) { return d.x; })
-                                    .attr("cy", function(d) { return d.y; })
-                                    .attr("fill", function(d, i) { return  color(d.group, d.type); })
-                                    //.style("stroke-width", "1.5px");
-                                    //.style("stroke", "#fff");
+                                    console.log(d);
+                                    elm
+                                            .attr('height', '23')
+                                            .attr('width', '23')
+                                        .append('svg:path')
+                                            .attr('transform', 'translate(-11,-11)')
+                                            .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('fill', function(d, i) { return  color(d.group, d.type);} );
+                                        elm.append('circle')
+                                            .attr('transform', 'translate(-11,-11)')
+                                            .attr('cx', 11.1)
+                                            .attr('cy', 4.9)
+                                            .attr('r', 4.9)
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('fill', function(d, i) { return  color(d.group, d.type);});
                                 } else {
                                     elm
                                         .append("svg:circle")
