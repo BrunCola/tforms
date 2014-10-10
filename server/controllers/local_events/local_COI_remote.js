@@ -19,7 +19,6 @@ module.exports = function(pool) {
             }
             var force;
             if (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1) {
-                console.log("TESSST");
                 if (req.query.type === 'checkCoor') {
                     var database = req.session.passport.user.database;
                     var select_coordinates = {
@@ -92,7 +91,7 @@ module.exports = function(pool) {
                                     '`lan_zone` AS `Victim Zone`,'+
                                     '`lan_machine` AS `Victim Machine`,'+
                                     '`lan_user`,'+
-                                    '`lan_user` AS `Victim_User`,'+
+                                    '`lan_user` AS `Victim User`,'+
                                     '`lan_ip` AS `Victim IP`,'+
                                     '`remote_machine` AS `Attacker Machine`,'+
                                     '`remote_user` AS `Attacker User`,'+
@@ -111,7 +110,7 @@ module.exports = function(pool) {
                                     '\'Non-Stealth Internal Attack\' AS type,'+
                                     '`lan_zone` AS `Attacker Zone`,'+
                                     '`machine` AS `Attacker Machine`,'+
-                                    '`lan_user` AS `Attacker_User`,'+
+                                    '`lan_user` AS `Attacker User`,'+
                                     '`lan_ip` AS `Attacker IP`,'+
                                     '`remote_machine` AS `Victim Machine`,'+
                                     '`remote_user` AS `lan_user`,'+
@@ -135,7 +134,7 @@ module.exports = function(pool) {
                                     '`lan_zone` AS `Victim Zone`,'+
                                     '`lan_machine` AS `Victim Machine`,'+
                                     '`lan_user`,'+
-                                    '`lan_user` AS `Victim_User`,'+
+                                    '`lan_user` AS `Victim User`,'+
                                     '`lan_ip` AS `Victim IP`,'+
                                     '`remote_machine` AS `Attacker Machine`,'+
                                     '`remote_user` AS `Attacker User`,'+
@@ -155,7 +154,7 @@ module.exports = function(pool) {
                                     '\'Non-Stealth Internal Connection\' AS type,'+
                                     '`lan_zone` AS `Attacker Zone`,'+
                                     '`machine` AS `Attacker Machine`,'+
-                                    '`lan_user` AS `Attacker_User`,'+
+                                    '`lan_user` AS `Attacker User`,'+
                                     '`lan_ip` AS `Attacker IP`,'+
                                     '`remote_machine` AS `Victim Machine`,'+
                                     '`remote_user` AS `lan_user`,'+

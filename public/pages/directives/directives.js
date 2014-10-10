@@ -3831,9 +3831,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                 var floorDiv = d3.select(element[0]);
                 //console.log(floorDiv);
 
-                $scope.setSelected = function(selected) { 
+                 $scope.$on('setSelected', function (selected) { 
                     $('#'+selected.id).addClass('selected');
-                }
+                })
+
   
                 function doneEditing(elm, item, value) {
                     $scope.change_customuser(item, value);
@@ -4186,6 +4187,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                 }
 
                 $scope.$on('appendInfo', function (event,user,data,type) { 
+                    console.log(type);
                     if (type === "clear"){
                         infoDiv.selectAll('tr').remove(); 
                     } else if (type === "userinfo"){
