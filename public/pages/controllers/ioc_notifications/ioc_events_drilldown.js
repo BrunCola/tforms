@@ -140,10 +140,8 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
         success(function(data) {
             if (data[0] !== undefined) {
                 $scope.num_user_quar = data[0].user_trigger;
-                console.log($scope.num_user_quar);
             }else{
                 $scope.num_user_quar = 0;
-                console.log("test2");
                 }
         });
 
