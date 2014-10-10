@@ -146,9 +146,21 @@ module.exports = function(pool) {
 			}
 		},
 
-		set_coordinates: function(req, res) {
+		set_info: function(req, res) {
             var database = req.session.passport.user.database;
-			if (req.query.type === 'insert') {
+            if (req.query.trigger_type === 'ldap') {
+            	var update_coordinates = {
+                    query: "UPDATE `script_trigger` SET `flag` = ? WHERE `type` = ? ",
+                    insert: [req.query.flag, req.query.trigger_type]
+                }                
+                new query(update_coordinates, {database: database, pool: pool}, function(err,data){
+                    if (err) {
+                        res.send(500);
+                    } else {
+                        res.send(200);
+                    }
+                });
+            }else if (req.query.type === 'insert') {
                 var update_coordinates = {
                     query: "INSERT into `stealth_view_coordinates` VALUES (?,?,?,?,?)",
                     insert: [req.body.name, req.body.user_login, req.body.x, req.body.y, req.body.page_title]

@@ -218,7 +218,7 @@ module.exports = function(pool) {
             }
         },
 
-        set_coordinates: function(req, res) {
+        set_info: function(req, res) {
             var database = req.session.passport.user.database;
             if (req.query.type === 'insert') {
                 var update_coordinates = {

@@ -943,6 +943,12 @@ module.exports = function(pool) {
                         laneGraph: result
                     });
                 });
+            } else if (req.query.trigger_type === 'quarantine') {
+                new query({query: 'SELECT count(*) AS user_trigger FROM `script_trigger` WHERE `flag` = ? ', insert: [req.query.trigger_user]}, {database: database, pool: pool}, function(err,data){
+                    if (data) {
+                        res.json(data);
+                    }
+                });   
             } else if (req.query.type === 'assets') {
                 if (req.query.lan_ip && req.query.lan_zone) {
                     var sql = {
@@ -1741,6 +1747,7 @@ module.exports = function(pool) {
                                     'sum(`out_bytes`) as out_bytes, '+
                                     '`machine`, '+
                                     '`lan_zone`, '+
+                                    '`lan_user`, '+
                                     '`lan_port`, '+
                                     '`remote_port`, '+
                                     '`remote_cc`, '+
@@ -1931,6 +1938,22 @@ module.exports = function(pool) {
                 } else {
                     res.redirect('/');
                 }
+            }
+        },
+        set_info: function(req, res) {
+            var database = req.session.passport.user.database;
+            if (req.query.trigger_type === 'quarantine') {
+                var update_coordinates = {
+                    query: "INSERT INTO `script_trigger` (`type`, `flag`) VALUES (?,?)",
+                    insert: [req.query.trigger_type, req.query.flag]
+                }
+                new query(update_coordinates, {database: database, pool: pool}, function(err,data){
+                    if (err) {
+                        res.send(500);
+                    } else {
+                        res.send(200);
+                    }
+                });
             }
         }
     }

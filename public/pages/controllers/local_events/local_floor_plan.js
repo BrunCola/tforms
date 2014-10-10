@@ -31,9 +31,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     $scope.requery = function(d) {
          // get user image
         if ($scope.lan_ip !== '-') {
-            console.log("test");
             $rootScope.$broadcast('appendInfo', "", "", "clear");
-            console.log("test");
 
             var userInfo = [];
             var query = '/local_events/local_floor_plan?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser'; 

@@ -2442,6 +2442,23 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
         link: function ($scope, element, attrs) {
             $scope.$on('stealthForceChart', function (event, data, params) {
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
+
+                    var trig = d3.select("#stealthforcechart")
+                        .append("div");
+
+                    var trigger_leggend = trig.selectAll(".trigger_leggend")
+                        .data(["test"])
+                        .enter().append("button")
+                        .text("Trigger Script")
+                        .style("display","block")
+                        .attr("class", "sUpload button-success pure-button")
+                        .style("fill", "#000");
+
+                    $('.sUpload').on('click',function(){
+                        $scope.triggerScript();
+                    });
+
+
                     var width = $('#stealthforcechart').width();
                     var height = width/1.5;
                     var tCount = [], link, node;
@@ -2562,7 +2579,6 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .charge(-1500)
                         .size([width-50, height]);
 
-
                     function dragstart(d, i) {
                         d.fixed = true; 
                         force.stop();
@@ -2590,7 +2606,6 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         tick();
                         force.resume();
                     }
-
 
                     $scope.update = function() {
                         force
@@ -2738,8 +2753,6 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         // node.transition()
                         //     .attr("r", function(d) { return 10; });
                         node.exit().remove();
-
-
                     };
                     $scope.update();
 
@@ -2793,7 +2806,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .data(circle_legend_data)
                         .enter().append("g")
                         .attr("class", "circle_legend")
-                        .attr("transform", function(d, i) { return "translate(11," + (i+5) * 23 + ")"; });
+                        .attr("transform", function(d, i) { return "translate(11," + (i+5.5) * 24 + ")"; });
 
                     circle_legend.append("circle")
                         .attr("r", function (d) {return logslider(d["width"]) - 7; })
@@ -2812,7 +2825,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .data(legend_data)
                         .enter().append("g")
                         .attr("class", "legend")
-                        .attr("transform", function(d, i) { return "translate(2," + i * 20 + ")"; });
+                        .attr("transform", function(d, i) { return "translate(2," + (i+1) * 20 + ")"; });
 
                     legend.append("rect")
                         .attr("width", 18)
@@ -2829,7 +2842,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .data(["Cleartext COI"])
                         .enter().append("g")
                         .attr("class", "gateway_legend")
-                        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+                        .attr("transform", function(d, i) { return "translate(0," + (i+1) * 20 + ")"; });
 
                     gateway_legend.append('svg:path')
                         .attr('transform', 'translate(0,176)')
@@ -2853,7 +2866,6 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .attr("y", 194)
                         .attr("dy", ".35em")
                         .text(function(d) { return d; });
-
                     
                 }, 0, false);
             })
@@ -4197,8 +4209,6 @@ angular.module('mean.pages').directive('appendFloorInfo', ['$timeout', '$rootSco
         link: function ($scope, element, attrs) {
             var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
             $scope.$on('appendInfo', function (event,user,data,type) { 
-                console.log(event);
-                console.log(type);
                 if (type === "clear"){
                     infoDiv.selectAll('tr').remove(); 
                 } else if (type === "userinfo"){
