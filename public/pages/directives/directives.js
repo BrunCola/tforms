@@ -3831,11 +3831,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                 var floorDiv = d3.select(element[0]);
                 //console.log(floorDiv);
 
-                 $scope.$on('setSelected', function (selected) { 
+                $scope.$on('setSelected', function (event, selected) { 
                     $('#'+selected.id).addClass('selected');
                 })
 
-  
                 function doneEditing(elm, item, value) {
                     $scope.change_customuser(item, value);
                     $(elm[0]).find('.usernametext').html(value);

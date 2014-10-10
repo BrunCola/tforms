@@ -23,7 +23,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 success(function(data) {
                     $scope.requery(data[0]);
                     var selected = $scope.data.force.filter(function(d){ if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ return true }});
-                    if (selected[0] !== undefined) { $scope.setSelected(selected[0]); }
+                    if (selected[0] !== undefined) { $scope.$broadcast('setSelected', selected[0]); }
                 });
         }
     }); 
