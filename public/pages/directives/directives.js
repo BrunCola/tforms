@@ -4186,94 +4186,102 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         });
                 }
 
-                $scope.$on('appendInfo', function (event,user,data,type) { 
-                    console.log(type);
-                    if (type === "clear"){
-                        infoDiv.selectAll('tr').remove(); 
-                    } else if (type === "userinfo"){
-                        for (var b in user) {
-                            if ((b === "x") || (b === "y") || (b === "map") || (b === "id")) {
-                            } else {
-                                var row = infoDiv.append('tr');
-                                if (user[b] !== null) {
-                                    row
-                                        .append('td')
-                                        .html('<strong>'+b+'</strong>');
-                                    row
-                                        .append('td')
-                                        .text(user[b]);
-                                }
-                            }
-                        }
-                    } else if (type === "assets"){
-                        var image = "public/system/assets/img/userplaceholder.jpg";
-                        if ((data !== '') && (data !== '-')) {
-                            image = data;
-                        }
-                        var row = infoDiv.append('tr');
-                        row
-                            .append('td')
-                            .html('<strong>User Image: </strong>');
-                        row
-                            .append('td')
-                            .html("<button class='uUpload userfloorbutton' type='button' value='"+JSON.stringify(user)+"' href=''><img src='"+image+"' width='48'/></button>");
+                plot(data, floorName);   
+            });
+        }
+    };
+}]);
 
-                        $('.uUpload').on('dblclick',function(){
-                            var rowData = JSON.parse(this.value);
-                            $scope.uploadUser(rowData);
-                        });
-                    } else {
-                        var title = "", link = "";
-                        switch(type){                           
-                            case "localioc":
-                                title = "IOC Hits: ";
-                                link = "#!/ioc_local_drill?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                                break;
-                            case "localapp":
-                                title = "App Hits: ";
-                                link = "#!/l7_local_app?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                                break;
-                            case "localhttp":
-                                title = "HTTP Hits: ";
-                                link = "#!/http_local_by_domain?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                                break;
-                            case "localfiles":
-                                title = "File Hits: ";
-                                link = "#!/by_file_name?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                                break;
-                            case "endpoint":
-                                title = "Endpoints Hits: ";
-                                link = "#!/endpoint_by_user_and_ip?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                                break;
-                            default:
-                                title = "NO TITLE HITS";
-                                link = "#!/ioc_events?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                                break;                
-                        }
-
-                        for (var i in data){
+angular.module('mean.pages').directive('appendFloorInfo', ['$timeout', '$rootScope', '$http', function ($timeout, $rootScope, $http) {
+    return {
+        link: function ($scope, element, attrs) {
+            var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
+            $scope.$on('appendInfo', function (event,user,data,type) { 
+                console.log(event);
+                console.log(type);
+                if (type === "clear"){
+                    infoDiv.selectAll('tr').remove(); 
+                } else if (type === "userinfo"){
+                    for (var b in user) {
+                        if ((b === "x") || (b === "y") || (b === "map") || (b === "id")) {
+                        } else {
                             var row = infoDiv.append('tr');
-                            if (data[i] === 0){
+                            if (user[b] !== null) {
                                 row
                                     .append('td')
-                                    .html('<strong>'+title+'</strong>');
+                                    .html('<strong>'+b+'</strong>');
                                 row
                                     .append('td')
-                                    .html(data[i]+'');
-                            } else {
-                                row
-                                    .append('td')
-                                    .html('<strong>'+title+'</strong>');
-                                row
-                                    .append('td')
-                                    .html('<a href="'+link+'"]>'+data[i]+'</a>');
+                                    .text(user[b]);
                             }
                         }
                     }
-                })
+                } else if (type === "assets"){
+                    var image = "public/system/assets/img/userplaceholder.jpg";
+                    if ((data !== '') && (data !== '-')) {
+                        image = data;
+                    }
+                    var row = infoDiv.append('tr');
+                    row
+                        .append('td')
+                        .html('<strong>User Image: </strong>');
+                    row
+                        .append('td')
+                        .html("<button class='uUpload userfloorbutton' type='button' value='"+JSON.stringify(user)+"' href=''><img src='"+image+"' width='48'/></button>");
 
-                plot(data, floorName);   
-            });
+                    $('.uUpload').on('dblclick',function(){
+                        var rowData = JSON.parse(this.value);
+                        $scope.uploadUser(rowData);
+                    });
+                } else {
+                    var title = "", link = "";
+                    switch(type){                           
+                        case "localioc":
+                            title = "IOC Hits: ";
+                            link = "#!/ioc_local_drill?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            break;
+                        case "localapp":
+                            title = "App Hits: ";
+                            link = "#!/l7_local_app?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            break;
+                        case "localhttp":
+                            title = "HTTP Hits: ";
+                            link = "#!/http_local_by_domain?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            break;
+                        case "localfiles":
+                            title = "File Hits: ";
+                            link = "#!/by_file_name?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            break;
+                        case "endpoint":
+                            title = "Endpoints Hits: ";
+                            link = "#!/endpoint_by_user_and_ip?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            break;
+                        default:
+                            title = "NO TITLE HITS";
+                            link = "#!/ioc_events?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            break;                
+                    }
+
+                    for (var i in data){
+                        var row = infoDiv.append('tr');
+                        if (data[i] === 0){
+                            row
+                                .append('td')
+                                .html('<strong>'+title+'</strong>');
+                            row
+                                .append('td')
+                                .html(data[i]+'');
+                        } else {
+                            row
+                                .append('td')
+                                .html('<strong>'+title+'</strong>');
+                            row
+                                .append('td')
+                                .html('<a href="'+link+'"]>'+data[i]+'</a>');
+                        }
+                    }
+                }
+            })       
         }
     };
 }]);

@@ -23,7 +23,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 success(function(data) {
                     $scope.requery(data[0]);
                     var selected = $scope.data.force.filter(function(d){ if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ return true }});
-                    if (selected[0] !== undefined) { $scope.$broadcast('appendInfo',selected[0]); }
+                    if (selected[0] !== undefined) { $scope.setSelected(selected[0]); }
                 });
         }
     }); 
@@ -31,7 +31,9 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     $scope.requery = function(d) {
          // get user image
         if ($scope.lan_ip !== '-') {
-            $scope.$broadcast('appendInfo', "", "", "clear");
+            console.log("test");
+            $rootScope.$broadcast('appendInfo', "", "", "clear");
+            console.log("test");
 
             var userInfo = [];
             var query = '/local_events/local_floor_plan?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser'; 
@@ -39,9 +41,9 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $http({method: 'GET', url: query+'&typeinfo=assets'}).
                 success(function(data) {
                     if (data[0] !== undefined) {
-                        $scope.$broadcast('appendInfo', d, data[0].path, "assets");
+                        $rootScope.$broadcast('appendInfo', d, data[0].path, "assets");
                     } else {
-                        $scope.$broadcast('appendInfo', d, '', "assets");
+                        $rootScope.$broadcast('appendInfo', d, '', "assets");
                     }
                 });
 
