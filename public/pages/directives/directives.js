@@ -2671,7 +2671,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                                             'l0.959-3.195l-2.882-1.775L24.715,19.976z')
                                         .attr('fill', '#595A5C');
                                 } else if (d.type === "user") {
-                                    console.log(d);
+                                    //console.log(d);
                                     elm
                                             .attr('height', '23')
                                             .attr('width', '23')
