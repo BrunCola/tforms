@@ -73,7 +73,7 @@ module.exports = function(pool) {
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_zone` = ? '+
                                 'AND `lan_ip` = ? '+
-                            'LIMIT 500',
+                            'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -133,7 +133,7 @@ module.exports = function(pool) {
                                 'AND `lan_zone` = ? '+
                                 'AND `lan_ip` = ? '+
                                 'AND `ioc_severity` >= 1 ' + 
-                            'LIMIT 500',
+                            'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -194,7 +194,7 @@ module.exports = function(pool) {
                                 'AND `lan_ip` = ? '+
                                 'AND `remote_ip` = ? '+
                                 'AND `ioc` = ? '+
-                            'LIMIT 500',
+                            'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                     params: [
                         {title: "Time", select: "time"},
@@ -249,7 +249,7 @@ module.exports = function(pool) {
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_ip` = ? '+
                                 'AND `l7_proto` != \'-\' '+
-                            'LIMIT 500',
+                            'LIMIT 2500',
                     insert: [start, end, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -295,7 +295,7 @@ module.exports = function(pool) {
                             'AND `lan_ip`= ? '+
                             'AND `in_bytes` > 0 '+
                             'AND `out_bytes` > 0 '+
-                        'LIMIT 500',
+                        'LIMIT 2500',
                     insert: [start, end, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -334,7 +334,7 @@ module.exports = function(pool) {
                             'time BETWEEN ? AND ? '+
                             'AND `lan_ip` = ? '+
                             'AND (`in_bytes` = 0 OR `out_bytes` = 0) '+
-                        'LIMIT 500',
+                        'LIMIT 2500',
                     insert: [start, end, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -374,7 +374,7 @@ module.exports = function(pool) {
                             '`time` BETWEEN ? AND ? '+
                             'AND `lan_zone` = ? '+
                             'AND `lan_ip` = ? '+
-                        'LIMIT 500',
+                        'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -418,7 +418,7 @@ module.exports = function(pool) {
                             'AND `lan_ip` = ? '+
                             'AND `remote_ip` = ? '+
                             'AND `ioc` = ? '+
-                        'LIMIT 500',
+                        'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                     params: [
                         {title: "Time", select: "time"},
@@ -465,7 +465,7 @@ module.exports = function(pool) {
                             '`time` BETWEEN ? AND ? '+
                             'AND `lan_zone` = ? '+
                             'AND `lan_ip` = ? '+
-                        'LIMIT 500',
+                        'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -513,7 +513,7 @@ module.exports = function(pool) {
                             'AND `lan_ip` = ? '+
                             'AND `remote_ip` = ? '+
                             'AND `ioc` = ? '+
-                        'LIMIT 500',
+                        'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                     params: [
                         {title: "Time", select: "time"},
@@ -554,7 +554,7 @@ module.exports = function(pool) {
                             '`time` BETWEEN ? AND ? '+
                             'AND `lan_zone` = ? '+
                             'AND `lan_ip` = ? '+
-                        'LIMIT 500',
+                        'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: 'Time', select: 'time'},
@@ -598,7 +598,7 @@ module.exports = function(pool) {
                             'AND `lan_ip` = ? '+
                             'AND `remote_ip` = ? '+
                             'AND `ioc` = ? '+
-                        'LIMIT 500',
+                        'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                     params: [
                         {title: "Time", select: "time"},
@@ -644,7 +644,7 @@ module.exports = function(pool) {
                             '`time` BETWEEN ? AND ? '+
                             'AND `lan_zone` = ? '+
                             'AND `lan_ip` = ? '+
-                        'LIMIT 500',
+                        'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -697,7 +697,7 @@ module.exports = function(pool) {
                             'AND `lan_ip` = ? '+
                             'AND `remote_ip` = ? '+
                             'AND `ioc` = ? '+
-                        'LIMIT 500',
+                        'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -745,7 +745,7 @@ module.exports = function(pool) {
                                 'AND `lan_ip` = ? '+
                                 'AND `mime` NOT REGEXP \'text\' '+
                                 'AND `mime` != \'-\' '+
-                            'LIMIT 500',
+                            'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -789,7 +789,7 @@ module.exports = function(pool) {
                             'AND `ioc` = ? '+
                             'AND `mime` NOT REGEXP \'text\' '+
                             'AND `mime` != \'-\' '+
-                        'LIMIT 500',
+                        'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                     params: [
                         {title: "Time", select: "time"},
@@ -825,7 +825,7 @@ module.exports = function(pool) {
                             'WHERE '+
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_ip` = ? '+
-                        'LIMIT 500',
+                        'LIMIT 2500',
                     insert: [start, end, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
@@ -1013,7 +1013,7 @@ module.exports = function(pool) {
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_zone`= ? '+
                                 'AND `lan_ip`= ? '+
-                            'LIMIT 500',
+                            'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
@@ -1070,7 +1070,7 @@ module.exports = function(pool) {
                                 'AND `lan_zone`= ? '+
                                 'AND `lan_ip`= ? '+
                                 'AND `ioc_severity` >= 1 ' +  
-                            'LIMIT 500',
+                            'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
@@ -1127,7 +1127,7 @@ module.exports = function(pool) {
                                 'AND `lan_ip` = ? '+
                                 'AND `remote_ip` = ? '+
                                 'AND `ioc`= ? '+
-                            'LIMIT 500',
+                            'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                         params: [
                             {title: "Time", select: "time"},
@@ -1182,7 +1182,7 @@ module.exports = function(pool) {
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_ip` = ? '+
                                     'AND `l7_proto` != \'-\' '+
-                                'LIMIT 500',
+                                'LIMIT 2500',
                         insert: [start, end, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
@@ -1229,7 +1229,7 @@ module.exports = function(pool) {
                                 'time BETWEEN ? AND ? '+
                                 'AND `lan_ip` = ? '+
                                 'AND (`in_bytes` = 0 OR `out_bytes` = 0)'+
-                            'LIMIT 500',
+                            'LIMIT 2500',
                         insert: [start, end, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
@@ -1270,7 +1270,7 @@ module.exports = function(pool) {
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_zone` = ? '+
                                     'AND `lan_ip` = ? '+
-                                'LIMIT 500',
+                                'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
@@ -1313,7 +1313,7 @@ module.exports = function(pool) {
                                     'AND `lan_ip` = ? '+
                                     'AND `remote_ip` = ? '+
                                     'AND `ioc` = ? '+
-                                'LIMIT 500',
+                                'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                         params: [
                             {title: "Time", select: "time"},
@@ -1360,7 +1360,7 @@ module.exports = function(pool) {
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_zone` = ? '+
                                     'AND `lan_ip` = ? '+
-                                'LIMIT 500',
+                                'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
@@ -1408,7 +1408,7 @@ module.exports = function(pool) {
                                     'AND `lan_ip` = ? '+
                                     'AND `remote_ip` = ? '+
                                     'AND `ioc` = ? '+
-                                'LIMIT 500',
+                                'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                         params: [
                             {title: "Time", select: "time"},
@@ -1449,7 +1449,7 @@ module.exports = function(pool) {
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_zone`= ?'+
                                     'AND `lan_ip`= ?'+
-                                'LIMIT 500',
+                                'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
@@ -1493,7 +1493,7 @@ module.exports = function(pool) {
                                     'AND `lan_ip` = ? '+
                                     'AND `remote_ip` = ? '+
                                     'AND `ioc` = ? '+
-                                'LIMIT 500',
+                                'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                         params: [
                             {title: "Time", select: "time"},
@@ -1539,7 +1539,7 @@ module.exports = function(pool) {
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_zone` = ? '+
                                     'AND `lan_ip` = ? '+
-                                'LIMIT 500',
+                                'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
@@ -1592,7 +1592,7 @@ module.exports = function(pool) {
                                     'AND `lan_ip` = ? '+
                                     'AND `remote_ip` = ? '+
                                     'AND `ioc`= ? '+
-                                'LIMIT 500',
+                                'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
@@ -1639,7 +1639,7 @@ module.exports = function(pool) {
                                     'AND `lan_zone` = ? '+
                                     'AND `lan_ip` = ? '+
                                     'AND `mime` NOT REGEXP \'text\' '+
-                            'LIMIT 500',
+                            'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
@@ -1682,7 +1682,7 @@ module.exports = function(pool) {
                                     'AND `remote_ip`= ? '+
                                     'AND `ioc`= ? '+
                                     'AND `mime` NOT REGEXP \'text\''+
-                                'LIMIT 500',
+                                'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                         params: [
                             {title: "Time", select: "time"},
@@ -1718,7 +1718,7 @@ module.exports = function(pool) {
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_ip` = ? '+
-                                'LIMIT 500',
+                                'LIMIT 2500',
                         insert: [start, end, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
