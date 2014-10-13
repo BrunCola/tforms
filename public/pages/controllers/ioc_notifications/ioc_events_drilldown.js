@@ -57,12 +57,36 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             });
         };
 
+        $scope.quarLoad = function (user, num) {            
+            $scope.modalInstance = $modal.open({
+                templateUrl: 'quarModal.html',
+                controller: quarInstanceCtrl,
+                keyboard: true,
+                resolve: {
+                    numUser: function() {
+                        return "User '"+user+"' has "+num+ " quarantines";
+                    },
+                    quar_user: function() {
+                        return user;
+                    }
+                }
+            });
+        };
+
         var descInstanceCtrl = function ($scope, $modalInstance, data, ioc) {
             $scope.ok = function () {
                 $modalInstance.close();
             };
             $scope.data = data;
             $scope.iocc = ioc;
+        };
+
+        var quarInstanceCtrl = function ($scope, $modalInstance, numUser, quar_user) {
+            $scope.ok = function () {
+                $modalInstance.close();
+            };
+            $scope.numUser = numUser;
+            $scope.quar_user = quar_user;
         };
 
         if (data.tree.childCount >= 35) {
@@ -78,6 +102,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
         $scope.lan_ip = $location.$$search.lan_ip;
 
         $scope.lan_port = data.info.main[0].lan_port;
+        $scope.lan_user = data.info.main[0].lan_user;
         $scope.machine_name = data.info.main[0].machine;
         $scope.packets_recieved = data.info.main[0].out_packets;
         $scope.bytes_received = data.info.main[0].out_bytes;
@@ -111,6 +136,16 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             $scope.zone_country = data.zone_country;
         })
 
+        $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?trigger_type=quarantine&trigger_user='+$scope.lan_user}).
+        success(function(data) {
+            if (data[0] !== undefined) {
+                $scope.num_user_quar = data[0].user_trigger;
+            }else{
+                $scope.num_user_quar = 0;
+                }
+        });
+
+
         // get user image
         if ($scope.lan_ip !== '-') {
             $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?lan_zone='+$scope.lan_zone+'&lan_ip='+$scope.lan_ip+'&type=custom_user'}).
@@ -125,7 +160,8 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?lan_zone='+$scope.lan_zone+'&lan_ip='+$scope.lan_ip+'&type=assets'}).
             success(function(data) {
                 if (data[0] !== undefined) {
-                    $scope.userImage = 'public/pages/assets/img/staff/'+data[0].file;
+                    //$scope.userImage = 'public/pages/assets/img/staff/'+data[0].file;
+                    $scope.userImage = 'public/uploads/phirelight/'+data[0].file;
                 }
             });
         }
@@ -176,14 +212,20 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
         }
     }
 
-    $scope.quarantineLink = function() {
+    $rootScope.quarantineLink = function(userFlag) {
+        console.log("testetwrtdf");
+        var query = '/ioc_notifications/ioc_events_drilldown?';
+        $http({method: 'POST', url: query+"trigger_type=quarantine&flag="+userFlag});
         var url = 'stealth_quarantine';
         if ($location.$$search.start && $location.$$search.end) {
             $location.path(url).search({'start':$location.$$search.start, 'end':$location.$$search.end});
         } else {
             $location.path(url);
         }
+
     }
+
+
 
     $scope.firewallLink = function() {
         var url = 'firewall';

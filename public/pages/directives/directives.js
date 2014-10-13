@@ -2442,6 +2442,23 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
         link: function ($scope, element, attrs) {
             $scope.$on('stealthForceChart', function (event, data, params) {
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
+
+                    var trig = d3.select("#stealthforcechart")
+                        .append("div");
+
+                    var trigger_leggend = trig.selectAll(".trigger_leggend")
+                        .data(["test"])
+                        .enter().append("button")
+                        .text("Redraw")
+                        .style("display","block")
+                        .attr("class", "sUpload button-success pure-button")
+                        .style("fill", "#000");
+
+                    $('.sUpload').on('click',function(){
+                        $scope.triggerScript();
+                    });
+
+
                     var width = $('#stealthforcechart').width();
                     var height = width/1.5;
                     var tCount = [], link, node;
@@ -2562,7 +2579,6 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .charge(-1500)
                         .size([width-50, height]);
 
-
                     function dragstart(d, i) {
                         d.fixed = true; 
                         force.stop();
@@ -2590,7 +2606,6 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         tick();
                         force.resume();
                     }
-
 
                     $scope.update = function() {
                         force
@@ -2656,19 +2671,24 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                                             'l0.959-3.195l-2.882-1.775L24.715,19.976z')
                                         .attr('fill', '#595A5C');
                                 } else if (d.type === "user") {
-                                elm
-                                    .append("rect")
-                                    .attr("width", 22)
-                                    .attr("height", 22)
-                                   // .attr("connections", $scope.requery(d))
-                                   // .attr("connections", $scope.requery(d))
-                                    .attr("x", -11)
-                                    .attr("y", -11)
-                                    .attr("cx", function(d) { return d.x; })
-                                    .attr("cy", function(d) { return d.y; })
-                                    .attr("fill", function(d, i) { return  color(d.group, d.type); })
-                                    //.style("stroke-width", "1.5px");
-                                    //.style("stroke", "#fff");
+                                    //console.log(d);
+                                    elm
+                                            .attr('height', '23')
+                                            .attr('width', '23')
+                                        .append('svg:path')
+                                            .attr('transform', 'translate(-11,-11)')
+                                            .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('fill', function(d, i) { return  color(d.group, d.type);} );
+                                        elm.append('circle')
+                                            .attr('transform', 'translate(-11,-11)')
+                                            .attr('cx', 11.1)
+                                            .attr('cy', 4.9)
+                                            .attr('r', 4.9)
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('fill', function(d, i) { return  color(d.group, d.type);});
                                 } else {
                                     elm
                                         .append("svg:circle")
@@ -2738,8 +2758,6 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         // node.transition()
                         //     .attr("r", function(d) { return 10; });
                         node.exit().remove();
-
-
                     };
                     $scope.update();
 
@@ -2793,7 +2811,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .data(circle_legend_data)
                         .enter().append("g")
                         .attr("class", "circle_legend")
-                        .attr("transform", function(d, i) { return "translate(11," + (i+5) * 23 + ")"; });
+                        .attr("transform", function(d, i) { return "translate(11," + (i+5.5) * 24 + ")"; });
 
                     circle_legend.append("circle")
                         .attr("r", function (d) {return logslider(d["width"]) - 7; })
@@ -2812,7 +2830,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .data(legend_data)
                         .enter().append("g")
                         .attr("class", "legend")
-                        .attr("transform", function(d, i) { return "translate(2," + i * 20 + ")"; });
+                        .attr("transform", function(d, i) { return "translate(2," + (i+1) * 20 + ")"; });
 
                     legend.append("rect")
                         .attr("width", 18)
@@ -2829,7 +2847,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .data(["Cleartext COI"])
                         .enter().append("g")
                         .attr("class", "gateway_legend")
-                        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+                        .attr("transform", function(d, i) { return "translate(0," + (i+1) * 20 + ")"; });
 
                     gateway_legend.append('svg:path')
                         .attr('transform', 'translate(0,176)')
@@ -2853,7 +2871,6 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .attr("y", 194)
                         .attr("dy", ".35em")
                         .text(function(d) { return d; });
-
                     
                 }, 0, false);
             })
@@ -3038,7 +3055,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 var xAxis = d3.svg.axis()
                     .scale(x1)
                     .orient('bottom')
-                     .tickFormat(d3.time.format('%H:%M'))
+                     // .tickFormat(d3.time.format('%H:%M'))
                     .tickSize(1)
                     .tickPadding(8);
                 
@@ -3819,103 +3836,22 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', '$http', function ($timeout, $rootScope, $http) {
     return {
         link: function ($scope, element, attrs) {
-            $scope.$on('floorPlan', function (event, data) {   
-
+            $scope.$on('floorPlan', function (event) {   
+                var data = $scope.data.force;
+                var floorName = element.attr('floor-name');
                 $scope.userList = data;
-
-                $scope.$broadcast('spinnerHide');
-                $scope.appendInfo = function(user,data,type) { 
-                    if (type === "clear"){
-                        infoDiv.selectAll('tr').remove(); 
-                    } else if (type === "userinfo"){
-                        for (var b in user) {
-                            if ((b === "x") || (b === "y") || (b === "map") || (b === "id")) {
-                            } else {
-                                var row = infoDiv.append('tr');
-                                if (user[b] !== null) {
-                                    row
-                                        .append('td')
-                                        .html('<strong>'+b+'</strong>');
-                                    row
-                                        .append('td')
-                                        .text(user[b]);
-                                }
-                            }
-                        }
-                    } else if (type === "assets"){
-                        var image = "public/system/assets/img/userplaceholder.jpg";
-                        if (data !== '') {
-                            image = data;
-                        }
-                        var row = infoDiv.append('tr');
-                        row
-                            .append('td')
-                            .html('<strong>User Image: </strong>');
-                        row
-                            .append('td')
-                            .html('<img src="'+image+'" width="48"/>');
-                    } else {
-                        var title = "", link = "";
-                        switch(type){                           
-                            case "localioc":
-                                title = "IOC Hits: ";
-                                link = "#!/ioc_local_drill?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                                break;
-                            case "localapp":
-                                title = "App Hits: ";
-                                link = "#!/l7_local_app?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                                break;
-                            case "localhttp":
-                                title = "HTTP Hits: ";
-                                link = "#!/http_local_by_domain?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                                break;
-                            case "localfiles":
-                                title = "File Hits: ";
-                                link = "#!/by_file_name?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                                break;
-                            case "endpoint":
-                                title = "Endpoints Hits: ";
-                                link = "#!/endpoint_by_user_and_ip?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                                break;
-                            default:
-                                title = "NO TITLE HITS";
-                                link = "#!/ioc_events?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                                break;                
-                        }
-
-                        for (var i in data){
-                            var row = infoDiv.append('tr');
-                            if (data[i] === 0){
-                                row
-                                    .append('td')
-                                    .html('<strong>'+title+'</strong>');
-                                row
-                                    .append('td')
-                                    .html(data[i]+'');
-                            } else {
-                                row
-                                    .append('td')
-                                    .html('<strong>'+title+'</strong>');
-                                row
-                                    .append('td')
-                                    .html('<a href="'+link+'"]>'+data[i]+'</a>');
-                            }
-                        }
-                    }
-                }
-
                 // info div
                 var width = element.width();
                 var infoHeight = element.height();
                 var userDiv = d3.select("#listlocalusers").style('height', infoHeight+25+'px').style('overflow', 'auto');
                 var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
-                var floorDiv = d3.select('#floorplan');
+                var floorDiv = d3.select(element[0]);
                 //console.log(floorDiv);
 
-                $scope.setSelected = function(selected) { 
+                $scope.$on('setSelected', function (event, selected) { 
                     $('#'+selected.id).addClass('selected');
-                }
-  
+                })
+
                 function doneEditing(elm, item, value) {
                     $scope.change_customuser(item, value);
                     $(elm[0]).find('.usernametext').html(value);
@@ -3927,7 +3863,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     });
                 }
 
-                function plot(data) {
+                function plot(data, floor) {
                     ////////////////////
                     ///  LIST USERS  ///
                     ////////////////////
@@ -3975,7 +3911,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 var element = elm
                                         .append('div')
                                             .attr('class', 'localuserlisticon')
-                                            .append('svg');     
+                                            .append('svg');   
                                 switch (d.lan_type) {
                                     case 'endpoint':
                                         element
@@ -4094,7 +4030,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         });
 
                     floorDiv.selectAll('button').remove();
-                    floorDiv.selectAll('button').data(data).enter()
+                    floorDiv.selectAll('button').data(data.filter(function(d){if (d.map === floorName){ return true; }})).enter()
                         .append('button').each(function(d){
                             // count++;
                             var name = d.lan_machine;
@@ -4152,7 +4088,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                         element
                                             .attr('height', '23')
                                             .attr('width', '23')
-                                        .append('svg:path')
+                                            .append('svg:path')
                                             .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
                                             .style('fill-rule', '#evenodd')
                                             .style('clip-rule', '#evenodd')
@@ -4265,8 +4201,101 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             }
                         });
                 }
-                plot(data);   
+
+                plot(data, floorName);   
             });
+        }
+    };
+}]);
+
+angular.module('mean.pages').directive('appendFloorInfo', ['$timeout', '$rootScope', '$http', function ($timeout, $rootScope, $http) {
+    return {
+        link: function ($scope, element, attrs) {
+            var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
+            $scope.$on('appendInfo', function (event,user,data,type) { 
+                if (type === "clear"){
+                    infoDiv.selectAll('tr').remove(); 
+                } else if (type === "userinfo"){
+                    for (var b in user) {
+                        if ((b === "x") || (b === "y") || (b === "map") || (b === "id")) {
+                        } else {
+                            var row = infoDiv.append('tr');
+                            if (user[b] !== null) {
+                                row
+                                    .append('td')
+                                    .html('<strong>'+b+'</strong>');
+                                row
+                                    .append('td')
+                                    .text(user[b]);
+                            }
+                        }
+                    }
+                } else if (type === "assets"){
+                    var image = "public/system/assets/img/userplaceholder.jpg";
+                    if ((data !== '') && (data !== '-')) {
+                        image = data;
+                    }
+                    var row = infoDiv.append('tr');
+                    row
+                        .append('td')
+                        .html('<strong>User Image: </strong>');
+                    row
+                        .append('td')
+                        .html("<button class='uUpload userfloorbutton' type='button' value='"+JSON.stringify(user)+"' href=''><img src='"+image+"' width='48'/></button>");
+
+                    $('.uUpload').on('dblclick',function(){
+                        var rowData = JSON.parse(this.value);
+                        $scope.uploadUser(rowData);
+                    });
+                } else {
+                    var title = "", link = "";
+                    switch(type){                           
+                        case "localioc":
+                            title = "IOC Hits: ";
+                            link = "#!/ioc_local_drill?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            break;
+                        case "localapp":
+                            title = "App Hits: ";
+                            link = "#!/l7_local_app?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            break;
+                        case "localhttp":
+                            title = "HTTP Hits: ";
+                            link = "#!/http_local_by_domain?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            break;
+                        case "localfiles":
+                            title = "File Hits: ";
+                            link = "#!/by_file_name?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            break;
+                        case "endpoint":
+                            title = "Endpoints Hits: ";
+                            link = "#!/endpoint_by_user_and_ip?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            break;
+                        default:
+                            title = "NO TITLE HITS";
+                            link = "#!/ioc_events?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            break;                
+                    }
+
+                    for (var i in data){
+                        var row = infoDiv.append('tr');
+                        if (data[i] === 0){
+                            row
+                                .append('td')
+                                .html('<strong>'+title+'</strong>');
+                            row
+                                .append('td')
+                                .html(data[i]+'');
+                        } else {
+                            row
+                                .append('td')
+                                .html('<strong>'+title+'</strong>');
+                            row
+                                .append('td')
+                                .html('<a href="'+link+'"]>'+data[i]+'</a>');
+                        }
+                    }
+                }
+            })       
         }
     };
 }]);
@@ -4311,6 +4340,7 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
             );
 
             el.addEventListener('drop', function(e) {
+                var floorName = d3.select(el).attr('floor-name');
                 // console.log(d3.select(el));
                 // Stops some browsers from redirecting.
                 if (e.stopPropagation) e.stopPropagation();
@@ -4339,9 +4369,9 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
                           fn(item.id, destinationId);
                         }
                     });
-                    $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: itemData.map, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
+                    $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: floorName, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
                 } else {
-                    console.log('test')
+                    // console.log('test')
                     item.removeClass('set');
                     item.removeClass('selected');
                     item.attr('style', 'top:0px; left:0px; position:relative; ');
@@ -4353,7 +4383,7 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
                           fn(item.id, destinationId);
                         }
                     });
-                    $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: 0, y_coord: 0, map_name: itemData.map, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
+                    $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: 0, y_coord: 0, map_name: null, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
                 }
                 return false;
                 },
