@@ -74,6 +74,7 @@ module.exports = function(pool) {
                             'u.lan_type, '+
                             'u.lan_os, '+
                             'u.lan_mac, '+
+                            'u.stealth, '+
                             'u.endpoint_agent, '+
                             'u.endpoint_agent_name, '+
                             'u.x, '+
@@ -112,6 +113,7 @@ module.exports = function(pool) {
                             'u.lan_type, '+
                             'u.lan_os, '+
                             'u.lan_mac, '+
+                            'u.stealth, '+
                             'u.endpoint_agent, '+
                             'u.endpoint_agent_name, '+
                             'u.x, '+
