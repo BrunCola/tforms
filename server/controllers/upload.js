@@ -32,8 +32,15 @@ module.exports = function(pool) {
 					if(req.body.imageType === 'map') { //if this is a floor plan image
 						var newName = "floor_plan." + nameSplit[1];
 					} else if (req.body.imageType === 'user') { //if this is a user image
-						//rename to <username>_<zone>.<extension>
-						var newName = req.body.lan_user + "_" + req.body.lan_zone + "." + nameSplit[1];
+						var newName;
+						if(req.body.lan_ip != undefined) {
+							//rename to <username>_<zone>_<lan_ip>.<extension> where lan_ip has all of the "." replaced with "-"
+							var ip_components = req.body.lan_ip.split(".");
+							var new_ip = ip_components[0] + "-" + ip_components[1] + "-" + ip_components[2] + "-" + ip_components[3];
+							newName = req.body.lan_user + "_" + req.body.lan_zone + "_" + new_ip + "." + nameSplit[1];
+						} else {
+							newName = req.body.lan_user + "_" + req.body.lan_zone + "." + nameSplit[1];
+						}
 					} else { //neither floor plan, nor user image, don't rename (keep randomly generated name)
 						var newName = req.files[i].name;
 					}
