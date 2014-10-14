@@ -1926,7 +1926,8 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     elm.append("path")
                                         .attr('d', 'M14,3.1C9.4,3.3,7,0,7,0c0,0-2,3.1-7,3.1C-0.4,8.3,2.7,18,7,18C11.2,18,14.4,7.2,14,3.1z')
                                         .attr('transform', 'translate(-25,-115) scale(0.7)')
-                                        .style('fill', "#333")
+                                        .style('fill', "#000")
+                                        .style('border', "solid 1px #000")
                                         .attr('transform', 'translate(-8,-8) scale(1.1)')
                                 } else if (d.value.type === 'outside') {
                                     elm.append("circle")
@@ -1934,13 +1935,14 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                         .attr("cy", function(d) { return d.y; })
                                         .attr("r", 8)
                                         .attr("fill", "#000")
+                                        .style('border', "solid 1px #000")
                                 } else if (d.value.type === 'Non-Stealth Internal Attack') {
                                     elm.append('rect')
                                         .attr('x', function(d) { return d.x; })
                                         .attr('y', function(d) { return d.y; })
                                         .attr('height', 14)
                                         .attr('width', 14)
-                                        .style('fill', "#888")
+                                        .style('fill', "#555")
                                         .attr('transform', 'translate(-8,-8)')
                                         .style('fill-opacity', '1')
                                 }
