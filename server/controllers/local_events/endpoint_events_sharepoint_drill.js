@@ -43,13 +43,13 @@ module.exports = function(pool) {
 						'`lan_user`, '+
 						'`lan_ip`, '+
 						'`lan_zone`',
-					insert: [start, end],
+					insert: [start, end, req.query.event_type],
 					params: [
 						{
                             title: 'Last Seen',
                             select: 'time',
                             link: {
-                                type: 'sharepoint_events_full',
+                                type: 'endpoint_events_sharepoint_full',
                                 val: ['event_type','lan_zone','lan_user', 'lan_ip'], // pre-evaluated values from the query above
                                 crumb: false
                             }
@@ -74,7 +74,6 @@ module.exports = function(pool) {
 				async.parallel([
 					// Table function(s)
 					function(callback) {
-						console.log(table1.query);
 						new dataTable(table1, {database: database, pool: pool}, function(err,data){
 							tables.push(data);
 							callback();
