@@ -57,38 +57,38 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             });
         };
 
-        $scope.quarLoad = function (user, num) {            
+        $scope.quarLoad = function (lanuser,num,user) {            
             $scope.modalInstance = $modal.open({
                 templateUrl: 'quarModal.html',
-                controller: descInstanceCtrl,
+                controller: quarInstanceCtrl,
                 keyboard: true,
                 resolve: {
-                    ioc: function() {
+                    data: function() {
                         if(num>0){
-                            return "User '"+user+"' is alread in quarantine";
+                            return "User '"+lanuser+"' is alread in quarantine";
                         }else{
-                            return "User '"+user+"' is not yet in quarantine";
+                            return "User '"+lanuser+"' is not yet in quarantine";
                         }
                     },
-                    data: function() {
+                    lanuser: function() {
+                        return lanuser;
+                    },
+                    user: function() {
                         return user;
                     }
                 }
             });
         };
 
-        $scope.firewallLoad = function () {            
+        $scope.firewallLoad = function (user) {            
             $scope.modalInstance = $modal.open({
                 templateUrl: 'firewallModal.html',
                 controller: firewallInstanceCtrl,
                 keyboard: true,
                 resolve: {
-                    /*numUser: function() {
-                        return "User '"+user+"' has "+num+ " quarantines";
-                    },
-                    quar_user: function() {
+                    user: function() {
                         return user;
-                    }*/
+                    }
                 }
             });
         };
@@ -97,9 +97,20 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             $scope.ok = function () {
                 $modalInstance.close();
             };
+            $scope.data = data;
+            $scope.iocc = ioc;
+        };
+
+        var quarInstanceCtrl = function ($scope, $modalInstance, data, lanuser, user) {
+            $scope.ok = function () {
+                $modalInstance.close();
+            };
             $scope.quarantineLink = function(userFlag) {
+                $scope.currentdate = Math.round(new Date().getTime()/1000.0);
                 var query = '/ioc_notifications/ioc_events_drilldown?';
                 $http({method: 'POST', url: query+"trigger_type=quarantine&flag="+userFlag});
+                //$http({method: 'POST', url: query+"trigger_type=quarantine&currenttime="+$scope.currentdate+"&email="+user+"&lan_zone="+$location.$$search.lan_zone+"&lan_machine="+$location.$$search.lan_ip+"&lan_ip="+$location.$$search.lan_ip});
+                $http({method: 'POST', url: query+"trigger_type=stealthquarantine&currenttime="+$scope.currentdate+"&email="+user+"&lan_zone="+$location.$$search.lan_zone+"&lan_machine=-&lan_ip="+$location.$$search.lan_ip});
                 var url = 'stealth_quarantine';
                 if ($location.$$search.start && $location.$$search.end) {
                     $location.path(url).search({'start':$location.$$search.start, 'end':$location.$$search.end});
@@ -109,23 +120,18 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                 $modalInstance.close();
             }
             $scope.data = data;
-            $scope.iocc = ioc;
+            $scope.lanuser = lanuser;
+            $scope.user = user;
         };
 
-        var firewallInstanceCtrl = function ($scope, $modalInstance) {
+        var firewallInstanceCtrl = function ($scope, $modalInstance, user) {
             $scope.ok = function () {
                 $modalInstance.close();
             };
             $scope.firewallLink = function(info) {
-                console.log(info);
-                /*console.log($scope.global.user.email);
-                console.log(info.select);
-                console.log(info.text);
-                $scope.date = new Date();
-                console.log($scope.date);*/
-
-              /*  var query = '/ioc_notifications/ioc_events_drilldown?';
-                $http({method: 'POST', url: query+"trigger_type=firewall"});*/
+                $scope.currentdate = Math.round(new Date().getTime()/1000.0);
+                var query = '/ioc_notifications/ioc_events_drilldown?';
+                $http({method: 'POST', url: query+"trigger_type=firewall&currenttime="+$scope.currentdate+"&email="+user+"&rule="+info.text+"&type="+info.select});
                 var url = 'firewall';
                 if ($location.$$search.start && $location.$$search.end) {
                     $location.path(url).search({'start':$location.$$search.start, 'end':$location.$$search.end});
@@ -134,6 +140,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                 }
                 $modalInstance.close();
             }
+            $scope.user = user;
         };
 
         if (data.tree.childCount >= 35) {

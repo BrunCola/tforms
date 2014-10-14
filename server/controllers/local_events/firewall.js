@@ -21,6 +21,7 @@ module.exports = function(pool) {
                  query: 'SELECT '+
                             '`time`,'+
                             '`email`,'+
+                            '`type`,'+
                             '`rule` '+
                         'FROM '+
                             '`firewall` '+
@@ -30,6 +31,7 @@ module.exports = function(pool) {
                 params: [
                     { title: 'Time', select: 'time' },
                     { title: 'Email', select: 'email' },
+                    { title: 'Type', select: 'type' },
                     { title: 'Rule', select: 'rule' },
                 ],
                 settings: {
