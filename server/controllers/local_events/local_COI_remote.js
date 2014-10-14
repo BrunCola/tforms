@@ -42,10 +42,9 @@ module.exports = function(pool) {
                         res.json(results);
                     });
 
-                }else if (req.query.type === 'top') {
+                } else if (req.query.type === 'top') {
                     var result = null;
                     var sql = {
-                       // query: 'SELECT * '+
                         query: 'SELECT DISTINCT '+
                                     '\'Non-Stealth Internal Attack\' AS type,'+
                                     '`lan_zone` AS `Attacker Zone`,'+
@@ -105,7 +104,6 @@ module.exports = function(pool) {
                         insert: [start, end]
                     }
                     var local_drop = {
-                       // query: 'SELECT * '+
                         query: 'SELECT DISTINCT '+
                                     '\'Non-Stealth Internal Attack\' AS type,'+
                                     '`lan_zone` AS `Attacker Zone`,'+
@@ -126,8 +124,6 @@ module.exports = function(pool) {
                                     'AND `out_bytes` = 0 ',
                         insert: [start, end]
                     }
-
-
                     var stealth_authorized = {
                         query: 'SELECT DISTINCT '+
                                     '\'Stealth COI Allow\' AS type,'+
@@ -171,7 +167,6 @@ module.exports = function(pool) {
                                     'AND `in_bytes` > 0 ',
                         insert: [start, end]
                     }
-
                     var rules = {
                         query: 'SELECT '+
                                     '`role`, '+
@@ -186,7 +181,6 @@ module.exports = function(pool) {
                                     '`cois`, `rule_order` ASC',
                         insert: []
                     }
-
                     var coordinates = {
                         query: 'SELECT * '+
                                 'FROM '+
@@ -196,7 +190,6 @@ module.exports = function(pool) {
                                 'AND `page_title` = "local_COI_remote"',
                         insert: [req.session.passport.user.email]
                     }
-
                     async.parallel([
                         // Crossfilter function
                         function(callback) {
@@ -217,7 +210,6 @@ module.exports = function(pool) {
                 res.redirect('/');
             }
         },
-
         set_info: function(req, res) {
             var database = req.session.passport.user.database;
             if (req.query.type === 'insert') {

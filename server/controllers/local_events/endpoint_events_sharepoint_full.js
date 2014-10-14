@@ -7,6 +7,7 @@ async = require('async');
 module.exports = function(pool) {
     return {
         render: function(req, res) {
+
             var database = req.session.passport.user.database;
             var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
             var end = Math.round(new Date().getTime() / 1000);
@@ -36,9 +37,10 @@ module.exports = function(pool) {
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_zone` = ? '+
                                 'AND `lan_user` = ? '+
+                                'AND `lan_ip` = ? '+
                                 'AND `event_type` = ? '+
                             'LIMIT 250',
-                    insert: [start, end, req.query.lan_zone, req.query.lan_user, req.query.event_type],
+                    insert: [start, end, req.query.lan_zone, req.query.lan_user, req.query.lan_ip, req.query.event_type],
                     params: [
                         { title: 'Time', select: 'time' },
                         { title: 'Stealth', select: 'stealth', access: [3] },
