@@ -45,6 +45,7 @@ module.exports = function(pool) {
                             '`stealth_conn_meta` '+
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
+                            'AND lan_ip REGEXP \'192.168.222\' '+
                         'GROUP BY '+
                             '`lan_user`,'+
                             '`lan_ip`',
