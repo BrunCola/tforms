@@ -186,7 +186,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'title': 'Local User Connections',
                     'url': 'local_user_conn',
                     'icon': 'fa-user',
-                    'orphans': []
+                    'orphans': ['local_user_conn_drill']
                 },
             ]
         },
