@@ -103,6 +103,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 
         $scope.lan_port = data.info.main[0].lan_port;
         $scope.lan_user = data.info.main[0].lan_user;
+        console.log(data.info.main[0]);
         $scope.machine_name = data.info.main[0].machine;
         $scope.packets_recieved = data.info.main[0].out_packets;
         $scope.bytes_received = data.info.main[0].out_bytes;

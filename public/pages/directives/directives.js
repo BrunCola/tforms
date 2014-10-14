@@ -1933,14 +1933,14 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                         .attr("cx", function(d) { return d.x; })
                                         .attr("cy", function(d) { return d.y; })
                                         .attr("r", 8)
-                                        .attr("fill", "#333")
+                                        .attr("fill", "#000")
                                 } else if (d.value.type === 'Non-Stealth Internal Attack') {
                                     elm.append('rect')
                                         .attr('x', function(d) { return d.x; })
                                         .attr('y', function(d) { return d.y; })
                                         .attr('height', 14)
                                         .attr('width', 14)
-                                        .style('fill', "#497eb5")
+                                        .style('fill', "#888")
                                         .attr('transform', 'translate(-8,-8)')
                                         .style('fill-opacity', '1')
                                 }
