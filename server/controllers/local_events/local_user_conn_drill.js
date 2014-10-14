@@ -39,10 +39,21 @@ module.exports = function(pool) {
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_zone` = ? '+
                                 'AND `lan_user` = ? '+
-                                'AND `lan_ip` = ? ',
+                                'AND `lan_ip` = ? '+
+                            'GROUP BY remote_ip',
                     insert: [start, end, req.query.lan_zone, req.query.lan_user, req.query.lan_ip],
                     params: [
-                        { title: 'Time', select: 'time' },
+                    {
+                        title: 'Time',
+                        select: 'time',
+                        dView: true,
+                        link: {
+                            type: 'local_user_conn_drill_by_remote',
+                            // val: the pre-evaluated values from the query above
+                            val: ['lan_ip','lan_zone','lan_user','remote_ip'],
+                            crumb: false
+                        },
+                    },
                         { title: 'Zone', select: 'lan_zone' },
                         { title: 'Machine', select: 'lan_machine' },
                         { title: 'Local User', select: 'lan_user' },

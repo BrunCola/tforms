@@ -150,14 +150,18 @@ module.exports = function(app, passport, version, io, pool) {
             var local_user_conn = require('../controllers/local_events/local_user_conn')(pool);
             app.route('/local_events/local_user_conn')
             .get(authorization.requiresLogin, local_user_conn.render);
-            // LOCAL USERS CONN DRILL
+        // LOCAL USERS CONN DRILL
             var local_user_conn_drill = require('../controllers/local_events/local_user_conn_drill')(pool);
             app.route('/local_events/local_user_conn_drill')
             .get(authorization.requiresLogin, local_user_conn_drill.render);
-            // LOCAL COI REMOTE DRILL
-                var local_COI_remote_drill = require('../controllers/local_events/local_COI_remote_drill')(pool);
-                app.route('/local_events/local_COI_remote_drill')
-                .get(authorization.requiresLogin, local_COI_remote_drill.render);
+        // LOCAL USERS CONN DRILL BY REMOTE
+            var local_user_conn_drill_by_remote = require('../controllers/local_events/local_user_conn_drill_by_remote')(pool);
+            app.route('/local_events/local_user_conn_drill_by_remote')
+            .get(authorization.requiresLogin, local_user_conn_drill_by_remote.render);
+        // LOCAL COI REMOTE DRILL
+            var local_COI_remote_drill = require('../controllers/local_events/local_COI_remote_drill')(pool);
+            app.route('/local_events/local_COI_remote_drill')
+            .get(authorization.requiresLogin, local_COI_remote_drill.render);
         // STEALTH QUARANTINE
             var stealth_quarantine = require('../controllers/local_events/stealth_quarantine')(pool); 
             app.route('/local_events/stealth_quarantine')

@@ -494,7 +494,25 @@ angular.module('mean.pages').config(['$stateProvider',
                         },
                         daterange: true
                     }
-                })  
+                })   
+                // LOCAL USER CONN DRILL BY REMOTE
+                .state('local_user_conn_drill_by_remote', {
+                    url: '/local_user_conn_drill_by_remote?start&end&lan_zone&lan_ip&lan_user&remote_ip',
+                    templateUrl: 'public/pages/views/local_events/local_user_conn_drill_by_remote.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'Local User Connections',
+                        subtitleElm: {
+                            'Local IP': 'lan_ip',
+                            'Zone': 'lan_zone',
+                            'Local User': 'lan_user',
+                            'Remote IP': 'remote_ip'
+                        },
+                        daterange: true
+                    }
+                }) 
                 // LOCAL USER CONN DRILL
                     .state('local_COI_remote_drill', {
                         url: '/local_COI_remote_drill?start&end&ip',
