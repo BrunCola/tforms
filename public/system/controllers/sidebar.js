@@ -182,6 +182,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'icon': 'fa-shield',
                     'orphans': []
                 },
+                {
+                    'title': 'Local User Connections',
+                    'url': 'local_user_conn',
+                    'icon': 'fa-user',
+                    'orphans': []
+                },
             ]
         },
         { // LOCAL EVENTS
@@ -191,19 +197,13 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
             'children':
             [
                 // {
-                //     'title': 'Local User Conn.',
-                //     'url': 'local_user_conn',
-                //     'icon': 'fa-user',
-                //     'orphans': []
-                // },
-                // {
                 //     'title': 'Local Network Map',
                 //     'url': 'local_network_map',
                 //     'icon': 'fa-sitemap',
                 //     'orphans': []
                 // },
                 {
-                    'title': 'Local Floor Plan',
+                    'title': 'Endpoint Map',
                     'url': 'local_floor_plan',
                     'icon': 'fa-user',
                     'orphans': []

@@ -91,7 +91,7 @@ module.exports = function(pool) {
                                     '`lan_zone` AS `Victim Zone`,'+
                                     '`lan_machine` AS `Victim Machine`,'+
                                     '`lan_user`,'+
-                                    '`lan_user` AS `Victim_User`,'+
+                                    '`lan_user` AS `Victim User`,'+
                                     '`lan_ip` AS `Victim IP`,'+
                                     '`remote_machine` AS `Attacker Machine`,'+
                                     '`remote_user` AS `Attacker User`,'+
@@ -110,7 +110,7 @@ module.exports = function(pool) {
                                     '\'Non-Stealth Internal Attack\' AS type,'+
                                     '`lan_zone` AS `Attacker Zone`,'+
                                     '`machine` AS `Attacker Machine`,'+
-                                    '`lan_user` AS `Attacker_User`,'+
+                                    '`lan_user` AS `Attacker User`,'+
                                     '`lan_ip` AS `Attacker IP`,'+
                                     '`remote_machine` AS `Victim Machine`,'+
                                     '`remote_user` AS `lan_user`,'+
@@ -134,7 +134,7 @@ module.exports = function(pool) {
                                     '`lan_zone` AS `Victim Zone`,'+
                                     '`lan_machine` AS `Victim Machine`,'+
                                     '`lan_user`,'+
-                                    '`lan_user` AS `Victim_User`,'+
+                                    '`lan_user` AS `Victim User`,'+
                                     '`lan_ip` AS `Victim IP`,'+
                                     '`remote_machine` AS `Attacker Machine`,'+
                                     '`remote_user` AS `Attacker User`,'+
@@ -154,7 +154,7 @@ module.exports = function(pool) {
                                     '\'Non-Stealth Internal Connection\' AS type,'+
                                     '`lan_zone` AS `Attacker Zone`,'+
                                     '`machine` AS `Attacker Machine`,'+
-                                    '`lan_user` AS `Attacker_User`,'+
+                                    '`lan_user` AS `Attacker User`,'+
                                     '`lan_ip` AS `Attacker IP`,'+
                                     '`remote_machine` AS `Victim Machine`,'+
                                     '`remote_user` AS `lan_user`,'+
@@ -204,9 +204,7 @@ module.exports = function(pool) {
                                 force = data;
                                 callback();
                             });
-                        }
-                    
-
+                        }   
                     ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                         if (err) throw console.log(err);
                         var results = {
@@ -220,7 +218,7 @@ module.exports = function(pool) {
             }
         },
 
-        set_coordinates: function(req, res) {
+        set_info: function(req, res) {
             var database = req.session.passport.user.database;
             if (req.query.type === 'insert') {
                 var update_coordinates = {

@@ -16,7 +16,8 @@ module.exports = function(app, passport, version, io, pool) {
             // IOC EVENTS DRILLDOWN
                 var ioc_events_drilldown = require('../controllers/ioc_notifications/ioc_events_drilldown')(pool);
                 app.route('/ioc_notifications/ioc_events_drilldown')
-                .get(authorization.requiresLogin, ioc_events_drilldown.render);
+                .get(authorization.requiresLogin, ioc_events_drilldown.render)
+                .post(authorization.requiresLogin, ioc_events_drilldown.set_info);
         // IOC REMOTE
             var ioc_remote = require('../controllers/ioc_notifications/ioc_remote')(pool);
              app.route('/ioc_notifications/ioc_remote')
@@ -126,17 +127,17 @@ module.exports = function(app, passport, version, io, pool) {
                 var ftp_remote2local = require('../controllers/general_network/ftp_remote2local')(pool);
                 app.route('/general_network/ftp_remote2local')
                 .get(authorization.requiresLogin, ftp_remote2local.render);
-    // LOCAL EVENTS        
+    // STEALTH
         // STEALTH COI MAP
             var stealth_COI_map = require('../controllers/local_events/stealth_COI_map')(pool); 
             app.route('/local_events/stealth_COI_map')
             .get(authorization.requiresLogin, stealth_COI_map.render)
-            .post(authorization.requiresLogin, stealth_COI_map.set_coordinates);
+            .post(authorization.requiresLogin, stealth_COI_map.set_info);
         // STEALTH USER CONN
             var local_COI_remote = require('../controllers/local_events/local_COI_remote')(pool); 
             app.route('/local_events/local_COI_remote')
             .get(authorization.requiresLogin, local_COI_remote.render)
-            .post(authorization.requiresLogin, local_COI_remote.set_coordinates);
+            .post(authorization.requiresLogin, local_COI_remote.set_info);
         // STEALTH QUARANTINE
             var stealth_quarantine = require('../controllers/local_events/stealth_quarantine')(pool); 
             app.route('/local_events/stealth_quarantine')
@@ -153,6 +154,15 @@ module.exports = function(app, passport, version, io, pool) {
                 var local_COI_remote_drill = require('../controllers/local_events/local_COI_remote_drill')(pool);
                 app.route('/local_events/local_COI_remote_drill')
                 .get(authorization.requiresLogin, local_COI_remote_drill.render);
+        // STEALTH QUARANTINE
+            var stealth_quarantine = require('../controllers/local_events/stealth_quarantine')(pool); 
+            app.route('/local_events/stealth_quarantine')
+            .get(authorization.requiresLogin, stealth_quarantine.render);
+    // LOCAL EVENTS        
+        // FIREWALL
+            var firewall = require('../controllers/local_events/firewall')(pool); 
+            app.route('/local_events/firewall')
+            .get(authorization.requiresLogin, firewall.render);
         // LOCAL NETWORK MAP
             var local_network_map = require('../controllers/local_events/local_network_map')(pool);
             app.route('/local_events/local_network_map')

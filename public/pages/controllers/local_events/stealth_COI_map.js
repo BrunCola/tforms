@@ -40,4 +40,10 @@ angular.module('mean.pages').controller('stealthCoiMapController', ['$scope', '$
         //$scope.appendInfo(results);
         return results;
     }
+
+    $scope.triggerScript = function(){
+        var query = '/local_events/stealth_COI_map?';
+        $http({method: 'POST', url: query+"trigger_type=ldap&flag=1"});
+    }
+
 }]);

@@ -19,6 +19,37 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
             $scope.$broadcast('spinnerHide');
         }
     });
+
+
+    $scope.onloadInfo = function (){
+        var nodeInfo = [];
+        var nodeName = [];
+        for(var i in $scope.forcedata.uniqueNodes){
+            var nodeAppend = [];
+            var selected = $scope.forcedata.nodes.filter(function(d){ 
+                if (i === d.name){
+                    nodeAppend["name"] = d.name;
+                    nodeAppend["count"] = d.count;
+                    nodeAppend["index"] = d.index;
+                }
+            });
+
+            nodeAppend["allowed"] = 0;
+            nodeAppend["block"] = 0;
+            var selected = $scope.forcedata.links.filter(function(d){
+                if ((d.class !== undefined) && ((d.target.index === nodeAppend["index"]) || (d.source.index === nodeAppend["index"]))) {
+                    if (d.allowed === "authorized") { 
+                        nodeAppend["allowed"]++;
+                    } else if (d.allowed === "blocked") {
+                        nodeAppend["block"]++;
+                    }
+                }
+            });
+            nodeInfo.push(nodeAppend);
+        }
+        $scope.pageLoadInfo(nodeInfo, "onload");
+    }
+
     $scope.requery = function(data, button) {
         var results = [];
         switch(button) {
@@ -34,7 +65,6 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
                 })
                 var rSource = $scope.forcedata.links.filter(function(d){
                     if ((d.class !== undefined) && (d.target.index === data.index) && (d.source.value.allow === "authorized")) {
-                        console.log("rSource");
                         return true;
                     }
                 })
@@ -50,7 +80,7 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
            // console.log(data)
             // get children hanging off of parent nodes
                 var rTargets = $scope.forcedata.links.filter(function(d){
-                    if ((d.class !== undefined) && (d.source.index === data.index) && (d.source.value.allow === "blocked")) {
+                    if ((d.class !== undefined) && (d.source.index === data.index) && (d.target.value.allow === "blocked")) {
                         return true;
                     }
                 })

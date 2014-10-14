@@ -14,27 +14,24 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.data.force.forEach(function(d){
                 d.id = count++;
             })
-            $scope.$broadcast('floorPlan', $scope.data.force);
+            $scope.$broadcast('floorPlan');
             $scope.$broadcast('spinnerHide');
         }
-
-        if($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
+        if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
             var query = '/local_events/local_floor_plan?lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&type=flooruser';
             $http({method: 'GET', url: query+'&typeinfo=userinfoload'}).
                 success(function(data) {
                     $scope.requery(data[0]);
                     var selected = $scope.data.force.filter(function(d){ if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ return true }});
-                    if (selected[0] !== undefined) { $scope.setSelected(selected[0]); }
+                    if (selected[0] !== undefined) { $scope.$broadcast('setSelected', selected[0]); }
                 });
         }
     }); 
     
-
-
     $scope.requery = function(d) {
          // get user image
         if ($scope.lan_ip !== '-') {
-            $scope.appendInfo("","","clear");
+            $rootScope.$broadcast('appendInfo', "", "", "clear");
 
             var userInfo = [];
             var query = '/local_events/local_floor_plan?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser'; 
@@ -42,40 +39,40 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $http({method: 'GET', url: query+'&typeinfo=assets'}).
                 success(function(data) {
                     if (data[0] !== undefined) {
-                        $scope.appendInfo(d,'public/pages/assets/img/staff/'+data[0].file,"assets");
+                        $rootScope.$broadcast('appendInfo', d, data[0].path, "assets");
                     } else {
-                        $scope.appendInfo(d,'',"assets");
+                        $rootScope.$broadcast('appendInfo', d, '', "assets");
                     }
                 });
 
-            $scope.appendInfo(d,"","userinfo");                       
+            $scope.$broadcast('appendInfo', d,"","userinfo");                       
 
             $http({method: 'GET', url: query+'&typeinfo=localioc'}).
                 success(function(data) {
-                    $scope.appendInfo(d,data[0],"localioc");
+                    $scope.$broadcast('appendInfo', d,data[0],"localioc");
                 });
 
             $http({method: 'GET', url: query+'&typeinfo=localapp'}).
                 success(function(data) {
-                    $scope.appendInfo(d,data[0],"localapp");
+                    $scope.$broadcast('appendInfo', d,data[0],"localapp");
                 });
 
             $http({method: 'GET', url: query+'&typeinfo=localhttp'}).
                 success(function(data) {
-                    $scope.appendInfo(d,data[0],"localhttp");
+                    $scope.$broadcast('appendInfo', d,data[0],"localhttp");
                 });
 
             $http({method: 'GET', url: query+'&typeinfo=localfiles'}).
                 success(function(data) {
-                    $scope.appendInfo(d,data[0],"localfiles");
+                    $scope.$broadcast('appendInfo', d,data[0],"localfiles");
                 });
 
             $http({method: 'GET', url: query+'&typeinfo=endpoint'}).
                 success(function(data) {
-                    $scope.appendInfo(d,data[0],"endpoint");
+                    $scope.$broadcast('appendInfo', d,data[0],"endpoint");
                 });
           
-            //$scope.appendInfo(userInfo);
+            //$scope.$broadcast('appendInfo', userInfo);
         }
     }
 
@@ -105,6 +102,17 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             keyboard: true
         });
     };
+
+    $scope.uploadUser = function (rowData) {
+        $rootScope.modalRowData = rowData;
+        $scope.modalInstance = $modal.open({
+            templateUrl: 'uploadModal.html',
+            controller: uploadInstanceCtrl,
+            keyboard: true,
+            modalRowData: rowData
+        });
+    };
+
     var uploadInstanceCtrl = function ($scope, $modalInstance, $upload) {
         $scope.ok = function () {
             $modalInstance.close();
@@ -140,28 +148,59 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 $scope.start(i);
             }
         };
-        $scope.start = function(index) {
-            $scope.progress[index] = 0;
-            $scope.errorMsg = null;
-            $scope.upload[index] = $upload.upload({
-                url : '/uploads',
-                method: 'POST',
-                data : {
-                    myModel : $scope.myModel,
-                    imageType: 'map'
-                },
-                file: $scope.selectedFiles[index],
-            }).then(function(response) {
-                $scope.uploadResult.push(response.data);
-            }, function(response) {
-                if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
-            }, function(evt) {
-                // Math.min is to fix IE which reports 200% sometimes
-                $scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-            }).xhr(function(xhr){
-                xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
-            });
-        };
+
+
+
+        if ($rootScope.modalRowData.lan_ip) {
+            $scope.start = function(index) {
+                $scope.progress[index] = 0;
+                $scope.errorMsg = null;
+                $scope.upload[index] = $upload.upload({
+                    url : '/uploads',
+                    method: 'POST',
+                    data : {
+                        myModel : $scope.myModel,
+                        imageType: 'user',
+                        lan_user: $rootScope.modalRowData.lan_user,
+                        lan_zone: $rootScope.modalRowData.lan_zone,
+                        lan_ip: $rootScope.modalRowData.lan_ip
+                    },
+                    file: $scope.selectedFiles[index],
+                }).then(function(response) {
+                    $scope.uploadResult.push(response.data);
+                }, function(response) {
+                    if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
+                }, function(evt) {
+                    // Math.min is to fix IE which reports 200% sometimes
+                    $scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+                }).xhr(function(xhr){
+                    xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
+                });
+            };
+        } else {
+            $scope.start = function(index) {
+                $scope.progress[index] = 0;
+                $scope.errorMsg = null;
+                $scope.upload[index] = $upload.upload({
+                    url : '/uploads',
+                    method: 'POST',
+                    data : {
+                        myModel : $scope.myModel,
+                        imageType: 'map'
+                    },
+                    file: $scope.selectedFiles[index],
+                }).then(function(response) {
+                    $scope.uploadResult.push(response.data);
+                }, function(response) {
+                    if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
+                }, function(evt) {
+                    // Math.min is to fix IE which reports 200% sometimes
+                    $scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+                }).xhr(function(xhr){
+                    xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
+                });
+            };
+        }
     };
 
 }]);

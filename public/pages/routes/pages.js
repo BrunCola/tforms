@@ -438,7 +438,7 @@ angular.module('mean.pages').config(['$stateProvider',
                             daterange: true
                         }
                     })
-        // LOCAL EVENTS
+        // STEALTH
             // STEALTH COI MAP
                 .state('stealth_COI_map', {
                     url: '/stealth_COI_map',
@@ -505,6 +505,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         daterange: true
                     }
                 }) 
+        // LOCAL EVENTS
             // FIREWALL
                 .state('firewall', {
                     url: '/firewall?start&end',
@@ -658,7 +659,6 @@ angular.module('mean.pages').config(['$stateProvider',
                             daterange: true
                         }
                     })
-
         // APPLICATIONS
             // BY APPLICATION
                 .state('app_by_application', {
@@ -973,7 +973,6 @@ angular.module('mean.pages').config(['$stateProvider',
                             daterange: true
                         }
                     })
-
         // DNS
             // LOCAL DNS
                 .state('dns_local', {
