@@ -98,8 +98,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             $scope.quarantineLink = function() {
                 $scope.currentdate = Math.round(new Date().getTime()/1000.0);
                 var query = '/ioc_notifications/ioc_events_drilldown?';
-                //$http({method: 'POST', url: query+"trigger_type=quarantine&flag="+$location.$$search.lan_user});
-                //$http({method: 'POST', url: query+"trigger_type=quarantine&currenttime="+$scope.currentdate+"&email="+user+"&lan_zone="+$location.$$search.lan_zone+"&lan_machine="+$location.$$search.lan_ip+"&lan_ip="+$location.$$search.lan_ip});
+                $http({method: 'POST', url: query+"trigger_type=quarantine&flag="+$location.$$search.lan_user});
                 $http({method: 'POST', url: query+"trigger_type=stealthquarantine&currenttime="+$scope.currentdate+"&email="+user+"&lan_zone="+$location.$$search.lan_zone+"&lan_user="+$location.$$search.lan_user});
                 var url = 'stealth_quarantine';
                 if ($location.$$search.start && $location.$$search.end) {
