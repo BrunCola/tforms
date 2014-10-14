@@ -117,8 +117,15 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                 $modalInstance.close();
             };
             $scope.firewallLink = function(info) {
-                // /$scope.
                 console.log(info);
+                /*console.log($scope.global.user.email);
+                console.log(info.select);
+                console.log(info.text);
+                $scope.date = new Date();
+                console.log($scope.date);*/
+
+              /*  var query = '/ioc_notifications/ioc_events_drilldown?';
+                $http({method: 'POST', url: query+"trigger_type=firewall"});*/
                 var url = 'firewall';
                 if ($location.$$search.start && $location.$$search.end) {
                     $location.path(url).search({'start':$location.$$search.start, 'end':$location.$$search.end});

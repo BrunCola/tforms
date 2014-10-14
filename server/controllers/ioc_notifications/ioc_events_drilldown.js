@@ -1954,7 +1954,19 @@ module.exports = function(pool) {
                         res.send(200);
                     }
                 });
-            }
+            } /*else if (req.query.type === 'quarantine') {
+                var update_coordinates = {
+                    query: "INSERT INTO `script_trigger` (`type`, `flag`) VALUES (?,?)",
+                    insert: [req.query.trigger_type, req.query.flag]
+                }
+                new query(update_coordinates, {database: database, pool: pool}, function(err,data){
+                    if (err) {
+                        res.send(500);
+                    } else {
+                        res.send(200);
+                    }
+                });
+            }*/
         }
     }
 };
