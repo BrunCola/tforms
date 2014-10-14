@@ -3800,6 +3800,14 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         row
                             .append('td')
                             .html('<img src="'+image+'" width="48"/>');
+                        //row
+                          //  .append('td')
+                           // .html("<button class='bUpload button-success pure-button' type='button' value='' ng-click='uploadOpen()' href=''>Upload Image</button>");
+
+                        // $('localuserinformation .bUpload').on('click',function(){
+                        //     //var rowData = JSON.parse(this.value);
+                        //     $scope.uploadOpen();
+                        // });
                     } else {
                         var title = "", link = "";
                         switch(type){                           
@@ -3870,6 +3878,11 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     });
                     $('.usernameform').each(function(e){
                         this.classList.add('ng-hide');
+                    });
+
+                    $('.bUpload').on('click',function(){
+                        // var rowData = JSON.parse(this.value);
+                        $scope.uploadOpen(rowData);
                     });
                 }
 
