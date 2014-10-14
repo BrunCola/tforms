@@ -22,8 +22,7 @@ module.exports = function(pool) {
                             '`time`,'+
                             '`email`,'+
                             '`lan_zone`,'+
-                            '`lan_machine`,'+
-                            '`lan_ip` '+
+                            '`lan_user` '+
                         'FROM '+
                             '`stealth_quarantine` '+
                         'WHERE '+
@@ -33,8 +32,7 @@ module.exports = function(pool) {
                     { title: 'Time', select: 'time' },
                     { title: 'Email', select: 'email' },
                     { title: 'Zone', select: 'lan_zone' },
-                    { title: 'Machine', select: 'lan_machine' },
-                    { title: 'Local IP', select: 'lan_ip' },
+                    { title: 'Machine', select: 'lan_user' },
                 ],
                 settings: {
                     sort: [[0, 'desc']],

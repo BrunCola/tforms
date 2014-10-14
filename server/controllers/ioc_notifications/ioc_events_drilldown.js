@@ -1957,8 +1957,8 @@ module.exports = function(pool) {
 
             } else if (req.query.trigger_type === 'stealthquarantine') {
                var update_quarantine = {
-                    query: "INSERT INTO `stealth_quarantine` (`time`, `email`, `lan_zone`, `lan_machine`, `lan_ip`) VALUES (?,?,?,?,?)",
-                    insert: [req.query.currenttime, req.query.email, req.query.lan_zone, req.query.lan_machine, req.query.lan_ip]
+                    query: "INSERT INTO `stealth_quarantine` (`time`, `email`, `lan_zone`, `lan_user`) VALUES (?,?,?,?)",
+                    insert: [req.query.currenttime, req.query.email, req.query.lan_zone, req.query.lan_user]
                 }
                 new query(update_quarantine, {database: database, pool: pool}, function(err,data){
                     if (err) {
