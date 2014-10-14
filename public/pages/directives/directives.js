@@ -3571,7 +3571,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .transition()
                             .duration(2000)
                             .attr('stdDeviation', 0);
-                        main.style('filter', 'url(#blur-effect-1)')
+                        main.style('filter', null)
                     }
                 }
 
