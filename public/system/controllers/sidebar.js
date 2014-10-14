@@ -224,7 +224,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'title': 'Sharepoint Access',
                     'url': 'endpoint_events_sharepoint',
                     'icon': 'fa-desktop',
-                    'orphans': ['endpoint_events_sharepoint_drill']
+                    'orphans': ['endpoint_events_sharepoint_drill', 'endpoint_events_sharepoint_full']
                 }
             ]
         },

@@ -19,59 +19,39 @@ module.exports = function(pool) {
             var table1 = {
                 query: 'SELECT '+
                             'count(*) AS count,'+
-                            'max(`timestamp`) as time,'+
-                            '`sharepoint_user`,'+
-                            '`lan_ip`,'+
-                            '`machine`, ' +
-                            '`lan_zone`, ' +
-                            '`remote_ip`, ' +
-                            '`remote_port`, '  +
-                            '`remote_cc`, ' +
-                            '`remote_country`, ' +
-                            '`remote_asn_name`, ' +
-                            '`location`,'+
-                            '`event`,'+
-                            '`event_id`,'+
-                            '`event_location` '+
+                            'max(`time`) AS `time`,'+
+                            '`event_id`, ' +
+                            '`event_src`, '  +
+                            '`event_type`, ' +
+                            '`event_detail`, ' +
+                            '`event_full`, ' +
+                            '`event_level` ' +
                         'FROM '+
-                            '`sharepoint` '+
+                            '`sharepoint_events` '+
                         'WHERE '+
-                            '`timestamp` BETWEEN ? AND ? '+
+                            '`time` BETWEEN ? AND ? '+
                         'GROUP BY '+
-                            '`event`, '+
-                            '`lan_ip`, '+
-                            '`lan_zone`', 
+                            '`event_type`',
                 insert: [start, end],
                 params: [
                     {
                         title: 'Last Seen',
                         select: 'time',
-                        // link: {
-                        //     type: 'endpoint_events_sharepoint_drill',
-                        //     // val: the pre-evaluated values from the query above
-                        //     val: ['event_id', 'lan_ip'],
-                        //     crumb: false
-                        // },
+                        link: {
+                            type: 'endpoint_events_sharepoint_drill',
+                            // val: the pre-evaluated values from the query above
+                            val: ['event_type'],
+                            crumb: false
+                        },
                     },
                     { title: 'Events', select: 'count' },
-                    // { title: 'Machine', select: 'machine' },
-                    // { title: 'Zone', select: 'lan_zone' },
-                    { title: 'Local IP', select: 'lan_ip' },
-                    { title: 'Sharepoint User', select: 'sharepoint_user'},
-                    { title: 'Location', select: 'location' },
-                    { title: 'Event', select: 'event' },
-                    { title: 'Event ID', select: 'event_id'},
-                    { title: 'Event Location', select: 'event_location' },
-                    // { title: 'Remote IP', select: 'remote_ip'},
-                    // { title: 'Remote port', select: 'remote_port' },
-                    // { title: 'Flag', select: 'remote_cc' },
-                    // { title: 'Remote Country', select: 'remote_country' },
-                    // { title: 'Remote ASN Name', select: 'remote_asn_name' }
+                    { title: 'Event Type', select: 'event_type' },
+                    { title: 'Event Source', select: 'event_src'}
                 ],
                 settings: {
                     sort: [[0, 'desc']],
                     div: 'table',
-                    title: 'Sharepoint Events by IP'
+                    title: 'Sharepoint Events by Type'
                 }
             }
             async.parallel([

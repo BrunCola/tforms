@@ -16,41 +16,54 @@ module.exports = function(pool) {
 				end = req.query.end;
 			}
 			//var results = [];
-			if (req.query.event_id && req.query.lan_ip && req.query.src_user) {
+			if (req.query.event_type) {
 				var tables = [];
 				var info = [];
 				var table1 = {
 					query: 'SELECT '+
-						'`timestamp` as time,'+
-						'`sharepoint_user`,'+
+						'count(*) AS count,'+
+                        'max(`time`) AS `time`,'+
+						'`lan_user`,'+
 						'`lan_ip`,'+
-						'`machine`, ' +
+						'`lan_machine`, ' +
 						'`lan_zone`, ' +
-						'`remote_ip`, ' +
-						'`remote_port`, '  +
-						'`remote_cc`, ' +
-						'`remote_country`, ' +
-						'`remote_asn_name`, ' +
-						'`location`,'+
-						'`event`,'+
-						'`event_id`,'+
-						'`event_location` '+
+						'`event_id`, ' +
+						'`event_src`, '  +
+						'`event_type`, ' +
+						'`event_detail`, ' +
+						'`event_full`, ' +
+						'`event_level`, ' +
+						'`stealth` ' +
 					'FROM '+
-						'`sharepoint` '+
+						'`sharepoint_events` '+
 					'WHERE '+
-						'`timestamp` BETWEEN ? AND ? '+
-						'AND event_id = ? '+
-						'AND lan_ip = ? ',//+
-					//	'AND lan_zone = ?',
-					insert: [start, end, req.query.event_id, req.query.lan_ip],
+						'`time` BETWEEN ? AND ? '+
+						'AND `event_type` = ? '+
+					'GROUP BY '+
+						'`lan_user`, '+
+						'`lan_ip`, '+
+						'`lan_zone`',
+					insert: [start, end],
 					params: [
-						{ title: 'Time', select: 'time' },
-						{ title: 'Local IP', select: 'lan_ip' },
-						{ title: 'Sharepoint User', select: 'sharepoint_user'},
-						{ title: 'Location', select: 'location' },
-						{ title: 'Event', select: 'event' },
-						{ title: 'Event ID', select: 'event_id'},
-						{ title: 'Event Location', select: 'event_location' },
+						{
+                            title: 'Last Seen',
+                            select: 'time',
+                            link: {
+                                type: 'sharepoint_events_full',
+                                val: ['event_type','lan_zone','lan_user', 'lan_ip'], // pre-evaluated values from the query above
+                                crumb: false
+                            }
+                        },
+						{ title: 'Events', select: 'count'},
+                        { title: 'Stealth', select: 'stealth', access: [3] },
+                        { title: 'Zone', select: 'lan_zone'},
+                        { title: 'Machine', select: 'lan_machine'},
+                        { title: 'Local User', select: 'lan_user'},
+                        { title: 'Local IP', select: 'lan_ip'},
+                        { title: 'Event Type', select: 'event_type' },
+                        { title: 'Event Details', select: 'event_detail'},
+                        { title: 'Event Source', select: 'event_src'},
+                        { title: 'Event ID', select: 'event_id'},
 					],
 					settings: {
 						sort: [[0, 'desc']],

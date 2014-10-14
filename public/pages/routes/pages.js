@@ -610,27 +610,43 @@ angular.module('mean.pages').config(['$stateProvider',
                         loggedin: checkLoggedin
                     },
                     data: {
-                        title: 'Endpoint Events',
+                        title: 'Endpoint Sharepoint Events by Type',
                         daterange: true
                     }
                 })
                 // ENDPOINT EVENTS SHAREPOINT DRILL
                     .state('endpoint_events_sharepoint_drill', {
-                        url: '/endpoint_events_sharepoint_drill?start&end&event_id&lan_ip',
+                        url: '/endpoint_events_sharepoint_drill?start&end&event_type',
                         templateUrl: 'public/pages/views/local_events/endpoint_events_sharepoint_drill.html',
                         resolve: {
                             loggedin: checkLoggedin
                         },
                         data: {
-                            title: 'Endpoint Event Full Logs',
+                            title: 'Endpoint Sharepoint Local Events',
                             subtitleElm: {
-                                'Event ID': 'event_id',
-                                'Local IP': 'lan_ip'
-                                //'Zone': 'lan_zone'
+                                'Event Type': 'event_type'
                             },
                             daterange: true
                         }
                     })
+                        // ENDPOINT EVENTS SHAREPOINT FULL
+                        .state('endpoint_events_sharepoint_full', {
+                            url: '/endpoint_events_sharepoint_full?start&end&event_type&lan_ip&lan_zone&lan_user',
+                            templateUrl: 'public/pages/views/local_events/endpoint_events_sharepoint_full.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Endpoint Sharepoint Event Full Logs',
+                                subtitleElm: {
+                                    'Event Type': 'event_type',
+                                    'Local IP': 'lan_ip',
+                                    'Zone': 'lan_zone',
+                                    'User': 'lan_user'
+                                },
+                                daterange: true
+                            }
+                        })
                 // LOCAL FLOOR PLAN
                     .state('local_floor_plan', {
                         url: '/local_floor_plan?start&end&event_id&lan_ip',
