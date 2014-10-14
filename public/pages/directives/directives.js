@@ -1942,7 +1942,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                         .attr('y', function(d) { return d.y; })
                                         .attr('height', 14)
                                         .attr('width', 14)
-                                        .style('fill', "#555")
+                                        .style('fill', "#002E7F")
                                         .attr('transform', 'translate(-8,-8)')
                                         .style('fill-opacity', '1')
                                 }
