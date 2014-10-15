@@ -14,7 +14,7 @@ module.exports = function(app, passport, io, pool) {
 
 		socket.on('disconnect', function() {
 			// Decrease the socket count on a disconnect, emit
-			socketCount--
+			socketCount--;
 			io.sockets.emit('users connected', socketCount);
 		})
 		socket.on('init', function(userData) {

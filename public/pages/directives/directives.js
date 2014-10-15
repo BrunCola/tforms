@@ -3411,25 +3411,27 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             "Event Timeline Navigation");
                     });
 
-                // var saveToggle = buttonHolder
-                //     .append('button')
-                //     .html('Create pattern')
-                //     .attr('class', 'saveToggle')
-                //     .on('click', function(){
-                //         if ($scope.pattern.searching === false) {
-                //             if ($scope.pattern.last !== null) {
-                //                 $scope.pattern.selected[$scope.pattern.last.id] = $scope.pattern.last;
-                //             }
-                //             // set searching to true
-                //             $scope.pattern.searching = true;
-                //             // change class (so we know its on)
-                //         } else {
-                //             // make a call to save restults
-                //             // clear our object & set it back to false
-                //             $scope.pattern.searching = false;
-                //             $scope.pattern.selected = {};
-                //         }
-                //     });
+                var saveToggle = buttonHolder
+                    .append('button')
+                    .html('Create pattern')
+                    .attr('class', 'saveToggle')
+                    .on('click', function(){
+                        if ($scope.pattern.searching === false) {
+                            d3.select(this).html('Save pattern');
+                            if ($scope.pattern.last !== null) {
+                                $scope.pattern.selected[$scope.pattern.last.id] = $scope.pattern.last;
+                            }
+                            // set searching to true
+                            $scope.pattern.searching = true;
+                            // change class (so we know its on)
+                        } else {
+                            d3.select(this).html('Create pattern');
+                            // make a call to save restults
+                            // clear our object & set it back to false
+                            $scope.pattern.searching = false;
+                            $scope.pattern.selected = {};
+                        }
+                    });
 
                 // var timeShiftHolder = d3.select("#lanegraph").append('div').attr('class', 'timeShiftHolder');
                 // var nextTime = timeShiftHolder
@@ -3688,6 +3690,28 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // elm.style('cursor', 'pointer');
                                 })
                                 .on("click", function(d){
+                                    // un-highlight previous box
+                                    $('#'+previousID).attr('class', null);
+                                    // this closes the last expanded block if there is one
+                                    if (lastExpandedId !== null) {
+                                        $('div'+lastExpandedId+'.infoDivExpanded').hide();
+                                    }
+                                    if($('#autoexpand').is(':checked')){
+                                        if (isOpen === '#'+d.id) {
+                                            $('#'+d.id+' .infoDivExpanded').css('display', 'none');
+                                            isOpen = null;
+                                        } else {
+                                            $('#'+d.id+' .infoDivExpanded').css('display', 'block');
+                                            lastExpandedId = '#'+d.id;
+                                            isOpen = '#'+d.id;
+
+                                            $('#'+d.id+' .infoDivExpanded').html(laneInfoAppend(d.expand));
+                                        }
+                                    }
+                                    // set class for active description
+                                    $('#'+d.id).attr('class', 'laneactive');
+                                    // scroll to position
+                                    scrollSide(d.id);
                                     if ($scope.pattern.searching === false) {
                                         // throw clicked element into out last object
                                         $scope.pattern.last = d;
@@ -3695,34 +3719,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                             var elm = d3.select(this);
                                             elm.attr('class', null);
                                         })
-                                        // un-highlight previous box
-                                        $('#'+previousID).attr('class', null);
-                                        // this closes the last expanded block if there is one
-                                        if (lastExpandedId !== null) {
-                                            $('div'+lastExpandedId+'.infoDivExpanded').hide();
-                                        }
-                                        if($('#autoexpand').is(':checked')){
-                                            if (isOpen === '#'+d.id) {
-                                                $('#'+d.id+' .infoDivExpanded').css('display', 'none');
-                                                isOpen = null;
-                                            } else {
-                                                $('#'+d.id+' .infoDivExpanded').css('display', 'block');
-                                                lastExpandedId = '#'+d.id;
-                                                isOpen = '#'+d.id;
-
-                                                $('#'+d.id+' .infoDivExpanded').html(laneInfoAppend(d.expand));
-                                            }
-                                        }
                                         // deselect previous element if there is one
                                         if (previousElm !== null) {
                                             previousElm.attr('class', null);
                                         }
                                         // make current node active
                                         elm.attr('class', 'pointactive');
-                                        // set class for active description
-                                        $('#'+d.id).attr('class', 'laneactive');
-                                        // scroll to position
-                                        scrollSide(d.id);
                                         // prevPos = currPos;
                                         // set ids for cross-refrence
                                         previousID = d.id;
