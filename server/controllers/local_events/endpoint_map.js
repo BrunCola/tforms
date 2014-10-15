@@ -17,10 +17,7 @@ module.exports = function(pool) {
                 start = req.query.start;
                 end = req.query.end;
             }
-
             if (req.query.type === 'flooruser') {
-
-
                 switch (req.query.typeinfo) {
                     // Info function(s) --- IOC
                     case 'localioc':
@@ -99,6 +96,7 @@ module.exports = function(pool) {
                         });  
                         break;
                 }     
+<<<<<<< HEAD:server/controllers/local_events/local_floor_plan.js
 
             } else if (req.query.type === 'floorquery') {
                 switch (req.query.typeinfo) {
@@ -118,9 +116,10 @@ module.exports = function(pool) {
                         break;
                 }
 
+=======
+>>>>>>> v1.5:server/controllers/local_events/endpoint_map.js
             } else {    
                 var floorplanReturn = [];
-
                 var floor_plan_users = {
                     query: 'SELECT '+
                             'u.lan_user, '+

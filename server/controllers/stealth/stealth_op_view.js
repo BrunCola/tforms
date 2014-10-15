@@ -1,9 +1,9 @@
 'use strict';
 
 var force_stealth_user = require('../constructors/force_stealth_user'),
-query = require('../constructors/query'),
-config = require('../../config/config'),
-async = require('async');
+    query = require('../constructors/query'),
+    config = require('../../config/config'),
+    async = require('async');
 
 var permissions = [3];
 
@@ -145,7 +145,6 @@ module.exports = function(pool) {
                         insert: [start, end]
                     }
                     var local_authorized = {
-                       // query: 'SELECT * '+
                         query: 'SELECT DISTINCT '+
                                     '\'Non-Stealth Internal Connection\' AS type,'+
                                     '`lan_zone` AS `Attacker Zone`,'+

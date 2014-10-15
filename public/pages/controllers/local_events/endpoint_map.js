@@ -2,7 +2,7 @@
 
 angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal) {
     $scope.global = Global;
-    var query = '/local_events/local_floor_plan?';
+    var query = '/local_events/endpoint_map?';
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {
     success(function(data) {
@@ -18,7 +18,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.$broadcast('spinnerHide');
         }
         if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
-            var query = '/local_events/local_floor_plan?lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&type=flooruser';
+            var query = '/local_events/endpoint_map?lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&type=flooruser';
             $http({method: 'GET', url: query+'&typeinfo=userinfoload'}).
                 success(function(data) {
                     $scope.requery(data[0]);
@@ -34,7 +34,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $rootScope.$broadcast('appendInfo', "", "", "clear");
 
             var userInfo = [];
-            var query = '/local_events/local_floor_plan?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser'; 
+            var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser'; 
             
             $http({method: 'GET', url: query+'&typeinfo=assets'}).
                 success(function(data) {
