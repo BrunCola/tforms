@@ -1,5 +1,4 @@
 <div data-ng-controller="floorPlanController">
-
     <script type="text/ng-template" id="uploadModal.html">
         <div class="modal-header">
             <h3>Upload Floorplan</h3>
@@ -41,13 +40,11 @@
             <button class="btn btn-primary" ng-click="ok()">Close</button>
         </div>
     </script>
-
     <section id="loading-error" loading-error></section>
     <section id="loading-spinner" loading-spinner></section>
     <section id="floorplanpage">
         <!-- <input type="file" name="file" onchange="angular.element(this).scope().uploadFile(this.files)"/> -->
         <li><a href="" ng-click="uploadOpen()"><i class="fa fa-upload"></i> Upload</a></li>
-
         <div class="span2">
             <div class="jdash-header">Local Users</div>
             <div id="listlocalusers" class="bin" droppable drop="handleDrop" style="position: relative">
@@ -374,10 +371,8 @@
                     </div>
                 <!-- </div> -->
                 </tab>
-
             </tabset>
         </div>
-
         <div class="span3">
             <div class="jdash-header">User Information</div>
             <div  style="background-color:#FFF;" class="box">

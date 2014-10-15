@@ -1,15 +1,14 @@
 'use strict';
 
-angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
+angular.module('mean.pages').controller('stealthOpViewController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/local_events/local_COI_remote?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/stealth/stealth_op_view?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/local_events/local_COI_remote?';
+        query = '/stealth/stealth_op_view?';
     }
     $http({method: 'GET', url: query}).
-    //success(function(data, status, headers, config) {
     success(function(data) {
         if (data.force === null) {
             $scope.$broadcast('loadError');
@@ -19,8 +18,6 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
             $scope.$broadcast('spinnerHide');
         }
     });
-
-
     $scope.onloadInfo = function (){
         var nodeInfo = [];
         var nodeName = [];
@@ -33,7 +30,6 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
                     nodeAppend["index"] = d.index;
                 }
             });
-
             nodeAppend["allowed"] = 0;
             nodeAppend["block"] = 0;
             var selected = $scope.forcedata.links.filter(function(d){
@@ -49,7 +45,6 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
         }
         $scope.pageLoadInfo(nodeInfo, "onload");
     }
-
     $scope.requery = function(data, button) {
         var results = [];
         switch(button) {
@@ -57,7 +52,7 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
                 $scope.appendInfo(data, 'rules');
             break;
             case 'authorized':
-            // get children hanging off of parent nodes
+                // get children hanging off of parent nodes
                 var rTargets = $scope.forcedata.links.filter(function(d){
                     if ((d.class !== undefined) && (d.source.index === data.index) && (d.source.value.allow === "authorized")) {
                         return true;
@@ -77,8 +72,7 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
                 $scope.appendInfo(results, 'authorized');
             break;
             case 'blocked':
-           // console.log(data)
-            // get children hanging off of parent nodes
+                // get children hanging off of parent nodes
                 var rTargets = $scope.forcedata.links.filter(function(d){
                     if ((d.class !== undefined) && (d.source.index === data.index) && (d.target.value.allow === "blocked")) {
                         return true;
@@ -108,10 +102,8 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
             break;
             case 'top':
                 // clear the div (replace with loading thing later)
-                // $scope.appendInfo({});
                 query += '&type=top';
                 $http({method: 'GET', url: query}).
-                //success(function(data, status, headers, config) {
                 success(function(data) {
                     if (data.force === null) {
                         $scope.$broadcast('loadError');
@@ -124,7 +116,7 @@ angular.module('mean.pages').controller('localCoiRemoteController', ['$scope', '
                 });
                 $scope.appendInfo(results, 'top');
             break;
-           /* case 'pageload':
+            /* case 'pageload':
                 var thisObj = $scope.forcedata.uniqueNodes[""+data.name];
                 for (var i in thisObj) {
                     var obj = {};

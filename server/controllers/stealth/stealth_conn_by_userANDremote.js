@@ -1,13 +1,12 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-config = require('../../config/config'),
-async = require('async');
+    config = require('../../config/config'),
+    async = require('async');
 
 module.exports = function(pool) {
     return {
         render: function(req, res) {
-
             var database = req.session.passport.user.database;
             var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
             var end = Math.round(new Date().getTime() / 1000);
@@ -15,7 +14,7 @@ module.exports = function(pool) {
                 start = req.query.start;
                 end = req.query.end;
             }
-            if (req.query.lan_zone && req.query.lan_user && req.query.lan_ip) {
+            if (req.query.lan_zone && req.query.lan_machine && req.query.lan_user && req.query.lan_ip && req.query.remote_ip) {
                 var tables = [];
                 var info = [];
                 var table1 = {
@@ -40,29 +39,19 @@ module.exports = function(pool) {
                                 'AND `lan_zone` = ? '+
                                 'AND `lan_user` = ? '+
                                 'AND `lan_ip` = ? '+
-                            'GROUP BY remote_ip',
-                    insert: [start, end, req.query.lan_zone, req.query.lan_user, req.query.lan_ip],
+                                'AND `remote_ip` = ? ',
+                    insert: [start, end, req.query.lan_zone, req.query.lan_user, req.query.lan_ip, req.query.remote_ip],
                     params: [
-                    {
-                        title: 'Time',
-                        select: 'time',
-                        dView: true,
-                        link: {
-                            type: 'local_user_conn_drill_by_remote',
-                            // val: the pre-evaluated values from the query above
-                            val: ['lan_ip','lan_zone','lan_user','remote_ip'],
-                            crumb: false
-                        },
-                    },
-                        { title: 'Zone', select: 'lan_zone' },
-                        { title: 'Machine', select: 'lan_machine' },
+                        { title: 'Time', select: 'time' },
+                        { title: 'Zone', select: 'lan_zone' }, 
+                        { title: 'Local Machine', select: 'lan_machine' },
                         { title: 'Local User', select: 'lan_user' },
                         { title: 'Local IP', select: 'lan_ip' },
-                        { title: 'MB to Remote', select: 'in_bytes' },
-                        { title: 'MB from Remote', select: 'out_bytes'},
-                        { title: 'Remote IP', select: 'remote_ip' },
                         { title: 'Remote Machine', select: 'remote_machine'},
                         { title: 'Remote User', select: 'remote_user'},
+                        { title: 'Remote IP', select: 'remote_ip' },
+                        { title: 'Bytes to Remote', select: 'in_bytes' },
+                        { title: 'Bytes from Remote', select: 'out_bytes'},
                         { title: 'Packets to Remote', select: 'in_packets', dView:false },
                         { title: 'Packets from Remote', select: 'out_packets', dView:false },
                         { title: 'Connections', select: 'count', dView:false },

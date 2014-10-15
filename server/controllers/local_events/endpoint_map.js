@@ -17,10 +17,7 @@ module.exports = function(pool) {
                 start = req.query.start;
                 end = req.query.end;
             }
-
             if (req.query.type === 'flooruser') {
-
-
                 switch (req.query.typeinfo) {
                     // Info function(s) --- IOC
                     case 'localioc':
@@ -99,10 +96,8 @@ module.exports = function(pool) {
                         });  
                         break;
                 }     
-
-            }else{    
+            } else {    
                 var floorplanReturn = [];
-
                 var floor_plan_users = {
                     query: 'SELECT '+
                             'u.lan_user, '+

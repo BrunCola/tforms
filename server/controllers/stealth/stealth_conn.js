@@ -1,9 +1,9 @@
 'use strict';
 
 var datatable = require('../constructors/datatable'),
-query = require('../constructors/query'),
-config = require('../../config/config'),
-async = require('async');
+    query = require('../constructors/query'),
+    config = require('../../config/config'),
+    async = require('async');
 
 module.exports = function(pool) {
     return {
@@ -48,14 +48,13 @@ module.exports = function(pool) {
                         select: 'time',
                         dView: true,
                         link: {
-                            type: 'local_user_conn_drill',
-                            // val: the pre-evaluated values from the query above
-                            val: ['lan_ip','lan_zone','lan_user'],
+                            type: 'stealth_conn_by_user',
+                            val: ['lan_zone','lan_machine','lan_user','lan_ip'],
                             crumb: false
                         },
                     },
                     { title: 'Zone', select: 'lan_zone' },
-                    { title: 'Machine', select: 'lan_machine' },
+                    { title: 'Local Machine', select: 'lan_machine' },
                     { title: 'Local User', select: 'lan_user' },
                     { title: 'Local IP', select: 'lan_ip' },
                     { title: 'MB to Remote', select: 'in_bytes' },
@@ -63,7 +62,6 @@ module.exports = function(pool) {
                     { title: 'Packets to Remote', select: 'in_packets', dView:false },
                     { title: 'Packets from Remote', select: 'out_packets', dView:false },
                     { title: 'Connections', select: 'count', dView:false },
-
                 ],
                 settings: {
                     sort: [[1, 'desc']],
