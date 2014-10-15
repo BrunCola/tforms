@@ -127,46 +127,42 @@ module.exports = function(app, passport, version, io, pool) {
                 var ftp_remote2local = require('../controllers/general_network/ftp_remote2local')(pool);
                 app.route('/general_network/ftp_remote2local')
                 .get(authorization.requiresLogin, ftp_remote2local.render);
-    // STEALTH
-        // STEALTH COI MAP
-            var stealth_COI_map = require('../controllers/local_events/stealth_COI_map')(pool); 
-            app.route('/local_events/stealth_COI_map')
-            .get(authorization.requiresLogin, stealth_COI_map.render)
-            .post(authorization.requiresLogin, stealth_COI_map.set_info);
-        // STEALTH USER CONN
-            var local_COI_remote = require('../controllers/local_events/local_COI_remote')(pool); 
-            app.route('/local_events/local_COI_remote')
-            .get(authorization.requiresLogin, local_COI_remote.render)
-            .post(authorization.requiresLogin, local_COI_remote.set_info);
-        // STEALTH QUARANTINE
-            var stealth_quarantine = require('../controllers/local_events/stealth_quarantine')(pool); 
-            app.route('/local_events/stealth_quarantine')
-            .get(authorization.requiresLogin, stealth_quarantine.render);
         // FIREWALL
             var firewall = require('../controllers/local_events/firewall')(pool); 
             app.route('/local_events/firewall')
             .get(authorization.requiresLogin, firewall.render);
-        // LOCAL USERS CONN
-            var local_user_conn = require('../controllers/local_events/local_user_conn')(pool);
-            app.route('/local_events/local_user_conn')
-            .get(authorization.requiresLogin, local_user_conn.render);
-            // LOCAL COI REMOTE DRILL
-                var local_COI_remote_drill = require('../controllers/local_events/local_COI_remote_drill')(pool);
-                app.route('/local_events/local_COI_remote_drill')
-                .get(authorization.requiresLogin, local_COI_remote_drill.render);
+    // STEALTH
+        // STEALTH DEPLOY CONFIG
+            var stealth_deploy_config = require('../controllers/stealth/stealth_deploy_config')(pool); 
+            app.route('/stealth/stealth_deploy_config')
+            .get(authorization.requiresLogin, stealth_deploy_config.render)
+            .post(authorization.requiresLogin, stealth_deploy_config.set_info);
+        // STEALTH OP VIEW
+            var stealth_op_view = require('../controllers/stealth/stealth_op_view')(pool); 
+            app.route('/stealth/stealth_op_view')
+            .get(authorization.requiresLogin, stealth_op_view.render)
+            .post(authorization.requiresLogin, stealth_op_view.set_info);
+        // STEALTH CONN
+            var stealth_conn = require('../controllers/stealth/stealth_conn')(pool);
+            app.route('/stealth/stealth_conn')
+            .get(authorization.requiresLogin, stealth_conn.render);
+            // STEALTH CONN BY USER
+                var stealth_conn_by_user = require('../controllers/stealth/stealth_conn_by_user')(pool);
+                app.route('/stealth/stealth_conn_by_user')
+                .get(authorization.requiresLogin, stealth_conn_by_user.render);
+                // STEALTH CONN BY USER AND REMOTE
+                    var stealth_conn_by_userANDremote = require('../controllers/stealth/stealth_conn_by_userANDremote')(pool);
+                    app.route('/stealth/stealth_conn_by_userANDremote')
+                    .get(authorization.requiresLogin, stealth_conn_by_userANDremote.render);
         // STEALTH QUARANTINE
-            var stealth_quarantine = require('../controllers/local_events/stealth_quarantine')(pool); 
-            app.route('/local_events/stealth_quarantine')
+            var stealth_quarantine = require('../controllers/stealth/stealth_quarantine')(pool); 
+            app.route('/stealth/stealth_quarantine')
             .get(authorization.requiresLogin, stealth_quarantine.render);
     // LOCAL EVENTS        
-        // FIREWALL
-            var firewall = require('../controllers/local_events/firewall')(pool); 
-            app.route('/local_events/firewall')
-            .get(authorization.requiresLogin, firewall.render);
-        // LOCAL NETWORK MAP
-            var local_network_map = require('../controllers/local_events/local_network_map')(pool);
-            app.route('/local_events/local_network_map')
-            .get(authorization.requiresLogin, local_network_map.render);
+        // ENDPOINT MAP
+            var endpoint_map = require('../controllers/local_events/endpoint_map')(pool);
+            app.route('/local_events/endpoint_map')
+            .get(authorization.requiresLogin, endpoint_map.render); 
         // ENDPOINT BY TYPE
             var endpoint_by_type = require('../controllers/local_events/endpoint_by_type')(pool);
             app.route('/local_events/endpoint_by_type')
@@ -199,14 +195,14 @@ module.exports = function(app, passport, version, io, pool) {
                     var endpoint_events_sharepoint_full = require('../controllers/local_events/endpoint_events_sharepoint_full')(pool);
                     app.route('/local_events/endpoint_events_sharepoint_full')
                     .get(authorization.requiresLogin, endpoint_events_sharepoint_full.render); 
-            // LOCAL FLOOR PLANS
-                var local_floor_plan = require('../controllers/local_events/local_floor_plan')(pool);
-                app.route('/local_events/local_floor_plan')
-                .get(authorization.requiresLogin, local_floor_plan.render); 
             // ENDPOINT BY LOCAL BY IP
                 var endpoint_by_user_and_ip = require('../controllers/local_events/endpoint_by_user_and_ip')(pool);
                 app.route('/local_events/endpoint_by_user_and_ip')
                 .get(authorization.requiresLogin, endpoint_by_user_and_ip.render); 
+        // FIREWALL
+            var firewall = require('../controllers/local_events/firewall')(pool); 
+            app.route('/local_events/firewall')
+            .get(authorization.requiresLogin, firewall.render);
     // APPLICATIONS
         // BY APPLICATION
             var app_by_application = require('../controllers/applications/app_by_application')(pool);

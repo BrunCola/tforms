@@ -439,10 +439,10 @@ angular.module('mean.pages').config(['$stateProvider',
                         }
                     })
         // STEALTH
-            // STEALTH COI MAP
-                .state('stealth_COI_map', {
-                    url: '/stealth_COI_map',
-                    templateUrl: 'public/pages/views/local_events/stealth_COI_map.html',
+            // STEALTH DEPLOY CONFIG
+                .state('stealth_deploy_config', {
+                    url: '/stealth_deploy_config',
+                    templateUrl: 'public/pages/views/stealth/stealth_deploy_config.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
@@ -451,10 +451,10 @@ angular.module('mean.pages').config(['$stateProvider',
                         daterange: true
                     }
                 })  
-            // STEALTH USERS CONN
-                .state('local_COI_remote', {
-                    url: '/local_COI_remote?start&end',
-                    templateUrl: 'public/pages/views/local_events/local_COI_remote.html',
+            // STEALTH OP VIEW
+                .state('stealth_op_view', {
+                    url: '/stealth_op_view?start&end',
+                    templateUrl: 'public/pages/views/stealth/stealth_op_view.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
@@ -463,40 +463,59 @@ angular.module('mean.pages').config(['$stateProvider',
                         daterange: true
                     }
                 })       
-            // LOCAL USER CONN
-                .state('local_user_conn', {
-                    url: '/local_user_conn?start&end&user',
-                    templateUrl: 'public/pages/views/local_events/local_user_conn.html',
+            // STEALTH CONN
+                .state('stealth_conn', {
+                    url: '/stealth_conn?start&end&user',
+                    templateUrl: 'public/pages/views/stealth/stealth_conn.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
                     data: {
-                        title: 'Local User Connections',
-                        subtitleElm: {
-                            'User': 'user'
-                        },
+                        title: 'Stealth User Connections',
                         daterange: true
                     }
                 })    
-                // LOCAL USER CONN DRILL
-                    .state('local_COI_remote_drill', {
-                        url: '/local_COI_remote_drill?start&end&ip',
-                        templateUrl: 'public/pages/views/local_events/local_COI_remote_drill.html',
+                // STEALTH CONN BY USER
+                    .state('stealth_conn_by_user', {
+                        url: '/stealth_conn_by_user?start&end&lan_zone&lan_machine&lan_user&lan_ip',
+                        templateUrl: 'public/pages/views/stealth/stealth_conn_by_user.html',
                         resolve: {
                             loggedin: checkLoggedin
                         },
                         data: {
-                            title: 'Local User Event Timeline',
+                            title: 'Stealth User Connections',
                             subtitleElm: {
-                                'Local IP': 'ip'
+                                'Zone': 'lan_zone',
+                                'Local Machine': 'lan_machine',
+                                'Local User': 'lan_user',
+                                'Local IP': 'lan_ip'
                             },
                             daterange: true
                         }
-                    })          
+                    })   
+                    // STEALTH CONN BY USER AND REMOTE
+                        .state('stealth_conn_by_userANDremote', {
+                            url: '/stealth_conn_by_userANDremote?start&end&lan_zone&lan_machine&lan_user&lan_ip&remote_ip',
+                            templateUrl: 'public/pages/views/stealth/stealth_conn_by_userANDremote.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Local User Connections',
+                                subtitleElm: {
+                                    'Zone': 'lan_zone',
+                                    'Local Machine': 'lan_machine',
+                                    'Local User': 'lan_user',
+                                    'Local IP': 'lan_ip',
+                                    'Remote IP': 'remote_ip'
+                                },
+                                daterange: true
+                            }
+                        }) 
             // STEALTH QUARANTINE
                 .state('stealth_quarantine', {
                     url: '/stealth_quarantine?start&end',
-                    templateUrl: 'public/pages/views/local_events/stealth_quarantine.html',
+                    templateUrl: 'public/pages/views/stealth/stealth_quarantine.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
@@ -506,28 +525,16 @@ angular.module('mean.pages').config(['$stateProvider',
                     }
                 }) 
         // LOCAL EVENTS
-            // FIREWALL
-                .state('firewall', {
-                    url: '/firewall?start&end',
-                    templateUrl: 'public/pages/views/local_events/firewall.html',
+            // ENDPOINT MAP
+                .state('endpoint_map', {
+                    url: '/endpoint_map?start&end&event_id&lan_ip',
+                    templateUrl: 'public/pages/views/local_events/endpoint_map.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
                     data: {
-                        title: 'Firewall Rules',
-                        daterange: true
-                    }
-                })    
-            // NETWORK MAP
-                .state('local_network_map', {
-                    url: '/local_network_map?start&end',
-                    templateUrl: 'public/pages/views/local_events/local_network_map.html',
-                    resolve: {
-                        loggedin: checkLoggedin
-                    },
-                    data: {
-                        title: 'Local Network Map',
-                        daterange: true
+                        title: 'Endpoint Map',
+                        daterange: false
                     }
                 })
             // ENDPOINT BY TYPE
@@ -647,18 +654,6 @@ angular.module('mean.pages').config(['$stateProvider',
                                 daterange: true
                             }
                         })
-                // LOCAL FLOOR PLAN
-                    .state('local_floor_plan', {
-                        url: '/local_floor_plan?start&end&event_id&lan_ip',
-                        templateUrl: 'public/pages/views/local_events/local_floor_plan.html',
-                        resolve: {
-                            loggedin: checkLoggedin
-                        },
-                        data: {
-                            title: 'Local Floor Events',
-                            daterange: false
-                        }
-                    })
                 // ENDPOINT EVENTS LOCAL BY IP 
                     .state('endpoint_by_user_and_ip', {
                         url: '/endpoint_by_user_and_ip?start&end&lan_zone&lan_ip',
@@ -675,6 +670,18 @@ angular.module('mean.pages').config(['$stateProvider',
                             daterange: true
                         }
                     })
+            // FIREWALL
+                .state('firewall', {
+                    url: '/firewall?start&end',
+                    templateUrl: 'public/pages/views/local_events/firewall.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'Firewall Rules',
+                        daterange: true
+                    }
+                })
         // APPLICATIONS
             // BY APPLICATION
                 .state('app_by_application', {

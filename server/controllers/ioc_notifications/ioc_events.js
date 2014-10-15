@@ -206,7 +206,7 @@ module.exports = function(pool) {
                             dView: true,
                             link: {
                                 type: 'ioc_events_drilldown',
-                                val: ['lan_zone','lan_ip','remote_ip','ioc','ioc_attrID'],
+                                val: ['lan_zone','lan_ip','remote_ip','ioc','ioc_attrID','lan_user'],
                                 crumb: false
                             },
                         },

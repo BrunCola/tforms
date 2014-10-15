@@ -1943,11 +1943,36 @@ module.exports = function(pool) {
         set_info: function(req, res) {
             var database = req.session.passport.user.database;
             if (req.query.trigger_type === 'quarantine') {
-                var update_coordinates = {
+                var update_flag = {
                     query: "INSERT INTO `script_trigger` (`type`, `flag`) VALUES (?,?)",
                     insert: [req.query.trigger_type, req.query.flag]
                 }
-                new query(update_coordinates, {database: database, pool: pool}, function(err,data){
+                new query(update_flag, {database: database, pool: pool}, function(err,data){
+                    if (err) {
+                        res.send(500);
+                    } else {
+                        res.send(200);
+                    }
+                });
+
+            } else if (req.query.trigger_type === 'stealthquarantine') {
+               var update_quarantine = {
+                    query: "INSERT INTO `stealth_quarantine` (`time`, `email`, `lan_zone`, `lan_user`) VALUES (?,?,?,?)",
+                    insert: [req.query.currenttime, req.query.email, req.query.lan_zone, req.query.lan_user]
+                }
+                new query(update_quarantine, {database: database, pool: pool}, function(err,data){
+                    if (err) {
+                        res.send(500);
+                    } else {
+                        res.send(200);
+                    }
+                });
+            } else if (req.query.trigger_type === 'firewall') {
+                var update_firewall = {
+                    query: "INSERT INTO `firewall` (`time`,`email`,`rule`,`type`) VALUES (?,?,?,?)",
+                    insert: [req.query.currenttime, req.query.email, req.query.rule, req.query.type]
+                }
+                new query(update_firewall, {database: database, pool: pool}, function(err,data){
                     if (err) {
                         res.send(500);
                     } else {

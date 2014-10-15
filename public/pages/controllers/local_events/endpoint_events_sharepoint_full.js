@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('endpointEventsSharepointFullController'
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/local_events/endpoint_full?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&lan_user='+$location.$$search.lan_user;
+        query = '/local_events/endpoint_events_sharepoint_full?start='+$location.$$search.start+'&end='+$location.$$search.end+'&event_type='+$location.$$search.event_type+'&lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&lan_user='+$location.$$search.lan_user;
     } else {
-        query = '/local_events/endpoint_full?&event_type='+$location.$$search.event_type+'&lan_zone='+$location.$$search.lan_zone+'&lan_user='+$location.$$search.lan_user+'&lan_ip='+$location.$$search.lan_ip;
+        query = '/local_events/endpoint_events_sharepoint_full?event_type='+$location.$$search.event_type+'&lan_zone='+$location.$$search.lan_zone+'&lan_user='+$location.$$search.lan_user+'&lan_ip='+$location.$$search.lan_ip;
     }
     $http({method: 'GET', url: query}).
     success(function(data) {

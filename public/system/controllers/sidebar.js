@@ -172,21 +172,21 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
             [
                 {
                     'title': 'Stealth Deploy Config',
-                    'url': 'stealth_COI_map',
+                    'url': 'stealth_deploy_config',
                     'icon': 'fa-code-fork',
                     'orphans': []
                 },
                 {
                     'title': 'Stealth Ops View',
-                    'url': 'local_COI_remote',
+                    'url': 'stealth_op_view',
                     'icon': 'fa-shield',
                     'orphans': []
                 },
                 {
-                    'title': 'Local User Connections',
-                    'url': 'local_user_conn',
+                    'title': 'Stealth User Connections',
+                    'url': 'stealth_conn',
                     'icon': 'fa-user',
-                    'orphans': []
+                    'orphans': ['stealth_conn_by_user','stealth_conn_by_userANDremote']
                 },
             ]
         },
@@ -196,15 +196,9 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
             'icon': 'fa-user',
             'children':
             [
-                // {
-                //     'title': 'Local Network Map',
-                //     'url': 'local_network_map',
-                //     'icon': 'fa-sitemap',
-                //     'orphans': []
-                // },
                 {
                     'title': 'Endpoint Map',
-                    'url': 'local_floor_plan',
+                    'url': 'endpoint_map',
                     'icon': 'fa-user',
                     'orphans': []
                 },

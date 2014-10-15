@@ -1,11 +1,10 @@
 'use strict';
 
-angular.module('mean.pages').controller('stealthCoiMapController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
+angular.module('mean.pages').controller('stealthDeployConfigController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
     $scope.global = Global;
     var query;
-    query = '/local_events/stealth_COI_map?';
+    query = '/stealth/stealth_deploy_config?';
     $http({method: 'GET', url: query}).
-    //success(function(data, status, headers, config) {
     success(function(data) {
         if (!data.force) {
             $scope.$broadcast('loadError');
@@ -30,20 +29,14 @@ angular.module('mean.pages').controller('stealthCoiMapController', ['$scope', '$
         })
         for (var i in rTargets) {
             results.push($scope.data.force.nodes[rTargets[i].target.index].index)
-            //console.log($scope.data.force.nodes[rTargets[i].target.index].index);
         }
         for (var i in rSource) {
             results.push($scope.data.force.nodes[rSource[i].source.index].index)
-            //console.log($scope.data.force.nodes[rSource[i].source.index].index);
         }
-        //console.log(results);
-        //$scope.appendInfo(results);
         return results;
     }
-
     $scope.triggerScript = function(){
-        var query = '/local_events/stealth_COI_map?';
+        var query = '/stealth/stealth_deploy_config?';
         $http({method: 'POST', url: query+"trigger_type=ldap&flag=1"});
     }
-
 }]);
