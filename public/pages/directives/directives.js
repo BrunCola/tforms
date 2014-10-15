@@ -564,6 +564,18 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                     if (aData.time && $scope.r.indexOf('time') !== -1) {
                                         $('td:eq('+$scope.r.indexOf("time")+')', nRow).html('<div style="min-width:100px">'+timeFormat(aData.time, 'tables')+'</div>');
                                     }
+                                    if (aData.lan_ip && $scope.r.indexOf('lan_ip') !== -1) {
+                                        $('td:eq('+$scope.r.indexOf("lan_ip")+')', nRow).html(aData.lan_ip);
+                                    }
+                                    if (aData.file !== undefined) {                                        
+                                        if (aData.file && $scope.r.indexOf('file') !== -1) {
+                                            if (aData.file > 0){                                                
+                                                $('td:eq('+$scope.r.indexOf("file")+')', nRow).html(aData.file);    
+                                            }
+                                        } else {
+                                            $('td:eq('+$scope.r.indexOf("file")+')', nRow).html("0"); 
+                                        }
+                                    }
                                     if (notReport) {
                                         // url builder
                                         for (var c in $scope.e) {
