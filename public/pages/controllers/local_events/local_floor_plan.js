@@ -76,24 +76,33 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         }
     }
 
+    $scope.ioc_users_requery = function() {
+        $rootScope.$broadcast('appendInfo', "", "", "clear");//needed?
+
+        var query = '/local_events/local_floor_plan?type=floorquery'; 
+
+        $http({method: 'GET', url: query+'&typeinfo=iocusers'}).
+            success(function(data) {
+                console.log(data);
+                $scope.$broadcast('appendInfo', data[0],"iocusers");//THIS WILL LIKELY NEED TO CHANGE...
+            });
+    }
+
+    $scope.active_users_requery = function() {
+        $rootScope.$broadcast('appendInfo', "", "", "clear");//needed?
+
+        var query = '/local_events/local_floor_plan?type=floorquery'; 
+
+        $http({method: 'GET', url: query+'&typeinfo=activeusers'}).
+            success(function(data) {
+                console.log(data);
+                $scope.$broadcast('appendInfo', data[0],"activeusers");//THIS WILL LIKELY NEED TO CHANGE...
+            });
+    }
+
     $scope.change_customuser = function(item,value) {
         $http({method: 'POST', url: '/actions/change_custom_user', data: {custom_user: value, lan_ip: item.lan_ip, lan_zone: item.lan_zone}});
     }
-
-    // $scope.uploadFile = function(files) {
-    //     var fd = new FormData();
-    //     //Take the first selected file
-
-    //     fd.append("file", files[0]);
-    //     console.log(fd);
-    //     var uploadUrl = '../../../uploads/'; //TODO Different folders per client? Diff folders for User photos and floor plans?
-    //     $http.post(uploadUrl, fd, {
-    //         withCredentials: true,
-    //         headers: {'Content-Type': undefined },
-    //         transformRequest: angular.identity
-    //     });//.success( console.log("UPLOADED");).error( console.log("error!"); );
-    // };  
-
 
     $scope.uploadOpen = function () {
         $scope.modalInstance = $modal.open({

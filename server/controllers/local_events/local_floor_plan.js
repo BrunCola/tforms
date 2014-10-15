@@ -100,7 +100,25 @@ module.exports = function(pool) {
                         break;
                 }     
 
-            }else{    
+            } else if (req.query.type === 'floorquery') {
+                switch (req.query.typeinfo) {
+                    case 'iocusers':
+                        new query({query: 'SELECT count(*) AS localioc, `lan_ip`, `lan_zone`, `lan_user` FROM `conn_ioc` WHERE (time between ? AND ?) GROUP BY `lan_ip`, `lan_zone`', insert: [start, end]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        });  
+                        break;
+                    case 'activeusers':
+                        new query({query: 'SELECT `lan_ip`, `lan_zone`, `lan_user` FROM `conn_meta` WHERE (time between ? AND ?) GROUP BY `lan_ip`, `lan_zone`', insert: [start, end]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        });  
+                        break;
+                }
+
+            } else {    
                 var floorplanReturn = [];
 
                 var floor_plan_users = {

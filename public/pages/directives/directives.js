@@ -4244,7 +4244,12 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 );
                             }
                         });
+                    floorDiv.append('button') //HOW TO MAKE DRAW?
+                        .on('click', function(){
+                            $scope.ioc_users_requery();
+                        });
                 }
+
 
                 plot(data, floorName);   
             });
