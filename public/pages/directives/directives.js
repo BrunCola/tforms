@@ -3356,6 +3356,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 
                 var itemRects = main.append("g")
                     .attr("clip-path", "url(#clip)");
+
+                var lineStory = main.append("g")
+                    .attr("class", "storyLine");
                 
                 // nav
                 var navArray = [], currentNavPos = 0;
@@ -3430,6 +3433,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             // clear our object & set it back to false
                             $scope.pattern.searching = false;
                             $scope.pattern.selected = {};
+                            lineStory.selectAll('line').remove();
                         }
                     });
 
@@ -3654,6 +3658,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         var prevPos = 0;
                         var previousID = -1, previousElm = null;
                         var lastExpandedId = null, isOpen = null;
+                        var previousX = 0, previousY = 0;
                         //console.log("plot");
                         // update time slice above chart
                         currentTime.html('Current Time Slice: <strong>'+moment(min).format('MMMM D, YYYY HH:MM A')+'</strong> - <strong>'+moment(max).format('MMMM D, YYYY HH:MM A')+'</strong>')
@@ -3670,6 +3675,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         x1.domain([min, max]);
                         xAxisBrush.transition().duration(500).call(xAxis);
                         // remove existing elements (perhaps this is innificent and should be modified to just transition)
+
+                        lineStory.selectAll('line').remove();
+                        var linesLinked = lineStory.selectAll(".storyLines").data([""]);
+
                         itemRects.selectAll('g').remove();
                         var icons = itemRects.selectAll("g").data(data);
                         // re-enter an append nodes (innificent as well)
@@ -3724,10 +3733,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         }
                                         // make current node active
                                         elm.attr('class', 'pointactive');
-                                        // prevPos = currPos;
-                                        // set ids for cross-refrence
-                                        previousID = d.id;
-                                        previousElm = elm;
+                                       
                                     } else {
                                         // have every d element push to our store array as well as contued highlighting of selected points
                                         if (!(d.id in $scope.pattern.selected)) {
@@ -3739,7 +3745,22 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                             elm.attr('class', null);
                                             delete $scope.pattern.selected[d.id];
                                         }
+                                        if ((previousElm !== null) && (previousX !== 0) && (previousY !== 0)) {
+                                            linesLinked.enter().append("line")
+                                                .attr("x1", previousX-4)
+                                                .attr("y1", previousY+20)
+                                                .attr("x2", x1(d.dd)-4)
+                                                .attr("y2", y1(d.lane)+20)
+                                                .attr("strokeWidth", "2px")
+                                                .attr("stroke", "#0f0");      
+                                        }
+                                        previousX = x1(d.dd);
+                                        previousY = y1(d.lane);
+                                        // prevPos = currPos;
+                                        // set ids for cross-refrence
                                     }
+                                        previousID = d.id;
+                                        previousElm = elm;
                                 })
                                 .on("mouseout", function(d){
                                     elm
