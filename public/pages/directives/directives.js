@@ -3462,7 +3462,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         setNewSize($scope.laneGraphWidth());
                     }, 150);
                 });
-
                 function laneInfoAppend(d) {
                     var send = '';
                     for (var i in d) {
