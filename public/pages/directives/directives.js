@@ -3086,7 +3086,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr("y1", function(d, i) { return y1(i);})
                     .attr("x2", w)
                     .attr("y2", function(d, i) {return y1(i);})
-                    .attr("stroke", "#666");
+                    .attr("stroke", function(d) {
+                        return rowColors(d);
+                    });
 
                 main.append("g").selectAll(".laneText")
                     .data($scope.lanes)
@@ -3116,9 +3118,41 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                 }
 
+                function rowColors(type) {
+                    switch(type){
+                        case 'IOC':
+                            return "#CCCCCC";
+                        case 'IOC Severity':
+                            return "#FF172F";
+                        case 'Conn':
+                            return "#CF4E77";
+                        case 'Stealth':
+                            return "#D34A2B";
+                        case 'Stealth_drop':
+                            return "#0080CE";
+                        case 'Applications':
+                            return "#B77A33";
+                        case 'DNS':
+                            return "#A39D39";
+                        case 'HTTP':
+                            return "#8CC63F";
+                        case 'SSL':
+                            return "#6BD36D";
+                        case 'Email':
+                            return "#49E19B";
+                        case 'File':
+                            return "#28D4B1";
+                        case 'Endpoint':
+                            return "#00C6C7";
+                        default:
+                            return "#666";
+                    }
+                }
+
                 $scope.point = function(element, type, name, id) {
                     if (type.search("ioc") !== -1) {
-                        element.attr('class', 'IOC');
+                        element.classed('IOC', true);
+                        element.classed('node-'+id, true);
                         element = element.append('g')
                             .attr('transform', 'translate(-18, -6)scale(0.8)');
                         element.append('svg:path')
@@ -3138,221 +3172,15 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .attr('height', 2.448);
                         return;
                     } else { 
-                        element.attr('class', id);
+                        element.classed('node-'+id, true);
                         element = element.append('g').attr('transform', 'translate(-18, -6)scale(0.8)');
-                        switch(type){
-                            case 'secure':
-                                element.append('circle')
-                                    .attr('fill', function(d){ return '#A0BB71'; })
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:path')
-                                    .attr('d', 'M25.518,13.467h-0.002c0-0.003,0.002-0.006,0.002-0.008c0-4.064-3.297-7.359-7.359-7.359'+
-                                        'c-4.064,0-7.359,3.295-7.359,7.359c0,0.002,0,0.005,0,0.008v2.674H9.291V27.9h17.785v-11.76h-1.559V13.467z')
-                                    .attr('fill', '#595A5C');
-                                element.append('svg:path')
-                                    .attr('d', 'M18.184,8.754c-3.191,0-4.661,2.372-4.661,4.967'+
-                                        'c0,0.004,0,0.006,0,0.008v2.412h9.397v-2.412c0-0.002,0-0.004,0-0.008C22.92,11.126,21.315,8.754,18.184,8.754z')
-                                    .attr('fill', '#A0BB71');
-                                return;
-                            case 'Conn':
-                                element.append('circle')
-                                    .attr('fill', function(d){ return '#6FBF9B'; })
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:polygon')
-                                    .attr('points', '24.585,6.299 24.585,9.064 11.195,9.064 11.195,14.221 24.585,14.221 24.585,16.986 31.658,11.643 ')
-                                    .attr('fill', '#595A5C');
-                                element.append('svg:polygon')
-                                    .attr('points', '10.99,17.822 3.916,23.166 10.99,28.51 10.99,25.744 24.287,25.744 24.287,20.59 10.99,20.59 ')
-                                    .attr('fill', '#595A5C');
-                                return;
-                            case 'IOC Severity':
-                                var color;
-                                element.append('circle')
-                                    .attr('fill', function(d){ 
-                                        if (d.ioc_severity === 1) {
-                                            color = '#377FC7'; 
-                                        } else if (d.ioc_severity === 2) {
-                                            color = '#F5D800'; 
-                                        } else if (d.ioc_severity === 3) {
-                                            color = '#F88B12'; 
-                                        } else if (d.ioc_severity === 4) {
-                                            color = '#DD122A'; 
-                                        } else {
-                                            color = '#6FBF9B'; 
-                                        }
-                                        return color;
-                                    })
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:path')
-                                    .attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
-                                    .attr('fill', color);
-                                element.append('svg:polygon')
-                                    .attr('points', '18.155,3.067 5.133,26.932 31.178,26.932 ')
-                                    .attr('fill', '#595A5C');
-                                element.append('svg:polygon')
-                                    .attr('points', '19.037,21.038 19.626,12.029 15.888,12.029 16.477,21.038 ')
-                                    .attr('fill', color);
-                                element.append('rect')
-                                    .attr('x', 16.376)
-                                    .attr('y', 22.045)
-                                    .attr('fill', color)
-                                    .attr('width', 2.838)
-                                    .attr('height', 2.448);
-                                return;
-                            case 'DNS':
-                                element.append('circle')
-                                    .attr('fill', function(d){ return '#708EBC'; })
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:path')
-                                    .attr('d', 'M20.909,13.115c0-0.07,0-0.106-0.071-0.106c-0.283,0-6.022,0.813-7.935,0.956'+
-                                        'c-0.036,0.955-0.071,2.053-0.071,3.009l2.267,0.106v8.707c0,0.071-0.035,0.143-0.142,0.178l-1.877,0.07'+
-                                        'c-0.035,0.92-0.035,1.982-0.035,2.938c1.452,0,3.33-0.036,4.818-0.036h4.888V26l-1.949-0.07'+
-                                        'C20.801,22.39,20.874,16.938,20.909,13.115z')
-                                    .attr('fill', '#595A5C');
-                                element.append('svg:path')
-                                    .attr('d', 'M17.473,10.921c1.771,0,3.329-1.274,3.329-3.187c0-1.486-1.098-2.867-3.152-2.867'+
-                                        'c-1.948,0-3.259,1.451-3.259,2.938C14.391,9.611,15.949,10.921,17.473,10.921z')
-                                    .attr('fill', '#595A5C');
-                                return;
-                            case 'HTTP':
-                                element.append('circle')
-                                    .attr('fill', function(d){ return '#67AAB5'; })
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:path')
-                                    .attr('d', 'M24.715,19.976l-2.057-1.122l-1.384-0.479l-1.051,0.857l-1.613-0.857l0.076-0.867l-1.062-0.325l0.31-1.146'+
-                                        'l-1.692,0.593l-0.724-1.616l0.896-1.049l1.108,0.082l0.918-0.511l0.806,1.629l0.447,0.087l-0.326-1.965l0.855-0.556l0.496-1.458'+
-                                        'l1.395-1.011l1.412-0.155l-0.729-0.7L22.06,9.039l1.984-0.283l0.727-0.568L22.871,6.41l-0.912,0.226L21.63,6.109l-1.406-0.352'+
-                                        'l-0.406,0.596l0.436,0.957l-0.485,1.201L18.636,7.33l-2.203-0.934l1.97-1.563L17.16,3.705l-2.325,0.627L8.91,3.678L6.39,6.285'+
-                                        'l2.064,1.242l1.479,1.567l0.307,2.399l1.009,1.316l1.694,2.576l0.223,0.177l-0.69-1.864l1.58,2.279l0.869,1.03'+
-                                        'c0,0,1.737,0.646,1.767,0.569c0.027-0.07,1.964,1.598,1.964,1.598l1.084,0.52L19.456,21.1l-0.307,1.775l1.17,1.996l0.997,1.242'+
-                                        'l-0.151,2.002L20.294,32.5l0.025,2.111l1.312-0.626c0,0,2.245-3.793,2.368-3.554c0.122,0.238,2.129-2.76,2.129-2.76l1.666-1.26'+
-                                        'l0.959-3.195l-2.882-1.775L24.715,19.976z')
-                                    .attr('fill', '#595A5C');
-                                return;
-                            case 'SSL':
-                                element.append('circle')
-                                    .attr('fill', function(d){ return '#A0BB71'; })
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:path')
-                                    .attr('fill', '#58595B')
-                                    .attr('d', 'M25.5,16.1v-2.7h0c0,0,0,0,0,0c0-4.1-3.3-7.4-7.4-7.4c-4.1,0-7.4,3.3-7.4,7.4c0,0,0,0,0,0v2.7H9.3'+
-                                    'v11.8h17.8V16.1H25.5z M22.9,13.7v2.4h-9.4v-2.4c0,0,0,0,0,0c0-2.6,1.5-5,4.7-5C21.3,8.8,22.9,11.1,22.9,13.7'+
-                                    'C22.9,13.7,22.9,13.7,22.9,13.7z');
-                                return;
-                            case 'Endpoint':
-                                element.append('circle')
-                                    .attr('fill', '#7E9E7B')
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:path')
-                                    .attr('d', 'M28.649,8.6H7.351c-0.684,0-1.238,0.554-1.238,1.238v14.363c0,0.684,0.554,1.238,1.238,1.238h7.529'+
-                                        'l-1.09,3.468v0.495h8.419v-0.495l-1.09-3.468h7.529c0.684,0,1.237-0.555,1.237-1.238V9.838C29.887,9.153,29.333,8.6,28.649,8.6z'+
-                                        'M28.477,22.072H7.635V10.074h20.842V22.072z')
-                                    .attr('fill', '#595A5C');
-                                return;
-                            case 'Stealth':
-                                element.append('circle')
-                                    .attr('fill', '#0080CE')
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:path')
-                                    .attr('fill', '#58595B')
-                                    .attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
-                                        'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
-                                        'C28.014,15.545,26.676,21.468,23.587,26.751z');
-                                element.append('svg:path')
-                                    .attr('fill', '#0080CE')
-                                    .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
-                                        'C11.076,16.238,11.938,20.26,13.699,23.661z');
-                                return;
-                            case 'Stealth_drop':
-                                element.append('circle')
-                                    .attr('fill', '#D8464A')
-                                    .attr('fill-opacity', '.5')
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:path')
-                                    .attr('fill', '#58595B')
-                                    .attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
-                                        'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
-                                        'C28.014,15.545,26.676,21.468,23.587,26.751z');
-                                element.append('svg:path')
-                                    .attr('fill', '#D8464A')
-                                    .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
-                                        'C11.076,16.238,11.938,20.26,13.699,23.661z');
-                                return;
-                            case 'Email':
-                                element.append('circle')
-                                    .attr('fill', function(d){ return '#39BFC1'; })
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('polygon')
-                                    .style('fill', '#58595B')
-                                    .attr('points', '18,17.3 8.7,11.6 27.3,11.6 ');
-                                element.append('polygon')
-                                    .style('fill', '#58595B')
-                                    .attr('points', '28.4,24.4 7.6,24.4 7.6,13.1 18,19.7 28.4,13.1 ');
-                                return;
-                            case 'File':
-                                element.append('circle')
-                                    .attr('fill', function(d){ return '#B572AB'; })
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:path')
-                                    .attr('d', 'M13.702,12.807h13.189c-0.436-0.655-1.223-1.104-2.066-1.104c0,0-7.713,0-8.361,0'+
-                                        'c-0.386-0.796-1.278-1.361-2.216-1.361H7.562c-1.625,0-1.968,0.938-1.839,2.025l2.104,11.42c0.146,0.797,0.791,1.461,1.594,1.735'+
-                                        'c0,0,2.237-10.702,2.378-11.308C12.005,13.334,12.403,12.807,13.702,12.807z')
-                                    .attr('fill', '#595A5C');
-                                element.append('svg:path')
-                                    .attr('d', 'M29.697,13.898c0,0-14.47-0.037-14.68-0.037c-1.021,0-1.435,0.647-1.562,1.289l-2.414,10.508h16.716'+
-                                        'c1.146,0,2.19-0.821,2.383-1.871l1.399-7.859C31.778,14.706,31.227,13.848,29.697,13.898z')
-                                    .attr('fill', '#595A5C');
-                                return;
-                            case 'Applications':
-                                element.append('circle')
-                                    .attr('fill', '#DEDEDE')
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('rect')
-                                    .attr('x', 10)
-                                    .attr('y', 10)
-                                    .attr('height', 4)
-                                    .attr('width', 17)
-                                    .style('fill', '#5E5E5E');
-                                element.append('rect')
-                                    .attr('x', 10)
-                                    .attr('y', 16)
-                                    .attr('height', 4)
-                                    .attr('width', 17)
-                                    .style('fill', '#5E5E5E');
-                                element.append('rect')
-                                    .attr('x', 10)
-                                    .attr('y', 22)
-                                    .attr('height', 4)
-                                    .attr('width', 17)
-                                    .style('fill', '#5E5E5E');
-                                return;
-                            default:
-                                return;
-                        }
+                        element.append('rect')
+                            .attr('x', 0)
+                            .attr('y', 0)
+                            .attr('fill', rowColors(type))
+                            .attr('width', 14)
+                            .attr('height', 14)
+                            .style('opacity', '0.4');     
                     }
                 }
  
@@ -3478,15 +3306,26 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         setNewSize($scope.laneGraphWidth());
                     }, 150);
                 });
-                function laneInfoAppend(d) {
+                function laneInfoAppend(d, format) {
+
                     var send = '';
-                    for (var i in d) {
-                        if (d[i].name === 'Time') {
-                            send += '<strong>'+d[i].name+':</strong> '+timeFormat(d[i].value, 'laneGraphExpanded')+'<br />';      
-                        } else {
-                            send += '<strong>'+d[i].name+':</strong> '+d[i].value+'<br />';
+                    // if (format === 'checkboxes') {
+                    //     for (var i in d) {
+                    //         if (d[i].name === 'Time') {
+                    //             send += '<strong>'+d[i].name+':</strong> '+timeFormat(d[i].value, 'laneGraphExpanded')+'<br />';      
+                    //         } else {
+                    //             send += '<strong>'+d[i].name+':</strong> '+d[i].value+'<br />';
+                    //         }
+                    //     }
+                    // } else {
+                        for (var i in d) {
+                            if (d[i].name === 'Time') {
+                                send += '<strong>'+d[i].name+':</strong> '+timeFormat(d[i].value, 'laneGraphExpanded')+'<br />';      
+                            } else {
+                                send += '<strong>'+d[i].name+':</strong> '+d[i].value+'<br />';
+                            }
                         }
-                    }
+                    // }
                     return send;
                 }
                 // info div
@@ -3662,16 +3501,14 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 
                 function plot(data, min, max) {
                     if (moment(max).unix() !== moment(min).unix()) {
-
+                        // node selecting
+                        var previousBar = null, previousElm = null;
+                        // bar selecting
+                        var isOpen = null;
+                        var previousX = 0, previousY = 0;
                         //////////////////
                         /// LANE NODES ///
-                        //////////////////
-                        // set variables for info sidebar
-                        var prevPos = 0;
-                        var previousID = -1, previousElm = null;
-                        var lastExpandedId = null, isOpen = null;
-                        var previousX = 0, previousY = 0;
-                        //console.log("plot");
+                        ////////////////// 
                         // update time slice above chart
                         currentTime.html('Current Time Slice: <strong>'+moment(min).format('MMMM D, YYYY HH:MM A')+'</strong> - <strong>'+moment(max).format('MMMM D, YYYY HH:MM A')+'</strong>')
                         // create transition effect of slider
@@ -3686,11 +3523,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         // set new domain and transition x-axis
                         x1.domain([min, max]);
                         xAxisBrush.transition().duration(500).call(xAxis);
-                        // remove existing elements (perhaps this is innificent and should be modified to just transition)
-
+                        // remove lines from story
                         lineStory.selectAll('line').remove();
                         var linesLinked = lineStory.selectAll(".storyLines").data([""]);
-
+                        // remove existing elements (perhaps this is innificent and should be modified to just transition)
                         itemRects.selectAll('g').remove();
                         var icons = itemRects.selectAll("g").data(data);
                         // re-enter an append nodes (innificent as well)
@@ -3698,7 +3534,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             var elm = d3.select(this);
                             elm
                                 .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
-                                .attr("class", function(d) {return "mainItem" + d.lane;})
                                 .on("mouseover", function(d){
                                     elm
                                         .style('cursor', 'pointer')
@@ -3710,69 +3545,68 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // elm.style('cursor', 'pointer');
                                 })
                                 .on("click", function(d){
-                                    // un-highlight previous box
-                                    $('#'+previousID).attr('class', null);
+                                    var sideSelected = d3.select('.scroll-'+d.id);
                                     // this closes the last expanded block if there is one
-                                    if (lastExpandedId !== null) {
-                                        $('div'+lastExpandedId+'.infoDivExpanded').hide();
+                                    if (previousBar !== null) {
+                                        previousBar.select('.infoDivExpanded').style('display', 'none');
+                                        previousBar.classed('laneactive', false);
                                     }
                                     if($('#autoexpand').is(':checked')){
-                                        if (isOpen === '#'+d.id) {
-                                            $('#'+d.id+' .infoDivExpanded').css('display', 'none');
+                                        if (isOpen === d.id) {
+                                            sideSelected.select('.infoDivExpanded').style('display', 'none');
                                             isOpen = null;
                                         } else {
-                                            $('#'+d.id+' .infoDivExpanded').css('display', 'block');
-                                            lastExpandedId = '#'+d.id;
-                                            isOpen = '#'+d.id;
-
-                                            $('#'+d.id+' .infoDivExpanded').html(laneInfoAppend(d.expand));
+                                            sideSelected.select('.infoDivExpanded').style('display', 'block');
+                                            isOpen = d.id;
+                                            // append different info if searching is enabled (i.e. checkboxes)
+                                            if ($scope.pattern.searching === false) {
+                                                $('#'+d.id+' .infoDivExpanded').html(laneInfoAppend(d.expand, null));
+                                            } else {
+                                                $('#'+d.id+' .infoDivExpanded').html(laneInfoAppend(d.expand, 'checkboxes'));
+                                            }
                                         }
                                     }
                                     // set class for active description
-                                    $('#'+d.id).attr('class', 'laneactive');
+                                    sideSelected.classed('laneactive', true);
                                     // scroll to position
                                     scrollSide(d.id);
                                     if ($scope.pattern.searching === false) {
                                         // throw clicked element into out last object
                                         $scope.pattern.last = d;
-                                        itemRects.selectAll('g').each(function(d){
-                                            var elm = d3.select(this);
-                                            elm.attr('class', null);
-                                        })
+                                        // clear class of all other nodes
+                                        itemRects.selectAll('g').classed('pointactive', false);
                                         // deselect previous element if there is one
                                         if (previousElm !== null) {
-                                            previousElm.attr('class', null);
+                                            previousElm.classed('pointactive', false);
                                         }
                                         // make current node active
-                                        elm.attr('class', 'pointactive');
-                                       
+                                        elm.classed('pointactive', true);
+                                        previousBar = sideSelected;
                                     } else {
+                                        if ((previousElm !== null) && (previousX !== 0) && (previousY !== 0)) {
+                                            linesLinked.enter().append("line")
+                                                .attr("x1", previousX)
+                                                .attr("y1", previousY)
+                                                .attr("x2", x1(d.dd))
+                                                .attr("y2", y1(d.lane))
+                                                .attr("stroke", "#FFF");      
+                                        }
+                                        previousX = x1(d.dd);
+                                        previousY = y1(d.lane);
+
+
                                         // have every d element push to our store array as well as contued highlighting of selected points
                                         if (!(d.id in $scope.pattern.selected)) {
                                             $scope.pattern.selected[d.id] = d;
                                             // make current node active
-                                            elm.attr('class', 'pointactive');
+                                            elm.classed('pointactive', true);
                                         } else {
                                             // make current node inactive
-                                            elm.attr('class', null);
+                                            elm.classed('pointactive', false);
                                             delete $scope.pattern.selected[d.id];
                                         }
-                                        if ((previousElm !== null) && (previousX !== 0) && (previousY !== 0)) {
-                                            linesLinked.enter().append("line")
-                                                .attr("x1", previousX-4)
-                                                .attr("y1", previousY+20)
-                                                .attr("x2", x1(d.dd)-4)
-                                                .attr("y2", y1(d.lane)+20)
-                                                .attr("strokeWidth", "2px")
-                                                .attr("stroke", "#0f0");      
-                                        }
-                                        previousX = x1(d.dd);
-                                        previousY = y1(d.lane);
-                                        // prevPos = currPos;
-                                        // set ids for cross-refrence
                                     }
-                                        previousID = d.id;
-                                        previousElm = elm;
+                                    previousElm = elm;
                                 })
                                 .on("mouseout", function(d){
                                     elm
@@ -3783,8 +3617,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         .attr('stroke', 'none')
                                         .attr('transform', 'scale(1) translate(' + x1(d.dd) + ',' + (y1(d.lane)+10) + ')');
                                 });
-                                // .attr("width", 5)
-                                // .attr("height", function(d) {return .8 * y1(1);});
                             // generate points from point function
                             if (d.type !== 'l7') {
                                 $scope.point(elm, d.type, null, d.id);
@@ -3805,38 +3637,28 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 elm
                                     // append id to li from data object
                                     .attr('id', function(d){return d.id })
+                                    .attr('class', 'scroll-'+d.id)
                                     .html(function(d){
                                         return "<div class='lanegraphlist'><strong>"+timeFormat(d.time, 'laneGraphPreview')+':</strong> '+d.info+"</div>";
                                     })
                                     .on('click', function(){
                                         scrollSide(d.id);
                                         // close last expanded sections
-                                        if (lastExpandedId !== '#'+d.id) {
-                                            $('div'+lastExpandedId+'.infoDivExpanded').hide();
+                                        if (previousBar !== null) {
+                                            previousBar.select('.infoDivExpanded').style('display', 'none');
+                                            previousBar.classed('laneactive', false);
                                         }
                                         // clear previous node
                                         if (previousElm !== null){
-                                            previousElm.attr('class', null);
+                                            previousElm.classed('pointactive', false);
                                         }
-                                        // clear class of previous li item
-                                        $('#'+previousID).attr('class', null);
                                         // get this id
-                                        var row = d3.select(this);
-                                        var id = row.attr('id'); 
-                                            row.attr('class', 'laneactive');
-                                        // iterate through points
-                                        itemRects.selectAll('g').each(function(d){
-                                            var elm = d3.select(this);
-                                            // if id's (of just clicked) match
-                                            if (d.id.toString() === id.toString()) {
-                                                elm.attr('class', 'pointactive');
-                                                previousElm = elm;
-                                            } else {
-                                                elm.attr('class', null);
-                                            }
-                                        })
-                                        // set previous id
-                                        previousID = id;
+                                        d3.select(this).classed('laneactive', true);
+                                        // select corresponding point
+                                        var thisNode = itemRects.select('.node-'+d.id);
+                                        thisNode.classed('pointactive', true);
+                                        previousBar = elm;
+                                        previousElm = thisNode;
                                     })
                                     // append expand buttons to list elements
                                     .append('div')
