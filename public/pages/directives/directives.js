@@ -3817,15 +3817,15 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // append expand buttons to list elements
                                     .append('div')
                                     .on('click', function(){
-                                        scrollSide(d.id);
                                         if (previousBar !== null) {
                                             previousBar.select('.infoDivExpanded').style('display', 'none');
+                                            previousBar.classed('laneactive', false);
                                         }
                                         if (isOpen === d.id) {
                                             elm.select('.infoDivExpanded').style('display', 'none');
                                             isOpen = null;
                                         } else {
-                                            elm.select('.infoDivExpanded').style('display', 'block');
+                                            elm.selectAll('.infoDivExpanded').style('display', 'block');
                                             previousBar = elm;
                                             isOpen = d.id;
                                             elm.select('.infoDivExpanded').html(laneInfoAppend(d.expand));
@@ -3836,8 +3836,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 elm
                                     .append('div')
                                     .style('display', 'none')
-                                    .attr('class', 'infoDivExpanded')
-                                    .attr('id', d.id);
+                                    .attr('class', 'infoDivExpanded');
                             });
                     }
                 }
