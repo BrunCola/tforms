@@ -96,8 +96,6 @@ module.exports = function(pool) {
                         });  
                         break;
                 }     
-<<<<<<< HEAD:server/controllers/local_events/local_floor_plan.js
-
             } else if (req.query.type === 'floorquery') {
                 switch (req.query.typeinfo) {
                     case 'iocusers':
@@ -115,9 +113,6 @@ module.exports = function(pool) {
                         });  
                         break;
                 }
-
-=======
->>>>>>> v1.5:server/controllers/local_events/endpoint_map.js
             } else {    
                 var floorplanReturn = [];
                 var floor_plan_users = {

@@ -79,24 +79,24 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     $scope.ioc_users_requery = function() {
         $rootScope.$broadcast('appendInfo', "", "", "clear");//needed?
 
-        var query = '/local_events/local_floor_plan?type=floorquery'; 
+        var query = '/local_events/endpoint_map?type=floorquery'; 
 
         $http({method: 'GET', url: query+'&typeinfo=iocusers'}).
             success(function(data) {
                 console.log(data);
-                $scope.$broadcast('appendInfo', data[0],"iocusers");//THIS WILL LIKELY NEED TO CHANGE...
+                $scope.$broadcast('floorPlan', data, "iocusers");//THIS WILL LIKELY NEED TO CHANGE...
             });
     }
 
     $scope.active_users_requery = function() {
         $rootScope.$broadcast('appendInfo', "", "", "clear");//needed?
 
-        var query = '/local_events/local_floor_plan?type=floorquery'; 
+        var query = '/local_events/endpoint_map?type=floorquery'; 
 
         $http({method: 'GET', url: query+'&typeinfo=activeusers'}).
             success(function(data) {
                 console.log(data);
-                $scope.$broadcast('appendInfo', data[0],"activeusers");//THIS WILL LIKELY NEED TO CHANGE...
+                $scope.$broadcast('appendInfo', data, "activeusers");//THIS WILL LIKELY NEED TO CHANGE...
             });
     }
 
