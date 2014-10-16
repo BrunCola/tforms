@@ -32,7 +32,7 @@ module.exports = function(pool) {
                             '`remote_asn`,'+
                             '`remote_asn_name`, '+
                             '`server_name`,'+
-                            '`proxy_blocked`'+
+                            '`proxy_blocked` '+
                         'FROM '+
                             '`ssl_uniq_remote_ip` '+
                         'WHERE '+
