@@ -3118,7 +3118,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 
                 $scope.point = function(element, type, name, id) {
                     if (type.search("ioc") !== -1) {
-                        element.attr('class', 'IOC');
+                        element.classed('IOC', true);
+                        element.classed('node-'+id, true);
                         element = element.append('g')
                             .attr('transform', 'translate(-18, -6)scale(0.8)');
                         element.append('svg:path')
@@ -3138,7 +3139,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .attr('height', 2.448);
                         return;
                     } else { 
-                        element.attr('class', id);
+                        element.classed('node-'+id, true);
                         element = element.append('g').attr('transform', 'translate(-18, -6)scale(0.8)');
                         switch(type){
                             case 'secure':
@@ -3474,15 +3475,26 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         setNewSize($scope.laneGraphWidth());
                     }, 150);
                 });
-                function laneInfoAppend(d) {
+                function laneInfoAppend(d, format) {
+
                     var send = '';
-                    for (var i in d) {
-                        if (d[i].name === 'Time') {
-                            send += '<strong>'+d[i].name+':</strong> '+timeFormat(d[i].value, 'laneGraphExpanded')+'<br />';      
-                        } else {
-                            send += '<strong>'+d[i].name+':</strong> '+d[i].value+'<br />';
+                    // if (format === 'checkboxes') {
+                    //     for (var i in d) {
+                    //         if (d[i].name === 'Time') {
+                    //             send += '<strong>'+d[i].name+':</strong> '+timeFormat(d[i].value, 'laneGraphExpanded')+'<br />';      
+                    //         } else {
+                    //             send += '<strong>'+d[i].name+':</strong> '+d[i].value+'<br />';
+                    //         }
+                    //     }
+                    // } else {
+                        for (var i in d) {
+                            if (d[i].name === 'Time') {
+                                send += '<strong>'+d[i].name+':</strong> '+timeFormat(d[i].value, 'laneGraphExpanded')+'<br />';      
+                            } else {
+                                send += '<strong>'+d[i].name+':</strong> '+d[i].value+'<br />';
+                            }
                         }
-                    }
+                    // }
                     return send;
                 }
                 // info div
@@ -3658,15 +3670,14 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 
                 function plot(data, min, max) {
                     if (moment(max).unix() !== moment(min).unix()) {
+                        // node selecting
+                        var previousBar = null, previousElm = null;
+                        // bar selecting
+                        var isOpen = null;
 
                         //////////////////
                         /// LANE NODES ///
-                        //////////////////
-                        // set variables for info sidebar
-                        var prevPos = 0;
-                        var previousID = -1, previousElm = null;
-                        var lastExpandedId = null, isOpen = null;
-                        //console.log("plot");
+                        ////////////////// 
                         // update time slice above chart
                         currentTime.html('Current Time Slice: <strong>'+moment(min).format('MMMM D, YYYY HH:MM A')+'</strong> - <strong>'+moment(max).format('MMMM D, YYYY HH:MM A')+'</strong>')
                         // create transition effect of slider
@@ -3689,7 +3700,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             var elm = d3.select(this);
                             elm
                                 .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
-                                .attr("class", function(d) {return "mainItem" + d.lane;})
                                 .on("mouseover", function(d){
                                     elm
                                         .style('cursor', 'pointer')
@@ -3701,54 +3711,53 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // elm.style('cursor', 'pointer');
                                 })
                                 .on("click", function(d){
-                                    // un-highlight previous box
-                                    $('#'+previousID).attr('class', null);
+                                    var sideSelected = d3.select('.scroll-'+d.id);
                                     // this closes the last expanded block if there is one
-                                    if (lastExpandedId !== null) {
-                                        $('div'+lastExpandedId+'.infoDivExpanded').hide();
+                                    if (previousBar !== null) {
+                                        previousBar.select('.infoDivExpanded').style('display', 'none');
+                                        previousBar.classed('laneactive', false);
                                     }
                                     if($('#autoexpand').is(':checked')){
-                                        if (isOpen === '#'+d.id) {
-                                            $('#'+d.id+' .infoDivExpanded').css('display', 'none');
+                                        if (isOpen === d.id) {
+                                            sideSelected.select('.infoDivExpanded').style('display', 'none');
                                             isOpen = null;
                                         } else {
-                                            $('#'+d.id+' .infoDivExpanded').css('display', 'block');
-                                            lastExpandedId = '#'+d.id;
-                                            isOpen = '#'+d.id;
-
-                                            $('#'+d.id+' .infoDivExpanded').html(laneInfoAppend(d.expand));
+                                            sideSelected.select('.infoDivExpanded').style('display', 'block');
+                                            isOpen = d.id;
+                                            // append different info if searching is enabled (i.e. checkboxes)
+                                            if ($scope.pattern.searching === false) {
+                                                $('#'+d.id+' .infoDivExpanded').html(laneInfoAppend(d.expand, null));
+                                            } else {
+                                                $('#'+d.id+' .infoDivExpanded').html(laneInfoAppend(d.expand, 'checkboxes'));
+                                            }
                                         }
                                     }
                                     // set class for active description
-                                    $('#'+d.id).attr('class', 'laneactive');
+                                    sideSelected.classed('laneactive', true);
                                     // scroll to position
                                     scrollSide(d.id);
                                     if ($scope.pattern.searching === false) {
                                         // throw clicked element into out last object
                                         $scope.pattern.last = d;
-                                        itemRects.selectAll('g').each(function(d){
-                                            var elm = d3.select(this);
-                                            elm.attr('class', null);
-                                        })
+                                        // clear class of all other nodes
+                                        itemRects.selectAll('g').classed('pointactive', false);
                                         // deselect previous element if there is one
                                         if (previousElm !== null) {
-                                            previousElm.attr('class', null);
+                                            previousElm.classed('pointactive', false);
                                         }
                                         // make current node active
-                                        elm.attr('class', 'pointactive');
-                                        // prevPos = currPos;
-                                        // set ids for cross-refrence
-                                        previousID = d.id;
+                                        elm.classed('pointactive', true);
+                                        previousBar = sideSelected;
                                         previousElm = elm;
                                     } else {
                                         // have every d element push to our store array as well as contued highlighting of selected points
                                         if (!(d.id in $scope.pattern.selected)) {
                                             $scope.pattern.selected[d.id] = d;
                                             // make current node active
-                                            elm.attr('class', 'pointactive');
+                                            elm.classed('pointactive', true);
                                         } else {
                                             // make current node inactive
-                                            elm.attr('class', null);
+                                            elm.classed('pointactive', false);
                                             delete $scope.pattern.selected[d.id];
                                         }
                                     }
@@ -3762,8 +3771,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         .attr('stroke', 'none')
                                         .attr('transform', 'scale(1) translate(' + x1(d.dd) + ',' + (y1(d.lane)+10) + ')');
                                 });
-                                // .attr("width", 5)
-                                // .attr("height", function(d) {return .8 * y1(1);});
                             // generate points from point function
                             if (d.type !== 'l7') {
                                 $scope.point(elm, d.type, null, d.id);
@@ -3784,52 +3791,43 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 elm
                                     // append id to li from data object
                                     .attr('id', function(d){return d.id })
+                                    .attr('class', 'scroll-'+d.id)
                                     .html(function(d){
                                         return "<div class='lanegraphlist'><strong>"+timeFormat(d.time, 'laneGraphPreview')+':</strong> '+d.info+"</div>";
                                     })
                                     .on('click', function(){
                                         scrollSide(d.id);
                                         // close last expanded sections
-                                        if (lastExpandedId !== '#'+d.id) {
-                                            $('div'+lastExpandedId+'.infoDivExpanded').hide();
+                                        if (previousBar !== null) {
+                                            previousBar.select('.infoDivExpanded').style('display', 'none');
+                                            previousBar.classed('laneactive', false);
                                         }
                                         // clear previous node
                                         if (previousElm !== null){
-                                            previousElm.attr('class', null);
+                                            previousElm.classed('pointactive', false);
                                         }
-                                        // clear class of previous li item
-                                        $('#'+previousID).attr('class', null);
                                         // get this id
-                                        var row = d3.select(this);
-                                        var id = row.attr('id'); 
-                                            row.attr('class', 'laneactive');
-                                        // iterate through points
-                                        itemRects.selectAll('g').each(function(d){
-                                            var elm = d3.select(this);
-                                            // if id's (of just clicked) match
-                                            if (d.id.toString() === id.toString()) {
-                                                elm.attr('class', 'pointactive');
-                                                previousElm = elm;
-                                            } else {
-                                                elm.attr('class', null);
-                                            }
-                                        })
-                                        // set previous id
-                                        previousID = id;
+                                        d3.select(this).classed('laneactive', true);
+                                        // select corresponding point
+                                        var thisNode = itemRects.select('.node-'+d.id);
+                                        thisNode.classed('pointactive', true);
+                                        previousBar = elm;
+                                        previousElm = thisNode;
                                     })
                                     // append expand buttons to list elements
                                     .append('div')
                                     .on('click', function(){
-                                        if (lastExpandedId !== '#'+d.id) {
-                                            $('div'+lastExpandedId+'.infoDivExpanded').hide();
+                                        scrollSide(d.id);
+                                        if (previousBar !== null) {
+                                            previousBar.select('.infoDivExpanded').style('display', 'none');
                                         }
-                                        if (isOpen === '#'+d.id) {
+                                        if (isOpen === d.id) {
                                             elm.select('.infoDivExpanded').style('display', 'none');
                                             isOpen = null;
                                         } else {
                                             elm.select('.infoDivExpanded').style('display', 'block');
-                                            lastExpandedId = '#'+d.id;
-                                            isOpen = '#'+d.id;
+                                            previousBar = elm;
+                                            isOpen = d.id;
                                             elm.select('.infoDivExpanded').html(laneInfoAppend(d.expand));
                                         }
                                     })
