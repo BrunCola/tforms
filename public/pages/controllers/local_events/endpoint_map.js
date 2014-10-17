@@ -84,7 +84,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     $scope.ioc_users_requery = function() {
         $rootScope.$broadcast('appendInfo', "", "", "clear");
 
-        var query = '/local_events/endpoint_map?type=floorquery'; 
+        var query = '/local_events/endpoint_map?type=floorquery';//+'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
 
         $http({method: 'GET', url: query+'&typeinfo=iocusers'}).
             success(function(data) {
@@ -96,7 +96,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     $scope.active_users_requery = function() {
         $rootScope.$broadcast('appendInfo', "", "", "clear");
 
-        var query = '/local_events/endpoint_map?type=floorquery'; 
+        var query = '/local_events/endpoint_map?type=floorquery'+'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
 
         $http({method: 'GET', url: query+'&typeinfo=activeusers'}).
             success(function(data) {
@@ -108,7 +108,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     $scope.active_stealth_users_requery = function() {
         $rootScope.$broadcast('appendInfo', "", "", "clear");
 
-        var query = '/local_events/endpoint_map?type=floorquery'; 
+        var query = '/local_events/endpoint_map?type=floorquery'+'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
 
         $http({method: 'GET', url: query+'&typeinfo=activestealthusers'}).
             success(function(data) {
