@@ -71,32 +71,49 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 success(function(data) {
                     $scope.$broadcast('appendInfo', d,data[0],"endpoint");
                 });
+
+            $http({method: 'GET', url: query+'&typeinfo=bandwidth'}).
+                success(function(data) {
+                    $scope.$broadcast('appendInfo', d,data[0],"bandwidth");
+                });
           
             //$scope.$broadcast('appendInfo', userInfo);
         }
     }
 
     $scope.ioc_users_requery = function() {
-        $rootScope.$broadcast('appendInfo', "", "", "clear");//needed?
+        $rootScope.$broadcast('appendInfo', "", "", "clear");
 
         var query = '/local_events/endpoint_map?type=floorquery'; 
 
         $http({method: 'GET', url: query+'&typeinfo=iocusers'}).
             success(function(data) {
                 console.log(data);
-                $scope.$broadcast('floorPlan', data, "iocusers");//THIS WILL LIKELY NEED TO CHANGE...
+                $scope.$broadcast('floorPlan', data, "iocusers");
             });
     }
 
     $scope.active_users_requery = function() {
-        $rootScope.$broadcast('appendInfo', "", "", "clear");//needed?
+        $rootScope.$broadcast('appendInfo', "", "", "clear");
 
         var query = '/local_events/endpoint_map?type=floorquery'; 
 
         $http({method: 'GET', url: query+'&typeinfo=activeusers'}).
             success(function(data) {
                 console.log(data);
-                $scope.$broadcast('floorPlan', data, "activeusers");//THIS WILL LIKELY NEED TO CHANGE...
+                $scope.$broadcast('floorPlan', data, "activeusers");
+            });
+    }
+
+    $scope.active_stealth_users_requery = function() {
+        $rootScope.$broadcast('appendInfo', "", "", "clear");
+
+        var query = '/local_events/endpoint_map?type=floorquery'; 
+
+        $http({method: 'GET', url: query+'&typeinfo=activestealthusers'}).
+            success(function(data) {
+                console.log(data);
+                $scope.$broadcast('floorPlan', data, "activestealthusers");
             });
     }
 

@@ -3889,6 +3889,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     colour = '#FF0000'; //CHANGE
                                 } else if(type === 'activeusers') {
                                     colour = '#00FF00'; //CHANGE
+                                } else if(type === 'activestealthusers') {
+                                    colour = '#666666'; //CHANGE
                                 } else {
                                     colour = '#29ABE2'; //the default
                                 }  
@@ -4300,6 +4302,12 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .on('click', function(){
                             $scope.active_users_requery();
                         });
+                    buttonDiv.append('button')
+                        .html('Highlight Active Stealth Users')
+                        .attr('class', 'resetButton')
+                        .on('click', function(){
+                            $scope.active_stealth_users_requery();
+                        });
                 }
 
 
@@ -4370,6 +4378,10 @@ angular.module('mean.pages').directive('appendFloorInfo', ['$timeout', '$rootSco
                         case "endpoint":
                             title = "Endpoints Hits: ";
                             link = "#!/endpoint_by_user_and_ip?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            break
+                        case "bandwidth":
+                            title = "Total Bandwidth in MB: ";
+                            link = "#!/local2remote?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"]+'&lan_machine='+user["lan_machine"];
                             break;
                         default:
                             title = "NO TITLE HITS";
