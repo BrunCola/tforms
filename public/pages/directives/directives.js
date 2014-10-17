@@ -3006,8 +3006,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     searching: false,
                     selected: {},
                     // last elm clicked, for throwing in object after an item is clicked when and our button is toggled
-                    last: null,
-                    order: 0
+                    last: null
                 }
 
                 var laneLength = $scope.lanes.length;
@@ -3487,28 +3486,30 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         setNewSize($scope.laneGraphWidth());
                     }, 150);
                 });
-                function laneInfoAppend(data, element, format) {
 
-                    var send = '';
-                    if (format === 'checkbox') {
-                        for (var i in data) {
-                            if (data[i].name === 'Time') {
-                                send += '<input checked type="checkbox" name="vehicle" value="Bike"><strong>'+data[i].name+':</strong> '+timeFormat(data[i].value, 'laneGraphExpanded')+'<br />';      
-                            } else {
-                                send += '<input type="checkbox" name="vehicle" value="Bike"><strong>'+data[i].name+':</strong> '+data[i].value+'<br />';
-                            }
-                        }
-                    } else {
-                        for (var i in data) {
-                            if (data[i].name === 'Time') {
-                                send += '<strong>'+data[i].name+':</strong> '+timeFormat(data[i].value, 'laneGraphExpanded')+'<br />';      
-                            } else {
-                                send += '<strong>'+data[i].name+':</strong> '+data[i].value+'<br />';
-                            }
-                        }
-                    }
-                    element.select('.infoDivExpanded').html(send);
+                $scope.addSearch = function() {
+
                 }
+
+                function laneInfoAppend(data, element, format) {
+                    var line = element
+                        .select('.infoDivExpanded')
+                        .selectAll('li')
+                        .data(data.expand)
+                        .enter()
+                        .append('li')
+                        .html(function(d){
+                            if (d.name === 'Time') {
+                                return '<strong>'+d.name+':</strong> '+timeFormat(d.value, 'laneGraphExpanded')+'<span class="test"> add</span><br />';      
+                            } else {
+                                return '<strong>'+d.name+':</strong> '+d.value+'<span class="test"> add</span><br />';
+                            }
+                        })
+                    line.select('.test').on('click', function(d){
+                        console.log(d)
+                    })
+                }
+
                 // info div
                 var infoHeight = element.height();
                 var infoTitle = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
@@ -3741,9 +3742,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                             isOpen = d.id;
                                             // append different info if searching is enabled (i.e. checkboxes)
                                             if ($scope.pattern.searching === false) {
-                                                laneInfoAppend(d.expand, sideSelected, null);
+                                                laneInfoAppend(d, sideSelected, null);
                                             } else {
-                                                laneInfoAppend(d.expand, sideSelected, 'checkbox');
+                                                laneInfoAppend(d, sideSelected, 'checkbox');
                                             }
                                         }
                                     }
@@ -3819,7 +3820,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 elm
                                     // append id to li from data object
                                     .attr('id', function(d){return d.id })
-                                    .attr('class', 'scroll-'+d.id)
+                                    .attr('class', 'scroll-'+d.id+' laneInfo')
                                     .html(function(d){
                                         return "<div class='lanegraphlist'><strong>"+timeFormat(d.time, 'laneGraphPreview')+':</strong> '+d.info+"</div>";
                                     })
