@@ -3104,6 +3104,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 var lineStory = main.append("g")
                     .attr("class", "storyLine");
 
+                var clickLine = main.append("g")
+                    .attr("class", "clickLine");
+
                 function rowColors(type) {
                     switch(type){
                         case 'IOC':
@@ -3152,6 +3155,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 $scope.point = function(element, type, name, id) {
                     element.classed('node-'+id, true);
                     element = element.append('g').attr('transform', 'translate(0, 0)');
+                    element.classed('eventSquare', true);
                     if (type.search("ioc") !== -1) {
                         element.classed('IOC', true);
                         element.append('svg:polygon')
@@ -3189,11 +3193,27 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                 }    
 
-                function changeIcon(element, type, id) {
+                function changeIcon(element, type, id, select, previousElm) { 
+                    // if select = true, then select current elm for story
+                    // is select = false, then current elm is clicked
                     var color;
+                    if ((previousElm)) {
+                        $(previousElm[0]).find('.eventFocus').remove();
+                    }
                     element.classed('node-'+id, true);
-                    element = element.append('g').attr('transform', 'translate(0, 0)');                   
+                    element = element.append('g');                
                     element.attr('transform', 'translate(-11, -9)');
+                    if ($('.node-'+id+' .eventStory')[0]) {
+                        $('.node-'+id+' .eventStory')[0].remove();
+                    }
+                    if ($('.node-'+id+' .eventFocus')[0]) {
+                        $('.node-'+id+' .eventFocus')[0].remove();
+                    } 
+                    if (select) {
+                        element.classed('eventStory', true);
+                    } else {
+                        element.classed('eventFocus', true);
+                    }
                     if (type.search("ioc") !== -1) {
                         element.classed('IOC', true);
                         element.append('svg:polygon')
@@ -3203,16 +3223,25 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         element.append('svg:polygon')
                             .attr('transform', 'translate(1, 3)')
                             .attr('points', '19.037,21.038 19.626,12.029 15.888,12.029 16.477,21.038 ')
-                            .attr('fill', '#595A5C');
+                            .attr('fill', "#595A5C");
                         element.append('rect')
                             .attr('transform', 'translate(1, 3)')
                             .attr('x', 16.376)
                             .attr('y', 22.045)
-                            .attr('fill', '#595A5C')
+                            .attr('fill', "#595A5C")
                             .attr('width', 2.838)
                             .attr('height', 2.448);
                         return;
                     } else {
+                        var color,color1,color2;
+                        if(!select){
+                            element.append('rect')
+                                .attr('x', -1)
+                                .attr('y', -1)
+                                .attr('fill', "#fff")
+                                .attr('width', 38)
+                                .attr('height', 38);
+                        }
                         element.append('rect')
                             .attr('x', 0)
                             .attr('y', 0)
@@ -3230,35 +3259,42 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         color = '#6FBF9B';
                                     }
                                 }else { 
-                                    color = rowColors(type);
+                                    color =  rowColors(type);
                                 }
-                                return color;
+                                color2 = "#595A5C";
+                                color1 = color;
+                                if(select){
+                                    color1 = "#595A5C";
+                                    color2 = color;
+                                }
+
+                                return color2;
                             })
                             .attr('width', 36)
-                            .attr('height', 36)
+                            .attr('height', 36);
                         switch(type){
                             case 'Conn':  
                                 element.append('svg:polygon')
                                     .attr('points', '24.585,6.299 24.585,9.064 11.195,9.064 11.195,14.221 24.585,14.221 24.585,16.986 31.658,11.643 ')
-                                    .attr('fill', '#595A5C');
+                                    .attr('fill', color1);
                                 element.append('svg:polygon')
                                     .attr('points', '10.99,17.822 3.916,23.166 10.99,28.51 10.99,25.744 24.287,25.744 24.287,20.59 10.99,20.59 ')
-                                    .attr('fill', '#595A5C');
+                                    .attr('fill', color1);
                                 return;
                             case 'IOC Severity':    
                                 element.append('svg:polygon')
                                     .attr('transform', 'translate(0, 3)')
                                     .attr('points', '18.155,3.067 5.133,26.932 31.178,26.932 ')
-                                    .attr('fill', '#595A5C');
+                                    .attr('fill', color1);
                                 element.append('svg:polygon')
                                     .attr('transform', 'translate(0, 3)')
                                     .attr('points', '19.037,21.038 19.626,12.029 15.888,12.029 16.477,21.038 ')
-                                    .attr('fill', color);
+                                    .attr('fill', color2);
                                 element.append('rect')
                                     .attr('transform', 'translate(0, 3)')
                                     .attr('x', 16.376)
                                     .attr('y', 22.045)
-                                    .attr('fill', color)
+                                    .attr('fill', color2)
                                     .attr('width', 2.838)
                                     .attr('height', 2.448);
                                 return;
@@ -3268,11 +3304,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         'c-0.036,0.955-0.071,2.053-0.071,3.009l2.267,0.106v8.707c0,0.071-0.035,0.143-0.142,0.178l-1.877,0.07'+
                                         'c-0.035,0.92-0.035,1.982-0.035,2.938c1.452,0,3.33-0.036,4.818-0.036h4.888V26l-1.949-0.07'+
                                         'C20.801,22.39,20.874,16.938,20.909,13.115z')
-                                    .attr('fill', '#595A5C');
+                                    .attr('fill', color1);
                                 element.append('svg:path')
                                     .attr('d', 'M17.473,10.921c1.771,0,3.329-1.274,3.329-3.187c0-1.486-1.098-2.867-3.152-2.867'+
                                         'c-1.948,0-3.259,1.451-3.259,2.938C14.391,9.611,15.949,10.921,17.473,10.921z')
-                                    .attr('fill', '#595A5C');
+                                    .attr('fill', color1);
                                 return;
                             case 'HTTP': 
                                 element.append('svg:path')
@@ -3284,11 +3320,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         'c0,0,1.737,0.646,1.767,0.569c0.027-0.07,1.964,1.598,1.964,1.598l1.084,0.52L19.456,21.1l-0.307,1.775l1.17,1.996l0.997,1.242'+
                                         'l-0.151,2.002L20.294,32.5l0.025,2.111l1.312-0.626c0,0,2.245-3.793,2.368-3.554c0.122,0.238,2.129-2.76,2.129-2.76l1.666-1.26'+
                                         'l0.959-3.195l-2.882-1.775L24.715,19.976z')
-                                    .attr('fill', '#595A5C');
+                                    .attr('fill', color1);
                                 return;
                             case 'SSL':
                                 element.append('svg:path')
-                                    .attr('fill', '#58595B')
+                                    .attr('fill', color1)
                                     .attr('d', 'M25.5,16.1v-2.7h0c0,0,0,0,0,0c0-4.1-3.3-7.4-7.4-7.4c-4.1,0-7.4,3.3-7.4,7.4c0,0,0,0,0,0v2.7H9.3'+
                                     'v11.8h17.8V16.1H25.5z M22.9,13.7v2.4h-9.4v-2.4c0,0,0,0,0,0c0-2.6,1.5-5,4.7-5C21.3,8.8,22.9,11.1,22.9,13.7'+
                                     'C22.9,13.7,22.9,13.7,22.9,13.7z');
@@ -3298,11 +3334,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .attr('d', 'M28.649,8.6H7.351c-0.684,0-1.238,0.554-1.238,1.238v14.363c0,0.684,0.554,1.238,1.238,1.238h7.529'+
                                         'l-1.09,3.468v0.495h8.419v-0.495l-1.09-3.468h7.529c0.684,0,1.237-0.555,1.237-1.238V9.838C29.887,9.153,29.333,8.6,28.649,8.6z'+
                                         'M28.477,22.072H7.635V10.074h20.842V22.072z')
-                                    .attr('fill', '#595A5C');
+                                    .attr('fill', color1);
                                 return;
                             case 'Stealth':
                                 element.append('svg:path')
-                                    .attr('fill', '#58595B')
+                                    .attr('fill', color1)
                                     .attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
                                         'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
                                         'C28.014,15.545,26.676,21.468,23.587,26.751z');
@@ -3313,7 +3349,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 return;
                             case 'Stealth_drop':
                                 element.append('svg:path')
-                                    .attr('fill', '#58595B')
+                                    .attr('fill', color1)
                                     .attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
                                         'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
                                         'C28.014,15.545,26.676,21.468,23.587,26.751z');
@@ -3324,10 +3360,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 return;
                             case 'Email':
                                 element.append('polygon')
-                                    .style('fill', '#58595B')
+                                    .style('fill', color1)
                                     .attr('points', '18,17.3 8.7,11.6 27.3,11.6 ');
                                 element.append('polygon')
-                                    .style('fill', '#58595B')
+                                    .style('fill', color1)
                                     .attr('points', '28.4,24.4 7.6,24.4 7.6,13.1 18,19.7 28.4,13.1 ');
                                 return;
                             case 'File':
@@ -3335,11 +3371,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .attr('d', 'M13.702,12.807h13.189c-0.436-0.655-1.223-1.104-2.066-1.104c0,0-7.713,0-8.361,0'+
                                         'c-0.386-0.796-1.278-1.361-2.216-1.361H7.562c-1.625,0-1.968,0.938-1.839,2.025l2.104,11.42c0.146,0.797,0.791,1.461,1.594,1.735'+
                                         'c0,0,2.237-10.702,2.378-11.308C12.005,13.334,12.403,12.807,13.702,12.807z')
-                                    .attr('fill', '#595A5C');
+                                    .attr('fill', color1);
                                 element.append('svg:path')
                                     .attr('d', 'M29.697,13.898c0,0-14.47-0.037-14.68-0.037c-1.021,0-1.435,0.647-1.562,1.289l-2.414,10.508h16.716'+
                                         'c1.146,0,2.19-0.821,2.383-1.871l1.399-7.859C31.778,14.706,31.227,13.848,29.697,13.898z')
-                                    .attr('fill', '#595A5C');
+                                    .attr('fill', color1);
                                 return;
                             case 'Applications': 
                                 element.append('rect')
@@ -3347,19 +3383,19 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .attr('y', 10)
                                     .attr('height', 4)
                                     .attr('width', 17)
-                                    .style('fill', '#5E5E5E');
+                                    .style('fill', color1);
                                 element.append('rect')
                                     .attr('x', 10)
                                     .attr('y', 16)
                                     .attr('height', 4)
                                     .attr('width', 17)
-                                    .style('fill', '#5E5E5E');
+                                    .style('fill', color1);
                                 element.append('rect')
                                     .attr('x', 10)
                                     .attr('y', 22)
                                     .attr('height', 4)
                                     .attr('width', 17)
-                                    .style('fill', '#5E5E5E');
+                                    .style('fill', color1);
                                 return;
                             default:
                                 return;
@@ -3717,11 +3753,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .on("mouseover", function(d){
                                     elm
                                         .style('cursor', 'pointer')
-                                        .transition()
+                                        /*.transition()
                                         .delay(3)
                                         .attr('fill-opacity', '1')
                                         .attr('stroke', '#ccc')
-                                        .attr('transform', 'scale(1.4) translate(' + ((x1(d.dd)/1.4)-2) + ',' + ((y1(d.lane)/1.4)-10) + ')');
+                                        .attr('transform', 'scale(1.4) translate(' + ((x1(d.dd)/1.4)-2) + ',' + ((y1(d.lane)/1.4)-10) + ')');*/
                                     // elm.style('cursor', 'pointer');
                                 })
                                 .on("click", function(d){
@@ -3762,6 +3798,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         // make current node active
                                         //elm.classed('pointactive', true);
                                         previousBar = sideSelected;
+                                        changeIcon(elm, d.type, d.id, false, previousElm);
                                     } else {
                                         if ((previousElm !== null) && (previousX !== 0) && (previousY !== 0)) {
                                             linesLinked.enter()
@@ -3786,19 +3823,38 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                             elm.classed('pointactive', false);
                                             delete $scope.pattern.selected[d.id];
                                         }
-                                        changeIcon(elm, d.type, d.id);
+                                        changeIcon(elm, d.type, d.id, true, previousElm);
                                     }
+
+
+                                    clickLine.selectAll('line').remove();
+                                    var selectedNode = clickLine.selectAll(".clickLine").data([""]);
+
+                                    selectedNode.enter()
+                                        .append("line")
+                                            .attr("x1", x1(d.dd)+7)
+                                            .attr("y1", m[0])
+                                            .attr("x2", x1(d.dd)+7)
+                                            .attr("y2", mainHeight)
+                                            .attr('stroke-width', '1')
+                                            .attr("stroke", "#FFF");
+
+
                                     previousElm = elm;
+
+
+
+
                                 })
                                 .on("mouseout", function(d){
                                     elm
                                         .style('cursor', 'pointer')
-                                        .transition()
+                                        /*.transition()
                                         .delay(150)
                                         .attr('fill-opacity', '1')
                                         .attr('stroke', 'none')
-                                        .attr('transform', 'scale(1) translate(' + x1(d.dd) + ',' + (y1(d.lane)-10) + ')');
-                                });
+                                        .attr('transform', 'scale(1) translate(' + x1(d.dd) + ',' + (y1(d.lane)-10) + ')');*/
+                                })
                             // generate points from point function
                             if (d.type !== 'l7') {
                                 $scope.point(elm, d.type, null, d.id);
