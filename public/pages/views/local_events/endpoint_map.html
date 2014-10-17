@@ -55,6 +55,7 @@
             </form>
         </div>
     </script>  
+    <section head></section>
     <section id="loading-error" loading-error></section>
     <section id="loading-spinner" loading-spinner></section>
     <section id="floorplanpage">
@@ -71,7 +72,12 @@
                 </ul> -->
             </div>
         </div>
-        <div class="span9">
+        <div class="span1">
+            <div class="jdash-header">Filters</div>
+            <div id="triggerbuttons" class="bin" style="position: relative">
+            </div>
+        </div>
+        <div class="span8">
             <tabset>
                 <tab select="alertMe()" ng-repeat="floor in floors">
                     <tab-heading>

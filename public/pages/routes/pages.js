@@ -534,7 +534,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     },
                     data: {
                         title: 'Endpoint Map',
-                        daterange: false
+                        daterange: true
                     }
                 })
             // ENDPOINT BY TYPE

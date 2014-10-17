@@ -72,28 +72,51 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 success(function(data) {
                     $scope.$broadcast('appendInfo', d,data[0],"endpoint");
                 });
+
+            $http({method: 'GET', url: query+'&typeinfo=bandwidth'}).
+                success(function(data) {
+                    $scope.$broadcast('appendInfo', d,data[0],"bandwidth");
+                });
           
             //$scope.$broadcast('appendInfo', userInfo);
         }
     }
 
-    $scope.change_customuser = function(item,value) {
-        $http({method: 'POST', url: '/actions/change_custom_user', data: {custom_user: value, lan_ip: item.lan_ip, lan_zone: item.lan_zone}});
+    $scope.ioc_users_requery = function() {
+        $rootScope.$broadcast('appendInfo', "", "", "clear");
+
+        var query = '/local_events/endpoint_map?type=floorquery';//+'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
+
+        $http({method: 'GET', url: query+'&typeinfo=iocusers'}).
+            success(function(data) {
+                console.log(data);
+                $scope.$broadcast('floorPlan', data, "iocusers");
+            });
     }
 
-    // $scope.uploadFile = function(files) {
-    //     var fd = new FormData();
-    //     //Take the first selected file
+    $scope.active_users_requery = function() {
+        $rootScope.$broadcast('appendInfo', "", "", "clear");
 
-    //     fd.append("file", files[0]);
-    //     console.log(fd);
-    //     var uploadUrl = '../../../uploads/'; //TODO Different folders per client? Diff folders for User photos and floor plans?
-    //     $http.post(uploadUrl, fd, {
-    //         withCredentials: true,
-    //         headers: {'Content-Type': undefined },
-    //         transformRequest: angular.identity
-    //     });//.success( console.log("UPLOADED");).error( console.log("error!"); );
-    // };  
+        var query = '/local_events/endpoint_map?type=floorquery'+'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
+
+        $http({method: 'GET', url: query+'&typeinfo=activeusers'}).
+            success(function(data) {
+                console.log(data);
+                $scope.$broadcast('floorPlan', data, "activeusers");
+            });
+    }
+
+    $scope.active_stealth_users_requery = function() {
+        $rootScope.$broadcast('appendInfo', "", "", "clear");
+
+        var query = '/local_events/endpoint_map?type=floorquery'+'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
+
+        $http({method: 'GET', url: query+'&typeinfo=activestealthusers'}).
+            success(function(data) {
+                console.log(data);
+                $scope.$broadcast('floorPlan', data, "activestealthusers");
+            });
+    }
 
     $scope.modelDelete = function (floors) {
         console.log(floors);
@@ -105,6 +128,9 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             modalFloors: floors
         });
     };
+    $scope.change_customuser = function(item,value) {
+        $http({method: 'POST', url: '/actions/change_custom_user', data: {custom_user: value, lan_ip: item.lan_ip, lan_zone: item.lan_zone}});
+    }
 
     $scope.uploadOpen = function () {
         $scope.modalInstance = $modal.open({
