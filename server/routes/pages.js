@@ -163,7 +163,8 @@ module.exports = function(app, passport, version, io, pool) {
         // ENDPOINT MAP
             var endpoint_map = require('../controllers/local_events/endpoint_map')(pool);
             app.route('/local_events/endpoint_map')
-            .get(auth.permission, endpoint_map.render); 
+            .get(auth.permission, endpoint_map.render) 
+            .post(auth.permission, endpoint_map.updatefp); 
         // ENDPOINT BY TYPE
             var endpoint_by_type = require('../controllers/local_events/endpoint_by_type')(pool);
             app.route('/local_events/endpoint_by_type')

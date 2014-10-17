@@ -3932,9 +3932,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', '$http', function ($timeout, $rootScope, $http) {
     return {
         link: function ($scope, element, attrs) {
-            $scope.$on('floorPlan', function (event) {   
+            //$scope.$on('floorPlan', function (event) { 
                 var data = $scope.data.force;
-                var floorName = element.attr('floor-name');
+                var floorName = attrs.floorName;
                 $scope.userList = data;
                 // info div
                 var width = element.width();
@@ -4339,9 +4339,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             }
                         });
                 }
-
                 plot(data, floorName);   
-            });
+            //});
         }
     };
 }]);

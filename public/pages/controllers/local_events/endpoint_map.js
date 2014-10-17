@@ -14,8 +14,9 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.data.force.forEach(function(d){
                 d.id = count++;
             })
-            $scope.$broadcast('floorPlan');
+            //$scope.$broadcast('floorPlan');
             $scope.$broadcast('spinnerHide');
+            $scope.floors = data.floor;
         }
         if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
             var query = '/local_events/endpoint_map?lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&type=flooruser';
@@ -94,6 +95,16 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     //     });//.success( console.log("UPLOADED");).error( console.log("error!"); );
     // };  
 
+    $scope.modelDelete = function (floors) {
+        console.log(floors);
+        $rootScope.modalFloors = floors;
+        $scope.modalInstance = $modal.open({
+            templateUrl: 'deleteModal.html',
+            controller: uploadInstanceCtrl,
+            keyboard: true,
+            modalFloors: floors
+        });
+    };
 
     $scope.uploadOpen = function () {
         $scope.modalInstance = $modal.open({
@@ -116,6 +127,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     var uploadInstanceCtrl = function ($scope, $modalInstance, $upload) {
         $scope.ok = function () {
             $modalInstance.close();
+            location.reload();
         };
         $scope.onFileSelect = function($files) {
             $scope.selectedFiles = [];
@@ -138,20 +150,24 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                     fileReader.readAsDataURL($files[i]);
                     var loadFile = function(fileReader, index) {
                         fileReader.onload = function(e) {
-                            $timeout(function() {
+                            //$timeout(function() {
                                 $scope.dataUrls[index] = e.target.result;
-                            });
+                            //});
                         }
                     }(fileReader, i);
                 }
                 $scope.progress[i] = -1;
-                $scope.start(i);
+                //$scope.start(i);
             }
         };
 
+        $scope.deleteFloorplan = function(floor) {
+            console.log(floor.select);
+            $http({method: 'POST', url: '/local_events/endpoint_map?type=deletefp', data: {asset_name: floor.select}});
+            $scope.ok();
+        };
 
-
-        if ($rootScope.modalRowData.lan_ip) {
+        if ($rootScope.modalRowData) {
             $scope.start = function(index) {
                 $scope.progress[index] = 0;
                 $scope.errorMsg = null;
@@ -178,11 +194,11 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 });
             };
         } else {
-            $scope.start = function(index) {
+            $scope.start = function(index, custom_fn) {
                 $scope.progress[index] = 0;
                 $scope.errorMsg = null;
                 $scope.upload[index] = $upload.upload({
-                    url : '/uploads',
+                    url : '/uploads?custom_name='+custom_fn,
                     method: 'POST',
                     data : {
                         myModel : $scope.myModel,

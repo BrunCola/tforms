@@ -130,6 +130,17 @@ module.exports = function(pool) {
                                 'lan_ip ',
                     insert: []
                 }
+
+                var floorplan = [];
+                var floors = {
+                    query: 'SELECT '+
+                            '* '+
+                            'FROM '+
+                                'assets '+
+                            'WHERE '+
+                                '`type` = "map"',
+                    insert: []
+                }
                 async.parallel([
                     // Table function(s)
                     function(callback) {
@@ -138,14 +149,37 @@ module.exports = function(pool) {
                             callback();
                         });
                     },
+                    function(callback) {
+                        new floor_plan(floors, {database: database, pool: pool}, function(err,data){
+                            floorplan = data;
+                            callback();
+                        });
+                    },
                 ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                     if (err) throw console.log(err);
                     var results = { 
-                        force: floorplanReturn
+                        force: floorplanReturn,
+                        floor: floorplan
                     };
                     res.json(results);
                 });         
             }
+        },
+        updatefp: function(req, res) {
+            var database = req.session.passport.user.database;
+            if (req.query.type === 'deletefp') {
+                var update_coordinates = {
+                    query: "DELETE FROM `assets` WHERE `type`='map' AND `asset_name`=?",
+                    insert: [req.body.asset_name]
+                }                
+                new query(update_coordinates, {database: database, pool: pool}, function(err,data){
+                    if (err) {
+                        res.send(500);
+                    } else {
+                        res.send(200);
+                    }
+                });
+            } 
         }
     }
 };

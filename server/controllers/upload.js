@@ -10,7 +10,7 @@ module.exports = function(pool) {
 			// if (config.localUploads.enabled === true) {
 				var createDirNeeded = false;
 
-				console.log(req.body);
+				//console.log(req.query);
 
 				//set the directory path for the final upload to public/uploads/<client>/
 				var dirPath = config.localUploads.directory + req.session.passport.user.client + "/";
@@ -30,7 +30,10 @@ module.exports = function(pool) {
 					var nameSplit = req.files[i].name.split('.');
 					//change the name of the uploaded file to floor_plan, keep the extension
 					if(req.body.imageType === 'map') { //if this is a floor plan image
-						var newName = "floor_plan." + nameSplit[1];
+						//var newName = "floor_plan." + nameSplit[1];
+						var newName = req.files[i].name;
+						var custom_name = req.query.custom_name;
+						var asset_name = custom_name.replace(" ", "_");
 					} else if (req.body.imageType === 'user') { //if this is a user image
 						var newName;
 						if(req.body.lan_ip != undefined) {
@@ -65,8 +68,8 @@ module.exports = function(pool) {
 							var database = req.session.passport.user.database;
 							if(req.body.imageType === 'map') {
 								var insert_map_image = {
-									query: "INSERT INTO `assets` (`type`, `file`, `asset_name`, `path`) VALUES ('map',?,?,?)",
-									insert: [newName, req.session.passport.user.client + "/" + newName, newPath]
+									query: "INSERT INTO `assets` (`type`, `file`, `asset_name`, `path`, `custom_name`) VALUES ('map',?,?,?,?)",
+									insert: [newName, asset_name, newPath, custom_name]
 								}
 								new query(insert_map_image, {database: database, pool: pool}, function(err,data){
 									res.send(200);
