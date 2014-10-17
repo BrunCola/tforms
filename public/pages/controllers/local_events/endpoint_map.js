@@ -96,7 +96,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         $http({method: 'GET', url: query+'&typeinfo=activeusers'}).
             success(function(data) {
                 console.log(data);
-                $scope.$broadcast('appendInfo', data, "activeusers");//THIS WILL LIKELY NEED TO CHANGE...
+                $scope.$broadcast('floorPlan', data, "activeusers");//THIS WILL LIKELY NEED TO CHANGE...
             });
     }
 

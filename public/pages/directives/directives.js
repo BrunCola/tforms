@@ -3861,10 +3861,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                 var userDiv = d3.select("#listlocalusers").style('height', infoHeight+25+'px').style('overflow', 'auto');
                 var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
                 var floorDiv = d3.select(element[0]);
-                //console.log(floorDiv);
 
-                var buttonDiv = d3.select("#buttondiv");
-
+                var buttonDiv = d3.select('#triggerbuttons');
 
                 $scope.$on('setSelected', function (event, selected) { 
                     $('#'+selected.id).addClass('selected');
@@ -4288,28 +4286,20 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 );
                             }
                         });
-                    floorDiv.append('button')
+
+                    buttonDiv.selectAll('button').remove();
+                    buttonDiv.append('button')
                         .html('Highlight Users with IOC')
                         .attr('class', 'resetButton')
-                        .attr('x', 10)
-                        .attr('y', 10)
-                        .style('top', 100+"px")
-                        .style('left', 100+"px")
-                        .style('position', "absolute")
                         .on('click', function(){
                             $scope.ioc_users_requery();
                         });
-                    // floorDiv.append('button')
-                    //     .html('Highlight Active Users')
-                    //     .attr('class', 'resetButton')
-                    //     .attr('x', 10)
-                    //     .attr('y', 30)
-                    //     .style('top', 100+"px")
-                    //     .style('left', 100+"px")
-                    //     .style('position', "absolute")
-                    //     .on('click', function(){
-                    //         $scope.active_users_requery();
-                    //     });
+                    buttonDiv.append('button')
+                        .html('Highlight Active Users')
+                        .attr('class', 'resetButton')
+                        .on('click', function(){
+                            $scope.active_users_requery();
+                        });
                 }
 
 
