@@ -3962,28 +3962,29 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                 }
 
                 function getIconColour(endpoint) {
-                    if(args != undefined) {
-                        var colour = '#29ABE2';//the default
-                        args.forEach(function(d){
-                            if(d.lan_ip == endpoint.lan_ip && d.lan_zone == endpoint.lan_zone) {
-                                //change to switch when more buttons are added
-                                if (type === 'iocusers') {
-                                    colour = '#FF0000'; //CHANGE
-                                } else if(type === 'activeusers') {
-                                    colour = '#00FF00'; //CHANGE
-                                } else if(type === 'activestealthusers') {
-                                    colour = '#666666'; //CHANGE
-                                } else {
-                                    colour = '#29ABE2'; //the default
-                                }  
-                                return;                                                          
-                            }                        
-                        });
+               /* if(args != undefined) {
+                    var colour = '#29ABE2';//the default
+                    args.forEach(function(d){
+                        if(d.lan_ip == endpoint.lan_ip && d.lan_zone == endpoint.lan_zone) {
+                            //change to switch when more buttons are added
+                            if (type === 'iocusers') {
+                                colour = '#FF0000'; //CHANGE
+                            } else if(type === 'activeusers') {
+                                colour = '#00FF00'; //CHANGE
+                            } else if(type === 'activestealthusers') {
+                                colour = '#666666'; //CHANGE
+                            } else {
+                                colour = '#29ABE2'; //the default
+                            }  
+                            return;                                                          
+                        }                        
+                    });
 
-                        return colour;
-                    } else {
+                    return colour;
+                } else {
+                    return '#29ABE2';
+                }*/
                         return '#29ABE2';
-                    }
                 }
 
                 function plot(data, floor) {
