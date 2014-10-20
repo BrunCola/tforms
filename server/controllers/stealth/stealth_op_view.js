@@ -116,7 +116,7 @@ module.exports = function(pool) {
                                     '`remote_ip` AS `Victim IP`, '+
                                     '\'blocked\' AS `allow` '+
                                 'FROM '+
-                                    ' `conn` '+
+                                    ' `conn_meta` '+
                                 'WHERE '+
                                     'time BETWEEN ? AND ? '+
                                     'AND `proto` != \'udp\' '+
@@ -157,7 +157,7 @@ module.exports = function(pool) {
                                     '`remote_ip` AS `Victim IP`, '+
                                     '\'authorized\' AS `allow` '+
                                 'FROM '+
-                                    ' `conn` '+
+                                    ' `conn_meta` '+
                                 'WHERE '+
                                     'time BETWEEN ? AND ? '+
                                     'AND `proto` != \'udp\' '+
@@ -186,7 +186,7 @@ module.exports = function(pool) {
                                     '`stealth_view_coordinates`'+
                                 'WHERE '+
                                 '`user_login` = ? '+
-                                'AND `page_title` = "local_COI_remote"',
+                                'AND `page_title` = "stealth_op_view"',
                         insert: [req.session.passport.user.email]
                     }
                     async.parallel([

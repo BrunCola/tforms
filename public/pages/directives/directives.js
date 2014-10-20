@@ -1693,12 +1693,12 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
 
                     function dragend(d, i) {
                         d.fixed = true; 
-                        $http({method: 'GET', url: '/local_events/local_COI_remote?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name+'&page_title=local_COI_remote'}).
+                        $http({method: 'GET', url: '/stealth/stealth_op_view?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name+'&page_title=stealth_op_view'}).
                             success(function(data) { 
                                 if (data["result"].length>0) {
-                                    $http({method: 'POST', url: '/local_events/local_COI_remote', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "local_COI_remote"}});
+                                    $http({method: 'POST', url: '/stealth/stealth_op_view', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_op_view"}});
                                 }else{
-                                    $http({method: 'POST', url: '/local_events/local_COI_remote?type=insert', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "local_COI_remote"}});
+                                    $http({method: 'POST', url: '/stealth/stealth_op_view?type=insert', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_op_view"}});
                                 }
                             });
                         tick();
@@ -2609,12 +2609,12 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 
                     function dragend(d, i) {
                         d.fixed = true; 
-                        $http({method: 'GET', url: '/local_events/stealth_COI_map?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name+'&page_title=stealth_COI_map'}).
+                        $http({method: 'GET', url: '/stealth/stealth_deploy_config?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name+'&page_title=stealth_COI_map'}).
                             success(function(data) { 
                                 if (data["force"].length>0) {
-                                    $http({method: 'POST', url: '/local_events/stealth_COI_map', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_COI_map"}});
+                                    $http({method: 'POST', url: '/stealth/stealth_deploy_config', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_COI_map"}});
                                 }else{
-                                    $http({method: 'POST', url: '/local_events/stealth_COI_map?type=insert', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_COI_map"}});
+                                    $http({method: 'POST', url: '/stealth/stealth_deploy_config?type=insert', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_COI_map"}});
                                 }
                             });
                         tick();
