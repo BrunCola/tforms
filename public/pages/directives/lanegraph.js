@@ -115,7 +115,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .data($scope.lanes)
                     .enter().append("line")
                     .attr('stroke-width', '1')
-                    //.attr("x1", m[1])
+                    .attr('stroke-opacity', '0.5')
                     .attr("x1", 0)
                     .attr("y1", function(d, i) { return y1(i);})
                     .attr("x2", w)
@@ -191,7 +191,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     if (type.search("ioc") !== -1) {
                         element.classed('IOC', true);
                         element.append('svg:polygon')
-                            .attr('points', '9.5,0 11.7,6.9 19,6.9 13.1,11.5 15.4,18.5 9.5,14.3 3.6,18.6 5.9,11.4 0,6.9 7.3,6.9')
+                            .attr('points', '7,15 14,6 0,6')
                             .attr('fill', rowColors("IOC"))
                             .style('opacity', '0.4'); 
                         return;
@@ -219,8 +219,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 return color;
                             })
                             //.attr('fill', rowColors(type))
-                            .attr('width', 14)
-                            .attr('height', 14)
+                            .attr('width', 12)
+                            .attr('height', 12)
                             .style('opacity', '0.4');     
                     }
                 }    
@@ -248,8 +248,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .attr("y1", $scope.pattern.lastXY.y)
                                 .attr("x2", x1(data.dd)+7)
                                 .attr("y2", y1(data.lane))
-                                .attr('stroke-width', '1')
-                                .attr("stroke", "#FFF");      
+                                .attr('stroke-width', 1)
+                                .attr("stroke", "#fff");      
                         }
                     }
 
@@ -272,15 +272,15 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     if (data.type.search("ioc") !== -1) {
                         element.classed('IOC', true);
                         element.append('svg:polygon')
-                            .attr('transform', 'scale(2)')
-                            .attr('points', '9.5,0 11.7,6.9 19,6.9 13.1,11.5 15.4,18.5 9.5,14.3 3.6,18.6 5.9,11.4 0,6.9 7.3,6.9')
+                            .attr('transform', 'scale(2) translate(2, 0)')
+                            .attr('points', '7,15 14,6 0,6')
                             .attr('fill', rowColors("IOC"))
                         element.append('svg:polygon')
-                            .attr('transform', 'translate(1, 3)')
+                            .attr('transform', 'translate(0, 2)')
                             .attr('points', '19.037,21.038 19.626,12.029 15.888,12.029 16.477,21.038 ')
                             .attr('fill', "#595A5C");
                         element.append('rect')
-                            .attr('transform', 'translate(1, 3)')
+                            .attr('transform', 'translate(0, 2)')
                             .attr('x', 16.376)
                             .attr('y', 22.045)
                             .attr('fill', "#595A5C")
@@ -289,17 +289,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         return;
                     } else {
                         var color,color1,color2;
-                        if (!select){
-                            element.append('rect')
-                                .attr('x', -1)
-                                .attr('y', -1)
-                                .attr('fill', "#fff")
-                                .attr('width', 38)
-                                .attr('height', 38);
-                        }
                         element.append('rect')
                             .attr('x', 0)
                             .attr('y', 0)
+                            .attr('stroke-width', 1)
+                            .attr('stroke', '#fff')
                             .attr('fill', function(d){
                                 if (data.type === "IOC Severity") {
                                     if (d.ioc_severity === 1) {
