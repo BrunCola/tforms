@@ -265,7 +265,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         return;
                     } else {
                         var color,color1,color2;
-                        if(!select){
+                        if (!select){
                             element.append('rect')
                                 .attr('x', -1)
                                 .attr('y', -1)
@@ -886,24 +886,24 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                             .attr('stroke-width', '1')
                                             .attr("stroke", "#FFF");
                                     // draw line links
-                                    if ($scope.pattern.searching) {
-                                        if ((previousElm !== null) && (previousX !== 0) && (previousY !== 0)) {
+                                    if (($scope.pattern.searching) && ($scope.pattern.last.data.id in $scope.pattern.selected)) {
+                                        if (previousElm !== null) {
                                             linesLinked.enter()
                                                 .append("line")
-                                                    .attr("x1", previousX+7)
-                                                    .attr("y1", previousY)
+                                                    .attr("x1", $scope.pattern.last.previousX+7)
+                                                    .attr("y1", $scope.pattern.last.previousY)
                                                     .attr("x2", x1(d.dd)+7)
                                                     .attr("y2", y1(d.lane))
                                                     .attr('stroke-width', '1')
                                                     .attr("stroke", "#FFF");      
                                         }
-                                        previousX = x1(d.dd);
-                                        previousY = y1(d.lane);
                                     }
                                     changeIcon(elm, d.type, d.id, false, previousElm);
                                     $scope.pattern.last = {
                                         element: sideSelected,
-                                        data: d
+                                        data: d,
+                                        previousX: x1(d.dd),
+                                        previousY: y1(d.lane)
                                     }
                                     previousElm = elm;
                                 })
@@ -950,7 +950,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         elm.classed('laneactive', true);
                                         $scope.pattern.last = {
                                             element: elm,
-                                            data: d
+                                            data: d,
+                                            previousX: x1(d.dd),
+                                            previousY: y1(d.lane)
                                         }
                                         previousBar = elm;
                                         previousElm = thisNode;
