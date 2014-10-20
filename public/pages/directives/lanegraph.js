@@ -263,10 +263,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         $('.node-'+data.id+' .eventFocus')[0].remove();
                     } 
                     if (select) {
-                        console.log('eventStory')
                         element.classed('eventStory', true);
                     } else if (!(data.id in $scope.pattern.selected)){
-                        console.log('eventFocus')
                         element.classed('eventFocus', true);
                     }
                     if (data.type.search("ioc") !== -1) {
@@ -541,7 +539,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             // clear our object & set it back to false
                             $scope.pattern.searching = false;
                             $scope.pattern.selected = {};
-                            // $scope.pattern.last = null;
                             lineStory.selectAll('line').remove();
                         }
                         laneInfoAppend($scope.pattern.last.data, $scope.pattern.last.element);
@@ -593,10 +590,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         $scope.pattern.selected[point.id].search.length++;
                         // add class to point
                         changeIcon(thisNode, point);
-                        // add current x and y points to last object (after changeicon function)
+                        // add current x and y points to last object (after changeicon function!)
                         $scope.pattern.lastXY = {};
                         $scope.pattern.lastXY.x = x1(point.dd);
                         $scope.pattern.lastXY.y = y1(point.lane);    
+                        $scope.pattern.lastXY.id = point.id;
                     } else {
                         // if data is not in point object, add it
                         if (!(data.name in $scope.pattern.selected[point.id].search)) {
@@ -611,8 +609,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         if ($scope.pattern.selected[point.id].search.length === 0) {
                             delete $scope.pattern.selected[point.id];
                             // reset our last x/y coordinate object
-                            $scope.pattern.lastXY.x = null;
-                            $scope.pattern.lastXY.y = null;
+                            $scope.pattern.lastXY = null;
                         }
                     }
                     // update style of point if there is no selected data in it
@@ -946,7 +943,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         ////////////////////
                         /// SIDEBAR LIST ///
                         ////////////////////
-                         infoDiv.selectAll('li').remove();
+                        infoDiv.selectAll('li').remove();
                         infoDiv.selectAll('li').data(data).enter()
                             .append('li').each(function(d){
                                 var elm = d3.select(this);
