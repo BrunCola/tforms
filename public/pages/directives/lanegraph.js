@@ -37,7 +37,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     searching: false,
                     selected: {},
                     // last elm clicked, for throwing in object after an item is clicked when and our button is toggled
-                    last: null
+                    last: null,
+                    lastXY: null
                 }
 
                 var laneLength = $scope.lanes.length;
@@ -225,31 +226,27 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }    
 
                 function changeIcon(element, data, select, previousElm) {
-                    console.log($scope.pattern.selected)
-                    // if select = true, then select current elm for story
-                    // is select = false, then current elm is clicked
                     var color;
                     if (previousElm) {
                         previousElm.select('.eventFocus').remove();
                     }
 
-                    // if (($scope.pattern.last !== null) && (data.id in $scope.pattern.selected)) {
-                        lineStory.selectAll('line').remove();
+                    
+                    if ((data.id in $scope.pattern.selected) && ($scope.pattern.lastXY !== null)) {
+                        // lineStory.selectAll('line').remove();
                         var linesLinked = lineStory.selectAll(".storyLines").data([""]);
                         // draw line links
-                        if (($scope.pattern.searching) && ($scope.pattern.last.data.id in $scope.pattern.selected)) {
-                            if (previousElm !== null) {
-                                linesLinked.enter()
-                                    .append("line")
-                                        .attr("x1", $scope.pattern.last.previousX+7)
-                                        .attr("y1", $scope.pattern.last.previousY)
-                                        .attr("x2", x1(data.dd)+7)
-                                        .attr("y2", y1(data.lane))
-                                        .attr('stroke-width', '1')
-                                        .attr("stroke", "#FFF");      
-                            }
+                        if (previousElm !== null) {
+                            linesLinked.enter()
+                                .append("line")
+                                    .attr("x1", $scope.pattern.lastXY.x+7)
+                                    .attr("y1", $scope.pattern.lastXY.y)
+                                    .attr("x2", x1(data.dd)+7)
+                                    .attr("y2", y1(data.lane))
+                                    .attr('stroke-width', '1')
+                                    .attr("stroke", "#FFF");      
                         }
-                    // }
+                    }
 
                     element.classed('node-'+data.id, true);
                     element = element.append('g');                
@@ -575,7 +572,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 
                 $scope.addSearch = function(point, data) {
                     var thisNode = itemRects.select('.node-'+point.id);
-                    if (!(point.id in $scope.pattern.selected)) {                        
+                    if (!(point.id in $scope.pattern.selected)) {         
                         // add empty obect with point id in search
                         $scope.pattern.selected[point.id] = {};
                         // insert point information (for redrawing later)
@@ -587,29 +584,28 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         // insert our selected data with name as key
                         $scope.pattern.selected[point.id].search[data.name] = data;
                         $scope.pattern.selected[point.id].search.length++;
-                        // add current x and y points to last object
-                        $scope.pattern.last.previousX = x1(point.dd);
-                        $scope.pattern.last.previousY = y1(point.lane);
                         // add class to point
                         changeIcon(thisNode, point, true);
+                        // add current x and y points to last object (after changeicon function)
+                        $scope.pattern.lastXY = {};
+                        $scope.pattern.lastXY.x = x1(point.dd);
+                        $scope.pattern.lastXY.y = y1(point.lane);    
                     } else {
                         // if data is not in point object, add it
                         if (!(data.name in $scope.pattern.selected[point.id].search)) {
                             $scope.pattern.selected[point.id].search[data.name] = data;
-                            $scope.pattern.selected[point.id].search.length++;
-                            // add current x and y points to last object
-                            $scope.pattern.last.previousX = x1(point.dd);
-                            $scope.pattern.last.previousY = y1(point.lane);
+                            $scope.pattern.selected[point.id].search.length++;    
                         } else {
                         // remove data if it already exists
                             delete $scope.pattern.selected[point.id].search[data.name];
                             $scope.pattern.selected[point.id].search.length--;
-                            delete $scope.pattern.last.previousX;
-                            delete $scope.pattern.last.previousY;
                         }
                         // remove point if its empty after changes
                         if ($scope.pattern.selected[point.id].search.length === 0) {
                             delete $scope.pattern.selected[point.id];
+                            // reset our last x/y coordinate object
+                            $scope.pattern.lastXY.x = null;
+                            $scope.pattern.lastXY.y = null;
                         }
                     }
                     // update style of point if there is no selected data in it
