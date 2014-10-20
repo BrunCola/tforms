@@ -58,47 +58,47 @@
     <section head></section>
     <section id="loading-error" loading-error></section>
     <section id="loading-spinner" loading-spinner></section>
-    <section id="floorplanpage">
-        <!-- <input type="file" name="file" onchange="angular.element(this).scope().uploadFile(this.files)"/> -->
-        <li><a href="" ng-click="uploadOpen()"><i class="fa fa-upload"></i> Upload</a></li>
-        <li><a href="" ng-click="modelDelete(floors)"> Delete Floorplan</a></li>
-        <div class="span2">
-            <div class="jdash-header">Local Users</div>
-            <div id="listlocalusers" class="bin" droppable drop="handleDrop" style="position: relative">
-               <!--  <ul>                    
-                    <li data-ng-repeat="user in userList" ng-show="display(user.editing)" ng-class="childClass(user)">
-                        <span ng-show="display(user.editing)" ng-class="childClass(user)"></span>
-                    </li>
-                </ul> -->
+    <div class="row-fluid">
+        <section id="floorplanpage">
+            <!-- <input type="file" name="file" onchange="angular.element(this).scope().uploadFile(this.files)"/> -->
+            <li><a href="" ng-click="uploadOpen()"><i class="fa fa-upload"></i> Upload</a></li>
+            <li><a href="" ng-click="modelDelete(floors)"> Delete Floorplan</a></li>
+            <div class="span2">
+                 <div class="jdash-header">Local Users</div>
+                <div id="listlocalusers" class="bin" droppable drop="handleDrop" style="position: relative">
+                   <!--  <ul>                    
+                        <li data-ng-repeat="user in userList" ng-show="display(user.editing)" ng-class="childClass(user)">
+                            <span ng-show="display(user.editing)" ng-class="childClass(user)"></span>
+                        </li>
+                    </ul> -->
+                </div>
             </div>
-        </div>
-        <div class="span1">
-            <div class="jdash-header">Filters</div>
-            <div id="triggerbuttons" class="bin" style="position: relative">
+            <div class="span1">
+                <div class="jdash-header">Filters</div>
+                <div id="triggerbuttons" class="bin" style="position: relative">
+                </div>
             </div>
-        </div>
-        <div class="span8">
-            <tabset>
-                <tab select="alertMe()" ng-repeat="floor in floors">
-                    <tab-heading>
-                        {{floor.custom_name}}
-                    </tab-heading>
-                    <div style="background-color:#FFF;" class="box">
-                        <div id="floorplan" floor-name="{{floor.asset_name}}" make-floor-plan class="bin" droppable drop="handleDrop" style="position: relative">
-                            <object width="910" height="600" id="svgFloorPlan" data="{{floor.path}}" type="image/svg+xml"></object>
-                            <!-- <svg width="910" height="600" id="svgFloorPlan">
-                                <image x="0" y="0" height="600" width="900"  xlink:href="{{floor.path}}" />
-                            </svg> -->
+            <div class="span6">
+                <tabset>
+                    <tab select="alertMe()" ng-repeat="floor in floors">
+                        <tab-heading>
+                            {{floor.custom_name}}
+                        </tab-heading>
+                        <div style="background-color:#FFF;" class="box">
+                            <div id="floorplan" floor-name="{{floor.asset_name}}" make-floor-plan class="bin" droppable drop="handleDrop" style="position: relative">
+                                <!-- <object width="910" height="600" id="svgFloorPlan" data="{{floor.path}}" type="image/svg+xml"></object> -->
+                                <object id="svgFloorPlan" width="800" data="{{floor.path}}" type="image/svg+xml"></object>
+                            </div>
                         </div>
-                    </div>
-                </tab>
-            </tabset>
-        </div>
-        <div class="span3">
-            <div class="jdash-header">User Information</div>
-            <div  style="background-color:#FFF;" class="box">
-                <div id="localuserinformation" append-floor-info></div>
+                    </tab>
+                </tabset>
             </div>
-        </div>
-    </section>
+            <div class="span3">
+                <div class="jdash-header">User Information</div>
+                <div  style="background-color:#FFF;" class="box">
+                    <div id="localuserinformation" append-floor-info></div>
+                </div>
+            </div>
+        </section>
+    </div>
 </div>
