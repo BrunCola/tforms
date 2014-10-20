@@ -224,28 +224,48 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                 }    
 
-                function changeIcon(element, type, id, select, previousElm) {
+                function changeIcon(element, data, select, previousElm) {
+                    console.log($scope.pattern.selected)
                     // if select = true, then select current elm for story
                     // is select = false, then current elm is clicked
                     var color;
                     if (previousElm) {
                         previousElm.select('.eventFocus').remove();
                     }
-                    element.classed('node-'+id, true);
+
+                    // if (($scope.pattern.last !== null) && (data.id in $scope.pattern.selected)) {
+                        lineStory.selectAll('line').remove();
+                        var linesLinked = lineStory.selectAll(".storyLines").data([""]);
+                        // draw line links
+                        if (($scope.pattern.searching) && ($scope.pattern.last.data.id in $scope.pattern.selected)) {
+                            if (previousElm !== null) {
+                                linesLinked.enter()
+                                    .append("line")
+                                        .attr("x1", $scope.pattern.last.previousX+7)
+                                        .attr("y1", $scope.pattern.last.previousY)
+                                        .attr("x2", x1(data.dd)+7)
+                                        .attr("y2", y1(data.lane))
+                                        .attr('stroke-width', '1')
+                                        .attr("stroke", "#FFF");      
+                            }
+                        }
+                    // }
+
+                    element.classed('node-'+data.id, true);
                     element = element.append('g');                
                     element.attr('transform', 'translate(-11, -9)');
-                    if ($('.node-'+id+' .eventStory')[0]) {
-                        $('.node-'+id+' .eventStory')[0].remove();
+                    if ($('.node-'+data.id+' .eventStory')[0]) {
+                        $('.node-'+data.id+' .eventStory')[0].remove();
                     }
-                    if ($('.node-'+id+' .eventFocus')[0]) {
-                        $('.node-'+id+' .eventFocus')[0].remove();
+                    if ($('.node-'+data.id+' .eventFocus')[0]) {
+                        $('.node-'+data.id+' .eventFocus')[0].remove();
                     } 
                     if (select) {
                         element.classed('eventStory', true);
                     } else {
                         element.classed('eventFocus', true);
                     }
-                    if (type.search("ioc") !== -1) {
+                    if (data.type.search("ioc") !== -1) {
                         element.classed('IOC', true);
                         element.append('svg:polygon')
                             .attr('transform', 'scale(2)')
@@ -277,7 +297,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .attr('x', 0)
                             .attr('y', 0)
                             .attr('fill', function(d){
-                                if (type === "IOC Severity") {
+                                if (data.type === "IOC Severity") {
                                     if (d.ioc_severity === 1) {
                                         color = '#377FC7'; 
                                     } else if (d.ioc_severity === 2) {
@@ -290,7 +310,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         color = '#6FBF9B';
                                     }
                                 }else { 
-                                    color =  rowColors(type);
+                                    color =  rowColors(data.type);
                                 }
                                 color2 = "#595A5C";
                                 color1 = color;
@@ -303,7 +323,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             })
                             .attr('width', 36)
                             .attr('height', 36);
-                        switch(type){
+                        switch(data.type){
                             case 'Conn':  
                                 element.append('svg:polygon')
                                     .attr('points', '24.585,6.299 24.585,9.064 11.195,9.064 11.195,14.221 24.585,14.221 24.585,16.986 31.658,11.643 ')
@@ -567,17 +587,25 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         // insert our selected data with name as key
                         $scope.pattern.selected[point.id].search[data.name] = data;
                         $scope.pattern.selected[point.id].search.length++;
+                        // add current x and y points to last object
+                        $scope.pattern.last.previousX = x1(point.dd);
+                        $scope.pattern.last.previousY = y1(point.lane);
                         // add class to point
-                        changeIcon(thisNode, point.type, point.id, true);
+                        changeIcon(thisNode, point, true);
                     } else {
                         // if data is not in point object, add it
                         if (!(data.name in $scope.pattern.selected[point.id].search)) {
                             $scope.pattern.selected[point.id].search[data.name] = data;
                             $scope.pattern.selected[point.id].search.length++;
+                            // add current x and y points to last object
+                            $scope.pattern.last.previousX = x1(point.dd);
+                            $scope.pattern.last.previousY = y1(point.lane);
                         } else {
                         // remove data if it already exists
                             delete $scope.pattern.selected[point.id].search[data.name];
                             $scope.pattern.selected[point.id].search.length--;
+                            delete $scope.pattern.last.previousX;
+                            delete $scope.pattern.last.previousY;
                         }
                         // remove point if its empty after changes
                         if ($scope.pattern.selected[point.id].search.length === 0) {
@@ -586,7 +614,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                     // update style of point if there is no selected data in it
                     if (!(point.id in $scope.pattern.selected)) {
-                        changeIcon(thisNode, point.type, point.id, false);
+                        changeIcon(thisNode, point, false);
                     }
                 }
 
@@ -832,8 +860,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         x1.domain([min, max]);
                         xAxisBrush.transition().duration(500).call(xAxis);
                         // remove lines from story
-                        lineStory.selectAll('line').remove();
-                        var linesLinked = lineStory.selectAll(".storyLines").data([""]);
+                        // lineStory.selectAll('line').remove();
+                        // var linesLinked = lineStory.selectAll(".storyLines").data([""]);
                         // remove existing elements (perhaps this is innificent and should be modified to just transition)
                         itemRects.selectAll('g').remove();
                         var icons = itemRects.selectAll("g").data(data);
@@ -850,6 +878,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     /////// SIDE SCROLL ///////
                                     ///////////////////////////
                                     var sideSelected = d3.select('.scroll-'+d.id);
+                                    // set last object before otehr functions run
+                                    $scope.pattern.last = {
+                                        element: sideSelected,
+                                        data: d
+                                    }
                                     // this closes the last expanded block if there is one
                                     if ((previousBar !== null) && (previousBar.attr('class') !== sideSelected.attr('class'))) {
                                         previousBar.select('.infoDivExpanded').style('display', 'none');
@@ -885,26 +918,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                             .attr("y2", mainHeight)
                                             .attr('stroke-width', '1')
                                             .attr("stroke", "#FFF");
-                                    // draw line links
-                                    if (($scope.pattern.searching) && ($scope.pattern.last.data.id in $scope.pattern.selected)) {
-                                        if (previousElm !== null) {
-                                            linesLinked.enter()
-                                                .append("line")
-                                                    .attr("x1", $scope.pattern.last.previousX+7)
-                                                    .attr("y1", $scope.pattern.last.previousY)
-                                                    .attr("x2", x1(d.dd)+7)
-                                                    .attr("y2", y1(d.lane))
-                                                    .attr('stroke-width', '1')
-                                                    .attr("stroke", "#FFF");      
-                                        }
-                                    }
-                                    changeIcon(elm, d.type, d.id, false, previousElm);
-                                    $scope.pattern.last = {
-                                        element: sideSelected,
-                                        data: d,
-                                        previousX: x1(d.dd),
-                                        previousY: y1(d.lane)
-                                    }
+                                    changeIcon(elm, d, false, previousElm);
                                     previousElm = elm;
                                 })
                                 .on("mouseout", function(d){
@@ -945,14 +959,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         if ((previousBar !== null) && (previousBar.attr('class') !== elm.attr('class'))) {
                                             previousBar.select('.infoDivExpanded').style('display', 'none');
                                             previousBar.classed('laneactive', false);
-                                            changeIcon(thisNode, d.type, d.id, false, previousElm);
+                                            changeIcon(thisNode, d, false, previousElm);
                                         }
                                         elm.classed('laneactive', true);
                                         $scope.pattern.last = {
                                             element: elm,
-                                            data: d,
-                                            previousX: x1(d.dd),
-                                            previousY: y1(d.lane)
+                                            data: d
                                         }
                                         previousBar = elm;
                                         previousElm = thisNode;
