@@ -14,8 +14,9 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.data.force.forEach(function(d){
                 d.id = count++;
             })
-            $scope.$broadcast('floorPlan');
+            //$scope.$broadcast('floorPlan');
             $scope.$broadcast('spinnerHide');
+            $scope.floors = data.floor;
         }
         if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
             var query = '/local_events/endpoint_map?lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&type=flooruser';
@@ -71,29 +72,65 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 success(function(data) {
                     $scope.$broadcast('appendInfo', d,data[0],"endpoint");
                 });
+
+            $http({method: 'GET', url: query+'&typeinfo=bandwidth'}).
+                success(function(data) {
+                    $scope.$broadcast('appendInfo', d,data[0],"bandwidth");
+                });
           
             //$scope.$broadcast('appendInfo', userInfo);
         }
     }
 
+    $scope.ioc_users_requery = function() {
+        $rootScope.$broadcast('appendInfo', "", "", "clear");
+
+        var query = '/local_events/endpoint_map?type=floorquery';//+'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
+
+        $http({method: 'GET', url: query+'&typeinfo=iocusers'}).
+            success(function(data) {
+                console.log(data);
+                $scope.$broadcast('floorPlan', data, "iocusers");
+            });
+    }
+
+    $scope.active_users_requery = function() {
+        $rootScope.$broadcast('appendInfo', "", "", "clear");
+
+        var query = '/local_events/endpoint_map?type=floorquery'+'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
+
+        $http({method: 'GET', url: query+'&typeinfo=activeusers'}).
+            success(function(data) {
+                console.log(data);
+                $scope.$broadcast('floorPlan', data, "activeusers");
+            });
+    }
+
+    $scope.active_stealth_users_requery = function() {
+        $rootScope.$broadcast('appendInfo', "", "", "clear");
+
+        var query = '/local_events/endpoint_map?type=floorquery'+'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
+
+        $http({method: 'GET', url: query+'&typeinfo=activestealthusers'}).
+            success(function(data) {
+                console.log(data);
+                $scope.$broadcast('floorPlan', data, "activestealthusers");
+            });
+    }
+
+    $scope.modelDelete = function (floors) {
+        console.log(floors);
+        $rootScope.modalFloors = floors;
+        $scope.modalInstance = $modal.open({
+            templateUrl: 'deleteModal.html',
+            controller: uploadInstanceCtrl,
+            keyboard: true,
+            modalFloors: floors
+        });
+    };
     $scope.change_customuser = function(item,value) {
         $http({method: 'POST', url: '/actions/change_custom_user', data: {custom_user: value, lan_ip: item.lan_ip, lan_zone: item.lan_zone}});
     }
-
-    // $scope.uploadFile = function(files) {
-    //     var fd = new FormData();
-    //     //Take the first selected file
-
-    //     fd.append("file", files[0]);
-    //     console.log(fd);
-    //     var uploadUrl = '../../../uploads/'; //TODO Different folders per client? Diff folders for User photos and floor plans?
-    //     $http.post(uploadUrl, fd, {
-    //         withCredentials: true,
-    //         headers: {'Content-Type': undefined },
-    //         transformRequest: angular.identity
-    //     });//.success( console.log("UPLOADED");).error( console.log("error!"); );
-    // };  
-
 
     $scope.uploadOpen = function () {
         $scope.modalInstance = $modal.open({
@@ -116,6 +153,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     var uploadInstanceCtrl = function ($scope, $modalInstance, $upload) {
         $scope.ok = function () {
             $modalInstance.close();
+            location.reload();
         };
         $scope.onFileSelect = function($files) {
             $scope.selectedFiles = [];
@@ -138,20 +176,24 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                     fileReader.readAsDataURL($files[i]);
                     var loadFile = function(fileReader, index) {
                         fileReader.onload = function(e) {
-                            $timeout(function() {
+                            //$timeout(function() {
                                 $scope.dataUrls[index] = e.target.result;
-                            });
+                            //});
                         }
                     }(fileReader, i);
                 }
                 $scope.progress[i] = -1;
-                $scope.start(i);
+                //$scope.start(i);
             }
         };
 
+        $scope.deleteFloorplan = function(floor) {
+            console.log(floor.select);
+            $http({method: 'POST', url: '/local_events/endpoint_map?type=deletefp', data: {asset_name: floor.select}});
+            $scope.ok();
+        };
 
-
-        if ($rootScope.modalRowData.lan_ip) {
+        if ($rootScope.modalRowData) {
             $scope.start = function(index) {
                 $scope.progress[index] = 0;
                 $scope.errorMsg = null;
@@ -178,11 +220,11 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 });
             };
         } else {
-            $scope.start = function(index) {
+            $scope.start = function(index, custom_fn) {
                 $scope.progress[index] = 0;
                 $scope.errorMsg = null;
                 $scope.upload[index] = $upload.upload({
-                    url : '/uploads',
+                    url : '/uploads?custom_name='+custom_fn,
                     method: 'POST',
                     data : {
                         myModel : $scope.myModel,

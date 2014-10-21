@@ -1693,12 +1693,12 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
 
                     function dragend(d, i) {
                         d.fixed = true; 
-                        $http({method: 'GET', url: '/local_events/local_COI_remote?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name+'&page_title=local_COI_remote'}).
+                        $http({method: 'GET', url: '/stealth/stealth_op_view?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name+'&page_title=stealth_op_view'}).
                             success(function(data) { 
                                 if (data["result"].length>0) {
-                                    $http({method: 'POST', url: '/local_events/local_COI_remote', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "local_COI_remote"}});
+                                    $http({method: 'POST', url: '/stealth/stealth_op_view', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_op_view"}});
                                 }else{
-                                    $http({method: 'POST', url: '/local_events/local_COI_remote?type=insert', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "local_COI_remote"}});
+                                    $http({method: 'POST', url: '/stealth/stealth_op_view?type=insert', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_op_view"}});
                                 }
                             });
                         tick();
@@ -2609,12 +2609,12 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 
                     function dragend(d, i) {
                         d.fixed = true; 
-                        $http({method: 'GET', url: '/local_events/stealth_COI_map?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name+'&page_title=stealth_COI_map'}).
+                        $http({method: 'GET', url: '/stealth/stealth_deploy_config?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name+'&page_title=stealth_COI_map'}).
                             success(function(data) { 
                                 if (data["force"].length>0) {
-                                    $http({method: 'POST', url: '/local_events/stealth_COI_map', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_COI_map"}});
+                                    $http({method: 'POST', url: '/stealth/stealth_deploy_config', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_COI_map"}});
                                 }else{
-                                    $http({method: 'POST', url: '/local_events/stealth_COI_map?type=insert', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_COI_map"}});
+                                    $http({method: 'POST', url: '/stealth/stealth_deploy_config?type=insert', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_COI_map"}});
                                 }
                             });
                         tick();
@@ -2972,9 +2972,10 @@ angular.module('mean.pages').directive('makeTreeChart', ['$timeout', '$rootScope
 angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', '$http', function ($timeout, $rootScope, $http) {
     return {
         link: function ($scope, element, attrs) {
-            $scope.$on('floorPlan', function (event) {   
+
+            //$scope.$on('floorPlan', function (event) { 
                 var data = $scope.data.force;
-                var floorName = element.attr('floor-name');
+                var floorName = attrs.floorName;
                 $scope.userList = data;
                 // info div
                 var width = element.width();
@@ -2982,7 +2983,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                 var userDiv = d3.select("#listlocalusers").style('height', infoHeight+25+'px').style('overflow', 'auto');
                 var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
                 var floorDiv = d3.select(element[0]);
-                //console.log(floorDiv);
+
+                var buttonDiv = d3.select('#triggerbuttons');
 
                 $scope.$on('setSelected', function (event, selected) { 
                     $('#'+selected.id).addClass('selected');
@@ -2999,6 +3001,32 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     });
                 }
 
+                function getIconColour(endpoint) {
+               /* if(args != undefined) {
+                    var colour = '#29ABE2';//the default
+                    args.forEach(function(d){
+                        if(d.lan_ip == endpoint.lan_ip && d.lan_zone == endpoint.lan_zone) {
+                            //change to switch when more buttons are added
+                            if (type === 'iocusers') {
+                                colour = '#FF0000'; //CHANGE
+                            } else if(type === 'activeusers') {
+                                colour = '#00FF00'; //CHANGE
+                            } else if(type === 'activestealthusers') {
+                                colour = '#666666'; //CHANGE
+                            } else {
+                                colour = '#29ABE2'; //the default
+                            }  
+                            return;                                                          
+                        }                        
+                    });
+
+                    return colour;
+                } else {
+                    return '#29ABE2';
+                }*/
+                        return '#29ABE2';
+                }
+
                 function plot(data, floor) {
                     ////////////////////
                     ///  LIST USERS  ///
@@ -3007,6 +3035,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     userDiv.selectAll('button').remove();
                     userDiv.selectAll('button').data(data).enter()
                         .append('button').each(function(d){
+                            var iconColour = '#29ABE2';//getIconColour(d);
+                            // console.log(iconColour);
                             var name = d.lan_machine;
                             if (d.custom_user != null){
                                 name = d.custom_user;
@@ -3056,17 +3086,17 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                         .attr('d', 'M22,18.4c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0C2.2,13.9,0,16,0,18.7c0,1,0,6.2,0,6.2h3.3c0,0,0-3.4,0-3.5c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.6,1,1.1c0,0.2,0,3.5,0,3.5h11.4c0,0,0-3.5,0-3.5c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.6,0.9,1.1c0,0,0,3.5,0,3.5H22L22,18.4z')
                                         .style('fill-rule', '#evenodd')
                                         .style('clip-rule', '#evenodd')
-                                        .style('fill', '#29ABE2');
+                                        .style('fill', iconColour);
                                     element.append('svg:path')
                                         .attr('d', 'M31.3,2.5C27.9,2.6,26.2,0,26.2,0c0,0-1.5,2.5-5.2,2.5c0,4.2,0.7,6.9,2.2,9.6c0.1,0.2,1,2.1,2.9,2.1c2,0,2.8-2,3-2.3C30.9,9,31.3,5.7,31.3,2.5z')
-                                        .style('fill', '#29ABE2');
+                                        .style('fill', iconColour);
                                     element.append('circle')
                                         .attr('cx', 11.1)
                                         .attr('cy', 7.3)
                                         .attr('r', 4.9)
                                         .style('fill-rule', '#evenodd')
                                         .style('clip-rule', '#evenodd')
-                                        .style('fill', '#29ABE2');
+                                        .style('fill', iconColour);
                                 } else {
                                     switch (d.lan_type) {
                                         case 'endpoint':
@@ -3084,7 +3114,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 .attr('r', 4.9)
                                                 .style('fill-rule', '#evenodd')
                                                 .style('clip-rule', '#evenodd')
-                                                .style('fill', '#29ABE2');
+                                                .style('fill', iconColour);
                                             break;
                                         case 'server':
                                             element
@@ -3092,26 +3122,26 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 .attr('width', '19')
                                             .append('svg:polygon')
                                                 .attr('points', '10,17 9,17 9,18 6,18 6,21 13,21 13,18 10,18') 
-                                                .style('fill', '#29ABE2');
+                                                .style('fill', iconColour);
                                             element.append('rect')
                                                 .attr('x', 14)
                                                 .attr('y', 19)
                                                 .attr('width', 5)
                                                 .attr('height', 1)
-                                                .style('fill', '#29ABE2');
+                                                .style('fill', iconColour);
                                             element.append('rect')
                                                 .attr('y', 19)
                                                 .attr('width', 5)
                                                 .attr('height', 1)
-                                                .style('fill', '#29ABE2');
+                                                .style('fill', iconColour);
                                             element.append('path')
-                                                .style('fill', '#29ABE2')
+                                                .style('fill', iconColour)
                                                 .attr('d', 'M19,12H0v4h19V12z M3,15H1v-2h2V15z');
                                             element.append('path')
-                                                .style('fill', '#29ABE2')
+                                                .style('fill', iconColour)
                                                 .attr('d', 'M19,6H0v4h19V6z M3,9H1V7h2V9z');
                                             element.append('path')
-                                                .style('fill', '#29ABE2')
+                                                .style('fill', iconColour)
                                                 .attr('d', 'M19,0H0v4h19V0z M3,3H1V1h2V3z');
                                             break;
                                         case 'mobile':
@@ -3122,7 +3152,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 .attr('d', 'M0,0v22h14V0H0z M7,20c-0.6,0-1-0.4-1-1c0-0.6,0.4-1,1-1c0.6,0,1,0.4,1,1C8,19.6,7.6,20,7,20z M12,17H2V2h10V17z')
                                                 .style('fill-rule', '#evenodd')
                                                 .style('clip-rule', '#evenodd')
-                                                .style('fill', '#29ABE2');
+                                                .style('fill', iconColour);
                                             break;
                                         default:
                                             element
@@ -3132,14 +3162,14 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
                                                 .style('fill-rule', '#evenodd')
                                                 .style('clip-rule', '#evenodd')
-                                                .style('fill', '#29ABE2');
+                                                .style('fill', iconColour);
                                             element.append('circle')
                                                 .attr('cx', 11.1)
                                                 .attr('cy', 4.9)
                                                 .attr('r', 4.9)
                                                 .style('fill-rule', '#evenodd')
                                                 .style('clip-rule', '#evenodd')
-                                                .style('fill', '#29ABE2');
+                                                .style('fill', iconColour);
                                             break;
                                     }
                                 }                                
@@ -3190,6 +3220,9 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     floorDiv.selectAll('button').data(data.filter(function(d){if (d.map === floorName){ return true; }})).enter()
                         .append('button').each(function(d){
                             // count++;
+                            var iconColour = getIconColour(d);
+                            console.log(iconColour);
+
                             var name = d.lan_machine;
                             if (d.custom_user !== null){
                                 name = d.custom_user;
@@ -3248,17 +3281,17 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                         .attr('d', 'M22,18.4c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0C2.2,13.9,0,16,0,18.7c0,1,0,6.2,0,6.2h3.3c0,0,0-3.4,0-3.5c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.6,1,1.1c0,0.2,0,3.5,0,3.5h11.4c0,0,0-3.5,0-3.5c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.6,0.9,1.1c0,0,0,3.5,0,3.5H22L22,18.4z')
                                         .style('fill-rule', '#evenodd')
                                         .style('clip-rule', '#evenodd')
-                                        .style('fill', '#29ABE2');
+                                        .style('fill', iconColour);
                                     element.append('svg:path')
                                         .attr('d', 'M31.3,2.5C27.9,2.6,26.2,0,26.2,0c0,0-1.5,2.5-5.2,2.5c0,4.2,0.7,6.9,2.2,9.6c0.1,0.2,1,2.1,2.9,2.1c2,0,2.8-2,3-2.3C30.9,9,31.3,5.7,31.3,2.5z')
-                                        .style('fill', '#29ABE2');
+                                        .style('fill', iconColour);
                                     element.append('circle')
                                         .attr('cx', 11.1)
                                         .attr('cy', 7.3)
                                         .attr('r', 4.9)
                                         .style('fill-rule', '#evenodd')
                                         .style('clip-rule', '#evenodd')
-                                        .style('fill', '#29ABE2');
+                                        .style('fill', iconColour);
                                 } else { 
                                     switch (d.lan_type){
                                         case 'endpoint':
@@ -3269,14 +3302,14 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
                                                 .style('fill-rule', '#evenodd')
                                                 .style('clip-rule', '#evenodd')
-                                                .style('fill', '#29ABE2');
+                                                .style('fill', iconColour);
                                             element.append('circle')
                                                 .attr('cx', 11.1)
                                                 .attr('cy', 4.9)
                                                 .attr('r', 4.9)
                                                 .style('fill-rule', '#evenodd')
                                                 .style('clip-rule', '#evenodd')
-                                                .style('fill', '#29ABE2');
+                                                .style('fill', iconColour);
                                             break;
                                         case 'server':
                                             element
@@ -3284,26 +3317,26 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 .attr('width', '19')
                                             .append('svg:polygon')
                                                 .attr('points', '10,17 9,17 9,18 6,18 6,21 13,21 13,18 10,18') 
-                                                .style('fill', '#29ABE2');
+                                                .style('fill', iconColour);
                                             element.append('rect')
                                                 .attr('x', 14)
                                                 .attr('y', 19)
                                                 .attr('width', 5)
                                                 .attr('height', 1)
-                                                .style('fill', '#29ABE2');
+                                                .style('fill', iconColour);
                                             element.append('rect')
                                                 .attr('y', 19)
                                                 .attr('width', 5)
                                                 .attr('height', 1)
-                                                .style('fill', '#29ABE2');
+                                                .style('fill', iconColour);
                                             element.append('path')
-                                                .style('fill', '#29ABE2')
+                                                .style('fill', iconColour)
                                                 .attr('d', 'M19,12H0v4h19V12z M3,15H1v-2h2V15z');
                                             element.append('path')
-                                                .style('fill', '#29ABE2')
+                                                .style('fill', iconColour)
                                                 .attr('d', 'M19,6H0v4h19V6z M3,9H1V7h2V9z');
                                             element.append('path')
-                                                .style('fill', '#29ABE2')
+                                                .style('fill', iconColour)
                                                 .attr('d', 'M19,0H0v4h19V0z M3,3H1V1h2V3z');
                                             break;
                                         case 'mobile':
@@ -3314,7 +3347,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 .attr('d', 'M0,0v22h14V0H0z M7,20c-0.6,0-1-0.4-1-1c0-0.6,0.4-1,1-1c0.6,0,1,0.4,1,1C8,19.6,7.6,20,7,20z M12,17H2V2h10V17z')
                                                 .style('fill-rule', '#evenodd')
                                                 .style('clip-rule', '#evenodd')
-                                                .style('fill', '#29ABE2');
+                                                .style('fill', iconColour);
                                             break;
                                         default:
                                             element
@@ -3324,14 +3357,14 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
                                                 .style('fill-rule', '#evenodd')
                                                 .style('clip-rule', '#evenodd')
-                                                .style('fill', '#29ABE2');
+                                                .style('fill', iconColour);
                                             element.append('circle')
                                                 .attr('cx', 11.1)
                                                 .attr('cy', 4.9)
                                                 .attr('r', 4.9)
                                                 .style('fill-rule', '#evenodd')
                                                 .style('clip-rule', '#evenodd')
-                                                .style('fill', '#29ABE2');
+                                                .style('fill', iconColour);
                                             break;
                                     } 
                                 } 
@@ -3378,10 +3411,29 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 );
                             }
                         });
-                }
 
+                    buttonDiv.selectAll('button').remove();
+                    buttonDiv.append('button')
+                        .html('Highlight Users with IOC')
+                        .attr('class', 'resetButton')
+                        .on('click', function(){
+                            $scope.ioc_users_requery();
+                        });
+                    buttonDiv.append('button')
+                        .html('Highlight Active Users')
+                        .attr('class', 'resetButton')
+                        .on('click', function(){
+                            $scope.active_users_requery();
+                        });
+                    buttonDiv.append('button')
+                        .html('Highlight Active Stealth Users')
+                        .attr('class', 'resetButton')
+                        .on('click', function(){
+                            $scope.active_stealth_users_requery();
+                        });
+                }
                 plot(data, floorName);   
-            });
+            //});
         }
     };
 }]);
@@ -3447,6 +3499,10 @@ angular.module('mean.pages').directive('appendFloorInfo', ['$timeout', '$rootSco
                         case "endpoint":
                             title = "Endpoints Hits: ";
                             link = "#!/endpoint_by_user_and_ip?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
+                            break
+                        case "bandwidth":
+                            title = "Total Bandwidth in MB: ";
+                            link = "#!/local2remote?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"]+'&lan_machine='+user["lan_machine"];
                             break;
                         default:
                             title = "NO TITLE HITS";

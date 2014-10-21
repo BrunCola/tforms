@@ -2187,3 +2187,7 @@ button.userfloorbutton{
   border-radius: 5px;
   outline:none;
 }
+
+#floorplanpage .span2{
+  margin-left: 0px;
+}

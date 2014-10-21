@@ -10,8 +10,6 @@ module.exports = function (sql, queries, conn, callback) {
     var nodesObject = {}; // for use on the front
     var clearTextIndex = -1;
 
-
-
     function uniqueUsers(user, group) {
         // if lan_user is not in unique object
         if (!(user in uniqueLinks)) {
@@ -59,6 +57,7 @@ module.exports = function (sql, queries, conn, callback) {
     function compareUsers(obj) {
         var user = obj.lan_user;
         if (user in uniqueLinks) {
+            console.log(user);
             //for (var i in uniqueLinks[user]) { // -- extra loop *** Prints double the nodes ***
                 var arr = [];
                 arr = Object.keys(uniqueLinks[user]);
@@ -130,7 +129,6 @@ module.exports = function (sql, queries, conn, callback) {
             function(callback) {
                 connection.query(queries[0].query, queries[0].insert)
                     .on('result', function(data){
-                        // console.log(data);
                         // console.log(" ");
                         usersList.push(data);
                     })

@@ -62,6 +62,13 @@ module.exports = function(pool) {
                             }
                         });  
                         break;
+                    case 'bandwidth':
+                        new query({query: 'SELECT sum((in_bytes + out_bytes)/1048576) as totalbandwidth FROM `conn_meta` WHERE (time between ? AND ?) AND  `lan_ip` = ? AND `lan_zone` = ?', insert: [start, end, req.query.lan_ip, req.query.lan_zone]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        });  
+                        break;
                     case 'userinfoload':
                         new query({query: 'SELECT '+
                             'u.lan_user, '+
@@ -96,6 +103,30 @@ module.exports = function(pool) {
                         });  
                         break;
                 }     
+            } else if (req.query.type === 'floorquery') {
+                switch (req.query.typeinfo) {
+                    case 'iocusers':
+                        new query({query: 'SELECT count(*) AS localioc, `lan_ip`, `lan_zone`, `lan_user` FROM `conn_ioc` WHERE (time between ? AND ?) GROUP BY `lan_ip`, `lan_zone`', insert: [start, end]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        });  
+                        break;
+                    case 'activeusers':
+                        new query({query: 'SELECT `lan_ip`, `lan_zone`, `lan_user` FROM `conn_meta` WHERE (time between ? AND ?) GROUP BY `lan_ip`, `lan_zone`', insert: [start, end]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        });  
+                        break;
+                    case 'activestealthusers':
+                        new query({query: 'SELECT `lan_ip`, `lan_zone`, `lan_user` FROM `stealth_local_meta` WHERE (time between ? AND ?) GROUP BY `lan_ip`, `lan_zone`', insert: [start, end]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        });  
+                        break;
+                }
             } else {    
                 var floorplanReturn = [];
                 var floor_plan_users = {
@@ -130,6 +161,17 @@ module.exports = function(pool) {
                                 'lan_ip ',
                     insert: []
                 }
+
+                var floorplan = [];
+                var floors = {
+                    query: 'SELECT '+
+                            '* '+
+                            'FROM '+
+                                'assets '+
+                            'WHERE '+
+                                '`type` = "map"',
+                    insert: []
+                }
                 async.parallel([
                     // Table function(s)
                     function(callback) {
@@ -138,14 +180,37 @@ module.exports = function(pool) {
                             callback();
                         });
                     },
+                    function(callback) {
+                        new floor_plan(floors, {database: database, pool: pool}, function(err,data){
+                            floorplan = data;
+                            callback();
+                        });
+                    },
                 ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                     if (err) throw console.log(err);
                     var results = { 
-                        force: floorplanReturn
+                        force: floorplanReturn,
+                        floor: floorplan
                     };
                     res.json(results);
                 });         
             }
+        },
+        updatefp: function(req, res) {
+            var database = req.session.passport.user.database;
+            if (req.query.type === 'deletefp') {
+                var update_coordinates = {
+                    query: "DELETE FROM `assets` WHERE `type`='map' AND `asset_name`=?",
+                    insert: [req.body.asset_name]
+                }                
+                new query(update_coordinates, {database: database, pool: pool}, function(err,data){
+                    if (err) {
+                        res.send(500);
+                    } else {
+                        res.send(200);
+                    }
+                });
+            } 
         }
     }
 };
