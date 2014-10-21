@@ -115,7 +115,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .data($scope.lanes)
                     .enter().append("line")
                     .attr('stroke-width', '1')
-                    .attr('stroke-opacity', '0.5')
+                    .attr('stroke-opacity', '0.8')
                     .attr("x1", 0)
                     .attr("y1", function(d, i) { return y1(i);})
                     .attr("x2", w)
