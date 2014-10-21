@@ -186,7 +186,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 
                 $scope.point = function(element, type, name, id) {
                     element.classed('node-'+id, true);
-                    element = element.append('g').attr('transform', 'translate(0, 0)');
+                    element = element.append('g');
                     element.classed('eventSquare', true);
                     if (type.search("ioc") !== -1) {
                         element.classed('IOC', true);
@@ -196,7 +196,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .style('opacity', '0.4')
                             .on('mouseover', function(){
                                 d3.select(this)
-                                .attr('transform', 'scale(2) translate(-3, -5) ');
+                                .attr('transform', 'scale(2) translate(-3, -5)');
                             })
                             .on('mouseout', function(){
                                 d3.select(this)
@@ -237,6 +237,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             })
                             .on('mouseout', function(){
                                 d3.select(this)
+                                .transition()
+                                .duration(550)
                                 .attr('transform', 'scale(1)')
                                 .attr('stroke', 'none')
                                 .attr('stroke-width', '0')
