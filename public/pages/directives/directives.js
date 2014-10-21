@@ -3936,7 +3936,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
             // $scope.$on('floorPlan', function (event, args, type) { 
                 var data = $scope.data.force;
                 var floorName = attrs.floorName;
-                console.log(floorName);
+
                 $scope.userList = data;
                 // info div
                 var width = element.width();
@@ -4379,7 +4379,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             }
                         });
                     
-                    floorDiv.selectAll('button').data(data.filter(function(d){if (d.map === floor){ return true; }})).exit().remove();
+                    // floorDiv.selectAll('button').data(data.filter(function(d){if (d.map === floor){ return true; }})).exit().remove();
 
                   //  floorDiv.selectAll('button').exit().remove();
 
