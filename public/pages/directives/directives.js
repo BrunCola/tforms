@@ -3933,9 +3933,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
     return {
         link: function ($scope, element, attrs) {
 
-            //$scope.$on('floorPlan', function (event) { 
+            // $scope.$on('floorPlan', function (event, args, type) { 
                 var data = $scope.data.force;
                 var floorName = attrs.floorName;
+                console.log(floorName);
                 $scope.userList = data;
                 // info div
                 var width = element.width();
@@ -3962,29 +3963,31 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                 }
 
                 function getIconColour(endpoint) {
-               /* if(args != undefined) {
-                    var colour = '#29ABE2';//the default
-                    args.forEach(function(d){
-                        if(d.lan_ip == endpoint.lan_ip && d.lan_zone == endpoint.lan_zone) {
-                            //change to switch when more buttons are added
-                            if (type === 'iocusers') {
-                                colour = '#FF0000'; //CHANGE
-                            } else if(type === 'activeusers') {
-                                colour = '#00FF00'; //CHANGE
-                            } else if(type === 'activestealthusers') {
-                                colour = '#666666'; //CHANGE
-                            } else {
-                                colour = '#29ABE2'; //the default
-                            }  
-                            return;                                                          
-                        }                        
-                    });
+                    var args = $rootScope.floorPlanTriggerArgs;
+                    var type = $rootScope.floorPlanTriggerType;
+                    if(args != undefined) {
+                        var colour = '#29ABE2';//the default
+                        args.forEach(function(d){
+                            if(d.lan_ip == endpoint.lan_ip && d.lan_zone == endpoint.lan_zone) {
+                                //change to switch when more buttons are added
+                                if (type === 'iocusers') {
+                                    colour = '#FF0000'; //CHANGE
+                                } else if(type === 'activeusers') {
+                                    colour = '#00FF00'; //CHANGE
+                                } else if(type === 'activestealthusers') {
+                                    colour = '#666666'; //CHANGE
+                                } else {
+                                    colour = '#29ABE2'; //the default
+                                }  
+                                return;                                                          
+                            }                        
+                        });
 
-                    return colour;
-                } else {
-                    return '#29ABE2';
-                }*/
+                        return colour;
+                    } else {
                         return '#29ABE2';
+                    }
+                //         return '#29ABE2';
                 }
 
                 function plot(data, floor) {
@@ -3992,11 +3995,12 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     ///  LIST USERS  ///
                     ////////////////////
                     // MAKE LIST ELEMENTS
+                    // console.log(data);
+                    // console.log(floor);
                     userDiv.selectAll('button').remove();
                     userDiv.selectAll('button').data(data).enter()
                         .append('button').each(function(d){
                             var iconColour = '#29ABE2';//getIconColour(d);
-                            // console.log(iconColour);
                             var name = d.lan_machine;
                             if (d.custom_user != null){
                                 name = d.custom_user;
@@ -4175,14 +4179,13 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 );
                             }
                         });
-
+    
                     floorDiv.selectAll('button').remove();
-                    floorDiv.selectAll('button').data(data.filter(function(d){if (d.map === floorName){ return true; }})).enter()
+                    floorDiv.selectAll('button').data(data.filter(function(d){if (d.map === floor){ return true; }})).enter()
                         .append('button').each(function(d){
                             // count++;
                             var iconColour = getIconColour(d);
                             console.log(iconColour);
-
                             var name = d.lan_machine;
                             if (d.custom_user !== null){
                                 name = d.custom_user;
@@ -4255,6 +4258,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 } else { 
                                     switch (d.lan_type){
                                         case 'endpoint':
+                                                                                    console.log(iconColour);
                                             element
                                                 .attr('height', '23')
                                                 .attr('width', '23')
@@ -4272,6 +4276,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 .style('fill', iconColour);
                                             break;
                                         case 'server':
+                                                                                    console.log(iconColour);
                                             element
                                                 .attr('height', '21')
                                                 .attr('width', '19')
@@ -4300,6 +4305,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 .attr('d', 'M19,0H0v4h19V0z M3,3H1V1h2V3z');
                                             break;
                                         case 'mobile':
+                                                                                    console.log(iconColour);
                                             element
                                                 .attr('height', '22')
                                                 .attr('width', '14')
@@ -4310,6 +4316,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 .style('fill', iconColour);
                                             break;
                                         default:
+                                                                                    console.log(iconColour);
                                             element
                                                 .attr('height', '23')
                                                 .attr('width', '23')
@@ -4371,6 +4378,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 );
                             }
                         });
+                    
+                    floorDiv.selectAll('button').data(data.filter(function(d){if (d.map === floor){ return true; }})).exit().remove();
+
+                  //  floorDiv.selectAll('button').exit().remove();
 
                     buttonDiv.selectAll('button').remove();
                     buttonDiv.append('button')
@@ -4378,22 +4389,31 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .attr('class', 'resetButton')
                         .on('click', function(){
                             $scope.ioc_users_requery();
+                            $scope.floors.forEach(function(d) {
+                                plot(data, d.asset_name);
+                            })
                         });
                     buttonDiv.append('button')
                         .html('Highlight Active Users')
                         .attr('class', 'resetButton')
                         .on('click', function(){
                             $scope.active_users_requery();
+                            $scope.floors.forEach(function(d) {
+                                plot(data, d.asset_name);
+                            })
                         });
                     buttonDiv.append('button')
                         .html('Highlight Active Stealth Users')
                         .attr('class', 'resetButton')
                         .on('click', function(){
                             $scope.active_stealth_users_requery();
+                            $scope.floors.forEach(function(d) {
+                                plot(data, d.asset_name);
+                            })
                         });
                 }
                 plot(data, floorName);   
-            //});
+            // });
         }
     };
 }]);

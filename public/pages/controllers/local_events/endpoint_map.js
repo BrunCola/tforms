@@ -14,7 +14,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.data.force.forEach(function(d){
                 d.id = count++;
             })
-            //$scope.$broadcast('floorPlan');
+            // $scope.$broadcast('floorPlan');
             $scope.$broadcast('spinnerHide');
             $scope.floors = data.floor;
         }
@@ -85,36 +85,41 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     $scope.ioc_users_requery = function() {
         $rootScope.$broadcast('appendInfo', "", "", "clear");
 
-        var query = '/local_events/endpoint_map?type=floorquery';//+'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
-
+        var query = '/local_events/endpoint_map?type=floorquery';
         $http({method: 'GET', url: query+'&typeinfo=iocusers'}).
             success(function(data) {
-                console.log(data);
-                $scope.$broadcast('floorPlan', data, "iocusers");
+                // $scope.$broadcast('floorPlan', data, "iocusers");
+                $rootScope.floorPlanTriggerArgs = data;
+                $rootScope.floorPlanTriggerType = "iocusers";
             });
     }
 
     $scope.active_users_requery = function() {
         $rootScope.$broadcast('appendInfo', "", "", "clear");
-
-        var query = '/local_events/endpoint_map?type=floorquery'+'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
+        var query = '/local_events/endpoint_map?type=floorquery';
+        if ($location.$$search.start && $location.$$search.end) {
+        	query = query +'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
+        }
 
         $http({method: 'GET', url: query+'&typeinfo=activeusers'}).
             success(function(data) {
-                console.log(data);
-                $scope.$broadcast('floorPlan', data, "activeusers");
+                // $scope.$broadcast('floorPlan', data, "activeusers");
+                $rootScope.floorPlanTriggerArgs = data;
+                $rootScope.floorPlanTriggerType = "activeusers";
             });
     }
 
     $scope.active_stealth_users_requery = function() {
         $rootScope.$broadcast('appendInfo', "", "", "clear");
-
-        var query = '/local_events/endpoint_map?type=floorquery'+'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
-
+        var query = '/local_events/endpoint_map?type=floorquery';
+        if ($location.$$search.start && $location.$$search.end) {
+        	query = query +'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
+		}
         $http({method: 'GET', url: query+'&typeinfo=activestealthusers'}).
             success(function(data) {
-                console.log(data);
-                $scope.$broadcast('floorPlan', data, "activestealthusers");
+                // $scope.$broadcast('floorPlan', data, "activestealthusers");
+                $rootScope.floorPlanTriggerArgs = data;
+                $rootScope.floorPlanTriggerType = "activestealthusers";
             });
     }
 
