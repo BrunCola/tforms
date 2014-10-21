@@ -541,7 +541,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             $scope.pattern.selected = {};
                             lineStory.selectAll('line').remove();
                         }
-                        laneInfoAppend($scope.pattern.last.data, $scope.pattern.last.element);
+                        if ($scope.pattern.last !== null) {
+                            laneInfoAppend($scope.pattern.last.data, $scope.pattern.last.element);
+                        }
                     });
 
                 // var timeShiftHolder = d3.select("#lanegraph").append('div').attr('class', 'timeShiftHolder');
