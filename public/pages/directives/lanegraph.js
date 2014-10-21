@@ -193,7 +193,15 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         element.append('svg:polygon')
                             .attr('points', '7,15 14,6 0,6')
                             .attr('fill', rowColors("IOC"))
-                            .style('opacity', '0.4'); 
+                            .style('opacity', '0.4')
+                            .on('mouseover', function(){
+                                d3.select(this)
+                                .attr('transform', 'scale(2) translate(-3, -5) ');
+                            })
+                            .on('mouseout', function(){
+                                d3.select(this)
+                                .attr('transform', 'scale(1)');
+                            }); 
                         return;
                     } else { 
                         element.append('rect')
@@ -210,18 +218,30 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         color = '#F88B12'; 
                                     } else if (d.ioc_severity === 4) {
                                         color = '#DD122A'; 
-                                    } else{
+                                    } else {
                                         color = '#6FBF9B';
                                     }
-                                }else { 
+                                } else { 
                                     color = rowColors(type);
                                 }
                                 return color;
                             })
-                            //.attr('fill', rowColors(type))
                             .attr('width', 12)
                             .attr('height', 12)
-                            .style('opacity', '0.4');     
+                            .style('opacity', '0.4')
+                            .on('mouseover', function(){
+                                d3.select(this)
+                                .attr('transform', 'scale(2) translate(-3, -6) ')
+                                .attr('stroke', '#fff')
+                                .attr('stroke-width', '1');
+                            })
+                            .on('mouseout', function(){
+                                d3.select(this)
+                                .attr('transform', 'scale(1)')
+                                .attr('stroke', 'none')
+                                .attr('stroke-width', '0')
+;
+                            });
                     }
                 }    
 
@@ -316,11 +336,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     color1 = "#595A5C";
                                     color2 = color;
                                 }
-
                                 return color2;
                             })
                             .attr('width', 36)
-                            .attr('height', 36);
+                            .attr('height', 36);                            
                         switch(data.type){
                             case 'Conn':  
                                 element.append('svg:polygon')
