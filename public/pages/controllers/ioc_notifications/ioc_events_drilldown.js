@@ -243,5 +243,14 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                 });
         }
     }
-    $scope.isActive = true;
+    $scope.patternPane = false;
+    $scope.$on('patternPane', function() {
+        $scope.$apply(function () {
+            if ($scope.patternPane) {
+                $scope.patternPane = false;
+            } else {
+                $scope.patternPane = true;
+            }
+        })
+    })
 }]);
