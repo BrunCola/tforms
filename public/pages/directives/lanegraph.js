@@ -115,7 +115,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .data($scope.lanes)
                     .enter().append("line")
                     .attr('stroke-width', '1')
-                    .attr('stroke-opacity', '0.8')
+                    .attr('stroke-opacity', '0.7')
                     .attr("x1", 0)
                     .attr("y1", function(d, i) { return y1(i);})
                     .attr("x2", w)
@@ -228,7 +228,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             })
                             .attr('width', 12)
                             .attr('height', 12)
-                            .style('opacity', '0.4')
+                            .style('opacity', '0.6')
                             .on('mouseover', function(){
                                 d3.select(this)
                                 .attr('transform', 'scale(2) translate(-3, -6) ')
@@ -241,8 +241,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .duration(550)
                                 .attr('transform', 'scale(1)')
                                 .attr('stroke', 'none')
-                                .attr('stroke-width', '0')
-;
+                                .attr('stroke-width', '0');
                             });
                     }
                 }    
@@ -330,16 +329,21 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 }else { 
                                     color =  rowColors(data.type);
                                 }
-                                color2 = "#595A5C";
+                                color2 = "#3f3f3f";
                                 color1 = color;
                                 if(select){
-                                    color1 = "#595A5C";
+                                    color1 = "#3f3f3f";
                                     color2 = color;
                                 }
                                 return color2;
                             })
                             .attr('width', 36)
-                            .attr('height', 36);                            
+                            .attr('height', 36);
+                            // .attr('classed', 'selSquare')
+                            // svg.select('#selSquare');
+
+
+
                         switch(data.type){
                             case 'Conn':  
                                 element.append('svg:polygon')
