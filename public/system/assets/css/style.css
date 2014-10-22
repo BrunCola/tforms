@@ -2043,7 +2043,8 @@ Datatables Plugin(in v1.3)
 }
 
 #floorplan{
-  height: 600px;
+  height: 570px;
+  overflow: hidden;
 }
 
 #listlocalusers{
@@ -2127,16 +2128,17 @@ Datatables Plugin(in v1.3)
 }
 
 
-#floorplan button{
+#floorplan .floorUser{
   background: none;
   border:none ;
   padding: 0px;
-  border:none;
+  border: #0f0 solid 1px;
   margin: 0px;
   border-radius: 8px;
   outline:none;
+  width:100%;
 }
-#floorplan button:hover, #floorplan button.selected{
+#floorplan .floorUser:hover, #floorplan .floorUser.selected{
   background: #ccc;
   border-radius: 8px;
   border:none !important;
@@ -2152,15 +2154,17 @@ Datatables Plugin(in v1.3)
 #floorplan .localuserlisticon{
   display: inline-block;
   text-align: center;
-  margin: 3px auto 0px auto;
+  margin: 3px 0px 0px 13px;
   height: auto;
-  width: 35px;
-  height: 23px;
+  width: 23px;
+  /*width: 35px;
+  height: 23px;*/
 }
 #floorplan .localuserlisttext{
-  margin: 0px 6px 3px 6px;
+  margin: 0px auto 3px auto;
   line-height: 10px;
-  text-align: top;
+  text-align: top center;
+  width: 99%;
 }
 .drag {
   opacity: 0.5;
@@ -2192,3 +2196,8 @@ button.userfloorbutton{
 #floorplanpage .span2{
   margin-left: 0px;
 }
+/*
+#floorplan{
+  height:2000px;
+  width:2000px;
+}*/
