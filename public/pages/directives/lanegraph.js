@@ -49,7 +49,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 
                 var laneLength = $scope.lanes.length;
                 var width = element.width();
-                var m = [5, 15, 15, 120], //top right bottom left
+                var m = [5, 15, 15, 130], //top right bottom left
                     w = width - m[1] - m[3],
                     h = 470 - m[0] - m[2],
                     miniHeight = 0,
@@ -94,12 +94,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr("height", h + m[0] + m[2])
                     .on("dblclick", draw)
                     .attr("class", "chart");
-            
-                chart.append("defs").append("clipPath")
-                    .attr("id", "clip")
-                    .append("rect")
-                    .attr("width", w)
-                    .attr("height", mainHeight);
 
                 var main = chart.append("g")
                     .attr("transform", "translate(" + m[3] + "," + m[0] + ")")
@@ -124,7 +118,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .data($scope.lanes)
                     .enter().append("line")
                     .attr('stroke-width', '1')
-                    .attr('stroke-opacity', '0.8')
+                    .attr('stroke-opacity', '0.7')
                     .attr("x1", 0)
                     .attr("y1", function(d, i) { return y1(i);})
                     .attr("x2", w)
@@ -137,22 +131,19 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .data($scope.lanes)
                     .enter().append("text")
                     .text(function(d) {return d;})
-                    .attr("x", -m[1])
+                    .attr("x", -m[1] *3)
                     .attr("y", function(d, i) {return y1(i);})
                     .attr("dy", ".5ex")
                     .attr("text-anchor", "end");
 
-                // var patternPane = chart
-                //     .append('g')
-                //     .attr('width', w)
-                //     .attr('height', h)
-                //     .style('fill', '#fff')
-                //     .append('svg:foreignObject')
-                //     .attr('width', w)
-                //     .attr('height', w)
-                //     .append('xhtml:div')
-                //     .html('test')
-
+                main.append("g").selectAll(".laneLines")
+                    .data($scope.lanes)
+                    .enter().append('rect')
+                    .attr('x', -m[1])
+                    .attr('y', function(d, i) {return y1(i) -m[0];})
+                    .attr('width', '10')
+                    .attr('height', '10')
+                    .style('fill', '#fff');
 
                 var lineStory = main.append("g")
                     .attr("class", "storyLine");
@@ -338,7 +329,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 
                 $scope.point = function(element, type, name, id) {
                     element.classed('node-'+id, true);
-                    element = element.append('g').attr('transform', 'translate(0, 0)');
+                    element = element.append('g');
                     element.classed('eventSquare', true);
                     if (type.search("ioc") !== -1) {
                         element.classed('IOC', true);
@@ -348,7 +339,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .style('opacity', '0.4')
                             .on('mouseover', function(){
                                 d3.select(this)
-                                .attr('transform', 'scale(2) translate(-3, -5) ');
+                                .attr('transform', 'scale(2) translate(-3, -5)');
                             })
                             .on('mouseout', function(){
                                 d3.select(this)
@@ -380,7 +371,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             })
                             .attr('width', 12)
                             .attr('height', 12)
-                            .style('opacity', '0.4')
+                            .style('opacity', '0.6')
                             .on('mouseover', function(){
                                 d3.select(this)
                                 .attr('transform', 'scale(2) translate(-3, -6) ')
@@ -389,6 +380,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             })
                             .on('mouseout', function(){
                                 d3.select(this)
+                                .transition()
+                                .duration(550)
                                 .attr('transform', 'scale(1)')
                                 .attr('stroke', 'none')
                                 .attr('stroke-width', '0');
@@ -484,10 +477,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 } else { 
                                     color = rowColors(data.type);
                                 }
-                                color2 = "#595A5C";
+                                color2 = "#3f3f3f";
                                 color1 = color;
-                                if (select){
-                                    color1 = "#595A5C";
+                                if(select){
+                                    color1 = "#3f3f3f";
                                     color2 = color;
                                 }
                                 return color2;
