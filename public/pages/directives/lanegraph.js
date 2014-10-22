@@ -43,7 +43,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 
                 var laneLength = $scope.lanes.length;
                 var width = element.width();
-                var m = [5, 15, 15, 120], //top right bottom left
+                var m = [5, 15, 15, 130], //top right bottom left
                     w = width - m[1] - m[3],
                     h = 470 - m[0] - m[2],
                     miniHeight = 0,
@@ -85,12 +85,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr("height", h + m[0] + m[2])
                     .on("dblclick", draw)
                     .attr("class", "chart");
-            
-                chart.append("defs").append("clipPath")
-                    .attr("id", "clip")
-                    .append("rect")
-                    .attr("width", w)
-                    .attr("height", mainHeight);
 
                 var main = chart.append("g")
                     .attr("transform", "translate(" + m[3] + "," + m[0] + ")")
@@ -128,10 +122,20 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .data($scope.lanes)
                     .enter().append("text")
                     .text(function(d) {return d;})
-                    .attr("x", -m[1])
+                    .attr("x", -m[1] *3)
                     .attr("y", function(d, i) {return y1(i);})
                     .attr("dy", ".5ex")
                     .attr("text-anchor", "end");
+
+// ICONS TEST
+                main.append("g").selectAll(".laneLines")
+                    .data($scope.lanes)
+                    .enter().append('rect')
+                    .attr('x', -m[1])
+                    .attr('y', function(d, i) {return y1(i) -m[0];})
+                    .attr('width', '10')
+                    .attr('height', '10')
+                    .style('fill', '#fff');
 
                 var lineStory = main.append("g")
                     .attr("class", "storyLine");
