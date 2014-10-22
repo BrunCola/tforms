@@ -22,6 +22,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             $scope.crossfilterData.add(parent);
         });
         $scope.$broadcast('laneGraph');
+        console.log($scope.width)
         $scope.description = function (d, e) {
             $scope.mData = d;
             $scope.mTitle = e;
@@ -199,9 +200,6 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                 }
             });
         }
-
-
-
     });
 
     $scope.requery = function(min, max, callback) {
@@ -245,4 +243,5 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                 });
         }
     }
+    $scope.isActive = true;
 }]);

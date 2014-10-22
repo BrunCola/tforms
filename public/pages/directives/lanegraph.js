@@ -7,7 +7,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 $scope.$broadcast('spinnerHide');
 
                 $.fn.scrollTo = function( target, options, callback ){
-                if ((typeof options == 'function') && (arguments.length == 2)) { callback = options; options = target; }
+                    if ((typeof options == 'function') && (arguments.length == 2)) { callback = options; options = target; }
                     var settings = $.extend({
                         scrollTarget  : target,
                         offsetTop     : 0,
@@ -48,6 +48,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     h = 470 - m[0] - m[2],
                     miniHeight = 0,
                     mainHeight = h - miniHeight - 50;
+                // put it in scope for use in view
+                $scope.width = w;
+                $scope.height = h;
 
                 var queryThreshhold = 3600; // one hour in seconds
 
@@ -132,6 +135,18 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr("y", function(d, i) {return y1(i);})
                     .attr("dy", ".5ex")
                     .attr("text-anchor", "end");
+
+                var patternPane = chart
+                    .append('g')
+                    .attr('width', w)
+                    .attr('height', h)
+                    .style('fill', '#fff')
+                    .append('svg:foreignObject')
+                    .attr('width', w)
+                    .attr('height', w)
+                    .append('xhtml:div')
+                    .html('test')
+
 
                 var lineStory = main.append("g")
                     .attr("class", "storyLine");
@@ -239,8 +254,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 d3.select(this)
                                 .attr('transform', 'scale(1)')
                                 .attr('stroke', 'none')
-                                .attr('stroke-width', '0')
-;
+                                .attr('stroke-width', '0');
                             });
                     }
                 }    
@@ -1013,7 +1027,20 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             });
                     }
                 }
+                $scope.$broadcast('laneGraphPattern');
             });
         }
     };
 }]);
+
+angular.module('mean.pages').directive('laneGraph', function() {
+    // This appends the page head (title and calendar) to all pages, so they can have their own controller
+    return {
+        restrict: 'A',
+        scope : {
+            title : '@'
+        },
+        templateUrl : 'public/pages/views/ioc_notifications/ioc_events_drilldown_control.html',
+        transclude : true
+    };
+});
