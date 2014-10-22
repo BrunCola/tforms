@@ -4000,7 +4000,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     userDiv.selectAll('button').remove();
                     userDiv.selectAll('button').data(data).enter()
                         .append('button').each(function(d){
-                            var iconColour = '#29ABE2';//getIconColour(d);
+                            var iconColour = getIconColour(d);
                             var name = d.lan_machine;
                             if (d.custom_user != null){
                                 name = d.custom_user;
@@ -4379,40 +4379,61 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             }
                         });
                     
+                    $rootScope.floorPlanTriggerArgs = undefined;
+                    $rootScope.floorPlanTriggerType = undefined;
                     // floorDiv.selectAll('button').data(data.filter(function(d){if (d.map === floor){ return true; }})).exit().remove();
 
                   //  floorDiv.selectAll('button').exit().remove();
 
-                    buttonDiv.selectAll('button').remove();
-                    buttonDiv.append('button')
-                        .html('Highlight Users with IOC')
-                        .attr('class', 'resetButton')
-                        .on('click', function(){
-                            $scope.ioc_users_requery();
-                            $scope.floors.forEach(function(d) {
-                                plot(data, d.asset_name);
-                            })
-                        });
-                    buttonDiv.append('button')
-                        .html('Highlight Active Users')
-                        .attr('class', 'resetButton')
-                        .on('click', function(){
-                            $scope.active_users_requery();
-                            $scope.floors.forEach(function(d) {
-                                plot(data, d.asset_name);
-                            })
-                        });
-                    buttonDiv.append('button')
-                        .html('Highlight Active Stealth Users')
-                        .attr('class', 'resetButton')
-                        .on('click', function(){
-                            $scope.active_stealth_users_requery();
-                            $scope.floors.forEach(function(d) {
-                                plot(data, d.asset_name);
-                            })
-                        });
+
                 }
+
+
                 plot(data, floorName);   
+
+                buttonDiv.selectAll('button').remove();
+                buttonDiv.append('button')
+                    .html('Highlight Users with IOC')
+                    .attr('class', 'resetButton')
+                    .on('click', function(){
+                        // $scope.ioc_users_requery();
+                        // while($rootScope.floorPlanTriggerArgs === undefined) {
+                        //     console.log("busy waiting...");
+                        // }
+                        var query = '/local_events/endpoint_map?type=floorquery';
+                        var triggerData;
+                        var triggerType;
+                        $http({method: 'GET', url: query+'&typeinfo=iocusers'}).
+                            success(function(result) {
+                                // $scope.$broadcast('floorPlan', data, "iocusers");
+                                console.log("in success");
+                                $rootScope.floorPlanTriggerArgs = result;
+                                $rootScope.floorPlanTriggerType = "iocusers";
+                                $scope.floors.forEach(function(d) {
+                                    console.log("calling plot");
+                                    plot(data, d.asset_name);
+                                })
+
+                        });
+                    });
+                buttonDiv.append('button')
+                    .html('Highlight Active Users')
+                    .attr('class', 'resetButton')
+                    .on('click', function(){
+                        $scope.active_users_requery();
+                        $scope.floors.forEach(function(d) {
+                            plot(data, d.asset_name);
+                        })
+                    });
+                buttonDiv.append('button')
+                    .html('Highlight Active Stealth Users')
+                    .attr('class', 'resetButton')
+                    .on('click', function(){
+                        $scope.active_stealth_users_requery();
+                        $scope.floors.forEach(function(d) {
+                            plot(data, d.asset_name);
+                        })
+                    });
             // });
         }
     };

@@ -84,11 +84,12 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
 
     $scope.ioc_users_requery = function() {
         $rootScope.$broadcast('appendInfo', "", "", "clear");
-
+        console.log("try get data...");
         var query = '/local_events/endpoint_map?type=floorquery';
         $http({method: 'GET', url: query+'&typeinfo=iocusers'}).
             success(function(data) {
                 // $scope.$broadcast('floorPlan', data, "iocusers");
+                console.log("data received");
                 $rootScope.floorPlanTriggerArgs = data;
                 $rootScope.floorPlanTriggerType = "iocusers";
             });
