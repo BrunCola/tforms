@@ -25,8 +25,8 @@ module.exports = function(pool) {
                             '`machine`,'+
                             '`lan_user`,'+
                             '`lan_ip`,'+
-                            'sum(`proxy_blocked`) AS proxy_blocked,'+
-                            'sum(`ioc_count`) AS `ioc_count` ' +
+                            'sum(`ioc_count`) AS `ioc_count`,' +
+                            'sum(`proxy_blocked`) AS proxy_blocked '+
                         'FROM ' + 
                             '`http_local` '+
                         'WHERE ' + 

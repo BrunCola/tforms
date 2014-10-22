@@ -49,6 +49,7 @@ module.exports = function(pool) {
                                 '`local_mime_types`, ' +
                                 '`remote_mime_types`, ' +
                                 '`proxy_blocked`, '+
+                                '`proxy_rule`, '+
                                 '`ioc_count` ' +
                             'FROM ' +
                                 '`http` ' +
@@ -62,6 +63,7 @@ module.exports = function(pool) {
                         { title: 'Time',  select: 'time' },
                         { title: 'Stealth', select: 'stealth', access: [3] },
                         { title: 'ABP', select: 'proxy_blocked', access: [2] },
+                        { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
                         { title: 'Domain', select: 'host' },
                         { title: 'URI', select: 'uri' },
                         { title: 'URL', select: 'url' },
