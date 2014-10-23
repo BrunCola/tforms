@@ -100,6 +100,7 @@
                             <strong>IOC: </strong>{{infoData.iocc}}<br />
                             <strong>IOC Type: </strong>{{infoData.ioc_typeIndicator}}<br />
                             <strong>IOC Info: </strong>{{infoData.desc}}<span ioc-desc></span><br />
+                            <a href="" ng-click="getChildIOC()" class="epmap">Show all Attributes</a>
                             <!-- <strong>IOC Rule: </strong>{{ioc_rule}}<span ioc-desc><br /> -->
                         </div>
                     </div>    
@@ -130,10 +131,6 @@
                                 </button>
                                 <div class="action-text red">Add Firewall Rule</span></div>
                             </div> 
-                            <hr style="margin: 8px 0px 8px 0px"></hr>
-                            <div>
-                                <a href="" ng-click="getChildIOC()" class="epmap">Child ID button</a>
-                            </div>
                         </div>
                     </div>
 

@@ -57,6 +57,29 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             });
         };
 
+        $scope.getChildIOC = function () {
+            // $scope.$broadcast('moodal', d);
+            $scope.modalInstance = $modal.open({
+                templateUrl: 'descModal.html',
+                controller: descInstanceCtrl,
+                keyboard: true,
+                resolve: {
+                    data: function() {
+                        var text = "";                        
+                        for (var i in $scope.child_ioc) {
+                            //text += "<strong>" + i + ": </strong>" + $scope.child_ioc[i] + "<br/>";
+                            text += i + ": "  + $scope.child_ioc[i] ;
+                        }
+                        // var htmlText = $.parseHTML(text);
+                        return text;
+                    },
+                    ioc: function() {
+                        return "Child ID Information";
+                    }
+                }
+            });
+        };
+
         $scope.quarLoad = function () {            
             $scope.modalInstance = $modal.open({
                 templateUrl: 'quarModal.html',
@@ -126,16 +149,6 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             //$scope.arquar = arquar;
         };
 
-        $scope.getChildIOC = function() { 
-            $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?type=child_id&event_id='+$scope.infoData.id}).
-            success(function(data) {
-                if (data[0] !== undefined) {
-                    $scope.child_ioc = data[0];
-                }
-            });
-            console.log($scope.child_ioc);
-        }
-
         if (data.tree.childCount >= 35) {
             var divHeight = data.tree.childCount*12;
         } else {
@@ -148,6 +161,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
         $scope.infoData = data.info.main[0];
         $scope.lan_ip = $location.$$search.lan_ip;
         $scope.remote_ip = $location.$$search.remote_ip;
+        $scope.ioc_childID = $location.$$search.ioc_childID;
 
         $scope.first = timeFormat(data.info.main[0].first, 'iochits');
         $scope.last = timeFormat(data.info.main[0].last, 'iochits');
@@ -197,6 +211,14 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                 }
             });
         }
+
+        $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?type=child_id&ioc_childID='+$scope.ioc_childID}).
+        success(function(data) {
+            if (data[0] !== undefined) {
+                $scope.child_ioc = data[0];
+            }
+        });
+
     });
 
     $scope.requery = function(min, max, callback) {
