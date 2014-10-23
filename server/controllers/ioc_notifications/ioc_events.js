@@ -267,7 +267,9 @@ module.exports = function(pool) {
                                 'hour(from_unixtime(`time`)),'+
                                 '`remote_country`,'+
                                 '`ioc_severity`,'+
-                                '`ioc`',
+                                '`ioc` '+
+                            'ORDER BY '+
+                                '`ioc_severity` DESC ',
                     insert: [start, end]
                 }
                 async.parallel([

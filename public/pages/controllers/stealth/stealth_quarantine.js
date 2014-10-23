@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('stealthQuarantineController', ['$scope'
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/local_events/stealth_quarantine?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/stealth/stealth_quarantine?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/local_events/stealth_quarantine?';
+        query = '/stealth/stealth_quarantine?';
     }
     $http({method: 'GET', url: query}).
     success(function(data) {

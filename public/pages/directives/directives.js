@@ -1122,7 +1122,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                                         .x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width]));
                                         $(element).height(hHeight);
                                         d3.select('#rowchart svg').attr('width', width).attr('height', hHeight);
-                                    $scope.rowChart.redraw();
+                                    //$scope.rowChart.redraw();
                                 }
                             };
                             $scope.rowChart
@@ -1183,6 +1183,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                         .margins({top: 5, left: 0, right: 0, bottom: 20})
                         .group(group)
                         .dimension(dimension)
+                        .ordering(function(d) { return -d.value.severity; })
                         .valueAccessor(function(d) {
                             if (d.value.count === 1){
                                 return d.value.count+1;

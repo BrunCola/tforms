@@ -702,13 +702,25 @@ module.exports = function(pool) {
                         laneGraph: result
                     });
                 });
-            } else if (req.query.trigger_type === 'quarantine') {
-                new query({query: 'SELECT count(*) AS user_trigger FROM `script_trigger` WHERE `flag` = ? ', insert: [req.query.trigger_user]}, {database: database, pool: pool}, function(err,data){
+            } else if (req.query.trigger_type === 'Quarantine') {
+                new query({query: 'SELECT * FROM `stealth_user` WHERE `lan_user` = ? AND `group` = ? ', insert: [req.query.user_quarantine,req.query.trigger_type]}, {database: database, pool: pool}, function(err,data){
                     if (data) {
                         res.json(data);
                     }
                 });   
-            } else if (req.query.type === 'assets') {
+            }  else if (req.query.trigger_type === 'firewall') {
+                new query({query: 'SELECT count(*) AS firewall_count FROM `firewall` ', insert: []}, {database: database, pool: pool}, function(err,data){
+                    if (data) {
+                        res.json(data);
+                    }
+                });   
+            } else if (req.query.type === 'child_id') {
+                new query({query: 'SELECT * from `ioc` WHERE id_child = ? ', insert: [req.query.event_id]}, {database: 'cyrin', pool: pool}, function(err,data){
+                    if (data) {
+                        res.json(data);
+                    }
+                });  
+            }else if (req.query.type === 'assets') {
                 if (req.query.lan_ip && req.query.lan_zone) {
                     var sql = {
                         query: 'SELECT '+
@@ -1294,6 +1306,7 @@ module.exports = function(pool) {
                     var info = {};
                     var InfoSQL = {
                         query: 'SELECT '+
+                                    '`id`, '+
                                     '`time`, '+
                                     'min(`time`) as first, '+
                                     'max(`time`) as last, '+
@@ -1472,10 +1485,10 @@ module.exports = function(pool) {
         },
         set_info: function(req, res) {
             var database = req.session.passport.user.database;
-            if (req.query.trigger_type === 'quarantine') {
+            if (req.query.trigger_type === 'Quarantine' || req.query.trigger_type === 'rQuarantine') {
                 var update_flag = {
-                    query: "INSERT INTO `script_trigger` (`type`, `flag`) VALUES (?,?)",
-                    insert: [req.query.trigger_type, req.query.flag]
+                    query: "INSERT INTO `script_trigger` (`type`, `flag`,`time`, `email`) VALUES (?,?,?,?)",
+                    insert: [req.query.trigger_type, req.query.flag, req.query.currenttime, req.query.email]
                 }
                 new query(update_flag, {database: database, pool: pool}, function(err,data){
                     if (err) {
@@ -1485,7 +1498,7 @@ module.exports = function(pool) {
                     }
                 });
 
-            } else if (req.query.trigger_type === 'stealthquarantine') {
+            } /*else if (req.query.trigger_type === 'stealthquarantine') {
                var update_quarantine = {
                     query: "INSERT INTO `stealth_quarantine` (`time`, `email`, `lan_zone`, `lan_user`) VALUES (?,?,?,?)",
                     insert: [req.query.currenttime, req.query.email, req.query.lan_zone, req.query.lan_user]
@@ -1497,7 +1510,7 @@ module.exports = function(pool) {
                         res.send(200);
                     }
                 });
-            } else if (req.query.trigger_type === 'firewall') {
+            } */else if (req.query.trigger_type === 'firewall') {
                 var update_firewall = {
                     query: "INSERT INTO `firewall` (`time`,`email`,`rule`,`type`) VALUES (?,?,?,?)",
                     insert: [req.query.currenttime, req.query.email, req.query.rule, req.query.type]

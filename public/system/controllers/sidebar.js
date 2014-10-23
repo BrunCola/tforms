@@ -160,6 +160,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'url': 'irc_remote',
                     'icon': 'fa-comment',
                     'orphans': ['irc_remote2local', 'irc_shared']
+                }, 
+                {
+                    'title': 'Firewall Rules',
+                    'url': 'firewall',
+                    'icon': 'fa-chevron-right',
+                    'orphans': []
                 },                
             ]
         },
@@ -187,6 +193,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'url': 'stealth_conn',
                     'icon': 'fa-user',
                     'orphans': ['stealth_conn_by_user','stealth_conn_by_userANDremote']
+                },
+                {
+                    'title': 'Stealth Quarantine',
+                    'url': 'stealth_quarantine',
+                    'icon': 'fa-user',
+                    'orphans': []
                 },
             ]
         },
