@@ -3936,7 +3936,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
             // $scope.$on('floorPlan', function (event, args, type) { 
                 var data = $scope.data.force;
                 var floorName = attrs.floorName;
-
+                var filterData;
+                var filterType;
                 $scope.userList = data;
                 // info div
                 var width = element.width();
@@ -3962,9 +3963,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     });
                 }
 
-                function getIconColour(endpoint) {
-                    var args = $rootScope.floorPlanTriggerArgs;
-                    var type = $rootScope.floorPlanTriggerType;
+                function getIconColour(endpoint, args, type) {
                     if(args != undefined) {
                         var colour = '#29ABE2';//the default
                         args.forEach(function(d){
@@ -4000,7 +3999,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     userDiv.selectAll('button').remove();
                     userDiv.selectAll('button').data(data).enter()
                         .append('button').each(function(d){
-                            var iconColour = getIconColour(d);
+                            var iconColour = getIconColour(d, filterData, filterType);
+                            //var iconColour = '#29ABE2';
                             var name = d.lan_machine;
                             if (d.custom_user != null){
                                 name = d.custom_user;
@@ -4184,8 +4184,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     floorDiv.selectAll('button').data(data.filter(function(d){if (d.map === floor){ return true; }})).enter()
                         .append('button').each(function(d){
                             // count++;
-                            var iconColour = getIconColour(d);
-                            console.log(iconColour);
+                            console.log(d);
+                            var iconColour = getIconColour(d, filterData, filterType);
                             var name = d.lan_machine;
                             if (d.custom_user !== null){
                                 name = d.custom_user;
@@ -4258,7 +4258,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 } else { 
                                     switch (d.lan_type){
                                         case 'endpoint':
-                                                                                    console.log(iconColour);
                                             element
                                                 .attr('height', '23')
                                                 .attr('width', '23')
@@ -4276,7 +4275,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 .style('fill', iconColour);
                                             break;
                                         case 'server':
-                                                                                    console.log(iconColour);
                                             element
                                                 .attr('height', '21')
                                                 .attr('width', '19')
@@ -4305,7 +4303,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 .attr('d', 'M19,0H0v4h19V0z M3,3H1V1h2V3z');
                                             break;
                                         case 'mobile':
-                                                                                    console.log(iconColour);
                                             element
                                                 .attr('height', '22')
                                                 .attr('width', '14')
@@ -4316,7 +4313,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 .style('fill', iconColour);
                                             break;
                                         default:
-                                                                                    console.log(iconColour);
                                             element
                                                 .attr('height', '23')
                                                 .attr('width', '23')
@@ -4379,8 +4375,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             }
                         });
                     
-                    $rootScope.floorPlanTriggerArgs = undefined;
-                    $rootScope.floorPlanTriggerType = undefined;
+                    // $rootScope.floorPlanTriggerArgs = undefined;
+                    // $rootScope.floorPlanTriggerType = undefined;
                     // floorDiv.selectAll('button').data(data.filter(function(d){if (d.map === floor){ return true; }})).exit().remove();
 
                   //  floorDiv.selectAll('button').exit().remove();
@@ -4407,10 +4403,13 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             success(function(result) {
                                 // $scope.$broadcast('floorPlan', data, "iocusers");
                                 console.log("in success");
-                                $rootScope.floorPlanTriggerArgs = result;
-                                $rootScope.floorPlanTriggerType = "iocusers";
+                                filterData = result;
+                                filterType = "iocusers";
+                                console.log(result);
                                 $scope.floors.forEach(function(d) {
                                     console.log("calling plot");
+                                    console.log("floor:"+d.asset_name);
+                                    // floorDiv.selectAll('button').remove();
                                     plot(data, d.asset_name);
                                 })
 
@@ -4420,19 +4419,61 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     .html('Highlight Active Users')
                     .attr('class', 'resetButton')
                     .on('click', function(){
-                        $scope.active_users_requery();
-                        $scope.floors.forEach(function(d) {
-                            plot(data, d.asset_name);
-                        })
+                        // $scope.active_users_requery();
+                        // $scope.floors.forEach(function(d) {
+                        //     plot(data, d.asset_name);
+                        // })
+                        var query = '/local_events/endpoint_map?type=floorquery';
+                        // if ($location.$$search.start && $location.$$search.end) {
+                        //     query = query +'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
+                        // }
+                        var triggerData;
+                        var triggerType;
+                        $http({method: 'GET', url: query+'&typeinfo=activeusers'}).
+                            success(function(result) {
+                                // $scope.$broadcast('floorPlan', data, "iocusers");
+                                console.log("in success");
+                                filterData = result;
+                                filterType = "activeusers";
+                                console.log(result);
+                                $scope.floors.forEach(function(d) {
+                                    console.log("calling plot");
+                                    console.log("floor:"+d.asset_name);
+                                    // floorDiv.selectAll('button').remove();
+                                    plot(data, d.asset_name);
+                                })
+
+                        });
                     });
                 buttonDiv.append('button')
                     .html('Highlight Active Stealth Users')
                     .attr('class', 'resetButton')
                     .on('click', function(){
-                        $scope.active_stealth_users_requery();
-                        $scope.floors.forEach(function(d) {
-                            plot(data, d.asset_name);
-                        })
+                        // $scope.active_stealth_users_requery();
+                        // $scope.floors.forEach(function(d) {
+                        //     plot(data, d.asset_name);
+                        // })
+                        var query = '/local_events/endpoint_map?type=floorquery';
+                        // if ($location.$$search.start && $location.$$search.end) {
+                        //     query = query +'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
+                        // }
+                        var triggerData;
+                        var triggerType;
+                        $http({method: 'GET', url: query+'&typeinfo=activestealthusers'}).
+                            success(function(result) {
+                                // $scope.$broadcast('floorPlan', data, "iocusers");
+                                console.log("in success");
+                                filterData = result;
+                                filterType = "activestealthusers";
+                                console.log(result);
+                                $scope.floors.forEach(function(d) {
+                                    console.log("calling plot");
+                                    console.log("floor:"+d.asset_name);
+                                    // floorDiv.selectAll('button').remove();
+                                    plot(data, d.asset_name);
+                                })
+
+                        });
                     });
             // });
         }
