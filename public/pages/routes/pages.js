@@ -437,7 +437,19 @@ angular.module('mean.pages').config(['$stateProvider',
                             },
                             daterange: true
                         }
-                    })
+                    })                    
+            // FIREWALL
+                .state('firewall', {
+                    url: '/firewall?start&end',
+                    templateUrl: 'public/pages/views/general_network/firewall.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'Firewall Rules',
+                        daterange: true
+                    }
+                })
         // STEALTH
             // STEALTH DEPLOY CONFIG
                 .state('stealth_deploy_config', {
@@ -474,7 +486,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         title: 'Stealth User Connections',
                         daterange: true
                     }
-                })    
+                })         
                 // STEALTH CONN BY USER
                     .state('stealth_conn_by_user', {
                         url: '/stealth_conn_by_user?start&end&lan_zone&lan_machine&lan_user&lan_ip',
@@ -670,18 +682,6 @@ angular.module('mean.pages').config(['$stateProvider',
                             daterange: true
                         }
                     })
-            // FIREWALL
-                .state('firewall', {
-                    url: '/firewall?start&end',
-                    templateUrl: 'public/pages/views/local_events/firewall.html',
-                    resolve: {
-                        loggedin: checkLoggedin
-                    },
-                    data: {
-                        title: 'Firewall Rules',
-                        daterange: true
-                    }
-                })
         // APPLICATIONS
             // BY APPLICATION
                 .state('app_by_application', {

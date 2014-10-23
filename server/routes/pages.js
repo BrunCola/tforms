@@ -129,8 +129,8 @@ module.exports = function(app, passport, version, io, pool) {
                 app.route('/general_network/ftp_remote2local')
                 .get(auth.permission, ftp_remote2local.render);
         // FIREWALL
-            var firewall = require('../controllers/local_events/firewall')(pool); 
-            app.route('/local_events/firewall')
+            var firewall = require('../controllers/general_network/firewall')(pool); 
+            app.route('/general_network/firewall')
             .get(auth.permission, firewall.render);
     // STEALTH
         // STEALTH DEPLOY CONFIG
@@ -201,10 +201,6 @@ module.exports = function(app, passport, version, io, pool) {
                 var endpoint_by_user_and_ip = require('../controllers/local_events/endpoint_by_user_and_ip')(pool);
                 app.route('/local_events/endpoint_by_user_and_ip')
                 .get(auth.permission, endpoint_by_user_and_ip.render); 
-        // FIREWALL
-            var firewall = require('../controllers/local_events/firewall')(pool); 
-            app.route('/local_events/firewall')
-            .get(auth.permission, firewall.render);
     // APPLICATIONS
         // BY APPLICATION
             var app_by_application = require('../controllers/applications/app_by_application')(pool);

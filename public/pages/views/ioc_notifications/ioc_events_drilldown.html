@@ -36,13 +36,14 @@
             <h3>Add Firewall Rule?</h3>
         </div>
         <div class="modal-body" id="firewallModalID">
-            <form id="myform">
-                <select id="fwSelect" name="fwSelect" ng-model="fiwa.select">
-                  <option value="ipaddress">IP Address</option>
+            {{data}} <br /><br />
+            <form id="myform" >
+                <select id="fwSelect" name="fwSelect" ng-model="fiwa.select" ng-init="fiwa.select='ipaddress'" >
+                  <option value="ipaddress" selected>IP Address</option>
                   <option value="ipsubnet">IP Subnet</option>
                   <option value="httpdomain">HTTP Domain</option>
                 </select><br />
-                <input type="text" id="fwTextarea" name="fwTextarea" ng-model="fiwa.text"/><br />
+                <input type="text" id="fwTextarea" name="fwTextarea" ng-model="fiwa.text" placeholder="Type Rule Here"/><br />
                 <button type="submit" class="button-success pure-button" ng-click="firewallLink(fiwa)">Add</button> 
                 <button type="reset" class="button-error pure-button" ng-click="ok()">Cancel</button>
             </form>
@@ -117,7 +118,8 @@
                                     </svg>
                                 </button>
                                 <div class="action-text"><span>Stealth Quarantine</span></div>
-                                <div class="action-exist">{{num_user_quar>0 ? "(Active)" : "(Inactive)" }}</div>
+                                <div class="action-exist">{{user_quar ? "(Active)" : "(Inactive)" }}</div>
+                
                             </div>
                             <hr style="margin: 8px 0px 8px 0px"></hr>
                             <div>
