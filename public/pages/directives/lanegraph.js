@@ -699,6 +699,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     function removeBtn(){
                         return 'remove';
                     }
+                    if (!(row.pattern)){return};
                     if (data.id in $scope.pattern.selected) {
                         if (row.name in $scope.pattern.selected[data.id].search) {
                             return removeBtn();
