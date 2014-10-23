@@ -2169,10 +2169,22 @@ Datatables Plugin(in v1.3)
   fill: #fff; width: 35px; height: 35px; float: left;
 }
 .action-text{
-  display:table-cell; vertical-align: middle; height: 41px; color: red; font-size: 16px; padding-left: 5px;
+  display:table-cell; vertical-align: middle; height: 41px; font-size: 16px; padding-left: 5px;
 }
 .action-bttns{
-  float: left; background-color: red; border-radius: 12px; padding: 3px 6px 3px 6px; border-width: 0px;
+  float: left; border-radius: 12px; padding: 3px 6px 3px 6px; border-width: 0px;
+}
+.action-text.red{
+  color:red;
+}
+.action-bttns.red{
+  background-color: red;
+}
+.action-text.blue{
+  color:#377FC7;
+}
+.action-bttns.blue{
+  background-color: #377FC7;
 }
 a.epmap{
   color: #4b8df8;
