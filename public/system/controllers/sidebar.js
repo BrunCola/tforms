@@ -24,7 +24,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
         } else {
             return false;
         }
-    }
+    };
     $scope.parentClass = function (link) {
         var currentRoute = $location.path().substring(1) || 'home';
         // return page === currentRoute ? 'start active' : '';
