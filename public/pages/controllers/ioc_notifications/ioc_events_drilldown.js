@@ -226,7 +226,6 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             $http({method: 'GET', url: query}).
                 success(function(data) {
                     $scope.crossfilterDeep = crossfilter();
-                    
                     var id = 0;
                     data.laneGraph.data.forEach(function(parent) {
                         parent.forEach(function(child) {
