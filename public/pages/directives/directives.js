@@ -4702,7 +4702,7 @@ container.append("g")
                                      .style('top', d.x+"px")
                                      .style('left', d.y+"px")
                                      //.call(drag)
-                                     .style("position", "fixed")
+                                     //.style("position", "fixed")
                                 var elel = elm[0];
                                 var el = elel[0];
                                 var element = elm.append("svg").attr('class', 'localuserlisticon').attr("width","23").attr("height","23").append("g");
