@@ -175,20 +175,20 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
         });
         $scope.iocalerts = [];
         $scope.socket.emit('init', {username: $scope.global.user.username, checkpoint: $scope.global.user.checkpoint, database: $scope.global.user.database});
-        $scope.socket.on('initial iocs', function(data, count) {
-            $scope.iocCount = 0;
-            if (count > 0) {
-                $scope.iocCount = count;
-            }
-            data.forEach(function(d){
-                if (d.newIOC == true) {
-                    d.class = 'flagged_drop';
-                }
-                d.icon = iocIcon(d.ioc_severity);
-            });
-            $scope.iocalerts = data;
-            $scope.$apply();
-        });
+        // $scope.socket.on('initial iocs', function(data, count) {
+        //     $scope.iocCount = 0;
+        //     if (count > 0) {
+        //         $scope.iocCount = count;
+        //     }
+        //     data.forEach(function(d){
+        //         if (d.newIOC == true) {
+        //             d.class = 'flagged_drop';
+        //         }
+        //         d.icon = iocIcon(d.ioc_severity);
+        //     });
+        //     $scope.iocalerts = data;
+        //     $scope.$apply();
+        // });
         $scope.socket.on('newIOC', function(data, iCount) {
             $scope.iocCount += iCount;
             $scope.iocalerts.splice(0, data.length);
@@ -202,15 +202,15 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
             });
             $scope.$apply();
         });
-        $scope.checkpoint = function() {
-            $scope.iocCount = 0;
-            $scope.socket.emit('checkpoint', {username: $scope.global.user.username, id: $scope.global.user.id, database: $scope.global.user.database});
-            $rootScope.$broadcast('killNoty');
-            $scope.flagged_drop = '';
-            for (var i in $scope.iocalerts) {
-                $scope.iocalerts[i].class = '';
-                $scope.iocalerts[i].newIOC = false;
-            }
-        };
+        // $scope.checkpoint = function() {
+        //     $scope.iocCount = 0;
+        //     $scope.socket.emit('checkpoint', {username: $scope.global.user.username, id: $scope.global.user.id, database: $scope.global.user.database});
+        //     $rootScope.$broadcast('killNoty');
+        //     $scope.flagged_drop = '';
+        //     for (var i in $scope.iocalerts) {
+        //         $scope.iocalerts[i].class = '';
+        //         $scope.iocalerts[i].newIOC = false;
+        //     }
+        // };
     }
 ]);

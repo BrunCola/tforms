@@ -29,48 +29,48 @@ module.exports = function(app, passport, io, pool) {
 						connection.changeUser({database : userData.database}, function(err) {
 							if (err) throw err;
 						});
-						connection.query("SELECT alert.added, conn_ioc.ioc FROM alert, conn_ioc WHERE alert.conn_uids = conn_ioc.conn_uids AND alert.username = ? AND alert.added >= ? ORDER BY alert.added", [userData.username, checkpoint], function (err, results) {
-							if (results) {
-								newIOCcount = results.length;
-							}
-						});
-						connection.query("SELECT "+
-							"alert.added, "+
-							"conn_ioc.ioc, "+
-							"conn_ioc.ioc_severity "+
-							"FROM alert, conn_ioc "+
-							"WHERE alert.conn_uids = conn_ioc.conn_uids "+
-							"AND alert.username = ? "+
-							"AND alert.trash is null "+
-							"ORDER BY alert.added DESC "+
-							"LIMIT 10", [userData.username])
-						.on('result', function(data) {
-							if (data.added >= checkpoint) {
-								data.newIOC = true;
-							}
-							alerts.push(data);
-						})
-						.on('end', function(){
-							socket.emit('initial iocs', alerts, newIOCcount);
-							POLLCheckpoint = Math.round(new Date().getTime() / 1000);
-							timer = setInterval(function(){polling(userData.username, POLLCheckpoint, userData.database)}, 5000);
-						})
+						// connection.query("SELECT alert.added, conn_ioc.ioc FROM alert, conn_ioc WHERE alert.conn_uids = conn_ioc.conn_uids AND alert.username = ? AND alert.added >= ? ORDER BY alert.added", [userData.username, checkpoint], function (err, results) {
+						// 	if (results) {
+						// 		newIOCcount = results.length;
+						// 	}
+						// });
+						// connection.query("SELECT "+
+						// 	"alert.added, "+
+						// 	"conn_ioc.ioc, "+
+						// 	"conn_ioc.ioc_severity "+
+						// 	"FROM alert, conn_ioc "+
+						// 	"WHERE alert.conn_uids = conn_ioc.conn_uids "+
+						// 	"AND alert.username = ? "+
+						// 	"AND alert.trash is null "+
+						// 	"ORDER BY alert.added DESC "+
+						// 	"LIMIT 10", [userData.username])
+						// .on('result', function(data) {
+						// 	if (data.added >= checkpoint) {
+						// 		data.newIOC = true;
+						// 	}
+						// 	alerts.push(data);
+						// })
+						// .on('end', function(){
+						// 	socket.emit('initial iocs', alerts, newIOCcount);
+						// 	POLLCheckpoint = Math.round(new Date().getTime() / 1000);
+						// 	timer = setInterval(function(){polling(userData.username, POLLCheckpoint, userData.database)}, 5000);
+						// })
 						connection.release();
 					}
 				})
 			});
 		});
-		socket.on('checkpoint', function(userData){
-			function newCP() {
-				var newCheckpoint = Math.round(new Date().getTime() / 1000);
-				POLLCheckpoint = newCheckpoint;
-				console.log('checkpoint now set to: '+newCheckpoint);
-				clearInterval(timer);
-				timer = setInterval(function(){polling(userData.username, POLLCheckpoint, userData.database)}, 5000);
-				pool.query("UPDATE `user` SET `checkpoint`= ? WHERE `username` = ?", [newCheckpoint, userData.username]);
-			}
-			newCP();
-		});
+		// socket.on('checkpoint', function(userData){
+		// 	function newCP() {
+		// 		var newCheckpoint = Math.round(new Date().getTime() / 1000);
+		// 		POLLCheckpoint = newCheckpoint;
+		// 		console.log('checkpoint now set to: '+newCheckpoint);
+		// 		clearInterval(timer);
+		// 		timer = setInterval(function(){polling(userData.username, POLLCheckpoint, userData.database)}, 5000);
+		// 		pool.query("UPDATE `user` SET `checkpoint`= ? WHERE `username` = ?", [newCheckpoint, userData.username]);
+		// 	}
+		// 	newCP();
+		// });
 		function polling(username, POLLCheckpoint, database) {
 			pool.getConnection(function(err, connection) {
 				connection.changeUser({database : database}, function(err) {
