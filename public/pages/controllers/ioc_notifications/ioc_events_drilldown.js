@@ -159,6 +159,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
         $scope.$broadcast('treeChart', data.tree, {height: divHeight});
 
         $scope.infoData = data.info.main[0];
+
         $scope.lan_ip = $location.$$search.lan_ip;
         $scope.remote_ip = $location.$$search.remote_ip;
         $scope.ioc_childID = $location.$$search.ioc_childID;

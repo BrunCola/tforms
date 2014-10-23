@@ -1023,7 +1023,7 @@ module.exports = function(pool) {
                             {title: "Local User", select: "lan_user"},
                             {title: "Local IP", select: "lan_ip"},
                             {title: "Local Port", select: "lan_port"},
-                            {title: "Remote IP", select: "remote_ip"},
+                            {title: "Remote IP", select: "remote_ip", pattern: true},
                             {title: "Remote Port", select: "remote_port"},
                             {title: "Remote Country", select: "remote_country"},
                             // {title: "Remote ASN", select: "remote_asn_name"},
