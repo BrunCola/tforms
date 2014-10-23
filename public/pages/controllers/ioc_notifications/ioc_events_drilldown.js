@@ -57,7 +57,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             });
         };
 
-        $scope.quarLoad = function (user) {            
+        $scope.quarLoad = function () {            
             $scope.modalInstance = $modal.open({
                 templateUrl: 'quarModal.html',
                 controller: quarInstanceCtrl,
@@ -81,7 +81,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             });
         };
 
-        $scope.firewallLoad = function (user) {            
+        $scope.firewallLoad = function () {            
             $scope.modalInstance = $modal.open({
                 templateUrl: 'firewallModal.html',
                 controller: quarInstanceCtrl,
@@ -126,6 +126,16 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             //$scope.arquar = arquar;
         };
 
+        $scope.getChildIOC = function() { 
+            $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?type=child_id&event_id='+$scope.event_id}).
+            success(function(data) {
+                if (data[0] !== undefined) {
+                    $scope.child_ioc = data[0];
+                }
+            });
+            console.log($scope.child_ioc);
+        }
+
         if (data.tree.childCount >= 35) {
             var divHeight = data.tree.childCount*12;
         } else {
@@ -135,6 +145,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
         $scope.$broadcast('forceChart', data.force, {height: divHeight});
         $scope.$broadcast('treeChart', data.tree, {height: divHeight});
 
+        $scope.event_id = data.info.main[0].id;
         $scope.lan_zone = data.info.main[0].lan_zone;
         $scope.lan_ip = $location.$$search.lan_ip;
 
@@ -206,8 +217,6 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                 }
             });
         }
-
-
 
     });
 

@@ -714,7 +714,13 @@ module.exports = function(pool) {
                         res.json(data);
                     }
                 });   
-            } else if (req.query.type === 'assets') {
+            } else if (req.query.type === 'child_id') {
+                new query({query: 'SELECT * from `ioc` WHERE id_child = ? ', insert: [req.query.event_id]}, {database: 'cyrin', pool: pool}, function(err,data){
+                    if (data) {
+                        res.json(data);
+                    }
+                });  
+            }else if (req.query.type === 'assets') {
                 if (req.query.lan_ip && req.query.lan_zone) {
                     var sql = {
                         query: 'SELECT '+
@@ -1300,6 +1306,7 @@ module.exports = function(pool) {
                     var info = {};
                     var InfoSQL = {
                         query: 'SELECT '+
+                                    '`id`, '+
                                     '`time`, '+
                                     'min(`time`) as first, '+
                                     'max(`time`) as last, '+
@@ -1515,7 +1522,7 @@ module.exports = function(pool) {
                         res.send(200);
                     }
                 });
-            }
+            } 
         }
     }
 };
