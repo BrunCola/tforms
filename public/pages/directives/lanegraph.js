@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'appIcon', '$rootScope', 'timeFormat', function ($timeout, $location, appIcon, $rootScope, timeFormat) {
+angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'appIcon', '$rootScope', 'timeFormat', '$http', function ($timeout, $location, appIcon, $rootScope, timeFormat, $http) {
     return {
         // restrict: 'A',
         // scope : {
@@ -41,7 +41,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 // toggle for turning on/off unit multiselecting
                 $scope.pattern = {
                     searching: false,
-                    selected: {},
+                    selected: {
+                        length: 0
+                    },
                     // last elm clicked, for throwing in object after an item is clicked when and our button is toggled
                     last: null,
                     lastXY: null
@@ -488,7 +490,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .attr('width', 36)
                             .attr('height', 36);
                             iconColors(data.type, element, color1, color2);
-
                     }
                 }
  
@@ -565,7 +566,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr('class', 'test')
                     .html('test')
                     .on('click', function(){
-                        $scope.$broadcast('patternPane')
+                        $scope.$broadcast('patternPane');
                     });
 
                 var saveToggle = buttonHolder
@@ -575,29 +576,43 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .on('click', function(){
                         if ($scope.pattern.searching === false) {
                             d3.select(this).html('Analize pattern');
-                            // buttonHolder
-                            //     .append('button')
-                            //     .attr('class', 'cancelBtn')
-                            //     .html('Cancel')
-                            //     .on('click', function(){
-                            //         d3.select(this).remove();
-                            //     });
                             // set searching to true
                             $scope.pattern.searching = true;
                             // change class (so we know its on)
                         } else {
-                            $scope.$broadcast('patternPane');
                             d3.select(this).html('Create pattern');
                             // make a call to save restults
                             // clear our object & set it back to false
+                            analize();
                             $scope.pattern.searching = false;
-                            $scope.pattern.selected = {};
+                            $scope.pattern.selected = {
+                                length: 0
+                            };
                             lineStory.selectAll('line').remove();
                         }
                         if ($scope.pattern.last !== null) {
                             laneInfoAppend($scope.pattern.last.data, $scope.pattern.last.element);
                         }
                     });
+                
+                function analize() {
+                    // $scope.$broadcast('patternPane');
+                    var compareObj = $scope.pattern.selected;
+                    console.log($scope.pattern.selected)
+                    if (compareObj.length > 0) {
+                        loading('start');
+                        // construct queries
+                        $http({method: 'POST', url: '/ioc_notifications/ioc_events_drilldown/patterns', data: compareObj}).
+                            success(function(data, status, headers, config) {
+                                
+                            })
+                            // send info to pattern pane
+                            // turn off loading
+                            // call clear points function
+                    } else {
+                        // call clear points function
+                    }
+                }
 
                 // var timeShiftHolder = d3.select("#lanegraph").append('div').attr('class', 'timeShiftHolder');
                 // var nextTime = timeShiftHolder
@@ -630,10 +645,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 });
 
                 $scope.addSearch = function(point, data) {
+                    console.log(data)
                     var thisNode = itemRects.select('.node-'+point.id);
                     if (!(point.id in $scope.pattern.selected)) {         
                         // add empty obect with point id in search
                         $scope.pattern.selected[point.id] = {};
+                        $scope.pattern.selected.length++;
                         // insert point information (for redrawing later)
                         $scope.pattern.selected[point.id].point = point;
                         // create search object for our selected data
@@ -663,6 +680,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         // remove point if its empty after changes
                         if ($scope.pattern.selected[point.id].search.length === 0) {
                             delete $scope.pattern.selected[point.id];
+                            $scope.pattern.length--;
                             // reset our last x/y coordinate object
                             $scope.pattern.lastXY = null;
                         }
@@ -1053,7 +1071,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             });
                     }
                 }
-                $scope.$broadcast('laneGraphPattern');
             });
         }
     };

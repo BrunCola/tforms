@@ -87,8 +87,9 @@ module.exports = function (sql, conn, callback) {
                     // check if value is undefined... it may be because of our veriable denial process above 
                     if (data[sql.params[d].select] !== undefined) {
                         expand.push({
-                            name: sql.params[d].title,
-                            value: data[sql.params[d].select]
+                            "name": sql.params[d].title,
+                            "value": data[sql.params[d].select],
+                            "select": sql.params[d].select
                         })
                     }
                 }

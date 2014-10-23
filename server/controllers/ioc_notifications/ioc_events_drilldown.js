@@ -1510,6 +1510,69 @@ module.exports = function(pool) {
                     }
                 });
             }
+        },
+        pattern: function(req, res) {
+            console.log('processing')
+            // set the datbase the user queries
+            var database = req.session.passport.user.database;
+            var queryList = [];
+            for (var i in req.body) {
+                // set current query object
+                var thisQuery = {
+                    query: null,
+                    insert: []
+                }
+                // build string(s)
+                var queryString = 'SELECT lan_user, lan_ip FROM ';
+                // ignore the length key, since we placed it in manually for use on front-end
+                if (i !== 'length') {
+                    // switch for stating what query type connects to what table
+                    switch (req.body[i].point.type) {
+                        case 'Conn':
+                            queryString += 'conn';
+                        break;
+                        default:
+                            queryString += 'conn';
+                        break;
+                    }
+                    queryString += ' WHERE ';
+                    var total = 1; // we count so the last inserted doesn't get an AND.. we also know theres at least one
+                    for (var s in req.body[i].search) {
+                        // ignore the length key again, since we placed it in manually for use on front-end
+                        if (s !== 'length') {
+                            var searchItem = req.body[i].search[s];
+                            if (total === req.body[i].search.length) {
+                                queryString += searchItem.select+' = ? ';
+                            } else {
+                                queryString += searchItem.select+' = ? AND ';
+                            }
+                            // push escaped values seperately
+                            thisQuery.insert.push(searchItem.value);
+                            total++;
+                        }
+                    }
+                    queryString += 'GROUP BY lan_user, lan_ip';
+                    thisQuery.query = queryString;
+                    queryList.push(thisQuery);
+                }
+            }
+            var asyncList = []; var results = [];
+            for (var q in queryList) {
+                // push each query object to out async array to be processed
+                asyncList.push(
+                    function(callback) {
+                        new query(queryList[q], {database: database, pool: pool}, function(err,data){
+                            results.push(data)
+                            callback();
+                        });
+                    }
+                )
+            }
+            async.parallel(asyncList, function(err) {
+                if (err) throw console.log(err);
+                // return here
+                console.log(results);
+            });
         }
     }
 };

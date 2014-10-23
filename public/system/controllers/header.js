@@ -170,6 +170,9 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
             };
         };
         // IOC notification settings
+        $scope.socket.on('connection', function() {
+            console.log('connected again')
+        })
         $scope.socket.on('disconnect', function() {
             $scope.open();
         });

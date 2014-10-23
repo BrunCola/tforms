@@ -17,8 +17,10 @@ module.exports = function(app, passport, version, io, pool) {
             // IOC EVENTS DRILLDOWN
                 var ioc_events_drilldown = require('../controllers/ioc_notifications/ioc_events_drilldown')(pool);
                 app.route('/ioc_notifications/ioc_events_drilldown')
-                .get(auth.permission, ioc_events_drilldown.render)
-                .post(auth.permission, ioc_events_drilldown.set_info);
+                    .get(auth.permission, ioc_events_drilldown.render)
+                    .post(auth.permission, ioc_events_drilldown.set_info);
+                app.route('/ioc_notifications/ioc_events_drilldown/patterns')
+                    .post(auth.permission, ioc_events_drilldown.pattern);
         // IOC REMOTE
             var ioc_remote = require('../controllers/ioc_notifications/ioc_remote')(pool);
              app.route('/ioc_notifications/ioc_remote')
