@@ -2970,11 +2970,11 @@ angular.module('mean.pages').directive('makeTreeChart', ['$timeout', '$rootScope
     };
 }]);
 
-angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', '$http', function ($timeout, $rootScope, $http) {
+angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', '$http', '$location', function ($timeout, $rootScope, $http, $location) {
     return {
         link: function ($scope, element, attrs) {
             //$scope.$on('floorPlan', function (event) {
-                //var floor_path = $scope.floor.path;
+                var floor_path = $scope.floor.path;
                 var data = $scope.data.force;
                 var floorName = attrs.floorName;
                 $scope.userList = data;
@@ -3309,40 +3309,40 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 if (d.custom_user !== null){
                                     name = d.custom_user;
                                 }
-                                //var iconColour = '#29ABE2';
                                 var iconColour = getIconColour(d);
                                 var id = d.id;
                                 var elm = d3.select(this);
                                 var elel = elm[0];
                                 var el = elel[0];
-                                var element = elm.append("svg").attr('class', 'localuserlisticon').attr("height","23").append("g");
+                                var element = elm.append("div").attr('class', 'localuserlisticon').append("svg");
 
                                 elm
-                                .on('dblclick', function(e){
-                                    $('.usernametext').each(function(e){
-                                        this.classList.remove('ng-hide');
-                                    });
-                                    $('.usernameform').each(function(e){
-                                        this.classList.add('ng-hide');
-                                    });
+                                    .attr('id', id)
+                                    .on('dblclick', function(e){
+                                        $('.usernametext').each(function(e){
+                                            this.classList.remove('ng-hide');
+                                        });
+                                        $('.usernameform').each(function(e){
+                                            this.classList.add('ng-hide');
+                                        });
 
-                                    var iconText = $(this).find('.usernametext')[0];
-                                    var iconInput = $(this).find('.usernameform')[0];
-                                    iconText.classList.add('ng-hide');
-                                    iconInput.classList.remove('ng-hide');
-                                })
-                                .on('click', function(e){
-                                    userDiv.selectAll('button').each(function(d){
-                                        var elm = d3.select(this);
-                                        $(elm[0]).removeClass('selected');
+                                        var iconText = $(this).find('.usernametext')[0];
+                                        var iconInput = $(this).find('.usernameform')[0];
+                                        iconText.classList.add('ng-hide');
+                                        iconInput.classList.remove('ng-hide');
                                     })
-                                    floorDiv.selectAll('button').each(function(d){
-                                        var elm = d3.select(this);
-                                        $(elm[0]).removeClass('selected');
-                                    })
-                                    el.classList.add('selected');
-                                    $scope.requery(d, 'flooruser');
-                                });
+                                    .on('click', function(e){
+                                        userDiv.selectAll('button').each(function(d){
+                                            var elm = d3.select(this);
+                                            $(elm[0]).removeClass('selected');
+                                        })
+                                        floorDiv.selectAll('button').each(function(d){
+                                            var elm = d3.select(this);
+                                            $(elm[0]).removeClass('selected');
+                                        })
+                                        el.classList.add('selected');
+                                        $scope.requery(d, 'flooruser');
+                                    });
 
                                 if (d.stealth === 1) {
                                     element
@@ -3493,6 +3493,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             var elm = d3.select(this);
                             var elel = elm[0];
                             var el = elel[0];
+                            console.log(el);
 
                             var element = elm.select('div').select('svg');
 
@@ -3575,7 +3576,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         zoomer([0,0], $scope.global.floorScale);
                     });*/
 
-                //}
+                }
 
                 plot(data, floorName);   
             // });
