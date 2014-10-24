@@ -85,42 +85,6 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         }
     }
 
-    $scope.ioc_users_requery = function() {
-        $rootScope.$broadcast('appendInfo', "", "", "clear");
-
-        var query = '/local_events/endpoint_map?type=floorquery';//+'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
-
-        $http({method: 'GET', url: query+'&typeinfo=iocusers'}).
-            success(function(data) {
-                console.log(data);
-                $scope.$broadcast('floorPlan', data, "iocusers");
-            });
-    }
-
-    $scope.active_users_requery = function() {
-        $rootScope.$broadcast('appendInfo', "", "", "clear");
-
-        var query = '/local_events/endpoint_map?type=floorquery'+'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
-
-        $http({method: 'GET', url: query+'&typeinfo=activeusers'}).
-            success(function(data) {
-                console.log(data);
-                $scope.$broadcast('floorPlan', data, "activeusers");
-            });
-    }
-
-    $scope.active_stealth_users_requery = function() {
-        $rootScope.$broadcast('appendInfo', "", "", "clear");
-
-        var query = '/local_events/endpoint_map?type=floorquery'+'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
-
-        $http({method: 'GET', url: query+'&typeinfo=activestealthusers'}).
-            success(function(data) {
-                console.log(data);
-                $scope.$broadcast('floorPlan', data, "activestealthusers");
-            });
-    }
-
     $scope.modelDelete = function (floors) {
         console.log(floors);
         $rootScope.modalFloors = floors;
