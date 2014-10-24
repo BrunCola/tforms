@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', 'timeFormat', '$sce', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, timeFormat, $sce) {
+angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', 'timeFormat', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, timeFormat) {
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
@@ -57,17 +57,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             });
         };
 
-        //$scope.preview_data.preview.embed.htmlSafe = $sce.trustAsHtml(preview_data.preview.embed.html);
-        // /$scope.testText = text;
-        //$scope.testText = $sce.trustAsHtml($scope.abcd);
-        $scope.testText = "<a href=''>test</a>";
-
-        $scope.to_trusted = function(html_code) {
-            return $sce.trustAsHtml(html_code);
-        }
-
         $scope.getChildIOC = function () {
-            // $scope.$broadcast('moodal', d);
             $scope.modalInstance = $modal.open({
                 templateUrl: 'showAllModal.html',
                 controller: descInstanceCtrl,
