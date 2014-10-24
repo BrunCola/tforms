@@ -3929,15 +3929,14 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
     };
 }]);
 
-angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', '$http', function ($timeout, $rootScope, $http) {
+angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$location', '$rootScope', '$http', function ($timeout, $location, $rootScope, $http) {
     return {
         link: function ($scope, element, attrs) {
 
             // $scope.$on('floorPlan', function (event, args, type) { 
                 var data = $scope.data.force;
                 var floorName = attrs.floorName;
-                var filterData;
-                var filterType;
+
                 $scope.userList = data;
                 // info div
                 var width = element.width();
@@ -3963,44 +3962,17 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     });
                 }
 
-                function getIconColour(endpoint, args, type) {
-                    if(args != undefined) {
-                        var colour = '#29ABE2';//the default
-                        args.forEach(function(d){
-                            if(d.lan_ip == endpoint.lan_ip && d.lan_zone == endpoint.lan_zone) {
-                                //change to switch when more buttons are added
-                                if (type === 'iocusers') {
-                                    colour = '#FF0000'; //CHANGE
-                                } else if(type === 'activeusers') {
-                                    colour = '#00FF00'; //CHANGE
-                                } else if(type === 'activestealthusers') {
-                                    colour = '#666666'; //CHANGE
-                                } else {
-                                    colour = '#29ABE2'; //the default
-                                }  
-                                return;                                                          
-                            }                        
-                        });
-
-                        return colour;
-                    } else {
-                        return '#29ABE2';
-                    }
-                //         return '#29ABE2';
-                }
+                
 
                 function plot(data, floor) {
                     ////////////////////
                     ///  LIST USERS  ///
                     ////////////////////
                     // MAKE LIST ELEMENTS
-                    // console.log(data);
-                    // console.log(floor);
                     userDiv.selectAll('button').remove();
                     userDiv.selectAll('button').data(data).enter()
                         .append('button').each(function(d){
-                            var iconColour = getIconColour(d, filterData, filterType);
-                            //var iconColour = '#29ABE2';
+                            var iconColour = '#29ABE2';
                             var name = d.lan_machine;
                             if (d.custom_user != null){
                                 name = d.custom_user;
@@ -4184,8 +4156,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     floorDiv.selectAll('button').data(data.filter(function(d){if (d.map === floor){ return true; }})).enter()
                         .append('button').each(function(d){
                             // count++;
-                            console.log(d);
-                            var iconColour = getIconColour(d, filterData, filterType);
+                            var iconColour = '#29ABE2';
                             var name = d.lan_machine;
                             if (d.custom_user !== null){
                                 name = d.custom_user;
@@ -4374,106 +4345,96 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 );
                             }
                         });
-                    
-                    // $rootScope.floorPlanTriggerArgs = undefined;
-                    // $rootScope.floorPlanTriggerType = undefined;
-                    // floorDiv.selectAll('button').data(data.filter(function(d){if (d.map === floor){ return true; }})).exit().remove();
-
-                  //  floorDiv.selectAll('button').exit().remove();
-
 
                 }
 
-
                 plot(data, floorName);   
+
+                //This function determines the colour of the endpoint based on what type 
+                //of trigger has been activated
+                function getIconColour(endpoint, args, type) {
+                    if(args != undefined) {
+                        var colour = '#29ABE2';//the default
+                        args.forEach(function(d){
+                            if(d.lan_ip == endpoint.lan_ip && d.lan_zone == endpoint.lan_zone) {
+                                //change to switch when more buttons are added
+                                if (type === 'iocusers') {
+                                    colour = '#FF0000'; //CHANGE
+                                } else if(type === 'activeusers') {
+                                    colour = '#00FF00'; //CHANGE
+                                } else if(type === 'activestealthusers') {
+                                    colour = '#666666'; //CHANGE
+                                } else {
+                                    colour = '#29ABE2'; //the default
+                                }  
+                                return;                                                          
+                            }                        
+                        });
+
+                        return colour;
+                    } else {
+                        return '#29ABE2';
+                    }
+                }
+
+                //The following function handles a trigger button being pressed, iterating over the endpoint
+                //icons and changing the colour of the ones matching the trigger filter
+                function handleTrigger(data, type) {
+                    d3.selectAll('button').each(function(d){
+                        if(d != undefined) {
+                            var id = d.id;
+                            var elm = d3.select(this);
+                            var elel = elm[0];
+                            var el = elel[0];
+
+                            var element = elm.select('div').select('svg');
+
+                            element.selectAll('path').style('fill', getIconColour(d, data, type));
+                            element.selectAll('circle').style('fill', getIconColour(d, data, type));
+                        }
+                    });
+                }
 
                 buttonDiv.selectAll('button').remove();
                 buttonDiv.append('button')
                     .html('Highlight Users with IOC')
                     .attr('class', 'resetButton')
                     .on('click', function(){
-                        // $scope.ioc_users_requery();
-                        // while($rootScope.floorPlanTriggerArgs === undefined) {
-                        //     console.log("busy waiting...");
-                        // }
                         var query = '/local_events/endpoint_map?type=floorquery';
                         var triggerData;
                         var triggerType;
                         $http({method: 'GET', url: query+'&typeinfo=iocusers'}).
                             success(function(result) {
-                                // $scope.$broadcast('floorPlan', data, "iocusers");
-                                console.log("in success");
-                                filterData = result;
-                                filterType = "iocusers";
-                                console.log(result);
-                                $scope.floors.forEach(function(d) {
-                                    console.log("calling plot");
-                                    console.log("floor:"+d.asset_name);
-                                    // floorDiv.selectAll('button').remove();
-                                    plot(data, d.asset_name);
-                                })
-
-                        });
+                                handleTrigger(result, "iocusers");
+                            });
                     });
                 buttonDiv.append('button')
                     .html('Highlight Active Users')
                     .attr('class', 'resetButton')
                     .on('click', function(){
-                        // $scope.active_users_requery();
-                        // $scope.floors.forEach(function(d) {
-                        //     plot(data, d.asset_name);
-                        // })
                         var query = '/local_events/endpoint_map?type=floorquery';
-                        // if ($location.$$search.start && $location.$$search.end) {
-                        //     query = query +'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
-                        // }
-                        var triggerData;
-                        var triggerType;
+                        if ($location.$$search.start && $location.$$search.end) {
+                            query = query +'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
+                        }
                         $http({method: 'GET', url: query+'&typeinfo=activeusers'}).
                             success(function(result) {
-                                // $scope.$broadcast('floorPlan', data, "iocusers");
-                                console.log("in success");
-                                filterData = result;
-                                filterType = "activeusers";
-                                console.log(result);
-                                $scope.floors.forEach(function(d) {
-                                    console.log("calling plot");
-                                    console.log("floor:"+d.asset_name);
-                                    // floorDiv.selectAll('button').remove();
-                                    plot(data, d.asset_name);
-                                })
+                                handleTrigger(result, "activeusers");
+                            });
 
-                        });
                     });
                 buttonDiv.append('button')
                     .html('Highlight Active Stealth Users')
                     .attr('class', 'resetButton')
                     .on('click', function(){
-                        // $scope.active_stealth_users_requery();
-                        // $scope.floors.forEach(function(d) {
-                        //     plot(data, d.asset_name);
-                        // })
                         var query = '/local_events/endpoint_map?type=floorquery';
-                        // if ($location.$$search.start && $location.$$search.end) {
-                        //     query = query +'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
-                        // }
-                        var triggerData;
-                        var triggerType;
+                        if ($location.$$search.start && $location.$$search.end) {
+                            query = query +'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
+                        }
                         $http({method: 'GET', url: query+'&typeinfo=activestealthusers'}).
                             success(function(result) {
-                                // $scope.$broadcast('floorPlan', data, "iocusers");
-                                console.log("in success");
-                                filterData = result;
-                                filterType = "activestealthusers";
-                                console.log(result);
-                                $scope.floors.forEach(function(d) {
-                                    console.log("calling plot");
-                                    console.log("floor:"+d.asset_name);
-                                    // floorDiv.selectAll('button').remove();
-                                    plot(data, d.asset_name);
-                                })
+                                handleTrigger(result, "activestealthusers");
+                            });
 
-                        });
                     });
             // });
         }
