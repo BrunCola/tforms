@@ -22,7 +22,6 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             $scope.crossfilterData.add(parent);
         });
         $scope.$broadcast('laneGraph');
-        console.log($scope.width)
         $scope.description = function (d, e) {
             $scope.mData = d;
             $scope.mTitle = e;
@@ -68,7 +67,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                         if ($scope.user_quar) {
                             return "'"+$scope.user_quar.lan_user+ "' is already Quarantined, would you like '"+$scope.user_quar.lan_user+"' to be removed from quarantine";
                         } else {
-                            return "Would you like to Quarantine '"+$scope.lan_user+"'";
+                            return "Would you like to Quarantine '"+$scope.infoData.lan_user+"'";
                         }
                     },
                     arquar: function() {
@@ -128,7 +127,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
         };
 
         $scope.getChildIOC = function() { 
-            $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?type=child_id&event_id='+$scope.event_id}).
+            $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?type=child_id&event_id='+$scope.infoData.id}).
             success(function(data) {
                 if (data[0] !== undefined) {
                     $scope.child_ioc = data[0];
@@ -147,46 +146,26 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
         $scope.$broadcast('treeChart', data.tree, {height: divHeight});
 
         $scope.infoData = data.info.main[0];
-        $scope.event_id = data.info.main[0].id;
-        $scope.lan_zone = data.info.main[0].lan_zone;
+
         $scope.lan_ip = $location.$$search.lan_ip;
-
-        $scope.lan_port = data.info.main[0].lan_port;
-        $scope.lan_user = data.info.main[0].lan_user;
-        $scope.machine_name = data.info.main[0].machine;
-        $scope.packets_recieved = data.info.main[0].out_packets;
-        $scope.bytes_received = data.info.main[0].out_bytes;
-
-        $scope.countryy = data.info.main[0].remote_country;
-        if (data.info.main[0].remote_cc){
-            $scope.flag = data.info.main[0].remote_cc.toLowerCase();
-        }
         $scope.remote_ip = $location.$$search.remote_ip;
-        $scope.remote_port = data.info.main[0].remote_port;
-        $scope.in_packets = data.info.main[0].in_packets;
-        $scope.in_bytes = data.info.main[0].in_bytes;
-        $scope.l7_proto = data.info.main[0].l7_proto;
-        $scope.remote_asn = data.info.main[0].remote_asn;
-        $scope.remote_asn_name = data.info.main[0].remote_asn_name;
 
         $scope.first = timeFormat(data.info.main[0].first, 'iochits');
         $scope.last = timeFormat(data.info.main[0].last, 'iochits');
 
         $scope.iocc = $location.$$search.ioc;
-        $scope.ioc_type = data.info.main[0].ioc_typeIndicator;
-        $scope.ioc_rule = data.info.main[0].ioc_rule;
 
         if (data.info.desc[0] !== undefined) {
             $scope.$broadcast('iocDesc', data.info.desc[0].description)
         }
 
-        $http({method: 'POST', url: '/actions/local_cc', data: {zone: $scope.lan_zone}}).
+        $http({method: 'POST', url: '/actions/local_cc', data: {zone: $scope.infoData.lan_zone}}).
         success(function(data) {
             $scope.zone_cc = data.zone_cc.toLowerCase();
             $scope.zone_country = data.zone_country;
         })
 
-        $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?trigger_type=Quarantine&user_quarantine='+$scope.lan_user}).
+        $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?trigger_type=Quarantine&user_quarantine='+$scope.infoData.lan_user}).
         success(function(data) {
             if (data[0] !== undefined) {
                 $scope.user_quar = data[0];
@@ -202,7 +181,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 
         // get user image
         if ($scope.lan_ip !== '-') {
-            $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?lan_zone='+$scope.lan_zone+'&lan_ip='+$scope.lan_ip+'&type=custom_user'}).
+            $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?lan_zone='+$scope.infoData.lan_zone+'&lan_ip='+$scope.lan_ip+'&type=custom_user'}).
             success(function(data) {
                 if (data[0] !== undefined) {
                     $scope.custom_user = data[0].custom_user;
@@ -211,7 +190,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
         }
 
         if ($scope.lan_ip !== '-') {
-            $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?lan_zone='+$scope.lan_zone+'&lan_ip='+$scope.lan_ip+'&type=assets'}).
+            $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?lan_zone='+$scope.infoData.lan_zone+'&lan_ip='+$scope.lan_ip+'&type=assets'}).
             success(function(data) {
                 if (data[0] !== undefined) {
                     //$scope.userImage = 'public/pages/assets/img/staff/'+data[0].file;

@@ -65,14 +65,14 @@
                                     <strong style="float:left" >Country: </strong><div style="float:left; margin-top:-8px;padding-left:10px;" class="f32"><span class="flag {{zone_cc}}"></span></div><span style="float:left"></span>
                                 </div>
                                 {{zone_country}}<br /> 
-                                <strong>Zone: </strong>{{lan_zone}}<br />
+                                <strong>Zone: </strong>{{infoData.lan_zone}}<br />
                                 <strong>Local IP: </strong>{{lan_ip}}<br />
                                 <a href="#!/endpoint_map?lan_ip={{lan_ip}}&lan_zone={{lan_zone}}&type=flooruser&typeinfo=userinfoload" class="epmap">Endpoint Map</a>
                             </div>
                             <div class="span6">
                                 <img class="logo" width="48" ng-src="{{userImage || 'public/system/assets/img/userplaceholder.jpg'}}" alt=""/><br />
-                                <strong>Machine name:<br /> </strong>{{machine_name}}<br />
-                                <strong>Custom name: </strong>{{custom_user || "-"}}
+                                <strong>Machine name:<br /> </strong>{{infoData.machine}}<br />
+                                <strong>Custom name: </strong>{{infoData.custom_user || "-"}}
                             </div>
                         </div>
                     </div>
@@ -81,11 +81,11 @@
                         <div class="row-fluid">
                             <div class="span6">
                                 <div class="row-fluid">
-                                    <strong style="float:left" >Country: </strong><div style="float:left; margin-top:-8px;padding-left:10px;" class="f32"><span class="flag {{flag}}"></span></div><span style="float:left"></span>
+                                    <strong style="float:left" >Country: </strong><div style="float:left; margin-top:-8px;padding-left:10px;" class="f32"><span class="flag {{infoData.remote_cc.toLowerCase()}}"></span></div><span style="float:left"></span>
                                 </div>
-                                {{countryy}}<br />
+                                {{infoData.remote_country}}<br />
                                 <strong>Remote IP: </strong>{{remote_ip}}<br />
-                                <strong>Remote ASN Name: </strong>{{remote_asn_name}}<br />
+                                <strong>Remote ASN Name: </strong>{{infoData.remote_asn_name}}<br />
                             </div>
                             <div class="span6">
                                 <strong>First IOC Hit: </strong>{{first}}<br />
@@ -97,9 +97,9 @@
                     <div class="span3" style="border-right:1px solid #ccc; margin-bottom:10px; padding-right: 10px;">
                         <h4 style="margin-top:-5px">IOC Information</h4>
                         <div class="row-fluid">
-                            <strong>IOC: </strong>{{iocc}}<br />
-                            <strong>IOC Type: </strong>{{ioc_type}}<br />
-                            <strong>IOC Info: </strong>{{desc}}<span ioc-desc></span><br />
+                            <strong>IOC: </strong>{{infoData.iocc}}<br />
+                            <strong>IOC Type: </strong>{{infoData.ioc_typeIndicator}}<br />
+                            <strong>IOC Info: </strong>{{infoData.desc}}<span ioc-desc></span><br />
                             <!-- <strong>IOC Rule: </strong>{{ioc_rule}}<span ioc-desc><br /> -->
                         </div>
                     </div>    

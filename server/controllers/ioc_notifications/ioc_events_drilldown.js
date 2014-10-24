@@ -1023,7 +1023,7 @@ module.exports = function(pool) {
                             {title: "Local User", select: "lan_user"},
                             {title: "Local IP", select: "lan_ip"},
                             {title: "Local Port", select: "lan_port"},
-                            {title: "Remote IP", select: "remote_ip"},
+                            {title: "Remote IP", select: "remote_ip", pattern: true},
                             {title: "Remote Port", select: "remote_port"},
                             {title: "Remote Country", select: "remote_country"},
                             // {title: "Remote ASN", select: "remote_asn_name"},
@@ -1525,66 +1525,109 @@ module.exports = function(pool) {
             }
         },
         pattern: function(req, res) {
-            console.log('processing')
+            console.log('processing');
             // set the datbase the user queries
             var database = req.session.passport.user.database;
-            var queryList = [];
-            for (var i in req.body) {
-                // set current query object
-                var thisQuery = {
-                    query: null,
-                    insert: []
-                }
-                // build string(s)
-                var queryString = 'SELECT lan_user, lan_ip FROM ';
-                // ignore the length key, since we placed it in manually for use on front-end
-                if (i !== 'length') {
-                    // switch for stating what query type connects to what table
-                    switch (req.body[i].point.type) {
-                        case 'Conn':
-                            queryString += 'conn';
-                        break;
-                        default:
-                            queryString += 'conn';
-                        break;
+            // we make a whitelist since we will be relying on the front end to send up custom selects
+            var allowedSelects = ['lan_user', 'lan_ip'];
+            var results = [];
+            function makeQueries() {
+                var queryList = [];
+                var selectList = ['lan_user', 'lan_ip']; // TEMPORARY.. this is going to be sent up with user
+                var selectString = '';
+                // make sure selects are present
+                if (selectList.length < 1) { return false; }
+                for (var n in selectList) {
+                    // bail out if select is not in our allowed list
+                    if (allowedSelects.indexOf(selectList[n]) === -1) { return false; }
+                    // append string
+                    selectString += selectList[n];
+                    // if not at end of array, use a comma
+                    if (selectList.indexOf(selectList[n]) !== (selectList.length-1)) {
+                        selectString += ',';
+                    // otherwise just add a space
                     }
-                    queryString += ' WHERE ';
-                    var total = 1; // we count so the last inserted doesn't get an AND.. we also know theres at least one
-                    for (var s in req.body[i].search) {
-                        // ignore the length key again, since we placed it in manually for use on front-end
-                        if (s !== 'length') {
-                            var searchItem = req.body[i].search[s];
-                            if (total === req.body[i].search.length) {
-                                queryString += searchItem.select+' = ? ';
-                            } else {
-                                queryString += searchItem.select+' = ? AND ';
-                            }
-                            // push escaped values seperately
-                            thisQuery.insert.push(searchItem.value);
-                            total++;
+                }
+                for (var i in req.body) {
+                    if (i !== 'length') { // ignore the length key, since we placed it in manually for use on front-end 
+                        // set current query object
+                        var thisQuery = {
+                            query: null,
+                            insert: [],
+                            passed: req.body[i].point
                         }
+                        // build string(s)
+                        var queryString = 'SELECT '+selectString+' FROM ';
+                        // switch for stating what query type connects to what table
+                        switch (req.body[i].point.type) {
+                            case 'Conn':
+                                queryString += 'conn';
+                            break;
+                            default:
+                                queryString += 'conn';
+                            break;
+                        }
+                        queryString += ' WHERE ';
+                        var total = 1; // we count so the last inserted doesn't get an AND.. we also know theres at least one
+                        for (var s in req.body[i].search) {
+                            // ignore the length key again, since we placed it in manually for use on front-end
+                            if (s !== 'length') {
+                                var searchItem = req.body[i].search[s];
+                                if (total === req.body[i].search.length) {
+                                    queryString += searchItem.select+' = ? ';
+                                } else {
+                                    queryString += searchItem.select+' = ? AND ';
+                                }
+                                // push escaped values seperately
+                                thisQuery.insert.push(searchItem.value);
+                                total++;
+                            }
+                        }
+                        queryString += 'GROUP BY '+selectString;
+                        thisQuery.query = queryString;
+                        queryList.push(thisQuery);
                     }
-                    queryString += 'GROUP BY lan_user, lan_ip';
-                    thisQuery.query = queryString;
-                    queryList.push(thisQuery);
+                }
+                return queryList;
+            }
+            var queries = makeQueries();
+            function getAsync(queries) {
+                var asyncList = [];
+                for (var q in queries) {
+                    // push each query object to out async array to be processed
+                    asyncList.push(
+                        function(callback) {
+                            new query(queries[q], {database: database, pool: pool}, function(err, data, passed){
+                                results.push({
+                                    result: data,
+                                    point: passed
+                                })
+                                callback();
+                            });
+                        }
+                    )
+                }
+                return asyncList;
+            }
+            var asyncArr = getAsync(queries);
+            function compare(data) {
+                for (var i in data) {
+                    var thisPoint = data[i].point;
+                    var pointResults = data[i].result;
+                    console.log(pointResults);
+                    // point results is an array, so loop through
+                    for (var r in pointResults) {
+                        var thisRow = pointResults[r];
+                    }
                 }
             }
-            var asyncList = []; var results = [];
-            for (var q in queryList) {
-                // push each query object to out async array to be processed
-                asyncList.push(
-                    function(callback) {
-                        new query(queryList[q], {database: database, pool: pool}, function(err,data){
-                            results.push(data)
-                            callback();
-                        });
-                    }
-                )
-            }
-            async.parallel(asyncList, function(err) {
+            // process our async list here
+            async.parallel(asyncArr, function(err) {
                 if (err) throw console.log(err);
-                // return here
-                console.log(results);
+                // compare functions
+                compare(results);
+                // each parent array is one query (point) and could have many object matches inside
+                // for every pair in each parent, search all other 
             });
         }
     }
