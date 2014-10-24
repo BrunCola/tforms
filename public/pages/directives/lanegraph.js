@@ -716,12 +716,21 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 //working here
 
                 // logic for add/remove buttons in sidebar (when patterns are on)
-                function addRemoveBtn(row, data) {
+                function addRemoveBtn(row, data, elm) {
+                    elm.select('svg').empty(); // this will redraw all on every click (not very efficient, but we'll fix this later)
                     function addBtn() {
-                        return '+ButtonHere';
+                        elm
+                            .append('rect')
+                            .attr('width', 10)
+                            .attr('height', 10)
+                            .style('fill', '#FFFFFF')
                     }
                     function removeBtn(){
-                        return 'remove';
+                        elm
+                            .append('rect')
+                            .attr('width', 10)
+                            .attr('height', 10)
+                            .style('fill', '#cc0000')
                     }
                     if (data.id in $scope.pattern.selected) {
                         if (row.name in $scope.pattern.selected[data.id].search) {
@@ -751,14 +760,19 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             }
                         });
                     if ($scope.pattern.searching) {
-                        line.append('span')
-                            .html(function(d) {
-                                return addRemoveBtn(d, data);
-                            })
-                            .on('click', function(d){
+                        line.each(function(d){
+                            var elm = d3.select(this)
+                                .append('div')
+                                .style('float', 'right')
+                                .append('svg')
+                                .attr('width', 10)
+                                .attr('height', 10);
+                            addRemoveBtn(d, data, elm);
+                            elm.on('click', function(d){
                                 $scope.addSearch(data, d);
-                                d3.select(this).html(addRemoveBtn(d, data));
+                                addRemoveBtn(d, data, elm);
                             })
+                        })
                     }
                 }
 
