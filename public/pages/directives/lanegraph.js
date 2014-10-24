@@ -336,7 +336,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .style('opacity', '0.4')
                             .on('mouseover', function(){
                                 d3.select(this)
-                                .attr('transform', 'scale(2) translate(-3, -5)');
+                                .attr('transform', 'scale(2.4) translate(-4, -5)');
                             })
                             .on('mouseout', function(){
                                 d3.select(this)
@@ -371,7 +371,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .style('opacity', '0.6')
                             .on('mouseover', function(){
                                 d3.select(this)
-                                .attr('transform', 'scale(2) translate(-3, -6) ')
+                                .attr('transform', 'scale(2.4) translate(-3, -5) ')
                                 .attr('stroke', '#fff')
                                 .attr('stroke-width', '1');
                             })
@@ -714,8 +714,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
 
 //working here
-                var addRemBttnWidth = 30;
-                var addRemBttnHeight = 16;
+                var addRemBttnWidth = 32;
+                var addRemBttnHeight = 18;
 
                 // logic for add/remove buttons in sidebar (when patterns are on)
                 function addRemoveBtn(row, data, elm) {
@@ -730,7 +730,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .append('path')
                             .attr('d', 'M5.7,0v4.4H10v1.2H5.7V10H4.3V5.6H0V4.4h4.3V0H5.7z')
                             .style('fill', '#fff')
-                            .attr('transform', 'translate(10,3) scale(1)')
+                            .attr('transform', 'translate(10,4)')
                     }
                     function removeBtn(){
                         elm
@@ -738,6 +738,19 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .attr('width', addRemBttnWidth)
                             .attr('height', addRemBttnHeight)
                             .style('fill', '#cc0000')
+                        elm
+                            .append('polygon')
+                            .attr('points', '5.7,0 5.7,4.4 10,4.4 10,5.6 5.7,5.6 5.7,10 4.3,10 4.3,5.6 0,5.6 0,4.4 4.3,4.4 4.3,0 ')
+                            .style('fill', '#fff')
+                            .attr('transform', 'rotate(45, 5, 18)')
+                        // .append('animateTransform')
+                        //     .attr('attributeType', 'xml')
+                        //     .attr('attributeName', 'transform')
+                        //     .attr('type', 'rotate')
+                        //     .attr('from', '0 0 3')
+                        //     .attr('to', '45 0 3')
+                        //     .attr('dur', '1s')
+                        //     .attr('repeatCount', 'none')
                     }
                     if (!(row.pattern)){return};
                     if (data.id in $scope.pattern.selected) {
@@ -760,7 +773,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         .selectAll('li')
                         .data(data.expand)
                         .enter().append('li')
-                        .style('line-height', 2)
+                        .style('line-height', 2.4)
                         .html(function(d){
                             if (d.name === 'Time') {
                                 return '<strong>'+d.name+':</strong> '+timeFormat(d.value, 'laneGraphExpanded')+'';      
@@ -1111,9 +1124,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                             // elm.select('.infoDivExpanded').html(laneInfoAppend(d.expand));
                                             laneInfoAppend(d, elm);
                                         }
-                                    });
-                                    // .attr('class', 'infoDivExpandBtn')
-                                    // .html('+');
+                                    })
+                                    .attr('class', 'infoDivExpandBtn')
+                                    .html('+');
                                 elm
                                     .append('div')
                                     .style('display', 'none')
