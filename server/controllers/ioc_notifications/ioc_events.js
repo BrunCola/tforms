@@ -175,6 +175,7 @@ module.exports = function(pool) {
                                 '`remote_asn_name`,'+
                                 '`remote_country`,'+
                                 '`remote_cc`,'+
+                                '`ioc_childID`,'+
                                 'sum(`in_packets`) AS in_packets,'+
                                 'sum(`out_packets`) AS out_packets,'+
                                 'sum(`in_bytes`) AS in_bytes,'+
@@ -206,7 +207,7 @@ module.exports = function(pool) {
                             dView: true,
                             link: {
                                 type: 'ioc_events_drilldown',
-                                val: ['lan_zone','lan_ip','remote_ip','ioc','ioc_attrID','lan_user'],
+                                val: ['lan_zone','lan_ip','remote_ip','ioc','ioc_attrID','lan_user','ioc_childID'],
                                 crumb: false
                             },
                         },
@@ -267,7 +268,9 @@ module.exports = function(pool) {
                                 'hour(from_unixtime(`time`)),'+
                                 '`remote_country`,'+
                                 '`ioc_severity`,'+
-                                '`ioc`',
+                                '`ioc` '+
+                            'ORDER BY '+
+                                '`ioc_severity` DESC ',
                     insert: [start, end]
                 }
                 async.parallel([

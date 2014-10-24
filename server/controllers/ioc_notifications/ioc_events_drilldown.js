@@ -702,13 +702,25 @@ module.exports = function(pool) {
                         laneGraph: result
                     });
                 });
-            } else if (req.query.trigger_type === 'quarantine') {
-                new query({query: 'SELECT count(*) AS user_trigger FROM `script_trigger` WHERE `flag` = ? ', insert: [req.query.trigger_user]}, {database: database, pool: pool}, function(err,data){
+            } else if (req.query.trigger_type === 'Quarantine') {
+                new query({query: 'SELECT * FROM `stealth_user` WHERE `lan_user` = ? AND `group` = ? ', insert: [req.query.user_quarantine,req.query.trigger_type]}, {database: database, pool: pool}, function(err,data){
                     if (data) {
                         res.json(data);
                     }
                 });   
-            } else if (req.query.type === 'assets') {
+            }  else if (req.query.trigger_type === 'firewall') {
+                new query({query: 'SELECT count(*) AS firewall_count FROM `firewall` ', insert: []}, {database: database, pool: pool}, function(err,data){
+                    if (data) {
+                        res.json(data);
+                    }
+                });   
+            } else if (req.query.type === 'child_id') {
+                new query({query: 'SELECT `ioc`, `typeIndicator` FROM `ioc` WHERE id_child = ? ', insert: [req.query.ioc_childID]}, {database: 'cyrin', pool: pool}, function(err,data){
+                    if (data) {
+                        res.json(data);
+                    }
+                });  
+            }else if (req.query.type === 'assets') {
                 if (req.query.lan_ip && req.query.lan_zone) {
                     var sql = {
                         query: 'SELECT '+
@@ -1011,7 +1023,7 @@ module.exports = function(pool) {
                             {title: "Local User", select: "lan_user"},
                             {title: "Local IP", select: "lan_ip"},
                             {title: "Local Port", select: "lan_port"},
-                            {title: "Remote IP", select: "remote_ip"},
+                            {title: "Remote IP", select: "remote_ip", pattern: true},
                             {title: "Remote Port", select: "remote_port"},
                             {title: "Remote Country", select: "remote_country"},
                             // {title: "Remote ASN", select: "remote_asn_name"},
@@ -1294,6 +1306,7 @@ module.exports = function(pool) {
                     var info = {};
                     var InfoSQL = {
                         query: 'SELECT '+
+                                    '`id`, '+
                                     '`time`, '+
                                     'min(`time`) as first, '+
                                     'max(`time`) as last, '+
@@ -1472,10 +1485,10 @@ module.exports = function(pool) {
         },
         set_info: function(req, res) {
             var database = req.session.passport.user.database;
-            if (req.query.trigger_type === 'quarantine') {
+            if (req.query.trigger_type === 'Quarantine' || req.query.trigger_type === 'rQuarantine') {
                 var update_flag = {
-                    query: "INSERT INTO `script_trigger` (`type`, `flag`) VALUES (?,?)",
-                    insert: [req.query.trigger_type, req.query.flag]
+                    query: "INSERT INTO `script_trigger` (`type`, `flag`,`time`, `email`) VALUES (?,?,?,?)",
+                    insert: [req.query.trigger_type, req.query.flag, req.query.currenttime, req.query.email]
                 }
                 new query(update_flag, {database: database, pool: pool}, function(err,data){
                     if (err) {
@@ -1485,7 +1498,7 @@ module.exports = function(pool) {
                     }
                 });
 
-            } else if (req.query.trigger_type === 'stealthquarantine') {
+            } /*else if (req.query.trigger_type === 'stealthquarantine') {
                var update_quarantine = {
                     query: "INSERT INTO `stealth_quarantine` (`time`, `email`, `lan_zone`, `lan_user`) VALUES (?,?,?,?)",
                     insert: [req.query.currenttime, req.query.email, req.query.lan_zone, req.query.lan_user]
@@ -1497,7 +1510,7 @@ module.exports = function(pool) {
                         res.send(200);
                     }
                 });
-            } else if (req.query.trigger_type === 'firewall') {
+            } */else if (req.query.trigger_type === 'firewall') {
                 var update_firewall = {
                     query: "INSERT INTO `firewall` (`time`,`email`,`rule`,`type`) VALUES (?,?,?,?)",
                     insert: [req.query.currenttime, req.query.email, req.query.rule, req.query.type]
@@ -1510,6 +1523,101 @@ module.exports = function(pool) {
                     }
                 });
             }
+        },
+        pattern: function(req, res) {
+            console.log('processing');
+            // set the datbase the user queries
+            var database = req.session.passport.user.database;
+            var allowedSelects = ['lan_user', 'lan_ip'];
+            var results = [];
+            function makeQueries() {
+                var queryList = [];
+                var selectList = ['lan_user', 'lan_ip']; // TEMPORARY.. this is going to be sent up with user
+                var selectString = '';
+                // make sure selects are present
+                if (selectList.length < 1) { return false; }
+                for (var n in selectList) {
+                    // bail out if select is not in our allowed list
+                    if (allowedSelects.indexOf(selectList[n]) === -1) { return false; }
+                    // append string
+                    selectString += selectList[n];
+                    // if not at end of array, use a comma
+                    if (selectList.indexOf(selectList[n]) !== (selectList.length-1)) {
+                        selectString += ',';
+                    // otherwise just add a space
+                    }
+                }
+                for (var i in req.body) {
+                    if (i !== 'length') { // ignore the length key, since we placed it in manually for use on front-end 
+                        // set current query object
+                        var thisQuery = {
+                            query: null,
+                            insert: [],
+                            passed: req.body[i].point
+                        }
+                        // build string(s)
+                        var queryString = 'SELECT '+selectString+' FROM ';
+                        // switch for stating what query type connects to what table
+                        switch (req.body[i].point.type) {
+                            case 'Conn':
+                                queryString += 'conn';
+                            break;
+                            default:
+                                queryString += 'conn';
+                            break;
+                        }
+                        queryString += ' WHERE ';
+                        var total = 1; // we count so the last inserted doesn't get an AND.. we also know theres at least one
+                        for (var s in req.body[i].search) {
+                            // ignore the length key again, since we placed it in manually for use on front-end
+                            if (s !== 'length') {
+                                var searchItem = req.body[i].search[s];
+                                if (total === req.body[i].search.length) {
+                                    queryString += searchItem.select+' = ? ';
+                                } else {
+                                    queryString += searchItem.select+' = ? AND ';
+                                }
+                                // push escaped values seperately
+                                thisQuery.insert.push(searchItem.value);
+                                total++;
+                            }
+                        }
+                        queryString += 'GROUP BY '+selectString;
+                        thisQuery.query = queryString;
+                        queryList.push(thisQuery);
+                    }
+                }
+                return queryList;
+            }
+            var queries = makeQueries();
+            console.log(queries)
+            function getAsync(queries) {
+                var asyncList = [];
+                for (var q in queries) {
+                    // push each query object to out async array to be processed
+                    asyncList.push(
+                        function(callback) {
+                            new query(queries[q], {database: database, pool: pool}, function(err, data, passed){
+                                results.push({
+                                    result: data,
+                                    point: passed
+                                })
+                                callback();
+                            });
+                        }
+                    )
+                }
+                return asyncList;
+            }
+            var asyncArr = getAsync(queries);
+            // process our async list here
+            async.parallel(asyncArr, function(err) {
+                if (err) throw console.log(err);
+                // compare functions
+                console.log(results);
+                // each parent array is one query (point) and caould hoem many object matches inside
+                // for every pair in each parent, search all other 
+            });
         }
     }
 };

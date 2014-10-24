@@ -86,6 +86,14 @@ p{
   font-size: 12px;
 }*/
 
+
+
+.lanePatternInfoPane {
+  position: absolute;
+  display: block;
+  background-color: #434154;
+}
+
 .node{
   border: #f0f solid 1px !important;
 }
@@ -93,16 +101,16 @@ p{
   /*overflow: hidden !important;*/
 }
 
-#lanegraphinfo li {
+.laneInfo {
   list-style: none;
   min-height: 30px;
   padding: 7px;
   line-height: 20px;
 }
-#lanegraphinfo li:hover {
+.laneInfo:hover {
   cursor: pointer;
 }
-#lanegraphinfo li .infoDivExpandBtn {
+.laneInfo .infoDivExpandBtn {
   height: 25px;
   width: 25px;
   background-color: #CCC;
@@ -115,14 +123,13 @@ p{
   color: #FFF;
   line-height: 25px;
 }
-#lanegraphinfo li .lanegraphlist{
+.laneInfo .lanegraphlist{
   width: 85%;
   display: inline-block;
   overflow: auto;
   word-wrap:break-word;
-
 }
-#lanegraphinfo li .infoDivExpanded {
+/*#lanegraphinfo li .infoDivExpanded {
   height: 00%;
   border-top: 1px;
   padding-top: 10px;
@@ -130,8 +137,8 @@ p{
   color: #ccc;
   font-weight: normal;
 }
-
-#lanegraphinfo li:nth-child(odd) {
+*/
+.laneInfo:nth-child(odd) {
   background-color: #DEDEDE;
 }
 .laneactive {
@@ -469,7 +476,7 @@ td.file {
 
 
     #lanegraph .chart {
-      background: #58595B;
+      background: #3f3f3f;
     }
 
     .mini text {
@@ -2171,10 +2178,22 @@ Datatables Plugin(in v1.3)
   fill: #fff; width: 35px; height: 35px; float: left;
 }
 .action-text{
-  display:table-cell; vertical-align: middle; height: 41px; color: red; font-size: 16px; padding-left: 5px;
+  display:table-cell; vertical-align: middle; height: 41px; font-size: 16px; padding-left: 5px;
 }
 .action-bttns{
-  float: left; background-color: red; border-radius: 12px; padding: 3px 6px 3px 6px; border-width: 0px;
+  float: left; border-radius: 12px; padding: 3px 6px 3px 6px; border-width: 0px;
+}
+.action-text.red{
+  color:red;
+}
+.action-bttns.red{
+  background-color: red;
+}
+.action-text.blue{
+  color:#377FC7;
+}
+.action-bttns.blue{
+  background-color: #377FC7;
 }
 a.epmap{
   color: #4b8df8;

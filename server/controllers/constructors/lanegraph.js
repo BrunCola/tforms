@@ -86,10 +86,15 @@ module.exports = function (sql, conn, callback) {
                 for (var d in sql.params) {
                     // check if value is undefined... it may be because of our veriable denial process above 
                     if (data[sql.params[d].select] !== undefined) {
-                        expand.push({
-                            name: sql.params[d].title,
-                            value: data[sql.params[d].select]
-                        })
+                        var expandObj = {
+                            "name": sql.params[d].title,
+                            "value": data[sql.params[d].select],
+                            "select": sql.params[d].select
+                        };
+                        if (sql.params[d].pattern) {
+                            expandObj.pattern = true;
+                        }
+                        expand.push(expandObj)
                     }
                 }
                 data.info = laneInfo(data);

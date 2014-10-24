@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('firewallController', ['$scope', '$state
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/local_events/firewall?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/general_network/firewall?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/local_events/firewall?';
+        query = '/general_network/firewall?';
     }
     $http({method: 'GET', url: query}).
     success(function(data) {
