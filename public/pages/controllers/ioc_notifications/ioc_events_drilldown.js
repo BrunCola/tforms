@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', 'timeFormat', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, timeFormat) {
+angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', 'timeFormat', '$sce', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, timeFormat, $sce) {
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
@@ -57,23 +57,24 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             });
         };
 
+        //$scope.preview_data.preview.embed.htmlSafe = $sce.trustAsHtml(preview_data.preview.embed.html);
+        // /$scope.testText = text;
+        //$scope.testText = $sce.trustAsHtml($scope.abcd);
+        $scope.testText = "<a href=''>test</a>";
+
+        $scope.to_trusted = function(html_code) {
+            return $sce.trustAsHtml(html_code);
+        }
+
         $scope.getChildIOC = function () {
             // $scope.$broadcast('moodal', d);
             $scope.modalInstance = $modal.open({
-                templateUrl: 'descModal.html',
+                templateUrl: 'showAllModal.html',
                 controller: descInstanceCtrl,
                 keyboard: true,
                 resolve: {
                     data: function() {
-                        var text = "";  
-                        var htmltext                      
-                        for (var i in $scope.child_ioc) {
-                            text += "<strong>" + i + ": </strong>" + $scope.child_ioc[i] + "<br/>";
-                            //text += i + ": "  + $scope.child_ioc[i] ;
-                        }
-                        // var htmlText = $.parseHTML(text);
-                        console.log(text);
-                        return text;
+                        return $scope.child_ioc;
                     },
                     ioc: function() {
                         return "Child ID Information";
