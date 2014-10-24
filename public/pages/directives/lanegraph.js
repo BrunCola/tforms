@@ -714,6 +714,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
 
 //working here
+                var addRemBttnWidth = 30;
+                var addRemBttnHeight = 16;
 
                 // logic for add/remove buttons in sidebar (when patterns are on)
                 function addRemoveBtn(row, data, elm) {
@@ -721,15 +723,20 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     function addBtn() {
                         elm
                             .append('rect')
-                            .attr('width', 10)
-                            .attr('height', 10)
-                            .style('fill', '#FFFFFF')
+                            .attr('width', addRemBttnWidth)
+                            .attr('height', addRemBttnHeight)
+                            .style('fill', '#8cc63f')
+                        elm
+                            .append('path')
+                            .attr('d', 'M5.7,0v4.4H10v1.2H5.7V10H4.3V5.6H0V4.4h4.3V0H5.7z')
+                            .style('fill', '#fff')
+                            .attr('transform', 'translate(10,3) scale(1)')
                     }
                     function removeBtn(){
                         elm
                             .append('rect')
-                            .attr('width', 10)
-                            .attr('height', 10)
+                            .attr('width', addRemBttnWidth)
+                            .attr('height', addRemBttnHeight)
                             .style('fill', '#cc0000')
                     }
                     if (data.id in $scope.pattern.selected) {
@@ -752,11 +759,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         .selectAll('li')
                         .data(data.expand)
                         .enter().append('li')
+                        .style('line-height', 2)
                         .html(function(d){
                             if (d.name === 'Time') {
-                                return '<strong>'+d.name+':</strong> '+timeFormat(d.value, 'laneGraphExpanded')+'<br />';      
+                                return '<strong>'+d.name+':</strong> '+timeFormat(d.value, 'laneGraphExpanded')+'';      
                             } else {
-                                return '<strong>'+d.name+':</strong> '+d.value+'<br />';
+                                return '<strong>'+d.name+':</strong> '+d.value+'';
                             }
                         });
                     if ($scope.pattern.searching) {
@@ -765,8 +773,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .append('div')
                                 .style('float', 'right')
                                 .append('svg')
-                                .attr('width', 10)
-                                .attr('height', 10);
+                                .attr('width', addRemBttnWidth)
+                                .attr('height', addRemBttnHeight);
                             addRemoveBtn(d, data, elm);
                             elm.on('click', function(d){
                                 $scope.addSearch(data, d);
@@ -1102,9 +1110,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                             // elm.select('.infoDivExpanded').html(laneInfoAppend(d.expand));
                                             laneInfoAppend(d, elm);
                                         }
-                                    })
-                                    .attr('class', 'infoDivExpandBtn')
-                                    .html('+');
+                                    });
+                                    // .attr('class', 'infoDivExpandBtn')
+                                    // .html('+');
                                 elm
                                     .append('div')
                                     .style('display', 'none')
