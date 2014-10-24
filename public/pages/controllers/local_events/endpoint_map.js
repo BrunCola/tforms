@@ -15,6 +15,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 d.id = count++;
             })
             //$scope.$broadcast('floorPlan');
+            $scope.global.floorScale = 1;
             $scope.$broadcast('spinnerHide');
             $scope.floors = data.floor;
         }

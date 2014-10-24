@@ -57,7 +57,6 @@ module.exports = function (sql, queries, conn, callback) {
     function compareUsers(obj) {
         var user = obj.lan_user;
         if (user in uniqueLinks) {
-            console.log(user);
             //for (var i in uniqueLinks[user]) { // -- extra loop *** Prints double the nodes ***
                 var arr = [];
                 arr = Object.keys(uniqueLinks[user]);
