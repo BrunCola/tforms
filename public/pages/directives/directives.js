@@ -3493,12 +3493,13 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             var elm = d3.select(this);
                             var elel = elm[0];
                             var el = elel[0];
-                            console.log(el);
 
                             var element = elm.select('div').select('svg');
 
                             element.selectAll('path').style('fill', getIconColour(d, data, type));
                             element.selectAll('circle').style('fill', getIconColour(d, data, type));
+                            element.selectAll('rect').style('fill', getIconColour(d, data, type));
+                            element.selectAll('polygon').style('fill', getIconColour(d, data, type));
                         }
                     });
                 }
