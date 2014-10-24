@@ -138,14 +138,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr("dy", ".5ex")
                     .attr("text-anchor", "end");
 
-                main.append("g").selectAll(".laneLines")
-                    .data($scope.lanes)
-                    .enter().append('rect')
-                    .attr('x', -m[1])
-                    .attr('y', function(d, i) {return y1(i) -m[0];})
-                    .attr('width', '10')
-                    .attr('height', '10')
-                    .style('fill', '#fff');
+
+// it was here
+
 
                 var lineStory = main.append("g")
                     .attr("class", "storyLine");
@@ -493,6 +488,33 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                 }
  
+
+//testing icons beside lane text 
+                //     var square =main.selectAll(".laneLines")
+                //     .data($scope.lanes)
+                //     .enter().append('rect')
+                //     .attr('x', -m[1])
+                //     .attr('y', function(d, i) {return y1(i) -m[0];})
+                //     .attr('width', '10')
+                //     .attr('height', '10')
+                //     .style('fill', '#ccc');
+
+                    // var square = main.append("g").selectAll(".laneLines")
+                    // .data($scope.lanes)
+                    // .enter().append('rect')
+                    // .attr('x', -m[1])
+                    // .attr('y', function(d, i) {return y1(i) -m[0];})
+                    // .attr('width', '10')
+                    // .attr('height', '10')
+                    // .style('fill', '#fff');
+
+                    // square.each(function(d){
+                    // var elm = d3.select(this);
+                    // d.type = 
+                    // someFunction(d.type, elm)
+                    // })
+
+
                 var brush = d3.svg.brush()
                     .x(x1)
                     .on("brushend", mouseup);
@@ -691,10 +713,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                 }
 
+//working here
+
                 // logic for add/remove buttons in sidebar (when patterns are on)
                 function addRemoveBtn(row, data) {
                     function addBtn() {
-                        return 'add';
+                        return '+ButtonHere';
                     }
                     function removeBtn(){
                         return 'remove';
@@ -713,6 +737,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 // logic for appending row information in sidebar
                 function laneInfoAppend(data, element) {
                     element.select('.infoDivExpanded').selectAll('li').remove();
+                    
                     var line = element
                         .select('.infoDivExpanded')
                         .selectAll('li')
@@ -736,6 +761,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             })
                     }
                 }
+
+//to here
+
 
                 // info div
                 var infoHeight = element.height();
