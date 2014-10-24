@@ -4191,16 +4191,16 @@ container.append("g")
                     // d3.select(this).style('top', d.y = d3.event.y).style('left', d.x = d3.event.x);
                     //d.x = (d3.mouse($("#floorContainer")[0])[0]*currScale);
                     //d.y = (d3.mouse($("#floorContainer")[0])[1]*currScale);
-                    //d.x = (d3.mouse($("#floorContainer")[0])[0])-25;
-                    //d.y = (d3.mouse($("#floorContainer")[0])[1])-25;
-                    d.x = d3.event.x;
-                    d.y = d3.event.y;
-                    console.log(d.x);
-                    console.log(d.y);
+                    d.x = (d3.mouse($("#floorContainer")[0])[0])-25;
+                    d.y = (d3.mouse($("#floorContainer")[0])[1])-25;
+                    /*d.x = d3.event.x;
+                    d.y = d3.event.y;*/
 
                     //$scope.global.floorScale = scale;
-                    d3.select(this).style('top', d.y).style('left', d.x );
-                    // d3.select(this).attr("transform", "translate("+d.x + "," + d.y+")scale(1)")
+                    //d3.select(this).style('top', d.y).style('left', d.x );
+                     d3.select(this).attr("transform", "translate("+d.x + "," + d.y+")scale(1)")
+                    console.log(d.x);
+                    console.log(d.y);
 
                     //console.log(d.x);
                     //console.log(d.y);
@@ -4700,8 +4700,8 @@ container.append("g")
                                 var elm = d3.select(this);
                                 elm
                                     .attr('draggable', "true")
-                                     .style('top', d.x+"px")
-                                     .style('left', d.y+"px")
+                                     // .style('top', d.x+"px")
+                                     // .style('left', d.y+"px")
                                      //.call(drag)
                                      //.style("position", "absolute")
                                 var elel = elm[0];
