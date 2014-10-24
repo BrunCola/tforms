@@ -3145,10 +3145,16 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     userDiv.selectAll('button').remove();
                     userDiv.selectAll('button').data(data).enter()
                         .append('button').each(function(d){
-                            var iconColour = '#29ABE2';
+                            var iconColour = '#29ABE2'; 
                             var name = d.lan_machine;
                             if (d.custom_user != null){
                                 name = d.custom_user;
+                            }
+                            if (name === ""){
+                                name = d.lan_ip;
+                            }
+                            if (name === ""){
+                                name = d.lan_mac;
                             }
                             if ((d.x === 0) && (d.y === 0)) {
                                 var id = d.id;
@@ -3338,10 +3344,16 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             .call(drag)
                         .append('xhtml:button')
                             .each(function(d){
-                            if ((d.x > 0) || (d.y > 0)){
+                            if ((d.x > 0) || (d.y > 0)){                                
                                 var name = d.lan_machine;
-                                if (d.custom_user !== null){
+                                if (d.custom_user != null){
                                     name = d.custom_user;
+                                }
+                                if (name === ""){
+                                    name = d.lan_ip;
+                                }
+                                if (name === ""){
+                                    name = d.lan_mac;
                                 }
                                 var iconColour = getIconColour(d);
                                 var id = d.id;
