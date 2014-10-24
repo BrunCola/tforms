@@ -1110,9 +1110,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                             // elm.select('.infoDivExpanded').html(laneInfoAppend(d.expand));
                                             laneInfoAppend(d, elm);
                                         }
-                                    });
-                                    // .attr('class', 'infoDivExpandBtn')
-                                    // .html('+');
+                                    })
+                                    .attr('class', 'infoDivExpandBtn')
+                                    .html('+');
                                 elm
                                     .append('div')
                                     .style('display', 'none')
