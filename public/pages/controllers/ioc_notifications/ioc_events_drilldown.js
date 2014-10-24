@@ -65,12 +65,14 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                 keyboard: true,
                 resolve: {
                     data: function() {
-                        var text = "";                        
+                        var text = "";  
+                        var htmltext                      
                         for (var i in $scope.child_ioc) {
-                            //text += "<strong>" + i + ": </strong>" + $scope.child_ioc[i] + "<br/>";
-                            text += i + ": "  + $scope.child_ioc[i] ;
+                            text += "<strong>" + i + ": </strong>" + $scope.child_ioc[i] + "<br/>";
+                            //text += i + ": "  + $scope.child_ioc[i] ;
                         }
                         // var htmlText = $.parseHTML(text);
+                        console.log(text);
                         return text;
                     },
                     ioc: function() {
