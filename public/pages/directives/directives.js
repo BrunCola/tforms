@@ -4679,7 +4679,9 @@ container.append("g")
                         .append('svg:foreignObject')
                             .attr('height', "50px")
                             .attr('width', "100px")
-                            .attr("transform", "translate(100,100)scale(1)")
+                            .attr("transform", function(d){
+                                return "translate("+d.x+","+d.y+")scale(1)";
+                            })
                             .call(drag)
                         .append('xhtml:div')
                             //.call(drag)
