@@ -1548,15 +1548,15 @@ module.exports = function(pool) {
                     }
                 }
                 for (var i in req.body) {
-                    // set current query object
-                    var thisQuery = {
-                        query: null,
-                        insert: []
-                    }
-                    // build string(s)
-                    var queryString = 'SELECT '+selectString+' FROM ';
-                    // ignore the length key, since we placed it in manually for use on front-end
-                    if (i !== 'length') {
+                    if (i !== 'length') { // ignore the length key, since we placed it in manually for use on front-end 
+                        // set current query object
+                        var thisQuery = {
+                            query: null,
+                            insert: [],
+                            point: req.body[i].point
+                        }
+                        // build string(s)
+                        var queryString = 'SELECT '+selectString+' FROM ';
                         // switch for stating what query type connects to what table
                         switch (req.body[i].point.type) {
                             case 'Conn':
