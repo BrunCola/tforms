@@ -680,7 +680,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         // remove point if its empty after changes
                         if ($scope.pattern.selected[point.id].search.length === 0) {
                             delete $scope.pattern.selected[point.id];
-                            $scope.pattern.length--;
+                            $scope.pattern.selected.length--;
                             // reset our last x/y coordinate object
                             $scope.pattern.lastXY = null;
                         }

@@ -1553,7 +1553,7 @@ module.exports = function(pool) {
                         var thisQuery = {
                             query: null,
                             insert: [],
-                            point: req.body[i].point
+                            passed: req.body[i].point
                         }
                         // build string(s)
                         var queryString = 'SELECT '+selectString+' FROM ';
@@ -1597,8 +1597,11 @@ module.exports = function(pool) {
                     // push each query object to out async array to be processed
                     asyncList.push(
                         function(callback) {
-                            new query(queries[q], {database: database, pool: pool}, function(err,data){
-                                results.push(data)
+                            new query(queries[q], {database: database, pool: pool}, function(err, data, passed){
+                                results.push({
+                                    result: data,
+                                    point: passed
+                                })
                                 callback();
                             });
                         }
@@ -1607,10 +1610,13 @@ module.exports = function(pool) {
                 return asyncList;
             }
             var asyncArr = getAsync(queries);
+            // process our async list here
             async.parallel(asyncArr, function(err) {
                 if (err) throw console.log(err);
-                // return here
+                // compare functions
                 console.log(results);
+                // each parent array is one query (point) and caould hoem many object matches inside
+                // for every pair in each parent, search all other 
             });
         }
     }
