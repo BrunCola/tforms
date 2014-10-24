@@ -170,11 +170,18 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
             };
         };
         // IOC notification settings
+        var disconnect = false;
         $scope.socket.on('connection', function() {
+            disconnect = false;
             console.log('connected again')
         })
         $scope.socket.on('disconnect', function() {
-            $scope.open();
+            disconnect = true;
+            setTimeout(function(){
+                if (disconnect === true) {
+                    $scope.open();
+                }
+            }, 3600);
         });
         //$scope.iocalerts = [];
         //$scope.socket.emit('init', {username: $scope.global.user.username, checkpoint: $scope.global.user.checkpoint, database: $scope.global.user.database});
