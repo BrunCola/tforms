@@ -17,9 +17,9 @@ angular.module('mean.pages').directive('iocDesc', function() {
         link: function($scope, element, attrs) {
             $scope.$on('iocDesc', function (event, description) {
                 if (!description) { return }
-                    var maxLength = 200;
+                    var maxLength = 160;
                 // if the string is less then our max length..
-                if (description.length < 200) {
+                if (description.length < maxLength) {
                     $(element).html(description);
                 // otherwise, trim and add link to modal
                 // NOTE: MODAL SETTINGS ARE CUSTOM IN EACH CONTROLLER

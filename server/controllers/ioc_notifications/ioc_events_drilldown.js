@@ -715,7 +715,7 @@ module.exports = function(pool) {
                     }
                 });   
             } else if (req.query.type === 'child_id') {
-                new query({query: 'SELECT * from `ioc` WHERE id_child = ? ', insert: [req.query.event_id]}, {database: 'cyrin', pool: pool}, function(err,data){
+                new query({query: 'SELECT `ioc`, `typeIndicator` FROM `ioc` WHERE id_child = ? ', insert: [req.query.ioc_childID]}, {database: 'cyrin', pool: pool}, function(err,data){
                     if (data) {
                         res.json(data);
                     }
