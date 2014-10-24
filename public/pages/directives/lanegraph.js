@@ -138,14 +138,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr("dy", ".5ex")
                     .attr("text-anchor", "end");
 
-                main.append("g").selectAll(".laneLines")
-                    .data($scope.lanes)
-                    .enter().append('rect')
-                    .attr('x', -m[1])
-                    .attr('y', function(d, i) {return y1(i) -m[0];})
-                    .attr('width', '10')
-                    .attr('height', '10')
-                    .style('fill', '#fff');
+
+// it was here
+
 
                 var lineStory = main.append("g")
                     .attr("class", "storyLine");
@@ -493,6 +488,33 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                 }
  
+
+//testing icons beside lane text 
+                //     var square =main.selectAll(".laneLines")
+                //     .data($scope.lanes)
+                //     .enter().append('rect')
+                //     .attr('x', -m[1])
+                //     .attr('y', function(d, i) {return y1(i) -m[0];})
+                //     .attr('width', '10')
+                //     .attr('height', '10')
+                //     .style('fill', '#ccc');
+
+                    // var square = main.append("g").selectAll(".laneLines")
+                    // .data($scope.lanes)
+                    // .enter().append('rect')
+                    // .attr('x', -m[1])
+                    // .attr('y', function(d, i) {return y1(i) -m[0];})
+                    // .attr('width', '10')
+                    // .attr('height', '10')
+                    // .style('fill', '#fff');
+
+                    // square.each(function(d){
+                    // var elm = d3.select(this);
+                    // d.type = 
+                    // someFunction(d.type, elm)
+                    // })
+
+
                 var brush = d3.svg.brush()
                     .x(x1)
                     .on("brushend", mouseup);
@@ -691,13 +713,31 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                 }
 
+//working here
+                var addRemBttnWidth = 30;
+                var addRemBttnHeight = 16;
+
                 // logic for add/remove buttons in sidebar (when patterns are on)
-                function addRemoveBtn(row, data) {
+                function addRemoveBtn(row, data, elm) {
+                    elm.select('svg').empty(); // this will redraw all on every click (not very efficient, but we'll fix this later)
                     function addBtn() {
-                        return 'add';
+                        elm
+                            .append('rect')
+                            .attr('width', addRemBttnWidth)
+                            .attr('height', addRemBttnHeight)
+                            .style('fill', '#8cc63f')
+                        elm
+                            .append('path')
+                            .attr('d', 'M5.7,0v4.4H10v1.2H5.7V10H4.3V5.6H0V4.4h4.3V0H5.7z')
+                            .style('fill', '#fff')
+                            .attr('transform', 'translate(10,3) scale(1)')
                     }
                     function removeBtn(){
-                        return 'remove';
+                        elm
+                            .append('rect')
+                            .attr('width', addRemBttnWidth)
+                            .attr('height', addRemBttnHeight)
+                            .style('fill', '#cc0000')
                     }
                     if (!(row.pattern)){return};
                     if (data.id in $scope.pattern.selected) {
@@ -714,29 +754,39 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 // logic for appending row information in sidebar
                 function laneInfoAppend(data, element) {
                     element.select('.infoDivExpanded').selectAll('li').remove();
+                    
                     var line = element
                         .select('.infoDivExpanded')
                         .selectAll('li')
                         .data(data.expand)
                         .enter().append('li')
+                        .style('line-height', 2)
                         .html(function(d){
                             if (d.name === 'Time') {
-                                return '<strong>'+d.name+':</strong> '+timeFormat(d.value, 'laneGraphExpanded')+'<br />';      
+                                return '<strong>'+d.name+':</strong> '+timeFormat(d.value, 'laneGraphExpanded')+'';      
                             } else {
-                                return '<strong>'+d.name+':</strong> '+d.value+'<br />';
+                                return '<strong>'+d.name+':</strong> '+d.value+'';
                             }
                         });
                     if ($scope.pattern.searching) {
-                        line.append('span')
-                            .html(function(d) {
-                                return addRemoveBtn(d, data);
-                            })
-                            .on('click', function(d){
+                        line.each(function(d){
+                            var elm = d3.select(this)
+                                .append('div')
+                                .style('float', 'right')
+                                .append('svg')
+                                .attr('width', addRemBttnWidth)
+                                .attr('height', addRemBttnHeight);
+                            addRemoveBtn(d, data, elm);
+                            elm.on('click', function(d){
                                 $scope.addSearch(data, d);
-                                d3.select(this).html(addRemoveBtn(d, data));
+                                addRemoveBtn(d, data, elm);
                             })
+                        })
                     }
                 }
+
+//to here
+
 
                 // info div
                 var infoHeight = element.height();
@@ -1061,9 +1111,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                             // elm.select('.infoDivExpanded').html(laneInfoAppend(d.expand));
                                             laneInfoAppend(d, elm);
                                         }
-                                    })
-                                    .attr('class', 'infoDivExpandBtn')
-                                    .html('+');
+                                    });
+                                    // .attr('class', 'infoDivExpandBtn')
+                                    // .html('+');
                                 elm
                                     .append('div')
                                     .style('display', 'none')
