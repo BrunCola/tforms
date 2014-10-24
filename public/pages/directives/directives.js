@@ -3055,6 +3055,41 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     .attr("xlink:href", floor_path)
                     .attr("type", "image/svg+xml");
 
+                // el.addEventListener(
+                //     'dragover',
+                //     function(e) {
+                //         console.log("dragover");
+                //         e.dataTransfer.dropEffect = 'move';
+                //         // allows us to drop
+                //         if (e.preventDefault) e.preventDefault();
+                //         $(this).addClass('over');
+                //         return false;
+                //     },
+                //     false
+                // )
+                // el.addEventListener(
+                //     'dragenter',
+                //     function(e) {
+                //         console.log("dragenter");
+                //         return false;
+                //     },
+                //     false
+                // )
+
+                // el.addEventListener(
+                //     'dragleave',
+                //     function(e) {
+                //         console.log("dragleave");
+                //         return false;
+                //     },
+                //     false
+                // )
+
+                // el.addEventListener('drop', function(e) {
+                //     console.log("drop");
+                //         return false;
+                // }
+
 
                 function zoomed() {
                     $scope.global.floorScale  = d3.event.scale;
@@ -3075,25 +3110,24 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                 function dragged(d) {
                     if ( (d3.mouse($("#floorplan")[0])[0]) < 0 || (d3.mouse($("#floorplan")[0])[0]) > 790 || (d3.mouse($("#floorplan")[0])[1]) < 0 || (d3.mouse($("#floorplan")[0])[1]) > 580 ) {
                         //console.log((d3.mouse($("#floorplan")[0])[0]) + " - " +(d3.mouse($("#floorplan")[0])[1]));
-                        var me = d3.event.sourceEvent;
-                        var destinationId = $(this).attr('id');
-                        var itemId = e.dataTransfer.getData("Text");
-                        var item = $(document).find('#'+itemId);
-                        var itemData = item[0]['__data__'];
-
+                        // var me = d3.event.sourceEvent;
                         // console.log(me);
+                        // var destinationId = $(this).attr('id');
                         // console.log(destinationId);
+                        // var itemId = me.dataTransfer.getData("Text");
                         // console.log(itemId);
+                        // var item = $(document).find('#'+itemId);
                         // console.log(item);
+                        // var itemData = item[0]['__data__'];
                         // console.log(itemData);
 
 
                         //d3.event.stopPropagation();
                     }else{
+                    }
                         d.x = d3.event.x;
                         d.y = d3.event.y;
                         d3.select(this).attr("transform", "translate("+d.x + "," + d.y+")")
-                    }
                 }
 
                 function dragended(d) {
@@ -3720,7 +3754,6 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
         link: function($scope, element) {
             // again we need the native object
             var el = element[0];
-
             el.addEventListener(
                 'dragover',
                 function(e) {
@@ -3763,12 +3796,12 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
                 var itemId = e.dataTransfer.getData("Text");
                 var item = $(document).find('#'+itemId);
                 var itemData = item[0]['__data__'];
-                // console.log(e);
-                //         console.log(destinationId);
-                //         console.log(itemId);
-                //         console.log(item);
-                //         console.log(itemData);
-                //         console.log(" ");
+                console.log(e);
+                console.log(destinationId);
+                console.log(itemId);
+                console.log(item);
+                console.log(itemData);
+                console.log(" ");
                 // var sourceElm = d3.select(e.srcElement).attr('id');
                 // var floorPlanElm = d3.select(el).attr('id');
                 if (destinationId === 'floorplan'){
@@ -3794,8 +3827,6 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
                     item.removeClass('selected');
                     item.attr('style', 'top:0px; left:0px; position:relative; ');
                     $(this).append(item[0]);
-                    console.log($(this));
-                    console.log(item[0]);
                     // call the passed drop function
                     $scope.$apply(function(scope) {
                         var fn = scope.drop();
