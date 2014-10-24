@@ -1528,6 +1528,7 @@ module.exports = function(pool) {
             console.log('processing');
             // set the datbase the user queries
             var database = req.session.passport.user.database;
+            // we make a whitelist since we will be relying on the front end to send up custom selects
             var allowedSelects = ['lan_user', 'lan_ip'];
             var results = [];
             function makeQueries() {
@@ -1590,7 +1591,6 @@ module.exports = function(pool) {
                 return queryList;
             }
             var queries = makeQueries();
-            console.log(queries)
             function getAsync(queries) {
                 var asyncList = [];
                 for (var q in queries) {
@@ -1610,12 +1610,23 @@ module.exports = function(pool) {
                 return asyncList;
             }
             var asyncArr = getAsync(queries);
+            function compare(data) {
+                for (var i in data) {
+                    var thisPoint = data[i].point;
+                    var pointResults = data[i].result;
+                    console.log(pointResults);
+                    // point results is an array, so loop through
+                    for (var r in pointResults) {
+                        var thisRow = pointResults[r];
+                    }
+                }
+            }
             // process our async list here
             async.parallel(asyncArr, function(err) {
                 if (err) throw console.log(err);
                 // compare functions
-                console.log(results);
-                // each parent array is one query (point) and caould hoem many object matches inside
+                compare(results);
+                // each parent array is one query (point) and could have many object matches inside
                 // for every pair in each parent, search all other 
             });
         }
