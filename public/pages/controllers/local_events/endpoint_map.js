@@ -29,7 +29,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 });
         }
     }); 
-    
+
     $scope.requery = function(d) {
          // get user image
         if ($scope.lan_ip !== '-') {
@@ -78,6 +78,8 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 success(function(data) {
                     $scope.$broadcast('appendInfo', d,data[0],"bandwidth");
                 });
+
+            $rootScope.$broadcast('appendInfo', d, "", "delete");
           
             //$scope.$broadcast('appendInfo', userInfo);
         }
