@@ -138,6 +138,51 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr("dy", ".5ex")
                     .attr("text-anchor", "end");
 
+                // this is our icon placeholder group
+                var iconBox = main.selectAll(".laneLines")
+                    .data($scope.lanes)
+                    .enter()
+                    .append('g')
+                    .attr('transform', function(d, i) { return 'translate('+(-m[1]*2.6)+','+(y1(i) -m[1]*1.2)+')' })
+                    .attr('width', 36)
+                    .attr('height', 31);
+
+                // here's the rectangle
+                var squares = iconBox.append('rect')
+                    .attr('width', 36)
+                    .attr('height', 31)
+                    .style('fill', 'none')
+                    .attr('stroke-width', 0.6)
+                    .attr('stroke', '#999');
+                // row icons
+                var rowIcons = iconBox.each(function(d){
+                    var elm = d3.select(this);
+                    var color, color1, color2;
+                    if (d === 'IOC') {
+                        color = '#FFF'
+                    } else {
+                        color = rowColors(d);
+                    }
+                    color2 = "#3f3f3f";
+                    color1 = color;
+                    iconColors(d, elm, color1, color2);
+                })
+
+
+                // var laneIcon = main.append("g").selectAll(".laneLines")
+                // .data($scope.lanes)
+                // .enter().append('rect')
+                // .attr('x', -m[1])
+                // .attr('y', function(d, i) {return y1(i) -m[0];})
+                // .attr('width', 10)
+                // .attr('height', 10);
+
+                // laneIcon.each(function(d){
+                // var elm = d3.select(this);
+                // d.type = iconColors(data.type, elm)
+                // })
+
+
                 var lineStory = main.append("g")
                     .attr("class", "storyLine");
 
@@ -486,31 +531,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
  
 
 //testing icons beside lane text
-
-                    var iconBox = main.selectAll(".laneLines")
-                    .data($scope.lanes)
-                    .enter().append('rect')
-                    .attr('x', -m[1]*2.6)
-                    .attr('y', function(d, i) {return y1(i) -m[1]*1.2;})
-                    .attr('width', 36)
-                    .attr('height', 31)
-                    .style('fill', 'none')
-                    .attr('stroke-width', 0.6)
-                    .attr('stroke', '#999');
-
-                    // var laneIcon = main.append("g").selectAll(".laneLines")
-                    // .data($scope.lanes)
-                    // .enter().append('rect')
-                    // .attr('x', -m[1])
-                    // .attr('y', function(d, i) {return y1(i) -m[0];})
-                    // .attr('width', 10)
-                    // .attr('height', 10);
-
-                    // laneIcon.each(function(d){
-                    // var elm = d3.select(this);
-                    // d.type = iconColors(data.type, elm)
-                    // })
-
 
                 var brush = d3.svg.brush()
                     .x(x1)
