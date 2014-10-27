@@ -879,6 +879,50 @@ angular.module('mean.pages').config(['$stateProvider',
                                 daterange: true
                             }
                         })
+            // HTTP BY USER AGENT
+                .state('http_by_user_agent', {
+                    url: '/http_by_user_agent?start&end',
+                    templateUrl: 'public/pages/views/http/http_by_user_agent.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'HTTP By User Agent',
+                        daterange: true
+                    }
+                })
+                // HTTP BY USER AGENT LOCAL
+                    .state('http_by_user_agent_local', {
+                        url: '/http_by_user_agent_local?start&end&user_agent',
+                        templateUrl: 'public/pages/views/http/http_by_user_agent_local.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Local HTTP By User Agent',
+                            subtitleElm: {
+                                'User Agent': 'user_agent'
+                            },
+                            daterange: true
+                        }
+                    })
+                    // HTTP BY USER AGENT LOCAL DRILL
+                        .state('http_by_user_agent_local_drill', {
+                            url: '/http_by_user_agent_local_drill?start&end&user_agent&lan_zone&lan_ip',
+                            templateUrl: 'public/pages/views/http/http_by_user_agent_local_drill.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Local HTTP By User Agent',
+                                subtitleElm: {
+                                    'User Agent': 'user_agent',
+                                    'LAN IP': 'lan_ip',
+                                    'Zone': 'lan_zone'
+                                },
+                                daterange: true
+                            }
+                        })
             // HTTP LOCAL
                 .state('http_local', {
                     url: '/http_local?start&end',
