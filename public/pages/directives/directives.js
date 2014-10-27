@@ -2988,8 +2988,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     element.height(elementHeight);
                     $scope.userList = data;
                     // info div
-                    var userDiv = d3.select("#listlocalusers").style('overflow', 'auto');
-                    userDiv.style('height', elementHeight+50+'px');
+                    var userDiv = d3.select("#listlocalusers").style('height', elementHeight+50+'px').style('overflow', 'auto');
+                    //$("#listlocalusers").height(elementHeight+50);
                     //var userDiv = d3.select("#listlocalusers").style('height', infoHeight+25+'px').style('overflow', 'auto');
                     var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
                     var floorDiv = d3.select(element[0]);
@@ -3013,6 +3013,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         });
                     }
 
+                     d3.select('#hidelocalusers').style("padding-top", (elementHeight/2)+'px');
 
 
                     var margin = {top: -5, right: -5, bottom: -5, left: -5};
@@ -3033,7 +3034,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .scaleExtent([0.5, 5])
                         //.translate([0,0])
                         .translate([0,0])
-                        .scale(2)
+                        //.scale(2)
                         .on("zoom", zoomed);
 
                     var drag = d3.behavior.drag()

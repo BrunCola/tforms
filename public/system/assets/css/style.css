@@ -2161,7 +2161,7 @@ Datatables Plugin(in v1.3)
   margin: 0px 1% 0px 0px;
   height: 326px;
   cursor: pointer;
-  padding: 300px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
   font-size: 10px;
 }
 .floorHide{
