@@ -7,7 +7,7 @@
             <div style="width: 70%;margin: 0 auto;">
                 <div style="width: 70%;margin: 0 auto;">
                     Upload file(s): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="file" ng-file-select="onFileSelect($files)" multiple onclick="this.value=null">
+                    <input type="file" ng-file-select="onFileSelect($files,width)" accept="image/*" multiple onclick="this.value=null">
                 </div>
                 <br/>
                 <div style="width: 70%;margin: 0 auto;">
@@ -50,8 +50,8 @@
                 <select ng-model="floorplan.select">
                   <option value="{{floor.asset_name}}" ng-repeat="floor in modalFloors">{{floor.custom_name}}</option>
                 </select><br />
-                <button type="reset" class="button-error pure-button" ng-click="deleteFloorplan(floorplan)">Delete</button>
-            <button class="btn btn-primary" ng-click="ok()">Close</button>
+                <button type="button" class="button-error pure-button" ng-click="deleteFloorplan(floorplan)">Delete</button>
+            <button type="button" class="rndCrnBtn pure-button" ng-click="ok()">Close</button>
             </form>
         </div>
     </script>  
@@ -62,8 +62,8 @@
         <section id="floorplanpage">
             <!-- <input type="file" name="file" onchange="angular.element(this).scope().uploadFile(this.files)"/> -->
             <!-- <li><a href="" ng-click="uploadOpen()"><i class="fa fa-upload"></i> Upload</a></li> -->
-            <li><a href="" ng-click="modelDelete(floors)"> Delete Floorplan</a></li>
-            <div class="span2">
+            <li><button type="button" class="button-error pure-button dfp" ng-click="modelDelete(floors)">Delete Floorplan</button></li>
+            <div id="listlocalusersspan">
                  <div class="jdash-header">Local Users</div>
                 <div id="listlocalusers" class="bin" droppable drop="handleDrop" style="position: relative">
                    <!--  <ul>                    
@@ -73,12 +73,11 @@
                     </ul> -->
                 </div>
             </div>
-            <div class="span1">
+            <div id="hidelocalusers" ></div>
+            <!-- <div class="span1">
                 <div class="jdash-header">Filters</div>
-                <div id="triggerbuttons" class="bin" style="position: relative">
-                </div>
-            </div>
-            <div class="span6">
+            </div> -->
+            <div id="floorplanspan">
                 <tabset>
                     <tab select="alertMe()" ng-repeat="floor in floors" active="$first" >
                         <tab-heading>
@@ -96,9 +95,10 @@
                         <tab-heading> + </tab-heading>     
                         <div style="background-color:#FFF;" class="box"></div>                    
                     </tab>
+                <div id="triggerbuttons" class="bin" ></div>
                 </tabset>
             </div>
-            <div class="span3">
+            <div id="localuserinformationspan">
                 <div class="jdash-header">User Information</div>
                 <div  style="background-color:#FFF;" class="box">
                     <div id="localuserinformation" append-floor-info></div>
