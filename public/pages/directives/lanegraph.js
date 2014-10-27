@@ -138,10 +138,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr("dy", ".5ex")
                     .attr("text-anchor", "end");
 
-
-// it was here
-
-
                 var lineStory = main.append("g")
                     .attr("class", "storyLine");
 
@@ -489,29 +485,30 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
  
 
-//testing icons beside lane text 
-                //     var square =main.selectAll(".laneLines")
-                //     .data($scope.lanes)
-                //     .enter().append('rect')
-                //     .attr('x', -m[1])
-                //     .attr('y', function(d, i) {return y1(i) -m[0];})
-                //     .attr('width', '10')
-                //     .attr('height', '10')
-                //     .style('fill', '#ccc');
+//testing icons beside lane text
 
-                    // var square = main.append("g").selectAll(".laneLines")
+                    var iconBox = main.selectAll(".laneLines")
+                    .data($scope.lanes)
+                    .enter().append('rect')
+                    .attr('x', -m[1]*2.6)
+                    .attr('y', function(d, i) {return y1(i) -m[1]*1.2;})
+                    .attr('width', 36)
+                    .attr('height', 31)
+                    .style('fill', 'none')
+                    .attr('stroke-width', 0.6)
+                    .attr('stroke', '#999');
+
+                    // var laneIcon = main.append("g").selectAll(".laneLines")
                     // .data($scope.lanes)
                     // .enter().append('rect')
                     // .attr('x', -m[1])
                     // .attr('y', function(d, i) {return y1(i) -m[0];})
-                    // .attr('width', '10')
-                    // .attr('height', '10')
-                    // .style('fill', '#fff');
+                    // .attr('width', 10)
+                    // .attr('height', 10);
 
-                    // square.each(function(d){
+                    // laneIcon.each(function(d){
                     // var elm = d3.select(this);
-                    // d.type = 
-                    // someFunction(d.type, elm)
+                    // d.type = iconColors(data.type, elm)
                     // })
 
 
@@ -713,7 +710,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                 }
 
-//working here
                 var addRemBttnWidth = 32;
                 var addRemBttnHeight = 18;
 
@@ -797,9 +793,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         })
                     }
                 }
-
-//to here
-
 
                 // info div
                 var infoHeight = element.height();
