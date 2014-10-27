@@ -320,6 +320,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'orphans': ['http_by_domain_local', 'http_by_domain_local_drill']
                 },
                 {
+                    'title': 'HTTP by User Agent',
+                    'url': 'http_by_user_agent',
+                    'icon': 'fa-user',
+                    'orphans': []
+                },
+                {
                     'title': 'Local HTTP',
                     'url': 'http_local',
                     'icon': 'fa-long-arrow-left',

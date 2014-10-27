@@ -879,6 +879,18 @@ angular.module('mean.pages').config(['$stateProvider',
                                 daterange: true
                             }
                         })
+            // HTTP BY USER AGENT
+                .state('http_by_user_agent', {
+                    url: '/http_by_user_agent?start&end',
+                    templateUrl: 'public/pages/views/http/http_by_user_agent.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'HTTP By User Agent',
+                        daterange: true
+                    }
+                })
             // HTTP LOCAL
                 .state('http_local', {
                     url: '/http_local?start&end',
@@ -1396,7 +1408,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         loggedin: checkLoggedin
                     },
                     data: {
-                        title: 'New Remote IP Detected Serving SSL Traffic',
+                        title: 'New Remote Server Detected Serving SSL Traffic',
                         daterange: true
                     }
                 })
