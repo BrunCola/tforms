@@ -209,7 +209,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
         $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?type=child_id&ioc_childID='+$scope.ioc_childID}).
         success(function(data) {
             if (data[0] !== undefined) {
-                $scope.child_ioc = data[0];
+                $scope.child_ioc = data;
             }
         });
 
