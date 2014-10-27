@@ -46,6 +46,9 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
                 /* initialize d */
                 function () {
                     return {count: 0, severity: 0};
+                },
+                function (d) {
+                    return d.severity;
                 }
             );
             $scope.$broadcast('rowChart', rowDimension, rowGroup, 'severity');
