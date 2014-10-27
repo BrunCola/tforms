@@ -2985,6 +2985,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                 var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
                 var floorDiv = d3.select(element[0]);
 
+                var hideListDiv = d3.select('#listlocalusersspan');
+                var expandDiv = d3.select('#floorplanspan');
                 var buttonDiv = d3.select('#triggerbuttons');
 
                 $scope.$on('setSelected', function (event, selected) { 
@@ -3004,7 +3006,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
 
                 var margin = {top: -5, right: -5, bottom: -5, left: -5},
-                    width = 780 - margin.left - margin.right,
+                    width = 950 - margin.left - margin.right,
                     height = 570 - margin.top - margin.bottom;
 
                 //$scope.floorScale = 1;
@@ -3029,9 +3031,9 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     .on("dragend", dragended);
 
 
-                var svg = floorDiv.append("svg")              
-                    .attr("width", width + margin.left + margin.right)
-                    .attr("height", height + margin.top + margin.bottom)
+                var svg = floorDiv.append("svg")             
+                    .attr("width", "100%")
+                    .attr("height", "100%")
                     .append("g")
                         .attr("transform", "translate(" + margin.left + "," + margin.right + ")")
                         .call(zoom);
@@ -3046,14 +3048,28 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                 svg.on("dblclick.zoom", null);
 
-                container.append("g")
+                container.append("g")  
                     .attr("class", "floorimage")
                     .append("image")
                     .attr("id", "svgFloorPlan")
-                    .attr("height", "600")                    
-                    .attr("width", "800")
+                    .attr("height", "644")                    
+                    .attr("width", "884")
                     .attr("xlink:href", floor_path)
                     .attr("type", "image/svg+xml");
+
+                var hideDiv = d3.select('#hidelocalusers')
+                    .on("click", function () {
+                        if ($(hideListDiv)[0][0].className === "floorHide") {
+                            hideListDiv.classed('floorHide', false);
+                            expandDiv.style('width','60%')
+                            hideDiv.html("&#9668; &#9668; &#9668;");
+                        }else{
+                            hideListDiv.classed('floorHide', true);
+                            expandDiv.style('width','75%')
+                            hideDiv.html("&#9658; &#9658; &#9658;");
+                        }
+                    })
+                    .html("&#9668; &#9668; &#9668;");
 
                 // el.addEventListener(
                 //     'dragover',
@@ -3337,7 +3353,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .attr('height', 0)
                         .append('svg:foreignObject')
                             .attr('height', "55px")
-                            .attr('width', "100px")
+                            .attr('width', "150px")
                             .attr("transform", function(d){
                                 return "translate("+d.x+","+d.y+")"
                             })
@@ -3552,8 +3568,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                 buttonDiv.selectAll('button').remove();
                 buttonDiv.append('button')
-                    .html('Highlight Users with IOC')
-                    .attr('class', 'resetButton')
+                    .html('Users with IOC')
+                    .attr('class', 'pure-button epbRed')
                     .on('click', function(){
                         var query = '/local_events/endpoint_map?type=floorquery';
                         var triggerData;
@@ -3564,8 +3580,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             });
                     });
                 buttonDiv.append('button')
-                    .html('Highlight Active Users')
-                    .attr('class', 'resetButton')
+                    .html('Active Users')
+                    .attr('class', 'pure-button epbGreen')
                     .on('click', function(){
                         var query = '/local_events/endpoint_map?type=floorquery';
                         if ($location.$$search.start && $location.$$search.end) {
@@ -3578,8 +3594,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                     });
                 buttonDiv.append('button')
-                    .html('Highlight Active Stealth Users')
-                    .attr('class', 'resetButton')
+                    .html('Active Stealth Users')
+                    .attr('class', 'pure-button epbGrey')
                     .on('click', function(){
                         var query = '/local_events/endpoint_map?type=floorquery';
                         if ($location.$$search.start && $location.$$search.end) {
