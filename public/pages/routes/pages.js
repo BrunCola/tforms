@@ -1396,7 +1396,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         loggedin: checkLoggedin
                     },
                     data: {
-                        title: 'New Remote IP Detected Serving SSL Traffic',
+                        title: 'New Remote Server Detected Serving SSL Traffic',
                         daterange: true
                     }
                 })
