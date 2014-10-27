@@ -57,9 +57,9 @@ module.exports = function(pool) {
                             crumb: false
                         },
                     },
+                    { title: 'IOC Hits', select: 'ioc_count' },
                     { title: 'ABP', select: 'proxy_blocked', access: [2] },
                     { title: 'Severity', select: 'ioc_severity' },
-                    { title: 'IOC Hits', select: 'ioc_count' },
                     { title: 'IOC', select: 'ioc' },
                     { title: 'IOC Type', select: 'ioc_typeIndicator' },
                     { title: 'IOC Stage', select: 'ioc_typeInfection' },
@@ -74,7 +74,7 @@ module.exports = function(pool) {
                     { title: 'Packets from Remote', select: 'out_packets', dView: false },
                 ],
                 settings: {
-                    sort: [[2, 'desc']],
+                    sort: [[1, 'desc']],
                     div: 'table',
                     title: 'Indicators of Compromise (IOC) Notifications',
                     access: req.session.passport.user.level

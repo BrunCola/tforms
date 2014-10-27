@@ -58,10 +58,10 @@ module.exports = function(pool) {
                             crumb: false
                         },
                     },
+                    { title: 'IOC Hits', select: 'count' },
                     { title: 'Stealth', select: 'stealth', access: [3] },
                     { title: 'ABP', select: 'proxy_blocked', access: [2] },
                     { title: 'Severity', select: 'ioc_severity' },
-                    { title: 'IOC Hits', select: 'count' },
                     { title: 'IOC', select: 'ioc' },
                     { title: 'IOC Type', select: 'ioc_typeIndicator' },
                     { title: 'IOC Stage', select: 'ioc_typeInfection' },

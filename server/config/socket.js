@@ -85,7 +85,7 @@ module.exports = function(app, passport, io, pool) {
 							"WHERE alert.conn_uids = conn_ioc.conn_uids "+
 							"AND alert.username = ? "+
 							"AND alert.added >= ? "+
-							"ORDER BY alert.added", [username, POLLCheckpoint])
+							"ORDER BY alert.added limit 10", [username, POLLCheckpoint])
 					.on('result', function(data) {
 						data.newIOC = true;
 						arr.push(data);

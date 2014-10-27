@@ -240,7 +240,7 @@ module.exports = function(pool) {
                         },
                     ],
                     settings: {
-                        sort: [[1, 'desc']],
+                        sort: [[0, 'desc']],
                         div: 'table',
                         title: 'Indicators of Compromise (IOC) Notifications',
                         access: req.session.passport.user.level
@@ -267,7 +267,9 @@ module.exports = function(pool) {
                                 'hour(from_unixtime(`time`)),'+
                                 '`remote_country`,'+
                                 '`ioc_severity`,'+
-                                '`ioc`',
+                                '`ioc` '+
+                            'ORDER BY '+
+                                '`ioc_severity` DESC',
                     insert: [start, end]
                 }
                 async.parallel([
