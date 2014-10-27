@@ -138,50 +138,35 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr("dy", ".5ex")
                     .attr("text-anchor", "end");
 
-                // this is our icon placeholder group
+                // icons to the left of lanes, this is our icon placeholder group
                 var iconBox = main.selectAll(".laneLines")
                     .data($scope.lanes)
                     .enter()
                     .append('g')
-                    .attr('transform', function(d, i) { return 'translate('+(-m[1]*2.6)+','+(y1(i) -m[1]*1.2)+')' })
-                    .attr('width', 36)
-                    .attr('height', 31);
+                    .attr('transform', function(d, i) { return 'translate('+(-m[1]*2.4)+','+(y1(i) -m[1])+') scale(0.8)'});
 
                 // here's the rectangle
                 var squares = iconBox.append('rect')
-                    .attr('width', 36)
-                    .attr('height', 31)
+                    .attr('width', 38)
+                    .attr('height', 38)
                     .style('fill', 'none')
-                    .attr('stroke-width', 0.6)
-                    .attr('stroke', '#999');
-                // row icons
+                    .attr('stroke-width', 1)
+                    .attr('stroke', '#606060');
+
+                // placing the row icons
                 var rowIcons = iconBox.each(function(d){
-                    var elm = d3.select(this);
-                    var color, color1, color2;
+                    var color1 = rowColors(d);
+                    var color2 = "#3f3f3f";
+                    var elm = d3.select(this)
                     if (d === 'IOC') {
-                        color = '#FFF'
-                    } else {
-                        color = rowColors(d);
-                    }
-                    color2 = "#3f3f3f";
-                    color1 = color;
+                        elm.append('polygon')
+                            .attr('points', '7,15 14,6 0,6')
+                            .attr('transform', 'translate(8,4) scale(1.6)')
+                            .attr('fill', '#fff')
+                            .style('opacity', '0.4');
+                    };
                     iconColors(d, elm, color1, color2);
-                })
-
-
-                // var laneIcon = main.append("g").selectAll(".laneLines")
-                // .data($scope.lanes)
-                // .enter().append('rect')
-                // .attr('x', -m[1])
-                // .attr('y', function(d, i) {return y1(i) -m[0];})
-                // .attr('width', 10)
-                // .attr('height', 10);
-
-                // laneIcon.each(function(d){
-                // var elm = d3.select(this);
-                // d.type = iconColors(data.type, elm)
-                // })
-
+                });
 
                 var lineStory = main.append("g")
                     .attr("class", "storyLine");
@@ -306,7 +291,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
                                     'C28.014,15.545,26.676,21.468,23.587,26.751z');
                             element.append('svg:path')
-                                .attr('fill', '#0080CE')
+                                .attr('fill', '#3f3f3f')
                                 .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
                                     'C11.076,16.238,11.938,20.26,13.699,23.661z');
                             return;
@@ -528,9 +513,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             iconColors(data.type, element, color1, color2);
                     }
                 }
- 
-
-//testing icons beside lane text
 
                 var brush = d3.svg.brush()
                     .x(x1)
