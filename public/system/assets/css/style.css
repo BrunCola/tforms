@@ -2050,12 +2050,14 @@ Datatables Plugin(in v1.3)
 }
 
 #floorplan{
-  height: 630px;
+  /*height: 630px;*/
+  width: inherit;
   overflow: hidden;
 }
 
 #listlocalusers{
    /*overflow: hidden !important;*/
+   /*height: 700px;*/
 }
 
 #listlocalusers button {

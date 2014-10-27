@@ -68,8 +68,8 @@ module.exports = function(pool) {
 							var database = req.session.passport.user.database;
 							if(req.body.imageType === 'map') {
 								var insert_map_image = {
-									query: "INSERT INTO `assets` (`type`, `file`, `asset_name`, `path`, `custom_name`) VALUES ('map',?,?,?,?)",
-									insert: [newName, asset_name, newPath, custom_name]
+									query: "INSERT INTO `assets` (`type`, `file`, `asset_name`, `path`, `custom_name`, `image_width`, `image_height`) VALUES (?,?,?,?,?,?,?)",
+									insert: [req.body.imageType ,newName, asset_name, newPath, custom_name, req.body.width,req.body.height]
 								}
 								new query(insert_map_image, {database: database, pool: pool}, function(err,data){
 									res.send(200);
