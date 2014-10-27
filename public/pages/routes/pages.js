@@ -997,6 +997,50 @@ angular.module('mean.pages').config(['$stateProvider',
                         }
                     })
         // DNS
+            // DNS BY QUERY TYPE
+                .state('dns_by_query_type', {
+                    url: '/dns_by_query_type?start&end',
+                    templateUrl: 'public/pages/views/dns/dns_by_query_type.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'DNS by Query Type',
+                        daterange: true
+                    }
+                })
+                // DNS BY QUERY TYPE LOCAL
+                    .state('dns_by_query_type_local', {
+                        url: '/dns_by_query_type_local?start&end&qtype',
+                        templateUrl: 'public/pages/views/dns/dns_by_query_type_local.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Local DNS by Query Type',
+                            subtitleElm: {
+                                'Query Type': 'qtype'
+                            },
+                            daterange: true
+                        }
+                    })
+                    // DNS BY QUERY TYPE DRILL
+                        .state('dns_by_query_type_local_drill', {
+                            url: '/dns_by_query_type_local_drill?start&end&qtype&lan_zone&lan_ip',
+                            templateUrl: 'public/pages/views/dns/dns_by_query_type_local_drill.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Local DNS by Query Type',
+                                subtitleElm: {
+                                    'Query Type': 'qtype',
+                                    'LAN IP': 'lan_ip',
+                                    'Zone': 'lan_zone'
+                                },
+                                daterange: true
+                            }
+                        })
             // LOCAL DNS
                 .state('dns_local', {
                     url: '/dns_local?start&end',
@@ -1396,7 +1440,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         loggedin: checkLoggedin
                     },
                     data: {
-                        title: 'New Remote IP Detected Serving SSL Traffic',
+                        title: 'New Remote Server Detected Serving SSL Traffic',
                         daterange: true
                     }
                 })

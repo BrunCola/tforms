@@ -235,26 +235,20 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
             ]
         },
         //
-            // {
-            //     'title': 'DNS',
-            //     'url': '',
-            //     'icon': 'fa-level-up',
-            //     'children':
-            //     [
-            //         {
-            //             'title': 'Local DNS',
-            //             'url': 'dns_local',
-            //             'icon': 'fa-level-down',
-            //             'orphans': []
-            //         },
-            //         {
-            //             'title': 'Remote DNS',
-            //             'url': 'dns_remote',
-            //             'icon': 'fa-level-up',
-            //             'orphans': []
-            //         }
-            //     ]
-            // },
+            {
+                'title': 'DNS',
+                'url': '',
+                'icon': 'fa-level-up',
+                'children':
+                [
+                    {
+                        'title': 'DNS by Query Type',
+                        'url': 'dns_by_query_type',
+                        'icon': 'fa-level-down',
+                        'orphans': ['dns_by_query_type_local', 'dns_by_query_type_local_drill']
+                    }
+                ]
+            },
             // {
             //     'title': 'SSL',
             //     'url': '',

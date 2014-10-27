@@ -245,6 +245,18 @@ module.exports = function(app, passport, version, io, pool) {
                     app.route('/applications/l7_remote_drill')
                     .get(auth.permission, l7_remote_drill.render);
     // DNS
+        // DNS BY QUERY TYPE
+            var dns_by_query_type = require('../controllers/dns/dns_by_query_type')(pool);
+            app.route('/dns/dns_by_query_type')
+            .get(auth.permission, dns_by_query_type.render);
+            // DNS BY QUERY TYPE LOCAL
+                var dns_by_query_type_local = require('../controllers/dns/dns_by_query_type_local')(pool);
+                app.route('/dns/dns_by_query_type_local')
+                .get(auth.permission, dns_by_query_type_local.render);
+                // DNS BY QUERY TYPE DRILL
+                    var dns_by_query_type_local_drill = require('../controllers/dns/dns_by_query_type_local_drill')(pool);
+                    app.route('/dns/dns_by_query_type_local_drill')
+                    .get(auth.permission, dns_by_query_type_local_drill.render);
         // LOCAL DNS
             var dns_local = require('../controllers/dns/dns_local')(pool);
             app.route('/dns/dns_local')
