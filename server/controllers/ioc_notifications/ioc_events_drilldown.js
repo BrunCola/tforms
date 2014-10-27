@@ -1650,7 +1650,7 @@ module.exports = function(pool) {
                         }
                         //Normal value comparison for strings and numbers
                         else if(this[propName] != object2[propName]) {
-                           return false;
+                            return false;
                         }
                     }
                     // return true if everything passed
@@ -1661,8 +1661,8 @@ module.exports = function(pool) {
                         var thisPoint = data[i];
                         var nextPoint = data[i+1];
                         for (var r in thisPoint.result) {
-                            console.log(thisPoint.result[0])
-                            console.log(thisPoint.result[1])
+                            console.log(typeof thisPoint.result[0])
+                            console.log(typeof thisPoint.result[1])
                             console.log('about to match')
                             var matched = nextPoint.result.filter(function(d){ console.log('matching'); return thisPoint.result[r].equals(d) });
                             console.log(matched);
