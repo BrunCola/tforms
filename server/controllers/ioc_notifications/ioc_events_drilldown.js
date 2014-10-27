@@ -1610,15 +1610,65 @@ module.exports = function(pool) {
                 return asyncList;
             }
             var asyncArr = getAsync(queries);
+            var matched = [];
             function compare(data) {
-                for (var i in data) {
-                    var thisPoint = data[i].point;
-                    var pointResults = data[i].result;
-                    console.log(pointResults);
-                    // point results is an array, so loop through
-                    for (var r in pointResults) {
-                        var thisRow = pointResults[r];
+                var totalPoints = data.length;
+                if (totalPoints < 2) { return false } // return if there aren't enough points to compare
+                Object.prototype.equals = function(object2) {
+                    //For the first loop, we only check for types
+                    for (var propName in this) {
+                        // checks if they share the same keys/properties
+                        if (this.hasOwnProperty(propName) != object2.hasOwnProperty(propName)) {
+                            return false;
+                        }
+                        //Check instance type
+                        else if (typeof this[propName] != typeof object2[propName]) {
+                            return false;
+                        }
                     }
+                    //Now a deeper check using other objects property names
+                    for (var propName in object2) {
+                        //We must check instances anyway, there may be a property that only exists in object2
+                            //I wonder, if remembering the checked values from the first loop would be faster or not 
+                        if (this.hasOwnProperty(propName) != object2.hasOwnProperty(propName)) {
+                            return false;
+                        }
+                        else if (typeof this[propName] != typeof object2[propName]) {
+                            return false;
+                        }
+                        //If the property is inherited, do not check any more (it must be equal if both objects inherit it)
+                        if(!this.hasOwnProperty(propName)) continue;
+                        //Now the detail check and recursion
+                        //This returns the script back to the array comparing
+                        if (this[propName] instanceof Array && object2[propName] instanceof Array) {
+                            // recurse into the nested arrays
+                            if (!this[propName].equals(object2[propName])) return false;
+                        }
+                        else if (this[propName] instanceof Object && object2[propName] instanceof Object) {
+                            // recurse into another objects
+                            if (!this[propName].equals(object2[propName])) return false;
+                        }
+                        //Normal value comparison for strings and numbers
+                        else if(this[propName] != object2[propName]) {
+                           return false;
+                        }
+                    }
+                    // return true if everything passed
+                    return true;
+                }
+                for (var i = 0; i < totalPoints; i++) { // each one of these is a seperate query / point with its own array of objects
+                    if (i === 0) { // run if first array
+                        var thisPoint = data[i];
+                        var nextPoint = data[i+1];
+                        for (var r in thisPoint.result) {
+                            console.log(thisPoint.result[0])
+                            console.log(thisPoint.result[1])
+                            console.log('about to match')
+                            var matched = nextPoint.result.filter(function(d){ console.log('matching'); return thisPoint.result[r].equals(d) });
+                            console.log(matched);
+                        }
+                    }
+                    // if anything matched run it in a function here
                 }
             }
             // process our async list here
@@ -1626,8 +1676,6 @@ module.exports = function(pool) {
                 if (err) throw console.log(err);
                 // compare functions
                 compare(results);
-                // each parent array is one query (point) and could have many object matches inside
-                // for every pair in each parent, search all other 
             });
         }
     }
