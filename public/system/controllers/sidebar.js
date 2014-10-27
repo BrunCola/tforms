@@ -323,7 +323,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'title': 'HTTP by User Agent',
                     'url': 'http_by_user_agent',
                     'icon': 'fa-user',
-                    'orphans': []
+                    'orphans': ['http_by_user_agent_local', 'http_by_user_agent_local_drill']
                 },
                 {
                     'title': 'Local HTTP',

@@ -31,15 +31,15 @@ module.exports = function(pool) {
                             '`user_agent`',
                 insert: [start, end],
                 params: [
-                    // {
-                    //     title: 'Last Seen',
-                    //     select: 'time',
-                    //      link: {
-                    //          type: 'http_by_domain_local',
-                    //          val: ['user_agent'], // val: the pre-evaluated values from the query above
-                    //          crumb: false
-                    //     },
-                    // },
+                    {
+                        title: 'Last Seen',
+                        select: 'time',
+                         link: {
+                             type: 'http_by_user_agent_local',
+                             val: ['user_agent'], // val: the pre-evaluated values from the query above
+                             crumb: false
+                        },
+                    },
                     { title: 'Connections', select: 'count' },
                     { title: 'ABP', select: 'proxy_blocked', access: [2] },
                     { title: 'User Agent', select: 'user_agent' },

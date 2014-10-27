@@ -270,6 +270,14 @@ module.exports = function(app, passport, version, io, pool) {
             var http_by_user_agent = require('../controllers/http/http_by_user_agent')(pool);
             app.route('/http/http_by_user_agent')
             .get(auth.permission, http_by_user_agent.render);
+            // HTTP BY USER AGENT LOCAL
+                var http_by_user_agent_local = require('../controllers/http/http_by_user_agent_local')(pool);
+                app.route('/http/http_by_user_agent_local')
+                .get(auth.permission, http_by_user_agent_local.render);
+                // HTTP BY USER AGENT LOCAL DRILL
+                    var http_by_user_agent_local_drill = require('../controllers/http/http_by_user_agent_local_drill')(pool);
+                    app.route('/http/http_by_user_agent_local_drill')
+                    .get(auth.permission, http_by_user_agent_local_drill.render);
         // HTTP LOCAL
             var http_local = require('../controllers/http/http_local')(pool);
             app.route('/http/http_local')

@@ -15,37 +15,38 @@ module.exports = function(pool) {
                 start = req.query.start;
                 end = req.query.end;
             }
-            if (req.query.host) {
+            if (req.query.user_agent) {
                 var tables = [];
                 var info = [];
                 var table1 = {
                     query: 'SELECT '+
-                                'sum(`count`) AS `count`, '+
+                                // 'sum(`count`) AS `count`, '+
+                                'count (*) AS `count`,'+
                                 'max(`time`) AS `time`, '+ 
                                 '`stealth`,'+
                                 '`lan_zone`, ' +
                                 '`machine`, '+
                                 '`lan_user`,'+
                                 '`lan_ip`, ' +
-                                '`host`, ' +
+                                '`user_agent`, ' +
                                 'sum(`proxy_blocked`) AS proxy_blocked,'+
                                 'sum(`ioc_count`) AS `ioc_count` ' +
                             'FROM ' +
-                                '`http_meta` '+
+                                '`http` '+
                             'WHERE ' +
                                 '`time` BETWEEN ? AND ? '+
-                                'AND `host` = ? '+
+                                'AND `user_agent` = ? '+
                             'GROUP BY '+
-                                '`lan_zone`, '+
-                                '`lan_ip`',
-                    insert: [start, end, req.query.host],
+                                '`lan_ip`, '+
+                                '`lan_zone`',
+                    insert: [start, end, req.query.user_agent],
                     params: [
                         {
                             title: 'Last Seen',
                             select: 'time',
                             link: {
-                                type: 'http_by_domain_local_drill',
-                                val: ['lan_ip','lan_zone','host'],
+                                type: 'http_by_user_agent_local_drill',
+                                val: ['lan_ip','lan_zone','user_agent'],
                                 crumb: false
                             }
                         },
@@ -56,13 +57,13 @@ module.exports = function(pool) {
                         { title: 'Machine', select: 'machine' },
                         { title: 'Local User', select: 'lan_user' },
                         { title: 'Local IP', select: 'lan_ip' },
-                        { title: 'Domain', select: 'host' },
+                        { title: 'User Agent', select: 'user_agent' },
                         { title: 'IOC Count', select: 'ioc_count' }
                     ],
                     settings: {
                         sort: [[1, 'desc']],
                         div: 'table',
-                        title: 'Local HTTP By Domain',
+                        title: 'Local HTTP By User Agent',
                         access: req.session.passport.user.level
                     }
                 }
