@@ -2,5 +2,23 @@
 <div data-ng-controller="dnsByQueryTypeController">
 	<section id="loading-error" loading-error></section>
 	<section id="loading-spinner" loading-spinner></section>
+	<div class="row-fluid">
+<!-- 		<div class="span4">
+			<div class="jdash-header">Remote IP Locations</div>
+			<div  style="background-color:#FFF;" class="box">
+				<div class="box-content">
+					<div id="geochart" make-geo-chart></div>
+				</div>
+			</div>
+		</div> -->
+		<div class="span12">
+			<div class="jdash-header">DNS Queries Detected Per Hour</div>
+			<div  style="background-color:#FFF;" class="box">
+				<div class="box-content">
+					<div id="barchart" make-bar-chart></div>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div make-table></div>
 </div>
