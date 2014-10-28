@@ -1179,7 +1179,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                         .margins({top: 5, left: 0, right: 0, bottom: 20})
                         .group(group)
                         .dimension(dimension)
-                        .ordering(functino(d) {return -d.value.severity;})
+                        .ordering(function(d) {return -d.value.severity;})
                         .valueAccessor(function(d) {
                             if (d.value.count === 1){
                                 return d.value.count+1;
