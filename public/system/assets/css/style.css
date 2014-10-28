@@ -2241,12 +2241,6 @@ button.userfloorbutton{
   border-radius: 5px;
   outline:none;
 }
-#floorplanpage li{
-  list-style: none;
-}
-#floorplanpage li{
-  list-style: none;
-}
 .dfp {
   margin: 0px 0px 10px 0px;
 }
@@ -2273,4 +2267,7 @@ button.epbGreen:hover,button.epbGreen:active{
 }
 button.epbGrey:hover,button.epbGrey:active{
   background: #666666;
+}
+.floorOrderInput {
+  width:50px;
 }

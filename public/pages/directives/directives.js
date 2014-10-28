@@ -3838,12 +3838,7 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
                 var itemId = e.dataTransfer.getData("Text");
                 var item = $(document).find('#'+itemId);
                 var itemData = item[0]['__data__'];
-                console.log(e);
-                console.log(destinationId);
-                console.log(itemId);
-                console.log(item);
-                console.log(itemData);
-                console.log(" ");
+                
                 // var sourceElm = d3.select(e.srcElement).attr('id');
                 // var floorPlanElm = d3.select(el).attr('id');
                 if (destinationId === 'floorplan'){

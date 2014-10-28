@@ -51,52 +51,62 @@
                   <option value="{{floor.asset_name}}" ng-repeat="floor in modalFloors">{{floor.custom_name}}</option>
                 </select><br />
                 <button type="button" class="button-error pure-button" ng-click="deleteFloorplan(floorplan, modalFloors)">Delete</button>
-            <button type="button" class="rndCrnBtn pure-button" ng-click="ok()">Close</button>
+                <button type="button" class="rndCrnBtn pure-button" ng-click="ok()">Close</button>
             </form>
         </div>
     </script>  
+    <script type="text/ng-template" id="editModal.html">
+        <div class="modal-header">
+            <h3>Edit Floorplans</h3>
+        </div>
+        <div class="modal-body">
+            <form id="myform">
+                <div ng-repeat="floor in modalFloors">
+                    Floor Name:&nbsp;<input type="text" ng-model="floor.custom_name" />
+                    &nbsp;&nbsp;&nbsp; Order:&nbsp;<input type="text" class="floorOrderInput" ng-model="floor.order_index" />
+                </div>
+                <button type="button" class="button-success pure-button" ng-click="editFloors(modalFloors)">Save</button>
+                <button type="button" class="rndCrnBtn pure-button" ng-click="ok()">Close</button>
+            </form>
+        </div>
+    </script>
     <section head></section>
     <section id="loading-error" loading-error></section>
     <section id="loading-spinner" loading-spinner></section>
     <div class="row-fluid">
         <section id="floorplanpage">
-            <!-- <input type="file" name="file" onchange="angular.element(this).scope().uploadFile(this.files)"/> -->
-            <!-- <li><a href="" ng-click="uploadOpen()"><i class="fa fa-upload"></i> Upload</a></li> -->
-            <li><button type="button" class="button-error pure-button dfp" ng-click="modelDelete(floors)">Delete Floorplan</button></li>
+            <div id="editbuttons">
+                <button type="button" class="button-error pure-button dfp" ng-click="modelDelete(floors)">Delete Floorplan</button>
+                <button type="button" class="rndCrnBtn pure-button" ng-click="editFloorPlan(floors)">Edit</button>
+            </div>
             <div id="listlocalusersspan">
                  <div class="jdash-header">Local Users</div>
-                <div id="listlocalusers" class="bin" droppable drop="handleDrop" style="position: relative">
-                   <!--  <ul>                    
-                        <li data-ng-repeat="user in userList" ng-show="display(user.editing)" ng-class="childClass(user)">
-                            <span ng-show="display(user.editing)" ng-class="childClass(user)"></span>
-                        </li>
-                    </ul> -->
+                <div id="listlocalusers" class="bin" droppable style="position: relative">
                 </div>
             </div>
             <div id="hidelocalusers" ></div>
-            <!-- <div class="span1">
-                <div class="jdash-header">Filters</div>
-            </div> -->
             <div id="floorplanspan">
-                <tabset ui-sortable="true">
-                    <tab select="alertMe()" ng-repeat="floor in floors" active="$first">
-                        <tab-heading>
-                            {{floor.custom_name}}
-                        </tab-heading>
-                        <div style="background-color:#FFF;" class="box">
-                            <div id="floorplan" floor-name="{{floor.asset_name}}" make-floor-plan class="bin" droppable drop="handleDrop" style="position: relative">
-                                <!-- <object width="910" height="600" id="svgFloorPlan" data="{{floor.path}}" type="image/svg+xml"></object> -->
-                                <!-- <object id="svgFloorPlan" width="800" data="{{floor.path}}" type="image/svg+xml" ></object> -->
-                                 <!-- <img id="svgFloorPlan" width="800" src="{{floor.path}}" type="image/svg+xml" />  -->
+                <div id="tabs" >
+                    <tabset>
+                        <tab select="alertMe()" ng-repeat="floor in floors" active="$first">
+                            <tab-heading>
+                                {{floor.custom_name}} 
+                            </tab-heading>
+                            <div style="background-color:#FFF;" class="box">
+                                <div id="floorplan" floor-name="{{floor.asset_name}}" make-floor-plan class="bin" droppable style="position: relative">
+                                    <!-- <object width="910" height="600" id="svgFloorPlan" data="{{floor.path}}" type="image/svg+xml"></object> -->
+                                    <!-- <object id="svgFloorPlan" width="800" data="{{floor.path}}" type="image/svg+xml" ></object> -->
+                                     <!-- <img id="svgFloorPlan" width="800" src="{{floor.path}}" type="image/svg+xml" />  -->
+                                </div>
                             </div>
-                        </div>
-                    </tab>
-                    <tab ng-click="uploadOpen()">
-                        <tab-heading> + </tab-heading>     
-                        <div style="background-color:#FFF;" class="box"></div>                    
-                    </tab>
-                <div id="triggerbuttons" class="bin" ></div>
-                </tabset>
+                        </tab>
+                        <tab ng-click="uploadOpen()">
+                            <tab-heading> + </tab-heading>     
+                            <div style="background-color:#FFF;" class="box"></div>                    
+                        </tab>
+                    <div id="triggerbuttons" class="bin" ></div>
+                    </tabset>
+                </div>
             </div>
             <div id="localuserinformationspan">
                 <div class="jdash-header">User Information</div>

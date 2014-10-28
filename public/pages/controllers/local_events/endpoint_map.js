@@ -85,6 +85,17 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         }
     }
 
+    $scope.editFloorPlan = function (floors) {
+        //console.log(floors);
+        $rootScope.modalFloors = floors;
+        $scope.modalInstance = $modal.open({
+            templateUrl: 'editModal.html',
+            controller: uploadInstanceCtrl,
+            keyboard: true,
+            modalFloors: floors
+        });
+    };
+
     $scope.modelDelete = function (floors) {
         //console.log(floors);
         $rootScope.modalFloors = floors;
@@ -122,6 +133,12 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $modalInstance.close();
             location.reload();
         };
+
+        $scope.editFloors = function(edited_floors) {
+            $http({method: 'POST', url: '/local_events/endpoint_map?type=editFloorInfo', data: {edited_floors: edited_floors}});
+            $scope.ok();
+        };
+
         $scope.onFileSelect = function($files, clientWidth) {
             $scope.selectedFiles = [];
             $scope.progress = [];
