@@ -20,6 +20,7 @@ angular.module('mean.pages').controller('dnsByQueryTypeController', ['$scope', '
                 d.count = +d.count;
             });
             $scope.crossfilterData = crossfilter(data.crossfilter);
+            $scope.piechartData = crossfilter(data.piechart);
             $scope.data = data;
 
             $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
@@ -32,6 +33,20 @@ angular.module('mean.pages').controller('dnsByQueryTypeController', ['$scope', '
             $scope.$broadcast('barChart', barDimension, barGroup, 'bar');
                 $scope.barChartxAxis = '';
                 $scope.barChartyAxis = '# DNS Queries / Hour';
+
+            var countDimension = $scope.piechartData.dimension(function(d) { return d.count }).top(10).map(function(d){ return d.pie_dimension });
+            $scope.appDimension = $scope.piechartData.dimension(function(d) { 
+                if(countDimension.indexOf(d.pie_dimension) !== -1) {
+                    return d.pie_dimension;
+                } else {
+                    return "Other";
+                }
+            });                 
+            $scope.pieGroup = $scope.appDimension.group().reduceSum(function (d) {
+                return d.count;
+            });
+            // console.log(pieGroup.top(Infinity));
+            $scope.$broadcast('pieChart', 'application');
         }
     });
 }]);
