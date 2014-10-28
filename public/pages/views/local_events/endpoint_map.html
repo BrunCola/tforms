@@ -50,7 +50,7 @@
                 <select ng-model="floorplan.select">
                   <option value="{{floor.asset_name}}" ng-repeat="floor in modalFloors">{{floor.custom_name}}</option>
                 </select><br />
-                <button type="button" class="button-error pure-button" ng-click="deleteFloorplan(floorplan)">Delete</button>
+                <button type="button" class="button-error pure-button" ng-click="deleteFloorplan(floorplan, modalFloors)">Delete</button>
             <button type="button" class="rndCrnBtn pure-button" ng-click="ok()">Close</button>
             </form>
         </div>
@@ -78,8 +78,8 @@
                 <div class="jdash-header">Filters</div>
             </div> -->
             <div id="floorplanspan">
-                <tabset>
-                    <tab select="alertMe()" ng-repeat="floor in floors" active="$first" >
+                <tabset ui-sortable="true">
+                    <tab select="alertMe()" ng-repeat="floor in floors" active="$first">
                         <tab-heading>
                             {{floor.custom_name}}
                         </tab-heading>

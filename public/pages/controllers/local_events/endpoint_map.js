@@ -86,7 +86,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     }
 
     $scope.modelDelete = function (floors) {
-        console.log(floors);
+        //console.log(floors);
         $rootScope.modalFloors = floors;
         $scope.modalInstance = $modal.open({
             templateUrl: 'deleteModal.html',
@@ -160,9 +160,15 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             }
         };
 
-        $scope.deleteFloorplan = function(floor) {
-            console.log(floor.select);
-            $http({method: 'POST', url: '/local_events/endpoint_map?type=deletefp', data: {asset_name: floor.select}});
+        $scope.deleteFloorplan = function(floor_name, floors) {
+            var imagePath = "";
+            for (var f in floors) {
+                if (floors[f].asset_name === floor_name.select) {
+                    imagePath = floors[f].path;
+                }
+            }
+            //console.log(imagePath);
+            $http({method: 'POST', url: '/local_events/endpoint_map?type=deletefp', data: {asset_name: floor_name.select, path: imagePath}});
             $scope.ok();
         };
 
@@ -220,5 +226,4 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             };
         }
     };
-
 }]);

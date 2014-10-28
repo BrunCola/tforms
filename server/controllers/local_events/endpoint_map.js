@@ -199,6 +199,32 @@ module.exports = function(pool) {
         updatefp: function(req, res) {
             var database = req.session.passport.user.database;
             if (req.query.type === 'deletefp') {
+
+                var _getAllFilesFromFolder = function(dir) {
+                    var filesystem = require("fs");
+                    var results = [];
+
+                    filesystem.readdirSync(dir).forEach(function(file) {
+                        file = dir+'/'+file;
+                        var stat = filesystem.statSync(file);
+
+                        if (stat && stat.isDirectory()) {
+                            results = results.concat(_getAllFilesFromFolder(file))
+                        } else {
+                            if(file === req.body.path){
+                                results.push(file);
+                            }
+                        }
+                    });
+                    if (results.length > 0) {
+                        filesystem.unlinkSync(results[0]);
+                        //console.log('successfully deleted '+results[0]);
+                    }
+                };
+
+                _getAllFilesFromFolder('./public/uploads/phirelight');
+
+
                 var update_coordinates = {
                     query: "DELETE FROM `assets` WHERE `type`='map' AND `asset_name`=?",
                     insert: [req.body.asset_name]
