@@ -1,5 +1,7 @@
 <section>
-	<div ng-show="patternPane" class="lanePatternInfoPane" style="width:{{width}}px; height:{{height}}px; margin-top:40px">
-		THIS IS CENTERED WITHOUT SCRIPTING :D
-	</div>
+    <div ng-show="patternPane" class="lanePatternInfoPane" style="width:{{width}}px; height:{{height+20}}px; margin-top:40px">
+        <ng-repeat="point in points">
+            <li>{{point.info}}</li>
+        </ng-repeat>
+    </div>
 </section>

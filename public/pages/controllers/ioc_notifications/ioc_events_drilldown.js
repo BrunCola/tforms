@@ -256,13 +256,16 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
         }
     }
     $scope.patternPane = false;
-    $scope.$on('patternPane', function() {
-        $scope.$apply(function () {
-            if ($scope.patternPane) {
-                $scope.patternPane = false;
-            } else {
-                $scope.patternPane = true;
+    $scope.$on('patternPane', function (event, search, matches) {
+        if ($scope.patternPane) { $scope.patternPane = false; return }
+        $scope.patternPane = true;
+        // push seperate points in search return to new array
+        $scope.points = [];
+        for (var i in search) {
+            if (i !== 'length') { // ignore the length key we set earlier
+                $scope.points.push(search[i].point);
             }
-        })
+        }
+        console.log($scope.points)
     })
 }]);

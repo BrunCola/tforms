@@ -1608,6 +1608,7 @@ module.exports = function(pool) {
                     asyncList.push(
                         function(callback) {
                             new query(queries[q], {database: database, pool: pool}, function(err, data, passed){
+                                console.log(data);
                                 results.push({
                                     result: data,
                                     point: passed
@@ -1705,8 +1706,8 @@ module.exports = function(pool) {
             async.parallel(asyncArr, function(err) {
                 if (err) throw console.log(err);
                 // compare functions
-                var test = compare(results);
-                console.log(test)
+                var result = compare(results);
+                res.json(result);
             });
         }
     }

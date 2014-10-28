@@ -580,15 +580,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             "needed.",
                             "Event Timeline Navigation");
                     });
-               
-                
-                buttonHolder
-                    .append('button')
-                    .attr('class', 'test')
-                    .html('test')
-                    .on('click', function(){
-                        $scope.$broadcast('patternPane');
-                    });
 
                 var saveToggle = buttonHolder
                     .append('button')
@@ -617,23 +608,25 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     });
                 
                 function analize() {
-                    // $scope.$broadcast('patternPane');
                     var compareObj = $scope.pattern.selected;
-                    console.log($scope.pattern.selected)
                     if (compareObj.length > 0) {
                         loading('start');
                         // construct queries
                         $http({method: 'POST', url: '/ioc_notifications/ioc_events_drilldown/patterns', data: compareObj}).
                             success(function(data, status, headers, config) {
-                                
+                                // send info to pattern pane
+                                $scope.$broadcast('patternPane', compareObj, data);
+                                // call clear points function
+                                // turn off loading
+                                loading('end');
                             })
-                            // send info to pattern pane
-                            // turn off loading
-                            // call clear points function
                     } else {
                         // call clear points function
+                        // turn off loading
+                        loading('end');
                     }
                 }
+
 
                 // var timeShiftHolder = d3.select("#lanegraph").append('div').attr('class', 'timeShiftHolder');
                 // var nextTime = timeShiftHolder
@@ -1134,15 +1127,3 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
         }
     };
 }]);
-
-// angular.module('mean.pages').directive('laneGraph', function() {
-//     // This appends the page head (title and calendar) to all pages, so they can have their own controller
-//     return {
-//         restrict: 'A',
-//         scope : {
-//             title : '@'
-//         },
-//         templateUrl : 'public/pages/views/ioc_notifications/ioc_events_drilldown_control.html',
-//         transclude : true
-//     };
-// });
