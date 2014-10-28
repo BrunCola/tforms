@@ -20,7 +20,7 @@ module.exports = function(pool) {
             var info = [];
             var table1 = {
                 query: 'SELECT '+
-                            'ssl_uniq_remote_ip.time as `time`,'+
+                            '`time`,'+
                             '`stealth`,'+
                             '`lan_zone`,'+
                             '`machine`,'+
@@ -34,9 +34,9 @@ module.exports = function(pool) {
                             '`server_name`,'+
                             '`proxy_blocked` '+
                         'FROM '+
-                            '`ssl_uniq_remote_ip` '+
+                            '`ssl_uniq_remote_server` '+
                         'WHERE '+
-                            'ssl_uniq_remote_ip.time BETWEEN ? AND ?',
+                            '`time` BETWEEN ? AND ?',
                 insert: [start, end],
                 params: [
                     {
@@ -65,7 +65,7 @@ module.exports = function(pool) {
                 settings: {
                     sort: [[1, 'desc']],
                     div: 'table',
-                    title: 'New Remote IP Addresses Detected'
+                    title: 'New Remote Servers Detected'
                 }
             }
             var crossfilterQ = {

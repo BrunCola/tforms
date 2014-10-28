@@ -122,7 +122,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $modalInstance.close();
             location.reload();
         };
-        $scope.onFileSelect = function($files) {
+        $scope.onFileSelect = function($files, clientWidth) {
             $scope.selectedFiles = [];
             $scope.progress = [];
             if ($scope.upload && $scope.upload.length > 0) {
@@ -144,7 +144,13 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                     var loadFile = function(fileReader, index) {
                         fileReader.onload = function(e) {
                             //$timeout(function() {
-                                $scope.dataUrls[index] = e.target.result;
+                            $scope.dataUrls[index] = e.target.result;
+                            $('#tempImg').attr('src', e.target.result);
+                            var imagex = e.target.result;
+                            var newimage = new Image();
+                            newimage.src = imagex;
+                            $scope.imageWidth = newimage.width ;
+                            $scope.imageHeight = newimage.height;
                             //});
                         }
                     }(fileReader, i);
@@ -195,11 +201,14 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                     method: 'POST',
                     data : {
                         myModel : $scope.myModel,
-                        imageType: 'map'
+                        imageType: 'map',
+                        width: $scope.imageWidth,
+                        height: $scope.imageHeight
                     },
                     file: $scope.selectedFiles[index],
                 }).then(function(response) {
                     $scope.uploadResult.push(response.data);
+                    console.log(response.data);
                 }, function(response) {
                     if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
                 }, function(evt) {

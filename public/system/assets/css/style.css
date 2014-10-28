@@ -2050,12 +2050,14 @@ Datatables Plugin(in v1.3)
 }
 
 #floorplan{
-  height: 570px;
+  /*height: 630px;*/
+  width: inherit;
   overflow: hidden;
 }
 
 #listlocalusers{
    /*overflow: hidden !important;*/
+   /*height: 700px;*/
 }
 
 #listlocalusers button {
@@ -2134,6 +2136,37 @@ Datatables Plugin(in v1.3)
   color:#f00;
 }
 
+#listlocalusersspan{
+  width:15%;
+  margin: 0px 0px 0px 0px;
+  padding: 0px;
+  float: left;
+}
+#floorplanspan{
+  width:60%;
+  margin: 0px 1% 0px 0px;
+  padding: 0px;
+  float: left;
+}
+#localuserinformationspan{
+  width:20%;
+  margin: 0px 0px 0px 0px;
+  padding: 0px;
+  float: left;
+}
+#hidelocalusers{
+  width: 0.5%;
+  float: left;
+  /*background: #CCC;*/
+  margin: 0px 1% 0px 0px;
+  height: 326px;
+  cursor: pointer;
+  padding: 0px 0px 0px 0px;
+  font-size: 10px;
+}
+.floorHide{
+  display:none;
+}
 
 #floorplan button{
   background: none;
@@ -2162,7 +2195,6 @@ Datatables Plugin(in v1.3)
   text-align: center;
   margin: 3px auto 0px auto;
   height: auto;
-  width: 23px;
   /*width: 35px;
   height: 23px;*/
 }
@@ -2209,12 +2241,36 @@ button.userfloorbutton{
   border-radius: 5px;
   outline:none;
 }
-
-#floorplanpage .span2{
-  margin-left: 0px;
+#floorplanpage li{
+  list-style: none;
+}
+#floorplanpage li{
+  list-style: none;
+}
+.dfp {
+  margin: 0px 0px 10px 0px;
 }
 /*
 #floorplan{
   height:2000px;
   width:2000px;
 }*/
+#triggerbuttons { 
+  float: right;
+}
+#triggerbuttons button{
+  margin: 0px 1px;  
+  border-radius: 4px;
+}
+button.rndCrnBtn {
+  border-radius: 5px;
+}
+button.epbRed:hover,button.epbRed:active{
+  background: #FF0000 !important;
+}
+button.epbGreen:hover,button.epbGreen:active{
+  background: #00FF00;
+}
+button.epbGrey:hover,button.epbGrey:active{
+  background: #666666;
+}

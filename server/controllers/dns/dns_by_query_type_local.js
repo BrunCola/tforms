@@ -15,54 +15,55 @@ module.exports = function(pool) {
                 start = req.query.start;
                 end = req.query.end;
             }
-            if (req.query.host) {
+            if (req.query.qtype) {
                 var tables = [];
                 var info = [];
                 var table1 = {
                     query: 'SELECT '+
-                                'sum(`count`) AS `count`, '+
+                                // 'sum(`count`) AS `count`,'+
+                                'count(*) AS `count`, '+
                                 'max(`time`) AS `time`, '+ 
                                 '`stealth`,'+
                                 '`lan_zone`, ' +
                                 '`machine`, '+
                                 '`lan_user`,'+
                                 '`lan_ip`, ' +
-                                '`host`, ' +
-                                'sum(`proxy_blocked`) AS proxy_blocked,'+
+                                '`qtype`, ' +
+                                '`qtype_name`, ' +
                                 'sum(`ioc_count`) AS `ioc_count` ' +
                             'FROM ' +
-                                '`http_meta` '+
+                                '`dns` '+
                             'WHERE ' +
                                 '`time` BETWEEN ? AND ? '+
-                                'AND `host` = ? '+
+                                'AND `qtype` = ? '+
                             'GROUP BY '+
-                                '`lan_zone`, '+
+                                '`lan_zone`, ' +
                                 '`lan_ip`',
-                    insert: [start, end, req.query.host],
+                    insert: [start, end, req.query.qtype],
                     params: [
                         {
                             title: 'Last Seen',
                             select: 'time',
                             link: {
-                                type: 'http_by_domain_local_drill',
-                                val: ['lan_ip','lan_zone','host'],
+                                type: 'dns_by_query_type_local_drill',
+                                val: ['lan_ip','lan_zone','qtype'],
                                 crumb: false
                             }
                         },
                         { title: 'Connections', select: 'count' },
                         { title: 'Stealth', select: 'stealth', access: [3] },
-                        { title: 'ABP', select: 'proxy_blocked', access: [2] },
                         { title: 'Zone', select: 'lan_zone' },
                         { title: 'Machine', select: 'machine' },
                         { title: 'Local User', select: 'lan_user' },
                         { title: 'Local IP', select: 'lan_ip' },
-                        { title: 'Domain', select: 'host' },
+                        { title: 'Query Type', select: 'qtype' },
+                        { title: 'Query Type Name', select: 'qtype_name' },
                         { title: 'IOC Count', select: 'ioc_count' }
                     ],
                     settings: {
                         sort: [[1, 'desc']],
                         div: 'table',
-                        title: 'Local HTTP By Domain',
+                        title: 'Local DNS by Query Type',
                         access: req.session.passport.user.level
                     }
                 }
