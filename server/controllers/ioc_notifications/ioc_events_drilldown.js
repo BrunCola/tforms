@@ -916,7 +916,7 @@ module.exports = function(pool) {
                             {title: 'Stealth', select: 'stealth', access: [3] },
                             {title: "Zone", select: "lan_zone"},
                             {title: "Machine", select: "machine"},
-                            {title: "Local User", select: "lan_user"},
+                            {title: "Local User", select: "lan_user", pattern: true},
                             {title: "Local IP", select: "lan_ip"},
                             {title: "Local Port", select: "lan_port"},
                             {title: "Remote IP", select: "remote_ip"},
@@ -1210,7 +1210,7 @@ module.exports = function(pool) {
                             {title: 'Machine Name', select: 'machine' },
                             {title: 'Local IP', select: 'lan_ip' },
                             {title: 'Remote IP', select: 'remote_ip' },
-                            {title: 'Remote Country', select: 'remote_country' },
+                            {title: 'Remote Country', select: 'remote_country', pattern: true },
                             {title: 'From', select: 'mailfrom' },
                             {title: 'To', select: 'receiptto' },
                             {title: 'Reply To', select: 'reply_to' },
@@ -1254,7 +1254,7 @@ module.exports = function(pool) {
                         params: [
                             {title: "Time", select: "time"},
                             {title: "File Type", select: "mime"},
-                            {title: "Name", select: "name"},
+                            {title: "Name", select: "name", pattern: true},
                             {title: "Size", select: "size"},
                             {title: "MD5", select: "md5"},
                             {title: "SHA1", select: "sha1"},
@@ -1525,6 +1525,7 @@ module.exports = function(pool) {
             }
         },
         pattern: function(req, res) {
+            console.log(req.url);
             console.log('processing');
             // set the datbase the user queries
             var database = req.session.passport.user.database;
@@ -1533,7 +1534,7 @@ module.exports = function(pool) {
             var results = [];
             function makeQueries() {
                 var queryList = [];
-                var selectList = ['lan_user', 'lan_ip']; // TEMPORARY.. this is going to be sent up with user
+                var selectList = ['lan_user', 'lan_ip']; // TEMPORARY.. this is going to be sent up with user8
                 var selectString = '';
                 // make sure selects are present
                 if (selectList.length < 1) { return false; }
@@ -1562,6 +1563,15 @@ module.exports = function(pool) {
                         switch (req.body[i].point.type) {
                             case 'Conn':
                                 queryString += 'conn';
+                            break;
+                            case 'File':
+                                queryString += 'file';
+                            break;
+                            case 'SSL':
+                                queryString += 'ssl';
+                            break;
+                            case 'Email':
+                                queryString += 'smtp';
                             break;
                             default:
                                 queryString += 'conn';
@@ -1610,19 +1620,18 @@ module.exports = function(pool) {
                 return asyncList;
             }
             var asyncArr = getAsync(queries);
-            var matched = [];
             function compare(data) {
                 var totalPoints = data.length;
                 if (totalPoints < 2) { return false } // return if there aren't enough points to compare
-                Object.prototype.equals = function(object2) {
+                function equals(object, object2) {
                     //For the first loop, we only check for types
-                    for (var propName in this) {
+                    for (var propName in object) {
                         // checks if they share the same keys/properties
-                        if (this.hasOwnProperty(propName) != object2.hasOwnProperty(propName)) {
+                        if (object.hasOwnProperty(propName) != object2.hasOwnProperty(propName)) {
                             return false;
                         }
                         //Check instance type
-                        else if (typeof this[propName] != typeof object2[propName]) {
+                        else if (typeof object[propName] != typeof object2[propName]) {
                             return false;
                         }
                     }
@@ -1630,52 +1639,74 @@ module.exports = function(pool) {
                     for (var propName in object2) {
                         //We must check instances anyway, there may be a property that only exists in object2
                             //I wonder, if remembering the checked values from the first loop would be faster or not 
-                        if (this.hasOwnProperty(propName) != object2.hasOwnProperty(propName)) {
+                        if (object.hasOwnProperty(propName) != object2.hasOwnProperty(propName)) {
                             return false;
                         }
-                        else if (typeof this[propName] != typeof object2[propName]) {
+                        else if (typeof object[propName] != typeof object2[propName]) {
                             return false;
                         }
                         //If the property is inherited, do not check any more (it must be equal if both objects inherit it)
-                        if(!this.hasOwnProperty(propName)) continue;
+                        if (!object.hasOwnProperty(propName)) continue;
                         //Now the detail check and recursion
-                        //This returns the script back to the array comparing
-                        if (this[propName] instanceof Array && object2[propName] instanceof Array) {
+                        //object returns the script back to the array comparing
+                        if (object[propName] instanceof Array && object2[propName] instanceof Array) {
                             // recurse into the nested arrays
-                            if (!this[propName].equals(object2[propName])) return false;
+                            if (!object[propName].equals(object2[propName])) return false;
                         }
-                        else if (this[propName] instanceof Object && object2[propName] instanceof Object) {
+                        else if (object[propName] instanceof Object && object2[propName] instanceof Object) {
                             // recurse into another objects
-                            if (!this[propName].equals(object2[propName])) return false;
+                            if (!object[propName].equals(object2[propName])) return false;
                         }
                         //Normal value comparison for strings and numbers
-                        else if(this[propName] != object2[propName]) {
+                        else if (object[propName] != object2[propName]) {
                             return false;
                         }
                     }
                     // return true if everything passed
                     return true;
                 }
-                for (var i = 0; i < totalPoints; i++) { // each one of these is a seperate query / point with its own array of objects
-                    if (i === 0) { // run if first array
-                        var thisPoint = data[i];
-                        var nextPoint = data[i+1];
-                        for (var r in thisPoint.result) {
-                            console.log(typeof thisPoint.result[0])
-                            console.log(typeof thisPoint.result[1])
-                            console.log('about to match')
-                            var matched = nextPoint.result.filter(function(d){ console.log('matching'); return thisPoint.result[r].equals(d) });
-                            console.log(matched);
+                function checkMatch(checkOne, checkTwo) {
+                    var matched = [];
+                    for (var r in checkOne) {
+                        var thisMatched = checkTwo.filter(function(d){ if (equals(checkOne[r], d)) { return true; } });
+                        // push every item of each array returned to a single larger array of matched items
+                        for (var m in thisMatched) {
+                            matched.push(thisMatched[m]);
                         }
                     }
-                    // if anything matched run it in a function here
+                    if (matched.length > 0) { return matched } else { return false }
+                }   
+                for (var i = 0; i < totalPoints; i++) { // each one of these is a seperate query / point with its own array of objects
+                    var matched = [];
+                    if (i === 0) { // run if first array
+                        var thisPoint = data[i].result;
+                        var nextPoint = data[i+1].result;
+                        var check = checkMatch(thisPoint, nextPoint);
+                        if (check) {
+                            // set our matched results
+                            matched = check;
+                        } else {
+                            // return if the first check didn't return results
+                            return false;
+                        }
+                    } else if ((matched.length > 0) && (i !== 1)) { // continue if the first loop matched, but skip the second 'i' since the we already tested it
+                        var thisPoint = data[i].result;
+                        var check = checkMatch(matched, thisPoint);
+                        if (check) {
+                            matched = check;
+                        } else {
+                            return false;
+                        }
+                    }
+                    if (matched.length > 0) { return matched } else { return false }
                 }
             }
             // process our async list here
             async.parallel(asyncArr, function(err) {
                 if (err) throw console.log(err);
                 // compare functions
-                compare(results);
+                var test = compare(results);
+                console.log(test)
             });
         }
     }
