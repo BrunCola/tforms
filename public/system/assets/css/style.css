@@ -2122,6 +2122,10 @@ Datatables Plugin(in v1.3)
   min-height: 30px;
   line-height: 20px;
 }
+#localuserinformation .luinfo {
+  margin: 5px 0px;
+  padding: 0px;
+}
 #localuserinformation li:hover {
   cursor: pointer;
 }

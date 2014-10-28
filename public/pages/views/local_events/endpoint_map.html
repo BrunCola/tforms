@@ -41,6 +41,47 @@
             <button class="btn btn-primary" ng-click="ok()">Close</button>
         </div>
     </script>
+    <script type="text/ng-template" id="uploadUserModal.html">
+        <div class="modal-header">
+            <h3>Upload User Image</h3>
+        </div>
+        <div class="modal-body">
+            <div style="width: 70%;margin: 0 auto;">
+                <div style="width: 70%;margin: 0 auto;">
+                    Upload file(s): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="file" ng-file-select="onFileSelect($files,width)" accept="image/*" multiple onclick="this.value=null">
+                </div>
+                <br/>
+                <div style="width: 70%;margin: 0 auto;">
+                    <div ng-show="dropSupported" class="drop-box" ng-file-drop="onFileSelect($files);" ng-file-drop-available="dropSupported=true">
+                        or drop files here
+                    </div>
+                </div>
+                <div ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
+                <br/>
+                <div ng-show="progress.length > 0" style="width: 70%;margin: 0 auto;">
+                    <div class="err" ng-show="errorMsg != null">{{errorMsg}}</div>
+                    Progress:
+                    <br/>
+                    <div ng-show="selectedFiles != null">
+                        <div class="sel-file" ng-repeat="f in selectedFiles">
+                            {{($index + 1) + '.'}}
+                            <img ng-show="dataUrls[$index]" ng-src="{{dataUrls[$index]}}">
+                            <button class="button" ng-click="start($index, custom_fn)" ng-show="progress[$index] < 0">Upload</button>
+                            <span class="progress" ng-show="progress[$index] >= 0">
+                                <div style="width:{{progress[$index]}}%">{{progress[$index]}}%</div>
+                            </span>
+                            <button class="button" ng-click="abort($index)" ng-show="hasUploader($index) && progress[$index] < 100">Abort</button>
+                            {{f.name}} - size: {{f.size}}B - type: {{f.type}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">Close</button>
+        </div>
+    </script>
     <script type="text/ng-template" id="deleteModal.html">
         <div class="modal-header">
             <h3>Delete Floorplan</h3>
@@ -108,10 +149,60 @@
                     </tabset>
                 </div>
             </div>
-            <div id="localuserinformationspan">
+            <div id="localuserinformationspan" ng-show="userinfo">
                 <div class="jdash-header">User Information</div>
                 <div  style="background-color:#FFF;" class="box">
-                    <div id="localuserinformation" append-floor-info></div>
+                    <div id="localuserinformation" >
+                        <div class="luinfo" ng-show="userinfo.user_image"><span style="font-weight:bold">User Image: </span><button class='uUpload userfloorbutton' ng-dblclick="uploadUser(userinfo)" type='button' value='userinfo' href=''><img src='{{userinfo.user_image}}' width='48'/></button></div>
+                        <div class="luinfo" ng-show="userinfo.custom_user"><span style="font-weight:bold">Custom Name: </span><span>{{userinfo.custom_user}}</span></div>
+                        <div class="luinfo" ng-show="userinfo.lan_ip"><span style="font-weight:bold">Lan IP: </span><span>{{userinfo.lan_ip}}</span></div>
+                        <div class="luinfo" ng-show="userinfo.lan_user"><span style="font-weight:bold">Lan User: </span><span>{{userinfo.lan_user}}</span></div>
+                        <div class="luinfo" ng-show="userinfo.lan_zone"><span style="font-weight:bold">Lan Zone: </span><span>{{userinfo.lan_zone}}</span></div>
+                        <div class="luinfo" ng-show="userinfo.lan_machine"><span style="font-weight:bold">Lan Machine: </span><span>{{userinfo.lan_machine}}</span></div>
+                        <div class="luinfo" ng-show="userinfo.lan_type"><span style="font-weight:bold">Lan Type: </span><span>{{userinfo.lan_type}}</span></div>
+                        <div class="luinfo" ng-show="userinfo.lan_os"><span style="font-weight:bold">Lan OS: </span><span>{{userinfo.lan_os}}</span></div>
+                        <div class="luinfo" ng-show="userinfo.lan_mac"><span style="font-weight:bold">Lan Mac: </span><span>{{userinfo.lan_mac}}</span></div>
+                        <div class="luinfo" ng-show="userinfo.stealth"><span style="font-weight:bold">Stealth: </span><span>{{userinfo.stealth}}</span></div>
+                        <div class="luinfo" ng-show="userinfo.endpoint_agent"><span style="font-weight:bold">Endpoint Agent: </span><span>{{userinfo.endpoint_agent}}</span></div>
+                        <div class="luinfo" ng-show="userinfo.endpoint_agent_name"><span style="font-weight:bold">Endpoint Agent Name: </span><span>{{userinfo.endpoint_agent_name}}</span></div>
+                        <div class="luinfo" ng-if="userinfo.ioc_hits != 0">
+                            <span style="font-weight:bold">IOC Hits: </span><span><a href="#!/ioc_local_drill?lan_zone={{userinfo.lan_zone}}&lan_ip={{userinfo.lan_ip}}"> {{userinfo.ioc_hits}}</a></span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.ioc_hits == 0">
+                            <span style="font-weight:bold">IOC Hits: </span><span>{{userinfo.ioc_hits}}</span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.app_hits != 0">
+                            <span style="font-weight:bold">App Hits: </span><span><a href="#!/l7_local_app?lan_zone={{userinfo.lan_zone}}&lan_ip={{userinfo.lan_ip}}"> {{userinfo.app_hits}}</a></span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.app_hits == 0">
+                            <span style="font-weight:bold">App Hits: </span><span>{{userinfo.app_hits}}</span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.http_hits != 0">
+                            <span style="font-weight:bold">HTTP Hits: </span><span><a href="#!/http_local_by_domain?lan_zone={{userinfo.lan_zone}}&lan_ip={{userinfo.lan_ip}}"> {{userinfo.http_hits}}</a></span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.http_hits == 0">
+                            <span style="font-weight:bold">HTTP Hits: </span><span>{{userinfo.http_hits}}</span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.file_hits != 0">
+                            <span style="font-weight:bold">File Hits: </span><span><a href="#!/by_file_name?lan_zone={{userinfo.lan_zone}}&lan_ip={{userinfo.lan_ip}}"> {{userinfo.file_hits}}</a></span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.file_hits == 0">
+                            <span style="font-weight:bold">File Hits: </span><span>{{userinfo.file_hits}}</span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.endpoint_hits != 0">
+                            <span style="font-weight:bold">Endpoints Hits: </span><span><a href="#!/endpoint_by_user_and_ip?lan_zone={{userinfo.lan_zone}}&lan_ip={{userinfo.lan_ip}}"> {{userinfo.endpoint_hits}}</a></span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.endpoint_hits == 0">
+                            <span style="font-weight:bold">Endpoints Hits: </span><span>{{userinfo.endpoint_hits}}</span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.total_bw != 0 && userinfo.total_bw != null">
+                            <span style="font-weight:bold">Total Bandwidth in MB: </span><span><a href="#!/local2remote?lan_zone={{userinfo.lan_zone}}&lan_ip={{userinfo.lan_ip}}&lan_machine={{userinfo.lan_machine}}"> {{userinfo.total_bw}}</a></span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.total_bw == null">
+                            <span style="font-weight:bold">Total Bandwidth in MB: </span><span>0</span>
+                        </div>
+                        <div ng-show="userinfo"><button type="button" class="button-error pure-button" ng-click="removeEndUser(userinfo)">Remove User</button></div>
+                    </div>
                 </div>
             </div>
         </section>
