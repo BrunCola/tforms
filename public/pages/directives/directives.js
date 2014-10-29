@@ -3138,23 +3138,23 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     }
 
                     function dragged(d) {
-                        if ( (d3.mouse($("#floorplan")[0])[0]) < 0 || (d3.mouse($("#floorplan")[0])[0]) > 790 || (d3.mouse($("#floorplan")[0])[1]) < 0 || (d3.mouse($("#floorplan")[0])[1]) > 580 ) {
-                            //console.log((d3.mouse($("#floorplan")[0])[0]) + " - " +(d3.mouse($("#floorplan")[0])[1]));
-                            // var me = d3.event.sourceEvent;
-                            // console.log(me);
-                            // var destinationId = $(this).attr('id');
-                            // console.log(destinationId);
-                            // var itemId = me.dataTransfer.getData("Text");
-                            // console.log(itemId);
-                            // var item = $(document).find('#'+itemId);
-                            // console.log(item);
-                            // var itemData = item[0]['__data__'];
-                            // console.log(itemData);
+                        // if ( (d3.mouse($("#floorplan")[0])[0]) < 0 || (d3.mouse($("#floorplan")[0])[0]) > 790 || (d3.mouse($("#floorplan")[0])[1]) < 0 || (d3.mouse($("#floorplan")[0])[1]) > 580 ) {
+                        //     //console.log((d3.mouse($("#floorplan")[0])[0]) + " - " +(d3.mouse($("#floorplan")[0])[1]));
+                        //     // var me = d3.event.sourceEvent;
+                        //     // console.log(me);
+                        //     // var destinationId = $(this).attr('id');
+                        //     // console.log(destinationId);
+                        //     // var itemId = me.dataTransfer.getData("Text");
+                        //     // console.log(itemId);
+                        //     // var item = $(document).find('#'+itemId);
+                        //     // console.log(item);
+                        //     // var itemData = item[0]['__data__'];
+                        //     // console.log(itemData);
 
 
-                            //d3.event.stopPropagation();
-                        }else{
-                        }
+                        //     //d3.event.stopPropagation();
+                        // }else{
+                        // }
                             d.x = d3.event.x;
                             d.y = d3.event.y;
                             d3.select(this).attr("transform", "translate("+d.x + "," + d.y+")")
@@ -3374,7 +3374,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 .call(drag)
                             .append('xhtml:button')
                                 .each(function(d){
-                                if ((d.x > 0) || (d.y > 0)){                                
+                                if ((d.x > 0) || (d.y > 0)) {                                
                                     var name = d.lan_machine;
                                     if (d.custom_user != null){
                                         name = d.custom_user;
@@ -3528,10 +3528,34 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             .attr('value', name+"")
                                             .on('blur', function(e){
                                                 doneEditing(elm, e, this.value)
-                                            })
+                                            });
+
+                                    el.draggable = true;
+                                    el.addEventListener(
+                                        'dragstart',
+                                        function(e) {
+                                            e.dataTransfer.effectAllowed = 'move';
+                                            e.dataTransfer.setData('Text', this.id);
+                                            //this.classList.add('drag');
+                                            return false;
+                                        },
+                                        false
+                                    );
+
+                                    el.addEventListener(
+                                        'dragend',
+                                        function(e) {
+                                            //this.classList.remove('drag');
+                                            $scope.requery(d, 'flooruser');
+                                            return false;
+                                        },
+                                        false
+                                    );
 
                                 }
-                            });     
+                            });
+
+                    }
                               
 
      //This function determines the colour of the endpoint based on what type 
@@ -3654,15 +3678,19 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             zoomer([0,0], $scope.global.floorScale);
                         });*/
 
-                    }
 
 
                     $rootScope.redrawFloor = function () {
                         // console.log(data);
                         // console.log(floorName);
                         var currentUser = d3.select('.selected');
-                        console.log(userDiv[0][0]);
-                        console.log(currentUser[0][0]);
+                        currentUser
+                            .attr("class", "localuserlist")
+                            .attr('draggable', "true");
+                        currentUser.remove();
+                        $(userDiv[0][0]).append(currentUser[0][0]);
+                        //currentUser[0].remove();
+                        //currentUser[0][0].remove();
                         //floorDiv[0].append(currentUser[0][0]);
                         // userDiv[0].append(currentUser[0][0]);
                     }
@@ -3752,7 +3780,7 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
                     item.removeClass('selected');
                     item.attr('style', 'top:0px; left:0px; position:relative; ');
                     $(this).append(item[0]);
-                    console.log($(this));
+                    console.log(this);
                     console.log(item[0]);
                     // call the passed drop function
                     $scope.$apply(function(scope) {
