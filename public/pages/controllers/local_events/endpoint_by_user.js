@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.pages').controller('endpointUserController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal) {
+angular.module('mean.pages').controller('endpointUserController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', 'timeFormat', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, timeFormat) {
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
@@ -13,11 +13,38 @@ angular.module('mean.pages').controller('endpointUserController', ['$scope', '$s
         if (data.tables[0] === null) {
             $scope.$broadcast('loadError');
         } else {
+            data.crossfilter.forEach(function(d) {
+                d.dd = timeFormat(d.time, 'strdDateObj');
+                d.hour = d3.time.hour(d.dd);
+                d.count = +d.count;
+            });
+            $scope.crossfilterData = crossfilter(data.crossfilter);
+            $scope.piechartData = crossfilter(data.piechart);
             $scope.data = data;
+
             $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
             $scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
             $scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
-            $scope.$broadcast('spinnerHide');
+
+            var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
+            var barGroup = barDimension.group().reduceSum(function(d) { return d.count });
+            $scope.$broadcast('barChart', barDimension, barGroup, 'bar');
+                $scope.barChartxAxis = '';
+                $scope.barChartyAxis = 'Endpoint Events / Hour';
+
+            var countDimension = $scope.piechartData.dimension(function(d) { return d.count }).top(10).map(function(d){ return d.lan_user + " " + d.lan_zone + " " + d.lan_ip });
+            $scope.appDimension = $scope.piechartData.dimension(function(d) { 
+                if(countDimension.indexOf(d.lan_user + " " + d.lan_zone + " " + d.lan_ip) !== -1) {
+                    return d.lan_user + " " + d.lan_zone + " " + d.lan_ip;
+                } else {
+                    return "Other";
+                }
+            });                 
+            $scope.pieGroup = $scope.appDimension.group().reduceSum(function (d) {
+                return d.count;
+            });
+            // console.log(pieGroup.top(Infinity));
+            $scope.$broadcast('pieChart', 'application');
         }
     });
 
