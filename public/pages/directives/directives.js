@@ -3366,7 +3366,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             .attr('width', 0)
                             .attr('height', 0)
                             .append('svg:foreignObject')
-                                .attr('height', "55px")
+                                .attr('height', "65px")
                                 .attr('width', "150px")
                                 .attr("transform", function(d){
                                     return "translate("+d.x+","+d.y+")"
@@ -3661,10 +3661,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         // console.log(data);
                         // console.log(floorName);
                         var currentUser = d3.select('.selected');
-                        console.log(userDiv[0]);
+                        console.log(userDiv[0][0]);
                         console.log(currentUser[0][0]);
-                        //floorDiv[0].remove(currentUser[0][0]);
-                        //userDiv[0].append(currentUser[0][0]);
+                        //floorDiv[0].append(currentUser[0][0]);
+                        // userDiv[0].append(currentUser[0][0]);
                     }
 
 
