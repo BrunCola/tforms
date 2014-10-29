@@ -2122,6 +2122,10 @@ Datatables Plugin(in v1.3)
   min-height: 30px;
   line-height: 20px;
 }
+#localuserinformation .luinfo {
+  margin: 5px 0px;
+  padding: 0px;
+}
 #localuserinformation li:hover {
   cursor: pointer;
 }
@@ -2177,7 +2181,7 @@ Datatables Plugin(in v1.3)
   border-radius: 8px;
   outline:none;
 }
-#floorplan button:hover, #floorplan button.selected{
+#floorplan button:hover, #floorplan button.selected, #floorplan .selected button{
   background: #ccc;
   border-radius: 8px;
   border:none !important;
@@ -2241,12 +2245,6 @@ button.userfloorbutton{
   border-radius: 5px;
   outline:none;
 }
-#floorplanpage li{
-  list-style: none;
-}
-#floorplanpage li{
-  list-style: none;
-}
 .dfp {
   margin: 0px 0px 10px 0px;
 }
@@ -2273,4 +2271,7 @@ button.epbGreen:hover,button.epbGreen:active{
 }
 button.epbGrey:hover,button.epbGrey:active{
   background: #666666;
+}
+.floorOrderInput {
+  width:50px;
 }

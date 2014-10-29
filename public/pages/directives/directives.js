@@ -3005,12 +3005,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     function doneEditing(elm, item, value) {
                         $scope.change_customuser(item, value);
                         $(elm[0]).find('.usernametext').html(value);
-                        $('.usernametext').each(function(e){
-                            this.classList.remove('ng-hide');
-                        });
-                        $('.usernameform').each(function(e){
-                            this.classList.add('ng-hide');
-                        });
                     }
 
                      d3.select('#hidelocalusers').style("padding-top", (elementHeight/2)+'px');
@@ -3065,10 +3059,23 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .attr("class", "floorimage")
                         .append("image")
                         .attr("id", "svgFloorPlan")
+                        .attr("class", "svgFloor")
                         .attr("height", elementHeight)                    
                         .attr("width", elementWidth)
                         .attr("xlink:href", floor_path)
                         .attr("type", "image/svg+xml");
+
+                    container.on('click', function(e){
+                        if(d3.event.toElement === d3.select('.svgFloor')[0][0]){                            
+                            $('.usernametext').each(function(e){
+                                this.classList.remove('ng-hide');
+                            });
+                            $('.usernameform').each(function(e){
+                                this.classList.add('ng-hide');
+                            });
+                        }
+                    })
+                                            
 
                     var hideDiv = d3.select('#hidelocalusers')
                         .on("click", function () {
@@ -3135,32 +3142,42 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     function dragstarted(d) {
                         d3.event.sourceEvent.stopPropagation();
                         d3.select(this).classed("dragging", true);
+                        userDiv.selectAll('button').each(function(d){
+                            var elm = d3.select(this);
+                            $(elm[0]).removeClass('selected');
+                        })
+                        floorDiv.selectAll('button').each(function(d){
+                            var elm = d3.select(this);
+                            $(elm[0]).removeClass('selected');
+                        })
                     }
 
                     function dragged(d) {
-                        if ( (d3.mouse($("#floorplan")[0])[0]) < 0 || (d3.mouse($("#floorplan")[0])[0]) > 790 || (d3.mouse($("#floorplan")[0])[1]) < 0 || (d3.mouse($("#floorplan")[0])[1]) > 580 ) {
-                            //console.log((d3.mouse($("#floorplan")[0])[0]) + " - " +(d3.mouse($("#floorplan")[0])[1]));
-                            // var me = d3.event.sourceEvent;
-                            // console.log(me);
-                            // var destinationId = $(this).attr('id');
-                            // console.log(destinationId);
-                            // var itemId = me.dataTransfer.getData("Text");
-                            // console.log(itemId);
-                            // var item = $(document).find('#'+itemId);
-                            // console.log(item);
-                            // var itemData = item[0]['__data__'];
-                            // console.log(itemData);
+                        // if ( (d3.mouse($("#floorplan")[0])[0]) < 0 || (d3.mouse($("#floorplan")[0])[0]) > 790 || (d3.mouse($("#floorplan")[0])[1]) < 0 || (d3.mouse($("#floorplan")[0])[1]) > 580 ) {
+                        //     //console.log((d3.mouse($("#floorplan")[0])[0]) + " - " +(d3.mouse($("#floorplan")[0])[1]));
+                        //     // var me = d3.event.sourceEvent;
+                        //     // console.log(me);
+                        //     // var destinationId = $(this).attr('id');
+                        //     // console.log(destinationId);
+                        //     // var itemId = me.dataTransfer.getData("Text");
+                        //     // console.log(itemId);
+                        //     // var item = $(document).find('#'+itemId);
+                        //     // console.log(item);
+                        //     // var itemData = item[0]['__data__'];
+                        //     // console.log(itemData);
 
 
-                            //d3.event.stopPropagation();
-                        }else{
-                        }
+                        //     //d3.event.stopPropagation();
+                        // }else{
+                        // }
                             d.x = d3.event.x;
                             d.y = d3.event.y;
                             d3.select(this).attr("transform", "translate("+d.x + "," + d.y+")")
                     }
 
                     function dragended(d) {
+                        d3.select('.user-'+d.id).classed("selected", true);
+                        $scope.requery(d, 'flooruser');
                         $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: d.x, y_coord: d.y, map_name: floorName, lan_ip: d.lan_ip, lan_zone: d.lan_zone}});
                         d3.select(this).classed("dragging", false);
                     }
@@ -3193,7 +3210,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     elm
                                         // append id to li from data object
                                         .attr('id', id)
-                                        .attr('class', 'localuserlist')
+                                        .classed('user-'+id, true)
+                                        .classed('localuserlist', true)
                                         .on('dblclick', function(e){
                                             $('.usernametext').each(function(e){
                                                 this.classList.remove('ng-hide');
@@ -3366,7 +3384,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             .attr('width', 0)
                             .attr('height', 0)
                             .append('svg:foreignObject')
-                                .attr('height', "55px")
+                                .attr('height', "65px")
                                 .attr('width', "150px")
                                 .attr("transform", function(d){
                                     return "translate("+d.x+","+d.y+")"
@@ -3374,7 +3392,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 .call(drag)
                             .append('xhtml:button')
                                 .each(function(d){
-                                if ((d.x > 0) || (d.y > 0)){                                
+                                if ((d.x > 0) || (d.y > 0)) {                                
                                     var name = d.lan_machine;
                                     if (d.custom_user != null){
                                         name = d.custom_user;
@@ -3394,6 +3412,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                                     elm
                                         .attr('id', id)
+                                        .classed('user-'+id, true)
                                         .on('dblclick', function(e){
                                             $('.usernametext').each(function(e){
                                                 this.classList.remove('ng-hide');
@@ -3408,13 +3427,19 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             iconInput.classList.remove('ng-hide');
                                         })
                                         .on('click', function(e){
+                                            $('.usernametext').each(function(e){
+                                                this.classList.remove('ng-hide');
+                                            });
+                                            $('.usernameform').each(function(e){
+                                                this.classList.add('ng-hide');
+                                            });
                                             userDiv.selectAll('button').each(function(d){
-                                                var elm = d3.select(this);
-                                                $(elm[0]).removeClass('selected');
+                                                var elmbut = d3.select(this);
+                                                $(elmbut[0]).removeClass('selected');
                                             })
                                             floorDiv.selectAll('button').each(function(d){
-                                                var elm = d3.select(this);
-                                                $(elm[0]).removeClass('selected');
+                                                var elmbut = d3.select(this);
+                                                $(elmbut[0]).removeClass('selected');
                                             })
                                             el.classList.add('selected');
                                             $scope.requery(d, 'flooruser');
@@ -3528,10 +3553,36 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             .attr('value', name+"")
                                             .on('blur', function(e){
                                                 doneEditing(elm, e, this.value)
-                                            })
+                                            });
+
+                                    el.draggable = true;
+                                    el.addEventListener(
+                                        'dragstart',
+                                        function(e) {
+                                            e.dataTransfer.effectAllowed = 'move';
+                                            e.dataTransfer.setData('Text', this.id);
+                                            //this.classList.add('drag');
+                                            return false;
+                                        },
+                                        false
+                                    );
+
+                                    el.addEventListener(
+                                        'dragend',
+                                        function(e) {
+                                            //this.classList.remove('drag');
+                                            console.log("test");
+                                            $scope.requery(d, 'flooruser');
+                                            return false;
+                                        },
+                                        false
+                                    );
 
                                 }
-                            });                 
+                            });
+
+                    }
+                              
 
      //This function determines the colour of the endpoint based on what type 
                     //of trigger has been activated
@@ -3653,136 +3704,27 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             zoomer([0,0], $scope.global.floorScale);
                         });*/
 
+
+
+                    $rootScope.redrawFloor = function () {
+                        // console.log(data);
+                        // console.log(floorName);
+                        var currentUser = d3.select('.selected');
+                        currentUser
+                            .attr("class", "localuserlist")
+                            .attr('draggable', "true");
+                        currentUser.remove();
+                        $(userDiv[0][0]).append(currentUser[0][0]);
+                        //currentUser[0].remove();
+                        //currentUser[0][0].remove();
+                        //floorDiv[0].append(currentUser[0][0]);
+                        // userDiv[0].append(currentUser[0][0]);
                     }
+
+
 
                     plot(data, floorName);  
             }, 0);
-        }
-    };
-}]);
-
-angular.module('mean.pages').directive('appendFloorInfo', ['$timeout', '$rootScope', '$http', function ($timeout, $rootScope, $http) {
-    return {
-        link: function ($scope, element, attrs) {
-            var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
-            $scope.$on('appendInfo', function (event,user,data,type) { 
-                if (type === "clear"){
-                    infoDiv.selectAll('tr').remove(); 
-                } else if (type === "userinfo"){
-                    for (var b in user) {
-                        if ((b === "x") || (b === "y") || (b === "map") || (b === "id")) {
-                        } else {
-                            var row = infoDiv.append('tr');
-                            if (user[b] !== null) {
-                                row
-                                    .append('td')
-                                    .html('<strong>'+b+'</strong>');
-                                row
-                                    .append('td')
-                                    .text(user[b]);
-                            }
-                        }
-                    }
-                } else if (type === "delete"){
-                    // var row = infoDiv.append('tr');
-                    // row
-                    //     .append('td')
-                    //     .on('mouseover', function(){
-                    //         d3.select(this).style('cursor', 'pointer')
-                    //     })
-                    //     .on('click', function(e){
-                    //         removeEndUser(user);
-                    //     })
-                    //     .html('<a class="removeUser">Remove User</a>');
-                        //.html('<button type="reset" class="button-error pure-button" ng-click="removeEndUser()">Remove User</button>');
-
-                } else if (type === "assets"){
-                    var image = "public/system/assets/img/userplaceholder.jpg";
-                    if ((data !== '') && (data !== '-')) {
-                        image = data;
-                    }
-                    var row = infoDiv.append('tr');
-                    row
-                        .append('td')
-                        .html('<strong>User Image: </strong>');
-                    row
-                        .append('td')
-                        .html("<button class='uUpload userfloorbutton' type='button' value='"+JSON.stringify(user)+"' href=''><img src='"+image+"' width='48'/></button>");
-
-                    $('.uUpload').on('dblclick',function(){
-                        var rowData = JSON.parse(this.value);
-                        $scope.uploadUser(rowData);
-                    });
-                } else {
-                    var title = "", link = "";
-                    switch(type){                           
-                        case "localioc":
-                            title = "IOC Hits: ";
-                            link = "#!/ioc_local_drill?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                            break;
-                        case "localapp":
-                            title = "App Hits: ";
-                            link = "#!/l7_local_app?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                            break;
-                        case "localhttp":
-                            title = "HTTP Hits: ";
-                            link = "#!/http_local_by_domain?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                            break;
-                        case "localfiles":
-                            title = "File Hits: ";
-                            link = "#!/by_file_name?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                            break;
-                        case "endpoint":
-                            title = "Endpoints Hits: ";
-                            link = "#!/endpoint_by_user_and_ip?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                            break
-                        case "bandwidth":
-                            title = "Total Bandwidth in MB: ";
-                            link = "#!/local2remote?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"]+'&lan_machine='+user["lan_machine"];
-                            break;
-                        default:
-                            title = "NO TITLE HITS";
-                            link = "#!/ioc_events?lan_zone="+user["lan_zone"]+'&lan_ip='+user["lan_ip"];
-                            break;                
-                    }
-
-                    for (var i in data){
-                        var row = infoDiv.append('tr');
-                        if (data[i] === 0){
-                            row
-                                .append('td')
-                                .html('<strong>'+title+'</strong>');
-                            row
-                                .append('td')
-                                .html(data[i]+'');
-                        } else {
-                            row
-                                .append('td')
-                                .html('<strong>'+title+'</strong>');
-                            row
-                                .append('td')
-                                .html('<a href="'+link+'"]>'+data[i]+'</a>');
-                        }
-                    }
-                }
-            })
-            function removeEndUser(){
-                // var itemId = e.dataTransfer.getData("Text");
-                // var item = $(document).find('#'+itemId);
-                // var itemData = item[0]['__data__'];
-                // item.removeClass('set');
-                // item.removeClass('selected');
-                // item.attr('style', 'top:0px; left:0px; position:relative; ');
-                // $(this).append(item[0]);
-                // console.log($(this));
-                // console.log(item[0]);
-
-                // floorDiv.selectAll('button').each(function(d){
-                //     var elm = d3.select(this);
-                //     $(elm[0]).removeClass('selected');
-                // })
-                console.log("remove");
-            }
         }
     };
 }]);
@@ -3838,12 +3780,7 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
                 var itemId = e.dataTransfer.getData("Text");
                 var item = $(document).find('#'+itemId);
                 var itemData = item[0]['__data__'];
-                console.log(e);
-                console.log(destinationId);
-                console.log(itemId);
-                console.log(item);
-                console.log(itemData);
-                console.log(" ");
+                
                 // var sourceElm = d3.select(e.srcElement).attr('id');
                 // var floorPlanElm = d3.select(el).attr('id');
                 if (destinationId === 'floorplan'){
@@ -3869,6 +3806,8 @@ angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
                     item.removeClass('selected');
                     item.attr('style', 'top:0px; left:0px; position:relative; ');
                     $(this).append(item[0]);
+                    console.log(this);
+                    console.log(item[0]);
                     // call the passed drop function
                     $scope.$apply(function(scope) {
                         var fn = scope.drop();

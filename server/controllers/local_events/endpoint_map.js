@@ -49,7 +49,7 @@ module.exports = function(pool) {
                         });  
                         break;
                     case 'endpoint':
-                        new query({query: 'SELECT count(*) AS localfiles FROM `endpoint_events` WHERE (time between ? AND ?) AND  `lan_ip` = ? AND `lan_zone` = ?', insert: [start, end, req.query.lan_ip, req.query.lan_zone]}, {database: database, pool: pool}, function(err,data){
+                        new query({query: 'SELECT count(*) AS endpoint FROM `endpoint_events` WHERE (time between ? AND ?) AND  `lan_ip` = ? AND `lan_zone` = ?', insert: [start, end, req.query.lan_ip, req.query.lan_zone]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
                             }
@@ -169,7 +169,8 @@ module.exports = function(pool) {
                             'FROM '+
                                 'assets '+
                             'WHERE '+
-                                '`type` = "map"',
+                                '`type` = "map"'+
+                            'ORDER BY `order_index`',
                     insert: []
                 }
                 async.parallel([
@@ -199,18 +200,56 @@ module.exports = function(pool) {
         updatefp: function(req, res) {
             var database = req.session.passport.user.database;
             if (req.query.type === 'deletefp') {
-                var update_coordinates = {
+                var _getAllFilesFromFolder = function(dir) {
+                    var filesystem = require("fs");
+                    var results = [];
+
+                    filesystem.readdirSync(dir).forEach(function(file) {
+                        file = dir+'/'+file;
+                        var stat = filesystem.statSync(file);
+
+                        if (stat && stat.isDirectory()) {
+                            results = results.concat(_getAllFilesFromFolder(file))
+                        } else {
+                            if(file === req.body.path){
+                                results.push(file);
+                            }
+                        }
+                    });
+                    if (results.length > 0) {
+                        filesystem.unlinkSync(results[0]);
+                        //console.log('successfully deleted '+results[0]);
+                    }
+                };
+
+                _getAllFilesFromFolder('./public/uploads/phirelight');
+
+
+                var delete_floor = {
                     query: "DELETE FROM `assets` WHERE `type`='map' AND `asset_name`=?",
                     insert: [req.body.asset_name]
                 }                
-                new query(update_coordinates, {database: database, pool: pool}, function(err,data){
+                new query(delete_floor, {database: database, pool: pool}, function(err,data){
                     if (err) {
                         res.send(500);
                     } else {
                         res.send(200);
                     }
                 });
-            } 
+            } else if (req.query.type === 'editFloorInfo') {
+
+                for (var floor in req.body.edited_floors) {
+                     var update_floor = {
+                        query: "update `assets` SET `order_index`=?, `custom_name`=? WHERE `type`='map' AND `asset_name`=?",
+                        insert: [req.body.edited_floors[floor].order_index, req.body.edited_floors[floor].custom_name, req.body.edited_floors[floor].asset_name]
+                    }                
+                    new query(update_floor, {database: database, pool: pool}, function(err,data){
+                        if (err) {
+                            res.send(500);
+                        }
+                    });
+                }
+            }
         }
     }
 };
