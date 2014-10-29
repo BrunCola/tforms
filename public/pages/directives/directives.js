@@ -3005,12 +3005,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     function doneEditing(elm, item, value) {
                         $scope.change_customuser(item, value);
                         $(elm[0]).find('.usernametext').html(value);
-                        $('.usernametext').each(function(e){
-                            this.classList.remove('ng-hide');
-                        });
-                        $('.usernameform').each(function(e){
-                            this.classList.add('ng-hide');
-                        });
                     }
 
                      d3.select('#hidelocalusers').style("padding-top", (elementHeight/2)+'px');
@@ -3065,10 +3059,23 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .attr("class", "floorimage")
                         .append("image")
                         .attr("id", "svgFloorPlan")
+                        .attr("class", "svgFloor")
                         .attr("height", elementHeight)                    
                         .attr("width", elementWidth)
                         .attr("xlink:href", floor_path)
                         .attr("type", "image/svg+xml");
+
+                    container.on('click', function(e){
+                        if(d3.event.toElement === d3.select('.svgFloor')[0][0]){                            
+                            $('.usernametext').each(function(e){
+                                this.classList.remove('ng-hide');
+                            });
+                            $('.usernameform').each(function(e){
+                                this.classList.add('ng-hide');
+                            });
+                        }
+                    })
+                                            
 
                     var hideDiv = d3.select('#hidelocalusers')
                         .on("click", function () {
@@ -3135,6 +3142,14 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     function dragstarted(d) {
                         d3.event.sourceEvent.stopPropagation();
                         d3.select(this).classed("dragging", true);
+                        userDiv.selectAll('button').each(function(d){
+                            var elm = d3.select(this);
+                            $(elm[0]).removeClass('selected');
+                        })
+                        floorDiv.selectAll('button').each(function(d){
+                            var elm = d3.select(this);
+                            $(elm[0]).removeClass('selected');
+                        })
                     }
 
                     function dragged(d) {
@@ -3161,6 +3176,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     }
 
                     function dragended(d) {
+                        d3.select('.user-'+d.id).classed("selected", true);
+                        $scope.requery(d, 'flooruser');
                         $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: d.x, y_coord: d.y, map_name: floorName, lan_ip: d.lan_ip, lan_zone: d.lan_zone}});
                         d3.select(this).classed("dragging", false);
                     }
@@ -3193,7 +3210,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     elm
                                         // append id to li from data object
                                         .attr('id', id)
-                                        .attr('class', 'localuserlist')
+                                        .classed('user-'+id, true)
+                                        .classed('localuserlist', true)
                                         .on('dblclick', function(e){
                                             $('.usernametext').each(function(e){
                                                 this.classList.remove('ng-hide');
@@ -3394,6 +3412,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                                     elm
                                         .attr('id', id)
+                                        .classed('user-'+id, true)
                                         .on('dblclick', function(e){
                                             $('.usernametext').each(function(e){
                                                 this.classList.remove('ng-hide');
@@ -3408,13 +3427,19 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             iconInput.classList.remove('ng-hide');
                                         })
                                         .on('click', function(e){
+                                            $('.usernametext').each(function(e){
+                                                this.classList.remove('ng-hide');
+                                            });
+                                            $('.usernameform').each(function(e){
+                                                this.classList.add('ng-hide');
+                                            });
                                             userDiv.selectAll('button').each(function(d){
-                                                var elm = d3.select(this);
-                                                $(elm[0]).removeClass('selected');
+                                                var elmbut = d3.select(this);
+                                                $(elmbut[0]).removeClass('selected');
                                             })
                                             floorDiv.selectAll('button').each(function(d){
-                                                var elm = d3.select(this);
-                                                $(elm[0]).removeClass('selected');
+                                                var elmbut = d3.select(this);
+                                                $(elmbut[0]).removeClass('selected');
                                             })
                                             el.classList.add('selected');
                                             $scope.requery(d, 'flooruser');
@@ -3546,6 +3571,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                         'dragend',
                                         function(e) {
                                             //this.classList.remove('drag');
+                                            console.log("test");
                                             $scope.requery(d, 'flooruser');
                                             return false;
                                         },

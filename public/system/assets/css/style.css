@@ -2181,7 +2181,7 @@ Datatables Plugin(in v1.3)
   border-radius: 8px;
   outline:none;
 }
-#floorplan button:hover, #floorplan button.selected{
+#floorplan button:hover, #floorplan button.selected, #floorplan .selected button{
   background: #ccc;
   border-radius: 8px;
   border:none !important;
