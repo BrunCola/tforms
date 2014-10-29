@@ -16,6 +16,7 @@ module.exports = function (sql, conn, callback) {
 			} else {
 				var passed = null;
 				if (sql.passed !== undefined) { passed = sql.passed; }
+				console.log(sql.passed)
 				callback(null, result, passed);
 			}
 		});

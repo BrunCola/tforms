@@ -1525,7 +1525,6 @@ module.exports = function(pool) {
             }
         },
         pattern: function(req, res) {
-            console.log(req.url);
             console.log('processing');
             // set the datbase the user queries
             var database = req.session.passport.user.database;
@@ -1550,12 +1549,13 @@ module.exports = function(pool) {
                     }
                 }
                 for (var i in req.body) {
+                    console.log(req.body[i])
                     if (i !== 'length') { // ignore the length key, since we placed it in manually for use on front-end 
                         // set current query object
                         var thisQuery = {
                             query: null,
                             insert: [],
-                            passed: req.body[i].point
+                            passed: req.body[i]
                         }
                         // build string(s)
                         var queryString = 'SELECT '+selectString+' FROM ';
@@ -1607,12 +1607,14 @@ module.exports = function(pool) {
                     // push each query object to out async array to be processed
                     asyncList.push(
                         function(callback) {
-                            new query(queries[q], {database: database, pool: pool}, function(err, data, passed){
-                                console.log(data);
+                            query(queries[q], {database: database, pool: pool}, function(err, data, passed){
+                                // console.log(passed);
                                 results.push({
                                     result: data,
-                                    point: passed
+                                    point: passed.point,
+                                    selected: passed.search
                                 })
+                                // console.log()
                                 callback();
                             });
                         }
@@ -1706,8 +1708,23 @@ module.exports = function(pool) {
             async.parallel(asyncArr, function(err) {
                 if (err) throw console.log(err);
                 // compare functions
-                var result = compare(results);
-                res.json(result);
+                var matched = compare(results);
+                // var test = JSON.stringify({
+                //     queried: results, // this will be used instead of the searchobj thats being used now
+                //     matched: matched
+                // })
+                // var fs = require('fs');
+                // fs.writeFile('test.json', test, function(err) {
+                //     if(err) {
+                //         console.log(err);
+                //     } else {
+                //         console.log("The file was saved!");
+                //     }
+                // }); 
+                res.json({
+                    queried: results, // this will be used instead of the searchobj thats being used now
+                    matched: matched
+                });
             });
         }
     }

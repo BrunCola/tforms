@@ -2,6 +2,299 @@
 
 angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', 'timeFormat', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, timeFormat) {
     $scope.global = Global;
+
+    // $scope.points = {
+    //    "queried":[
+    //       {
+    //          "result":[
+    //             {
+    //                "lan_user":"-",
+    //                "lan_ip":"10.0.0.129"
+    //             }
+    //          ],
+    //          "point":{
+    //             "type":"File",
+    //             "time":1414601572.184742,
+    //             "mime":"image/png",
+    //             "name":"Share-Arrow-Up(1x).png",
+    //             "size":347,
+    //             "md5":"2e5d854358a17055b40c19285b9d5ad0",
+    //             "sha1":"e4ae91c2f2daa60b6ff069b639361940215afc28",
+    //             "ioc":"-",
+    //             "ioc_typeIndicator":"-",
+    //             "ioc_typeInfection":"-",
+    //             "ioc_rule":"-",
+    //             "ioc_severity":0,
+    //             "ioc_count":0,
+    //             "lane":9,
+    //             "info":"File Seen - Share-Arrow-Up(1x).png",
+    //             "expand":[
+    //                {
+    //                   "name":"Time",
+    //                   "value":1414601572.184742,
+    //                   "select":"time"
+    //                },
+    //                {
+    //                   "name":"File Type",
+    //                   "value":"image/png",
+    //                   "select":"mime"
+    //                },
+    //                {
+    //                   "name":"Name",
+    //                   "value":"Share-Arrow-Up(1x).png",
+    //                   "select":"name",
+    //                   "pattern":true
+    //                },
+    //                {
+    //                   "name":"Size",
+    //                   "value":347,
+    //                   "select":"size"
+    //                },
+    //                {
+    //                   "name":"MD5",
+    //                   "value":"2e5d854358a17055b40c19285b9d5ad0",
+    //                   "select":"md5"
+    //                },
+    //                {
+    //                   "name":"SHA1",
+    //                   "value":"e4ae91c2f2daa60b6ff069b639361940215afc28",
+    //                   "select":"sha1"
+    //                },
+    //                {
+    //                   "name":"IOC",
+    //                   "value":"-",
+    //                   "select":"ioc"
+    //                },
+    //                {
+    //                   "name":"IOC Severity",
+    //                   "value":0,
+    //                   "select":"ioc_severity"
+    //                },
+    //                {
+    //                   "name":"IOC Type",
+    //                   "value":"-",
+    //                   "select":"ioc_typeIndicator"
+    //                },
+    //                {
+    //                   "name":"IOC Stage",
+    //                   "value":"-",
+    //                   "select":"ioc_typeInfection"
+    //                },
+    //                {
+    //                   "name":"IOC Rule",
+    //                   "value":"-",
+    //                   "select":"ioc_rule"
+    //                }
+    //             ],
+    //             "dd":"2014-10-29T16:52:52.184Z",
+    //             "id":51
+    //          },
+    //          "selected":{
+    //             "length":1,
+    //             "Name":{
+    //                "name":"Name",
+    //                "value":"Share-Arrow-Up(1x).png",
+    //                "select":"name",
+    //                "pattern":true
+    //             }
+    //          }
+    //       },
+    //       {
+    //          "result":[
+    //             {
+    //                "lan_user":"-",
+    //                "lan_ip":"10.0.0.129"
+    //             }
+    //          ],
+    //          "point":{
+    //             "type":"File",
+    //             "time":1414601572.184742,
+    //             "mime":"image/png",
+    //             "name":"Share-Arrow-Up(1x).png",
+    //             "size":347,
+    //             "md5":"2e5d854358a17055b40c19285b9d5ad0",
+    //             "sha1":"e4ae91c2f2daa60b6ff069b639361940215afc28",
+    //             "ioc":"-",
+    //             "ioc_typeIndicator":"-",
+    //             "ioc_typeInfection":"-",
+    //             "ioc_rule":"-",
+    //             "ioc_severity":0,
+    //             "ioc_count":0,
+    //             "lane":9,
+    //             "info":"File Seen - Share-Arrow-Up(1x).png",
+    //             "expand":[
+    //                {
+    //                   "name":"Time",
+    //                   "value":1414601572.184742,
+    //                   "select":"time"
+    //                },
+    //                {
+    //                   "name":"File Type",
+    //                   "value":"image/png",
+    //                   "select":"mime"
+    //                },
+    //                {
+    //                   "name":"Name",
+    //                   "value":"Share-Arrow-Up(1x).png",
+    //                   "select":"name",
+    //                   "pattern":true
+    //                },
+    //                {
+    //                   "name":"Size",
+    //                   "value":347,
+    //                   "select":"size"
+    //                },
+    //                {
+    //                   "name":"MD5",
+    //                   "value":"2e5d854358a17055b40c19285b9d5ad0",
+    //                   "select":"md5"
+    //                },
+    //                {
+    //                   "name":"SHA1",
+    //                   "value":"e4ae91c2f2daa60b6ff069b639361940215afc28",
+    //                   "select":"sha1"
+    //                },
+    //                {
+    //                   "name":"IOC",
+    //                   "value":"-",
+    //                   "select":"ioc"
+    //                },
+    //                {
+    //                   "name":"IOC Severity",
+    //                   "value":0,
+    //                   "select":"ioc_severity"
+    //                },
+    //                {
+    //                   "name":"IOC Type",
+    //                   "value":"-",
+    //                   "select":"ioc_typeIndicator"
+    //                },
+    //                {
+    //                   "name":"IOC Stage",
+    //                   "value":"-",
+    //                   "select":"ioc_typeInfection"
+    //                },
+    //                {
+    //                   "name":"IOC Rule",
+    //                   "value":"-",
+    //                   "select":"ioc_rule"
+    //                }
+    //             ],
+    //             "dd":"2014-10-29T16:52:52.184Z",
+    //             "id":51
+    //          },
+    //          "selected":{
+    //             "length":1,
+    //             "Name":{
+    //                "name":"Name",
+    //                "value":"Share-Arrow-Up(1x).png",
+    //                "select":"name",
+    //                "pattern":true
+    //             }
+    //          }
+    //       },
+    //       {
+    //          "result":[
+    //             {
+    //                "lan_user":"-",
+    //                "lan_ip":"10.0.0.129"
+    //             }
+    //          ],
+    //          "point":{
+    //             "type":"File",
+    //             "time":1414601572.184742,
+    //             "mime":"image/png",
+    //             "name":"Share-Arrow-Up(1x).png",
+    //             "size":347,
+    //             "md5":"2e5d854358a17055b40c19285b9d5ad0",
+    //             "sha1":"e4ae91c2f2daa60b6ff069b639361940215afc28",
+    //             "ioc":"-",
+    //             "ioc_typeIndicator":"-",
+    //             "ioc_typeInfection":"-",
+    //             "ioc_rule":"-",
+    //             "ioc_severity":0,
+    //             "ioc_count":0,
+    //             "lane":9,
+    //             "info":"File Seen - Share-Arrow-Up(1x).png",
+    //             "expand":[
+    //                {
+    //                   "name":"Time",
+    //                   "value":1414601572.184742,
+    //                   "select":"time"
+    //                },
+    //                {
+    //                   "name":"File Type",
+    //                   "value":"image/png",
+    //                   "select":"mime"
+    //                },
+    //                {
+    //                   "name":"Name",
+    //                   "value":"Share-Arrow-Up(1x).png",
+    //                   "select":"name",
+    //                   "pattern":true
+    //                },
+    //                {
+    //                   "name":"Size",
+    //                   "value":347,
+    //                   "select":"size"
+    //                },
+    //                {
+    //                   "name":"MD5",
+    //                   "value":"2e5d854358a17055b40c19285b9d5ad0",
+    //                   "select":"md5"
+    //                },
+    //                {
+    //                   "name":"SHA1",
+    //                   "value":"e4ae91c2f2daa60b6ff069b639361940215afc28",
+    //                   "select":"sha1"
+    //                },
+    //                {
+    //                   "name":"IOC",
+    //                   "value":"-",
+    //                   "select":"ioc"
+    //                },
+    //                {
+    //                   "name":"IOC Severity",
+    //                   "value":0,
+    //                   "select":"ioc_severity"
+    //                },
+    //                {
+    //                   "name":"IOC Type",
+    //                   "value":"-",
+    //                   "select":"ioc_typeIndicator"
+    //                },
+    //                {
+    //                   "name":"IOC Stage",
+    //                   "value":"-",
+    //                   "select":"ioc_typeInfection"
+    //                },
+    //                {
+    //                   "name":"IOC Rule",
+    //                   "value":"-",
+    //                   "select":"ioc_rule"
+    //                }
+    //             ],
+    //             "dd":"2014-10-29T16:52:52.184Z",
+    //             "id":51
+    //          },
+    //          "selected":{
+    //             "length":1,
+    //             "Name":{
+    //                "name":"Name",
+    //                "value":"Share-Arrow-Up(1x).png",
+    //                "select":"name",
+    //                "pattern":true
+    //             }
+    //          }
+    //       }
+    //    ],
+    //    "matched":[
+    //       {
+    //          "lan_user":"-",
+    //          "lan_ip":"10.0.0.129"
+    //       }
+    //    ]
+    // };
     var query;
     if ($location.$$search.start && $location.$$search.end) {
         query = '/ioc_notifications/ioc_events_drilldown?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc+'&ioc_attrID='+$location.$$search.ioc_attrID+'&lan_user='+$location.$$search.lan_user;
@@ -256,16 +549,20 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
         }
     }
     $scope.patternPane = false;
+    $scope.$broadcast('appendRowIcon')
     $scope.$on('patternPane', function (event, search, matches) {
         if ($scope.patternPane) { $scope.patternPane = false; return }
         $scope.patternPane = true;
+        $scope.points = matches;
+        // var search = [{"lan_user":"-","lan_ip":"10.0.0.1"},{"lan_user":"-","lan_ip":"10.0.0.113"},{"lan_user":"-","lan_ip":"10.0.0.119"},{"lan_user":"-","lan_ip":"10.0.0.130"},{"lan_user":"-","lan_ip":"10.0.0.145"},{"lan_user":"-","lan_ip":"10.0.0.147"},{"lan_user":"-","lan_ip":"10.0.0.180"},{"lan_user":"-","lan_ip":"10.0.0.181"},{"lan_user":"-","lan_ip":"10.0.0.186"},{"lan_user":"-","lan_ip":"10.0.0.187"},{"lan_user":"-","lan_ip":"10.0.0.189"},{"lan_user":"-","lan_ip":"10.0.0.2"},{"lan_user":"-","lan_ip":"10.0.0.218"},{"lan_user":"-","lan_ip":"10.0.0.240"},{"lan_user":"-","lan_ip":"10.0.0.30"},{"lan_user":"-","lan_ip":"10.0.0.33"},{"lan_user":"-","lan_ip":"10.0.0.4"},{"lan_user":"-","lan_ip":"10.0.0.43"},{"lan_user":"-","lan_ip":"10.0.0.6"},{"lan_user":"-","lan_ip":"10.0.0.99"},{"lan_user":"-","lan_ip":"255.255.255.255"},{"lan_user":"-","lan_ip":"::"},{"lan_user":"-","lan_ip":"fe80::12c3:7bff:fe95:a3b2"},{"lan_user":"-","lan_ip":"fe80::20a:cdff:fe21:b3e"},{"lan_user":"-","lan_ip":"fe80::213:3bff:fe0c:719e"},{"lan_user":"-","lan_ip":"fe80::213:3bff:fe0c:71ec"},{"lan_user":"-","lan_ip":"fe80::3285:a9ff:fea8:3499"},{"lan_user":"-","lan_ip":"fe80::3e07:54ff:fe02:fc77"},{"lan_user":"-","lan_ip":"fe80::5054:ff:fef4:78cc"},{"lan_user":"-","lan_ip":"fe80::6a5b:35ff:feb0:b507"},{"lan_user":"-","lan_ip":"fe80::7256:81ff:fec5:968a"},{"lan_user":"-","lan_ip":"fe80::bc61:63cf:23b2:2e8c"},{"lan_user":"-","lan_ip":"fe80::d63d:7eff:febd:a4aa"},{"lan_user":"-","lan_ip":"fe80::e4ce:4bfc:5421:1bad"},{"lan_user":"-","lan_ip":"fe80::ea03:9aff:febe:1072"},{"lan_user":"-","lan_ip":"fe80::eea8:6bff:fed0:3054"}];
         // push seperate points in search return to new array
-        $scope.points = [];
-        for (var i in search) {
-            if (i !== 'length') { // ignore the length key we set earlier
-                $scope.points.push(search[i].point);
-            }
-        }
-        console.log($scope.points)
+        // $scope.points = [];
+        // for (var i in search) {
+        //     if (i !== 'length') { // ignore the length key we set earlier
+        //         $scope.points.push(search[i].point);
+        //     }
+        // }
+        $scope.test = 'test';
+        // console.log($scope.points)
     })
 }]);
