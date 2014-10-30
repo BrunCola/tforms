@@ -2998,15 +2998,13 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     var buttonDiv = d3.select('#triggerbuttons');
 
                     $scope.$on('setSelected', function (event, selected) { 
-                        $('#'+selected.id).addClass('selected');
+                        d3.select('.user-'+selected.id).classed("selected", true);
                     })
 
                     function doneEditing(elm, item, value) {
                         $scope.change_customuser(item, value);
                         $(elm[0]).find('.usernametext').html(value);
                     }
-
-
 
                     var margin = {top: -5, right: -5, bottom: -5, left: -5};
                         // width = 950 - margin.left - margin.right,
@@ -3018,6 +3016,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .translate([0,0])
                         //.scale(2)
                         .on("zoom", zoomed);
+
+                    var scale = 1;
 
                     var drag = d3.behavior.drag()
                         .origin(function(d) { return d; })
@@ -3111,8 +3111,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                         if (destinationId === 'floorContainer'){
                             var divPos = {
-                                 left: (e.pageX - $(containerTag).offset().left)/$scope.global.floorScale,
-                                 top: (e.pageY - $(containerTag).offset().top)/$scope.global.floorScale
+                                 left: (e.pageX - $(containerTag).offset().left)/scale,
+                                 top: (e.pageY - $(containerTag).offset().top)/scale
                             };
 
                             // var userTransItem = d3.select(".userTrans"+itemId);
@@ -3156,7 +3156,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .style("padding-top", (elementHeight/2)+'px');
 
                     function zoomed() {
-                        $scope.global.floorScale  = d3.event.scale;
+                        scale = d3.event.scale;
                         container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
                     }
 
@@ -3272,7 +3272,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             floorDiv.selectAll('button').each(function(d){
                                                 var elm = d3.select(this);
                                                 $(elm[0]).removeClass('selected');
-                                                console.log(elm[0])
                                             })
                                             el.classList.add('selected');
                                             $scope.requery(d, 'flooruser');

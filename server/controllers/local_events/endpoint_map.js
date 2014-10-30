@@ -155,7 +155,7 @@ module.exports = function(pool) {
                             'AND '+
                                 'u.id = groupedu.maxID '+
                             'WHERE '+
-                                'u.lan_ip IS NOT NULL AND'+
+                                'u.lan_ip IS NOT NULL AND '+
                                 '(u.lan_mac IS NOT NULL OR u.lan_machine IS NOT NULL) '+
                             'ORDER BY '+
                                 'lan_ip ',
