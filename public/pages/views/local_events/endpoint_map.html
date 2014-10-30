@@ -122,10 +122,11 @@
             </div>
             <div id="listlocalusersspan">
                  <div class="jdash-header">Local Users</div>
-                <div id="listlocalusers" class="bin" droppable style="position: relative">
+                <div id="localListWrapper">
+                    <svg id="listlocalusers" style="position: relative"></svg>
                 </div>
             </div>
-            <div id="hidelocalusers" ></div>
+            <div class="hidelocalusers" ></div>
             <div id="floorplanspan">
                 <div id="tabs" >
                     <tabset>
@@ -134,7 +135,7 @@
                                 {{floor.custom_name}} 
                             </tab-heading>
                             <div style="background-color:#FFF;" class="box">
-                                <div id="floorplan" floor-name="{{floor.asset_name}}" make-floor-plan class="bin" droppable style="position: relative">
+                                <div id="floorplan" floor-name="{{floor.asset_name}}" make-floor-plan style="position: relative">
                                     <!-- <object width="910" height="600" id="svgFloorPlan" data="{{floor.path}}" type="image/svg+xml"></object> -->
                                     <!-- <object id="svgFloorPlan" width="800" data="{{floor.path}}" type="image/svg+xml" ></object> -->
                                      <!-- <img id="svgFloorPlan" width="800" src="{{floor.path}}" type="image/svg+xml" />  -->
@@ -201,7 +202,7 @@
                         <div class="luinfo" ng-if="userinfo.total_bw == null">
                             <span style="font-weight:bold">Total Bandwidth in MB: </span><span>0</span>
                         </div>
-                        <div ng-show="userinfo"><button type="button" class="button-error pure-button" ng-click="removeEndUser(userinfo)">Remove User</button></div>
+                        <div ng-show="userinfo.map"><button type="button" class="button-error pure-button" ng-click="removeEndUser(userinfo)">Remove User</button></div>
                     </div>
                 </div>
             </div>

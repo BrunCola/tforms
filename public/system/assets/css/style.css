@@ -2070,8 +2070,7 @@ Datatables Plugin(in v1.3)
   outline:none;
 }
 #listlocalusers button.localuserlist{
-  width: 100%;
-  display: inline-block;
+  width:100%;
   border-bottom: #DEDEDE solid 1px;
   font-weight: bold;
   background: none ;
@@ -2158,8 +2157,9 @@ Datatables Plugin(in v1.3)
   padding: 0px;
   float: left;
 }
-#hidelocalusers{
+.hidelocalusers{
   width: 0.5%;
+  display: block;
   float: left;
   /*background: #CCC;*/
   margin: 0px 1% 0px 0px;

@@ -2988,9 +2988,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     element.height(elementHeight);
                     $scope.userList = data;
                     // info div
-                    var userDiv = d3.select("#listlocalusers").style('height', elementHeight+50+'px').style('overflow', 'auto');
-                    //$("#listlocalusers").height(elementHeight+50);
-                    //var userDiv = d3.select("#listlocalusers").style('height', infoHeight+25+'px').style('overflow', 'auto');
+                    var userDivWrapper = d3.select("#localListWrapper").style('height', elementHeight+50+'px').style('overflow', 'auto');
+                    var userDiv = d3.select("#listlocalusers").attr("width","100%");
                     var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
                     var floorDiv = d3.select(element[0]);
 
@@ -3007,22 +3006,11 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         $(elm[0]).find('.usernametext').html(value);
                     }
 
-                     d3.select('#hidelocalusers').style("padding-top", (elementHeight/2)+'px');
 
 
                     var margin = {top: -5, right: -5, bottom: -5, left: -5};
                         // width = 950 - margin.left - margin.right,
                         // height = 570 - margin.top - margin.bottom;
-
-                    //$scope.floorScale = 1;
-                    var prevScale = 1;
-                    var prevFloorX = 0;
-                    var prevFloorY = 0;
-
-
-                    var currScale = 1;
-                    var currFloorX = 0;
-                    var currFloorY = 0;
 
                     var zoom = d3.behavior.zoom()
                         .scaleExtent([0.5, 5])
@@ -3037,7 +3025,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .on("drag", dragged)
                         .on("dragend", dragended);
 
-
                     var svg = floorDiv.append("svg")             
                         .attr("width", "100%")
                         .attr("height", "100%")
@@ -3046,7 +3033,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             .call(zoom);
 
                     var container = svg.append("g")
-                        .attr("droppable", "true") 
                         .attr("class", "bin")
                         .attr("drop", "handleDrop")
                         .attr("id", "floorContainer")
@@ -3075,9 +3061,86 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             });
                         }
                     })
-                                            
 
-                    var hideDiv = d3.select('#hidelocalusers')
+                    var containerTag = container[0][0];
+                    containerTag.droppable = true;
+                    containerTag.addEventListener(
+                        'dragover',
+                        function(e) {
+                            e.dataTransfer.dropEffect = 'move';
+                            // allows us to drop
+                            if (e.preventDefault) e.preventDefault();
+                            $(this).addClass('over');
+                            return false;
+                        },
+                        false
+                    );
+                    containerTag.addEventListener(
+                        'dragenter',
+                        function(e) {
+                            $(this).addClass('over');
+                            return false;
+                        },
+                        false
+                    );
+                    containerTag.addEventListener(
+                        'dragleave',
+                        function(e) {
+                            $(this).removeClass('over');
+                            return false;
+                        },
+                        false
+                    );
+                    containerTag.addEventListener('drop', function(e) {
+
+                        // var drag = d3.behavior.drag()
+                        // .origin(function(d) { return d; })
+                        // .on("dragstart", dragstarted)
+                        // .on("drag", dragged)
+                        // .on("dragend", dragended);    
+
+                        var floorName = d3.select(containerTag).attr('floor-name');
+                        // Stops some browsers from redirecting.
+                        if (e.stopPropagation) e.stopPropagation();
+
+                        // call the drop passed drop function
+                        var destinationId = $(this).attr('id');
+                        var itemId = e.dataTransfer.getData("Text");
+                        var item = $(document).find('#'+itemId);
+                        var itemData = item[0]['__data__'];
+
+                        if (destinationId === 'floorContainer'){
+                            var divPos = {
+                                 left: (e.pageX - $(containerTag).offset().left)/$scope.global.floorScale,
+                                 top: (e.pageY - $(containerTag).offset().top)/$scope.global.floorScale
+                            };
+
+                            // var userTransItem = d3.select(".userTrans"+itemId);
+                            // var userTransItem = d3.select(".userTrans-"+itemId);
+                            // userTransItem
+                            //     .attr('height', "65px")
+                            //     .attr('width', "150px")
+                            //     .attr("transform", function(d){
+                            //         return "translate("+divPos.left+","+divPos.top+")";
+                            //     })
+                            //     .call(drag);
+
+                            $(this).append(item[0]);
+
+                            itemData.x = divPos.left;
+                            itemData.y = divPos.top;
+                            itemData.map = attrs.floorName;
+
+                            $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: attrs.floorName, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
+                            plot(data, attrs.floorName); 
+                            d3.select('.user-'+itemId).classed("selected", true);
+                        } 
+                        return false;
+                        },
+                        false
+                    );            
+
+                    var hideDiv = d3.select('.hidelocalusers')
                         .on("click", function () {
                             if (hideListDiv.attr("class") === "floorHide") {
                                 hideListDiv.classed('floorHide', false);
@@ -3089,53 +3152,12 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 hideDiv.html("&#9658; &#9658; &#9658;");
                             }
                         })
-                        .html("&#9668; &#9668; &#9668;");
-
-
-                    // el.addEventListener(
-                    //     'dragover',
-                    //     function(e) {
-                    //         console.log("dragover");
-                    //         e.dataTransfer.dropEffect = 'move';
-                    //         // allows us to drop
-                    //         if (e.preventDefault) e.preventDefault();
-                    //         $(this).addClass('over');
-                    //         return false;
-                    //     },
-                    //     false
-                    // )
-                    // el.addEventListener(
-                    //     'dragenter',
-                    //     function(e) {
-                    //         console.log("dragenter");
-                    //         return false;
-                    //     },
-                    //     false
-                    // )
-
-                    // el.addEventListener(
-                    //     'dragleave',
-                    //     function(e) {
-                    //         console.log("dragleave");
-                    //         return false;
-                    //     },
-                    //     false
-                    // )
-
-                    // el.addEventListener('drop', function(e) {
-                    //     console.log("drop");
-                    //         return false;
-                    // }
-
+                        .html("&#9668; &#9668; &#9668;")
+                        .style("padding-top", (elementHeight/2)+'px');
 
                     function zoomed() {
                         $scope.global.floorScale  = d3.event.scale;
                         container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-                    }
-
-                    function zoomer(translate, scale) {
-                        $("#floorContainer").attr("transform", "translate(" + translate + ")scale(" + scale + ")");
-                        moveIcons(data, translate, scale);
                     }
 
 
@@ -3153,23 +3175,23 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     }
 
                     function dragged(d) {
-                        // if ( (d3.mouse($("#floorplan")[0])[0]) < 0 || (d3.mouse($("#floorplan")[0])[0]) > 790 || (d3.mouse($("#floorplan")[0])[1]) < 0 || (d3.mouse($("#floorplan")[0])[1]) > 580 ) {
-                        //     //console.log((d3.mouse($("#floorplan")[0])[0]) + " - " +(d3.mouse($("#floorplan")[0])[1]));
-                        //     // var me = d3.event.sourceEvent;
-                        //     // console.log(me);
-                        //     // var destinationId = $(this).attr('id');
-                        //     // console.log(destinationId);
-                        //     // var itemId = me.dataTransfer.getData("Text");
-                        //     // console.log(itemId);
-                        //     // var item = $(document).find('#'+itemId);
-                        //     // console.log(item);
-                        //     // var itemData = item[0]['__data__'];
-                        //     // console.log(itemData);
+                       /* if ( (d3.mouse($("#floorplan")[0])[0]) < 0 || (d3.mouse($("#floorplan")[0])[0]) > 790 || (d3.mouse($("#floorplan")[0])[1]) < 0 || (d3.mouse($("#floorplan")[0])[1]) > 580 ) {
+                            //console.log((d3.mouse($("#floorplan")[0])[0]) + " - " +(d3.mouse($("#floorplan")[0])[1]));
+                            // var me = d3.event.sourceEvent;
+                            // console.log(me);
+                            // var destinationId = $(this).attr('id');
+                            // console.log(destinationId);
+                            // var itemId = me.dataTransfer.getData("Text");
+                            // console.log(itemId);
+                            // var item = $(document).find('#'+itemId);
+                            // console.log(item);
+                            // var itemData = item[0]['__data__'];
+                            // console.log(itemData);
 
 
-                        //     //d3.event.stopPropagation();
-                        // }else{
-                        // }
+                            //d3.event.stopPropagation();
+                        }else{
+                        }*/
                             d.x = d3.event.x;
                             d.y = d3.event.y;
                             d3.select(this).attr("transform", "translate("+d.x + "," + d.y+")")
@@ -3182,16 +3204,33 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         d3.select(this).classed("dragging", false);
                     }
 
-                    
-
                     function plot(data, floor) {
                         ////////////////////
                         ///  LIST USERS  ///
                         ////////////////////
                         // MAKE LIST ELEMENTS
-                        userDiv.selectAll('button').remove();
-                        userDiv.selectAll('button').data(data).enter()
-                            .append('button').each(function(d){
+                        var count = -1;
+                        var nodeHeight = 32;
+                        userDiv.selectAll('g').remove();
+                        userDiv.selectAll('g').data(data.filter(function(d){if (d.map == null){ return true; }})).enter()
+                            .append('g')
+                            .attr('width', 0)
+                            .attr('height', 0)
+                            .attr("id", function(d){
+                                return d.id;
+                            })
+                            .append('svg:foreignObject')
+                                .attr('height', "65px")
+                                .attr('width', "100%")
+                                .attr("class", function(d){
+                                    return 'userTrans-'+d.id;
+                                })
+                                .attr("transform", function(d){
+                                    count++;
+                                    return "translate(0,"+count*nodeHeight+")";
+                                })
+                            .append('xhtml:button').each(function(d){
+                            // .append('button').each(function(d){
                                 var iconColour = '#29ABE2'; 
                                 var name = d.lan_machine;
                                 if (d.custom_user != null){
@@ -3203,7 +3242,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 if (name === ""){
                                     name = d.lan_mac;
                                 }
-                                if ((d.x === 0) && (d.y === 0)) {
+                                //if ((d.x === 0) && (d.y === 0)) {
                                     var id = d.id;
                                     var elm = d3.select(this);
                                     var elel = elm[0];
@@ -3233,6 +3272,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             floorDiv.selectAll('button').each(function(d){
                                                 var elm = d3.select(this);
                                                 $(elm[0]).removeClass('selected');
+                                                console.log(elm[0])
                                             })
                                             el.classList.add('selected');
                                             $scope.requery(d, 'flooruser');
@@ -3361,7 +3401,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                         function(e) {
                                             e.dataTransfer.effectAllowed = 'move';
                                             e.dataTransfer.setData('Text', this.id);
-                                            this.classList.add('drag');
+                                            //this.classList.add('drag');
                                             return false;
                                         },
                                         false
@@ -3370,19 +3410,24 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     el.addEventListener(
                                         'dragend',
                                         function(e) {
-                                            this.classList.remove('drag');
+                                            //this.classList.remove('drag');
                                             $scope.requery(d, 'flooruser');
                                             return false;
                                         },
                                         false
                                     );
-                                }
+                               // }
                             });
+                        userDiv.style('height', (count+1)*nodeHeight+'px');
+
                         container.selectAll('button').remove();
                         container.selectAll('button').data(data.filter(function(d){if (d.map === floorName){ return true; }})).enter()
                             .append('g')
                             .attr('width', 0)
                             .attr('height', 0)
+                            .attr("id", function(d){
+                                return d.id;
+                            })
                             .append('svg:foreignObject')
                                 .attr('height', "65px")
                                 .attr('width', "150px")
@@ -3411,7 +3456,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     var element = elm.append("div").attr('class', 'localuserlisticon').append("svg");
 
                                     elm
-                                        .attr('id', id)
+                                        //.attr('id', id)
                                         .classed('user-'+id, true)
                                         .on('dblclick', function(e){
                                             $('.usernametext').each(function(e){
@@ -3556,6 +3601,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             });
 
                                     el.draggable = true;
+
                                     el.addEventListener(
                                         'dragstart',
                                         function(e) {
@@ -3571,13 +3617,12 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                         'dragend',
                                         function(e) {
                                             //this.classList.remove('drag');
-                                            console.log("test");
+                                            console.log("dragend");
                                             $scope.requery(d, 'flooruser');
                                             return false;
                                         },
                                         false
                                     );
-
                                 }
                             });
 
@@ -3705,20 +3750,15 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         });*/
 
 
-
                     $rootScope.redrawFloor = function () {
-                        // console.log(data);
-                        // console.log(floorName);
                         var currentUser = d3.select('.selected');
                         currentUser
                             .attr("class", "localuserlist")
                             .attr('draggable', "true");
+                        currentUser.data()[0].map = null;
                         currentUser.remove();
                         $(userDiv[0][0]).append(currentUser[0][0]);
-                        //currentUser[0].remove();
-                        //currentUser[0][0].remove();
-                        //floorDiv[0].append(currentUser[0][0]);
-                        // userDiv[0].append(currentUser[0][0]);
+                        plot(data,floorName);
                     }
 
 
@@ -3727,100 +3767,4 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
             }, 0);
         }
     };
-}]);
-
-angular.module('mean.pages').directive('droppable', ['$http', function ($http) {
-    return {
-        scope: {
-            drop: '&',
-            bin: '=' // bi-directional scope
-        },
-        link: function($scope, element) {
-            // again we need the native object
-            var el = element[0];
-            el.addEventListener(
-                'dragover',
-                function(e) {
-                    e.dataTransfer.dropEffect = 'move';
-                    // allows us to drop
-                    if (e.preventDefault) e.preventDefault();
-                    $(this).addClass('over');
-                    return false;
-                },
-                false
-            );
-            el.addEventListener(
-                'dragenter',
-                function(e) {
-                    $(this).addClass('over');
-                    return false;
-                },
-                false
-            );
-
-            el.addEventListener(
-                'dragleave',
-                function(e) {
-                    $(this).removeClass('over');
-                    return false;
-                },
-                false
-            );
-
-            el.addEventListener('drop', function(e) {
-                //console.log(e);
-                var floorName = d3.select(el).attr('floor-name');
-                // Stops some browsers from redirecting.
-                if (e.stopPropagation) e.stopPropagation();
-
-                $(this).removeClass('over');
-
-                // call the drop passed drop function
-                var destinationId = $(this).attr('id');
-                var itemId = e.dataTransfer.getData("Text");
-                var item = $(document).find('#'+itemId);
-                var itemData = item[0]['__data__'];
-                
-                // var sourceElm = d3.select(e.srcElement).attr('id');
-                // var floorPlanElm = d3.select(el).attr('id');
-                if (destinationId === 'floorplan'){
-                    var divPos = {
-                        left: e.pageX - $(el).offset().left,
-                        top: e.pageY - $(el).offset().top
-                    };
-                    item.addClass('set');
-                    item.attr('style', 'top:'+divPos.top+'px; left:'+divPos.left+'px; position:absolute;');
-                    //item.attr("transform", "translate("+divPos.left+","+divPos.top+")")
-                    $(this).append(item[0]);
-                    // call the passed drop function
-                    $scope.$apply(function(scope) {
-                        var fn = scope.drop();
-                        if ('undefined' !== typeof fn) {
-                          fn(item.id, destinationId);
-                        }
-                    });
-                    $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: floorName, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
-                } else {
-                    // console.log('test')
-                    item.removeClass('set');
-                    item.removeClass('selected');
-                    item.attr('style', 'top:0px; left:0px; position:relative; ');
-                    $(this).append(item[0]);
-                    console.log(this);
-                    console.log(item[0]);
-                    // call the passed drop function
-                    $scope.$apply(function(scope) {
-                        var fn = scope.drop();
-                        if ('undefined' !== typeof fn) {
-                          fn(item.id, destinationId);
-                        }
-                    });
-                    $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: 0, y_coord: 0, map_name: null, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
-                }
-                return false;
-                },
-                false
-            );
-        }
-    }
 }]);
