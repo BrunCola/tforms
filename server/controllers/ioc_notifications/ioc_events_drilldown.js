@@ -1530,7 +1530,6 @@ module.exports = function(pool) {
             var database = req.session.passport.user.database;
             // we make a whitelist since we will be relying on the front end to send up custom selects
             var allowedSelects = ['lan_user', 'lan_ip'];
-            var results = [];
             function makeQueries() {
                 var queryList = [];
                 var selectList = ['lan_user', 'lan_ip']; // TEMPORARY.. this is going to be sent up with user8
@@ -1600,29 +1599,6 @@ module.exports = function(pool) {
                 }
                 return queryList;
             }
-            var queries = makeQueries();
-            function getAsync(queries) {
-                var asyncList = [];
-                for (var q in queries) {
-                    // push each query object to out async array to be processed
-                    asyncList.push(
-                        function(callback) {
-                            query(queries[q], {database: database, pool: pool}, function(err, data, passed){
-                                // console.log(passed);
-                                results.push({
-                                    result: data,
-                                    point: passed.point,
-                                    selected: passed.search
-                                })
-                                // console.log()
-                                callback();
-                            });
-                        }
-                    )
-                }
-                return asyncList;
-            }
-            var asyncArr = getAsync(queries);
             function compare(data) {
                 var totalPoints = data.length;
                 if (totalPoints < 2) { return false } // return if there aren't enough points to compare
@@ -1704,23 +1680,29 @@ module.exports = function(pool) {
                     if (matched.length > 0) { return matched } else { return false }
                 }
             }
-            // process our async list here
-            async.parallel(asyncArr, function(err) {
+            function processQueries(queries, callback) {
+                var results = [], qLength = queries.length, index = 0;
+                for (var q in queries) {
+                    // query every item in our query array
+                    new query(queries[q], {database: database, pool: pool}, function(err, data, passed){
+                        if (err) { callback(err); }
+                        results.push({
+                            result: data,
+                            point: passed.point,
+                            selected: passed.search
+                        })
+                        index++;
+                        // within return, callback if we've reached gor responses from all queries
+                        if (index === qLength) {
+                            callback(null, results);
+                        }
+                    });
+                }
+            }
+            var queries = makeQueries();
+            processQueries(queries, function(err, results){
                 if (err) throw console.log(err);
-                // compare functions
                 var matched = compare(results);
-                // var test = JSON.stringify({
-                //     queried: results, // this will be used instead of the searchobj thats being used now
-                //     matched: matched
-                // })
-                // var fs = require('fs');
-                // fs.writeFile('test.json', test, function(err) {
-                //     if(err) {
-                //         console.log(err);
-                //     } else {
-                //         console.log("The file was saved!");
-                //     }
-                // }); 
                 res.json({
                     queried: results, // this will be used instead of the searchobj thats being used now
                     matched: matched

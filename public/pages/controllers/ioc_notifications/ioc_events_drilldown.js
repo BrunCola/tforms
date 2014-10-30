@@ -554,15 +554,5 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
         if ($scope.patternPane) { $scope.patternPane = false; return }
         $scope.patternPane = true;
         $scope.points = matches;
-        // var search = [{"lan_user":"-","lan_ip":"10.0.0.1"},{"lan_user":"-","lan_ip":"10.0.0.113"},{"lan_user":"-","lan_ip":"10.0.0.119"},{"lan_user":"-","lan_ip":"10.0.0.130"},{"lan_user":"-","lan_ip":"10.0.0.145"},{"lan_user":"-","lan_ip":"10.0.0.147"},{"lan_user":"-","lan_ip":"10.0.0.180"},{"lan_user":"-","lan_ip":"10.0.0.181"},{"lan_user":"-","lan_ip":"10.0.0.186"},{"lan_user":"-","lan_ip":"10.0.0.187"},{"lan_user":"-","lan_ip":"10.0.0.189"},{"lan_user":"-","lan_ip":"10.0.0.2"},{"lan_user":"-","lan_ip":"10.0.0.218"},{"lan_user":"-","lan_ip":"10.0.0.240"},{"lan_user":"-","lan_ip":"10.0.0.30"},{"lan_user":"-","lan_ip":"10.0.0.33"},{"lan_user":"-","lan_ip":"10.0.0.4"},{"lan_user":"-","lan_ip":"10.0.0.43"},{"lan_user":"-","lan_ip":"10.0.0.6"},{"lan_user":"-","lan_ip":"10.0.0.99"},{"lan_user":"-","lan_ip":"255.255.255.255"},{"lan_user":"-","lan_ip":"::"},{"lan_user":"-","lan_ip":"fe80::12c3:7bff:fe95:a3b2"},{"lan_user":"-","lan_ip":"fe80::20a:cdff:fe21:b3e"},{"lan_user":"-","lan_ip":"fe80::213:3bff:fe0c:719e"},{"lan_user":"-","lan_ip":"fe80::213:3bff:fe0c:71ec"},{"lan_user":"-","lan_ip":"fe80::3285:a9ff:fea8:3499"},{"lan_user":"-","lan_ip":"fe80::3e07:54ff:fe02:fc77"},{"lan_user":"-","lan_ip":"fe80::5054:ff:fef4:78cc"},{"lan_user":"-","lan_ip":"fe80::6a5b:35ff:feb0:b507"},{"lan_user":"-","lan_ip":"fe80::7256:81ff:fec5:968a"},{"lan_user":"-","lan_ip":"fe80::bc61:63cf:23b2:2e8c"},{"lan_user":"-","lan_ip":"fe80::d63d:7eff:febd:a4aa"},{"lan_user":"-","lan_ip":"fe80::e4ce:4bfc:5421:1bad"},{"lan_user":"-","lan_ip":"fe80::ea03:9aff:febe:1072"},{"lan_user":"-","lan_ip":"fe80::eea8:6bff:fed0:3054"}];
-        // push seperate points in search return to new array
-        // $scope.points = [];
-        // for (var i in search) {
-        //     if (i !== 'length') { // ignore the length key we set earlier
-        //         $scope.points.push(search[i].point);
-        //     }
-        // }
-        $scope.test = 'test';
-        // console.log($scope.points)
     })
 }]);
