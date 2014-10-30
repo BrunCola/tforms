@@ -223,7 +223,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 
                             for (var i = 0; i < elements.length; i++) {
                                  if (elements[i].id == 'ioc_attr_link') {
-                                    elements[i].style.background = 'red';
+                                    elements[i].style.color = 'red';
                                 }
                             }
                         });
