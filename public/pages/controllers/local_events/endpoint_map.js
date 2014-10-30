@@ -33,60 +33,70 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     $scope.requery = function(d) {
          // get user image
         if ($scope.lan_ip !== '-') {
-            $rootScope.$broadcast('appendInfo', "", "", "clear");
-
-            var userInfo = [];
             var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser'; 
             
             $http({method: 'GET', url: query+'&typeinfo=assets'}).
                 success(function(data) {
                     if (data[0] !== undefined) {
-                        $rootScope.$broadcast('appendInfo', d, data[0].path, "assets");
+                        $scope.userinfo.user_image = data[0].path;
+                        //$rootScope.$broadcast('appendInfo', d, data[0].path, "assets");
                     } else {
-                        $rootScope.$broadcast('appendInfo', d, '', "assets");
+                        $scope.userinfo.user_image = "public/system/assets/img/userplaceholder.jpg";
                     }
                 });
 
-            $scope.$broadcast('appendInfo', d,"","userinfo");                       
+            $scope.userinfo = d;                      
 
             $http({method: 'GET', url: query+'&typeinfo=localioc'}).
                 success(function(data) {
-                    $scope.$broadcast('appendInfo', d,data[0],"localioc");
+                    $scope.userinfo.ioc_hits = data[0].localioc;
                 });
 
             $http({method: 'GET', url: query+'&typeinfo=localapp'}).
                 success(function(data) {
-                    $scope.$broadcast('appendInfo', d,data[0],"localapp");
+                    $scope.userinfo.app_hits = data[0].localapp;
                 });
 
             $http({method: 'GET', url: query+'&typeinfo=localhttp'}).
                 success(function(data) {
-                    $scope.$broadcast('appendInfo', d,data[0],"localhttp");
+                    $scope.userinfo.http_hits = data[0].localhttp;
                 });
 
             $http({method: 'GET', url: query+'&typeinfo=localfiles'}).
                 success(function(data) {
-                    $scope.$broadcast('appendInfo', d,data[0],"localfiles");
+                    $scope.userinfo.file_hits = data[0].localfiles;
                 });
 
             $http({method: 'GET', url: query+'&typeinfo=endpoint'}).
                 success(function(data) {
-                    $scope.$broadcast('appendInfo', d,data[0],"endpoint");
+                    $scope.userinfo.endpoint_hits = data[0].endpoint;
                 });
 
             $http({method: 'GET', url: query+'&typeinfo=bandwidth'}).
                 success(function(data) {
-                    $scope.$broadcast('appendInfo', d,data[0],"bandwidth");
+                    $scope.userinfo.total_bw = data[0].totalbandwidth;
                 });
-
-            $rootScope.$broadcast('appendInfo', d, "", "delete");
-          
-            //$scope.$broadcast('appendInfo', userInfo);
         }
     }
 
+    $scope.removeEndUser = function (user) {
+        $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: 0, y_coord: 0, map_name: null, lan_ip: user.lan_ip, lan_zone: user.lan_zone}});
+        $scope.redrawFloor();
+    }
+
+    $scope.editFloorPlan = function (floors) {
+        //console.log(floors);
+        $rootScope.modalFloors = floors;
+        $scope.modalInstance = $modal.open({
+            templateUrl: 'editModal.html',
+            controller: uploadInstanceCtrl,
+            keyboard: true,
+            modalFloors: floors
+        });
+    };
+
     $scope.modelDelete = function (floors) {
-        console.log(floors);
+        //console.log(floors);
         $rootScope.modalFloors = floors;
         $scope.modalInstance = $modal.open({
             templateUrl: 'deleteModal.html',
@@ -110,7 +120,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     $scope.uploadUser = function (rowData) {
         $rootScope.modalRowData = rowData;
         $scope.modalInstance = $modal.open({
-            templateUrl: 'uploadModal.html',
+            templateUrl: 'uploadUserModal.html',
             controller: uploadInstanceCtrl,
             keyboard: true,
             modalRowData: rowData
@@ -122,6 +132,12 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $modalInstance.close();
             location.reload();
         };
+
+        $scope.editFloors = function(edited_floors) {
+            $http({method: 'POST', url: '/local_events/endpoint_map?type=editFloorInfo', data: {edited_floors: edited_floors}});
+            $scope.ok();
+        };
+
         $scope.onFileSelect = function($files, clientWidth) {
             $scope.selectedFiles = [];
             $scope.progress = [];
@@ -160,9 +176,15 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             }
         };
 
-        $scope.deleteFloorplan = function(floor) {
-            console.log(floor.select);
-            $http({method: 'POST', url: '/local_events/endpoint_map?type=deletefp', data: {asset_name: floor.select}});
+        $scope.deleteFloorplan = function(floor_name, floors) {
+            var imagePath = "";
+            for (var f in floors) {
+                if (floors[f].asset_name === floor_name.select) {
+                    imagePath = floors[f].path;
+                }
+            }
+            //console.log(imagePath);
+            $http({method: 'POST', url: '/local_events/endpoint_map?type=deletefp', data: {asset_name: floor_name.select, path: imagePath}});
             $scope.ok();
         };
 
@@ -220,5 +242,4 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             };
         }
     };
-
 }]);
