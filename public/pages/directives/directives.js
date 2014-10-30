@@ -808,10 +808,10 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                                     $scope.tableData.filterAll();
                                     var arr = [];
                                     for(var i in $scope.appDimension.top(Infinity)) {
-                                        arr.push($scope.appDimension.top(Infinity)[i].l7_proto);
+                                        arr.push($scope.appDimension.top(Infinity)[i].pie_dimension);
                                     }
 
-                                    $scope.tableData.filter(function(d) { return arr.indexOf(d.l7_proto) >= 0; });
+                                    $scope.tableData.filter(function(d) { return arr.indexOf(d.pie_dimension) >= 0; });
                                     $scope.$broadcast('crossfilterToTable');
 
                                 }, 400, "filterWait");
@@ -858,10 +858,10 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                         } else {
                             $scope.appDimension.filterAll();
                             // console.log($scope.appDimension.top(Infinity));
-                            if ($scope.l7_proto) {
-                                $scope.appDimension.filter(function(d) { return $scope.l7_proto.indexOf(d) >= 0; });
+                            if ($scope.pie_dimension) {
+                                $scope.appDimension.filter(function(d) { return $scope.pie_dimension.indexOf(d) >= 0; });
                                 // $scope.pieGroup = $scope.appDimension.group().reduceSum(function (d) {
-                    //                 return d.app_count;
+                    //                 return d.count;
                     //             });
                             }
                             // console.log($scope.appDimension.top(Infinity));

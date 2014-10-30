@@ -15,6 +15,8 @@ module.exports = function(pool) {
                 start = req.query.start;
                 end = req.query.end;
             }
+            var crossfilter = [];
+            var piechart = [];
             var tables = [];
             var table1 = {
                 query: 'SELECT '+
@@ -52,6 +54,34 @@ module.exports = function(pool) {
                     title: 'Extracted File Types'
                 }
             }
+            var crossfilterQ = {
+                query: 'SELECT '+
+                        'count(*) AS count,'+
+                        'time '+
+                    'FROM '+
+                        '`file_mime` '+
+                    'WHERE '+
+                        '`time` BETWEEN ? AND ? '+
+                    'GROUP BY '+
+                        'month(from_unixtime(`time`)),'+
+                        'day(from_unixtime(`time`)),'+
+                        'hour(from_unixtime(`time`))',
+                insert: [start, end]
+            }           
+            var piechartQ = {
+                query: 'SELECT '+
+                         'time,'+
+                         '`mime` AS `pie_dimension`, '+
+                         'count(*) AS `count` '+
+                     'FROM '+
+                         '`file_mime` '+
+                     'WHERE '+
+                         '`time` BETWEEN ? AND ? '+
+                         'AND `mime` !=\'-\' '+
+                     'GROUP BY '+
+                         '`mime`',
+                insert: [start, end]
+            }
             async.parallel([
                 // Table function(s)
                 function(callback) {
@@ -59,11 +89,27 @@ module.exports = function(pool) {
                         tables.push(data);
                         callback();
                     });
+                },
+                // Crossfilter function
+                function(callback) {
+                    new query(crossfilterQ, {database: database, pool: pool}, function(err,data){
+                        crossfilter = data;
+                        callback();
+                    });
+                },
+                // Piechart function
+                function(callback) {
+                    new query(piechartQ, {database: database, pool: pool}, function(err,data){
+                        piechart = data;
+                        callback();
+                    });
                 }
             ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                 if (err) throw console.log(err);
                 var results = {
-                    tables: tables
+                    tables: tables,
+                    crossfilter: crossfilter,
+                    piechart: piechart
                 };
                 res.json(results);
             });

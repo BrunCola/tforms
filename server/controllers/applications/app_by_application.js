@@ -98,8 +98,8 @@ module.exports = function(pool) {
             var piechartQ = {
                 query: 'SELECT '+
                          'time,'+
-                         '`l7_proto`, '+
-                         '(sum(in_bytes + out_bytes) / 1048576) AS app_count '+
+                         '`l7_proto` AS `pie_dimension`, '+
+                         '(sum(in_bytes + out_bytes) / 1048576) AS `count` '+
                      'FROM '+
                          '`conn_l7_proto` '+
                      'WHERE '+

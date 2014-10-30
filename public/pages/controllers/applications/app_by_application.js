@@ -50,16 +50,16 @@ angular.module('mean.pages').controller('appByApplicationController', ['$scope',
             );
             $scope.$broadcast('barChart', barDimension, barGroup, 'bandwidth');
 
-            var countDimension = $scope.piechartData.dimension(function(d) { return d.app_count }).top(10).map(function(d){ return d.l7_proto });
+            var countDimension = $scope.piechartData.dimension(function(d) { return d.count }).top(10).map(function(d){ return d.pie_dimension });
             $scope.appDimension = $scope.piechartData.dimension(function(d) { 
-                if(countDimension.indexOf(d.l7_proto) !== -1) {
-                    return d.l7_proto;
+                if(countDimension.indexOf(d.pie_dimension) !== -1) {
+                    return d.pie_dimension;
                 } else {
                     return "Other";
                 }
             });                 
             $scope.pieGroup = $scope.appDimension.group().reduceSum(function (d) {
-                return d.app_count;
+                return d.count;
             });
             // console.log(pieGroup.top(Infinity));
             $scope.$broadcast('pieChart', 'application');
