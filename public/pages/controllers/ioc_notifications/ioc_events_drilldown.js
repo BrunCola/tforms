@@ -211,7 +211,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             if (data[0] !== undefined) {
                 $scope.child_ioc = data;
 
-                //iterate and check against user stuff here? in order to highlight?
+                //iterate and check against user stuff here in order to highlight
                 data.forEach(function(d){
                     if(d.typeIndicator == "IP Indicator") {
                         console.log("IP indicator");
@@ -220,11 +220,11 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                         success(function(result) {
                             console.log(result);
                             var elements = document.getElementsByTagName('a');
-                            
+
                             for (var i = 0; i < elements.length; i++) {
-                                // if (elements.className.split(/\s+/).indexOf('red') !== -1) {
-                                    elements[i].style.color = 'red';
-                                // }
+                                 if (elements[i].id == 'ioc_attr_link') {
+                                    elements[i].style.background = 'red';
+                                }
                             }
                         });
                     }
