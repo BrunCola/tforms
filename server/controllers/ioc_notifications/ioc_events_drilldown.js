@@ -720,7 +720,17 @@ module.exports = function(pool) {
                         res.json(data);
                     }
                 });  
-            }else if (req.query.type === 'assets') {
+            } else if (req.query.type === 'ioc_ip_match') {
+                new query({query: 'SELECT * FROM `conn` WHERE `lan_user` = ? AND `lan_ip` = ? AND `lan_zone` = ? AND `remote_ip` = ? ', insert: [req.query.lan_user, req.query.lan_ip, req.query.lan_zone,req.query.ioc_ip]}, {database: database, pool: pool}, function(err,data){
+                    console.log(req.query.lan_user); 
+                    console.log(req.query.lan_ip);
+                    console.log(req.query.lan_zone);
+                    console.log(req.query.ioc_ip);
+                    if (data) {
+                        res.json(data);
+                    }
+                });  
+            } else if (req.query.type === 'assets') {
                 if (req.query.lan_ip && req.query.lan_zone) {
                     var sql = {
                         query: 'SELECT '+
