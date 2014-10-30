@@ -2976,9 +2976,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
             //$scope.$on('floorPlan', function (event) {
                 setTimeout(function () {
                     var floor_path = $scope.floor.path;
-                    var image_width = $scope.floor.image_width;
-                    var image_height = $scope.floor.image_height;
-                    var imageRatio = image_width/image_height;
+                    var imageRatio = $scope.floor.image_width/$scope.floor.image_height;
                     var data = $scope.data.force;
                     var floorName = attrs.floorName;
 
@@ -2992,8 +2990,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     var userDiv = d3.select("#listlocalusers").attr("width","100%");
                     var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
                     var floorDiv = d3.select(element[0]);
-                    floorDiv
-                        .style("border" , "solid 1px #0f0");
 
                     var hideListDiv = d3.select('#listlocalusersspan');
                     var expandDiv = d3.select('#floorplanspan');
@@ -3147,15 +3143,15 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             if (hideListDiv.attr("class") === "floorHide") {
                                 hideListDiv.classed('floorHide', false);
                                 expandDiv.style('width','60%');
-                                element.width(elementWidth);
-                                element.height(elementHeight);
+                                // element.width(elementWidth);
+                                // element.height(elementHeight);
                                 hideDiv.html("&#9668; &#9668; &#9668;");
                             }else{
                                 hideListDiv.classed('floorHide', true);
-                                console.log(floorDiv[0][0]);
-                                element[0].style('width',elementWidth*1.25+"px");
-                                floorDiv.style('height',elementHeight*1.25+"px");
-                                console.log(floorDiv[0][0]);
+                                // console.log(d3.select(element[0]));
+                                // floorDiv.style('width',elementWidth*1.25+"px");
+                                // floorDiv.style('height',elementHeight*1.25+"px");
+                                // console.log(d3.select(element[0]));
                                 expandDiv.style('width','75%'); 
                                 hideDiv.html("&#9658; &#9658; &#9658;");
                             }
