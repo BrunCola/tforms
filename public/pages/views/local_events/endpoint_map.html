@@ -7,15 +7,15 @@
             <div style="width: 70%;margin: 0 auto;">
                 <div style="width: 70%;margin: 0 auto;">
                     Upload file(s): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="file" ng-file-select="onFileSelect($files,width)" accept="image/*" multiple onclick="this.value=null">
+                    <input type="file" ng-file-select="onFileSelect($files)" accept="image/*" onclick="this.value=null">
                 </div>
                 <br/>
-                <div style="width: 70%;margin: 0 auto;">
+                <!--<div style="width: 70%;margin: 0 auto;">
                     <div ng-show="dropSupported" class="drop-box" ng-file-drop="onFileSelect($files);" ng-file-drop-available="dropSupported=true">
-                        or drop files here
+                        or drop image here
                     </div>
                 </div>
-                <div ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
+                <div ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>-->
                 <br/>
                 <div ng-show="progress.length > 0" style="width: 70%;margin: 0 auto;">
                     <div class="err" ng-show="errorMsg != null">{{errorMsg}}</div>
@@ -49,16 +49,16 @@
             <div style="width: 70%;margin: 0 auto;">
                 <div style="width: 70%;margin: 0 auto;">
                     Upload file(s): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="file" ng-file-select="onFileSelect($files,width)" accept="image/*" multiple onclick="this.value=null">
+                    <input type="file" ng-file-select="onFileSelect($files)" accept="image/*" onclick="this.value=null">
                 </div>
                 <br/>
-                <div style="width: 70%;margin: 0 auto;">
+                <!--<div style="width: 70%;margin: 0 auto;">
                     <div ng-show="dropSupported" class="drop-box" ng-file-drop="onFileSelect($files);" ng-file-drop-available="dropSupported=true">
-                        or drop files here
+                        or drop image here
                     </div>
                 </div>
                 <div ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
-                <br/>
+                <br/>-->
                 <div ng-show="progress.length > 0" style="width: 70%;margin: 0 auto;">
                     <div class="err" ng-show="errorMsg != null">{{errorMsg}}</div>
                     Progress:

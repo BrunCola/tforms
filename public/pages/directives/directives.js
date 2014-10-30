@@ -2992,6 +2992,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     var userDiv = d3.select("#listlocalusers").attr("width","100%");
                     var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
                     var floorDiv = d3.select(element[0]);
+                    floorDiv
+                        .style("border" , "solid 1px #0f0");
 
                     var hideListDiv = d3.select('#listlocalusersspan');
                     var expandDiv = d3.select('#floorplanspan');
@@ -3041,7 +3043,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                     svg.on("dblclick.zoom", null);
 
-                    container.append("g")  
+                    container.append("svg")  
                         .attr("class", "floorimage")
                         .append("image")
                         .attr("id", "svgFloorPlan")
@@ -3144,11 +3146,17 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .on("click", function () {
                             if (hideListDiv.attr("class") === "floorHide") {
                                 hideListDiv.classed('floorHide', false);
-                                expandDiv.style('width','60%')
+                                expandDiv.style('width','60%');
+                                element.width(elementWidth);
+                                element.height(elementHeight);
                                 hideDiv.html("&#9668; &#9668; &#9668;");
                             }else{
                                 hideListDiv.classed('floorHide', true);
-                                expandDiv.style('width','75%')
+                                console.log(floorDiv[0][0]);
+                                element[0].style('width',elementWidth*1.25+"px");
+                                floorDiv.style('height',elementHeight*1.25+"px");
+                                console.log(floorDiv[0][0]);
+                                expandDiv.style('width','75%'); 
                                 hideDiv.html("&#9658; &#9658; &#9658;");
                             }
                         })
@@ -3419,8 +3427,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             });
                         userDiv.style('height', (count+1)*nodeHeight+'px');
 
-                        container.selectAll('button').remove();
-                        container.selectAll('button').data(data.filter(function(d){if (d.map === floorName){ return true; }})).enter()
+                        container.selectAll('g').remove();
+                        container.selectAll('g').data(data.filter(function(d){if (d.map === floorName){ return true; }})).enter()
                             .append('g')
                             .attr('width', 0)
                             .attr('height', 0)
