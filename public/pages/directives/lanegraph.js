@@ -485,7 +485,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         $http({method: 'POST', url: '/ioc_notifications/ioc_events_drilldown/patterns', data: compareObj}).
                             success(function(data, status, headers, config) {
                                 // send info to pattern pane
-                                $scope.$broadcast('patternPane', compareObj, data);
+                                $scope.$broadcast('patternPane', data);
                                 // call clear points function
                                 // turn off loading
                                 loading('end');
@@ -496,7 +496,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         loading('end');
                     }
                 }
-
 
                 // var timeShiftHolder = d3.select("#lanegraph").append('div').attr('class', 'timeShiftHolder');
                 // var nextTime = timeShiftHolder
@@ -661,7 +660,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
 
                 // info div
                 var infoHeight = element.height();
-                var infoTitle = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
                 var infoDiv = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
 
                 // function timeShift(cmd) {
@@ -1005,7 +1003,6 @@ angular.module('mean.pages').directive('appendRowIcon', ['laneRowSymbols', funct
                 switch(type){
                     case 'IOC':
                         return "#CCCCCC";
-
                    /* case 'Conn_ioc':
                         return "#EFAA86";
                     case 'DNS_ioc':
@@ -1064,3 +1061,4 @@ angular.module('mean.pages').directive('appendRowIcon', ['laneRowSymbols', funct
         }
     };
 }]);
+
