@@ -210,6 +210,25 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
         success(function(data) {
             if (data[0] !== undefined) {
                 $scope.child_ioc = data;
+
+                //iterate and check against user stuff here? in order to highlight?
+                data.forEach(function(d){
+                    if(d.typeIndicator == "IP Indicator") {
+                        console.log("IP indicator");
+
+                        $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?type=ioc_ip_match&ioc_ip='+d.ioc + '&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&lan_user='+$location.$$search.lan_user}).
+                        success(function(result) {
+                            console.log(result);
+                            var elements = document.getElementsByTagName('a');
+                            
+                            for (var i = 0; i < elements.length; i++) {
+                                // if (elements.className.split(/\s+/).indexOf('red') !== -1) {
+                                    elements[i].style.color = 'red';
+                                // }
+                            }
+                        });
+                    }
+                });
             }
         });
 
@@ -235,7 +254,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                 max: maxUnix
             };
             //  grab more from api
-            var query = '/ioc_notifications/ioc_events_drilldown?start='+minUnix+'&end='+maxUnix+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc+'&ioc_attrID='+$location.$$search.ioc_attrID+'&type=drill';
+            var query = '/ioc_notifications/ioc_events_drilldown?start='+minUnix+'&end='+maxUnix+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc+'&ioc_attrID='+$location.$$search.ioc_attrID+'&type=drill'+'&lan_user='+$location.$$search.lan_user;
             $http({method: 'GET', url: query}).
                 success(function(data) {
                     $scope.crossfilterDeep = crossfilter();
