@@ -13,8 +13,6 @@ module.exports = function (sql, conn, callback) {
         if (obj.dView === undefined) {
             obj.dView = true;
         }
-    
-            
         if (obj.select === 'Archive') {
             obj.select = null;
         }

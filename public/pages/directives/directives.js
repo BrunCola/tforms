@@ -511,9 +511,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                     $scope.r = [], $scope.e = [];
                                     for (var a in oSettings.aoColumns) {
                                         // find the index of column rows so they can me modified below
-                                            //console.log(oSettings.aoColumns[a]);
-                                            console.log(oSettings.aoColumns[a])
-                                        if ((oSettings.aoColumns[a].bVisible === true) && oSettings.aoColumns[a].bVis === true) {
+                                        if (oSettings.aoColumns[a].bVisible === true) {
                                             $scope.r.push(oSettings.aoColumns[a].mData);
                                         }
                                         // push unique to link builder
