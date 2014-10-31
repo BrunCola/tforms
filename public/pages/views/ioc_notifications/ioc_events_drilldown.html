@@ -114,7 +114,7 @@
                             <strong>IOC: </strong>{{iocc}}<br />
                             <strong>IOC Type: </strong>{{infoData.ioc_typeIndicator}}<br />
                             <strong>IOC Info: </strong>{{infoData.desc}}<span ioc-desc></span><br />
-                            <a href="" ng-click="getChildIOC()" class="epmap">Show all Attributes</a>
+                            <a id="ioc_attr_link" href="" ng-click="getChildIOC()" class="epmap">Show all Attributes</a>
                             <!-- <strong>IOC Rule: </strong>{{ioc_rule}}<span ioc-desc><br /> -->
                         </div>
                     </div>    
@@ -167,8 +167,11 @@
         <div class="span4">
             <div id="box">
                 <div class="box-content">
-                    <div class="lanegraphtitle"><strong>Event Info</strong> <form action="" id="autoExpand"><input type="checkbox" id="autoexpand" name="autoexpand" value="autoexpand" checked=""> Auto Expand</form></div>
-                    <div id="lanegraphinfo"></div>
+                    <div class="lanegraphtitle">
+                        <strong>Event Info</strong>
+                        <form action="" id="autoExpand"><input type="checkbox" id="autoexpand" name="autoexpand" value="autoexpand" checked=""> Auto Expand</form>
+                    </div>
+                    <div id="lanegraphinfo" info-pane></div>
                 </div>
             </div>
         </div>
