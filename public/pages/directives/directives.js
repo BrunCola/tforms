@@ -511,7 +511,9 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                     $scope.r = [], $scope.e = [];
                                     for (var a in oSettings.aoColumns) {
                                         // find the index of column rows so they can me modified below
-                                        if (oSettings.aoColumns[a].bVisible === true) {
+                                            //console.log(oSettings.aoColumns[a]);
+                                            console.log(oSettings.aoColumns[a])
+                                        if ((oSettings.aoColumns[a].bVisible === true) && oSettings.aoColumns[a].bVis === true) {
                                             $scope.r.push(oSettings.aoColumns[a].mData);
                                         }
                                         // push unique to link builder
@@ -3005,8 +3007,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     }
 
                     var margin = {top: -5, right: -5, bottom: -5, left: -5};
-                        // width = 950 - margin.left - margin.right,
-                        // height = 570 - margin.top - margin.bottom;
 
                     var zoom = d3.behavior.zoom()
                         .scaleExtent([0.5, 5])
@@ -3050,7 +3050,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .attr("type", "image/svg+xml");
 
                     container.on('click', function(e){
-                        if(d3.event.toElement === d3.select('.svgFloor')[0][0]){                            
+                        if(d3.event.toElement === d3.select('.svgFloor')[0][0]){ 
+                        console.log("true");                           
                             $('.usernametext').each(function(e){
                                 this.classList.remove('ng-hide');
                             });
@@ -3148,10 +3149,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 hideDiv.html("&#9668; &#9668; &#9668;");
                             }else{
                                 hideListDiv.classed('floorHide', true);
-                                // console.log(d3.select(element[0]));
-                                // floorDiv.style('width',elementWidth*1.25+"px");
-                                // floorDiv.style('height',elementHeight*1.25+"px");
-                                // console.log(d3.select(element[0]));
+                                console.log(d3.select(element[0]));
+                                floorDiv.style('width',elementWidth*1.25+"px");
+                                floorDiv.style('height',elementHeight*1.25+"px");
+                                console.log(d3.select(element[0]));
                                 expandDiv.style('width','75%'); 
                                 hideDiv.html("&#9658; &#9658; &#9658;");
                             }
@@ -3474,8 +3475,12 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             iconText.classList.add('ng-hide');
                                             iconInput.classList.remove('ng-hide');
                                         })
+
                                         .on('click', function(e){
-                                            $('.usernametext').each(function(e){
+                                            if (d3.select('.selected')[0][0] === this){
+                                                console.log(d3.select('.selected')[0][0]);
+                                            }
+                                            $('.usernametext').each(function(d){
                                                 this.classList.remove('ng-hide');
                                             });
                                             $('.usernameform').each(function(e){
@@ -3492,7 +3497,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             el.classList.add('selected');
                                             $scope.requery(d, 'flooruser');
                                         });
-
                                     if (d.stealth === 1) {
                                         element
                                             .attr('height', '25')
