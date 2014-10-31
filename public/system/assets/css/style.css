@@ -88,6 +88,8 @@ p{
 
 
 
+
+
 .lanePatternInfoPane {
   position: absolute;
   display: block;
@@ -214,6 +216,16 @@ p{
 }
 #lanegraphinfo{
   /*overflow: hidden !important;*/
+}
+
+#lanegraph .laneAlert {
+  background-color: #CC0000;
+  padding: 0 10px 0 10px;
+  text-align: center;
+  color: #FFFFFF;
+  float: right;
+  display: none;
+  width: 140px;
 }
 
 .laneInfo {

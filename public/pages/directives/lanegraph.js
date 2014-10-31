@@ -2,16 +2,11 @@
 
 angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'appIcon', '$rootScope', 'timeFormat', '$http', 'laneRowSymbols', function ($timeout, $location, appIcon, $rootScope, timeFormat, $http, laneRowSymbols) {
     return {
-        // restrict: 'A',
-        // scope : {
-        //     title : '@'
-        // },
         templateUrl : 'public/pages/views/ioc_notifications/ioc_events_drilldown_control.html',
         transclude : true,
         link: function ($scope, element, attrs) {
             $scope.$on('laneGraph', function() {
                 $scope.$broadcast('spinnerHide');
-
                 $.fn.scrollTo = function( target, options, callback ){
                     if ((typeof options == 'function') && (arguments.length == 2)) { callback = options; options = target; }
                     var settings = $.extend({
@@ -49,16 +44,35 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     lastXY: null
                 }
 
+                var leftSide = d3.select(element[0]).append('div').attr('class', 'span8').append('div').attr('id', 'box').append('div').attr('class', 'box-content');
+                var rightSide = d3.select(element[0]).append('div').attr('class', 'span4').append('div').attr('id', 'box').append('div').attr('class', 'box-content');
+
                 var laneLength = $scope.lanes.length;
-                var width = element.width();
+                var lWidth = leftSide.node().offsetWidth;
                 var m = [5, 15, 15, 130], //top right bottom left
-                    w = width - m[1] - m[3],
+                    w = lWidth - m[1] - m[3],
                     h = 470 - m[0] - m[2],
                     miniHeight = 0,
                     mainHeight = h - miniHeight - 50;
                 // put it in scope for use in view
                 $scope.width = element.width();
                 $scope.height = h;
+
+                // right side header
+                rightSide.append('div')
+                    .classed('lanegraphtitle', true)
+                    .append('form')
+                        .html('Auto Expand')
+                        .attr('action', null)
+                        .attr('id', 'autoExpand')
+                            .append('input')
+                                .attr('type', 'checkbox')
+                                .attr('id', 'autoexpand')
+                                .attr('name', 'autoexpand')
+                                .attr('value', 'autoexpand')
+                                .attr('checked', null);
+                var infoHeight = h;
+                var infoDiv = rightSide.append('div').classed('divScroll', true).style('height', infoHeight+'px').style('overflow', 'scroll');
 
                 var queryThreshhold = 3600; // one hour in seconds
 
@@ -74,23 +88,13 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .range([30, mainHeight]);
 
                 // current time div
-                var currentTimeSlice = d3.select("#lanegraph").append('div').attr('class', 'timeslice');
+                var currentTimeSlice = leftSide.append('div').attr('class', 'timeslice');
                 var currentTime = currentTimeSlice.append('div').style('float', 'left');
 
                 // enhanced view alert
-                $scope.alert = currentTimeSlice.append('div')
-                    .attr('class', 'laneAlert')
-                    .style('background-color', '#CC0000')
-                    .style('padding', '0 10px 0 10px')
-                    .style('text-align', 'center')
-                    .style('color', '#FFFFFF')
-                    .style('float', 'right')
-                    .style('display', 'none')
-                    .style('width', '140px');
+                $scope.alert = currentTimeSlice.append('div').attr('class', 'laneAlert').html('Enhanced drill-down view');
 
-                $scope.alert.html('Enhanced drill-down view');
-
-                var chart = d3.select("#lanegraph")
+                var chart = leftSide
                     .append("svg")
                     .attr("width", w + m[1] + m[3])
                     .attr("height", h + m[0] + m[2])
@@ -399,7 +403,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 
                 // nav
                 var navArray = [], currentNavPos = 0;
-                var buttonHolder = d3.select("#lanegraph").append('div').attr('class', 'buttonHolder');
+                var buttonHolder = leftSide.append('div').attr('class', 'buttonHolder');
                 var resetBtn = buttonHolder
                     .append('button')
                     .html('Reset')
@@ -512,23 +516,22 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 //     .on('click', function(){
                 //         timeShift('next');
                 //     });
-                $scope.laneGraphWidth = function() {
-                    return $('#lanegraph').parent()[0].clientWidth;
-                }
+                // $scope.laneGraphWidth = function() {
+                //     return leftSide.width();
+                // }
                 
-                var setNewSize = function(width) {
-                    chart.attr("width", width);
-                    main.attr("width", width-135);                  
-                }
+                // var setNewSize = function(width) {
+                //     chart.attr("width", width);
+                //     main.attr("width", width-135);                  
+                // }
 
-                $(window).bind('resize', function() {
-                    setTimeout(function(){
-                        setNewSize($scope.laneGraphWidth());
-                    }, 150);
-                });
+                // $(window).bind('resize', function() {
+                //     setTimeout(function(){
+                //         setNewSize($scope.laneGraphWidth());
+                //     }, 150);
+                // });
 
                 $scope.addSearch = function(point, data) {
-                    console.log(data)
                     var thisNode = itemRects.select('.node-'+point.id);
                     if (!(point.id in $scope.pattern.selected)) {         
                         // add empty obect with point id in search
@@ -658,10 +661,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                 }
 
-                // info div
-                var infoHeight = element.height();
-                var infoDiv = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
-
                 // function timeShift(cmd) {
                 //     // calculate what the current time shift would be (forward or back)
                 //     var minExtent = moment(navArray[currentNavPos].min).unix();
@@ -716,7 +715,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr('stdDeviation', 0);
                 var load = chart.append('g')
                     .style('display', 'none')
-                    .attr('transform', 'translate('+((width/2)-20)+','+((infoHeight/2)-80)+')')
+                    .attr('transform', 'translate('+((lWidth/2)-20)+','+((infoHeight/2)-80)+')')
                 // loading svg
                 load.append('svg')
                     .attr('version', 1.1)
@@ -820,12 +819,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     var ept  = elm.position().top;
                     var eppt = elm.parent().position().top;
                     var offset = ept - eppt;
-                    var totalHeight = $('#lanegraphinfo')[0].scrollHeight;
-                    var windowHeight = $('#lanegraphinfo').height();
+                    var totalHeight = $('.divScroll')[0].scrollHeight;
+                    var windowHeight = $('.divScroll').height();
                     if (offset>(totalHeight-windowHeight)) {
                         offset = totalHeight-windowHeight;
                     }
-                    $('#lanegraphinfo').scrollTo(offset);
+                    $('.divScroll').scrollTo(offset);
                 }
 
                 function plot(data, min, max) {
@@ -1003,19 +1002,6 @@ angular.module('mean.pages').directive('appendRowIcon', ['laneRowSymbols', funct
                 switch(type){
                     case 'IOC':
                         return "#CCCCCC";
-                   /* case 'Conn_ioc':
-                        return "#EFAA86";
-                    case 'DNS_ioc':
-                        return "#F3BD5D";
-                    case 'HTTP_ioc':
-                        return "#FFF2A0";
-                    case 'SSL_ioc':
-                        return "#D97373";
-                    case 'Email_ioc': 
-                        return "#F3BD5D";
-                    case 'File_ioc':
-                        return "#F68D55";*/
-
                     case 'IOC Severity':
                         return "#FF172F";
                     case 'Conn':
