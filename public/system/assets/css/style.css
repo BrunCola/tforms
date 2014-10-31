@@ -136,20 +136,20 @@ p{
 }
 /* SQUARED TWO */
 .squaredTwo {
-  width: 28px;
-  height: 28px;
-  background: #fcfff4;
-  background: -webkit-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-  background: -moz-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-  background: -o-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-  background: -ms-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-  background: linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfff4', endColorstr='#b3bead',GradientType=0 );
+  width: 22px;
+  height: 22px;
+  background: #666666;
+  background: -webkit-linear-gradient(top, #666666 0%, #999999 40%, #606060 100%);
+  background: -moz-linear-gradient(top, #666666 0%, #999999 40%, #606060 100%);
+  background: -o-linear-gradient(top, #666666 0%, #999999 40%, #606060 100%);
+  background: -ms-linear-gradient(top, #666666 0%, #999999 40%, #606060 100%);
+  background: linear-gradient(top, #666666 0%, #999999 40%, #606060 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#666666', endColorstr='#606060',GradientType=0 );
   margin: 20px auto;
 
-  -webkit-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
+  /*-webkit-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
   -moz-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
-  box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
+  box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);*/
   position: relative;
 }
 .squaredTwo label {
@@ -157,19 +157,10 @@ p{
   position: absolute;
   width: 20px;
   height: 20px;
-  left: 4px;
-  top: 4px;
+  left: 1px;
+  top: 1px;
 
-  -webkit-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,1);
-  -moz-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,1);
-  box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,1);
-
-  background: -webkit-linear-gradient(top, #222 0%, #45484d 100%);
-  background: -moz-linear-gradient(top, #222 0%, #45484d 100%);
-  background: -o-linear-gradient(top, #222 0%, #45484d 100%);
-  background: -ms-linear-gradient(top, #222 0%, #45484d 100%);
-  background: linear-gradient(top, #222 0%, #45484d 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#222', endColorstr='#45484d',GradientType=0 );
+  background-color: #e6e6e6;
 }
 
 .squaredTwo label:after {
@@ -183,7 +174,7 @@ p{
   background: transparent;
   top: 4px;
   left: 4px;
-  border: 3px solid #fcfff4;
+  border: 3px solid #666666;
   border-top: none;
   border-right: none;
 
