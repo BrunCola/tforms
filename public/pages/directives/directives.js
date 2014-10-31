@@ -512,8 +512,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                     for (var a in oSettings.aoColumns) {
                                         // find the index of column rows so they can me modified below
                                             //console.log(oSettings.aoColumns[a]);
-                                            console.log(oSettings.aoColumns[a])
-                                        if ((oSettings.aoColumns[a].bVisible === true) && oSettings.aoColumns[a].bVis === true) {
+                                        if (oSettings.aoColumns[a].bVisible === true) {
                                             $scope.r.push(oSettings.aoColumns[a].mData);
                                         }
                                         // push unique to link builder
@@ -523,6 +522,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                     }
                                 },
                                 'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                                    console.log(aData)
                                     if (aData.ioc_severity && $scope.r.indexOf('ioc_severity') !== -1) {
                                         var rIndex = $scope.r.indexOf("ioc_severity");
                                         $('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa '+iocIcon(aData.ioc_severity)+' fa-stack-1x fa-inverse"></i></span>');
@@ -581,8 +581,10 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                     if (notReport) {
                                         // url builder
                                         for (var c in $scope.e) {
+                                            console.log($scope.e[c]);
+                                            console.log(" ");
                                             var type = $scope.e[c].link.type;
-                                            if ($scope.e[c].bVisible) {
+                                            //if ($scope.e[c].bVisible) {
                                                 switch(type) {
                                                     case 'Archive':
                                                         $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
@@ -611,13 +613,16 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                                             objlink: obj
                                                         });
                                                         if ($scope.e[c].mData === 'time') {
+                                                            console.log($scope.r.indexOf($scope.e[c].mData));
+                                                            console.log($scope.e[c].mData);
+                                                            console.log($scope.r);
                                                             $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
                                                         } else {
                                                             $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button>");
                                                         }
                                                     break;
                                                 }  
-                                            }                                            
+                                            //}                                            
                                         }
                                     }
                                 },
