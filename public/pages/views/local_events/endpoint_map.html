@@ -105,6 +105,7 @@
                 <div ng-repeat="floor in modalFloors">
                     Floor Name:&nbsp;<input type="text" ng-model="floor.custom_name" />
                     &nbsp;&nbsp;&nbsp; Order:&nbsp;<input type="text" class="floorOrderInput" ng-model="floor.order_index" />
+                    &nbsp;&nbsp;&nbsp; Scale:&nbsp;<input type="text" class="floorOrderInput" ng-model="floor.scale" />
                 </div>
                 <button type="button" class="button-success pure-button" ng-click="editFloors(modalFloors)">Save</button>
                 <button type="button" class="rndCrnBtn pure-button" ng-click="ok()">Close</button>

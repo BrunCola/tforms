@@ -34,11 +34,12 @@ module.exports = function(pool) {
                     {
                         title: 'Last Seen',
                         select: 'time',
-                         link: {
+                        link: {
                              type: 'http_by_domain_local',
                              val: ['host'], // val: the pre-evaluated values from the query above
                              crumb: false
                         },
+                        dView: false
                     },
                     { title: 'Connections', select: 'count' },
                     { title: 'ABP', select: 'proxy_blocked', access: [2] },

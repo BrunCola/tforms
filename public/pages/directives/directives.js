@@ -511,7 +511,6 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                     $scope.r = [], $scope.e = [];
                                     for (var a in oSettings.aoColumns) {
                                         // find the index of column rows so they can me modified below
-                                            //console.log(oSettings.aoColumns[a]);
                                         if (oSettings.aoColumns[a].bVisible === true) {
                                             $scope.r.push(oSettings.aoColumns[a].mData);
                                         }
@@ -522,7 +521,6 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                     }
                                 },
                                 'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                                    console.log(aData)
                                     if (aData.ioc_severity && $scope.r.indexOf('ioc_severity') !== -1) {
                                         var rIndex = $scope.r.indexOf("ioc_severity");
                                         $('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa '+iocIcon(aData.ioc_severity)+' fa-stack-1x fa-inverse"></i></span>');
@@ -581,8 +579,6 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                     if (notReport) {
                                         // url builder
                                         for (var c in $scope.e) {
-                                            console.log($scope.e[c]);
-                                            console.log(" ");
                                             var type = $scope.e[c].link.type;
                                             //if ($scope.e[c].bVisible) {
                                                 switch(type) {
@@ -613,9 +609,6 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                                             objlink: obj
                                                         });
                                                         if ($scope.e[c].mData === 'time') {
-                                                            console.log($scope.r.indexOf($scope.e[c].mData));
-                                                            console.log($scope.e[c].mData);
-                                                            console.log($scope.r);
                                                             $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
                                                         } else {
                                                             $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button>");
@@ -2983,6 +2976,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
             //$scope.$on('floorPlan', function (event) {
                 setTimeout(function () {
                     var floor_path = $scope.floor.path;
+                    var scale = $scope.floor.scale;
                     var imageRatio = $scope.floor.image_width/$scope.floor.image_height;
                     var data = $scope.data.force;
                     var floorName = attrs.floorName;
@@ -3017,10 +3011,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .scaleExtent([0.5, 5])
                         //.translate([0,0])
                         .translate([0,0])
-                        //.scale(2)
+                        .scale(scale)
                         .on("zoom", zoomed);
-
-                    var scale = 1;
 
                     var drag = d3.behavior.drag()
                         .origin(function(d) { return d; })
@@ -3040,7 +3032,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .attr("drop", "handleDrop")
                         .attr("id", "floorContainer")
                         .style("pointer-events", "all")
-                        .attr("transform", "translate(0,0)scale(1)");
+                        .attr("transform", "translate(0,0)scale("+scale+")");
 
                     svg.on("dblclick.zoom", null);
 
@@ -3056,7 +3048,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                     container.on('click', function(e){
                         if(d3.event.toElement === d3.select('.svgFloor')[0][0]){ 
-                        console.log("true");                           
                             $('.usernametext').each(function(e){
                                 this.classList.remove('ng-hide');
                             });
@@ -3118,7 +3109,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                  left: (e.pageX - $(containerTag).offset().left)/scale,
                                  top: (e.pageY - $(containerTag).offset().top)/scale
                             };
-
                             // var userTransItem = d3.select(".userTrans"+itemId);
                             // var userTransItem = d3.select(".userTrans-"+itemId);
                             // userTransItem
@@ -3164,6 +3154,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         })
                         .html("&#9668; &#9668; &#9668;")
                         .style("padding-top", (elementHeight/2)+'px');
+
+                    function saveScale(){
+                        console.log(scale);
+                    }
 
                     function zoomed() {
                         scale = d3.event.scale;
@@ -3482,15 +3476,14 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                         })
 
                                         .on('click', function(e){
-                                            if (d3.select('.selected')[0][0] === this){
-                                                console.log(d3.select('.selected')[0][0]);
+                                            if(d3.event.toElement.value === undefined){
+                                                $('.usernametext').each(function(e){
+                                                    this.classList.remove('ng-hide');
+                                                });
+                                                $('.usernameform').each(function(e){
+                                                    this.classList.add('ng-hide');
+                                                });
                                             }
-                                            $('.usernametext').each(function(d){
-                                                this.classList.remove('ng-hide');
-                                            });
-                                            $('.usernameform').each(function(e){
-                                                this.classList.add('ng-hide');
-                                            });
                                             userDiv.selectAll('button').each(function(d){
                                                 var elmbut = d3.select(this);
                                                 $(elmbut[0]).removeClass('selected');
@@ -3729,6 +3722,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 });
 
                         });
+                    // buttonDiv.append('button')
+                    //     .html('Save Scale')
+                    //     .attr('class', 'pure-button')
+                    //     .on('click', saveScale);
 
                        /* buttonDiv.append('button')
                             .html('Zoom In')

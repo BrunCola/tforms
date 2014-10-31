@@ -225,7 +225,8 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                         myModel : $scope.myModel,
                         imageType: 'map',
                         width: $scope.imageWidth,
-                        height: $scope.imageHeight
+                        height: $scope.imageHeight,
+                        scale: 1
                     },
                     file: $scope.selectedFiles[index],
                 }).then(function(response) {

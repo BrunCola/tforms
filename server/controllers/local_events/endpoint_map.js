@@ -240,8 +240,8 @@ module.exports = function(pool) {
 
                 for (var floor in req.body.edited_floors) {
                      var update_floor = {
-                        query: "update `assets` SET `order_index`=?, `custom_name`=? WHERE `type`='map' AND `asset_name`=?",
-                        insert: [req.body.edited_floors[floor].order_index, req.body.edited_floors[floor].custom_name, req.body.edited_floors[floor].asset_name]
+                        query: "update `assets` SET `order_index`=?, `custom_name`=?, `scale`=? WHERE `type`='map' AND `asset_name`=?",
+                        insert: [req.body.edited_floors[floor].order_index, req.body.edited_floors[floor].custom_name, req.body.edited_floors[floor].scale, req.body.edited_floors[floor].asset_name]
                     }                
                     new query(update_floor, {database: database, pool: pool}, function(err,data){
                         if (err) {
