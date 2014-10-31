@@ -715,9 +715,27 @@ module.exports = function(pool) {
                     }
                 });   
             } else if (req.query.type === 'child_id') {
-                new query({query: 'SELECT `ioc`, `typeIndicator` FROM `ioc` WHERE id_child = ? ', insert: [req.query.ioc_childID]}, {database: 'cyrin', pool: pool}, function(err,data){
+                new query({query: 'SELECT `ioc`, `typeIndicator`, `type` FROM `ioc` WHERE id_child = ? ', insert: [req.query.ioc_childID]}, {database: 'cyrin', pool: pool}, function(err,data){
                     if (data) {
-                        res.json(data);
+                        // var ipMatch = false;
+                        // var portMatch = false;
+                        // console.log(data[0]);
+                        for(var i = 0; i < data.length; i++) {
+                               switch(data[i].type) {
+                                case "IPType":
+                                    console.log("MATCH IP");
+                                break;
+                                case "PortType":
+                                    console.log("MATCH PORT");
+                                break;
+                                default:
+                                break;
+                            }
+                        }
+                        
+                        var toHighlight = false;
+
+                        res.json({data: data, highlight: toHighlight});
                     }
                 });  
             } else if (req.query.type === 'ioc_ip_match') {
