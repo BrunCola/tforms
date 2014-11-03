@@ -44,8 +44,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     lastXY: null
                 }
 
-                var leftSide = d3.select(element[0]).append('div').attr('class', 'span8').append('div').attr('id', 'box').append('div').attr('class', 'box-content');
-                var rightSide = d3.select(element[0]).append('div').attr('class', 'span4').append('div').attr('id', 'box').append('div').attr('class', 'box-content');
+                var graphRow = d3.select(element[0]).append('div').attr('class', 'row-fluid');
+                var leftSide = graphRow.append('div').attr('class', 'span8').append('div').attr('id', 'box').append('div').attr('class', 'box-content');
+                var rightSide = graphRow.append('div').attr('class', 'span4').append('div').attr('id', 'box').append('div').attr('class', 'box-content');
 
                 var laneLength = $scope.lanes.length;
                 var lWidth = leftSide.node().offsetWidth;
@@ -55,7 +56,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     miniHeight = 0,
                     mainHeight = h - miniHeight - 50;
                 // put it in scope for use in view
-                $scope.width = element.width();
+                $scope.width = lWidth;
                 $scope.height = h;
 
                 // right side header
@@ -70,7 +71,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .attr('id', 'autoexpand')
                                 .attr('name', 'autoexpand')
                                 .attr('value', 'autoexpand')
-                                .attr('checked', null);
+                                .attr('checked', true);
                 var infoHeight = h;
                 var infoDiv = rightSide.append('div').classed('divScroll', true).style('height', infoHeight+'px').style('overflow', 'scroll');
 
@@ -493,6 +494,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 // call clear points function
                                 // turn off loading
                                 loading('end');
+                                // broadcast right pane overlay
                             })
                     } else {
                         // call clear points function

@@ -27,6 +27,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
     //             "ioc_severity":0,
     //             "ioc_count":0,
     //             "lane":9,
+    //             "checked": true,
     //             "info":"File Seen - Share-Arrow-Up(1x).png",
     //             "expand":[
     //                {
@@ -120,6 +121,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
     //             "ioc_rule":"-",
     //             "ioc_severity":0,
     //             "ioc_count":0,
+    //             "checked": true,
     //             "lane":9,
     //             "info":"File Seen - Share-Arrow-Up(1x).png",
     //             "expand":[
@@ -213,6 +215,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
     //             "ioc_typeInfection":"-",
     //             "ioc_rule":"-",
     //             "ioc_severity":0,
+    //             "checked": true,
     //             "ioc_count":0,
     //             "lane":9,
     //             "info":"File Seen - Share-Arrow-Up(1x).png",
@@ -567,11 +570,16 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                 });
         }
     }
-    $scope.patternPane = false;
+    // $scope.patternPane = true;
     $scope.$on('patternPane', function (event, data) {
         if ($scope.patternPane) { $scope.patternPane = false; return }
+        // loop through and add a checked flag for each point (for use in finsing comonalities)
+        data.queried.forEach(function(d){
+            d.point.checked = true;
+        })
         $scope.$broadcast('appendRowIcon');
         $scope.patternPane = true;
+        console.log(data)
         $scope.points = data;
         console.log(data.matched)
     })

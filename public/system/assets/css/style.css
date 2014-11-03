@@ -91,19 +91,20 @@ p{
 
 
 .lanePatternInfoPane {
-  position: absolute;
+  /*position: absolute;*/
   display: block;
   background-color: #e6e6e6;
+  margin-top: 40px;
+  padding:20px;
 }
 .lanePatternInfoPane div.title {
   text-align: center;
-  padding-top: 20px;
 }
 .lanePatternInfoPane div.list-container {
-  overflow: scroll;
+  /*overflow: scroll;*/
   margin-top: 20px;
-  padding: 10px 15px 0 15px;
-  height: 100%;
+  /*padding: 10px 15px 0 15px;*/
+  /*height: 100%;*/
 }
 .lanePatternInfoPane div.list-row {
   line-height: 60px;
@@ -132,7 +133,6 @@ p{
 }
 .lanePatternInfoPane div.pattern-result-count {
 }
-
 .lanePatternInfoPane input[type=checkbox] {
   visibility: hidden;
 }
@@ -206,6 +206,11 @@ p{
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
   filter: alpha(opacity=100);
   opacity: 1;
+}
+/* RIGHT LIST*/
+.lanePatternInfoPane .rightList{
+  /*position: absolute;*/
+  list-style: none;
 }
 
 
