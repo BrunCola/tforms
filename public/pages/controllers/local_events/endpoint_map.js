@@ -23,9 +23,12 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             var query = '/local_events/endpoint_map?lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&type=flooruser';
             $http({method: 'GET', url: query+'&typeinfo=userinfoload'}).
                 success(function(data) {
-                    $scope.requery(data[0]);
-                    var selected = $scope.data.force.filter(function(d){ if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ return true }});
-                    if (selected[0] !== undefined) { $scope.$broadcast('setSelected', selected[0]); }
+                    if (data[0] !== undefined) {
+                        console.log(data[0])
+                        $scope.requery(data[0]);
+                        var selected = $scope.data.force.filter(function(d){ if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ return true }});
+                        if (selected[0] !== undefined) { $scope.$broadcast('setSelected', selected[0]); }
+                    }                    
                 });
         }
     }); 
