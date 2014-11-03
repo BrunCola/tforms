@@ -717,35 +717,52 @@ module.exports = function(pool) {
             } else if (req.query.type === 'child_id') {
                 new query({query: 'SELECT `ioc`, `typeIndicator`, `type` FROM `ioc` WHERE id_child = ? ', insert: [req.query.ioc_childID]}, {database: 'cyrin', pool: pool}, function(err,data){
                     if (data) {
-                        // var ipMatch = false;
-                        // var portMatch = false;
-                        // console.log(data[0]);
+                        //need to know if only IP is given, or both IP and Port
+                        var ioc_ip;
+                        var ioc_port;
+                        var toHighlight = false;
+                        var ui_data = [];
                         for(var i = 0; i < data.length; i++) {
-                               switch(data[i].type) {
+                            ui_data.push({
+                                ioc: data[i].ioc, 
+                                typeIndicator: data[i].typeIndicator
+                            });
+                            switch(data[i].type) {
                                 case "IPType":
-                                    console.log("MATCH IP");
+                                console.log("IPType")
+                                    ioc_ip = data[i].ioc;
                                 break;
                                 case "PortType":
-                                    console.log("MATCH PORT");
-                                break;
+                                    ioc_port = data[i].ioc_port;
+                                break;//COULD HANDLE OTHER IOC TYPES HERE ALSO...
                                 default:
                                 break;
                             }
                         }
-                        
-                        var toHighlight = false;
 
-                        res.json({data: data, highlight: toHighlight});
-                    }
-                });  
-            } else if (req.query.type === 'ioc_ip_match') {
-                new query({query: 'SELECT * FROM `conn` WHERE `lan_user` = ? AND `lan_ip` = ? AND `lan_zone` = ? AND `remote_ip` = ? ', insert: [req.query.lan_user, req.query.lan_ip, req.query.lan_zone,req.query.ioc_ip]}, {database: database, pool: pool}, function(err,data){
-                    console.log(req.query.lan_user); 
-                    console.log(req.query.lan_ip);
-                    console.log(req.query.lan_zone);
-                    console.log(req.query.ioc_ip);
-                    if (data) {
-                        res.json(data);
+                        // console.log(req.query.lan_user);
+                        // console.log(req.query.lan_ip);
+                        // console.log(req.query.lan_zone);
+                        // console.log(ioc_ip);
+                        // console.log(ioc_port);
+
+                        //if both IP and Port are defined for the IOC, look for the combination of the two
+                        if(ioc_ip && ioc_port) {
+                            new query({query: 'SELECT * FROM `conn` WHERE `lan_user` = ? AND `lan_ip` = ? AND `lan_zone` = ? AND `remote_ip` = ? AND `remote_port` = ? ', insert: [req.query.lan_user, req.query.lan_ip, req.query.lan_zone, ioc_ip, ioc_port]}, {database: database, pool: pool}, function(err,result){
+                                if(result) {
+                                    toHighlight = true;
+                                }
+                            });
+                        } else if(ioc_ip) { //if only the IP is defined, look for the IP
+                            new query({query: 'SELECT * FROM `conn` WHERE `lan_user` = ? AND `lan_ip` = ? AND `lan_zone` = ? AND `remote_ip` = ? ', insert: [req.query.lan_user, req.query.lan_ip, req.query.lan_zone, ioc_ip]}, {database: database, pool: pool}, function(err,result){
+                                if(result) {
+                                    toHighlight = true;
+                                }
+                            });
+                        } //DO WE WANT TO HANDLE OTHER IOC TYPES? (Domain, etc...)
+                        
+
+                        res.json({data: ui_data, highlight: toHighlight});
                     }
                 });  
             } else if (req.query.type === 'assets') {
