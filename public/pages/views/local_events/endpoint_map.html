@@ -4,41 +4,16 @@
             <h3>Upload Floorplan</h3>
         </div>
         <div class="modal-body">
-            <div style="width: 70%;margin: 0 auto;">
-                <div style="width: 70%;margin: 0 auto;">
-                    Upload file(s): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="file" ng-file-select="onFileSelect($files)" accept="image/*" onclick="this.value=null">
-                </div>
-                <br/>
-                <!--<div style="width: 70%;margin: 0 auto;">
-                    <div ng-show="dropSupported" class="drop-box" ng-file-drop="onFileSelect($files);" ng-file-drop-available="dropSupported=true">
-                        or drop image here
-                    </div>
-                </div>
-                <div ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>-->
-                <br/>
-                <div ng-show="progress.length > 0" style="width: 70%;margin: 0 auto;">
-                    <div class="err" ng-show="errorMsg != null">{{errorMsg}}</div>
-                    Progress:
-                    <br/>
-                    <div ng-show="selectedFiles != null">
-                        <div class="sel-file" ng-repeat="f in selectedFiles">
-                            {{($index + 1) + '.'}}
-                            <input type="text" ng-model="custom_fn" placeholder="Example floor name"/>
-                            <img ng-show="dataUrls[$index]" ng-src="{{dataUrls[$index]}}">
-                            <button class="button" ng-click="start($index, custom_fn)" ng-show="progress[$index] < 0">Upload</button>
-                            <span class="progress" ng-show="progress[$index] >= 0">
-                                <div style="width:{{progress[$index]}}%">{{progress[$index]}}%</div>
-                            </span>
-                            <button class="button" ng-click="abort($index)" ng-show="hasUploader($index) && progress[$index] < 100">Abort</button>
-                            {{f.name}} - size: {{f.size}}B - type: {{f.type}}
-                        </div>
-                    </div>
+            <div style="width: 100%;margin: 0 auto;">               
+                <input type="text" ng-model="custom_fn" placeholder="Example floor name"/>
+                <div ng-show="cant_leave_blank" class="cant_leave_blank">
+                You must enter a floor name
                 </div>
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="ok()">Close</button>
+            <button type="button" class="button-success pure-button" ng-click="newBlankFloor(custom_fn)">Create Floor</button>
+            <button class=" pure-button" ng-click="ok()">Close</button>
         </div>
     </script>
     <script type="text/ng-template" id="uploadUserModal.html">
@@ -82,45 +57,38 @@
             <button class="btn btn-primary" ng-click="ok()">Close</button>
         </div>
     </script>
-    <script type="text/ng-template" id="deleteModal.html">
+    <script type="text/ng-template" id="editModal.html">
         <div class="modal-header">
-            <h3>Delete Floorplan</h3>
+            <h3>Edit Floorplan</h3>
         </div>
         <div class="modal-body">
             <form id="myform">
                 <select ng-model="floorplan.select">
                   <option value="{{floor.asset_name}}" ng-repeat="floor in modalFloors">{{floor.custom_name}}</option>
                 </select><br />
-                <button type="button" class="button-error pure-button" ng-click="deleteFloorplan(floorplan, modalFloors)">Delete</button>
-                <button type="button" class="rndCrnBtn pure-button" ng-click="ok()">Close</button>
+                <div ng-repeat="floor in modalFloors">
+                    <div ng-show="floorplan.select == floor.asset_name">
+                        Floor Name:&nbsp;<input type="text" ng-model="floor.custom_name" />
+                        &nbsp;&nbsp;&nbsp; Order:&nbsp;<input type="text" class="floorOrderInput" ng-model="floor.order_index" />
+                        &nbsp;&nbsp;&nbsp; Scale:&nbsp;<input type="text" class="floorOrderInput" ng-model="floor.scale" />
+                        Upload file: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="file" ng-file-select="onFileSelect($files, floor.asset_name)" accept="image/*" onclick="this.value=null"><br /><br /> 
+                        <div ng-show="floor.submitted" >
+                        Floor is saved!
+                        </div>
+                        <button type="button" class="button-success pure-button" ng-click="editFloors(0, floor)">Save</button>
+                        <button type="button" class="button-error pure-button" ng-click="deleteFloorplan(floorplan, modalFloors)">Delete</button>
+                        <button type="button" class="rndCrnBtn pure-button" ng-click="ok()">Close</button>                       
+                    </div>
+                        {{floorplan.select === floor.asset_name ? clearFiles(floor.asset_name) : "" }}
+                </div>
             </form>
         </div>
     </script>  
-    <script type="text/ng-template" id="editModal.html">
-        <div class="modal-header">
-            <h3>Edit Floorplans</h3>
-        </div>
-        <div class="modal-body">
-            <form id="myform">
-                <div ng-repeat="floor in modalFloors">
-                    Floor Name:&nbsp;<input type="text" ng-model="floor.custom_name" />
-                    &nbsp;&nbsp;&nbsp; Order:&nbsp;<input type="text" class="floorOrderInput" ng-model="floor.order_index" />
-                    &nbsp;&nbsp;&nbsp; Scale:&nbsp;<input type="text" class="floorOrderInput" ng-model="floor.scale" />
-                </div>
-                <button type="button" class="button-success pure-button" ng-click="editFloors(modalFloors)">Save</button>
-                <button type="button" class="rndCrnBtn pure-button" ng-click="ok()">Close</button>
-            </form>
-        </div>
-    </script>
     <section head></section>
     <section id="loading-error" loading-error></section>
     <section id="loading-spinner" loading-spinner></section>
     <div class="row-fluid">
         <section id="floorplanpage">
-            <div id="editbuttons">
-                <button type="button" class="button-error pure-button dfp" ng-click="modelDelete(floors)">Delete Floorplan</button>
-                <button type="button" class="rndCrnBtn pure-button" ng-click="editFloorPlan(floors)">Edit</button>
-            </div>
             <div id="listlocalusersspan">
                  <div class="jdash-header">Local Users</div>
                 <div id="localListWrapper">
@@ -147,6 +115,9 @@
                             <tab-heading> + </tab-heading>     
                             <div style="background-color:#FFF;" class="box"></div>                    
                         </tab>
+                    <div id="editbuttons" class="bin">
+                        <button type="button" class="rndCrnBtn pure-button" ng-click="editFloorPlan(floors)">Edit</button>
+                    </div>
                     <div id="triggerbuttons" class="bin" ></div>
                     </tabset>
                 </div>
@@ -210,3 +181,33 @@
         </section>
     </div>
 </div>
+ <!--<div style="width: 100%;margin: 0 auto;">
+                    Upload Floor: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="file" ng-file-select="onFileSelect($files)" accept="image/*" onclick="this.value=null">
+                </div>
+                <br/>
+                <div style="width: 70%;margin: 0 auto;">
+                    <div ng-show="dropSupported" class="drop-box" ng-file-drop="onFileSelect($files);" ng-file-drop-available="dropSupported=true">
+                        or drop image here
+                    </div>
+                </div>
+                <div ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
+                <br/>
+                <div ng-show="progress.length > 0" style="width: 70%;margin: 0 auto;">
+                    <div class="err" ng-show="errorMsg != null">{{errorMsg}}</div>
+                    Progress:
+                    <br/>
+                    <div ng-show="selectedFiles != null">
+                        <div class="sel-file" ng-repeat="f in selectedFiles">
+                            {{($index + 1) + '.'}}
+                            <input type="text" ng-model="custom_fn" placeholder="Example floor name"/>
+                            <img ng-show="dataUrls[$index]" ng-src="{{dataUrls[$index]}}">
+                            <button class="button" ng-click="start($index, custom_fn)" ng-show="progress[$index] < 0">Upload</button>
+                            <span class="progress" ng-show="progress[$index] >= 0">
+                                <div style="width:{{progress[$index]}}%">{{progress[$index]}}%</div>
+                            </span>
+                            <button class="button" ng-click="abort($index)" ng-show="hasUploader($index) && progress[$index] < 100">Abort</button>
+                            {{f.name}} - size: {{f.size}}B - type: {{f.type}}
+                        </div>
+                    </div>
+                </div> -->

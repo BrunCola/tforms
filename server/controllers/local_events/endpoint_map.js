@@ -3,6 +3,7 @@
 var floor_plan = require('../constructors/floor_plan'),
     query = require('../constructors/query'),
     config = require('../../config/config'),
+    fs = require('fs'),
     async = require('async');
 
 var permissions = [3];
@@ -127,6 +128,12 @@ module.exports = function(pool) {
                         });  
                         break;
                 }
+            } else if (req.query.type === 'max_order') {
+                new query({query: 'SELECT MAX(`order_index`) AS `max_order` FROM `assets` ', insert: []}, {database: database, pool: pool}, function(err,data){
+                    if (data) {
+                        res.json(data);
+                    }
+                }); 
             } else {    
                 var floorplanReturn = [];
                 var floor_plan_users = {
@@ -238,15 +245,27 @@ module.exports = function(pool) {
                 });
             } else if (req.query.type === 'editFloorInfo') {
 
-                for (var floor in req.body.edited_floors) {
-                     var update_floor = {
-                        query: "update `assets` SET `order_index`=?, `custom_name`=?, `scale`=? WHERE `type`='map' AND `asset_name`=?",
-                        insert: [req.body.edited_floors[floor].order_index, req.body.edited_floors[floor].custom_name, req.body.edited_floors[floor].scale, req.body.edited_floors[floor].asset_name]
-                    }                
-                    new query(update_floor, {database: database, pool: pool}, function(err,data){
-                        if (err) {
-                            res.send(500);
-                        }
+                var update_floor = {
+                    query: "update `assets` SET `order_index`=?, `custom_name`=?, `scale`=? WHERE `type`='map' AND `asset_name`=?",
+                    insert: [req.body.edited_floor.order_index, req.body.edited_floor.custom_name, req.body.edited_floor.scale, req.body.edited_floor.asset_name]
+                }                
+                new query(update_floor, {database: database, pool: pool}, function(err,data){
+                    if (err) {
+                        res.send(500);
+                    }
+                });
+            } else if (req.query.type === 'newFloor') {
+
+                if (req.body.custom_name !== undefined ) {                    
+                    var asset_name = req.body.custom_name.replace(" ", "_");
+                    console.log(asset_name);
+
+                    var insert_map_image = {
+                        query: "INSERT INTO `assets` (`file`,  `asset_name`, `path`, `type`, `custom_name`, `image_width`, `image_height`, `scale`) VALUES (?,?,?,?,?,?,?,?)",
+                        insert: ["",asset_name,"","map",req.body.custom_name,800,600,1]
+                    }
+                    new query(insert_map_image, {database: database, pool: pool}, function(err,data){
+                        res.send(200);
                     });
                 }
             }

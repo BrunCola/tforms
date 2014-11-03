@@ -2340,6 +2340,9 @@ Datatables Plugin(in v1.3)
 .action-bttns.red{
   background-color: red;
 }
+.cant_leave_blank {
+  color:red;
+}
 .action-text.blue{
   color:#377FC7;
 }
@@ -2374,6 +2377,9 @@ button.userfloorbutton{
 #triggerbuttons button{
   margin: 0px 1px;  
   border-radius: 4px;
+}
+#editbuttons{
+  float: right;
 }
 button.rndCrnBtn {
   border-radius: 5px;
