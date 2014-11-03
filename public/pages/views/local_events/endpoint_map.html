@@ -99,7 +99,7 @@
             <div id="floorplanspan">
                 <div id="tabs" >
                     <tabset>
-                        <tab select="alertMe()" ng-repeat="floor in floors" active="$first">
+                        <tab select="alertMe()" ng-repeat="floor in floors" active="tab_select == floor.custom_name">
                             <tab-heading>
                                 {{floor.custom_name}} 
                             </tab-heading>

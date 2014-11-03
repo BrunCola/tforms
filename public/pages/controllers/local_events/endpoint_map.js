@@ -18,13 +18,15 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             //$scope.global.floorScale = 1;
             $scope.$broadcast('spinnerHide');
             $scope.floors = data.floor;
+            $scope.setTab($scope.floors[0].custom_name);
+
         }
         if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
             var query = '/local_events/endpoint_map?lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&type=flooruser';
             $http({method: 'GET', url: query+'&typeinfo=userinfoload'}).
                 success(function(data) {
                     if (data[0] !== undefined) {
-                        console.log(data[0])
+                        $scope.setTab(data[0].map);
                         $scope.requery(data[0]);
                         var selected = $scope.data.force.filter(function(d){ if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ return true }});
                         if (selected[0] !== undefined) { $scope.$broadcast('setSelected', selected[0]); }
@@ -32,6 +34,10 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 });
         }
     }); 
+
+    $scope.setTab = function (floor_name) {
+        $scope.tab_select = floor_name;
+    }
 
     /*$http({method: 'GET', url: '/local_events/endpoint_map?type=max_order'}).
         success(function(data) {
