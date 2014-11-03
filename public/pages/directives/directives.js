@@ -3712,10 +3712,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                         });
 
-                    buttonDiv.append('button')
-                        .html('Save Scale')
-                        .attr('class', 'pure-button')
-                        .on('click', saveScale);
+                    // buttonDiv.append('button')
+                    //     .html('Save Scale')
+                    //     .attr('class', 'pure-button')
+                    //     .on('click', saveScale);
 
                        /* buttonDiv.append('button')
                             .html('Zoom In')
