@@ -686,6 +686,8 @@ angular.module('mean.pages').directive('universalSearch', function() {
                 if ($scope.search) {
                     if (($scope.search !== null) || ($scope.search !== '')) {
                         $('#table').dataTable().fnFilter($scope.search);
+                        // var testSearch = searchFilter($scope.crossfilterData);
+                        // console.log(testSearch);
                     }
                 }
             });
@@ -2970,7 +2972,7 @@ angular.module('mean.pages').directive('makeTreeChart', ['$timeout', '$rootScope
     };
 }]);
 
-angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', '$http', '$location', function ($timeout, $rootScope, $http, $location) {
+angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', '$http', '$location', 'searchFilter', function ($timeout, $rootScope, $http, $location, searchFilter) {
     return {
         link: function ($scope, element, attrs) {
             //$scope.$on('floorPlan', function (event) {
@@ -2979,7 +2981,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     var floor_path = $scope.floor.path;
                     var scale = $scope.floor.scale;
                     var imageRatio = $scope.floor.image_width/$scope.floor.image_height;
-                    var data = $scope.data.force;
+                    var data = $scope.data.users;
                     var floorName = attrs.floorName;
 
                     var elementWidth = $('#floorplanspan')[0].offsetWidth-25;
@@ -3760,7 +3762,14 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         plot(data,floorName);
                     }
                     // -- display users
-                    plot(data, floorName);  
+
+                    $scope.$on('searchUsers', function (event, filteredData){
+                        plot(filteredData, floorName);
+                        $scope.requery(filteredData[0], 'flooruser');
+                        d3.select('.user-'+filteredData[0].id).classed("selected", true);
+                    })
+                    plot(data, floorName);
+
             }, 0);
         }
     };

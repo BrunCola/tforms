@@ -197,7 +197,7 @@ module.exports = function(pool) {
                 ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                     if (err) throw console.log(err);
                     var results = { 
-                        force: floorplanReturn,
+                        users: floorplanReturn,
                         floor: floorplan
                     };
                     res.json(results);

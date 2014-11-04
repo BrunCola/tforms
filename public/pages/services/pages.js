@@ -1,5 +1,54 @@
 'use strict';
 
+angular.module('mean.pages').factory('searchFilter', ['$rootScope',
+    function($rootScope) {
+        var searchFilter = function(dimension) {
+            // $rootScope.waitForFinalEvent = (function () {
+                // var timers = {};
+                // return function (callback, ms, uniqueId) {
+                    // if (!uniqueId) {
+                        // uniqueId = "filterWait"; //Don't call this twice without a uniqueId
+                    // }
+                    // if (timers[uniqueId]) {
+                        // clearTimeout (timers[uniqueId]);
+                    // }
+                    // timers[uniqueId] = setTimeout(callback, ms);
+                // };
+            // })();
+            // our filter function
+            function filtah(obj) {
+                for (var i in obj) {
+                    // continue if value is defined
+                    if ((obj[i] !== undefined) && (obj[i] !== null)){
+                        var name = obj[i].toString().toLowerCase();
+                        if (name.toLowerCase().indexOf($rootScope.search.toLowerCase()) > -1) {
+                            // jump out if search is defined
+                            return true;
+                        }
+                    }
+                    // one reached the end of the object, return
+                    if (i === obj[obj.length-1]) {
+                        return false;
+                    }
+                }
+            }
+            // clears existing filter
+            // $rootScope.waitForFinalEvent(function(){
+            dimension.filterAll(null);
+            if ($rootScope.search.length > 0) {
+                dimension.filter(filtah);
+            }
+            // }, 10, "filtertWait");
+        }
+        return searchFilter;
+    }
+]);
+
+
+
+
+
+
 angular.module('mean.pages').factory('iocIcon', [
     function() {
         var iocIcon = function(severity) {
