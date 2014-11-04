@@ -3789,7 +3789,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         wait(function(){
                             if (filteredData.length > 0) {
                                 if (lastUserRequeried !== filteredData[0].id) {
-                                    $scope.floors.filter(function(d){ if ((filteredData[0].map === d.asset_name)) { d.active = true; } else if (filteredData[0].map !== null) { d.active = false; }});
+                                    $scope.floors.filter(function(d){ if ((filteredData[0].map === d.asset_name)) { d.active = true; }});
                                     $scope.requery(filteredData[0], 'flooruser');
                                     lastUserRequeried = filteredData[0].id;
                                 } 

@@ -40,7 +40,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $http({method: 'GET', url: query+'&typeinfo=userinfoload'}).
                 success(function(data) {
                     if (data[0] !== undefined) {
-                        $scope.floors.filter(function(d){ if ((data[0].map === d.asset_name)) { d.active = true; } else { d.active = false; }});
+                        $scope.floors.filter(function(d){ if ((data[0].map === d.asset_name)) { d.active = true; }});
                         $scope.requery(data[0]);
                         var selected = $scope.data.users.filter(function(d){ if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ return true }});
                         if (selected[0] !== undefined) { $scope.$broadcast('setSelected', selected[0]); }
