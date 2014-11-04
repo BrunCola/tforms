@@ -94,29 +94,34 @@ p{
   background-color: #e6e6e6;
 }
 .lanePatternInfoPane div.title {
+  font-family: Helvetica Neue;
+  font-size: 20px;
+  font-weight: 300;
   text-align: center;
-  padding-top: 20px;
+  padding: 30px 0px 5px 0px;
 }
 .lanePatternInfoPane div.list-container {
   overflow: scroll;
-  margin-top: 20px;
   padding: 10px 15px 0 15px;
   height: 100%;
 }
 .lanePatternInfoPane div.list-row {
-  line-height: 60px;
+  line-height: 76px;
 }
 .lanePatternInfoPane div.pattern-checkbox {
   float: left;
   /*position: relative;*/
 }
 .lanePatternInfoPane div.pattern-row-icon {
-  padding-left: 20px;
+  padding: 0px 0px 0px 20px;
   float: left;
   /*position: relative;*/
 }
 .lanePatternInfoPane div.pattern-row-type {
-  padding-left: 20px;
+  font-family: Helvetica Neue;
+  font-size: 16px;
+  font-weight: 300;
+  padding-left: 15px;
   float: left;
   /*position: relative;*/
 }
@@ -126,9 +131,13 @@ p{
 }
 .lanePatternInfoPane div.pattern-row-selected li{
   list-style: none;
-  line-height: 30px;
+  line-height: 76px;
 }
 .lanePatternInfoPane div.pattern-result-count {
+  font-family: Helvetica Neue;
+  font-size: 18px;
+  font-weight: 300;
+  text-align: center;
 }
 
 .lanePatternInfoPane input[type=checkbox] {
@@ -136,40 +145,31 @@ p{
 }
 /* SQUARED TWO */
 .squaredTwo {
-  width: 28px;
-  height: 28px;
-  background: #fcfff4;
-  background: -webkit-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-  background: -moz-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-  background: -o-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-  background: -ms-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-  background: linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfff4', endColorstr='#b3bead',GradientType=0 );
+  width: 36px;
+  height: 36px;
+  background: #666666;
+  background: -webkit-linear-gradient(top, #666666 0%, #999999 40%, #606060 100%);
+  background: -moz-linear-gradient(top, #666666 0%, #999999 40%, #606060 100%);
+  background: -o-linear-gradient(top, #666666 0%, #999999 40%, #606060 100%);
+  background: -ms-linear-gradient(top, #666666 0%, #999999 40%, #606060 100%);
+  background: linear-gradient(top, #666666 0%, #999999 40%, #606060 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#666666', endColorstr='#606060',GradientType=0 );
   margin: 20px auto;
 
-  -webkit-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
+  /*-webkit-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
   -moz-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
-  box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
+  box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);*/
   position: relative;
 }
 .squaredTwo label {
   cursor: pointer;
   position: absolute;
-  width: 20px;
-  height: 20px;
-  left: 4px;
-  top: 4px;
+  width: 34px;
+  height: 34px;
+  left: 1px;
+  top: 1px;
 
-  -webkit-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,1);
-  -moz-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,1);
-  box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,1);
-
-  background: -webkit-linear-gradient(top, #222 0%, #45484d 100%);
-  background: -moz-linear-gradient(top, #222 0%, #45484d 100%);
-  background: -o-linear-gradient(top, #222 0%, #45484d 100%);
-  background: -ms-linear-gradient(top, #222 0%, #45484d 100%);
-  background: linear-gradient(top, #222 0%, #45484d 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#222', endColorstr='#45484d',GradientType=0 );
+  background-color: #e6e6e6;
 }
 
 .squaredTwo label:after {
@@ -178,12 +178,12 @@ p{
   opacity: 0;
   content: '';
   position: absolute;
-  width: 9px;
-  height: 5px;
+  width: 14px;
+  height: 8px;
   background: transparent;
-  top: 4px;
-  left: 4px;
-  border: 3px solid #fcfff4;
+  top: 7px;
+  left: 8px;
+  border: 5px solid #666666;
   border-top: none;
   border-right: none;
 
