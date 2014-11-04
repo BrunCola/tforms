@@ -99,7 +99,7 @@
             <div id="floorplanspan">
                 <div id="tabs" >
                     <tabset>
-                        <tab select="alertMe()" ng-repeat="floor in floors" active="tab_select == floor.custom_name">
+                        <tab select="alertMe()" ng-repeat="floor in floors" active="floor.active">
                             <tab-heading>
                                 {{floor.custom_name}} 
                             </tab-heading>
@@ -107,7 +107,7 @@
                                 <div id="floorplan" floor-name="{{floor.asset_name}}" make-floor-plan style="position: relative">
                                     <!-- <object width="910" height="600" id="svgFloorPlan" data="{{floor.path}}" type="image/svg+xml"></object> -->
                                     <!-- <object id="svgFloorPlan" width="800" data="{{floor.path}}" type="image/svg+xml" ></object> -->
-                                     <!-- <img id="svgFloorPlan" width="800" src="{{floor.path}}" type="image/svg+xml" />  -->
+                                    <!-- <img id="svgFloorPlan" width="800" src="{{floor.path}}" type="image/svg+xml" />  -->
                                 </div>
                             </div>
                         </tab>

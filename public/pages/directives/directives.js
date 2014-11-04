@@ -2977,6 +2977,18 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
         link: function ($scope, element, attrs) {
             //$scope.$on('floorPlan', function (event) {
                 setTimeout(function () {
+                    var wait = (function () {
+                        var timers = {};
+                        return function (callback, ms, uniqueId) {
+                            if (!uniqueId) {
+                                uniqueId = "filterWait"; //Don't call this twice without a uniqueId
+                            }
+                            if (timers[uniqueId]) {
+                                clearTimeout (timers[uniqueId]);
+                            }
+                            timers[uniqueId] = setTimeout(callback, ms);
+                        };
+                    })();
                     // -- initial variables
                     var floor_path = $scope.floor.path;
                     var scale = $scope.floor.scale;
@@ -3201,6 +3213,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                     // -- displays users in userlist and floor plans
                     function plot(data, floor) {
+                        // set order of array
+                        data = data.sort(function(a, b){ return a.id-b.id });
                         ////////////////////
                         ///  LIST USERS  ///
                         ////////////////////
@@ -3762,11 +3776,20 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         plot(data,floorName);
                     }
                     // -- display users
-
+                    var lastUserRequeried = -1;
                     $scope.$on('searchUsers', function (event, filteredData){
                         plot(filteredData, floorName);
-                        $scope.requery(filteredData[0], 'flooruser');
-                        d3.select('.user-'+filteredData[0].id).classed("selected", true);
+                        wait(function(){
+                            if (filteredData.length > 0) {
+                                if (lastUserRequeried !== filteredData[0].id) {
+                                    $scope.requery(filteredData[0], 'flooruser');
+                                    lastUserRequeried = filteredData[0].id;
+                                }
+                                d3.select('.user-'+filteredData[0].id).classed("selected", true);
+                            } else {
+                                // remove the info pane
+                            }
+                        }, 500, "filtertWait");
                     })
                     plot(data, floorName);
 
