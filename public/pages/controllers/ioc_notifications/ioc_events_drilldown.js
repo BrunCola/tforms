@@ -558,7 +558,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                 });
         }
     }
-    $scope.patternPane = true;
+    $scope.patternPane = false;
     $scope.$on('patternPane', function (event, data) {
         if ($scope.patternPane) { $scope.patternPane = false; return }
         $scope.$broadcast('appendRowIcon');
