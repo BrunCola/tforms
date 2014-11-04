@@ -32,7 +32,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             //$scope.global.floorScale = 1;
             $scope.$broadcast('spinnerHide');
             $scope.floors = data.floor;
-            $scope.setTab($scope.floors[0].custom_name);
+            $scope.floors[0].active = true;
 
         }
         if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
@@ -40,7 +40,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $http({method: 'GET', url: query+'&typeinfo=userinfoload'}).
                 success(function(data) {
                     if (data[0] !== undefined) {
-                        $scope.setTab(data[0].map);
+                        $scope.floors.filter(function(d){ if ((data[0].map === d.custom_name)) { d.active = true; }});
                         $scope.requery(data[0]);
                         var selected = $scope.data.users.filter(function(d){ if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ return true }});
                         if (selected[0] !== undefined) { $scope.$broadcast('setSelected', selected[0]); }
@@ -48,14 +48,6 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 });
         }
     }); 
-
-    $scope.setTab = function (floor_name) {
-        $scope.tab_select = floor_name;
-    }
-
-    $scope.setTab2 = function (floor_name) {
-        console.log(floor_name);
-    }
 
     /*$http({method: 'GET', url: '/local_events/endpoint_map?type=max_order'}).
         success(function(data) {
