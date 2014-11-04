@@ -32,7 +32,7 @@ module.exports = function(pool) {
 					if(req.body.imageType === 'map') { //if this is a floor plan image
 						//var newName = "floor_plan." + nameSplit[1];
 						var newName = req.files[i].name;
-						var custom_name = req.query.custom_name;
+						var custom_name = req.body.custom_name;
 						var asset_name = custom_name.replace(" ", "_");
 					} else if (req.body.imageType === 'user') { //if this is a user image
 						var newName;
@@ -67,13 +67,23 @@ module.exports = function(pool) {
 							//Upload floor plan name and path to DB
 							var database = req.session.passport.user.database;
 							if(req.body.imageType === 'map') {
-								var insert_map_image = {
-									query: "INSERT INTO `assets` (`type`, `file`, `asset_name`, `path`, `custom_name`, `image_width`, `image_height`) VALUES (?,?,?,?,?,?,?)",
-									insert: [req.body.imageType ,newName, asset_name, newPath, custom_name, req.body.width,req.body.height]
-								}
-								new query(insert_map_image, {database: database, pool: pool}, function(err,data){
-									res.send(200);
-								});
+								if (req.body.updateFile === "update") {
+									var insert_map_image = {
+										query: "UPDATE `assets` SET `file`=?, `path`=?, `custom_name`=?, `image_width`=?, `image_height`=?, `order_index`=?, `scale`=? WHERE `asset_name`=?",
+										insert: [newName, newPath, custom_name, req.body.width, req.body.height, req.body.order_index, req.body.scale, req.body.asset_name]
+									}
+									new query(insert_map_image, {database: database, pool: pool}, function(err,data){
+										res.send(200);
+									});
+								} else {
+									var insert_map_image = {
+										query: "INSERT INTO `assets` (`type`, `file`, `asset_name`, `path`, `custom_name`, `image_width`, `image_height`, `scale`) VALUES (?,?,?,?,?,?,?,?)",
+										insert: [req.body.imageType ,newName, asset_name, newPath, custom_name, req.body.width,req.body.height, req.body.scale]
+									}
+									new query(insert_map_image, {database: database, pool: pool}, function(err,data){
+										res.send(200);
+									});
+								}								
 							} else if(req.body.imageType === 'user') {
 								var update_user_image = {
 									query: "INSERT INTO `assets` (`type`, `file`, `asset_name`, `lan_zone`, `lan_ip`, `lan_user`, `path`) VALUES ('user',?,?,?,?,?,?)",

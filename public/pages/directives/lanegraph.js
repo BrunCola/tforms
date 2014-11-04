@@ -1037,15 +1037,49 @@ angular.module('mean.pages').directive('appendRowIcon', ['laneRowSymbols', funct
                 .attr('height', 38);
             var type = attrs.type;
             var color1 = rowColors(type);
-            var color2 = "#3f3f3f";
-            if (type === 'IOC') {
-                elm.append('polygon')
-                    .attr('points', '7,15 14,6 0,6')
-                    .attr('transform', 'translate(8,4) scale(1.6)')
-                    .attr('fill', '#fff')
-                    .style('opacity', '0.4');
-            };
-            laneRowSymbols(type, elm, color1, color2);
+            var color2 = "#e6e6e6";
+
+            var color,color1,color2;
+            elm.append('rect')
+                .attr('x', 0)
+                .attr('y', 0)
+                .attr('fill', function(d){
+                    if (type === "IOC Severity") {
+                        // switch (d.ioc_severity) {
+                        //     case 1:
+                        //         color = '#377FC7';
+                        //         break;
+                        //     case 2:
+                        //         color = '#F5D800';
+                        //         break;
+                        //     case 3:
+                        //         color = '#F88B12';
+                        //         break;
+                        //     case 4:
+                        //         color = '#DD122A';
+                        //         break;
+                        //     default:
+                        //         color = '#6FBF9B';
+                        // }
+                    } else { 
+                        color = rowColors(type);
+                    }
+                    color1 = "#e6e6e6";
+                        color2 = color;
+                    return color2;
+                })
+                .attr('width', 36)
+                .attr('height', 36);
+                laneRowSymbols(type, elm, color1, color2);
+
+            // if (type === 'IOC') {
+            //     elm.append('polygon')
+            //         .attr('points', '7,15 14,6 0,6')
+            //         .attr('transform', 'translate(8,4) scale(1.6)')
+            //         .attr('fill', '#fff')
+            //         .style('opacity', '0.4');
+            // };
+            // laneRowSymbols(type, elm, color1, color2);
         }
     };
 }]);

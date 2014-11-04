@@ -18,17 +18,32 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             //$scope.global.floorScale = 1;
             $scope.$broadcast('spinnerHide');
             $scope.floors = data.floor;
+            $scope.setTab($scope.floors[0].custom_name);
+
         }
         if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
             var query = '/local_events/endpoint_map?lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&type=flooruser';
             $http({method: 'GET', url: query+'&typeinfo=userinfoload'}).
                 success(function(data) {
-                    $scope.requery(data[0]);
-                    var selected = $scope.data.force.filter(function(d){ if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ return true }});
-                    if (selected[0] !== undefined) { $scope.$broadcast('setSelected', selected[0]); }
+                    if (data[0] !== undefined) {
+                        $scope.setTab(data[0].map);
+                        $scope.requery(data[0]);
+                        var selected = $scope.data.force.filter(function(d){ if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ return true }});
+                        if (selected[0] !== undefined) { $scope.$broadcast('setSelected', selected[0]); }
+                    }                    
                 });
         }
     }); 
+
+    $scope.setTab = function (floor_name) {
+        $scope.tab_select = floor_name;
+    }
+
+    /*$http({method: 'GET', url: '/local_events/endpoint_map?type=max_order'}).
+        success(function(data) {
+            $scope.max_order = data[0].max_order;    
+            console.log($scope.max_order);                
+        });*/
 
     $scope.requery = function(d) {
          // get user image
@@ -95,16 +110,6 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         });
     };
 
-    $scope.modelDelete = function (floors) {
-        //console.log(floors);
-        $rootScope.modalFloors = floors;
-        $scope.modalInstance = $modal.open({
-            templateUrl: 'deleteModal.html',
-            controller: uploadInstanceCtrl,
-            keyboard: true,
-            modalFloors: floors
-        });
-    };
     $scope.change_customuser = function(item,value) {
         $http({method: 'POST', url: '/actions/change_custom_user', data: {custom_user: value, lan_ip: item.lan_ip, lan_zone: item.lan_zone}});
     }
@@ -133,12 +138,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             location.reload();
         };
 
-        $scope.editFloors = function(edited_floors) {
-            $http({method: 'POST', url: '/local_events/endpoint_map?type=editFloorInfo', data: {edited_floors: edited_floors}});
-            $scope.ok();
-        };
-
-        $scope.onFileSelect = function($files, clientWidth) {
+        $scope.onFileSelect = function($files, floor_name) {
             $scope.selectedFiles = [];
             $scope.progress = [];
             if ($scope.upload && $scope.upload.length > 0) {
@@ -151,6 +151,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.upload = [];
             $scope.uploadResult = [];
             $scope.selectedFiles = $files;
+            $scope.selectedFiles[0].floor_name = floor_name;
             $scope.dataUrls = [];
             for ( var i = 0; i < $files.length; i++) {
                 var $file = $files[i];
@@ -176,6 +177,58 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             }
         };
 
+        $scope.clearFiles = function(floor_name) {
+            if (($scope.selectedFiles !== undefined) && ($scope.selectedFiles[0].floor_name !== floor_name)) {
+                $scope.selectedFiles = undefined;
+            }
+        }
+
+        $scope.editFloors = function(index, edited_floor) {
+            edited_floor.submitted = true;
+            if ($scope.selectedFiles !== undefined) {
+                $scope.progress[index] = 0;
+                $scope.errorMsg = null;
+                $scope.upload[index] = $upload.upload({
+                    url : '/uploads',
+                    method: 'POST',
+                    data : {
+                        myModel : $scope.myModel,
+                        custom_name: edited_floor.custom_name, 
+                        imageType: 'map',
+                        updateFile: 'update',
+                        width: $scope.imageWidth,
+                        height: $scope.imageHeight,
+                        order_index: edited_floor.order_index,
+                        asset_name: edited_floor.asset_name,
+                        scale: edited_floor.scale
+                    },
+                    file: $scope.selectedFiles[index],
+                }).then(function(response) {
+                    $scope.uploadResult.push(response.data);
+                    console.log(response.data);
+                }, function(response) {
+                    if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
+                }, function(evt) {
+                    // Math.min is to fix IE which reports 200% sometimes
+                    $scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+                }).xhr(function(xhr){
+                    xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
+                });
+            } else { 
+                $http({method: 'POST', url: '/local_events/endpoint_map?type=editFloorInfo', data: {edited_floor: edited_floor}});
+            }
+        };
+
+        $scope.newBlankFloor = function(floor_name) {
+            if (floor_name !== undefined) {
+                $scope.cant_leave_blank = false;
+                $http({method: 'POST', url: '/local_events/endpoint_map?type=newFloor', data: {custom_name: floor_name}});
+                $scope.ok();
+            } else {
+                $scope.cant_leave_blank = true;
+            }
+        };
+
         $scope.deleteFloorplan = function(floor_name, floors) {
             var imagePath = "";
             for (var f in floors) {
@@ -183,7 +236,6 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                     imagePath = floors[f].path;
                 }
             }
-            //console.log(imagePath);
             $http({method: 'POST', url: '/local_events/endpoint_map?type=deletefp', data: {asset_name: floor_name.select, path: imagePath}});
             $scope.ok();
         };
@@ -219,13 +271,15 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 $scope.progress[index] = 0;
                 $scope.errorMsg = null;
                 $scope.upload[index] = $upload.upload({
-                    url : '/uploads?custom_name='+custom_fn,
+                    url : '/uploads',
                     method: 'POST',
                     data : {
                         myModel : $scope.myModel,
+                        custom_name: custom_fn,
                         imageType: 'map',
                         width: $scope.imageWidth,
-                        height: $scope.imageHeight
+                        height: $scope.imageHeight,
+                        scale: 1
                     },
                     file: $scope.selectedFiles[index],
                 }).then(function(response) {

@@ -580,7 +580,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         // url builder
                                         for (var c in $scope.e) {
                                             var type = $scope.e[c].link.type;
-                                            if ($scope.e[c].bVisible) {
+                                            //if ($scope.e[c].bVisible) {
                                                 switch(type) {
                                                     case 'Archive':
                                                         $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
@@ -615,7 +615,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                                         }
                                                     break;
                                                 }  
-                                            }                                            
+                                            //}                                            
                                         }
                                     }
                                 },
@@ -2975,7 +2975,9 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
         link: function ($scope, element, attrs) {
             //$scope.$on('floorPlan', function (event) {
                 setTimeout(function () {
+                    // -- initial variables
                     var floor_path = $scope.floor.path;
+                    var scale = $scope.floor.scale;
                     var imageRatio = $scope.floor.image_width/$scope.floor.image_height;
                     var data = $scope.data.force;
                     var floorName = attrs.floorName;
@@ -2995,27 +2997,25 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     var expandDiv = d3.select('#floorplanspan');
                     var buttonDiv = d3.select('#triggerbuttons');
 
+                    // -- sets selected class for CSS 
                     $scope.$on('setSelected', function (event, selected) { 
                         d3.select('.user-'+selected.id).classed("selected", true);
                     })
 
+                    // -- updates username
                     function doneEditing(elm, item, value) {
                         $scope.change_customuser(item, value);
                         $(elm[0]).find('.usernametext').html(value);
                     }
 
                     var margin = {top: -5, right: -5, bottom: -5, left: -5};
-                        // width = 950 - margin.left - margin.right,
-                        // height = 570 - margin.top - margin.bottom;
 
                     var zoom = d3.behavior.zoom()
                         .scaleExtent([0.5, 5])
                         //.translate([0,0])
                         .translate([0,0])
-                        //.scale(2)
+                        .scale(scale)
                         .on("zoom", zoomed);
-
-                    var scale = 1;
 
                     var drag = d3.behavior.drag()
                         .origin(function(d) { return d; })
@@ -3035,7 +3035,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .attr("drop", "handleDrop")
                         .attr("id", "floorContainer")
                         .style("pointer-events", "all")
-                        .attr("transform", "translate(0,0)scale(1)");
+                        .attr("transform", "translate(0,0)scale("+scale+")");
 
                     svg.on("dblclick.zoom", null);
 
@@ -3049,8 +3049,9 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .attr("xlink:href", floor_path)
                         .attr("type", "image/svg+xml");
 
+                    // -- to hide <input> when changing custom username
                     container.on('click', function(e){
-                        if(d3.event.toElement === d3.select('.svgFloor')[0][0]){                            
+                        if(d3.event.toElement === d3.select('.svgFloor')[0][0]){ 
                             $('.usernametext').each(function(e){
                                 this.classList.remove('ng-hide');
                             });
@@ -3060,6 +3061,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         }
                     })
 
+                    // -- droppable behaviours
                     var containerTag = container[0][0];
                     containerTag.droppable = true;
                     containerTag.addEventListener(
@@ -3091,12 +3093,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     );
                     containerTag.addEventListener('drop', function(e) {
 
-                        // var drag = d3.behavior.drag()
-                        // .origin(function(d) { return d; })
-                        // .on("dragstart", dragstarted)
-                        // .on("drag", dragged)
-                        // .on("dragend", dragended);    
-
                         var floorName = d3.select(containerTag).attr('floor-name');
                         // Stops some browsers from redirecting.
                         if (e.stopPropagation) e.stopPropagation();
@@ -3112,17 +3108,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                  left: (e.pageX - $(containerTag).offset().left)/scale,
                                  top: (e.pageY - $(containerTag).offset().top)/scale
                             };
-
-                            // var userTransItem = d3.select(".userTrans"+itemId);
-                            // var userTransItem = d3.select(".userTrans-"+itemId);
-                            // userTransItem
-                            //     .attr('height', "65px")
-                            //     .attr('width', "150px")
-                            //     .attr("transform", function(d){
-                            //         return "translate("+divPos.left+","+divPos.top+")";
-                            //     })
-                            //     .call(drag);
-
                             $(this).append(item[0]);
 
                             itemData.x = divPos.left;
@@ -3136,8 +3121,9 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         return false;
                         },
                         false
-                    );            
+                    );          
 
+                    // -- hide user list
                     var hideDiv = d3.select('.hidelocalusers')
                         .on("click", function () {
                             if (hideListDiv.attr("class") === "floorHide") {
@@ -3145,12 +3131,14 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 expandDiv.style('width','60%');
                                 // element.width(elementWidth);
                                 // element.height(elementHeight);
+                                floorDiv.style('width',elementWidth+"px");
+                                floorDiv.style('height',elementHeight+"px");
                                 hideDiv.html("&#9668; &#9668; &#9668;");
                             }else{
                                 hideListDiv.classed('floorHide', true);
                                 // console.log(d3.select(element[0]));
-                                // floorDiv.style('width',elementWidth*1.25+"px");
-                                // floorDiv.style('height',elementHeight*1.25+"px");
+                                floorDiv.style('width',elementWidth*1.25+"px");
+                                floorDiv.style('height',elementHeight*1.25+"px");
                                 // console.log(d3.select(element[0]));
                                 expandDiv.style('width','75%'); 
                                 hideDiv.html("&#9658; &#9658; &#9658;");
@@ -3159,12 +3147,15 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .html("&#9668; &#9668; &#9668;")
                         .style("padding-top", (elementHeight/2)+'px');
 
+                    function saveScale(){
+                        console.log(scale);
+                    }
+
+                    // -- zoom behaviours 
                     function zoomed() {
                         scale = d3.event.scale;
                         container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
                     }
-
-
                     function dragstarted(d) {
                         d3.event.sourceEvent.stopPropagation();
                         d3.select(this).classed("dragging", true);
@@ -3177,7 +3168,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             $(elm[0]).removeClass('selected');
                         })
                     }
-
                     function dragged(d) {
                        /* if ( (d3.mouse($("#floorplan")[0])[0]) < 0 || (d3.mouse($("#floorplan")[0])[0]) > 790 || (d3.mouse($("#floorplan")[0])[1]) < 0 || (d3.mouse($("#floorplan")[0])[1]) > 580 ) {
                             //console.log((d3.mouse($("#floorplan")[0])[0]) + " - " +(d3.mouse($("#floorplan")[0])[1]));
@@ -3196,11 +3186,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             //d3.event.stopPropagation();
                         }else{
                         }*/
-                            d.x = d3.event.x;
-                            d.y = d3.event.y;
-                            d3.select(this).attr("transform", "translate("+d.x + "," + d.y+")")
+                        d.x = d3.event.x;
+                        d.y = d3.event.y;
+                        d3.select(this).attr("transform", "translate("+d.x + "," + d.y+")");
                     }
-
                     function dragended(d) {
                         d3.select('.user-'+d.id).classed("selected", true);
                         $scope.requery(d, 'flooruser');
@@ -3208,6 +3197,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         d3.select(this).classed("dragging", false);
                     }
 
+                    // -- displays users in userlist and floor plans
                     function plot(data, floor) {
                         ////////////////////
                         ///  LIST USERS  ///
@@ -3423,6 +3413,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             });
                         userDiv.style('height', (count+1)*nodeHeight+'px');
 
+                        // Draw users on floor
                         container.selectAll('g').remove();
                         container.selectAll('g').data(data.filter(function(d){if (d.map === floorName){ return true; }})).enter()
                             .append('g')
@@ -3474,13 +3465,16 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             iconText.classList.add('ng-hide');
                                             iconInput.classList.remove('ng-hide');
                                         })
+
                                         .on('click', function(e){
-                                            $('.usernametext').each(function(e){
-                                                this.classList.remove('ng-hide');
-                                            });
-                                            $('.usernameform').each(function(e){
-                                                this.classList.add('ng-hide');
-                                            });
+                                            if(d3.event.toElement.value === undefined){
+                                                $('.usernametext').each(function(e){
+                                                    this.classList.remove('ng-hide');
+                                                });
+                                                $('.usernameform').each(function(e){
+                                                    this.classList.add('ng-hide');
+                                                });
+                                            }
                                             userDiv.selectAll('button').each(function(d){
                                                 var elmbut = d3.select(this);
                                                 $(elmbut[0]).removeClass('selected');
@@ -3492,7 +3486,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             el.classList.add('selected');
                                             $scope.requery(d, 'flooruser');
                                         });
-
                                     if (d.stealth === 1) {
                                         element
                                             .attr('height', '25')
@@ -3627,10 +3620,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                         false
                                     );
                                 }
-                            });
-
-                    }
-                              
+                            });                            
+                    }  
 
      //This function determines the colour of the endpoint based on what type 
                     //of trigger has been activated
@@ -3721,6 +3712,11 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                         });
 
+                    // buttonDiv.append('button')
+                    //     .html('Save Scale')
+                    //     .attr('class', 'pure-button')
+                    //     .on('click', saveScale);
+
                        /* buttonDiv.append('button')
                             .html('Zoom In')
                             .attr('class', 'resetButton')
@@ -3752,7 +3748,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             zoomer([0,0], $scope.global.floorScale);
                         });*/
 
-
+                    // -- redraws the floor (used when user is deleted from floorplan)
                     $rootScope.redrawFloor = function () {
                         var currentUser = d3.select('.selected');
                         currentUser
@@ -3763,9 +3759,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         $(userDiv[0][0]).append(currentUser[0][0]);
                         plot(data,floorName);
                     }
-
-
-
+                    // -- display users
                     plot(data, floorName);  
             }, 0);
         }
