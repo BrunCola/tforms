@@ -3,6 +3,9 @@
 angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', 'searchFilter', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, searchFilter) {
     $scope.global = Global;
     var query = '/local_events/endpoint_map?';
+    if ($location.$$search.start && $location.$$search.end) {
+        query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end;
+    } 
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {
     success(function(data) {
@@ -49,6 +52,21 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         }
     }); 
 
+
+
+    $scope.changePage = function (url, params) {
+        if ($location.$$search.start && $location.$$search.end) {
+            params.start = $location.$$search.start;
+            params.end = $location.$$search.end;
+        }
+        if (url !== '') {
+            console.log(url);
+            console.log(params);
+            $location.path(url).search(params);
+        }
+    }
+
+
     /*$http({method: 'GET', url: '/local_events/endpoint_map?type=max_order'}).
         success(function(data) {
             $scope.max_order = data[0].max_order;    
@@ -60,8 +78,13 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
          if (d === "clear") {
             $scope.userinfo = [];
          } else if ($scope.lan_ip !== '-') {
-            var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser'; 
-            
+            var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser';
+            $scope.startend = ""; 
+            if ($location.$$search.start && $location.$$search.end) {
+                query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser'; 
+                $scope.startend = 'start='+$location.$$search.start+'&end='+$location.$$search.end+'&'; 
+            } 
+
             $http({method: 'GET', url: query+'&typeinfo=assets'}).
                 success(function(data) {
                     if (data[0] !== undefined) {
