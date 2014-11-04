@@ -1,8 +1,19 @@
 'use strict';
-
+// var wait = (function () {
+//     var timers = {};
+//     return function (callback, ms, uniqueId) {
+//         if (!uniqueId) {
+//             uniqueId = "filterWait"; //Don't call this twice without a uniqueId
+//         }
+//         if (timers[uniqueId]) {
+//             clearTimeout (timers[uniqueId]);
+//         }
+//         timers[uniqueId] = setTimeout(callback, ms);
+//     };
+// })();
 angular.module('mean.pages').factory('searchFilter', ['$rootScope',
     function($rootScope) {
-        var searchFilter = function(dimension) {
+        var searchFilter = function(dimension, sort) {
             // $rootScope.waitForFinalEvent = (function () {
                 // var timers = {};
                 // return function (callback, ms, uniqueId) {
@@ -33,12 +44,12 @@ angular.module('mean.pages').factory('searchFilter', ['$rootScope',
                 }
             }
             // clears existing filter
-            // $rootScope.waitForFinalEvent(function(){
-            dimension.filterAll(null);
-            if ($rootScope.search.length > 0) {
-                dimension.filter(filtah);
-            }
-            // }, 10, "filtertWait");
+            // wait(function(){
+                dimension.filterAll(null);
+                if ($rootScope.search.length > 0) {
+                    dimension.filter(filtah);
+                }
+            // }, 200, "filtertWait");
         }
         return searchFilter;
     }
