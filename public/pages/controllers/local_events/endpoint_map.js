@@ -1,19 +1,33 @@
 'use strict';
 
-angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal) {
+angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', 'searchFilter', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, searchFilter) {
     $scope.global = Global;
     var query = '/local_events/endpoint_map?';
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {
     success(function(data) {
-        if (!data.force) {
+        if (!data.users) {
             $scope.$broadcast('loadError');
         } else {
             $scope.data = data;
             var count = 0;
-            $scope.data.force.forEach(function(d){
+            $scope.data.users.forEach(function(d){
                 d.id = count++;
             })
+
+            $scope.crossfilterData = crossfilter(data.users);
+            $scope.searchDimension = $scope.crossfilterData.dimension(function(d) { return d });
+
+            // watch global search for changes.. then filter
+            var searchFired = false;
+            $rootScope.$watch('search', function(){
+                if (searchFired === true) {
+                    searchFilter($scope.searchDimension, $rootScope.search);
+                    $scope.$broadcast('searchUsers',$scope.searchDimension.top(Infinity));
+                }
+                searchFired = true;
+            })
+
             //$scope.$broadcast('floorPlan');
             //$scope.global.floorScale = 1;
             $scope.$broadcast('spinnerHide');
@@ -28,7 +42,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                     if (data[0] !== undefined) {
                         $scope.setTab(data[0].map);
                         $scope.requery(data[0]);
-                        var selected = $scope.data.force.filter(function(d){ if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ return true }});
+                        var selected = $scope.data.users.filter(function(d){ if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ return true }});
                         if (selected[0] !== undefined) { $scope.$broadcast('setSelected', selected[0]); }
                     }                    
                 });
@@ -37,6 +51,10 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
 
     $scope.setTab = function (floor_name) {
         $scope.tab_select = floor_name;
+    }
+
+    $scope.setTab2 = function (floor_name) {
+        console.log(floor_name);
     }
 
     /*$http({method: 'GET', url: '/local_events/endpoint_map?type=max_order'}).
