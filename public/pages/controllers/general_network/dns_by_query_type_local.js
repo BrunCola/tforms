@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('mean.pages').controller('dnsByQueryTypeLocalDrillController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
+angular.module('mean.pages').controller('dnsByQueryTypeLocalController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/dns/dns_by_query_type_local_drill?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&qtype='+$location.$$search.qtype;
+        query = '/general_network/dns_by_query_type_local?start='+$location.$$search.start+'&end='+$location.$$search.end+'&qtype='+$location.$$search.qtype;
     } else {
-        query = '/dns/dns_by_query_type_local_drill?lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&qtype='+$location.$$search.qtype;
+        query = '/general_network/dns_by_query_type_local?qtype='+$location.$$search.qtype;
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

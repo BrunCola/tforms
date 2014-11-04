@@ -246,25 +246,17 @@ module.exports = function(app, passport, version, io, pool) {
                     .get(auth.permission, l7_remote_drill.render);
     // DNS
         // DNS BY QUERY TYPE
-            var dns_by_query_type = require('../controllers/dns/dns_by_query_type')(pool);
-            app.route('/dns/dns_by_query_type')
+            var dns_by_query_type = require('../controllers/general_network/dns_by_query_type')(pool);
+            app.route('/general_network/dns_by_query_type')
             .get(auth.permission, dns_by_query_type.render);
             // DNS BY QUERY TYPE LOCAL
-                var dns_by_query_type_local = require('../controllers/dns/dns_by_query_type_local')(pool);
-                app.route('/dns/dns_by_query_type_local')
+                var dns_by_query_type_local = require('../controllers/general_network/dns_by_query_type_local')(pool);
+                app.route('/general_network/dns_by_query_type_local')
                 .get(auth.permission, dns_by_query_type_local.render);
                 // DNS BY QUERY TYPE DRILL
-                    var dns_by_query_type_local_drill = require('../controllers/dns/dns_by_query_type_local_drill')(pool);
-                    app.route('/dns/dns_by_query_type_local_drill')
+                    var dns_by_query_type_local_drill = require('../controllers/general_network/dns_by_query_type_local_drill')(pool);
+                    app.route('/general_network/dns_by_query_type_local_drill')
                     .get(auth.permission, dns_by_query_type_local_drill.render);
-        // LOCAL DNS
-            var dns_local = require('../controllers/dns/dns_local')(pool);
-            app.route('/dns/dns_local')
-            .get(auth.permission, dns_local.render);
-        // REMOTE DNS
-            var dns_remote = require('../controllers/dns/dns_remote')(pool);
-            app.route('/dns/dns_remote')
-            .get(auth.permission, dns_remote.render);
     // HTTP
         // HTTP BY DOMAIN
             var http_by_domain = require('../controllers/http/http_by_domain')(pool);

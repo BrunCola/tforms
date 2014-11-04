@@ -1044,7 +1044,7 @@ angular.module('mean.pages').config(['$stateProvider',
             // DNS BY QUERY TYPE
                 .state('dns_by_query_type', {
                     url: '/dns_by_query_type?start&end',
-                    templateUrl: 'public/pages/views/dns/dns_by_query_type.html',
+                    templateUrl: 'public/pages/views/general_network/dns_by_query_type.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
@@ -1056,7 +1056,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 // DNS BY QUERY TYPE LOCAL
                     .state('dns_by_query_type_local', {
                         url: '/dns_by_query_type_local?start&end&qtype',
-                        templateUrl: 'public/pages/views/dns/dns_by_query_type_local.html',
+                        templateUrl: 'public/pages/views/general_network/dns_by_query_type_local.html',
                         resolve: {
                             loggedin: checkLoggedin
                         },
@@ -1071,7 +1071,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     // DNS BY QUERY TYPE DRILL
                         .state('dns_by_query_type_local_drill', {
                             url: '/dns_by_query_type_local_drill?start&end&qtype&lan_zone&lan_ip',
-                            templateUrl: 'public/pages/views/dns/dns_by_query_type_local_drill.html',
+                            templateUrl: 'public/pages/views/general_network/dns_by_query_type_local_drill.html',
                             resolve: {
                                 loggedin: checkLoggedin
                             },
@@ -1085,30 +1085,6 @@ angular.module('mean.pages').config(['$stateProvider',
                                 daterange: true
                             }
                         })
-            // LOCAL DNS
-                .state('dns_local', {
-                    url: '/dns_local?start&end',
-                    templateUrl: 'public/pages/views/dns/dns_local.html',
-                    resolve: {
-                        loggedin: checkLoggedin
-                    },
-                    data: {
-                        title: 'Local DNS',
-                        daterange: true
-                    }
-                })
-            // REMOTE DNS
-                .state('dns_remote', {
-                    url: '/dns_remote?start&end',
-                    templateUrl: 'public/pages/views/dns/dns_remote.html',
-                    resolve: {
-                        loggedin: checkLoggedin
-                    },
-                    data: {
-                        title: 'Remote DNS',
-                        daterange: true
-                    }
-                })
         // SSL
             // SSL SERVER
                 .state('ssl_server', {
