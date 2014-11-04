@@ -19,6 +19,7 @@ module.exports = function (version) {
 			// Send some basic starting info to the view
 			var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 			var end = Math.round(new Date().getTime() / 1000);
+			console.log(req.session.passport.user);
 			res.render('index', {
 				user: req.session.passport.user ? JSON.stringify({
 					email: req.session.passport.user.email,
