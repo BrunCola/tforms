@@ -499,29 +499,20 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             });
         }
 
-        $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?type=child_id&ioc_childID='+$scope.ioc_childID}).
-        success(function(data) {
-            if (data[0] !== undefined) {
-                $scope.child_ioc = data;
+        $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?type=child_id&ioc_childID='+$scope.ioc_childID+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&lan_user='+$location.$$search.lan_user}).
+        success(function(result) {
+            if (result.data[0] !== undefined) {
+                $scope.child_ioc = result.data;
 
-                //iterate and check against user stuff here in order to highlight
-                data.forEach(function(d){
-                    if(d.typeIndicator == "IP Indicator") {
-                        console.log("IP indicator");
+                if(result.highlight){
+                    var elements = document.getElementsByTagName('a');
 
-                        $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?type=ioc_ip_match&ioc_ip='+d.ioc + '&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&lan_user='+$location.$$search.lan_user}).
-                        success(function(result) {
-                            console.log(result);
-                            var elements = document.getElementsByTagName('a');
-
-                            for (var i = 0; i < elements.length; i++) {
-                                 if (elements[i].id == 'ioc_attr_link') {
-                                    elements[i].style.color = 'red';
-                                }
-                            }
-                        });
+                    for (var i = 0; i < elements.length; i++) {
+                         if (elements[i].id == 'ioc_attr_link') {
+                            elements[i].style.color = 'red';
+                        }
                     }
-                });
+                }
             }
         });
 
