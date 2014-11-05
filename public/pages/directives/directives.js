@@ -3292,101 +3292,191 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             .append('div')
                                                 .attr('class', 'localuserlisticon')
                                                 .append('svg');
-                                    if (d.stealth === 1) {
-                                        element
+                                     element
                                             .attr('height', '25')
-                                            .attr('width', '31')
-                                        .append('svg:path')
-                                            .attr('d', 'M22,18.4c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0C2.2,13.9,0,16,0,18.7c0,1,0,6.2,0,6.2h3.3c0,0,0-3.4,0-3.5c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.6,1,1.1c0,0.2,0,3.5,0,3.5h11.4c0,0,0-3.5,0-3.5c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.6,0.9,1.1c0,0,0,3.5,0,3.5H22L22,18.4z')
-                                            .style('fill-rule', '#evenodd')
-                                            .style('clip-rule', '#evenodd')
-                                            .style('fill', iconColour);
-                                        element.append('svg:path')
-                                            .attr('d', 'M31.3,2.5C27.9,2.6,26.2,0,26.2,0c0,0-1.5,2.5-5.2,2.5c0,4.2,0.7,6.9,2.2,9.6c0.1,0.2,1,2.1,2.9,2.1c2,0,2.8-2,3-2.3C30.9,9,31.3,5.7,31.3,2.5z')
-                                            .style('fill', iconColour);
-                                        element.append('circle')
-                                            .attr('cx', 11.1)
-                                            .attr('cy', 7.3)
-                                            .attr('r', 4.9)
-                                            .style('fill-rule', '#evenodd')
-                                            .style('clip-rule', '#evenodd')
-                                            .style('fill', iconColour);
-                                    } else {
-                                        switch (d.lan_type) {
+                                            .attr('width', '41')
+                                        switch (d.lan_type){
                                             case 'endpoint':
                                                 element
                                                     .attr('height', '23')
-                                                    .attr('width', '23')
-                                                .append('svg:path')
-                                                    .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
-                                                    .style('fill-rule', '#evenodd')
-                                                    .style('clip-rule', '#evenodd')
-                                                    .style('fill', '#29ABE2');
-                                                element.append('circle')
-                                                    .attr('cx', 11.1)
-                                                    .attr('cy', 4.9)
-                                                    .attr('r', 4.9)
+                                                    .attr('width', '100')
+                                                    .append('svg:polygon')
+                                                    .attr('points', '2,0.9 28,0.9 28,17.9 19.3,17.9 20.8,22.9 9.6,22.9 10.9,17.9 2,17.9')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
                                                     .style('fill', iconColour);
                                                 break;
                                             case 'server':
                                                 element
-                                                    .attr('height', '21')
-                                                    .attr('width', '19')
                                                 .append('svg:polygon')
-                                                    .attr('points', '10,17 9,17 9,18 6,18 6,21 13,21 13,18 10,18') 
+                                                    .attr('points', '15,18 14,18 14,19 11,19 11,22 18,22 18,19 15,19') 
                                                     .style('fill', iconColour);
                                                 element.append('rect')
-                                                    .attr('x', 14)
-                                                    .attr('y', 19)
+                                                    .attr('x', 19)
+                                                    .attr('y', 20)
                                                     .attr('width', 5)
                                                     .attr('height', 1)
                                                     .style('fill', iconColour);
                                                 element.append('rect')
-                                                    .attr('y', 19)
+                                                    .attr('x', 5)
+                                                    .attr('y', 20)
                                                     .attr('width', 5)
                                                     .attr('height', 1)
                                                     .style('fill', iconColour);
                                                 element.append('path')
                                                     .style('fill', iconColour)
-                                                    .attr('d', 'M19,12H0v4h19V12z M3,15H1v-2h2V15z');
+                                                    .attr('d', 'M24,13H5v4h19V13z M8,16H6v-2h2V16z');
                                                 element.append('path')
                                                     .style('fill', iconColour)
-                                                    .attr('d', 'M19,6H0v4h19V6z M3,9H1V7h2V9z');
+                                                    .attr('d', 'M24,7H5v4h19V7z M8,10H6V8h2V10z');
                                                 element.append('path')
                                                     .style('fill', iconColour)
-                                                    .attr('d', 'M19,0H0v4h19V0z M3,3H1V1h2V3z');
+                                                    .attr('d', 'M24,1H5v4h19V1z M8,4H6V2h2V4z');
                                                 break;
                                             case 'mobile':
                                                 element
-                                                    .attr('height', '22')
-                                                    .attr('width', '14')
                                                 .append('svg:path')
-                                                    .attr('d', 'M0,0v22h14V0H0z M7,20c-0.6,0-1-0.4-1-1c0-0.6,0.4-1,1-1c0.6,0,1,0.4,1,1C8,19.6,7.6,20,7,20z M12,17H2V2h10V17z')
+                                                    .attr('d', 'M8,1v22h14V1H8z M15,22.3c-0.8,0-1.5-0.7-1.5-1.5c0-0.8,0.7-1.5,1.5-1.5c0.8,0,1.5,0.7,1.5,1.5C16.5,21.6,15.8,22.3,15,22.3z M20,18H10V3h10V18z')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
                                                     .style('fill', iconColour);
                                                 break;
                                             default:
                                                 element
-                                                    .attr('height', '23')
-                                                    .attr('width', '23')
-                                                .append('svg:path')
-                                                    .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
-                                                    .style('fill-rule', '#evenodd')
-                                                    .style('clip-rule', '#evenodd')
-                                                    .style('fill', iconColour);
-                                                element.append('circle')
-                                                    .attr('cx', 11.1)
-                                                    .attr('cy', 4.9)
-                                                    .attr('r', 4.9)
+                                                    .append('svg:polygon')
+                                                    .attr('points', '2,0.9 28,0.9 28,17.9 19.3,17.9 20.8,22.9 9.6,22.9 10.9,17.9 2,17.9')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
                                                     .style('fill', iconColour);
                                                 break;
-                                        }
-                                    }                                
+                                    } 
+
+                                    if (d.stealth === 1) {
+                                        element.append('svg:path')
+                                            .attr('transform', 'translate(26,0)')
+                                            .attr('d', 'M14.1,1.9C11.2,2,9.6,0,9.6,0c0,0-1.3,1.9-4.5,1.9c0,3.2,0.6,5.4,2,7.4C7.2,9.5,8,11,9.6,11c1.7,0,2.4-1.5,2.6-1.8C13.8,7,14.1,4.4,14.1,1.9z')
+                                            .style('fill', iconColour);
+                                    }           
+                                    var machIcon = element.append('g')
+                                            .attr('transform', 'translate(26,12)'); 
+                                    switch (d.machine_icon){                              
+                                            case 'win':
+                                                machIcon
+                                                    .append('svg:polygon')
+                                                        .attr('points', '10,1 10,5.9 16,5.9 16,0')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', iconColour);
+                                                machIcon
+                                                    .append('svg:polygon')
+                                                        .attr('points', '4,5.9 9,5.9 9,1 4,1.7')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', iconColour);
+                                                machIcon
+                                                    .append('svg:polygon')
+                                                        .attr('points', '4,10.3 9,11 9,6.9 4,6.9')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', iconColour);
+                                                machIcon
+                                                    .append('svg:polygon')
+                                                        .attr('points', '10,11 16,12 16,6.9 10,6.9')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', iconColour);
+                                                break;
+                                            case 'os':                                              
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M11.7,1.9c0.4-0.5,0.7-1.2,0.6-1.9c-0.7,0-1.4,0.5-1.9,1C10,1.5,9.7,2.2,9.8,2.9C10.5,2.9,11.3,2.5,11.7,1.9z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#818385');
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M13.7,5.4c0.2-0.6,0.6-1.1,1.2-1.4c-0.6-0.8-1.5-1.2-2.4-1.2c-1.1,0-1.6,0.5-2.3,0.5c-0.8,0-1.4-0.5-2.4-0.5c-0.9,0-1.9,0.6-2.6,1.5C5,4.7,4.9,5.1,4.8,5.6C4.6,7,4.9,8.8,6,10.4C6.5,11.1,7.2,12,8.1,12c0.8,0,1-0.5,2.1-0.5c1.1,0,1.3,0.5,2.1,0.5c0.9,0,1.6-1,2.2-1.7c0.4-0.6,0.5-0.8,0.8-1.5C13.8,8.3,13.2,6.7,13.7,5.4z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#818385');
+                                                break;
+                                            case 'linux':
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M10.4,0c0.5,0,1.3,0.4,1.4,1c0.1,0.3,0,0.7,0,1.1c0,0.4,0,0.8,0,1.2c0.1,0.7,0.6,1.1,0.9,1.7c0.2,0.3,0.3,0.6,0.4,0.9c0.1,0.4,0.2,0.7,0.2,1.1c0.1,0.4,0.1,0.7,0.1,1.1c0,0.2,0,0.3,0,0.5c0,0.2-0.1,0.3-0.1,0.5c0,0.2,0,0.3,0.2,0.3c0.2,0,0.3,0,0.5,0c0.3,0,0.7,0.2,0.6,0.5c-0.4,0.5-0.8,1.2-1.3,1.6c-0.2,0.2-0.4,0.5-0.7,0.5c-0.3,0.1-0.7,0.1-0.9-0.1c-0.1-0.1-0.2-0.2-0.2-0.3c0-0.1-0.1-0.1-0.1-0.2c0-0.1,0-0.1-0.1-0.1c-0.4,0-0.8,0-1.2,0c-0.4,0-0.7-0.1-1.1-0.2c-0.1-0.1-0.3-0.1-0.4-0.2c-0.1-0.1-0.2,0.3-0.3,0.3c-0.1,0.2-0.3,0.5-0.6,0.5c-0.1,0-0.3,0-0.4,0c-0.2-0.1-0.3-0.2-0.5-0.3c-0.3-0.2-0.6-0.4-0.9-0.6c-0.3-0.2-0.7-0.5-0.7-0.8c0.1-0.3,0.2-0.4,0.5-0.4c0.1,0,0.3,0,0.3-0.1c0-0.1,0-0.1,0-0.2c0-0.1,0-0.2,0-0.3c0.1-0.3,0.5-0.1,0.7,0c0.1-0.1,0.2-0.2,0.2-0.3C7,8.4,7.1,8.4,7.1,8.2C6.9,6.7,7.8,5.3,8.5,4c0.1-0.2,0.2-0.4,0.3-0.6c0.1-0.1,0.1-0.4,0.1-0.6c0-0.5,0-1,0-1.4c0-0.4,0.1-0.7,0.4-1C9.6,0.2,10,0,10.4,0z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#231F20');
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M11,3.4c0.1,0.2,0.1,0.5,0.2,0.7c0.1,0.2,0.2,0.4,0.3,0.7c0.2,0.5,0.5,0.9,0.6,1.4c0.2,0.5,0.3,0.9,0.2,1.4c-0.1,0.2-0.1,0.5-0.2,0.7c0,0.1-0.1,0.1-0.1,0.1c-0.1,0.1-0.1,0.2-0.1,0.4c-0.2,0-0.3-0.2-0.5-0.1c-0.2,0-0.2,0.4-0.2,0.5c0,0.3,0,0.5,0,0.8c0,0.1,0,0.1,0,0.2c-0.1,0-0.1,0.1-0.2,0.1c-0.1,0-0.2,0.1-0.3,0.1c-0.5,0.1-1,0.1-1.5,0c-0.1,0-0.2-0.1-0.3-0.1c-0.2-0.1-0.2-0.1-0.2-0.2c0-0.2-0.2-0.6-0.3-0.8c-0.2-0.5-0.4-1-0.6-1.6c0-0.1-0.1-0.2-0.1-0.3c0-0.1,0-0.2,0-0.3c0.1-0.3,0.2-0.5,0.3-0.8C8,6,8.2,5.8,8.3,5.6c0.1-0.2,0.1-0.5,0.2-0.7c0.1-0.2,0.2-0.4,0.3-0.7C9,4,9.1,3.7,9.2,3.5c0.3,0.3,0.5,0.3,0.9,0.3c0.2,0,0.3-0.1,0.5-0.1C10.6,3.6,10.9,3.4,11,3.4z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#FFFFFF');
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M8.9,1.2C8.9,1.2,8.9,1.2,8.9,1.2C8.9,1.2,8.9,1.2,8.9,1.2z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#C5C7C9');
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M8.9,1.8C8.9,1.8,8.9,1.7,8.9,1.8C8.9,1.7,8.9,1.8,8.9,1.8z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#C5C7C9');
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M8.9,3.4C8.9,3.4,8.9,3.4,8.9,3.4C8.9,3.4,8.9,3.4,8.9,3.4z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#C5C7C9');
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M7.3,8.5c0.1,0.1,0.2,0.3,0.3,0.4c0.1,0.2,0.2,0.5,0.2,0.7C7.9,9.9,8,10.4,8,10.8c0,0.4-0.3,0.6-0.6,0.6c-0.2,0-0.4-0.1-0.6-0.2c-0.2-0.1-0.4-0.2-0.6-0.4c-0.3-0.2-0.8-0.5-0.9-0.9C5.2,9.8,5.4,9.6,5.6,9.6c0.2,0,0.3,0,0.4-0.2c0.1-0.1,0-0.3,0-0.4c0.1-0.2,0.3-0.1,0.5,0c0.1,0,0.1,0.1,0.2,0c0.1-0.1,0.1-0.2,0.2-0.3C7,8.6,7.3,8.3,7.3,8.5z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#F5C055');
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M11.8,8.8c0.1,0,0.1,0.1,0.2,0.1c0,0.1,0,0.2,0,0.3c0,0.2,0.3,0.3,0.5,0.4C12.9,9.7,13,9.3,13.2,9c0.1,0,0.1,0.3,0.1,0.4c0.1,0.2,0.3,0.1,0.4,0.1c0.3-0.1,0.9,0,0.7,0.5c-0.2,0.3-0.5,0.6-0.7,0.9c-0.1,0.1-0.2,0.3-0.4,0.4c-0.1,0.1-0.3,0.2-0.4,0.3c-0.3,0.2-0.6,0.4-1,0.3c-0.5-0.1-0.5-0.6-0.6-1c-0.1-0.4-0.1-0.9-0.1-1.3c0-0.2,0-0.4,0.1-0.6C11.4,8.8,11.6,8.7,11.8,8.8z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#F5C055');
+                                                machIcon
+                                                    .append('svg:ellipse')
+                                                        .attr('cx', '10.9')
+                                                        .attr('cy', '2.1')
+                                                        .attr('rx', '0.4')
+                                                        .attr('ry', '0.6')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#FFFFFF');
+                                                machIcon
+                                                    .append('svg:ellipse')
+                                                        .attr('cx', '9.3')
+                                                        .attr('cy', '2.1')
+                                                        .attr('rx', '0.4')
+                                                        .attr('ry', '0.6')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#FFFFFF');
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M10.1,2.5c0.2,0,0.3,0.2,0.4,0.2c0.2,0.1,0.4,0,0.4,0.2c0.1,0.2-0.1,0.3-0.3,0.4c-0.2,0.1-0.3,0.2-0.6,0.2s-0.4,0-0.6-0.1C9.4,3.3,9.3,3.2,9.3,3c0-0.2,0.2-0.2,0.4-0.3C9.7,2.7,9.9,2.4,10.1,2.5z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#F5C055');
+                                                break;
+                                            default:                                               
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M9,8.1l0-0.4C8.9,6.9,9.2,6.1,9.9,5.2c0.7-0.8,1-1.4,1-2.1c0-0.8-0.5-1.3-1.4-1.3C9,1.8,8.4,2,8,2.3L7.7,1.3C8.2,1,9,0.7,9.8,0.7c1.7,0,2.5,1.1,2.5,2.2c0,1-0.6,1.8-1.3,2.6c-0.7,0.8-0.9,1.4-0.9,2.2l0,0.4H9z M8.7,10.2c0-0.6,0.4-0.9,0.9-0.9c0.5,0,0.9,0.4,0.9,0.9c0,0.5-0.3,0.9-0.9,0.9C9.1,11.2,8.7,10.8,8.7,10.2z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#818385');
+                                                break; 
+                                    } 
                                     
                                     var elm2 = elm.append('div')
                                         .attr('class', 'localuserlisttext');
@@ -3506,120 +3596,191 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             $scope.requery(d, 'flooruser');
                                             lastUserRequeried = d.id;
                                         });
-                                    // if (d.stealth === 1) {
-                                    //     element
-                                    //         .attr('height', '25')
-                                    //         .attr('width', '31')
-                                    //     .append('svg:path')
-                                    //         .attr('d', 'M22,18.4c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0C2.2,13.9,0,16,0,18.7c0,1,0,6.2,0,6.2h3.3c0,0,0-3.4,0-3.5c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.6,1,1.1c0,0.2,0,3.5,0,3.5h11.4c0,0,0-3.5,0-3.5c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.6,0.9,1.1c0,0,0,3.5,0,3.5H22L22,18.4z')
-                                    //         .style('fill-rule', '#evenodd')
-                                    //         .style('clip-rule', '#evenodd')
-                                    //         .style('fill', iconColour);
-                                    //     element.append('svg:path')
-                                    //         .attr('d', 'M31.3,2.5C27.9,2.6,26.2,0,26.2,0c0,0-1.5,2.5-5.2,2.5c0,4.2,0.7,6.9,2.2,9.6c0.1,0.2,1,2.1,2.9,2.1c2,0,2.8-2,3-2.3C30.9,9,31.3,5.7,31.3,2.5z')
-                                    //         .style('fill', iconColour);
-                                    //     element.append('circle')
-                                    //         .attr('cx', 11.1)
-                                    //         .attr('cy', 7.3)
-                                    //         .attr('r', 4.9)
-                                    //         .style('fill-rule', '#evenodd')
-                                    //         .style('clip-rule', '#evenodd')
-                                    //         .style('fill', iconColour);
-                                    // } else { 
+                                        element
+                                            .attr('height', '25')
+                                            .attr('width', '41')
                                         switch (d.lan_type){
                                             case 'endpoint':
                                                 element
                                                     .attr('height', '23')
-                                                    .attr('width', '31')
-                                                    .append('svg:path')
-                                                    .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
-                                                    .style('fill-rule', '#evenodd')
-                                                    .style('clip-rule', '#evenodd')
-                                                    .style('fill', iconColour);
-                                                if (d.stealth === 1) {
-                                                    element.append('svg:path')
-                                                        .attr('d', 'M31.3,2.5C27.9,2.6,26.2,0,26.2,0c0,0-1.5,2.5-5.2,2.5c0,4.2,0.7,6.9,2.2,9.6c0.1,0.2,1,2.1,2.9,2.1c2,0,2.8-2,3-2.3C30.9,9,31.3,5.7,31.3,2.5z')
-                                                        .style('fill', iconColour);
-                                                }
-                                                element.append('circle')
-                                                    .attr('cx', 11.1)
-                                                    .attr('cy', 4.9)
-                                                    .attr('r', 4.9)
+                                                    .attr('width', '100')
+                                                    .append('svg:polygon')
+                                                    .attr('points', '2,0.9 28,0.9 28,17.9 19.3,17.9 20.8,22.9 9.6,22.9 10.9,17.9 2,17.9')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
                                                     .style('fill', iconColour);
                                                 break;
                                             case 'server':
                                                 element
-                                                    .attr('height', '21')
-                                                    .attr('width', '31')
                                                 .append('svg:polygon')
-                                                    .attr('points', '10,17 9,17 9,18 6,18 6,21 13,21 13,18 10,18') 
+                                                    .attr('points', '15,18 14,18 14,19 11,19 11,22 18,22 18,19 15,19') 
                                                     .style('fill', iconColour);
                                                 element.append('rect')
-                                                    .attr('x', 14)
-                                                    .attr('y', 19)
+                                                    .attr('x', 19)
+                                                    .attr('y', 20)
                                                     .attr('width', 5)
                                                     .attr('height', 1)
                                                     .style('fill', iconColour);
                                                 element.append('rect')
-                                                    .attr('y', 19)
+                                                    .attr('x', 5)
+                                                    .attr('y', 20)
                                                     .attr('width', 5)
                                                     .attr('height', 1)
                                                     .style('fill', iconColour);
-                                                if (d.stealth === 1) {
-                                                    element.append('svg:path')
-                                                        .attr('d', 'M31.3,2.5C27.9,2.6,26.2,0,26.2,0c0,0-1.5,2.5-5.2,2.5c0,4.2,0.7,6.9,2.2,9.6c0.1,0.2,1,2.1,2.9,2.1c2,0,2.8-2,3-2.3C30.9,9,31.3,5.7,31.3,2.5z')
-                                                        .style('fill', iconColour);
-                                                }
                                                 element.append('path')
                                                     .style('fill', iconColour)
-                                                    .attr('d', 'M19,12H0v4h19V12z M3,15H1v-2h2V15z');
+                                                    .attr('d', 'M24,13H5v4h19V13z M8,16H6v-2h2V16z');
                                                 element.append('path')
                                                     .style('fill', iconColour)
-                                                    .attr('d', 'M19,6H0v4h19V6z M3,9H1V7h2V9z');
+                                                    .attr('d', 'M24,7H5v4h19V7z M8,10H6V8h2V10z');
                                                 element.append('path')
                                                     .style('fill', iconColour)
-                                                    .attr('d', 'M19,0H0v4h19V0z M3,3H1V1h2V3z');
+                                                    .attr('d', 'M24,1H5v4h19V1z M8,4H6V2h2V4z');
                                                 break;
                                             case 'mobile':
                                                 element
-                                                    .attr('height', '22')
-                                                    .attr('width', '31')
                                                 .append('svg:path')
-                                                    .attr('d', 'M0,0v22h14V0H0z M7,20c-0.6,0-1-0.4-1-1c0-0.6,0.4-1,1-1c0.6,0,1,0.4,1,1C8,19.6,7.6,20,7,20z M12,17H2V2h10V17z')
+                                                    .attr('d', 'M8,1v22h14V1H8z M15,22.3c-0.8,0-1.5-0.7-1.5-1.5c0-0.8,0.7-1.5,1.5-1.5c0.8,0,1.5,0.7,1.5,1.5C16.5,21.6,15.8,22.3,15,22.3z M20,18H10V3h10V18z')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
                                                     .style('fill', iconColour);
-                                                if (d.stealth === 1) {
-                                                    element.append('svg:path')
-                                                        .attr('d', 'M31.3,2.5C27.9,2.6,26.2,0,26.2,0c0,0-1.5,2.5-5.2,2.5c0,4.2,0.7,6.9,2.2,9.6c0.1,0.2,1,2.1,2.9,2.1c2,0,2.8-2,3-2.3C30.9,9,31.3,5.7,31.3,2.5z')
+                                                break;
+                                            default:
+                                                element
+                                                    .append('svg:polygon')
+                                                    .attr('points', '2,0.9 28,0.9 28,17.9 19.3,17.9 20.8,22.9 9.6,22.9 10.9,17.9 2,17.9')
+                                                    .style('fill-rule', '#evenodd')
+                                                    .style('clip-rule', '#evenodd')
+                                                    .style('fill', iconColour);
+                                                break;
+                                    } 
+
+                                    if (d.stealth === 1) {
+                                        element.append('svg:path')
+                                            .attr('transform', 'translate(26,0)')
+                                            .attr('d', 'M14.1,1.9C11.2,2,9.6,0,9.6,0c0,0-1.3,1.9-4.5,1.9c0,3.2,0.6,5.4,2,7.4C7.2,9.5,8,11,9.6,11c1.7,0,2.4-1.5,2.6-1.8C13.8,7,14.1,4.4,14.1,1.9z')
+                                            .style('fill', iconColour);
+                                    }           
+                                    var machIcon = element.append('g')
+                                            .attr('transform', 'translate(26,12)'); 
+                                    switch (d.machine_icon){                              
+                                            case 'win':
+                                                machIcon
+                                                    .append('svg:polygon')
+                                                        .attr('points', '10,1 10,5.9 16,5.9 16,0')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
                                                         .style('fill', iconColour);
-                                                }
+                                                machIcon
+                                                    .append('svg:polygon')
+                                                        .attr('points', '4,5.9 9,5.9 9,1 4,1.7')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', iconColour);
+                                                machIcon
+                                                    .append('svg:polygon')
+                                                        .attr('points', '4,10.3 9,11 9,6.9 4,6.9')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', iconColour);
+                                                machIcon
+                                                    .append('svg:polygon')
+                                                        .attr('points', '10,11 16,12 16,6.9 10,6.9')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', iconColour);
+                                                break;
+                                            case 'os':                                              
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M11.7,1.9c0.4-0.5,0.7-1.2,0.6-1.9c-0.7,0-1.4,0.5-1.9,1C10,1.5,9.7,2.2,9.8,2.9C10.5,2.9,11.3,2.5,11.7,1.9z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#818385');
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M13.7,5.4c0.2-0.6,0.6-1.1,1.2-1.4c-0.6-0.8-1.5-1.2-2.4-1.2c-1.1,0-1.6,0.5-2.3,0.5c-0.8,0-1.4-0.5-2.4-0.5c-0.9,0-1.9,0.6-2.6,1.5C5,4.7,4.9,5.1,4.8,5.6C4.6,7,4.9,8.8,6,10.4C6.5,11.1,7.2,12,8.1,12c0.8,0,1-0.5,2.1-0.5c1.1,0,1.3,0.5,2.1,0.5c0.9,0,1.6-1,2.2-1.7c0.4-0.6,0.5-0.8,0.8-1.5C13.8,8.3,13.2,6.7,13.7,5.4z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#818385');
+                                                break;
+                                            case 'linux':
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M10.4,0c0.5,0,1.3,0.4,1.4,1c0.1,0.3,0,0.7,0,1.1c0,0.4,0,0.8,0,1.2c0.1,0.7,0.6,1.1,0.9,1.7c0.2,0.3,0.3,0.6,0.4,0.9c0.1,0.4,0.2,0.7,0.2,1.1c0.1,0.4,0.1,0.7,0.1,1.1c0,0.2,0,0.3,0,0.5c0,0.2-0.1,0.3-0.1,0.5c0,0.2,0,0.3,0.2,0.3c0.2,0,0.3,0,0.5,0c0.3,0,0.7,0.2,0.6,0.5c-0.4,0.5-0.8,1.2-1.3,1.6c-0.2,0.2-0.4,0.5-0.7,0.5c-0.3,0.1-0.7,0.1-0.9-0.1c-0.1-0.1-0.2-0.2-0.2-0.3c0-0.1-0.1-0.1-0.1-0.2c0-0.1,0-0.1-0.1-0.1c-0.4,0-0.8,0-1.2,0c-0.4,0-0.7-0.1-1.1-0.2c-0.1-0.1-0.3-0.1-0.4-0.2c-0.1-0.1-0.2,0.3-0.3,0.3c-0.1,0.2-0.3,0.5-0.6,0.5c-0.1,0-0.3,0-0.4,0c-0.2-0.1-0.3-0.2-0.5-0.3c-0.3-0.2-0.6-0.4-0.9-0.6c-0.3-0.2-0.7-0.5-0.7-0.8c0.1-0.3,0.2-0.4,0.5-0.4c0.1,0,0.3,0,0.3-0.1c0-0.1,0-0.1,0-0.2c0-0.1,0-0.2,0-0.3c0.1-0.3,0.5-0.1,0.7,0c0.1-0.1,0.2-0.2,0.2-0.3C7,8.4,7.1,8.4,7.1,8.2C6.9,6.7,7.8,5.3,8.5,4c0.1-0.2,0.2-0.4,0.3-0.6c0.1-0.1,0.1-0.4,0.1-0.6c0-0.5,0-1,0-1.4c0-0.4,0.1-0.7,0.4-1C9.6,0.2,10,0,10.4,0z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#231F20');
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M11,3.4c0.1,0.2,0.1,0.5,0.2,0.7c0.1,0.2,0.2,0.4,0.3,0.7c0.2,0.5,0.5,0.9,0.6,1.4c0.2,0.5,0.3,0.9,0.2,1.4c-0.1,0.2-0.1,0.5-0.2,0.7c0,0.1-0.1,0.1-0.1,0.1c-0.1,0.1-0.1,0.2-0.1,0.4c-0.2,0-0.3-0.2-0.5-0.1c-0.2,0-0.2,0.4-0.2,0.5c0,0.3,0,0.5,0,0.8c0,0.1,0,0.1,0,0.2c-0.1,0-0.1,0.1-0.2,0.1c-0.1,0-0.2,0.1-0.3,0.1c-0.5,0.1-1,0.1-1.5,0c-0.1,0-0.2-0.1-0.3-0.1c-0.2-0.1-0.2-0.1-0.2-0.2c0-0.2-0.2-0.6-0.3-0.8c-0.2-0.5-0.4-1-0.6-1.6c0-0.1-0.1-0.2-0.1-0.3c0-0.1,0-0.2,0-0.3c0.1-0.3,0.2-0.5,0.3-0.8C8,6,8.2,5.8,8.3,5.6c0.1-0.2,0.1-0.5,0.2-0.7c0.1-0.2,0.2-0.4,0.3-0.7C9,4,9.1,3.7,9.2,3.5c0.3,0.3,0.5,0.3,0.9,0.3c0.2,0,0.3-0.1,0.5-0.1C10.6,3.6,10.9,3.4,11,3.4z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#FFFFFF');
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M8.9,1.2C8.9,1.2,8.9,1.2,8.9,1.2C8.9,1.2,8.9,1.2,8.9,1.2z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#C5C7C9');
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M8.9,1.8C8.9,1.8,8.9,1.7,8.9,1.8C8.9,1.7,8.9,1.8,8.9,1.8z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#C5C7C9');
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M8.9,3.4C8.9,3.4,8.9,3.4,8.9,3.4C8.9,3.4,8.9,3.4,8.9,3.4z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#C5C7C9');
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M7.3,8.5c0.1,0.1,0.2,0.3,0.3,0.4c0.1,0.2,0.2,0.5,0.2,0.7C7.9,9.9,8,10.4,8,10.8c0,0.4-0.3,0.6-0.6,0.6c-0.2,0-0.4-0.1-0.6-0.2c-0.2-0.1-0.4-0.2-0.6-0.4c-0.3-0.2-0.8-0.5-0.9-0.9C5.2,9.8,5.4,9.6,5.6,9.6c0.2,0,0.3,0,0.4-0.2c0.1-0.1,0-0.3,0-0.4c0.1-0.2,0.3-0.1,0.5,0c0.1,0,0.1,0.1,0.2,0c0.1-0.1,0.1-0.2,0.2-0.3C7,8.6,7.3,8.3,7.3,8.5z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#F5C055');
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M11.8,8.8c0.1,0,0.1,0.1,0.2,0.1c0,0.1,0,0.2,0,0.3c0,0.2,0.3,0.3,0.5,0.4C12.9,9.7,13,9.3,13.2,9c0.1,0,0.1,0.3,0.1,0.4c0.1,0.2,0.3,0.1,0.4,0.1c0.3-0.1,0.9,0,0.7,0.5c-0.2,0.3-0.5,0.6-0.7,0.9c-0.1,0.1-0.2,0.3-0.4,0.4c-0.1,0.1-0.3,0.2-0.4,0.3c-0.3,0.2-0.6,0.4-1,0.3c-0.5-0.1-0.5-0.6-0.6-1c-0.1-0.4-0.1-0.9-0.1-1.3c0-0.2,0-0.4,0.1-0.6C11.4,8.8,11.6,8.7,11.8,8.8z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#F5C055');
+                                                machIcon
+                                                    .append('svg:ellipse')
+                                                        .attr('cx', '10.9')
+                                                        .attr('cy', '2.1')
+                                                        .attr('rx', '0.4')
+                                                        .attr('ry', '0.6')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#FFFFFF');
+                                                machIcon
+                                                    .append('svg:ellipse')
+                                                        .attr('cx', '9.3')
+                                                        .attr('cy', '2.1')
+                                                        .attr('rx', '0.4')
+                                                        .attr('ry', '0.6')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#FFFFFF');
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M10.1,2.5c0.2,0,0.3,0.2,0.4,0.2c0.2,0.1,0.4,0,0.4,0.2c0.1,0.2-0.1,0.3-0.3,0.4c-0.2,0.1-0.3,0.2-0.6,0.2s-0.4,0-0.6-0.1C9.4,3.3,9.3,3.2,9.3,3c0-0.2,0.2-0.2,0.4-0.3C9.7,2.7,9.9,2.4,10.1,2.5z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#F5C055');
                                                 break;
                                             default:
-                                                element
-                                                    .attr('height', '23')
-                                                    .attr('width', '31')
-                                                .append('svg:path')
-                                                    .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
-                                                    .style('fill-rule', '#evenodd')
-                                                    .style('clip-rule', '#evenodd')
-                                                    .style('fill', iconColour);
-                                                if (d.stealth === 1) {
-                                                    element.append('svg:path')
-                                                        .attr('d', 'M31.3,2.5C27.9,2.6,26.2,0,26.2,0c0,0-1.5,2.5-5.2,2.5c0,4.2,0.7,6.9,2.2,9.6c0.1,0.2,1,2.1,2.9,2.1c2,0,2.8-2,3-2.3C30.9,9,31.3,5.7,31.3,2.5z')
-                                                        .style('fill', iconColour);
-                                                }
-                                                element.append('circle')
-                                                    .attr('cx', 11.1)
-                                                    .attr('cy', 4.9)
-                                                    .attr('r', 4.9)
-                                                    .style('fill-rule', '#evenodd')
-                                                    .style('clip-rule', '#evenodd')
-                                                    .style('fill', iconColour);
-                                                break;
-                                        // } 
+                                               
+                                                machIcon
+                                                    .append('svg:path')
+                                                        .attr('d', 'M9,8.1l0-0.4C8.9,6.9,9.2,6.1,9.9,5.2c0.7-0.8,1-1.4,1-2.1c0-0.8-0.5-1.3-1.4-1.3C9,1.8,8.4,2,8,2.3L7.7,1.3C8.2,1,9,0.7,9.8,0.7c1.7,0,2.5,1.1,2.5,2.2c0,1-0.6,1.8-1.3,2.6c-0.7,0.8-0.9,1.4-0.9,2.2l0,0.4H9z M8.7,10.2c0-0.6,0.4-0.9,0.9-0.9c0.5,0,0.9,0.4,0.9,0.9c0,0.5-0.3,0.9-0.9,0.9C9.1,11.2,8.7,10.8,8.7,10.2z')
+                                                        .style('fill-rule', '#evenodd')
+                                                        .style('clip-rule', '#evenodd')
+                                                        .style('fill', '#818385');
+                                                break; 
                                     } 
                                     var elm2 = elm.append('div')
                                         .attr('class', 'localuserlisttext');
