@@ -166,7 +166,13 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'url': 'firewall',
                     'icon': 'fa-chevron-right',
                     'orphans': []
-                },                
+                },  
+                {
+                    'title': 'DNS by Query Type',
+                    'url': 'dns_by_query_type',
+                    'icon': 'fa-level-down',
+                    'orphans': ['dns_by_query_type_local', 'dns_by_query_type_local_drill']
+                },              
             ]
         },
         { // STEALTH
@@ -235,20 +241,6 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
             ]
         },
         //
-            {
-                'title': 'DNS',
-                'url': '',
-                'icon': 'fa-level-up',
-                'children':
-                [
-                    {
-                        'title': 'DNS by Query Type',
-                        'url': 'dns_by_query_type',
-                        'icon': 'fa-level-down',
-                        'orphans': ['dns_by_query_type_local', 'dns_by_query_type_local_drill']
-                    }
-                ]
-            },
             // {
             //     'title': 'SSL',
             //     'url': '',
