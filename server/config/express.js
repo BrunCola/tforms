@@ -51,7 +51,7 @@ module.exports = function(app, passport, version, io, pool) {
         return df(new Date(), 'yy-mm-dd HH:MM:ss');
     });
 
-    app.use(morgan('[:mydate] :method :url :color_output :status:res[content-length] :remote-addr :response-time ms'));
+    app.use(morgan('[:mydate] :method :url :status:res[content-length] :remote-addr :response-time ms'));
 
      // assign the template engine to .html files
     app.engine('html', consolidate[config.templateEngine]);
