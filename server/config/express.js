@@ -41,10 +41,17 @@ module.exports = function(app, passport, version, io, pool) {
 		level: 9
 	}));
 
-	// Only use logger for development environment
-	if (process.env.NODE_ENV === 'development') {
-		app.use(morgan('dev'));
-	}
+	// Only use logger for development environment //NOW USING IN ALL ENVIRONMENTS
+	// if (process.env.NODE_ENV === 'development') {
+	app.use(morgan('dev'));
+
+	morgan.format('mydate', function() {
+	   return new Date();
+	});
+
+	// app.use(morgan('[:mydate] :method\t:url\t:status\t:res[content-length]\t:remote-addr\t:response-time ms'));
+	app.use(morgan('[:mydate] :remote-addr'));
+	// }
 
 	// assign the template engine to .html files
 	app.engine('html', consolidate[config.templateEngine]);
