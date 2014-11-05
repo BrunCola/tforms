@@ -2173,6 +2173,7 @@ Datatables Plugin(in v1.3)
 #listlocalusers{
    /*overflow: hidden !important;*/
    /*height: 700px;*/
+   min-height: 400px;
 }
 
 #listlocalusers button {

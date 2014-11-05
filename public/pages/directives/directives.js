@@ -3009,6 +3009,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
                     var floorDiv = d3.select(element[0]);
 
+
                     var hideListDiv = d3.select('#listlocalusersspan');
                     var expandDiv = d3.select('#floorplanspan');
                     var buttonDiv = d3.select('#triggerbuttons');
@@ -3140,28 +3141,35 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     );          
 
                     // -- hide user list
-                    var hideDiv = d3.select('.hidelocalusers')
+                    console.log();
+                    
+                    var hideDiv = $('.hidelocalusers')
                         .on("click", function () {
                             if (hideListDiv.attr("class") === "floorHide") {
-                                hideListDiv.classed('floorHide', false);
                                 expandDiv.style('width','60%');
                                 // element.width(elementWidth);
                                 // element.height(elementHeight);
                                 floorDiv.style('width',elementWidth+"px");
                                 floorDiv.style('height',elementHeight+"px");
                                 hideDiv.html("&#9668; &#9668; &#9668;");
+                                setTimeout(function () {
+                                    hideListDiv.classed('floorHide', false);
+                                 }, 0);
                             }else{
-                                hideListDiv.classed('floorHide', true);
                                 // console.log(d3.select(element[0]));
                                 floorDiv.style('width',elementWidth*1.25+"px");
                                 floorDiv.style('height',elementHeight*1.25+"px");
                                 // console.log(d3.select(element[0]));
                                 expandDiv.style('width','75%'); 
                                 hideDiv.html("&#9658; &#9658; &#9658;");
+                                setTimeout(function () {
+                                    hideListDiv.classed('floorHide', true);
+                                 }, 0);
                             }
                         })
-                        .html("&#9668; &#9668; &#9668;")
-                        .style("padding-top", (elementHeight/2)+'px');
+                        .attr("style","padding-top:"+ (elementHeight/2)+'px')
+                        .html("&#9668; &#9668; &#9668;");
+                        // .style("padding-top", (elementHeight/2)+'px');
 
                     function saveScale(){
                         console.log(scale);
