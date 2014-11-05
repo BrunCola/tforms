@@ -88,295 +88,6 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
         }
     }
 
-    $scope.points = [
-    {
-        "result":[
-            {
-               "lan_user":"-",
-               "lan_ip":"10.0.0.129"
-            }
-         ],
-         "point":{
-            "type":"File",
-            "time":1414601572.184742,
-            "mime":"image/png",
-            "name":"Share-Arrow-Up(1x).png",
-            "size":347,
-            "md5":"2e5d854358a17055b40c19285b9d5ad0",
-            "sha1":"e4ae91c2f2daa60b6ff069b639361940215afc28",
-            "ioc":"-",
-            "ioc_typeIndicator":"-",
-            "ioc_typeInfection":"-",
-            "ioc_rule":"-",
-            "ioc_severity":0,
-            "ioc_count":0,
-            "lane":9,
-            "checked": false,
-            "info":"File Seen - Share-Arrow-Up(1x).png",
-            "expand":[
-               {
-                  "name":"Time",
-                  "value":1414601572.184742,
-                  "select":"time"
-               },
-               {
-                  "name":"File Type",
-                  "value":"image/png",
-                  "select":"mime"
-               },
-               {
-                  "name":"Name",
-                  "value":"Share-Arrow-Up(1x).png",
-                  "select":"name",
-                  "pattern":true
-               },
-               {
-                  "name":"Size",
-                  "value":347,
-                  "select":"size"
-               },
-               {
-                  "name":"MD5",
-                  "value":"2e5d854358a17055b40c19285b9d5ad0",
-                  "select":"md5"
-               },
-               {
-                  "name":"SHA1",
-                  "value":"e4ae91c2f2daa60b6ff069b639361940215afc28",
-                  "select":"sha1"
-               },
-               {
-                  "name":"IOC",
-                  "value":"-",
-                  "select":"ioc"
-               },
-               {
-                  "name":"IOC Severity",
-                  "value":0,
-                  "select":"ioc_severity"
-               },
-               {
-                  "name":"IOC Type",
-                  "value":"-",
-                  "select":"ioc_typeIndicator"
-               },
-               {
-                  "name":"IOC Stage",
-                  "value":"-",
-                  "select":"ioc_typeInfection"
-               },
-               {
-                  "name":"IOC Rule",
-                  "value":"-",
-                  "select":"ioc_rule"
-               }
-            ],
-            "dd":"2014-10-29T16:52:52.184Z",
-            "id":56
-         },
-         "selected":{
-            "length":1,
-            "Name":{
-               "name":"Name",
-               "value":"Share-Arrow-Up(1x).png",
-               "select":"name",
-               "pattern":true
-            }
-         }
-      },
-      {
-         "result":[
-            {
-               "lan_user":"-",
-               "lan_ip":"10.0.0.129"
-            }
-         ],
-         "point":{
-            "type":"File",
-            "time":1414601572.184742,
-            "mime":"image/png",
-            "name":"Share-Arrow-Up(1x).png",
-            "size":347,
-            "md5":"2e5d854358a17055b40c19285b9d5ad0",
-            "sha1":"e4ae91c2f2daa60b6ff069b639361940215afc28",
-            "ioc":"-",
-            "ioc_typeIndicator":"-",
-            "ioc_typeInfection":"-",
-            "ioc_rule":"-",
-            "ioc_severity":0,
-            "ioc_count":0,
-            "checked": true,
-            "lane":9,
-            "info":"File Seen - Share-Arrow-Up(1x).png",
-            "expand":[
-               {
-                  "name":"Time",
-                  "value":1414601572.184742,
-                  "select":"time"
-               },
-               {
-                  "name":"File Type",
-                  "value":"image/png",
-                  "select":"mime"
-               },
-               {
-                  "name":"Name",
-                  "value":"Share-Arrow-Up(1x).png",
-                  "select":"name",
-                  "pattern":true
-               },
-               {
-                  "name":"Size",
-                  "value":347,
-                  "select":"size"
-               },
-               {
-                  "name":"MD5",
-                  "value":"2e5d854358a17055b40c19285b9d5ad0",
-                  "select":"md5"
-               },
-               {
-                  "name":"SHA1",
-                  "value":"e4ae91c2f2daa60b6ff069b639361940215afc28",
-                  "select":"sha1"
-               },
-               {
-                  "name":"IOC",
-                  "value":"-",
-                  "select":"ioc"
-               },
-               {
-                  "name":"IOC Severity",
-                  "value":0,
-                  "select":"ioc_severity"
-               },
-               {
-                  "name":"IOC Type",
-                  "value":"-",
-                  "select":"ioc_typeIndicator"
-               },
-               {
-                  "name":"IOC Stage",
-                  "value":"-",
-                  "select":"ioc_typeInfection"
-               },
-               {
-                  "name":"IOC Rule",
-                  "value":"-",
-                  "select":"ioc_rule"
-               }
-            ],
-            "dd":"2014-10-29T16:52:52.184Z",
-            "id":54
-         },
-         "selected":{
-            "length":1,
-            "Name":{
-               "name":"Name",
-               "value":"Share-Arrow-Up(1x).png",
-               "select":"name",
-               "pattern":true
-            }
-         }
-      },
-      {
-         "result":[
-            {
-               "lan_user":"-",
-               "lan_ip":"10.0.0.129"
-            }
-         ],
-         "point":{
-            "type":"File",
-            "time":1414601572.184742,
-            "mime":"image/png",
-            "name":"Share-Arrow-Up(1x).png",
-            "size":347,
-            "md5":"2e5d854358a17055b40c19285b9d5ad0",
-            "sha1":"e4ae91c2f2daa60b6ff069b639361940215afc28",
-            "ioc":"-",
-            "ioc_typeIndicator":"-",
-            "ioc_typeInfection":"-",
-            "ioc_rule":"-",
-            "ioc_severity":0,
-            "checked": true,
-            "ioc_count":0,
-            "lane":9,
-            "info":"File Seen - Share-Arrow-Up(1x).png",
-            "expand":[
-               {
-                  "name":"Time",
-                  "value":1414601572.184742,
-                  "select":"time"
-               },
-               {
-                  "name":"File Type",
-                  "value":"image/png",
-                  "select":"mime"
-               },
-               {
-                  "name":"Name",
-                  "value":"Share-Arrow-Up(1x).png",
-                  "select":"name",
-                  "pattern":true
-               },
-               {
-                  "name":"Size",
-                  "value":347,
-                  "select":"size"
-               },
-               {
-                  "name":"MD5",
-                  "value":"2e5d854358a17055b40c19285b9d5ad0",
-                  "select":"md5"
-               },
-               {
-                  "name":"SHA1",
-                  "value":"e4ae91c2f2daa60b6ff069b639361940215afc28",
-                  "select":"sha1"
-               },
-               {
-                  "name":"IOC",
-                  "value":"-",
-                  "select":"ioc"
-               },
-               {
-                  "name":"IOC Severity",
-                  "value":0,
-                  "select":"ioc_severity"
-               },
-               {
-                  "name":"IOC Type",
-                  "value":"-",
-                  "select":"ioc_typeIndicator"
-               },
-               {
-                  "name":"IOC Stage",
-                  "value":"-",
-                  "select":"ioc_typeInfection"
-               },
-               {
-                  "name":"IOC Rule",
-                  "value":"-",
-                  "select":"ioc_rule"
-               }
-            ],
-            "dd":"2014-10-29T16:52:52.184Z",
-            "id":52
-         },
-         "selected":{
-            "length":1,
-            "Name":{
-               "name":"Name",
-               "value":"Share-Arrow-Up(1x).png",
-               "select":"name",
-               "pattern":true
-            }
-         }
-      }
-    ];
-    $scope.matched = compare($scope.points);
-
     var query;
     if ($location.$$search.start && $location.$$search.end) {
         query = '/ioc_notifications/ioc_events_drilldown?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc+'&ioc_attrID='+$location.$$search.ioc_attrID+'&lan_user='+$location.$$search.lan_user;
@@ -639,18 +350,21 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                 });
         }
     }
-    $scope.patternPane = true;
+    $scope.patternPane = false;
     $scope.$on('patternPane', function (event, data) {
         if ($scope.patternPane) { $scope.patternPane = false; return }
-        // loop through and add a checked flag for each point (for use in finsing comonalities)
+        // loop through and add a checked flag for each point (for use in finding commonalities)
         data.forEach(function(d){
             d.point.checked = true;
         })
         $scope.$broadcast('appendRowIcon');
         $scope.patternPane = true;
-        console.log(data)
         $scope.points = data;
-        $scope.matched = compare(data);
+        if (data.length === 1) {
+            $scope.matched = data[0].result;
+        } else {
+            $scope.matched = compare(data);
+        }
     })
     $scope.checkboxChange = function() {
         // whenever a checkbox is checked, re-compare our existing points
@@ -662,5 +376,8 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             // otherwise just attempt to compare .. it will still return null if points.length is 0
             $scope.matched = compare(points);
         }
+    }
+    $scope.closePatternBox = function() {
+        $scope.patternPane = false;
     }
 }]);

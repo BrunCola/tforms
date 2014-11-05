@@ -89,13 +89,36 @@ p{
 
 
 
-
+.patternPane {
+  position: relative;
+}
+.patternPane .closeBtnContainer{
+  position: absolute;
+  z-index: 200;
+}
+.patternPane .closeBtnContainer .closeBtn{
+  margin-top: 40px;
+  text-align: center;
+  height: 30px;
+  width: 30px;
+  line-height: 30px;
+  background-color: #CC0000;
+  color: #FFFFFF;
+}
+.patternPane .closeBtnContainer:hover{
+  cursor: pointer;
+}
+.patternPane .container {
+  width: 100%;
+  z-index: 100;
+  position: absolute;
+}
 .lanePatternInfoPane {
-  /*position: absolute;*/
   display: block;
   background-color: #e6e6e6;
   margin-top: 40px;
-  padding:20px;
+  padding-bottom: 20px;
+  padding: 20px;
 }
 .lanePatternInfoPane div.title {
   font-family: Helvetica Neue;
@@ -104,10 +127,7 @@ p{
   text-align: center;
 }
 .lanePatternInfoPane div.list-container {
-  /*overflow: scroll;*/
   margin-top: 20px;
-  /*padding: 10px 15px 0 15px;*/
-  /*height: 100%;*/
 }
 .lanePatternInfoPane div.list-row {
   line-height: 76px;
@@ -212,6 +232,7 @@ p{
 .patternInfoRight {
   /*position: absolute;*/
   display: block;
+  overflow: scroll;
   background-color: #e6e6e6;
   margin-top: 40px;
 }

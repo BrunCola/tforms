@@ -1,6 +1,11 @@
-<!-- <section> -->
-    <div ng-show="patternPane" class="row-fluid" style="position:absolute">
-        <div class="span8 lanePatternInfoPane" style="height:{{height}}px">
+<div ng-show="patternPane" class="patternPane">
+    <div ng-click="closePatternBox()" class="closeBtnContainer">
+        <div class="closeBtn">
+            x
+        </div>
+    </div>
+    <div class="container">
+        <div class="span8 lanePatternInfoPane" style="height:{{height+20}}px">
             <div class="row-fuid">
                 <div class="span8">
                     <div class="title">Selected Events</div>
@@ -42,6 +47,7 @@
         </div>
         <div style="height:{{height}}px" style="overflow:scroll" class="span4 patternInfoRight">
             <section ng-if="matched.length > 0">
+                Common Users
                 <li class="rightList" ng-repeat="match in matched">
                     <div class="lanegraphlist">
                         <strong>{{match.lan_user}}:</strong> {{match.lan_ip}}
@@ -55,4 +61,4 @@
             </section>
         </div>
     </div>
-<!-- </section> -->
+</div>

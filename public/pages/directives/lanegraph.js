@@ -475,7 +475,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             $scope.pattern.selected = {
                                 length: 0
                             };
-                            lineStory.selectAll('line').remove();
                         }
                         if ($scope.pattern.last !== null) {
                             laneInfoAppend($scope.pattern.last.data, $scope.pattern.last.element);
@@ -492,6 +491,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 // send info to pattern pane
                                 $scope.$broadcast('patternPane', data);
                                 // call clear points function
+                                itemRects.selectAll(".eventStory").remove();
+                                lineStory.selectAll('line').remove();
                                 // turn off loading
                                 loading('end');
                                 // broadcast right pane overlay
@@ -632,7 +633,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 // logic for appending row information in sidebar
                 function laneInfoAppend(data, element) {
                     element.select('.infoDivExpanded').selectAll('li').remove();
-                    
                     var line = element
                         .select('.infoDivExpanded')
                         .selectAll('li')
