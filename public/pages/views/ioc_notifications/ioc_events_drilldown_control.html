@@ -1,8 +1,8 @@
-<section>
-    <div ng-show="patternPane" class="row-fluid" style="width:100%;">
+<!-- <section> -->
+    <div ng-show="patternPane" class="row-fluid" style="position:absolute">
         <div class="span8 lanePatternInfoPane" style="height:{{height}}px">
             <div class="row-fuid">
-                <div class="span6">
+                <div class="span8">
                     <div class="title">Selected Events</div>
                 </div>
                 <div class="span4">
@@ -14,7 +14,7 @@
                     <div ng-repeat="(key, value) in points" class="list-row">
                         <div ng-if="key != 'length'">
                             <div class="row-fluid">
-                                <div class="span6">
+                                <div class="span8">
                                     <div class="pattern-checkbox">
                                         <div class="squaredTwo">
                                             <input type="checkbox" value="None" id="pattern-check-{{value.point.id}}" name="check" ng-change="checkboxChange()" ng-model="value.point.checked"/>
@@ -40,11 +40,19 @@
                 </div>
             </div>
         </div>
-        <div style="height:{{height}}px" class="span4 lanePatternInfoPane">
-            Common Users
-            <li class="rightList" ng-repeat="match in matched">
-                <strong>{{match.lan_user}}:</strong> {{match.lan_ip}}
-            </li>
+        <div style="height:{{height}}px" style="overflow:scroll" class="span4 patternInfoRight">
+            <section ng-if="matched.length > 0">
+                <li class="rightList" ng-repeat="match in matched">
+                    <div class="lanegraphlist">
+                        <strong>{{match.lan_user}}:</strong> {{match.lan_ip}}
+                    </div>
+                </li>
+            </section>
+            <section ng-if="((!matched) || (matched.length == 0))">
+                <div class="matchError">
+                    Sorry, no common matches.
+                </div>
+            </section>
         </div>
     </div>
-</section>
+<!-- </section> -->

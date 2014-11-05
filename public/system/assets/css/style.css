@@ -209,12 +209,26 @@ p{
   opacity: 1;
 }
 /* RIGHT LIST*/
-.lanePatternInfoPane .rightList{
+.patternInfoRight {
+  /*position: absolute;*/
+  display: block;
+  background-color: #e6e6e6;
+  margin-top: 40px;
+}
+.patternInfoRight .rightList{
   /*position: absolute;*/
   list-style: none;
+  min-height: 30px;
+  padding: 7px;
+  line-height: 30px;
 }
-
-
+.patternInfoRight .rightList:nth-child(odd) {
+  background-color: #DEDEDE;
+}
+.patternInfoRight .matchError {
+  text-align: center;
+  padding-top: 50%;
+}
 
 
 .node{
