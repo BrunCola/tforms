@@ -46,14 +46,45 @@ module.exports = function(app, passport, version, io, pool) {
        app.use(morgan('dev'));
     } 
 
-    morgan.format('mydate', function() {
-        var df = require('dateformat');
-        return df(new Date(), 'yy-mm-dd HH:MM:ss');
-    });
+    //
+    // replace in morgan/index.js for slightly more interesting logging
+    //
 
-    app.use(morgan('[:mydate] :method :url :status:res[content-length] :remote-addr :response-time ms'));
+    // exports.format('dev', function(tokens, req, res){
 
-     // assign the template engine to .html files
+    //     var console_timestamp = function() {
+    //         return function() {
+    //             var df = require('dateformat');
+    //             return df(new Date(), 'yy-mm-dd HH:MM:ss');
+    //         }
+    //     }
+    //     var timestamp = console_timestamp()
+
+    //   var status = res.statusCode
+    //     , len = parseInt(res.getHeader('Content-Length'), 10)
+    //     , color = 32;
+
+    //   if (status >= 500) color = 31
+    //   else if (status >= 400) color = 33
+    //   else if (status >= 300) color = 36;
+
+    //   len = isNaN(len)
+    //     ? ''
+    //     : len = ' - ' + bytes(len);
+      
+    //   return '[' + timestamp() + '] \x1b[90m' + req.method
+    //     + ' ' + (req.originalUrl || req.url) + ' '
+    //     + '\x1b[' + color + 'm' + res.statusCode
+    //     + ' \x1b[90m'
+    //     + req.ip + ' '
+    //     + (new Date - req._startTime)
+    //     + 'ms' + len
+    //     + '\x1b[0m';
+    // });
+
+
+
+    // assign the template engine to .html files
     app.engine('html', consolidate[config.templateEngine]);
 
     // set .html as the default extension
