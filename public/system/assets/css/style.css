@@ -2356,10 +2356,11 @@ Datatables Plugin(in v1.3)
 .action-bttns.blue{
   background-color: #377FC7;
 }
-a.epmap{
+.epmap{
   color: #4b8df8;
   text-decoration: underline;
   font-weight: bold;
+  cursor: pointer;
 }
 button.userfloorbutton{
   background: none;

@@ -39,6 +39,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
 
         }
         if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
+            console.log("test");
             var query = '/local_events/endpoint_map?lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&type=flooruser';
             $http({method: 'GET', url: query+'&typeinfo=userinfoload'}).
                 success(function(data) {
@@ -60,8 +61,6 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             params.end = $location.$$search.end;
         }
         if (url !== '') {
-            console.log(url);
-            console.log(params);
             $location.path(url).search(params);
         }
     }

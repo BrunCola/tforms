@@ -518,6 +518,18 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 
     });
 
+    $scope.changePage = function (url, params) {
+        if ($location.$$search.start && $location.$$search.end) {
+            params.start = $location.$$search.start;
+            params.end = $location.$$search.end;
+        }
+        if (url !== '') {
+          console.log(url);
+          console.log(params);
+            $location.path(url).search(params);
+        }
+    }
+
     $scope.requery = function(min, max, callback) {
         var minUnix = moment(min).unix();
         var maxUnix = moment(max).unix();
