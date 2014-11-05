@@ -29,21 +29,21 @@ module.exports = function(pool) {
                         });  
                         break;
                     case 'localapp':
-                        new query({query: 'SELECT count(*) AS localapp FROM `conn_l7_meta` WHERE (time between ? AND ?) AND  `lan_ip` = ? AND `lan_zone` = ?', insert: [start, end, req.query.lan_ip, req.query.lan_zone]}, {database: database, pool: pool}, function(err,data){
+                        new query({query: 'SELECT sum(`count`) AS localapp FROM `conn_l7_meta` WHERE (time between ? AND ?) AND  `lan_ip` = ? AND `lan_zone` = ?', insert: [start, end, req.query.lan_ip, req.query.lan_zone]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
                             }
                         });  
                         break;
                     case 'localhttp':
-                        new query({query: 'SELECT count(*) AS localhttp FROM `http_meta` WHERE (time between ? AND ?) AND  `lan_ip` = ? AND `lan_zone` = ?', insert: [start, end, req.query.lan_ip, req.query.lan_zone]}, {database: database, pool: pool}, function(err,data){
+                        new query({query: 'SELECT sum(`count`) AS localhttp FROM `http_meta` WHERE (time between ? AND ?) AND  `lan_ip` = ? AND `lan_zone` = ?', insert: [start, end, req.query.lan_ip, req.query.lan_zone]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
                             }
                         });  
                         break;
                     case 'localfiles':
-                        new query({query: 'SELECT count(*) AS localfiles FROM `file_meta` WHERE (file_meta.time between ? AND ?) AND  file_meta.lan_ip = ? AND `lan_zone` = ?', insert: [start, end, req.query.lan_ip, req.query.lan_zone]}, {database: database, pool: pool}, function(err,data){
+                        new query({query: 'SELECT sum(`count`) AS `localfiles` FROM `file_meta` WHERE (file_meta.time between ? AND ?) AND  file_meta.lan_ip = ? AND `lan_zone` = ?', insert: [start, end, req.query.lan_ip, req.query.lan_zone]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
                             }
