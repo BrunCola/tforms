@@ -243,6 +243,17 @@ module.exports = function(pool) {
                         res.send(200);
                     }
                 });
+            } else if (req.query.type === 'saveFloorScale') {
+
+                var update_floor = {
+                    query: "update `assets` SET `scale`=? WHERE `type`='map' AND `asset_name`=?",
+                    insert: [req.body.scale, req.body.floor.asset_name]
+                }                
+                new query(update_floor, {database: database, pool: pool}, function(err,data){
+                    if (err) {
+                        res.send(500);
+                    }
+                });
             } else if (req.query.type === 'editFloorInfo') {
 
                 var update_floor = {

@@ -3013,6 +3013,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     var hideListDiv = d3.select('#listlocalusersspan');
                     var expandDiv = d3.select('#floorplanspan');
                     var buttonDiv = d3.select('#triggerbuttons');
+                    var scaleButtonDiv = $('#scalebuttons');
 
                     // -- sets selected class for CSS 
                     $scope.$on('setSelected', function (event, selected) { 
@@ -3140,40 +3141,29 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         false
                     );          
 
-                    // -- hide user list
-                    console.log();
-                    
+                    // -- hide user list                    
                     var hideDiv = $('.hidelocalusers')
                         .on("click", function () {
                             if (hideListDiv.attr("class") === "floorHide") {
                                 expandDiv.style('width','60%');
-                                // element.width(elementWidth);
-                                // element.height(elementHeight);
                                 floorDiv.style('width',elementWidth+"px");
                                 floorDiv.style('height',elementHeight+"px");
                                 hideDiv.html("&#9668; &#9668; &#9668;");
                                 setTimeout(function () {
                                     hideListDiv.classed('floorHide', false);
-                                 }, 0);
+                                }, 0);
                             }else{
-                                // console.log(d3.select(element[0]));
                                 floorDiv.style('width',elementWidth*1.25+"px");
                                 floorDiv.style('height',elementHeight*1.25+"px");
-                                // console.log(d3.select(element[0]));
                                 expandDiv.style('width','75%'); 
                                 hideDiv.html("&#9658; &#9658; &#9658;");
                                 setTimeout(function () {
                                     hideListDiv.classed('floorHide', true);
-                                 }, 0);
+                                }, 0);
                             }
                         })
                         .attr("style","padding-top:"+ (elementHeight/2)+'px')
                         .html("&#9668; &#9668; &#9668;");
-                        // .style("padding-top", (elementHeight/2)+'px');
-
-                    function saveScale(){
-                        console.log(scale);
-                    }
 
                     // -- zoom behaviours 
                     function zoomed() {
@@ -3516,36 +3506,41 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             $scope.requery(d, 'flooruser');
                                             lastUserRequeried = d.id;
                                         });
-                                    if (d.stealth === 1) {
-                                        element
-                                            .attr('height', '25')
-                                            .attr('width', '31')
-                                        .append('svg:path')
-                                            .attr('d', 'M22,18.4c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0C2.2,13.9,0,16,0,18.7c0,1,0,6.2,0,6.2h3.3c0,0,0-3.4,0-3.5c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.6,1,1.1c0,0.2,0,3.5,0,3.5h11.4c0,0,0-3.5,0-3.5c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.6,0.9,1.1c0,0,0,3.5,0,3.5H22L22,18.4z')
-                                            .style('fill-rule', '#evenodd')
-                                            .style('clip-rule', '#evenodd')
-                                            .style('fill', iconColour);
-                                        element.append('svg:path')
-                                            .attr('d', 'M31.3,2.5C27.9,2.6,26.2,0,26.2,0c0,0-1.5,2.5-5.2,2.5c0,4.2,0.7,6.9,2.2,9.6c0.1,0.2,1,2.1,2.9,2.1c2,0,2.8-2,3-2.3C30.9,9,31.3,5.7,31.3,2.5z')
-                                            .style('fill', iconColour);
-                                        element.append('circle')
-                                            .attr('cx', 11.1)
-                                            .attr('cy', 7.3)
-                                            .attr('r', 4.9)
-                                            .style('fill-rule', '#evenodd')
-                                            .style('clip-rule', '#evenodd')
-                                            .style('fill', iconColour);
-                                    } else { 
+                                    // if (d.stealth === 1) {
+                                    //     element
+                                    //         .attr('height', '25')
+                                    //         .attr('width', '31')
+                                    //     .append('svg:path')
+                                    //         .attr('d', 'M22,18.4c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0C2.2,13.9,0,16,0,18.7c0,1,0,6.2,0,6.2h3.3c0,0,0-3.4,0-3.5c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.6,1,1.1c0,0.2,0,3.5,0,3.5h11.4c0,0,0-3.5,0-3.5c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.6,0.9,1.1c0,0,0,3.5,0,3.5H22L22,18.4z')
+                                    //         .style('fill-rule', '#evenodd')
+                                    //         .style('clip-rule', '#evenodd')
+                                    //         .style('fill', iconColour);
+                                    //     element.append('svg:path')
+                                    //         .attr('d', 'M31.3,2.5C27.9,2.6,26.2,0,26.2,0c0,0-1.5,2.5-5.2,2.5c0,4.2,0.7,6.9,2.2,9.6c0.1,0.2,1,2.1,2.9,2.1c2,0,2.8-2,3-2.3C30.9,9,31.3,5.7,31.3,2.5z')
+                                    //         .style('fill', iconColour);
+                                    //     element.append('circle')
+                                    //         .attr('cx', 11.1)
+                                    //         .attr('cy', 7.3)
+                                    //         .attr('r', 4.9)
+                                    //         .style('fill-rule', '#evenodd')
+                                    //         .style('clip-rule', '#evenodd')
+                                    //         .style('fill', iconColour);
+                                    // } else { 
                                         switch (d.lan_type){
                                             case 'endpoint':
                                                 element
                                                     .attr('height', '23')
-                                                    .attr('width', '23')
+                                                    .attr('width', '31')
                                                     .append('svg:path')
                                                     .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
                                                     .style('fill', iconColour);
+                                                if (d.stealth === 1) {
+                                                    element.append('svg:path')
+                                                        .attr('d', 'M31.3,2.5C27.9,2.6,26.2,0,26.2,0c0,0-1.5,2.5-5.2,2.5c0,4.2,0.7,6.9,2.2,9.6c0.1,0.2,1,2.1,2.9,2.1c2,0,2.8-2,3-2.3C30.9,9,31.3,5.7,31.3,2.5z')
+                                                        .style('fill', iconColour);
+                                                }
                                                 element.append('circle')
                                                     .attr('cx', 11.1)
                                                     .attr('cy', 4.9)
@@ -3557,7 +3552,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             case 'server':
                                                 element
                                                     .attr('height', '21')
-                                                    .attr('width', '19')
+                                                    .attr('width', '31')
                                                 .append('svg:polygon')
                                                     .attr('points', '10,17 9,17 9,18 6,18 6,21 13,21 13,18 10,18') 
                                                     .style('fill', iconColour);
@@ -3572,6 +3567,11 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                     .attr('width', 5)
                                                     .attr('height', 1)
                                                     .style('fill', iconColour);
+                                                if (d.stealth === 1) {
+                                                    element.append('svg:path')
+                                                        .attr('d', 'M31.3,2.5C27.9,2.6,26.2,0,26.2,0c0,0-1.5,2.5-5.2,2.5c0,4.2,0.7,6.9,2.2,9.6c0.1,0.2,1,2.1,2.9,2.1c2,0,2.8-2,3-2.3C30.9,9,31.3,5.7,31.3,2.5z')
+                                                        .style('fill', iconColour);
+                                                }
                                                 element.append('path')
                                                     .style('fill', iconColour)
                                                     .attr('d', 'M19,12H0v4h19V12z M3,15H1v-2h2V15z');
@@ -3585,22 +3585,32 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             case 'mobile':
                                                 element
                                                     .attr('height', '22')
-                                                    .attr('width', '14')
+                                                    .attr('width', '31')
                                                 .append('svg:path')
                                                     .attr('d', 'M0,0v22h14V0H0z M7,20c-0.6,0-1-0.4-1-1c0-0.6,0.4-1,1-1c0.6,0,1,0.4,1,1C8,19.6,7.6,20,7,20z M12,17H2V2h10V17z')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
                                                     .style('fill', iconColour);
+                                                if (d.stealth === 1) {
+                                                    element.append('svg:path')
+                                                        .attr('d', 'M31.3,2.5C27.9,2.6,26.2,0,26.2,0c0,0-1.5,2.5-5.2,2.5c0,4.2,0.7,6.9,2.2,9.6c0.1,0.2,1,2.1,2.9,2.1c2,0,2.8-2,3-2.3C30.9,9,31.3,5.7,31.3,2.5z')
+                                                        .style('fill', iconColour);
+                                                }
                                                 break;
                                             default:
                                                 element
                                                     .attr('height', '23')
-                                                    .attr('width', '23')
+                                                    .attr('width', '31')
                                                 .append('svg:path')
                                                     .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
                                                     .style('fill', iconColour);
+                                                if (d.stealth === 1) {
+                                                    element.append('svg:path')
+                                                        .attr('d', 'M31.3,2.5C27.9,2.6,26.2,0,26.2,0c0,0-1.5,2.5-5.2,2.5c0,4.2,0.7,6.9,2.2,9.6c0.1,0.2,1,2.1,2.9,2.1c2,0,2.8-2,3-2.3C30.9,9,31.3,5.7,31.3,2.5z')
+                                                        .style('fill', iconColour);
+                                                }
                                                 element.append('circle')
                                                     .attr('cx', 11.1)
                                                     .attr('cy', 4.9)
@@ -3609,7 +3619,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                     .style('clip-rule', '#evenodd')
                                                     .style('fill', iconColour);
                                                 break;
-                                        } 
+                                        // } 
                                     } 
                                     var elm2 = elm.append('div')
                                         .attr('class', 'localuserlisttext');
@@ -3743,10 +3753,15 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                         });
 
-                    // buttonDiv.append('button')
-                    //     .html('Save Scale')
-                    //     .attr('class', 'pure-button')
-                    //     .on('click', saveScale);
+
+                    scaleButtonDiv.append('button')
+                        .html('Save Scale')
+                        .attr('class', 'pure-button')
+                        .on('click', function (d) {
+                            if ($scope.floor.active) {
+                                $http({method: 'POST', url: '/local_events/endpoint_map?type=saveFloorScale', data: {scale: scale,floor: $scope.floor}});
+                            }
+                        });
 
                        /* buttonDiv.append('button')
                             .html('Zoom In')

@@ -2387,7 +2387,11 @@ button.userfloorbutton{
   margin: 0px 1px;  
   border-radius: 4px;
 }
-#editbuttons{
+#scalebuttons {
+  margin: 0px 1px;  
+  border-radius: 4px;
+}
+#editbuttons, #scalebuttons{
   float: right;
 }
 button.rndCrnBtn {

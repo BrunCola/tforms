@@ -16,7 +16,18 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             var count = 0;
             $scope.data.users.forEach(function(d){
                 d.id = count++;
+                if (d.lan_os.toLowerCase().indexOf("win") !== -1 ){
+                    d.machine_icon = "win";
+                } else if ((d.lan_os.toLowerCase().indexOf("os") !== -1) ||  (d.lan_os.toLowerCase().indexOf("apple") !== -1)){
+                    d.machine_icon = "os";
+                } else if (d.lan_os.toLowerCase().indexOf("linux") !== -1 ){
+                    d.machine_icon = "linux";
+                } else {
+                    d.machine_icon = "none";
+                } 
             })
+
+
 
             $scope.crossfilterData = crossfilter(data.users);
             $scope.searchDimension = $scope.crossfilterData.dimension(function(d) { return d });
@@ -36,10 +47,11 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.$broadcast('spinnerHide');
             $scope.floors = data.floor;
             $scope.floors[0].active = true;
+            $scope.floors[1].active = false;
+            $scope.floors[2].active = false;
 
         }
         if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
-            console.log("test");
             var query = '/local_events/endpoint_map?lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&type=flooruser';
             $http({method: 'GET', url: query+'&typeinfo=userinfoload'}).
                 success(function(data) {
