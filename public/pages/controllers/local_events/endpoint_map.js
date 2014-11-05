@@ -3,6 +3,9 @@
 angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', 'searchFilter', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, searchFilter) {
     $scope.global = Global;
     var query = '/local_events/endpoint_map?';
+    if ($location.$$search.start && $location.$$search.end) {
+        query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end;
+    } 
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {
     success(function(data) {
@@ -40,7 +43,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $http({method: 'GET', url: query+'&typeinfo=userinfoload'}).
                 success(function(data) {
                     if (data[0] !== undefined) {
-                        $scope.floors.filter(function(d){ if ((data[0].map === d.custom_name)) { d.active = true; }});
+                        $scope.floors.filter(function(d){ if ((data[0].map === d.asset_name)) { d.active = true; }});
                         $scope.requery(data[0]);
                         var selected = $scope.data.users.filter(function(d){ if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ return true }});
                         if (selected[0] !== undefined) { $scope.$broadcast('setSelected', selected[0]); }
@@ -48,6 +51,21 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 });
         }
     }); 
+
+
+
+    $scope.changePage = function (url, params) {
+        if ($location.$$search.start && $location.$$search.end) {
+            params.start = $location.$$search.start;
+            params.end = $location.$$search.end;
+        }
+        if (url !== '') {
+            console.log(url);
+            console.log(params);
+            $location.path(url).search(params);
+        }
+    }
+
 
     /*$http({method: 'GET', url: '/local_events/endpoint_map?type=max_order'}).
         success(function(data) {
@@ -57,9 +75,16 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
 
     $scope.requery = function(d) {
          // get user image
-        if ($scope.lan_ip !== '-') {
-            var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser'; 
-            
+         if (d === "clear") {
+            $scope.userinfo = [];
+         } else if ($scope.lan_ip !== '-') {
+            var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser';
+            $scope.startend = ""; 
+            if ($location.$$search.start && $location.$$search.end) {
+                query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser'; 
+                $scope.startend = 'start='+$location.$$search.start+'&end='+$location.$$search.end+'&'; 
+            } 
+
             $http({method: 'GET', url: query+'&typeinfo=assets'}).
                 success(function(data) {
                     if (data[0] !== undefined) {
