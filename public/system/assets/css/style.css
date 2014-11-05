@@ -88,22 +88,46 @@ p{
 
 
 
-.lanePatternInfoPane {
+
+.patternPane {
+  position: relative;
+}
+.patternPane .closeBtnContainer{
   position: absolute;
+  z-index: 200;
+}
+.patternPane .closeBtnContainer .closeBtn{
+  margin-top: 40px;
+  text-align: center;
+  height: 30px;
+  width: 30px;
+  line-height: 30px;
+  background-color: #CC0000;
+  color: #FFFFFF;
+}
+.patternPane .closeBtnContainer:hover{
+  cursor: pointer;
+}
+.patternPane .container {
+  width: 100%;
+  z-index: 100;
+  position: absolute;
+}
+.lanePatternInfoPane {
   display: block;
   background-color: #e6e6e6;
+  margin-top: 40px;
+  padding-bottom: 20px;
+  padding: 20px;
 }
 .lanePatternInfoPane div.title {
   font-family: Helvetica Neue;
   font-size: 20px;
   font-weight: 300;
   text-align: center;
-  padding: 30px 0px 5px 0px;
 }
 .lanePatternInfoPane div.list-container {
-  overflow: scroll;
-  padding: 10px 15px 0 15px;
-  height: 100%;
+  margin-top: 20px;
 }
 .lanePatternInfoPane div.list-row {
   line-height: 76px;
@@ -139,7 +163,6 @@ p{
   font-weight: 300;
   text-align: center;
 }
-
 .lanePatternInfoPane input[type=checkbox] {
   visibility: hidden;
 }
@@ -205,8 +228,28 @@ p{
   filter: alpha(opacity=100);
   opacity: 1;
 }
-
-
+/* RIGHT LIST*/
+.patternInfoRight {
+  /*position: absolute;*/
+  display: block;
+  overflow: scroll;
+  background-color: #e6e6e6;
+  margin-top: 40px;
+}
+.patternInfoRight .rightList{
+  /*position: absolute;*/
+  list-style: none;
+  min-height: 30px;
+  padding: 7px;
+  line-height: 30px;
+}
+.patternInfoRight .rightList:nth-child(odd) {
+  background-color: #DEDEDE;
+}
+.patternInfoRight .matchError {
+  text-align: center;
+  padding-top: 50%;
+}
 
 
 .node{
@@ -214,6 +257,16 @@ p{
 }
 #lanegraphinfo{
   /*overflow: hidden !important;*/
+}
+
+#lanegraph .laneAlert {
+  background-color: #CC0000;
+  padding: 0 10px 0 10px;
+  text-align: center;
+  color: #FFFFFF;
+  float: right;
+  display: none;
+  width: 140px;
 }
 
 .laneInfo {

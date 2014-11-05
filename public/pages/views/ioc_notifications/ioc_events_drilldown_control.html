@@ -1,42 +1,64 @@
-<section>
-    <div ng-show="patternPane" class="lanePatternInfoPane" style="width:{{width}}px; height:{{height+20}}px; margin-top:40px">
-        <div class="row-fuid">
-            <div class="span6">
-                <div class="title">Selected Events</div>
-            </div>
-            <div class="span6">
-                <div class="title">Users matching these events</div>
-            </div>
-        </div>
-        <div class="row-fuid">
-            <div class="list-container">
-                <div ng-repeat="(key, value) in points.queried" class="list-row">
-                    <div ng-if="key != 'length'">
-                        <div class="row-fluid">
-                            <div class="span6 offset1">
-                                <div class="pattern-checkbox">
-                                    <div class="squaredTwo">
-                                        <input type="checkbox" value="None" id="pattern-check-{{value.point.id}}" name="check" />
-                                        <label for="pattern-check-{{value.point.id}}"></label>
-                                    </div>
-                                </div>
-                                <div class="pattern-row-icon" append-row-icon type="{{value.point.type}}"></div>
-                                <div class="pattern-row-type">{{value.point.type}}</div>
-                                <div class="pattern-row-selected">
-                                    <li ng-repeat="(selectedKey, selectedValue) in value.selected">
-                                        <div ng-if="selectedKey != 'length'">
-                                            {{selectedValue.name}}: {{selectedValue.value}}
-                                        </div>
-                                    </li>
-                                </div>
-                            </div>
-                            <div class="span4">
-                                 <div class="pattern-result-count"><strong>{{value.result.length}}</strong></div>
-                            </div>
-                        </div>
-                    </div>
-               </div>
-            </div>
+<div ng-show="patternPane" class="patternPane">
+    <div ng-click="closePatternBox()" class="closeBtnContainer">
+        <div class="closeBtn">
+            x
         </div>
     </div>
-</section>
+    <div class="container">
+        <div class="span8 lanePatternInfoPane" style="height:{{height+20}}px">
+            <div class="row-fuid">
+                <div class="span8">
+                    <div class="title">Selected Events</div>
+                </div>
+                <div class="span4">
+                    <div class="title">Number of users matching these events</div>
+                </div>
+            </div>
+            <div class="row-fuid">
+                <div class="list-container">
+                    <div ng-repeat="(key, value) in points" class="list-row">
+                        <div ng-if="key != 'length'">
+                            <div class="row-fluid">
+                                <div class="span8">
+                                    <div class="pattern-checkbox">
+                                        <div class="squaredTwo">
+                                            <input type="checkbox" value="None" id="pattern-check-{{value.point.id}}" name="check" ng-change="checkboxChange()" ng-model="value.point.checked"/>
+                                            <label for="pattern-check-{{value.point.id}}"></label>
+                                        </div>
+                                    </div>
+                                    <div class="pattern-row-icon" append-row-icon type="{{value.point.type}}"></div>
+                                    <div class="pattern-row-type">{{value.point.type}}</div>
+                                    <div class="pattern-row-selected">
+                                        <li ng-repeat="(selectedKey, selectedValue) in value.selected">
+                                            <div ng-if="selectedKey != 'length'">
+                                                {{selectedValue.name}}: {{selectedValue.value}}
+                                            </div>
+                                        </li>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="pattern-result-count"><strong>{{value.result.length}}</strong></div>
+                                </div>
+                            </div>
+                        </div>
+                   </div>
+                </div>
+            </div>
+        </div>
+        <div style="height:{{height}}px" style="overflow:scroll" class="span4 patternInfoRight">
+            <section ng-if="matched.length > 0">
+                Common Users
+                <li class="rightList" ng-repeat="match in matched">
+                    <div class="lanegraphlist">
+                        <strong>{{match.lan_user}}:</strong> {{match.lan_ip}}
+                    </div>
+                </li>
+            </section>
+            <section ng-if="((!matched) || (matched.length == 0))">
+                <div class="matchError">
+                    Sorry, no common matches.
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
