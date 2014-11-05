@@ -3294,7 +3294,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 .append('svg');
                                      element
                                             .attr('height', '25')
-                                            .attr('width', '41')
+                                            .attr('width', '43')
                                         switch (d.lan_type){
                                             case 'endpoint':
                                                 element
@@ -3349,35 +3349,35 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     } 
 
                                     if (d.stealth === 1) {
-                                        element.append('svg:path')
+                                        element.append('g').append('svg:path')
                                             .attr('transform', 'translate(26,0)')
                                             .attr('d', 'M14.1,1.9C11.2,2,9.6,0,9.6,0c0,0-1.3,1.9-4.5,1.9c0,3.2,0.6,5.4,2,7.4C7.2,9.5,8,11,9.6,11c1.7,0,2.4-1.5,2.6-1.8C13.8,7,14.1,4.4,14.1,1.9z')
-                                            .style('fill', iconColour);
+                                            .style('fill', "#000000");
                                     }           
                                     var machIcon = element.append('g').attr('transform', 'translate(26,12)'); 
 
                                     switch (d.machine_icon){                              
-                                            case 'win':
-                                                machIcon.append('svg:polygon')
-                                                    .attr('points', '10,1 10,5.9 16,5.9 16,0')
+                                            case 'win':                                              
+                                                machIcon.append('svg:path')
+                                                    .attr('d', 'M6,0.6c1-0.4,3.1-1.2,5,0.4c-0.3,0.8-0.9,3.4-1.3,4.5c-1.6-1.2-3.8-0.9-5-0.3C5,4.2,6,0.6,6,0.6z')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
-                                                    .style('fill', iconColour);
-                                                machIcon.append('svg:polygon')
-                                                    .attr('points', '4,5.9 9,5.9 9,1 4,1.7')
+                                                    .style('fill', '#D66C27');                                             
+                                                machIcon.append('svg:path')
+                                                    .attr('d', 'M4.5,5.9c1-0.4,3.1-1.2,5,0.4C9.3,7,8.6,9.6,8.2,10.7c-1.6-1.2-3.8-0.9-5-0.2C3.5,9.4,4.5,5.9,4.5,5.9z')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
-                                                    .style('fill', iconColour);
-                                                machIcon.append('svg:polygon')
-                                                    .attr('points', '4,10.3 9,11 9,6.9 4,6.9')
+                                                    .style('fill', '#0390C8');                                             
+                                                machIcon.append('svg:path')
+                                                    .attr('d', 'M15.3,6.3c-1,0.4-3.1,1.2-5-0.4c0.3-0.8,0.9-3.4,1.3-4.5c1.6,1.2,3.8,0.9,5,0.2C16.3,2.7,15.3,6.3,15.3,6.3z')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
-                                                    .style('fill', iconColour);
-                                                machIcon.append('svg:polygon')
-                                                    .attr('points', '10,11 16,12 16,6.9 10,6.9')
+                                                    .style('fill', '#87B340');                                             
+                                                machIcon.append('svg:path')
+                                                    .attr('d', 'M13.9,11.4c-1,0.4-3.1,1.2-5-0.4c0.3-0.8,0.9-3.4,1.3-4.5c1.6,1.2,3.8,0.9,5,0.3C14.9,7.9,13.9,11.4,13.9,11.4z')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
-                                                    .style('fill', iconColour);
+                                                    .style('fill', '#FCCE32');
                                                 break;
                                             case 'os':                                              
                                                 machIcon.append('svg:path')
@@ -3391,7 +3391,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                     .style('clip-rule', '#evenodd')
                                                     .style('fill', '#818385');
                                                 break;
-                                            case 'linux':
+                                            case 'win':
                                                 machIcon.append('svg:path')
                                                     .attr('d', 'M10.4,0c0.5,0,1.3,0.4,1.4,1c0.1,0.3,0,0.7,0,1.1c0,0.4,0,0.8,0,1.2c0.1,0.7,0.6,1.1,0.9,1.7c0.2,0.3,0.3,0.6,0.4,0.9c0.1,0.4,0.2,0.7,0.2,1.1c0.1,0.4,0.1,0.7,0.1,1.1c0,0.2,0,0.3,0,0.5c0,0.2-0.1,0.3-0.1,0.5c0,0.2,0,0.3,0.2,0.3c0.2,0,0.3,0,0.5,0c0.3,0,0.7,0.2,0.6,0.5c-0.4,0.5-0.8,1.2-1.3,1.6c-0.2,0.2-0.4,0.5-0.7,0.5c-0.3,0.1-0.7,0.1-0.9-0.1c-0.1-0.1-0.2-0.2-0.2-0.3c0-0.1-0.1-0.1-0.1-0.2c0-0.1,0-0.1-0.1-0.1c-0.4,0-0.8,0-1.2,0c-0.4,0-0.7-0.1-1.1-0.2c-0.1-0.1-0.3-0.1-0.4-0.2c-0.1-0.1-0.2,0.3-0.3,0.3c-0.1,0.2-0.3,0.5-0.6,0.5c-0.1,0-0.3,0-0.4,0c-0.2-0.1-0.3-0.2-0.5-0.3c-0.3-0.2-0.6-0.4-0.9-0.6c-0.3-0.2-0.7-0.5-0.7-0.8c0.1-0.3,0.2-0.4,0.5-0.4c0.1,0,0.3,0,0.3-0.1c0-0.1,0-0.1,0-0.2c0-0.1,0-0.2,0-0.3c0.1-0.3,0.5-0.1,0.7,0c0.1-0.1,0.2-0.2,0.2-0.3C7,8.4,7.1,8.4,7.1,8.2C6.9,6.7,7.8,5.3,8.5,4c0.1-0.2,0.2-0.4,0.3-0.6c0.1-0.1,0.1-0.4,0.1-0.6c0-0.5,0-1,0-1.4c0-0.4,0.1-0.7,0.4-1C9.6,0.2,10,0,10.4,0z')
                                                     .style('fill-rule', '#evenodd')
@@ -3578,7 +3578,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                         });
                                         element
                                             .attr('height', '25')
-                                            .attr('width', '41')
+                                            .attr('width', '43')
                                         switch (d.lan_type){
                                             case 'endpoint':
                                                 element
@@ -3637,32 +3637,32 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                         element.append('svg:path')
                                             .attr('transform', 'translate(26,0)')
                                             .attr('d', 'M14.1,1.9C11.2,2,9.6,0,9.6,0c0,0-1.3,1.9-4.5,1.9c0,3.2,0.6,5.4,2,7.4C7.2,9.5,8,11,9.6,11c1.7,0,2.4-1.5,2.6-1.8C13.8,7,14.1,4.4,14.1,1.9z')
-                                            .style('fill', iconColour);
+                                            .style('fill', "#000000");
                                     }           
                                     var machIcon = element.append('g').attr('transform', 'translate(26,12)'); 
 
                                     switch (d.machine_icon){                              
-                                            case 'win':
-                                                machIcon.append('svg:polygon')
-                                                    .attr('points', '10,1 10,5.9 16,5.9 16,0')
+                                            case 'win':                                              
+                                                machIcon.append('svg:path')
+                                                    .attr('d', 'M6,0.6c1-0.4,3.1-1.2,5,0.4c-0.3,0.8-0.9,3.4-1.3,4.5c-1.6-1.2-3.8-0.9-5-0.3C5,4.2,6,0.6,6,0.6z')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
-                                                    .style('fill', iconColour);
-                                                machIcon.append('svg:polygon')
-                                                    .attr('points', '4,5.9 9,5.9 9,1 4,1.7')
+                                                    .style('fill', '#D66C27');                                             
+                                                machIcon.append('svg:path')
+                                                    .attr('d', 'M4.5,5.9c1-0.4,3.1-1.2,5,0.4C9.3,7,8.6,9.6,8.2,10.7c-1.6-1.2-3.8-0.9-5-0.2C3.5,9.4,4.5,5.9,4.5,5.9z')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
-                                                    .style('fill', iconColour);
-                                                machIcon.append('svg:polygon')
-                                                    .attr('points', '4,10.3 9,11 9,6.9 4,6.9')
+                                                    .style('fill', '#0390C8');                                             
+                                                machIcon.append('svg:path')
+                                                    .attr('d', 'M15.3,6.3c-1,0.4-3.1,1.2-5-0.4c0.3-0.8,0.9-3.4,1.3-4.5c1.6,1.2,3.8,0.9,5,0.2C16.3,2.7,15.3,6.3,15.3,6.3z')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
-                                                    .style('fill', iconColour);
-                                                machIcon.append('svg:polygon')
-                                                    .attr('points', '10,11 16,12 16,6.9 10,6.9')
+                                                    .style('fill', '#87B340');                                             
+                                                machIcon.append('svg:path')
+                                                    .attr('d', 'M13.9,11.4c-1,0.4-3.1,1.2-5-0.4c0.3-0.8,0.9-3.4,1.3-4.5c1.6,1.2,3.8,0.9,5,0.3C14.9,7.9,13.9,11.4,13.9,11.4z')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
-                                                    .style('fill', iconColour);
+                                                    .style('fill', '#FCCE32');
                                                 break;
                                             case 'os':                                              
                                                 machIcon.append('svg:path')
