@@ -46,9 +46,11 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             //$scope.global.floorScale = 1;
             $scope.$broadcast('spinnerHide');
             $scope.floors = data.floor;
+
+            
             $scope.floors[0].active = true;
-            $scope.floors[1].active = false;
-            $scope.floors[2].active = false;
+
+            $rootScope.only_numb = /^\d+$/;
 
         }
         if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
@@ -64,8 +66,6 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 });
         }
     }); 
-
-
 
     $scope.changePage = function (url, params) {
         if ($location.$$search.start && $location.$$search.end) {
@@ -222,6 +222,18 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 //$scope.start(i);
             }
         };
+
+        $scope.numberOnly = function(key) {
+            console.log("test")
+            // var theEvent = evt || window.event;
+            // var key = theEvent.keyCode || theEvent.which;
+            // key = String.fromCharCode( key );
+            // var regex = /[0-9]|\./;
+            // if( !regex.test(key) ) {
+            //     theEvent.returnValue = false;
+            //     if(theEvent.preventDefault) theEvent.preventDefault();
+            // }
+        }
 
         $scope.clearFiles = function(floor_name) {
             if (($scope.selectedFiles !== undefined) && ($scope.selectedFiles[0].floor_name !== floor_name)) {
