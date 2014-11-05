@@ -90,7 +90,7 @@
     <div class="row-fluid">
         <section id="floorplanpage">
             <div id="listlocalusersspan">
-                 <div class="jdash-header">Local Users</div>
+                <div class="jdash-header">Local Users</div>                 
                 <div id="localListWrapper">
                     <svg id="listlocalusers" style="position: relative"></svg>
                 </div>
@@ -99,7 +99,7 @@
             <div id="floorplanspan">
                 <div id="tabs" >
                     <tabset>
-                        <tab select="alertMe()" ng-repeat="floor in floors" active="tab_select == floor.custom_name">
+                        <tab select="alertMe()" ng-repeat="floor in floors" active="floor.active">
                             <tab-heading>
                                 {{floor.custom_name}} 
                             </tab-heading>
@@ -107,7 +107,7 @@
                                 <div id="floorplan" floor-name="{{floor.asset_name}}" make-floor-plan style="position: relative">
                                     <!-- <object width="910" height="600" id="svgFloorPlan" data="{{floor.path}}" type="image/svg+xml"></object> -->
                                     <!-- <object id="svgFloorPlan" width="800" data="{{floor.path}}" type="image/svg+xml" ></object> -->
-                                     <!-- <img id="svgFloorPlan" width="800" src="{{floor.path}}" type="image/svg+xml" />  -->
+                                    <!-- <img id="svgFloorPlan" width="800" src="{{floor.path}}" type="image/svg+xml" />  -->
                                 </div>
                             </div>
                         </tab>
@@ -139,37 +139,37 @@
                         <div class="luinfo" ng-show="userinfo.endpoint_agent"><span style="font-weight:bold">Endpoint Agent: </span><span>{{userinfo.endpoint_agent}}</span></div>
                         <div class="luinfo" ng-show="userinfo.endpoint_agent_name"><span style="font-weight:bold">Endpoint Agent Name: </span><span>{{userinfo.endpoint_agent_name}}</span></div>
                         <div class="luinfo" ng-if="userinfo.ioc_hits != 0">
-                            <span style="font-weight:bold">IOC Hits: </span><span><a href="#!/ioc_local_drill?lan_zone={{userinfo.lan_zone}}&lan_ip={{userinfo.lan_ip}}"> {{userinfo.ioc_hits}}</a></span>
+                            <span style="font-weight:bold">IOC Hits: </span><span class="epMapLink" ng-click="changePage('ioc_local_drill',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.ioc_hits}}</span>
                         </div>
                         <div class="luinfo" ng-if="userinfo.ioc_hits == 0">
                             <span style="font-weight:bold">IOC Hits: </span><span>{{userinfo.ioc_hits}}</span>
                         </div>
                         <div class="luinfo" ng-if="userinfo.app_hits != 0">
-                            <span style="font-weight:bold">App Hits: </span><span><a href="#!/l7_local_app?lan_zone={{userinfo.lan_zone}}&lan_ip={{userinfo.lan_ip}}"> {{userinfo.app_hits}}</a></span>
+                            <span style="font-weight:bold">App Hits: </span><span class="epMapLink" ng-click="changePage('l7_local_app',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.app_hits}}</span>
                         </div>
                         <div class="luinfo" ng-if="userinfo.app_hits == 0">
                             <span style="font-weight:bold">App Hits: </span><span>{{userinfo.app_hits}}</span>
                         </div>
                         <div class="luinfo" ng-if="userinfo.http_hits != 0">
-                            <span style="font-weight:bold">HTTP Hits: </span><span><a href="#!/http_local_by_domain?lan_zone={{userinfo.lan_zone}}&lan_ip={{userinfo.lan_ip}}"> {{userinfo.http_hits}}</a></span>
+                            <span style="font-weight:bold">HTTP Hits: </span><span class="epMapLink" ng-click="changePage('http_local_by_domain',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.http_hits}}</span>
                         </div>
                         <div class="luinfo" ng-if="userinfo.http_hits == 0">
                             <span style="font-weight:bold">HTTP Hits: </span><span>{{userinfo.http_hits}}</span>
                         </div>
                         <div class="luinfo" ng-if="userinfo.file_hits != 0">
-                            <span style="font-weight:bold">File Hits: </span><span><a href="#!/by_file_name?lan_zone={{userinfo.lan_zone}}&lan_ip={{userinfo.lan_ip}}"> {{userinfo.file_hits}}</a></span>
+                            <span style="font-weight:bold">File Hits: </span><span class="epMapLink" ng-click="changePage('by_file_name',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.file_hits}}</span>
                         </div>
                         <div class="luinfo" ng-if="userinfo.file_hits == 0">
                             <span style="font-weight:bold">File Hits: </span><span>{{userinfo.file_hits}}</span>
                         </div>
                         <div class="luinfo" ng-if="userinfo.endpoint_hits != 0">
-                            <span style="font-weight:bold">Endpoints Hits: </span><span><a href="#!/endpoint_by_user_and_ip?lan_zone={{userinfo.lan_zone}}&lan_ip={{userinfo.lan_ip}}"> {{userinfo.endpoint_hits}}</a></span>
+                            <span style="font-weight:bold">Endpoints Hits: </span><span class="epMapLink" ng-click="changePage('endpoint_by_user_and_ip',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.endpoint_hits}}</span>
                         </div>
                         <div class="luinfo" ng-if="userinfo.endpoint_hits == 0">
                             <span style="font-weight:bold">Endpoints Hits: </span><span>{{userinfo.endpoint_hits}}</span>
                         </div>
                         <div class="luinfo" ng-if="userinfo.total_bw != 0 && userinfo.total_bw != null">
-                            <span style="font-weight:bold">Total Bandwidth in MB: </span><span><a href="#!/local2remote?lan_zone={{userinfo.lan_zone}}&lan_ip={{userinfo.lan_ip}}&lan_machine={{userinfo.lan_machine}}"> {{userinfo.total_bw}}</a></span>
+                            <span style="font-weight:bold">Total Bandwidth in MB: </span><span class="epMapLink" ng-click="changePage('local2remote',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip,'lan_machine' : userinfo.lan_machine })" > {{userinfo.total_bw}}</span>
                         </div>
                         <div class="luinfo" ng-if="userinfo.total_bw == null">
                             <span style="font-weight:bold">Total Bandwidth in MB: </span><span>0</span>

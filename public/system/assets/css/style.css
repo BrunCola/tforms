@@ -2258,6 +2258,13 @@ Datatables Plugin(in v1.3)
   margin: 5px 0px;
   padding: 0px;
 }
+#localuserinformation .epMapLink {
+  color: #f00;
+  cursor: pointer;
+}
+#localuserinformation .epMapLink:hover {
+  text-decoration: underline;
+}
 #localuserinformation li:hover {
   cursor: pointer;
 }

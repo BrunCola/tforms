@@ -686,6 +686,8 @@ angular.module('mean.pages').directive('universalSearch', function() {
                 if ($scope.search) {
                     if (($scope.search !== null) || ($scope.search !== '')) {
                         $('#table').dataTable().fnFilter($scope.search);
+                        // var testSearch = searchFilter($scope.crossfilterData);
+                        // console.log(testSearch);
                     }
                 }
             });
@@ -2970,16 +2972,30 @@ angular.module('mean.pages').directive('makeTreeChart', ['$timeout', '$rootScope
     };
 }]);
 
-angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', '$http', '$location', function ($timeout, $rootScope, $http, $location) {
+angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', '$http', '$location', 'searchFilter', function ($timeout, $rootScope, $http, $location, searchFilter) {
     return {
         link: function ($scope, element, attrs) {
             //$scope.$on('floorPlan', function (event) {
                 setTimeout(function () {
+
+                    var lastUserRequeried = -1;
+                    var wait = (function () {
+                        var timers = {};
+                        return function (callback, ms, uniqueId) {
+                            if (!uniqueId) {
+                                uniqueId = "filterWait"; //Don't call this twice without a uniqueId
+                            }
+                            if (timers[uniqueId]) {
+                                clearTimeout (timers[uniqueId]);
+                            }
+                            timers[uniqueId] = setTimeout(callback, ms);
+                        };
+                    })();
                     // -- initial variables
                     var floor_path = $scope.floor.path;
                     var scale = $scope.floor.scale;
                     var imageRatio = $scope.floor.image_width/$scope.floor.image_height;
-                    var data = $scope.data.force;
+                    var data = $scope.data.users;
                     var floorName = attrs.floorName;
 
                     var elementWidth = $('#floorplanspan')[0].offsetWidth-25;
@@ -3193,12 +3209,15 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     function dragended(d) {
                         d3.select('.user-'+d.id).classed("selected", true);
                         $scope.requery(d, 'flooruser');
+                        lastUserRequeried = d.id;
                         $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: d.x, y_coord: d.y, map_name: floorName, lan_ip: d.lan_ip, lan_zone: d.lan_zone}});
                         d3.select(this).classed("dragging", false);
                     }
 
                     // -- displays users in userlist and floor plans
                     function plot(data, floor) {
+                        // set order of array
+                        data = data.sort(function(a, b){ return a.id-b.id });
                         ////////////////////
                         ///  LIST USERS  ///
                         ////////////////////
@@ -3269,6 +3288,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             })
                                             el.classList.add('selected');
                                             $scope.requery(d, 'flooruser');
+                                            lastUserRequeried = d.id;
                                         });
                                     var element = elm
                                             .append('div')
@@ -3405,6 +3425,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                         function(e) {
                                             //this.classList.remove('drag');
                                             $scope.requery(d, 'flooruser');
+                                            lastUserRequeried = d.id;
                                             return false;
                                         },
                                         false
@@ -3485,6 +3506,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             })
                                             el.classList.add('selected');
                                             $scope.requery(d, 'flooruser');
+                                            lastUserRequeried = d.id;
                                         });
                                     if (d.stealth === 1) {
                                         element
@@ -3615,6 +3637,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             //this.classList.remove('drag');
                                             console.log("dragend");
                                             $scope.requery(d, 'flooruser');
+                                            lastUserRequeried = d.id;
                                             return false;
                                         },
                                         false
@@ -3759,8 +3782,27 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         $(userDiv[0][0]).append(currentUser[0][0]);
                         plot(data,floorName);
                     }
-                    // -- display users
-                    plot(data, floorName);  
+
+                    // -- display users after
+                    $scope.$on('searchUsers', function (event, filteredData){
+                        plot(filteredData, floorName);
+                        wait(function(){
+                            if (filteredData.length > 0) {
+                                if (lastUserRequeried !== filteredData[0].id) {
+                                    $scope.floors.filter(function(d){ if ((filteredData[0].map === d.asset_name)) { d.active = true; }});
+                                    $scope.requery(filteredData[0], 'flooruser');
+                                    lastUserRequeried = filteredData[0].id;
+                                } 
+                                d3.select('.user-'+filteredData[0].id).classed("selected", true);
+                            } else {
+                                // remove the info pane
+                                lastUserRequeried = -1;
+                                $scope.requery("clear", 'flooruser');   
+                            }
+                        }, 500, "filtertWait");
+                    })
+                    plot(data, floorName);
+
             }, 0);
         }
     };
