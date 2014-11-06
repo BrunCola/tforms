@@ -3491,8 +3491,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     el.addEventListener(
                                         'dragstart',
                                         function(e) {
-                                            console.log(e);
-                                            console.log(this);
                                             e.dataTransfer.effectAllowed = 'move';
                                             e.dataTransfer.setData('Text', this.id);
                                             this.classList.add('drag');
@@ -3504,11 +3502,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     el.addEventListener(
                                         'dragend',
                                         function(e) {
-                                             console.log(e);
-                                            // console.log(this);
-                                            // console.log(" ");
-                                            // $scope.requery(d, 'flooruser');
-                                            // lastUserRequeried = d.id;
+                                            $scope.requery(d, 'flooruser');
+                                            lastUserRequeried = d.id;
                                             this.classList.remove('drag');
                                             return false;
                                         },
