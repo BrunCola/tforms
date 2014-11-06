@@ -3834,7 +3834,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 var el = elel[0];
 
                                 var element = elm.select('div').select('svg');
-
+                       
+                                //element.selectAll('path').filter(function(d){ console.log(this)}).style('fill', getIconColour(d, data, type));
                                 element.selectAll('path').style('fill', getIconColour(d, data, type));
                                 element.selectAll('circle').style('fill', getIconColour(d, data, type));
                                 element.selectAll('rect').style('fill', getIconColour(d, data, type));
@@ -3963,17 +3964,22 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
     };
 }]);
 
-angular.module('mean.pages').directive('onlyNum', function() {
-    return function(scope, element, attrs) {
-        var keyCode = [8,9,37,39,48,49,50,51,52,53,54,55,56,57,96,97,98,99,100,101,102,103,104,105,110,190];
-        element.bind("keydown", function(event) {
-            if($.inArray(event.which,keyCode) == -1) {
-                scope.$apply(function(){
-                    scope.$eval(attrs.onlyNum);
-                    event.preventDefault();
-                });
-                event.preventDefault();
-            }
-        });
-    };
+angular.module('mean.pages').directive('numbersOnly', function(){
+   return {
+     require: 'ngModel',
+     link: function(scope, element, attrs, modelCtrl) {
+       modelCtrl.$parsers.push(function (inputValue) {
+           // this next if is necessary for when using ng-required on your input. 
+           // In such cases, when a letter is typed first, this parser will be called
+           // again, and the 2nd time, the value will be undefined
+           if (inputValue == undefined) return '' 
+           var transformedInput = inputValue.replace(/[^0-9+.]/g, ''); 
+           if (transformedInput!=inputValue) {
+              modelCtrl.$setViewValue(transformedInput);
+              modelCtrl.$render();
+           }         
+           return transformedInput;         
+       });
+     }
+   };
 });

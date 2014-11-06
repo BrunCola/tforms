@@ -27,8 +27,6 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 } 
             })
 
-
-
             $scope.crossfilterData = crossfilter(data.users);
             $scope.searchDimension = $scope.crossfilterData.dimension(function(d) { return d });
 
@@ -46,12 +44,8 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             //$scope.global.floorScale = 1;
             $scope.$broadcast('spinnerHide');
             $scope.floors = data.floor;
-
             
             $scope.floors[0].active = true;
-
-            $rootScope.only_numb = /^\d+$/;
-
         }
         if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
             var query = '/local_events/endpoint_map?lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&type=flooruser';
@@ -61,7 +55,11 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                         $scope.floors.filter(function(d){ if ((data[0].map === d.asset_name)) { d.active = true; }});
                         $scope.requery(data[0]);
                         var selected = $scope.data.users.filter(function(d){ if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ return true }});
-                        if (selected[0] !== undefined) { $scope.$broadcast('setSelected', selected[0]); }
+                        if (selected[0] !== undefined) { 
+                            setTimeout(function () {
+                                $scope.$broadcast('setSelected', selected[0]);
+                                }, 0);
+                            }
                     }                    
                 });
         }
