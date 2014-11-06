@@ -24,7 +24,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         });
                     });
                 }
-
+                ///////////////////////
+                /////  VARIABLES  /////
+                ///////////////////////
                 var itemsDimension = $scope.crossfilterData.dimension(function(d){ return d.time });
                 var items = itemsDimension.top(Infinity);
                 // set our in-to-deep variable
@@ -43,7 +45,13 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     last: null,
                     lastXY: null
                 }
+                var queryThreshhold = 3600; // one hour in seconds
+                var navArray = [], currentNavPos = 0;
+                var addRemBtnDimensions = [32,18];
 
+                ///////////////////////
+                /////  DIV SETUP  /////
+                ///////////////////////
                 var graphRow = d3.select(element[0]).append('div').attr('class', 'row-fluid');
                 var leftSide = graphRow.append('div').attr('class', 'span8').append('div').attr('id', 'box').append('div').attr('class', 'box-content');
                 var rightSide = graphRow.append('div').attr('class', 'span4').append('div').attr('id', 'box').append('div').attr('class', 'box-content');
@@ -56,7 +64,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     miniHeight = 0,
                     mainHeight = h - miniHeight - 50;
                 // put it in scope for use in view
-                $scope.width = lWidth;
                 $scope.height = h;
 
                 // right side header
@@ -74,9 +81,16 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .attr('checked', true);
                 var infoHeight = h;
                 var infoDiv = rightSide.append('div').classed('divScroll', true).style('height', infoHeight+'px').style('overflow', 'scroll');
+                
+                // current time div
+                var currentTimeSlice = leftSide.append('div').attr('class', 'timeslice');
+                var currentTime = currentTimeSlice.append('div').style('float', 'left');
+                // enhanced view alert
+                $scope.alert = currentTimeSlice.append('div').attr('class', 'laneAlert').html('Enhanced drill-down view');
 
-                var queryThreshhold = 3600; // one hour in seconds
-
+                //////////////////////////
+                /////  D3 VIZ SETUP  /////
+                //////////////////////////
                 //scales
                 var x = d3.time.scale()
                     .domain([new Date($scope.start), new Date($scope.end)])
@@ -87,13 +101,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 var y1 = d3.scale.linear()
                     .domain([0, laneLength])
                     .range([30, mainHeight]);
-
-                // current time div
-                var currentTimeSlice = leftSide.append('div').attr('class', 'timeslice');
-                var currentTime = currentTimeSlice.append('div').style('float', 'left');
-
-                // enhanced view alert
-                $scope.alert = currentTimeSlice.append('div').attr('class', 'laneAlert').html('Enhanced drill-down view');
 
                 var chart = leftSide
                     .append("svg")
@@ -179,24 +186,159 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 var clickLine = main.append("g")
                     .attr("class", "clickLine");
 
+                // GRAPH BLUR FILTER
+                var blurFilter = chart
+                    .append('filter')
+                    .attr('id', 'blur-effect-1')
+                    .append('feGaussianBlur')
+                var blur = blurFilter.attr('class', 'graphBlur')
+                    .attr('stdDeviation', 0);
+                var load = chart.append('g')
+                    .style('display', 'none')
+                    .attr('transform', 'translate('+((lWidth/2)-20)+','+((infoHeight/2)-80)+')')
+                // loading svg
+                load.append('svg')
+                    .attr('version', 1.1)
+                    .attr('id', 'loader-1')
+                    .attr('x', '0px')
+                    .attr('y', '0px')
+                    .attr('width', '40px')
+                    .attr('height', '40px')
+                    .attr('viewBox', '0 0 50 50')
+                    .attr('style', 'enable-background:new 0 0 50 50;')
+                    .attr('xml:space', 'preserve')
+                // spinner
+                load.append('path')
+                    .attr('fill', '#FF6700')
+                    .attr('d', 'M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z')
+                    .append('animateTransform')
+                        .attr('attributeType', 'xml')
+                        .attr('attributeName', 'transform')
+                        .attr('type', 'rotate')
+                        .attr('from', '0 25 25')
+                        .attr('to', '360 25 25')
+                        .attr('dur', '0.6s')
+                        .attr('repeatCount', 'indefinite');
+
+                var brush = d3.svg.brush()
+                    .x(x1)
+                    .on("brushend", navCrtl);
+                main.append("g")
+                    .attr("class", "x brush")
+                    .call(brush)
+                    .selectAll("rect")
+                    .attr("y", 1)
+                    .attr("height", mainHeight);
+
+                var itemRects = main.append("g")
+                    .attr("clip-path", "url(#clip)");
+                
+                // nav
+                var buttonHolder = leftSide.append('div').attr('class', 'buttonHolder');
+                var resetBtn = buttonHolder
+                    .append('button')
+                    .html('Reset')
+                    .attr('class', 'resetButton')
+                    .on('click', function(){
+                        draw();
+                    });
+                var prevButton = buttonHolder.append('button')
+                    .html('Previous')
+                    .attr('class', 'prevButton')
+                    .on('click', function(){
+                        if (currentNavPos > 0) {
+                            nextButton.attr('disabled', null);
+                            currentNavPos--;
+                            navCrtl('nav');
+                        }
+                    });
+                var nextButton = buttonHolder
+                    .append('button')
+                    .html('Next')
+                    .attr('class', 'prevButton')
+                    .on('click', function(){
+                        if (currentNavPos < navArray.length) {
+                            prevButton.attr('disabled', null);
+                            currentNavPos++;
+                            navCrtl('nav');
+                        }
+                    });
+                var qMarkButton = buttonHolder
+                    .append('button')
+                    .html('?')
+                    .attr('class', 'qMarkButton')
+                    .on('click', function(){
+                        $scope.description(
+                            "This chart represents discrete events deemed significant to the IOC being examined "+
+                            "(i.e. it is related to the 3-tuple which includes local, remote and IOC information)."+
+                            "Discrete event categories available are: IOC - describing the indicator, conn - the "+
+                            "raw IP connection information, applications that were used by the use, DNS queries, "+
+                            "HTTP queries, SSL connections, File metadata, and Endpoint events)."+
+                            "To view details of any event, click the icon in the chart and details will be "+
+                            "highlighted in the table to the left.  Further information will be displayed by "+
+                            "clicking the \"+\" sign for each record."+
+                            "To view ALL event data in the chart, left mouse click and drag over the area to zoom."+
+                            "If the zoom area covers a time slice less than 60 minutes, an \"Enhanced View\" will "+
+                            "be displayed on the screen, showing every event triggered by the local endpoint within"+
+                            "the time slice.  This query can take a few seconds to display, depending on the amount"+
+                            "of information.  Once the enhanced view data is presented, you can continue to zoom as "+
+                            "needed.",
+                            "Event Timeline Navigation");
+                    });
+
+                var saveToggle = buttonHolder
+                    .append('button')
+                    .html('Create pattern')
+                    .attr('class', 'saveToggle')
+                    .on('click', function(){
+                        if ($scope.pattern.searching === false) {
+                            d3.select(this).html('Analyze pattern');
+                            // set searching to true
+                            $scope.pattern.searching = true;
+                            // change class (so we know its on)
+                        } else {
+                            d3.select(this).html('Create pattern');
+                            // make a call to save restults
+                            // clear our object & set it back to false
+                            analize();
+                            $scope.pattern.searching = false;
+                            $scope.pattern.selected = {
+                                length: 0
+                            };
+                        }
+                        if ($scope.pattern.last !== null) {
+                            laneInfoAppend($scope.pattern.last.data, $scope.pattern.last.element);
+                        }
+                    });
+
+                ///////////////////////////////
+                /////  GENERAL FUNCTIONS  /////
+                ///////////////////////////////
+                // loading actions
+                function loading(action) {
+                    if (action === 'start') {
+                        load.style('display', 'block');
+                        main.select('.brush').style('display', 'none');
+                        blurFilter
+                            .transition()
+                            .duration(500)
+                            .attr('stdDeviation', 3);
+                        main
+                            .style('filter', 'url(#blur-effect-1)');
+                    } else {
+                        load.style('display', 'none');
+                        main.select('.brush').style('display', 'block');
+                        blurFilter
+                            .transition()
+                            .duration(2000)
+                            .attr('stdDeviation', 0);
+                        main.style('filter', null)
+                    }
+                }
                 function rowColors(type) {
                     switch(type){
                         case 'IOC':
                             return "#CCCCCC";
-
-                       /* case 'Conn_ioc':
-                            return "#EFAA86";
-                        case 'DNS_ioc':
-                            return "#F3BD5D";
-                        case 'HTTP_ioc':
-                            return "#FFF2A0";
-                        case 'SSL_ioc':
-                            return "#D97373";
-                        case 'Email_ioc': 
-                            return "#F3BD5D";
-                        case 'File_ioc':
-                            return "#F68D55";*/
-
                         case 'IOC Severity':
                             return "#FF172F";
                         case 'Conn':
@@ -223,70 +365,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             return "#666";
                     }
                 }
-
-                // default squares and rectangles
-                $scope.point = function(element, type, name, id) {
-                    element.classed('node-'+id, true);
-                    element = element.append('g');
-                    element.classed('eventSquare', true);
-                    if (type.search("ioc") !== -1) {
-                        element.classed('IOC', true);
-                        element.append('svg:polygon')
-                            .attr('points', '7,15 14,6 0,6')
-                            .attr('fill', rowColors("IOC"))
-                            .style('opacity', '0.4')
-                            .on('mouseover', function(){
-                                d3.select(this)
-                                .attr('transform', 'scale(2.4) translate(-4, -5)');
-                            })
-                            .on('mouseout', function(){
-                                d3.select(this)
-                                .attr('transform', 'scale(1)');
-                            }); 
-                        return;
-                    } else { 
-                        element.append('rect')
-                            .attr('x', 0)
-                            .attr('y', 3)
-                            .attr('fill', function(d){
-                                var color;
-                                if (type === "IOC Severity") {
-                                    if (d.ioc_severity === 1) {
-                                        color = '#377FC7'; 
-                                    } else if (d.ioc_severity === 2) {
-                                        color = '#F5D800'; 
-                                    } else if (d.ioc_severity === 3) {
-                                        color = '#F88B12'; 
-                                    } else if (d.ioc_severity === 4) {
-                                        color = '#DD122A'; 
-                                    } else {
-                                        color = '#6FBF9B';
-                                    }
-                                } else { 
-                                    color = rowColors(type);
-                                }
-                                return color;
-                            })
-                            .attr('width', 12)
-                            .attr('height', 12)
-                            .style('opacity', '0.6')
-                            .on('mouseover', function(){
-                                d3.select(this)
-                                .attr('transform', 'scale(2.4) translate(-3, -5) ')
-                                .attr('stroke', '#fff')
-                                .attr('stroke-width', '1');
-                            })
-                            .on('mouseout', function(){
-                                d3.select(this)
-                                .transition()
-                                .duration(550)
-                                .attr('transform', 'scale(1)')
-                                .attr('stroke', 'none')
-                                .attr('stroke-width', '0');
-                            });
-                    }
-                }    
-
                 function changeIcon(element, data, previousElm) {
                     var color, select;
                     if (previousElm) {
@@ -388,99 +466,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             laneRowSymbols(data.type, element, color1, color2);
                     }
                 }
-
-                var brush = d3.svg.brush()
-                    .x(x1)
-                    .on("brushend", mouseup);
-                main.append("g")
-                    .attr("class", "x brush")
-                    .call(brush)
-                    .selectAll("rect")
-                    .attr("y", 1)
-                    .attr("height", mainHeight);
-
-                var itemRects = main.append("g")
-                    .attr("clip-path", "url(#clip)");
-                
-                // nav
-                var navArray = [], currentNavPos = 0;
-                var buttonHolder = leftSide.append('div').attr('class', 'buttonHolder');
-                var resetBtn = buttonHolder
-                    .append('button')
-                    .html('Reset')
-                    .attr('class', 'resetButton')
-                    .on('click', function(){
-                        draw();
-                    });
-                var prevButton = buttonHolder.append('button')
-                    .html('Previous')
-                    .attr('class', 'prevButton')
-                    .on('click', function(){
-                        if (currentNavPos > 0) {
-                            nextButton.attr('disabled', null);
-                            currentNavPos--;
-                            mouseup('nav');
-                        }
-                    });
-                var nextButton = buttonHolder
-                    .append('button')
-                    .html('Next')
-                    .attr('class', 'prevButton')
-                    .on('click', function(){
-                        if (currentNavPos < navArray.length) {
-                            prevButton.attr('disabled', null);
-                            currentNavPos++;
-                            mouseup('nav');
-                        }
-                    });
-                var qMarkButton = buttonHolder
-                    .append('button')
-                    .html('?')
-                    .attr('class', 'qMarkButton')
-                    .on('click', function(){
-                        $scope.description(
-                            "This chart represents discrete events deemed significant to the IOC being examined "+
-                            "(i.e. it is related to the 3-tuple which includes local, remote and IOC information)."+
-                            "Discrete event categories available are: IOC - describing the indicator, conn - the "+
-                            "raw IP connection information, applications that were used by the use, DNS queries, "+
-                            "HTTP queries, SSL connections, File metadata, and Endpoint events)."+
-                            "To view details of any event, click the icon in the chart and details will be "+
-                            "highlighted in the table to the left.  Further information will be displayed by "+
-                            "clicking the \"+\" sign for each record."+
-                            "To view ALL event data in the chart, left mouse click and drag over the area to zoom."+
-                            "If the zoom area covers a time slice less than 60 minutes, an \"Enhanced View\" will "+
-                            "be displayed on the screen, showing every event triggered by the local endpoint within"+
-                            "the time slice.  This query can take a few seconds to display, depending on the amount"+
-                            "of information.  Once the enhanced view data is presented, you can continue to zoom as "+
-                            "needed.",
-                            "Event Timeline Navigation");
-                    });
-
-                var saveToggle = buttonHolder
-                    .append('button')
-                    .html('Create pattern')
-                    .attr('class', 'saveToggle')
-                    .on('click', function(){
-                        if ($scope.pattern.searching === false) {
-                            d3.select(this).html('Analyze pattern');
-                            // set searching to true
-                            $scope.pattern.searching = true;
-                            // change class (so we know its on)
-                        } else {
-                            d3.select(this).html('Create pattern');
-                            // make a call to save restults
-                            // clear our object & set it back to false
-                            analize();
-                            $scope.pattern.searching = false;
-                            $scope.pattern.selected = {
-                                length: 0
-                            };
-                        }
-                        if ($scope.pattern.last !== null) {
-                            laneInfoAppend($scope.pattern.last.data, $scope.pattern.last.element);
-                        }
-                    });
-                
                 function analize() {
                     var compareObj = $scope.pattern.selected;
                     if (compareObj.length > 0) {
@@ -489,7 +474,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         $http({method: 'POST', url: '/ioc_notifications/ioc_events_drilldown/patterns', data: compareObj}).
                             success(function(data, status, headers, config) {
                                 // send info to pattern pane
-                                $scope.$broadcast('patternPane', data);
+                                patternPane(data);
                                 // call clear points function
                                 itemRects.selectAll(".eventStory").remove();
                                 lineStory.selectAll('line').remove();
@@ -503,38 +488,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         loading('end');
                     }
                 }
-
-                // var timeShiftHolder = d3.select("#lanegraph").append('div').attr('class', 'timeShiftHolder');
-                // var nextTime = timeShiftHolder
-                //     .append('button')
-                //     .html('Prev')
-                //     .attr('class', 'prevButton')
-                //     .on('click', function(){
-                //         timeShift('prev');
-                //     });
-                // var prevTime = timeShiftHolder
-                //     .append('button')
-                //     .html('Next')
-                //     .attr('class', 'navButton')
-                //     .on('click', function(){
-                //         timeShift('next');
-                //     });
-                // $scope.laneGraphWidth = function() {
-                //     return leftSide.width();
-                // }
-                
-                // var setNewSize = function(width) {
-                //     chart.attr("width", width);
-                //     main.attr("width", width-135);                  
-                // }
-
-                // $(window).bind('resize', function() {
-                //     setTimeout(function(){
-                //         setNewSize($scope.laneGraphWidth());
-                //     }, 150);
-                // });
-
-                $scope.addSearch = function(point, data) {
+                function addSearch(point, data) {
                     var thisNode = itemRects.select('.node-'+point.id);
                     if (!(point.id in $scope.pattern.selected)) {         
                         // add empty obect with point id in search
@@ -579,18 +533,14 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         changeIcon(thisNode, point);
                     }
                 }
-
-                var addRemBttnWidth = 32;
-                var addRemBttnHeight = 18;
-
                 // logic for add/remove buttons in sidebar (when patterns are on)
                 function addRemoveBtn(row, data, elm) {
                     elm.select('svg').empty(); // this will redraw all on every click (not very efficient, but we'll fix this later)
                     function addBtn() {
                         elm
                             .append('rect')
-                            .attr('width', addRemBttnWidth)
-                            .attr('height', addRemBttnHeight)
+                            .attr('width', addRemBtnDimensions[0])
+                            .attr('height', addRemBtnDimensions[1])
                             .style('fill', '#8cc63f')
                         elm
                             .append('path')
@@ -601,22 +551,14 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     function removeBtn(){
                         elm
                             .append('rect')
-                            .attr('width', addRemBttnWidth)
-                            .attr('height', addRemBttnHeight)
-                            .style('fill', '#cc0000')
+                            .attr('width', addRemBtnDimensions[0])
+                            .attr('height', addRemBtnDimensions[1])
+                            .style('fill', '#cc0000');
                         elm
                             .append('polygon')
                             .attr('points', '5.7,0 5.7,4.4 10,4.4 10,5.6 5.7,5.6 5.7,10 4.3,10 4.3,5.6 0,5.6 0,4.4 4.3,4.4 4.3,0 ')
                             .style('fill', '#fff')
-                            .attr('transform', 'rotate(45, 5, 18)')
-                        // .append('animateTransform')
-                        //     .attr('attributeType', 'xml')
-                        //     .attr('attributeName', 'transform')
-                        //     .attr('type', 'rotate')
-                        //     .attr('from', '0 0 3')
-                        //     .attr('to', '45 0 3')
-                        //     .attr('dur', '1s')
-                        //     .attr('repeatCount', 'none')
+                            .attr('transform', 'rotate(45, 5, 18)');
                     }
                     if (!(row.pattern)){return};
                     if (data.id in $scope.pattern.selected) {
@@ -629,7 +571,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         return addBtn();
                     }
                 }
-
                 // logic for appending row information in sidebar
                 function laneInfoAppend(data, element) {
                     element.select('.infoDivExpanded').selectAll('li').remove();
@@ -652,41 +593,16 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .append('div')
                                 .style('float', 'right')
                                 .append('svg')
-                                .attr('width', addRemBttnWidth)
-                                .attr('height', addRemBttnHeight);
+                                .attr('width', addRemBtnDimensions[0])
+                                .attr('height', addRemBtnDimensions[1]);
                             addRemoveBtn(d, data, elm);
                             elm.on('click', function(d){
-                                $scope.addSearch(data, d);
+                                addSearch(data, d);
                                 addRemoveBtn(d, data, elm);
                             })
                         })
                     }
                 }
-
-                // function timeShift(cmd) {
-                //     // calculate what the current time shift would be (forward or back)
-                //     var minExtent = moment(navArray[currentNavPos].min).unix();
-                //     var maxExtent = moment(navArray[currentNavPos].max).unix();
-                //     var difference = maxExtent - minExtent;
-                //     // take a fraction of difference
-                //     var diff = difference * 0.90;
-                //     if (cmd === 'prev') {
-                //         var max = minExtent + (difference - diff);
-                //         var min = max - diff;
-                //     }
-                //     if (cmd === 'next') {
-                //         var min = maxExtent - (difference - diff);
-                //         var max = min + diff;
-                //     }
-                //     var minFormatted = moment(min).format('MMMM D, YYYY h:mm A');
-                //     var maxFormatted = moment(max).format('MMMM D, YYYY h:mm A');
-                //     $scope.requery(maxFormatted, minFormatted, function(data){
-                //         plot(data, maxFormatted, minFormatted);
-                //         navArray.push({'min': minFormatted, 'max': maxFormatted});
-                //         currentNavPos++;
-                //     })                
-                // }
-
                 function draw() {
                     // reset navagation array
                     navArray = [];
@@ -705,65 +621,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     var max = new Date($scope.end);
                     items.reverse()
                     plot(items, min, max);
-                }
-                draw();
-
-                // GRAPH BLUR FILTER
-                var blurFilter = chart
-                    .append('filter')
-                    .attr('id', 'blur-effect-1')
-                    .append('feGaussianBlur')
-                var blur = blurFilter.attr('class', 'graphBlur')
-                    .attr('stdDeviation', 0);
-                var load = chart.append('g')
-                    .style('display', 'none')
-                    .attr('transform', 'translate('+((lWidth/2)-20)+','+((infoHeight/2)-80)+')')
-                // loading svg
-                load.append('svg')
-                    .attr('version', 1.1)
-                    .attr('id', 'loader-1')
-                    .attr('x', '0px')
-                    .attr('y', '0px')
-                    .attr('width', '40px')
-                    .attr('height', '40px')
-                    .attr('viewBox', '0 0 50 50')
-                    .attr('style', 'enable-background:new 0 0 50 50;')
-                    .attr('xml:space', 'preserve')
-                // spinner
-                load.append('path')
-                    .attr('fill', '#FF6700')
-                    .attr('d', 'M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z')
-                    .append('animateTransform')
-                        .attr('attributeType', 'xml')
-                        .attr('attributeName', 'transform')
-                        .attr('type', 'rotate')
-                        .attr('from', '0 25 25')
-                        .attr('to', '360 25 25')
-                        .attr('dur', '0.6s')
-                        .attr('repeatCount', 'indefinite');
-                // loading actions
-                function loading(action) {
-                    if (action === 'start') {
-                        load.style('display', 'block');
-                        main.select('.brush').style('display', 'none');
-                        blurFilter
-                            .transition()
-                            .duration(500)
-                            .attr('stdDeviation', 3);
-                        main
-                            .style('filter', 'url(#blur-effect-1)');
-                    } else {
-                        load.style('display', 'none');
-                        main.select('.brush').style('display', 'block');
-                        blurFilter
-                            .transition()
-                            .duration(2000)
-                            .attr('stdDeviation', 0);
-                        main.style('filter', null)
-                    }
-                }
-
-                function mouseup(action) {
+                }           
+                function navCrtl(action) {
                     // set variables
                     var rects, labels, minExtent, maxExtent, visItems;
                     // if a nav button is pressed
@@ -802,7 +661,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     if ((msDifference < queryThreshhold) && (msDifference !== 0)) {
                         // push to requery and then plot
                         loading('start');
-                        $scope.requery(minExtent, maxExtent, function(data){
+                        requery(minExtent, maxExtent, function(data){
                             loading('end');
                             data.reverse();
                             plot(data, minExtent, maxExtent);
@@ -815,7 +674,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         plot(data, minExtent, maxExtent);
                     }
                 }
-
                 function scrollSide(id) {
                     var elm = $('li#'+id);
                     var ept  = elm.position().top;
@@ -828,8 +686,69 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                     $('.divScroll').scrollTo(offset);
                 }
-
                 function plot(data, min, max) {
+                    // default squares and rectangles
+                    $scope.point = function(element, type, name, id) {
+                        element.classed('node-'+id, true);
+                        element = element.append('g');
+                        element.classed('eventSquare', true);
+                        if (type.search("ioc") !== -1) {
+                            element.classed('IOC', true);
+                            element.append('svg:polygon')
+                                .attr('points', '7,15 14,6 0,6')
+                                .attr('fill', rowColors("IOC"))
+                                .style('opacity', '0.4')
+                                .on('mouseover', function(){
+                                    d3.select(this)
+                                    .attr('transform', 'scale(2.4) translate(-4, -5)');
+                                })
+                                .on('mouseout', function(){
+                                    d3.select(this)
+                                    .attr('transform', 'scale(1)');
+                                }); 
+                            return;
+                        } else { 
+                            element.append('rect')
+                                .attr('x', 0)
+                                .attr('y', 3)
+                                .attr('fill', function(d){
+                                    var color;
+                                    if (type === "IOC Severity") {
+                                        if (d.ioc_severity === 1) {
+                                            color = '#377FC7'; 
+                                        } else if (d.ioc_severity === 2) {
+                                            color = '#F5D800'; 
+                                        } else if (d.ioc_severity === 3) {
+                                            color = '#F88B12'; 
+                                        } else if (d.ioc_severity === 4) {
+                                            color = '#DD122A'; 
+                                        } else {
+                                            color = '#6FBF9B';
+                                        }
+                                    } else { 
+                                        color = rowColors(type);
+                                    }
+                                    return color;
+                                })
+                                .attr('width', 12)
+                                .attr('height', 12)
+                                .style('opacity', '0.6')
+                                .on('mouseover', function(){
+                                    d3.select(this)
+                                    .attr('transform', 'scale(2.4) translate(-3, -5) ')
+                                    .attr('stroke', '#fff')
+                                    .attr('stroke-width', '1');
+                                })
+                                .on('mouseout', function(){
+                                    d3.select(this)
+                                    .transition()
+                                    .duration(550)
+                                    .attr('transform', 'scale(1)')
+                                    .attr('stroke', 'none')
+                                    .attr('stroke-width', '0');
+                                });
+                        }
+                    }    
                     if (moment(max).unix() !== moment(min).unix()) {
                         // node selecting
                         var previousBar = null, previousElm = null;
@@ -846,16 +765,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .transition()
                             .duration(150)
                             .attr('width', w)
-                            // .attr('x', function(d) {console.log(x); return x/2 })
                             .transition()
                             .duration(50)
                             .attr('width', 0);
                         // set new domain and transition x-axis
                         x1.domain([min, max]);
                         xAxisBrush.transition().duration(500).call(xAxis);
-                        // remove lines from story
-                        // lineStory.selectAll('line').remove();
-                        // var linesLinked = lineStory.selectAll(".storyLines").data([""]);
                         // remove existing elements (perhaps this is innificent and should be modified to just transition)
                         itemRects.selectAll('g').remove();
                         var icons = itemRects.selectAll("g").data(data);
@@ -916,13 +831,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     previousElm = elm;
                                 })
                                 .on("mouseout", function(d){
-                                    elm
-                                        .style('cursor', 'pointer')
-                                        /*.transition()
-                                        .delay(150)
-                                        .attr('fill-opacity', '1')
-                                        .attr('stroke', 'none')
-                                        .attr('transform', 'scale(1) translate(' + x1(d.dd) + ',' + (y1(d.lane)-10) + ')');*/
+                                    elm.style('cursor', 'pointer');
                                 })
                             // generate points from point function
                             if (d.type !== 'l7') {
@@ -992,6 +901,166 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             });
                     }
                 }
+                function requery(min, max, callback) {
+                    var minUnix = moment(min).unix();
+                    var maxUnix = moment(max).unix();
+                    if (($scope.inTooDeep.min === minUnix) && ($scope.inTooDeep.max === maxUnix)) {
+                        $scope.inTooDeep.areWe = true;
+                        // $scope.inTooDeep.min = minUnix;
+                        // $scope.inTooDeep.max = maxUnix;
+                    }
+                    if (($scope.inTooDeep.areWe === true) && (minUnix >= $scope.inTooDeep.min) && (maxUnix <= $scope.inTooDeep.max)) {
+                        var deepItems = $scope.deepItems.filter(function(d) { if((d.dd < max) && (d.dd > min)) {return true};});
+                        callback(deepItems);
+                        $scope.alert.style('display', 'block');
+                    } else {
+                        //  set $scope.inTooDeep
+                        $scope.inTooDeep = {
+                            areWe: true,
+                            min: minUnix,
+                            max: maxUnix
+                        };
+                        //  grab more from api
+                        var query = '/ioc_notifications/ioc_events_drilldown?start='+minUnix+'&end='+maxUnix+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc+'&ioc_attrID='+$location.$$search.ioc_attrID+'&type=drill'+'&lan_user='+$location.$$search.lan_user;
+                        $http({method: 'GET', url: query}).
+                            success(function(data) {
+                                $scope.crossfilterDeep = crossfilter();
+                                var id = 0;
+                                data.laneGraph.data.forEach(function(parent) {
+                                    parent.forEach(function(child) {
+                                        child.dd = timeFormat(child.time, 'strdDateObj');
+                                        child.id = id;
+                                        id++;
+                                    })
+                                    $scope.crossfilterDeep.add(parent);
+                                });
+                                var itemsDimension = $scope.crossfilterDeep.dimension(function(d){ return d.time });
+                                $scope.deepItems = itemsDimension.top(Infinity);
+                                callback($scope.deepItems);
+                                $scope.alert.style('display', 'block');
+                            });
+                    }
+                }
+
+                ////////////////////////////////
+                /////  IN-SCOPE FUNCTIONS  /////
+                ////////////////////////////////
+                $scope.patternPane = false;
+                function compare(data) {
+                    var totalPoints = data.length;
+                    if (totalPoints < 2) { return false } // return if there aren't enough points to compare
+                    function equals(object, object2) {
+                        //For the first loop, we only check for types
+                        for (var propName in object) {
+                            if (propName !== '$$hashKey') { // ignore angular's inserted id key
+                                // checks if they share the same keys/properties
+                                if (object.hasOwnProperty(propName) != object2.hasOwnProperty(propName)) {
+                                    return false;
+                                }
+                                //Check instance type
+                                else if (typeof object[propName] != typeof object2[propName]) {
+                                    return false;
+                                }
+                            }
+                        }
+                        //Now a deeper check using other objects property names
+                        for (var propName in object2) {
+                            if (propName !== '$$hashKey') { // ignore angular's inserted id key
+                                //We must check instances anyway, there may be a property that only exists in object2
+                                    //I wonder, if remembering the checked values from the first loop would be faster or not 
+                                if (object.hasOwnProperty(propName) != object2.hasOwnProperty(propName)) {
+                                    return false;
+                                }
+                                else if (typeof object[propName] != typeof object2[propName]) {
+                                    return false;
+                                }
+                                //If the property is inherited, do not check any more (it must be equal if both objects inherit it)
+                                if (!object.hasOwnProperty(propName)) continue;
+                                //Now the detail check and recursion
+                                //object returns the script back to the array comparing
+                                if (object[propName] instanceof Array && object2[propName] instanceof Array) {
+                                    // recurse into the nested arrays
+                                    if (!object[propName].equals(object2[propName])) return false;
+                                }
+                                else if (object[propName] instanceof Object && object2[propName] instanceof Object) {
+                                    // recurse into another objects
+                                    if (!object[propName].equals(object2[propName])) return false;
+                                }
+                                //Normal value comparison for strings and numbers
+                                else if (object[propName] != object2[propName]) {
+                                    return false;
+                                }
+                            }
+                        }
+                        // return true if everything passed
+                        return true;
+                    }
+                    function checkMatch(checkOne, checkTwo) {
+                        var matched = [];
+                        for (var r in checkOne) {
+                            var thisMatched = checkTwo.filter(function(d){ if (equals(checkOne[r], d)) { return true; } });
+                            // push every item of each array returned to a single larger array of matched items
+                            for (var m in thisMatched) {
+                                matched.push(thisMatched[m]);
+                            }
+                        }
+                        if (matched.length > 0) { return matched } else { return false }
+                    }   
+                    for (var i = 0; i < totalPoints; i++) { // each one of these is a seperate query / point with its own array of objects
+                        var matched = [];
+                        if (i === 0) { // run if first array
+                            var thisPoint = data[i].result;
+                            var nextPoint = data[i+1].result;
+                            var check = checkMatch(thisPoint, nextPoint);
+                            if (check) {
+                                // set our matched results
+                                matched = check;
+                            } else {
+                                // return if the first check didn't return results
+                                return false;
+                            }
+                        } else if ((matched.length > 0) && (i !== 1)) { // continue if the first loop matched, but skip the second 'i' since the we already tested it
+                            var thisPoint = data[i].result;
+                            var check = checkMatch(matched, thisPoint);
+                            if (check) {
+                                matched = check;
+                            } else {
+                                return false;
+                            }
+                        }
+                        if (matched.length > 0) { return matched } else { return false }
+                    }
+                }
+                function patternPane(data) {
+                    if ($scope.patternPane) { $scope.patternPane = false; return }
+                    // loop through and add a checked flag for each point (for use in finding commonalities)
+                    data.forEach(function(d){
+                        d.point.checked = true;
+                    })
+                    $scope.patternPane = true;
+                    $scope.points = data;
+                    if (data.length === 1) {
+                        $scope.matched = data[0].result;
+                    } else {
+                        $scope.matched = compare(data);
+                    }
+                }
+                $scope.checkboxChange = function() {
+                    // whenever a checkbox is checked, re-compare our existing points
+                    var points = $scope.points.filter(function(d){ return d.point.checked });
+                    if (points.length === 1) {
+                        // if there is only one return, just display its results without comparing
+                        $scope.matched = points[0].result;
+                    } else {
+                        // otherwise just attempt to compare .. it will still return null if points.length is 0
+                        $scope.matched = compare(points);
+                    }
+                }
+                $scope.closePatternBox = function() {
+                    $scope.patternPane = false;
+                }
+                // begin execution
+                draw();
             });
         }
     };
@@ -1044,24 +1113,7 @@ angular.module('mean.pages').directive('appendRowIcon', ['laneRowSymbols', funct
                 .attr('x', 0)
                 .attr('y', 0)
                 .attr('fill', function(d){
-                    if (type === "IOC Severity") {
-                        // switch (d.ioc_severity) {
-                        //     case 1:
-                        //         color = '#377FC7';
-                        //         break;
-                        //     case 2:
-                        //         color = '#F5D800';
-                        //         break;
-                        //     case 3:
-                        //         color = '#F88B12';
-                        //         break;
-                        //     case 4:
-                        //         color = '#DD122A';
-                        //         break;
-                        //     default:
-                        //         color = '#6FBF9B';
-                        // }
-                    } else { 
+                    if (type !== "IOC Severity") {
                         color = rowColors(type);
                     }
                     color1 = "#e6e6e6";
@@ -1071,15 +1123,6 @@ angular.module('mean.pages').directive('appendRowIcon', ['laneRowSymbols', funct
                 .attr('width', 36)
                 .attr('height', 36);
                 laneRowSymbols(type, elm, color1, color2);
-
-            // if (type === 'IOC') {
-            //     elm.append('polygon')
-            //         .attr('points', '7,15 14,6 0,6')
-            //         .attr('transform', 'translate(8,4) scale(1.6)')
-            //         .attr('fill', '#fff')
-            //         .style('opacity', '0.4');
-            // };
-            // laneRowSymbols(type, elm, color1, color2);
         }
     };
 }]);
