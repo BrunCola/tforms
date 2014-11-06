@@ -6,7 +6,7 @@
     </div>
     <div class="container">
         <div class="span8 lanePatternInfoPane" style="height:{{height+20}}px">
-            <div class="row-fuid">
+            <div class="row-fuid patTitleRow">
                 <div class="span8">
                     <div class="title">Selected Events</div>
                 </div>
@@ -19,7 +19,7 @@
                     <div ng-repeat="(key, value) in points" class="list-row">
                         <div ng-if="key != 'length'">
                             <div class="row-fluid">
-                                <div class="span8">
+                                <div class="span8 patRow" >
                                     <div class="pattern-checkbox">
                                         <div class="squaredTwo">
                                             <input type="checkbox" value="None" id="pattern-check-{{value.point.id}}" name="check" ng-change="checkboxChange()" ng-model="value.point.checked"/>
@@ -36,7 +36,7 @@
                                         </li>
                                     </div>
                                 </div>
-                                <div class="span4">
+                                <div class="span4 patRow">
                                     <div class="pattern-result-count"><strong>{{value.result.length}}</strong></div>
                                 </div>
                             </div>

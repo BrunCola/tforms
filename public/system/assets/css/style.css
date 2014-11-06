@@ -87,8 +87,12 @@ p{
 }*/
 
 
-
-
+.patTitleRow {
+  padding-bottom: 10px;
+}
+.patRow {
+  border-top: 1px solid #CCC;
+}
 .patternPane {
   position: relative;
 }
@@ -114,6 +118,7 @@ p{
   position: absolute;
 }
 .lanePatternInfoPane {
+  overflow: scroll;
   display: block;
   background-color: #e6e6e6;
   margin-top: 40px;
@@ -130,7 +135,7 @@ p{
   margin-top: 20px;
 }
 .lanePatternInfoPane div.list-row {
-  line-height: 76px;
+  vertical-align: middle;
 }
 .lanePatternInfoPane div.pattern-checkbox {
   float: left;
@@ -155,7 +160,7 @@ p{
 }
 .lanePatternInfoPane div.pattern-row-selected li{
   list-style: none;
-  line-height: 76px;
+  vertical-align: middle;
 }
 .lanePatternInfoPane div.pattern-result-count {
   font-family: Helvetica Neue;
