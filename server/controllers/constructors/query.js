@@ -8,8 +8,6 @@ module.exports = function (sql, conn, callback) {
             if (err) throw err;
         });
         connection.query(sql.query, sql.insert, function(err, result) {
-            console.log(sql.query);
-            console.log(sql.insert)
             connection.release();
             if (err) {
                 console.log(err);
