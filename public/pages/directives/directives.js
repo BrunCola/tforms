@@ -3232,14 +3232,19 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 return d.id;
                             })
                             .append('svg:foreignObject')
-                                .attr('height', "65px")
+                                // .attr("transform", function(d){
+                                //     count++;
+                                //     return "translate(0,"+count*nodeHeight+")";
+                                // })
+                                .style("padding-top", function(d){
+                                    count++;
+                                    return count*nodeHeight+"px";
+                                })
+                                .attr("height", (count+1)*nodeHeight+"px")
+                                //.attr('height', "65px")
                                 .attr('width', "100%")
                                 .attr("class", function(d){
                                     return 'userTrans-'+d.id;
-                                })
-                                .attr("transform", function(d){
-                                    count++;
-                                    return "translate(0,"+count*nodeHeight+")";
                                 })
                             .append('xhtml:button').each(function(d){
                             // .append('button').each(function(d){
@@ -3477,13 +3482,20 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
         
                                     var el = elel[0];
 
+                                     var elm2 = $(this);
+                                    // console.log(el)
+                                     //console.log(elm2[0])
+
+
                                     el.draggable = true;
                                     el.addEventListener(
                                         'dragstart',
                                         function(e) {
+                                            console.log(e);
+                                            console.log(this);
                                             e.dataTransfer.effectAllowed = 'move';
                                             e.dataTransfer.setData('Text', this.id);
-                                            //this.classList.add('drag');
+                                            this.classList.add('drag');
                                             return false;
                                         },
                                         false
@@ -3492,9 +3504,12 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     el.addEventListener(
                                         'dragend',
                                         function(e) {
-                                            //this.classList.remove('drag');
-                                            $scope.requery(d, 'flooruser');
-                                            lastUserRequeried = d.id;
+                                             console.log(e);
+                                            // console.log(this);
+                                            // console.log(" ");
+                                            // $scope.requery(d, 'flooruser');
+                                            // lastUserRequeried = d.id;
+                                            this.classList.remove('drag');
                                             return false;
                                         },
                                         false
