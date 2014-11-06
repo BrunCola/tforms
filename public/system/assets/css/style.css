@@ -90,8 +90,10 @@ p{
 .patTitleRow {
   padding-bottom: 10px;
 }
-.patRow {
+.patternRow {
   border-top: 1px solid #CCC;
+  min-height: 100px;
+  vertical-align: middle;
 }
 .patternPane {
   position: relative;
@@ -131,11 +133,8 @@ p{
   font-weight: 300;
   text-align: center;
 }
-.lanePatternInfoPane div.list-container {
-  margin-top: 20px;
-}
 .lanePatternInfoPane div.list-row {
-  vertical-align: middle;
+  /*min-height: 60px;*/
 }
 .lanePatternInfoPane div.pattern-checkbox {
   float: left;
@@ -160,7 +159,6 @@ p{
 }
 .lanePatternInfoPane div.pattern-row-selected li{
   list-style: none;
-  vertical-align: middle;
 }
 .lanePatternInfoPane div.pattern-result-count {
   font-family: Helvetica Neue;
