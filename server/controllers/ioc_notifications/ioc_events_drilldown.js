@@ -1605,19 +1605,19 @@ module.exports = function(pool) {
                         // switch for stating what query type connects to what table
                         switch (req.body[i].point.type) {
                             case 'Conn':
-                                queryString += 'conn';
+                                queryString += '`conn`';
                             break;
                             case 'File':
-                                queryString += 'file';
+                                queryString += '`file`';
                             break;
                             case 'SSL':
-                                queryString += 'ssl';
+                                queryString += '`ssl`';
                             break;
                             case 'Email':
-                                queryString += 'smtp';
+                                queryString += '`smtp`';
                             break;
                             default:
-                                queryString += 'conn';
+                                queryString += '`conn`';
                             break;
                         }
                         queryString += ' WHERE ';

@@ -87,14 +87,9 @@ p{
 }*/
 
 
-.patTitleRow {
+/*.patTitleRow {
   padding-bottom: 10px;
-}
-.patternRow {
-  border-top: 1px solid #CCC;
-  min-height: 100px;
-  vertical-align: middle;
-}
+}*/
 .patternPane {
   position: relative;
 }
@@ -127,31 +122,36 @@ p{
   padding-bottom: 20px;
   padding: 20px;
 }
-.lanePatternInfoPane div.title {
+.lanePatternInfoPane .patternRow {
+  border-top: 1px solid #CCC;
+}
+.lanePatternInfoPane .pr-outer {
+  position: relative;
+  display: table;
+  min-height: 60px;
+}
+.patternPane div.title {
   font-family: Helvetica Neue;
   font-size: 20px;
+  padding-bottom: 15px;
   font-weight: 300;
   text-align: center;
 }
-.lanePatternInfoPane div.list-row {
-  /*min-height: 60px;*/
-}
-.lanePatternInfoPane div.pattern-checkbox {
-  float: left;
-  /*position: relative;*/
+.lanePatternInfoPane div.pattern-row-container {
+  display: table-cell;
+  vertical-align: middle;
 }
 .lanePatternInfoPane div.pattern-row-icon {
   padding: 0px 0px 0px 20px;
   float: left;
-  /*position: relative;*/
 }
 .lanePatternInfoPane div.pattern-row-type {
   font-family: Helvetica Neue;
   font-size: 16px;
   font-weight: 300;
   padding-left: 15px;
+  line-height: 36px;
   float: left;
-  /*position: relative;*/
 }
 .lanePatternInfoPane div.pattern-row-selected {
   padding-left: 20px;
@@ -163,6 +163,7 @@ p{
 .lanePatternInfoPane div.pattern-result-count {
   font-family: Helvetica Neue;
   font-size: 18px;
+  line-height: 36px;
   font-weight: 300;
   text-align: center;
 }
@@ -171,6 +172,7 @@ p{
 }
 /* SQUARED TWO */
 .squaredTwo {
+  float: left;
   width: 36px;
   height: 36px;
   background: #666666;
@@ -180,7 +182,7 @@ p{
   background: -ms-linear-gradient(top, #666666 0%, #999999 40%, #606060 100%);
   background: linear-gradient(top, #666666 0%, #999999 40%, #606060 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#666666', endColorstr='#606060',GradientType=0 );
-  margin: 20px auto;
+  /*margin: 20px auto;*/
 
   /*-webkit-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
   -moz-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
