@@ -2229,6 +2229,7 @@ Datatables Plugin(in v1.3)
 #listlocalusers{
    /*overflow: hidden !important;*/
    /*height: 700px;*/
+   min-height: 400px;
 }
 
 #listlocalusers button {
@@ -2412,10 +2413,11 @@ Datatables Plugin(in v1.3)
 .action-bttns.blue{
   background-color: #377FC7;
 }
-a.epmap{
+.epmap{
   color: #4b8df8;
   text-decoration: underline;
   font-weight: bold;
+  cursor: pointer;
 }
 button.userfloorbutton{
   background: none;
@@ -2441,7 +2443,11 @@ button.userfloorbutton{
   margin: 0px 1px;  
   border-radius: 4px;
 }
-#editbuttons{
+#scalebuttons {
+  margin: 0px 1px;  
+  border-radius: 4px;
+}
+#editbuttons, #scalebuttons{
   float: right;
 }
 button.rndCrnBtn {

@@ -68,9 +68,9 @@
                 </select><br />
                 <div ng-repeat="floor in modalFloors">
                     <div ng-show="floorplan.select == floor.asset_name">
-                        Floor Name:&nbsp;<input type="text" ng-model="floor.custom_name" />
-                        &nbsp;&nbsp;&nbsp; Order:&nbsp;<input type="text" class="floorOrderInput" ng-model="floor.order_index" />
-                        &nbsp;&nbsp;&nbsp; Scale:&nbsp;<input type="text" class="floorOrderInput" ng-model="floor.scale" />
+                        Floor Name:&nbsp;<input type="text" ng-model="floor.custom_name" /><br />
+                        Scale:&nbsp;<input type="text" ng-model="floor.scale" only-num><br />
+                        Order:&nbsp;<input type="text" class="floorOrderInput" ng-model="floor.order_index" only-num><br />
                         Upload file: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="file" ng-file-select="onFileSelect($files, floor.asset_name)" accept="image/*" onclick="this.value=null"><br /><br /> 
                         <div ng-show="floor.submitted" >
                         Floor is saved!
@@ -118,6 +118,7 @@
                     <div id="editbuttons" class="bin">
                         <button type="button" class="rndCrnBtn pure-button" ng-click="editFloorPlan(floors)">Edit</button>
                     </div>
+                    <div id="scalebuttons" class="bin"></div>
                     <div id="triggerbuttons" class="bin" ></div>
                     </tabset>
                 </div>

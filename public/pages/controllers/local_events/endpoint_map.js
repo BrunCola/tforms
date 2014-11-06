@@ -16,7 +16,18 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             var count = 0;
             $scope.data.users.forEach(function(d){
                 d.id = count++;
+                if (d.lan_os.toLowerCase().indexOf("win") !== -1 ){
+                    d.machine_icon = "win";
+                } else if ((d.lan_os.toLowerCase().indexOf("os") !== -1) ||  (d.lan_os.toLowerCase().indexOf("apple") !== -1)){
+                    d.machine_icon = "os";
+                } else if (d.lan_os.toLowerCase().indexOf("linux") !== -1 ){
+                    d.machine_icon = "linux";
+                } else {
+                    d.machine_icon = "none";
+                } 
             })
+
+
 
             $scope.crossfilterData = crossfilter(data.users);
             $scope.searchDimension = $scope.crossfilterData.dimension(function(d) { return d });
@@ -35,7 +46,11 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             //$scope.global.floorScale = 1;
             $scope.$broadcast('spinnerHide');
             $scope.floors = data.floor;
+
+            
             $scope.floors[0].active = true;
+
+            $rootScope.only_numb = /^\d+$/;
 
         }
         if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
@@ -52,16 +67,12 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         }
     }); 
 
-
-
     $scope.changePage = function (url, params) {
         if ($location.$$search.start && $location.$$search.end) {
             params.start = $location.$$search.start;
             params.end = $location.$$search.end;
         }
         if (url !== '') {
-            console.log(url);
-            console.log(params);
             $location.path(url).search(params);
         }
     }
@@ -211,6 +222,18 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 //$scope.start(i);
             }
         };
+
+        $scope.numberOnly = function(key) {
+            console.log("test")
+            // var theEvent = evt || window.event;
+            // var key = theEvent.keyCode || theEvent.which;
+            // key = String.fromCharCode( key );
+            // var regex = /[0-9]|\./;
+            // if( !regex.test(key) ) {
+            //     theEvent.returnValue = false;
+            //     if(theEvent.preventDefault) theEvent.preventDefault();
+            // }
+        }
 
         $scope.clearFiles = function(floor_name) {
             if (($scope.selectedFiles !== undefined) && ($scope.selectedFiles[0].floor_name !== floor_name)) {

@@ -82,8 +82,6 @@ module.exports = function(app, passport, version, io, pool) {
     //     + '\x1b[0m';
     // });
 
-
-
     // assign the template engine to .html files
     app.engine('html', consolidate[config.templateEngine]);
 
