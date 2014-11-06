@@ -14,12 +14,13 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
     success(function(data) {
         if (data.tables[0] === null) {
             $scope.$broadcast('loadError');
-        } else {
+        } else { 
             data.crossfilter.forEach(function(d) {
                 d.dd = timeFormat(d.time, 'strdDateObj');
                 d.hour = d3.time.hour(d.dd);
                 d.count = +d.count;
             });
+          
             $scope.crossfilterData = crossfilter(data.crossfilter);
             $scope.data = data;
 
@@ -27,7 +28,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
             $scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
             $scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
 
-            var rowDimension = $scope.crossfilterData.dimension(function(d) { return d.ioc; });
+            var rowDimension = $scope.crossfilterData.dimension(function(d) { return d.ioc + d.ioc_severity; });
             var rowGroupPre = rowDimension.group().reduceSum(function(d) { return d.count; });
             var rowGroup = rowGroupPre.reduce(
                 function (d, v) {
@@ -46,12 +47,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
                 /* initialize d */
                 function () {
                     return {count: 0, severity: 0};
-                },
-
-                function (d) {
-                    return d.severity;
                 }
-
             );
             $scope.$broadcast('rowChart', rowDimension, rowGroup, 'severity');
 

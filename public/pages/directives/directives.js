@@ -1085,6 +1085,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
         link: function ($scope, element, attrs) {
             $scope.$on('rowChart', function (event, dimension, group, chartType) {
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
+
                     var waitForFinalEvent = (function () {
                         var timers = {};
                         return function (callback, ms, uniqueId) {
@@ -1196,7 +1197,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                             }
                         })
                         .renderLabel(true)
-                        .label(function(d) { return d.key+' ('+d.value.count+')'; })
+                        .label(function(d) { return d.key.substring(0, d.key.length - 1)+' ('+d.value.count+')'; })
                         .labelOffsetY(lOffset) //lOffset
                         .elasticX(false)
                         .x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width])) //500 ->width
