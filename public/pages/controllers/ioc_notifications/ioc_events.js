@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', 'timeFormat', function ($scope, $stateParams, $location, Global, $rootScope, $http, timeFormat) {
+angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$interval', 'timeFormat', function ($scope, $stateParams, $location, Global, $rootScope, $http, $interval, timeFormat) {
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
@@ -114,8 +114,36 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
             $scope.barChartxAxis = '';
             $scope.barChartyAxis = '# IOC / Hour';
             $scope.$broadcast('severityLoad');
+
+            
         }
     });
+
+    //auto refresh using angular interval
+    var refreshPeriod = 10000; //in milliseconds (10 seconds)
+    var promise = $interval(function() {
+        console.log("AUTO REFRESH");
+        var newStart, newEnd;
+        if ($location.$$search.start && $location.$$search.end) {
+            newEnd = parseInt($location.$$search.end) + refreshPeriod / 1000;
+            newStart = $location.$$search.end;            
+
+            query = '/ioc_notifications/ioc_events?start='+newStart+'&end='+newEnd;
+
+            $location.$$search.end = "" + (parseInt($location.$$search.end) + refreshPeriod / 1000);
+        } else {
+            newEnd = new Date().getTime() / 1000; 
+            newStart = newEnd - refreshPeriod / 1000;
+
+            query = '/ioc_notifications/ioc_events?start='+newStart+'&end='+newEnd;
+        }
+        $http({method: 'GET', url: query}).
+        success(function(data) {
+            console.log(data);
+            //TODO: Add the new data to all the crossfilters and broadcast to the directives.
+            //Filter out the timeslice between the old start and old start + refresh period (and update directives)
+        });
+    }, refreshPeriod);
 
     $http({method: 'GET', url: query+'&type=ioc_notifications'}).
     success(function(data) {
