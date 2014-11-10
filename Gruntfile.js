@@ -1,7 +1,7 @@
 'use strict';
 
 var paths = {
-    js: ['*.js', 'server/**/*.js', '!server/config/**', 'public/**/*.js', 'test/**/*.js', '!test/coverage/**', '!public/system/lib/**', 'packages/**/*.js', '!public/system/services/global.js'],
+    js: ['*.js', 'server/**/*.js', '!server/config/**', 'public/**/*.js', 'test/**/*.js', '!test/coverage/**', '!public/system/lib/**', 'packages/**/*.js', '!public/system/services/global.js', '!public/system/assets/js/*.js'],
     html: ['public/**/views/**', 'server/views/**', 'packages/**/public/**/views/**', 'packages/**/server/views/**'],
     css: ['public/**/css/*.css', '!public/system/lib/**', '!public/system/assets/**', '!public/auth/assets/**', 'packages/**/public/**/css/*.css']
 };
