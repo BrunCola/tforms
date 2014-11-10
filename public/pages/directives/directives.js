@@ -1085,6 +1085,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
         link: function ($scope, element, attrs) {
             $scope.$on('rowChart', function (event, dimension, group, chartType) {
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
+
                     var waitForFinalEvent = (function () {
                         var timers = {};
                         return function (callback, ms, uniqueId) {
@@ -1196,7 +1197,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                             }
                         })
                         .renderLabel(true)
-                        .label(function(d) { return d.key+' ('+d.value.count+')'; })
+                        .label(function(d) { return d.key.substring(0, d.key.length - 1)+' ('+d.value.count+')'; })
                         .labelOffsetY(lOffset) //lOffset
                         .elasticX(false)
                         .x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width])) //500 ->width
@@ -3231,14 +3232,19 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 return d.id;
                             })
                             .append('svg:foreignObject')
-                                .attr('height', "65px")
+                                // .attr("transform", function(d){
+                                //     count++;
+                                //     return "translate(0,"+count*nodeHeight+")";
+                                // })
+                                .style("padding-top", function(d){
+                                    count++;
+                                    return count*nodeHeight+"px";
+                                })
+                                .attr("height", (count+1)*nodeHeight+"px")
+                                //.attr('height', "65px")
                                 .attr('width', "100%")
                                 .attr("class", function(d){
                                     return 'userTrans-'+d.id;
-                                })
-                                .attr("transform", function(d){
-                                    count++;
-                                    return "translate(0,"+count*nodeHeight+")";
                                 })
                             .append('xhtml:button').each(function(d){
                             // .append('button').each(function(d){
@@ -3297,10 +3303,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             .attr('width', '43')
                                         switch (d.lan_type){
                                             case 'endpoint':
-                                                element
-                                                    .attr('height', '23')
-                                                    .attr('width', '100')
-                                                .append('svg:polygon')
+                                                 element.append('svg:polygon')
+                                                    .attr("class", "userColor")
                                                     .attr('points', '2,0.9 28,0.9 28,17.9 19.3,17.9 20.8,22.9 9.6,22.9 10.9,17.9 2,17.9')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
@@ -3308,32 +3312,42 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 break;
                                             case 'server':
                                                 element.append('svg:polygon')
+                                                    .attr("class", "userColor")
                                                     .attr('points', '15,18 14,18 14,19 11,19 11,22 18,22 18,19 15,19') 
                                                     .style('fill', iconColour);
                                                 element.append('rect')
+                                                    .attr("class", "userColor")
                                                     .attr('x', 19)
                                                     .attr('y', 20)
                                                     .attr('width', 5)
                                                     .attr('height', 1)
                                                     .style('fill', iconColour);
                                                 element.append('rect')
+                                                    .attr("class", "userColor")
                                                     .attr('x', 5)
                                                     .attr('y', 20)
                                                     .attr('width', 5)
                                                     .attr('height', 1)
                                                     .style('fill', iconColour);
                                                 element.append('path')
+                                                    .attr("class", "userColor")
                                                     .style('fill', iconColour)
+                                                    .attr("class", "serverBox")
                                                     .attr('d', 'M24,13H5v4h19V13z M8,16H6v-2h2V16z');
                                                 element.append('path')
+                                                    .attr("class", "userColor")
                                                     .style('fill', iconColour)
+                                                    .attr("class", "serverBox")
                                                     .attr('d', 'M24,7H5v4h19V7z M8,10H6V8h2V10z');
                                                 element.append('path')
+                                                    .attr("class", "userColor")
                                                     .style('fill', iconColour)
+                                                    .attr("class", "serverBox")
                                                     .attr('d', 'M24,1H5v4h19V1z M8,4H6V2h2V4z');
                                                 break;
                                             case 'mobile':
                                                 element.append('svg:path')
+                                                    .attr("class", "userColor")
                                                     .attr('d', 'M8,1v22h14V1H8z M15,22.3c-0.8,0-1.5-0.7-1.5-1.5c0-0.8,0.7-1.5,1.5-1.5c0.8,0,1.5,0.7,1.5,1.5C16.5,21.6,15.8,22.3,15,22.3z M20,18H10V3h10V18z')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
@@ -3341,6 +3355,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 break;
                                             default:
                                                 element.append('svg:polygon')
+                                                    .attr("class", "userColor")
                                                     .attr('points', '2,0.9 28,0.9 28,17.9 19.3,17.9 20.8,22.9 9.6,22.9 10.9,17.9 2,17.9')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
@@ -3476,13 +3491,18 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
         
                                     var el = elel[0];
 
+                                     var elm2 = $(this);
+                                    // console.log(el)
+                                     //console.log(elm2[0])
+
+
                                     el.draggable = true;
                                     el.addEventListener(
                                         'dragstart',
                                         function(e) {
                                             e.dataTransfer.effectAllowed = 'move';
                                             e.dataTransfer.setData('Text', this.id);
-                                            //this.classList.add('drag');
+                                            this.classList.add('drag');
                                             return false;
                                         },
                                         false
@@ -3491,9 +3511,9 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     el.addEventListener(
                                         'dragend',
                                         function(e) {
-                                            //this.classList.remove('drag');
                                             $scope.requery(d, 'flooruser');
                                             lastUserRequeried = d.id;
+                                            this.classList.remove('drag');
                                             return false;
                                         },
                                         false
@@ -3581,44 +3601,51 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             .attr('width', '43')
                                         switch (d.lan_type){
                                             case 'endpoint':
-                                                element
-                                                    .attr('height', '23')
-                                                    .attr('width', '100')
-                                                .append('svg:polygon')
+                                                element.append('svg:polygon')
+                                                    .attr("class", "userColor")
                                                     .attr('points', '2,0.9 28,0.9 28,17.9 19.3,17.9 20.8,22.9 9.6,22.9 10.9,17.9 2,17.9')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
                                                     .style('fill', iconColour);
                                                 break;
                                             case 'server':
-                                                element
-                                                .append('svg:polygon')
+                                                element.append('svg:polygon')
+                                                    .attr("class", "userColor")
                                                     .attr('points', '15,18 14,18 14,19 11,19 11,22 18,22 18,19 15,19') 
                                                     .style('fill', iconColour);
                                                 element.append('rect')
+                                                    .attr("class", "userColor")
                                                     .attr('x', 19)
                                                     .attr('y', 20)
                                                     .attr('width', 5)
                                                     .attr('height', 1)
                                                     .style('fill', iconColour);
                                                 element.append('rect')
+                                                    .attr("class", "userColor")
                                                     .attr('x', 5)
                                                     .attr('y', 20)
                                                     .attr('width', 5)
                                                     .attr('height', 1)
                                                     .style('fill', iconColour);
                                                 element.append('path')
+                                                    .attr("class", "userColor")
                                                     .style('fill', iconColour)
+                                                    .attr("class", "serverBox")
                                                     .attr('d', 'M24,13H5v4h19V13z M8,16H6v-2h2V16z');
                                                 element.append('path')
+                                                    .attr("class", "userColor")
                                                     .style('fill', iconColour)
+                                                    .attr("class", "serverBox")
                                                     .attr('d', 'M24,7H5v4h19V7z M8,10H6V8h2V10z');
                                                 element.append('path')
+                                                    .attr("class", "userColor")
                                                     .style('fill', iconColour)
+                                                    .attr("class", "serverBox")
                                                     .attr('d', 'M24,1H5v4h19V1z M8,4H6V2h2V4z');
                                                 break;
                                             case 'mobile':
                                                 element.append('svg:path')
+                                                    .attr("class", "userColor")
                                                     .attr('d', 'M8,1v22h14V1H8z M15,22.3c-0.8,0-1.5-0.7-1.5-1.5c0-0.8,0.7-1.5,1.5-1.5c0.8,0,1.5,0.7,1.5,1.5C16.5,21.6,15.8,22.3,15,22.3z M20,18H10V3h10V18z')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
@@ -3626,6 +3653,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 break;
                                             default:
                                                 element.append('svg:polygon')
+                                                    .attr("class", "userColor")
                                                     .attr('points', '2,0.9 28,0.9 28,17.9 19.3,17.9 20.8,22.9 9.6,22.9 10.9,17.9 2,17.9')
                                                     .style('fill-rule', '#evenodd')
                                                     .style('clip-rule', '#evenodd')
@@ -3824,10 +3852,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                                 var element = elm.select('div').select('svg');
 
-                                element.selectAll('path').style('fill', getIconColour(d, data, type));
-                                element.selectAll('circle').style('fill', getIconColour(d, data, type));
-                                element.selectAll('rect').style('fill', getIconColour(d, data, type));
-                                element.selectAll('polygon').style('fill', getIconColour(d, data, type));
+                                element.selectAll('.userColor').style('fill', getIconColour(d, data, type));
                             }
                         });
                     }
@@ -3952,17 +3977,22 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
     };
 }]);
 
-angular.module('mean.pages').directive('onlyNum', function() {
-    return function(scope, element, attrs) {
-        var keyCode = [8,9,37,39,48,49,50,51,52,53,54,55,56,57,96,97,98,99,100,101,102,103,104,105,110,190];
-        element.bind("keydown", function(event) {
-            if($.inArray(event.which,keyCode) == -1) {
-                scope.$apply(function(){
-                    scope.$eval(attrs.onlyNum);
-                    event.preventDefault();
-                });
-                event.preventDefault();
-            }
-        });
-    };
+angular.module('mean.pages').directive('numbersOnly', function(){
+   return {
+     require: 'ngModel',
+     link: function(scope, element, attrs, modelCtrl) {
+       modelCtrl.$parsers.push(function (inputValue) {
+           // this next if is necessary for when using ng-required on your input. 
+           // In such cases, when a letter is typed first, this parser will be called
+           // again, and the 2nd time, the value will be undefined
+           if (inputValue == undefined) return '' 
+           var transformedInput = inputValue.replace(/[^0-9+.]/g, ''); 
+           if (transformedInput!=inputValue) {
+              modelCtrl.$setViewValue(transformedInput);
+              modelCtrl.$render();
+           }         
+           return transformedInput;         
+       });
+     }
+   };
 });

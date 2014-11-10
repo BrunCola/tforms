@@ -2389,7 +2389,7 @@ Datatables Plugin(in v1.3)
   text-align: center top;
 }
 .drag {
-  opacity: 0.5;
+  opacity: 0.3;
 }
 .action-icon{
   fill: #fff; width: 35px; height: 35px; float: left;
