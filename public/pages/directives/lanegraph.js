@@ -365,7 +365,46 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             return "#666";
                     }
                 }
+                function highlightSameNodes(time, id, previousElm) {
+                    var pData = false;
+                    if (previousElm) {
+                        pData = previousElm.data();
+                    }
+                    itemRects.selectAll('g').each(function(d){
+                        // select nodes that match
+                        var elm = d3.select(this).select('rect');
+                        if ((d.time === time) && (d.id !== id)) {
+                            d.hover = true;
+                            hoverPoint(elm, 'mouseover');
+                        }
+                        // deselect previous nodes (if any)
+                        if (pData) {
+                            if ((pData[0].time === time) && (d.id !== id)) {
+                                d.hover = false;
+                                hoverPoint(elm, 'mouseout');
+                            }
+                        }
+                    })
+                }
+                function hoverPoint(elm, action) {
+                    if (action === 'mouseover') {
+                        elm
+                            .attr('transform', 'scale(2.4) translate(-3, -5) ')
+                            .attr('stroke', '#fff')
+                            .attr('stroke-width', '1');
+                    } else if (action === 'mouseout') {
+                        elm 
+                            .transition()
+                            .duration(550)
+                            .attr('transform', 'scale(1)')
+                            .attr('stroke', 'none')
+                            .attr('stroke-width', '0');
+                    }
+                }
                 function changeIcon(element, data, previousElm) {
+                    // call filter funtion to highlight all nodes with the same time
+                    highlightSameNodes(data.time, data.id, previousElm);
+
                     var color, select;
                     if (previousElm) {
                         previousElm.select('.eventFocus').remove();
@@ -733,19 +772,15 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .attr('width', 12)
                                 .attr('height', 12)
                                 .style('opacity', '0.6')
-                                .on('mouseover', function(){
-                                    d3.select(this)
-                                    .attr('transform', 'scale(2.4) translate(-3, -5) ')
-                                    .attr('stroke', '#fff')
-                                    .attr('stroke-width', '1');
+                                .on('mouseover', function(d){
+                                    var elm = d3.select(this);
+                                    hoverPoint(elm, 'mouseover');
                                 })
-                                .on('mouseout', function(){
-                                    d3.select(this)
-                                    .transition()
-                                    .duration(550)
-                                    .attr('transform', 'scale(1)')
-                                    .attr('stroke', 'none')
-                                    .attr('stroke-width', '0');
+                                .on('mouseout', function(d){
+                                    var elm = d3.select(this);
+                                    if (d.hover !== true){
+                                        hoverPoint(elm, 'mouseout');
+                                    }
                                 });
                         }
                     }    
