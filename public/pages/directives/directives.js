@@ -3010,6 +3010,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
                     var floorDiv = d3.select(element[0]);
 
+                    var windowScale = $scope.standardWidth/element.outerWidth();
 
                     var hideListDiv = d3.select('#listlocalusersspan');
                     var expandDiv = d3.select('#floorplanspan');
@@ -3129,11 +3130,11 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             };
                             $(this).append(item[0]);
 
-                            itemData.x = divPos.left;
-                            itemData.y = divPos.top;
+                            itemData.x = setAdjustedCoor(divPos.left);
+                            itemData.y = setAdjustedCoor(divPos.top);
                             itemData.map = attrs.floorName;
-
-                            $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: attrs.floorName, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                            
+                            $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: itemData.x, y_coord: itemData.y, map_name: attrs.floorName, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
                             plot(data, attrs.floorName); 
                             d3.select('.user-'+itemId).classed("selected", true);
                         } 
@@ -3201,6 +3202,9 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             //d3.event.stopPropagation();
                         }else{
                         }*/
+                        //console.log(d3.event)
+                        console.log(d3.event.sourceEvent)
+                        console.log("("+d.x + ", " + d.y +")");
                         d.x = d3.event.x;
                         d.y = d3.event.y;
                         d3.select(this).attr("transform", "translate("+d.x + "," + d.y+")");
@@ -3209,8 +3213,19 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         d3.select('.user-'+d.id).classed("selected", true);
                         $scope.requery(d, 'flooruser');
                         lastUserRequeried = d.id;
-                        $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: d.x, y_coord: d.y, map_name: floorName, lan_ip: d.lan_ip, lan_zone: d.lan_zone}});
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                            
+                        $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: setAdjustedCoor(d.x), y_coord: setAdjustedCoor(d.y), map_name: floorName, lan_ip: d.lan_ip, lan_zone: d.lan_zone}});
                         d3.select(this).classed("dragging", false);
+                    }
+
+                    function getAdjustedCoor(coord) {
+                        console.log("get " + coord + " / " + windowScale + " -> " + coord/windowScale)
+                        return coord/windowScale;
+                    }
+
+                    function setAdjustedCoor(coord) {
+                        console.log("set " + coord + " * " + windowScale + " -> " + coord*windowScale)
+                        return coord*windowScale;
                     }
 
                     // -- displays users in userlist and floor plans
@@ -3534,7 +3549,11 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             .append('svg:foreignObject')
                                 .attr('height', "65px")
                                 .attr('width', "150px")
+                                //.attr('class', "dragging")
                                 .attr("transform", function(d){
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                                      
+                                    d.x = getAdjustedCoor(d.x);
+                                    d.y = getAdjustedCoor(d.y);                                    
                                     return "translate("+d.x+","+d.y+")"
                                 })
                                 .call(drag)
@@ -3802,7 +3821,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                         'dragend',
                                         function(e) {
                                             //this.classList.remove('drag');
-                                            console.log("dragend");
                                             $scope.requery(d, 'flooruser');
                                             lastUserRequeried = d.id;
                                             return false;
@@ -3898,7 +3916,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 });
 
                         });
-
 
                     scaleButtonDiv.append('button')
                         .html('Save Scale')
