@@ -19,7 +19,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
         }
     });
     //auto refresh using angular interval
-    var refreshPeriod = 10000; //in milliseconds (30 seconds)
+    var refreshPeriod = 30000; //in milliseconds (30 seconds)
     var promise = $interval(function() {
         console.log("AUTO REFRESH");
         var newStart, newEnd;
@@ -38,7 +38,10 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
         }
         $http({method: 'GET', url: query}).
         success(function(data) {
-            console.log(data);
+            console.log("table data");
+            console.log(data.tables[0]);
+            console.log("crossfilter data");
+            console.log(data.crossfilter);
             //TODO: Filter out the timeslice between the old start and old start + refresh period (and update directives)
 
             processData(data, true);
@@ -60,18 +63,177 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
         //if this is a call from an auto refresh, just add the data to the existing crossfilters
         //otherwise create the crossfilters
         // if(autoRefresh) { //for testing...
-        // data.crossfilter = [{
-        //             count: 1, 
-        //             dd: "Mon Nov 10 2014 09:21:47 GMT+0000 (GMT)",
-        //             hour: "Mon Nov 10 2014 09:00:00 GMT+0000 (GMT)",
-        //             in_bytes: 0.0018,
-        //             ioc: "Known Hostile IP",
-        //             ioc_severity: 3,
-        //             out_bytes: 0.0022,
+        //     data.crossfilter = [{
+        //         count: 1, 
+        //         dd: "Mon Nov 10 2014 09:21:47 GMT+0000 (GMT)",
+        //         hour: "Mon Nov 10 2014 09:00:00 GMT+0000 (GMT)",
+        //         in_bytes: 0.0018,
+        //         ioc: "Known Hostile IP",
+        //         ioc_severity: 3,
+        //         out_bytes: 0.0022,
+        //         remote_country: "United States",
+        //         time: 1415640420,
+        //     }];
+
+        //     data.tables[0] = {
+        //         aaData: [{
+        //             in_bytes: 44,
+        //             in_packets: 1,
+        //             ioc: "Suspected Hostile IP",
+        //             ioc_attrID: "200494",
+        //             ioc_childID: "200494",
+        //             ioc_count: 1,
+        //             ioc_rule: "141.212.121.0/24",
+        //             ioc_severity: 2,
+        //             ioc_typeIndicator: "IP Subnet",
+        //             ioc_typeInfection: "Pre-Infection",
+        //             lan_ip: "10.0.0.30",
+        //             lan_user: "-",
+        //             lan_zone: "Dev",
+        //             machine: "-",
+        //             out_bytes: 84,
+        //             out_packets: 2,
+        //             proxy_blocked: 0,
+        //             remote_asn_name: "UMICH-AS-5",
+        //             remote_cc: "US",
         //             remote_country: "United States",
-        //             time: 1415640420,
-        //         }];
-        //     }
+        //             remote_ip: "141.212.121.61",
+        //             stealth: 0,
+        //             time: 1415725920.396433}],
+        //         params: [ 
+        //             { sTitle: 'Last Seen',
+        //                mData: 'time',
+        //                sType: undefined,
+        //                bVisible: true,
+        //                link: undefined,
+        //                sClass: null },
+        //              { sTitle: 'Stealth',
+        //                mData: 'stealth',
+        //                sType: undefined,
+        //                bVisible: true,
+        //                link: undefined,
+        //                sClass: null },
+        //              { sTitle: 'Severity',
+        //                mData: 'ioc_severity',
+        //                sType: undefined,
+        //                bVisible: true,
+        //                link: undefined,
+        //                sClass: null },
+        //              { sTitle: 'IOC Hits',
+        //                mData: 'ioc_count',
+        //                sType: undefined,
+        //                bVisible: true,
+        //                link: undefined,
+        //                sClass: null },
+        //              { sTitle: 'IOC',
+        //                mData: 'ioc',
+        //                sType: undefined,
+        //                bVisible: true,
+        //                link: undefined,
+        //                sClass: null },
+        //              { sTitle: 'IOC Type',
+        //                mData: 'ioc_typeIndicator',
+        //                sType: undefined,
+        //                bVisible: true,
+        //                link: undefined,
+        //                sClass: null },
+        //              { sTitle: 'IOC Stage',
+        //                mData: 'ioc_typeInfection',
+        //                sType: undefined,
+        //                bVisible: true,
+        //                link: undefined,
+        //                sClass: null },
+        //              { sTitle: 'IOC Rule',
+        //                mData: 'ioc_rule',
+        //                sType: undefined,
+        //                bVisible: true,
+        //                link: undefined,
+        //                sClass: null },
+        //              { sTitle: 'Zone',
+        //                mData: 'lan_zone',
+        //                sType: undefined,
+        //                bVisible: true,
+        //                link: undefined,
+        //                sClass: null },
+        //              { sTitle: 'Machine',
+        //                mData: 'machine',
+        //                sType: undefined,
+        //                bVisible: true,
+        //                link: undefined,
+        //                sClass: null },
+        //              { sTitle: 'Local User',
+        //                mData: 'lan_user',
+        //                sType: undefined,
+        //                bVisible: true,
+        //                link: undefined,
+        //                sClass: null },
+        //              { sTitle: 'Local IP',
+        //                mData: 'lan_ip',
+        //                sType: undefined,
+        //                bVisible: true,
+        //                link: undefined,
+        //                sClass: null },
+        //              { sTitle: 'Remote IP',
+        //                mData: 'remote_ip',
+        //                sType: undefined,
+        //                bVisible: true,
+        //                link: undefined,
+        //                sClass: null },
+        //              { sTitle: 'Remote Country',
+        //                mData: 'remote_country',
+        //                sType: undefined,
+        //                bVisible: true,
+        //                link: undefined,
+        //                sClass: null },
+        //              { sTitle: 'Flag',
+        //                mData: 'remote_cc',
+        //                sType: undefined,
+        //                bVisible: true,
+        //                link: undefined,
+        //                sClass: null },
+        //              { sTitle: 'Remote ASN',
+        //                mData: 'remote_asn_name',
+        //                sType: undefined,
+        //                bVisible: true,
+        //                link: undefined,
+        //                sClass: null },
+        //              { sTitle: 'Bytes to Remote',
+        //                mData: 'in_bytes',
+        //                sType: undefined,
+        //                bVisible: true,
+        //                link: undefined,
+        //                sClass: null },
+        //              { sTitle: 'Bytes from Remote',
+        //                mData: 'out_bytes',
+        //                sType: undefined,
+        //                bVisible: true,
+        //                link: undefined,
+        //                sClass: null },
+        //              { sTitle: 'Packets to Remote',
+        //                mData: 'in_packets',
+        //                sType: undefined,
+        //                bVisible: true,
+        //                link: undefined,
+        //                sClass: null },
+        //              { sTitle: 'Packets from Remote',
+        //                mData: 'out_packets',
+        //                sType: undefined,
+        //                bVisible: false,
+        //                link: undefined,
+        //                sClass: null },
+        //              { sTitle: '',
+        //                mData: null,
+        //                sType: undefined,
+        //                bVisible: true,
+        //                link: undefined,
+        //                sClass: null } ],
+        //                sort: [ [ 0, 'desc' ] ],
+        //               div: 'table',
+        //               title: 'Indicators of Compromise (IOC) Notifications',
+        //           };
+
+        //     console.log(data.tables);
+        // }
         if(autoRefresh && data.crossfilter.length > 0) {
             $scope.crossfilterData.add(data.crossfilter);
             newCrossfilterData = true;
@@ -176,7 +338,8 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
         var newTableData = false;
 
         if(autoRefresh && data.tables[0] != null) {
-            $scope.tableCrossfitler.add(data.tables[0].aaData);
+            // $scope.tableCrossfitler.add(data.tables[0].aaData);
+            $scope.tableCrossfitler.add(data.tables[0].aaData);//JUST FOR TESTING
             newTableData = true;
         } else if(!autoRefresh) { //fresh page load
             $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
@@ -185,77 +348,13 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
 
         if(newTableData) {
             $scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
-            $scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
-        }
-
-        // if(autoRefresh) {
-        //     newData = (data.crossfilter.length > 0) && (data.tables[0] != null); //????
-        //     if(newData) {
-        //         $scope.crossfilterData.add(data.crossfilter);
-        //         $scope.tableCrossfitler.add(data.tables[0].aaData);
-
-        //         // $scope.data.add(data);//??
-        //     } 
-        //     else {//TEMPORARY FOR TESTING
-        //         data.crossfilter = [{
-        //             count: 1, 
-        //             dd: "Mon Nov 10 2014 09:21:47 GMT+0000 (GMT)",
-        //             hour: "Mon Nov 10 2014 09:00:00 GMT+0000 (GMT)",
-        //             in_bytes: 0.0018,
-        //             ioc: "Known Hostile IP",
-        //             ioc_severity: 3,
-        //             out_bytes: 0.0022,
-        //             remote_country: "United States",
-        //             time: 1415640420,
-        //         }];
-        //         data.crossfilter.forEach(function(d) {
-        //             d.dd = timeFormat(d.time, 'strdDateObj');
-        //             d.hour = d3.time.hour(d.dd);
-        //             d.count = +d.count;
-        //         });
-
-        //         data.tables.push({
-        //             aaData: [{
-        //             in_bytes: 44,
-        //             in_packets: 1,
-        //             ioc: "Suspected Hostile IP",
-        //             ioc_attrID: "200494",
-        //             ioc_childID: "200494",
-        //             ioc_count: 1,
-        //             ioc_rule: "141.212.121.0/24",
-        //             ioc_severity: 2,
-        //             ioc_typeIndicator: "IP Subnet",
-        //             ioc_typeInfection: "Pre-Infection",
-        //             lan_ip: "10.0.0.30",
-        //             lan_user: "-",
-        //             lan_zone: "Dev",
-        //             machine: "-",
-        //             out_bytes: 84,
-        //             out_packets: 2,
-        //             proxy_blocked: 0,
-        //             remote_asn_name: "UMICH-AS-5",
-        //             remote_cc: "US",
-        //             remote_country: "United States",
-        //             remote_ip: "141.212.121.61",
-        //             stealth: 0,
-        //             time: 1415707500.396433}]
-        //         });
-        //         console.log(data.tables);
-        //         newData = true;
-        //         $scope.crossfilterData.add(data.crossfilter);
-        //         $scope.tableCrossfitler.add(data.tables[1].aaData);
-
-        //         // $scope.data.add(data);//??
-        //     }
-
-        // } else { //not a refresh, a fresh page load
-        //     newData = true;
-        //     $scope.crossfilterData = crossfilter(data.crossfilter);
-        //     $scope.data = data;
-        //     console.log($scope.data.tables[0]);
-        //     $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
-        // }
-
+            if(autoRefresh) {
+                $scope.$broadcast('tableUpdate', $scope.tableData, $scope.data.tables, null);
+            } else {
+                $scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
+            }
+            
+        } 
     }
 
     $http({method: 'GET', url: query+'&type=ioc_notifications'}).

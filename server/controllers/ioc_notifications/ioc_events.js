@@ -278,6 +278,8 @@ module.exports = function(pool) {
                     function(callback) {
                         new dataTable(table1, {database: database, pool: pool}, function(err,data){
                             tables.push(data);
+                            // console.log(table1);
+                            // console.log(data);
                             callback();
                         });
                     },
@@ -285,6 +287,7 @@ module.exports = function(pool) {
                     function(callback) {
                         new query(crossfilterQ, {database: database, pool: pool}, function(err,data){
                             crossfilter = data;
+                            // console.log(crossfilterQ);
                             callback();
                         });
                     }
