@@ -372,14 +372,15 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                     itemRects.selectAll('g').each(function(d){
                         // select nodes that match
-                        var elm = d3.select(this).select('rect');
+                        var elm = d3.select(this).select('.hover-square');
                         if ((d.time === time) && (d.id !== id)) {
                             d.hover = true;
                             hoverPoint(elm, 'mouseover');
                         }
                         // deselect previous nodes (if any)
                         if (pData) {
-                            if ((pData[0].time === time) && (d.id !== id)) {
+                            // if any nodes match our previous time andwe're on a different time segment
+                            if ((pData[0].time === d.time) && (pData[0].time !== time)) {
                                 d.hover = false;
                                 hoverPoint(elm, 'mouseout');
                             }
@@ -404,7 +405,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 function changeIcon(element, data, previousElm) {
                     // call filter funtion to highlight all nodes with the same time
                     highlightSameNodes(data.time, data.id, previousElm);
-
                     var color, select;
                     if (previousElm) {
                         previousElm.select('.eventFocus').remove();
@@ -748,6 +748,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             return;
                         } else { 
                             element.append('rect')
+                                .classed('hover-square', true)
                                 .attr('x', 0)
                                 .attr('y', 3)
                                 .attr('fill', function(d){
@@ -877,7 +878,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             }
                         })
                         icons.exit();
-
                         ////////////////////
                         /// SIDEBAR LIST ///
                         ////////////////////
@@ -934,7 +934,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .attr('class', 'infoDivExpanded')
                                     .attr('id', d.id);
                             });
-                    }
+                    }                   
                 }
                 function requery(min, max, callback) {
                     var minUnix = moment(min).unix();
