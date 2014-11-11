@@ -16,6 +16,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.standardWidth = 1000;
             var count = 0;       
             $scope.data.users.forEach(function(d){
+                d.setFloor = false;
                 d.id = count++;
                 if (d.lan_os.toLowerCase().indexOf("win") !== -1 ){
                     d.machine_icon = "win";
