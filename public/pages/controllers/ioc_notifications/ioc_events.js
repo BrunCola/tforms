@@ -19,7 +19,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
         }
     });
     //auto refresh using angular interval
-    var refreshPeriod = 30000; //in milliseconds (30 seconds)
+    var refreshPeriod = 60000; //in milliseconds (60 seconds)
     var newIocFound = false;
     //DEFAULT VALUES FOR newEnd and newStart
     var newEnd = new Date().getTime() / 1000; 
@@ -31,7 +31,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
             newEnd = parseInt($location.$$search.end) + refreshPeriod / 1000;
             
             if(newIocFound) {//only update $location.$$search.end (which controls newStart) if new IOC is found, 
-                //otherwise, keep growing the time slice
+                //otherwise, keep growing the time slicey
                 $location.$$search.end = "" + newEnd;
                 newIocFound = false; //reset the flag
             }
