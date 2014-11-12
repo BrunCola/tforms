@@ -91,6 +91,9 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .attr("xlink:href", floor_path)
                         .attr("type", "image/svg+xml");
 
+                    var endpointConn = container.append("svg")
+                    .attr("class", "endpointConn");
+
                     // -- to hide <input> when changing custom username
                     container.on('click', function(e){
                         if(d3.event.toElement === d3.select('.svgFloor')[0][0]){ 
@@ -572,6 +575,9 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             .attr("id", function(d){
                                 return d.id;
                             })
+                            .on('click', function(d) {
+
+                            })
                             .append('svg:foreignObject')
                                 .attr('height', "65px")
                                 .attr('width', "150px")
@@ -640,7 +646,39 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 $(elmbut[0]).removeClass('selected');
                                             })
                                             el.classList.add('selected');
-                                            $scope.getConnections(d);
+
+                                            $scope.getConnections(d); 
+                                            endpointConn.selectAll('line').remove();
+
+                                            wait(function(){
+                                                var conns = endpointConn.selectAll(".endpointConns").data([""]);
+                                                for (var c in $scope.connection) {
+                                                    console.log($scope.connection[c])
+                                                    console.log($scope.selectedUser)
+                                                    if ( $scope.connection[c].map === $scope.selectedUser.map ) {                                       
+                                                        conns.enter()
+                                                            .append("line")
+                                                            .attr("x1", $scope.selectedUser.x+20)
+                                                            .attr("y1", $scope.selectedUser.y+20)
+                                                            .attr("x2", $scope.connection[c].x+20)
+                                                            .attr("y2", $scope.connection[c].y+20)
+                                                            .attr('stroke-width', 1)
+                                                            .attr("stroke", "#00f");
+                                                    } else {
+                                                        conns.enter()
+                                                            .append("line")
+                                                            .attr("x1", $scope.selectedUser.x+20)
+                                                            .attr("y1", $scope.selectedUser.y+20)
+                                                            .attr("x2", 0)
+                                                            .attr("y2", 0)
+                                                            .attr('stroke-width', 1)
+                                                            .attr("stroke", "#00f");
+                                                    }                     
+                                                } 
+                                            }, 200);
+                                            // draw line links
+                                            
+   
                                             $scope.requery(d, 'flooruser');
                                             lastUserRequeried = d.id;
                                         });
@@ -992,6 +1030,42 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     //////////////////////////
                     ///  $SCOPE FUNCTIONS  ///
                     //////////////////////////
+
+                    $rootScope.removeLines = function () {
+                        endpointConn.selectAll('line').remove();
+                    }
+
+
+                    $rootScope.drawConnections = function (user, connections) {
+                        console.log(user)
+                        console.log(connections)
+
+                        var conns = endpointConn.selectAll(".endpointConns").data([""]);
+                        // draw line links
+                        for (var c in connections) {
+                            if ( connections[c].map === user.map ) {                                       
+                                conns.enter()
+                                    .append("line")
+                                    .attr("x1", user.x)
+                                    .attr("y1", user.y)
+                                    .attr("x2", connections[c].x)
+                                    .attr("y2", connections[c].y)
+                                    .attr('stroke-width', 2)
+                                    .attr("stroke", "#00f");
+                            } else {
+                                conns.enter()
+                                    .append("line")
+                                    .attr("x1", user.x)
+                                    .attr("y1", user.y)
+                                    .attr("x2", 0)
+                                    .attr("y2", 0)
+                                    .attr('stroke-width', 2)
+                                    .attr("stroke", "#00f");
+                            }                     
+                        } 
+                    }
+
+
                     // -- redraws the floor (used when user is deleted from floorplan)
                     $rootScope.redrawFloor = function () {
                         var currentUser = d3.select('.selected');

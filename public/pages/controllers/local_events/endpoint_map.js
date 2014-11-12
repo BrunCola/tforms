@@ -48,6 +48,19 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.floors = data.floor;
             
             $scope.floors[0].active = true;
+
+           // $scope.userOnFloors = $scope.data.users.filter(function(d){ 
+            //     for (var f in $scope.floors) {
+            //         ($scope.floors
+            //     }
+            //     if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ 
+            //         return true 
+            //     }
+            // });
+
+
+
+
         }
         if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
             var query = '/local_events/endpoint_map?lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&type=flooruser';
@@ -91,43 +104,34 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=endpointconnection'; 
                 $scope.startend = 'start='+$location.$$search.start+'&end='+$location.$$search.end+'&'; 
             } 
-
-            $http({method: 'GET', url: query+'&typeinfo=getconn1'}).
-                success(function(data) {
-                    if (data[0] != undefined) {
-                        console.log("getconn1")
-                        for (var d in data) {
-                            console.log(data[d])
-                        }
-                    }
-                });
             $http({method: 'GET', url: query+'&typeinfo=getconn2'}).
                 success(function(data) {
+                    // $scope.removeLines();
+                    $scope.selectedUser = "";
+                    $scope.connection = "";
                     if (data[0] != undefined) {
-                        console.log("getconn2")
-                        for (var d in data) {
-                            console.log(data[d])
-                        }
+
+                        var connections = $scope.data.users.filter(function(d){ 
+                            for (var da in data) {
+                                if ((data[da].remote_ip === d.lan_ip)){ 
+                                    return true 
+                                }
+                            }
+                        });
+                        $scope.selectedUser = d;
+                        $scope.connection = connections;
+                        //$scope.drawConnections(d,connections);
                     }
                 });
-            $http({method: 'GET', url: query+'&typeinfo=getconn3'}).
-                success(function(data) {
-                    if (data[0] != undefined) {
-                        console.log("getconn3")
-                        for (var d in data) {
-                            console.log(data[d])
-                        }
-                    }
-                });
-            $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
-                success(function(data) {
-                    if (data[0] != undefined) {
-                        console.log("getconn4")
-                        for (var d in data) {                            
-                            console.log(data[d])
-                        }
-                    }
-                });
+            // $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
+            //     success(function(data) {
+            //         if (data[0] != undefined) {
+            //             console.log("getconn4")
+            //             for (var d in data) {                            
+            //                 console.log(data[d])
+            //             }
+            //         }
+            //     });
     }
 
     $scope.requery = function(d) {
