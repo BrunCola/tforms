@@ -3010,6 +3010,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
                     var floorDiv = d3.select(element[0]);
 
+                    var windowScale = $scope.standardWidth/element.outerWidth();
 
                     var hideListDiv = d3.select('#listlocalusersspan');
                     var expandDiv = d3.select('#floorplanspan');
@@ -3082,7 +3083,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                     // -- droppable behaviours
                     var containerTag = container[0][0];
-                    containerTag.droppable = true;
+                    containerTag.droppable = false;
                     containerTag.addEventListener(
                         'dragover',
                         function(e) {
@@ -3124,8 +3125,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                         if (destinationId === 'floorContainer'){
                             var divPos = {
-                                 left: (e.pageX - $(containerTag).offset().left)/scale,
-                                 top: (e.pageY - $(containerTag).offset().top)/scale
+                                // left: e.layerX/scale,
+                                // top: e.layerY/scale
+                                left: (e.pageX - $(containerTag).offset().left)/scale,
+                                top: (e.pageY - $(containerTag).offset().top)/scale
                             };
                             $(this).append(item[0]);
 
@@ -3172,6 +3175,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
                     }
                     function dragstarted(d) {
+
                         d3.event.sourceEvent.stopPropagation();
                         d3.select(this).classed("dragging", true);
                         userDiv.selectAll('button').each(function(d){
@@ -3203,14 +3207,22 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         }*/
                         d.x = d3.event.x;
                         d.y = d3.event.y;
-                        d3.select(this).attr("transform", "translate("+d.x + "," + d.y+")");
+                        d3.select(this).attr("transform", "translate("+d.x + "," + d.y +")");
                     }
                     function dragended(d) {
                         d3.select('.user-'+d.id).classed("selected", true);
                         $scope.requery(d, 'flooruser');
                         lastUserRequeried = d.id;
-                        $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: d.x, y_coord: d.y, map_name: floorName, lan_ip: d.lan_ip, lan_zone: d.lan_zone}});
+                        $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: setAdjustedCoor(d.x), y_coord: setAdjustedCoor(d.y), map_name: floorName, lan_ip: d.lan_ip, lan_zone: d.lan_zone}});
                         d3.select(this).classed("dragging", false);
+                    }
+
+                    function getAdjustedCoor(coord) {
+                        return coord/windowScale;
+                    }
+
+                    function setAdjustedCoor(coord) {
+                        return coord*windowScale;
                     }
 
                     // -- displays users in userlist and floor plans
@@ -3241,7 +3253,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     return count*nodeHeight+"px";
                                 })
                                 .attr("height", (count+1)*nodeHeight+"px")
-                                //.attr('height', "65px")
+                                // /.attr('height', "30px")
                                 .attr('width', "100%")
                                 .attr("class", function(d){
                                     return 'userTrans-'+d.id;
@@ -3534,7 +3546,13 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             .append('svg:foreignObject')
                                 .attr('height', "65px")
                                 .attr('width', "150px")
+                                //.attr('class', "dragging")
                                 .attr("transform", function(d){
+                                    if (!d.setFloor) {
+                                        d.x = getAdjustedCoor(d.x);
+                                        d.y = getAdjustedCoor(d.y);
+                                        d.setFloor = true; 
+                                    }        
                                     return "translate("+d.x+","+d.y+")"
                                 })
                                 .call(drag)
@@ -3785,30 +3803,29 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 doneEditing(elm, e, this.value)
                                             });
 
-                                    el.draggable = true;
+                                    // el.draggable = true;
 
-                                    el.addEventListener(
-                                        'dragstart',
-                                        function(e) {
-                                            e.dataTransfer.effectAllowed = 'move';
-                                            e.dataTransfer.setData('Text', this.id);
-                                            //this.classList.add('drag');
-                                            return false;
-                                        },
-                                        false
-                                    );
+                                    // el.addEventListener(
+                                    //     'dragstart',
+                                    //     function(e) {
+                                    //         e.dataTransfer.effectAllowed = 'move';
+                                    //         e.dataTransfer.setData('Text', this.id);
+                                    //         //this.classList.add('drag');
+                                    //         return false;
+                                    //     },
+                                    //     false
+                                    // );
 
-                                    el.addEventListener(
-                                        'dragend',
-                                        function(e) {
-                                            //this.classList.remove('drag');
-                                            console.log("dragend");
-                                            $scope.requery(d, 'flooruser');
-                                            lastUserRequeried = d.id;
-                                            return false;
-                                        },
-                                        false
-                                    );
+                                    // el.addEventListener(
+                                    //     'dragend',
+                                    //     function(e) {
+                                    //         //this.classList.remove('drag');
+                                    //         $scope.requery(d, 'flooruser');
+                                    //         lastUserRequeried = d.id;
+                                    //         return false;
+                                    //     },
+                                    //     false
+                                    // );
                                 }
                             });                            
                     }  
@@ -3898,7 +3915,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 });
 
                         });
-
 
                     scaleButtonDiv.append('button')
                         .html('Save Scale')

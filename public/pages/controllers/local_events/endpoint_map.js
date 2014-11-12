@@ -13,8 +13,10 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.$broadcast('loadError');
         } else {
             $scope.data = data;
-            var count = 0;
+            $scope.standardWidth = 1000;
+            var count = 0;       
             $scope.data.users.forEach(function(d){
+                d.setFloor = false;
                 d.id = count++;
                 if (d.lan_os.toLowerCase().indexOf("win") !== -1 ){
                     d.machine_icon = "win";
@@ -25,7 +27,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 } else {
                     d.machine_icon = "none";
                 } 
-            })
+            });
 
             $scope.crossfilterData = crossfilter(data.users);
             $scope.searchDimension = $scope.crossfilterData.dimension(function(d) { return d });
@@ -63,7 +65,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                     }                    
                 });
         }
-    }); 
+    });
 
     $scope.changePage = function (url, params) {
         if ($location.$$search.start && $location.$$search.end) {
