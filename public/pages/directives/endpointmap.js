@@ -640,6 +640,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 $(elmbut[0]).removeClass('selected');
                                             })
                                             el.classList.add('selected');
+                                            $scope.getConnections(d);
                                             $scope.requery(d, 'flooruser');
                                             lastUserRequeried = d.id;
                                         });

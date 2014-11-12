@@ -128,6 +128,37 @@ module.exports = function(pool) {
                         });  
                         break;
                 }
+            }  else if (req.query.type === 'endpointconnection') {
+                switch (req.query.typeinfo) {
+                    case 'getconn1':
+                        new query({query: 'SELECT DISTINCT lan_ip, lan_machine, lan_user, lan_zone, remote_ip, remote_machine, remote_user FROM `stealth_conn_meta` WHERE time BETWEEN ? AND ? AND `in_bytes` = 0 AND `lan_ip` = ?', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        }); 
+                        break;
+                    case 'getconn2':
+                        new query({query: 'SELECT DISTINCT lan_ip, lan_country, lan_user, lan_zone, machine, remote_country, remote_ip FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `in_bytes` = 0 AND `lan_ip` = ? ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        }); 
+                        break;
+                    case 'getconn3':
+                        new query({query: 'SELECT DISTINCT lan_ip, lan_machine, lan_user, lan_zone, remote_ip, remote_machine, remote_user FROM `stealth_conn_meta` WHERE time BETWEEN ? AND ? AND `out_bytes` > 0 AND `in_bytes` > 0 AND `lan_ip` = ?', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        }); 
+                        break;
+                    case 'getconn4':
+                        new query({query: 'SELECT DISTINCT lan_ip, lan_country, lan_user, lan_zone, machine, remote_country, remote_ip FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `out_bytes` > 0 AND `in_bytes` > 0 AND `lan_ip` = ?', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        });  
+                        break;
+                }
             } else if (req.query.type === 'max_order') {
                 new query({query: 'SELECT MAX(`order_index`) AS `max_order` FROM `assets` ', insert: []}, {database: database, pool: pool}, function(err,data){
                     if (data) {
@@ -180,6 +211,68 @@ module.exports = function(pool) {
                             'ORDER BY `order_index`',
                     insert: []
                 }
+
+
+                var stealthDrop = [];
+                var stealth_drop = {
+                    query: 'SELECT DISTINCT '+
+                            'lan_user, '+
+                            'lan_ip, '+
+                            'lan_zone, '+
+                            'lan_machine '+
+                        'FROM '+
+                            '`stealth_conn_meta` '+
+                        'WHERE '+
+                            'time BETWEEN ? AND ? '+
+                            'AND `in_bytes` = 0 ',
+                    insert: [start, end]
+                }
+                var localDrop = [];
+                var local_drop = {
+                    query: 'SELECT DISTINCT '+
+                            'lan_user, '+
+                            'lan_ip, '+
+                            'lan_zone, '+
+                            'machine '+ 
+                    'FROM '+
+                        ' `conn_meta` '+
+                    'WHERE '+
+                        'time BETWEEN ? AND ? '+
+                        'AND `out_bytes` = 0 ',
+                    insert: [start, end]
+                }
+                var stealthAuthorized = [];
+                var stealth_authorized = {
+                    query: 'SELECT DISTINCT '+
+                            'lan_user, '+
+                            'lan_ip, '+
+                            'lan_zone, '+
+                            'lan_machine '+
+                        'FROM '+
+                            '`stealth_conn_meta` '+
+                        'WHERE '+
+                            'time BETWEEN ? AND ? '+
+                            'AND `out_bytes` > 0 '+
+                            'AND `in_bytes` > 0 ',
+                    insert: [start, end]
+                }
+                var localAuthorized = [];
+                var local_authorized = {
+                    query: 'SELECT DISTINCT '+
+                            'lan_user, '+
+                            'lan_ip, '+
+                            'lan_zone, '+
+                            'machine '+
+                    'FROM '+
+                        ' `conn_meta` '+
+                    'WHERE '+
+                        'time BETWEEN ? AND ? '+
+                        'AND `out_bytes` > 0 '+
+                        'AND `in_bytes` > 0 ',
+                    insert: [start, end]
+                }
+
+
                 async.parallel([
                     // Table function(s)
                     function(callback) {
@@ -188,6 +281,34 @@ module.exports = function(pool) {
                             callback();
                         });
                     },
+
+
+                    function(callback) {
+                        new query(stealth_drop, {database: database, pool: pool}, function(err,data){
+                            stealthDrop = data;
+                            callback();
+                        });
+                    },
+                    function(callback) {
+                        new floor_plan(local_drop, {database: database, pool: pool}, function(err,data){
+                            localDrop = data;
+                            callback();
+                        });
+                    },
+                    function(callback) {
+                        new floor_plan(stealth_authorized, {database: database, pool: pool}, function(err,data){
+                            stealthAuthorized = data;
+                            callback();
+                        });
+                    },
+                    function(callback) {
+                        new floor_plan(local_authorized, {database: database, pool: pool}, function(err,data){
+                            localAuthorized = data;
+                            callback();
+                        });
+                    },
+
+
                     function(callback) {
                         new floor_plan(floors, {database: database, pool: pool}, function(err,data){
                             floorplan = data;
@@ -198,6 +319,10 @@ module.exports = function(pool) {
                     if (err) throw console.log(err);
                     var results = { 
                         users: floorplanReturn,
+                        sd: stealthDrop,
+                        ld: localDrop,
+                        sa: stealthAuthorized,
+                        la: localAuthorized,
                         floor: floorplan
                     };
                     res.json(results);

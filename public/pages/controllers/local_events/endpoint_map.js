@@ -84,6 +84,52 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             console.log($scope.max_order);                
         });*/
 
+    $scope.getConnections = function(d) {
+        var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=endpointconnection';
+            $scope.startend = ""; 
+            if ($location.$$search.start && $location.$$search.end) {
+                query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=endpointconnection'; 
+                $scope.startend = 'start='+$location.$$search.start+'&end='+$location.$$search.end+'&'; 
+            } 
+
+            $http({method: 'GET', url: query+'&typeinfo=getconn1'}).
+                success(function(data) {
+                    if (data[0] != undefined) {
+                        console.log("getconn1")
+                        for (var d in data) {
+                            console.log(data[d])
+                        }
+                    }
+                });
+            $http({method: 'GET', url: query+'&typeinfo=getconn2'}).
+                success(function(data) {
+                    if (data[0] != undefined) {
+                        console.log("getconn2")
+                        for (var d in data) {
+                            console.log(data[d])
+                        }
+                    }
+                });
+            $http({method: 'GET', url: query+'&typeinfo=getconn3'}).
+                success(function(data) {
+                    if (data[0] != undefined) {
+                        console.log("getconn3")
+                        for (var d in data) {
+                            console.log(data[d])
+                        }
+                    }
+                });
+            $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
+                success(function(data) {
+                    if (data[0] != undefined) {
+                        console.log("getconn4")
+                        for (var d in data) {                            
+                            console.log(data[d])
+                        }
+                    }
+                });
+    }
+
     $scope.requery = function(d) {
          // get user image
          if (d === "clear") {

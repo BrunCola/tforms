@@ -813,7 +813,9 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                                         arr.push($scope.appDimension.top(Infinity)[i].pie_dimension);
                                     }
 
-                                    $scope.tableData.filter(function(d) { return arr.indexOf(d.pie_dimension) >= 0; });
+                                    $scope.tableData.filter(function(d) { 
+                                        return arr.indexOf(d.l7_proto) >= 0; 
+                                    });
                                     $scope.$broadcast('crossfilterToTable');
 
                                 }, 400, "filterWait");
@@ -2992,3 +2994,4 @@ angular.module('mean.pages').directive('numbersOnly', function(){
      }
    };
 });
+
