@@ -676,7 +676,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                     }                     
                                                 } 
                                             }, 200);
-                                            // draw line links                                           
+                                            // draw line links                                             
    
                                             $scope.requery(d, 'flooruser');
                                             lastUserRequeried = d.id;

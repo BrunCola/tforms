@@ -123,6 +123,25 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                         //$scope.drawConnections(d,connections);
                     }
                 });
+             $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
+                success(function(data) {
+                    // $scope.removeLines();
+                    $scope.selectedUser = "";
+                    $scope.connection = "";
+                    if (data[0] != undefined) {
+
+                        var connections = $scope.data.users.filter(function(d){ 
+                            for (var da in data) {
+                                if ((data[da].lan_ip === d.lan_ip)){ 
+                                    return true 
+                                }
+                            }
+                        });
+                        $scope.selectedUser = d;
+                        $scope.connection = connections;
+                        //$scope.drawConnections(d,connections);
+                    }
+                });
             // $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
             //     success(function(data) {
             //         if (data[0] != undefined) {
