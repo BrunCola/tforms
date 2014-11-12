@@ -50,6 +50,12 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
         });
     }, refreshPeriod);
 
+    $scope.$on("$destroy", function(event) {     
+            $interval.cancel(promise);
+        }
+    );
+
+
     function processData(data, autoRefresh) {
         data.crossfilter.forEach(function(d) {
             d.dd = timeFormat(d.time, 'strdDateObj');
