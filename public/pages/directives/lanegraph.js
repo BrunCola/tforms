@@ -784,7 +784,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     }
                                 });
                         }
-                    }    
+                    }
                     if (moment(max).unix() !== moment(min).unix()) {
                         // node selecting
                         var previousBar = null, previousElm = null;
