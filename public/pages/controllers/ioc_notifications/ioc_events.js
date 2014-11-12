@@ -20,19 +20,32 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
     });
     //auto refresh using angular interval
     var refreshPeriod = 30000; //in milliseconds (30 seconds)
+    var newIocFound = false;
+    //DEFAULT VALUES FOR newEnd and newStart
+    var newEnd = new Date().getTime() / 1000; 
+    var newStart = newEnd - refreshPeriod / 1000;
+    //timeout interval - repeated until user navigates away from page
     var promise = $interval(function() {
         console.log("AUTO REFRESH");
-        var newStart, newEnd;
         if ($location.$$search.start && $location.$$search.end) {
             newEnd = parseInt($location.$$search.end) + refreshPeriod / 1000;
+            
+            if(newIocFound) {//only update $location.$$search.end (which controls newStart) if new IOC is found, 
+                //otherwise, keep growing the time slice
+                $location.$$search.end = "" + newEnd;
+                newIocFound = false; //reset the flag
+            }
+
             newStart = $location.$$search.end;            
 
             query = '/ioc_notifications/ioc_events?start='+newStart+'&end='+newEnd;
 
-            $location.$$search.end = "" + (parseInt($location.$$search.end) + refreshPeriod / 1000);
         } else {
             newEnd = new Date().getTime() / 1000; 
-            newStart = newEnd - refreshPeriod / 1000;
+            if(newIocFound) {//reset the newStart to 1 refresh period away from newEnd
+                newStart = newEnd - refreshPeriod / 1000; 
+                newIocFound = false; //reset the flag
+            } //otherwise keep the newStart the same, so that the timeslice grows
 
             query = '/ioc_notifications/ioc_events?start='+newStart+'&end='+newEnd;
         }
@@ -66,183 +79,10 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
         //first, crossfilter
         var newCrossfilterData = false;
 
-        //if this is a call from an auto refresh, just add the data to the existing crossfilters
-        //otherwise create the crossfilters
-        // if(autoRefresh) { //for testing...
-        //     data.crossfilter = [{
-        //         count: 1, 
-        //         dd: "Mon Nov 10 2014 09:21:47 GMT+0000 (GMT)",
-        //         hour: "Mon Nov 10 2014 09:00:00 GMT+0000 (GMT)",
-        //         in_bytes: 0.0018,
-        //         ioc: "Known Hostile IP",
-        //         ioc_severity: 3,
-        //         out_bytes: 0.0022,
-        //         remote_country: "United States",
-        //         time: 1415640420,
-        //     }];
-
-        //     data.tables[0] = {
-        //         aaData: [{
-        //             in_bytes: 44,
-        //             in_packets: 1,
-        //             ioc: "Suspected Hostile IP",
-        //             ioc_attrID: "200494",
-        //             ioc_childID: "200494",
-        //             ioc_count: 1,
-        //             ioc_rule: "141.212.121.0/24",
-        //             ioc_severity: 2,
-        //             ioc_typeIndicator: "IP Subnet",
-        //             ioc_typeInfection: "Pre-Infection",
-        //             lan_ip: "10.0.0.30",
-        //             lan_user: "-",
-        //             lan_zone: "Dev",
-        //             machine: "-",
-        //             out_bytes: 84,
-        //             out_packets: 2,
-        //             proxy_blocked: 0,
-        //             remote_asn_name: "UMICH-AS-5",
-        //             remote_cc: "US",
-        //             remote_country: "United States",
-        //             remote_ip: "141.212.121.61",
-        //             stealth: 0,
-        //             time: 1415725920.396433}],
-        //         params: [ 
-        //             { sTitle: 'Last Seen',
-        //                mData: 'time',
-        //                sType: undefined,
-        //                bVisible: true,
-        //                link: undefined,
-        //                sClass: null },
-        //              { sTitle: 'Stealth',
-        //                mData: 'stealth',
-        //                sType: undefined,
-        //                bVisible: true,
-        //                link: undefined,
-        //                sClass: null },
-        //              { sTitle: 'Severity',
-        //                mData: 'ioc_severity',
-        //                sType: undefined,
-        //                bVisible: true,
-        //                link: undefined,
-        //                sClass: null },
-        //              { sTitle: 'IOC Hits',
-        //                mData: 'ioc_count',
-        //                sType: undefined,
-        //                bVisible: true,
-        //                link: undefined,
-        //                sClass: null },
-        //              { sTitle: 'IOC',
-        //                mData: 'ioc',
-        //                sType: undefined,
-        //                bVisible: true,
-        //                link: undefined,
-        //                sClass: null },
-        //              { sTitle: 'IOC Type',
-        //                mData: 'ioc_typeIndicator',
-        //                sType: undefined,
-        //                bVisible: true,
-        //                link: undefined,
-        //                sClass: null },
-        //              { sTitle: 'IOC Stage',
-        //                mData: 'ioc_typeInfection',
-        //                sType: undefined,
-        //                bVisible: true,
-        //                link: undefined,
-        //                sClass: null },
-        //              { sTitle: 'IOC Rule',
-        //                mData: 'ioc_rule',
-        //                sType: undefined,
-        //                bVisible: true,
-        //                link: undefined,
-        //                sClass: null },
-        //              { sTitle: 'Zone',
-        //                mData: 'lan_zone',
-        //                sType: undefined,
-        //                bVisible: true,
-        //                link: undefined,
-        //                sClass: null },
-        //              { sTitle: 'Machine',
-        //                mData: 'machine',
-        //                sType: undefined,
-        //                bVisible: true,
-        //                link: undefined,
-        //                sClass: null },
-        //              { sTitle: 'Local User',
-        //                mData: 'lan_user',
-        //                sType: undefined,
-        //                bVisible: true,
-        //                link: undefined,
-        //                sClass: null },
-        //              { sTitle: 'Local IP',
-        //                mData: 'lan_ip',
-        //                sType: undefined,
-        //                bVisible: true,
-        //                link: undefined,
-        //                sClass: null },
-        //              { sTitle: 'Remote IP',
-        //                mData: 'remote_ip',
-        //                sType: undefined,
-        //                bVisible: true,
-        //                link: undefined,
-        //                sClass: null },
-        //              { sTitle: 'Remote Country',
-        //                mData: 'remote_country',
-        //                sType: undefined,
-        //                bVisible: true,
-        //                link: undefined,
-        //                sClass: null },
-        //              { sTitle: 'Flag',
-        //                mData: 'remote_cc',
-        //                sType: undefined,
-        //                bVisible: true,
-        //                link: undefined,
-        //                sClass: null },
-        //              { sTitle: 'Remote ASN',
-        //                mData: 'remote_asn_name',
-        //                sType: undefined,
-        //                bVisible: true,
-        //                link: undefined,
-        //                sClass: null },
-        //              { sTitle: 'Bytes to Remote',
-        //                mData: 'in_bytes',
-        //                sType: undefined,
-        //                bVisible: true,
-        //                link: undefined,
-        //                sClass: null },
-        //              { sTitle: 'Bytes from Remote',
-        //                mData: 'out_bytes',
-        //                sType: undefined,
-        //                bVisible: true,
-        //                link: undefined,
-        //                sClass: null },
-        //              { sTitle: 'Packets to Remote',
-        //                mData: 'in_packets',
-        //                sType: undefined,
-        //                bVisible: true,
-        //                link: undefined,
-        //                sClass: null },
-        //              { sTitle: 'Packets from Remote',
-        //                mData: 'out_packets',
-        //                sType: undefined,
-        //                bVisible: false,
-        //                link: undefined,
-        //                sClass: null },
-        //              { sTitle: '',
-        //                mData: null,
-        //                sType: undefined,
-        //                bVisible: true,
-        //                link: undefined,
-        //                sClass: null } ],
-        //                sort: [ [ 0, 'desc' ] ],
-        //               div: 'table',
-        //               title: 'Indicators of Compromise (IOC) Notifications',
-        //           };
-
-        //     console.log(data.tables);
-        // }
         if(autoRefresh && data.crossfilter.length > 0) {
             $scope.crossfilterData.add(data.crossfilter);
             newCrossfilterData = true;
+            newIocFound = true;
         } else if(!autoRefresh) { //fresh page load
             $scope.crossfilterData = crossfilter(data.crossfilter);
             $scope.data = data;
@@ -347,6 +187,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
             // $scope.tableCrossfitler.add(data.tables[0].aaData);
             $scope.tableCrossfitler.add(data.tables[0].aaData);//JUST FOR TESTING
             newTableData = true;
+            newIocFound = true;
         } else if(!autoRefresh) { //fresh page load
             $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
             newTableData = true;

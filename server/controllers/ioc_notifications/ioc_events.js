@@ -287,7 +287,8 @@ module.exports = function(pool) {
                     function(callback) {
                         new query(crossfilterQ, {database: database, pool: pool}, function(err,data){
                             crossfilter = data;
-                            // console.log(crossfilterQ);
+                            console.log(crossfilterQ);
+                            console.log(data);
                             callback();
                         });
                     }
