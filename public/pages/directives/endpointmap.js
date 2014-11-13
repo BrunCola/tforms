@@ -678,7 +678,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 for (var c in $scope.connectionOut) {
                                                     // console.log($scope.connection[c])
                                                     // console.log($scope.selectedUser)
-                                                    if ( $scope.connectionOut[c].map === $scope.selectedUser.map ) {                                       
+                                                    if ( $scope.connectionOut[c].map === $scope.selectedUser.map ) {                             
                                                         conns.enter()
                                                             .append("line")
                                                             .attr("x1", $scope.selectedUser.x+20)

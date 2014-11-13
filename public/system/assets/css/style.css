@@ -2468,3 +2468,6 @@ button.epbGrey:hover,button.epbGrey:active{
 .floorOrderInput {
   width:50px;
 }
+.rotateChord{
+  color: #0f0 !important;
+}

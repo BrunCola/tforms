@@ -3030,20 +3030,20 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
                 // console.log(matrix);
 
 
-                var matrix = [
-                  [11975,  5871, 8916, 2868, 5000],
-                  [ 1951, 10048, 2060, 6171, 5000],
-                  [ 8010, 16145, 8090, 8045, 5000],
-                  [ 8010, 16145, 8090, 8045, 5000],
-                  [ 5000,   990,  940, 6907, 5000]
-                ];
                 // var matrix = [
-                //     [ 0, 1, 0, 0, 0],
-                //     [ 0, 0, 0, 0, 1],
-                //     [ 1, 6, 0, 0, 0],
-                //     [ 0, 0, 0, 0, 0],
-                //     [ 0, 0, 0, 0, 0]
+                //   [11975,  5871, 8916, 2868, 5000],
+                //   [ 1951, 10048, 2060, 6171, 5000],
+                //   [ 8010, 16145, 8090, 8045, 5000],
+                //   [ 8010, 16145, 8090, 8045, 5000],
+                //   [ 5000,   990,  940, 6907, 5000]
                 // ];
+                var matrix = [
+                    [ 0, 1, 1, 0, 0],
+                    [ 1, 0, 6, 0, 1],
+                    [ 1, 6, 0, 0, 0],
+                    [ 0, 0, 0, 1, 0],
+                    [ 0, 1, 0, 0, 0]
+                ];
 
                 var chord = d3.layout.chord()
                     .padding(.05)
@@ -3065,6 +3065,8 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
                     .append("g")
                     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
+
+                var count2 = -1;
                 svg.append("g").selectAll("path")
                     .data(chord.groups)
                   .enter().append("path")
@@ -3092,11 +3094,11 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
                     .text(function(d) {
                         count2++;
                         return data.nodes[count2].name;
-                    })
+                    }).attr("class", "rotateChord")
                     .attr("transform", function(d) {
                         console.log(d)
                         count++;
-                      return "rotate(" + (d.startAngle * 180 / Math.PI - 90) + ")"
+                        return "rotate(" + (d.startAngle * 180 / Math.PI - 90) + ")"
                           + "translate(" + outerRadius + ",200)";
                     });
 
@@ -3127,11 +3129,11 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
                 // Returns an array of tick angles and labels, given a group.
                 function groupTicks(d) {
                   var k = (d.endAngle - d.startAngle) / d.value;
-                  return d3.range(0, d.value, 2000).map(function(v, i) {
+                  return d3.range(0, d.value, 1).map(function(v, i) {
                     return {
                       angle: v * k + d.startAngle,
-                      label: i % 5 ? null : v / 1000 + "k"
-                      // label: v
+                      //label: i % 5 ? null : v / 1000 + "k"
+                      label: v
                     };
                   });
                 }

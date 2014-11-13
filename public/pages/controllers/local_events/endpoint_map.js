@@ -31,6 +31,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
 
             $scope.crossfilterData = crossfilter(data.users);
             $scope.searchDimension = $scope.crossfilterData.dimension(function(d) { return d });
+            $scope.userDimension = $scope.crossfilterData.dimension(function(d) { return d });
 
             // watch global search for changes.. then filter
             var searchFired = false;
@@ -109,28 +110,20 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                     // $scope.removeLines();
                     $scope.selectedUser = "";
                     $scope.connectionIn = "";
+                        var results = [];
                     if (data[0] != undefined) {
                         var users; //-----------------------------------------------------Should be upgraded!!-------------------------------------------------------------------
-                        var connections = $.map( data, function( da ) {
-                            users = $scope.data.users.filter(function(d){ 
-                                if ((da.remote_ip === d.lan_ip)){
-                                    return true; 
+                        var connections = data.map(function( da ) {
+                            users = $scope.userDimension.filter(function(dt){ 
+                                if ((da.remote_ip === dt.lan_ip)){
+                                    results.push(dt)
                                 }
                             });
-                            return users;
                         });
 
-                        // var connections = $scope.data.users.filter(function(d){ 
-                        //     for (var da in data) {
-                        //         if ((data[da].remote_ip === d.lan_ip)){ 
-                        //             return true 
-                        //         }
-                        //     }
-                        // });
+                        console.log(results)
                         $scope.selectedUser = d;
-                        $scope.connectionIn = connections;
-                        //console.log(connections)
-                        //$scope.drawConnections(d,connections);
+                        $scope.connectionIn = results;
                     }
                 });
              $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
@@ -138,31 +131,22 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                     // $scope.removeLines();
                     $scope.selectedUser = "";
                     $scope.connectionOut = "";
+                    var results2 = [];
                     if (data[0] != undefined) {
                         var users; //---------------^^^^^^^^^^^^^^^^-----------------------Should be upgraded!!--------------------------^^^^^^^^^^-------------------------
-                        var connections = $.map( data, function( da ) {
-                            users = $scope.data.users.filter(function(d){ 
-                                if ((da.lan_ip === d.lan_ip)){
-                                    return true; 
+                        var connections = data.map(function( da ) {
+                            users = $scope.userDimension.filter(function(dt){ 
+                                if ((da.lan_ip === dt.lan_ip)){
+                                    results2.push(dt)
+                                    //return true; 
                                 }
                             });
-                            return users;
+                            //return users.top(Infinity);
                         });
                         $scope.selectedUser = d;
-                        $scope.connectionOut = connections;
-                        //console.log(connections)
-                        //$scope.drawConnections(d,connections);
+                        $scope.connectionOut = results2;
                     }
                 });
-            // $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
-            //     success(function(data) {
-            //         if (data[0] != undefined) {
-            //             console.log("getconn4")
-            //             for (var d in data) {                            
-            //                 console.log(data[d])
-            //             }
-            //         }
-            //     });
     }
 
     $scope.requery = function(d) {
