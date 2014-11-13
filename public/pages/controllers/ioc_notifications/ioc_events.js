@@ -9,8 +9,6 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
         query = '/ioc_notifications/ioc_events?';
     }
     $http({method: 'GET', url: query}).
-    //success(function(data, status, headers, config) {
-    // console.log($location.$$search);
     success(function(data) {
         if (data.tables[0] === null) {
             $scope.$broadcast('loadError');
@@ -20,19 +18,21 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
     });
     //auto refresh using angular interval
     var refreshPeriod = 60000; //in milliseconds (60 seconds)
-    var newIocFound = false;
-    //DEFAULT VALUES FOR newEnd and newStart
+    var newIocFound = false; //flag to track if a new IOC was found - gets reset after the new IOC is pushed to the directives
+    //default values for newEnd and newStart
     var newEnd = new Date().getTime() / 1000; 
     var newStart = newEnd - refreshPeriod / 1000;
+    //for keeping track of original start time, given no user-set params:
+    var oldStart = Math.round(new Date().getTime() / 1000)-((3600*24)); //default date range is usually 1
     //timeout interval - repeated until user navigates away from page
+    //count to keep track of number of refreshes - every 10 we'll do a larger query...
     var promise = $interval(function() {
-        console.log("AUTO REFRESH");
         if ($location.$$search.start && $location.$$search.end) {
             newEnd = parseInt($location.$$search.end) + refreshPeriod / 1000;
             
             if(newIocFound) {//only update $location.$$search.end (which controls newStart) if new IOC is found, 
                 //otherwise, keep growing the time slicey
-                $location.$$search.end = "" + newEnd;
+                $location.$$search.end = "" + (newEnd - (refreshPeriod / 1000) * 5);
                 newIocFound = false; //reset the flag
             }
 
@@ -40,35 +40,34 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
 
             query = '/ioc_notifications/ioc_events?start='+newStart+'&end='+newEnd;
 
+            //update $location.$$search.start to use it for filtering out old data
+            $location.$$search.start = "" + (parseInt($location.$$search.start) + refreshPeriod / 1000);
+
         } else {
             newEnd = new Date().getTime() / 1000; 
-            if(newIocFound) {//reset the newStart to 1 refresh period away from newEnd
-                newStart = newEnd - refreshPeriod / 1000; 
+            if(newIocFound) {//reset the newStart to 3 refresh period away from newEnd
+                newStart = newEnd - (refreshPeriod / 1000) * 5; 
                 newIocFound = false; //reset the flag
             } //otherwise keep the newStart the same, so that the timeslice grows
 
             query = '/ioc_notifications/ioc_events?start='+newStart+'&end='+newEnd;
+
+            oldStart = oldStart + refreshPeriod / 1000;
         }
         $http({method: 'GET', url: query}).
         success(function(data) {
-            console.log("table data");
-            console.log(data.tables[0]);
-            console.log("crossfilter data");
-            console.log(data.crossfilter);
-            //TODO: Filter out the timeslice between the old start and old start + refresh period (and update directives)
-
             processData(data, true);
-
-
         });
     }, refreshPeriod);
 
+    //stop the interval when the user navigates away from the page
     $scope.$on("$destroy", function(event) {     
             $interval.cancel(promise);
         }
     );
 
-
+    //this function handles data returned from the server, both on page load and on refresh
+    //autoRefresh is boolean (true if data call is coming from refresh)
     function processData(data, autoRefresh) {
         data.crossfilter.forEach(function(d) {
             d.dd = timeFormat(d.time, 'strdDateObj');
@@ -76,9 +75,11 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
             d.count = +d.count;
         }); 
 
-        //first, crossfilter
+        //first, handle crossfilter data
         var newCrossfilterData = false;
 
+        //add new data to crossfilter, if it's coming from a refresh
+        //or create the crossfilter using the whole data set, if a fresh page load
         if(autoRefresh && data.crossfilter.length > 0) {
             $scope.crossfilterData.add(data.crossfilter);
             newCrossfilterData = true;
@@ -88,6 +89,26 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
             $scope.data = data;
             newCrossfilterData = true;
         } 
+
+        //filter out old data from the crossfilter
+        if(autoRefresh) {
+            var timeDimension = $scope.crossfilterData.dimension(function(d) { return d.time; });
+            //filter by date smaller than the old start (previously moved up by one refresh period)
+            timeDimension.filter(function(d){
+                if($location.$$search.start) {
+                    return d < parseInt($location.$$search.start);
+                } else {
+                    return d < oldStart;
+                }
+            });
+            //if something has been filtered, newCrossfilterData = true (will push to directives)
+            newCrossfilterData = timeDimension.top(Infinity).length > 0;
+
+            //remove the filtered data from crossfilter
+            $scope.crossfilterData.remove();
+            //add back the other data (I think this is needed)
+            timeDimension.filterAll();
+        }
 
         //if it's a fresh page load or a refresh which pulled new data, process and push to directives
         if(newCrossfilterData) {
@@ -192,6 +213,26 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
             $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
             newTableData = true;
         } 
+
+        //filter out old data from the crossfilter
+        if(autoRefresh) {
+            var timeDimension = $scope.tableCrossfitler.dimension(function(d) { return d.time; });
+            //filter by date smaller than the old start (previously moved up by one refresh period)
+            timeDimension.filter(function(d){
+                if($location.$$search.start) {
+                    return d < parseInt($location.$$search.start);
+                } else {
+                    return d < oldStart;
+                }
+            });
+            //if something has been filtered, newTableData = true (will push to directives)
+            newTableData = timeDimension.top(Infinity).length > 0;
+
+            //remove the filtered data from crossfilter
+            $scope.tableCrossfitler.remove();
+            //add back the other data (I think this line is needed...)
+            timeDimension.filterAll();
+        }
 
         if(newTableData) {
             $scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
