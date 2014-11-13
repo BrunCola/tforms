@@ -205,7 +205,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                 }
             });
         }
-
+ 
         $http({method: 'GET', url: '/ioc_notifications/ioc_events_drilldown?type=child_id&ioc_childID='+$scope.ioc_childID+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&lan_user='+$location.$$search.lan_user}).
         success(function(result) {
             if (result.data[0] !== undefined) {

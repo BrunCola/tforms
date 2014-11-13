@@ -365,7 +365,46 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             return "#666";
                     }
                 }
+                function highlightSameNodes(time, id, previousElm) {
+                    var pData = false;
+                    if (previousElm) {
+                        pData = previousElm.data();
+                    }
+                    itemRects.selectAll('g').each(function(d){
+                        // select nodes that match
+                        var elm = d3.select(this).select('.hover-square');
+                        if ((d.time === time) && (d.id !== id)) {
+                            d.hover = true;
+                            hoverPoint(elm, 'mouseover');
+                        }
+                        // deselect previous nodes (if any)
+                        if (pData) {
+                            // if any nodes match our previous time andwe're on a different time segment
+                            if ((pData[0].time === d.time) && (pData[0].time !== time)) {
+                                d.hover = false;
+                                hoverPoint(elm, 'mouseout');
+                            }
+                        }
+                    })
+                }
+                function hoverPoint(elm, action) {
+                    if (action === 'mouseover') {
+                        elm
+                            .attr('transform', 'scale(2.4) translate(-3, -5) ')
+                            .attr('stroke', '#fff')
+                            .attr('stroke-width', '1');
+                    } else if (action === 'mouseout') {
+                        elm 
+                            .transition()
+                            .duration(550)
+                            .attr('transform', 'scale(1)')
+                            .attr('stroke', 'none')
+                            .attr('stroke-width', '0');
+                    }
+                }
                 function changeIcon(element, data, previousElm) {
+                    // call filter funtion to highlight all nodes with the same time
+                    highlightSameNodes(data.time, data.id, previousElm);
                     var color, select;
                     if (previousElm) {
                         previousElm.select('.eventFocus').remove();
@@ -709,6 +748,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             return;
                         } else { 
                             element.append('rect')
+                                .classed('hover-square', true)
                                 .attr('x', 0)
                                 .attr('y', 3)
                                 .attr('fill', function(d){
@@ -733,22 +773,18 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .attr('width', 12)
                                 .attr('height', 12)
                                 .style('opacity', '0.6')
-                                .on('mouseover', function(){
-                                    d3.select(this)
-                                    .attr('transform', 'scale(2.4) translate(-3, -5) ')
-                                    .attr('stroke', '#fff')
-                                    .attr('stroke-width', '1');
+                                .on('mouseover', function(d){
+                                    var elm = d3.select(this);
+                                    hoverPoint(elm, 'mouseover');
                                 })
-                                .on('mouseout', function(){
-                                    d3.select(this)
-                                    .transition()
-                                    .duration(550)
-                                    .attr('transform', 'scale(1)')
-                                    .attr('stroke', 'none')
-                                    .attr('stroke-width', '0');
+                                .on('mouseout', function(d){
+                                    var elm = d3.select(this);
+                                    if (d.hover !== true){
+                                        hoverPoint(elm, 'mouseout');
+                                    }
                                 });
                         }
-                    }    
+                    }
                     if (moment(max).unix() !== moment(min).unix()) {
                         // node selecting
                         var previousBar = null, previousElm = null;
@@ -842,7 +878,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             }
                         })
                         icons.exit();
-
                         ////////////////////
                         /// SIDEBAR LIST ///
                         ////////////////////
@@ -899,7 +934,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .attr('class', 'infoDivExpanded')
                                     .attr('id', d.id);
                             });
-                    }
+                    }                   
                 }
                 function requery(min, max, callback) {
                     var minUnix = moment(min).unix();

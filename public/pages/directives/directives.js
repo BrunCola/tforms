@@ -343,12 +343,13 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
     return {
         link: function ($scope, element, attrs) {
             $scope.socket = socket;
+
+            function redrawTable(tableData) {
+                $('#table').dataTable().fnClearTable();
+                $('#table').dataTable().fnAddData(tableData.top(Infinity));
+                $('#table').dataTable().fnDraw();
+            }
             $scope.$on('tableLoad', function (event, tableData, params, tableType) {
-                function redrawTable() {
-                    $('#table').dataTable().fnClearTable();
-                    $('#table').dataTable().fnAddData(tableData.top(Infinity));
-                    $('#table').dataTable().fnDraw();
-                }
                 for (var t in params) {
                     if (params[t] != null) {
                         if ($location.$$absUrl.search('/report#!/') === -1) {
@@ -632,7 +633,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                                     var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
                                                     $scope.tableCrossfitler.remove(fil);
                                                     tableData.filterAll();
-                                                    redrawTable();
+                                                    redrawTable(tableData);
                                                 })
                                         });
                                         $('table .bRestore').on('click',function(){
@@ -642,7 +643,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                                     var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
                                                     $scope.tableCrossfitler.remove(fil);
                                                     tableData.filterAll();
-                                                    redrawTable();
+                                                    redrawTable(tableData);
                                                 })
                                         });
                                         $('table .bUpload').on('click',function(){
@@ -674,7 +675,10 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                         }
                     break;
                 }
-            })
+            });
+            $scope.$on('tableUpdate', function (event, tableData, params, tableType) {
+                redrawTable(tableData);
+            });
         }
     };
 }]);
