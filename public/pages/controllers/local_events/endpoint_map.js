@@ -108,7 +108,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 success(function(data) {
                     // $scope.removeLines();
                     $scope.selectedUser = "";
-                    $scope.connection = "";
+                    $scope.connectionIn = "";
                     if (data[0] != undefined) {
                         var users; //-----------------------------------------------------Should be upgraded!!-------------------------------------------------------------------
                         var connections = $.map( data, function( da ) {
@@ -137,7 +137,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 success(function(data) {
                     // $scope.removeLines();
                     $scope.selectedUser = "";
-                    $scope.connection = "";
+                    $scope.connectionOut = "";
                     if (data[0] != undefined) {
                         var users; //---------------^^^^^^^^^^^^^^^^-----------------------Should be upgraded!!--------------------------^^^^^^^^^^-------------------------
                         var connections = $.map( data, function( da ) {
