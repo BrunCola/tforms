@@ -535,6 +535,18 @@ angular.module('mean.pages').config(['$stateProvider',
                         title: 'Quarantined Endpoints',
                         daterange: true
                     }
+                })             
+            // STEALTH CHORD VIEW
+                .state('stealth_coi_conn_view', {
+                    url: '/stealth_coi_conn_view?start&end',
+                    templateUrl: 'public/pages/views/stealth/stealth_coi_conn_view.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'Stealth COI Connections',
+                        daterange: true
+                    }
                 }) 
         // LOCAL EVENTS
             // ENDPOINT MAP
