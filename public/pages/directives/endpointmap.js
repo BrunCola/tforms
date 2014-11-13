@@ -675,7 +675,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                             .attr("stroke", "#00f");
                                                     }                     
                                                 } 
-                                            }, 300);
+                                            }, 400);
                                             // draw line links                                             
    
                                             $scope.requery(d, 'flooruser');
@@ -1039,29 +1039,29 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         // console.log(user)
                         // console.log(connections)
 
-                        var conns = endpointConn.selectAll(".endpointConns").data([""]);
-                        // draw line links
-                        for (var c in connections) {
-                            if ( connections[c].map === user.map ) {                                       
-                                conns.enter()
-                                    .append("line")
-                                    .attr("x1", user.x)
-                                    .attr("y1", user.y)
-                                    .attr("x2", connections[c].x)
-                                    .attr("y2", connections[c].y)
-                                    .attr('stroke-width', 2)
-                                    .attr("stroke", "#00f");
-                            } else {
-                                conns.enter()
-                                    .append("line")
-                                    .attr("x1", user.x)
-                                    .attr("y1", user.y)
-                                    .attr("x2", 0)
-                                    .attr("y2", 0)
-                                    .attr('stroke-width', 2)
-                                    .attr("stroke", "#00f");
-                            }                     
-                        } 
+                        // var conns = endpointConn.selectAll(".endpointConns").data([""]);
+                        // // draw line links
+                        // for (var c in connections) {
+                        //     if ( connections[c].map === user.map ) {                                       
+                        //         conns.enter()
+                        //             .append("line")
+                        //             .attr("x1", user.x)
+                        //             .attr("y1", user.y)
+                        //             .attr("x2", connections[c].x)
+                        //             .attr("y2", connections[c].y)
+                        //             .attr('stroke-width', 2)
+                        //             .attr("stroke", "#00f");
+                        //     } else {
+                        //         conns.enter()
+                        //             .append("line")
+                        //             .attr("x1", user.x)
+                        //             .attr("y1", user.y)
+                        //             .attr("x2", 0)
+                        //             .attr("y2", 0)
+                        //             .attr('stroke-width', 2)
+                        //             .attr("stroke", "#00f");
+                        //     }                     
+                        // } 
                     }
 
 
