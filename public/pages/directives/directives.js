@@ -3051,8 +3051,8 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
                     .matrix(matrix);
 
                 var width = 960,
-                    height = 500,
-                    innerRadius = Math.min(width, height) * .41,
+                    height = 900,
+                    innerRadius = Math.min(width, height) * .31,
                     outerRadius = innerRadius * 1.1;
 
                 var fill = d3.scale.ordinal()
@@ -3084,6 +3084,22 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
                           + "translate(" + outerRadius + ",0)";
                     });
 
+                var count = 0;
+                var count2 = -1;
+                var labels = svg.append("g").selectAll("g")
+                    .data(chord.groups)
+                    .enter().append("text")
+                    .text(function(d) {
+                        count2++;
+                        return data.nodes[count2].name;
+                    })
+                    .attr("transform", function(d) {
+                        console.log(d)
+                        count++;
+                      return "rotate(" + (d.startAngle * 180 / Math.PI - 90) + ")"
+                          + "translate(" + outerRadius + ",200)";
+                    });
+
                 ticks.append("line")
                     .attr("x1", 1)
                     .attr("y1", 0)
@@ -3097,6 +3113,7 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
                     .attr("transform", function(d) { return d.angle > Math.PI ? "rotate(180)translate(-16)" : null; })
                     .style("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
                     .text(function(d) { return d.label; });
+                
 
                 svg.append("g")
                     .attr("class", "chord")
@@ -3109,7 +3126,6 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
 
                 // Returns an array of tick angles and labels, given a group.
                 function groupTicks(d) {
-                    console.log(d)
                   var k = (d.endAngle - d.startAngle) / d.value;
                   return d3.range(0, d.value, 2000).map(function(v, i) {
                     return {
