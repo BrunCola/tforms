@@ -653,8 +653,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             wait(function(){
                                                 var conns = endpointConn.selectAll(".endpointConns").data([""]);
                                                 for (var c in $scope.connection) {
-                                                    console.log($scope.connection[c])
-                                                    console.log($scope.selectedUser)
+                                                    // console.log($scope.connection[c])
+                                                    // console.log($scope.selectedUser)
                                                     if ( $scope.connection[c].map === $scope.selectedUser.map ) {                                       
                                                         conns.enter()
                                                             .append("line")
@@ -675,7 +675,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                             .attr("stroke", "#00f");
                                                     }                     
                                                 } 
-                                            }, 200);
+                                            }, 250);
                                             // draw line links                                             
    
                                             $scope.requery(d, 'flooruser');
@@ -1036,8 +1036,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
 
                     $rootScope.drawConnections = function (user, connections) {
-                        console.log(user)
-                        console.log(connections)
+                        // console.log(user)
+                        // console.log(connections)
 
                         var conns = endpointConn.selectAll(".endpointConns").data([""]);
                         // draw line links

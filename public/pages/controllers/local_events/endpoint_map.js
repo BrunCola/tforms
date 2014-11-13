@@ -110,14 +110,23 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                     $scope.selectedUser = "";
                     $scope.connection = "";
                     if (data[0] != undefined) {
-
-                        var connections = $scope.data.users.filter(function(d){ 
-                            for (var da in data) {
-                                if ((data[da].remote_ip === d.lan_ip)){ 
-                                    return true 
+                        var users; //-----------------------------------------------------Should be upgraded!!-------------------------------------------------------------------
+                        var connections = $.map( data, function( da ) {
+                            users = $scope.data.users.filter(function(d){ 
+                                if ((da.remote_ip === d.lan_ip)){
+                                    return true; 
                                 }
-                            }
+                            });
+                            return users;
                         });
+
+                        // var connections = $scope.data.users.filter(function(d){ 
+                        //     for (var da in data) {
+                        //         if ((data[da].remote_ip === d.lan_ip)){ 
+                        //             return true 
+                        //         }
+                        //     }
+                        // });
                         $scope.selectedUser = d;
                         $scope.connection = connections;
                         //$scope.drawConnections(d,connections);
@@ -129,13 +138,14 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                     $scope.selectedUser = "";
                     $scope.connection = "";
                     if (data[0] != undefined) {
-
-                        var connections = $scope.data.users.filter(function(d){ 
-                            for (var da in data) {
-                                if ((data[da].lan_ip === d.lan_ip)){ 
-                                    return true 
+                        var users; //---------------^^^^^^^^^^^^^^^^-----------------------Should be upgraded!!--------------------------^^^^^^^^^^-------------------------
+                        var connections = $.map( data, function( da ) {
+                            users = $scope.data.users.filter(function(d){ 
+                                if ((da.lan_ip === d.lan_ip)){
+                                    return true; 
                                 }
-                            }
+                            });
+                            return users;
                         });
                         $scope.selectedUser = d;
                         $scope.connection = connections;
