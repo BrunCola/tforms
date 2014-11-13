@@ -3065,42 +3065,40 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
                     .append("g")
                     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
+                var g = svg.selectAll(".group")
+                      .data(chord.groups)
+                    .enter().append("g")
+                      .attr("class", "group");
 
-                var count2 = -1;
-                svg.append("g").selectAll("path")
-                    .data(chord.groups)
-                  .enter().append("path")
+                g.append("path")
                     .style("fill", function(d) { return fill(d.index); })
                     .style("stroke", function(d) { return fill(d.index); })
                     .attr("d", d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius))
                     .on("mouseover", fade(.1))
                     .on("mouseout", fade(1));
 
-                var ticks = svg.append("g").selectAll("g")
-                    .data(chord.groups)
-                  .enter().append("g").selectAll("g")
-                    .data(groupTicks)
-                  .enter().append("g")
-                    .attr("transform", function(d) {
-                      return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
-                          + "translate(" + outerRadius + ",0)";
-                    });
 
-                var count = 0;
-                var count2 = -1;
-                var labels = svg.append("g").selectAll("g")
-                    .data(chord.groups)
-                    .enter().append("text")
-                    .text(function(d) {
-                        count2++;
-                        return data.nodes[count2].name;
-                    }).attr("class", "rotateChord")
+                g.append("text")
+                    .attr("class", "chordlabel")
+                    .each(function(d) { d.angle = (d.startAngle + d.endAngle) / 2; })
+                    .attr("dy", ".35em")
                     .attr("transform", function(d) {
-                        console.log(d)
-                        count++;
-                        return "rotate(" + (d.startAngle * 180 / Math.PI - 90) + ")"
-                          + "translate(" + outerRadius + ",200)";
-                    });
+                        return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
+                            + "translate(" + (outerRadius + 26) + ")"
+                            + (d.angle > Math.PI ? "rotate(180)" : "");
+                    })
+                    .style("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
+                    .text(function(d) { return data.nodes[d.index].name; });
+
+                var ticks = svg.append("g").selectAll("g")
+                        .data(chord.groups)
+                    .enter().append("g").selectAll("g")
+                        .data(groupTicks)
+                    .enter().append("g")
+                        .attr("transform", function(d) {
+                            return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
+                            + "translate(" + outerRadius + ",0)";
+                        });
 
                 ticks.append("line")
                     .attr("x1", 1)
@@ -3114,8 +3112,7 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
                     .attr("dy", ".35em")
                     .attr("transform", function(d) { return d.angle > Math.PI ? "rotate(180)translate(-16)" : null; })
                     .style("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
-                    .text(function(d) { return d.label; });
-                
+                    .text(function(d) { return d.label; });                
 
                 svg.append("g")
                     .attr("class", "chord")
@@ -3147,7 +3144,6 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
                         .style("opacity", opacity);
                   };
                 }
-
 
 
 
