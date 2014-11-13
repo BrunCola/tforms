@@ -9,8 +9,6 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
         query = '/ioc_notifications/ioc_events?';
     }
     $http({method: 'GET', url: query}).
-    //success(function(data, status, headers, config) {
-    // console.log($location.$$search);
     success(function(data) {
         if (data.tables[0] === null) {
             $scope.$broadcast('loadError');
@@ -19,117 +17,96 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
         }
     });
     //auto refresh using angular interval
-    var refreshPeriod = 30000; //in milliseconds (30 seconds)
+    var refreshPeriod = 60000; //in milliseconds (60 seconds)
+    var newIocFound = false; //flag to track if a new IOC was found - gets reset after the new IOC is pushed to the directives
+    //default values for newEnd and newStart
+    var newEnd = new Date().getTime() / 1000; 
+    var newStart = newEnd - refreshPeriod / 1000;
+    //for keeping track of original start time, given no user-set params:
+    var oldStart = Math.round(new Date().getTime() / 1000)-((3600*24)); //default date range is usually 1
+    //timeout interval - repeated until user navigates away from page
+    //count to keep track of number of refreshes - every 10 we'll do a larger query...
     var promise = $interval(function() {
-        console.log("AUTO REFRESH");
-        var newStart, newEnd;
         if ($location.$$search.start && $location.$$search.end) {
             newEnd = parseInt($location.$$search.end) + refreshPeriod / 1000;
+            if(newIocFound) {//only update $location.$$search.end (which controls newStart) if new IOC is found, 
+                //otherwise, keep growing the time slicey
+                $location.$$search.end = "" + (newEnd - (refreshPeriod / 1000) * 5);
+                newIocFound = false; //reset the flag
+            }
             newStart = $location.$$search.end;            
-
             query = '/ioc_notifications/ioc_events?start='+newStart+'&end='+newEnd;
+            //update $location.$$search.start to use it for filtering out old data
+            $location.$$search.start = "" + (parseInt($location.$$search.start) + refreshPeriod / 1000);
 
-            $location.$$search.end = "" + (parseInt($location.$$search.end) + refreshPeriod / 1000);
         } else {
             newEnd = new Date().getTime() / 1000; 
-            newStart = newEnd - refreshPeriod / 1000;
-
+            if(newIocFound) {//reset the newStart to 3 refresh period away from newEnd
+                newStart = newEnd - (refreshPeriod / 1000) * 5; 
+                newIocFound = false; //reset the flag
+            } //otherwise keep the newStart the same, so that the timeslice grows
             query = '/ioc_notifications/ioc_events?start='+newStart+'&end='+newEnd;
+
+            oldStart = oldStart + refreshPeriod / 1000;
         }
         $http({method: 'GET', url: query}).
         success(function(data) {
-            console.log(data);
-            //TODO: Add the new data to all the crossfilters and broadcast to the directives.
-            //Filter out the timeslice between the old start and old start + refresh period (and update directives)
-
             processData(data, true);
-
-
         });
     }, refreshPeriod);
 
-        function processData(data, autoRefresh) {
+    //stop the interval when the user navigates away from the page
+    $scope.$on("$destroy", function(event) {     
+            $interval.cancel(promise);
+        }
+    );
+
+    //this function handles data returned from the server, both on page load and on refresh
+    //autoRefresh is boolean (true if data call is coming from refresh)
+    function processData(data, autoRefresh) {
         data.crossfilter.forEach(function(d) {
             d.dd = timeFormat(d.time, 'strdDateObj');
             d.hour = d3.time.hour(d.dd);
             d.count = +d.count;
         }); 
 
-        var newData = false;
-        //if this is a call from an auto refresh, just add the data to the existing crossfilters
-        //otherwise create the crossfilters
-        if(autoRefresh) {
-            newData = (data.crossfilter.length > 0) && (data.tables[0] != null);
-            if(newData) {
-                $scope.crossfilterData.add(data.crossfilter);
-                $scope.tableCrossfitler.add(data.tables[0].aaData);
+        //first, handle crossfilter data
+        var newCrossfilterData = false;
 
-                $scope.data.add(data);//??
-            } 
-            // else {//TEMPORARY FOR TESTING
-            //     data.crossfilter = [{
-            //         count: 1, 
-            //         dd: "Mon Nov 10 2014 09:21:47 GMT+0000 (GMT)",
-            //         hour: "Mon Nov 10 2014 09:00:00 GMT+0000 (GMT)",
-            //         in_bytes: 0.0018,
-            //         ioc: "Known Hostile IP",
-            //         ioc_severity: 3,
-            //         out_bytes: 0.0022,
-            //         remote_country: "United States",
-            //         time: 1415640420,
-            //     }];
-            //     data.crossfilter.forEach(function(d) {
-            //         d.dd = timeFormat(d.time, 'strdDateObj');
-            //         d.hour = d3.time.hour(d.dd);
-            //         d.count = +d.count;
-            //     });
-
-            //     data.tables[.push({
-            //         aaData: [{
-            //         in_bytes: 44,
-            //         in_packets: 1,
-            //         ioc: "Suspected Hostile IP",
-            //         ioc_attrID: "200494",
-            //         ioc_childID: "200494",
-            //         ioc_count: 1,
-            //         ioc_rule: "141.212.121.0/24",
-            //         ioc_severity: 2,
-            //         ioc_typeIndicator: "IP Subnet",
-            //         ioc_typeInfection: "Pre-Infection",
-            //         lan_ip: "10.0.0.30",
-            //         lan_user: "-",
-            //         lan_zone: "Dev",
-            //         machine: "-",
-            //         out_bytes: 84,
-            //         out_packets: 2,
-            //         proxy_blocked: 0,
-            //         remote_asn_name: "UMICH-AS-5",
-            //         remote_cc: "US",
-            //         remote_country: "United States",
-            //         remote_ip: "141.212.121.61",
-            //         stealth: 0,
-            //         time: 1415640420.396433}]
-            //     });
-            //     console.log(data.tables);
-            //     newData = true;
-            //     $scope.crossfilterData.add(data.crossfilter);
-            //     $scope.tableCrossfitler.add(data.tables[0].aaData);
-
-            //     $scope.data.add(data);//??
-            // }
-
-        } else {
-            newData = true;
+        //add new data to crossfilter, if it's coming from a refresh
+        //or create the crossfilter using the whole data set, if a fresh page load
+        if(autoRefresh && data.crossfilter.length > 0) {
+            $scope.crossfilterData.add(data.crossfilter);
+            newCrossfilterData = true;
+            newIocFound = true;
+        } else if(!autoRefresh) { //fresh page load
             $scope.crossfilterData = crossfilter(data.crossfilter);
             $scope.data = data;
-            console.log($scope.data.tables[0]);
-            $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+            newCrossfilterData = true;
+        } 
+
+        //filter out old data from the crossfilter
+        if(autoRefresh) {
+            var timeDimension = $scope.crossfilterData.dimension(function(d) { return d.time; });
+            //filter by date smaller than the old start (previously moved up by one refresh period)
+            timeDimension.filter(function(d){
+                if($location.$$search.start) {
+                    return d < parseInt($location.$$search.start);
+                } else {
+                    return d < oldStart;
+                }
+            });
+            //if something has been filtered, newCrossfilterData = true (will push to directives)
+            newCrossfilterData = timeDimension.top(Infinity).length > 0;
+
+            //remove the filtered data from crossfilter
+            $scope.crossfilterData.remove();
+            //add back the other data (I think this is needed)
+            timeDimension.filterAll();
         }
 
-        if(newData) {
-            $scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
-            $scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
-
+        //if it's a fresh page load or a refresh which pulled new data, process and push to directives
+        if(newCrossfilterData) {
             var rowDimension = $scope.crossfilterData.dimension(function(d) { return d.ioc + d.ioc_severity; });
             var rowGroupPre = rowDimension.group().reduceSum(function(d) { return d.count; });
             var rowGroup = rowGroupPre.reduce(
@@ -211,8 +188,56 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
 
             $scope.barChartxAxis = '';
             $scope.barChartyAxis = '# IOC / Hour';
-            $scope.$broadcast('severityLoad');
+
+            if(autoRefresh) {
+                $scope.$broadcast('severityUpdate');
+            } else {
+                $scope.$broadcast('severityLoad');
+            }
         }
+
+        //now data table
+        var newTableData = false;
+
+        if(autoRefresh && data.tables[0] != null) {
+            // $scope.tableCrossfitler.add(data.tables[0].aaData);
+            $scope.tableCrossfitler.add(data.tables[0].aaData);//JUST FOR TESTING
+            newTableData = true;
+            newIocFound = true;
+        } else if(!autoRefresh) { //fresh page load
+            $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+            newTableData = true;
+        } 
+
+        //filter out old data from the crossfilter
+        if(autoRefresh) {
+            var timeDimension = $scope.tableCrossfitler.dimension(function(d) { return d.time; });
+            //filter by date smaller than the old start (previously moved up by one refresh period)
+            timeDimension.filter(function(d){
+                if($location.$$search.start) {
+                    return d < parseInt($location.$$search.start);
+                } else {
+                    return d < oldStart;
+                }
+            });
+            //if something has been filtered, newTableData = true (will push to directives)
+            newTableData = timeDimension.top(Infinity).length > 0;
+
+            //remove the filtered data from crossfilter
+            $scope.tableCrossfitler.remove();
+            //add back the other data (I think this line is needed...)
+            timeDimension.filterAll();
+        }
+
+        if(newTableData) {
+            $scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+            if(autoRefresh) {
+                $scope.$broadcast('tableUpdate', $scope.tableData, $scope.data.tables, null);
+            } else {
+                $scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
+            }
+            
+        } 
     }
 
     $http({method: 'GET', url: query+'&type=ioc_notifications'}).
