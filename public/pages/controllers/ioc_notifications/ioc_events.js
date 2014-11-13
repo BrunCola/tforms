@@ -29,24 +29,19 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
         console.log("AUTO REFRESH");
         if ($location.$$search.start && $location.$$search.end) {
             newEnd = parseInt($location.$$search.end) + refreshPeriod / 1000;
-            
             if(newIocFound) {//only update $location.$$search.end (which controls newStart) if new IOC is found, 
                 //otherwise, keep growing the time slicey
                 $location.$$search.end = "" + newEnd;
                 newIocFound = false; //reset the flag
             }
-
             newStart = $location.$$search.end;            
-
             query = '/ioc_notifications/ioc_events?start='+newStart+'&end='+newEnd;
-
         } else {
             newEnd = new Date().getTime() / 1000; 
             if(newIocFound) {//reset the newStart to 1 refresh period away from newEnd
                 newStart = newEnd - refreshPeriod / 1000; 
                 newIocFound = false; //reset the flag
             } //otherwise keep the newStart the same, so that the timeslice grows
-
             query = '/ioc_notifications/ioc_events?start='+newStart+'&end='+newEnd;
         }
         $http({method: 'GET', url: query}).
@@ -56,10 +51,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
             console.log("crossfilter data");
             console.log(data.crossfilter);
             //TODO: Filter out the timeslice between the old start and old start + refresh period (and update directives)
-
             processData(data, true);
-
-
         });
     }, refreshPeriod);
 
