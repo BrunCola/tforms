@@ -128,7 +128,8 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                         //     }
                         // });
                         $scope.selectedUser = d;
-                        $scope.connection = connections;
+                        $scope.connectionIn = connections;
+                        //console.log(connections)
                         //$scope.drawConnections(d,connections);
                     }
                 });
@@ -148,7 +149,8 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                             return users;
                         });
                         $scope.selectedUser = d;
-                        $scope.connection = connections;
+                        $scope.connectionOut = connections;
+                        //console.log(connections)
                         //$scope.drawConnections(d,connections);
                     }
                 });

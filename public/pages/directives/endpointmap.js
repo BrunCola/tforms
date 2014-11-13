@@ -652,16 +652,16 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                                             wait(function(){
                                                 var conns = endpointConn.selectAll(".endpointConns").data([""]);
-                                                for (var c in $scope.connection) {
+                                                for (var c in $scope.connectionIn) {
                                                     // console.log($scope.connection[c])
                                                     // console.log($scope.selectedUser)
-                                                    if ( $scope.connection[c].map === $scope.selectedUser.map ) {                                       
+                                                    if ( $scope.connectionIn[c].map === $scope.selectedUser.map ) {                                       
                                                         conns.enter()
                                                             .append("line")
                                                             .attr("x1", $scope.selectedUser.x+20)
                                                             .attr("y1", $scope.selectedUser.y+20)
-                                                            .attr("x2", $scope.connection[c].x+20)
-                                                            .attr("y2", $scope.connection[c].y+20)
+                                                            .attr("x2", $scope.connectionIn[c].x+20)
+                                                            .attr("y2", $scope.connectionIn[c].y+20)
                                                             .attr('stroke-width', 1)
                                                             .attr("stroke", "#00f");
                                                     } else {
@@ -673,6 +673,29 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                             .attr("y2", 0)
                                                             .attr('stroke-width', 1)
                                                             .attr("stroke", "#00f");
+                                                    }                     
+                                                } 
+                                                for (var c in $scope.connectionOut) {
+                                                    // console.log($scope.connection[c])
+                                                    // console.log($scope.selectedUser)
+                                                    if ( $scope.connectionOut[c].map === $scope.selectedUser.map ) {                                       
+                                                        conns.enter()
+                                                            .append("line")
+                                                            .attr("x1", $scope.selectedUser.x+20)
+                                                            .attr("y1", $scope.selectedUser.y+20)
+                                                            .attr("x2", $scope.connectionOut[c].x+20)
+                                                            .attr("y2", $scope.connectionOut[c].y+20)
+                                                            .attr('stroke-width', 1)
+                                                            .attr("stroke", "#f0f");
+                                                    } else {
+                                                        conns.enter()
+                                                            .append("line")
+                                                            .attr("x1", $scope.selectedUser.x+20)
+                                                            .attr("y1", $scope.selectedUser.y+20)
+                                                            .attr("x2", 0)
+                                                            .attr("y2", 0)
+                                                            .attr('stroke-width', 1)
+                                                            .attr("stroke", "#f0f");
                                                     }                     
                                                 } 
                                             }, 400);
