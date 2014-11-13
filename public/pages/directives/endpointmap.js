@@ -675,7 +675,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                             .attr("stroke", "#00f");
                                                     }                     
                                                 } 
-                                            }, 250);
+                                            }, 300);
                                             // draw line links                                             
    
                                             $scope.requery(d, 'flooruser');
