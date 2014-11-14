@@ -48,6 +48,19 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.floors = data.floor;
             
             $scope.floors[0].active = true;
+
+           // $scope.userOnFloors = $scope.data.users.filter(function(d){ 
+            //     for (var f in $scope.floors) {
+            //         ($scope.floors
+            //     }
+            //     if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ 
+            //         return true 
+            //     }
+            // });
+
+
+
+
         }
         if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
             var query = '/local_events/endpoint_map?lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&type=flooruser';
@@ -83,6 +96,74 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.max_order = data[0].max_order;    
             console.log($scope.max_order);                
         });*/
+
+    $scope.getConnections = function(d) {
+        var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=endpointconnection';
+            $scope.startend = ""; 
+            if ($location.$$search.start && $location.$$search.end) {
+                query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=endpointconnection'; 
+                $scope.startend = 'start='+$location.$$search.start+'&end='+$location.$$search.end+'&'; 
+            } 
+            $http({method: 'GET', url: query+'&typeinfo=getconn2'}).
+                success(function(data) {
+                    // $scope.removeLines();
+                    $scope.selectedUser = "";
+                    $scope.connectionIn = "";
+                    if (data[0] != undefined) {
+                        var users; //-----------------------------------------------------Should be upgraded!!-------------------------------------------------------------------
+                        var connections = $.map( data, function( da ) {
+                            users = $scope.data.users.filter(function(d){ 
+                                if ((da.remote_ip === d.lan_ip)){
+                                    return true; 
+                                }
+                            });
+                            return users;
+                        });
+
+                        // var connections = $scope.data.users.filter(function(d){ 
+                        //     for (var da in data) {
+                        //         if ((data[da].remote_ip === d.lan_ip)){ 
+                        //             return true 
+                        //         }
+                        //     }
+                        // });
+                        $scope.selectedUser = d;
+                        $scope.connectionIn = connections;
+                        //console.log(connections)
+                        //$scope.drawConnections(d,connections);
+                    }
+                });
+             $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
+                success(function(data) {
+                    // $scope.removeLines();
+                    $scope.selectedUser = "";
+                    $scope.connectionOut = "";
+                    if (data[0] != undefined) {
+                        var users; //---------------^^^^^^^^^^^^^^^^-----------------------Should be upgraded!!--------------------------^^^^^^^^^^-------------------------
+                        var connections = $.map( data, function( da ) {
+                            users = $scope.data.users.filter(function(d){ 
+                                if ((da.lan_ip === d.lan_ip)){
+                                    return true; 
+                                }
+                            });
+                            return users;
+                        });
+                        $scope.selectedUser = d;
+                        $scope.connectionOut = connections;
+                        //console.log(connections)
+                        //$scope.drawConnections(d,connections);
+                    }
+                });
+            // $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
+            //     success(function(data) {
+            //         if (data[0] != undefined) {
+            //             console.log("getconn4")
+            //             for (var d in data) {                            
+            //                 console.log(data[d])
+            //             }
+            //         }
+            //     });
+    }
 
     $scope.requery = function(d) {
          // get user image

@@ -33,17 +33,13 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
     var promise = $interval(function() {
         if ($location.$$search.start && $location.$$search.end) {
             newEnd = parseInt($location.$$search.end) + refreshPeriod / 1000;
-            
             if(newIocFound) {//only update $location.$$search.end (which controls newStart) if new IOC is found, 
                 //otherwise, keep growing the time slicey
                 $location.$$search.end = "" + (newEnd - (refreshPeriod / 1000) * 5);
                 newIocFound = false; //reset the flag
             }
-
             newStart = $location.$$search.end;            
-
             query = '/ioc_notifications/ioc_events?start='+newStart+'&end='+newEnd;
-
             //update $location.$$search.start to use it for filtering out old data
             $location.$$search.start = "" + (parseInt($location.$$search.start) + refreshPeriod / 1000);
 
@@ -53,7 +49,6 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
                 newStart = newEnd - (refreshPeriod / 1000) * 5; 
                 newIocFound = false; //reset the flag
             } //otherwise keep the newStart the same, so that the timeslice grows
-
             query = '/ioc_notifications/ioc_events?start='+newStart+'&end='+newEnd;
 
             oldStart = oldStart + refreshPeriod / 1000;

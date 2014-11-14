@@ -161,6 +161,10 @@ module.exports = function(app, passport, version, io, pool) {
             var stealth_quarantine = require('../controllers/stealth/stealth_quarantine')(pool); 
             app.route('/stealth/stealth_quarantine')
             .get(auth.permission, stealth_quarantine.render);
+        // STEALTH CHORD VIEW
+            var stealth_coi_conn_view = require('../controllers/stealth/stealth_coi_conn_view')(pool); 
+            app.route('/stealth/stealth_coi_conn_view')
+            .get(auth.permission, stealth_coi_conn_view.render);
     // LOCAL EVENTS        
         // ENDPOINT MAP
             var endpoint_map = require('../controllers/local_events/endpoint_map')(pool);
