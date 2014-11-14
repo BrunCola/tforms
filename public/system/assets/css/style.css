@@ -349,6 +349,24 @@ p{
   font-size:12px;
 }
 
+#chordchartinfo {
+  overflow: scroll;
+  height: 650px;
+  margin-left: 0;
+}
+#chordchartinfo table{
+  width: 100%;
+}
+#chordchartinfo table tr:nth-child(odd){
+  background-color: #93d1c8;
+}
+#chordchartinfo table tr td{
+  margin: 7px 7px 11px 7px;
+  padding: 7px;
+  font-size:12px;
+}
+
+
 div#descModalID.modal-body {
   white-space: pre-wrap;
   float: left;

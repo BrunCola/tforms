@@ -3011,20 +3011,94 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
             $scope.$on('chordChart', function (event, data) {
 
 
+                // var infoDiv = d3.select('#chordchartinfo').append('table');
+
+                // $scope.appendInfo = function(data, type) { 
+                //     infoDiv.selectAll('tr').remove();
+
+                //     var divInfo = '';
+                //     if (type === "linkBetween") {
+                //         var uniqueNodes = $scope.forcedata.uniqueNodes;
+                //         var uniqueUsers = $scope.forcedata.uniqueUsers;
+                //         var unique = [];
+                //         var source = data.source.name;
+                //         var target = data.target.name;             
+                        
+                //         for (var i in uniqueNodes[source]) {
+                //             for (var j in uniqueNodes[target]) {
+                //                 if (i === j) { 
+                //                     unique.push(i);
+                //                 }
+                //             }         
+                //         }
+                //         for (var x=0; x<unique.length; x++) {
+                //             var divInfo = '';
+                //             divInfo += '<div><strong>'+unique[x]+'</strong></div>';
+                //             for (var k in uniqueUsers) {
+                //                 if (k === unique[x]) {
+                //                     for (var z in uniqueUsers[k]) {
+                //                         divInfo += '<div>'+z+'</div>';
+                //                     }
+                //                 }
+                //             }
+                //             var row = infoDiv.append('tr');
+                //             row
+                //                 .append('td')
+                //                 .html(divInfo);
+                //         }
+                //     } else if (type === "rules"){
+                //             var divInfo = '';
+                //             divInfo += '<div><strong>Rules: </strong><br />';
+                //             var rules = "";
+                //             for (var i = 0; i < data.rules.length; i++) {
+                //                 if (data.rules[i].rule !== "-"){
+                //                     var ruleString = data.rules[i].rule.replace(/Except/g , "<br />Except");
+                //                     divInfo += data.rules[i].order  + "<br />" + " " + ruleString + "<br />";
+                //                 } else {
+                //                     divInfo += "none <br />";
+                //                 }                                    
+                //             }
+                //             var row = infoDiv.append('tr');
+                //                 row
+                //                     .append('td')
+                //                     .html(divInfo);
+                //     } else {
+                //         for (var i in data) {
+                //             if (typeof data[i] === 'object') {
+                //                 var divInfo = '';
+                //                 for (var e in data[i]) {
+                //                     divInfo += '<div><strong>'+e+': </strong>'+data[i][e]+'</div>';
+                //                 }
+                //                 var row = infoDiv.append('tr');
+                //                     row
+                //                         .append('td')
+                //                         .html(divInfo);
+                //             } else {
+                //                 var row = infoDiv.append('tr');
+                //                     row
+                //                         .append('td')
+                //                         .html('<strong>'+dictionary(i)+'</strong>');
+                //                     row
+                //                         .append('td')
+                //                         .text(data[i]);
+                //             }
+                //         }                            
+                //     }  
+                // }
 
                 console.log(data.nodes)
                 console.log(data.links)
 
                 var matrix = [];
-                for (var i = 0; i < data.nodes.length-1; i++) {
+                for (var i = 0; i < data.nodes.length; i++) {
                     var row = [];
-                    for (var j = 0; j < data.nodes.length-1; j++) {
+                    for (var j = 0; j < data.nodes.length; j++) {
                         row.push(0)
                     }
                     matrix.push(row);
                 }
 
-                for (var i = 0; i < data.links.length-1; i++) {
+                for (var i = 0; i < data.links.length; i++) {
                     matrix[data.links[i].source][data.links[i].target] = data.links[i].value;
                     matrix[data.links[i].target][data.links[i].source] = data.links[i].value;
                 }
@@ -3076,7 +3150,11 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
                     .style("stroke", function(d) { return fill(d.index); })
                     .attr("d", d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius))
                     .on("mouseover", fade(.1))
-                    .on("mouseout", fade(1));
+                    .on("mouseout", fade(1))
+                    // .on('click', function(d){
+                    //     $scope.appendInfo(data.links, 'linkBetween');
+                    //     //console.log("test")
+                    // });
 
 
                 g.append("text")
