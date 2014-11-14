@@ -97,18 +97,15 @@
                 </div>
             </div>
             <div class="hidelocalusers" ></div>
-            <div id="floorplanspan">
+            <!-- <div id="floorplanspan">
                 <div id="tabs" >
                     <tabset>
                         <tab select="alertMe()" ng-repeat="floor in floors" active="floor.active">
                             <tab-heading>
                                 {{floor.custom_name}} 
                             </tab-heading>
-                            <div style="background-color:#FFF;" class="box">
-                                <div id="floorplan" floor-name="{{floor.asset_name}}" make-floor-plan style="position: relative">
-                                    <!-- <object width="910" height="600" id="svgFloorPlan" data="{{floor.path}}" type="image/svg+xml"></object> -->
-                                    <!-- <object id="svgFloorPlan" width="800" data="{{floor.path}}" type="image/svg+xml" ></object> -->
-                                    <!-- <img id="svgFloorPlan" width="800" src="{{floor.path}}" type="image/svg+xml" />  -->
+                            <div style="background-color:#FFF;" class="box" >
+                                <div id="floorplan" floor-name="{{floor.asset_name}}" make-floor-plan style="position: relative; border: solid 1px #0f0;">
                                 </div>
                             </div>
                         </tab>
@@ -122,6 +119,13 @@
                     <div id="scalebuttons" class="bin"></div>
                     <div id="triggerbuttons" class="bin" ></div>
                     </tabset>
+                </div>
+            </div> -->
+            <div id="floorplanspan">
+                <div style="background-color:#FFF;" class="box" >
+                    <div id="floorplan" style="position: relative; border: solid 1px #00f;">
+                        <div ng-repeat="floor in floors" floor-name="{{floor.asset_name}}" make-floor-plan style="position: relative; border: solid 1px #0f0;"></div>
+                    </div>
                 </div>
             </div>
             <div id="localuserinformationspan" ng-show="userinfo">

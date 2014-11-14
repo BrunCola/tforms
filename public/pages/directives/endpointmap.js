@@ -31,9 +31,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     if (($scope.floor.user_scale !== undefined) && ($scope.floor.user_scale !== null) && (angular.isNumber($scope.floor.user_scale))) {
                         userScale = $scope.floor.user_scale;
                     } 
+                    userScale = userScale/3;
 
-                    var elementWidth = $('#floorplanspan')[0].offsetWidth-25;
-                    var elementHeight = ($('#floorplanspan')[0].offsetWidth-25)/imageRatio;
+                    var elementWidth = ($('#floorplanspan')[0].offsetWidth-25)/3;
+                    var elementHeight = (($('#floorplanspan')[0].offsetWidth-25)/imageRatio)/3;
                     element.width(elementWidth);
                     element.height(elementHeight);
                     $scope.userList = data;
@@ -45,6 +46,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     var userDiv = d3.select("#listlocalusers").attr("width","100%");
                     var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
                     var floorDiv = d3.select(element[0]);
+                    var floorPlanDiv = d3.select("#floorplan");
+                    console.log(floorPlanDiv[0][0])
 
                     var windowScale = $scope.standardWidth/element.outerWidth();
 
@@ -56,7 +59,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     var margin = {top: -5, right: -5, bottom: -5, left: -5};
 
                     var zoom = d3.behavior.zoom()
-                        .scaleExtent([0.5, 5])
+                        .scaleExtent([0.1, 5])
                         //.translate([0,0])
                         .translate([0,0])
                         .scale(scale)
@@ -94,7 +97,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .attr("xlink:href", floor_path)
                         .attr("type", "image/svg+xml");
 
-                    var endpointConn = container.append("svg")
+                    var endpointConn = floorPlanDiv.append("svg")
                     .attr("class", "endpointConn");
 
                     // -- to hide <input> when changing custom username
@@ -242,7 +245,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         }*/
                         d.x = d3.event.x;
                         d.y = d3.event.y;
-                        d3.select(this).attr("transform", "translate("+d.x + "," + d.y +")");
+                        d3.select(this).attr("transform", "scale("+userScale+")translate("+(d.x/userScale) + "," + (d.y/userScale) +")");
                     }
                     // -- handles the end of when a user is dragged
                     function dragended(d) {
