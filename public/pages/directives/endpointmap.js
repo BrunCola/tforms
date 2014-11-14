@@ -242,7 +242,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         }*/
                         d.x = d3.event.x;
                         d.y = d3.event.y;
-                        d3.select(this).attr("transform", "translate("+d.x + "," + d.y +")");
+                        d3.select(this).attr("transform", "scale("+userScale+")translate("+(d.x/userScale) + "," + (d.y/userScale) +")");
                     }
                     // -- handles the end of when a user is dragged
                     function dragended(d) {
@@ -664,17 +664,17 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                     if ( $scope.connectionIn[c].map === $scope.selectedUser.map ) {                                             
                                                         conns.enter()
                                                             .append("line")
-                                                            .attr("x1", $scope.selectedUser.x+(elm[0][0].clientHeight/2))
-                                                            .attr("y1", $scope.selectedUser.y+(elm[0][0].clientWidth/2))
-                                                            .attr("x2", $scope.connectionIn[c].x+(elm[0][0].clientHeight/2))
-                                                            .attr("y2", $scope.connectionIn[c].y+(elm[0][0].clientWidth/2))
+                                                            .attr("x1", $scope.selectedUser.x+((elm[0][0].clientHeight/2)*userScale))
+                                                            .attr("y1", $scope.selectedUser.y+((elm[0][0].clientWidth/2)*userScale))
+                                                            .attr("x2", $scope.connectionIn[c].x+((elm[0][0].clientHeight/2)*userScale))
+                                                            .attr("y2", $scope.connectionIn[c].y+((elm[0][0].clientWidth/2)*userScale))
                                                             .attr('stroke-width', 1)
                                                             .attr("stroke", "#23FF1C");
                                                     } else {
                                                         conns.enter()
                                                             .append("line")
-                                                            .attr("x1", $scope.selectedUser.x+(elm[0][0].clientHeight/2))
-                                                            .attr("y1", $scope.selectedUser.y+(elm[0][0].clientWidth/2))
+                                                            .attr("x1", $scope.selectedUser.x+((elm[0][0].clientHeight/2)*userScale))
+                                                            .attr("y1", $scope.selectedUser.y+((elm[0][0].clientWidth/2)*userScale))
                                                             .attr("x2", 0)
                                                             .attr("y2", 0)
                                                             .attr('stroke-width', 1)
@@ -687,17 +687,17 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                     if ( $scope.connectionOut[c].map === $scope.selectedUser.map ) {                      
                                                         conns.enter()
                                                             .append("line")
-                                                            .attr("x1", $scope.selectedUser.x+(elm[0][0].clientHeight/2))
-                                                            .attr("y1", $scope.selectedUser.y+(elm[0][0].clientWidth/2))
-                                                            .attr("x2", $scope.connectionOut[c].x+(elm[0][0].clientHeight/2))
-                                                            .attr("y2", $scope.connectionOut[c].y+(elm[0][0].clientWidth/2))
+                                                            .attr("x1", $scope.selectedUser.x+((elm[0][0].clientHeight/2)*userScale))
+                                                            .attr("y1", $scope.selectedUser.y+((elm[0][0].clientWidth/2)*userScale))
+                                                            .attr("x2", $scope.connectionOut[c].x+((elm[0][0].clientHeight/2)*userScale))
+                                                            .attr("y2", $scope.connectionOut[c].y+((elm[0][0].clientWidth/2)*userScale))
                                                             .attr('stroke-width', 1)
                                                             .attr("stroke", "#FF4A00");
                                                     } else {
                                                         conns.enter()
                                                             .append("line")
-                                                            .attr("x1", $scope.selectedUser.x+(elm[0][0].clientHeight/2))
-                                                            .attr("y1", $scope.selectedUser.y+(elm[0][0].clientWidth/2))
+                                                            .attr("x1", $scope.selectedUser.x+((elm[0][0].clientHeight/2)*userScale))
+                                                            .attr("y1", $scope.selectedUser.y+((elm[0][0].clientWidth/2)*userScale))
                                                             .attr("x2", 0)
                                                             .attr("y2", 0)
                                                             .attr('stroke-width', 1)
