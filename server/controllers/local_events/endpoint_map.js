@@ -362,17 +362,19 @@ module.exports = function(pool) {
                 _getAllFilesFromFolder('./public/uploads/phirelight');
 
 
-                var delete_floor = {
-                    query: "DELETE FROM `assets` WHERE `type`='map' AND `asset_name`=?",
-                    insert: [req.body.asset_name]
-                }                
-                new query(delete_floor, {database: database, pool: pool}, function(err,data){
-                    if (err) {
-                        res.send(500);
-                    } else {
-                        res.send(200);
-                    }
-                });
+                if (req.query.rem === 'removeFloorPlan') {
+                    var delete_floor = {
+                        query: "DELETE FROM `assets` WHERE `type`='map' AND `asset_name`=?",
+                        insert: [req.body.asset_name]
+                    }                
+                    new query(delete_floor, {database: database, pool: pool}, function(err,data){
+                        if (err) {
+                            res.send(500);
+                        } else {
+                            res.send(200);
+                        }
+                    });
+                }
             } else if (req.query.type === 'saveFloorScale') {
 
                 var update_floor = {
@@ -385,10 +387,9 @@ module.exports = function(pool) {
                     }
                 });
             } else if (req.query.type === 'editFloorInfo') {
-
                 var update_floor = {
-                    query: "update `assets` SET `order_index`=?, `custom_name`=?, `scale`=? WHERE `type`='map' AND `asset_name`=?",
-                    insert: [req.body.edited_floor.order_index, req.body.edited_floor.custom_name, req.body.edited_floor.scale, req.body.edited_floor.asset_name]
+                    query: "update `assets` SET `order_index`=?, `custom_name`=?, `scale`=?, `user_scale`=? WHERE `type`='map' AND `asset_name`=?",
+                    insert: [req.body.edited_floor.order_index, req.body.edited_floor.custom_name, req.body.edited_floor.scale, req.body.edited_floor.user_scale, req.body.edited_floor.asset_name]
                 }                
                 new query(update_floor, {database: database, pool: pool}, function(err,data){
                     if (err) {

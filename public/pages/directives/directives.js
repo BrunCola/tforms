@@ -3015,23 +3015,20 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
                 console.log(data.nodes)
                 console.log(data.links)
 
-                // var matrix = [];
-                // for (var i = 0; i < data.nodes.length; i++) {
-                //     var row = [];
-                //     for (var j = 0; j < data.nodes.length; j++) {
-                //         row.push(0)
-                //     }
-                //     matrix.push(row);
-                // }
+                var matrix = [];
+                for (var i = 0; i < data.nodes.length-1; i++) {
+                    var row = [];
+                    for (var j = 0; j < data.nodes.length-1; j++) {
+                        row.push(0)
+                    }
+                    matrix.push(row);
+                }
 
-                // for (var i = 0; i < data.links.length; i++) {
-                //     for (var j = 0; j < data.links.length; j++) {
-                //         if ((i === data.links[i].source) && (j === data.links[j].target)) {
-                //             matrix[i][j] = data.links[i].value;
-                //         }
-                //     }
-                // }
-                // console.log(matrix);
+                for (var i = 0; i < data.links.length-1; i++) {
+                    matrix[data.links[i].source][data.links[i].target] = data.links[i].value;
+                    matrix[data.links[i].target][data.links[i].source] = data.links[i].value;
+                }
+                console.log(matrix);
 
 
                 // var matrix = [
@@ -3041,13 +3038,13 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
                 //   [ 8010, 16145, 8090, 8045, 5000],
                 //   [ 5000,   990,  940, 6907, 5000]
                 // ];
-                var matrix = [
-                    [ 0, 1, 1, 0, 0],
-                    [ 1, 0, 6, 0, 1],
-                    [ 1, 6, 0, 0, 0],
-                    [ 0, 0, 0, 1, 0],
-                    [ 0, 1, 0, 0, 0]
-                ];
+                // var matrix = [
+                //     [ 0, 1, 1, 0, 0],
+                //     [ 1, 0, 6, 0, 1],
+                //     [ 1, 6, 0, 0, 0],
+                //     [ 0, 0, 0, 1, 0],
+                //     [ 0, 1, 0, 0, 0]
+                // ];
 
                 var chord = d3.layout.chord()
                     .padding(.05)
