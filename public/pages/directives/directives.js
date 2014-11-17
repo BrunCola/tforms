@@ -2049,11 +2049,20 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         return Math.exp(minv + scale*(x-minp));
                     }
                     
+                    // define the zoomListener which calls the zoom function on the "zoom" event constrained within the scaleExtents
+                    var zoomListener = d3.behavior.zoom().scaleExtent([0.5, 3]).on("zoom", zoom);
+
                     var vis = d3.select("#forcechart")
-                        .append("svg:svg")
+                        .append("svg")
                         .attr("class", "stage")
                         .attr("width", width)
-                        .attr("height", height);
+                        .attr("height", height)
+                        .call(zoomListener)
+                        .append('g');
+
+                    function zoom() {
+                        vis.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+                    }
 
                     var force = d3.layout.force()
                         .nodes(data.nodes)
@@ -3015,11 +3024,18 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                     }
 
                     var circleWidth = 5;
+
                     var vis = d3.select("#stealthforcechart")
-                        .append("svg:svg")
+                        .append("svg")
                         .attr("class", "stage")
                         .attr("width", width)
-                        .attr("height", height);
+                        .attr("height", height)
+                        .call(d3.behavior.zoom().scaleExtent([1, 6]).on("zoom", zoom))
+                        .append('g');
+
+                      function zoom() {
+                        vis.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+                      }
 
                     // Add tooltip
                     $scope.tip = d3.tip()
