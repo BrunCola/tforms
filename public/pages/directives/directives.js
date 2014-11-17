@@ -3011,42 +3011,113 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
             $scope.$on('chordChart', function (event, data) {
 
 
+                // var infoDiv = d3.select('#chordchartinfo').append('table');
+
+                // $scope.appendInfo = function(data, type) { 
+                //     infoDiv.selectAll('tr').remove();
+
+                //     var divInfo = '';
+                //     if (type === "linkBetween") {
+                //         var uniqueNodes = $scope.forcedata.uniqueNodes;
+                //         var uniqueUsers = $scope.forcedata.uniqueUsers;
+                //         var unique = [];
+                //         var source = data.source.name;
+                //         var target = data.target.name;             
+                        
+                //         for (var i in uniqueNodes[source]) {
+                //             for (var j in uniqueNodes[target]) {
+                //                 if (i === j) { 
+                //                     unique.push(i);
+                //                 }
+                //             }         
+                //         }
+                //         for (var x=0; x<unique.length; x++) {
+                //             var divInfo = '';
+                //             divInfo += '<div><strong>'+unique[x]+'</strong></div>';
+                //             for (var k in uniqueUsers) {
+                //                 if (k === unique[x]) {
+                //                     for (var z in uniqueUsers[k]) {
+                //                         divInfo += '<div>'+z+'</div>';
+                //                     }
+                //                 }
+                //             }
+                //             var row = infoDiv.append('tr');
+                //             row
+                //                 .append('td')
+                //                 .html(divInfo);
+                //         }
+                //     } else if (type === "rules"){
+                //             var divInfo = '';
+                //             divInfo += '<div><strong>Rules: </strong><br />';
+                //             var rules = "";
+                //             for (var i = 0; i < data.rules.length; i++) {
+                //                 if (data.rules[i].rule !== "-"){
+                //                     var ruleString = data.rules[i].rule.replace(/Except/g , "<br />Except");
+                //                     divInfo += data.rules[i].order  + "<br />" + " " + ruleString + "<br />";
+                //                 } else {
+                //                     divInfo += "none <br />";
+                //                 }                                    
+                //             }
+                //             var row = infoDiv.append('tr');
+                //                 row
+                //                     .append('td')
+                //                     .html(divInfo);
+                //     } else {
+                //         for (var i in data) {
+                //             if (typeof data[i] === 'object') {
+                //                 var divInfo = '';
+                //                 for (var e in data[i]) {
+                //                     divInfo += '<div><strong>'+e+': </strong>'+data[i][e]+'</div>';
+                //                 }
+                //                 var row = infoDiv.append('tr');
+                //                     row
+                //                         .append('td')
+                //                         .html(divInfo);
+                //             } else {
+                //                 var row = infoDiv.append('tr');
+                //                     row
+                //                         .append('td')
+                //                         .html('<strong>'+dictionary(i)+'</strong>');
+                //                     row
+                //                         .append('td')
+                //                         .text(data[i]);
+                //             }
+                //         }                            
+                //     }  
+                // }
 
                 console.log(data.nodes)
                 console.log(data.links)
 
-                // var matrix = [];
-                // for (var i = 0; i < data.nodes.length; i++) {
-                //     var row = [];
-                //     for (var j = 0; j < data.nodes.length; j++) {
-                //         row.push(0)
-                //     }
-                //     matrix.push(row);
-                // }
+                var matrix = [];
+                for (var i = 0; i < data.nodes.length; i++) {
+                    var row = [];
+                    for (var j = 0; j < data.nodes.length; j++) {
+                        row.push(0)
+                    }
+                    matrix.push(row);
+                }
 
-                // for (var i = 0; i < data.links.length; i++) {
-                //     for (var j = 0; j < data.links.length; j++) {
-                //         if ((i === data.links[i].source) && (j === data.links[j].target)) {
-                //             matrix[i][j] = data.links[i].value;
-                //         }
-                //     }
-                // }
-                // console.log(matrix);
+                for (var i = 0; i < data.links.length; i++) {
+                    matrix[data.links[i].source][data.links[i].target] = data.links[i].value;
+                    matrix[data.links[i].target][data.links[i].source] = data.links[i].value;
+                }
+                console.log(matrix);
 
 
-                var matrix = [
-                  [11975,  5871, 8916, 2868, 5000],
-                  [ 1951, 10048, 2060, 6171, 5000],
-                  [ 8010, 16145, 8090, 8045, 5000],
-                  [ 8010, 16145, 8090, 8045, 5000],
-                  [ 5000,   990,  940, 6907, 5000]
-                ];
                 // var matrix = [
-                //     [ 0, 1, 0, 0, 0],
-                //     [ 0, 0, 0, 0, 1],
+                //   [11975,  5871, 8916, 2868, 5000],
+                //   [ 1951, 10048, 2060, 6171, 5000],
+                //   [ 8010, 16145, 8090, 8045, 5000],
+                //   [ 8010, 16145, 8090, 8045, 5000],
+                //   [ 5000,   990,  940, 6907, 5000]
+                // ];
+                // var matrix = [
+                //     [ 0, 1, 1, 0, 0],
+                //     [ 1, 0, 6, 0, 1],
                 //     [ 1, 6, 0, 0, 0],
-                //     [ 0, 0, 0, 0, 0],
-                //     [ 0, 0, 0, 0, 0]
+                //     [ 0, 0, 0, 1, 0],
+                //     [ 0, 1, 0, 0, 0]
                 // ];
 
                 var chord = d3.layout.chord()
@@ -3069,40 +3140,44 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
                     .append("g")
                     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-                svg.append("g").selectAll("path")
-                    .data(chord.groups)
-                  .enter().append("path")
+                var g = svg.selectAll(".group")
+                      .data(chord.groups)
+                    .enter().append("g")
+                      .attr("class", "group");
+
+                g.append("path")
                     .style("fill", function(d) { return fill(d.index); })
                     .style("stroke", function(d) { return fill(d.index); })
                     .attr("d", d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius))
                     .on("mouseover", fade(.1))
-                    .on("mouseout", fade(1));
+                    .on("mouseout", fade(1))
+                    // .on('click', function(d){
+                    //     $scope.appendInfo(data.links, 'linkBetween');
+                    //     //console.log("test")
+                    // });
+
+
+                g.append("text")
+                    .attr("class", "chordlabel")
+                    .each(function(d) { d.angle = (d.startAngle + d.endAngle) / 2; })
+                    .attr("dy", ".35em")
+                    .attr("transform", function(d) {
+                        return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
+                            + "translate(" + (outerRadius + 26) + ")"
+                            + (d.angle > Math.PI ? "rotate(180)" : "");
+                    })
+                    .style("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
+                    .text(function(d) { return data.nodes[d.index].name; });
 
                 var ticks = svg.append("g").selectAll("g")
-                    .data(chord.groups)
-                  .enter().append("g").selectAll("g")
-                    .data(groupTicks)
-                  .enter().append("g")
-                    .attr("transform", function(d) {
-                      return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
-                          + "translate(" + outerRadius + ",0)";
-                    });
-
-                var count = 0;
-                var count2 = -1;
-                var labels = svg.append("g").selectAll("g")
-                    .data(chord.groups)
-                    .enter().append("text")
-                    .text(function(d) {
-                        count2++;
-                        return data.nodes[count2].name;
-                    })
-                    .attr("transform", function(d) {
-                        console.log(d)
-                        count++;
-                      return "rotate(" + (d.startAngle * 180 / Math.PI - 90) + ")"
-                          + "translate(" + outerRadius + ",200)";
-                    });
+                        .data(chord.groups)
+                    .enter().append("g").selectAll("g")
+                        .data(groupTicks)
+                    .enter().append("g")
+                        .attr("transform", function(d) {
+                            return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
+                            + "translate(" + outerRadius + ",0)";
+                        });
 
                 ticks.append("line")
                     .attr("x1", 1)
@@ -3116,8 +3191,7 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
                     .attr("dy", ".35em")
                     .attr("transform", function(d) { return d.angle > Math.PI ? "rotate(180)translate(-16)" : null; })
                     .style("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
-                    .text(function(d) { return d.label; });
-                
+                    .text(function(d) { return d.label; });                
 
                 svg.append("g")
                     .attr("class", "chord")
@@ -3131,11 +3205,11 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
                 // Returns an array of tick angles and labels, given a group.
                 function groupTicks(d) {
                   var k = (d.endAngle - d.startAngle) / d.value;
-                  return d3.range(0, d.value, 2000).map(function(v, i) {
+                  return d3.range(0, d.value, 1).map(function(v, i) {
                     return {
                       angle: v * k + d.startAngle,
-                      label: i % 5 ? null : v / 1000 + "k"
-                      // label: v
+                      //label: i % 5 ? null : v / 1000 + "k"
+                      label: v
                     };
                   });
                 }
@@ -3149,7 +3223,6 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
                         .style("opacity", opacity);
                   };
                 }
-
 
 
 

@@ -69,8 +69,8 @@ module.exports = function(pool) {
 							if(req.body.imageType === 'map') {
 								if (req.body.updateFile === "update") {
 									var insert_map_image = {
-										query: "UPDATE `assets` SET `file`=?, `path`=?, `custom_name`=?, `image_width`=?, `image_height`=?, `order_index`=?, `scale`=? WHERE `asset_name`=?",
-										insert: [newName, newPath, custom_name, req.body.width, req.body.height, req.body.order_index, req.body.scale, req.body.asset_name]
+										query: "UPDATE `assets` SET `file`=?, `path`=?, `custom_name`=?, `image_width`=?, `image_height`=?, `order_index`=?, `scale`=?, `user_scale`=? WHERE `asset_name`=?",
+										insert: [newName, newPath, custom_name, req.body.width, req.body.height, req.body.order_index, req.body.scale, req.body.user_scale, req.body.asset_name]
 									}
 									new query(insert_map_image, {database: database, pool: pool}, function(err,data){
 										res.send(200);

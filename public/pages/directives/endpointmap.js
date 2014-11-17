@@ -27,13 +27,16 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     var imageRatio = $scope.floor.image_width/$scope.floor.image_height;
                     var data = $scope.data.users;
                     var floorName = attrs.floorName;
+                    var userScale = 1;
+                    if (($scope.floor.user_scale !== undefined) && ($scope.floor.user_scale !== null) && (angular.isNumber($scope.floor.user_scale))) {
+                        userScale = $scope.floor.user_scale;
+                    } 
 
                     var elementWidth = $('#floorplanspan')[0].offsetWidth-25;
                     var elementHeight = ($('#floorplanspan')[0].offsetWidth-25)/imageRatio;
                     element.width(elementWidth);
                     element.height(elementHeight);
                     $scope.userList = data;
-
 
                     ///////////////////////////
                     ///  DIV/ELEMENT SETUP  ///
@@ -96,7 +99,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                     // -- to hide <input> when changing custom username
                     container.on('click', function(e){
-                        if(d3.event.toElement === d3.select('.svgFloor')[0][0]){ 
+                        if(d3.event.toElement.id == d3.select('.svgFloor')[0][0].id){ 
                             $('.usernametext').each(function(e){
                                 this.classList.remove('ng-hide');
                             });
@@ -239,7 +242,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         }*/
                         d.x = d3.event.x;
                         d.y = d3.event.y;
-                        d3.select(this).attr("transform", "translate("+d.x + "," + d.y +")");
+                        d3.select(this).attr("transform", "scale("+userScale+")translate("+(d.x/userScale) + "," + (d.y/userScale) +")");
                     }
                     // -- handles the end of when a user is dragged
                     function dragended(d) {
@@ -588,7 +591,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                         d.y = getAdjustedCoor(d.y);
                                         d.setFloor = true; 
                                     }        
-                                    return "translate("+d.x+","+d.y+")"
+                                    return "scale("+userScale+")translate("+(d.x/userScale)+","+(d.y/userScale)+")"
                                 })
                                 .call(drag)
                             .append('xhtml:button')
@@ -645,7 +648,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 var elmbut = d3.select(this);
                                                 $(elmbut[0]).removeClass('selected');
                                             })
-                                            el.classList.add('selected');
+                                            el.classList.add('selected');                                   
+   
+                                            $scope.requery(d, 'flooruser');
+                                            lastUserRequeried = d.id;
 
                                             $scope.getConnections(d); 
                                             endpointConn.selectAll('line').remove();
@@ -655,54 +661,51 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 for (var c in $scope.connectionIn) {
                                                     // console.log($scope.connection[c])
                                                     // console.log($scope.selectedUser)
-                                                    if ( $scope.connectionIn[c].map === $scope.selectedUser.map ) {                                       
+                                                    if ( $scope.connectionIn[c].map === $scope.selectedUser.map ) {                                             
                                                         conns.enter()
                                                             .append("line")
-                                                            .attr("x1", $scope.selectedUser.x+20)
-                                                            .attr("y1", $scope.selectedUser.y+20)
-                                                            .attr("x2", $scope.connectionIn[c].x+20)
-                                                            .attr("y2", $scope.connectionIn[c].y+20)
+                                                            .attr("x1", $scope.selectedUser.x+((elm[0][0].clientHeight/2)*userScale))
+                                                            .attr("y1", $scope.selectedUser.y+((elm[0][0].clientWidth/2)*userScale))
+                                                            .attr("x2", $scope.connectionIn[c].x+((elm[0][0].clientHeight/2)*userScale))
+                                                            .attr("y2", $scope.connectionIn[c].y+((elm[0][0].clientWidth/2)*userScale))
                                                             .attr('stroke-width', 1)
-                                                            .attr("stroke", "#00f");
+                                                            .attr("stroke", "#23FF1C");
                                                     } else {
                                                         conns.enter()
                                                             .append("line")
-                                                            .attr("x1", $scope.selectedUser.x+20)
-                                                            .attr("y1", $scope.selectedUser.y+20)
+                                                            .attr("x1", $scope.selectedUser.x+((elm[0][0].clientHeight/2)*userScale))
+                                                            .attr("y1", $scope.selectedUser.y+((elm[0][0].clientWidth/2)*userScale))
                                                             .attr("x2", 0)
                                                             .attr("y2", 0)
                                                             .attr('stroke-width', 1)
-                                                            .attr("stroke", "#00f");
+                                                            .attr("stroke", "#23FF1C");
                                                     }                     
                                                 } 
                                                 for (var c in $scope.connectionOut) {
                                                     // console.log($scope.connection[c])
                                                     // console.log($scope.selectedUser)
-                                                    if ( $scope.connectionOut[c].map === $scope.selectedUser.map ) {                                       
+                                                    if ( $scope.connectionOut[c].map === $scope.selectedUser.map ) {                      
                                                         conns.enter()
                                                             .append("line")
-                                                            .attr("x1", $scope.selectedUser.x+20)
-                                                            .attr("y1", $scope.selectedUser.y+20)
-                                                            .attr("x2", $scope.connectionOut[c].x+20)
-                                                            .attr("y2", $scope.connectionOut[c].y+20)
+                                                            .attr("x1", $scope.selectedUser.x+((elm[0][0].clientHeight/2)*userScale))
+                                                            .attr("y1", $scope.selectedUser.y+((elm[0][0].clientWidth/2)*userScale))
+                                                            .attr("x2", $scope.connectionOut[c].x+((elm[0][0].clientHeight/2)*userScale))
+                                                            .attr("y2", $scope.connectionOut[c].y+((elm[0][0].clientWidth/2)*userScale))
                                                             .attr('stroke-width', 1)
-                                                            .attr("stroke", "#f0f");
+                                                            .attr("stroke", "#FF4A00");
                                                     } else {
                                                         conns.enter()
                                                             .append("line")
-                                                            .attr("x1", $scope.selectedUser.x+20)
-                                                            .attr("y1", $scope.selectedUser.y+20)
+                                                            .attr("x1", $scope.selectedUser.x+((elm[0][0].clientHeight/2)*userScale))
+                                                            .attr("y1", $scope.selectedUser.y+((elm[0][0].clientWidth/2)*userScale))
                                                             .attr("x2", 0)
                                                             .attr("y2", 0)
                                                             .attr('stroke-width', 1)
-                                                            .attr("stroke", "#f0f");
+                                                            .attr("stroke", "#FF4A00");
                                                     }                     
                                                 } 
                                             }, 400);
-                                            // draw line links                                             
-   
-                                            $scope.requery(d, 'flooruser');
-                                            lastUserRequeried = d.id;
+                                            // draw line links          
                                         });
                                         element
                                             .attr('height', '25')
@@ -1016,6 +1019,20 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 $http({method: 'POST', url: '/local_events/endpoint_map?type=saveFloorScale', data: {scale: scale,floor: $scope.floor}});
                             }
                         });
+
+                    // buttonDiv.append('button')
+                    //     .html('Reset Users')
+                    //     .attr('class', 'pure-button epbGrey')
+                    //     .on('click', function(){
+                    //         $scope.data.users.filter(function(d){
+                    //             if( d.map !== null){
+                    //                 console.log(d.map)
+                    //                 console.log(d.x)
+                    //                 console.log(d.y)
+                    //                 console.log(" ")
+                    //             } 
+                    //         });
+                    //     });
 
                        /* buttonDiv.append('button')
                             .html('Zoom In')
