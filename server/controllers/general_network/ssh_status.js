@@ -23,6 +23,7 @@ module.exports = function(pool) {
                 query: 'SELECT '+
                             'count(*) AS count,'+
                             'max(`time`) AS `time`,'+
+                            '`status_code`, '+
                             '`status_code` AS `pie_dimension`, '+
                             'sum(`ioc_count`) AS ioc_count '+
                         'FROM '+

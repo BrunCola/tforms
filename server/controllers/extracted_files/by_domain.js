@@ -22,6 +22,7 @@ module.exports = function(pool) {
 				query: 'SELECT '+
 							'count(*) as count, '+
                             'max(`time`) AS `time`,'+
+                            '`http_host`, '+
                          	'`http_host` AS `pie_dimension`, '+
 							'(sum(`size`) / 1048576) AS size,'+
 							'sum(`ioc_count`) AS ioc_count '+
