@@ -39,7 +39,6 @@ module.exports = function(pool) {
                              val: ['host'], // val: the pre-evaluated values from the query above
                              crumb: false
                         },
-                        dView: false
                     },
                     { title: 'Connections', select: 'count' },
                     { title: 'ABP', select: 'proxy_blocked', access: [2] },
