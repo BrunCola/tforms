@@ -25,11 +25,11 @@ module.exports = function(pool) {
                             'count(*) AS `count`, '+
                             'max(`time`) AS `time`,'+
                             '`qtype`,'+
-                            '`qtype_name`,'+
+                            '`qtype_name` AS `pie_dimension`, '+
                             'sum(`ioc_count`) AS `ioc_count` '+
                         'FROM ' + 
                             '`dns` '+
-                        'WHERE ' + 
+                        'WHERE ' +
                             '`time` BETWEEN ? AND ? '+
                         'GROUP BY '+
                             '`qtype`',
@@ -47,7 +47,7 @@ module.exports = function(pool) {
                     },
                     { title: 'Connections', select: 'count' },
                     { title: 'Query Type', select: 'qtype' },
-                    { title: 'Query Type Name', select: 'qtype_name' },
+                    { title: 'Query Type Name', select: 'pie_dimension' },
                     { title: 'IOC Count', select: 'ioc_count' }
                 ],
                 settings: {

@@ -600,7 +600,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                                             obj.end = $location.$$search.end;
                                                         }
                                                         for (var l in $scope.e[c].link.val) {
-                                                            if (aData[$scope.e[c].link.val[l]] !== null) {
+                                                            if ((aData[$scope.e[c].link.val[l]] !== null) && (aData[$scope.e[c].link.val[l]] !== undefined)) {
                                                                 var newVar = aData[$scope.e[c].link.val[l]].toString();
                                                                 obj[$scope.e[c].link.val[l]] = newVar.replace("'", "&#39;");
                                                             }
@@ -807,6 +807,7 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                     //      filter = false;
                     //      break;
                     // }
+
                     if (filter == true) {
                         $scope.pieChart
                             .on("filtered", function(chart, filter){
@@ -814,16 +815,17 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                                     $scope.tableData.filterAll();
                                     var arr = [];
                                     for(var i in $scope.appDimension.top(Infinity)) {
-                                        arr.push($scope.appDimension.top(Infinity)[i].pie_dimension);
-                                    }
-
-                                    $scope.tableData.filter(function(d) { 
-                                        if (d.l7_proto != undefined) {
-                                            return arr.indexOf(d.l7_proto) >= 0; 
-                                        } else if (d.event_type != undefined) {
-                                            return arr.indexOf(d.event_type) >= 0; 
+                                        if ($scope.appDimension.top(Infinity)[i].pie_dimension !== undefined) {
+                                            arr.push($scope.appDimension.top(Infinity)[i].pie_dimension);
                                         } else {
+                                            arr.push($scope.appDimension.top(Infinity)[i].lan_user + $scope.appDimension.top(Infinity)[i].lan_zone + $scope.appDimension.top(Infinity)[i].lan_ip);
+                                        }
+                                    }
+                                    $scope.tableData.filter(function(d) { 
+                                        if (d.pie_dimension !== undefined) {
                                             return arr.indexOf(d.pie_dimension) >= 0; 
+                                        } else {
+                                            return (arr.indexOf(d.lan_user+d.lan_zone+d.lan_ip)) >= 0;
                                         }
                                     });
                                     $scope.$broadcast('crossfilterToTable');
