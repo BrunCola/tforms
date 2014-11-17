@@ -808,10 +808,15 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                                     $scope.tableData.filterAll();
                                     var arr = [];
                                     for(var i in $scope.appDimension.top(Infinity)) {
+                                        console.log($scope.appDimension.top(Infinity)[i])
                                         arr.push($scope.appDimension.top(Infinity)[i].pie_dimension);
                                     }
 
-                                    $scope.tableData.filter(function(d) { return arr.indexOf(d.pie_dimension) >= 0; });
+                                    console.log(arr)
+                                    $scope.tableData.filter(function(d) { 
+                                        console.log(arr.indexOf(d.pie_dimension))
+                                        return arr.indexOf(d.pie_dimension) >= 0; 
+                                    });
                                     $scope.$broadcast('crossfilterToTable');
 
                                 }, 400, "filterWait");
