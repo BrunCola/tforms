@@ -365,7 +365,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             return "#666";
                     }
                 }
-                function highlightSameNodes(time, id, previousElm) {
+                function highlightSameNodes(uid, id, previousElm) {
                     var pData = false;
                     if (previousElm) {
                         pData = previousElm.data();
@@ -373,14 +373,14 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     itemRects.selectAll('g').each(function(d){
                         // select nodes that match
                         var elm = d3.select(this).select('.hover-square');
-                        if ((d.time === time) && (d.id !== id)) {
+                        if ((d.conn_uids === uid) && (d.id !== id)) {
                             d.hover = true;
                             hoverPoint(elm, 'mouseover');
                         }
                         // deselect previous nodes (if any)
                         if (pData) {
                             // if any nodes match our previous time andwe're on a different time segment
-                            if ((pData[0].time === d.time) && (pData[0].time !== time)) {
+                            if ((pData[0].conn_uids === d.conn_uids) && (pData[0].conn_uids !== uid)) {
                                 d.hover = false;
                                 hoverPoint(elm, 'mouseout');
                             }
@@ -404,7 +404,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
                 function changeIcon(element, data, previousElm) {
                     // call filter funtion to highlight all nodes with the same time
-                    highlightSameNodes(data.time, data.id, previousElm);
+                    highlightSameNodes(data.conn_uids, data.id, previousElm);
                     var color, select;
                     if (previousElm) {
                         previousElm.select('.eventFocus').remove();

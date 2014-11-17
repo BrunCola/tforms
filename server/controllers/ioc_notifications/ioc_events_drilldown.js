@@ -58,6 +58,7 @@ module.exports = function(pool) {
                                 '`remote_country`,'+
                                 '`remote_asn_name`,'+
                                 '`l7_proto`,'+
+                                '`conn_uids`,'+
                                 '`in_bytes`,'+
                                 '`out_bytes`,'+
                                 '`ioc`,'+
@@ -120,6 +121,7 @@ module.exports = function(pool) {
                                 '`remote_country`,'+
                                 '`remote_asn_name`,'+
                                 '`l7_proto`,'+
+                                '`conn_uids`,'+
                                 '`in_bytes`,'+
                                 '`out_bytes`,'+
                                 '`ioc`,'+
@@ -182,6 +184,7 @@ module.exports = function(pool) {
                                 '`remote_country`,'+
                                 '`remote_asn_name`,'+
                                 '`l7_proto`,'+
+                                '`conn_uids`,'+
                                 '`in_bytes`,'+
                                 '`out_bytes`,'+
                                 '`ioc`,'+
@@ -241,6 +244,7 @@ module.exports = function(pool) {
                                 '`remote_country`,'+
                                 '`remote_asn_name`,'+
                                 '`l7_proto`,'+
+                                '`conn_uids`,'+
                                 '`in_bytes`,'+
                                 '`out_bytes`,'+
                                 '`ioc`,'+
@@ -294,6 +298,7 @@ module.exports = function(pool) {
                             '`remote_machine`,'+
                             '`remote_user`,'+
                             '`remote_ip`,'+
+                            '`conn_uids`,'+
                             '(`in_bytes` / 1048576) as in_bytes,'+
                             '(`out_bytes` / 1048576) as out_bytes,'+
                             '`in_packets`,'+
@@ -335,6 +340,7 @@ module.exports = function(pool) {
                                 '`remote_machine`, '+
                                 '`remote_user`, '+
                                 '`remote_ip`, '+
+                                '`conn_uids`,'+
                                 '(`in_bytes` / 1048576) as in_bytes, '+
                                 '(`out_bytes` / 1048576) as out_bytes, '+
                                 '`in_packets`, '+
@@ -375,6 +381,7 @@ module.exports = function(pool) {
                                 '`query`,'+
                                 '`answers`,'+
                                 '`TTLs`,'+
+                                '`conn_uids`,'+
                                 '`ioc`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`,'+
@@ -421,6 +428,7 @@ module.exports = function(pool) {
                                 '`status_msg`,'+
                                 '`info_code`,'+
                                 '`info_msg`,'+
+                                '`conn_uids`,'+
                                 '`ioc`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`,'+
@@ -463,6 +471,7 @@ module.exports = function(pool) {
                                 '`cipher`,'+
                                 '`subject`,'+
                                 '`issuer_subject`,'+
+                                '`conn_uids`,'+
                                 '`ioc`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`,'+    
@@ -512,6 +521,7 @@ module.exports = function(pool) {
                                 '`reply_to`,'+
                                 '`in_reply_to`,'+
                                 '`subject`,'+
+                                '`conn_uids`,'+
                                 '`ioc`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`, '+    
@@ -558,6 +568,7 @@ module.exports = function(pool) {
                                 '`size`,'+
                                 '`md5`,'+
                                 '`sha1`,'+
+                                '`conn_uids`,'+
                                 '`ioc`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`,'+
@@ -817,6 +828,7 @@ module.exports = function(pool) {
                                     '`in_bytes`,'+
                                     '`out_bytes`,'+
                                     '`l7_proto`,'+
+                                    '`conn_uids`,'+
                                     '`ioc`,'+
                                     '`ioc_typeIndicator`,'+
                                     '`ioc_typeInfection`,'+
@@ -879,6 +891,7 @@ module.exports = function(pool) {
                                     '`in_bytes`,'+
                                     '`out_bytes`,'+
                                     '`l7_proto`,'+
+                                    '`conn_uids`,'+
                                     '`ioc`,'+
                                     '`ioc_typeIndicator`,'+
                                     '`ioc_typeInfection`,'+
@@ -940,6 +953,7 @@ module.exports = function(pool) {
                                 '`in_bytes`,'+
                                 '`out_bytes`,'+
                                 '`l7_proto`,'+
+                                '`conn_uids`,'+
                                 '`ioc`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`,'+
@@ -992,6 +1006,7 @@ module.exports = function(pool) {
                                 '`lan_machine`,'+
                                 '`lan_user`,'+
                                 '`lan_ip`,'+
+                                '`conn_uids`,'+
                                 '`remote_machine`,'+
                                 '`remote_user`,'+
                                 '`remote_ip`,'+
@@ -1043,6 +1058,7 @@ module.exports = function(pool) {
                                     '`in_bytes`,'+
                                     '`out_bytes`,'+
                                     '`l7_proto`,'+
+                                    '`conn_uids`,'+
                                     '`ioc`,'+
                                     '`ioc_typeIndicator`,'+
                                     '`ioc_typeInfection`,'+
@@ -1098,6 +1114,7 @@ module.exports = function(pool) {
                                     '`query`,'+
                                     '`answers`,'+
                                     '`TTLs`,'+
+                                    '`conn_uids`,'+
                                     '`ioc`,'+
                                     '`ioc_typeIndicator`,'+
                                     '`ioc_typeInfection`,'+
@@ -1143,6 +1160,7 @@ module.exports = function(pool) {
                                     '`status_msg`,'+
                                     '`info_code`,'+
                                     '`info_msg`,'+
+                                    '`conn_uids`,'+
                                     '`ioc`,'+
                                     '`ioc_typeIndicator`,'+
                                     '`ioc_typeInfection`,'+
@@ -1187,6 +1205,7 @@ module.exports = function(pool) {
                                     '`server_name`,'+
                                     '`subject`,'+
                                     '`issuer_subject`,'+
+                                    '`conn_uids`,'+
                                     '`ioc`,'+
                                     '`ioc_typeIndicator`,'+
                                     '`ioc_typeInfection`,'+    
@@ -1235,6 +1254,7 @@ module.exports = function(pool) {
                                     '`reply_to`,'+
                                     '`in_reply_to`,'+
                                     '`subject`,'+
+                                    '`conn_uids`,'+
                                     '`ioc`,'+
                                     '`ioc_typeIndicator`,'+
                                     '`ioc_typeInfection`, '+    
@@ -1281,6 +1301,7 @@ module.exports = function(pool) {
                                     '`size`,'+
                                     '`md5`,'+
                                     '`sha1`,'+
+                                    '`conn_uids`,'+
                                     '`ioc`,'+
                                     '`ioc_typeIndicator`,'+
                                     '`ioc_typeInfection`,'+
