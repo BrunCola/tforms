@@ -44,8 +44,9 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             })
 
             $scope.$broadcast('spinnerHide');
+
+            $scope.toggleView = false;
             $scope.floors = data.floor;
-            
             $scope.floors[0].active = true;
 
         }

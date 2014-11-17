@@ -89,6 +89,7 @@
     <section id="loading-error" loading-error></section>
     <section id="loading-spinner" loading-spinner></section>
     <div class="row-fluid">
+            <input type="checkbox" id="togView" ng-model="toggleView" >
         <section id="floorplanpage">
             <div id="listlocalusersspan">
                 <div class="jdash-header">Local Users</div>                 
@@ -97,7 +98,7 @@
                 </div>
             </div>
             <div class="hidelocalusers" ></div>
-            <!-- <div id="floorplanspan">
+            <div id="floorplanspan" ng-show="toggleView">
                 <div id="tabs" >
                     <tabset>
                         <tab select="alertMe()" ng-repeat="floor in floors" active="floor.active">
@@ -105,7 +106,7 @@
                                 {{floor.custom_name}} 
                             </tab-heading>
                             <div style="background-color:#FFF;" class="box" >
-                                <div id="floorplan" floor-name="{{floor.asset_name}}" make-floor-plan style="position: relative; border: solid 1px #0f0;">
+                                <div id="floorplan" floor-name="{{floor.asset_name}}" make-floor-plan style="position: relative;">
                                 </div>
                             </div>
                         </tab>
@@ -120,11 +121,11 @@
                     <div id="triggerbuttons" class="bin" ></div>
                     </tabset>
                 </div>
-            </div> -->
-            <div id="floorplanspan">
+            </div> 
+             <div id="allfloorplanspan" ng-show="!toggleView">
                 <div style="background-color:#FFF;" class="box" >
-                    <div id="floorplan" style="position: relative; border: solid 1px #00f;">
-                        <div ng-repeat="floor in floors" floor-name="{{floor.asset_name}}" make-floor-plan style="position: relative; border: solid 1px #0f0;"></div>
+                    <div id="allfloorplan" style="position: relative;">
+                        <div make-all-floor-plan style="position: relative;"></div>
                     </div>
                 </div>
             </div>
