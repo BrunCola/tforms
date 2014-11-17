@@ -2492,3 +2492,6 @@ button.epbGrey:hover,button.epbGrey:active{
 .chordlabel {
   font-size: 15px !important;
 }
+#flus td{
+  padding:0px 10px 0px 0px;
+}

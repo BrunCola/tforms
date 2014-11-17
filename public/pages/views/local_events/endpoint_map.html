@@ -191,9 +191,13 @@
                 <div  style="background-color:#FFF;" class="box">
                      <div id="alllocaluserinformation">
                         <div class="luinfo" ng-show="currentFloor">
-                            <div ng-repeat="user in currentFloor" ng-click="userLink(user)">
-                                <span style="font-weight:bold">User: </span><span>{{user.lan_ip}}</span> 
-                            </div>
+                            <table id="flus">
+                                <tr style="font-weight:bold">
+                                    <td>IP</td><td>Host Name</td><td>User name</td>
+                                </tr>
+                                <tr  ng-repeat="user in currentFloor" ng-click="userLink(user)">
+                                    <td>{{user.lan_ip}}</td><td>{{user.lan_machine}}</td><td>{{user.lan_user}}</td>
+                                </tr> 
                         </div>
                     </div>
                 </div>

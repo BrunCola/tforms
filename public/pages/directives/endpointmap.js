@@ -214,7 +214,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     );          
 
                     ///////////////////
-                    ///  FUNCTIONS  ///
+                    ///  FUNCTIONS  /// 
                     ///////////////////
                     // -- zoom and movement behaviours of the floor
                     function zoomed() {
@@ -223,7 +223,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             container.attr("transform", "translate(0,0)scale(1)");
                             $rootScope.toggleView = false;
                             $scope.$apply();
-                        } else {
+                        } else { 
                             scale = d3.event.scale;
                             container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
                         }
@@ -1311,15 +1311,15 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                     ///////////////////
                     // -- zoom and movement behaviours of the floor
                     function zoomed() {
-                        if (d3.event.scale > 3) {
-                            zoom.translate([0,0]).scale(1);
-                            container.attr("transform", "translate(0,0)scale(1)");
-                            $rootScope.toggleView = true;
-                            $scope.$apply();
-                        } else {
+                        // if (d3.event.scale > 3) {
+                        //     zoom.translate([0,0]).scale(1);
+                        //     container.attr("transform", "translate(0,0)scale(1)");
+                        //     $rootScope.toggleView = true;
+                        //     $scope.$apply();
+                        // } else {
                             scale = d3.event.scale;
                             container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-                        }
+                        // }
                     }
                     // -- handles the beginging of a user being dragged
                     function dragstarted(d) {
@@ -1680,6 +1680,11 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                                     .style("border", "solid 1px #f0f")
                                     .style("text-align", "center")
                                     .html("<h4>"+d.custom_name + "</h4><strong>" + userCount + " Users </strong>")
+                                    .on('dblclick', function(e){
+                                        d.active = true;
+                                        $rootScope.toggleView = true;
+
+                                    })
                                     .on('click', function(e){
                                         $scope.requery(d, 'listusers');        
                                     })
