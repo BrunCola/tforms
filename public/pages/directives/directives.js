@@ -809,13 +809,18 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                                     $scope.tableData.filterAll();
                                     var arr = [];
                                     for(var i in $scope.appDimension.top(Infinity)) {
-                                        console.log($scope.appDimension.top(Infinity)[i])
-                                        arr.push($scope.appDimension.top(Infinity)[i].pie_dimension);
+                                        if ($scope.appDimension.top(Infinity)[i].pie_dimension !== undefined) {
+                                            arr.push($scope.appDimension.top(Infinity)[i].pie_dimension);
+                                        } else {
+                                            arr.push($scope.appDimension.top(Infinity)[i].lan_user + $scope.appDimension.top(Infinity)[i].lan_zone + $scope.appDimension.top(Infinity)[i].lan_ip);
+                                        }
                                     }
-                                    console.log(arr)
                                     $scope.tableData.filter(function(d) { 
-                                        console.log(d)
-                                        return arr.indexOf(d.pie_dimension) >= 0; 
+                                        if (d.pie_dimension !== undefined) {
+                                            return arr.indexOf(d.pie_dimension) >= 0; 
+                                        } else {
+                                            return (arr.indexOf(d.lan_user+d.lan_zone+d.lan_ip)) >= 0;
+                                        }
                                     });
                                     $scope.$broadcast('crossfilterToTable');
 
