@@ -23,7 +23,7 @@ module.exports = function(pool) {
                 query: 'SELECT '+
                             'sum(`count`) AS `count`, '+
                             'max(`time`) AS `time`, '+
-                            '`user_agent`, ' +
+                            '`user_agent` AS `pie_dimension`, '+
                             'sum(`proxy_blocked`) AS proxy_blocked,'+
                             'sum(`ioc_count`) AS `ioc_count` ' +
                         'FROM ' +
@@ -45,7 +45,7 @@ module.exports = function(pool) {
                     },
                     { title: 'Connections', select: 'count' },
                     { title: 'ABP', select: 'proxy_blocked', access: [2] },
-                    { title: 'User Agent', select: 'user_agent' },
+                    { title: 'User Agent', select: 'pie_dimension' },
                     { title: 'IOC Count', select: 'ioc_count' }
                 ],
                 settings: {

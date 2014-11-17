@@ -599,7 +599,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                                             obj.end = $location.$$search.end;
                                                         }
                                                         for (var l in $scope.e[c].link.val) {
-                                                            if (aData[$scope.e[c].link.val[l]] !== null) {
+                                                            if ((aData[$scope.e[c].link.val[l]] !== null) && (aData[$scope.e[c].link.val[l]] !== undefined)) {
                                                                 var newVar = aData[$scope.e[c].link.val[l]].toString();
                                                                 obj[$scope.e[c].link.val[l]] = newVar.replace("'", "&#39;");
                                                             }
@@ -801,6 +801,7 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                     //      filter = false;
                     //      break;
                     // }
+
                     if (filter == true) {
                         $scope.pieChart
                             .on("filtered", function(chart, filter){
@@ -811,10 +812,9 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                                         console.log($scope.appDimension.top(Infinity)[i])
                                         arr.push($scope.appDimension.top(Infinity)[i].pie_dimension);
                                     }
-
                                     console.log(arr)
                                     $scope.tableData.filter(function(d) { 
-                                        console.log(arr.indexOf(d.pie_dimension))
+                                        console.log(d)
                                         return arr.indexOf(d.pie_dimension) >= 0; 
                                     });
                                     $scope.$broadcast('crossfilterToTable');
