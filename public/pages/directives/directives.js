@@ -824,6 +824,8 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                                     $scope.tableData.filter(function(d) { 
                                         if (d.pie_dimension !== undefined) {
                                             return arr.indexOf(d.pie_dimension) >= 0; 
+                                        } else if (d.l7_proto !== undefined) {
+                                            return arr.indexOf(d.l7_proto) >= 0; 
                                         } else {
                                             return (arr.indexOf(d.lan_user+d.lan_zone+d.lan_ip)) >= 0;
                                         }
