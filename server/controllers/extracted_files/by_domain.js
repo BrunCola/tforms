@@ -22,7 +22,7 @@ module.exports = function(pool) {
 				query: 'SELECT '+
 							'count(*) as count, '+
                             'max(`time`) AS `time`,'+
-							'`http_host`,'+
+                         	'`http_host` AS `pie_dimension`, '+
 							'(sum(`size`) / 1048576) AS size,'+
 							'sum(`ioc_count`) AS ioc_count '+
 						'FROM '+
@@ -44,7 +44,7 @@ module.exports = function(pool) {
 						},
 					},
 					{ title: 'Total Extracted Files', select: 'count' },
-					{ title: 'Domain', select: 'http_host' },
+					{ title: 'Domain', select: 'pie_dimension' },
 					{ title: 'Total Size (MB)', select: 'size' },
 					{ title: 'Total IOC Hits', select: 'ioc_count' }
 				],

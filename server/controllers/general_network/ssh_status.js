@@ -23,7 +23,7 @@ module.exports = function(pool) {
                 query: 'SELECT '+
                             'count(*) AS count,'+
                             'max(`time`) AS `time`,'+
-                            '`status_code`,'+
+                            '`status_code` AS `pie_dimension`, '+
                             'sum(`ioc_count`) AS ioc_count '+
                         'FROM '+
                             '`ssh` '+
@@ -43,7 +43,7 @@ module.exports = function(pool) {
                         },
                     },
                     { title: 'Connections', select: 'count' },
-                    { title: 'Status', select: 'status_code' },
+                    { title: 'Status', select: 'pie_dimension' },
                     { title: 'IOC Count', select: 'ioc_count' }
                 ],
                 settings: {

@@ -23,7 +23,7 @@ module.exports = function(pool) {
                 query: 'SELECT '+
                             'sum(`count`) AS `count`, '+
                             'max(`time`) AS `time`,'+ // LASt Seen
-                            '`l7_proto`, '+
+                            '`l7_proto` AS `pie_dimension`, '+
                             '(sum(`in_bytes`) / 1048576) AS in_bytes, '+
                             '(sum(`out_bytes`) / 1048576) AS out_bytes, '+
                             'sum(`in_packets`) AS in_packets, '+
@@ -55,7 +55,7 @@ module.exports = function(pool) {
                             crumb: false
                         },
                     },
-                    { title: 'Applications', select: 'l7_proto' },
+                    { title: 'Applications', select: 'pie_dimension' },
                     { title: 'MB to Remote', select: 'in_bytes' },
                     { title: 'MB from Remote', select: 'out_bytes' },
                     { title: 'Packets to Remote', select: 'in_packets', dView: false },
