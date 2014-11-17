@@ -2309,7 +2309,7 @@ Datatables Plugin(in v1.3)
   font-weight: bold;
   width: 100%;
 }
-#localuserinformation li {
+#localuserinformation li{
   list-style: none;
   min-height: 30px;
   line-height: 20px;

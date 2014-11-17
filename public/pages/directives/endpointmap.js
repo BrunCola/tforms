@@ -6,6 +6,16 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
             //$scope.$on('floorPlan', function (event) {
                 setTimeout(function () {
 
+                    // watch global search for changes.. then filter
+                    var searchFired = false;
+                    $rootScope.$watch('search', function(){
+                        if (searchFired === true) {
+                            searchFilter($scope.searchDimension, $rootScope.search);
+                            $scope.$broadcast('searchUsers',$scope.searchDimension.top(Infinity));
+                        }
+                        searchFired = true;
+                    })
+
                     var lastUserRequeried = -1;
                     var wait = (function () {
                         var timers = {};
@@ -208,14 +218,15 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     ///////////////////
                     // -- zoom and movement behaviours of the floor
                     function zoomed() {
-                        scale = d3.event.scale;
-                        if (d3.event.scale < 0.3) {
-                            console.log(d3.event.scale)
-                            $scope.toggleView = false;
+                        if (d3.event.scale < 0.5) {
+                            zoom.translate([0,0]).scale(1);
+                            container.attr("transform", "translate(0,0)scale(1)");
+                            $rootScope.toggleView = false;
                             $scope.$apply();
-                            console.log($scope)
+                        } else {
+                            scale = d3.event.scale;
+                            container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
                         }
-                        container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
                     }
                     // -- handles the beginging of a user being dragged
                     function dragstarted(d) {
@@ -1163,6 +1174,16 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
             //$scope.$on('floorPlan', function (event) {
                 setTimeout(function () {
 
+                    // watch global search for changes.. then filter
+                    var searchFired = false;
+                    $rootScope.$watch('search', function(){
+                        if (searchFired === true) {
+                            searchFilter($scope.searchDimension, $rootScope.search);
+                            $scope.$broadcast('searchUsers',$scope.searchDimension.top(Infinity));
+                        }
+                        searchFired = true;
+                    })
+
                     var lastUserRequeried = -1;
                     var wait = (function () {
                         var timers = {};
@@ -1198,7 +1219,7 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                     ///////////////////////////
                     var userDivWrapper = d3.select("#localListWrapper").style('height', elementHeight+50+'px').style('overflow', 'auto');
                     var userDiv = d3.select("#listlocalusers").attr("width","100%");
-                    var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
+                    var infoDiv = d3.select('#alllocaluserinformation').append('table').style('overflow', 'auto');
                     var floorDiv = d3.select(element[0]);
 
                     var windowScale = $scope.standardWidth/element.outerWidth();
@@ -1255,17 +1276,11 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                     .attr("class", "endpointConn");
 
                     // -- to hide <input> when changing custom username
-                    // container.on('click', function(e){
-                    //     console.log("container click")
-                    //     if(d3.event.toElement.id == d3.select('.svgFloor')[0][0].id){ 
-                    //         $('.usernametext').each(function(e){
-                    //             this.classList.remove('ng-hide');
-                    //         });
-                    //         $('.usernameform').each(function(e){
-                    //             this.classList.add('ng-hide');
-                    //         });
-                    //     }
-                    // })
+                    container.on('click', function(e){
+                        if(d3.event.toElement.id == d3.select('.svgFloor')[0][0].id){
+                            $scope.requery("clear"); 
+                        }
+                    })
 
                      // -- hide/show userlist                    
                     var hideDiv = $('.hidelocalusers')
@@ -1291,86 +1306,20 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                         .attr("style","padding-top:"+ (elementHeight/2)+'px')
                         .html("&#9668; &#9668; &#9668;");
 
-
-                    /////////////////////////////
-                    ///  DROPPABLE BEHAVIOUR  ///
-                    /////////////////////////////
-                    // -- used for when a user is being dragged from userlist to floor
-                    var containerTag = container[0][0];
-                    containerTag.droppable = false;
-                    containerTag.addEventListener(
-                        'dragover',
-                        function(e) {
-                            e.dataTransfer.dropEffect = 'move';
-                            // allows us to drop
-                            if (e.preventDefault) e.preventDefault();
-                            $(this).addClass('over');
-                            return false;
-                        },
-                        false
-                    );
-                    containerTag.addEventListener(
-                        'dragenter',
-                        function(e) {
-                            $(this).addClass('over');
-                            return false;
-                        },
-                        false
-                    );
-                    containerTag.addEventListener(
-                        'dragleave',
-                        function(e) {
-                            $(this).removeClass('over');
-                            return false;
-                        },
-                        false
-                    );
-                    // -- handles when a user is dropped from userlist to floorplan
-                    containerTag.addEventListener('drop', function(e) {
-                        var floorName = d3.select(containerTag).attr('floor-name');
-                        // Stops some browsers from redirecting.
-                        if (e.stopPropagation) e.stopPropagation();
-
-                        // call the drop passed drop function
-                        var destinationId = $(this).attr('id');
-                        var itemId = e.dataTransfer.getData("Text");
-                        var item = $(document).find('#'+itemId);
-                        var itemData = item[0]['__data__'];
-
-                        if (destinationId === 'floorContainer'){
-                            var divPos = {
-                                // left: e.layerX/scale,
-                                // top: e.layerY/scale
-                                left: (e.pageX - $(containerTag).offset().left)/scale,
-                                top: (e.pageY - $(containerTag).offset().top)/scale
-                            };
-                            $(this).append(item[0]);
-
-                            itemData.x = divPos.left;
-                            itemData.y = divPos.top;
-                            itemData.map = attrs.floorName;
-
-                            $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: attrs.floorName, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
-                            plot(data, attrs.floorName); 
-                            d3.select('.user-'+itemId).classed("selected", true);
-                        } 
-                        return false;
-                        },
-                        false
-                    );          
-
                     ///////////////////
                     ///  FUNCTIONS  ///
                     ///////////////////
                     // -- zoom and movement behaviours of the floor
                     function zoomed() {
-
-                        scale = d3.event.scale;
-                        if (scale > 3) {
-                            $scope.toggleView = true;
+                        if (d3.event.scale > 3) {
+                            zoom.translate([0,0]).scale(1);
+                            container.attr("transform", "translate(0,0)scale(1)");
+                            $rootScope.toggleView = true;
                             $scope.$apply();
+                        } else {
+                            scale = d3.event.scale;
+                            container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
                         }
-                        container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
                     }
                     // -- handles the beginging of a user being dragged
                     function dragstarted(d) {
@@ -1717,23 +1666,100 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                                 })
                                 .call(drag)
                             .append('xhtml:div').each(function(d){    
-                                    var userCount = 0;               
-                                    
-                                    var elm = d3.select(this);
+                                var userCount = 0;               
+                                
+                                var elm = d3.select(this);
 
-                                    data.filter(function(user){
-                                        if (d.asset_name === user.map) {
-                                            userCount++;
-                                        }
-                                    });
+                                data.filter(function(user){
+                                    if (d.asset_name === user.map) {
+                                        userCount++;
+                                    }
+                                });
 
-                                    elm
-                                        .style("border", "solid 1px #f0f")
-                                        .style("text-align", "center")
-                                        .html("<h4>"+d.custom_name + "</h4><strong>" + userCount + " Users </strong>")
-                                        .on('click', function(e){
-                                            console.log("click Floor")        
-                                        });                              
+                                elm
+                                    .style("border", "solid 1px #f0f")
+                                    .style("text-align", "center")
+                                    .html("<h4>"+d.custom_name + "</h4><strong>" + userCount + " Users </strong>")
+                                    .on('click', function(e){
+                                        $scope.requery(d, 'listusers');        
+                                    })
+                                    .on('mouseover', function(e){
+                                        d3.select(this).style("cursor","pointer")
+                                    });  
+
+                                var elel = elm[0];
+                                var el = elel[0];
+
+                                /////////////////////////////
+                                ///  DROPPABLE BEHAVIOUR  ///
+                                /////////////////////////////
+                                // -- used for when a user is being dragged from userlist to floor
+                                // var containerTag = container[0][0];
+                                // containerTag.droppable = true;
+                                // containerTag.addEventListener(
+                                //     'dragover',
+                                //     function(e) {
+                                //         e.dataTransfer.dropEffect = 'move';
+                                //         // allows us to drop
+                                //         if (e.preventDefault) e.preventDefault();
+                                //         $(this).addClass('over');
+                                //         return false;
+                                //     },
+                                //     false
+                                // );
+                                // containerTag.addEventListener(
+                                //     'dragenter',
+                                //     function(e) {
+                                //         $(this).addClass('over');
+                                //         return false;
+                                //     },
+                                //     false
+                                // );
+                                // containerTag.addEventListener(
+                                //     'dragleave',
+                                //     function(e) {
+                                //         $(this).removeClass('over');
+                                //         return false;
+                                //     },
+                                //     false
+                                // );
+                                // // -- handles when a user is dropped from userlist to floorplan
+                                // containerTag.addEventListener('drop', function(e) {
+                                //     var floorName = d3.select(containerTag).attr('floor-name');
+                                //     // Stops some browsers from redirecting.
+                                //     if (e.stopPropagation) e.stopPropagation();
+
+                                //     // call the drop passed drop function
+                                //     var destinationId = $(this).attr('id');
+                                //     var itemId = e.dataTransfer.getData("Text");
+                                //     var item = $(document).find('#'+itemId);
+                                //     var itemData = item[0]['__data__'];
+
+                                //     if (destinationId === 'floorContainer'){
+                                //         var divPos = {
+                                //             // left: e.layerX/scale,
+                                //             // top: e.layerY/scale
+                                //             left: (e.pageX - $(containerTag).offset().left)/scale,
+                                //             top: (e.pageY - $(containerTag).offset().top)/scale
+                                //         };
+                                //         $(this).append(item[0]);
+
+                                //         itemData.x = divPos.left;
+                                //         itemData.y = divPos.top;
+                                //         scale = d3.event.scale = 1;
+                                //         d3.event.translate = (0,0);
+                                //         itemData.map = attrs.floorName;
+
+                                //         $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: attrs.floorName, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
+                                //         plot(data, attrs.floorName); 
+                                //         d3.select('.user-'+itemId).classed("selected", true);
+                                //     } 
+                                //     return false;
+                                //     },
+                                //     false
+                                // );          
+
+
                             });                            
                     }  
      //This function determines the colour of the endpoint based on what type 
@@ -1845,7 +1871,7 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                     ////////////////
                     // -- display users after
                     $scope.$on('searchUsers', function (event, filteredData){
-                        plot(filteredData, floorName);
+                        plot(filteredData, floors);
                         wait(function(){
                             if (filteredData.length > 0) {
                                 if (lastUserRequeried !== filteredData[0].id) {
@@ -1868,3 +1894,4 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
     };
 }]);
 
+ 

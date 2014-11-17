@@ -132,7 +132,7 @@
             <div id="localuserinformationspan" ng-show="userinfo">
                 <div class="jdash-header">User Information</div>
                 <div  style="background-color:#FFF;" class="box">
-                    <div id="localuserinformation" >
+                    <div id="localuserinformation"  ng-show="toggleView">
                         <div class="luinfo" ng-show="userinfo.user_image"><span style="font-weight:bold">User Image: </span><button class='uUpload userfloorbutton' ng-dblclick="uploadUser(userinfo)" type='button' value='userinfo' href=''><img src='{{userinfo.user_image}}' width='48'/></button></div>
                         <div class="luinfo" ng-show="userinfo.custom_user"><span style="font-weight:bold">Custom Name: </span><span>{{userinfo.custom_user}}</span></div>
                         <div class="luinfo" ng-show="userinfo.lan_ip"><span style="font-weight:bold">Lan IP: </span><span>{{userinfo.lan_ip}}</span></div>
@@ -186,6 +186,19 @@
                     </div>
                 </div>
             </div>
+            <div id="localuserinformationspan" ng-show="currentFloor">
+                <div class="jdash-header">User Information</div>
+                <div  style="background-color:#FFF;" class="box">
+                     <div id="alllocaluserinformation">
+                        <div class="luinfo" ng-show="currentFloor">
+                            <div ng-repeat="user in currentFloor" ng-click="userLink(user)">
+                                <span style="font-weight:bold">User: </span><span>{{user.lan_ip}}</span> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
         </section>
     </div>
 </div>
