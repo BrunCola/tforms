@@ -89,6 +89,7 @@
     <section id="loading-error" loading-error></section>
     <section id="loading-spinner" loading-spinner></section>
     <div class="row-fluid">
+            <input type="checkbox" id="togView" ng-model="toggleView" > 
         <section id="floorplanpage">
             <div id="listlocalusersspan">
                 <div class="jdash-header">Local Users</div>                 
@@ -97,18 +98,15 @@
                 </div>
             </div>
             <div class="hidelocalusers" ></div>
-            <div id="floorplanspan">
+            <div id="floorplanspan" ng-show="toggleView">
                 <div id="tabs" >
                     <tabset>
                         <tab select="alertMe()" ng-repeat="floor in floors" active="floor.active">
                             <tab-heading>
                                 {{floor.custom_name}} 
                             </tab-heading>
-                            <div style="background-color:#FFF;" class="box">
-                                <div id="floorplan" floor-name="{{floor.asset_name}}" make-floor-plan style="position: relative">
-                                    <!-- <object width="910" height="600" id="svgFloorPlan" data="{{floor.path}}" type="image/svg+xml"></object> -->
-                                    <!-- <object id="svgFloorPlan" width="800" data="{{floor.path}}" type="image/svg+xml" ></object> -->
-                                    <!-- <img id="svgFloorPlan" width="800" src="{{floor.path}}" type="image/svg+xml" />  -->
+                            <div style="background-color:#FFF;" class="box" >
+                                <div id="floorplan" floor-name="{{floor.asset_name}}" make-floor-plan style="position: relative;">
                                 </div>
                             </div>
                         </tab>
@@ -123,11 +121,18 @@
                     <div id="triggerbuttons" class="bin" ></div>
                     </tabset>
                 </div>
+            </div> 
+             <div id="allfloorplanspan" ng-show="!toggleView">
+                <div style="background-color:#FFF;" class="box" >
+                    <div id="allfloorplan" style="position: relative;">
+                        <div make-all-floor-plan style="position: relative;"></div>
+                    </div>
+                </div>
             </div>
             <div id="localuserinformationspan" ng-show="userinfo">
                 <div class="jdash-header">User Information</div>
                 <div  style="background-color:#FFF;" class="box">
-                    <div id="localuserinformation" >
+                    <div id="localuserinformation"  ng-show="toggleView">
                         <div class="luinfo" ng-show="userinfo.user_image"><span style="font-weight:bold">User Image: </span><button class='uUpload userfloorbutton' ng-dblclick="uploadUser(userinfo)" type='button' value='userinfo' href=''><img src='{{userinfo.user_image}}' width='48'/></button></div>
                         <div class="luinfo" ng-show="userinfo.custom_user"><span style="font-weight:bold">Custom Name: </span><span>{{userinfo.custom_user}}</span></div>
                         <div class="luinfo" ng-show="userinfo.lan_ip"><span style="font-weight:bold">Lan IP: </span><span>{{userinfo.lan_ip}}</span></div>
@@ -181,6 +186,23 @@
                     </div>
                 </div>
             </div>
+            <div id="localuserinformationspan" ng-show="currentFloor">
+                <div class="jdash-header">User Information</div>
+                <div  style="background-color:#FFF;" class="box">
+                     <div id="alllocaluserinformation">
+                        <div class="luinfo" ng-show="currentFloor">
+                            <table id="flus">
+                                <tr style="font-weight:bold">
+                                    <td>IP</td><td>Host Name</td><td>User name</td>
+                                </tr>
+                                <tr  ng-repeat="user in currentFloor" ng-click="userLink(user)">
+                                    <td>{{user.lan_ip}}</td><td>{{user.lan_machine}}</td><td>{{user.lan_user}}</td>
+                                </tr> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
         </section>
     </div>
 </div>
