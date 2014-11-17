@@ -1185,7 +1185,7 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                     })
 
                     var lastUserRequeried = -1;
-                    var wait = (function () {
+                    var wait = (function () { 
                         var timers = {};
                         return function (callback, ms, uniqueId) {
                             if (!uniqueId) {

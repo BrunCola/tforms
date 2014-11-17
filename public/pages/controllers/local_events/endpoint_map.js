@@ -127,7 +127,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                     if (data[0] != undefined) {
                         var users; 
                         var connections = data.map(function( da ) {
-                            users = $scope.userDimension.filter(function(dt){ 
+                            users = $scope.userDimension.filter(function(dt){  
                                 if ((da.remote_ip === dt.lan_ip)){
                                     results.push(dt);
                                 }
