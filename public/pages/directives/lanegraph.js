@@ -660,7 +660,17 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     var max = new Date($scope.end);
                     items.reverse()
                     plot(items, min, max);
-                }           
+                }
+                function reHighlightPoints(timeObj) {
+                    var clicked = itemRects.select('g .eventFocus').data();
+                    // check if anything is clicked
+                    if (clicked[0] !== undefined) {
+                        console.log(clicked[0]);
+                    }
+                    console.log(timeObj)
+                    // compare against time interval and highlight if any points fall within
+                    // "turn on" points that are in our pattern object that fall within the time slice (if paterns are turned on)
+                }
                 function navCrtl(action) {
                     // set variables
                     var rects, labels, minExtent, maxExtent, visItems;
@@ -694,6 +704,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     // convert times returned to unix
                     var minUnix = moment(minExtent).unix();
                     var maxUnix = moment(maxExtent).unix();
+                    // call the rehightlight function
+                    reHighlightPoints({min: minUnix, max: maxUnix});
                     // should it requery?
                     var msDifference = maxUnix - minUnix;
                     // if difference is less than threshhold or is not a single time select (resulting in difference being 0)
