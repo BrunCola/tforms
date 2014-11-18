@@ -22,7 +22,8 @@ module.exports = function(pool) {
                 query: 'SELECT '+
                             'sum(`count`) AS `count`,'+
                             'max(`time`) AS `time`,'+
-                            '`mime`,'+
+                            '`mime`, '+
+                            '`mime` AS `pie_dimension`, '+
                             '(sum(`size`) / 1048576) AS size,'+
                             'sum(`ioc_count`) AS ioc_count '+
                         'FROM '+
@@ -44,7 +45,7 @@ module.exports = function(pool) {
                         },
                     },
                     { title: 'Total Extracted Files', select: 'count' },
-                    { title: 'File Type', select: 'mime' },
+                    { title: 'File Type', select: 'pie_dimension' },
                     { title: 'Total Size (MB)', select: 'size' },
                     { title: 'Total IOC Hits', select: 'ioc_count' }
                 ],

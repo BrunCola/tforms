@@ -18,40 +18,49 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
     });
 
     //first time through, call to populate summary sections
-    getSummaryInfo();
+    getSummaryInfo(query);
 
     //auto refresh using angular interval
     var refreshPeriod = 60000; //in milliseconds (60 seconds)
     var newIocFound = false; //flag to track if a new IOC was found - gets reset after the new IOC is pushed to the directives
+
     //default values for newEnd and newStart
-    var newEnd = new Date().getTime() / 1000; 
-    var newStart = newEnd - refreshPeriod / 1000;
+    var newEnd, newStart;
+    if($location.$$search.start && $location.$$search.end) {
+        newEnd = parseInt($location.$$search.end) + refreshPeriod / 1000;
+        newStart = $location.$$search.end;
+    } else {
+        newEnd = new Date().getTime() / 1000; 
+        newStart = newEnd - refreshPeriod / 1000;
+    }
+
     //for keeping track of original start time, given no user-set params:
-    var oldStart = Math.round(new Date().getTime() / 1000)-((3600*24)); //default date range is usually 1
+    var oldStart = Math.round(new Date().getTime() / 1000)-((3600*24)); //default date range is usually 1 day
     //timeout interval - repeated until user navigates away from page
-    //count to keep track of number of refreshes - every 10 we'll do a larger query...
     var promise = $interval(function() {
         if ($location.$$search.start && $location.$$search.end) {
-            newEnd = parseInt($location.$$search.end) + refreshPeriod / 1000;
+            newEnd = newEnd + refreshPeriod / 1000; //move newEnd forward
             if(newIocFound) {//only update $location.$$search.end (which controls newStart) if new IOC is found, 
-                //otherwise, keep growing the time slicey
+                //otherwise, keep growing the time slice
+                //start time moved to 5 minutes before new end time, to give a wider search, accounting for delay between IOC ident and insertion into DB
                 $location.$$search.end = "" + (newEnd - (refreshPeriod / 1000) * 5);
+                newStart = $location.$$search.end; //update newStart...
                 newIocFound = false; //reset the flag
-            }
-            newStart = $location.$$search.end;            
+            }         
             query = '/ioc_notifications/ioc_events?start='+newStart+'&end='+newEnd;
+
             //update $location.$$search.start to use it for filtering out old data
             $location.$$search.start = "" + (parseInt($location.$$search.start) + refreshPeriod / 1000);
-
         } else {
-            newEnd = new Date().getTime() / 1000; 
-            if(newIocFound) {//reset the newStart to 3 refresh period away from newEnd
+            newEnd = new Date().getTime() / 1000; //automatically moves forward by one refreshPeriod
+            if(newIocFound) {//reset the newStart to 5 refresh period away from newEnd
+                //start time moved to 5 minutes before new end time, to give a wider search, accounting for delay between IOC ident and insertion into DB
                 newStart = newEnd - (refreshPeriod / 1000) * 5; 
                 newIocFound = false; //reset the flag
             } //otherwise keep the newStart the same, so that the timeslice grows
             query = '/ioc_notifications/ioc_events?start='+newStart+'&end='+newEnd;
 
-            oldStart = oldStart + refreshPeriod / 1000;
+            oldStart = oldStart + refreshPeriod / 1000; //move the start forward by a refresh period to use for filtering old data
         }
         $http({method: 'GET', url: query}).
         success(function(data) {
@@ -91,7 +100,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
 
         //filter out old data from the crossfilter
         if(autoRefresh) {
-            var timeDimension = $scope.crossfilterData.dimension(function(d) { return d.time; });
+            var timeDimension = $scope.crossfilterData.dimension(function(d) { return d.time; });//ERRORs out sometimes??
             //filter by date smaller than the old start (previously moved up by one refresh period)
             timeDimension.filter(function(d){
                 if($location.$$search.start) {
@@ -200,7 +209,13 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
             }
 
             if(autoRefresh && (newCrossfilterData || newTableData)) {
-                getSummaryInfo();
+                var query;
+                if($location.$$search.start && $location.$$search.end) {
+                    query = '/ioc_notifications/ioc_events?start='+$location.$$search.start+'&end='+newEnd;
+                } else {
+                    query = '/ioc_notifications/ioc_events?start='+oldStart+'&end='+newEnd;
+                }
+                getSummaryInfo(query);
             }
         }
 
@@ -248,7 +263,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
         } 
     }
 
-    function getSummaryInfo() {
+    function getSummaryInfo(query) {
         $http({method: 'GET', url: query+'&type=ioc_notifications'}).
         success(function(data) {
             $scope.ioc_notifications = data[0].count;

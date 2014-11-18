@@ -410,6 +410,15 @@ module.exports = function(pool) {
                         res.send(200);
                     });
                 }
+            } else if (req.query.type === 'editFloorPos') {
+
+                var edit_floor_pos = {
+                    query: "UPDATE `assets` SET `x`=?, `y`=? WHERE `asset_name`=?",
+                    insert: [req.body.x, req.body.y, req.body.map_name]
+                }
+                new query(edit_floor_pos, {database: database, pool: pool}, function(err,data){
+                    res.send(200);
+                });
             }
         }
     }

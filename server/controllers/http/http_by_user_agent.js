@@ -23,7 +23,8 @@ module.exports = function(pool) {
                 query: 'SELECT '+
                             'sum(`count`) AS `count`, '+
                             'max(`time`) AS `time`, '+
-                            '`user_agent`, ' +
+                            '`user_agent`,'+
+                            '`user_agent` AS `pie_dimension`, '+
                             'sum(`proxy_blocked`) AS proxy_blocked,'+
                             'sum(`ioc_count`) AS `ioc_count` ' +
                         'FROM ' +
@@ -45,7 +46,7 @@ module.exports = function(pool) {
                     },
                     { title: 'Connections', select: 'count' },
                     { title: 'ABP', select: 'proxy_blocked', access: [2] },
-                    { title: 'User Agent', select: 'user_agent' },
+                    { title: 'User Agent', select: 'pie_dimension' },
                     { title: 'IOC Count', select: 'ioc_count' }
                 ],
                 settings: {
@@ -57,24 +58,21 @@ module.exports = function(pool) {
             }
             var crossfilterQ = {
                 query: 'SELECT '+
-                        'time,'+
-                        // '`l7_proto`, '+
-                        '(sum(in_bytes + out_bytes) / 1048576) AS count, '+
-                        '(sum(`in_bytes`) / 1048576) AS in_bytes, '+
-                        '(sum(`out_bytes`) / 1048576) AS out_bytes '+
-                    'FROM '+
-                        '`conn_meta` '+
-                    'WHERE '+
-                        '`time` BETWEEN ? AND ? '+
-                        'AND `http` > 0 '+
-                    'GROUP BY '+
-                        'month(from_unixtime(time)),'+
-                        'day(from_unixtime(time)),'+
-                        'hour(from_unixtime(time))',
-                        // '`l7_proto`',
+                            'time,'+
+                            '(sum(in_bytes + out_bytes) / 1048576) AS count, '+
+                            '(sum(`in_bytes`) / 1048576) AS in_bytes, '+
+                            '(sum(`out_bytes`) / 1048576) AS out_bytes '+
+                        'FROM '+
+                            '`conn_meta` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                            'AND `http` > 0 '+
+                        'GROUP BY '+
+                            'month(from_unixtime(time)),'+
+                            'day(from_unixtime(time)),'+
+                            'hour(from_unixtime(time))',
                 insert: [start, end]
             }
-           
             var piechartQ = {
                 query: 'SELECT '+
                          'time,'+
