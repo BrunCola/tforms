@@ -76,15 +76,14 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 $scope.startend = 'start='+$location.$$search.start+'&end='+$location.$$search.end+'&'; 
             } 
             $scope.selectedUser = "";
-            $http({method: 'GET', url: query+'&typeinfo=getconn2'}).
+            $http({method: 'GET', url: query+'&typeinfo=getconn1'}).
                 success(function(data) {
                     $scope.connectionIn = "";
-                        var results = [];
+                    var results = [];
                     if (data[0] != undefined) {
-                        var users; 
                         var connections = data.map(function( da ) {
-                            users = $scope.userDimension.filter(function(dt){ 
-                                if ((da.remote_ip === dt.lan_ip)){
+                            var users = $scope.userDimension.filter(function(dt){ 
+                                if ((da.remote_ip === dt.lan_ip)){ // && (da.machine === dt.remote_machine)
                                     results.push(dt);
                                 }
                             });
@@ -93,15 +92,14 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                         $scope.connectionIn = results;
                     }
                 });
-             $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
+            $http({method: 'GET', url: query+'&typeinfo=getconn2'}).
                 success(function(data) {
                     $scope.connectionOut = "";
                     var results2 = [];
                     if (data[0] != undefined) {
-                        var users; 
                         var connections = data.map(function( da ) {
-                            users = $scope.userDimension.filter(function(dt){ 
-                                if ((da.lan_ip === dt.lan_ip)){
+                            var users = $scope.userDimension.filter(function(dt){ 
+                                if ((da.lan_ip === dt.lan_ip) && (da.machine === dt.lan_machine)){
                                     results2.push(dt);
                                 }
                             });
@@ -109,52 +107,105 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                         $scope.connectionOut = results2;
                     }
                 });
+
+            $http({method: 'GET', url: query+'&typeinfo=getconn3'}).
+                success(function(data) {
+                    $scope.connStealthIn = "";
+                    var results3 = [];
+                    if (data[0] != undefined) {
+                        var connections = data.map(function( da ) {
+                            var users = $scope.userDimension.filter(function(dt){ 
+                                if ((da.remote_ip === dt.lan_ip)){ // && (da.machine === dt.remote_machine)
+                                    results3.push(dt);
+                                }
+                            });
+                        });
+
+                        $scope.connStealthIn = results3;
+                    }
+                });
+            $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
+                success(function(data) {
+                    $scope.connStealthOut = "";
+                    var results3 = [];
+                    if (data[0] != undefined) {
+                        var connections = data.map(function( da ) {
+                            var users = $scope.userDimension.filter(function(dt){ 
+                                if ((da.lan_ip === dt.lan_ip) && (da.machine === dt.lan_machine)){
+                                    results3.push(dt);
+                                }
+                            });
+                        });
+                        $scope.connStealthOut = results3;
+                    }
+                });
             $scope.selectedUser = d;
+            $scope.userLink(d);
     }                                   //---------------^^^^^^^^^^^^^^^^-----------------------Should be upgraded!!--------------------------^^^^^^^^^^-------------------------
 
     $scope.userLink = function(d) {//-----------------------------------------------------Should be upgraded!!-------------------------------------------------------------------
         var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=endpointconnection';
-            $scope.startend = ""; 
-            if ($location.$$search.start && $location.$$search.end) {
-                query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=endpointconnection'; 
-                $scope.startend = 'start='+$location.$$search.start+'&end='+$location.$$search.end+'&'; 
-            } 
-            $scope.selectedUser = "";
-            $http({method: 'GET', url: query+'&typeinfo=getconn2'}).
+        $scope.startend = ""; 
+        if ($location.$$search.start && $location.$$search.end) {
+            query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=endpointconnection'; 
+            $scope.startend = 'start='+$location.$$search.start+'&end='+$location.$$search.end+'&'; 
+        } 
+        $scope.selectedUser = "";
+        $scope.floorConns = [];
+        // for (var i = 1; i<=4; i++) {            
+            $http({method: 'GET', url: query+'&typeinfo=getconn1'}).
                 success(function(data) {
-                    $scope.connectionIn = "";
-                        var results = [];
                     if (data[0] != undefined) {
-                        var users; 
                         var connections = data.map(function( da ) {
-                            users = $scope.userDimension.filter(function(dt){  
-                                if ((da.remote_ip === dt.lan_ip)){
-                                    results.push(dt);
-                                }
+                            var users = $scope.userDimension.filter(function(dt){  
+                                if ((da.remote_ip === dt.lan_ip) && (d.map !== dt.map)){ // && (da.machine === dt.remote_machine)
+                                    $scope.floorConns.push(dt);
+                                } 
                             });
                         });
+                    }
+                });
+        // }
+        $http({method: 'GET', url: query+'&typeinfo=getconn2'}).
+            success(function(data) {
+                if (data[0] != undefined) {
+                    var connections = data.map(function( da ) {
+                        var users = $scope.userDimension.filter(function(dt){ 
+                            if ((da.lan_ip === dt.lan_ip) && (d.map !== dt.map) && (da.machine === dt.lan_machine)){ 
+                                $scope.floorConns.push(dt);
+                            }
+                        });
+                    });
+                }
+            });
 
-                        $scope.connectionIn = results;
-                    }
-                });
-             $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
+        $http({method: 'GET', url: query+'&typeinfo=getconn3'}).
                 success(function(data) {
-                    $scope.connectionOut = "";
-                    var results2 = [];
                     if (data[0] != undefined) {
-                        var users; 
                         var connections = data.map(function( da ) {
-                            users = $scope.userDimension.filter(function(dt){ 
-                                if ((da.lan_ip === dt.lan_ip)){
-                                    results2.push(dt);
-                                }
+                            var users = $scope.userDimension.filter(function(dt){  
+                                if ((da.remote_ip === dt.lan_ip) && (d.map !== dt.map)){ // && (da.machine === dt.remote_machine)
+                                    $scope.floorConns.push(dt);
+                                } 
                             });
                         });
-                        $scope.connectionOut = results2;
                     }
                 });
-            $scope.selectedUser = d;
-        console.log(d)
+        $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
+            success(function(data) {
+                if (data[0] != undefined) {
+                    var connections = data.map(function( da ) {
+                        var users = $scope.userDimension.filter(function(dt){ 
+                            if ((da.lan_ip === dt.lan_ip) && (d.map !== dt.map) && (da.machine === dt.lan_machine)){ 
+                                $scope.floorConns.push(dt);
+                            }
+                        });
+                    });
+                }
+            });
+        $scope.selectedUser = d;
+        $scope.drawFloorConns("#23FF1C");   
+        //console.log(d);
     } 
 
     $scope.requery = function(d, type) {

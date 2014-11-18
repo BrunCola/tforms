@@ -2388,6 +2388,14 @@ Datatables Plugin(in v1.3)
   outline:none;
   /*border:#000 solid 1px;*/
 }
+#allfloorplan .selected div {
+  background: #ccc !important;
+  border-radius: 8px;
+  border:none !important;
+  outline:none;
+  padding: 2px 0px;
+  /*border:#000 solid 1px;*/
+}
 
 #floorplan button.localuserlist{
  /* background: none !important;
@@ -2494,4 +2502,7 @@ button.epbGrey:hover,button.epbGrey:active{
 }
 #flus td{
   padding:0px 10px 0px 0px;
+}
+#flus td span{
+  cursor: pointer;
 }

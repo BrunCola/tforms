@@ -38,6 +38,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     var data = $scope.data.users;
                     var floorName = attrs.floorName;
                     var userScale = 1;
+                    var lineCount = 0;
                     if (($scope.floor.user_scale !== undefined) && ($scope.floor.user_scale !== null) && (angular.isNumber($scope.floor.user_scale))) {
                         userScale = $scope.floor.user_scale;
                     } 
@@ -106,7 +107,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .attr("xlink:href", floor_path)
                         .attr("type", "image/svg+xml");
 
-                    var endpointConn = floorPlanDiv.append("svg")
+                    var endpointConn = container.append("svg")
                     .attr("class", "endpointConn");
 
                     // -- to hide <input> when changing custom username
@@ -284,6 +285,34 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     function setAdjustedCoor(coord) {
                         return coord*windowScale;
                     }
+
+                    // -- draws connections between hosts
+                    function drawConnections (elm, user, connections, color) {
+                        var conns = endpointConn.selectAll(".endpointConns").data([""]);
+                        for (var c in connections) {
+                            if ( connections[c].map === user.map ) {                                         
+                                conns.enter()
+                                    .append("line")
+                                    .attr("x1", user.x+((elm.clientWidth/2)*userScale))
+                                    .attr("y1", user.y+((elm.clientHeight/2)*userScale)+lineCount)
+                                    .attr("x2", connections[c].x+((elm.clientWidth/2)*userScale))
+                                    .attr("y2", connections[c].y+((elm.clientHeight/2)*userScale)+lineCount)
+                                    .attr('stroke-width', 1)
+                                    .attr("stroke", color);
+                            } else {
+                                conns.enter()
+                                    .append("line")
+                                    .attr("x1", user.x+((elm.clientWidth/2)*userScale))
+                                    .attr("y1", user.y+((elm.clientHeight/2)*userScale)+lineCount)
+                                    .attr("x2", 0)
+                                    .attr("y2", 0+lineCount)
+                                    .attr('stroke-width', 1)
+                                    .attr("stroke", color);
+                            }                     
+                        }  
+                        lineCount +=2;
+                    }
+
                     // -- displays users in userlist and floor plans
                     function plot(data, floor) {
                         // set order of array
@@ -676,53 +705,11 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             endpointConn.selectAll('line').remove();
 
                                             wait(function(){
-                                                var conns = endpointConn.selectAll(".endpointConns").data([""]);
-                                                for (var c in $scope.connectionIn) {
-                                                    // console.log($scope.connection[c])
-                                                    // console.log($scope.selectedUser)
-                                                    if ( $scope.connectionIn[c].map === $scope.selectedUser.map ) {                                             
-                                                        conns.enter()
-                                                            .append("line")
-                                                            .attr("x1", $scope.selectedUser.x+((elm[0][0].clientHeight/2)*userScale))
-                                                            .attr("y1", $scope.selectedUser.y+((elm[0][0].clientWidth/2)*userScale))
-                                                            .attr("x2", $scope.connectionIn[c].x+((elm[0][0].clientHeight/2)*userScale))
-                                                            .attr("y2", $scope.connectionIn[c].y+((elm[0][0].clientWidth/2)*userScale))
-                                                            .attr('stroke-width', 1)
-                                                            .attr("stroke", "#23FF1C");
-                                                    } else {
-                                                        conns.enter()
-                                                            .append("line")
-                                                            .attr("x1", $scope.selectedUser.x+((elm[0][0].clientHeight/2)*userScale))
-                                                            .attr("y1", $scope.selectedUser.y+((elm[0][0].clientWidth/2)*userScale))
-                                                            .attr("x2", 0)
-                                                            .attr("y2", 0)
-                                                            .attr('stroke-width', 1)
-                                                            .attr("stroke", "#23FF1C");
-                                                    }                     
-                                                } 
-                                                for (var c in $scope.connectionOut) {
-                                                    // console.log($scope.connection[c])
-                                                    // console.log($scope.selectedUser)
-                                                    if ( $scope.connectionOut[c].map === $scope.selectedUser.map ) {                      
-                                                        conns.enter()
-                                                            .append("line")
-                                                            .attr("x1", $scope.selectedUser.x+((elm[0][0].clientHeight/2)*userScale))
-                                                            .attr("y1", $scope.selectedUser.y+((elm[0][0].clientWidth/2)*userScale))
-                                                            .attr("x2", $scope.connectionOut[c].x+((elm[0][0].clientHeight/2)*userScale))
-                                                            .attr("y2", $scope.connectionOut[c].y+((elm[0][0].clientWidth/2)*userScale))
-                                                            .attr('stroke-width', 1)
-                                                            .attr("stroke", "#FF4A00");
-                                                    } else {
-                                                        conns.enter()
-                                                            .append("line")
-                                                            .attr("x1", $scope.selectedUser.x+((elm[0][0].clientHeight/2)*userScale))
-                                                            .attr("y1", $scope.selectedUser.y+((elm[0][0].clientWidth/2)*userScale))
-                                                            .attr("x2", 0)
-                                                            .attr("y2", 0)
-                                                            .attr('stroke-width', 1)
-                                                            .attr("stroke", "#FF4A00");
-                                                    }                     
-                                                } 
+                                                lineCount = 0;
+                                                drawConnections(elm[0][0], $scope.selectedUser, $scope.connectionIn, "#34D4FF");
+                                                drawConnections(elm[0][0], $scope.selectedUser, $scope.connectionOut, "#009426");
+                                                drawConnections(elm[0][0], $scope.selectedUser, $scope.connStealthIn, "#C40600");
+                                                drawConnections(elm[0][0], $scope.selectedUser, $scope.connStealthOut, "#EE00FF");                                                 
                                             }, 400);
                                             // draw line links          
                                         });
@@ -1093,37 +1080,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         endpointConn.selectAll('line').remove();
                     }
 
-
-                    $rootScope.drawConnections = function (user, connections) {
-                        // console.log(user)
-                        // console.log(connections)
-
-                        // var conns = endpointConn.selectAll(".endpointConns").data([""]);
-                        // // draw line links
-                        // for (var c in connections) {
-                        //     if ( connections[c].map === user.map ) {                                       
-                        //         conns.enter()
-                        //             .append("line")
-                        //             .attr("x1", user.x)
-                        //             .attr("y1", user.y)
-                        //             .attr("x2", connections[c].x)
-                        //             .attr("y2", connections[c].y)
-                        //             .attr('stroke-width', 2)
-                        //             .attr("stroke", "#00f");
-                        //     } else {
-                        //         conns.enter()
-                        //             .append("line")
-                        //             .attr("x1", user.x)
-                        //             .attr("y1", user.y)
-                        //             .attr("x2", 0)
-                        //             .attr("y2", 0)
-                        //             .attr('stroke-width', 2)
-                        //             .attr("stroke", "#00f");
-                        //     }                     
-                        // } 
-                    }
-
-
                     // -- redraws the floor (used when user is deleted from floorplan)
                     $rootScope.redrawFloor = function () {
                         var currentUser = d3.select('.selected');
@@ -1225,7 +1181,7 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                     var windowScale = $scope.standardWidth/element.outerWidth();
 
                     var hideListDiv = d3.select('#listlocalusersspan');
-                    var expandDiv = d3.select('#floorplanspan');
+                    var expandDiv = d3.select('#allfloorplanspan');
                     var buttonDiv = d3.select('#triggerbuttons');
                     var scaleButtonDiv = $('#scalebuttons');
 
@@ -1247,7 +1203,6 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                     var svg = floorDiv.append("svg")             
                         .attr("width", "100%")
                         .attr("height", "100%")
-                        .style("border", "3px solid #000")
                         .append("g")
                             .attr("transform", "translate(" + margin.left + "," + margin.right + ")")
                             .call(zoom);
@@ -1264,7 +1219,6 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                     container.append("svg")  
                         .attr("class", "floorimage")
                         .append("image")
-                        .style("border", "1px solid #0ff")
                         .attr("id", "svgFloorPlan")
                         .attr("class", "svgFloor")
                         .attr("height", elementHeight)                    
@@ -1272,7 +1226,7 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                         .attr("xlink:href", " ")
                         .attr("type", "image/svg+xml");     
 
-                    var endpointConn = floorDiv.append("svg")
+                    var endpointConn = container.append("svg")
                     .attr("class", "endpointConn");
 
                     // -- to hide <input> when changing custom username
@@ -1325,6 +1279,10 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                     function dragstarted(d) {
                         d3.event.sourceEvent.stopPropagation();
                         d3.select(this).classed("dragging", true);
+                        container.selectAll('g').each(function(){
+                            d3.select(this).classed("selected", false);
+                        })
+                        d3.select(this).classed("selected", true);
                     }
                     // -- handles during a user is dragged
                     function dragged(d) {
@@ -1334,15 +1292,16 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                     }
                     // -- handles the end of when a user is dragged
                     function dragended(d) {
-                        d3.select(this).classed("selected", true);
                         $http({method: 'POST', url: '/local_events/endpoint_map?type=editFloorPos', data: {x: d.x, y: d.y, map_name: d.asset_name}});
                         d3.select(this).classed("dragging", false);
+                        $scope.drawFloorConns("#23FF1C");
                     }
                     // -- updates username
                     function doneEditing(elm, item, value) {
                         $scope.change_customuser(item, value);
                         $(elm[0]).find('.usernametext').html(value);
                     }
+
                     // -- displays users in userlist and floor plans
                     function plot(data, floors) {
                         // set order of array
@@ -1416,7 +1375,6 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                                                 $(elm[0]).removeClass('selected');
                                             })
                                             el.classList.add('selected');
-                                            $scope.requery(d, 'flooruser');
                                             lastUserRequeried = d.id;
                                         });
                                     var element = elm
@@ -1654,17 +1612,13 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                             .append('g')
                             .attr('width', 0)
                             .attr('height', 0)
-                            .on('click', function(d) {
-
+                            .attr("transform", function(d){ 
+                                return "translate("+d.x+","+d.y+")"
                             })
+                            .call(drag)
                             .append('svg:foreignObject')
                                 .attr('width', (elementWidth/3)+"px")
                                 .attr('height', (elementHeight/3)+"px")
-                                //.attr('class', "dragging")
-                                .attr("transform", function(d){ 
-                                    return "translate("+d.x+","+d.y+")"
-                                })
-                                .call(drag)
                             .append('xhtml:div').each(function(d){    
                                 var userCount = 0;               
                                 
@@ -1677,16 +1631,19 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                                 });
 
                                 elm
-                                    .style("border", "solid 1px #f0f")
+                                    .style("border", "solid 1px #000")
+                                    .style("background", "#fff")
+                                    .style("border-radius", "8px")
                                     .style("text-align", "center")
-                                    .html("<h4>"+d.custom_name + "</h4><strong>" + userCount + " Users </strong>")
+                                    .html("<h4>"+d.custom_name + "</h4><strong>" + userCount + " Hosts </strong>")
                                     .on('dblclick', function(e){
                                         d.active = true;
                                         $rootScope.toggleView = true;
-
+                                        $scope.$apply();
                                     })
                                     .on('click', function(e){
-                                        $scope.requery(d, 'listusers');        
+                                        $scope.requery(d, 'listusers'); 
+                                        // $scope.removeLines();
                                     })
                                     .on('mouseover', function(e){
                                         d3.select(this).style("cursor","pointer")
@@ -1756,7 +1713,7 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                                 //         itemData.map = attrs.floorName;
 
                                 //         $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: attrs.floorName, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
-                                //         plot(data, attrs.floorName); 
+                                //         plot(data, attrs.fluserScaleoorName); 
                                 //         d3.select('.user-'+itemId).classed("selected", true);
                                 //     } 
                                 //     return false;
@@ -1821,39 +1778,57 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                     //////////////////////////
 
                     $rootScope.removeLines = function () {
+                        $scope.selectedUser = "";
+                        $scope.floorConns = "";
                         endpointConn.selectAll('line').remove();
                     }
 
-
-                    $rootScope.drawConnections = function (user, connections) {
-                        // console.log(user)
-                        // console.log(connections)
-
-                        // var conns = endpointConn.selectAll(".endpointConns").data([""]);
-                        // // draw line links
-                        // for (var c in connections) {
-                        //     if ( connections[c].map === user.map ) {                                       
-                        //         conns.enter()
-                        //             .append("line")
-                        //             .attr("x1", user.x)
-                        //             .attr("y1", user.y)
-                        //             .attr("x2", connections[c].x)
-                        //             .attr("y2", connections[c].y)
-                        //             .attr('stroke-width', 2)
-                        //             .attr("stroke", "#00f");
-                        //     } else {
-                        //         conns.enter()
-                        //             .append("line")
-                        //             .attr("x1", user.x)
-                        //             .attr("y1", user.y)
-                        //             .attr("x2", 0)
-                        //             .attr("y2", 0)
-                        //             .attr('stroke-width', 2)
-                        //             .attr("stroke", "#00f");
-                        //     }                     
-                        // } 
+                    // -- draws connections between floors
+                    $rootScope.drawFloorConns = function (color) {
+                        if (($scope.floorConns !== undefined) && ($scope.selectedUser !== undefined)) {
+                            endpointConn.selectAll('line').remove();
+                            var conns = endpointConn.selectAll(".endpointConns").data([""]);
+                            wait(function(){
+                                var count = 0;
+                                var floor1 = $scope.floors.filter(function(fl){ 
+                                    if (($scope.selectedUser.map === fl.asset_name)){
+                                        return true;
+                                    }
+                                });
+                                for (var c in $scope.floorConns) {
+                                    var floor2 = $scope.floors.filter(function(fl){ 
+                                        if (($scope.floorConns[c].map === fl.asset_name)){
+                                            return true;
+                                        }
+                                    });
+                                    if (floor2[0] !== undefined) {
+                                         conns.enter()
+                                            .append("line")
+                                            .attr("x1", floor1[0].x+(elementWidth/6))
+                                            .attr("y1", floor1[0].y+30+count)
+                                            .attr("x2", floor2[0].x+(elementWidth/6))
+                                            .attr("y2", floor2[0].y+30+count)
+                                            .attr('stroke-width', 1)
+                                            .attr("stroke", color);
+                                            count++;
+                                        // if (count<9) {
+                                        //     count++;
+                                        // }
+                                    } else {
+                                         conns.enter()
+                                            .append("line")
+                                            .attr("x1", floor1[0].x+(elementWidth/6))
+                                            .attr("y1", floor1[0].y+30+count)
+                                            .attr("x2", 0)
+                                            .attr("y2", 0+count)
+                                            .attr('stroke-width', 1)
+                                            .attr("stroke", color);
+                                            count++;
+                                    }                              
+                                }
+                            }, 400);
+                        }       
                     }
-
 
                     // -- redraws the floor (used when user is deleted from floorplan)
                     $rootScope.redrawFloor = function () {

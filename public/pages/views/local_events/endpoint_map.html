@@ -89,7 +89,7 @@
     <section id="loading-error" loading-error></section>
     <section id="loading-spinner" loading-spinner></section>
     <div class="row-fluid">
-            <input type="checkbox" id="togView" ng-model="toggleView" > 
+            <!-- <input type="checkbox" id="togView" ng-model="toggleView" >  -->
         <section id="floorplanpage">
             <div id="listlocalusersspan">
                 <div class="jdash-header">Local Users</div>                 
@@ -196,7 +196,7 @@
                                     <td>IP</td><td>Host Name</td><td>User name</td>
                                 </tr>
                                 <tr  ng-repeat="user in currentFloor" ng-click="userLink(user)">
-                                    <td>{{user.lan_ip}}</td><td>{{user.lan_machine}}</td><td>{{user.lan_user}}</td>
+                                    <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
                                 </tr> 
                         </div>
                     </div>
