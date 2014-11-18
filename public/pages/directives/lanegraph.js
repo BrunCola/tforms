@@ -662,12 +662,26 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     plot(items, min, max);
                 }
                 function reHighlightPoints(timeObj) {
-                    var clicked = itemRects.select('g .eventFocus').data();
+                    var clickedElm = itemRects.select('g .eventFocus');
+                    var clicked = clickedElm.data();
                     // check if anything is clicked
                     if (clicked[0] !== undefined) {
-                        console.log(clicked[0]);
+                        // compare against time to see if point fall within brush
+                        if ((clicked[0].time > timeObj.min) && (clicked[0].time < timeObj.max)) {
+                            console.log(clicked[0]);
+                            var selectedNode = clickLine.selectAll(".clickLine").data(['']);
+                                // vertical line
+                                selectedNode.enter()
+                                    .append("line")
+                                        .attr("x1", x1(clicked[0].dd)+7)
+                                        .attr("y1", m[0])
+                                        .attr("x2", x1(clicked[0].dd)+7)
+                                        .attr("y2", mainHeight)
+                                        .attr('stroke-width', '1')
+                                        .attr("stroke", "#FFF");
+                                changeIcon(clickedElm, clicked[0], null);
+                        }
                     }
-                    console.log(timeObj)
                     // compare against time interval and highlight if any points fall within
                     // "turn on" points that are in our pattern object that fall within the time slice (if paterns are turned on)
                 }
