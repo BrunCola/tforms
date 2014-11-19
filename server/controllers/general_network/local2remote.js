@@ -25,7 +25,7 @@ module.exports = function(pool) {
                                 'max(`time`) as `time`,'+
                                 '`stealth`,'+
                                 '`lan_zone`,'+
-                                '`machine`,'+
+                                '`lan_machine`,'+
                                 '`lan_user`,'+
                                 '`lan_ip`,'+
                                 '`remote_ip`,'+
@@ -68,7 +68,7 @@ module.exports = function(pool) {
                         { title: 'Stealth', select: 'stealth', access: [3] },
                         { title: 'ABP', select: 'proxy_blocked', access: [2] },
                         { title: 'Zone', select: 'lan_zone' },
-                        { title: 'Machine Name', select: 'machine' },
+                        { title: 'Machine Name', select: 'lan_machine' },
                         { title: 'Local User', select: 'lan_user' },
                         { title: 'Local IP', select: 'lan_ip' },
                         { title: 'Remote IP', select: 'remote_ip' },

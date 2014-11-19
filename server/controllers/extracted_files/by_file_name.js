@@ -23,7 +23,7 @@ module.exports = function(pool) {
                                 'max(file_meta.time) AS `time`,'+
                                 '`stealth`,'+
                                 '`lan_zone`,'+
-                                '`machine`,'+
+                                '`lan_machine`,'+
                                 '`lan_user`,'+
                                 '`lan_ip`,'+
                                 '`mime`,'+
@@ -53,7 +53,7 @@ module.exports = function(pool) {
                         { title: 'Total Extracted Files', select: 'count' },
                         { title: 'Stealth', select: 'stealth', access: [3] },
                         { title: 'Zone', select: 'lan_zone', dView: false },
-                        { title: 'Machine', select: 'machine', dView: false },
+                        { title: 'Machine', select: 'lan_machine', dView: false },
                         { title: 'Local User', select: 'lan_user', dView: false },
                         { title: 'Local IP', select: 'lan_ip', dView: false },
                         { title: 'File Type', select: 'mime' },

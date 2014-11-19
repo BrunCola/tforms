@@ -24,7 +24,7 @@ module.exports = function(pool) {
                             '`mime`,'+
                             '`stealth`,'+
                             '`lan_zone`,'+
-                            '`machine`,'+
+                            '`lan_machine`,'+
                             '`lan_user`,'+
                             '`lan_ip`,'+
                             '(sum(`size`) / 1048576) AS size,'+
@@ -53,7 +53,7 @@ module.exports = function(pool) {
                         { title: 'File Type', select: 'mime', dView: false },
                         { title: 'Stealth', select: 'stealth', access: [3] },
                         { title: 'Zone', select: 'lan_zone' },
-                        { title: 'Machine', select: 'machine' },
+                        { title: 'Machine', select: 'lan_machine' },
                         { title: 'Local User', select: 'lan_user' },
                         { title: 'Local IP', select: 'lan_ip' },
                         { title: 'Total Size (MB)', select: 'size' },
