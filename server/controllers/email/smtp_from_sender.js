@@ -22,7 +22,7 @@ module.exports = function(pool) {
 								'smtp.time AS `time`,'+
 								'`stealth`,'+
 								'`lan_zone`,'+
-								'`machine`,'+
+								'`lan_machine`,'+
 								'`lan_user`,'+
 								'`lan_ip`,'+
 								'`lan_port`,'+
@@ -68,7 +68,7 @@ module.exports = function(pool) {
 						{ title: 'IOC Count', select: 'ioc_count' },
 						{ title: 'Stealth', select: 'stealth', access: [3] },
 						{ title: 'Zone', select: 'lan_zone' },
-						{ title: 'Machine Name', select: 'machine' },
+						{ title: 'Machine Name', select: 'lan_machine' },
 						{ title: 'Local IP', select: 'lan_user' },
 						{ title: 'Local IP', select: 'lan_ip' },
 						{ title: 'Local port', select: 'lan_port' },
