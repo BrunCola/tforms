@@ -48,7 +48,7 @@ module.exports = function(pool) {
                         query: 'SELECT DISTINCT '+
                                     '\'Non-Stealth Internal Attack\' AS type,'+
                                     '`lan_zone` AS `Attacker Zone`,'+
-                                    '`machine` AS `Attacker Machine`,'+
+                                    '`lan_machine` AS `Attacker Machine`,'+
                                     '`lan_user` AS `Attacker_User`,'+
                                     '`lan_ip` AS `Attacker IP`,'+
                                     '`remote_machine` AS `Victim Machine`,'+
@@ -107,7 +107,7 @@ module.exports = function(pool) {
                         query: 'SELECT DISTINCT '+
                                     '\'Non-Stealth Internal Attack\' AS type,'+
                                     '`lan_zone` AS `Attacker Zone`,'+
-                                    '`machine` AS `Attacker Machine`,'+
+                                    '`lan_machine` AS `Attacker Machine`,'+
                                     '`lan_user` AS `Attacker User`,'+
                                     '`lan_ip` AS `Attacker IP`,'+
                                     '`remote_machine` AS `Victim Machine`,'+
@@ -148,7 +148,7 @@ module.exports = function(pool) {
                         query: 'SELECT DISTINCT '+
                                     '\'Non-Stealth Internal Connection\' AS type,'+
                                     '`lan_zone` AS `Attacker Zone`,'+
-                                    '`machine` AS `Attacker Machine`,'+
+                                    '`lan_machine` AS `Attacker Machine`,'+
                                     '`lan_user` AS `Attacker User`,'+
                                     '`lan_ip` AS `Attacker IP`,'+
                                     '`remote_machine` AS `Victim Machine`,'+

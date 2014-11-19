@@ -235,7 +235,7 @@ module.exports = function(pool) {
 								'ioc_typeIndicator,'+
 								'ioc_rule,'+
 								'lan_zone,'+
-								'machine,'+
+								'lan_machine,'+
 								'lan_ip,'+
 								'sum(`in_bytes`) AS icon_in_bytes,'+
 								'sum(`out_bytes`) AS icon_out_bytes '+

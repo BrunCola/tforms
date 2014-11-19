@@ -49,7 +49,7 @@ module.exports = function(pool) {
                                 '`time`,'+
                                 '`stealth`,'+
                                 '`lan_zone`,'+
-                                '`machine`,'+
+                                '`lan_machine`,'+
                                 '`lan_user`,'+
                                 '`lan_ip`,'+
                                 '`lan_port`,'+
@@ -85,7 +85,7 @@ module.exports = function(pool) {
                         {title: 'ABP', select: 'proxy_blocked', access: [2] },
                         {title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
                         {title: "Zone", select: "lan_zone"},
-                        {title: "Machine", select: "machine", pattern: true},
+                        {title: "Machine", select: "lan_machine", pattern: true},
                         {title: "Local User", select: "lan_user", pattern: true},
                         {title: "Local IP", select: "lan_ip", pattern: true},
                         // {title: "Local Port", select: "lan_port", pattern: true},
@@ -112,7 +112,7 @@ module.exports = function(pool) {
                                 '`time`,'+
                                 '`stealth`,'+
                                 '`lan_zone`,'+
-                                '`machine`,'+
+                                '`lan_machine`,'+
                                 '`lan_user`,'+
                                 '`lan_ip`,'+
                                 '`lan_port`,'+
@@ -147,7 +147,7 @@ module.exports = function(pool) {
                         {title: 'ABP', select: 'proxy_blocked', access: [2] },
                         // {title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
                         {title: "Zone", select: "lan_zone"},
-                        // {title: "Machine", select: "machine", pattern: true},
+                        // {title: "Machine", select: "lan_machine", pattern: true},
                         {title: "Local User", select: "lan_user", pattern: true},
                         {title: "Local IP", select: "lan_ip", pattern: true},
                         // {title: "Local Port", select: "lan_port", pattern: true},
@@ -175,7 +175,7 @@ module.exports = function(pool) {
                                 '`time`,'+
                                 '`stealth`,'+
                                 '`lan_zone`,'+
-                                '`machine`,'+
+                                '`lan_machine`,'+
                                 '`lan_user`,'+
                                 '`lan_ip`,'+
                                 '`lan_port`,'+
@@ -209,7 +209,7 @@ module.exports = function(pool) {
                         {title: 'ABP', select: 'proxy_blocked', access: [2] },
                         {title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
                         {title: "Zone", select: "lan_zone"},
-                        {title: "Machine", select: "machine", pattern: true},
+                        {title: "Machine", select: "lan_machine", pattern: true},
                         {title: "Local User", select: "lan_user", pattern: true},
                         {title: "Local IP", select: "lan_ip", pattern: true},
                         {title: "Local Port", select: "lan_port", pattern: true},
@@ -236,7 +236,7 @@ module.exports = function(pool) {
                                 '\'Applications\' AS type,'+
                                 '`time`,'+
                                 '`lan_zone`,'+
-                                '`machine`,'+
+                                '`lan_machine`,'+
                                 '`lan_ip`,'+
                                 '`lan_port`,'+
                                 '`remote_ip`,'+
@@ -267,7 +267,7 @@ module.exports = function(pool) {
                     params: [
                         {title: "Time", select: "time"},
                         {title: "Zone", select: "lan_zone"},
-                        {title: "Machine", select: "machine", pattern: true},
+                        {title: "Machine", select: "lan_machine", pattern: true},
                         {title: "Local IP", select: "lan_ip", pattern: true},
                         {title: "Local Port", select: "lan_port", pattern: true},
                         {title: "Remote IP", select: "remote_ip", pattern: true},
@@ -511,7 +511,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                                 '\'Email\' AS type, '+
                                 'time, '+
-                                '`machine`,'+
+                                '`lan_machine`,'+
                                 '`lan_zone`,'+
                                 '`lan_ip`,'+
                                 '`remote_ip`,'+
@@ -539,7 +539,7 @@ module.exports = function(pool) {
                     params: [
                         {title: "Time", select: "time"},
                         {title: 'Zone', select: 'lan_zone' },
-                        {title: 'Machine Name', select: 'machine', pattern: true},
+                        {title: 'Machine Name', select: 'lan_machine', pattern: true},
                         {title: 'Local IP', select: 'lan_ip', pattern: true },
                         {title: 'Remote IP', select: 'remote_ip', pattern: true },
                         {title: 'Remote Country', select: 'remote_country', pattern: true },
@@ -817,7 +817,7 @@ module.exports = function(pool) {
                                     '`time`,'+
                                     '`stealth`,'+
                                     '`lan_zone`,'+
-                                    '`machine`,'+
+                                    '`lan_machine`,'+
                                     '`lan_user`,'+
                                     '`lan_ip`,'+
                                     '`lan_port`,'+
@@ -851,7 +851,7 @@ module.exports = function(pool) {
                             {title: "Time", select: "time"},
                             {title: 'Stealth', select: 'stealth', access: [3] },
                             {title: "Zone", select: "lan_zone"},
-                            {title: "Machine", select: "machine", pattern: true},
+                            {title: "Machine", select: "lan_machine", pattern: true},
                             {title: "Local User", select: "lan_user", pattern: true},
                             {title: "Local IP", select: "lan_ip", pattern: true},
                             {title: "Local Port", select: "lan_port", pattern: true},
@@ -880,7 +880,7 @@ module.exports = function(pool) {
                                     '`time`,'+
                                     '`stealth`,'+
                                     '`lan_zone`,'+
-                                    '`machine`,'+
+                                    '`lan_machine`,'+
                                     '`lan_user`,'+
                                     '`lan_ip`,'+
                                     '`lan_port`,'+
@@ -915,7 +915,7 @@ module.exports = function(pool) {
                             // {title: 'ABP', select: 'proxy_blocked', access: [2] },
                             // {title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
                             {title: "Zone", select: "lan_zone"},
-                            {title: "Machine", select: "machine", pattern: true},
+                            {title: "Machine", select: "lan_machine", pattern: true},
                             {title: "Local User", select: "lan_user", pattern: true},
                             {title: "Local IP", select: "lan_ip", pattern: true},
                             {title: "Local Port", select: "lan_port", pattern: true},
@@ -942,7 +942,7 @@ module.exports = function(pool) {
                                 '`time`,'+
                                 '`stealth`,'+
                                 '`lan_zone`,'+
-                                '`machine`,'+
+                                '`lan_machine`,'+
                                 '`lan_user`,'+
                                 '`lan_ip`,'+
                                 '`lan_port`,'+
@@ -974,7 +974,7 @@ module.exports = function(pool) {
                             {title: "Time", select: "time"},
                             {title: 'Stealth', select: 'stealth', access: [3] },
                             {title: "Zone", select: "lan_zone"},
-                            {title: "Machine", select: "machine", pattern: true},
+                            {title: "Machine", select: "lan_machine", pattern: true},
                             {title: "Local User", select: "lan_user", pattern: true},
                             {title: "Local IP", select: "lan_ip", pattern: true},
                             {title: "Local Port", select: "lan_port", pattern: true},
@@ -1047,7 +1047,7 @@ module.exports = function(pool) {
                                     '`time`,'+
                                     '`stealth`,'+
                                     '`lan_zone`,'+
-                                    '`machine`,'+
+                                    '`lan_machine`,'+
                                     '`lan_user`,'+
                                     '`lan_ip`,'+
                                     '`lan_port`,'+
@@ -1080,7 +1080,7 @@ module.exports = function(pool) {
                             {title: "Time", select: "time"},
                             // {title: 'Stealth', select: 'stealth', access: [3] },
                             // {title: "Zone", select: "lan_zone"},
-                            {title: "Machine", select: "machine", pattern: true},
+                            {title: "Machine", select: "lan_machine", pattern: true},
                             {title: "Local User", select: "lan_user", pattern: true},
                             {title: "Local IP", select: "lan_ip", pattern: true},
                             {title: "Local Port", select: "lan_port", pattern: true},
@@ -1244,7 +1244,7 @@ module.exports = function(pool) {
                         query: 'SELECT '+
                                     '\'Email\' AS type, '+
                                     'time, '+
-                                    '`machine`,'+
+                                    '`lan_machine`,'+
                                     '`lan_zone`,'+
                                     '`lan_ip`,'+
                                     '`remote_ip`,'+
@@ -1272,7 +1272,7 @@ module.exports = function(pool) {
                         params: [
                             {title: "Time", select: "time"},
                             {title: 'Zone', select: 'lan_zone' },
-                            {title: 'Machine Name', select: 'machine' },
+                            {title: 'Machine Name', select: 'lan_machine' },
                             {title: 'Local IP', select: 'lan_ip' },
                             {title: 'Remote IP', select: 'remote_ip', pattern: true },
                             {title: 'Remote Country', select: 'remote_country', pattern: true },
@@ -1380,7 +1380,7 @@ module.exports = function(pool) {
                                     'sum(`out_packets`) as out_packets, '+
                                     'sum(`in_bytes`) as in_bytes, '+
                                     'sum(`out_bytes`) as out_bytes, '+
-                                    '`machine`, '+
+                                    '`lan_machine`, '+
                                     '`lan_zone`, '+
                                     '`lan_user`, '+
                                     '`lan_port`, '+
