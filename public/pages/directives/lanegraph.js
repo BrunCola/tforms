@@ -661,27 +661,14 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     items.reverse()
                     plot(items, min, max);
                 }
+                // this function finds what's clicked on brush and adds flag to values for redraw highlighting
                 function reHighlightPoints(timeObj) {
-                    var clickedElm = itemRects.select('g .eventFocus');
-                    var clicked = clickedElm.data();
-                    // check if anything is clicked
-                    if (clicked[0] !== undefined) {
-                        // compare against time to see if point fall within brush
-                        if ((clicked[0].time > timeObj.min) && (clicked[0].time < timeObj.max)) {
-                            console.log(clicked[0]);
-                            var selectedNode = clickLine.selectAll(".clickLine").data(['']);
-                                // vertical line
-                                selectedNode.enter()
-                                    .append("line")
-                                        .attr("x1", x1(clicked[0].dd)+7)
-                                        .attr("y1", m[0])
-                                        .attr("x2", x1(clicked[0].dd)+7)
-                                        .attr("y2", mainHeight)
-                                        .attr('stroke-width', '1')
-                                        .attr("stroke", "#FFF");
-                                changeIcon(clickedElm, clicked[0], null);
+                    var clickedElm = itemRects.selectAll('g .eventFocus').each(function(d){
+                        // if the point sits within the time space add flag for highlight (or add to external object for refrence later)
+                        if ((d.time > timeObj.min) && (d.time < timeObj.max)) {
+                            console.log(d);
                         }
-                    }
+                    });
                     // compare against time interval and highlight if any points fall within
                     // "turn on" points that are in our pattern object that fall within the time slice (if paterns are turned on)
                 }
