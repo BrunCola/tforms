@@ -23,7 +23,7 @@ module.exports = function(pool) {
                             'http_uniq_host.time AS `time`,'+
                             '`stealth`,'+
                             '`lan_zone`,'+
-                            '`machine`,'+
+                            '`lan_machine`,'+
                             '`lan_user`,'+
                             '`lan_ip`,'+
                             '`remote_ip`,'+
@@ -48,7 +48,7 @@ module.exports = function(pool) {
                     { title: 'Flag', select: 'remote_cc', },
                     { title: 'Remote ASN', select: 'remote_asn_name' },
                     { title: 'Zone', select: 'lan_zone' },
-                    { title: 'Machine Name', select: 'machine' },
+                    { title: 'Machine Name', select: 'lan_machine' },
                     { title: 'Local User', select: 'lan_user' },
                     { title: 'Local IP', select: 'lan_ip' },
                 ],

@@ -22,7 +22,7 @@ module.exports = function(pool) {
                             'count(*) AS count,'+
                             'max(`time`) AS `time`,'+
                             '`stealth`,'+
-                            '`machine`,'+
+                            '`lan_machine`,'+
                             '`lan_zone`,'+
                             '`lan_user`,'+
                             '`lan_ip`,'+
@@ -66,7 +66,7 @@ module.exports = function(pool) {
                     { title: 'Connections', select: 'count' },
                     { title: 'Stealth', select: 'stealth', access: [3] },
                     { title: 'Zone', select: 'lan_zone' },
-                    { title: 'Machine', select: 'machine' },
+                    { title: 'Machine', select: 'lan_machine' },
                     { title: 'Local User', select: 'lan_user' },
                     { title: 'Local IP', select: 'lan_ip' },
                     { title: 'Local Port', select: 'lan_port' },

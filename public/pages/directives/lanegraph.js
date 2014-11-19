@@ -35,6 +35,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     min: null,
                     max: null
                 };
+                $scope.highlightedPoint = false;
                 // toggle for turning on/off unit multiselecting
                 $scope.pattern = {
                     searching: false,
@@ -241,6 +242,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr('class', 'resetButton')
                     .on('click', function(){
                         draw();
+                        $scope.alert.style('display', 'none');
+                        $scope.highlightedPoint = false;
+                        clearVerticalLine();
                     });
                 var prevButton = buttonHolder.append('button')
                     .html('Previous')
@@ -365,7 +369,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             return "#666";
                     }
                 }
-                function highlightSameNodes(time, id, previousElm) {
+                function highlightSameNodes(uid, id, previousElm) {
                     var pData = false;
                     if (previousElm) {
                         pData = previousElm.data();
@@ -373,14 +377,14 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     itemRects.selectAll('g').each(function(d){
                         // select nodes that match
                         var elm = d3.select(this).select('.hover-square');
-                        if ((d.time === time) && (d.id !== id)) {
+                        if ((d.conn_uids === uid) && (d.id !== id)) {
                             d.hover = true;
                             hoverPoint(elm, 'mouseover');
                         }
                         // deselect previous nodes (if any)
                         if (pData) {
                             // if any nodes match our previous time andwe're on a different time segment
-                            if ((pData[0].time === d.time) && (pData[0].time !== time)) {
+                            if ((pData[0].conn_uids === d.conn_uids) && (pData[0].conn_uids !== uid)) {
                                 d.hover = false;
                                 hoverPoint(elm, 'mouseout');
                             }
@@ -402,9 +406,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .attr('stroke-width', '0');
                     }
                 }
+                function clearVerticalLine() {
+                    clickLine.selectAll('line').remove();
+                }
                 function changeIcon(element, data, previousElm) {
                     // call filter funtion to highlight all nodes with the same time
-                    highlightSameNodes(data.time, data.id, previousElm);
+                    highlightSameNodes(data.conn_uids, data.id, previousElm);
                     var color, select;
                     if (previousElm) {
                         previousElm.select('.eventFocus').remove();
@@ -517,6 +524,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 // call clear points function
                                 itemRects.selectAll(".eventStory").remove();
                                 lineStory.selectAll('line').remove();
+                                clearVerticalLine();
                                 // turn off loading
                                 loading('end');
                                 // broadcast right pane overlay
@@ -660,8 +668,21 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     var max = new Date($scope.end);
                     items.reverse()
                     plot(items, min, max);
-                }           
+                }
+                // this function finds what's clicked on brush and adds flag to values for redraw highlighting
+                function reHighlightPoints(timeObj) {
+                    var clickedElm = itemRects.selectAll('g .eventFocus').each(function(d){
+                        // if the point sits within the time space add flag for highlight (or add to external object for refrence later)
+                        if ((d.time > timeObj.min) && (d.time < timeObj.max)) {
+                            $scope.highlightedPoint = d;
+                        }
+                    });
+                    // compare against time interval and highlight if any points fall within
+                    // "turn on" points that are in our pattern object that fall within the time slice (if paterns are turned on)
+                }
                 function navCrtl(action) {
+                    // clear all lines drawn
+                    clearVerticalLine();
                     // set variables
                     var rects, labels, minExtent, maxExtent, visItems;
                     // if a nav button is pressed
@@ -694,6 +715,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     // convert times returned to unix
                     var minUnix = moment(minExtent).unix();
                     var maxUnix = moment(maxExtent).unix();
+                    // call the rehightlight function
+                    reHighlightPoints({min: minUnix, max: maxUnix});
                     // should it requery?
                     var msDifference = maxUnix - minUnix;
                     // if difference is less than threshhold or is not a single time select (resulting in difference being 0)
@@ -715,17 +738,53 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
                 function scrollSide(id) {
                     var elm = $('li#'+id);
-                    var ept  = elm.position().top;
-                    var eppt = elm.parent().position().top;
-                    var offset = ept - eppt;
-                    var totalHeight = $('.divScroll')[0].scrollHeight;
-                    var windowHeight = $('.divScroll').height();
-                    if (offset>(totalHeight-windowHeight)) {
-                        offset = totalHeight-windowHeight;
+                    if (elm.length !== 0) {
+                        var ept  = elm.position().top;
+                        var eppt = elm.parent().position().top;
+                        var offset = ept - eppt;
+                        var totalHeight = $('.divScroll')[0].scrollHeight;
+                        var windowHeight = $('.divScroll').height();
+                        if (offset>(totalHeight-windowHeight)) {
+                            offset = totalHeight-windowHeight;
+                        }
+                        $('.divScroll').scrollTo(offset);
                     }
-                    $('.divScroll').scrollTo(offset);
                 }
                 function plot(data, min, max) {
+                    // node selecting
+                    var previousBar = null, previousElm = null;
+                    // bar selecting
+                    var isOpen = null;
+                    var previousX = 0, previousY = 0;
+                    function openScrollSide(d) {
+                        var sideSelected = d3.select('.scroll-'+d.id);
+                        // set last object before otehr functions run
+                        $scope.pattern.last = {
+                            element: sideSelected,
+                            data: d
+                        }
+                        // this closes the last expanded block if there is one
+                        if ((previousBar !== null) && (previousBar.attr('class') !== sideSelected.attr('class'))) {
+                            previousBar.select('.infoDivExpanded').style('display', 'none');
+                            previousBar.classed('laneactive', false);
+                        }
+                        if ($('#autoexpand').is(':checked')){
+                            if (isOpen === d.id) {
+                                sideSelected.select('.infoDivExpanded').style('display', 'none');
+                                isOpen = null;
+                            } else {
+                                sideSelected.select('.infoDivExpanded').style('display', 'block');
+                                isOpen = d.id;
+                                // append different info if searching is enabled (i.e. checkboxes)
+                                laneInfoAppend(d, sideSelected);
+                            }
+                        }
+                         // set class for active description
+                        sideSelected.classed('laneactive', true);
+                        // scroll to position
+                        scrollSide(d.id);
+                        previousBar = sideSelected;
+                    }
                     // default squares and rectangles
                     $scope.point = function(element, type, name, id) {
                         element.classed('node-'+id, true);
@@ -786,11 +845,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         }
                     }
                     if (moment(max).unix() !== moment(min).unix()) {
-                        // node selecting
-                        var previousBar = null, previousElm = null;
-                        // bar selecting
-                        var isOpen = null;
-                        var previousX = 0, previousY = 0;
                         //////////////////
                         /// LANE NODES ///
                         ////////////////// 
@@ -822,37 +876,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     ///////////////////////////
                                     /////// SIDE SCROLL ///////
                                     ///////////////////////////
-                                    var sideSelected = d3.select('.scroll-'+d.id);
-                                    // set last object before otehr functions run
-                                    $scope.pattern.last = {
-                                        element: sideSelected,
-                                        data: d
-                                    }
-                                    // this closes the last expanded block if there is one
-                                    if ((previousBar !== null) && (previousBar.attr('class') !== sideSelected.attr('class'))) {
-                                        previousBar.select('.infoDivExpanded').style('display', 'none');
-                                        previousBar.classed('laneactive', false);
-                                    }
-                                    if ($('#autoexpand').is(':checked')){
-                                        if (isOpen === d.id) {
-                                            sideSelected.select('.infoDivExpanded').style('display', 'none');
-                                            isOpen = null;
-                                        } else {
-                                            sideSelected.select('.infoDivExpanded').style('display', 'block');
-                                            isOpen = d.id;
-                                            // append different info if searching is enabled (i.e. checkboxes)
-                                            laneInfoAppend(d, sideSelected);
-                                        }
-                                    }
-                                     // set class for active description
-                                    sideSelected.classed('laneactive', true);
-                                    // scroll to position
-                                    scrollSide(d.id);
-                                    previousBar = sideSelected;
+                                    openScrollSide(d);
                                     ///////////////////////////
                                     //////// THIS NODE ////////
                                     ///////////////////////////
-                                    clickLine.selectAll('line').remove();
+                                    clearVerticalLine();
                                     var selectedNode = clickLine.selectAll(".clickLine").data(['']);
                                     // vertical line
                                     selectedNode.enter()
@@ -869,6 +897,24 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .on("mouseout", function(d){
                                     elm.style('cursor', 'pointer');
                                 })
+                            // LANE NODE LOADING
+                            // if there's anything in our highlightPoint variable, use the information to highlight data and then clear
+                            if (($scope.highlightedPoint.conn_uids === d.conn_uids) && ($scope.highlightedPoint.type === d.type)) {
+                                isOpen = null;
+                                openScrollSide(d);
+                                var selectedNode = clickLine.selectAll(".clickLine").data(['']);
+                                selectedNode.enter()
+                                    .append("line")
+                                        .attr("x1", x1(d.dd)+7)
+                                        .attr("y1", m[0])
+                                        .attr("x2", x1(d.dd)+7)
+                                        .attr("y2", mainHeight)
+                                        .attr('stroke-width', '1')
+                                        .attr("stroke", "#FFF");
+                                changeIcon(elm, d, previousElm);
+                                previousElm = elm;
+                                $scope.highlightedPoint = false;
+                            }
                             // generate points from point function
                             if (d.type !== 'l7') {
                                 $scope.point(elm, d.type, null, d.id);

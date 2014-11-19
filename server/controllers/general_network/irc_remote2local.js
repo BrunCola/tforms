@@ -25,7 +25,7 @@ module.exports = function(pool) {
                             '`stealth`,'+
                             '`lan_user`,'+
                             '`lan_zone`,'+
-                            '`machine`,'+
+                            '`lan_machine`,'+
                             'irc.lan_ip,'+
                             '`lan_port`,'+
                             '`remote_ip`,'+
@@ -63,7 +63,7 @@ module.exports = function(pool) {
                         { title: 'Connections', select: 'count' },
                         { title: 'Stealth', select: 'stealth', access: [3] },
                         { title: 'Zone', select: 'lan_zone' },
-                        { title: 'Machine', select: 'machine' },
+                        { title: 'Machine', select: 'lan_machine' },
                         { title: 'Local User', select: 'lan_user' },
                         { title: 'Local IP', select: 'lan_ip' },
                         { title: 'Local Port', select: 'lan_port' },

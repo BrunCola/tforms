@@ -21,7 +21,7 @@ module.exports = function(pool) {
                     query: 'SELECT ' +
                                 '`time`, '+ // Last Seen
                                 '`stealth`, ' +
-                                '`machine`, ' +
+                                '`lan_machine`, ' +
                                 '`lan_zone`, ' +
                                 '`lan_user`, ' +
                                 '`lan_ip`, ' +
@@ -73,7 +73,7 @@ module.exports = function(pool) {
                         { title: 'Depth', select: 'depth' },
                         { title: 'Method', select: 'method' },
                         { title: 'Zone', select: 'lan_zone' },
-                        { title: 'Machine', select: 'machine' },
+                        { title: 'Machine', select: 'lan_machine' },
                         { title: 'Local User', select: 'lan_user' },
                         { title: 'Local IP', select: 'lan_ip' },
                         { title: 'Remote IP', select: 'remote_ip'},

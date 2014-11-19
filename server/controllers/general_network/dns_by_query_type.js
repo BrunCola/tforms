@@ -25,6 +25,7 @@ module.exports = function(pool) {
                             'count(*) AS `count`, '+
                             'max(`time`) AS `time`,'+
                             '`qtype`,'+
+                            '`qtype_name`, '+
                             '`qtype_name` AS `pie_dimension`, '+
                             'sum(`ioc_count`) AS `ioc_count` '+
                         'FROM ' + 

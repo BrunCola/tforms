@@ -22,7 +22,7 @@ module.exports = function(pool) {
                                 'time, '+
                                 '`stealth`, ' +
                                 '`lan_zone`, ' +
-                                '`machine`, ' +
+                                '`lan_machine`, ' +
                                 '`lan_user`, ' +
                                 '`lan_ip`, ' +
                                 '`remote_ip`, ' +
@@ -71,7 +71,7 @@ module.exports = function(pool) {
                         { title: 'User Agent', select: 'user_agent' },
                         { title: 'Depth', select: 'depth' },
                         { title: 'Method', select: 'method' },
-                        { title: 'Machine Name', select: 'machine' },
+                        { title: 'Machine Name', select: 'lan_machine' },
                         { title: 'Zone', select: 'lan_zone' },
                         { title: 'Local User', select: 'lan_user' },
                         { title: 'Local IP', select: 'lan_ip' },

@@ -23,7 +23,7 @@ module.exports = function(pool) {
                 query: 'SELECT '+
                             'sum(`count`) AS `count`, '+
                             'max(`time`) AS `time`,'+ // LASt Seen
-                            '`l7_proto` AS `pie_dimension`, '+
+                            '`l7_proto`,'+
                             '(sum(`in_bytes`) / 1048576) AS in_bytes, '+
                             '(sum(`out_bytes`) / 1048576) AS out_bytes, '+
                             'sum(`in_packets`) AS in_packets, '+
@@ -55,7 +55,7 @@ module.exports = function(pool) {
                             crumb: false
                         },
                     },
-                    { title: 'Applications', select: 'pie_dimension' },
+                    { title: 'Applications', select: 'l7_proto' },
                     { title: 'MB to Remote', select: 'in_bytes' },
                     { title: 'MB from Remote', select: 'out_bytes' },
                     { title: 'Packets to Remote', select: 'in_packets', dView: false },
@@ -78,35 +78,34 @@ module.exports = function(pool) {
             }
             var crossfilterQ = {
                 query: 'SELECT '+
-                        'time,'+
-                        '`l7_proto`, '+
-                        '(sum(in_bytes + out_bytes) / 1048576) AS count, '+
-                        '(sum(`in_bytes`) / 1048576) AS in_bytes, '+
-                        '(sum(`out_bytes`) / 1048576) AS out_bytes '+
-                    'FROM '+
-                        '`conn_l7_proto` '+
-                    'WHERE '+
-                        '`time` BETWEEN ? AND ? '+
-                    'GROUP BY '+
-                        'month(from_unixtime(time)),'+
-                        'day(from_unixtime(time)),'+
-                        'hour(from_unixtime(time)),'+
-                        '`l7_proto`',
+                            'time,'+
+                            '`l7_proto`, '+
+                            '(sum(in_bytes + out_bytes) / 1048576) AS count, '+
+                            '(sum(`in_bytes`) / 1048576) AS in_bytes, '+
+                            '(sum(`out_bytes`) / 1048576) AS out_bytes '+
+                        'FROM '+
+                            '`conn_l7_proto` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                        'GROUP BY '+
+                            'month(from_unixtime(time)),'+
+                            'day(from_unixtime(time)),'+
+                            'hour(from_unixtime(time)),'+
+                            '`l7_proto`',
                 insert: [start, end]
             }
-           
             var piechartQ = {
                 query: 'SELECT '+
-                         'time,'+
-                         '`l7_proto` AS `pie_dimension`, '+
-                         '(sum(in_bytes + out_bytes) / 1048576) AS `count` '+
-                     'FROM '+
-                         '`conn_l7_proto` '+
-                     'WHERE '+
-                         '`time` BETWEEN ? AND ? '+
-                         'AND `l7_proto` !=\'-\' '+
-                     'GROUP BY '+
-                         '`l7_proto`',
+                            'time,'+
+                            '`l7_proto` AS `pie_dimension`, '+
+                            '(sum(in_bytes + out_bytes) / 1048576) AS `count` '+
+                        'FROM '+
+                            '`conn_l7_proto` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                            'AND `l7_proto` !=\'-\' '+
+                        'GROUP BY '+
+                            '`l7_proto`',
                 insert: [start, end, start, end, start, end]
             }
             async.parallel([

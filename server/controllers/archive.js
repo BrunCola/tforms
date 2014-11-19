@@ -32,7 +32,7 @@ module.exports = function(pool) {
 					'`ioc_rule`, '+
 					'`lan_zone`, '+
 					'`lan_ip`, '+
-					'`machine`, '+
+					'`lan_machine`, '+
 					'`remote_ip`, '+
 					'`remote_asn`, '+
 					'`remote_asn_name`, '+
@@ -69,7 +69,7 @@ module.exports = function(pool) {
 					{ title: 'IOC Rule', select: 'ioc_rule' },
 					{ title: 'Zone', select: 'lan_zone' },
 					{ title: 'Local IP', select: 'lan_ip' },
-					{ title: 'Machine Name', select: 'machine' },
+					{ title: 'Machine Name', select: 'lan_machine' },
 					{ title: 'Remote IP', select: 'remote_ip' },
 					{ title: 'Remote ASN', select: 'remote_asn' },
 					{ title: 'Remote ASN Name', select: 'remote_asn_name' },
