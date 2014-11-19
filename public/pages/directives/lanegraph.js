@@ -764,9 +764,13 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             data: d
                         }
                         // this closes the last expanded block if there is one
-                        if ((previousBar !== null) && (previousBar.attr('class') !== sideSelected.attr('class'))) {
-                            previousBar.select('.infoDivExpanded').style('display', 'none');
-                            previousBar.classed('laneactive', false);
+                        if ((previousBar !== null)) {
+                            if (previousBar[0][0] !== null) {
+                                if (previousBar.attr('class') !== sideSelected.attr('class')) {
+                                    previousBar.select('.infoDivExpanded').style('display', 'none');
+                                    previousBar.classed('laneactive', false);
+                                }
+                            }
                         }
                         if ($('#autoexpand').is(':checked')){
                             if (isOpen === d.id) {
