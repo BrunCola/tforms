@@ -1,6 +1,7 @@
 'use strict';
 
 var floor_plan = require('../constructors/floor_plan'),
+    buildings = require('../constructors/buildings'),
     query = require('../constructors/query'),
     config = require('../../config/config'),
     fs = require('fs'),
@@ -212,65 +213,77 @@ module.exports = function(pool) {
                     insert: []
                 }
 
+                var buildingplan = [];
+                var blds = {
+                    query: 'SELECT '+
+                            '`building` '+
+                            'FROM '+
+                                'assets '+
+                            'WHERE '+
+                                '`type` = "map"'+
+                            'group by `building`',
+                    insert: []
+                }
 
-                var stealthDrop = [];
-                var stealth_drop = {
-                    query: 'SELECT DISTINCT '+
-                            'lan_user, '+
-                            'lan_ip, '+
-                            'lan_zone, '+
-                            'lan_machine '+
-                        'FROM '+
-                            '`stealth_conn_meta` '+
-                        'WHERE '+
-                            'time BETWEEN ? AND ? '+
-                            'AND `in_bytes` = 0 ',
-                    insert: [start, end]
-                }
-                var localDrop = [];
-                var local_drop = {
-                    query: 'SELECT DISTINCT '+
-                            'lan_user, '+
-                            'lan_ip, '+
-                            'lan_zone, '+
-                            'machine '+ 
-                    'FROM '+
-                        ' `conn_meta` '+
-                    'WHERE '+
-                        'time BETWEEN ? AND ? '+
-                        'AND `out_bytes` = 0 ',
-                    insert: [start, end]
-                }
-                var stealthAuthorized = [];
-                var stealth_authorized = {
-                    query: 'SELECT DISTINCT '+
-                            'lan_user, '+
-                            'lan_ip, '+
-                            'lan_zone, '+
-                            'lan_machine '+
-                        'FROM '+
-                            '`stealth_conn_meta` '+
-                        'WHERE '+
-                            'time BETWEEN ? AND ? '+
-                            'AND `out_bytes` > 0 '+
-                            'AND `in_bytes` > 0 ',
-                    insert: [start, end]
-                }
-                var localAuthorized = [];
-                var local_authorized = {
-                    query: 'SELECT DISTINCT '+
-                            'lan_user, '+
-                            'lan_ip, '+
-                            'lan_zone, '+
-                            'machine '+
-                    'FROM '+
-                        ' `conn_meta` '+
-                    'WHERE '+
-                        'time BETWEEN ? AND ? '+
-                        'AND `out_bytes` > 0 '+
-                        'AND `in_bytes` > 0 ',
-                    insert: [start, end]
-                }
+
+                // var stealthDrop = [];
+                // var stealth_drop = {
+                //     query: 'SELECT DISTINCT '+
+                //             'lan_user, '+
+                //             'lan_ip, '+
+                //             'lan_zone, '+
+                //             'lan_machine '+
+                //         'FROM '+
+                //             '`stealth_conn_meta` '+
+                //         'WHERE '+
+                //             'time BETWEEN ? AND ? '+
+                //             'AND `in_bytes` = 0 ',
+                //     insert: [start, end]
+                // }
+                // var localDrop = [];
+                // var local_drop = {
+                //     query: 'SELECT DISTINCT '+
+                //             'lan_user, '+
+                //             'lan_ip, '+
+                //             'lan_zone, '+
+                //             'machine '+ 
+                //     'FROM '+
+                //         ' `conn_meta` '+
+                //     'WHERE '+
+                //         'time BETWEEN ? AND ? '+
+                //         'AND `out_bytes` = 0 ',
+                //     insert: [start, end]
+                // }
+                // var stealthAuthorized = [];
+                // var stealth_authorized = {
+                //     query: 'SELECT DISTINCT '+
+                //             'lan_user, '+
+                //             'lan_ip, '+
+                //             'lan_zone, '+
+                //             'lan_machine '+
+                //         'FROM '+
+                //             '`stealth_conn_meta` '+
+                //         'WHERE '+
+                //             'time BETWEEN ? AND ? '+
+                //             'AND `out_bytes` > 0 '+
+                //             'AND `in_bytes` > 0 ',
+                //     insert: [start, end]
+                // }
+                // var localAuthorized = [];
+                // var local_authorized = {
+                //     query: 'SELECT DISTINCT '+
+                //             'lan_user, '+
+                //             'lan_ip, '+
+                //             'lan_zone, '+
+                //             'machine '+
+                //     'FROM '+
+                //         ' `conn_meta` '+
+                //     'WHERE '+
+                //         'time BETWEEN ? AND ? '+
+                //         'AND `out_bytes` > 0 '+
+                //         'AND `in_bytes` > 0 ',
+                //     insert: [start, end]
+                // }
 
 
                 async.parallel([
@@ -284,30 +297,17 @@ module.exports = function(pool) {
 
 
                     function(callback) {
-                        new query(stealth_drop, {database: database, pool: pool}, function(err,data){
-                            stealthDrop = data;
+                        new buildings(floors, blds, {database: database, pool: pool}, function(err,data){
+                            buildingplan = data;
                             callback();
                         });
                     },
-                    function(callback) {
-                        new floor_plan(local_drop, {database: database, pool: pool}, function(err,data){
-                            localDrop = data;
-                            callback();
-                        });
-                    },
-                    function(callback) {
-                        new floor_plan(stealth_authorized, {database: database, pool: pool}, function(err,data){
-                            stealthAuthorized = data;
-                            callback();
-                        });
-                    },
-                    function(callback) {
-                        new floor_plan(local_authorized, {database: database, pool: pool}, function(err,data){
-                            localAuthorized = data;
-                            callback();
-                        });
-                    },
-
+                    // function(callback) {
+                    //     new force_stealth_user(sql, [stealth_drop, local_drop, rules, coordinates, stealth_authorized, local_authorized], {database: database, pool: pool}, function(err,data){
+                    //         force = data;
+                    //         callback();
+                    //     });
+                    // }
 
                     function(callback) {
                         new floor_plan(floors, {database: database, pool: pool}, function(err,data){
@@ -319,10 +319,7 @@ module.exports = function(pool) {
                     if (err) throw console.log(err);
                     var results = { 
                         users: floorplanReturn,
-                        sd: stealthDrop,
-                        ld: localDrop,
-                        sa: stealthAuthorized,
-                        la: localAuthorized,
+                        buildings: buildingplan,
                         floor: floorplan
                     };
                     res.json(results);

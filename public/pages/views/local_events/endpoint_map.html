@@ -106,7 +106,7 @@
                                 {{floor.custom_name}} 
                             </tab-heading>
                             <div style="background-color:#FFF;" class="box" >
-                                <div id="floorplan" floor-name="{{floor.asset_name}}" make-floor-plan style="position: relative;">
+                                <div id="floorplan" floor-name="{{floor.id}}" make-floor-plan style="position: relative;">
                                 </div>
                             </div>
                         </tab>
@@ -129,6 +129,13 @@
                     </div>
                 </div>
             </div>
+            <!--  <div id="buildingplanspan" ng-show="!toggleView">
+                <div style="background-color:#FFF;" class="box" >
+                    <div id="allfloorplan" style="position: relative;">
+                        <div make-all-floor-plan style="position: relative;"></div>
+                    </div>
+                </div>
+            </div> -->
             <div id="localuserinformationspan" ng-show="userinfo">
                 <div class="jdash-header">User Information</div>
                 <div  style="background-color:#FFF;" class="box">
@@ -202,6 +209,22 @@
                     </div>
                 </div>
             </div>
+           <!--  <div id="localuserinformationspan" ng-show="currentBuilding">
+                <div class="jdash-header">User Information</div>
+                <div  style="background-color:#FFF;" class="box">
+                     <div id="alllocaluserinformation">
+                        <div class="luinfo" ng-show="currentFloor">
+                            <table id="flus">
+                                <tr style="font-weight:bold">
+                                    <td>IP</td><td>Host Name</td><td>User name</td>
+                                </tr>
+                                <tr  ng-repeat="user in currentFloor" ng-click="userLink(user)">
+                                    <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
+                                </tr> 
+                        </div>
+                    </div>
+                </div>
+            </div> -->
            
         </section>
     </div>
