@@ -738,15 +738,17 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
                 function scrollSide(id) {
                     var elm = $('li#'+id);
-                    var ept  = elm.position().top;
-                    var eppt = elm.parent().position().top;
-                    var offset = ept - eppt;
-                    var totalHeight = $('.divScroll')[0].scrollHeight;
-                    var windowHeight = $('.divScroll').height();
-                    if (offset>(totalHeight-windowHeight)) {
-                        offset = totalHeight-windowHeight;
+                    if (elm.length !== 0) {
+                        var ept  = elm.position().top;
+                        var eppt = elm.parent().position().top;
+                        var offset = ept - eppt;
+                        var totalHeight = $('.divScroll')[0].scrollHeight;
+                        var windowHeight = $('.divScroll').height();
+                        if (offset>(totalHeight-windowHeight)) {
+                            offset = totalHeight-windowHeight;
+                        }
+                        $('.divScroll').scrollTo(offset);
                     }
-                    $('.divScroll').scrollTo(offset);
                 }
                 function plot(data, min, max) {
                     // node selecting
@@ -897,7 +899,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 })
                             // LANE NODE LOADING
                             // if there's anything in our highlightPoint variable, use the information to highlight data and then clear
-                            if ($scope.highlightedPoint === d) {
+                            if (($scope.highlightedPoint.conn_uids === d.conn_uids) && ($scope.highlightedPoint.type === d.type)) {
                                 isOpen = null;
                                 openScrollSide(d);
                                 var selectedNode = clickLine.selectAll(".clickLine").data(['']);
