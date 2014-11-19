@@ -20,6 +20,11 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
     //first time through, call to populate summary sections
     getSummaryInfo(query);
 
+
+    //*****************
+    // AUTO REFRESH
+    //*****************
+
     //auto refresh using angular interval
     var refreshPeriod = 60000; //in milliseconds (60 seconds)
     var newIocFound = false; //flag to track if a new IOC was found - gets reset after the new IOC is pushed to the directives
@@ -83,24 +88,14 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
             d.count = +d.count;
         }); 
 
-        //first, handle crossfilter data
+        //*******************
+        // CROSSFILTER
+        //*******************
         var newCrossfilterData = false;
 
-        //add new data to crossfilter, if it's coming from a refresh
-        //or create the crossfilter using the whole data set, if a fresh page load
-        if(autoRefresh && data.crossfilter.length > 0) {
-            $scope.crossfilterData.add(data.crossfilter);
-            newCrossfilterData = true;
-            newIocFound = true;
-        } else if(!autoRefresh) { //fresh page load
-            $scope.crossfilterData = crossfilter(data.crossfilter);
-            $scope.data = data;
-            newCrossfilterData = true;
-        } 
-
         //filter out old data from the crossfilter
-        if(autoRefresh) {
-            var timeDimension = $scope.crossfilterData.dimension(function(d) { return d.time; });//ERRORs out sometimes??
+        if(autoRefresh && data.crossfilter.length <= 0) {
+            var timeDimension = $scope.crossfilterData.dimension(function(d) { return d.time; });//ERRORs out startometimes??
             //filter by date smaller than the old start (previously moved up by one refresh period)
             timeDimension.filter(function(d){
                 if($location.$$search.start) {
@@ -116,7 +111,45 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
             $scope.crossfilterData.remove();
             //add back the other data (I think this is needed)
             timeDimension.filterAll();
-        }
+        } else if(autoRefresh && data.crossfilter.length > 0) {
+            //add new data to crossfilter, if it's coming from a refresh
+            //or create the crossfilter using the whole data set, if a fresh page load
+
+            //ATTEMPT AT DUPLICATE CHECKING //???????????
+            var timeDimension = $scope.crossfilterData.dimension(function(d) { return d.time; });
+            // var newTimeDim = data.crossfilter.dimension(function(d) { return d.time; });
+            // newTimeDim.filter(function(d) {
+            //     timeDimension.top(Infinity).forEach(function(e) {
+            //         if(e == d){
+            //             return d;
+            //         }
+            //     });
+            // });
+            // data.crossfilter.remove();
+            // newTimeDim.filterAll();
+            // timeDimension.filterAll(); //??
+
+            timeDimension.top(Infinity).forEach(function(d) {
+                for(var i = 0; i < data.crossfilter.length; i ++) {
+                    if(d == data.crossfilter[i].time){
+                        data.crossfilter.splice(i, 1);
+                        i --;
+                    }
+                }
+                
+            });
+            timeDimension.filterAll(); //??
+
+            if(data.crossfilter.length > 0) {
+                $scope.crossfilterData.add(data.crossfilter);
+                newCrossfilterData = true;
+                newIocFound = true;
+            }
+        } else if(!autoRefresh) { //fresh page load
+            $scope.crossfilterData = crossfilter(data.crossfilter);
+            $scope.data = data;
+            newCrossfilterData = true;
+        } 
 
         //if it's a fresh page load or a refresh which pulled new data, process and push to directives
         if(newCrossfilterData) {
@@ -219,21 +252,14 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
             }
         }
 
-        //now data table
+        //*******************
+        // DATA TABLE
+        //*******************
         var newTableData = false;
 
-        if(autoRefresh && data.tables[0] != null) {
-            // $scope.tableCrossfitler.add(data.tables[0].aaData);
-            $scope.tableCrossfitler.add(data.tables[0].aaData);//JUST FOR TESTING
-            newTableData = true;
-            newIocFound = true;
-        } else if(!autoRefresh) { //fresh page load
-            $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
-            newTableData = true;
-        } 
-
-        //filter out old data from the crossfilter
-        if(autoRefresh) {
+        //filter out old data from the data table
+        if(autoRefresh && data.tables[0] == null) {
+            console.log("Trying to remove old data");
             var timeDimension = $scope.tableCrossfitler.dimension(function(d) { return d.time; });
             //filter by date smaller than the old start (previously moved up by one refresh period)
             timeDimension.filter(function(d){
@@ -250,9 +276,35 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
             $scope.tableCrossfitler.remove();
             //add back the other data (I think this line is needed...)
             timeDimension.filterAll();
-        }
+        } else if(autoRefresh && data.tables[0] != null) {
+            //add new data to the data table
+            
+            // $scope.tableCrossfitler.add(data.tables[0].aaData);
+            var timeDimension = $scope.tableCrossfitler.dimension(function(d) { return d.time; });
+            timeDimension.top(Infinity).forEach(function(d) {
+                for(var i = 0; i < data.tables[0].aaData.length; i ++) {
+                    if(d == data.tables[0].aaData[i].time){
+                        data.tables[0].aaData.splice(i, 1);
+                        i --;
+                    }
+                }
+                
+            });
+            timeDimension.filterAll(); //??
+
+            if(data.tables[0].aaData.length > 0) {            
+                console.log("Trying to add new data");
+                $scope.tableCrossfitler.add(data.tables[0].aaData);//JUST FOR TESTING
+                newTableData = true;
+                newIocFound = true;
+            }
+        } else if(!autoRefresh) { //fresh page load
+            $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+            newTableData = true;
+        } 
 
         if(newTableData) {
+            console.log("Pushing out new data");
             $scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
             if(autoRefresh) {
                 $scope.$broadcast('tableUpdate', $scope.tableData, $scope.data.tables, null);
@@ -263,6 +315,9 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
         } 
     }
 
+    //*******************
+    // SUMMARY SECTIONS
+    //*******************
     function getSummaryInfo(query) {
         $http({method: 'GET', url: query+'&type=ioc_notifications'}).
         success(function(data) {
