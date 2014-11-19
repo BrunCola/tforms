@@ -37,16 +37,16 @@ module.exports = function (floors, bldg, conn, callback) {
 	        for (var b in bld) {
 	            var floor = [];
 	            floor = flr.filter(function(fl){
-                    if (fl.building === bld[b].building){ 
+                    if (fl.building === bld[b].asset_name){ 
                         return true;
                     }
                 });
-	            groupedFloors.push(floor);     
+	            bld[b].floors = floor;     
 	        }
-            var results = {
-                building: groupedFloors
-            }
-            callback(null, groupedFloors);
+            // var results = {
+            //     building: groupedFloors
+            // }
+            callback(null, bld);
         });
     })
 };

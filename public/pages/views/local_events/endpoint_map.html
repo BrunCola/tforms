@@ -89,7 +89,7 @@
     <section id="loading-error" loading-error></section>
     <section id="loading-spinner" loading-spinner></section>
     <div class="row-fluid">
-            <!-- <input type="checkbox" id="togView" ng-model="toggleView" >  -->
+        <input type="checkbox" id="togView" ng-model="toggleView" ng-show="toggleZoom" > 
         <section id="floorplanpage">
             <div id="listlocalusersspan">
                 <div class="jdash-header">Local Users</div>                 
@@ -98,10 +98,10 @@
                 </div>
             </div>
             <div class="hidelocalusers" ></div>
-            <div id="floorplanspan" ng-show="toggleView">
-                <div id="tabs" >
+            <div id="floorplanspan" ng-show="toggleZoom && building.active" ng-repeat="building in buildings">
+                <div id="tabs" ng-show="toggleView" >
                     <tabset>
-                        <tab select="alertMe()" ng-repeat="floor in floors" active="floor.active">
+                        <tab select="alertMe()" ng-repeat="floor in building.floors" active="floor.active">
                             <tab-heading>
                                 {{floor.custom_name}} 
                             </tab-heading>
@@ -120,23 +120,25 @@
                     <div id="scalebuttons" class="bin"></div>
                     <div id="triggerbuttons" class="bin" ></div>
                     </tabset>
-                </div>
-            </div> 
+                </div> 
              <div id="allfloorplanspan" ng-show="!toggleView">
+                <div class="jdash-header">Floor View</div>  
                 <div style="background-color:#FFF;" class="box" >
                     <div id="allfloorplan" style="position: relative;">
                         <div make-all-floor-plan style="position: relative;"></div>
                     </div>
                 </div>
             </div>
-            <!--  <div id="buildingplanspan" ng-show="!toggleView">
+            </div>
+             <div id="buildingplanspan" ng-show="!toggleZoom">
+                <div class="jdash-header">Building View</div>  
                 <div style="background-color:#FFF;" class="box" >
                     <div id="allfloorplan" style="position: relative;">
-                        <div make-all-floor-plan style="position: relative;"></div>
+                        <div make-building-plan style="position: relative;"></div>
                     </div>
                 </div>
-            </div> -->
-            <div id="localuserinformationspan" ng-show="userinfo">
+            </div>
+<!--             <div id="localuserinformationspan" ng-show="userinfo">
                 <div class="jdash-header">User Information</div>
                 <div  style="background-color:#FFF;" class="box">
                     <div id="localuserinformation"  ng-show="toggleView">
@@ -189,27 +191,10 @@
                             <span style="font-weight:bold">Total Bandwidth in MB: </span><span>0</span>
                         </div>
                         <div ng-show="userinfo.map"><button type="button" class="button-error pure-button" ng-click="removeEndUser(userinfo)">Remove User</button></div>
-                        <!-- <div ng-show="userinfo.map"><button type="button" class="button-success pure-button" ng-click="getConnections(userinfo)">Show Connections</button></div> -->
                     </div>
                 </div>
-            </div>
-            <div id="localuserinformationspan" ng-show="currentFloor">
-                <div class="jdash-header">User Information</div>
-                <div  style="background-color:#FFF;" class="box">
-                     <div id="alllocaluserinformation">
-                        <div class="luinfo" ng-show="currentFloor">
-                            <table id="flus">
-                                <tr style="font-weight:bold">
-                                    <td>IP</td><td>Host Name</td><td>User name</td>
-                                </tr>
-                                <tr  ng-repeat="user in currentFloor" ng-click="userLink(user)">
-                                    <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
-                                </tr> 
-                        </div>
-                    </div>
-                </div>
-            </div>
-           <!--  <div id="localuserinformationspan" ng-show="currentBuilding">
+            </div> -->
+<!--             <div id="localuserinformationspan" ng-show="currentFloor">
                 <div class="jdash-header">User Information</div>
                 <div  style="background-color:#FFF;" class="box">
                      <div id="alllocaluserinformation">
@@ -225,6 +210,22 @@
                     </div>
                 </div>
             </div> -->
+            <div id="localuserinformationspan" ng-show="currentBuilding">
+                <div class="jdash-header">User Information</div>
+                <div  style="background-color:#FFF;" class="box">
+                     <div id="alllocaluserinformation">
+                        <div class="luinfo" ng-show="currentFloor">
+                            <table id="flus">
+                                <tr style="font-weight:bold">
+                                    <td>IP</td><td>Host Name</td><td>User name</td>
+                                </tr>
+                                <tr  ng-repeat="user in currentFloor" ng-click="userLink(user)">
+                                    <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
+                                </tr> 
+                        </div>
+                    </div>
+                </div>
+            </div>
            
         </section>
     </div>

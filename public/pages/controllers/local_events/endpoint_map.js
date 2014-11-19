@@ -35,12 +35,10 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
 
             $scope.$broadcast('spinnerHide');
 
-            $rootScope.toggleView = false;
-
+            $rootScope.toggleZoom = false;
+            $rootScope.toggleView = true;
 
             $scope.buildings = data.buildings; 
-            $scope.floors = data.floor; 
-            $scope.floors[0].active = true;
 
         }
         if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){

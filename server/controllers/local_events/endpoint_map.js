@@ -213,17 +213,27 @@ module.exports = function(pool) {
                     insert: []
                 }
 
-                var buildingplan = [];
-                var blds = {
+                var groupedFloors = [];
+                var build = {
                     query: 'SELECT '+
-                            '`building` '+
+                            '* '+
                             'FROM '+
                                 'assets '+
                             'WHERE '+
-                                '`type` = "map"'+
-                            'group by `building`',
+                                '`type` = "building"',
                     insert: []
                 }
+
+                // var blds = {
+                //     query: 'SELECT '+
+                //             '`building` '+
+                //             'FROM '+
+                //                 'assets '+
+                //             'WHERE '+
+                //                 '`type` = "map"'+
+                //             'group by `building`',
+                //     insert: []
+                // }
 
 
                 // var stealthDrop = [];
@@ -297,18 +307,11 @@ module.exports = function(pool) {
 
 
                     function(callback) {
-                        new buildings(floors, blds, {database: database, pool: pool}, function(err,data){
-                            buildingplan = data;
+                        new buildings(floors, build, {database: database, pool: pool}, function(err,data){
+                            groupedFloors = data;
                             callback();
                         });
                     },
-                    // function(callback) {
-                    //     new force_stealth_user(sql, [stealth_drop, local_drop, rules, coordinates, stealth_authorized, local_authorized], {database: database, pool: pool}, function(err,data){
-                    //         force = data;
-                    //         callback();
-                    //     });
-                    // }
-
                     function(callback) {
                         new floor_plan(floors, {database: database, pool: pool}, function(err,data){
                             floorplan = data;
@@ -319,8 +322,8 @@ module.exports = function(pool) {
                     if (err) throw console.log(err);
                     var results = { 
                         users: floorplanReturn,
-                        buildings: buildingplan,
-                        floor: floorplan
+                        floor: floorplan,
+                        buildings: groupedFloors
                     };
                     res.json(results);
                 });         

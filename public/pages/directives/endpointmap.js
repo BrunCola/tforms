@@ -222,7 +222,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         if (d3.event.scale < 0.5) {
                             zoom.translate([0,0]).scale(1);
                             container.attr("transform", "translate(0,0)scale(1)");
-                            $rootScope.toggleView = false;
+                            $rootScope.toggleZoom = false;
                             $scope.$apply();
                         } else { 
                             scale = d3.event.scale;
@@ -1100,23 +1100,23 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     ///  SEARCH  ///
                     ////////////////
                     // -- display users after
-                    $scope.$on('searchUsers', function (event, filteredData){
-                        plot(filteredData, floorName);
-                        wait(function(){
-                            if (filteredData.length > 0) {
-                                if (lastUserRequeried !== filteredData[0].id) {
-                                    $scope.floors.filter(function(d){ if ((filteredData[0].map === d.asset_name)) { d.active = true; }});
-                                    $scope.requery(filteredData[0], 'flooruser');
-                                    lastUserRequeried = filteredData[0].id;
-                                } 
-                                d3.select('.user-'+filteredData[0].id).classed("selected", true);
-                            } else {
-                                // remove the info pane
-                                lastUserRequeried = -1;
-                                $scope.requery("clear", 'flooruser');   
-                            }
-                        }, 500, "filtertWait");
-                    })
+                    // $scope.$on('searchUsers', function (event, filteredData){
+                    //     plot(filteredData, floorName);
+                    //     wait(function(){
+                    //         if (filteredData.length > 0) {
+                    //             if (lastUserRequeried !== filteredData[0].id) {
+                    //                 $scope.floors.filter(function(d){ if ((filteredData[0].map === d.asset_name)) { d.active = true; }});
+                    //                 $scope.requery(filteredData[0], 'flooruser');
+                    //                 lastUserRequeried = filteredData[0].id;
+                    //             } 
+                    //             d3.select('.user-'+filteredData[0].id).classed("selected", true);
+                    //         } else {
+                    //             // remove the info pane
+                    //             lastUserRequeried = -1;
+                    //             $scope.requery("clear", 'flooruser');   
+                    //         }
+                    //     }, 500, "filtertWait");
+                    // })
                     plot(data, floorName);
 
             }, 0);
@@ -1156,10 +1156,9 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                     ///////////////////////////
                     ///  INITIAL VARIABLES  ///
                     ///////////////////////////
-                    var floors = $scope.floors;
+                    var floors = $scope.building.floors;
                     var imageRatio = 1.33333333333;
                     var data = $scope.data.users;
-                    var floorName = attrs.floorName;
                     var scale = 1;
 
                     // var elementWidth = ($('#allfloorplanspan')[0].offsetWidth-25);
@@ -1265,15 +1264,9 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                     ///////////////////
                     // -- zoom and movement behaviours of the floor
                     function zoomed() {
-                        // if (d3.event.scale > 3) {
-                        //     zoom.translate([0,0]).scale(1);
-                        //     container.attr("transform", "translate(0,0)scale(1)");
-                        //     $rootScope.toggleView = true;
-                        //     $scope.$apply();
-                        // } else {
                             scale = d3.event.scale;
                             container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-                        // }
+                   
                     }
                     // -- handles the beginging of a user being dragged
                     function dragstarted(d) {
@@ -1638,7 +1631,7 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                                     .html("<h4>"+d.custom_name + "</h4><strong>" + userCount + " Hosts </strong>")
                                     .on('dblclick', function(e){
                                         d.active = true;
-                                        $rootScope.toggleView = true;
+                                        $rootScope.toggleZoom = true;
                                         $scope.$apply();
                                     })
                                     .on('click', function(e){
@@ -1785,49 +1778,49 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
 
                     // -- draws connections between floors
                     $rootScope.drawFloorConns = function (color) {
-                        if (($scope.floorConns !== undefined) && ($scope.selectedUser !== undefined)) {
-                            endpointConn.selectAll('line').remove();
-                            var conns = endpointConn.selectAll(".endpointConns").data([""]);
-                            wait(function(){
-                                var count = 0;
-                                var floor1 = $scope.floors.filter(function(fl){ 
-                                    if (($scope.selectedUser.map === fl.asset_name)){
-                                        return true;
-                                    }
-                                });
-                                for (var c in $scope.floorConns) {
-                                    var floor2 = $scope.floors.filter(function(fl){ 
-                                        if (($scope.floorConns[c].map === fl.asset_name)){
-                                            return true;
-                                        }
-                                    });
-                                    if (floor2[0] !== undefined) {
-                                         conns.enter()
-                                            .append("line")
-                                            .attr("x1", floor1[0].x+(elementWidth/6))
-                                            .attr("y1", floor1[0].y+30+count)
-                                            .attr("x2", floor2[0].x+(elementWidth/6))
-                                            .attr("y2", floor2[0].y+30+count)
-                                            .attr('stroke-width', 1)
-                                            .attr("stroke", color);
-                                            count++;
-                                        // if (count<9) {
-                                        //     count++;
-                                        // }
-                                    } else {
-                                         conns.enter()
-                                            .append("line")
-                                            .attr("x1", floor1[0].x+(elementWidth/6))
-                                            .attr("y1", floor1[0].y+30+count)
-                                            .attr("x2", 0)
-                                            .attr("y2", 0+count)
-                                            .attr('stroke-width', 1)
-                                            .attr("stroke", color);
-                                            count++;
-                                    }                              
-                                }
-                            }, 400);
-                        }       
+                        // if (($scope.floorConns !== undefined) && ($scope.selectedUser !== undefined)) {
+                        //     endpointConn.selectAll('line').remove();
+                        //     var conns = endpointConn.selectAll(".endpointConns").data([""]);
+                        //     wait(function(){
+                        //         var count = 0;
+                        //         var floor1 = $scope.floors.filter(function(fl){ 
+                        //             if (($scope.selectedUser.map === fl.asset_name)){
+                        //                 return true;
+                        //             }
+                        //         });
+                        //         for (var c in $scope.floorConns) {
+                        //             var floor2 = $scope.floors.filter(function(fl){ 
+                        //                 if (($scope.floorConns[c].map === fl.asset_name)){
+                        //                     return true;
+                        //                 }
+                        //             });
+                        //             if (floor2[0] !== undefined) {
+                        //                  conns.enter()
+                        //                     .append("line")
+                        //                     .attr("x1", floor1[0].x+(elementWidth/6))
+                        //                     .attr("y1", floor1[0].y+30+count)
+                        //                     .attr("x2", floor2[0].x+(elementWidth/6))
+                        //                     .attr("y2", floor2[0].y+30+count)
+                        //                     .attr('stroke-width', 1)
+                        //                     .attr("stroke", color);
+                        //                     count++;
+                        //                 // if (count<9) {
+                        //                 //     count++;
+                        //                 // }
+                        //             } else {
+                        //                  conns.enter()
+                        //                     .append("line")
+                        //                     .attr("x1", floor1[0].x+(elementWidth/6))
+                        //                     .attr("y1", floor1[0].y+30+count)
+                        //                     .attr("x2", 0)
+                        //                     .attr("y2", 0+count)
+                        //                     .attr('stroke-width', 1)
+                        //                     .attr("stroke", color);
+                        //                     count++;
+                        //             }                              
+                        //         }
+                        //     }, 400);
+                        // }       
                     }
 
                     // -- redraws the floor (used when user is deleted from floorplan)
@@ -1850,23 +1843,23 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                     ///  SEARCH  ///
                     ////////////////
                     // -- display users after
-                    $scope.$on('searchUsers', function (event, filteredData){
-                        plot(filteredData, floors);
-                        wait(function(){
-                            if (filteredData.length > 0) {
-                                if (lastUserRequeried !== filteredData[0].id) {
-                                    $scope.floors.filter(function(d){ if ((filteredData[0].map === d.asset_name)) { d.active = true; }});
-                                    $scope.requery(filteredData[0], 'flooruser');
-                                    lastUserRequeried = filteredData[0].id;
-                                } 
-                                d3.select('.user-'+filteredData[0].id).classed("selected", true);
-                            } else {
-                                // remove the info pane
-                                lastUserRequeried = -1;
-                                $scope.requery("clear", 'flooruser');   
-                            }
-                        }, 500, "filtertWait");
-                    })
+                    // $scope.$on('searchUsers', function (event, filteredData){
+                    //     plot(filteredData, floors);
+                    //     wait(function(){
+                    //         if (filteredData.length > 0) {
+                    //             if (lastUserRequeried !== filteredData[0].id) {
+                    //                 $scope.floors.filter(function(d){ if ((filteredData[0].map === d.asset_name)) { d.active = true; }});
+                    //                 $scope.requery(filteredData[0], 'flooruser');
+                    //                 lastUserRequeried = filteredData[0].id;
+                    //             } 
+                    //             d3.select('.user-'+filteredData[0].id).classed("selected", true);
+                    //         } else {
+                    //             // remove the info pane
+                    //             lastUserRequeried = -1;
+                    //             $scope.requery("clear", 'flooruser');   
+                    //         }
+                    //     }, 500, "filtertWait");
+                    // })
                     plot(data, floors);
 
             }, 1000);
@@ -1906,10 +1899,9 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                     ///////////////////////////
                     ///  INITIAL VARIABLES  ///
                     ///////////////////////////
-                    var floors = $scope.floors;
+                    var buildings = $scope.buildings;
                     var imageRatio = 1.33333333333;
                     var data = $scope.data.users;
-                    var floorName = attrs.floorName;
                     var scale = 1;
 
                     // var elementWidth = ($('#allfloorplanspan')[0].offsetWidth-25);
@@ -1918,7 +1910,6 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                     var elementHeight = (elementWidth/imageRatio);
                     element.width(elementWidth);
                     element.height(elementHeight);
-                    $scope.userList = data;
 
                     ///////////////////////////
                     ///  DIV/ELEMENT SETUP  ///
@@ -2018,7 +2009,7 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                         // if (d3.event.scale > 3) {
                         //     zoom.translate([0,0]).scale(1);
                         //     container.attr("transform", "translate(0,0)scale(1)");
-                        //     $rootScope.toggleView = true;
+                        //     $rootScope.toggleZoom = true;
                         //     $scope.$apply();
                         // } else {
                             scale = d3.event.scale;
@@ -2053,7 +2044,7 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                     }
 
                     // -- displays users in userlist and floor plans
-                    function plot(data, floors) {
+                    function plot(data, bldgs) {
                         // set order of array
                         data = data.sort(function(a, b){ return a.id-b.id });
                         ////////////////////
@@ -2358,7 +2349,7 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                         // Draw users on floor
                         var floorcount = -1;
                         // container.selectAll('g').remove();
-                        container.selectAll('g').data(floors.filter(function(d){return true; })).enter()
+                        container.selectAll('g').data(bldgs.filter(function(d){return true; })).enter()
                             .append('g')
                             .attr('width', 0)
                             .attr('height', 0)
@@ -2374,11 +2365,13 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                                 
                                 var elm = d3.select(this);
 
-                                data.filter(function(user){
-                                    if (d.asset_name === user.map) {
-                                        userCount++;
-                                    }
-                                });
+                                for (var f in d.floors) {                                   
+                                    data.filter(function(user){
+                                        if (d.floors[f].id == user.map) {
+                                            userCount++;
+                                        }
+                                    });
+                                }
 
                                 elm
                                     .style("border", "solid 1px #000")
@@ -2387,8 +2380,13 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                                     .style("text-align", "center")
                                     .html("<h4>"+d.custom_name + "</h4><strong>" + userCount + " Hosts </strong>")
                                     .on('dblclick', function(e){
+                                        for (var bld in $scope.buildings) {
+                                             $scope.buildings[bld].active = false;
+                                        }
                                         d.active = true;
-                                        $rootScope.toggleView = true;
+                                        d.floors[0].active = true;
+
+                                        $rootScope.toggleZoom = true;
                                         $scope.$apply();
                                     })
                                     .on('click', function(e){
@@ -2474,54 +2472,6 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
 
                             });                            
                     }  
-     //This function determines the colour of the endpoint based on what type 
-                    //of trigger has been activated
-                    function getIconColour(endpoint, args, type) {
-                        if(args != undefined) {
-                            var colour = '#29ABE2';//the default
-                            args.forEach(function(d){
-                                if(d.lan_ip == endpoint.lan_ip && d.lan_zone == endpoint.lan_zone) {
-                                    //change to switch when more buttons are added
-                                    if (type === 'iocusers') {
-                                        colour = '#FF0000'; //CHANGE
-                                    } else if(type === 'activeusers') {
-                                        colour = '#00FF00'; //CHANGE
-                                    } else if(type === 'activestealthusers') {
-                                        colour = '#666666'; //CHANGE
-                                    } else {
-                                        colour = '#29ABE2'; //the default
-                                    }  
-                                    return;                                                          
-                                }                        
-                            });
-
-                            return colour;
-                        } else {
-                            return '#29ABE2';
-                        }
-                    }
-
-                    //The following function handles a trigger button being pressed, iterating over the endpoint
-                    //icons and changing the colour of the ones matching the trigger filter
-                    function handleTrigger(data, type) {
-                        d3.selectAll('button').each(function(d){
-                            if(d != undefined) {
-                                var id = d.id;
-                                var elm = d3.select(this);
-                                var elel = elm[0];
-                                var el = elel[0];
-
-                                var element = elm.select('div').select('svg');
-
-                                element.selectAll('.userColor').style('fill', getIconColour(d, data, type));
-                            }
-                        });
-                    }
-
-                    /////////////////
-                    ///  BUTTONS  ///
-                    /////////////////
-
 
                     //////////////////////////
                     ///  $SCOPE FUNCTIONS  ///
@@ -2535,89 +2485,73 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
 
                     // -- draws connections between floors
                     $rootScope.drawFloorConns = function (color) {
-                        if (($scope.floorConns !== undefined) && ($scope.selectedUser !== undefined)) {
-                            endpointConn.selectAll('line').remove();
-                            var conns = endpointConn.selectAll(".endpointConns").data([""]);
-                            wait(function(){
-                                var count = 0;
-                                var floor1 = $scope.floors.filter(function(fl){ 
-                                    if (($scope.selectedUser.map === fl.asset_name)){
-                                        return true;
-                                    }
-                                });
-                                for (var c in $scope.floorConns) {
-                                    var floor2 = $scope.floors.filter(function(fl){ 
-                                        if (($scope.floorConns[c].map === fl.asset_name)){
-                                            return true;
-                                        }
-                                    });
-                                    if (floor2[0] !== undefined) {
-                                         conns.enter()
-                                            .append("line")
-                                            .attr("x1", floor1[0].x+(elementWidth/6))
-                                            .attr("y1", floor1[0].y+30+count)
-                                            .attr("x2", floor2[0].x+(elementWidth/6))
-                                            .attr("y2", floor2[0].y+30+count)
-                                            .attr('stroke-width', 1)
-                                            .attr("stroke", color);
-                                            count++;
-                                        // if (count<9) {
-                                        //     count++;
-                                        // }
-                                    } else {
-                                         conns.enter()
-                                            .append("line")
-                                            .attr("x1", floor1[0].x+(elementWidth/6))
-                                            .attr("y1", floor1[0].y+30+count)
-                                            .attr("x2", 0)
-                                            .attr("y2", 0+count)
-                                            .attr('stroke-width', 1)
-                                            .attr("stroke", color);
-                                            count++;
-                                    }                              
-                                }
-                            }, 400);
-                        }       
+                        // if (($scope.floorConns !== undefined) && ($scope.selectedUser !== undefined)) {
+                        //     endpointConn.selectAll('line').remove();
+                        //     var conns = endpointConn.selectAll(".endpointConns").data([""]);
+                        //     wait(function(){
+                        //         var count = 0;
+                        //         var floor1 = $scope.floors.filter(function(fl){ 
+                        //             if (($scope.selectedUser.map === fl.asset_name)){
+                        //                 return true;
+                        //             }
+                        //         });
+                        //         for (var c in $scope.floorConns) {
+                        //             var floor2 = $scope.floors.filter(function(fl){ 
+                        //                 if (($scope.floorConns[c].map === fl.asset_name)){
+                        //                     return true;
+                        //                 }
+                        //             });
+                        //             if (floor2[0] !== undefined) {
+                        //                  conns.enter()
+                        //                     .append("line")
+                        //                     .attr("x1", floor1[0].x+(elementWidth/6))
+                        //                     .attr("y1", floor1[0].y+30+count)
+                        //                     .attr("x2", floor2[0].x+(elementWidth/6))
+                        //                     .attr("y2", floor2[0].y+30+count)
+                        //                     .attr('stroke-width', 1)
+                        //                     .attr("stroke", color);
+                        //                     count++;
+                        //                 // if (count<9) {
+                        //                 //     count++;
+                        //                 // }
+                        //             } else {
+                        //                  conns.enter()
+                        //                     .append("line")
+                        //                     .attr("x1", floor1[0].x+(elementWidth/6))
+                        //                     .attr("y1", floor1[0].y+30+count)
+                        //                     .attr("x2", 0)
+                        //                     .attr("y2", 0+count)
+                        //                     .attr('stroke-width', 1)
+                        //                     .attr("stroke", color);
+                        //                     count++;
+                        //             }                              
+                        //         }
+                        //     }, 400);
+                        // }       
                     }
-
-                    // -- redraws the floor (used when user is deleted from floorplan)
-                    $rootScope.redrawFloor = function () {
-                        var currentUser = d3.select('.selected');
-                        currentUser
-                            .attr("class", "localuserlist")
-                            .attr('draggable', "true");
-                        currentUser.data()[0].map = null;
-                        currentUser.remove();
-                        $(userDiv[0][0]).append(currentUser[0][0]);
-                        plot(data,floorName);
-                    }
-                    // -- sets selected class for CSS (controller calls this when coming from ioc_events_drilldown(page2))
-                    $scope.$on('setSelected', function (event, selected) { 
-                        d3.select('.user-'+selected.id).classed("selected", true);
-                    })
 
                     ////////////////
                     ///  SEARCH  ///
                     ////////////////
-                    // -- display users after
-                    $scope.$on('searchUsers', function (event, filteredData){
-                        plot(filteredData, floors);
-                        wait(function(){
-                            if (filteredData.length > 0) {
-                                if (lastUserRequeried !== filteredData[0].id) {
-                                    $scope.floors.filter(function(d){ if ((filteredData[0].map === d.asset_name)) { d.active = true; }});
-                                    $scope.requery(filteredData[0], 'flooruser');
-                                    lastUserRequeried = filteredData[0].id;
-                                } 
-                                d3.select('.user-'+filteredData[0].id).classed("selected", true);
-                            } else {
-                                // remove the info pane
-                                lastUserRequeried = -1;
-                                $scope.requery("clear", 'flooruser');   
-                            }
-                        }, 500, "filtertWait");
-                    })
-                    plot(data, floors);
+                    // // -- display users after
+                    // $scope.$on('searchUsers', function (event, filteredData){
+                    //     plot(filteredData, floors);
+                    //     wait(function(){
+                    //         if (filteredData.length > 0) {
+                    //             if (lastUserRequeried !== filteredData[0].id) {
+                    //                 $scope.floors.filter(function(d){ if ((filteredData[0].map === d.asset_name)) { d.active = true; }});
+                    //                 $scope.requery(filteredData[0], 'flooruser');
+                    //                 lastUserRequeried = filteredData[0].id;
+                    //             } 
+                    //             d3.select('.user-'+filteredData[0].id).classed("selected", true);
+                    //         } else {
+                    //             // remove the info pane
+                    //             lastUserRequeried = -1;
+                    //             $scope.requery("clear", 'flooruser');   
+                    //         }
+                    //     }, 500, "filtertWait");
+                    // })
+                    plot(data, buildings);
 
             }, 1000);
         }
