@@ -2410,7 +2410,6 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                                         d3.select(this).style("cursor","pointer")
                                     });  
 
-
                                 var element = elm.append("div").attr('class', 'floorplanicon').append("svg");
 
                                  element
@@ -2421,12 +2420,7 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                                             .style('fill-rule', '#evenodd')
                                             .style('clip-rule', '#evenodd')
                                             .style('opacity','0.6')
-                                            .style('fill', "#676767");    
-
-
-
-
-
+                                            .style('fill', "#676767"); 
 
                                 var elel = elm[0];
                                 var el = elel[0];
