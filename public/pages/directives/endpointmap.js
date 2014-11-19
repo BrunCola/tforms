@@ -1610,8 +1610,8 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                             })
                             .call(drag)
                             .append('svg:foreignObject')
-                                .attr('width', (elementWidth/3)+"px")
-                                .attr('height', (elementHeight/3)+"px")
+                                .attr('width', "320px")
+                                .attr('height', "300px")
                             .append('xhtml:div').each(function(d){    
                                 var userCount = 0;               
                                 
@@ -1624,14 +1624,12 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                                 });
 
                                 elm
-                                    .style("border", "solid 1px #000")
-                                    .style("background", "#fff")
-                                    .style("border-radius", "8px")
+                                    .style("padding-top", "2px")
                                     .style("text-align", "center")
                                     .html("<h4>"+d.custom_name + "</h4><strong>" + userCount + " Hosts </strong>")
                                     .on('dblclick', function(e){
                                         d.active = true;
-                                        $rootScope.toggleZoom = true;
+                                        $rootScope.toggleView = true;
                                         $scope.$apply();
                                     })
                                     .on('click', function(e){
@@ -1641,6 +1639,23 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                                     .on('mouseover', function(e){
                                         d3.select(this).style("cursor","pointer")
                                     });  
+
+                                var element = elm.append("div").attr('class', 'floorplanicon').append("svg");
+
+                                 element
+                                    .attr('width', '300')
+                                    .attr('height', '209')
+                                        element.append('svg:path')
+                                            .attr('d', 'M71.5,87.2h17.1v2.3H71.5V87.2z M302,2v206H2V2H302zM297.3,84.9h-17.4v3.8h17.4V84.9z M297.3,80.1h-17.4v3.8h17.4V80.1z M297.3,75.3h-17.4v3.8h17.4V75.3z M297.3,70.6h-17.4v3.8h17.4V70.6z M297.3,65.8h-17.4v3.8h17.4V65.8z M297.3,61h-17.4v3.8h17.4V61z M297.3,56.2h-17.4V60h17.4V56.2z M297.3,51.5h-17.4v3.8h17.4V51.5z M297.3,46.7h-17.4v3.8h17.4V46.7z M297.3,41.9h-17.4v3.8h17.4V41.9z M297.3,37.1h-17.4v3.8h17.4V37.1z M297.3,6.7h-41.9v82v0.9v0.1h-34v-1H253v-82h-45.5v83h-34.1v-1h31.7v-82h-47.3v82.9h-2.4V6.7h-46.4v80.4h20.7v2.4h-23.1V6.7H60.5v67h13.3v3.3H58.1V6.7H6.7v80.5h53.4v2.3H6.7v34.7h50.8V98.7h3.3v28.7H6.7v33.8h50.8v-24.6h3.3v27.9v0H6.7v38.8h50.7v-26h19.1v-4h1.8v5.7H60.7v24.2h45.6v-44.6H71.5l0-45l40.7,0v2.3h-22v2.1h1.9v0.9h2.7v0c1.1,0,2.6,1,2.6,2.3c0,1.3-1.5,2.3-2.6,2.3v0h-2.7v0.9h-1.9v3.2h1.9v0.9h2.7v0c1.1,0,2.6,1,2.6,2.3c0,1.3-1.5,2.3-2.6,2.3v0h-2.7v0.9h-1.9v1.6H114v-1.7h0.9v-1.1h0c0-1.1,1-1.8,2.3-1.8c1.3,0,2.3,0.7,2.3,1.8h0v1.1h0.9v1.7h2.2v-21.6h3.3v21.6h1.6v-2.5h0.9V130h0c0-1.1,1-2.6,2.3-2.6c1.3,0,2.3,1.5,2.3,2.6h0v2.7h0.9v2.5h13.6v-3.3h-1.3v-0.9h-1.1v0c-1.1,0-1.8-1-1.8-2.3c0-1.3,0.7-2.3,1.8-2.3v0h1.1v-0.9h1.3v-9.9h-11.8v-2.3h11.8h3.3l0,23.9H90.2v18.9h18.5v46.9H204v-65.8h-15.8l0-23.9h3.3v21.6h27.2v-21.6h3.3v23.9h-15.5v65.8h90.9v-65.8h-56.1v-23.9h12.1v2.3h-8.8v19.4h1.3v-2.8h0.9v-2.7h0c0-1.1,1-2.6,2.3-2.6c1.3,0,2.3,1.5,2.3,2.6h0v2.7h0.9v2.8h6.5v-1.7h0.9v-1.1h0c0-1.1,1-1.8,2.3-1.8c1.3,0,2.3,0.7,2.3,1.8h0v1.1h0.9v1.7h6.8v-2.8h0.9v-2.7h0c0-1.1,1-2.6,2.3-2.6c1.3,0,2.3,1.5,2.3,2.6h0v2.7h0.9v2.8h1.5v-19.4h-14.6v-2.3h21.6v2.3h-3.7v19.4h14.5v-19.4h-3.8v-2.2h3.8V89.6h-18.4V36.1h18.4V6.7z M86.9,151.9v-3.8H72.5v3.8H86.9z M72.5,152.9v3.5h14.4v-3.5H72.5z M86.9,147.1v-3.8H72.5v3.8H86.9z M86.9,142.3v-3.8H72.5v3.8H86.9z M86.9,137.5v-3.8H72.5v3.8H86.9z M86.9,132.7V129H72.5v3.8H86.9z M86.9,128v-3.8H72.5v3.8H86.9z M86.9,123.2v-3.8H72.5v3.8H86.9z M86.9,118.4v-3.8H72.5v3.8H86.9z')
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('fill', "#676767");                                        
+                                        element.append('svg:path')
+                                            .attr('d', 'M262.5,4.5v-4h27v4H262.5zM290.5,7.5v-3h-29v3H290.5z M276.5,204.5v4h9v-4H276.5z M275.5,201.5v3h11v-3H275.5z M238.5,204.5v4h9v-4H238.5z M237.5,201.5v3h11v-3H237.5z M214.5,204.5v4h9v-4H214.5z M213.5,201.5v3h11v-3H213.5z M175.5,204.5v4h9v-4H175.5z M174.5,201.5v3h11v-3H174.5z M151.5,204.5v4h9v-4H151.5z M150.5,201.5v3h11v-3H150.5z M113.5,204.5v4h9v-4H113.5z M112.5,201.5v3h11v-3H112.5z M38.5,204.5v4h9v-4H38.5z M37.5,201.5v3h11v-3H37.5z M18.5,204.5v4h9v-4H18.5z M17.5,201.5v3h11v-3H17.5z M4.5,140.5h-4v9h4V140.5z M7.5,139.5h-3v11h3V139.5z M4.5,100.5h-4v9h4V100.5z M7.5,99.5h-3v11h3V99.5z M4.5,58.5h-4v9h4V58.5z M7.5,57.5h-3v11h3V57.5z M84.5,204.5v4h9v-4H84.5z M83.5,201.5v3h11v-3H83.5z M243.5,4.5v-4h-27v4H243.5z M244.5,7.5v-3h-29v3H244.5z M195.5,4.5v-4h-27v4H195.5z M196.5,7.5v-3h-29v3H196.5z M145.5,4.5v-4h-27v4H145.5z M146.5,7.5v-3h-29v3H146.5z M99.5,4.5v-4h-27v4H99.5z M100.5,7.5v-3h-29v3H100.5zM45.5,4.5v-4h-27v4H45.5z M46.5,7.5v-3h-29v3H46.5z')
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('stroke', "#676767")
+                                            .style('fill', "#F3F3F3");
 
                                 var elel = elm[0];
                                 var el = elel[0];
@@ -1783,13 +1798,13 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                         //     var conns = endpointConn.selectAll(".endpointConns").data([""]);
                         //     wait(function(){
                         //         var count = 0;
-                        //         var floor1 = $scope.floors.filter(function(fl){ 
+                        //         var floor1 = floors.filter(function(fl){ 
                         //             if (($scope.selectedUser.map === fl.asset_name)){
                         //                 return true;
                         //             }
                         //         });
                         //         for (var c in $scope.floorConns) {
-                        //             var floor2 = $scope.floors.filter(function(fl){ 
+                        //             var floor2 = floors.filter(function(fl){ 
                         //                 if (($scope.floorConns[c].map === fl.asset_name)){
                         //                     return true;
                         //                 }
@@ -2358,8 +2373,8 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                             })
                             .call(drag)
                             .append('svg:foreignObject')
-                                .attr('width', (elementWidth/3)+"px")
-                                .attr('height', (elementHeight/3)+"px")
+                                .attr('width', "180px")
+                                .attr('height', "300px")
                             .append('xhtml:div').each(function(d){    
                                 var userCount = 0;               
                                 
@@ -2374,9 +2389,7 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                                 }
 
                                 elm
-                                    .style("border", "solid 1px #000")
-                                    .style("background", "#fff")
-                                    .style("border-radius", "8px")
+                                    .style("padding-top", "2px")
                                     .style("text-align", "center")
                                     .html("<h4>"+d.custom_name + "</h4><strong>" + userCount + " Hosts </strong>")
                                     .on('dblclick', function(e){
@@ -2396,6 +2409,24 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                                     .on('mouseover', function(e){
                                         d3.select(this).style("cursor","pointer")
                                     });  
+
+
+                                var element = elm.append("div").attr('class', 'floorplanicon').append("svg");
+
+                                 element
+                                    .attr('width', '122')
+                                    .attr('height', '185')
+                                        element.append('svg:path')
+                                            .attr('d', 'M122.5,40.4v-2.5h-7.2V27.3h-28V14.1h9.2v-3.5h-9.2V8.2H75.9V0H38.8v8.2H27.3v19.1H6.1v10.7H0v2.5h6.1v144.9h9.4v-22.4h16.9v22.4h76.1h6.9h2.1V153h-2.1V40.4H122.5z M28.8,152.2h-9.9v-20.8h9.9V152.2z M28.8,123.2h-9.9v-20.8h9.9V123.2z M28.8,95.7h-9.9V74.9h9.9V95.7z M28.8,65.4h-9.9V42.9h9.9V65.4z M59.2,176.5h-9.9v-15.9h9.9V176.5z M59.2,152.2h-9.9v-20.8h9.9V152.2z M59.2,123.2h-9.9v-20.8h9.9V123.2z M59.2,95.7h-9.9V74.9h9.9V95.7zM64.3,65.4H44.2V42.9h20.1V65.4z M64.3,27.8H44.2V13.4h20.1V27.8z M78.2,176.5h-9.9v-15.9h9.9V176.5z M78.2,152.2h-9.9v-20.8h9.9V152.2z M78.2,123.2h-9.9v-20.8h9.9V123.2z M78.2,95.7h-9.9V74.9h9.9V95.7z M78.2,65.4h-9.9V42.9h9.9V65.4z M109.4,176.5H87.6v-15.9h21.8V176.5z M113.1,152.2H89.8v-20.8h23.3V152.2z M113.1,123.2H89.8v-20.8h23.3V123.2z M113.1,95.7H89.8V74.9h23.3V95.7zM113.1,65.4H89.8V42.9h23.3V65.4z')
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('opacity','0.6')
+                                            .style('fill', "#676767");    
+
+
+
+
+
 
                                 var elel = elm[0];
                                 var el = elel[0];

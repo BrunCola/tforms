@@ -36,9 +36,11 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.$broadcast('spinnerHide');
 
             $rootScope.toggleZoom = false;
-            $rootScope.toggleView = true;
+            $rootScope.toggleView = false;
 
             $scope.buildings = data.buildings; 
+            // $scope.floors = data.floor; 
+            // $scope.floors[0].active = true;
 
         }
         if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
@@ -58,6 +60,22 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 });
         }
     });
+
+    $scope.toggleViews = function (url, params) {
+        if ($rootScope.toggleView == false) {
+            $rootScope.toggleView = true;
+        } else {
+            $rootScope.toggleView = false
+        }
+    }
+
+    $scope.toggleZooms = function (url, params) {
+        if ($rootScope.toggleZoom == false) {
+            $rootScope.toggleZoom = true;
+        } else {
+            $rootScope.toggleZoom = false
+        }
+    }
 
     $scope.changePage = function (url, params) {
         if ($location.$$search.start && $location.$$search.end) {
