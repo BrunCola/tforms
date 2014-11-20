@@ -9,10 +9,33 @@
                 <div ng-show="cant_leave_blank" class="cant_leave_blank">
                 You must enter a floor name
                 </div>
+                <div ng-show="name_already_taken" class="cant_leave_blank">
+                The name has already been taken
+                </div>
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="button-success pure-button" ng-click="newBlankFloor(custom_fn)">Create Floor</button>
+            <button type="button" class="button-success pure-button" ng-click="newBlankFloor(custom_fn, building)">Create Floor</button>
+            <button class=" pure-button" ng-click="ok()">Close</button>
+        </div>
+    </script>
+    <script type="text/ng-template" id="uploadBuildingModal.html">
+        <div class="modal-header">
+            <h3>Upload Building</h3>
+        </div>
+        <div class="modal-body">
+            <div style="width: 100%;margin: 0 auto;">               
+                <input type="text" ng-model="custom_bn" placeholder="Example building name"/>
+                <div ng-show="cant_leave_blank" class="cant_leave_blank">
+                You must enter a name for the building
+                </div>
+                <div ng-show="name_already_taken" class="cant_leave_blank">
+                The name has already been taken
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="button-success pure-button" ng-click="newBlankBuilding(custom_bn)">Create Building</button>
             <button class=" pure-button" ng-click="ok()">Close</button>
         </div>
     </script>
@@ -89,7 +112,8 @@
     <section id="loading-error" loading-error></section>
     <section id="loading-spinner" loading-spinner></section>
     <div class="row-fluid">
-            <input type="checkbox" id="togView" ng-model="toggleView" > 
+        <button type="button" class="rndCrnBtn pure-button" ng-show="toggleZoom"  ng-click="toggleViews()">Toggle View</button>
+        <button type="button" class="rndCrnBtn pure-button" ng-show="toggleZoom"  ng-click="toggleZooms()">Zoom Out</button>
         <section id="floorplanpage">
             <div id="listlocalusersspan">
                 <div class="jdash-header">Local Users</div>                 
@@ -98,34 +122,43 @@
                 </div>
             </div>
             <div class="hidelocalusers" ></div>
-            <div id="floorplanspan" ng-show="toggleView">
-                <div id="tabs" >
+            <div id="floorplanspan" ng-show="toggleZoom && building.active" ng-repeat="building in buildings">
+                <div id="tabs" ng-show="toggleView" >
                     <tabset>
-                        <tab select="alertMe()" ng-repeat="floor in floors" active="floor.active">
+                        <tab select="alertMe()" ng-repeat="floor in building.floors" active="floor.active">
                             <tab-heading>
                                 {{floor.custom_name}} 
                             </tab-heading>
                             <div style="background-color:#FFF;" class="box" >
-                                <div id="floorplan" floor-name="{{floor.asset_name}}" make-floor-plan style="position: relative;">
+                                <div id="floorplan" floor-name="{{floor.id}}" make-floor-plan style="position: relative;">
                                 </div>
                             </div>
                         </tab>
-                        <tab ng-click="uploadOpen()">
+                        <tab ng-click="uploadOpen(building)">
                             <tab-heading> + </tab-heading>     
                             <div style="background-color:#FFF;" class="box"></div>                    
                         </tab>
-                    <div id="editbuttons" class="bin">
-                        <button type="button" class="rndCrnBtn pure-button" ng-click="editFloorPlan(floors)">Edit</button>
+                    <div id="editbuttons" class="bin epbuttons">
+                        <button type="button" class="rndCrnBtn pure-button" ng-click="editFloorPlan(building.floors)">Edit</button>
                     </div>
-                    <div id="scalebuttons" class="bin"></div>
-                    <div id="triggerbuttons" class="bin" ></div>
+                    <div id="scalebuttons{{building.asset_name}}" class="bin epbuttons"></div>
+                    <div id="triggerbuttons{{building.asset_name}}" class="bin epbuttons" ></div>
                     </tabset>
-                </div>
-            </div> 
+                </div> 
              <div id="allfloorplanspan" ng-show="!toggleView">
+                <div class="jdash-header">Floor View</div>  
                 <div style="background-color:#FFF;" class="box" >
                     <div id="allfloorplan" style="position: relative;">
                         <div make-all-floor-plan style="position: relative;"></div>
+                    </div>
+                </div>
+            </div>
+            </div>
+             <div id="buildingplanspan" ng-show="!toggleZoom">
+                <div class="jdash-header">Building View <button type="button" class="rndCrnBtn pure-button right" ng-click="createBuilding()">Create Building</button></div>  
+                <div style="background-color:#FFF;" class="box" >
+                    <div id="allfloorplan" style="position: relative;">
+                        <div make-building-plan style="position: relative;"></div>
                     </div>
                 </div>
             </div>
@@ -182,7 +215,6 @@
                             <span style="font-weight:bold">Total Bandwidth in MB: </span><span>0</span>
                         </div>
                         <div ng-show="userinfo.map"><button type="button" class="button-error pure-button" ng-click="removeEndUser(userinfo)">Remove User</button></div>
-                        <!-- <div ng-show="userinfo.map"><button type="button" class="button-success pure-button" ng-click="getConnections(userinfo)">Show Connections</button></div> -->
                     </div>
                 </div>
             </div>
@@ -196,8 +228,30 @@
                                     <td>IP</td><td>Host Name</td><td>User name</td>
                                 </tr>
                                 <tr  ng-repeat="user in currentFloor" ng-click="userLink(user)">
-                                    <td>{{user.lan_ip}}</td><td>{{user.lan_machine}}</td><td>{{user.lan_user}}</td>
-                                </tr> 
+                                    <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
+                                </tr>
+                            </table> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="localuserinformationspan" ng-show="currentBuilding">
+                <div class="jdash-header">User Information</div>
+                <div  style="background-color:#FFF;" class="box">
+                     <div id="alllocaluserinformation">
+                        <div class="luinfo" ng-show="currentBuilding">
+                            <table id="flus">
+                                <tr>
+                                    <button type="button" class="button-error pure-button" ng-click="removeBuilding(selectedBuilding)">Remove Building</button>
+                                </tr>
+                                <tr style="font-weight:bold">
+                                    <td>IP</td><td>Host Name</td><td>User name</td>
+                                </tr>
+                                <tr  ng-repeat="user in currentBuilding" ng-click="userLink(user)">
+                                    <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
+                                </tr>
+                            </table>  
                         </div>
                     </div>
                 </div>

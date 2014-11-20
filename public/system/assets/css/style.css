@@ -2345,7 +2345,7 @@ Datatables Plugin(in v1.3)
   padding: 0px;
   float: left;
 }
-#floorplanspan, #allfloorplanspan{
+#floorplanspan, #buildingplanspan{
   width:60%;
   margin: 0px 1% 0px 0px;
   padding: 0px;
@@ -2386,6 +2386,14 @@ Datatables Plugin(in v1.3)
   border-radius: 8px;
   border:none !important;
   outline:none;
+  /*border:#000 solid 1px;*/
+}
+#allfloorplan .selected div {
+  background: #ccc !important;
+  border-radius: 8px;
+  border:none !important;
+  outline:none;
+  padding: 2px 0px;
   /*border:#000 solid 1px;*/
 }
 
@@ -2457,20 +2465,6 @@ button.userfloorbutton{
   height:2000px;
   width:2000px;
 }*/
-#triggerbuttons { 
-  float: right;
-}
-#triggerbuttons button{
-  margin: 0px 1px;  
-  border-radius: 4px;
-}
-#scalebuttons {
-  margin: 0px 1px;  
-  border-radius: 4px;
-}
-#editbuttons, #scalebuttons{
-  float: right;
-}
 button.rndCrnBtn {
   border-radius: 5px;
 }
@@ -2494,4 +2488,14 @@ button.epbGrey:hover,button.epbGrey:active{
 }
 #flus td{
   padding:0px 10px 0px 0px;
+}
+#flus td span{
+  cursor: pointer;
+}
+button.right, .epbuttons{
+  float:right;
+}
+.epbuttons button {
+  margin: 0px 1px;  
+  border-radius: 4px;
 }
