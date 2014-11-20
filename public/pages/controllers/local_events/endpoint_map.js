@@ -47,16 +47,16 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             var query = '/local_events/endpoint_map?lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&type=flooruser';
             $http({method: 'GET', url: query+'&typeinfo=userinfoload'}).
                 success(function(data) {
-                    if (data[0] !== undefined) {
-                        $scope.floors.filter(function(d){ if ((data[0].map === d.asset_name)) { d.active = true; }});
-                        $scope.requery(data[0]);
-                        var selected = $scope.data.users.filter(function(d){ if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ return true }});
-                        if (selected[0] !== undefined) { 
-                            setTimeout(function () {
-                                $scope.$broadcast('setSelected', selected[0]);
-                                }, 0);
-                            }
-                    }                    
+                    // if (data[0] !== undefined) { //--------------------------------------------------------------------------------------------------- fix $scope.floors
+                    //     $scope.floors.filter(function(d){ if ((data[0].map === d.asset_name)) { d.active = true; }});
+                    //     $scope.requery(data[0]);
+                    //     var selected = $scope.data.users.filter(function(d){ if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ return true }});
+                    //     if (selected[0] !== undefined) { 
+                    //         setTimeout(function () {
+                    //             $scope.$broadcast('setSelected', selected[0]);
+                    //             }, 0);
+                    //         }
+                    // }                    
                 });
         }
     });

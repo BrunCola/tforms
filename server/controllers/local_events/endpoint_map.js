@@ -131,7 +131,6 @@ module.exports = function(pool) {
                 }
             }  else if (req.query.type === 'endpointconnection') { 
                 switch (req.query.typeinfo) {
-<<<<<<< HEAD
                     case 'getconn1':
                         new query({query: 'SELECT DISTINCT `lan_ip`, `lan_machine`, `remote_ip` FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `lan_ip` = ? ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
@@ -148,35 +147,13 @@ module.exports = function(pool) {
                         break;
                     case 'getconn3':
                         new query({query: 'SELECT DISTINCT  `lan_ip`, `lan_machine`, `remote_ip` FROM `conn_l7_meta` WHERE time BETWEEN ? AND ? AND `l7_proto`="IPsec" AND `lan_ip` = ?', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
-=======
-                //     // case 'getconn1':
-                //     //     new query({query: 'SELECT DISTINCT lan_ip, lan_machine, lan_user, lan_zone, remote_ip, remote_machine, remote_user FROM `stealth_conn_meta` WHERE time BETWEEN ? AND ? AND `in_bytes` = 0 AND `lan_ip` = ?', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
-                //     //         if (data) {
-                //     //             res.json(data);
-                //     //         }
-                //     //     }); 
-                //     //     break;
-                //     // case 'getconn2':
-                //     //     new query({query: 'SELECT DISTINCT lan_ip, lan_country, lan_user, lan_zone, lan_machine, remote_country, remote_ip FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `in_bytes` = 0 AND `lan_ip` = ? ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
-                //     //         if (data) {
-                //     //             res.json(data);
-                //     //         }
-                //     //     }); 
-                //     //     break;
-                    case 'getconn2':
-                        new query({query: 'SELECT DISTINCT lan_ip, lan_country, lan_user, lan_zone, lan_machine, remote_country, remote_ip  FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `lan_ip` = ? ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
->>>>>>> 954a7be5cb22960a36ed003e0c36d49a75b2c163
                             if (data) {
                                 res.json(data);
                             }
                         }); 
                         break;
                     case 'getconn4':
-<<<<<<< HEAD
                         new query({query: 'SELECT DISTINCT  `lan_ip`, `lan_machine`, `remote_ip` FROM `conn_l7_meta` WHERE time BETWEEN ? AND ? AND `l7_proto`="IPsec" AND `remote_ip` = ?', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
-=======
-                        new query({query: 'SELECT DISTINCT lan_ip, lan_country, lan_user, lan_zone, lan_machine, remote_country, remote_ip FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `remote_ip` = ?', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
->>>>>>> 954a7be5cb22960a36ed003e0c36d49a75b2c163
                             if (data) {
                                 res.json(data);
                             }
@@ -236,7 +213,7 @@ module.exports = function(pool) {
                     insert: []
                 }
 
-<<<<<<< HEAD
+
                 var groupedFloors = [];
                 var build = {
                     query: 'SELECT '+
@@ -246,66 +223,6 @@ module.exports = function(pool) {
                             'WHERE '+
                                 '`type` = "building"',
                     insert: []
-=======
-
-                var stealthDrop = [];
-                var stealth_drop = {
-                    query: 'SELECT DISTINCT '+
-                            'lan_user, '+
-                            'lan_ip, '+
-                            'lan_zone, '+
-                            'lan_machine '+
-                        'FROM '+
-                            '`stealth_conn_meta` '+
-                        'WHERE '+
-                            'time BETWEEN ? AND ? '+
-                            'AND `in_bytes` = 0 ',
-                    insert: [start, end]
-                }
-                var localDrop = [];
-                var local_drop = {
-                    query: 'SELECT DISTINCT '+
-                            'lan_user, '+
-                            'lan_ip, '+
-                            'lan_zone, '+
-                            'lan_machine '+ 
-                    'FROM '+
-                        ' `conn_meta` '+
-                    'WHERE '+
-                        'time BETWEEN ? AND ? '+
-                        'AND `out_bytes` = 0 ',
-                    insert: [start, end]
-                }
-                var stealthAuthorized = [];
-                var stealth_authorized = {
-                    query: 'SELECT DISTINCT '+
-                            'lan_user, '+
-                            'lan_ip, '+
-                            'lan_zone, '+
-                            'lan_machine '+
-                        'FROM '+
-                            '`stealth_conn_meta` '+
-                        'WHERE '+
-                            'time BETWEEN ? AND ? '+
-                            'AND `out_bytes` > 0 '+
-                            'AND `in_bytes` > 0 ',
-                    insert: [start, end]
-                }
-                var localAuthorized = [];
-                var local_authorized = {
-                    query: 'SELECT DISTINCT '+
-                            'lan_user, '+
-                            'lan_ip, '+
-                            'lan_zone, '+
-                            'lan_machine '+
-                    'FROM '+
-                        ' `conn_meta` '+
-                    'WHERE '+
-                        'time BETWEEN ? AND ? '+
-                        'AND `out_bytes` > 0 '+
-                        'AND `in_bytes` > 0 ',
-                    insert: [start, end]
->>>>>>> 954a7be5cb22960a36ed003e0c36d49a75b2c163
                 }
 
                 // var blds = {
