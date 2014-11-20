@@ -915,7 +915,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         .attr("y2", mainHeight)
                                         .attr('stroke-width', '1')
                                         .attr("stroke", "#FFF");
-                                changeIcon(elm, d, previousElm);
+                                changeIcon(elm, d);
                                 previousElm = elm;
                                 $scope.highlightedPoint = false;
                             }
