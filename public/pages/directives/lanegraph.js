@@ -366,26 +366,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             return "#666";
                     }
                 }
-                function highlightSameNodes(uid, id, previousElm) {
-                    var pData = false;
-                    if (previousElm) {
-                        pData = previousElm.data();
-                    }
-                    itemRects.selectAll('g').each(function(d){
-                        // select nodes that match
-                        var elm = d3.select(this).select('.hover-square');
-                        if ((d.conn_uids === uid) && (d.id !== id)) {
-                            hoverPoint(elm, 'mouseover');
-                        }
-                        // deselect previous nodes (if any)
-                        if (pData) {
-                            // if any nodes match our previous time andwe're on a different time segment
-                            if ((pData[0].conn_uids === d.conn_uids) && (pData[0].conn_uids !== uid)) {
-                                hoverPoint(elm, 'mouseout');
-                            }
-                        }
-                    })
-                }
                 function hoverPoint(elm, action) {
                     if (action === 'mouseover') {
                         elm
@@ -405,10 +385,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     clickLine.selectAll('line').remove();
                 }
                 function changeIcon(element, data, previousElm) {
-                    // call filter funtion to highlight all nodes with the same time
-                    highlightSameNodes(data.conn_uids, data.id, previousElm);
-                    var color, select;
+                    var color, select, pData = false;
                     if (previousElm) {
+                        pData = previousElm.data();
                         previousElm.select('.eventFocus').remove();
                     }
                     if (data.id in $scope.pattern.selected) {
@@ -433,7 +412,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .attr("stroke", "#fff");      
                         }
                     }
-
                     element.classed('node-'+data.id, true);
                     element = element.append('g');                
                     element.attr('transform', 'translate(-11, -9)');
@@ -506,6 +484,23 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .attr('height', 36);
                             laneRowSymbols(data.type, element, color1, color2);
                     }
+                    setTimeout(function(){ // this is a temporary fix to an unknown issue reguarding this firing too soon
+                        // highlight all nodes matching the uid
+                        itemRects.selectAll('g').each(function(d){
+                            // select nodes that match
+                            var elm = d3.select(this).select('.hover-square');
+                            if ((d.conn_uids === data.conn_uids) && (d.id !== data.id)) {
+                                hoverPoint(elm, 'mouseover');
+                            }
+                            // deselect previous nodes (if any)
+                            if (pData) {
+                                // if any nodes match our previous time andwe're on a different time segment
+                                if ((pData[0].conn_uids === d.conn_uids) && (pData[0].conn_uids !== data.conn_uids)) {
+                                    hoverPoint(elm, 'mouseout');
+                                }
+                            }
+                        })
+                    }, 10)
                 }
                 function analize() {
                     var compareObj = $scope.pattern.selected;
@@ -924,7 +919,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         .attr("stroke", "#FFF");
                                 changeIcon(elm, d);
                                 previousElm = elm;
-                                // set highlighted point to to new elm
+                                // set highlighted point to to new elm data
                                 $scope.highlightedPoint = d;
                             }
                             // generate points from point function
