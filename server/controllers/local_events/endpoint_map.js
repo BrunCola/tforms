@@ -360,8 +360,8 @@ module.exports = function(pool) {
 
                 if (req.query.rem === 'removeFloorPlan') {
                     var delete_floor = {
-                        query: "DELETE FROM `assets` WHERE `type`='map' AND `asset_name`=?",
-                        insert: [req.body.asset_name]
+                        query: "DELETE FROM `assets` WHERE `type`='map' AND `asset_name`=? AND `building`=?",
+                        insert: [req.body.asset_name, req.body.building]
                     }                
                     new query(delete_floor, {database: database, pool: pool}, function(err,data){
                         if (err) {
@@ -384,8 +384,8 @@ module.exports = function(pool) {
                 });
             } else if (req.query.type === 'editFloorInfo') {
                 var update_floor = {
-                    query: "update `assets` SET `order_index`=?, `custom_name`=?, `scale`=?, `user_scale`=? WHERE `type`='map' AND `asset_name`=?",
-                    insert: [req.body.edited_floor.order_index, req.body.edited_floor.custom_name, req.body.edited_floor.scale, req.body.edited_floor.user_scale, req.body.edited_floor.asset_name]
+                    query: "update `assets` SET `order_index`=?, `custom_name`=?, `scale`=?, `user_scale`=? WHERE `type`='map' AND `asset_name`=? AND `building`=?",
+                    insert: [req.body.edited_floor.order_index, req.body.edited_floor.custom_name, req.body.edited_floor.scale, req.body.edited_floor.user_scale, req.body.edited_floor.asset_name, req.body.edited_floor.building]
                 }                
                 new query(update_floor, {database: database, pool: pool}, function(err,data){
                     if (err) {
@@ -399,8 +399,8 @@ module.exports = function(pool) {
                     console.log(asset_name);
 
                     var insert_map_image = {
-                        query: "INSERT INTO `assets` (`file`,  `asset_name`, `path`, `type`, `custom_name`, `image_width`, `image_height`, `scale`) VALUES (?,?,?,?,?,?,?,?)",
-                        insert: ["",asset_name,"","map",req.body.custom_name,800,600,1]
+                        query: "INSERT INTO `assets` (`file`,  `asset_name`, `path`, `type`, `custom_name`, `image_width`, `image_height`, `scale`, `building`) VALUES (?,?,?,?,?,?,?,?,?)",
+                        insert: ["",asset_name,"","map",req.body.custom_name,800,600,1,req.body.building]
                     }
                     new query(insert_map_image, {database: database, pool: pool}, function(err,data){
                         res.send(200);

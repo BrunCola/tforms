@@ -314,7 +314,8 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         $http({method: 'POST', url: '/actions/change_custom_user', data: {custom_user: value, lan_ip: item.lan_ip, lan_zone: item.lan_zone}});
     }
 
-    $scope.uploadOpen = function () {
+    $scope.uploadOpen = function (building) {
+        $rootScope.building = building;
         $scope.modalInstance = $modal.open({
             templateUrl: 'uploadModal.html',
             controller: uploadInstanceCtrl,
@@ -404,7 +405,8 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                         order_index: edited_floor.order_index,
                         asset_name: edited_floor.asset_name,
                         scale: edited_floor.scale,
-                        user_scale: edited_floor.user_scale
+                        user_scale: edited_floor.user_scale,
+                        building: edited_floor.building
                     },
                     file: $scope.selectedFiles[index],
                 }).then(function(response) {
@@ -423,10 +425,11 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             }
         };
 
-        $scope.newBlankFloor = function(floor_name) {
+        $scope.newBlankFloor = function(floor_name, building) {
+
             if (floor_name !== undefined) {
                 $scope.cant_leave_blank = false;
-                $http({method: 'POST', url: '/local_events/endpoint_map?type=newFloor', data: {custom_name: floor_name}});
+                $http({method: 'POST', url: '/local_events/endpoint_map?type=newFloor', data: {custom_name: floor_name, building: building.asset_name}});
                 $scope.ok();
             } else {
                 $scope.cant_leave_blank = true;
@@ -439,12 +442,14 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
 
         $scope.deleteFloorplan = function(floor_name, floors) {
             var imagePath = "";
+            var building = "";
             for (var f in floors) {
                 if (floors[f].asset_name === floor_name.select) {
                     imagePath = floors[f].path;
+                    building = floors[f].building;
                 }
             }
-            $http({method: 'POST', url: '/local_events/endpoint_map?type=deletefp&rem=removeFloorPlan', data: {asset_name: floor_name.select, path: imagePath}});
+            $http({method: 'POST', url: '/local_events/endpoint_map?type=deletefp&rem=removeFloorPlan', data: {asset_name: floor_name.select, path: imagePath, building: building}});
             $scope.ok();
         };
 
@@ -475,33 +480,33 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 });
             };
         } else {
-            $scope.start = function(index, custom_fn) {
-                $scope.progress[index] = 0;
-                $scope.errorMsg = null;
-                $scope.upload[index] = $upload.upload({
-                    url : '/uploads',
-                    method: 'POST',
-                    data : {
-                        myModel : $scope.myModel,
-                        custom_name: custom_fn,
-                        imageType: 'map',
-                        width: $scope.imageWidth,
-                        height: $scope.imageHeight,
-                        scale: 1
-                    },
-                    file: $scope.selectedFiles[index],
-                }).then(function(response) {
-                    $scope.uploadResult.push(response.data);
-                    console.log(response.data);
-                }, function(response) {
-                    if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
-                }, function(evt) {
-                    // Math.min is to fix IE which reports 200% sometimes
-                    $scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-                }).xhr(function(xhr){
-                    xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
-                });
-            };
+            // $scope.start = function(index, custom_fn) {
+            //     $scope.progress[index] = 0;
+            //     $scope.errorMsg = null;
+            //     $scope.upload[index] = $upload.upload({
+            //         url : '/uploads',
+            //         method: 'POST',
+            //         data : {
+            //             myModel : $scope.myModel,
+            //             custom_name: custom_fn,
+            //             imageType: 'map',
+            //             width: $scope.imageWidth,
+            //             height: $scope.imageHeight,
+            //             scale: 1
+            //         },
+            //         file: $scope.selectedFiles[index],
+            //     }).then(function(response) {
+            //         $scope.uploadResult.push(response.data);
+            //         console.log(response.data);
+            //     }, function(response) {
+            //         if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
+            //     }, function(evt) {
+            //         // Math.min is to fix IE which reports 200% sometimes
+            //         $scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+            //     }).xhr(function(xhr){
+            //         xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
+            //     });
+            // };
         }
     };
 }]);

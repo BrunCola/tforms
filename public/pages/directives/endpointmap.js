@@ -2391,7 +2391,7 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                                 elm
                                     .style("padding-top", "2px")
                                     .style("text-align", "center")
-                                    .html("<h4>"+d.custom_name + "</h4><strong>" + userCount + " Hosts </strong>")
+                                    .html("<h4>"+d.custom_name + "</h4><strong>" + d.floors.length + " Floors, " + userCount + " Hosts</strong>")
                                     .on('dblclick', function(e){
                                         for (var bld in $scope.buildings) {
                                              $scope.buildings[bld].active = false;
