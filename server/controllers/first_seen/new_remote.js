@@ -22,7 +22,7 @@ module.exports = function(pool) {
 				query: 'SELECT '+
 						'conn_uniq_remote_ip.time AS `time`,'+
 						'`lan_zone`,'+
-						'`machine`,'+
+						'`lan_machine`,'+
 						'conn_uniq_remote_ip.lan_ip AS lan_ip,'+
 						//'`lan_ip`,'+
 						'`remote_ip`,'+
@@ -50,7 +50,7 @@ module.exports = function(pool) {
 					{ title: 'Flag', select: 'remote_cc', },
 					{ title: 'Remote ASN', select: 'remote_asn_name' },
 					{ title: 'Zone', select: 'lan_zone' },
-					{ title: 'Machine Name', select: 'machine' },
+					{ title: 'Machine Name', select: 'lan_machine' },
 					{ title: 'Local IP', select: 'lan_ip' }
 				],
 				settings: {

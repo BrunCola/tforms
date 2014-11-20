@@ -235,7 +235,7 @@ module.exports = function(pool) {
 								'ioc_typeIndicator,'+
 								'ioc_rule,'+
 								'lan_zone,'+
-								'machine,'+
+								'lan_machine,'+
 								'lan_ip,'+
 								'sum(`in_bytes`) AS icon_in_bytes,'+
 								'sum(`out_bytes`) AS icon_out_bytes '+
@@ -262,7 +262,7 @@ module.exports = function(pool) {
 							{ title: 'IOC Type', select: 'ioc_typeIndicator' },
 							{ title: 'IOC Rule', select: 'ioc_rule' },
 							{ title: 'Zone', select: 'lan_zone' },
-							{ title: 'Machine Name', select: 'machine' },
+							{ title: 'Machine Name', select: 'lan_machine' },
 							{ title: 'Local IP', select: 'lan_ip' },
 							{ title: 'Traffic In/Out', select: 'icon_in_bytes' }
 						],

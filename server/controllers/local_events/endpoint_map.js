@@ -143,21 +143,21 @@ module.exports = function(pool) {
                 //     //     }); 
                 //     //     break;
                 //     // case 'getconn2':
-                //     //     new query({query: 'SELECT DISTINCT lan_ip, lan_country, lan_user, lan_zone, machine, remote_country, remote_ip FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `in_bytes` = 0 AND `lan_ip` = ? ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                //     //     new query({query: 'SELECT DISTINCT lan_ip, lan_country, lan_user, lan_zone, lan_machine, remote_country, remote_ip FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `in_bytes` = 0 AND `lan_ip` = ? ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
                 //     //         if (data) {
                 //     //             res.json(data);
                 //     //         }
                 //     //     }); 
                 //     //     break;
                     case 'getconn2':
-                        new query({query: 'SELECT DISTINCT lan_ip, lan_country, lan_user, lan_zone, machine, remote_country, remote_ip  FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `lan_ip` = ? ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                        new query({query: 'SELECT DISTINCT lan_ip, lan_country, lan_user, lan_zone, lan_machine, remote_country, remote_ip  FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `lan_ip` = ? ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
                             }
                         }); 
                         break;
                     case 'getconn4':
-                        new query({query: 'SELECT DISTINCT lan_ip, lan_country, lan_user, lan_zone, machine, remote_country, remote_ip FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `remote_ip` = ?', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                        new query({query: 'SELECT DISTINCT lan_ip, lan_country, lan_user, lan_zone, lan_machine, remote_country, remote_ip FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `remote_ip` = ?', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
                             }
@@ -238,7 +238,7 @@ module.exports = function(pool) {
                             'lan_user, '+
                             'lan_ip, '+
                             'lan_zone, '+
-                            'machine '+ 
+                            'lan_machine '+ 
                     'FROM '+
                         ' `conn_meta` '+
                     'WHERE '+
@@ -267,7 +267,7 @@ module.exports = function(pool) {
                             'lan_user, '+
                             'lan_ip, '+
                             'lan_zone, '+
-                            'machine '+
+                            'lan_machine '+
                     'FROM '+
                         ' `conn_meta` '+
                     'WHERE '+
