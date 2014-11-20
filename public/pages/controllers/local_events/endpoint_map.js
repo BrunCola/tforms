@@ -232,15 +232,28 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
          if (d === "clear") {
             $scope.userinfo = undefined;
             $scope.currentFloor = undefined;
+            $scope.currentBuilding = undefined;
             $scope.$apply();
          } else if(type === "listusers") {
             $scope.userinfo = undefined;
+            $scope.currentBuilding = undefined;
             var users = $scope.userDimension.filter(function(dt){ 
-                    if ((d.asset_name === dt.map)){
+                    if ((d.id == dt.map)){
                         return true;
                     }
                 });
             $scope.currentFloor = users.top(Infinity);
+         } else if(type === "listallusers") {
+            $scope.userinfo = undefined;
+            $scope.currentFloor = undefined;
+            var users = $scope.userDimension.filter(function(dt){
+                    for (var fl in d.floors) {
+                        if ((d.floors[fl].id == dt.map)){
+                            return true;
+                        }
+                    }                    
+                });
+            $scope.currentBuilding = users.top(Infinity);
          } else if ($scope.lan_ip !== '-') {
             $scope.currentFloor = undefined;
             var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser';

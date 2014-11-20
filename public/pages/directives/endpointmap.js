@@ -1100,23 +1100,23 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     ///  SEARCH  ///
                     ////////////////
                     // -- display users after
-                    // $scope.$on('searchUsers', function (event, filteredData){
-                    //     plot(filteredData, floorName);
-                    //     wait(function(){
-                    //         if (filteredData.length > 0) {
-                    //             if (lastUserRequeried !== filteredData[0].id) {
-                    //                 $scope.floors.filter(function(d){ if ((filteredData[0].map === d.asset_name)) { d.active = true; }});
-                    //                 $scope.requery(filteredData[0], 'flooruser');
-                    //                 lastUserRequeried = filteredData[0].id;
-                    //             } 
-                    //             d3.select('.user-'+filteredData[0].id).classed("selected", true);
-                    //         } else {
-                    //             // remove the info pane
-                    //             lastUserRequeried = -1;
-                    //             $scope.requery("clear", 'flooruser');   
-                    //         }
-                    //     }, 500, "filtertWait");
-                    // })
+                    $scope.$on('searchUsers', function (event, filteredData){
+                        plot(filteredData, floorName);
+                        wait(function(){
+                            if (filteredData.length > 0) {
+                                if (lastUserRequeried !== filteredData[0].id) {
+                                    //$scope.buildings.filter(function(d){ if ((filteredData[0].map === d.asset_name)) { d.active = true; }}); // doesnt switch floors
+                                    $scope.requery(filteredData[0], 'flooruser');
+                                    lastUserRequeried = filteredData[0].id;
+                                } 
+                                d3.select('.user-'+filteredData[0].id).classed("selected", true);
+                            } else {
+                                // remove the info pane
+                                lastUserRequeried = -1;
+                                $scope.requery("clear", 'flooruser');   
+                            }
+                        }, 500, "filtertWait");
+                    })
                     plot(data, floorName);
 
             }, 0);
@@ -2403,7 +2403,7 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                                         $scope.$apply();
                                     })
                                     .on('click', function(e){
-                                        $scope.requery(d, 'listusers'); 
+                                        $scope.requery(d, 'listallusers'); 
                                         // $scope.removeLines();
                                     })
                                     .on('mouseover', function(e){

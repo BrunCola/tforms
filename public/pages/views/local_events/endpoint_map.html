@@ -140,7 +140,7 @@
                     </div>
                 </div>
             </div>
-<!--             <div id="localuserinformationspan" ng-show="userinfo">
+            <div id="localuserinformationspan" ng-show="userinfo">
                 <div class="jdash-header">User Information</div>
                 <div  style="background-color:#FFF;" class="box">
                     <div id="localuserinformation"  ng-show="toggleView">
@@ -195,8 +195,8 @@
                         <div ng-show="userinfo.map"><button type="button" class="button-error pure-button" ng-click="removeEndUser(userinfo)">Remove User</button></div>
                     </div>
                 </div>
-            </div> -->
-<!--             <div id="localuserinformationspan" ng-show="currentFloor">
+            </div>
+            <div id="localuserinformationspan" ng-show="currentFloor">
                 <div class="jdash-header">User Information</div>
                 <div  style="background-color:#FFF;" class="box">
                      <div id="alllocaluserinformation">
@@ -207,23 +207,26 @@
                                 </tr>
                                 <tr  ng-repeat="user in currentFloor" ng-click="userLink(user)">
                                     <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
-                                </tr> 
+                                </tr>
+                            </table> 
                         </div>
                     </div>
                 </div>
-            </div> -->
+            </div>
+
             <div id="localuserinformationspan" ng-show="currentBuilding">
                 <div class="jdash-header">User Information</div>
                 <div  style="background-color:#FFF;" class="box">
                      <div id="alllocaluserinformation">
-                        <div class="luinfo" ng-show="currentFloor">
+                        <div class="luinfo" ng-show="currentBuilding">
                             <table id="flus">
                                 <tr style="font-weight:bold">
                                     <td>IP</td><td>Host Name</td><td>User name</td>
                                 </tr>
-                                <tr  ng-repeat="user in currentFloor" ng-click="userLink(user)">
+                                <tr  ng-repeat="user in currentBuilding" ng-click="userLink(user)">
                                     <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
-                                </tr> 
+                                </tr>
+                            </table>  
                         </div>
                     </div>
                 </div>
