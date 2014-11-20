@@ -39,6 +39,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $rootScope.toggleView = false;
 
             $scope.buildings = data.buildings; 
+            $rootScope.assets = data.assets; 
             // $scope.floors = data.floor; 
             // $scope.floors[0].active = true;
 
@@ -456,21 +457,47 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
 
         $scope.newBlankFloor = function(floor_name, building) {
             if ((floor_name !== undefined) && (floor_name !== "")){
-                $scope.cant_leave_blank = false;
-                $http({method: 'POST', url: '/local_events/endpoint_map?type=newFloor', data: {custom_name: floor_name, building: building.asset_name}});
-                $scope.ok();
+                var new_asset_name = floor_name.replace(new RegExp(" ", 'g'), "_")
+                var nameTaken = $scope.assets.filter(function(a){ 
+                    if ((new_asset_name === a.asset_name)){ // && (da.machine === dt.remote_machine)
+                        return true;
+                    }
+                });
+                if (nameTaken.length > 0) {
+                    $scope.name_already_taken = true;
+                    $scope.cant_leave_blank = false;
+                } else{                    
+                    $scope.cant_leave_blank = false;
+                    $scope.name_already_taken = false;
+                    $http({method: 'POST', url: '/local_events/endpoint_map?type=newFloor', data: {custom_name: floor_name, building: building.asset_name, asset_name: new_asset_name}});
+                    $scope.ok();
+                }
             } else {
                 $scope.cant_leave_blank = true;
+                $scope.name_already_taken = false;
             }
         };
 
         $scope.newBlankBuilding = function(building_name) {
             if ((building_name !== undefined) && (building_name !== "")) {
-                $scope.cant_leave_blank = false;
-                $http({method: 'POST', url: '/local_events/endpoint_map?type=newBuilding', data: {custom_name: building_name}});
-                $scope.ok();
+                var new_asset_name = building_name.replace(new RegExp(" ", 'g'), "_")
+                var nameTaken = $scope.assets.filter(function(a){ 
+                    if ((new_asset_name === a.asset_name)){ // && (da.machine === dt.remote_machine)
+                        return true;
+                    }
+                });
+                if (nameTaken.length > 0) {
+                    $scope.name_already_taken = true;
+                    $scope.cant_leave_blank = false;
+                } else{                    
+                    $scope.cant_leave_blank = false;
+                    $scope.name_already_taken = false;
+                    $http({method: 'POST', url: '/local_events/endpoint_map?type=newBuilding', data: {custom_name: building_name, asset_name: new_asset_name}});
+                    $scope.ok();
+                }
             } else {
                 $scope.cant_leave_blank = true;
+                $scope.name_already_taken = false;
             }
         };
 

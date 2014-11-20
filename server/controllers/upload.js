@@ -33,7 +33,7 @@ module.exports = function(pool) {
 						//var newName = "floor_plan." + nameSplit[1];
 						var newName = req.files[i].name;
 						var custom_name = req.body.custom_name;
-						var asset_name = custom_name.replace(" ", "_");
+                    	var asset_name = custom_name.replace(new RegExp(" ", 'g'), "_")
 					} else if (req.body.imageType === 'user') { //if this is a user image
 						var newName;
 						if(req.body.lan_ip != undefined) {

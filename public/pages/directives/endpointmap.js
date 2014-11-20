@@ -2399,10 +2399,12 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                                              $scope.buildings[bld].active = false;
                                         }
                                         d.active = true;
-                                        d.floors[0].active = true;
+                                        if (d.floors[0] !== undefined) {
+                                            d.floors[0].active = true;
 
-                                        $rootScope.toggleZoom = true;
-                                        $scope.$apply();
+                                        }
+                                            $rootScope.toggleZoom = true;
+                                            $scope.$apply();
                                     })
                                     .on('click', function(e){
                                         $scope.requery(d, 'listallusers'); 

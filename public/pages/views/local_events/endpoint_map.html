@@ -9,6 +9,9 @@
                 <div ng-show="cant_leave_blank" class="cant_leave_blank">
                 You must enter a floor name
                 </div>
+                <div ng-show="name_already_taken" class="cant_leave_blank">
+                The name has already been taken
+                </div>
             </div>
         </div>
         <div class="modal-footer">
@@ -25,6 +28,9 @@
                 <input type="text" ng-model="custom_bn" placeholder="Example building name"/>
                 <div ng-show="cant_leave_blank" class="cant_leave_blank">
                 You must enter a name for the building
+                </div>
+                <div ng-show="name_already_taken" class="cant_leave_blank">
+                The name has already been taken
                 </div>
             </div>
         </div>

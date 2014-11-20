@@ -213,6 +213,14 @@ module.exports = function(pool) {
                     insert: []
                 }
 
+                var assets = [];
+                var asset = {
+                    query: 'SELECT '+
+                            '* '+
+                            'FROM '+
+                                'assets ',
+                    insert: []
+                }
 
                 var groupedFloors = [];
                 var build = {
@@ -306,7 +314,6 @@ module.exports = function(pool) {
                         });
                     },
 
-
                     function(callback) {
                         new buildings(floors, build, {database: database, pool: pool}, function(err,data){
                             groupedFloors = data;
@@ -319,12 +326,19 @@ module.exports = function(pool) {
                             callback();
                         });
                     },
+                    function(callback) {
+                        new floor_plan(asset, {database: database, pool: pool}, function(err,data){
+                            assets = data;
+                            callback();
+                        });
+                    },
                 ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                     if (err) throw console.log(err);
                     var results = { 
                         users: floorplanReturn,
                         floor: floorplan,
-                        buildings: groupedFloors
+                        buildings: groupedFloors,
+                        assets: assets
                     };
                     res.json(results);
                 });         
@@ -404,11 +418,9 @@ module.exports = function(pool) {
                 });
             } else if (req.query.type === 'newFloor') {
                 if (req.body.custom_name !== undefined ) {                    
-                    var asset_name = req.body.custom_name.replace(" ", "_");
-
                     var insert_map_image = {
                         query: "INSERT INTO `assets` (`file`,  `asset_name`, `path`, `type`, `custom_name`, `image_width`, `image_height`, `scale`, `building`) VALUES (?,?,?,?,?,?,?,?,?)",
-                        insert: ["",asset_name,"","map",req.body.custom_name,800,600,1,req.body.building]
+                        insert: ["",req.body.asset_name,"","map",req.body.custom_name,800,600,1,req.body.building]
                     }
                     new query(insert_map_image, {database: database, pool: pool}, function(err,data){
                         res.send(200);
@@ -416,11 +428,9 @@ module.exports = function(pool) {
                 }
             } else if (req.query.type === 'newBuilding') {
                 if (req.body.custom_name !== undefined ) {                    
-                    var asset_name = req.body.custom_name.replace(" ", "_");
-
                     var insert_building = {
                         query: "INSERT INTO `assets` (`file`, `asset_name`, `path`, `type`, `custom_name`, `image_width`, `image_height`,`scale`, `building`) VALUES (?,?,?,?,?,?,?,?,?)",
-                        insert: ["",asset_name,"","building",req.body.custom_name,800,600,1,null]
+                        insert: ["",req.body.asset_name,"","building",req.body.custom_name,800,600,1,null]
                     }
                     new query(insert_building, {database: database, pool: pool}, function(err,data){
                         res.send(200);
