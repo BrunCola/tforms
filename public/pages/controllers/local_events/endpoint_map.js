@@ -256,6 +256,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.currentBuilding = users.top(Infinity);
          } else if ($scope.lan_ip !== '-') {
             $scope.currentFloor = undefined;
+            $scope.currentBuilding = undefined;
             var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser';
             $scope.startend = ""; 
             if ($location.$$search.start && $location.$$search.end) {
