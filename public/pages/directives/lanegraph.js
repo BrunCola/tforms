@@ -37,15 +37,20 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 };
                 $scope.highlightedPoint = false;
                 // toggle for turning on/off unit multiselecting
-                $scope.pattern = {
-                    searching: false,
-                    selected: {
-                        length: 0
-                    },
-                    // last elm clicked, for throwing in object after an item is clicked when and our button is toggled
-                    last: null,
-                    lastXY: null
+                $scope.pattern;
+                // we put the pattern in a function because it's easier to clear later without redefining things
+                function setPatternObj() {
+                    $scope.pattern = {
+                        searching: false,
+                        selected: {
+                            length: 0
+                        },
+                        // last elm clicked, for throwing in object after an item is clicked when and our button is toggled
+                        last: null,
+                        lastXY: null
+                    }
                 }
+                setPatternObj();
                 var queryThreshhold = 3600; // one hour in seconds
                 var navArray = [], currentNavPos = 0;
                 var addRemBtnDimensions = [32,18];
@@ -311,6 +316,19 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             laneInfoAppend($scope.pattern.last.data, $scope.pattern.last.element);
                         }
                     });
+                $scope.$watch('patternPane', function(pane){
+                    if (pane) {
+                        saveToggle.attr('disabled', 'disabled');
+                        prevButton.attr('disabled', 'disabled');
+                        nextButton.attr('disabled', 'disabled');
+                        resetBtn.attr('disabled', 'disabled');
+                    } else {
+                        saveToggle.attr('disabled', null);
+                        prevButton.attr('disabled', null);
+                        nextButton.attr('disabled', null);
+                        resetBtn.attr('disabled', null);
+                    }
+                })
 
                 ///////////////////////////////
                 /////  GENERAL FUNCTIONS  /////
@@ -664,7 +682,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
                 // this function finds what's clicked on brush and adds flag to values for redraw highlighting
                 function reHighlightPoints(timeObj) {
-                    var clickedElm = itemRects.selectAll('g .eventFocus').each(function(d){
+                    itemRects.select('g .eventFocus').node(function(d){
                         // if the point sits within the time space add flag for highlight (or add to external object for refrence later)
                         if ((d.time > timeObj.min) && (d.time < timeObj.max)) {
                             $scope.highlightedPoint = d;
@@ -1120,7 +1138,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                 }
                 function patternPane(data) {
-                    if ($scope.patternPane) { $scope.patternPane = false; return }
+                    if ($scope.patternPane) { $scope.patternPane = false; return; }
                     // loop through and add a checked flag for each point (for use in finding commonalities)
                     data.forEach(function(d){
                         d.point.checked = true;
@@ -1146,6 +1164,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
                 $scope.closePatternBox = function() {
                     $scope.patternPane = false;
+                    $scope.highlightedPoint = false; 
+                    setPatternObj();
                 }
                 // begin execution
                 draw();
