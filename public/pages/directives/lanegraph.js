@@ -242,9 +242,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr('class', 'resetButton')
                     .on('click', function(){
                         draw();
-                        $scope.alert.style('display', 'none');
-                        $scope.highlightedPoint = false;
-                        clearVerticalLine();
                     });
                 var prevButton = buttonHolder.append('button')
                     .html('Previous')
@@ -378,14 +375,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         // select nodes that match
                         var elm = d3.select(this).select('.hover-square');
                         if ((d.conn_uids === uid) && (d.id !== id)) {
-                            d.hover = true;
                             hoverPoint(elm, 'mouseover');
                         }
                         // deselect previous nodes (if any)
                         if (pData) {
                             // if any nodes match our previous time andwe're on a different time segment
                             if ((pData[0].conn_uids === d.conn_uids) && (pData[0].conn_uids !== uid)) {
-                                d.hover = false;
                                 hoverPoint(elm, 'mouseout');
                             }
                         }
@@ -659,6 +654,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     prevButton.attr('disabled', 'disabled');
                     nextButton.attr('disabled', 'disabled');
                     resetBtn.attr('disabled', 'disabled');
+                    $scope.alert.style('display', 'none');
+                    $scope.highlightedPoint = false;
+                    clearVerticalLine();
                     // push current time position to nav array
                     navArray.push({'min': new Date($scope.start), 'max': new Date($scope.end)});
                     // push time slice heading t odiv
@@ -749,6 +747,13 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         }
                         $('.divScroll').scrollTo(offset);
                     }
+                }
+                function uidsMatch(data){
+                    // compares 2 objects 2 ids - current use is to determine if a point should be zommed out if moused over
+                    if ($scope.highlightedPoint.conn_uids === data.conn_uids){
+                        return true;
+                    }
+                    return false;
                 }
                 function plot(data, min, max) {
                     // node selecting
@@ -842,7 +847,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 })
                                 .on('mouseout', function(d){
                                     var elm = d3.select(this);
-                                    if (d.hover !== true){
+                                    if (!(uidsMatch(d))){
                                         hoverPoint(elm, 'mouseout');
                                     }
                                 });
@@ -885,6 +890,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     //////// THIS NODE ////////
                                     ///////////////////////////
                                     clearVerticalLine();
+                                    // set new highlighted point object
+                                    $scope.highlightedPoint = d;
                                     var selectedNode = clickLine.selectAll(".clickLine").data(['']);
                                     // vertical line
                                     selectedNode.enter()
@@ -917,7 +924,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         .attr("stroke", "#FFF");
                                 changeIcon(elm, d);
                                 previousElm = elm;
-                                $scope.highlightedPoint = false;
+                                // set highlighted point to to new elm
+                                $scope.highlightedPoint = d;
                             }
                             // generate points from point function
                             if (d.type !== 'l7') {
