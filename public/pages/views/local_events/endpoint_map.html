@@ -16,6 +16,23 @@
             <button class=" pure-button" ng-click="ok()">Close</button>
         </div>
     </script>
+    <script type="text/ng-template" id="uploadBuildingModal.html">
+        <div class="modal-header">
+            <h3>Upload Building</h3>
+        </div>
+        <div class="modal-body">
+            <div style="width: 100%;margin: 0 auto;">               
+                <input type="text" ng-model="custom_bn" placeholder="Example building name"/>
+                <div ng-show="cant_leave_blank" class="cant_leave_blank">
+                You must enter a name for the building
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="button-success pure-button" ng-click="newBlankBuilding(custom_bn)">Create Building</button>
+            <button class=" pure-button" ng-click="ok()">Close</button>
+        </div>
+    </script>
     <script type="text/ng-template" id="uploadUserModal.html">
         <div class="modal-header">
             <h3>Upload User Image</h3>
@@ -89,7 +106,6 @@
     <section id="loading-error" loading-error></section>
     <section id="loading-spinner" loading-spinner></section>
     <div class="row-fluid">
-        <!-- <input type="checkbox" id="togView" ng-model="toggleView" ng-show="toggleZoom" >  -->
         <button type="button" class="rndCrnBtn pure-button" ng-show="toggleZoom"  ng-click="toggleViews()">Toggle View</button>
         <button type="button" class="rndCrnBtn pure-button" ng-show="toggleZoom"  ng-click="toggleZooms()">Zoom Out</button>
         <section id="floorplanpage">
@@ -116,11 +132,11 @@
                             <tab-heading> + </tab-heading>     
                             <div style="background-color:#FFF;" class="box"></div>                    
                         </tab>
-                    <div id="editbuttons" class="bin">
+                    <div id="editbuttons" class="bin epbuttons">
                         <button type="button" class="rndCrnBtn pure-button" ng-click="editFloorPlan(building.floors)">Edit</button>
                     </div>
-                    <div id="scalebuttons" class="bin"></div>
-                    <div id="triggerbuttons" class="bin" ></div>
+                    <div id="scalebuttons{{building.asset_name}}" class="bin epbuttons"></div>
+                    <div id="triggerbuttons{{building.asset_name}}" class="bin epbuttons" ></div>
                     </tabset>
                 </div> 
              <div id="allfloorplanspan" ng-show="!toggleView">
@@ -133,7 +149,7 @@
             </div>
             </div>
              <div id="buildingplanspan" ng-show="!toggleZoom">
-                <div class="jdash-header">Building View</div>  
+                <div class="jdash-header">Building View <button type="button" class="rndCrnBtn pure-button right" ng-click="createBuilding()">Create Building</button></div>  
                 <div style="background-color:#FFF;" class="box" >
                     <div id="allfloorplan" style="position: relative;">
                         <div make-building-plan style="position: relative;"></div>
@@ -220,6 +236,9 @@
                      <div id="alllocaluserinformation">
                         <div class="luinfo" ng-show="currentBuilding">
                             <table id="flus">
+                                <tr>
+                                    <button type="button" class="button-error pure-button" ng-click="removeBuilding(selectedBuilding)">Remove Building</button>
+                                </tr>
                                 <tr style="font-weight:bold">
                                     <td>IP</td><td>Host Name</td><td>User name</td>
                                 </tr>

@@ -33,6 +33,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     ///  INITIAL VARIABLES  ///
                     ///////////////////////////
                     var floor_path = $scope.floor.path;
+                    var bdname = $scope.floor.building;
                     var scale = $scope.floor.scale;
                     var imageRatio = $scope.floor.image_width/$scope.floor.image_height;
                     var data = $scope.data.users;
@@ -63,8 +64,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                     var hideListDiv = d3.select('#listlocalusersspan');
                     var expandDiv = d3.select('#floorplanspan');
-                    var buttonDiv = d3.select('#triggerbuttons');
-                    var scaleButtonDiv = $('#scalebuttons');
+                    var buttonDiv = d3.select('#triggerbuttons'+bdname);
+                    var scaleButtonDiv = $('#scalebuttons'+bdname);
 
                     var margin = {top: -5, right: -5, bottom: -5, left: -5};
 
@@ -975,6 +976,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     /////////////////
                     ///  BUTTONS  ///
                     /////////////////
+
                     buttonDiv.selectAll('button').remove();
                     buttonDiv.append('button')
                         .html('Users with IOC')
@@ -1019,7 +1021,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                     scaleButtonDiv.append('button')
                         .html('Save Scale')
-                        .attr('class', 'pure-button')
+                        .attr('class', 'epbuttons pure-button')
                         .on('click', function (d) {
                             if ($scope.floor.active) {
                                 $http({method: 'POST', url: '/local_events/endpoint_map?type=saveFloorScale', data: {scale: scale,floor: $scope.floor}});
@@ -1258,6 +1260,85 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                         })
                         .attr("style","padding-top:"+ (elementHeight/2)+'px')
                         .html("&#9668; &#9668; &#9668;");
+
+
+                    /////////////////////////////
+                    ///  DROPPABLE BEHAVIOUR  ///
+                    /////////////////////////////
+                    // -- used for when a user is being dragged from userlist to floor
+                    var containerTag = container[0][0];
+                    containerTag.droppable = true;
+                    containerTag.addEventListener(
+                        'dragover',
+                        function(e) {
+                            e.dataTransfer.dropEffect = 'move';
+                            // allows us to drop
+                            if (e.preventDefault) e.preventDefault();
+                            $(this).addClass('over');
+                            return false;
+                        },
+                        false
+                    );
+                    containerTag.addEventListener(
+                        'dragenter',
+                        function(e) {
+                            $(this).addClass('over');
+                            return false;
+                        },
+                        false
+                    );
+                    containerTag.addEventListener(
+                        'dragleave',
+                        function(e) {
+                            $(this).removeClass('over');
+                            return false;
+                        },
+                        false
+                    );
+                    // -- handles when a user is dropped from userlist to floorplan
+                    containerTag.addEventListener('drop', function(e) {
+                        var floorName = d3.select(containerTag);
+                        // Stops some browsers from redirecting.
+                        if (e.stopPropagation) e.stopPropagation();
+
+                        // call the drop passed drop function
+                        var destinationId = $(this).attr('id');
+                        var itemId = e.dataTransfer.getData("Text");
+                        var item = $(document).find('#'+itemId);
+                        var itemData = item[0]['__data__'];
+
+                        console.log(floorName)
+                        console.log(floorName[0][0])
+                        console.log(destinationId)
+                        console.log(itemId)
+                        console.log(item)
+                        console.log(itemData)
+
+                        // if (destinationId === 'floorContainer'){
+                        //     var divPos = {
+                        //         // left: e.layerX/scale,
+                        //         // top: e.layerY/scale
+                        //         left: (e.pageX - $(containerTag).offset().left)/scale,
+                        //         top: (e.pageY - $(containerTag).offset().top)/scale
+                        //     };
+                        //     $(this).append(item[0]);
+
+                        //     itemData.x = divPos.left;
+                        //     itemData.y = divPos.top;
+                        //     scale = d3.event.scale = 1;
+                        //     d3.event.translate = (0,0);
+                        //     itemData.map = attrs.floorName;
+
+                        //     // $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: attrs.floorName, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
+                        //     plot(data, attrs.fluserScaleoorName); 
+                        //     // d3.select('.user-'+itemId).classed("selected", true);
+                        // } 
+                        return false;
+                        },
+                        false
+                    );          
+
+
 
                     ///////////////////
                     ///  FUNCTIONS  ///
@@ -1608,6 +1689,9 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                             .attr("transform", function(d){ 
                                 return "translate("+d.x+","+d.y+")"
                             })
+                            .attr("class", function(d){ 
+                                return d.id;
+                            })
                             .call(drag)
                             .append('svg:foreignObject')
                                 .attr('width', "320px")
@@ -1659,77 +1743,6 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
 
                                 var elel = elm[0];
                                 var el = elel[0];
-
-                                /////////////////////////////
-                                ///  DROPPABLE BEHAVIOUR  ///
-                                /////////////////////////////
-                                // -- used for when a user is being dragged from userlist to floor
-                                // var containerTag = container[0][0];
-                                // containerTag.droppable = true;
-                                // containerTag.addEventListener(
-                                //     'dragover',
-                                //     function(e) {
-                                //         e.dataTransfer.dropEffect = 'move';
-                                //         // allows us to drop
-                                //         if (e.preventDefault) e.preventDefault();
-                                //         $(this).addClass('over');
-                                //         return false;
-                                //     },
-                                //     false
-                                // );
-                                // containerTag.addEventListener(
-                                //     'dragenter',
-                                //     function(e) {
-                                //         $(this).addClass('over');
-                                //         return false;
-                                //     },
-                                //     false
-                                // );
-                                // containerTag.addEventListener(
-                                //     'dragleave',
-                                //     function(e) {
-                                //         $(this).removeClass('over');
-                                //         return false;
-                                //     },
-                                //     false
-                                // );
-                                // // -- handles when a user is dropped from userlist to floorplan
-                                // containerTag.addEventListener('drop', function(e) {
-                                //     var floorName = d3.select(containerTag).attr('floor-name');
-                                //     // Stops some browsers from redirecting.
-                                //     if (e.stopPropagation) e.stopPropagation();
-
-                                //     // call the drop passed drop function
-                                //     var destinationId = $(this).attr('id');
-                                //     var itemId = e.dataTransfer.getData("Text");
-                                //     var item = $(document).find('#'+itemId);
-                                //     var itemData = item[0]['__data__'];
-
-                                //     if (destinationId === 'floorContainer'){
-                                //         var divPos = {
-                                //             // left: e.layerX/scale,
-                                //             // top: e.layerY/scale
-                                //             left: (e.pageX - $(containerTag).offset().left)/scale,
-                                //             top: (e.pageY - $(containerTag).offset().top)/scale
-                                //         };
-                                //         $(this).append(item[0]);
-
-                                //         itemData.x = divPos.left;
-                                //         itemData.y = divPos.top;
-                                //         scale = d3.event.scale = 1;
-                                //         d3.event.translate = (0,0);
-                                //         itemData.map = attrs.floorName;
-
-                                //         $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: attrs.floorName, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
-                                //         plot(data, attrs.fluserScaleoorName); 
-                                //         d3.select('.user-'+itemId).classed("selected", true);
-                                //     } 
-                                //     return false;
-                                //     },
-                                //     false
-                                // );          
-
-
                             });                            
                     }  
      //This function determines the colour of the endpoint based on what type 
@@ -1838,17 +1851,6 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                         // }       
                     }
 
-                    // -- redraws the floor (used when user is deleted from floorplan)
-                    $rootScope.redrawFloor = function () {
-                        var currentUser = d3.select('.selected');
-                        currentUser
-                            .attr("class", "localuserlist")
-                            .attr('draggable', "true");
-                        currentUser.data()[0].map = null;
-                        currentUser.remove();
-                        $(userDiv[0][0]).append(currentUser[0][0]);
-                        plot(data,floorName);
-                    }
                     // -- sets selected class for CSS (controller calls this when coming from ioc_events_drilldown(page2))
                     $scope.$on('setSelected', function (event, selected) { 
                         d3.select('.user-'+selected.id).classed("selected", true);
@@ -2363,7 +2365,7 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
 
                         // Draw users on floor
                         var floorcount = -1;
-                        // container.selectAll('g').remove();
+                        container.selectAll('g').remove();
                         container.selectAll('g').data(bldgs.filter(function(d){return true; })).enter()
                             .append('g')
                             .attr('width', 0)
@@ -2501,6 +2503,12 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                     //////////////////////////
                     ///  $SCOPE FUNCTIONS  ///
                     //////////////////////////
+
+                    // -- redraws the floor (used when user is deleted from floorplan)
+                    $rootScope.redrawBuilding = function (bldRemoved) {
+                        buildings.splice(buildings.indexOf(bldRemoved),1);
+                        plot(data, buildings);
+                    }
 
                     $rootScope.removeLines = function () {
                         $scope.selectedUser = "";

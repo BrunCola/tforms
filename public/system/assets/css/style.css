@@ -2465,20 +2465,6 @@ button.userfloorbutton{
   height:2000px;
   width:2000px;
 }*/
-#triggerbuttons { 
-  float: right;
-}
-#triggerbuttons button{
-  margin: 0px 1px;  
-  border-radius: 4px;
-}
-#scalebuttons {
-  margin: 0px 1px;  
-  border-radius: 4px;
-}
-#editbuttons, #scalebuttons{
-  float: right;
-}
 button.rndCrnBtn {
   border-radius: 5px;
 }
@@ -2505,4 +2491,11 @@ button.epbGrey:hover,button.epbGrey:active{
 }
 #flus td span{
   cursor: pointer;
+}
+button.right, .epbuttons{
+  float:right;
+}
+.epbuttons button {
+  margin: 0px 1px;  
+  border-radius: 4px;
 }

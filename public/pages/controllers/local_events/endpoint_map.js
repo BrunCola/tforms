@@ -233,7 +233,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.userinfo = undefined;
             $scope.currentFloor = undefined;
             $scope.currentBuilding = undefined;
-            $scope.$apply();
+            $scope.selectedBuilding = undefined;
          } else if(type === "listusers") {
             $scope.userinfo = undefined;
             $scope.currentBuilding = undefined;
@@ -246,6 +246,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
          } else if(type === "listallusers") {
             $scope.userinfo = undefined;
             $scope.currentFloor = undefined;
+            $scope.selectedBuilding = d;
             var users = $scope.userDimension.filter(function(dt){
                     for (var fl in d.floors) {
                         if ((d.floors[fl].id == dt.map)){
@@ -313,6 +314,12 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         $scope.redrawFloor();
     }
 
+    $scope.removeBuilding = function (building) {
+        $http({method: 'POST', url: '/local_events/endpoint_map?type=removeBuilding', data: {asset_name: building.asset_name, type:building.type}});
+        $scope.requery("clear");
+        $scope.redrawBuilding(building);
+    }
+
     $scope.editFloorPlan = function (floors) {
         //console.log(floors);
         $rootScope.modalFloors = floors;
@@ -321,6 +328,14 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             controller: uploadInstanceCtrl,
             keyboard: true,
             modalFloors: floors
+        });
+    };
+
+    $scope.createBuilding = function () {
+        $scope.modalInstance = $modal.open({
+            templateUrl: 'uploadBuildingModal.html',
+            controller: uploadInstanceCtrl,
+            keyboard: true
         });
     };
 
@@ -440,10 +455,19 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         };
 
         $scope.newBlankFloor = function(floor_name, building) {
-
-            if (floor_name !== undefined) {
+            if ((floor_name !== undefined) && (floor_name !== "")){
                 $scope.cant_leave_blank = false;
                 $http({method: 'POST', url: '/local_events/endpoint_map?type=newFloor', data: {custom_name: floor_name, building: building.asset_name}});
+                $scope.ok();
+            } else {
+                $scope.cant_leave_blank = true;
+            }
+        };
+
+        $scope.newBlankBuilding = function(building_name) {
+            if ((building_name !== undefined) && (building_name !== "")) {
+                $scope.cant_leave_blank = false;
+                $http({method: 'POST', url: '/local_events/endpoint_map?type=newBuilding', data: {custom_name: building_name}});
                 $scope.ok();
             } else {
                 $scope.cant_leave_blank = true;

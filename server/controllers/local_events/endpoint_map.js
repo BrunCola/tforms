@@ -357,7 +357,6 @@ module.exports = function(pool) {
 
                 _getAllFilesFromFolder('./public/uploads/phirelight');
 
-
                 if (req.query.rem === 'removeFloorPlan') {
                     var delete_floor = {
                         query: "DELETE FROM `assets` WHERE `type`='map' AND `asset_name`=? AND `building`=?",
@@ -371,8 +370,19 @@ module.exports = function(pool) {
                         }
                     });
                 }
+            } else if (req.query.type === 'removeBuilding') {
+                var delete_building = {
+                        query: "DELETE FROM `assets` WHERE `asset_name`=? AND `type`=?",
+                        insert: [req.body.asset_name, req.body.type]
+                    }                
+                    new query(delete_building, {database: database, pool: pool}, function(err,data){
+                        if (err) {
+                            res.send(500);
+                        } else {
+                            res.send(200);
+                        }
+                    });
             } else if (req.query.type === 'saveFloorScale') {
-
                 var update_floor = {
                     query: "update `assets` SET `scale`=? WHERE `type`='map' AND `asset_name`=?",
                     insert: [req.body.scale, req.body.floor.asset_name]
@@ -393,10 +403,8 @@ module.exports = function(pool) {
                     }
                 });
             } else if (req.query.type === 'newFloor') {
-
                 if (req.body.custom_name !== undefined ) {                    
                     var asset_name = req.body.custom_name.replace(" ", "_");
-                    console.log(asset_name);
 
                     var insert_map_image = {
                         query: "INSERT INTO `assets` (`file`,  `asset_name`, `path`, `type`, `custom_name`, `image_width`, `image_height`, `scale`, `building`) VALUES (?,?,?,?,?,?,?,?,?)",
@@ -406,8 +414,19 @@ module.exports = function(pool) {
                         res.send(200);
                     });
                 }
-            } else if (req.query.type === 'editFloorPos') {
+            } else if (req.query.type === 'newBuilding') {
+                if (req.body.custom_name !== undefined ) {                    
+                    var asset_name = req.body.custom_name.replace(" ", "_");
 
+                    var insert_building = {
+                        query: "INSERT INTO `assets` (`file`, `asset_name`, `path`, `type`, `custom_name`, `image_width`, `image_height`,`scale`, `building`) VALUES (?,?,?,?,?,?,?,?,?)",
+                        insert: ["",asset_name,"","building",req.body.custom_name,800,600,1,null]
+                    }
+                    new query(insert_building, {database: database, pool: pool}, function(err,data){
+                        res.send(200);
+                    });
+                }
+            } else if (req.query.type === 'editFloorPos') {
                 var edit_floor_pos = {
                     query: "UPDATE `assets` SET `x`=?, `y`=? WHERE `asset_name`=?",
                     insert: [req.body.x, req.body.y, req.body.map_name]
