@@ -2050,7 +2050,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                     }
                     
                     // define the zoomListener which calls the zoom function on the "zoom" event constrained within the scaleExtents
-                    var zoomListener = d3.behavior.zoom().scaleExtent([0.5, 3]).on("zoom", zoom);
+                    var zoomListener = d3.behavior.zoom().scaleExtent([0.7, 3]).on("zoom", zoom);
 
                     var vis = d3.select("#forcechart")
                         .append("svg")
@@ -2143,6 +2143,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         //.call(force.drag);
 
                     function dragstart(d, i) {
+                        d3.event.sourceEvent.stopPropagation();
                         d.fixed = true; 
                         force.stop();
                     }
@@ -3009,20 +3010,6 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         return Math.exp(minv + scale*(x-minp));
                     }
 
-                    // Toggle children on click.
-                    function click(connections) {
-                        for(var i = 0; i<connections.length; i++){
-                           if (data.nodes[connections[i]].hide) {
-                                data.nodes[connections[i]]._hide= data.nodes[connections[i]].hide;
-                                data.nodes[connections[i]].hide = null;
-                            } else {
-                                data.nodes[connections[i]].hide = "true";
-                                data.nodes[connections[i]]._hide = null;
-                            }
-                        }
-                        $scope.update();
-                    }
-
                     var circleWidth = 5;
 
                     var vis = d3.select("#stealthforcechart")
@@ -3030,7 +3017,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .attr("class", "stage")
                         .attr("width", width)
                         .attr("height", height)
-                        .call(d3.behavior.zoom().scaleExtent([1, 6]).on("zoom", zoom))
+                        .call(d3.behavior.zoom().scaleExtent([0.5, 4]).on("zoom", zoom))
                         .append('g');
 
                       function zoom() {
@@ -3066,7 +3053,8 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .size([width-50, height]);
 
                     function dragstart(d, i) {
-                        d.fixed = true; 
+                        d3.event.sourceEvent.stopPropagation();
+                        d.fixed = true;
                         force.stop();
                     }
 
@@ -3163,18 +3151,13 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                                             .attr('width', '23')
                                         .append('svg:path')
                                             .attr('transform', 'translate(-11,-11)')
-                                            .attr('d', 'M22,16.2c-0.2-2.5-2.3-4.4-4.9-4.4c-0.2,0-12,0-12.2,0c-2.7,0-4.9,2.1-4.9,4.8c0,1,0,6.2,0,6.2h3.3c0,0,0-3.6,0-3.7c0-0.5,0.5-1.1,1-1.1c0.5,0,1,0.7,1,1.2c0,0.2,0,3.6,0,3.6h11.4c0,0,0-3.7,0-3.7c0-0.5,0.4-1.1,1-1.1c0.5,0,0.9,0.7,0.9,1.2c0,0,0,3.6,0,3.6H22L22,16.2z')
+                                            .attr('d', 'M22,22.5h-3.4c0,0,0-3.5,0-3.5c0-0.5-0.4-1.1-0.9-1.1'+
+                                            'c-0.5,0-1,0.5-1,1.1c0,0,0,3.5,0,3.5H5.3c0,0,0-3.3,0-3.5c0-0.5-0.4-1.1-1-1.1c-0.5,0-1,0.5-1,1.1c0,0.1,0,3.5,0,3.5H0'+
+                                            'c0,0,0-5.3,0-6.2c0-2.7,2.2-4.8,4.9-4.8c0.2,0,12,0,12.2,0c2.6,0,4.7,1.9,4.9,4.4L22,22.5z M11.1,0C8.4,0,6.2,2.2,6.2,4.9'+
+                                            's2.2,4.9,4.9,4.9c2.7,0,4.9-2.2,4.9-4.9S13.8,0,11.1,0z')
                                             .style('fill-rule', '#evenodd')
                                             .style('clip-rule', '#evenodd')
                                             .style('fill', function(d, i) { return  color(d.group, d.type);} );
-                                        elm.append('circle')
-                                            .attr('transform', 'translate(-11,-11)')
-                                            .attr('cx', 11.1)
-                                            .attr('cy', 4.9)
-                                            .attr('r', 4.9)
-                                            .style('fill-rule', '#evenodd')
-                                            .style('clip-rule', '#evenodd')
-                                            .style('fill', function(d, i) { return  color(d.group, d.type);});
                                 } else {
                                     elm
                                         .append("svg:circle")
