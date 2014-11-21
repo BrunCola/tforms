@@ -3,17 +3,118 @@
 angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$interval', 'timeFormat', function ($scope, $stateParams, $location, Global, $rootScope, $http, $interval, timeFormat) {
     $scope.global = Global;
     var query;
+    var crossfilterTimeDimension, tableTimeDimension, rowDimension, rowGroup, geoDimension, geoGroup, barDimension, barGroup;
     if ($location.$$search.start && $location.$$search.end) {
         query = '/ioc_notifications/ioc_events?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
         query = '/ioc_notifications/ioc_events?';
     }
     $http({method: 'GET', url: query}).
+    //success(function(data, status, headers, config) {
+    // console.log($location.$$search);
     success(function(data) {
         if (data.tables[0] === null) {
             $scope.$broadcast('loadError');
-        } else {
-            processData(data, false);            
+        } else { 
+            data.crossfilter.forEach(function(d) {
+                d.dd = timeFormat(d.time, 'strdDateObj');
+                d.hour = d3.time.hour(d.dd);
+                d.count = +d.count;
+            });
+          
+            $scope.crossfilterData = crossfilter(data.crossfilter);
+            $scope.data = data;
+
+            crossfilterTimeDimension = $scope.crossfilterData.dimension(function(d) { return d.time; });
+
+            $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
+            $scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
+            $scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
+
+            tableTimeDimension = $scope.tableCrossfitler.dimension(function(d) { return d.time; });
+
+            rowDimension = $scope.crossfilterData.dimension(function(d) { return d.ioc + d.ioc_severity; });
+            var rowGroupPre = rowDimension.group().reduceSum(function(d) { return d.count; });
+            rowGroup = rowGroupPre.reduce(
+                function (d, v) {
+                    //++d.count;
+                    d.severity = v.ioc_severity - 1;
+                    d.count += v.count;
+                    return d;
+                },
+                /* callback for when data is removed from the current filter results */
+                function (d, v) {
+                    //--d.count;
+                    d.severity = v.ioc_severity - 1;
+                    d.count -= v.count;
+                    return d;
+                },
+                /* initialize d */
+                function () {
+                    return {count: 0, severity: 0};
+                }
+            );
+            $scope.$broadcast('rowChart', rowDimension, rowGroup, 'severity');
+
+            geoDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
+            geoGroup = geoDimension.group().reduceSum(function (d) {
+                return d.count;
+            });
+            $scope.$broadcast('geoChart', geoDimension, geoGroup);
+            barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour; });
+            var barGroupPre = barDimension.group();
+            barGroup = barGroupPre.reduce(
+                function(p, v) {
+                    if (v.ioc_severity === 1) {
+                        p.guarded += v.count;
+                    }
+                    if (v.ioc_severity === 2) {
+                        p.elevated += v.count;
+                    }
+                    if (v.ioc_severity === 3) {
+                        p.high += v.count;
+                    }
+                    if (v.ioc_severity === 4) {
+                        p.severe += v.count;
+                    }
+                    if (v.ioc_severity === null) {
+                        p.other += v.count;
+                    }
+                    return p;
+                },
+                function(p, v) {
+                    if (v.ioc_severity === 1) {
+                        p.guarded -= v.count;
+                    }
+                    if (v.ioc_severity === 2) {
+                        p.elevated -= v.count;
+                    }
+                    if (v.ioc_severity === 3) {
+                        p.high -= v.count;
+                    }
+                    if (v.ioc_severity === 4) {
+                        p.severe -= v.count;
+                    }
+                    if (v.ioc_severity === null) {
+                        p.other -= v.count;
+                    }
+                    return p;
+                },
+                function() {
+                    return {
+                        guarded:0,
+                        elevated:0,
+                        high:0,
+                        severe:0,
+                        other:0
+                    };
+                }
+            );
+            $scope.$broadcast('barChart', barDimension, barGroup, 'severity');
+
+            $scope.barChartxAxis = '';
+            $scope.barChartyAxis = '# IOC / Hour';
+            $scope.$broadcast('severityLoad');
         }
     });
 
@@ -69,7 +170,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
         }
         $http({method: 'GET', url: query}).
         success(function(data) {
-            processData(data, true);
+            processData(data);
         });
     }, refreshPeriod);
 
@@ -77,179 +178,44 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
     $scope.$on("$destroy", function(event) {     
             $interval.cancel(promise);
         }
-    );
+    ); 
 
-    //this function handles data returned from the server, both on page load and on refresh
-    //autoRefresh is boolean (true if data call is coming from refresh)
-    function processData(data, autoRefresh) {
+    function processData(data) {
+        //*******************
+        // CROSSFILTER
+        //*******************
+        var newCrossfilterData = false;
+
         data.crossfilter.forEach(function(d) {
             d.dd = timeFormat(d.time, 'strdDateObj');
             d.hour = d3.time.hour(d.dd);
             d.count = +d.count;
         }); 
 
-        //*******************
-        // CROSSFILTER
-        //*******************
-        var newCrossfilterData = false;
+        if(data.crossfilter.length > 0) {
+            $scope.crossfilterData.add(data.crossfilter);
 
-        //filter out old data from the crossfilter
-        if(autoRefresh && data.crossfilter.length <= 0) {
-            var timeDimension = $scope.crossfilterData.dimension(function(d) { return d.time; });//ERRORs out startometimes??
+            newIocFound = true;
+            newCrossfilterData = true;
+
             //filter by date smaller than the old start (previously moved up by one refresh period)
-            timeDimension.filter(function(d){
+            crossfilterTimeDimension.filter(function(d){
                 if($location.$$search.start) {
                     return d < parseInt($location.$$search.start);
                 } else {
                     return d < oldStart;
                 }
             });
-            //if something has been filtered, newCrossfilterData = true (will push to directives)
-            newCrossfilterData = timeDimension.top(Infinity).length > 0;
 
             //remove the filtered data from crossfilter
             $scope.crossfilterData.remove();
             //add back the other data (I think this is needed)
-            timeDimension.filterAll();
-        } else if(autoRefresh && data.crossfilter.length > 0) {
-            //add new data to crossfilter, if it's coming from a refresh
-            //or create the crossfilter using the whole data set, if a fresh page load
+            crossfilterTimeDimension.filterAll();
 
-            //ATTEMPT AT DUPLICATE CHECKING //???????????
-            var timeDimension = $scope.crossfilterData.dimension(function(d) { return d.time; });
-            // var newTimeDim = data.crossfilter.dimension(function(d) { return d.time; });
-            // newTimeDim.filter(function(d) {
-            //     timeDimension.top(Infinity).forEach(function(e) {
-            //         if(e == d){
-            //             return d;
-            //         }
-            //     });
-            // });
-            // data.crossfilter.remove();
-            // newTimeDim.filterAll();
-            // timeDimension.filterAll(); //??
-
-            timeDimension.top(Infinity).forEach(function(d) {
-                for(var i = 0; i < data.crossfilter.length; i ++) {
-                    if(d == data.crossfilter[i].time){
-                        data.crossfilter.splice(i, 1);
-                        i --;
-                    }
-                }
-                
-            });
-            timeDimension.filterAll(); //??
-
-            if(data.crossfilter.length > 0) {
-                $scope.crossfilterData.add(data.crossfilter);
-                newCrossfilterData = true;
-                newIocFound = true;
-            }
-        } else if(!autoRefresh) { //fresh page load
-            $scope.crossfilterData = crossfilter(data.crossfilter);
-            $scope.data = data;
-            newCrossfilterData = true;
-        } 
-
-        //if it's a fresh page load or a refresh which pulled new data, process and push to directives
-        if(newCrossfilterData) {
-            var rowDimension = $scope.crossfilterData.dimension(function(d) { return d.ioc + d.ioc_severity; });
-            var rowGroupPre = rowDimension.group().reduceSum(function(d) { return d.count; });
-            var rowGroup = rowGroupPre.reduce(
-                function (d, v) {
-                    //++d.count;
-                    d.severity = v.ioc_severity - 1;
-                    d.count += v.count;
-                    return d;
-                },
-                /* callback for when data is removed from the current filter results */
-                function (d, v) {
-                    //--d.count;
-                    d.severity = v.ioc_severity - 1;
-                    d.count -= v.count;
-                    return d;
-                },
-                /* initialize d */
-                function () {
-                    return {count: 0, severity: 0};
-                }
-            );
             $scope.$broadcast('rowChart', rowDimension, rowGroup, 'severity');
-
-            var geoDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
-            var geoGroup = geoDimension.group().reduceSum(function (d) {
-                return d.count;
-            });
             $scope.$broadcast('geoChart', geoDimension, geoGroup);
-            var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour; });
-            var barGroupPre = barDimension.group();
-            var barGroup = barGroupPre.reduce(
-                function(p, v) {
-                    if (v.ioc_severity === 1) {
-                        p.guarded += v.count;
-                    }
-                    if (v.ioc_severity === 2) {
-                        p.elevated += v.count;
-                    }
-                    if (v.ioc_severity === 3) {
-                        p.high += v.count;
-                    }
-                    if (v.ioc_severity === 4) {
-                        p.severe += v.count;
-                    }
-                    if (v.ioc_severity === null) {
-                        p.other += v.count;
-                    }
-                    return p;
-                },
-                function(p, v) {
-                    if (v.ioc_severity === 1) {
-                        p.guarded -= v.count;
-                    }
-                    if (v.ioc_severity === 2) {
-                        p.elevated -= v.count;
-                    }
-                    if (v.ioc_severity === 3) {
-                        p.high -= v.count;
-                    }
-                    if (v.ioc_severity === 4) {
-                        p.severe -= v.count;
-                    }
-                    if (v.ioc_severity === null) {
-                        p.other -= v.count;
-                    }
-                    return p;
-                },
-                function() {
-                    return {
-                        guarded:0,
-                        elevated:0,
-                        high:0,
-                        severe:0,
-                        other:0
-                    };
-                }
-            );
             $scope.$broadcast('barChart', barDimension, barGroup, 'severity');
-
-            $scope.barChartxAxis = '';
-            $scope.barChartyAxis = '# IOC / Hour';
-
-            if(autoRefresh) {
-                $scope.$broadcast('severityUpdate');
-            } else {
-                $scope.$broadcast('severityLoad');
-            }
-
-            if(autoRefresh && (newCrossfilterData || newTableData)) {
-                var query;
-                if($location.$$search.start && $location.$$search.end) {
-                    query = '/ioc_notifications/ioc_events?start='+$location.$$search.start+'&end='+newEnd;
-                } else {
-                    query = '/ioc_notifications/ioc_events?start='+oldStart+'&end='+newEnd;
-                }
-                getSummaryInfo(query);
-            }
+            $scope.$broadcast('severityUpdate');
         }
 
         //*******************
@@ -257,62 +223,39 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
         //*******************
         var newTableData = false;
 
-        //filter out old data from the data table
-        if(autoRefresh && data.tables[0] == null) {
-            console.log("Trying to remove old data");
-            var timeDimension = $scope.tableCrossfitler.dimension(function(d) { return d.time; });
+        if(data.tables[0] != null) {
+            $scope.tableCrossfitler.add(data.tables[0].aaData);//JUST FOR TESTING
+
+            newIocFound = true;
+            newTableData = true;
+
             //filter by date smaller than the old start (previously moved up by one refresh period)
-            timeDimension.filter(function(d){
+            tableTimeDimension.filter(function(d){
                 if($location.$$search.start) {
                     return d < parseInt($location.$$search.start);
                 } else {
                     return d < oldStart;
                 }
             });
-            //if something has been filtered, newTableData = true (will push to directives)
-            newTableData = timeDimension.top(Infinity).length > 0;
 
             //remove the filtered data from crossfilter
             $scope.tableCrossfitler.remove();
             //add back the other data (I think this line is needed...)
-            timeDimension.filterAll();
-        } else if(autoRefresh && data.tables[0] != null) {
-            //add new data to the data table
-            
-            // $scope.tableCrossfitler.add(data.tables[0].aaData);
-            var timeDimension = $scope.tableCrossfitler.dimension(function(d) { return d.time; });
-            timeDimension.top(Infinity).forEach(function(d) {
-                for(var i = 0; i < data.tables[0].aaData.length; i ++) {
-                    if(d == data.tables[0].aaData[i].time){
-                        data.tables[0].aaData.splice(i, 1);
-                        i --;
-                    }
-                }
-                
-            });
-            timeDimension.filterAll(); //??
+            tableTimeDimension.filterAll();
 
-            if(data.tables[0].aaData.length > 0) {            
-                console.log("Trying to add new data");
-                $scope.tableCrossfitler.add(data.tables[0].aaData);//JUST FOR TESTING
-                newTableData = true;
-                newIocFound = true;
-            }
-        } else if(!autoRefresh) { //fresh page load
-            $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
-            newTableData = true;
-        } 
+            $scope.$broadcast('tableUpdate', $scope.tableData, $scope.data.tables, null); 
+        }
 
-        if(newTableData) {
-            console.log("Pushing out new data");
-            $scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
-            if(autoRefresh) {
-                $scope.$broadcast('tableUpdate', $scope.tableData, $scope.data.tables, null);
+        //SUMMARY STUFF
+        if(newCrossfilterData || newTableData) {
+            var query;
+            if($location.$$search.start && $location.$$search.end) {
+                query = '/ioc_notifications/ioc_events?start='+$location.$$search.start+'&end='+newEnd;
             } else {
-                $scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
+                query = '/ioc_notifications/ioc_events?start='+oldStart+'&end='+newEnd;
             }
-            
-        } 
+            getSummaryInfo(query);
+        }
     }
 
     //*******************
