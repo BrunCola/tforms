@@ -1594,10 +1594,10 @@ module.exports = function(pool) {
             // set the datbase the user queries
             var database = req.session.passport.user.database;
             // we make a whitelist since we will be relying on the front end to send up custom selects
-            var allowedSelects = ['lan_user', 'lan_ip'];
+            var allowedSelects = ['lan_user', 'lan_ip', 'lan_machine'];
             function makeQueries() {
                 var queryList = [];
-                var selectList = ['lan_user', 'lan_ip']; // TEMPORARY.. this is going to be sent up with user8
+                var selectList = ['lan_user', 'lan_ip', 'lan_machine']; // TEMPORARY.. this is going to be sent up with user8
                 var selectString = '';
                 // make sure selects are present
                 if (selectList.length < 1) { return false; }
