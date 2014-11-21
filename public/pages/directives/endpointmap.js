@@ -44,6 +44,12 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         userScale = $scope.floor.user_scale;
                     } 
 
+
+                    if (($('#floorplanspan')[0].offsetWidth-25) != -25) {
+                        //console.log("test")
+                        $scope.elementWidth = ($('#floorplanspan')[0].offsetWidth-25)
+                    }
+                    //console.log($scope.elementWidth)
                     //var elementWidth = ($('#floorplanspan')[0].offsetWidth-25);
                     var elementWidth = 959;
                     var elementHeight = (elementWidth/imageRatio);
@@ -313,7 +319,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     count++;
                                     return count*nodeHeight+"px";
                                 })
-                                .attr("height", (count+1)*nodeHeight+"px")
+                                .attr("height", (count+1)*nodeHeight+10+"px")
                                 // /.attr('height', "30px")
                                 .attr('width', "100%")
                                 .attr("class", function(d){
@@ -1138,7 +1144,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         plot(filteredData, floorName);
                         wait(function(){
                             if (filteredData.length > 0) {
-                                if (lastUserRequeried !== filteredData[0].id) {
+                                //if (lastUserRequeried !== filteredData[0].id) {
 
                                     // $scope.buildings.filter(function(d){ 
                                     //     if (d.active = true) {
@@ -1150,16 +1156,16 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     //     }
                                     // });
 
-                                    $scope.requery(filteredData[0], 'flooruser');
-                                    lastUserRequeried = filteredData[0].id;
-                                } 
+                                    $scope.requery(filteredData, 'listsearch');
+                                    //lastUserRequeried = filteredData[0].id;
+                                //} 
                                 d3.select('.user-'+filteredData[0].id).classed("selected", true);
                             } else {
                                 // remove the info pane
                                 lastUserRequeried = -1;
                                 $scope.requery("clear", 'flooruser');   
                             }
-                        }, 500, "filtertWait");  
+                        }, 0, "filtertWait");  
                         //}          
                     })
                     plot(data, floorName);
@@ -1206,6 +1212,11 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                     var data = $scope.data.users;
                     var scale = 1;
 
+                    if (($('#floorplanspan')[0].offsetWidth-25) != -25) {
+                        //console.log("test")
+                        $scope.elementWidth = ($('#floorplanspan')[0].offsetWidth-25)
+                    }
+                    //console.log($scope.elementWidth)
                     // var elementWidth = ($('#allfloorplanspan')[0].offsetWidth-25);
                     // var elementHeight = (($('#allfloorplanspan')[0].offsetWidth-25)/imageRatio);
                     var elementWidth = 959;
@@ -1451,7 +1462,7 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                                     count++;
                                     return count*nodeHeight+"px";
                                 })
-                                .attr("height", (count+1)*nodeHeight+"px")
+                                .attr("height", (count+1)*nodeHeight+10+"px")
                                 // /.attr('height', "30px")
                                 .attr('width', "100%")
                                 .attr("class", function(d){
@@ -1978,7 +1989,12 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                     var data = $scope.data.users;
                     var scale = 1;
 
-                    // var elementWidth = ($('#allfloorplanspan')[0].offsetWidth-25);
+                    if (($('#buildingplanspan')[0].offsetWidth-25) != -25) {
+                        //console.log("test")
+                        $scope.elementWidth = ($('#buildingplanspan')[0].offsetWidth-25)
+                    }
+                    //console.log($scope.elementWidth)
+                    // var elementWidth = ($('#buildingplanspan')[0].offsetWidth-25);
                     // var elementHeight = (($('#allfloorplanspan')[0].offsetWidth-25)/imageRatio);
                     var elementWidth = 959;
                     var elementHeight = (elementWidth/imageRatio);
@@ -2149,7 +2165,7 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                                     count++;
                                     return count*nodeHeight+"px";
                                 })
-                                .attr("height", (count+1)*nodeHeight+"px")
+                                .attr("height", (count+1)*nodeHeight+10+"px")
                                 // /.attr('height', "30px")
                                 .attr('width', "100%")
                                 .attr("class", function(d){

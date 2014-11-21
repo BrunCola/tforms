@@ -125,7 +125,7 @@
             <div id="floorplanspan" ng-show="toggleZoom && building.active" ng-repeat="building in buildings">
                 <div id="tabs" ng-show="toggleView" >
                     <tabset>
-                        <tab select="alertMe()" ng-repeat="floor in building.floors" active="floor.active">
+                        <tab select="alertMe()" ng-repeat="floor in building.floors" ng-click="setFloorActive(floor)" active="floor.active">
                             <tab-heading>
                                 {{floor.custom_name}} 
                             </tab-heading>
@@ -145,17 +145,17 @@
                     <div id="triggerbuttons{{building.asset_name}}" class="bin epbuttons" ></div>
                     </tabset>
                 </div> 
-             <div id="allfloorplanspan" ng-show="!toggleView">
-                <div class="jdash-header">Floor View</div>  
-                <div style="background-color:#FFF;" class="box" >
-                    <div id="allfloorplan" style="position: relative;">
-                        <div make-all-floor-plan style="position: relative;"></div>
+                 <div id="allfloorplanspan" ng-show="!toggleView">
+                    <div class="jdash-header">Floor View</div>  
+                    <div style="background-color:#FFF;" class="box" >
+                        <div id="allfloorplan" style="position: relative;">
+                            <div make-all-floor-plan style="position: relative;"></div>
+                        </div>
                     </div>
                 </div>
             </div>
-            </div>
              <div id="buildingplanspan" ng-show="!toggleZoom">
-                <div class="jdash-header">Building View <button type="button" class="rndCrnBtn pure-button right" ng-click="createBuilding()">Create Building</button></div>  
+                <div class="jdash-header">Site View <button type="button" class="rndCrnBtn pure-button right" ng-click="createBuilding()">Create Site</button></div>  
                 <div style="background-color:#FFF;" class="box" >
                     <div id="allfloorplan" style="position: relative;">
                         <div make-building-plan style="position: relative;"></div>
@@ -235,6 +235,16 @@
                                 <td>IP</td><td>Host Name</td><td>User name</td>
                             </tr>
                             <tr  ng-repeat="user in currentBuilding" ng-click="userLink(user)">
+                                <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
+                            </tr>
+                        </table>  
+                    </div>
+                    <div class="luinfo" ng-show="currentSearchUsers">
+                        <table id="flus">
+                            <tr style="font-weight:bold">
+                                <td>IP</td><td>Host Name</td><td>User name</td>
+                            </tr>
+                            <tr  ng-repeat="user in currentSearchUsers" ng-click="userLinkTo(user)">
                                 <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
                             </tr>
                         </table>  

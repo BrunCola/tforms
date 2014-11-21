@@ -24,7 +24,7 @@ module.exports = function(pool) {
                             'count(*) AS count,'+
                             'max(`time`) AS `time`,'+
                             '`event_src`,'+
-                            '`event_type` AS `pie_dimension`, '+
+                            '`event_type` AS `pie_dimension` '+
                         'FROM '+
                             '`endpoint_events` '+
                         'WHERE '+
