@@ -206,12 +206,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'icon': 'fa-user',
                     'orphans': []
                 },
-                {
-                    'title': 'Stealth COI Connections',
-                    'url': 'stealth_coi_conn_view',
-                    'icon': 'fa-shield',
-                    'orphans': []
-                },
+                //{
+                //    'title': 'Stealth COI Connections',
+                //    'url': 'stealth_coi_conn_view',
+                //    'icon': 'fa-shield',
+                //    'orphans': []
+                //},
             ]
         },
         { // LOCAL EVENTS
