@@ -316,6 +316,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             laneInfoAppend($scope.pattern.last.data, $scope.pattern.last.element);
                         }
                     });
+                // this function disables all buttons when the pattern-pane is active
                 $scope.$watch('patternPane', function(pane){
                     if (pane) {
                         saveToggle.attr('disabled', 'disabled');
@@ -634,7 +635,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         .selectAll('li')
                         .data(data.expand)
                         .enter().append('li')
-                        .style('line-height', 2.4)
+                        .style('line-heig ht', 2.4)
                         .html(function(d){
                             if (d.name === 'Time') {
                                 return '<strong>'+d.name+':</strong> '+timeFormat(d.value, 'laneGraphExpanded')+'';      
@@ -981,10 +982,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // append expand buttons to list elements
                                     .append('div')
                                     .on('click', function(){
+                                        var thisNode = itemRects.select('.node-'+d.id);
                                         scrollSide(d.id);
                                         if ((previousBar !== null) && (previousBar.attr('class') !== elm.attr('class'))) {
                                             previousBar.select('.infoDivExpanded').style('display', 'none');
                                             previousBar.classed('laneactive', false);
+                                            changeIcon(thisNode, d, thisNode);
                                         }
                                         if (isOpen === d.id) {
                                             elm.select('.infoDivExpanded').style('display', 'none');
@@ -1004,7 +1007,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .style('display', 'none')
                                     .attr('class', 'infoDivExpanded')
                                     .attr('id', d.id);
+                                // if there is a point selected, scroll to it on sidebar
+                                if (($scope.highlightedPoint.conn_uids === d.conn_uids) && ($scope.highlightedPoint.type === d.type)) {
+                                    openScrollSide(d);
+                                }
                             });
+
                     }                   
                 }
                 function requery(min, max, callback) {
