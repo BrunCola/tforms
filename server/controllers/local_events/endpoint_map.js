@@ -1,6 +1,7 @@
 'use strict';
 
 var floor_plan = require('../constructors/floor_plan'),
+    buildings = require('../constructors/buildings'),
     query = require('../constructors/query'),
     config = require('../../config/config'),
     fs = require('fs'),
@@ -128,36 +129,31 @@ module.exports = function(pool) {
                         });  
                         break;
                 }
-            }  else if (req.query.type === 'endpointconnection') {
-                        // new query({query: 'SELECT DISTINCT lan_ip, lan_country, lan_user, lan_zone, machine, remote_country, remote_ip  FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `lan_ip` = ? ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
-                        //     if (data) {
-                        //         res.json(data);
-                        //     }
-                        // }); 
+            }  else if (req.query.type === 'endpointconnection') { 
                 switch (req.query.typeinfo) {
-                //     // case 'getconn1':
-                //     //     new query({query: 'SELECT DISTINCT lan_ip, lan_machine, lan_user, lan_zone, remote_ip, remote_machine, remote_user FROM `stealth_conn_meta` WHERE time BETWEEN ? AND ? AND `in_bytes` = 0 AND `lan_ip` = ?', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
-                //     //         if (data) {
-                //     //             res.json(data);
-                //     //         }
-                //     //     }); 
-                //     //     break;
-                //     // case 'getconn2':
-                //     //     new query({query: 'SELECT DISTINCT lan_ip, lan_country, lan_user, lan_zone, lan_machine, remote_country, remote_ip FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `in_bytes` = 0 AND `lan_ip` = ? ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
-                //     //         if (data) {
-                //     //             res.json(data);
-                //     //         }
-                //     //     }); 
-                //     //     break;
+                    case 'getconn1':
+                        new query({query: 'SELECT DISTINCT `lan_ip`, `lan_machine`, `remote_ip` FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `lan_ip` = ? ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        }); 
+                        break;
                     case 'getconn2':
-                        new query({query: 'SELECT DISTINCT lan_ip, lan_country, lan_user, lan_zone, lan_machine, remote_country, remote_ip  FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `lan_ip` = ? ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                        new query({query: 'SELECT DISTINCT  `lan_ip`, `lan_machine`, `remote_ip`  FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `remote_ip` = ? ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        }); 
+                        break;
+                    case 'getconn3':
+                        new query({query: 'SELECT DISTINCT  `lan_ip`, `lan_machine`, `remote_ip` FROM `conn_l7_meta` WHERE time BETWEEN ? AND ? AND `l7_proto`="IPsec" AND `lan_ip` = ?', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
                             }
                         }); 
                         break;
                     case 'getconn4':
-                        new query({query: 'SELECT DISTINCT lan_ip, lan_country, lan_user, lan_zone, lan_machine, remote_country, remote_ip FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `remote_ip` = ?', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                        new query({query: 'SELECT DISTINCT  `lan_ip`, `lan_machine`, `remote_ip` FROM `conn_l7_meta` WHERE time BETWEEN ? AND ? AND `l7_proto`="IPsec" AND `remote_ip` = ?', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
                             }
@@ -217,65 +213,96 @@ module.exports = function(pool) {
                     insert: []
                 }
 
+                var assets = [];
+                var asset = {
+                    query: 'SELECT '+
+                            '* '+
+                            'FROM '+
+                                'assets ',
+                    insert: []
+                }
 
-                var stealthDrop = [];
-                var stealth_drop = {
-                    query: 'SELECT DISTINCT '+
-                            'lan_user, '+
-                            'lan_ip, '+
-                            'lan_zone, '+
-                            'lan_machine '+
-                        'FROM '+
-                            '`stealth_conn_meta` '+
-                        'WHERE '+
-                            'time BETWEEN ? AND ? '+
-                            'AND `in_bytes` = 0 ',
-                    insert: [start, end]
+                var groupedFloors = [];
+                var build = {
+                    query: 'SELECT '+
+                            '* '+
+                            'FROM '+
+                                'assets '+
+                            'WHERE '+
+                                '`type` = "building"',
+                    insert: []
                 }
-                var localDrop = [];
-                var local_drop = {
-                    query: 'SELECT DISTINCT '+
-                            'lan_user, '+
-                            'lan_ip, '+
-                            'lan_zone, '+
-                            'lan_machine '+ 
-                    'FROM '+
-                        ' `conn_meta` '+
-                    'WHERE '+
-                        'time BETWEEN ? AND ? '+
-                        'AND `out_bytes` = 0 ',
-                    insert: [start, end]
-                }
-                var stealthAuthorized = [];
-                var stealth_authorized = {
-                    query: 'SELECT DISTINCT '+
-                            'lan_user, '+
-                            'lan_ip, '+
-                            'lan_zone, '+
-                            'lan_machine '+
-                        'FROM '+
-                            '`stealth_conn_meta` '+
-                        'WHERE '+
-                            'time BETWEEN ? AND ? '+
-                            'AND `out_bytes` > 0 '+
-                            'AND `in_bytes` > 0 ',
-                    insert: [start, end]
-                }
-                var localAuthorized = [];
-                var local_authorized = {
-                    query: 'SELECT DISTINCT '+
-                            'lan_user, '+
-                            'lan_ip, '+
-                            'lan_zone, '+
-                            'lan_machine '+
-                    'FROM '+
-                        ' `conn_meta` '+
-                    'WHERE '+
-                        'time BETWEEN ? AND ? '+
-                        'AND `out_bytes` > 0 '+
-                        'AND `in_bytes` > 0 ',
-                    insert: [start, end]
-                }
+
+                // var blds = {
+                //     query: 'SELECT '+
+                //             '`building` '+
+                //             'FROM '+
+                //                 'assets '+
+                //             'WHERE '+
+                //                 '`type` = "map"'+
+                //             'group by `building`',
+                //     insert: []
+                // }
+
+
+                // var stealthDrop = [];
+                // var stealth_drop = {
+                //     query: 'SELECT DISTINCT '+
+                //             'lan_user, '+
+                //             'lan_ip, '+
+                //             'lan_zone, '+
+                //             'lan_machine '+
+                //         'FROM '+
+                //             '`stealth_conn_meta` '+
+                //         'WHERE '+
+                //             'time BETWEEN ? AND ? '+
+                //             'AND `in_bytes` = 0 ',
+                //     insert: [start, end]
+                // }
+                // var localDrop = [];
+                // var local_drop = {
+                //     query: 'SELECT DISTINCT '+
+                //             'lan_user, '+
+                //             'lan_ip, '+
+                //             'lan_zone, '+
+                //             'machine '+ 
+                //     'FROM '+
+                //         ' `conn_meta` '+
+                //     'WHERE '+
+                //         'time BETWEEN ? AND ? '+
+                //         'AND `out_bytes` = 0 ',
+                //     insert: [start, end]
+                // }
+                // var stealthAuthorized = [];
+                // var stealth_authorized = {
+                //     query: 'SELECT DISTINCT '+
+                //             'lan_user, '+
+                //             'lan_ip, '+
+                //             'lan_zone, '+
+                //             'lan_machine '+
+                //         'FROM '+
+                //             '`stealth_conn_meta` '+
+                //         'WHERE '+
+                //             'time BETWEEN ? AND ? '+
+                //             'AND `out_bytes` > 0 '+
+                //             'AND `in_bytes` > 0 ',
+                //     insert: [start, end]
+                // }
+                // var localAuthorized = [];
+                // var local_authorized = {
+                //     query: 'SELECT DISTINCT '+
+                //             'lan_user, '+
+                //             'lan_ip, '+
+                //             'lan_zone, '+
+                //             'machine '+
+                //     'FROM '+
+                //         ' `conn_meta` '+
+                //     'WHERE '+
+                //         'time BETWEEN ? AND ? '+
+                //         'AND `out_bytes` > 0 '+
+                //         'AND `in_bytes` > 0 ',
+                //     insert: [start, end]
+                // }
 
 
                 async.parallel([
@@ -287,36 +314,21 @@ module.exports = function(pool) {
                         });
                     },
 
-
                     function(callback) {
-                        new query(stealth_drop, {database: database, pool: pool}, function(err,data){
-                            stealthDrop = data;
+                        new buildings(floors, build, {database: database, pool: pool}, function(err,data){
+                            groupedFloors = data;
                             callback();
                         });
                     },
-                    function(callback) {
-                        new floor_plan(local_drop, {database: database, pool: pool}, function(err,data){
-                            localDrop = data;
-                            callback();
-                        });
-                    },
-                    function(callback) {
-                        new floor_plan(stealth_authorized, {database: database, pool: pool}, function(err,data){
-                            stealthAuthorized = data;
-                            callback();
-                        });
-                    },
-                    function(callback) {
-                        new floor_plan(local_authorized, {database: database, pool: pool}, function(err,data){
-                            localAuthorized = data;
-                            callback();
-                        });
-                    },
-
-
                     function(callback) {
                         new floor_plan(floors, {database: database, pool: pool}, function(err,data){
                             floorplan = data;
+                            callback();
+                        });
+                    },
+                    function(callback) {
+                        new floor_plan(asset, {database: database, pool: pool}, function(err,data){
+                            assets = data;
                             callback();
                         });
                     },
@@ -324,11 +336,9 @@ module.exports = function(pool) {
                     if (err) throw console.log(err);
                     var results = { 
                         users: floorplanReturn,
-                        sd: stealthDrop,
-                        ld: localDrop,
-                        sa: stealthAuthorized,
-                        la: localAuthorized,
-                        floor: floorplan
+                        floor: floorplan,
+                        buildings: groupedFloors,
+                        assets: assets
                     };
                     res.json(results);
                 });         
@@ -361,11 +371,10 @@ module.exports = function(pool) {
 
                 _getAllFilesFromFolder('./public/uploads/phirelight');
 
-
                 if (req.query.rem === 'removeFloorPlan') {
                     var delete_floor = {
-                        query: "DELETE FROM `assets` WHERE `type`='map' AND `asset_name`=?",
-                        insert: [req.body.asset_name]
+                        query: "DELETE FROM `assets` WHERE `type`='map' AND `asset_name`=? AND `building`=?",
+                        insert: [req.body.asset_name, req.body.building]
                     }                
                     new query(delete_floor, {database: database, pool: pool}, function(err,data){
                         if (err) {
@@ -375,8 +384,19 @@ module.exports = function(pool) {
                         }
                     });
                 }
+            } else if (req.query.type === 'removeBuilding') {
+                var delete_building = {
+                        query: "DELETE FROM `assets` WHERE `asset_name`=? AND `type`=?",
+                        insert: [req.body.asset_name, req.body.type]
+                    }                
+                    new query(delete_building, {database: database, pool: pool}, function(err,data){
+                        if (err) {
+                            res.send(500);
+                        } else {
+                            res.send(200);
+                        }
+                    });
             } else if (req.query.type === 'saveFloorScale') {
-
                 var update_floor = {
                     query: "update `assets` SET `scale`=? WHERE `type`='map' AND `asset_name`=?",
                     insert: [req.body.scale, req.body.floor.asset_name]
@@ -388,8 +408,8 @@ module.exports = function(pool) {
                 });
             } else if (req.query.type === 'editFloorInfo') {
                 var update_floor = {
-                    query: "update `assets` SET `order_index`=?, `custom_name`=?, `scale`=?, `user_scale`=? WHERE `type`='map' AND `asset_name`=?",
-                    insert: [req.body.edited_floor.order_index, req.body.edited_floor.custom_name, req.body.edited_floor.scale, req.body.edited_floor.user_scale, req.body.edited_floor.asset_name]
+                    query: "update `assets` SET `order_index`=?, `custom_name`=?, `scale`=?, `user_scale`=? WHERE `type`='map' AND `asset_name`=? AND `building`=?",
+                    insert: [req.body.edited_floor.order_index, req.body.edited_floor.custom_name, req.body.edited_floor.scale, req.body.edited_floor.user_scale, req.body.edited_floor.asset_name, req.body.edited_floor.building]
                 }                
                 new query(update_floor, {database: database, pool: pool}, function(err,data){
                     if (err) {
@@ -397,21 +417,26 @@ module.exports = function(pool) {
                     }
                 });
             } else if (req.query.type === 'newFloor') {
-
                 if (req.body.custom_name !== undefined ) {                    
-                    var asset_name = req.body.custom_name.replace(" ", "_");
-                    console.log(asset_name);
-
                     var insert_map_image = {
-                        query: "INSERT INTO `assets` (`file`,  `asset_name`, `path`, `type`, `custom_name`, `image_width`, `image_height`, `scale`) VALUES (?,?,?,?,?,?,?,?)",
-                        insert: ["",asset_name,"","map",req.body.custom_name,800,600,1]
+                        query: "INSERT INTO `assets` (`file`,  `asset_name`, `path`, `type`, `custom_name`, `image_width`, `image_height`, `scale`, `building`) VALUES (?,?,?,?,?,?,?,?,?)",
+                        insert: ["",req.body.asset_name,"","map",req.body.custom_name,800,600,1,req.body.building]
                     }
                     new query(insert_map_image, {database: database, pool: pool}, function(err,data){
                         res.send(200);
                     });
                 }
+            } else if (req.query.type === 'newBuilding') {
+                if (req.body.custom_name !== undefined ) {                    
+                    var insert_building = {
+                        query: "INSERT INTO `assets` (`file`, `asset_name`, `path`, `type`, `custom_name`, `image_width`, `image_height`,`scale`, `building`) VALUES (?,?,?,?,?,?,?,?,?)",
+                        insert: ["",req.body.asset_name,"","building",req.body.custom_name,800,600,1,null]
+                    }
+                    new query(insert_building, {database: database, pool: pool}, function(err,data){
+                        res.send(200);
+                    });
+                }
             } else if (req.query.type === 'editFloorPos') {
-
                 var edit_floor_pos = {
                     query: "UPDATE `assets` SET `x`=?, `y`=? WHERE `asset_name`=?",
                     insert: [req.body.x, req.body.y, req.body.map_name]

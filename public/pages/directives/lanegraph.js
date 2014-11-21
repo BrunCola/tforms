@@ -37,15 +37,20 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 };
                 $scope.highlightedPoint = false;
                 // toggle for turning on/off unit multiselecting
-                $scope.pattern = {
-                    searching: false,
-                    selected: {
-                        length: 0
-                    },
-                    // last elm clicked, for throwing in object after an item is clicked when and our button is toggled
-                    last: null,
-                    lastXY: null
+                $scope.pattern;
+                // we put the pattern in a function because it's easier to clear later without redefining things
+                function setPatternObj() {
+                    $scope.pattern = {
+                        searching: false,
+                        selected: {
+                            length: 0
+                        },
+                        // last elm clicked, for throwing in object after an item is clicked when and our button is toggled
+                        last: null,
+                        lastXY: null
+                    }
                 }
+                setPatternObj();
                 var queryThreshhold = 3600; // one hour in seconds
                 var navArray = [], currentNavPos = 0;
                 var addRemBtnDimensions = [32,18];
@@ -242,9 +247,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr('class', 'resetButton')
                     .on('click', function(){
                         draw();
-                        $scope.alert.style('display', 'none');
-                        $scope.highlightedPoint = false;
-                        clearVerticalLine();
                     });
                 var prevButton = buttonHolder.append('button')
                     .html('Previous')
@@ -314,6 +316,19 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             laneInfoAppend($scope.pattern.last.data, $scope.pattern.last.element);
                         }
                     });
+                $scope.$watch('patternPane', function(pane){
+                    if (pane) {
+                        saveToggle.attr('disabled', 'disabled');
+                        prevButton.attr('disabled', 'disabled');
+                        nextButton.attr('disabled', 'disabled');
+                        resetBtn.attr('disabled', 'disabled');
+                    } else {
+                        saveToggle.attr('disabled', null);
+                        prevButton.attr('disabled', null);
+                        nextButton.attr('disabled', null);
+                        resetBtn.attr('disabled', null);
+                    }
+                })
 
                 ///////////////////////////////
                 /////  GENERAL FUNCTIONS  /////
@@ -369,28 +384,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             return "#666";
                     }
                 }
-                function highlightSameNodes(uid, id, previousElm) {
-                    var pData = false;
-                    if (previousElm) {
-                        pData = previousElm.data();
-                    }
-                    itemRects.selectAll('g').each(function(d){
-                        // select nodes that match
-                        var elm = d3.select(this).select('.hover-square');
-                        if ((d.conn_uids === uid) && (d.id !== id)) {
-                            d.hover = true;
-                            hoverPoint(elm, 'mouseover');
-                        }
-                        // deselect previous nodes (if any)
-                        if (pData) {
-                            // if any nodes match our previous time andwe're on a different time segment
-                            if ((pData[0].conn_uids === d.conn_uids) && (pData[0].conn_uids !== uid)) {
-                                d.hover = false;
-                                hoverPoint(elm, 'mouseout');
-                            }
-                        }
-                    })
-                }
                 function hoverPoint(elm, action) {
                     if (action === 'mouseover') {
                         elm
@@ -410,10 +403,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     clickLine.selectAll('line').remove();
                 }
                 function changeIcon(element, data, previousElm) {
-                    // call filter funtion to highlight all nodes with the same time
-                    highlightSameNodes(data.conn_uids, data.id, previousElm);
-                    var color, select;
+                    var color, select, pData = false;
                     if (previousElm) {
+                        pData = previousElm.data();
                         previousElm.select('.eventFocus').remove();
                     }
                     if (data.id in $scope.pattern.selected) {
@@ -438,7 +430,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .attr("stroke", "#fff");      
                         }
                     }
-
                     element.classed('node-'+data.id, true);
                     element = element.append('g');                
                     element.attr('transform', 'translate(-11, -9)');
@@ -511,6 +502,23 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .attr('height', 36);
                             laneRowSymbols(data.type, element, color1, color2);
                     }
+                    setTimeout(function(){ // this is a temporary fix to an unknown issue reguarding this firing too soon
+                        // highlight all nodes matching the uid
+                        itemRects.selectAll('g').each(function(d){
+                            // select nodes that match
+                            var elm = d3.select(this).select('.hover-square');
+                            if ((d.conn_uids === data.conn_uids) && (d.id !== data.id)) {
+                                hoverPoint(elm, 'mouseover');
+                            }
+                            // deselect previous nodes (if any)
+                            if (pData) {
+                                // if any nodes match our previous time andwe're on a different time segment
+                                if ((pData[0].conn_uids === d.conn_uids) && (pData[0].conn_uids !== data.conn_uids)) {
+                                    hoverPoint(elm, 'mouseout');
+                                }
+                            }
+                        })
+                    }, 10)
                 }
                 function analize() {
                     var compareObj = $scope.pattern.selected;
@@ -659,6 +667,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     prevButton.attr('disabled', 'disabled');
                     nextButton.attr('disabled', 'disabled');
                     resetBtn.attr('disabled', 'disabled');
+                    $scope.alert.style('display', 'none');
+                    $scope.highlightedPoint = false;
+                    clearVerticalLine();
                     // push current time position to nav array
                     navArray.push({'min': new Date($scope.start), 'max': new Date($scope.end)});
                     // push time slice heading t odiv
@@ -671,7 +682,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
                 // this function finds what's clicked on brush and adds flag to values for redraw highlighting
                 function reHighlightPoints(timeObj) {
-                    var clickedElm = itemRects.selectAll('g .eventFocus').each(function(d){
+                    itemRects.select('g .eventFocus').node(function(d){
                         // if the point sits within the time space add flag for highlight (or add to external object for refrence later)
                         if ((d.time > timeObj.min) && (d.time < timeObj.max)) {
                             $scope.highlightedPoint = d;
@@ -749,6 +760,13 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         }
                         $('.divScroll').scrollTo(offset);
                     }
+                }
+                function uidsMatch(data){
+                    // compares 2 objects 2 ids - current use is to determine if a point should be zommed out if moused over
+                    if ($scope.highlightedPoint.conn_uids === data.conn_uids){
+                        return true;
+                    }
+                    return false;
                 }
                 function plot(data, min, max) {
                     // node selecting
@@ -842,7 +860,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 })
                                 .on('mouseout', function(d){
                                     var elm = d3.select(this);
-                                    if (d.hover !== true){
+                                    if (!(uidsMatch(d))){
                                         hoverPoint(elm, 'mouseout');
                                     }
                                 });
@@ -885,6 +903,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     //////// THIS NODE ////////
                                     ///////////////////////////
                                     clearVerticalLine();
+                                    // set new highlighted point object
+                                    $scope.highlightedPoint = d;
                                     var selectedNode = clickLine.selectAll(".clickLine").data(['']);
                                     // vertical line
                                     selectedNode.enter()
@@ -915,9 +935,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         .attr("y2", mainHeight)
                                         .attr('stroke-width', '1')
                                         .attr("stroke", "#FFF");
-                                changeIcon(elm, d, previousElm);
+                                changeIcon(elm, d);
                                 previousElm = elm;
-                                $scope.highlightedPoint = false;
+                                // set highlighted point to to new elm data
+                                $scope.highlightedPoint = d;
                             }
                             // generate points from point function
                             if (d.type !== 'l7') {
@@ -1117,7 +1138,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                 }
                 function patternPane(data) {
-                    if ($scope.patternPane) { $scope.patternPane = false; return }
+                    if ($scope.patternPane) { $scope.patternPane = false; return; }
                     // loop through and add a checked flag for each point (for use in finding commonalities)
                     data.forEach(function(d){
                         d.point.checked = true;
@@ -1143,6 +1164,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
                 $scope.closePatternBox = function() {
                     $scope.patternPane = false;
+                    $scope.highlightedPoint = false; 
+                    setPatternObj();
                 }
                 // begin execution
                 draw();

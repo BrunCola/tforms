@@ -35,28 +35,48 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
 
             $scope.$broadcast('spinnerHide');
 
+            $rootScope.toggleZoom = false;
             $rootScope.toggleView = false;
-            $scope.floors = data.floor; 
-            $scope.floors[0].active = true;
+
+            $scope.buildings = data.buildings; 
+            $rootScope.assets = data.assets; 
+            // $scope.floors = data.floor; 
+            // $scope.floors[0].active = true;
 
         }
         if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
             var query = '/local_events/endpoint_map?lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&type=flooruser';
             $http({method: 'GET', url: query+'&typeinfo=userinfoload'}).
                 success(function(data) {
-                    if (data[0] !== undefined) {
-                        $scope.floors.filter(function(d){ if ((data[0].map === d.asset_name)) { d.active = true; }});
-                        $scope.requery(data[0]);
-                        var selected = $scope.data.users.filter(function(d){ if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ return true }});
-                        if (selected[0] !== undefined) { 
-                            setTimeout(function () {
-                                $scope.$broadcast('setSelected', selected[0]);
-                                }, 0);
-                            }
-                    }                    
+                    // if (data[0] !== undefined) { //--------------------------------------------------------------------------------------------------- fix $scope.floors
+                    //     $scope.floors.filter(function(d){ if ((data[0].map === d.asset_name)) { d.active = true; }});
+                    //     $scope.requery(data[0]);
+                    //     var selected = $scope.data.users.filter(function(d){ if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ return true }});
+                    //     if (selected[0] !== undefined) { 
+                    //         setTimeout(function () {
+                    //             $scope.$broadcast('setSelected', selected[0]);
+                    //             }, 0);
+                    //         }
+                    // }                    
                 });
         }
     });
+
+    $scope.toggleViews = function (url, params) {
+        if ($rootScope.toggleView == false) {
+            $rootScope.toggleView = true;
+        } else {
+            $rootScope.toggleView = false
+        }
+    }
+
+    $scope.toggleZooms = function (url, params) {
+        if ($rootScope.toggleZoom == false) {
+            $rootScope.toggleZoom = true;
+        } else {
+            $rootScope.toggleZoom = false
+        }
+    }
 
     $scope.changePage = function (url, params) {
         if ($location.$$search.start && $location.$$search.end) {
@@ -76,15 +96,14 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 $scope.startend = 'start='+$location.$$search.start+'&end='+$location.$$search.end+'&'; 
             } 
             $scope.selectedUser = "";
-            $http({method: 'GET', url: query+'&typeinfo=getconn2'}).
+            $http({method: 'GET', url: query+'&typeinfo=getconn1'}).
                 success(function(data) {
                     $scope.connectionIn = "";
-                        var results = [];
+                    var results = [];
                     if (data[0] != undefined) {
-                        var users; 
                         var connections = data.map(function( da ) {
-                            users = $scope.userDimension.filter(function(dt){ 
-                                if ((da.remote_ip === dt.lan_ip)){
+                            var users = $scope.userDimension.filter(function(dt){ 
+                                if ((da.remote_ip === dt.lan_ip)){ // && (da.machine === dt.remote_machine)
                                     results.push(dt);
                                 }
                             });
@@ -93,15 +112,14 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                         $scope.connectionIn = results;
                     }
                 });
-             $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
+            $http({method: 'GET', url: query+'&typeinfo=getconn2'}).
                 success(function(data) {
                     $scope.connectionOut = "";
                     var results2 = [];
                     if (data[0] != undefined) {
-                        var users; 
                         var connections = data.map(function( da ) {
-                            users = $scope.userDimension.filter(function(dt){ 
-                                if ((da.lan_ip === dt.lan_ip)){
+                            var users = $scope.userDimension.filter(function(dt){ 
+                                if ((da.lan_ip === dt.lan_ip) && (da.machine === dt.lan_machine)){
                                     results2.push(dt);
                                 }
                             });
@@ -109,52 +127,105 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                         $scope.connectionOut = results2;
                     }
                 });
+
+            $http({method: 'GET', url: query+'&typeinfo=getconn3'}).
+                success(function(data) {
+                    $scope.connStealthIn = "";
+                    var results3 = [];
+                    if (data[0] != undefined) {
+                        var connections = data.map(function( da ) {
+                            var users = $scope.userDimension.filter(function(dt){ 
+                                if ((da.remote_ip === dt.lan_ip)){ // && (da.machine === dt.remote_machine)
+                                    results3.push(dt);
+                                }
+                            });
+                        });
+
+                        $scope.connStealthIn = results3;
+                    }
+                });
+            $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
+                success(function(data) {
+                    $scope.connStealthOut = "";
+                    var results3 = [];
+                    if (data[0] != undefined) {
+                        var connections = data.map(function( da ) {
+                            var users = $scope.userDimension.filter(function(dt){ 
+                                if ((da.lan_ip === dt.lan_ip) && (da.machine === dt.lan_machine)){
+                                    results3.push(dt);
+                                }
+                            });
+                        });
+                        $scope.connStealthOut = results3;
+                    }
+                });
             $scope.selectedUser = d;
+            $scope.userLink(d);
     }                                   //---------------^^^^^^^^^^^^^^^^-----------------------Should be upgraded!!--------------------------^^^^^^^^^^-------------------------
 
     $scope.userLink = function(d) {//-----------------------------------------------------Should be upgraded!!-------------------------------------------------------------------
         var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=endpointconnection';
-            $scope.startend = ""; 
-            if ($location.$$search.start && $location.$$search.end) {
-                query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=endpointconnection'; 
-                $scope.startend = 'start='+$location.$$search.start+'&end='+$location.$$search.end+'&'; 
-            } 
-            $scope.selectedUser = "";
-            $http({method: 'GET', url: query+'&typeinfo=getconn2'}).
+        $scope.startend = ""; 
+        if ($location.$$search.start && $location.$$search.end) {
+            query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=endpointconnection'; 
+            $scope.startend = 'start='+$location.$$search.start+'&end='+$location.$$search.end+'&'; 
+        } 
+        $scope.selectedUser = "";
+        $scope.floorConns = [];
+        // for (var i = 1; i<=4; i++) {            
+            $http({method: 'GET', url: query+'&typeinfo=getconn1'}).
                 success(function(data) {
-                    $scope.connectionIn = "";
-                        var results = [];
                     if (data[0] != undefined) {
-                        var users; 
                         var connections = data.map(function( da ) {
-                            users = $scope.userDimension.filter(function(dt){  
-                                if ((da.remote_ip === dt.lan_ip)){
-                                    results.push(dt);
-                                }
+                            var users = $scope.userDimension.filter(function(dt){  
+                                if ((da.remote_ip === dt.lan_ip) && (d.map !== dt.map)){ // && (da.machine === dt.remote_machine)
+                                    $scope.floorConns.push(dt);
+                                } 
                             });
                         });
+                    }
+                });
+        // }
+        $http({method: 'GET', url: query+'&typeinfo=getconn2'}).
+            success(function(data) {
+                if (data[0] != undefined) {
+                    var connections = data.map(function( da ) {
+                        var users = $scope.userDimension.filter(function(dt){ 
+                            if ((da.lan_ip === dt.lan_ip) && (d.map !== dt.map) && (da.machine === dt.lan_machine)){ 
+                                $scope.floorConns.push(dt);
+                            }
+                        });
+                    });
+                }
+            });
 
-                        $scope.connectionIn = results;
-                    }
-                });
-             $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
+        $http({method: 'GET', url: query+'&typeinfo=getconn3'}).
                 success(function(data) {
-                    $scope.connectionOut = "";
-                    var results2 = [];
                     if (data[0] != undefined) {
-                        var users; 
                         var connections = data.map(function( da ) {
-                            users = $scope.userDimension.filter(function(dt){ 
-                                if ((da.lan_ip === dt.lan_ip)){
-                                    results2.push(dt);
-                                }
+                            var users = $scope.userDimension.filter(function(dt){  
+                                if ((da.remote_ip === dt.lan_ip) && (d.map !== dt.map)){ // && (da.machine === dt.remote_machine)
+                                    $scope.floorConns.push(dt);
+                                } 
                             });
                         });
-                        $scope.connectionOut = results2;
                     }
                 });
-            $scope.selectedUser = d;
-        console.log(d)
+        $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
+            success(function(data) {
+                if (data[0] != undefined) {
+                    var connections = data.map(function( da ) {
+                        var users = $scope.userDimension.filter(function(dt){ 
+                            if ((da.lan_ip === dt.lan_ip) && (d.map !== dt.map) && (da.machine === dt.lan_machine)){ 
+                                $scope.floorConns.push(dt);
+                            }
+                        });
+                    });
+                }
+            });
+        $scope.selectedUser = d;
+        $scope.drawFloorConns("#23FF1C");   
+        //console.log(d);
     } 
 
     $scope.requery = function(d, type) {
@@ -162,17 +233,32 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
          if (d === "clear") {
             $scope.userinfo = undefined;
             $scope.currentFloor = undefined;
-            $scope.$apply();
+            $scope.currentBuilding = undefined;
+            $scope.selectedBuilding = undefined;
          } else if(type === "listusers") {
             $scope.userinfo = undefined;
+            $scope.currentBuilding = undefined;
             var users = $scope.userDimension.filter(function(dt){ 
-                    if ((d.asset_name === dt.map)){
+                    if ((d.id == dt.map)){
                         return true;
                     }
                 });
             $scope.currentFloor = users.top(Infinity);
+         } else if(type === "listallusers") {
+            $scope.userinfo = undefined;
+            $scope.currentFloor = undefined;
+            $scope.selectedBuilding = d;
+            var users = $scope.userDimension.filter(function(dt){
+                    for (var fl in d.floors) {
+                        if ((d.floors[fl].id == dt.map)){
+                            return true;
+                        }
+                    }                    
+                });
+            $scope.currentBuilding = users.top(Infinity);
          } else if ($scope.lan_ip !== '-') {
             $scope.currentFloor = undefined;
+            $scope.currentBuilding = undefined;
             var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser';
             $scope.startend = ""; 
             if ($location.$$search.start && $location.$$search.end) {
@@ -229,6 +315,12 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         $scope.redrawFloor();
     }
 
+    $scope.removeBuilding = function (building) {
+        $http({method: 'POST', url: '/local_events/endpoint_map?type=removeBuilding', data: {asset_name: building.asset_name, type:building.type}});
+        $scope.requery("clear");
+        $scope.redrawBuilding(building);
+    }
+
     $scope.editFloorPlan = function (floors) {
         //console.log(floors);
         $rootScope.modalFloors = floors;
@@ -240,11 +332,20 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         });
     };
 
+    $scope.createBuilding = function () {
+        $scope.modalInstance = $modal.open({
+            templateUrl: 'uploadBuildingModal.html',
+            controller: uploadInstanceCtrl,
+            keyboard: true
+        });
+    };
+
     $scope.change_customuser = function(item,value) {
         $http({method: 'POST', url: '/actions/change_custom_user', data: {custom_user: value, lan_ip: item.lan_ip, lan_zone: item.lan_zone}});
     }
 
-    $scope.uploadOpen = function () {
+    $scope.uploadOpen = function (building) {
+        $rootScope.building = building;
         $scope.modalInstance = $modal.open({
             templateUrl: 'uploadModal.html',
             controller: uploadInstanceCtrl,
@@ -334,7 +435,8 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                         order_index: edited_floor.order_index,
                         asset_name: edited_floor.asset_name,
                         scale: edited_floor.scale,
-                        user_scale: edited_floor.user_scale
+                        user_scale: edited_floor.user_scale,
+                        building: edited_floor.building
                     },
                     file: $scope.selectedFiles[index],
                 }).then(function(response) {
@@ -353,13 +455,30 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             }
         };
 
-        $scope.newBlankFloor = function(floor_name) {
-            if (floor_name !== undefined) {
-                $scope.cant_leave_blank = false;
-                $http({method: 'POST', url: '/local_events/endpoint_map?type=newFloor', data: {custom_name: floor_name}});
-                $scope.ok();
+        $scope.newBlank = function(name, building) {
+            if ((name !== undefined) && (name !== "")){
+                var new_asset_name = name.replace(new RegExp(" ", 'g'), "_")
+                var nameTaken = $scope.assets.filter(function(a){ 
+                    if ((new_asset_name === a.asset_name)){ // && (da.machine === dt.remote_machine)
+                        return true;
+                    }
+                });
+                if (nameTaken.length > 0) {
+                    $scope.name_already_taken = true;
+                    $scope.cant_leave_blank = false;
+                } else{                    
+                    $scope.cant_leave_blank = false;
+                    $scope.name_already_taken = false;
+                    if (building !== undefined) {
+                        $http({method: 'POST', url: '/local_events/endpoint_map?type=newFloor', data: {custom_name: name, building: building.asset_name, asset_name: new_asset_name}});
+                    }else {
+                        $http({method: 'POST', url: '/local_events/endpoint_map?type=newBuilding', data: {custom_name: name, asset_name: new_asset_name}});
+                    }
+                    $scope.ok();
+                }
             } else {
                 $scope.cant_leave_blank = true;
+                $scope.name_already_taken = false;
             }
         };
 
@@ -369,12 +488,14 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
 
         $scope.deleteFloorplan = function(floor_name, floors) {
             var imagePath = "";
+            var building = "";
             for (var f in floors) {
                 if (floors[f].asset_name === floor_name.select) {
                     imagePath = floors[f].path;
+                    building = floors[f].building;
                 }
             }
-            $http({method: 'POST', url: '/local_events/endpoint_map?type=deletefp&rem=removeFloorPlan', data: {asset_name: floor_name.select, path: imagePath}});
+            $http({method: 'POST', url: '/local_events/endpoint_map?type=deletefp&rem=removeFloorPlan', data: {asset_name: floor_name.select, path: imagePath, building: building}});
             $scope.ok();
         };
 
@@ -405,33 +526,33 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 });
             };
         } else {
-            $scope.start = function(index, custom_fn) {
-                $scope.progress[index] = 0;
-                $scope.errorMsg = null;
-                $scope.upload[index] = $upload.upload({
-                    url : '/uploads',
-                    method: 'POST',
-                    data : {
-                        myModel : $scope.myModel,
-                        custom_name: custom_fn,
-                        imageType: 'map',
-                        width: $scope.imageWidth,
-                        height: $scope.imageHeight,
-                        scale: 1
-                    },
-                    file: $scope.selectedFiles[index],
-                }).then(function(response) {
-                    $scope.uploadResult.push(response.data);
-                    console.log(response.data);
-                }, function(response) {
-                    if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
-                }, function(evt) {
-                    // Math.min is to fix IE which reports 200% sometimes
-                    $scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-                }).xhr(function(xhr){
-                    xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
-                });
-            };
+            // $scope.start = function(index, custom_fn) {
+            //     $scope.progress[index] = 0;
+            //     $scope.errorMsg = null;
+            //     $scope.upload[index] = $upload.upload({
+            //         url : '/uploads',
+            //         method: 'POST',
+            //         data : {
+            //             myModel : $scope.myModel,
+            //             custom_name: custom_fn,
+            //             imageType: 'map',
+            //             width: $scope.imageWidth,
+            //             height: $scope.imageHeight,
+            //             scale: 1
+            //         },
+            //         file: $scope.selectedFiles[index],
+            //     }).then(function(response) {
+            //         $scope.uploadResult.push(response.data);
+            //         console.log(response.data);
+            //     }, function(response) {
+            //         if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
+            //     }, function(evt) {
+            //         // Math.min is to fix IE which reports 200% sometimes
+            //         $scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+            //     }).xhr(function(xhr){
+            //         xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
+            //     });
+            // };
         }
     };
 }]);
