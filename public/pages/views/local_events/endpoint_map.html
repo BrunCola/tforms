@@ -162,10 +162,10 @@
                     </div>
                 </div>
             </div>
-            <div id="localuserinformationspan" ng-show="userinfo">
+            <div id="localuserinformationspan">
                 <div class="jdash-header">User Information</div>
                 <div  style="background-color:#FFF;" class="box">
-                    <div id="localuserinformation"  ng-show="toggleView">
+                    <div id="localuserinformation"  ng-show="userinfo">
                         <div class="luinfo" ng-show="userinfo.user_image"><span style="font-weight:bold">User Image: </span><button class='uUpload userfloorbutton' ng-dblclick="uploadUser(userinfo)" type='button' value='userinfo' href=''><img src='{{userinfo.user_image}}' width='48'/></button></div>
                         <div class="luinfo" ng-show="userinfo.custom_user"><span style="font-weight:bold">Custom Name: </span><span>{{userinfo.custom_user}}</span></div>
                         <div class="luinfo" ng-show="userinfo.lan_ip"><span style="font-weight:bold">Lan IP: </span><span>{{userinfo.lan_ip}}</span></div>
@@ -216,12 +216,35 @@
                         </div>
                         <div ng-show="userinfo.map"><button type="button" class="button-error pure-button" ng-click="removeEndUser(userinfo)">Remove User</button></div>
                     </div>
+                    <div class="luinfo" ng-show="currentFloor">
+                        <table id="flus">
+                            <tr style="font-weight:bold">
+                                <td>IP</td><td>Host Name</td><td>User name</td>
+                            </tr>
+                            <tr  ng-repeat="user in currentFloor" ng-click="userLink(user)">
+                                <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
+                            </tr>
+                        </table> 
+                    </div>
+                    <div class="luinfo" ng-show="currentBuilding">
+                        <table id="flus">
+                            <tr>
+                                <button type="button" class="button-error pure-button" ng-click="removeBuilding(selectedBuilding)">Remove Building</button>
+                            </tr>
+                            <tr style="font-weight:bold">
+                                <td>IP</td><td>Host Name</td><td>User name</td>
+                            </tr>
+                            <tr  ng-repeat="user in currentBuilding" ng-click="userLink(user)">
+                                <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
+                            </tr>
+                        </table>  
+                    </div>
                 </div>
             </div>
-            <div id="localuserinformationspan" ng-show="currentFloor">
+            <!-- <div id="localuserinformationspan" ng-show="currentFloor">
                 <div class="jdash-header">User Information</div>
                 <div  style="background-color:#FFF;" class="box">
-                     <div id="alllocaluserinformation">
+                     <div id="localuserinformation">
                         <div class="luinfo" ng-show="currentFloor">
                             <table id="flus">
                                 <tr style="font-weight:bold">
@@ -239,7 +262,7 @@
             <div id="localuserinformationspan" ng-show="currentBuilding">
                 <div class="jdash-header">User Information</div>
                 <div  style="background-color:#FFF;" class="box">
-                     <div id="alllocaluserinformation">
+                     <div id="localuserinformation">
                         <div class="luinfo" ng-show="currentBuilding">
                             <table id="flus">
                                 <tr>
@@ -255,7 +278,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
            
         </section>
     </div>
