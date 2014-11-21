@@ -24,15 +24,13 @@ module.exports = function(pool) {
                             '`lan_zone`,'+
                             '`lan_user` '+
                         'FROM '+
-                            '`stealth_quarantine` '+
-                        'WHERE '+
-                            '`time` BETWEEN ? AND ? ',
-                insert: [start, end],
+                            '`stealth_quarantine`',
+                insert: [],
                 params: [
                     { title: 'Time', select: 'time' },
-                    { title: 'Email', select: 'email' },
+                    { title: 'rapidPHIRE User Responsible', select: 'email' },
                     { title: 'Zone', select: 'lan_zone' },
-                    { title: 'Machine', select: 'lan_user' },
+                    { title: 'Quarantined User', select: 'lan_user' },
                 ],
                 settings: {
                     sort: [[0, 'desc']],
