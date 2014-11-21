@@ -316,6 +316,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             laneInfoAppend($scope.pattern.last.data, $scope.pattern.last.element);
                         }
                     });
+                // this function disables all buttons when the pattern-pane is active
                 $scope.$watch('patternPane', function(pane){
                     if (pane) {
                         saveToggle.attr('disabled', 'disabled');
