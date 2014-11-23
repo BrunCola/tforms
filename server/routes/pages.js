@@ -162,12 +162,12 @@ module.exports = function(app, passport, version, io, pool) {
             app.route('/stealth/stealth_events')
             .get(auth.permission, stealth_events.render);
             // STEALTH EVENTS USER
-                var stealth_events_by_type_and_user = require('../controllers/local_events/stealth_events_by_type_and_user')(pool);
-                app.route('/local_events/stealth_events_by_type_and_user')
+                var stealth_events_by_type_and_user = require('../controllers/stealth/stealth_events_by_type_and_user')(pool);
+                app.route('/stealth/stealth_events_by_type_and_user')
                 .get(auth.permission, stealth_events_by_type_and_user.render);
                 // STEALTH EVENTS USER DRILL
-                    var stealth_events_full = require('../controllers/local_events/stealth_events_full')(pool);
-                    app.route('/local_events/stealth_events_full')
+                    var stealth_events_full = require('../controllers/stealth/stealth_events_full')(pool);
+                    app.route('/stealth/stealth_events_full')
                     .get(auth.permission, stealth_events_full.render);
         // STEALTH QUARANTINE
             var stealth_quarantine = require('../controllers/stealth/stealth_quarantine')(pool); 

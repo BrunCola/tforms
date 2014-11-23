@@ -539,7 +539,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 // STEALTH EVENTS USER
                     .state('stealth_events_by_type_and_user', {
                         url: '/stealth_events_by_type_and_user?start&end&event_type',
-                        templateUrl: 'public/pages/views/local_events/stealth_events_by_type_and_user.html',
+                        templateUrl: 'public/pages/views/stealth/stealth_events_by_type_and_user.html',
                         resolve: {
                             loggedin: checkLoggedin
                         },
@@ -554,7 +554,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     // STEALTH EVENTS USER DRILL
                         .state('stealth_events_full', {
                             url: '/stealth_events_full?start&end&event_type&lan_zone&lan_user',
-                            templateUrl: 'public/pages/views/local_events/stealth_events_full.html',
+                            templateUrl: 'public/pages/views/stealth/stealth_events_full.html',
                             resolve: {
                                 loggedin: checkLoggedin
                             },
