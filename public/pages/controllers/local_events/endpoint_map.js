@@ -30,37 +30,53 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             });
 
             $scope.crossfilterData = crossfilter(data.users);
+            $scope.crossfilterData2 = crossfilter(data.users);
             $scope.searchDimension = $scope.crossfilterData.dimension(function(d) { return d });
-            $scope.userDimension = $scope.crossfilterData.dimension(function(d) { return d });
+            $scope.userDimension = $scope.crossfilterData2.dimension(function(d) { return d });
 
             $scope.$broadcast('spinnerHide');
 
             $rootScope.toggleZoom = false;
             $rootScope.toggleView = false;
 
-            $scope.buildings = data.buildings; 
+            $scope.buildings = data.buildings;
+            // $scope.buildings.forEach(function(d){
+            //     d.active = false;
+            // })
             $rootScope.assets = data.assets; 
+
+            $scope.searchFired = false;
+
+            $scope.elementWidth = 0;
+
             // $scope.floors = data.floor; 
             // $scope.floors[0].active = true;
-
         }
+
         if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
             var query = '/local_events/endpoint_map?lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&type=flooruser';
             $http({method: 'GET', url: query+'&typeinfo=userinfoload'}).
                 success(function(data) {
-                    // if (data[0] !== undefined) { //--------------------------------------------------------------------------------------------------- fix $scope.floors
-                    //     $scope.floors.filter(function(d){ if ((data[0].map === d.asset_name)) { d.active = true; }});
-                    //     $scope.requery(data[0]);
-                    //     var selected = $scope.data.users.filter(function(d){ if ((data[0].lan_ip === d.lan_ip) && (data[0].lan_zone === d.lan_zone)){ return true }});
-                    //     if (selected[0] !== undefined) { 
-                    //         setTimeout(function () {
-                    //             $scope.$broadcast('setSelected', selected[0]);
-                    //             }, 0);
-                    //         }
-                    // }                    
+                    if (data[0] !== undefined) {
+                        $rootScope.userLinkTo(data[0])
+                    }          
                 });
         }
     });
+
+
+    $scope.setFloorActive = function (floor) {
+        $scope.buildings.filter(function(d){ 
+            for(var f in d.floors) {                           
+                if ((floor.id == d.floors[f].id)) {
+                    d.floors[f].active = true;
+                }else {
+                    d.floors[f].active = false; 
+                }
+            }
+        });
+    }
+
 
     $scope.toggleViews = function (url, params) {
         if ($rootScope.toggleView == false) {
@@ -88,79 +104,127 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         }
     }
 
-    $scope.getConnections = function(d) {//-----------------------------------------------------Should be upgraded!!-------------------------------------------------------------------
+    function selectColor (number){
+        if (number==1) {
+            return "#34D4FF";
+        } else if (number==2) {
+            return "#009426";
+        } else if (number==3) {
+            return "#C40600";
+        } else {
+            return "#EE00FF";
+        }
+
+    }
+
+    $scope.getConnections = function(d, conns) {//-----------------------------------------------------Should be upgraded!!-------------------------------------------------------------------
         var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=endpointconnection';
             $scope.startend = ""; 
             if ($location.$$search.start && $location.$$search.end) {
                 query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=endpointconnection'; 
                 $scope.startend = 'start='+$location.$$search.start+'&end='+$location.$$search.end+'&'; 
             } 
-            $scope.selectedUser = "";
+            //$scope.selectedUser = "";
+
+
+           // for (var i = 1; i<=4; i++) { 
+            //     var count = 0;  
+            //     console.log(i);  
+            //     setTimeout(function () {        
+            //         $http({method: 'GET', url: query+'&typeinfo=getconn1'}).
+            //             success(function(data) {
+            //                 var results = [];
+            //                 if (data[0] != undefined) {
+            //                     var connections = data.map(function( da ) {
+            //                         var users = $scope.userDimension.filter(function(dt){ 
+            //                             // console.log(i);
+            //                             // count++;  
+            //                             // console.log(count);
+            //                             // if (count>=300) {
+            //                             //     return;
+            //                             // }
+
+            //                             // if (i % 2) { 
+            //                                 //console.log(i);   
+            //                                 // if ((da.lan_ip === dt.lan_ip) && (da.machine === dt.lan_machine)){ 
+            //                                 //     results.push(dt);
+            //                                 // }
+            //                             // } else {
+            //                                 // if ((da.remote_ip === dt.lan_ip)){ // && (da.machine === dt.remote_machine)
+            //                                 //     results.push(dt);
+            //                                 // }
+            //                             // }
+            //                         });
+            //                     });
+            //                 }
+            //             });
+            //         //$scope.drawConnections(d,results,selectColor(i));
+            //    // }, 400);
+            // }
             $http({method: 'GET', url: query+'&typeinfo=getconn1'}).
                 success(function(data) {
-                    $scope.connectionIn = "";
+                    $scope.connectionOut = "";
                     var results = [];
                     if (data[0] != undefined) {
                         var connections = data.map(function( da ) {
                             var users = $scope.userDimension.filter(function(dt){ 
-                                if ((da.remote_ip === dt.lan_ip)){ // && (da.machine === dt.remote_machine)
+                               if ((da.remote_ip === dt.lan_ip)){
                                     results.push(dt);
                                 }
                             });
                         });
-
-                        $scope.connectionIn = results;
+                        $scope.drawConnections(d,results,selectColor(1),conns);
                     }
                 });
+                
             $http({method: 'GET', url: query+'&typeinfo=getconn2'}).
                 success(function(data) {
                     $scope.connectionOut = "";
-                    var results2 = [];
+                    var results = [];
                     if (data[0] != undefined) {
                         var connections = data.map(function( da ) {
                             var users = $scope.userDimension.filter(function(dt){ 
-                                if ((da.lan_ip === dt.lan_ip) && (da.machine === dt.lan_machine)){
-                                    results2.push(dt);
+                                if ((da.lan_ip === dt.lan_ip) && (da.lan_machine === dt.lan_machine)) {
+                                    results.push(dt);
                                 }
                             });
                         });
-                        $scope.connectionOut = results2;
+                        $scope.drawConnections(d,results,selectColor(2),conns);
                     }
                 });
 
             $http({method: 'GET', url: query+'&typeinfo=getconn3'}).
                 success(function(data) {
                     $scope.connStealthIn = "";
-                    var results3 = [];
+                    var results = [];
                     if (data[0] != undefined) {
                         var connections = data.map(function( da ) {
                             var users = $scope.userDimension.filter(function(dt){ 
-                                if ((da.remote_ip === dt.lan_ip)){ // && (da.machine === dt.remote_machine)
-                                    results3.push(dt);
+                                if ((da.remote_ip === dt.lan_ip)){ // && (da.lan_machine === dt.remote_machine)
+                                    results.push(dt);
                                 }
                             });
                         });
-
-                        $scope.connStealthIn = results3;
+                        $scope.drawConnections(d,results,selectColor(3),conns);
                     }
                 });
             $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
                 success(function(data) {
                     $scope.connStealthOut = "";
-                    var results3 = [];
+                    var results = [];
                     if (data[0] != undefined) {
                         var connections = data.map(function( da ) {
                             var users = $scope.userDimension.filter(function(dt){ 
-                                if ((da.lan_ip === dt.lan_ip) && (da.machine === dt.lan_machine)){
-                                    results3.push(dt);
+                                if ((da.lan_ip === dt.lan_ip) && (da.lan_machine === dt.lan_machine)){
+                                    results.push(dt);
                                 }
                             });
                         });
-                        $scope.connStealthOut = results3;
+                        $scope.drawConnections(d,results,selectColor(4),conns);
                     }
                 });
-            $scope.selectedUser = d;
-            $scope.userLink(d);
+            // $scope.selectedUser = d;
+            // $scope.userLink(d);
     }                                   //---------------^^^^^^^^^^^^^^^^-----------------------Should be upgraded!!--------------------------^^^^^^^^^^-------------------------
 
     $scope.userLink = function(d) {//-----------------------------------------------------Should be upgraded!!-------------------------------------------------------------------
@@ -228,16 +292,50 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         //console.log(d);
     } 
 
+    $rootScope.userLinkTo = function (data) {
+        $rootScope.toggleZoom = false;
+        $rootScope.toggleView = false;
+        console.log(data)
+        if (data !== undefined) {
+             $scope.buildings.filter(function(d){ 
+                for(var f in d.floors) {                           
+                    if ((data.map == d.floors[f].id)) {
+                        d.active = true; 
+                        d.floors[f].active = true; 
+                        $rootScope.toggleZoom = true;
+                        $rootScope.toggleView = true;
+                        return;
+                    } else{
+                        d.active = false; 
+                        d.floors[f].active = false; 
+                    }
+                }
+            });
+            
+            $scope.requery(data);
+            var selected = $scope.data.users.filter(function(d){ if ((data.lan_ip === d.lan_ip) && (data.lan_zone === d.lan_zone)){ return true }});
+            if (selected[0] !== undefined) { 
+                setTimeout(function () {
+                    $scope.setSelected(selected[0]);
+                }, 1000);
+            }
+        }
+    }
+
     $scope.requery = function(d, type) {
+            $scope.userinfo = undefined;
+            $scope.currentFloor = undefined;
+            $scope.currentBuilding = undefined;
+            $scope.selectedBuilding = undefined;
+            $scope.currentSearchUsers = undefined;
          // get user image
          if (d === "clear") {
             $scope.userinfo = undefined;
             $scope.currentFloor = undefined;
             $scope.currentBuilding = undefined;
             $scope.selectedBuilding = undefined;
+            $scope.currentSearchUsers = undefined;
          } else if(type === "listusers") {
-            $scope.userinfo = undefined;
-            $scope.currentBuilding = undefined;
             var users = $scope.userDimension.filter(function(dt){ 
                     if ((d.id == dt.map)){
                         return true;
@@ -245,8 +343,6 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 });
             $scope.currentFloor = users.top(Infinity);
          } else if(type === "listallusers") {
-            $scope.userinfo = undefined;
-            $scope.currentFloor = undefined;
             $scope.selectedBuilding = d;
             var users = $scope.userDimension.filter(function(dt){
                     for (var fl in d.floors) {
@@ -256,10 +352,10 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                     }                    
                 });
             $scope.currentBuilding = users.top(Infinity);
+         } else if(type === "listsearch") {
+            $scope.currentSearchUsers = d;
          } else if ($scope.lan_ip !== '-') {
-            $scope.currentFloor = undefined;
-            $scope.currentBuilding = undefined;
-            var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser';
+            var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&l an_zone='+d.lan_zone+'&type=flooruser';
             $scope.startend = ""; 
             if ($location.$$search.start && $location.$$search.end) {
                 query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser'; 

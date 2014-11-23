@@ -125,7 +125,7 @@
             <div id="floorplanspan" ng-show="toggleZoom && building.active" ng-repeat="building in buildings">
                 <div id="tabs" ng-show="toggleView" >
                     <tabset>
-                        <tab select="alertMe()" ng-repeat="floor in building.floors" active="floor.active">
+                        <tab select="alertMe()" ng-repeat="floor in building.floors" ng-click="setFloorActive(floor)" active="floor.active">
                             <tab-heading>
                                 {{floor.custom_name}} 
                             </tab-heading>
@@ -145,27 +145,27 @@
                     <div id="triggerbuttons{{building.asset_name}}" class="bin epbuttons" ></div>
                     </tabset>
                 </div> 
-             <div id="allfloorplanspan" ng-show="!toggleView">
-                <div class="jdash-header">Floor View</div>  
-                <div style="background-color:#FFF;" class="box" >
-                    <div id="allfloorplan" style="position: relative;">
-                        <div make-all-floor-plan style="position: relative;"></div>
+                 <div id="allfloorplanspan" ng-show="!toggleView">
+                    <div class="jdash-header">Floor View</div>  
+                    <div style="background-color:#FFF;" class="box" >
+                        <div id="allfloorplan" style="position: relative;">
+                            <div make-all-floor-plan style="position: relative;"></div>
+                        </div>
                     </div>
                 </div>
             </div>
-            </div>
              <div id="buildingplanspan" ng-show="!toggleZoom">
-                <div class="jdash-header">Building View <button type="button" class="rndCrnBtn pure-button right" ng-click="createBuilding()">Create Building</button></div>  
+                <div class="jdash-header">Site View <button type="button" class="rndCrnBtn pure-button right" ng-click="createBuilding()">Create Site</button></div>  
                 <div style="background-color:#FFF;" class="box" >
                     <div id="allfloorplan" style="position: relative;">
                         <div make-building-plan style="position: relative;"></div>
                     </div>
                 </div>
             </div>
-            <div id="localuserinformationspan" ng-show="userinfo">
+            <div id="localuserinformationspan">
                 <div class="jdash-header">User Information</div>
                 <div  style="background-color:#FFF;" class="box">
-                    <div id="localuserinformation"  ng-show="toggleView">
+                    <div id="localuserinformation"  ng-show="userinfo">
                         <div class="luinfo" ng-show="userinfo.user_image"><span style="font-weight:bold">User Image: </span><button class='uUpload userfloorbutton' ng-dblclick="uploadUser(userinfo)" type='button' value='userinfo' href=''><img src='{{userinfo.user_image}}' width='48'/></button></div>
                         <div class="luinfo" ng-show="userinfo.custom_user"><span style="font-weight:bold">Custom Name: </span><span>{{userinfo.custom_user}}</span></div>
                         <div class="luinfo" ng-show="userinfo.lan_ip"><span style="font-weight:bold">Lan IP: </span><span>{{userinfo.lan_ip}}</span></div>
@@ -216,12 +216,45 @@
                         </div>
                         <div ng-show="userinfo.map"><button type="button" class="button-error pure-button" ng-click="removeEndUser(userinfo)">Remove User</button></div>
                     </div>
+                    <div class="luinfo" ng-show="currentFloor">
+                        <table id="flus">
+                            <tr style="font-weight:bold">
+                                <td>IP</td><td>Host Name</td><td>User name</td>
+                            </tr>
+                            <tr  ng-repeat="user in currentFloor" ng-click="userLink(user)">
+                                <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
+                            </tr>
+                        </table> 
+                    </div>
+                    <div class="luinfo" ng-show="currentBuilding">
+                        <table id="flus">
+                            <tr>
+                                <button type="button" class="button-error pure-button" ng-click="removeBuilding(selectedBuilding)">Remove Building</button>
+                            </tr>
+                            <tr style="font-weight:bold">
+                                <td>IP</td><td>Host Name</td><td>User name</td>
+                            </tr>
+                            <tr  ng-repeat="user in currentBuilding" ng-click="userLink(user)">
+                                <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
+                            </tr>
+                        </table>  
+                    </div>
+                    <div class="luinfo" ng-show="currentSearchUsers">
+                        <table id="flus">
+                            <tr style="font-weight:bold">
+                                <td>IP</td><td>Host Name</td><td>User name</td>
+                            </tr>
+                            <tr  ng-repeat="user in currentSearchUsers" ng-click="userLinkTo(user)">
+                                <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
+                            </tr>
+                        </table>  
+                    </div>
                 </div>
             </div>
-            <div id="localuserinformationspan" ng-show="currentFloor">
+            <!-- <div id="localuserinformationspan" ng-show="currentFloor">
                 <div class="jdash-header">User Information</div>
                 <div  style="background-color:#FFF;" class="box">
-                     <div id="alllocaluserinformation">
+                     <div id="localuserinformation">
                         <div class="luinfo" ng-show="currentFloor">
                             <table id="flus">
                                 <tr style="font-weight:bold">
@@ -239,7 +272,7 @@
             <div id="localuserinformationspan" ng-show="currentBuilding">
                 <div class="jdash-header">User Information</div>
                 <div  style="background-color:#FFF;" class="box">
-                     <div id="alllocaluserinformation">
+                     <div id="localuserinformation">
                         <div class="luinfo" ng-show="currentBuilding">
                             <table id="flus">
                                 <tr>
@@ -255,7 +288,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
            
         </section>
     </div>

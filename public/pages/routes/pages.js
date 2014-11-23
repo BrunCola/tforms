@@ -524,6 +524,50 @@ angular.module('mean.pages').config(['$stateProvider',
                                 daterange: true
                             }
                         }) 
+            // STEALTH EVENTS
+                .state('stealth_events', {
+                    url: '/stealth_events?start&end',
+                    templateUrl: 'public/pages/views/stealth/stealth_events.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'Stealth Events',
+                        daterange: true
+                    }
+                })
+                // STEALTH EVENTS USER
+                    .state('stealth_events_by_type_and_user', {
+                        url: '/stealth_events_by_type_and_user?start&end&event_type',
+                        templateUrl: 'public/pages/views/stealth/stealth_events_by_type_and_user.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Stealth Users Triggering Event',
+                            subtitleElm: {
+                                'Event Type': 'event_type'
+                            },
+                            daterange: true
+                        }
+                    })
+                    // STEALTH EVENTS USER DRILL
+                        .state('stealth_events_full', {
+                            url: '/stealth_events_full?start&end&event_type&lan_zone&lan_user',
+                            templateUrl: 'public/pages/views/stealth/stealth_events_full.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Stealth Event Full Logs',
+                                subtitleElm: {
+                                    'Zone': 'lan_zone',
+                                    'User': 'lan_user',
+                                    'Event Type': 'event_type',
+                                },
+                                daterange: true
+                            }
+                        })
             // STEALTH QUARANTINE
                 .state('stealth_quarantine', {
                     url: '/stealth_quarantine?start&end',
@@ -535,19 +579,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         title: 'Quarantined Endpoints',
                         daterange: true
                     }
-                })             
-            // STEALTH CHORD VIEW
-                .state('stealth_coi_conn_view', {
-                    url: '/stealth_coi_conn_view?start&end',
-                    templateUrl: 'public/pages/views/stealth/stealth_coi_conn_view.html',
-                    resolve: {
-                        loggedin: checkLoggedin
-                    },
-                    data: {
-                        title: 'Stealth COI Connections',
-                        daterange: true
-                    }
-                }) 
+                })           
         // LOCAL EVENTS
             // ENDPOINT MAP
                 .state('endpoint_map', {

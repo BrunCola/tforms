@@ -41,7 +41,6 @@ module.exports = function(pool) {
                         };
                         res.json(results);
                     });
-
                 } else if (req.query.type === 'top') {
                     var result = null;
                     var sql = {
@@ -56,7 +55,7 @@ module.exports = function(pool) {
                                     '`remote_user` AS `Victim User`,'+
                                     '`remote_ip` AS `Victim IP` '+
                                 'FROM '+
-                                    ' `conn` '+
+                                    ' `conn_meta` '+
                                 'WHERE '+
                                     'time BETWEEN ? AND ? '+
                                     'AND `proto` != \'udp\' '+
@@ -116,7 +115,7 @@ module.exports = function(pool) {
                                     '`remote_ip` AS `Victim IP`, '+
                                     '\'blocked\' AS `allow` '+
                                 'FROM '+
-                                    ' `conn_meta` '+
+                                    ' `conn` '+
                                 'WHERE '+
                                     'time BETWEEN ? AND ? '+
                                     'AND `proto` != \'udp\' '+
@@ -192,10 +191,18 @@ module.exports = function(pool) {
                     async.parallel([
                         // Crossfilter function
                         function(callback) {
-                            new force_stealth_user(sql, [stealth_drop, local_drop, rules, coordinates, stealth_authorized, local_authorized], {database: database, pool: pool}, function(err,data){
-                                force = data;
-                                callback();
-                            });
+                            new force_stealth_user(sql, [
+                                    stealth_drop, 
+                                    local_drop, 
+                                    rules, 
+                                    coordinates, 
+                                    stealth_authorized, 
+                                    local_authorized
+                                ], { database: database, pool: pool }, function(err,data) {
+                                    force = data;
+                                    callback();
+                                }
+                            );
                         }   
                     ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                         if (err) throw console.log(err);

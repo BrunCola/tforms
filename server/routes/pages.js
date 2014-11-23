@@ -157,14 +157,22 @@ module.exports = function(app, passport, version, io, pool) {
                     var stealth_conn_by_userANDremote = require('../controllers/stealth/stealth_conn_by_userANDremote')(pool);
                     app.route('/stealth/stealth_conn_by_userANDremote')
                     .get(auth.permission, stealth_conn_by_userANDremote.render);
+        // STEALTH EVENTS
+            var stealth_events = require('../controllers/stealth/stealth_events')(pool); 
+            app.route('/stealth/stealth_events')
+            .get(auth.permission, stealth_events.render);
+            // STEALTH EVENTS USER
+                var stealth_events_by_type_and_user = require('../controllers/stealth/stealth_events_by_type_and_user')(pool);
+                app.route('/stealth/stealth_events_by_type_and_user')
+                .get(auth.permission, stealth_events_by_type_and_user.render);
+                // STEALTH EVENTS USER DRILL
+                    var stealth_events_full = require('../controllers/stealth/stealth_events_full')(pool);
+                    app.route('/stealth/stealth_events_full')
+                    .get(auth.permission, stealth_events_full.render);
         // STEALTH QUARANTINE
             var stealth_quarantine = require('../controllers/stealth/stealth_quarantine')(pool); 
             app.route('/stealth/stealth_quarantine')
             .get(auth.permission, stealth_quarantine.render);
-        // STEALTH CHORD VIEW
-            var stealth_coi_conn_view = require('../controllers/stealth/stealth_coi_conn_view')(pool); 
-            app.route('/stealth/stealth_coi_conn_view')
-            .get(auth.permission, stealth_coi_conn_view.render);
     // LOCAL EVENTS        
         // ENDPOINT MAP
             var endpoint_map = require('../controllers/local_events/endpoint_map')(pool);
