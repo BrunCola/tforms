@@ -1,9 +1,9 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-query = require('../constructors/query'),
-config = require('../../config/config'),
-async = require('async');
+    query = require('../constructors/query'),
+    config = require('../../config/config'),
+    async = require('async');
 
 module.exports = function(pool) {
     return {
@@ -34,7 +34,7 @@ module.exports = function(pool) {
                             '`server_name`,'+
                             '`proxy_blocked` '+
                         'FROM '+
-                            '`ssl_uniq_remote_server` '+
+                            '`ssl_uniq_server_name` '+
                         'WHERE '+
                             '`time` BETWEEN ? AND ?',
                 insert: [start, end],
@@ -74,7 +74,7 @@ module.exports = function(pool) {
                         'time,'+
                         '`remote_country` '+
                     'FROM '+
-                        '`ssl_uniq_remote_ip` '+
+                        '`ssl_uniq_server_name` '+
                     'WHERE '+
                         '`time` BETWEEN ? AND ? '+
                     'GROUP BY '+
