@@ -385,23 +385,45 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             return "#666";
                     }
                 }
-                function hoverPoint(elm, action) {
-                    if (action === 'mouseover') {
-                        elm
-                            .attr('transform', 'scale(2.4) translate(-3, -5) ')
-                            .attr('stroke', '#fff')
-                            .attr('stroke-width', '1');
-                    } else if (action === 'mouseout') {
-                        elm 
-                            .transition()
-                            .duration(550)
-                            .attr('transform', 'scale(1)')
-                            .attr('stroke', 'none')
-                            .attr('stroke-width', '0');
+                function hoverPoint(elm, action, type) {
+                    if (type.search('ioc') !== -1) {
+                        var elm = elm.select('.')
+                        if (action === 'mouseover') {
+                            elm
+                                .attr('transform', 'scale(2.4) translate(-4, -5)');
+                        } else if (action === 'mouseout') {
+                            elm 
+                                .attr('transform', 'scale(1)');
+                        }
+                    } else {
+                        var elm = elm.select('.');
+                        if (action === 'mouseover') {
+                            elm
+                                .attr('transform', 'scale(2.4) translate(-3, -5) ')
+                                .attr('stroke', '#fff')
+                                .attr('stroke-width', '1');
+                        } else if (action === 'mouseout') {
+                            elm 
+                                .transition()
+                                .duration(550)
+                                .attr('transform', 'scale(1)')
+                                .attr('stroke', 'none')
+                                .attr('stroke-width', '0');
+                        }
                     }
+                    return;
                 }
                 function clearVerticalLine() {
                     clickLine.selectAll('line').remove();
+                }
+                function appendVerticalLine(d) {
+                    clickLine.append("line")
+                        .attr("x1", x1(d.dd)+7)
+                        .attr("y1", m[0])
+                        .attr("x2", x1(d.dd)+7)
+                        .attr("y2", mainHeight)
+                        .attr('stroke-width', '1')
+                        .attr("stroke", "#FFF");
                 }
                 function changeIcon(element, data, previousElm) {
                     var color, select, pData = false;
@@ -507,15 +529,15 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         // highlight all nodes matching the uid
                         itemRects.selectAll('g').each(function(d){
                             // select nodes that match
-                            var elm = d3.select(this).select('.hover-square');
+                            var elm = d3.select(this);
                             if ((d.conn_uids === data.conn_uids) && (d.id !== data.id)) {
-                                hoverPoint(elm, 'mouseover');
+                                hoverPoint(elm, 'mouseover', d.type);
                             }
                             // deselect previous nodes (if any)
                             if (pData) {
                                 // if any nodes match our previous time andwe're on a different time segment
                                 if ((pData[0].conn_uids === d.conn_uids) && (pData[0].conn_uids !== data.conn_uids)) {
-                                    hoverPoint(elm, 'mouseout');
+                                    hoverPoint(elm, 'mouseout', d.type);
                                 }
                             }
                         })
@@ -816,17 +838,20 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         if (type.search("ioc") !== -1) {
                             element.classed('IOC', true);
                             element.append('svg:polygon')
+                                .classed('hover-ioc', true)
                                 .attr('points', '7,15 14,6 0,6')
                                 .attr('fill', rowColors("IOC"))
                                 .style('opacity', '0.4')
-                                .on('mouseover', function(){
-                                    d3.select(this)
-                                    .attr('transform', 'scale(2.4) translate(-4, -5)');
+                                .on('mouseover', function(d){
+                                    var elm = d3.select(this);
+                                    hoverPoint(elm, 'mouseover', d.type);
                                 })
-                                .on('mouseout', function(){
-                                    d3.select(this)
-                                    .attr('transform', 'scale(1)');
-                                }); 
+                                .on('mouseout', function(d){
+                                    var elm = d3.select(this);
+                                    if (!(uidsMatch(d))){
+                                        hoverPoint(elm, 'mouseout', d.type);
+                                    }
+                                });
                             return;
                         } else { 
                             element.append('rect')
@@ -857,12 +882,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .style('opacity', '0.6')
                                 .on('mouseover', function(d){
                                     var elm = d3.select(this);
-                                    hoverPoint(elm, 'mouseover');
+                                    hoverPoint(elm, 'mouseover', d.type);
                                 })
                                 .on('mouseout', function(d){
                                     var elm = d3.select(this);
                                     if (!(uidsMatch(d))){
-                                        hoverPoint(elm, 'mouseout');
+                                        hoverPoint(elm, 'mouseout', d.type);
                                     }
                                 });
                         }
@@ -904,18 +929,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     //////// THIS NODE ////////
                                     ///////////////////////////
                                     clearVerticalLine();
+                                    appendVerticalLine(d);
                                     // set new highlighted point object
                                     $scope.highlightedPoint = d;
-                                    var selectedNode = clickLine.selectAll(".clickLine").data(['']);
-                                    // vertical line
-                                    selectedNode.enter()
-                                        .append("line")
-                                            .attr("x1", x1(d.dd)+7)
-                                            .attr("y1", m[0])
-                                            .attr("x2", x1(d.dd)+7)
-                                            .attr("y2", mainHeight)
-                                            .attr('stroke-width', '1')
-                                            .attr("stroke", "#FFF");
+                                    
                                     changeIcon(elm, d, previousElm);
                                     previousElm = elm;
                                 })
@@ -927,16 +944,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             if (($scope.highlightedPoint.conn_uids === d.conn_uids) && ($scope.highlightedPoint.type === d.type)) {
                                 isOpen = d.id;
                                 openScrollSide(d);
-                                var selectedNode = clickLine.selectAll(".clickLine").data(['']);
-                                selectedNode.enter()
-                                    .append("line")
-                                        .attr("x1", x1(d.dd)+7)
-                                        .attr("y1", m[0])
-                                        .attr("x2", x1(d.dd)+7)
-                                        .attr("y2", mainHeight)
-                                        .attr('stroke-width', '1')
-                                        .attr("stroke", "#FFF");
-                                changeIcon(elm, d);
+                                clearVerticalLine();
+                                appendVerticalLine(d);
+                                changeIcon(elm, d, previousElm);
                                 previousElm = elm;
                                 // set highlighted point to to new elm data
                                 $scope.highlightedPoint = d;
@@ -967,8 +977,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .on('click', function(){
                                         // do nothing if already active
                                         if (elm.classed('laneactive')){ return }
+                                        // add lines
+                                        clearVerticalLine();
+                                        appendVerticalLine(d);
                                         var thisNode = itemRects.select('.node-'+d.id);
-                                        changeIcon(thisNode, d, thisNode);
+                                        changeIcon(thisNode, d, previousElm);
                                         // select any active pointunhighlight and collapse
                                         var lastbar = infoDiv.select('li.laneactive').classed('laneactive', false);
                                         lastbar.select('.infoDivExpanded').style('display', 'none');
@@ -982,12 +995,14 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     // append expand buttons to list elements
                                     .append('div')
                                     .on('click', function(){
+                                        clearVerticalLine();
+                                        appendVerticalLine(d);
                                         var thisNode = itemRects.select('.node-'+d.id);
                                         // select any active pointunhighlight and collapse
                                         var lastbar = infoDiv.select('li.laneactive').classed('laneactive', false);
                                         lastbar.select('.infoDivExpanded').style('display', 'none');
                                         scrollSide(d.id);
-                                        changeIcon(thisNode, d, thisNode);
+                                        changeIcon(thisNode, d, previousElm);
                                         if (isOpen === d.id) {
                                             elm.select('.infoDivExpanded').style('display', 'none');
                                             isOpen = null;
@@ -998,6 +1013,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                             // elm.select('.infoDivExpanded').html(laneInfoAppend(d.expand));
                                             laneInfoAppend(d, elm);
                                         }
+                                        previousElm = thisNode;
                                     })
                                     .attr('class', 'infoDivExpandBtn')
                                     .html('+');
