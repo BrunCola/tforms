@@ -20,7 +20,7 @@ module.exports = function(pool) {
                 var table1 = {
                      query: 'SELECT '+
                                 '`time`,'+
-                                '`stealth`,'+
+                                '`lan_stealth` AS `stealth`,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
                                 '`lan_user`,'+

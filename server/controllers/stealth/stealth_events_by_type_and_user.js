@@ -23,7 +23,7 @@ module.exports = function(pool) {
                      query: 'SELECT '+
                                 'count(*) AS count,'+
                                 'max(`time`) AS `time`,'+
-                                '`stealth`,'+
+                                '`lan_stealth` AS `stealth`,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
                                 '`lan_user`,'+
@@ -52,7 +52,7 @@ module.exports = function(pool) {
                             }
                         },
                         { title: 'Events', select: 'count'},
-                        { title: 'Stealth', select: 'stealth', access: [3] },
+                        { title: 'lan_Stealth', select: 'stealth', access: [3] },
                         { title: 'Zone', select: 'lan_zone'},
                         { title: 'Machine', select: 'lan_machine'},
                         { title: 'Local User', select: 'lan_user'},
