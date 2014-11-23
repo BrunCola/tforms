@@ -925,7 +925,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             // LANE NODE LOADING
                             // if there's anything in our highlightPoint variable, use the information to highlight data and then clear
                             if (($scope.highlightedPoint.conn_uids === d.conn_uids) && ($scope.highlightedPoint.type === d.type)) {
-                                isOpen = null;
+                                isOpen = d.id;
                                 openScrollSide(d);
                                 var selectedNode = clickLine.selectAll(".clickLine").data(['']);
                                 selectedNode.enter()
@@ -964,31 +964,30 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .html(function(d){
                                         return "<div class='lanegraphlist'><strong>"+timeFormat(d.time, 'laneGraphPreview')+':</strong> '+d.info+"</div>";
                                     })
-                                    .on('click', function(){// select corresponding point
+                                    .on('click', function(){
+                                        // do nothing if already active
+                                        if (elm.classed('laneactive')){ return }
                                         var thisNode = itemRects.select('.node-'+d.id);
-                                        if ((previousBar !== null) && (previousBar.attr('class') !== elm.attr('class'))) {
-                                            previousBar.select('.infoDivExpanded').style('display', 'none');
-                                            previousBar.classed('laneactive', false);
-                                            changeIcon(thisNode, d, thisNode);
-                                        }
+                                        changeIcon(thisNode, d, thisNode);
+                                        // select any active pointunhighlight and collapse
+                                        var lastbar = infoDiv.select('li.laneactive').classed('laneactive', false);
+                                        lastbar.select('.infoDivExpanded').style('display', 'none');
                                         elm.classed('laneactive', true);
                                         $scope.pattern.last = {
                                             element: elm,
                                             data: d
                                         }
-                                        previousBar = elm;
                                         previousElm = thisNode;
                                     })
                                     // append expand buttons to list elements
                                     .append('div')
                                     .on('click', function(){
                                         var thisNode = itemRects.select('.node-'+d.id);
+                                        // select any active pointunhighlight and collapse
+                                        var lastbar = infoDiv.select('li.laneactive').classed('laneactive', false);
+                                        lastbar.select('.infoDivExpanded').style('display', 'none');
                                         scrollSide(d.id);
-                                        if ((previousBar !== null) && (previousBar.attr('class') !== elm.attr('class'))) {
-                                            previousBar.select('.infoDivExpanded').style('display', 'none');
-                                            previousBar.classed('laneactive', false);
-                                            changeIcon(thisNode, d, thisNode);
-                                        }
+                                        changeIcon(thisNode, d, thisNode);
                                         if (isOpen === d.id) {
                                             elm.select('.infoDivExpanded').style('display', 'none');
                                             isOpen = null;
