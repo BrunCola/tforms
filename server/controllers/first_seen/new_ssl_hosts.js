@@ -34,7 +34,7 @@ module.exports = function(pool) {
                             '`server_name`,'+
                             '`proxy_blocked` '+
                         'FROM '+
-                            '`ssl_uniq_remote_server` '+
+                            '`ssl_uniq_server_name` '+
                         'WHERE '+
                             '`time` BETWEEN ? AND ?',
                 insert: [start, end],
