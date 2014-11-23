@@ -387,7 +387,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
                 function hoverPoint(elm, action, type) {
                     if (type.search('ioc') !== -1) {
-                        var elm = elm.select('.')
+                        var elm = elm.select('.hover-ioc')
                         if (action === 'mouseover') {
                             elm
                                 .attr('transform', 'scale(2.4) translate(-4, -5)');
@@ -396,7 +396,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .attr('transform', 'scale(1)');
                         }
                     } else {
-                        var elm = elm.select('.');
+                        var elm = elm.select('.hover-square');
                         if (action === 'mouseover') {
                             elm
                                 .attr('transform', 'scale(2.4) translate(-3, -5) ')
@@ -806,7 +806,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         }
                         // this closes the last expanded block if there is one
                         if ((previousBar !== null)) {
-                            if (previousBar[0][0] !== null) {
+                            if (!(previousBar.empty())) {
                                 if (previousBar.attr('class') !== sideSelected.attr('class')) {
                                     previousBar.select('.infoDivExpanded').style('display', 'none');
                                     previousBar.classed('laneactive', false);
@@ -921,18 +921,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     elm.style('cursor', 'pointer');
                                 })
                                 .on("click", function(d){
-                                    ///////////////////////////
-                                    /////// SIDE SCROLL ///////
-                                    ///////////////////////////
                                     openScrollSide(d);
-                                    ///////////////////////////
-                                    //////// THIS NODE ////////
-                                    ///////////////////////////
                                     clearVerticalLine();
                                     appendVerticalLine(d);
                                     // set new highlighted point object
                                     $scope.highlightedPoint = d;
-                                    
                                     changeIcon(elm, d, previousElm);
                                     previousElm = elm;
                                 })
