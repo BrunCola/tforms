@@ -74,7 +74,7 @@ module.exports = function(pool) {
                         'time,'+
                         '`remote_country` '+
                     'FROM '+
-                        '`ssl_uniq_remote_ip` '+
+                        '`ssl_uniq_server_name` '+
                     'WHERE '+
                         '`time` BETWEEN ? AND ? '+
                     'GROUP BY '+
