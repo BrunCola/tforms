@@ -201,6 +201,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'orphans': ['stealth_conn_by_user','stealth_conn_by_userANDremote']
                 },
                 {
+                    'title': 'Stealth Events',
+                    'url': 'stealth_events',
+                    'icon': 'fa-desktop',
+                    'orphans': ['stealth_events_by_type_and_user','stealth_events_full']
+                },
+                {
                     'title': 'Stealth Quarantine',
                     'url': 'stealth_quarantine',
                     'icon': 'fa-user',
