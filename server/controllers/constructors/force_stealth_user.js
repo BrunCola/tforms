@@ -135,7 +135,6 @@ module.exports = function (sql, queries, conn, callback) {
                         callback();
                     });
             },
-
             function(callback) {
                 connection.query(queries[1].query, queries[1].insert)
                     .on('result', function(data){
@@ -145,8 +144,7 @@ module.exports = function (sql, queries, conn, callback) {
                         callback();
                     });
             },
-
-           function(callback) {
+            function(callback) {
                 connection.query(queries[2].query, queries[2].insert, function(err, result) {
                     if (err) {
                         callback(err, null);
@@ -165,7 +163,6 @@ module.exports = function (sql, queries, conn, callback) {
                     }
                 })
             },
-
             function(callback) {
                 connection.query(queries[3].query, queries[3].insert, function(err, result) {
                     if (err) {
@@ -183,7 +180,6 @@ module.exports = function (sql, queries, conn, callback) {
                     }
                 })
             },
-
             function(callback) {
                 connection.query(queries[4].query, queries[4].insert)
                     .on('result', function(data){
@@ -193,7 +189,6 @@ module.exports = function (sql, queries, conn, callback) {
                         callback();
                     });
             },
-
             function(callback) {
                 connection.query(queries[5].query, queries[5].insert)
                     .on('result', function(data){
