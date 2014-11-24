@@ -17,12 +17,14 @@ module.exports = function(pool) {
             }
             var tables = [];
             var crossfilter = [];
+            var piechart = [];
             var info = [];
             var table1 = {
                 query: 'SELECT '+
                             'sum(`count`) AS `count`,'+
                             'max(`time`) AS `time`,'+
                             '`remote_ip`,'+
+                            '`remote_ip` AS pie_dimension,'+
                             '`remote_country`,'+
                             '`remote_cc`,'+
                             '`remote_asn_name`,'+
@@ -57,7 +59,7 @@ module.exports = function(pool) {
                             crumb: false
                         },
                     },
-                    { title: 'Remote IP', select: 'remote_ip' },
+                    { title: 'Remote IP', select: 'pie_dimension' },
                     { title: 'Remote Country', select: 'remote_country' },
                     { title: 'Flag', select: 'remote_cc' },
                     { title: 'Remote ASN', select: 'remote_asn_name' },
@@ -97,6 +99,20 @@ module.exports = function(pool) {
                         'hour(from_unixtime(time))',
                 insert: [start, end]
             }
+            var piechartQ = {
+                query: 'SELECT '+
+                         'time,'+
+                         '`remote_ip` AS `pie_dimension`, '+
+                         'sum(`count`) AS `count` '+
+                     'FROM '+
+                         '`conn_l7_remote` '+
+                     'WHERE '+
+                         '`time` BETWEEN ? AND ? '+
+                         'AND `remote_ip` !=\'-\' '+
+                     'GROUP BY '+
+                         '`remote_ip`',
+                insert: [start, end, start, end, start, end]
+            }
             async.parallel([
                 // Table function(s)
                 function(callback) {
@@ -111,13 +127,21 @@ module.exports = function(pool) {
                         crossfilter = data;
                         callback();
                     });
+                },
+                // Piechart function
+                function(callback) {
+                    new query(piechartQ, {database: database, pool: pool}, function(err,data){
+                        piechart = data;
+                        callback();
+                    });
                 }
             ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                 if (err) throw console.log(err);
                 var results = {
                     info: info,
                     tables: tables,
-                    crossfilter: crossfilter
+                    crossfilter: crossfilter,
+                    piechart: piechart
                 };
                 //console.log(results);
                 res.json(results);
