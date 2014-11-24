@@ -387,23 +387,25 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
                 function hoverPoint(elm, action, type) {
                     if (type.search('ioc') !== -1) {
-                        var elm = elm.select('.hover-ioc')
+                        var nElm = elm.select('.hover-ioc');
                         if (action === 'mouseover') {
-                            elm
-                                .attr('transform', 'scale(2.4) translate(-4, -5)');
+                            elm.classed('hover-active', true);
+                            nElm.attr('transform', 'scale(2.4) translate(-4, -5)');
                         } else if (action === 'mouseout') {
-                            elm 
-                                .attr('transform', 'scale(1)');
+                            elm.classed('hover-active', false);
+                            nElm.attr('transform', 'scale(1)');
                         }
                     } else {
-                        var elm = elm.select('.hover-square');
+                        var nElm = elm.select('.hover-square');
                         if (action === 'mouseover') {
-                            elm
+                            elm.classed('hover-active', true);
+                            nElm
                                 .attr('transform', 'scale(2.4) translate(-3, -5) ')
                                 .attr('stroke', '#fff')
                                 .attr('stroke-width', '1');
                         } else if (action === 'mouseout') {
-                            elm 
+                            elm.classed('hover-active', false);
+                            nElm
                                 .transition()
                                 .duration(550)
                                 .attr('transform', 'scale(1)')
@@ -425,12 +427,21 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         .attr('stroke-width', '1')
                         .attr("stroke", "#FFF");
                 }
-                function changeIcon(element, data, previousElm) {
-                    var color, select, pData = false;
-                    if (previousElm) {
-                        pData = previousElm.data();
-                        previousElm.select('.eventFocus').remove();
-                    }
+                function changeIcon(element, data) {
+                    var color, select;
+                    // select previous sctive node and deselect it
+                    var prevElm = itemRects.select('g .node-active');
+                    prevElm.select('.eventFocus').remove();
+                    prevElm.classed('node-active', false);
+                    // set this new element as active
+                    element.classed('node-active', true);
+                    // deselect any nodes that do not match our conn_uids
+                    itemRects.selectAll('.hover-active').each(function(d){
+                        var elm = d3.select(this);
+                        if (d.conn_uids !== data.conn_uids) {
+                            hoverPoint(elm, 'mouseout', d.type);
+                        }
+                    })
                     if (data.id in $scope.pattern.selected) {
                         // if id is in our select object, retain select status
                         select = true;
@@ -438,21 +449,22 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         // otherwise remove it
                         select = false;
                     }
-                    if ((data.id in $scope.pattern.selected) && ($scope.pattern.lastXY !== null)) {
-                        // lineStory.selectAll('line').remove();
-                        var linesLinked = lineStory.selectAll(".storyLines").data([""]);
-                        // draw line links
-                        if (previousElm !== null) {
-                            linesLinked.enter()
-                                .append("line")
-                                .attr("x1", $scope.pattern.lastXY.x+7)
-                                .attr("y1", $scope.pattern.lastXY.y)
-                                .attr("x2", x1(data.dd)+7)
-                                .attr("y2", y1(data.lane))
-                                .attr('stroke-width', 1)
-                                .attr("stroke", "#fff");      
-                        }
-                    }
+                    // linklines if selected
+                    // if ((data.id in $scope.pattern.selected) && ($scope.pattern.lastXY !== null)) {
+                    //     // lineStory.selectAll('line').remove();
+                    //     var linesLinked = lineStory.selectAll(".storyLines").data([""]);
+                    //     // draw line links
+                    //     if (previousElm !== null) {
+                    //         linesLinked.enter()
+                    //             .append("line")
+                    //             .attr("x1", $scope.pattern.lastXY.x+7)
+                    //             .attr("y1", $scope.pattern.lastXY.y)
+                    //             .attr("x2", x1(data.dd)+7)
+                    //             .attr("y2", y1(data.lane))
+                    //             .attr('stroke-width', 1)
+                    //             .attr("stroke", "#fff");      
+                    //     }
+                    // }
                     element.classed('node-'+data.id, true);
                     element = element.append('g');                
                     element.attr('transform', 'translate(-11, -9)');
@@ -532,14 +544,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             var elm = d3.select(this);
                             if ((d.conn_uids === data.conn_uids) && (d.id !== data.id)) {
                                 hoverPoint(elm, 'mouseover', d.type);
-                            }
-                            // deselect previous nodes (if any)
-                            if (pData) {
-                                // if any nodes match our previous time andwe're on a different time segment
-                                if ((pData[0].conn_uids === d.conn_uids) && (pData[0].conn_uids !== data.conn_uids)) {
-                                    hoverPoint(elm, 'mouseout', d.type);
-                                }
-                            }
+                            }                            
                         })
                     }, 10)
                 }
@@ -793,7 +798,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
                 function plot(data, min, max) {
                     // node selecting
-                    var previousBar = null, previousElm = null;
+                    var previousBar = null;
                     // bar selecting
                     var isOpen = null;
                     var previousX = 0, previousY = 0;
@@ -843,11 +848,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .attr('fill', rowColors("IOC"))
                                 .style('opacity', '0.4')
                                 .on('mouseover', function(d){
-                                    var elm = d3.select(this);
+                                    var elm = d3.select(this.parentNode);
                                     hoverPoint(elm, 'mouseover', d.type);
                                 })
                                 .on('mouseout', function(d){
-                                    var elm = d3.select(this);
+                                    var elm = d3.select(this.parentNode);
                                     if (!(uidsMatch(d))){
                                         hoverPoint(elm, 'mouseout', d.type);
                                     }
@@ -881,11 +886,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .attr('height', 12)
                                 .style('opacity', '0.6')
                                 .on('mouseover', function(d){
-                                    var elm = d3.select(this);
+                                    var elm = d3.select(this.parentNode);
                                     hoverPoint(elm, 'mouseover', d.type);
                                 })
                                 .on('mouseout', function(d){
-                                    var elm = d3.select(this);
+                                    var elm = d3.select(this.parentNode);
                                     if (!(uidsMatch(d))){
                                         hoverPoint(elm, 'mouseout', d.type);
                                     }
@@ -926,8 +931,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     appendVerticalLine(d);
                                     // set new highlighted point object
                                     $scope.highlightedPoint = d;
-                                    changeIcon(elm, d, previousElm);
-                                    previousElm = elm;
+                                    changeIcon(elm, d);
                                 })
                                 .on("mouseout", function(d){
                                     elm.style('cursor', 'pointer');
@@ -939,10 +943,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 openScrollSide(d);
                                 clearVerticalLine();
                                 appendVerticalLine(d);
-                                changeIcon(elm, d, previousElm);
-                                previousElm = elm;
-                                // set highlighted point to to new elm data
                                 $scope.highlightedPoint = d;
+                                changeIcon(elm, d);
+                                // set highlighted point to to new elm data
                             }
                             // generate points from point function
                             if (d.type !== 'l7') {
@@ -974,7 +977,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         clearVerticalLine();
                                         appendVerticalLine(d);
                                         var thisNode = itemRects.select('.node-'+d.id);
-                                        changeIcon(thisNode, d, previousElm);
+                                        changeIcon(thisNode, d);
                                         // select any active pointunhighlight and collapse
                                         var lastbar = infoDiv.select('li.laneactive').classed('laneactive', false);
                                         lastbar.select('.infoDivExpanded').style('display', 'none');
@@ -983,7 +986,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                             element: elm,
                                             data: d
                                         }
-                                        previousElm = thisNode;
                                     })
                                     // append expand buttons to list elements
                                     .append('div')
@@ -995,7 +997,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         var lastbar = infoDiv.select('li.laneactive').classed('laneactive', false);
                                         lastbar.select('.infoDivExpanded').style('display', 'none');
                                         scrollSide(d.id);
-                                        changeIcon(thisNode, d, previousElm);
+                                        changeIcon(thisNode, d);
                                         if (isOpen === d.id) {
                                             elm.select('.infoDivExpanded').style('display', 'none');
                                             isOpen = null;
@@ -1006,7 +1008,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                             // elm.select('.infoDivExpanded').html(laneInfoAppend(d.expand));
                                             laneInfoAppend(d, elm);
                                         }
-                                        previousElm = thisNode;
                                     })
                                     .attr('class', 'infoDivExpandBtn')
                                     .html('+');
