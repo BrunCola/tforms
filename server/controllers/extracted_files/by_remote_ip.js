@@ -16,11 +16,14 @@ module.exports = function(pool) {
                 end = req.query.end;
             }
             var tables = [];
+            var crossfilter = [];
+            var piechart = [];
             var table1 = {
                 query: 'SELECT '+
                             'sum(`count`) AS `count`,'+
                             'max(`time`) AS `time`,'+
                             '`remote_ip`,'+
+                            '`remote_ip` AS pie_dimension,'+
                             '`remote_asn`,'+
                             '`remote_asn_name`,'+
                             '`remote_country`,'+
@@ -47,7 +50,7 @@ module.exports = function(pool) {
                         },
                     },
                     { title: 'Total Extracted Files', select: 'count' },
-                    { title: 'Remote IP', select: 'remote_ip' },
+                    { title: 'Remote IP', select: 'pie_dimension' },
                     { title: 'Remote Country', select: 'remote_country' },
                     { title: 'Flag', select: 'remote_cc' },
                     { title: 'ASN', select: 'remote_asn' },
@@ -61,6 +64,34 @@ module.exports = function(pool) {
                     title: 'Extracted Files From Remote IPs'
                 }
             }
+            var crossfilterQ = {
+                query: 'SELECT '+
+                        'count(*) AS count,'+
+                        'time '+
+                    'FROM '+
+                        '`file` '+
+                    'WHERE '+
+                        '`time` BETWEEN ? AND ? '+
+                    'GROUP BY '+
+                        'month(from_unixtime(`time`)),'+
+                        'day(from_unixtime(`time`)),'+
+                        'hour(from_unixtime(`time`))',
+                insert: [start, end]
+            }   
+            var piechartQ = {
+                query: 'SELECT '+
+                         'time,'+
+                         '`remote_ip` AS `pie_dimension`, '+
+                         'sum(`count`) AS `count` '+
+                     'FROM '+
+                         '`file_remote` '+
+                     'WHERE '+
+                         '`time` BETWEEN ? AND ? '+
+                         'AND `remote_ip` !=\'-\' '+
+                     'GROUP BY '+
+                         '`remote_ip`',
+                insert: [start, end]
+            }
             async.parallel([
                 // Table function(s)
                 function(callback) {
@@ -68,11 +99,28 @@ module.exports = function(pool) {
                         tables.push(data);
                         callback();
                     });
+                },
+                // Crossfilter function
+                function(callback) {
+                    console.log(crossfilterQ);
+                    new query(crossfilterQ, {database: database, pool: pool}, function(err,data){
+                        crossfilter = data;
+                        callback();
+                    });
+                },
+                // Piechart function
+                function(callback) {
+                    new query(piechartQ, {database: database, pool: pool}, function(err,data){
+                        piechart = data;
+                        callback();
+                    });
                 }
             ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                 if (err) throw console.log(err);
                 var results = {
-                    tables: tables
+                    tables: tables,
+                    crossfilter: crossfilter,
+                    piechart: piechart
                 };
                 res.json(results);
             });
