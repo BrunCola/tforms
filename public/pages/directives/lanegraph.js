@@ -688,7 +688,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         .selectAll('li')
                         .data(data.expand)
                         .enter().append('li')
-                        .style('line-heig ht', 2.4)
+                        .style('line-height', 2.4)
                         .html(function(d){
                             if (d.name === 'Time') {
                                 return '<strong>'+d.name+':</strong> '+timeFormat(d.value, 'laneGraphExpanded')+'';      
