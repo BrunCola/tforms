@@ -237,7 +237,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr("y", 1)
                     .attr("height", mainHeight);
 
-                var itemRects = main.append("g")
+                var itemRects = main.append('svg').attr('width', w).attr('height', mainHeight).append("g")
                     .attr("clip-path", "url(#clip)");
                 
                 // nav
