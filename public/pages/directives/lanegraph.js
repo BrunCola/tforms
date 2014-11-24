@@ -48,7 +48,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         },
                         // last elm clicked, for throwing in object after an item is clicked when and our button is toggled
                         last: null,
-                        lastXY: null
                     }
                 }
                 setPatternObj();
@@ -460,8 +459,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         }
                     }
                 }
-                function changeIcon(element, data, highlight) {
+                function changeIcon(element, data) {
                     var color, select;
+                    // set the current highlighted point
+                    $scope.highlightedPoint = data;
                     // select previous sctive node and deselect it
                     var prevElm = itemRects.select('g .node-active');
                     prevElm.select('.eventFocus').remove();
@@ -614,11 +615,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         $scope.pattern.selected[point.conn_uids+'-'+point.type].search.length++;
                         // add class to point
                         changeIcon(thisNode, point);
-                        // add current x and y points to last object (after changeicon function!)
-                        $scope.pattern.lastXY = {};
-                        $scope.pattern.lastXY.x = x1(point.dd);
-                        $scope.pattern.lastXY.y = y1(point.lane);    
-                        $scope.pattern.lastXY.id = point.conn_uids+'-'+point.type;
                     } else {
                         // if data is not in point object, add it
                         if (!(data.name in $scope.pattern.selected[point.conn_uids+'-'+point.type].search)) {
@@ -633,8 +629,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         if ($scope.pattern.selected[point.conn_uids+'-'+point.type].search.length === 0) {
                             delete $scope.pattern.selected[point.conn_uids+'-'+point.type];
                             $scope.pattern.selected.length--;
-                            // reset our last x/y coordinate object
-                            $scope.pattern.lastXY = null;
                         }
                     }
                     // update style of point if there is no selected data in it
@@ -950,8 +944,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     openScrollSide(d);
                                     clearVerticalLine();
                                     appendVerticalLine(d);
-                                    // set new highlighted point object
-                                    $scope.highlightedPoint = d;
                                     changeIcon(elm, d);
                                 })
                                 .on("mouseout", function(d){
@@ -964,9 +956,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 openScrollSide(d);
                                 clearVerticalLine();
                                 appendVerticalLine(d);
-                                $scope.highlightedPoint = d;
                                 changeIcon(elm, d);
-                                // set highlighted point to to new elm data
                             }
                             // change if node is in pattern
                             if ((d.conn_uids+'-'+d.type) in $scope.pattern.selected) {
@@ -1035,6 +1025,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     .style('display', 'none')
                                     .attr('class', 'infoDivExpanded')
                                     .attr('id', d.id);
+                                // SIDE NODE LOADING
                                 // if there is a point selected, scroll to it on sidebar
                                 if (($scope.highlightedPoint.conn_uids === d.conn_uids) && ($scope.highlightedPoint.type === d.type)) {
                                     openScrollSide(d);
