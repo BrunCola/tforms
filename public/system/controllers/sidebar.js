@@ -120,6 +120,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'orphans': ['remote2local', 'shared']
                 },
                 {
+                    'title': 'DNS by Query Type',
+                    'url': 'dns_by_query_type',
+                    'icon': 'fa-level-down',
+                    'orphans': ['dns_by_query_type_local', 'dns_by_query_type_local_drill']
+                }, 
+                {
                     'title': 'Local FTP',
                     'url': 'ftp_local',
                     'icon': 'fa-file',
@@ -167,12 +173,6 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'icon': 'fa-chevron-right',
                     'orphans': []
                 },  
-                {
-                    'title': 'DNS by Query Type',
-                    'url': 'dns_by_query_type',
-                    'icon': 'fa-level-down',
-                    'orphans': ['dns_by_query_type_local', 'dns_by_query_type_local_drill']
-                },              
             ]
         },
         { // STEALTH
@@ -378,27 +378,27 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
             [
                 {
                     'title': 'By File Type',
-                    'url': 'by_mime_type',
+                    'url': 'files_by_mime_type',
                     'icon': 'fa-folder-open',
-                    'orphans': ['file_mime_local', 'file_local']
+                    'orphans': ['files_file_mime_local', 'files_local']
                 },
                 {
                     'title': 'By Local IP',
-                    'url': 'by_local_ip',
+                    'url': 'files_by_local_ip',
                     'icon': 'fa-folder-open',
-                    'orphans': ['by_file_name','file_local']
+                    'orphans': ['files_by_file_name','files_local']
                 },
                 {
                     'title': 'By Remote IP',
-                    'url': 'by_remote_ip',
+                    'url': 'files_by_remote_ip',
                     'icon': 'fa-folder-open',
-                    'orphans': ['by_file_name_remote','file_remote']
+                    'orphans': ['files_by_file_name_remote','files_remote']
                 },
                 {
                     'title': 'By Domain',
-                    'url': 'by_domain',
+                    'url': 'files_by_domain',
                     'icon': 'fa-folder-open',
-                    'orphans': ['by_domain_local', 'by_domain_local_mime', 'by_domain_local_mime_drill']
+                    'orphans': ['files_by_domain_local', 'files_by_domain_local_mime', 'files_by_domain_local_mime_drill']
                 }
             ]
         },

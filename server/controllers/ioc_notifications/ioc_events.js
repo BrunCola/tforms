@@ -295,7 +295,6 @@ module.exports = function(pool) {
                         tables: tables,
                         crossfilter: crossfilter
                     };
-                    //console.log(results);
                     res.json(results);
                 });
             break;
