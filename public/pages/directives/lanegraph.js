@@ -187,10 +187,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     laneRowSymbols(d, elm, color1, color2);
                 });
 
-                var lineStory = main.append("g")
+                var lineStory = main.append("svg").attr('width', w).attr('height', mainHeight).append("g")
                     .attr("class", "storyLine");
 
-                var clickLine = main.append("g")
+                var clickLine = main.append('g')
                     .attr("class", "clickLine");
 
                 // GRAPH BLUR FILTER
@@ -429,7 +429,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         .attr("stroke", "#FFF");
                 }
                 function drawLinkConnections() {
-                    // remove lines before doing anything
                     lineStory.selectAll('line').remove();
                     // return immediately if search is not enabled
                     if (!($scope.pattern.searching) || ($scope.pattern.selected.length <= 1)) { return }
@@ -441,7 +440,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             return 1;
                         return 0;
                     }
-                    var linesLinked = lineStory.selectAll(".storyLines").data([""]);
                     // draw line links
                     for (var i in $scope.pattern.selected) {
                         sortArr.push($scope.pattern.selected[i]);
@@ -451,7 +449,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     // loop through our sorted array and begin drawing lines
                     for (var i = 1; i < sortArr.length-1; i++) {
                         if ((typeof sortArr[i]) != 'number') {
-                            linesLinked.enter()
+                            lineStory
                                 .append("line")
                                 .attr("x1", x1(sortArr[i].point.dd)+7)
                                 .attr("y1", y1(sortArr[i].point.lane))
@@ -564,7 +562,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         itemRects.selectAll('g').each(function(d){
                             // select nodes that match
                             var elm = d3.select(this);
-                            if ((d.conn_uids === data.conn_uids) && (d.id !== data.id) && (!(data.conn_uids+'-'+data.type) in $scope.pattern.selected)) {
+                            if ((d.conn_uids === data.conn_uids) && (d.id !== data.id)) {
+                                if ((data.conn_uids+'-'+data.type) in $scope.pattern.selected) { return }
                                 hoverPoint(elm, 'mouseover', d.type);
                             }                            
                         })
@@ -749,6 +748,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 function navCrtl(action) {
                     // clear all lines drawn
                     clearVerticalLine();
+                    // remove lines before doing anything
+                    lineStory.selectAll('line').remove();
                     // set variables
                     var rects, labels, minExtent, maxExtent, visItems;
                     // if a nav button is pressed
