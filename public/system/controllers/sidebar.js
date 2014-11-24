@@ -312,31 +312,31 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
             'children':
             [
                 {
-                    'title': 'HTTP by Domain',
+                    'title': 'By Domain',
                     'url': 'http_by_domain',
                     'icon': 'fa-arrows-h',
                     'orphans': ['http_by_domain_local', 'http_by_domain_local_drill']
                 },
                 {
-                    'title': 'HTTP by User Agent',
+                    'title': 'By User Agent',
                     'url': 'http_by_user_agent',
                     'icon': 'fa-user',
                     'orphans': ['http_by_user_agent_local', 'http_by_user_agent_local_drill']
                 },
                 {
-                    'title': 'Local HTTP',
+                    'title': 'By Local IP',
                     'url': 'http_local',
                     'icon': 'fa-long-arrow-left',
                     'orphans': ['http_local_by_domain', 'http_by_domain_local_drill']
                 },
                 {
-                    'title': 'Remote HTTP',
+                    'title': 'By Remote IP',
                     'url': 'http_remote',
                     'icon': 'fa-long-arrow-right',
                     'orphans': ['http_remote2local', 'http_remote2local_drill']
                 },
                 {
-                    'title': 'Local Blocked HTTP',
+                    'title': 'Blocked HTTP',
                     'accessLevel': [2],   
                     'url': 'http_local_blocked',
                     'icon': 'fa-times',
