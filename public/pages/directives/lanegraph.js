@@ -797,11 +797,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     return false;
                 }
                 function plot(data, min, max) {
-                    // node selecting
-                    var previousBar = null;
                     // bar selecting
                     var isOpen = null;
-                    var previousX = 0, previousY = 0;
                     function openScrollSide(d) {
                         var sideSelected = d3.select('.scroll-'+d.id);
                         // set last object before otehr functions run
@@ -809,31 +806,27 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             element: sideSelected,
                             data: d
                         }
-                        // this closes the last expanded block if there is one
-                        if ((previousBar !== null)) {
-                            if (!(previousBar.empty())) {
-                                if (previousBar.attr('class') !== sideSelected.attr('class')) {
-                                    previousBar.select('.infoDivExpanded').style('display', 'none');
-                                    previousBar.classed('laneactive', false);
-                                }
-                            }
-                        }
+                        // close previous bar
+                        var lastbar = infoDiv.select('li.laneactive').classed('laneactive', false).classed('laneopen', false);
+                        lastbar.select('.infoDivExpanded').style('display', 'none');
+                        // d3.select('.laneopen').classed('laneopen', false).classed('laneactive', false).select('.infoDivExpanded').style('display', 'none');
                         if ($('#autoexpand').is(':checked')){
                             if (isOpen === d.id) {
+                                sideSelected.classed('laneopen', false);
                                 sideSelected.select('.infoDivExpanded').style('display', 'none');
                                 isOpen = null;
                             } else {
+                                sideSelected.classed('laneopen', true);
                                 sideSelected.select('.infoDivExpanded').style('display', 'block');
                                 isOpen = d.id;
                                 // append different info if searching is enabled (i.e. checkboxes)
                                 laneInfoAppend(d, sideSelected);
                             }
                         }
-                         // set class for active description
+                        // set class for active description
                         sideSelected.classed('laneactive', true);
                         // scroll to position
                         scrollSide(d.id);
-                        previousBar = sideSelected;
                     }
                     // default squares and rectangles
                     $scope.point = function(element, type, name, id) {
@@ -979,9 +972,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         var thisNode = itemRects.select('.node-'+d.id);
                                         changeIcon(thisNode, d);
                                         // select any active pointunhighlight and collapse
-                                        var lastbar = infoDiv.select('li.laneactive').classed('laneactive', false);
-                                        lastbar.select('.infoDivExpanded').style('display', 'none');
-                                        elm.classed('laneactive', true);
+                                        openScrollSide(d);
                                         $scope.pattern.last = {
                                             element: elm,
                                             data: d
@@ -994,20 +985,18 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         appendVerticalLine(d);
                                         var thisNode = itemRects.select('.node-'+d.id);
                                         // select any active pointunhighlight and collapse
-                                        var lastbar = infoDiv.select('li.laneactive').classed('laneactive', false);
-                                        lastbar.select('.infoDivExpanded').style('display', 'none');
-                                        scrollSide(d.id);
-                                        changeIcon(thisNode, d);
                                         if (isOpen === d.id) {
                                             elm.select('.infoDivExpanded').style('display', 'none');
                                             isOpen = null;
                                         } else {
                                             elm.select('.infoDivExpanded').style('display', 'block');
-                                            previousBar = elm;
                                             isOpen = d.id;
                                             // elm.select('.infoDivExpanded').html(laneInfoAppend(d.expand));
                                             laneInfoAppend(d, elm);
                                         }
+                                        scrollSide(d.id);
+                                        changeIcon(thisNode, d);
+                                        
                                     })
                                     .attr('class', 'infoDivExpandBtn')
                                     .html('+');
