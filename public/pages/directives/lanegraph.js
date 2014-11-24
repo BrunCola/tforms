@@ -27,8 +27,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 ///////////////////////
                 /////  VARIABLES  /////
                 ///////////////////////
-                var itemsDimension = $scope.crossfilterData.dimension(function(d){ return d.time });
-                var items = itemsDimension.top(Infinity);
+                var itemsDimension = $scope.crossfilterData.dimension(function(d){ return d.dd });
+                var deepDimension = $scope.crossfilterData.dimension(function(d){ return d.deep });
+                var uniqueIds = []; // this is so we do not add duplicate items into our crossfitler
                 // set our in-to-deep variable
                 $scope.inTooDeep = {
                     areWe: false,
@@ -725,8 +726,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     // convert min and max to date object and send to plot function
                     var min = new Date($scope.start);
                     var max = new Date($scope.end);
-                    items.reverse()
-                    plot(items, min, max);
+                    plot(itemsDimension, min, max);
                 }
                 // this function finds what's clicked on brush and adds flag to values for redraw highlighting
                 function reHighlightPoints(timeObj) {
@@ -786,13 +786,15 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         loading('start');
                         requery(minExtent, maxExtent, function(data){
                             loading('end');
-                            data.reverse();
+                            deepDimension.filter(function(d){return d}); 
                             plot(data, minExtent, maxExtent);
                         })
                     } else {
                         // reset if not within threshold
                         $scope.inTooDeep.areWe = false;
-                        var data = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true};}).reverse();
+                        // var data = itemsDimension.filter(function(d) { if ((d.deep === false) && ((d.dd < maxExtent) && (d.dd > minExtent))) {return true};});
+                        deepDimension.filter(function(d){return (!(d))});
+                        var data = itemsDimension.filter(function(d) { return ((d < maxExtent) && (d > minExtent))});
                         $scope.alert.style('display', 'none');
                         plot(data, minExtent, maxExtent);
                     }
@@ -818,9 +820,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                     return false;
                 }
-                function plot(data, min, max) {
+                function plot(dimension, min, max) {
                     // bar selecting
-                    var isOpen = null;
+                    var isOpen = null, data = dimension.top(Infinity);
                     function openScrollSide(d) {
                         var sideSelected = d3.select('.scroll-'+d.id);
                         // set last object before otehr functions run
@@ -1039,11 +1041,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     var maxUnix = moment(max).unix();
                     if (($scope.inTooDeep.min === minUnix) && ($scope.inTooDeep.max === maxUnix)) {
                         $scope.inTooDeep.areWe = true;
-                        // $scope.inTooDeep.min = minUnix;
-                        // $scope.inTooDeep.max = maxUnix;
                     }
                     if (($scope.inTooDeep.areWe === true) && (minUnix >= $scope.inTooDeep.min) && (maxUnix <= $scope.inTooDeep.max)) {
-                        var deepItems = $scope.deepItems.filter(function(d) { if((d.dd < max) && (d.dd > min)) {return true};});
+                        var deepItems = itemsDimension.filter(function(d) { return ((d < max) && (d > min))});
                         callback(deepItems);
                         $scope.alert.style('display', 'block');
                     } else {
@@ -1057,19 +1057,20 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         var query = '/ioc_notifications/ioc_events_drilldown?start='+minUnix+'&end='+maxUnix+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc+'&ioc_attrID='+$location.$$search.ioc_attrID+'&type=drill'+'&lan_user='+$location.$$search.lan_user;
                         $http({method: 'GET', url: query}).
                             success(function(data) {
-                                $scope.crossfilterDeep = crossfilter();
                                 var id = 0;
                                 data.laneGraph.data.forEach(function(parent) {
                                     parent.forEach(function(child) {
-                                        child.dd = timeFormat(child.time, 'strdDateObj');
-                                        child.id = id;
-                                        id++;
+                                        if (uniqueIds.indexOf(child.conn_uids+child.time+child.type) === -1) { // only show if not already in existance
+                                            child.deep = true; // this is for filtering and removing after user exists drilldown
+                                            child.dd = timeFormat(child.time, 'strdDateObj');
+                                            child.id = id;
+                                            id++;
+                                            uniqueIds.push(child.conn_uids+child.time+child.type); // push to records
+                                        }
                                     })
-                                    $scope.crossfilterDeep.add(parent);
+                                    $scope.crossfilterData.add(parent);
                                 });
-                                var itemsDimension = $scope.crossfilterDeep.dimension(function(d){ return d.time });
-                                $scope.deepItems = itemsDimension.top(Infinity);
-                                callback($scope.deepItems);
+                                callback(itemsDimension);
                                 $scope.alert.style('display', 'block');
                             });
                     }

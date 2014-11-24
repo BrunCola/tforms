@@ -17,6 +17,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             parent.forEach(function(child) {
                 child.dd = timeFormat(child.time, 'strdDateObj');
                 child.id = id;
+                child.deep = false; // important for our filtering of deep items
                 id++;
             })
             $scope.crossfilterData.add(parent);
