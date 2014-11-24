@@ -42,6 +42,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 function setPatternObj() {
                     $scope.pattern = {
                         searching: false,
+                        order: 0,
                         selected: {
                             length: 0
                         },
@@ -427,7 +428,41 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         .attr('stroke-width', '1')
                         .attr("stroke", "#FFF");
                 }
-                function changeIcon(element, data) {
+                function drawLinkConnections() {
+                    // remove lines before doing anything
+                    lineStory.selectAll('line').remove();
+                    // return immediately if search is not enabled
+                    if (!($scope.pattern.searching) || ($scope.pattern.selected.length <= 1)) { return }
+                    var sortArr = [];
+                    function reorder(a, b) {
+                        if (a.order < b.order)
+                            return -1;
+                        if (a.order > b.order)
+                            return 1;
+                        return 0;
+                    }
+                    var linesLinked = lineStory.selectAll(".storyLines").data([""]);
+                    // draw line links
+                    for (var i in $scope.pattern.selected) {
+                        sortArr.push($scope.pattern.selected[i]);
+                    }
+                    // sort array based on object order
+                    sortArr.sort(reorder);
+                    // loop through our sorted array and begin drawing lines
+                    for (var i = 1; i < sortArr.length-1; i++) {
+                        if ((typeof sortArr[i]) != 'number') {
+                            linesLinked.enter()
+                                .append("line")
+                                .attr("x1", x1(sortArr[i].point.dd)+7)
+                                .attr("y1", y1(sortArr[i].point.lane))
+                                .attr("x2", x1(sortArr[i+1].point.dd)+7)
+                                .attr("y2", y1(sortArr[i+1].point.lane))
+                                .attr('stroke-width', 1)
+                                .attr("stroke", "#fff");  
+                        }
+                    }
+                }
+                function changeIcon(element, data, highlight) {
                     var color, select;
                     // select previous sctive node and deselect it
                     var prevElm = itemRects.select('g .node-active');
@@ -442,33 +477,18 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             hoverPoint(elm, 'mouseout', d.type);
                         }
                     })
-                    if (data.id in $scope.pattern.selected) {
+                    if ((data.conn_uids+'-'+data.type) in $scope.pattern.selected) {
                         // if id is in our select object, retain select status
                         select = true;
                     } else {
                         // otherwise remove it
                         select = false;
                     }
-                    // linklines if selected
-                    // if ((data.id in $scope.pattern.selected) && ($scope.pattern.lastXY !== null)) {
-                    //     // lineStory.selectAll('line').remove();
-                    //     var linesLinked = lineStory.selectAll(".storyLines").data([""]);
-                    //     // draw line links
-                    //     if (previousElm !== null) {
-                    //         linesLinked.enter()
-                    //             .append("line")
-                    //             .attr("x1", $scope.pattern.lastXY.x+7)
-                    //             .attr("y1", $scope.pattern.lastXY.y)
-                    //             .attr("x2", x1(data.dd)+7)
-                    //             .attr("y2", y1(data.lane))
-                    //             .attr('stroke-width', 1)
-                    //             .attr("stroke", "#fff");      
-                    //     }
-                    // }
                     element.classed('node-'+data.id, true);
                     element = element.append('g');                
                     element.attr('transform', 'translate(-11, -9)');
                     if ($('.node-'+data.id+' .eventStory')[0]) {
+                        element.classed('active-pattern', false);
                         $('.node-'+data.id+' .eventStory')[0].remove();
                     }
                     if ($('.node-'+data.id+' .eventFocus')[0]) {
@@ -476,7 +496,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     } 
                     if (select) {
                         element.classed('eventStory', true);
-                    } else if (!(data.id in $scope.pattern.selected)){
+                        element.classed('active-pattern', true);
+                    } else if (!((data.conn_uids+'-'+data.type) in $scope.pattern.selected)){
                         element.classed('eventFocus', true);
                     }
                     if (data.type.search("ioc") !== -1) {
@@ -537,16 +558,19 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .attr('height', 36);
                             laneRowSymbols(data.type, element, color1, color2);
                     }
+                    // a few functions may not want to highight same nodes on brush, so its set as a parameter
                     setTimeout(function(){ // this is a temporary fix to an unknown issue reguarding this firing too soon
                         // highlight all nodes matching the uid
                         itemRects.selectAll('g').each(function(d){
                             // select nodes that match
                             var elm = d3.select(this);
-                            if ((d.conn_uids === data.conn_uids) && (d.id !== data.id)) {
+                            if ((d.conn_uids === data.conn_uids) && (d.id !== data.id) && (!(data.conn_uids+'-'+data.type) in $scope.pattern.selected)) {
                                 hoverPoint(elm, 'mouseover', d.type);
                             }                            
                         })
                     }, 10)
+                    // draw link nodes
+                    drawLinkConnections();
                 }
                 function analize() {
                     var compareObj = $scope.pattern.selected;
@@ -573,46 +597,49 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
                 function addSearch(point, data) {
                     var thisNode = itemRects.select('.node-'+point.id);
-                    if (!(point.id in $scope.pattern.selected)) {         
+                    if (!((point.conn_uids+'-'+point.type) in $scope.pattern.selected)) {         
                         // add empty obect with point id in search
-                        $scope.pattern.selected[point.id] = {};
+                        $scope.pattern.selected[point.conn_uids+'-'+point.type] = {};
                         $scope.pattern.selected.length++;
                         // insert point information (for redrawing later)
-                        $scope.pattern.selected[point.id].point = point;
+                        $scope.pattern.selected[point.conn_uids+'-'+point.type].point = point;
+                        // count up order in which items were selected
+                        $scope.pattern.selected[point.conn_uids+'-'+point.type].order = $scope.pattern.order;
+                        $scope.pattern.order++;
                         // create search object for our selected data
-                        $scope.pattern.selected[point.id].search = {
+                        $scope.pattern.selected[point.conn_uids+'-'+point.type].search = {
                             length: 0
                         };
                         // insert our selected data with name as key
-                        $scope.pattern.selected[point.id].search[data.name] = data;
-                        $scope.pattern.selected[point.id].search.length++;
+                        $scope.pattern.selected[point.conn_uids+'-'+point.type].search[data.name] = data;
+                        $scope.pattern.selected[point.conn_uids+'-'+point.type].search.length++;
                         // add class to point
                         changeIcon(thisNode, point);
                         // add current x and y points to last object (after changeicon function!)
                         $scope.pattern.lastXY = {};
                         $scope.pattern.lastXY.x = x1(point.dd);
                         $scope.pattern.lastXY.y = y1(point.lane);    
-                        $scope.pattern.lastXY.id = point.id;
+                        $scope.pattern.lastXY.id = point.conn_uids+'-'+point.type;
                     } else {
                         // if data is not in point object, add it
-                        if (!(data.name in $scope.pattern.selected[point.id].search)) {
-                            $scope.pattern.selected[point.id].search[data.name] = data;
-                            $scope.pattern.selected[point.id].search.length++;    
+                        if (!(data.name in $scope.pattern.selected[point.conn_uids+'-'+point.type].search)) {
+                            $scope.pattern.selected[point.conn_uids+'-'+point.type].search[data.name] = data;
+                            $scope.pattern.selected[point.conn_uids+'-'+point.type].search.length++;    
                         } else {
                         // remove data if it already exists
-                            delete $scope.pattern.selected[point.id].search[data.name];
-                            $scope.pattern.selected[point.id].search.length--;
+                            delete $scope.pattern.selected[point.conn_uids+'-'+point.type].search[data.name];
+                            $scope.pattern.selected[point.conn_uids+'-'+point.type].search.length--;
                         }
                         // remove point if its empty after changes
-                        if ($scope.pattern.selected[point.id].search.length === 0) {
-                            delete $scope.pattern.selected[point.id];
+                        if ($scope.pattern.selected[point.conn_uids+'-'+point.type].search.length === 0) {
+                            delete $scope.pattern.selected[point.conn_uids+'-'+point.type];
                             $scope.pattern.selected.length--;
                             // reset our last x/y coordinate object
                             $scope.pattern.lastXY = null;
                         }
                     }
                     // update style of point if there is no selected data in it
-                    if (!(point.id in $scope.pattern.selected)) {
+                    if (!((point.conn_uids+'-'+point.type) in $scope.pattern.selected)) {
                         changeIcon(thisNode, point);
                     }
                 }
@@ -644,8 +671,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .attr('transform', 'rotate(45, 5, 18)');
                     }
                     if (!(row.pattern)){return};
-                    if (data.id in $scope.pattern.selected) {
-                        if (row.name in $scope.pattern.selected[data.id].search) {
+                    if ((data.conn_uids+'-'+data.type) in $scope.pattern.selected) {
+                        if (row.name in $scope.pattern.selected[data.conn_uids+'-'+data.type].search) {
                             return removeBtn();
                         } else {
                             return addBtn();
@@ -940,6 +967,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 changeIcon(elm, d);
                                 // set highlighted point to to new elm data
                             }
+                            // change if node is in pattern
+                            if ((d.conn_uids+'-'+d.type) in $scope.pattern.selected) {
+                                changeIcon(elm, d);
+                            }
                             // generate points from point function
                             if (d.type !== 'l7') {
                                 $scope.point(elm, d.type, null, d.id);
@@ -991,12 +1022,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                         } else {
                                             elm.select('.infoDivExpanded').style('display', 'block');
                                             isOpen = d.id;
-                                            // elm.select('.infoDivExpanded').html(laneInfoAppend(d.expand));
                                             laneInfoAppend(d, elm);
                                         }
                                         scrollSide(d.id);
                                         changeIcon(thisNode, d);
-                                        
                                     })
                                     .attr('class', 'infoDivExpandBtn')
                                     .html('+');
