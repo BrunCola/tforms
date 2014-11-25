@@ -5,7 +5,7 @@ Default theme
 Reset and overrides  
 ***/
 body {
-  background-color: #383E4B;
+  background-color: #232323;
 }
 /***
 Page header
@@ -29,12 +29,13 @@ Page header
 Page sidebar
 ***/
 .page-sidebar {
-  background-color: #383E4B;
+/*  background-color: #383E4B;*/
+  background-color: #232323;
   position: fixed;
 }
 ul.page-sidebar-menu > li > a {
   border-top: 1px solid #2D323D !important;
-  color: #ffffff !important;
+  color: #696969 !important;
 }
 ul.page-sidebar-menu > li:last-child > a {
   border-bottom: 1px solid transparent !important;
@@ -48,12 +49,12 @@ ul.page-sidebar-menu > li:hover > a {
   background: #2D323D;
 }
 ul.page-sidebar-menu > li.active > a {
-  background: #CC0000 !important;
+  background: #f5f5f5 !important;
   border-top-color: transparent !important;
   color: #ffffff;
 }
 ul.page-sidebar-menu > li.active > a i {
-  color: #ffffff;
+  color: #232323;
 }
 ul.page-sidebar-menu > li > ul.sub-menu > li:first-child > a {
   border-top: 0px !important;
@@ -61,7 +62,7 @@ ul.page-sidebar-menu > li > ul.sub-menu > li:first-child > a {
 ul.page-sidebar-menu > li > ul.sub-menu > li.active > a,
 ul.page-sidebar-menu > li > ul.sub-menu > li > a:hover {
   color: #ffffff !important;
-  background: #2D323D !important;
+  background: #424242 !important;
 }
 ul.page-sidebar-menu > li > ul.sub-menu > li > a:hover {
   background: #2D323D !important;

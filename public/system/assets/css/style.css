@@ -30,8 +30,8 @@ Reset and overrides
 ***/
 /* general body settings */
 body {
-    /*background: #f5f5f5;*/
-    color: #383e4b;
+/*  color: #383e4b;*/
+  color: #333;
   /*font-family: 'Open Sans';*/
   padding: 0px !important;
   margin: 0px !important;
@@ -117,7 +117,7 @@ p{
 .lanePatternInfoPane {
   overflow: scroll;
   display: block;
-  background-color: #e6e6e6;
+  background-color: #232323;
   margin-top: 40px;
   padding-bottom: 20px;
   padding: 20px;
@@ -249,7 +249,7 @@ p{
   line-height: 30px;
 }
 .patternInfoRight .rightList:nth-child(odd) {
-  background-color: #DEDEDE;
+  background-color: #b3b3b3;
 }
 .patternInfoRight .matchError {
   text-align: center;
@@ -286,14 +286,14 @@ p{
 .laneInfo .infoDivExpandBtn {
   height: 25px;
   width: 25px;
-  background-color: #CCC;
+  background-color: #383838;
   float: right;
   top: 0;
   bottom: 0px;
   text-align: center;
   vertical-align: top;
   font-size: 18px;
-  color: #FFF;
+  color: #828282;
   line-height: 25px;
 }
 .laneInfo .lanegraphlist{
@@ -312,12 +312,11 @@ p{
 }
 */
 .laneInfo:nth-child(odd) {
-  background-color: #DEDEDE;
+  background-color: #474747;
 }
 .laneactive {
-  /*background-color: #000;*/
-  background-color: #191919 !important;
-  color: #ccc;
+  background-color: #e6e6e6 !important;
+  color: #1a1a1a;
 }
 .pointactive {
   stroke-width: 2px;
@@ -750,6 +749,7 @@ td.file {
     width:100%;
 }
 .container-fluid {
+/*  background: #232323 !important;*/
 }
 
 h3 small/**, h4 small**//**, h5 small**/ {
@@ -2493,4 +2493,44 @@ button.right, .epbuttons{
 .epbuttons button {
   margin: 0px 1px;  
   border-radius: 4px;
+}
+.lanegraph-temp-bg {
+  background: #3f3f3f;
+  color: #b3b3b3 !important;
+  padding: 10px 20px 12px 15px;
+}
+.buttonHolder{
+  text-align: center;
+}
+.resetButton{
+  background: #282828;
+  color: #b3b3b3;
+  border: 0px;
+  margin-right: 1px;
+  font-size: 11px;
+  padding: 3px 12px 5px 12px;
+}
+.prevButton{
+  background: #666;
+  color: #070707;
+  border: 0px;
+  margin-right: 1px;
+  font-size: 11px;
+  padding: 3px 12px 5px 12px;
+}
+.saveToggle{
+  background: #a8730b;
+  color: #070707;
+  border: 0px;
+  margin-right: 1px;
+  padding: 3px 12px 5px 12px;
+  font-size: 11px;
+}
+.qMarkButton{
+  background: #888;
+  border: 0px;
+  border-radius: 3px;
+}
+.patternInfoRight{
+  color: #000;
 }
