@@ -1036,42 +1036,44 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         // url builder
                                         for (var c in $scope.e) {
                                             var type = $scope.e[c].link.type;
-                                            //if ($scope.e[c].bVisible) {
-                                                switch(type) {
-                                                    case 'Archive':
-                                                        $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
-                                                    break;
-                                                    case 'Restore':
-                                                        $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bRestore button-success pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Restore</button>");
-                                                    break;
-                                                    case 'Upload Image':
-                                                        $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bUpload button-success pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Upload Image</button>");
-                                                    break;
-                                                    default:
-                                                        var obj = new Object();
-                                                        //var all = new Object();
-                                                        if ($location.$$search.start && $location.$$search.end) {
-                                                            obj.start = $location.$$search.start;
-                                                            obj.end = $location.$$search.end;
-                                                        }
-                                                        for (var l in $scope.e[c].link.val) {
-                                                            if ((aData[$scope.e[c].link.val[l]] !== null) && (aData[$scope.e[c].link.val[l]] !== undefined)) {
-                                                                var newVar = aData[$scope.e[c].link.val[l]].toString();
-                                                                obj[$scope.e[c].link.val[l]] = newVar.replace("'", "&#39;");
-                                                            }
-                                                        }
-                                                        var links = JSON.stringify({
-                                                            type: $scope.e[c].link.type,
-                                                            objlink: obj
-                                                        });
-                                                        if ($scope.e[c].mData === 'time') {
-                                                            $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
-                                                        } else {
-                                                            $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button>");
-                                                        }
-                                                    break;
-                                                }  
-                                            //}                                            
+                                            if ($scope.e[c].bVisible !== undefined) {
+                                              if ($scope.e[c].bVisible) {
+                                                  switch(type) {
+                                                      case 'Archive':
+                                                          $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
+                                                      break;
+                                                      case 'Restore':
+                                                          $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bRestore button-success pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Restore</button>");
+                                                      break;
+                                                      case 'Upload Image':
+                                                          $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bUpload button-success pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Upload Image</button>");
+                                                      break;
+                                                      default:
+                                                          var obj = new Object();
+                                                          //var all = new Object();
+                                                          if ($location.$$search.start && $location.$$search.end) {
+                                                              obj.start = $location.$$search.start;
+                                                              obj.end = $location.$$search.end;
+                                                          }
+                                                          for (var l in $scope.e[c].link.val) {
+                                                              if ((aData[$scope.e[c].link.val[l]] !== null) && (aData[$scope.e[c].link.val[l]] !== undefined)) {
+                                                                  var newVar = aData[$scope.e[c].link.val[l]].toString();
+                                                                  obj[$scope.e[c].link.val[l]] = newVar.replace("'", "&#39;");
+                                                              }
+                                                          }
+                                                          var links = JSON.stringify({
+                                                              type: $scope.e[c].link.type,
+                                                              objlink: obj
+                                                          });
+                                                          if ($scope.e[c].mData === 'time') {
+                                                              $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
+                                                          } else {
+                                                              $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button>");
+                                                          }
+                                                      break;
+                                                  }  
+                                              }   
+                                            }                                         
                                         }
                                     }
                                 },
