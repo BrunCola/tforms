@@ -55,10 +55,42 @@ angular.module('mean.pages').factory('searchFilter', ['$rootScope',
     }
 ]);
 
-
-
-
-
+angular.module('mean.pages').factory('getSize', ['$rootScope',
+    function($rootScope) {
+        var getSize = function(element, type, width) {
+            var selection = $(element).closest('div:regex(class, span\d*)');
+            var module = d3.select(selection[0]);
+            var span = module.attr('class');
+            var width = selection.width();
+            var height = 0; // 0 so it doesn't break incase there's no match (it just won't show)
+            // I'm putting the differen't visuals' switches in functions so having switches within switches doesn't get confusing
+            function pieChart(width) {
+                switch(span){
+                    case 'span5':
+                        return width/2.4;
+                    // case 'span6':
+                    //     return width/2.4
+                    default:
+                        return width/2.4; // anything that would be appropriate as a default here
+                }
+            }
+            switch(type) {
+                case 'pieChart':
+                    return {
+                        width: width,
+                        height: pieChart(width)
+                    }
+                break;
+                default:
+                    return {
+                        height: height,
+                        width: width
+                    }
+            }
+        }
+        return getSize;
+    }
+]);
 
 angular.module('mean.pages').factory('iocIcon', [
     function() {
