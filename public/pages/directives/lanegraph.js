@@ -964,6 +964,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             if ((d.conn_uids+'-'+d.type) in $scope.pattern.selected) {
                                 changeIcon(elm, d);
                             }
+                            drawLinkConnections();
                             // generate points from point function
                             if (d.type !== 'l7') {
                                 $scope.point(elm, d.type, null, d.id);
