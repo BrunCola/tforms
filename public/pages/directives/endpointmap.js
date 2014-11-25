@@ -115,7 +115,8 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .attr("type", "image/svg+xml");
 
                     var endpointConn = container.append("svg")
-                    .attr("class", "endpointConn");
+                    .attr("class", "endpointConn")
+                    .attr("connName", floorName);
 
                     // -- to hide <input> when changing custom username
                     container.on('click', function(e){
@@ -1065,6 +1066,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
 
                     // -- draws connections between hosts
                     $rootScope.drawConnections = function (user, connections, color, conns) {
+                        // var conns = d3.select(".endpointConns");
                        //wait(function(){
                             //var conns = endpointConn.selectAll(".endpointConns").data([""]);
                             for (var c in connections) {
@@ -1091,32 +1093,35 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 if ( connections[c].map === user.map ) {                                   
                                     conns.enter()
                                         .append("line")
-                                        .attr("x1", user.x)
-                                        .attr("y1", user.y+lineCount)
-                                        .attr("x2", connections[c].x)
-                                        .attr("y2", connections[c].y+lineCount)
-                                        .attr('stroke-width', 1)
+                                        .attr("x1", user.x+30)
+                                        .attr("y1", user.y+lineCount+20)
+                                        .attr("x2", connections[c].x+30)
+                                        .attr("y2", connections[c].y+lineCount+20)
+                                        .attr('stroke-width', 2)
                                         .attr("stroke", color);
                                 } else {
                                     conns.enter()
                                         .append("line")
-                                        .attr("x1", user.x)
-                                        .attr("y1", user.y+lineCount)
+                                        .attr("x1", user.x+30)
+                                        .attr("y1", user.y+lineCount+20)
                                         .attr("x2", 0)
                                         .attr("y2", 0+lineCount)
-                                        .attr('stroke-width', 1)
+                                        .attr('stroke-width', 2)
                                         .attr("stroke", color);
                                 }                 
                             }  
-                        lineCount +=2;
+                        lineCount +=4;
                        //}, 400);
                     }
 
-
-
-                    $rootScope.removeLines = function () {
-                        endpointConn.selectAll('line').remove();
+                    $rootScope.resetLineCount = function () {
+                        lineCount = 0;
                     }
+
+
+                    // $rootScope.removeLines = function () {
+                    //     endpointConn.selectAll('line').remove();
+                    // }
 
                     // -- redraws the floor (used when user is deleted from floorplan)
                     $rootScope.redrawFloor = function () {
@@ -1211,6 +1216,7 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                     var imageRatio = 1.33333333333;
                     var data = $scope.data.users;
                     var scale = 1;
+                    var lineCount = 0;
 
                     if (($('#floorplanspan')[0].offsetWidth-25) != -25) {
                         //console.log("test")
@@ -1243,7 +1249,7 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                     var margin = {top: -5, right: -5, bottom: -5, left: -5};
 
                     var zoom = d3.behavior.zoom()
-                        .scaleExtent([0.1, 5])
+                        .scaleExtent([0.3, 5])
                         //.translate([0,0])
                         .translate([0,0])
                         .scale(scale)
@@ -1281,8 +1287,15 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                         .attr("xlink:href", " ")
                         .attr("type", "image/svg+xml");     
 
-                    var endpointConn = container.append("svg")
-                    .attr("class", "endpointConn");
+                    d3.select("#floorplanspan").append("svg")
+                    .attr("class", "endpointConns");
+                    // .attr("width", elementWidth)
+                    // .attr("height", elementHeight);
+
+                    // var endpointConn = container.append("svg")
+                    //     .attr("class", "endpointConns");
+
+
 
                     // -- to hide <input> when changing custom username
                     container.on('click', function(e){
@@ -1313,7 +1326,7 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                                 floorDiv.style('height',elementHeight*1.25+"px");
                                 expandDiv.style('width','75%'); 
                                 hideDiv.html("&#9658; &#9658; &#9658;");
-                                setTimeout(function () {
+                                setTimeout(function () {rapidPHIRE
                                     hideListDiv.classed('floorHide', true);
                                 }, 0);
                             }
@@ -1350,7 +1363,7 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                     containerTag.addEventListener(
                         'dragleave',
                         function(e) {
-                            $(this).removeClass('over');
+                            $(this).removeClass('over');floors
                             return false;
                         },
                         false
@@ -1757,8 +1770,8 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                             })
                             .call(drag)
                             .append('svg:foreignObject')
-                                .attr('width', "320px")
-                                .attr('height', "300px")
+                                .attr('width', "170px")
+                                .attr('height', "200px")
                             .append('xhtml:div').each(function(d){    
                                 var userCount = 0;               
                                 
@@ -1790,14 +1803,16 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                                 var element = elm.append("div").attr('class', 'floorplanicon').append("svg");
 
                                  element
-                                    .attr('width', '300')
-                                    .attr('height', '209')
+                                    .attr('width', '155')
+                                    .attr('height', '110')
                                         element.append('svg:path')
+                                            .attr("transform", "scale(0.5)")
                                             .attr('d', 'M71.5,87.2h17.1v2.3H71.5V87.2z M302,2v206H2V2H302zM297.3,84.9h-17.4v3.8h17.4V84.9z M297.3,80.1h-17.4v3.8h17.4V80.1z M297.3,75.3h-17.4v3.8h17.4V75.3z M297.3,70.6h-17.4v3.8h17.4V70.6z M297.3,65.8h-17.4v3.8h17.4V65.8z M297.3,61h-17.4v3.8h17.4V61z M297.3,56.2h-17.4V60h17.4V56.2z M297.3,51.5h-17.4v3.8h17.4V51.5z M297.3,46.7h-17.4v3.8h17.4V46.7z M297.3,41.9h-17.4v3.8h17.4V41.9z M297.3,37.1h-17.4v3.8h17.4V37.1z M297.3,6.7h-41.9v82v0.9v0.1h-34v-1H253v-82h-45.5v83h-34.1v-1h31.7v-82h-47.3v82.9h-2.4V6.7h-46.4v80.4h20.7v2.4h-23.1V6.7H60.5v67h13.3v3.3H58.1V6.7H6.7v80.5h53.4v2.3H6.7v34.7h50.8V98.7h3.3v28.7H6.7v33.8h50.8v-24.6h3.3v27.9v0H6.7v38.8h50.7v-26h19.1v-4h1.8v5.7H60.7v24.2h45.6v-44.6H71.5l0-45l40.7,0v2.3h-22v2.1h1.9v0.9h2.7v0c1.1,0,2.6,1,2.6,2.3c0,1.3-1.5,2.3-2.6,2.3v0h-2.7v0.9h-1.9v3.2h1.9v0.9h2.7v0c1.1,0,2.6,1,2.6,2.3c0,1.3-1.5,2.3-2.6,2.3v0h-2.7v0.9h-1.9v1.6H114v-1.7h0.9v-1.1h0c0-1.1,1-1.8,2.3-1.8c1.3,0,2.3,0.7,2.3,1.8h0v1.1h0.9v1.7h2.2v-21.6h3.3v21.6h1.6v-2.5h0.9V130h0c0-1.1,1-2.6,2.3-2.6c1.3,0,2.3,1.5,2.3,2.6h0v2.7h0.9v2.5h13.6v-3.3h-1.3v-0.9h-1.1v0c-1.1,0-1.8-1-1.8-2.3c0-1.3,0.7-2.3,1.8-2.3v0h1.1v-0.9h1.3v-9.9h-11.8v-2.3h11.8h3.3l0,23.9H90.2v18.9h18.5v46.9H204v-65.8h-15.8l0-23.9h3.3v21.6h27.2v-21.6h3.3v23.9h-15.5v65.8h90.9v-65.8h-56.1v-23.9h12.1v2.3h-8.8v19.4h1.3v-2.8h0.9v-2.7h0c0-1.1,1-2.6,2.3-2.6c1.3,0,2.3,1.5,2.3,2.6h0v2.7h0.9v2.8h6.5v-1.7h0.9v-1.1h0c0-1.1,1-1.8,2.3-1.8c1.3,0,2.3,0.7,2.3,1.8h0v1.1h0.9v1.7h6.8v-2.8h0.9v-2.7h0c0-1.1,1-2.6,2.3-2.6c1.3,0,2.3,1.5,2.3,2.6h0v2.7h0.9v2.8h1.5v-19.4h-14.6v-2.3h21.6v2.3h-3.7v19.4h14.5v-19.4h-3.8v-2.2h3.8V89.6h-18.4V36.1h18.4V6.7z M86.9,151.9v-3.8H72.5v3.8H86.9z M72.5,152.9v3.5h14.4v-3.5H72.5z M86.9,147.1v-3.8H72.5v3.8H86.9z M86.9,142.3v-3.8H72.5v3.8H86.9z M86.9,137.5v-3.8H72.5v3.8H86.9z M86.9,132.7V129H72.5v3.8H86.9z M86.9,128v-3.8H72.5v3.8H86.9z M86.9,123.2v-3.8H72.5v3.8H86.9z M86.9,118.4v-3.8H72.5v3.8H86.9z')
                                             .style('fill-rule', '#evenodd')
                                             .style('clip-rule', '#evenodd')
                                             .style('fill', "#676767");                                        
                                         element.append('svg:path')
+                                            .attr("transform", "scale(0.5)")
                                             .attr('d', 'M262.5,4.5v-4h27v4H262.5zM290.5,7.5v-3h-29v3H290.5z M276.5,204.5v4h9v-4H276.5z M275.5,201.5v3h11v-3H275.5z M238.5,204.5v4h9v-4H238.5z M237.5,201.5v3h11v-3H237.5z M214.5,204.5v4h9v-4H214.5z M213.5,201.5v3h11v-3H213.5z M175.5,204.5v4h9v-4H175.5z M174.5,201.5v3h11v-3H174.5z M151.5,204.5v4h9v-4H151.5z M150.5,201.5v3h11v-3H150.5z M113.5,204.5v4h9v-4H113.5z M112.5,201.5v3h11v-3H112.5z M38.5,204.5v4h9v-4H38.5z M37.5,201.5v3h11v-3H37.5z M18.5,204.5v4h9v-4H18.5z M17.5,201.5v3h11v-3H17.5z M4.5,140.5h-4v9h4V140.5z M7.5,139.5h-3v11h3V139.5z M4.5,100.5h-4v9h4V100.5z M7.5,99.5h-3v11h3V99.5z M4.5,58.5h-4v9h4V58.5z M7.5,57.5h-3v11h3V57.5z M84.5,204.5v4h9v-4H84.5z M83.5,201.5v3h11v-3H83.5z M243.5,4.5v-4h-27v4H243.5z M244.5,7.5v-3h-29v3H244.5z M195.5,4.5v-4h-27v4H195.5z M196.5,7.5v-3h-29v3H196.5z M145.5,4.5v-4h-27v4H145.5z M146.5,7.5v-3h-29v3H146.5z M99.5,4.5v-4h-27v4H99.5z M100.5,7.5v-3h-29v3H100.5zM45.5,4.5v-4h-27v4H45.5z M46.5,7.5v-3h-29v3H46.5z')
                                             .style('fill-rule', '#evenodd')
                                             .style('clip-rule', '#evenodd')
@@ -1866,14 +1881,50 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                         d3.select('.user-'+selected.id).classed("selected", true);
                     }
                     
-                    $rootScope.removeLines = function () {
-                        $scope.selectedUser = "";
-                        $scope.floorConns = "";
-                        endpointConn.selectAll('line').remove();
-                    }
+                    // $rootScope.removeLines = function () {
+                    //     $scope.selectedUser = "";
+                    //     $scope.floorConns = "";
+                    //     endpointConn.selectAll('line').remove();
+                    // }
 
+                    $rootScope.resetLineCountF = function () {
+                        lineCount = 0;
+                    }
+                    $rootScope.removeFLines = function () {
+                        container.selectAll('line').remove();
+                        lineCount = 0;
+                    } 
                     // -- draws connections between floors
-                    $rootScope.drawFloorConns = function (color) {
+                    $rootScope.drawFloorConns = function (user, connections, color) {
+                        //console.log("test");
+                        //var conns = endpointConn.selectAll(".endpointConns").data([""]);
+                        //container.selectAll(".endpointConns").each(function (d) {
+                            // var elm = d3.select(this);
+                            // console.log(elm)
+                            for (var b in $scope.buildings) {
+                                for (var f1 in $scope.buildings[b].floors) {
+                                    for (var f2 in $scope.buildings[b].floors) {
+                                        if (user.map == $scope.buildings[b].floors[f1].id) {
+                                            for (var c in connections) {
+                                                if (connections[c].map == $scope.buildings[b].floors[f2].id) {  
+                                                    container.append("line")
+                                                        .attr("x1", $scope.buildings[b].floors[f1].x+85)
+                                                        .attr("y1", $scope.buildings[b].floors[f1].y+lineCount+100)
+                                                        .attr("x2", $scope.buildings[b].floors[f2].x+85)
+                                                        .attr("y2", $scope.buildings[b].floors[f2].y+lineCount+100)
+                                                        .attr('stroke-width', 2)
+                                                        .attr("stroke", color);
+                                                }
+                                            }   
+                                        }
+                                    }
+                                }
+                            }
+                       // });
+
+                        
+                        lineCount += 4;
+
                         // if (($scope.floorConns !== undefined) && ($scope.selectedUser !== undefined)) {
                         //     endpointConn.selectAll('line').remove();
                         //     var conns = endpointConn.selectAll(".endpointConns").data([""]);
@@ -1917,7 +1968,7 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                         //         }
                         //     }, 400);
                         // }       
-                    }
+                    }// -- draws connections between hosts
 
                     // -- sets selected class for CSS (controller calls this when coming from ioc_events_drilldown(page2))
                     $scope.$on('setSelected', function (event, selected) { 
@@ -1988,6 +2039,7 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                     var imageRatio = 1.33333333333;
                     var data = $scope.data.users;
                     var scale = 1;
+                    var lineCount = 0;
 
                     if (($('#buildingplanspan')[0].offsetWidth-25) != -25) {
                         //console.log("test")
@@ -2019,7 +2071,7 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                     var margin = {top: -5, right: -5, bottom: -5, left: -5};
 
                     var zoom = d3.behavior.zoom()
-                        .scaleExtent([0.1, 5])
+                        .scaleExtent([0.3, 5])
                         //.translate([0,0])
                         .translate([0,0])
                         .scale(scale)
@@ -2594,60 +2646,47 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                         plot(data, buildings);
                     }
 
-                    $rootScope.removeLines = function () {
-                        $scope.selectedUser = "";
-                        $scope.floorConns = "";
-                        endpointConn.selectAll('line').remove();
-                    }                    // -- sets selected class for CSS (controller calls this when coming from ioc_events_drilldown(page2))
+                    $rootScope.removeBLines = function () {
+                        container.selectAll('line').remove();
+                        lineCount = 0;
+                    }                    
+                    // -- sets selected class for CSS (controller calls this when coming from ioc_events_drilldown(page2))
                     $rootScope.setSelected = function (selected) {
                         d3.select('.user-'+selected.id).classed("selected", true);
                     }
 
+
+                    $rootScope.resetLineCountB = function () {
+                        lineCount = 0;
+                    }
                     // -- draws connections between floors
-                    $rootScope.drawFloorConns = function (color) {
-                        // if (($scope.floorConns !== undefined) && ($scope.selectedUser !== undefined)) {
-                        //     endpointConn.selectAll('line').remove();
-                        //     var conns = endpointConn.selectAll(".endpointConns").data([""]);
-                        //     wait(function(){
-                        //         var count = 0;
-                        //         var floor1 = $scope.floors.filter(function(fl){ 
-                        //             if (($scope.selectedUser.map === fl.asset_name)){
-                        //                 return true;
-                        //             }
-                        //         });
-                        //         for (var c in $scope.floorConns) {
-                        //             var floor2 = $scope.floors.filter(function(fl){ 
-                        //                 if (($scope.floorConns[c].map === fl.asset_name)){
-                        //                     return true;
-                        //                 }
-                        //             });
-                        //             if (floor2[0] !== undefined) {
-                        //                  conns.enter()
-                        //                     .append("line")
-                        //                     .attr("x1", floor1[0].x+(elementWidth/6))
-                        //                     .attr("y1", floor1[0].y+30+count)
-                        //                     .attr("x2", floor2[0].x+(elementWidth/6))
-                        //                     .attr("y2", floor2[0].y+30+count)
-                        //                     .attr('stroke-width', 1)
-                        //                     .attr("stroke", color);
-                        //                     count++;
-                        //                 // if (count<9) {
-                        //                 //     count++;
-                        //                 // }
-                        //             } else {
-                        //                  conns.enter()
-                        //                     .append("line")
-                        //                     .attr("x1", floor1[0].x+(elementWidth/6))
-                        //                     .attr("y1", floor1[0].y+30+count)
-                        //                     .attr("x2", 0)
-                        //                     .attr("y2", 0+count)
-                        //                     .attr('stroke-width', 1)
-                        //                     .attr("stroke", color);
-                        //                     count++;
-                        //             }                              
-                        //         }
-                        //     }, 400);
-                        // }       
+                    $rootScope.drawBuildingConns = function (user, connections, color) {
+                        // console.log("test");
+                        //var conns = endpointConn.selectAll(".endpointConns").data([""]);
+                        //container.selectAll(".endpointConns").each(function (d) {
+                            // var elm = d3.select(this);
+                        //container.selectAll('line').remove();
+                        for (var b1 in $scope.buildings) {
+                            for (var b2 in $scope.buildings) {
+                                for (var f1 in $scope.buildings[b1].floors) { 
+                                    for (var f2 in $scope.buildings[b2].floors) { 
+                                        for (var c in connections) {
+                                            if ((user.map == $scope.buildings[b1].floors[f1].id) && (connections[c].map == $scope.buildings[b2].floors[f2].id)) {         
+                                                container.append("line")
+                                                    .attr("x1", $scope.buildings[b1].x+65)
+                                                    .attr("y1", $scope.buildings[b1].y+lineCount+80)
+                                                    .attr("x2", $scope.buildings[b2].x+65)
+                                                    .attr("y2", $scope.buildings[b2].y+lineCount+80)
+                                                    .attr('stroke-width', 2)
+                                                    .attr("stroke", color);
+                                            }   
+                                        }
+                                    }                             
+                                }
+                            }
+                        }
+                       // });
+                        lineCount += 4;   
                     }
 
                     ////////////////
@@ -2677,5 +2716,3 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
         }
     };
 }]);
-
- 
