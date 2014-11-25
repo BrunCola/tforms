@@ -15,56 +15,53 @@ module.exports = function(pool) {
                 start = req.query.start;
                 end = req.query.end;
             }
-            if (req.query.lan_zone && req.query.lan_ip) {
+            if (req.query.remote_ip) {
                 var tables = [];
                 var table1 = {
                     query: 'SELECT '+
-                                'sum(`count`) AS `count`,'+
-                                'max(file_meta.time) AS `time`,'+
-                                '`stealth`,'+
-                                '`lan_zone`,'+
-                                '`lan_machine`,'+
-                                '`lan_user`,'+
-                                '`lan_ip`,'+
+                                'sum(`count`) AS `count`, '+
+                                'max(`time`) AS `time`,'+
                                 '`mime`,'+
+                                '`remote_ip`,'+
+                                '`remote_asn`,'+
+                                '`remote_asn_name`,'+
+                                '`remote_country`,'+
+                                '`remote_cc`,'+
                                 '(sum(`size`) / 1048576) AS size,'+
                                 'sum(`ioc_count`) AS ioc_count '+
                             'FROM '+
                                 '`file_meta` '+
                             'WHERE '+
-                                'file_meta.time BETWEEN ? AND ? '+
-                                'AND `lan_zone` = ? '+
-                                'AND file_meta.lan_ip = ? '+
+                                'time BETWEEN ? AND ? '+
+                                'AND `remote_ip` = ? '+
                             'GROUP BY '+
-                                'mime',
-                    insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+                                '`mime`',
+                    insert: [start, end, req.query.remote_ip],
                     params: [
-                        {
-                            title: 'Last Seen',
-                            select: 'time',
-                            dView: true,
-                            link: {
-                                type: 'file_local',
-                                // val: the pre-evaluated values from the query above
-                                val: ['lan_zone','lan_ip','mime'],
-                                crumb: false
+                            {
+                                title: 'Last Seen',
+                                select: 'time',
+                                dView: true,
+                                link: {
+                                    type: 'files_remote',
+                                    val: ['remote_ip', 'mime'],
+                                    crumb: false
+                                },
                             },
-                        },
-                        { title: 'Total Extracted Files', select: 'count' },
-                        { title: 'Stealth', select: 'stealth', access: [3] },
-                        { title: 'Zone', select: 'lan_zone', dView: false },
-                        { title: 'Machine', select: 'lan_machine', dView: false },
-                        { title: 'Local User', select: 'lan_user', dView: false },
-                        { title: 'Local IP', select: 'lan_ip', dView: false },
-                        { title: 'File Type', select: 'mime' },
-                        { title: 'Total Size (MB)', select: 'size' },
-                        { title: 'Total IOC Hits', select: 'ioc_count' }
+                            { title: 'Total Extracted Files', select: 'count' },
+                            { title: 'File Type', select: 'mime' },
+                            { title: 'Remote IP', select: 'remote_ip', dView: false },
+                            { title: 'Remote Country', select: 'remote_country', dView: false },
+                            { title: 'Flag', select: 'remote_cc', dView: false },
+                            { title: 'ASN', select: 'remote_asn', dView: false },
+                            { title: 'ASN Name', select: 'remote_asn_name', dView: false },
+                            { title: 'Total Size (MB)', select: 'size' },
+                            { title: 'Total IOC Hits', select: 'ioc_count' }
                     ],
                     settings: {
-                        sort: [[1, 'desc']],
+                        sort: [[0, 'desc']],
                         div: 'table',
-                        title: 'Extracted File Types',
-                        access: req.session.passport.user.level
+                        title: 'Extracted File Types'
                     }
                 }
                 async.parallel([

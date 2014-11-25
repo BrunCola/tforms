@@ -20,7 +20,7 @@ module.exports = function(pool) {
                 var table1 = {
                     query: 'SELECT '+
                                 'count(*) as count, '+
-                                'max(file.time) AS `time`,'+
+                                'max(`time`) AS `time`,'+
                                 '`stealth`,'+
                                 '`lan_zone`,'+
                                 '`lan_user`,'+
@@ -45,7 +45,7 @@ module.exports = function(pool) {
                             select: 'time',
                             dView: true,
                             link: {
-                                type: 'by_domain_local_mime_drill',
+                                type: 'files_by_domain_local_mime_drill',
                                 val: ['http_host', 'lan_ip', 'lan_zone', 'mime'],
                                 crumb: false
                             },

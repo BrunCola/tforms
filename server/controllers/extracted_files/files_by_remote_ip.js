@@ -1,9 +1,9 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-query = require('../constructors/query'),
-config = require('../../config/config'),
-async = require('async');
+    query = require('../constructors/query'),
+    config = require('../../config/config'),
+    async = require('async');
 
 module.exports = function(pool) {
     return {
@@ -18,33 +18,22 @@ module.exports = function(pool) {
             var tables = [];
             var crossfilter = [];
             var piechart = [];
-            var info = [];
             var table1 = {
                 query: 'SELECT '+
                             'sum(`count`) AS `count`,'+
                             'max(`time`) AS `time`,'+
                             '`remote_ip`,'+
                             '`remote_ip` AS pie_dimension,'+
+                            '`remote_asn`,'+
+                            '`remote_asn_name`,'+
                             '`remote_country`,'+
                             '`remote_cc`,'+
-                            '`remote_asn_name`,'+
-                            '(sum(`in_bytes`) / 1048576) AS `in_bytes`,'+
-                            '(sum(`out_bytes`) / 1048576) AS `out_bytes`,'+
-                            'sum(`in_packets`) AS `in_packets`,'+
-                            'sum(`out_packets`) AS `out_packets`,'+
-                            'sum(`dns`) AS `dns`,'+
-                            'sum(`http`) AS `http`,'+
-                            'sum(`ssl`) AS `ssl`,'+
-                            'sum(`ftp`) AS `ftp`,'+
-                            'sum(`irc`) AS `irc`,'+
-                            'sum(`smtp`) AS `smtp`,'+
-                            'sum(`file`) AS `file`,'+
-                            'sum(`ioc_count`) AS `ioc_count` '+
+                            '(sum(`size`) / 1048576) AS size,'+
+                            'sum(`ioc_count`) AS ioc_count '+
                         'FROM '+
-                            '`conn_l7_remote` '+
+                            '`file_remote` '+
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
-                            'AND `l7_proto` !=\'-\' '+
                         'GROUP BY '+
                             '`remote_ip`',
                 insert: [start, end],
@@ -54,64 +43,53 @@ module.exports = function(pool) {
                         select: 'time',
                         dView: true,
                         link: {
-                            type: 'l7_remote_app',
+                            type: 'files_by_file_name_remote',
                             val: ['remote_ip'],
                             crumb: false
                         },
                     },
+                    { title: 'Total Extracted Files', select: 'count' },
                     { title: 'Remote IP', select: 'pie_dimension' },
                     { title: 'Remote Country', select: 'remote_country' },
                     { title: 'Flag', select: 'remote_cc' },
-                    { title: 'Remote ASN', select: 'remote_asn_name' },
-                    { title: 'MB to Remote', select: 'in_bytes' },
-                    { title: 'MB from Remote', select: 'out_bytes' },
-                    { title: 'Packets to Remote', select: 'in_packets', dView: false },
-                    { title: 'Packets from Remote', select: 'out_packets', dView: false },
-                    { title: 'IOC Count', select: 'ioc_count' },
-                    { title: 'Connections', select: 'count' },
-                    { title: 'DNS', select: 'dns' },
-                    { title: 'HTTP', select: 'http' },
-                    { title: 'SSL', select: 'ssl' },
-                    { title: 'FTP', select: 'ftp' },
-                    { title: 'IRC', select: 'irc' },
-                    { title: 'SMTP', select: 'smtp' },
-                    { title: 'File', select: 'file' },
+                    { title: 'ASN', select: 'remote_asn' },
+                    { title: 'ASN Name', select: 'remote_asn_name' },
+                    { title: 'Total Size (MB)', select: 'size' },
+                    { title: 'Total IOC Hits', select: 'ioc_count' }
                 ],
                 settings: {
-                    sort: [[6, 'desc']],
+                    sort: [[1, 'desc']],
                     div: 'table',
-                    title: 'Application Bandwidth Usage'
+                    title: 'Extracted Files From Remote IPs'
                 }
             }
             var crossfilterQ = {
                 query: 'SELECT '+
-                        'time,'+
-                        '(sum(in_bytes + out_bytes) / 1048576) AS count, '+
-                        '(sum(`in_bytes`) / 1048576) AS in_bytes, '+
-                        '(sum(`out_bytes`) / 1048576) AS out_bytes '+
-                    'FROM '+
-                        '`conn_l7_remote` '+
-                    'WHERE '+
-                        '`time` BETWEEN ? AND ? '+
-                    'GROUP BY '+
-                        'month(from_unixtime(time)),'+
-                        'day(from_unixtime(time)),'+
-                        'hour(from_unixtime(time))',
+                            'count(*) AS count,'+
+                            'time '+
+                        'FROM '+
+                            '`file` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                        'GROUP BY '+
+                            'month(from_unixtime(`time`)),'+
+                            'day(from_unixtime(`time`)),'+
+                            'hour(from_unixtime(`time`))',
                 insert: [start, end]
-            }
+            }   
             var piechartQ = {
                 query: 'SELECT '+
-                         'time,'+
-                         '`remote_ip` AS `pie_dimension`, '+
-                         'sum(`count`) AS `count` '+
-                     'FROM '+
-                         '`conn_l7_remote` '+
-                     'WHERE '+
-                         '`time` BETWEEN ? AND ? '+
-                         'AND `remote_ip` !=\'-\' '+
-                     'GROUP BY '+
-                         '`remote_ip`',
-                insert: [start, end, start, end, start, end]
+                            'time,'+
+                            '`remote_ip` AS `pie_dimension`, '+
+                            'sum(`count`) AS `count` '+
+                        'FROM '+
+                            '`file_remote` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                            'AND `remote_ip` !=\'-\' '+
+                        'GROUP BY '+
+                            '`remote_ip`',
+                insert: [start, end]
             }
             async.parallel([
                 // Table function(s)
@@ -138,12 +116,10 @@ module.exports = function(pool) {
             ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                 if (err) throw console.log(err);
                 var results = {
-                    info: info,
                     tables: tables,
                     crossfilter: crossfilter,
                     piechart: piechart
                 };
-                //console.log(results);
                 res.json(results);
             });
         }

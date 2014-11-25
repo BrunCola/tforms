@@ -15,40 +15,43 @@ module.exports = function(pool) {
                 start = req.query.start;
                 end = req.query.end;
             }
-            if (req.query.remote_ip && req.query.mime) {
+            if (req.query.lan_zone && req.query.lan_ip && req.query.mime && req.query.http_host) {
                 var tables = [];
                 var table1 = {
                     query: 'SELECT '+
-                                'file.time as `time`, '+ // Last Seen
-                                '`mime`, '+
-                                '`name`, '+
+                                '`time`,'+
                                 '`stealth`,'+
-                                '`lan_zone`, '+
-                                '`lan_machine`, '+
-                                '`lan_user`, '+
-                                '`lan_ip`, '+
-                                '`lan_port`, '+
-                                '`remote_ip`, '+
-                                '`remote_port`, '+
-                                '`remote_asn`, '+
-                                '`remote_asn_name`, '+
-                                '`remote_country`, '+
-                                '`remote_cc`, '+
-                                '(`size` / 1024) AS `size`, '+
-                                '`proto`, '+
-                                '`md5`, '+
-                                '`http_host`, '+
-                                '`ioc`, '+
-                                '`ioc_rule`, '+
-                                '`ioc_typeIndicator`, '+
+                                '`lan_zone`,'+
+                                '`lan_machine`,'+
+                                '`lan_user`,'+
+                                '`lan_ip`,'+
+                                '`lan_port`,'+
+                                '`remote_ip`,'+
+                                '`remote_port`,'+
+                                '`remote_asn`,'+
+                                '`remote_asn_name`,'+
+                                '`remote_country`,'+
+                                '`remote_cc`,'+
+                                '`proto`,'+
+                                '`http_host`,'+
+                                '`mime`,'+
+                                '`name`,'+
+                                '(`size` / 1024) AS `size`, '+    
+                                '`md5`,'+
+                                '`sha1`,'+
+                                '`ioc`,'+
+                                '`ioc_rule`,'+
+                                '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection` '+
-                            'FROM '+
+                            'FROM '+ 
                                 '`file` '+
                             'WHERE '+
-                                'file.time BETWEEN ? AND ? '+
-                                'AND `remote_ip` = ? '+
-                                'AND `mime` = ? ',
-                    insert: [start, end, req.query.remote_ip, req.query.mime],
+                                '`time` BETWEEN ? AND ? '+
+                                'AND `lan_zone` = ? '+
+                                'AND `lan_ip` = ? '+
+                                'AND `mime` = ? '+
+                                'AND `http_host` = ?',
+                    insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.mime, req.query.http_host],
                     params: [
                         { title: 'Last Seen', select: 'time' },
                         { title: 'File Type', select: 'mime' },
@@ -72,12 +75,13 @@ module.exports = function(pool) {
                         { title: 'IOC Type', select: 'ioc_typeIndicator' },
                         { title: 'IOC Stage', select: 'ioc_typeInfection' },
                         { title: 'IOC Rule', select: 'ioc_rule' },
-                        { title: 'MD5', select: 'md5' }
+                        { title: 'MD5', select: 'md5' },
+                        { title: 'SHA1', select: 'sha1' }
                     ],
                     settings: {
                         sort: [[1, 'desc']],
                         div: 'table',
-                        title: 'Extracted Files by Remote IP',
+                        title: 'Extracted Files by Local IP, Domain, Type',
                         access: req.session.passport.user.level
                     }
                 }

@@ -740,7 +740,6 @@ module.exports = function(pool) {
                             });
                             switch(data[i].type) {
                                 case "IPType":
-                                console.log("IPType")
                                     ioc_ip = data[i].ioc;
                                 break;
                                 case "PortType":
@@ -750,12 +749,6 @@ module.exports = function(pool) {
                                 break;
                             }
                         }
-
-                        // console.log(req.query.lan_user);
-                        // console.log(req.query.lan_ip);
-                        // console.log(req.query.lan_zone);
-                        // console.log(ioc_ip);
-                        // console.log(ioc_port);
 
                         //if both IP and Port are defined for the IOC, look for the combination of the two
                         if(ioc_ip && ioc_port) {
@@ -1472,7 +1465,6 @@ module.exports = function(pool) {
                         function(callback) { // stealth block
                             if (req.session.passport.user.level === 3) {
                                 new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
-                                    console.log(data)
                                     handleReturn(data, callback);
                                 });
                             } else {
@@ -1613,7 +1605,6 @@ module.exports = function(pool) {
                     }
                 }
                 for (var i in req.body) {
-                    console.log(req.body[i])
                     if (i !== 'length') { // ignore the length key, since we placed it in manually for use on front-end 
                         // set current query object
                         var thisQuery = {

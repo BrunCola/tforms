@@ -20,18 +20,18 @@ module.exports = function(pool) {
             var tables = [];
             var table1 = {
                 query: 'SELECT '+
-                            'sum(`count`) AS `count`,'+
+                            'count(*) as count, '+
                             'max(`time`) AS `time`,'+
-                            '`mime`, '+
-                            '`mime` AS `pie_dimension`, '+
+                            '`http_host`, '+
+                             '`http_host` AS `pie_dimension`, '+
                             '(sum(`size`) / 1048576) AS size,'+
                             'sum(`ioc_count`) AS ioc_count '+
                         'FROM '+
-                            '`file_mime` '+
+                            '`file` '+
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
                         'GROUP BY '+
-                            '`mime`',
+                            '`http_host`',
                 insert: [start, end],
                 params: [
                     {
@@ -39,48 +39,48 @@ module.exports = function(pool) {
                         select: 'time',
                         dView: true,
                         link: {
-                            type: 'file_mime_local',
-                            val: ['mime'],
+                            type: 'files_by_domain_local',
+                            val: ['http_host'],
                             crumb: false
                         },
                     },
                     { title: 'Total Extracted Files', select: 'count' },
-                    { title: 'File Type', select: 'pie_dimension' },
+                    { title: 'Domain', select: 'pie_dimension' },
                     { title: 'Total Size (MB)', select: 'size' },
                     { title: 'Total IOC Hits', select: 'ioc_count' }
                 ],
                 settings: {
                     sort: [[1, 'desc']],
                     div: 'table',
-                    title: 'Extracted File Types'
+                    title: 'Extracted Files by Domain'
                 }
             }
             var crossfilterQ = {
                 query: 'SELECT '+
-                        'count(*) AS count,'+
-                        'time '+
-                    'FROM '+
-                        '`file_mime` '+
-                    'WHERE '+
-                        '`time` BETWEEN ? AND ? '+
-                    'GROUP BY '+
-                        'month(from_unixtime(`time`)),'+
-                        'day(from_unixtime(`time`)),'+
-                        'hour(from_unixtime(`time`))',
+                            'count(*) AS count,'+
+                            'time '+
+                        'FROM '+
+                            '`file` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                        'GROUP BY '+
+                            'month(from_unixtime(`time`)),'+
+                            'day(from_unixtime(`time`)),'+
+                            'hour(from_unixtime(`time`))',
                 insert: [start, end]
             }           
             var piechartQ = {
                 query: 'SELECT '+
-                         'time,'+
-                         '`mime` AS `pie_dimension`, '+
-                         'count(*) AS `count` '+
-                     'FROM '+
-                         '`file_mime` '+
-                     'WHERE '+
-                         '`time` BETWEEN ? AND ? '+
-                         'AND `mime` !=\'-\' '+
-                     'GROUP BY '+
-                         '`mime`',
+                            'time,'+
+                            '`http_host` AS `pie_dimension`, '+
+                            'count(*) AS `count` '+
+                        'FROM '+
+                            '`file` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                            'AND `http_host` !=\'-\' '+
+                        'GROUP BY '+
+                            '`http_host`',
                 insert: [start, end]
             }
             async.parallel([
