@@ -20,16 +20,13 @@ module.exports = function(pool) {
                 var table1 = {
                      query: 'SELECT '+
                                 '`time`,'+
-                                '`lan_stealth` AS `stealth`,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
                                 '`lan_user`,'+
                                 '`lan_ip`,'+
-                                '`event_src`,'+
                                 '`event_id`,'+
                                 '`event_type`,'+
-                                '`event_detail`,'+
-                                '`event_full` '+
+                                '`event_detail` '+
                             'FROM '+
                                 '`stealth_events` '+
                             'WHERE '+
@@ -41,12 +38,13 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_user, req.query.event_type],
                     params: [
                         { title: 'Time', select: 'time' },
-                        { title: 'Stealth', select: 'stealth', access: [3] },
-                        { title: 'Event Full Log', select: 'event_full' },
-                        { title: 'Event ID', select: 'event_id', dView:false },
-                        { title: 'Event Source', select: 'event_src', dView:false },
-                        { title: 'Event Type', select: 'event_type', dView:false },
-                        { title: 'Event Details', select: 'event_detail', dView:false },
+                        { title: 'Zone', select: 'lan_zone'},
+                        { title: 'Machine', select: 'lan_machine'},
+                        { title: 'Local User', select: 'lan_user'},
+                        { title: 'Local IP', select: 'lan_ip'},
+                        { title: 'Event Type', select: 'event_type' },
+                        { title: 'Event Details', select: 'event_detail'},
+                        { title: 'Event ID', select: 'event_id'},
                     ],
                     settings: {
                         sort: [[0, 'desc']],
