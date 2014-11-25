@@ -820,6 +820,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                     return false;
                 }
+                // function replot() {
+                //     setTimeout(function(){
+                        
+                //     }, 5000)
+                // }
                 function plot(dimension, min, max) {
                     // bar selecting
                     var isOpen = null, data = dimension.top(Infinity);
@@ -1034,7 +1039,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     openScrollSide(d);
                                 }
                             });
-
                     }                   
                 }
                 function requery(min, max, callback) {
@@ -1198,6 +1202,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 }
                 // begin execution
                 draw();
+                // replot();
             });
         }
     };

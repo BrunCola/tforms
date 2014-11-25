@@ -1154,7 +1154,7 @@ angular.module('mean.pages').directive('universalSearch', function() {
     };
 });
 
-angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '$rootScope', function ($timeout, $window, $rootScope) {
+angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '$rootScope', 'getSize', function ($timeout, $window, $rootScope, getSize) {
     return {
         link: function ($scope, element, attrs) {
             $scope.$on('pieChart', function (event, chartType, params) {
@@ -1173,11 +1173,11 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                             timers[uniqueId] = setTimeout(callback, ms);
                         };
                     })();
-                    var filter, height;
-                    var width = $('#piechart').parent().width();
-                    height = width/2.4;
+                    var filter;
+                    var width = getSize(element, 'pieChart').width;
+                    var height = getSize(element, 'pieChart').height;
                     $scope.sevWidth = function() {
-                        return $('#piechart').parent().width();
+                        return getSize(element, 'pieChart').width;
                     }
                     filter = true;
                     // switch (chartType){
