@@ -112,7 +112,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 var chart = leftSide
                     .append("svg")
                     .attr("width", w + m[1] + m[3])
-                    .attr("height", h + m[0] + m[2])
+                    .attr("height", h)
                     .on("dblclick", draw)
                     .attr("class", "chart");
 
@@ -165,12 +165,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .attr('transform', function(d, i) { return 'translate('+(-m[1]*2.4)+','+(y1(i) -m[1])+') scale(0.8)'});
 
                 // here's the rectangle
-                var squares = iconBox.append('rect')
-                    .attr('width', 38)
-                    .attr('height', 38)
-                    .style('fill', 'none')
-                    .attr('stroke-width', 1)
-                    .attr('stroke', '#606060');
+                // var squares = iconBox.append('rect')
+                //     .attr('width', 38)
+                //     .attr('height', 38)
+                //     .style('fill', 'none')
+                //     .attr('stroke-width', 0)
+                //     .attr('stroke', '#606060');
 
                 // placing the row icons
                 var rowIcons = iconBox.each(function(d){
