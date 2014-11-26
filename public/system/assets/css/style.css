@@ -30,7 +30,6 @@ Reset and overrides
 ***/
 /* general body settings */
 body {
-/*  color: #383e4b;*/
   color: #333;
   /*font-family: 'Open Sans';*/
   padding: 0px !important;
@@ -762,7 +761,7 @@ h1, h2, h3, h4, h5, h6 {
 
 a {
   text-shadow: none !important;
- color: #383e4b;}
+ color: #232323;}
 
 /***
 ie8 & ie9 modes
@@ -1261,7 +1260,7 @@ ul.page-sidebar-menu > li > ul.sub-menu  li > ul.sub-menu > li > a > i {
   max-width:100%;
 }
 .trial-footer {
-    background:#383E4B;
+    background:#232323;
     position: fixed;
     left: 0;
     z-index:10000;
