@@ -58,6 +58,18 @@ module.exports = function(app, passport, version, io, pool) {
                     var shared = require('../controllers/general_network/shared')(pool);
                     app.route('/general_network/shared')
                     .get(auth.permission, shared.render);
+        // DNS BY QUERY TYPE
+            var dns_by_query_type = require('../controllers/general_network/dns_by_query_type')(pool);
+            app.route('/general_network/dns_by_query_type')
+            .get(auth.permission, dns_by_query_type.render);
+            // DNS BY QUERY TYPE LOCAL
+                var dns_by_query_type_local = require('../controllers/general_network/dns_by_query_type_local')(pool);
+                app.route('/general_network/dns_by_query_type_local')
+                .get(auth.permission, dns_by_query_type_local.render);
+                // DNS BY QUERY TYPE DRILL
+                    var dns_by_query_type_local_drill = require('../controllers/general_network/dns_by_query_type_local_drill')(pool);
+                    app.route('/general_network/dns_by_query_type_local_drill')
+                    .get(auth.permission, dns_by_query_type_local_drill.render);
         // SSH
             var ssh_local = require('../controllers/general_network/ssh_local')(pool);
             app.route('/general_network/ssh_local')
@@ -173,7 +185,7 @@ module.exports = function(app, passport, version, io, pool) {
             var stealth_quarantine = require('../controllers/stealth/stealth_quarantine')(pool); 
             app.route('/stealth/stealth_quarantine')
             .get(auth.permission, stealth_quarantine.render);
-    // LOCAL EVENTS        
+    // LOCAL EVENTS
         // ENDPOINT MAP
             var endpoint_map = require('../controllers/local_events/endpoint_map')(pool);
             app.route('/local_events/endpoint_map')
@@ -256,19 +268,6 @@ module.exports = function(app, passport, version, io, pool) {
                     var l7_remote_drill = require('../controllers/applications/l7_remote_drill')(pool);
                     app.route('/applications/l7_remote_drill')
                     .get(auth.permission, l7_remote_drill.render);
-    // DNS
-        // DNS BY QUERY TYPE
-            var dns_by_query_type = require('../controllers/general_network/dns_by_query_type')(pool);
-            app.route('/general_network/dns_by_query_type')
-            .get(auth.permission, dns_by_query_type.render);
-            // DNS BY QUERY TYPE LOCAL
-                var dns_by_query_type_local = require('../controllers/general_network/dns_by_query_type_local')(pool);
-                app.route('/general_network/dns_by_query_type_local')
-                .get(auth.permission, dns_by_query_type_local.render);
-                // DNS BY QUERY TYPE DRILL
-                    var dns_by_query_type_local_drill = require('../controllers/general_network/dns_by_query_type_local_drill')(pool);
-                    app.route('/general_network/dns_by_query_type_local_drill')
-                    .get(auth.permission, dns_by_query_type_local_drill.render);
     // HTTP
         // HTTP BY DOMAIN
             var http_by_domain = require('../controllers/http/http_by_domain')(pool);
@@ -373,54 +372,54 @@ module.exports = function(app, passport, version, io, pool) {
                     app.route('/email/smtp_from_sender_by_subject')
                     .get(auth.permission, smtp_from_sender_by_subject.render);
     // EXTRACTED FILES
-        // BY LOCAL IP
-            var by_local_ip = require('../controllers/extracted_files/by_local_ip')(pool);
-            app.route('/extracted_files/by_local_ip')
-            .get(auth.permission, by_local_ip.render);
-            // BY FILE NAME
-                var by_file_name = require('../controllers/extracted_files/by_file_name')(pool);
-                app.route('/extracted_files/by_file_name')
-                .get(auth.permission, by_file_name.render);
-                // FILE LOCAL
-                    var file_local = require('../controllers/extracted_files/file_local')(pool);
-                    app.route('/extracted_files/file_local')
-                    .get(auth.permission, file_local.render);
-        // BY REMOTE IP
-            var by_remote_ip = require('../controllers/extracted_files/by_remote_ip')(pool);
-            app.route('/extracted_files/by_remote_ip')
-            .get(auth.permission, by_remote_ip.render); 
-            // BY FILE NAME REMOTE
-                var by_file_name_remote = require('../controllers/extracted_files/by_file_name_remote')(pool);
-                app.route('/extracted_files/by_file_name_remote')
-                .get(auth.permission, by_file_name_remote.render); 
-               // FILE REMOTE
-                    var file_remote = require('../controllers/extracted_files/file_remote')(pool);
-                    app.route('/extracted_files/file_remote')
-                    .get(auth.permission, file_remote.render);
         // BY MIME TYPE
-            var by_mime_type = require('../controllers/extracted_files/by_mime_type')(pool);
-            app.route('/extracted_files/by_mime_type')
-            .get(auth.permission, by_mime_type.render);
+            var files_by_mime_type = require('../controllers/extracted_files/files_by_mime_type')(pool);
+            app.route('/extracted_files/files_by_mime_type')
+            .get(auth.permission, files_by_mime_type.render);
             // FILE MIME LOCAL
-                var file_mime_local = require('../controllers/extracted_files/file_mime_local')(pool);
-                app.route('/extracted_files/file_mime_local')
-                .get(auth.permission, file_mime_local.render);
+                var files_mime_local = require('../controllers/extracted_files/files_mime_local')(pool);
+                app.route('/extracted_files/files_mime_local')
+                .get(auth.permission, files_mime_local.render);
+        // BY LOCAL IP
+            var files_by_local_ip = require('../controllers/extracted_files/files_by_local_ip')(pool);
+            app.route('/extracted_files/files_by_local_ip')
+            .get(auth.permission, files_by_local_ip.render);
+            // BY FILE NAME
+                var files_by_file_name = require('../controllers/extracted_files/files_by_file_name')(pool);
+                app.route('/extracted_files/files_by_file_name')
+                .get(auth.permission, files_by_file_name.render);
+                // FILE LOCAL
+                    var files_local = require('../controllers/extracted_files/files_local')(pool);
+                    app.route('/extracted_files/files_local')
+                    .get(auth.permission, files_local.render);
+        // BY REMOTE IP
+            var files_by_remote_ip = require('../controllers/extracted_files/files_by_remote_ip')(pool);
+            app.route('/extracted_files/files_by_remote_ip')
+            .get(auth.permission, files_by_remote_ip.render); 
+            // BY FILE NAME REMOTE
+                var files_by_file_name_remote = require('../controllers/extracted_files/files_by_file_name_remote')(pool);
+                app.route('/extracted_files/files_by_file_name_remote')
+                .get(auth.permission, files_by_file_name_remote.render); 
+               // FILE REMOTE
+                    var files_remote = require('../controllers/extracted_files/files_remote')(pool);
+                    app.route('/extracted_files/files_remote')
+                    .get(auth.permission, files_remote.render);
         // BY DOMAIN
-            var by_domain = require('../controllers/extracted_files/by_domain')(pool);
-            app.route('/extracted_files/by_domain')
-            .get(auth.permission, by_domain.render);
+            var files_by_domain = require('../controllers/extracted_files/files_by_domain')(pool);
+            app.route('/extracted_files/files_by_domain')
+            .get(auth.permission, files_by_domain.render);
             // BY DOMAIN LOCAL
-                var by_domain_local = require('../controllers/extracted_files/by_domain_local')(pool);
-                app.route('/extracted_files/by_domain_local')
-                .get(auth.permission, by_domain_local.render);
+                var files_by_domain_local = require('../controllers/extracted_files/files_by_domain_local')(pool);
+                app.route('/extracted_files/files_by_domain_local')
+                .get(auth.permission, files_by_domain_local.render);
                 // BY DOMAIN LOCAL MIME
-                    var by_domain_local_mime = require('../controllers/extracted_files/by_domain_local_mime')(pool);
-                    app.route('/extracted_files/by_domain_local_mime')
-                    .get(auth.permission, by_domain_local_mime.render);
+                    var files_by_domain_local_mime = require('../controllers/extracted_files/files_by_domain_local_mime')(pool);
+                    app.route('/extracted_files/files_by_domain_local_mime')
+                    .get(auth.permission, files_by_domain_local_mime.render);
                     // BY DOMAIN LOCAL MIME DRILL
-                        var by_domain_local_mime_drill = require('../controllers/extracted_files/by_domain_local_mime_drill')(pool);
-                        app.route('/extracted_files/by_domain_local_mime_drill')
-                        .get(auth.permission, by_domain_local_mime_drill.render);
+                        var files_by_domain_local_mime_drill = require('../controllers/extracted_files/files_by_domain_local_mime_drill')(pool);
+                        app.route('/extracted_files/files_by_domain_local_mime_drill')
+                        .get(auth.permission, files_by_domain_local_mime_drill.render);
     // FIRST SEEN
         // NEW REMOTE
             var new_remote = require('../controllers/first_seen/new_remote')(pool);

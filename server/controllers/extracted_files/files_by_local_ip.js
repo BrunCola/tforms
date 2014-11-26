@@ -19,21 +19,21 @@ module.exports = function(pool) {
             var table1 = {
                 query: 'SELECT '+
                             'sum(`count`) AS `count`,'+
-                            'max(file_local.time) AS `time`,'+
+                            'max(`time`) AS `time`,'+
                             '`stealth`,'+
                             '`lan_zone`,'+
                             '`lan_machine`,'+
                             '`lan_user`,'+
                             '`lan_ip`,'+
-                            '(sum(size) / 1048576) AS size,'+
-                            'sum(ioc_count) AS ioc_count '+
+                            '(sum(`size`) / 1048576) AS `size`,'+
+                            'sum(`ioc_count`) AS `ioc_count` '+
                         'FROM '+
                             '`file_local` '+
                         'WHERE '+
-                            'file_local.time BETWEEN ? AND ? '+
+                            '`time` BETWEEN ? AND ? '+
                         'GROUP BY '+
                             '`lan_zone`,'+
-                            'file_local.lan_ip',
+                            '`lan_ip`',
                 insert: [start, end],
                 params: [
                     {
@@ -41,8 +41,7 @@ module.exports = function(pool) {
                         select: 'time',
                         dView: true,
                         link: {
-                            type: 'by_file_name',
-                            // val: the pre-evaluated values from the query above
+                            type: 'files_by_file_name',
                             val: ['lan_zone','lan_ip'],
                             crumb: false
                         },

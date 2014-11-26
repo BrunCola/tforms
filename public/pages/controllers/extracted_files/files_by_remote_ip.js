@@ -1,15 +1,14 @@
 'use strict';
 
-angular.module('mean.pages').controller('byDomainController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', 'timeFormat', function ($scope, $stateParams, $location, Global, $rootScope, $http, timeFormat) {
+angular.module('mean.pages').controller('byRemoteIpController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', 'timeFormat', function ($scope, $stateParams, $location, Global, $rootScope, $http, timeFormat) {
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/extracted_files/by_domain?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/extracted_files/files_by_remote_ip?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/extracted_files/by_domain?';
+        query = '/extracted_files/files_by_remote_ip?';
     }
     $http({method: 'GET', url: query}).
-    //success(function(data, status, headers, config) {
     success(function(data) {
         if (data.tables[0] === null) {
             $scope.$broadcast('loadError');
@@ -44,7 +43,6 @@ angular.module('mean.pages').controller('byDomainController', ['$scope', '$state
             $scope.pieGroup = $scope.appDimension.group().reduceSum(function (d) {
                 return d.count;
             });
-            // console.log(pieGroup.top(Infinity));
             $scope.$broadcast('pieChart', 'application');
         }
     });

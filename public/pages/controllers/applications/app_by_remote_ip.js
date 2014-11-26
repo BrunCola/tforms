@@ -20,6 +20,7 @@ angular.module('mean.pages').controller('appByRemoteIpController', ['$scope', '$
                 d.count = +d.count;
             });
             $scope.crossfilterData = crossfilter(data.crossfilter);
+            $scope.piechartData = crossfilter(data.piechart);
             $scope.data = data;
             $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
             $scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
@@ -49,6 +50,20 @@ angular.module('mean.pages').controller('appByRemoteIpController', ['$scope', '$
 
             $scope.barChartxAxis = '';
             $scope.barChartyAxis = '# MB / Hour';
+
+            var countDimension = $scope.piechartData.dimension(function(d) { return d.count }).top(10).map(function(d){ return d.pie_dimension });
+            $scope.appDimension = $scope.piechartData.dimension(function(d) { 
+                if(countDimension.indexOf(d.pie_dimension) !== -1) {
+                    return d.pie_dimension;
+                } else {
+                    return "Other";
+                }
+            });                 
+            $scope.pieGroup = $scope.appDimension.group().reduceSum(function (d) {
+                return d.count;
+            });
+            // console.log(pieGroup.top(Infinity));
+            $scope.$broadcast('pieChart', 'application');
         }
     });
 }]);

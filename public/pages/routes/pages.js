@@ -179,6 +179,50 @@ angular.module('mean.pages').config(['$stateProvider',
                             daterange: true
                         }
                     })
+            // DNS BY QUERY TYPE
+                .state('dns_by_query_type', {
+                    url: '/dns_by_query_type?start&end',
+                    templateUrl: 'public/pages/views/general_network/dns_by_query_type.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'DNS by Query Type',
+                        daterange: true
+                    }
+                })
+                // DNS BY QUERY TYPE LOCAL
+                    .state('dns_by_query_type_local', {
+                        url: '/dns_by_query_type_local?start&end&qtype',
+                        templateUrl: 'public/pages/views/general_network/dns_by_query_type_local.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Local DNS by Query Type',
+                            subtitleElm: {
+                                'Query Type': 'qtype'
+                            },
+                            daterange: true
+                        }
+                    })
+                    // DNS BY QUERY TYPE DRILL
+                        .state('dns_by_query_type_local_drill', {
+                            url: '/dns_by_query_type_local_drill?start&end&qtype&lan_zone&lan_ip',
+                            templateUrl: 'public/pages/views/general_network/dns_by_query_type_local_drill.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Local DNS by Query Type',
+                                subtitleElm: {
+                                    'Query Type': 'qtype',
+                                    'LAN IP': 'lan_ip',
+                                    'Zone': 'lan_zone'
+                                },
+                                daterange: true
+                            }
+                        })
             // LOCAL FTP 
                 .state('ftp_local`', {
                     url: '/ftp_local?start&end',
@@ -1084,51 +1128,6 @@ angular.module('mean.pages').config(['$stateProvider',
                             daterange: true
                         }
                     })
-        // DNS
-            // DNS BY QUERY TYPE
-                .state('dns_by_query_type', {
-                    url: '/dns_by_query_type?start&end',
-                    templateUrl: 'public/pages/views/general_network/dns_by_query_type.html',
-                    resolve: {
-                        loggedin: checkLoggedin
-                    },
-                    data: {
-                        title: 'DNS by Query Type',
-                        daterange: true
-                    }
-                })
-                // DNS BY QUERY TYPE LOCAL
-                    .state('dns_by_query_type_local', {
-                        url: '/dns_by_query_type_local?start&end&qtype',
-                        templateUrl: 'public/pages/views/general_network/dns_by_query_type_local.html',
-                        resolve: {
-                            loggedin: checkLoggedin
-                        },
-                        data: {
-                            title: 'Local DNS by Query Type',
-                            subtitleElm: {
-                                'Query Type': 'qtype'
-                            },
-                            daterange: true
-                        }
-                    })
-                    // DNS BY QUERY TYPE DRILL
-                        .state('dns_by_query_type_local_drill', {
-                            url: '/dns_by_query_type_local_drill?start&end&qtype&lan_zone&lan_ip',
-                            templateUrl: 'public/pages/views/general_network/dns_by_query_type_local_drill.html',
-                            resolve: {
-                                loggedin: checkLoggedin
-                            },
-                            data: {
-                                title: 'Local DNS by Query Type',
-                                subtitleElm: {
-                                    'Query Type': 'qtype',
-                                    'LAN IP': 'lan_ip',
-                                    'Zone': 'lan_zone'
-                                },
-                                daterange: true
-                            }
-                        })
         // SSL
             // SSL SERVER
                 .state('ssl_server', {
@@ -1282,10 +1281,37 @@ angular.module('mean.pages').config(['$stateProvider',
                         }
                     })      
         // EXTRACTED FILES
+            // BY MIME TYPE
+                .state('files_by_mime_type', {
+                    url: '/files_by_mime_type?start&end',
+                    templateUrl: 'public/pages/views/extracted_files/files_by_mime_type.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'Extracted Files by Type',
+                        daterange: true
+                    }
+                })
+                // BY MIME TYPE
+                    .state('files_mime_local', {
+                        url: '/files_mime_local?start&end&mime',
+                        templateUrl: 'public/pages/views/extracted_files/files_mime_local.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Extracted Files by Type',
+                            subtitleElm: {
+                                'File Type': 'mime'
+                            },
+                            daterange: true
+                        }
+                    })
             // BY LOCAL IP
-                .state('by_local_ip', {
-                    url: '/by_local_ip?start&end',
-                    templateUrl: 'public/pages/views/extracted_files/by_local_ip.html',
+                .state('files_by_local_ip', {
+                    url: '/files_by_local_ip?start&end',
+                    templateUrl: 'public/pages/views/extracted_files/files_by_local_ip.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
@@ -1295,9 +1321,9 @@ angular.module('mean.pages').config(['$stateProvider',
                     }
                 })
                 // BY FILE NAME
-                .state('by_file_name', {
-                    url: '/by_file_name?start&end&lan_ip',
-                    templateUrl: 'public/pages/views/extracted_files/by_file_name.html',
+                .state('files_by_file_name', {
+                    url: '/files_by_file_name?start&end&lan_ip',
+                    templateUrl: 'public/pages/views/extracted_files/files_by_file_name.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
@@ -1311,9 +1337,9 @@ angular.module('mean.pages').config(['$stateProvider',
                     }
                 })
                     // FILE LOCAL
-                    .state('file_local', {
-                        url: '/file_local?start&end&lan_ip&mime',
-                        templateUrl: 'public/pages/views/extracted_files/file_local.html',
+                    .state('files_local', {
+                        url: '/files_local?start&end&lan_ip&mime',
+                        templateUrl: 'public/pages/views/extracted_files/files_local.html',
                         resolve: {
                             loggedin: checkLoggedin
                         },
@@ -1328,9 +1354,9 @@ angular.module('mean.pages').config(['$stateProvider',
                         }
                     })
             // BY REMOTE IP
-                .state('by_remote_ip', {
-                    url: '/by_remote_ip?start&end',
-                    templateUrl: 'public/pages/views/extracted_files/by_remote_ip.html',
+                .state('files_by_remote_ip', {
+                    url: '/files_by_remote_ip?start&end',
+                    templateUrl: 'public/pages/views/extracted_files/files_by_remote_ip.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
@@ -1340,9 +1366,9 @@ angular.module('mean.pages').config(['$stateProvider',
                     }
                 })
                 // BY FILE NAME
-                .state('by_file_name_remote', {
-                    url: '/by_file_name_remote?start&end&remote_ip',
-                    templateUrl: 'public/pages/views/extracted_files/by_file_name_remote.html',
+                .state('files_by_file_name_remote', {
+                    url: '/files_by_file_name_remote?start&end&remote_ip',
+                    templateUrl: 'public/pages/views/extracted_files/files_by_file_name_remote.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
@@ -1355,9 +1381,9 @@ angular.module('mean.pages').config(['$stateProvider',
                     }
                 })
                     // FILE REMOTE
-                    .state('file_remote', {
-                        url: '/file_remote?start&end&remote_ip&mime',
-                        templateUrl: 'public/pages/views/extracted_files/file_remote.html',
+                    .state('files_remote', {
+                        url: '/files_remote?start&end&remote_ip&mime',
+                        templateUrl: 'public/pages/views/extracted_files/files_remote.html',
                         resolve: {
                             loggedin: checkLoggedin
                         },
@@ -1370,37 +1396,10 @@ angular.module('mean.pages').config(['$stateProvider',
                             daterange: true
                         }
                     })
-            // BY MIME TYPE
-                .state('by_mime_type', {
-                    url: '/by_mime_type?start&end',
-                    templateUrl: 'public/pages/views/extracted_files/by_mime_type.html',
-                    resolve: {
-                        loggedin: checkLoggedin
-                    },
-                    data: {
-                        title: 'Extracted Files by Type',
-                        daterange: true
-                    }
-                })
-                // BY MIME TYPE
-                .state('file_mime_local', {
-                    url: '/file_mime_local?start&end&mime',
-                    templateUrl: 'public/pages/views/extracted_files/file_mime_local.html',
-                    resolve: {
-                        loggedin: checkLoggedin
-                    },
-                    data: {
-                        title: 'Extracted Files by Type',
-                        subtitleElm: {
-                            'File Type': 'mime'
-                        },
-                        daterange: true
-                    }
-                })
             // BY DOMAIN
-                .state('by_domain', {
-                    url: '/by_domain?start&end',
-                    templateUrl: 'public/pages/views/extracted_files/by_domain.html',
+                .state('files_by_domain', {
+                    url: '/files_by_domain?start&end',
+                    templateUrl: 'public/pages/views/extracted_files/files_by_domain.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
@@ -1410,55 +1409,55 @@ angular.module('mean.pages').config(['$stateProvider',
                     }
                 })
                 // BY DOMAIN LOCAL
-                .state('by_domain_local', {
-                    url: '/by_domain_local?start&end&http_host',
-                    templateUrl: 'public/pages/views/extracted_files/by_domain_local.html',
-                    resolve: {
-                        loggedin: checkLoggedin
-                    },
-                    data: {
-                        title: 'Local Extracted Files by Domain',
-                        subtitleElm: {
-                            'Domain': 'http_host'
-                        },
-                        daterange: true
-                    }
-                })
-                    // BY DOMAIN LOCAL MIME by_domain_local_mime_drill
-                    .state('by_domain_local_mime', {
-                        url: '/by_domain_local_mime?start&end&http_host&lan_zone&lan_ip',
-                        templateUrl: 'public/pages/views/extracted_files/by_domain_local_mime.html',
+                    .state('files_by_domain_local', {
+                        url: '/files_by_domain_local?start&end&http_host',
+                        templateUrl: 'public/pages/views/extracted_files/files_by_domain_local.html',
                         resolve: {
                             loggedin: checkLoggedin
                         },
                         data: {
-                            title: 'Types of Extracted Files by Domain and Local IP',
+                            title: 'Local Extracted Files by Domain',
                             subtitleElm: {
-                                'Zone': 'lan_zone',
-                                'Local IP': 'lan_ip',
                                 'Domain': 'http_host'
                             },
                             daterange: true
                         }
                     })
-                        // BY DOMAIN LOCAL MIME DRILL
-                        .state('by_domain_local_mime_drill', {
-                            url: '/by_domain_local_mime_drill?start&end&http_host&lan_zone&lan_ip&mime',
-                            templateUrl: 'public/pages/views/extracted_files/by_domain_local_mime_drill.html',
+                    // BY DOMAIN LOCAL MIME by_domain_local_mime_drill
+                        .state('files_by_domain_local_mime', {
+                            url: '/files_by_domain_local_mime?start&end&http_host&lan_zone&lan_ip',
+                            templateUrl: 'public/pages/views/extracted_files/files_by_domain_local_mime.html',
                             resolve: {
                                 loggedin: checkLoggedin
                             },
                             data: {
-                                title: 'Local Extracted Files by Domain and MIME',
+                                title: 'Types of Extracted Files by Domain and Local IP',
                                 subtitleElm: {
                                     'Zone': 'lan_zone',
                                     'Local IP': 'lan_ip',
-                                    'Domain': 'http_host',
-                                    'File Type': 'mime'
+                                    'Domain': 'http_host'
                                 },
                                 daterange: true
                             }
                         })
+                        // BY DOMAIN LOCAL MIME DRILL
+                            .state('files_by_domain_local_mime_drill', {
+                                url: '/files_by_domain_local_mime_drill?start&end&http_host&lan_zone&lan_ip&mime',
+                                templateUrl: 'public/pages/views/extracted_files/files_by_domain_local_mime_drill.html',
+                                resolve: {
+                                    loggedin: checkLoggedin
+                                },
+                                data: {
+                                    title: 'Local Extracted Files by Domain and MIME',
+                                    subtitleElm: {
+                                        'Zone': 'lan_zone',
+                                        'Local IP': 'lan_ip',
+                                        'Domain': 'http_host',
+                                        'File Type': 'mime'
+                                    },
+                                    daterange: true
+                                }
+                            })
         // FIRST SEEN
             // NEW REMOTE IPS
                 .state('new_remote', {

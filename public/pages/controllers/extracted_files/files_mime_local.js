@@ -1,15 +1,14 @@
 'use strict';
 
-angular.module('mean.pages').controller('fileRemoteController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
+angular.module('mean.pages').controller('fileMimeLocalController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/extracted_files/file_remote?start='+$location.$$search.start+'&end='+$location.$$search.end+'&remote_ip='+$location.$$search.remote_ip+'&mime='+$location.$$search.mime;
+        query = '/extracted_files/files_mime_local?start='+$location.$$search.start+'&end='+$location.$$search.end+'&mime='+$location.$$search.mime;
     } else {
-        query = '/extracted_files/file_remote?remote_ip='+$location.$$search.remote_ip+'&mime='+$location.$$search.mime;
+        query = '/extracted_files/files_mime_local?mime='+$location.$$search.mime;
     }
     $http({method: 'GET', url: query}).
-    //success(function(data, status, headers, config) {
     success(function(data) {
         if (data.tables[0] === null) {
             $scope.$broadcast('loadError');

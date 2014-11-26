@@ -18,13 +18,14 @@ module.exports = function() {
             next();
         },
         permission: function(req, res, next) {
+            if (req.session.passport.user === undefined) { return }
             req.session.passport.user.blacklist = []; // remove this once check function is created
             // check if logged in
             if (!req.isAuthenticated()) {
                 return res.status(401).send('User is not authorized');
             }
             // check if the user doesn't have permission for the route
-            if (req.session.passport.user.blacklist) {
+            if (req.session.passport.user.blacklist.length > -1) {
                 var page = req.route.path.match(/.*\/(\S+)/);
                 if ((req.session.passport.user.blacklist.length > 0) && (page[page.length-1].indexOf(req.session.passport.user.blacklist) !== -1)) {
                     return res.status(401).send('User is not authorized');

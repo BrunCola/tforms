@@ -23,7 +23,7 @@ module.exports = function(pool) {
                 query: 'SELECT '+
                             'count(*) AS count,'+
                             'max(`time`) AS `time`,'+
-                            '`event_src`,'+
+                            '`event_detail`,'+
                             '`event_type`,'+
                             '`event_type` AS `pie_dimension` '+
                         'FROM '+
@@ -45,7 +45,7 @@ module.exports = function(pool) {
                     },
                     { title: 'Events', select: 'count' },
                     { title: 'Event Type', select: 'pie_dimension' },
-                    { title: 'Event Source', select: 'event_src'},
+                    { title: 'Event Detail', select: 'event_detail'},
                 ],
                 settings: {
                     sort: [[1, 'desc']],
