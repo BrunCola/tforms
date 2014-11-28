@@ -340,7 +340,6 @@ module.exports = function(pool) {
                                 '`remote_machine`, '+
                                 '`remote_user`, '+
                                 '`remote_ip`, '+
-                                '`conn_uids`,'+
                                 '(`in_bytes` / 1048576) as in_bytes, '+
                                 '(`out_bytes` / 1048576) as out_bytes, '+
                                 '`in_packets`, '+
