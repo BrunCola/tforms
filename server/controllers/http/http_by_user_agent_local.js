@@ -20,7 +20,7 @@ module.exports = function(pool) {
                 var info = [];
                 var table1 = {
                     query: 'SELECT '+
-                                'sum(`count`) AS `count`,'+
+                                'count(*) AS `count`,'+
                                 'max(`time`) AS `time`, '+ 
                                 '`stealth`,'+
                                 '`lan_zone`, ' +
