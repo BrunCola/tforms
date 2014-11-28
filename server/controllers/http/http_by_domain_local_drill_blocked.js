@@ -19,8 +19,8 @@ module.exports = function(pool) {
                 var info = [];
                 var table1 = {
                     query: 'SELECT ' +
-                                '`time`, '+ // Last Seen
-                                '`stealth`, ' +
+                                '`time`, '+
+                                '`lan_stealth`, ' +
                                 '`lan_machine`, ' +
                                 '`lan_zone`, ' +
                                 '`lan_user`, ' +
@@ -62,7 +62,7 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.host],
                     params: [
                         { title: 'Time', select: 'time' },
-                        { title: 'Stealth', select: 'stealth', access: [3] },
+                        { title: 'Stealth', select: 'lan_stealth', access: [3] },
                         { title: 'ABP', select: 'proxy_blocked', access: [2] },
                         { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
                         { title: 'Domain', select: 'host' },
@@ -73,11 +73,11 @@ module.exports = function(pool) {
                         { title: 'Depth', select: 'depth' },
                         { title: 'Method', select: 'method' },
                         { title: 'Zone', select: 'lan_zone' },
-                        { title: 'Machine', select: 'lan_machine' },
+                        { title: 'Local Machine', select: 'lan_machine' },
                         { title: 'Local User', select: 'lan_user' },
                         { title: 'Local IP', select: 'lan_ip' },
                         { title: 'Remote IP', select: 'remote_ip'},
-                        { title: 'Remote port', select: 'remote_port' },
+                        { title: 'Remote Port', select: 'remote_port' },
                         { title: 'Flag', select: 'remote_cc' },
                         { title: 'Remote Country', select: 'remote_country' },
                         { title: 'Remote ASN Name', select: 'remote_asn_name' },

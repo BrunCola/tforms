@@ -21,7 +21,7 @@ module.exports = function(pool) {
             var table1 = {
                 query: 'SELECT '+
                             'http_uniq_host.time AS `time`,'+
-                            '`stealth`,'+
+                            '`lan_stealth`,'+
                             '`lan_zone`,'+
                             '`lan_machine`,'+
                             '`lan_user`,'+
@@ -40,7 +40,7 @@ module.exports = function(pool) {
                 insert: [start, end],
                 params: [
                     { title: 'First Seen', select: 'time' },
-                    { title: 'Stealth', select: 'stealth', access: [3] },
+                    { title: 'Stealth', select: 'lan_stealth', access: [3] },
                     { title: 'ABP', select: 'proxy_blocked', access: [2] },
                     { title: 'HTTP Domain', select: 'host' },
                     { title: 'Remote IP', select: 'remote_ip' },

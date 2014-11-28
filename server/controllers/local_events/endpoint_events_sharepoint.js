@@ -1,9 +1,9 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-config = require('../../config/config'),
-async = require('async'),
-query = require('../constructors/query');
+    config = require('../../config/config'),
+    async = require('async'),
+    query = require('../constructors/query');
 
 module.exports = function(pool) {
     return {
@@ -23,12 +23,12 @@ module.exports = function(pool) {
                 query: 'SELECT '+
                             'count(*) AS count,'+
                             'max(`time`) AS `time`,'+
-                            '`event_id`, ' +
-                            '`event_src`, '  +
-                            '`event_type`, ' +
-                            '`event_detail`, ' +
-                            '`event_full`, ' +
-                            '`event_level` ' +
+                            '`event_id`,'+
+                            '`event_src`,'+
+                            '`event_type`,'+
+                            '`event_type` AS `pie_dimension`,'+
+                            '`event_detail`,'+
+                            '`event_full` '+
                         'FROM '+
                             '`sharepoint_events` '+
                         'WHERE '+
@@ -42,7 +42,6 @@ module.exports = function(pool) {
                         select: 'time',
                         link: {
                             type: 'endpoint_events_sharepoint_drill',
-                            // val: the pre-evaluated values from the query above
                             val: ['event_type'],
                             crumb: false
                         },
@@ -54,41 +53,41 @@ module.exports = function(pool) {
                 settings: {
                     sort: [[0, 'desc']],
                     div: 'table',
-                    title: 'Sharepoint Events by Type'
+                    title: 'Sharepoint Events by Type',
+                    access: req.session.passport.user.level
                 }
             }
             var crossfilterQ = {
                 query: 'SELECT '+
-                        'count(*) AS count,'+
-                        'time '+
-                    'FROM '+
-                        '`sharepoint_events` '+
-                    'WHERE '+
-                        '`time` BETWEEN ? AND ? '+
-                    'GROUP BY '+
-                        'month(from_unixtime(`time`)),'+
-                        'day(from_unixtime(`time`)),'+
-                        'hour(from_unixtime(`time`))',
+                            'count(*) AS count,'+
+                            '`time` '+
+                        'FROM '+
+                            '`sharepoint_events` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                        'GROUP BY '+
+                            'month(from_unixtime(`time`)),'+
+                            'day(from_unixtime(`time`)),'+
+                            'hour(from_unixtime(`time`))',
                 insert: [start, end]
             }           
             var piechartQ = {
                 query: 'SELECT '+
-                         'time,'+
-                         '`event_type` AS `pie_dimension`, '+
-                         'count(*) AS `count` '+
-                     'FROM '+
-                         '`sharepoint_events` '+
-                     'WHERE '+
-                         '`time` BETWEEN ? AND ? '+
-                         'AND `event_type` !=\'-\' '+
-                     'GROUP BY '+
-                         '`event_type`',
+                            'count(*) AS `count`,'+
+                            '`time`,'+
+                            '`event_type` AS `pie_dimension` '+
+                        'FROM '+
+                            '`sharepoint_events` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                        'GROUP BY '+
+                            '`event_type`',
                 insert: [start, end]
             }
             async.parallel([
                 // Table function(s)
                 function(callback) {
-                    new dataTable(table1, {database: database, pool: pool}, function(err,data){
+                    new dataTable(table1, {database: database, pool: pool}, function(err,data) {
                         tables.push(data);
                         callback();
                     });
@@ -115,7 +114,6 @@ module.exports = function(pool) {
                     crossfilter: crossfilter,
                     piechart: piechart
                 };
-                //console.log(results);
                 res.json(results);
             });
         }

@@ -63,7 +63,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                                 'time, '+ 
                                 '`stealth_COIs`, ' +
-                                '`stealth`, '+
+                                '`lan_stealth`, '+
                                 '`lan_ip`, ' +
                                 '`event`, ' +
                                 '`user` ' +
@@ -74,7 +74,7 @@ module.exports = function(pool) {
                                 'AND event = "Log On" ',
                     insert: [],
                     params: [
-                        { title: 'Stealth', select: 'stealth' },
+                        { title: 'Stealth', select: 'lan_stealth' },
                         { title: 'COI Groups', select: 'stealth_COIs' },
                         { title: 'User', select: 'user' }
                     ],

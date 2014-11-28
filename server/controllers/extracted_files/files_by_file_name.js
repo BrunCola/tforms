@@ -21,7 +21,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                                 'sum(`count`) AS `count`,'+
                                 'max(`time`) AS `time`,'+
-                                '`stealth`,'+
+                                '`lan_stealth`,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
                                 '`lan_user`,'+
@@ -50,9 +50,9 @@ module.exports = function(pool) {
                             },
                         },
                         { title: 'Total Extracted Files', select: 'count' },
-                        { title: 'Stealth', select: 'stealth', access: [3] },
+                        { title: 'Stealth', select: 'lan_stealth', access: [3] },
                         { title: 'Zone', select: 'lan_zone', dView: false },
-                        { title: 'Machine', select: 'lan_machine', dView: false },
+                        { title: 'Local Machine', select: 'lan_machine', dView: false },
                         { title: 'Local User', select: 'lan_user', dView: false },
                         { title: 'Local IP', select: 'lan_ip', dView: false },
                         { title: 'File Type', select: 'mime' },

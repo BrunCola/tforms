@@ -21,7 +21,7 @@ module.exports = function(pool) {
                 var table1 = {
                     query: 'SELECT ' +
                                 '`time`,'+
-                                '`stealth`,'+
+                                '`lan_stealth`,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
                                 '`lan_user`,'+
@@ -60,14 +60,14 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip],
                     params: [
                         { title: 'Time', select: 'time' },
-                        { title: 'Stealth', select: 'stealth', access: [3] },
+                        { title: 'Stealth', select: 'lan_stealth', access: [3] },
                         { title: 'Zone', select: 'lan_zone' },
-                        { title: 'Machine', select: 'lan_machine' },
+                        { title: 'Local Machine', select: 'lan_machine' },
                         { title: 'Local User', select: 'lan_user' },
                         { title: 'Local IP', select: 'lan_ip' },
-                        { title: 'Local port', select: 'lan_port' },
+                        { title: 'Local Port', select: 'lan_port' },
                         { title: 'Remote IP', select: 'remote_ip'},
-                        { title: 'Remote port', select: 'remote_port' },
+                        { title: 'Remote Port', select: 'remote_port' },
                         { title: 'Flag', select: 'remote_cc' },
                         { title: 'Remote Country', select: 'remote_country' },
                         { title: 'Remote ASN Name', select: 'remote_asn_name' },

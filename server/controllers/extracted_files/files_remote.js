@@ -22,7 +22,7 @@ module.exports = function(pool) {
                                 '`time`,'+
                                 '`mime`,'+
                                 '`name`,'+
-                                '`stealth`,'+
+                                '`lan_stealth`,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
                                 '`lan_user`,'+
@@ -54,9 +54,9 @@ module.exports = function(pool) {
                         { title: 'File Type', select: 'mime' },
                         { title: 'Name', select: 'name', sClass:'file'},
                         { title: 'Size (KB)', select: 'size' },
-                        { title: 'Stealth', select: 'stealth', access: [3] },
+                        { title: 'Stealth', select: 'lan_stealth', access: [3] },
                         { title: 'Zone', select: 'lan_zone' },
-                        { title: 'Machine', select: 'lan_machine' },
+                        { title: 'Local Machine', select: 'lan_machine' },
                         { title: 'Local User', select: 'lan_user' },
                         { title: 'Local IP', select: 'lan_ip' },
                         { title: 'Local Port', select: 'lan_port' },

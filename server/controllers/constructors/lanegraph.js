@@ -77,8 +77,8 @@ module.exports = function (sql, conn, callback) {
                     if (data.type.search('ioc') !== -1) {
                         index = conn.lanes.indexOf('IOC');
                     }
-                    if (data.type.search('Stealth') !== -1) {
-                        index = conn.lanes.indexOf('Stealth');
+                    if (data.type.search('lan_stealth') !== -1) {
+                        index = conn.lanes.indexOf('lan_stealth');
                     }
                 }
                 data.lane = index;

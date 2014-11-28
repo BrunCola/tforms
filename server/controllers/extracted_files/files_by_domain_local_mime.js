@@ -21,7 +21,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                                 'count(*) as count, '+
                                 'max(`time`) AS `time`,'+
-                                '`stealth`,'+
+                                '`lan_stealth`,'+
                                 '`lan_zone`,'+
                                 '`lan_user`,'+
                                 '`lan_ip`,'+
@@ -52,9 +52,9 @@ module.exports = function(pool) {
                         },
                         { title: 'Total Extracted Files', select: 'count' },
                         { title: 'Domain', select: 'http_host' },
-                        { title: 'Stealth', select: 'stealth', access: [3] },
+                        { title: 'Stealth', select: 'lan_stealth', access: [3] },
                         { title: 'Zone', select: 'lan_zone' },
-                        { title: 'Local IP', select: 'lan_user' },
+                        { title: 'Local User', select: 'lan_user' },
                         { title: 'Local IP', select: 'lan_ip' },
                         { title: 'File Type', select: 'mime' },
                         { title: 'Total Size (MB)', select: 'size' },

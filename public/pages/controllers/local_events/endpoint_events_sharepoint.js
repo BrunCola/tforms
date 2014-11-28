@@ -9,7 +9,6 @@ angular.module('mean.pages').controller('endpointEventsSharepointController', ['
         query = '/local_events/endpoint_events_sharepoint?';
     }
     $http({method: 'GET', url: query}).
-    //success(function(data, status, headers, config) {
     success(function(data) {
         if (data.tables[0] === null) {
             $scope.$broadcast('loadError');
