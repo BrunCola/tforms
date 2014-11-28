@@ -999,7 +999,6 @@ module.exports = function(pool) {
                                 '`lan_machine`,'+
                                 '`lan_user`,'+
                                 '`lan_ip`,'+
-                                '`conn_uids`,'+
                                 '`remote_machine`,'+
                                 '`remote_user`,'+
                                 '`remote_ip`,'+
@@ -1021,7 +1020,7 @@ module.exports = function(pool) {
                             {title: "Zone", select: "lan_zone"},
                             {title: "Source Machine", select: "lan_machine"},
                             {title: "Source User", select: "lan_user"},
-                            {title: "Source IP", select: "src_ip"},
+                            {title: "Source IP", select: "lan_ip"},
                             {title: "Destination Machine", select: "remote_machine"},
                             {title: "Destination User", select: "remote_user"},
                             {title: "Destination IP", select: "remote_ip"},
