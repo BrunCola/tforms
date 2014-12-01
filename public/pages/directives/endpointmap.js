@@ -329,13 +329,13 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             .append('xhtml:button').each(function(d){
                                 var iconColour = '#29ABE2'; 
                                 var name = d.lan_machine;
-                                if (d.custom_user != null){
+                                if (d.custom_user !== null){
                                     name = d.custom_user;
                                 }
-                                if (name === ""){
+                                if ((name === "") && (name === null)){
                                     name = d.lan_ip;
                                 }
-                                if (name === ""){
+                                if ((name === "") && (name === null)){
                                     name = d.lan_mac;
                                 }
                                 //if ((d.x === 0) && (d.y === 0)) {
@@ -630,13 +630,13 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 .each(function(d){
                                 if ((d.x > 0) || (d.y > 0)) {                                
                                     var name = d.lan_machine;
-                                    if (d.custom_user != null){
+                                    if (d.custom_user !== null){
                                         name = d.custom_user;
                                     }
-                                    if (name === ""){
+                                    if ((name === "") && (name === null)){
                                         name = d.lan_ip;
                                     }
-                                    if (name === ""){
+                                    if ((name === "") && (name === null)){
                                         name = d.lan_mac;
                                     }
                                     var iconColour = getIconColour(d);
@@ -1484,13 +1484,13 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                             .append('xhtml:button').each(function(d){
                                 var iconColour = '#29ABE2'; 
                                 var name = d.lan_machine;
-                                if (d.custom_user != null){
+                                if (d.custom_user !== null){
                                     name = d.custom_user;
                                 }
-                                if (name === ""){
+                                if ((name === "") || (name === null)){
                                     name = d.lan_ip;
                                 }
-                                if (name === ""){
+                                if ((name === "") || (name === null)){
                                     name = d.lan_mac;
                                 }
                                 //if ((d.x === 0) && (d.y === 0)) {
@@ -2226,13 +2226,13 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                             .append('xhtml:button').each(function(d){
                                 var iconColour = '#29ABE2'; 
                                 var name = d.lan_machine;
-                                if (d.custom_user != null){
+                                if (d.custom_user !== null){
                                     name = d.custom_user;
                                 }
-                                if (name === ""){
+                                if ((name === "") || (name === null)){
                                     name = d.lan_ip;
                                 }
-                                if (name === ""){
+                                if ((name === "") || (name === null)){
                                     name = d.lan_mac;
                                 }
                                 //if ((d.x === 0) && (d.y === 0)) {
