@@ -226,12 +226,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
             'icon': 'fa-user',
             'children':
             [
-                // {
-                //     'title': 'Endpoint Map',
-                //     'url': 'endpoint_map',
-                //     'icon': 'fa-user',
-                //     'orphans': []
-                // },
+                {
+                    'title': 'Endpoint Map',
+                    'url': 'endpoint_map',
+                    'icon': 'fa-user',
+                    'orphans': []
+                },
                 {
                     'title': 'Endpoint By Type',
                     'url': 'endpoint_by_type',
