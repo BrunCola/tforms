@@ -997,13 +997,11 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         var newVar = aData.mailfrom.replace(/[\<\>]/g,'');
                                         $('td:eq('+$scope.r.indexOf("mailfrom")+')', nRow).html(newVar);
                                     }
-                                    if (aData.stealth !== undefined) {                                        
-                                        if (aData.stealth && $scope.r.indexOf('stealth') !== -1) {
-                                            if (aData.stealth > 0){
-                                                $('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-shield fa-stack-1x fa-inverse"></i></span>');
-                                            }
-                                        } else {
-                                            $('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html('');
+                                    if ((aData.lan_stealth !== undefined) && ($scope.r.indexOf('lan_stealth') !== -1)) {      
+                                        if (aData.lan_stealth > 0){
+                                            $('td:eq('+$scope.r.indexOf("lan_stealth")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-shield fa-stack-1x fa-inverse"></i></span>');
+                                        }else {
+                                          $('td:eq('+$scope.r.indexOf("lan_stealth")+')', nRow).html('');
                                         }
                                     }
                                     if (aData.proxy_blocked !== undefined && $scope.r.indexOf('proxy_blocked') !== -1) {
