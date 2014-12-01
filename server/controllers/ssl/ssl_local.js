@@ -19,21 +19,21 @@ module.exports = function(pool) {
             var table1 = {
                 query: 'SELECT '+
                             'sum(`count`) AS `count`,'+
-                            'time, '+ // Last Seen
-                            '`stealth`,'+
-                            '`lan_zone`, ' +
-                            '`lan_machine`, ' +
+                            'time,'+
+                            '`lan_stealth`,'+
+                            '`lan_zone`,'+
+                            '`lan_machine`,'+
                             '`lan_user`,'+
-                            '`lan_ip`, ' +
-                            '`lan_user`, ' +
-                            'sum(`proxy_blocked`) AS `proxy_blocked`, ' +
-                            'sum(`ioc_count`) AS `ioc_count` ' +
-                        'FROM ' + 
+                            '`lan_ip`,'+
+                            '`lan_user`,'+
+                            'sum(`proxy_blocked`) AS `proxy_blocked`,'+
+                            'sum(`ioc_count`) AS `ioc_count` '+
+                        'FROM '+ 
                             '`ssl_local` '+
-                        'WHERE ' + 
+                        'WHERE '+ 
                             '`time` BETWEEN ? AND ? '+
                         'GROUP BY '+
-                            '`lan_ip`, ' +
+                            '`lan_ip`,'+
                             '`lan_zone`',
                 insert: [start, end],
                 params: [
@@ -48,9 +48,9 @@ module.exports = function(pool) {
                         // },
                     },
                     { title: 'Connections', select: 'count' },
-                    { title: 'Stealth', select: 'stealth', access: [3] },
+                    { title: 'Stealth', select: 'lan_stealth', access: [3] },
                     { title: 'Zone', select: 'lan_zone' },
-                    { title: 'Machine', select: 'lan_machine' },
+                    { title: 'Local Machine', select: 'lan_machine' },
                     { title: 'Local User', select: 'lan_user' },
                     { title: 'Local IP', select: 'lan_ip' },
                     { title: 'IOC Count', select: 'ioc_count' }

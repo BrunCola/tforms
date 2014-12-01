@@ -20,7 +20,7 @@ module.exports = function(pool) {
                 query: 'SELECT '+
                             'sum(`count`) AS `count`,'+
                             'max(`time`) AS `time`,'+
-                            '`stealth`,'+
+                            '`lan_stealth`,'+
                             '`lan_zone`,'+
                             '`lan_machine`,'+
                             '`lan_user`,'+
@@ -46,7 +46,7 @@ module.exports = function(pool) {
                         },
                     },
                     { title: 'Connections', select: 'count' },
-                    { title: 'Stealth', select: 'stealth', access: [3] },
+                    { title: 'Stealth', select: 'lan_stealth', access: [3] },
                     { title: 'ABP', select: 'proxy_blocked', access: [2] },
                     { title: 'Zone', select: 'lan_zone' },
                     { title: 'Machine Name', select: 'lan_machine' },

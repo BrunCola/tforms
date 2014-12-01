@@ -34,7 +34,7 @@ module.exports = function(pool) {
             }
             var lanes;
             if (req.session.passport.user.level === 3) {
-                lanes = ['IOC', 'IOC Severity', 'Conn', 'Stealth', 'Applications', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
+                lanes = ['IOC', 'IOC Severity', 'Conn', 'lan_stealth', 'Applications', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
             } else {
                 lanes = ['IOC', 'IOC Severity', 'Conn', 'Applications', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
             }
@@ -47,7 +47,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                                 '\'Conn_ioc\' AS type,'+
                                 '`time`,'+
-                                '`stealth`,'+
+                                '`lan_stealth`,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
                                 '`lan_user`,'+
@@ -81,7 +81,7 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                     params: [
                         {title: "Time", select: "time"},
-                        {title: 'Stealth', select: 'stealth', access: [3] },
+                        {title: 'Stealth', select: 'lan_stealth', access: [3] },
                         {title: 'ABP', select: 'proxy_blocked', access: [2] },
                         {title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
                         {title: "Zone", select: "lan_zone"},
@@ -110,7 +110,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                                 '\'IOC Severity\' AS type,'+
                                 '`time`,'+
-                                '`stealth`,'+
+                                '`lan_stealth`,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
                                 '`lan_user`,'+
@@ -143,7 +143,7 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
-                        {title: 'Stealth', select: 'stealth', access: [3] },
+                        {title: 'Stealth', select: 'lan_stealth', access: [3] },
                         {title: 'ABP', select: 'proxy_blocked', access: [2] },
                         // {title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
                         {title: "Zone", select: "lan_zone"},
@@ -173,7 +173,7 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                                 '\'Conn\' AS type,'+
                                 '`time`,'+
-                                '`stealth`,'+
+                                '`lan_stealth`,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
                                 '`lan_user`,'+
@@ -205,7 +205,7 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         {title: "Time", select: "time"},
-                        {title: 'Stealth', select: 'stealth', access: [3] },
+                        {title: 'Stealth', select: 'lan_stealth', access: [3] },
                         {title: 'ABP', select: 'proxy_blocked', access: [2] },
                         {title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
                         {title: "Zone", select: "lan_zone"},
@@ -807,7 +807,7 @@ module.exports = function(pool) {
                         query: 'SELECT '+
                                     '\'Conn_ioc\' AS type,'+
                                     '`time`,'+
-                                    '`stealth`,'+
+                                    '`lan_stealth`,'+
                                     '`lan_zone`,'+
                                     '`lan_machine`,'+
                                     '`lan_user`,'+
@@ -841,7 +841,7 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                         params: [
                             {title: "Time", select: "time"},
-                            {title: 'Stealth', select: 'stealth', access: [3] },
+                            {title: 'Stealth', select: 'lan_stealth', access: [3] },
                             {title: "Zone", select: "lan_zone"},
                             {title: "Machine", select: "lan_machine", pattern: true},
                             {title: "Local User", select: "lan_user", pattern: true},
@@ -870,7 +870,7 @@ module.exports = function(pool) {
                         query: 'SELECT '+
                                     '\'IOC Severity\' AS type, '+
                                     '`time`,'+
-                                    '`stealth`,'+
+                                    '`lan_stealth`,'+
                                     '`lan_zone`,'+
                                     '`lan_machine`,'+
                                     '`lan_user`,'+
@@ -903,7 +903,7 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
-                            // {title: 'Stealth', select: 'stealth', access: [3] },
+                            // {title: 'Stealth', select: 'lan_stealth', access: [3] },
                             // {title: 'ABP', select: 'proxy_blocked', access: [2] },
                             // {title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
                             {title: "Zone", select: "lan_zone"},
@@ -932,7 +932,7 @@ module.exports = function(pool) {
                         query: 'SELECT '+
                                 '\'Conn\' AS type, '+
                                 '`time`,'+
-                                '`stealth`,'+
+                                '`lan_stealth`,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
                                 '`lan_user`,'+
@@ -964,7 +964,7 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
-                            {title: 'Stealth', select: 'stealth', access: [3] },
+                            {title: 'Stealth', select: 'lan_stealth', access: [3] },
                             {title: "Zone", select: "lan_zone"},
                             {title: "Machine", select: "lan_machine", pattern: true},
                             {title: "Local User", select: "lan_user", pattern: true},
@@ -1036,7 +1036,7 @@ module.exports = function(pool) {
                         query: 'SELECT '+
                                     '\'Applications\' AS type,'+
                                     '`time`,'+
-                                    '`stealth`,'+
+                                    '`lan_stealth`,'+
                                     '`lan_zone`,'+
                                     '`lan_machine`,'+
                                     '`lan_user`,'+
@@ -1069,7 +1069,7 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                             {title: "Time", select: "time"},
-                            // {title: 'Stealth', select: 'stealth', access: [3] },
+                            // {title: 'Stealth', select: 'lan_stealth', access: [3] },
                             // {title: "Zone", select: "lan_zone"},
                             {title: "Machine", select: "lan_machine", pattern: true},
                             {title: "Local User", select: "lan_user", pattern: true},

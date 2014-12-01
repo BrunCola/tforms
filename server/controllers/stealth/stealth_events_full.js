@@ -39,7 +39,7 @@ module.exports = function(pool) {
                     params: [
                         { title: 'Time', select: 'time' },
                         { title: 'Zone', select: 'lan_zone'},
-                        { title: 'Machine', select: 'lan_machine'},
+                        { title: 'Local Machine', select: 'lan_machine'},
                         { title: 'Local User', select: 'lan_user'},
                         { title: 'Local IP', select: 'lan_ip'},
                         { title: 'Event Type', select: 'event_type' },
