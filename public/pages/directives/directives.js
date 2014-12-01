@@ -1296,8 +1296,10 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                         .height(height)
                         .transitionDuration(500) // (optional) define chart transition duration, :default = 500
                         // .margins(margin) // (optional) define margins
+                        .ordering(function(d) { return 1 - d.value; })
                         .dimension($scope.appDimension) // set dimension
                         .group($scope.pieGroup) // set group
+                        // .ordering($scope.pieGroup)
                         .legend(dc.legend().x(width - 100).y(10).itemHeight(13).gap(5))
                         .colors(d3.scale.category20());
 
