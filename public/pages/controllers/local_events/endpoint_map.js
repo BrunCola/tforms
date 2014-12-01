@@ -18,7 +18,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.data.users.forEach(function(d){
                 d.setFloor = false;
                 d.id = count++;
-                if (d.lan_os !== null) {                    
+                if (d.lan_os !== null) {                 
                     if (d.lan_os.toLowerCase().indexOf("win") !== -1 ){
                         d.machine_icon = "win";
                     } else if ((d.lan_os.toLowerCase().indexOf("os") !== -1) ||  (d.lan_os.toLowerCase().indexOf("apple") !== -1)){
@@ -119,7 +119,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
 
     }
 
-    $scope.getConnections = function(d, conns) {//-----------------------------------------------------Should be upgraded!!-------------------------------------------------------------------
+     $scope.getConnections = function(d, conns) {//-----------------------------------------------------Should be upgraded!!-------------------------------------------------------------------
         //$scope.removeLines();
         $scope.removeFLines();
         $scope.removeBLines();
@@ -131,79 +131,102 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             } 
             //$scope.selectedUser = "";
 
+            $scope.results = [];
             $http({method: 'GET', url: query+'&typeinfo=getconn1'}).
                 success(function(data) {
                     $scope.connectionOut = "";
-                    var results = [];
                     if (data[0] != undefined) {
                         var connections = data.map(function( da ) {
                             var users = $scope.userDimension.filter(function(dt){ 
                                if ((da.remote_ip === dt.lan_ip)){
-                                    results.push(dt);
+                                    dt.depth=1;
+                                    $scope.results.push(dt);
                                 }
                             });
                         });
-                        $scope.drawConnections(d,results,selectColor(1),conns);
-                        $scope.drawFloorConns(d,results,selectColor(1));
-                        $scope.drawBuildingConns(d,results,selectColor(1));
+                        // $scope.drawConnections(d,results,selectColor(1),conns);
+                        // $scope.drawFloorConns(d,results,selectColor(1));
+                        // $scope.drawBuildingConns(d,results,selectColor(1));
+                        //$scope.plotLinks(d,results,selectColor(1));
                     }
                 });
                 
             $http({method: 'GET', url: query+'&typeinfo=getconn2'}).
                 success(function(data) {
                     $scope.connectionOut = "";
-                    var results = [];
+                    //var results = [];
                     if (data[0] != undefined) {
                         var connections = data.map(function( da ) {
                             var users = $scope.userDimension.filter(function(dt){ 
                                 if ((da.lan_ip === dt.lan_ip) && (da.lan_machine === dt.lan_machine)) {
-                                    results.push(dt);
+                                    dt.depth=1;
+                                    $scope.results.push(dt);
                                 }
                             });
                         });
-                        $scope.drawConnections(d,results,selectColor(2),conns);
-                        $scope.drawFloorConns(d,results,selectColor(2));
-                        $scope.drawBuildingConns(d,results,selectColor(2));
+                        // $scope.drawConnections(d,results,selectColor(2),conns);
+                        // $scope.drawFloorConns(d,results,selectColor(2));
+                        // $scope.drawBuildingConns(d,results,selectColor(2));
+                        //$scope.plotLinks(d,results,selectColor(2));
                     }
                 });
 
             $http({method: 'GET', url: query+'&typeinfo=getconn3'}).
                 success(function(data) {
                     $scope.connStealthIn = "";
-                    var results = [];
+                    //var results = [];
                     if (data[0] != undefined) {
                         var connections = data.map(function( da ) {
                             var users = $scope.userDimension.filter(function(dt){ 
                                 if ((da.remote_ip === dt.lan_ip)){ // && (da.lan_machine === dt.remote_machine)
-                                    results.push(dt);
+                                    dt.depth=1;
+                                    $scope.results.push(dt);
                                 }
                             });
                         });
-                        $scope.drawConnections(d,results,selectColor(3),conns);
-                        $scope.drawFloorConns(d,results,selectColor(3));
-                        $scope.drawBuildingConns(d,results,selectColor(3));
+                        // $scope.drawConnections(d,results,selectColor(3),conns);
+                        // $scope.drawFloorConns(d,results,selectColor(3));
+                        // $scope.drawBuildingConns(d,results,selectColor(3));
+                        //$scope.plotLinks(d,results,selectColor(3));
                     }
                 });
             $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
                 success(function(data) {
                     $scope.connStealthOut = "";
-                    var results = [];
+                    //var results = [];
                     if (data[0] != undefined) {
                         var connections = data.map(function( da ) {
                             var users = $scope.userDimension.filter(function(dt){ 
                                 if ((da.lan_ip === dt.lan_ip) && (da.lan_machine === dt.lan_machine)){
-                                    results.push(dt);
+                                    dt.depth=1;
+                                    $scope.results.push(dt);
                                 }
                             });
                         });
-                        $scope.drawConnections(d,results,selectColor(4),conns);
-                        $scope.drawFloorConns(d,results,selectColor(4));
-                        $scope.drawBuildingConns(d,results,selectColor(4));
+                        // $scope.drawConnections(d,results,selectColor(4),conns);
+                        // $scope.drawFloorConns(d,results,selectColor(4));
+                        // $scope.drawBuildingConns(d,results,selectColor(4));
+                        //$scope.plotLinks(d,results,selectColor(4));
                     }
                 });
             // $scope.selectedUser = d;
             // $scope.userLink(d);
+            //setTimeout(function () {
+                d.depth=0;
+                d.children = $scope.results;
+                //console.log($scope.results)
+                d.childCount = $scope.results.length;
+               // $scope.plotLinks(d,selectColor(1));        
+                // if (d.childCount >= 35) {
+                //     var divHeight = d.childCount*12;
+                // } else {
+                //     var divHeight = 420;
+                // }
+
+                 $scope.$broadcast('plotLinks', d);
+            //}, 5000);
     }                                   //---------------^^^^^^^^^^^^^^^^-----------------------Should be upgraded!!--------------------------^^^^^^^^^^-------------------------
+
 
     $scope.userLink = function(d) {//-----------------------------------------------------Should be upgraded!!-------------------------------------------------------------------
         //$scope.removeLines();

@@ -250,76 +250,16 @@
                         </table>  
                     </div>
                 </div>
-            </div>
-            <!-- <div id="localuserinformationspan" ng-show="currentFloor">
-                <div class="jdash-header">User Information</div>
-                <div  style="background-color:#FFF;" class="box">
-                     <div id="localuserinformation">
-                        <div class="luinfo" ng-show="currentFloor">
-                            <table id="flus">
-                                <tr style="font-weight:bold">
-                                    <td>IP</td><td>Host Name</td><td>User name</td>
-                                </tr>
-                                <tr  ng-repeat="user in currentFloor" ng-click="userLink(user)">
-                                    <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
-                                </tr>
-                            </table> 
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="localuserinformationspan" ng-show="currentBuilding">
-                <div class="jdash-header">User Information</div>
-                <div  style="background-color:#FFF;" class="box">
-                     <div id="localuserinformation">
-                        <div class="luinfo" ng-show="currentBuilding">
-                            <table id="flus">
-                                <tr>
-                                    <button type="button" class="button-error pure-button" ng-click="removeBuilding(selectedBuilding)">Remove Building</button>
-                                </tr>
-                                <tr style="font-weight:bold">
-                                    <td>IP</td><td>Host Name</td><td>User name</td>
-                                </tr>
-                                <tr  ng-repeat="user in currentBuilding" ng-click="userLink(user)">
-                                    <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
-                                </tr>
-                            </table>  
-                        </div>
-                    </div>
-                </div>
-            </div> -->
-           
+            </div>           
         </section>
     </div>
+    <div id="hostlinksspan" >
+        <div class="jdash-header">Host Connections</div>  
+        <div style="background-color:#FFF;" class="box" >
+            <div id="hostlinks" style="position: relative;">
+                <div draw-links style="position: relative;"></div>
+                <!-- <div make-tree-chart style="position: relative;"></div> -->
+            </div>
+        </div>
+    </div>
 </div>
- <!--<div style="width: 100%;margin: 0 auto;">
-                    Upload Floor: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="file" ng-file-select="onFileSelect($files)" accept="image/*" onclick="this.value=null">
-                </div>
-                <br/>
-                <div style="width: 70%;margin: 0 auto;">
-                    <div ng-show="dropSupported" class="drop-box" ng-file-drop="onFileSelect($files);" ng-file-drop-available="dropSupported=true">
-                        or drop image here
-                    </div>
-                </div>
-                <div ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
-                <br/>
-                <div ng-show="progress.length > 0" style="width: 70%;margin: 0 auto;">
-                    <div class="err" ng-show="errorMsg != null">{{errorMsg}}</div>
-                    Progress:
-                    <br/>
-                    <div ng-show="selectedFiles != null">
-                        <div class="sel-file" ng-repeat="f in selectedFiles">
-                            {{($index + 1) + '.'}}
-                            <input type="text" ng-model="custom_fn" placeholder="Example floor name"/>
-                            <img ng-show="dataUrls[$index]" ng-src="{{dataUrls[$index]}}">
-                            <button class="button" ng-click="start($index, custom_fn)" ng-show="progress[$index] < 0">Upload</button>
-                            <span class="progress" ng-show="progress[$index] >= 0">
-                                <div style="width:{{progress[$index]}}%">{{progress[$index]}}%</div>
-                            </span>
-                            <button class="button" ng-click="abort($index)" ng-show="hasUploader($index) && progress[$index] < 100">Abort</button>
-                            {{f.name}} - size: {{f.size}}B - type: {{f.type}}
-                        </div>
-                    </div>
-                </div> -->

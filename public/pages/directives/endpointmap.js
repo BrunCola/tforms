@@ -879,29 +879,29 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 doneEditing(elm, e, this.value)
                                             });
 
-                                    // el.draggable = true;
+                                    el.draggable = true;
 
-                                    // el.addEventListener(
-                                    //     'dragstart',
-                                    //     function(e) {
-                                    //         e.dataTransfer.effectAllowed = 'move';
-                                    //         e.dataTransfer.setData('Text', this.id);
-                                    //         //this.classList.add('drag');
-                                    //         return false;
-                                    //     },
-                                    //     false
-                                    // );
+                                    el.addEventListener(
+                                        'dragstart',
+                                        function(e) {
+                                            e.dataTransfer.effectAllowed = 'move';
+                                            e.dataTransfer.setData('Text', this.id);
+                                            //this.classList.add('drag');
+                                            return false;
+                                        },
+                                        false
+                                    );
 
-                                    // el.addEventListener(
-                                    //     'dragend',
-                                    //     function(e) {
-                                    //         //this.classList.remove('drag');
-                                    //         $scope.requery(d, 'flooruser');
-                                    //         lastUserRequeried = d.id;
-                                    //         return false;
-                                    //     },
-                                    //     false
-                                    // );
+                                    el.addEventListener(
+                                        'dragend',
+                                        function(e) {
+                                            //this.classList.remove('drag');
+                                            $scope.requery(d, 'flooruser');
+                                            lastUserRequeried = d.id;
+                                            return false;
+                                        },
+                                        false
+                                    );
                                 }
                             });                            
                     }  
@@ -2713,6 +2713,100 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                     plot(data, buildings);
 
             }, 1000);
+        }
+    };
+}]);
+
+angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '$http', '$location', function ($timeout, $rootScope, $http, $location) {
+    return {
+        link: function ($scope, element, attrs) {
+           
+            $scope.$on('plotLinks', function (event, root) {
+                $timeout(function () { // You might need this timeout to be sure its run after DOM render
+                    
+                    console.log(root)
+
+                    for (var i in root.children) {
+                        root.children[i].x = undefined;
+                        root.children[i].y = undefined;
+                    }
+
+
+                    //var width = $("#hostlinks").parent().width(),
+                        //height = params["height"];
+                        var width = 755, height = 420;
+
+                    var cluster = d3.layout.cluster()
+                        .size([height, width - 230]);
+
+                    var nodeColor = function(severity) {
+                        switch(severity) {
+                            case 1:
+                                return "#377FC7";
+                                break;
+                            case 2:
+                                return "#F5D800";
+                                break;
+                            case 3:
+                                return "#F88B12";
+                                break;
+                            case 4:
+                                return "#DD122A";
+                                break;
+                            default:
+                            return "#377FC7";
+                        }
+                    }
+
+                    var diagonal = d3.svg.diagonal()
+                        .projection(function(d) { console.log(d); return [d.y, d.x]; });
+
+                    var svg = d3.select("#hostlinks").append("svg")
+                        .attr("width", width)
+                        .attr("height", height)
+                        .append("g")
+                        .attr("transform", "translate(180,0)");
+
+                        var nodes = cluster.nodes(root),
+                        links = cluster.links(nodes);
+                        // console.log(nodes)
+                        // console.log(links)
+
+                        var link = svg.selectAll(".link")
+                            .data(links)
+                            .enter().append("path")
+                            .attr("d", diagonal)
+                            .data(nodes)
+                            // .attr("stroke-width", function(d) { 
+                            //     console.log(d)
+                            //     return d.idRoute ? "1px" : "0"; 
+                            // })
+                            .attr("stroke-width", "1px")
+                            .attr("class", "conn_link");
+
+                        var node = svg.selectAll(".conn")
+                            .data(nodes)
+                            .enter().append("g")
+                            .attr("class", "conn")
+                            .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+                        node.append("circle")
+                            .attr("fill",function(d){ return nodeColor(1); } )
+                            .attr("stroke", "#000")
+                            .attr("stroke-width", "0.7px")
+                            .attr("r", 10);
+
+                        node.append("text")
+                            .attr("dx", function(d) { return d.children ? -8 : 8; })
+                            .attr("dy", 3)
+                            .attr("font-weight", function(d) { return d.idRoute ? "bold" : 400; })
+                            // .attr("class", function(d){return aRoute(d.idRoute)})
+                            .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
+                            .text(function(d) { return d.lan_machine; });
+                    d3.select(self.frameElement).style("height", height + "px");
+
+                }, 1000, false);
+            })
         }
     };
 }]);
