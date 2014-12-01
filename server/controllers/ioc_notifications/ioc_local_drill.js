@@ -29,9 +29,9 @@ module.exports = function(pool) {
                                 '`ioc_rule`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`,'+
-                                '`stealth`,'+
+                                '`lan_stealth`,'+
                                 '`lan_zone`,'+
-                                '`machine`,'+
+                                '`lan_machine`,'+
                                 '`lan_user`,'+
                                 '`lan_ip`,'+
                                 '`remote_ip`,'+
@@ -66,8 +66,7 @@ module.exports = function(pool) {
                                 crumb: false
                             },
                         },
-                        { title: 'IOC Hits', select: 'count' },
-                        { title: 'Stealth', select: 'stealth', access: [3] },
+                        { title: 'Stealth', select: 'lan_stealth', access: [3] },
                         { title: 'ABP', select: 'proxy_blocked', access: [2] },
                         { title: 'Severity', select: 'ioc_severity' },
                         { title: 'IOC', select: 'ioc' },
@@ -75,7 +74,7 @@ module.exports = function(pool) {
                         { title: 'IOC Stage', select: 'ioc_typeInfection' },
                         { title: 'IOC Rule', select: 'ioc_rule' },
                         { title: 'Zone', select: 'lan_zone' },
-                        { title: 'Machine', select: 'machine' },
+                        { title: 'Local Machine', select: 'lan_machine' },
                         { title: 'Local User', select: 'lan_user' },
                         { title: 'Local IP', select: 'lan_ip' },
                         { title: 'Remote IP', select: 'remote_ip' },
@@ -139,7 +138,6 @@ module.exports = function(pool) {
                 async.parallel([
                     // Table function(s)
                     function(callback) {
-                        console.log(table1.query);
                         new dataTable(table1, {database: database, pool: pool}, function(err,data){
                             tables.push(data);
                             callback();

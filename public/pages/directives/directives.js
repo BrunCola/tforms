@@ -12,14 +12,469 @@ angular.module('mean.pages').directive('head', function() {
     };
 });
 
+//Frank's working on this
+angular.module('mean.pages').directive('wordCloud', function() {
+    return {
+        link: function($scope, element) {
+
+//////////////////////////////////////////////////////////////////////////
+//word cloud functions start here ////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+                            (function() {
+                              function cloud() {
+                                var size = [256, 256],
+                                    text = cloudText,
+                                    font = cloudFont,
+                                    fontSize = cloudFontSize,
+                                    fontStyle = cloudFontNormal,
+                                    fontWeight = cloudFontNormal,
+                                    rotate = cloudRotate,
+                                    padding = cloudPadding,
+                                    spiral = archimedeanSpiral,
+                                    words = [],
+                                    timeInterval = Infinity,
+                                    event = d3.dispatch("word", "end"),
+                                    timer = null,
+                                    cloud = {};
+
+                                cloud.start = function() {
+                                  var board = zeroArray((size[0] >> 5) * size[1]),
+                                      bounds = null,
+                                      n = words.length,
+                                      i = -1,
+                                      tags = [],
+                                      data = words.map(function(d, i) {
+                                        d.text = text.call(this, d, i);
+                                        d.font = font.call(this, d, i);
+                                        d.style = fontStyle.call(this, d, i);
+                                        d.weight = fontWeight.call(this, d, i);
+                                        d.rotate = rotate.call(this, d, i);
+                                        d.size = ~~fontSize.call(this, d, i);
+                                        d.padding = padding.call(this, d, i);
+                                        return d;
+                                      }).sort(function(a, b) { return b.size - a.size; });
+
+                                  if (timer) clearInterval(timer);
+                                  timer = setInterval(step, 0);
+                                  step();
+
+                                  return cloud;
+
+                                  function step() {
+                                    var start = +new Date,
+                                        d;
+                                    while (+new Date - start < timeInterval && ++i < n && timer) {
+                                      d = data[i];
+                                      d.x = (size[0] * (Math.random() + .5)) >> 1;
+                                      d.y = (size[1] * (Math.random() + .5)) >> 1;
+                                      cloudSprite(d, data, i);
+                                      if (d.hasText && place(board, d, bounds)) {
+                                        tags.push(d);
+                                        event.word(d);
+                                        if (bounds) cloudBounds(bounds, d);
+                                        else bounds = [{x: d.x + d.x0, y: d.y + d.y0}, {x: d.x + d.x1, y: d.y + d.y1}];
+                                        // Temporary hack
+                                        d.x -= size[0] >> 1;
+                                        d.y -= size[1] >> 1;
+                                      }
+                                    }
+                                    if (i >= n) {
+                                      cloud.stop();
+                                      event.end(tags, bounds);
+                                    }
+                                  }
+                                }
+
+                                cloud.stop = function() {
+                                  if (timer) {
+                                    clearInterval(timer);
+                                    timer = null;
+                                  }
+                                  return cloud;
+                                };
+
+                                cloud.timeInterval = function(x) {
+                                  if (!arguments.length) return timeInterval;
+                                  timeInterval = x == null ? Infinity : x;
+                                  return cloud;
+                                };
+
+                                function place(board, tag, bounds) {
+                                  var perimeter = [{x: 0, y: 0}, {x: size[0], y: size[1]}],
+                                      startX = tag.x,
+                                      startY = tag.y,
+                                      maxDelta = Math.sqrt(size[0] * size[0] + size[1] * size[1]),
+                                      s = spiral(size),
+                                      dt = Math.random() < .5 ? 1 : -1,
+                                      t = -dt,
+                                      dxdy,
+                                      dx,
+                                      dy;
+
+                                  while (dxdy = s(t += dt)) {
+                                    dx = ~~dxdy[0];
+                                    dy = ~~dxdy[1];
+
+                                    if (Math.min(dx, dy) > maxDelta) break;
+
+                                    tag.x = startX + dx;
+                                    tag.y = startY + dy;
+
+                                    if (tag.x + tag.x0 < 0 || tag.y + tag.y0 < 0 ||
+                                        tag.x + tag.x1 > size[0] || tag.y + tag.y1 > size[1]) continue;
+                                    // TODO only check for collisions within current bounds.
+                                    if (!bounds || !cloudCollide(tag, board, size[0])) {
+                                      if (!bounds || collideRects(tag, bounds)) {
+                                        var sprite = tag.sprite,
+                                            w = tag.width >> 5,
+                                            sw = size[0] >> 5,
+                                            lx = tag.x - (w << 4),
+                                            sx = lx & 0x7f,
+                                            msx = 32 - sx,
+                                            h = tag.y1 - tag.y0,
+                                            x = (tag.y + tag.y0) * sw + (lx >> 5),
+                                            last;
+                                        for (var j = 0; j < h; j++) {
+                                          last = 0;
+                                          for (var i = 0; i <= w; i++) {
+                                            board[x + i] |= (last << msx) | (i < w ? (last = sprite[j * w + i]) >>> sx : 0);
+                                          }
+                                          x += sw;
+                                        }
+                                        delete tag.sprite;
+                                        return true;
+                                      }
+                                    }
+                                  }
+                                  return false;
+                                }
+
+                                cloud.words = function(x) {
+                                  if (!arguments.length) return words;
+                                  words = x;
+                                  return cloud;
+                                };
+
+                                cloud.size = function(x) {
+                                  if (!arguments.length) return size;
+                                  size = [+x[0], +x[1]];
+                                  return cloud;
+                                };
+
+                                cloud.font = function(x) {
+                                  if (!arguments.length) return font;
+                                  font = d3.functor(x);
+                                  return cloud;
+                                };
+
+                                cloud.fontStyle = function(x) {
+                                  if (!arguments.length) return fontStyle;
+                                  fontStyle = d3.functor(x);
+                                  return cloud;
+                                };
+
+                                cloud.fontWeight = function(x) {
+                                  if (!arguments.length) return fontWeight;
+                                  fontWeight = d3.functor(x);
+                                  return cloud;
+                                };
+
+                                cloud.rotate = function(x) {
+                                  if (!arguments.length) return rotate;
+                                  rotate = d3.functor(x);
+                                  return cloud;
+                                };
+
+                                cloud.text = function(x) {
+                                  if (!arguments.length) return text;
+                                  text = d3.functor(x);
+                                  return cloud;
+                                };
+
+                                cloud.spiral = function(x) {
+                                  if (!arguments.length) return spiral;
+                                  spiral = spirals[x + ""] || x;
+                                  return cloud;
+                                };
+
+                                cloud.fontSize = function(x) {
+                                  if (!arguments.length) return fontSize;
+                                  fontSize = d3.functor(x);
+                                  return cloud;
+                                };
+
+                                cloud.padding = function(x) {
+                                  if (!arguments.length) return padding;
+                                  padding = d3.functor(x);
+                                  return cloud;
+                                };
+
+                                return d3.rebind(cloud, event, "on");
+                              }
+
+                              function cloudText(d) {
+                                return d.text;
+                              }
+
+                              function cloudFont() {
+                                return "serif";
+                              }
+
+                              function cloudFontNormal() {
+                                return "normal";
+                              }
+
+                              function cloudFontSize(d) {
+                                return Math.sqrt(d.value);
+                              }
+
+                              function cloudRotate() {
+                                return (~~(Math.random() * 6) - 3) * 30;
+                              }
+
+                              function cloudPadding() {
+                                return 1;
+                              }
+
+                              // Fetches a monochrome sprite bitmap for the specified text.
+                              // Load in batches for speed.
+                              function cloudSprite(d, data, di) {
+                                if (d.sprite) return;
+                                c.clearRect(0, 0, (cw << 5) / ratio, ch / ratio);
+                                var x = 0,
+                                    y = 0,
+                                    maxh = 0,
+                                    n = data.length;
+                                --di;
+                                while (++di < n) {
+                                  d = data[di];
+                                  c.save();
+                                  c.font = d.style + " " + d.weight + " " + ~~((d.size + 1) / ratio) + "px " + d.font;
+                                  var w = c.measureText(d.text + "m").width * ratio,
+                                      h = d.size << 1;
+                                  if (d.rotate) {
+                                    var sr = Math.sin(d.rotate * cloudRadians),
+                                        cr = Math.cos(d.rotate * cloudRadians),
+                                        wcr = w * cr,
+                                        wsr = w * sr,
+                                        hcr = h * cr,
+                                        hsr = h * sr;
+                                    w = (Math.max(Math.abs(wcr + hsr), Math.abs(wcr - hsr)) + 0x1f) >> 5 << 5;
+                                    h = ~~Math.max(Math.abs(wsr + hcr), Math.abs(wsr - hcr));
+                                  } else {
+                                    w = (w + 0x1f) >> 5 << 5;
+                                  }
+                                  if (h > maxh) maxh = h;
+                                  if (x + w >= (cw << 5)) {
+                                    x = 0;
+                                    y += maxh;
+                                    maxh = 0;
+                                  }
+                                  if (y + h >= ch) break;
+                                  c.translate((x + (w >> 1)) / ratio, (y + (h >> 1)) / ratio);
+                                  if (d.rotate) c.rotate(d.rotate * cloudRadians);
+                                  c.fillText(d.text, 0, 0);
+                                  if (d.padding) c.lineWidth = 2 * d.padding, c.strokeText(d.text, 0, 0);
+                                  c.restore();
+                                  d.width = w;
+                                  d.height = h;
+                                  d.xoff = x;
+                                  d.yoff = y;
+                                  d.x1 = w >> 1;
+                                  d.y1 = h >> 1;
+                                  d.x0 = -d.x1;
+                                  d.y0 = -d.y1;
+                                  d.hasText = true;
+                                  x += w;
+                                }
+                                var pixels = c.getImageData(0, 0, (cw << 5) / ratio, ch / ratio).data,
+                                    sprite = [];
+                                while (--di >= 0) {
+                                  d = data[di];
+                                  if (!d.hasText) continue;
+                                  var w = d.width,
+                                      w32 = w >> 5,
+                                      h = d.y1 - d.y0;
+                                  // Zero the buffer
+                                  for (var i = 0; i < h * w32; i++) sprite[i] = 0;
+                                  x = d.xoff;
+                                  if (x == null) return;
+                                  y = d.yoff;
+                                  var seen = 0,
+                                      seenRow = -1;
+                                  for (var j = 0; j < h; j++) {
+                                    for (var i = 0; i < w; i++) {
+                                      var k = w32 * j + (i >> 5),
+                                          m = pixels[((y + j) * (cw << 5) + (x + i)) << 2] ? 1 << (31 - (i % 32)) : 0;
+                                      sprite[k] |= m;
+                                      seen |= m;
+                                    }
+                                    if (seen) seenRow = j;
+                                    else {
+                                      d.y0++;
+                                      h--;
+                                      j--;
+                                      y++;
+                                    }
+                                  }
+                                  d.y1 = d.y0 + seenRow;
+                                  d.sprite = sprite.slice(0, (d.y1 - d.y0) * w32);
+                                }
+                              }
+
+                              // Use mask-based collision detection.
+                              function cloudCollide(tag, board, sw) {
+                                sw >>= 5;
+                                var sprite = tag.sprite,
+                                    w = tag.width >> 5,
+                                    lx = tag.x - (w << 4),
+                                    sx = lx & 0x7f,
+                                    msx = 32 - sx,
+                                    h = tag.y1 - tag.y0,
+                                    x = (tag.y + tag.y0) * sw + (lx >> 5),
+                                    last;
+                                for (var j = 0; j < h; j++) {
+                                  last = 0;
+                                  for (var i = 0; i <= w; i++) {
+                                    if (((last << msx) | (i < w ? (last = sprite[j * w + i]) >>> sx : 0))
+                                        & board[x + i]) return true;
+                                  }
+                                  x += sw;
+                                }
+                                return false;
+                              }
+
+                              function cloudBounds(bounds, d) {
+                                var b0 = bounds[0],
+                                    b1 = bounds[1];
+                                if (d.x + d.x0 < b0.x) b0.x = d.x + d.x0;
+                                if (d.y + d.y0 < b0.y) b0.y = d.y + d.y0;
+                                if (d.x + d.x1 > b1.x) b1.x = d.x + d.x1;
+                                if (d.y + d.y1 > b1.y) b1.y = d.y + d.y1;
+                              }
+
+                              function collideRects(a, b) {
+                                return a.x + a.x1 > b[0].x && a.x + a.x0 < b[1].x && a.y + a.y1 > b[0].y && a.y + a.y0 < b[1].y;
+                              }
+
+                              function archimedeanSpiral(size) {
+                                var e = size[0] / size[1];
+                                return function(t) {
+                                  return [e * (t *= .1) * Math.cos(t), t * Math.sin(t)];
+                                };
+                              }
+
+                              function rectangularSpiral(size) {
+                                var dy = 4,
+                                    dx = dy * size[0] / size[1],
+                                    x = 0,
+                                    y = 0;
+                                return function(t) {
+                                  var sign = t < 0 ? -1 : 1;
+                                  // See triangular numbers: T_n = n * (n + 1) / 2.
+                                  switch ((Math.sqrt(1 + 4 * sign * t) - sign) & 3) {
+                                    case 0:  x += dx; break;
+                                    case 1:  y += dy; break;
+                                    case 2:  x -= dx; break;
+                                    default: y -= dy; break;
+                                  }
+                                  return [x, y];
+                                };
+                              }
+
+                              // TODO reuse arrays?
+                              function zeroArray(n) {
+                                var a = [],
+                                    i = -1;
+                                while (++i < n) a[i] = 0;
+                                return a;
+                              }
+
+                              var cloudRadians = Math.PI / 180,
+                                  cw = 1 << 11 >> 5,
+                                  ch = 1 << 11,
+                                  canvas,
+                                  ratio = 1;
+
+                              if (typeof document !== "undefined") {
+                                canvas = document.createElement("canvas");
+                                canvas.width = 1;
+                                canvas.height = 1;
+                                ratio = Math.sqrt(canvas.getContext("2d").getImageData(0, 0, 1, 1).data.length >> 2);
+                                canvas.width = (cw << 5) / ratio;
+                                canvas.height = ch / ratio;
+                              } else {
+                                // Attempt to use node-canvas.
+                                canvas = new Canvas(cw << 5, ch);
+                              }
+
+                              var c = canvas.getContext("2d"),
+                                  spirals = {
+                                    archimedean: archimedeanSpiral,
+                                    rectangular: rectangularSpiral
+                                  };
+                              c.fillStyle = c.strokeStyle = "red";
+                              c.textAlign = "center";
+
+                              if (typeof module === "object" && module.exports) module.exports = cloud;
+                              else (d3.layout || (d3.layout = {})).cloud = cloud;
+                            })();
+
+//////////////////////////////////////////////////////////////////////////
+//TO HERE ////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+                        var myVars = [{"text":"study","size":40},{"text":"motion","size":15},{"text":"forces","size":10},{"text":"electricity","size":15},{"text":"movement","size":10},{"text":"relation","size":5},{"text":"things","size":10},{"text":"force","size":5},{"text":"ad","size":5},{"text":"w3","size":85},{"text":"living","size":5},{"text":"nonliving","size":5},{"text":"laws","size":15},{"text":"speed","size":45},{"text":"velocity","size":30},{"text":"define","size":5},{"text":"constraints","size":5},{"text":"universe","size":10},{"text":"youtube","size":120},{"text":"describing","size":5},{"text":"matter","size":90},{"text":"physics-the","size":5},{"text":"world","size":10},{"text":"works","size":10},{"text":"science","size":70},{"text":"interactions","size":30},{"text":"studies","size":5},{"text":"properties","size":45},{"text":"nature","size":40},{"text":"branch","size":30},{"text":"concerned","size":25},{"text":"source","size":40},{"text":"google","size":10},{"text":"defintions","size":5},{"text":"two","size":15},{"text":"grouped","size":15},{"text":"traditional","size":15},{"text":"fields","size":15},{"text":"acoustics","size":15},{"text":"optics","size":15},{"text":"mechanics","size":20},{"text":"thermodynamics","size":15},{"text":"electromagnetism","size":15},{"text":"modern","size":15},{"text":"extensions","size":15},{"text":"thefreedictionary","size":15},{"text":"interaction","size":15},{"text":"org","size":25},{"text":"answers","size":5},{"text":"natural","size":15},{"text":"objects","size":5},{"text":"treats","size":10},{"text":"acting","size":5},{"text":"department","size":5},{"text":"gravitation","size":5},{"text":"heat","size":10},{"text":"light","size":10},{"text":"magnetism","size":10},{"text":"modify","size":5},{"text":"general","size":10},{"text":"bodies","size":5},{"text":"philosophy","size":5},{"text":"brainyquote","size":5},{"text":"words","size":5},{"text":"ph","size":5},{"text":"html","size":5},{"text":"lrl","size":5},{"text":"zgzmeylfwuy","size":5},{"text":"subject","size":5},{"text":"distinguished","size":5},{"text":"chemistry","size":5},{"text":"biology","size":5},{"text":"includes","size":5},{"text":"radiation","size":5},{"text":"sound","size":5},{"text":"structure","size":5},{"text":"atoms","size":5},{"text":"including","size":10},{"text":"atomic","size":10},{"text":"nuclear","size":10},{"text":"cryogenics","size":10},{"text":"solid-state","size":10},{"text":"particle","size":10},{"text":"plasma","size":10},{"text":"deals","size":5},{"text":"merriam-webster","size":5},{"text":"dictionary","size":10},{"text":"analysis","size":5},{"text":"conducted","size":5},{"text":"order","size":5},{"text":"understand","size":5},{"text":"behaves","size":5},{"text":"en","size":5},{"text":"wikipedia","size":5},{"text":"wiki","size":5},{"text":"physics-","size":5},{"text":"physical","size":5},{"text":"behaviour","size":5},{"text":"collinsdictionary","size":5},{"text":"english","size":5},{"text":"time","size":35},{"text":"distance","size":35},{"text":"wheels","size":5},{"text":"revelations","size":5},{"text":"minute","size":5},{"text":"acceleration","size":20},{"text":"torque","size":5},{"text":"wheel","size":5},{"text":"rotations","size":5},{"text":"resistance","size":5},{"text":"momentum","size":5},{"text":"measure","size":10},{"text":"direction","size":10},{"text":"car","size":5},{"text":"add","size":5},{"text":"traveled","size":5},{"text":"weight","size":5},{"text":"electrical","size":5},{"text":"power","size":5}];
+
+                        var color = d3.scale.linear()
+                                .domain([0,1,2,3,4,5,6,10,15,20,100])
+                                .range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
+
+                        d3.layout.cloud().size([700, 300])
+                                .words(myVars)
+                                .rotate(0)
+                                .fontSize(function(d) { return d.size; })
+                                .on("end", draw)
+                                .start();
+
+                        function draw(words) {
+                            d3.select("#wordCloud").append("svg")
+                                    .attr("width", 850)
+                                    .attr("height", 350)
+                                    .attr("class", "wordcloud")
+                                    .append("g")
+                                    // without the transform, words words would get cutoff to the left and top, they would appear outside of the SVG area
+                                    .attr("transform", "translate(360,200)")
+                                    .selectAll("text")
+                                    .data(words)
+                                    .enter().append("text")
+                                    .style("font-size", function(d) { return d.size + "px"; })
+                                    .style("fill", function(d, i) { return color(i); })
+                                    .attr("transform", function(d) {
+                                        return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                                    })
+                                    .text(function(d) { return d.text; });
+                        }
+
+        }
+
+
+    };
+});
+
+//frank's code ends here
+
+
+
 angular.module('mean.pages').directive('iocDesc', function() {
     return {
         link: function($scope, element, attrs) {
             $scope.$on('iocDesc', function (event, description) {
                 if (!description) { return }
-                    var maxLength = 200;
+                    var maxLength = 160;
                 // if the string is less then our max length..
-                if (description.length < 200) {
+                if (description.length < maxLength) {
                     $(element).html(description);
                 // otherwise, trim and add link to modal
                 // NOTE: MODAL SETTINGS ARE CUSTOM IN EACH CONTROLLER
@@ -49,7 +504,7 @@ angular.module('mean.pages').directive('modalWindow', function() {
                     "bFilter": true,
                     "bRebuild": true,
                     "aoColumns": $scope.columns,
-                    "iDisplayLength": 4,
+                    "iDisplayLength": 10,
                 });
             }
         }
@@ -191,7 +646,7 @@ angular.module('mean.system').directive('sidebar', function() {
             App.init();
         }
     };
-});
+});https://localhost:3000/#!/stealth_coi_conn_view
 
 angular.module('mean.pages').directive('severityLevels', ['$timeout', function ($timeout) {
     return {
@@ -343,19 +798,20 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
     return {
         link: function ($scope, element, attrs) {
             $scope.socket = socket;
+
+            function redrawTable(tableData) {
+                $('#table').dataTable().fnClearTable();
+                $('#table').dataTable().fnAddData(tableData.top(Infinity));
+                $('#table').dataTable().fnDraw();
+            }
             $scope.$on('tableLoad', function (event, tableData, params, tableType) {
-                function redrawTable() {
-                    $('#table').dataTable().fnClearTable();
-                    $('#table').dataTable().fnAddData(tableData.top(Infinity));
-                    $('#table').dataTable().fnDraw();
-                }
                 for (var t in params) {
                     if (params[t] != null) {
                         if ($location.$$absUrl.search('/report#!/') === -1) {
                             $(element).prepend('<div class="row-fluid"> '+
                             '<div class="span12"> '+
                                     '<div class="jdash-header">'+params[t].title+'</div> '+
-                                    '<div  style="background-color:#FFF;" class="box"> '+
+                                    '<div class="box"> '+
                                         '<div class="box-content"> '+
                                             '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="'+params[t].div+'" ></table>'+
                                         '</div> '+
@@ -367,7 +823,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                 '<div class="row-fluid"> '+
                                     '<div class="span12"> '+
                                         '<div class="jdash-header">'+params[t].title+'</div> '+
-                                        '<div  style="background-color:#FFF;" class="box"> '+
+                                        '<div  class="box"> '+
                                             '<div class="box-content"> '+
                                                 '<table class="table report-table" id="'+params[t].div+'" ></table>'+
                                             '</div> '+
@@ -519,11 +975,6 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                             $scope.e.push(oSettings.aoColumns[a]);
                                         }
                                     }
-                                    for (var i=0; i<5; i++) {
-                                        // find the index of column rows so they can me modified below
-                                        $scope.r.push("test"+i);
-                                        //console.log($scope.r);
-                                    }
                                 },
                                 'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
                                     if (aData.ioc_severity && $scope.r.indexOf('ioc_severity') !== -1) {
@@ -546,7 +997,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         var newVar = aData.mailfrom.replace(/[\<\>]/g,'');
                                         $('td:eq('+$scope.r.indexOf("mailfrom")+')', nRow).html(newVar);
                                     }
-                                    if(aData.stealth !== undefined){                                        
+                                    if (aData.stealth !== undefined) {                                        
                                         if (aData.stealth && $scope.r.indexOf('stealth') !== -1) {
                                             if (aData.stealth > 0){
                                                 $('td:eq('+$scope.r.indexOf("stealth")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-shield fa-stack-1x fa-inverse"></i></span>');
@@ -558,7 +1009,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                     if (aData.proxy_blocked !== undefined && $scope.r.indexOf('proxy_blocked') !== -1) {
                                         if (aData.proxy_blocked == 0){
                                             $('td:eq('+$scope.r.indexOf("proxy_blocked")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-check fa-stack-1x fa-inverse"></i></span>');
-                                        } else if(aData.proxy_blocked > 0) {
+                                        } else if (aData.proxy_blocked > 0) {
                                             $('td:eq('+$scope.r.indexOf("proxy_blocked")+')', nRow).html('<span style="color:#E71010 " class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-times fa-stack-1x fa-inverse"></i></span>');
                                         }
                                     }
@@ -582,41 +1033,47 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         }
                                     }
                                     if (notReport) {
-
                                         // url builder
                                         for (var c in $scope.e) {
                                             var type = $scope.e[c].link.type;
-                                            switch(type) {
-                                                case 'Archive':
-                                                    $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
-                                                break;
-                                                case 'Restore':
-                                                    $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bRestore button-success pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Restore</button>");
-                                                break;
-                                                default:
-                                                    var obj = new Object();
-                                                    //var all = new Object();
-                                                    if ($location.$$search.start && $location.$$search.end) {
-                                                        obj.start = $location.$$search.start;
-                                                        obj.end = $location.$$search.end;
-                                                    }
-                                                    for (var l in $scope.e[c].link.val) {
-                                                        if (aData[$scope.e[c].link.val[l]] !== null) {
-                                                            var newVar = aData[$scope.e[c].link.val[l]].toString();
-                                                            obj[$scope.e[c].link.val[l]] = newVar.replace("'", "&#39;");
-                                                        }
-                                                    }
-                                                    var links = JSON.stringify({
-                                                        type: $scope.e[c].link.type,
-                                                        objlink: obj
-                                                    });
-                                                    if ($scope.e[c].mData === 'time') {
-                                                        $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
-                                                    } else {
-                                                        $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button>");
-                                                    }
-                                                break;
-                                            }
+                                            if ($scope.e[c].bVisible !== undefined) {
+                                              if ($scope.e[c].bVisible) {
+                                                  switch(type) {
+                                                      case 'Archive':
+                                                          $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
+                                                      break;
+                                                      case 'Restore':
+                                                          $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bRestore button-success pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Restore</button>");
+                                                      break;
+                                                      case 'Upload Image':
+                                                          $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bUpload button-success pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Upload Image</button>");
+                                                      break;
+                                                      default:
+                                                          var obj = new Object();
+                                                          //var all = new Object();
+                                                          if ($location.$$search.start && $location.$$search.end) {
+                                                              obj.start = $location.$$search.start;
+                                                              obj.end = $location.$$search.end;
+                                                          }
+                                                          for (var l in $scope.e[c].link.val) {
+                                                              if ((aData[$scope.e[c].link.val[l]] !== null) && (aData[$scope.e[c].link.val[l]] !== undefined)) {
+                                                                  var newVar = aData[$scope.e[c].link.val[l]].toString();
+                                                                  obj[$scope.e[c].link.val[l]] = newVar.replace("'", "&#39;");
+                                                              }
+                                                          }
+                                                          var links = JSON.stringify({
+                                                              type: $scope.e[c].link.type,
+                                                              objlink: obj
+                                                          });
+                                                          if ($scope.e[c].mData === 'time') {
+                                                              $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
+                                                          } else {
+                                                              $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button>");
+                                                          }
+                                                      break;
+                                                  }  
+                                              }   
+                                            }                                         
                                         }
                                     }
                                 },
@@ -633,7 +1090,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                                     var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
                                                     $scope.tableCrossfitler.remove(fil);
                                                     tableData.filterAll();
-                                                    redrawTable();
+                                                    redrawTable(tableData);
                                                 })
                                         });
                                         $('table .bRestore').on('click',function(){
@@ -643,8 +1100,12 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                                     var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
                                                     $scope.tableCrossfitler.remove(fil);
                                                     tableData.filterAll();
-                                                    redrawTable();
+                                                    redrawTable(tableData);
                                                 })
+                                        });
+                                        $('table .bUpload').on('click',function(){
+                                            var rowData = JSON.parse(this.value);
+                                            $scope.uploadOpen(rowData);
                                         });
                                         $scope.country = [];
                                         $scope.ioc = [];
@@ -665,12 +1126,16 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                 $('#table').dataTable().fnAddData(tableData.top(Infinity));
                                 $('#table').dataTable().fnDraw();
                             });
+
                             // new $.fn.dataTable.FixedHeader( params[t].div );
                             $.fn.dataTableExt.sErrMode = 'throw';
                         }
                     break;
                 }
-            })
+            });
+            $scope.$on('tableUpdate', function (event, tableData, params, tableType) {
+                redrawTable(tableData);
+            });
         }
     };
 }]);
@@ -682,15 +1147,16 @@ angular.module('mean.pages').directive('universalSearch', function() {
                 if ($scope.search) {
                     if (($scope.search !== null) || ($scope.search !== '')) {
                         $('#table').dataTable().fnFilter($scope.search);
+                        // var testSearch = searchFilter($scope.crossfilterData);
+                        // console.log(testSearch);
                     }
                 }
             });
-
         }
     };
 });
 
-angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '$rootScope', function ($timeout, $window, $rootScope) {
+angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '$rootScope', 'getSize', function ($timeout, $window, $rootScope, getSize) {
     return {
         link: function ($scope, element, attrs) {
             $scope.$on('pieChart', function (event, chartType, params) {
@@ -709,11 +1175,11 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                             timers[uniqueId] = setTimeout(callback, ms);
                         };
                     })();
-                    var filter, height;
-                    var width = $('#piechart').parent().width();
-                    height = width/2.4;
+                    var filter;
+                    var width = getSize(element, 'pieChart').width;
+                    var height = getSize(element, 'pieChart').height;
                     $scope.sevWidth = function() {
-                        return $('#piechart').parent().width();
+                        return getSize(element, 'pieChart').width;
                     }
                     filter = true;
                     // switch (chartType){
@@ -798,6 +1264,7 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                     //      filter = false;
                     //      break;
                     // }
+
                     if (filter == true) {
                         $scope.pieChart
                             .on("filtered", function(chart, filter){
@@ -805,10 +1272,21 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                                     $scope.tableData.filterAll();
                                     var arr = [];
                                     for(var i in $scope.appDimension.top(Infinity)) {
-                                        arr.push($scope.appDimension.top(Infinity)[i].l7_proto);
+                                        if ($scope.appDimension.top(Infinity)[i].pie_dimension !== undefined) {
+                                            arr.push($scope.appDimension.top(Infinity)[i].pie_dimension);
+                                        } else {
+                                            arr.push($scope.appDimension.top(Infinity)[i].lan_user + $scope.appDimension.top(Infinity)[i].lan_zone + $scope.appDimension.top(Infinity)[i].lan_ip);
+                                        }
                                     }
-
-                                    $scope.tableData.filter(function(d) { return arr.indexOf(d.l7_proto) >= 0; });
+                                    $scope.tableData.filter(function(d) { 
+                                        if (d.pie_dimension !== undefined) {
+                                            return arr.indexOf(d.pie_dimension) >= 0; 
+                                        } else if (d.l7_proto !== undefined) {
+                                            return arr.indexOf(d.l7_proto) >= 0; 
+                                        } else {
+                                            return (arr.indexOf(d.lan_user+d.lan_zone+d.lan_ip)) >= 0;
+                                        }
+                                    });
                                     $scope.$broadcast('crossfilterToTable');
 
                                 }, 400, "filterWait");
@@ -850,15 +1328,15 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                     // var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
                     $rootScope.$watch('search', function(){
 
-                        if($rootScope.search === null) {
+                        if ($rootScope.search === null) {
                             $scope.appDimension.filterAll();
                         } else {
                             $scope.appDimension.filterAll();
                             // console.log($scope.appDimension.top(Infinity));
-                            if ($scope.l7_proto) {
-                                $scope.appDimension.filter(function(d) { return $scope.l7_proto.indexOf(d) >= 0; });
+                            if ($scope.pie_dimension) {
+                                $scope.appDimension.filter(function(d) { return $scope.pie_dimension.indexOf(d) >= 0; });
                                 // $scope.pieGroup = $scope.appDimension.group().reduceSum(function (d) {
-                    //                 return d.app_count;
+                    //                 return d.count;
                     //             });
                             }
                             // console.log($scope.appDimension.top(Infinity));
@@ -1080,6 +1558,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
         link: function ($scope, element, attrs) {
             $scope.$on('rowChart', function (event, dimension, group, chartType) {
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
+
                     var waitForFinalEvent = (function () {
                         var timers = {};
                         return function (callback, ms, uniqueId) {
@@ -1119,7 +1598,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                                         .x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width]));
                                         $(element).height(hHeight);
                                         d3.select('#rowchart svg').attr('width', width).attr('height', hHeight);
-                                    $scope.rowChart.redraw();
+                                    //$scope.rowChart.redraw();
                                 }
                             };
                             $scope.rowChart
@@ -1179,7 +1658,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                         .margins({top: 5, left: 0, right: 0, bottom: 20})
                         .group(group)
                         .dimension(dimension)
-                        .ordering(function(d) {return -d.value.severity;})
+                        .ordering(function(d) { return -d.value.severity; })
                         .valueAccessor(function(d) {
                             if (d.value.count === 1){
                                 return d.value.count+1;
@@ -1190,7 +1669,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                             }
                         })
                         .renderLabel(true)
-                        .label(function(d) { return d.key+' ('+d.value.count+')'; })
+                        .label(function(d) { return d.key.substring(0, d.key.length - 1)+' ('+d.value.count+')'; })
                         .labelOffsetY(lOffset) //lOffset
                         .elasticX(false)
                         .x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width])) //500 ->width
@@ -1217,7 +1696,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                         var rowFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
                         $rootScope.$watch('search', function(){
                             $scope.tableToRowChart = function () {
-                                if($rootScope.search === null) {
+                                if ($rootScope.search === null) {
                                     rowFilterDimension.filterAll();
                                 } else {
                                     rowFilterDimension.filterAll();
@@ -1332,7 +1811,7 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
                     });
                     var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
                     $rootScope.$watch('search', function(){
-                        if($rootScope.search === null) {
+                        if ($rootScope.search === null) {
                                 geoFilterDimension.filterAll();
                             } else {
                                 geoFilterDimension.filterAll();
@@ -1537,7 +2016,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
     };
 }]);
 
-angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope', 'dictionary', function ($timeout, $rootScope, dictionary) {
+angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope', 'dictionary', '$http', function ($timeout, $rootScope, dictionary, $http) {
     return {
         link: function ($scope, element, attrs) {
             $scope.$on('forceChart', function (event, data, params) {
@@ -1590,25 +2069,34 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         return Math.exp(minv + scale*(x-minp));
                     }
                     
+                    // define the zoomListener which calls the zoom function on the "zoom" event constrained within the scaleExtents
+                    var zoomListener = d3.behavior.zoom().scaleExtent([0.7, 3]).on("zoom", zoom);
+
                     var vis = d3.select("#forcechart")
-                        .append("svg:svg")
+                        .append("svg")
                         .attr("class", "stage")
                         .attr("width", width)
-                        .attr("height", height);
+                        .attr("height", height)
+                        .call(zoomListener)
+                        .append('g');
+
+                    function zoom() {
+                        vis.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+                    }
 
                     var force = d3.layout.force()
                         .nodes(data.nodes)
                         .links(data.links)
                         .gravity(function(d) { 
                             if (d.class === 'child') {
-                               return  -0.099;
+                               return  0.2;
                             } else {
-                               return  0.5;
+                               return  0;
                             }
                         })
                         .linkDistance(function(d) { 
                             if (d.class === 'child') {
-                                return  120;
+                                return  130;
                             } else {
                                 var w;
                                 if (width/2 > 400) {
@@ -1619,8 +2107,9 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                 return w;
                             }
                         })
-                        .charge(-70)
+                        .charge(-30)
                         .size([width-50, height]);
+
 
                     var link = vis.selectAll(".link")
                         .data(data.links)
@@ -1628,9 +2117,20 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         .attr('class', 'linkgroup')
                         .append("line")
                         .attr("class", "link")
+                        .style("display", function(d){
+                             if (d.allowed==="authorized") {
+                                return 'none';
+                            } else {
+                                return 'inline-block';
+                            }
+                        })
                         .style('stroke', function(d){
                             if (d.class === 'child'){
-                                return '#CC0000';
+                                if (d.allowed==="authorized") {
+                                    return '#00FF00';
+                                } else {
+                                    return '#CC0000';
+                                }
                             } else {
                                 return '#259286';
                             }
@@ -1650,11 +2150,46 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                             }
                         });
 
+                    var node_drag = d3.behavior.drag()
+                        .on("dragstart", dragstart)
+                        .on("drag", dragmove)
+                        .on("dragend", dragend);
+
                     var node = vis.selectAll("circle.node")
                         .data(data.nodes)
                         .enter().append("g")
                         .attr("class", "node")
-                        .call(force.drag);
+                        .call(node_drag);
+                        //.call(force.drag);
+
+                    function dragstart(d, i) {
+                        d3.event.sourceEvent.stopPropagation();
+                        d.fixed = true; 
+                        force.stop();
+                    }
+
+                    function dragmove(d, i) {
+                        d.fixed = true; 
+                        d.px += d3.event.dx;
+                        d.py += d3.event.dy;
+                        d.x += d3.event.dx;
+                        d.y += d3.event.dy;
+                        tick(); 
+                    }
+
+                    function dragend(d, i) {
+                        d.fixed = true; 
+                        $http({method: 'GET', url: '/stealth/stealth_op_view?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name+'&page_title=stealth_op_view'}).
+                            success(function(data) { 
+                                if (data["result"].length>0) {
+                                    $http({method: 'POST', url: '/stealth/stealth_op_view', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_op_view"}});
+                                }else{
+                                    $http({method: 'POST', url: '/stealth/stealth_op_view?type=insert', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_op_view"}});
+                                }
+                            });
+                        tick();
+                        force.resume();
+                    }
 
                     var tableDiv = d3.select('#force-table');
                     var infoDiv = d3.select('#forcechartinfo').append('table');
@@ -1662,16 +2197,24 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                     var circleWidth = 5;
                     node.each(function(d){
                         var elm = d3.select(this).append('g').attr('transform', 'scale(0.7)');
+                        if (d.group === "child") {
+                        } else {
+                            d.fixed = true;
+                        }
                         switch(d.group) {
                             case 'coi':
                                 //CIRCLE
                                 elm.append("svg:circle")
-                                    .attr("cx", function(d) { return d.x; })
-                                    .attr("cy", function(d) { return d.y; })
                                     .attr("r", function (d) {return logslider(d["width"]); })
                                     .attr("fill", '#fff')
                                     .style("stroke-width", "14px")
-                                    .style("stroke", "#259286");
+                                    .style('stroke', function(d){
+                                        if (d.name === 'Quarantine'){
+                                            return '#ff0000';
+                                        } else {
+                                            return '#259286';
+                                        }
+                                    });
 
                                 //TEXT appends name
                                 elm.append("text")
@@ -1769,7 +2312,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                         .style('fill-opacity', '0');
                                     })
                                     .on('click', function(d){
-                                        $scope.requery(d, 'blocked');
+                                        $scope.requery(d, 'authorized');
                                     })
                                     .on('mouseout', function(){d3.select(this)
                                     .style('fill-opacity', '0.3');
@@ -1787,6 +2330,48 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                             ' M66.7,57.5l9.8-3.7L78.9,42H68.6L66.7,57.5z')
                                             .attr('transform', 'translate(-25,-115) scale(0.7)')
 
+                                        elm.append("svg:circle")
+                                            .attr("cx", 2)
+                                            .attr("cy", -88)
+                                            .attr("r", 32)
+                                            .attr("fill", '#fff')
+                                            .style('fill-opacity', '0.3')
+                                            .on('mouseover', function(){
+                                                d3.select(this).style('cursor', 'pointer')
+                                                .style('fill-opacity', '0');
+                                            })
+                                            .on('click', function(d){
+                                               //$scope.requery(d, 'top');
+                                               $scope.requery(d, 'rules');
+                                            })
+                                            .on('mouseout', function(){d3.select(this)
+                                            .style('fill-opacity', '0.3');
+                                            });
+                                        break;
+                                    case 'Quarantine':
+                                        elm.append('path')
+                                            .style('fill', '#ff0000')
+                                            .attr('d','M36.6,32.1c1.4-2.2,2.4-4.7,2.9-7.3c-8.1-3.3-13.8-11.2-13.8-20.5c0-1.1,0.1-2.1,0.2-3.1 C23.7,0.4,21.3,0,18.8,0c-0.2,0-0.4,0-0.6,0'+
+                                            'c-0.2,1.4-0.3,2.9-0.3,4.3C17.9,16.9,25.6,27.7,36.6,32.1z M94.3,36.2c-4.3,5-10.6,8.1-17.7,8.1c-12.9,0-23.4-10.4-23.4-23.3c0-3.8,0.9-7.5,2.6-10.7'+
+                                            'l-2.8-1.6 c-1.2,1.4-3.1,2.4-5.1,2.4c-2.1,0-3.9-0.9-5.1-2.4l-3,1.8c1.6,3.2,2.5,6.8,2.5,10.6c0,12.9-10.5,23.3-23.4,23.3 c-7,0-13.3-3.1-17.6-7.9'+
+                                            'L0,37.1c6.2,8,15.9,13.1,26.7,13.1c8,0,15.3-2.8,21.1-7.4c5.8,4.6,13.1,7.4,21.1,7.4 c10.9,0,20.6-5.2,26.7-13.1L94.3,36.2z')
+                                            .attr('transform', 'translate(-21,-90) scale(0.5)')
+
+                                        elm.append('path')
+                                            .style('fill', '#ff0000')
+                                            .attr('d','M36.6,32.1c1.4-2.2,2.4-4.7,2.9-7.3c-8.1-3.3-13.8-11.2-13.8-20.5c0-1.1,0.1-2.1,0.2-3.1 C23.7,0.4,21.3,0,18.8,0c-0.2,0-0.4,0-0.6,0'+
+                                            'c-0.2,1.4-0.3,2.9-0.3,4.3C17.9,16.9,25.6,27.7,36.6,32.1z M94.3,36.2c-4.3,5-10.6,8.1-17.7,8.1c-12.9,0-23.4-10.4-23.4-23.3c0-3.8,0.9-7.5,2.6-10.7'+
+                                            'l-2.8-1.6 c-1.2,1.4-3.1,2.4-5.1,2.4c-2.1,0-3.9-0.9-5.1-2.4l-3,1.8c1.6,3.2,2.5,6.8,2.5,10.6c0,12.9-10.5,23.3-23.4,23.3 c-7,0-13.3-3.1-17.6-7.9'+
+                                            'L0,37.1c6.2,8,15.9,13.1,26.7,13.1c8,0,15.3-2.8,21.1-7.4c5.8,4.6,13.1,7.4,21.1,7.4 c10.9,0,20.6-5.2,26.7-13.1L94.3,36.2z')
+                                            .attr('transform', 'rotate(120,39,-49) scale(0.5)')
+
+                                        elm.append('path')
+                                            .style('fill', '#ff0000')
+                                            .attr('d','M36.6,32.1c1.4-2.2,2.4-4.7,2.9-7.3c-8.1-3.3-13.8-11.2-13.8-20.5c0-1.1,0.1-2.1,0.2-3.1 C23.7,0.4,21.3,0,18.8,0c-0.2,0-0.4,0-0.6,0'+
+                                            'c-0.2,1.4-0.3,2.9-0.3,4.3C17.9,16.9,25.6,27.7,36.6,32.1z M94.3,36.2c-4.3,5-10.6,8.1-17.7,8.1c-12.9,0-23.4-10.4-23.4-23.3c0-3.8,0.9-7.5,2.6-10.7'+
+                                            'l-2.8-1.6 c-1.2,1.4-3.1,2.4-5.1,2.4c-2.1,0-3.9-0.9-5.1-2.4l-3,1.8c1.6,3.2,2.5,6.8,2.5,10.6c0,12.9-10.5,23.3-23.4,23.3 c-7,0-13.3-3.1-17.6-7.9'+
+                                            'L0,37.1c6.2,8,15.9,13.1,26.7,13.1c8,0,15.3-2.8,21.1-7.4c5.8,4.6,13.1,7.4,21.1,7.4 c10.9,0,20.6-5.2,26.7-13.1L94.3,36.2z')
+                                            .attr('transform', 'rotate(240,-12,-37) scale(0.5)')
 
                                         elm.append("svg:circle")
                                             .attr("cx", 2)
@@ -1799,7 +2384,8 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                                 .style('fill-opacity', '0');
                                             })
                                             .on('click', function(d){
-                                                $scope.requery(d, 'top');
+                                               //$scope.requery(d, 'top');
+                                               $scope.requery(d, 'rules');
                                             })
                                             .on('mouseout', function(){d3.select(this)
                                             .style('fill-opacity', '0.3');
@@ -1824,7 +2410,8 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                                 .style('fill-opacity', '0');
                                             })
                                             .on('click', function(d){
-                                                $scope.requery(d, 'top');
+                                                //$scope.requery(d, 'top');
+                                                $scope.requery(d, 'rules');
                                             })
                                             .on('mouseout', function(){d3.select(this)
                                             .style('fill-opacity', '0.3');
@@ -1833,26 +2420,27 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                 }
                             break;
                             case 'child':
-
                                 if (d.value.type === 'Stealth COI Mismatch') {
                                     elm.append("path")
                                         .attr('d', 'M14,3.1C9.4,3.3,7,0,7,0c0,0-2,3.1-7,3.1C-0.4,8.3,2.7,18,7,18C11.2,18,14.4,7.2,14,3.1z')
                                         .attr('transform', 'translate(-25,-115) scale(0.7)')
-                                        .style('fill', '#333')
+                                        .style('fill', "#000")
+                                        .style('border', "solid 1px #000")
                                         .attr('transform', 'translate(-8,-8) scale(1.1)')
-                                } else if(d.value.type === 'outside') {
+                                } else if (d.value.type === 'outside') {
                                     elm.append("circle")
                                         .attr("cx", function(d) { return d.x; })
                                         .attr("cy", function(d) { return d.y; })
                                         .attr("r", 8)
-                                        .attr("fill", '#333')
-                                } else if(d.value.type === 'Non-Stealth Internal Attack') {
+                                        .attr("fill", "#000")
+                                        .style('border', "solid 1px #000")
+                                } else if (d.value.type === 'Non-Stealth Internal Attack') {
                                     elm.append('rect')
                                         .attr('x', function(d) { return d.x; })
                                         .attr('y', function(d) { return d.y; })
                                         .attr('height', 14)
                                         .attr('width', 14)
-                                        .style('fill', '#333')
+                                        .style('fill', "#002E7F")
                                         .attr('transform', 'translate(-8,-8)')
                                         .style('fill-opacity', '1')
                                 }
@@ -1860,21 +2448,94 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         }
                     });
                     
-                    $scope.appendInfo = function(data, type) {
-                        console.log(type)
+                    $scope.appendInfo = function(data, type) { 
                         infoDiv.selectAll('tr').remove();
+
+                        var divInfo = '';
+                        if (type === "linkBetween") {
+                            var uniqueNodes = $scope.forcedata.uniqueNodes;
+                            var uniqueUsers = $scope.forcedata.uniqueUsers;
+                            var unique = [];
+                            var source = data.source.name;
+                            var target = data.target.name;             
+                            
+                            for (var i in uniqueNodes[source]) {
+                                for (var j in uniqueNodes[target]) {
+                                    if (i === j) { 
+                                        unique.push(i);
+                                    }
+                                }         
+                            }
+                            for (var x=0; x<unique.length; x++) {
+                                var divInfo = '';
+                                divInfo += '<div><strong>'+unique[x]+'</strong></div>';
+                                for (var k in uniqueUsers) {
+                                    if (k === unique[x]) {
+                                        for (var z in uniqueUsers[k]) {
+                                            divInfo += '<div>'+z+'</div>';
+                                        }
+                                    }
+                                }
+                                var row = infoDiv.append('tr');
+                                row
+                                    .append('td')
+                                    .html(divInfo);
+                            }
+                        } else if (type === "rules"){
+                                var divInfo = '';
+                                divInfo += '<div><strong>Rules: </strong><br />';
+                                var rules = "";
+                                for (var i = 0; i < data.rules.length; i++) {
+                                    if (data.rules[i].rule !== "-"){
+                                        var ruleString = data.rules[i].rule.replace(/Except/g , "<br />Except");
+                                        divInfo += data.rules[i].order  + "<br />" + " " + ruleString + "<br />";
+                                    } else {
+                                        divInfo += "none <br />";
+                                    }                                    
+                                }
+                                var row = infoDiv.append('tr');
+                                    row
+                                        .append('td')
+                                        .html(divInfo);
+                        } else {
+                            for (var i in data) {
+                                if (typeof data[i] === 'object') {
+                                    var divInfo = '';
+                                    for (var e in data[i]) {
+                                        divInfo += '<div><strong>'+e+': </strong>'+data[i][e]+'</div>';
+                                    }
+                                    var row = infoDiv.append('tr');
+                                        row
+                                            .append('td')
+                                            .html(divInfo);
+                                } else {
+                                    var row = infoDiv.append('tr');
+                                        row
+                                            .append('td')
+                                            .html('<strong>'+dictionary(i)+'</strong>');
+                                        row
+                                            .append('td')
+                                            .text(data[i]);
+                                }
+                            }                            
+                        }  
+                    }
+
+
+                    $scope.pageLoadInfo = function(data, type) {
                         for (var i in data) {
                             if (typeof data[i] === 'object') {
                                 var divInfo = '';
                                 for (var e in data[i]) {
-                                    divInfo += '<div><strong>'+e+': </strong>'+data[i][e]+'</div>';
+                                    if (e !==  "index"){
+                                        divInfo += '<div><strong>'+e+': </strong>'+data[i][e]+'</div>';
+                                    }
                                 }
                                 var row = infoDiv.append('tr');
                                     row
                                         .append('td')
                                         .html(divInfo);
                             } else {
-                                console.log('other')
                                 var row = infoDiv.append('tr');
                                     row
                                         .append('td')
@@ -1883,20 +2544,48 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                         .append('td')
                                         .text(data[i]);
                             }
-                        }
-                        // switch(type) {
-
-                        // }
+                        }                       
                     }
+
                     var linktext = d3.selectAll('.linkgroup');
                     var text = linktext
                         .append('text')
                         .attr("fill", '#fff')
                         .style('font-size', '3em')
+                        .style('cursor', 'pointer')
                         .attr('text-anchor', 'middle')
-                        .text(function(d) { return d.value; });
+                        .text(function(d) { return d.value; })
+                        .on('click', function(d){
+                            $scope.appendInfo(d, 'linkBetween');
+                        });
 
-                    force.on("tick", function(e) {
+                    function tick() {
+                        node[0].x = width;
+                        node[0].y = height;
+                        var value = 120; 
+
+                        node.attr("cx", function(d) { 
+                                if (d.group === "child") {
+                                    value = 0;
+                                } else {
+                                    value = 120;
+                                }
+                                return d.x = Math.max(value, Math.min(width - value, d.x)); 
+                            })
+                            .attr("cy", function(d) { 
+                                if (d.group === "child") {
+                                    value = 0;
+                                } else {
+                                    value = 120;
+                                }
+                                return d.y = Math.max(value, Math.min(height - value, d.y)); });
+
+                        link.attr("x1", function(d) { return d.source.x; })
+                            .attr("y1", function(d) { return d.source.y; })
+                            .attr("x2", function(d) { return d.target.x; })
+                            .attr("y2", function(d) { return d.target.y; });
+
+
                         text.attr("transform", function(d, i) {
                             var x1 = d.source.x;
                             var x2 = d.target.x;
@@ -1906,17 +2595,158 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                             var y = ((y1+y2)*1.027)/2;
                             return "translate(" + x + "," + y + ")";
                         });
+
                         node.attr("transform", function(d, i) {
                             return "translate(" + d.x + "," + d.y + ")";
                         });
-                        node[0].x = width;
-                        node[0].y = height;
-                        link.attr("x1", function(d) { return d.source.x; })
-                            .attr("y1", function(d) { return d.source.y; })
-                            .attr("x2", function(d) { return d.target.x; })
-                            .attr("y2", function(d) { return d.target.y; })
-                    });
+                    };
+
+                    force.on("tick", tick);
                     force.start();
+                    $scope.onloadInfo();
+
+                    //LEGEND
+                    var circle_legend = vis.selectAll(".circle_legend")
+                        .data(["Stealth COIs"])
+                        .enter().append("g")
+                        .attr("class", "circle_legend")
+                        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+                    circle_legend.append('svg:circle')
+                        .attr('transform', 'translate(15,15) scale(0.5)')
+                        .attr('r', 25)
+                        .style('fill', '#fff')
+                        .style("stroke-width", "8px")
+                        .style("stroke" , "#259286");
+                    circle_legend.append("text")
+                        .attr("x", 38)
+                        .attr("y", 17)
+                        .attr("dy", ".35em")
+                        .text(function(d) { return d; });
+
+
+                    var link_legend = vis.selectAll(".link_legend")
+                        .data(["User with Shared Access"])
+                        .enter().append("g")
+                        .attr("class", "link_legend")
+                        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+                    link_legend.append('svg:rect')
+                        .attr('transform', 'translate(0,35)')
+                        .style('fill', '#259286')
+                        .attr('width', 30)
+                        .attr('height', 20);
+                    link_legend.append("text")
+                        .attr("x", 38)
+                        .attr("y", 44)
+                        .attr("dy", ".35em")
+                        .text(function(d) { return d; });
+
+
+                    var standard_legend = vis.selectAll(".standard_legend")
+                        .data(["Standard"])
+                        .enter().append("g")
+                        .attr("class", "standard_legend")
+                        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+                    standard_legend.append('svg:polygon')
+                        .attr('transform', 'translate(0,61) scale(0.5)')
+                        .style('fill', '#515151')
+                        .attr('points', '53,18 53,10 60,10 60,0 44,0 44,10 51,10 51,16 31,16 31,10 38,10 38,0 22,0 22,10 29,10 '+
+                        '29,16 9,16 9,10 16,10 16,0 0,0 0,10 7,10 7,18 29,18 29,26 7,26 7,35 0,35 0,45 16,45 16,35 9,35 9,28 29,28 29,35 22,35 22,45 '+
+                        '38,45 38,35 31,35 31,28 51,28 51,35 44,35 44,45 60,45 60,35 53,35 53,26 31,26 31,18');
+                    standard_legend.append("text")
+                        .attr("x", 38)
+                        .attr("y", 74)
+                        .attr("dy", ".35em")
+                        .text(function(d) { return d; });
+
+
+                    var ct_legend = vis.selectAll(".ct_legend")
+                        .data(["ClearText"])
+                        .enter().append("g")
+                        .attr("class", "ct_legend")
+                        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+                    ct_legend.append('svg:path')
+                        .attr('transform', 'translate(0,90) scale(0.4)')
+                        .style('fill', '#259286')
+                        .attr('d', 'M36.8,12.2L19.6,15l4.4-12L36.8,0V12.2z M3.8,20.8l9.2-3.7l5.4-11.4L3.8,20.8z M36.8,16.5l-18.6,3.8'+
+                        'L17.5,37h19.3V16.5z M12.2,21.6l-9.8,3.6L0,37h10.3L12.2,21.6z M42.8,12.2L59.9,15l-4.6-12L42.8,0V12.2z M60.4,5.8l5.4,11.4l9.2,3.7'+
+                        'L60.4,5.8z M42.8,37h20.4L61,20.3l-18.2-3.8V37z M68.6,37h10.3l-2.4-11.8l-9.8-3.6L68.6,37z M36.8,67.2l-17.3-2.8l4.4,12l12.8,3.1'+
+                        'V67.2z M18.5,73.6l-5.4-11.4l-9.2-3.7L18.5,73.6z M36.8,42H17.5l0.7,16.8l18.6,2.1V42z M10.3,42H0l2.4,11.9l9.8,3.7L10.3,42z'+
+                        ' M42.8,79.4l12.4-3.1l4.6-12l-17.1,2.8V79.4z M75.1,58.6l-9.2,3.7l-5.4,11.4L75.1,58.6z M42.8,60.9L61,58.8L63.2,42H42.8V60.9z'+
+                        ' M66.7,57.5l9.8-3.7L78.9,42H68.6L66.7,57.5z');
+                    ct_legend.append("text")
+                        .attr("x", 38)
+                        .attr("y", 107)
+                        .attr("dy", ".35em")
+                        .text(function(d) { return d; });
+
+
+                    var quar_legend = vis.selectAll(".quar_legend")
+                        .data(["Quarantine"])
+                        .enter().append("g")
+                        .attr("class", "quar_legend")
+                        .attr("transform", function(d, i) { return "translate(0, " + i * 20 + ")"; });
+                    quar_legend.append('svg:path')
+                        .attr('transform', 'translate(3,140) scale(0.25)')
+                        .style('fill', '#ff0000')
+                        .attr('d', 'M36.6,32.1c1.4-2.2,2.4-4.7,2.9-7.3c-8.1-3.3-13.8-11.2-13.8-20.5c0-1.1,0.1-2.1,0.2-3.1 C23.7,0.4,21.3,0,18.8,0c-0.2,0-0.4,0-0.6,0'+
+                        'c-0.2,1.4-0.3,2.9-0.3,4.3C17.9,16.9,25.6,27.7,36.6,32.1z M94.3,36.2c-4.3,5-10.6,8.1-17.7,8.1c-12.9,0-23.4-10.4-23.4-23.3c0-3.8,0.9-7.5,2.6-10.7'+
+                        'l-2.8-1.6 c-1.2,1.4-3.1,2.4-5.1,2.4c-2.1,0-3.9-0.9-5.1-2.4l-3,1.8c1.6,3.2,2.5,6.8,2.5,10.6c0,12.9-10.5,23.3-23.4,23.3 c-7,0-13.3-3.1-17.6-7.9'+
+                        'L0,37.1c6.2,8,15.9,13.1,26.7,13.1c8,0,15.3-2.8,21.1-7.4c5.8,4.6,13.1,7.4,21.1,7.4 c10.9,0,20.6-5.2,26.7-13.1L94.3,36.2z');
+                    quar_legend.append('svg:path')
+                        .attr('transform', 'rotate(120,-27,71.5) scale(0.25)')
+                        .style('fill', '#ff0000')
+                        .attr('d', 'M36.6,32.1c1.4-2.2,2.4-4.7,2.9-7.3c-8.1-3.3-13.8-11.2-13.8-20.5c0-1.1,0.1-2.1,0.2-3.1 C23.7,0.4,21.3,0,18.8,0c-0.2,0-0.4,0-0.6,0'+
+                        'c-0.2,1.4-0.3,2.9-0.3,4.3C17.9,16.9,25.6,27.7,36.6,32.1z M94.3,36.2c-4.3,5-10.6,8.1-17.7,8.1c-12.9,0-23.4-10.4-23.4-23.3c0-3.8,0.9-7.5,2.6-10.7'+
+                        'l-2.8-1.6 c-1.2,1.4-3.1,2.4-5.1,2.4c-2.1,0-3.9-0.9-5.1-2.4l-3,1.8c1.6,3.2,2.5,6.8,2.5,10.6c0,12.9-10.5,23.3-23.4,23.3 c-7,0-13.3-3.1-17.6-7.9'+
+                        'L0,37.1c6.2,8,15.9,13.1,26.7,13.1c8,0,15.3-2.8,21.1-7.4c5.8,4.6,13.1,7.4,21.1,7.4 c10.9,0,20.6-5.2,26.7-13.1L94.3,36.2z');   
+                    quar_legend.append('svg:path')
+                        .attr('transform', 'rotate(240,54,70) scale(0.25)')
+                        .style('fill', '#ff0000')
+                        .attr('d', 'M36.6,32.1c1.4-2.2,2.4-4.7,2.9-7.3c-8.1-3.3-13.8-11.2-13.8-20.5c0-1.1,0.1-2.1,0.2-3.1 C23.7,0.4,21.3,0,18.8,0c-0.2,0-0.4,0-0.6,0'+
+                        'c-0.2,1.4-0.3,2.9-0.3,4.3C17.9,16.9,25.6,27.7,36.6,32.1z M94.3,36.2c-4.3,5-10.6,8.1-17.7,8.1c-12.9,0-23.4-10.4-23.4-23.3c0-3.8,0.9-7.5,2.6-10.7'+
+                        'l-2.8-1.6 c-1.2,1.4-3.1,2.4-5.1,2.4c-2.1,0-3.9-0.9-5.1-2.4l-3,1.8c1.6,3.2,2.5,6.8,2.5,10.6c0,12.9-10.5,23.3-23.4,23.3 c-7,0-13.3-3.1-17.6-7.9'+
+                        'L0,37.1c6.2,8,15.9,13.1,26.7,13.1c8,0,15.3-2.8,21.1-7.4c5.8,4.6,13.1,7.4,21.1,7.4 c10.9,0,20.6-5.2,26.7-13.1L94.3,36.2z');                  
+                    quar_legend.append("text")
+                        .attr("x", 38)
+                        .attr("y", 140)
+                        .attr("dy", ".35em")
+                        .text(function(d) { return d; });
+
+
+                    var checkmark_legend = vis.selectAll(".checkmark_legend")
+                        .data(["Allowed Connections"])
+                        .enter().append("g")
+                        .attr("class", "checkmark_legend")
+                        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+                    checkmark_legend.append('svg:path')
+                        .attr('transform', 'translate(-85 -93) scale(0.5)')
+                        .attr('d', 'M193.6,542.1c-0.5,0-8.8-14.6-8.8-14.6l8-3.6l1.6,8.4c0,0,19.9-22.3,21.7-23.9l4.3-0.2'+
+                                        'C220.3,508.2,194.1,542.1,193.6,542.1z')
+                        .style('fill', '#000000');                
+                    checkmark_legend.append("text")
+                        .attr("x", 38)
+                        .attr("y", 170)
+                        .attr("dy", ".35em")
+                        .text(function(d) { return d; });
+
+                    
+                    var redx_legend = vis.selectAll(".redx_legend")
+                        .data(["Dropped Connections"])
+                        .enter().append("g")
+                        .attr("class", "redx_legend")
+                        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+                    redx_legend.append('svg:path')
+                        .attr('transform', 'translate(7,185) scale(0.5)')
+                        .attr('d', 'M0,29.9c0-0.6,11.3-12,11.8-12.6c0.5-0.5-3.3-13-3.3-14.6C8.4,1.5,10.7,0,11.2,0'+
+                                    'c2.1,0,9.4,9.1,9.4,9.1s11-8.2,12.3-7.8c2.5,0.8,3.5,3,2,4.4c-2.3,2.5-11,11.8-11,13.9c0,1,5.3,8.7,4.7,9.5l-3.1,4.5'+
+                                    'c-0.6,0.9-10-7.7-10-7.7S5.3,35.8,4.9,35.8C4.5,35.8,0,30.5,0,29.9z')
+                        .attr('style', 'fill:#f60000;fill-opacity:1;stroke:none;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1');    
+                    redx_legend.append("text")
+                        .attr("x", 38)
+                        .attr("y", 194)
+                        .attr("dy", ".35em")
+                        .text(function(d) { return d; });
+
                 }, 0, false);
             })
         }
@@ -2107,11 +2937,28 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
     };
 }]);
 
-angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$rootScope', '$location', function ($timeout, $rootScope, $location) {
+angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$rootScope', '$location', '$http', function ($timeout, $rootScope, $location, $http) {
     return {
         link: function ($scope, element, attrs) {
             $scope.$on('stealthForceChart', function (event, data, params) {
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
+
+                    var trig = d3.select("#stealthforcechart")
+                        .append("div");
+
+                    var trigger_leggend = trig.selectAll(".trigger_leggend")
+                        .data(["test"])
+                        .enter().append("button")
+                        .text("Redraw")
+                        .style("display","block")
+                        .attr("class", "sUpload button-success pure-button")
+                        .style("fill", "#000");
+
+                    $('.sUpload').on('click',function(){
+                        $scope.triggerScript();
+                    });
+
+
                     var width = $('#stealthforcechart').width();
                     var height = width/1.5;
                     var tCount = [], link, node;
@@ -2149,11 +2996,11 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                     }
                     var color = function(group, type) {
                         if (group === 0) { //stealth role/group/coi node
-                            if(type === "role") {
+                            if (type === "role") {
                                 return palette.pink;
-                            } else if(type === "group") {
+                            } else if (type === "group") {
                                 return palette.purple;
-                            } else if(type === "coi") {
+                            } else if (type === "coi") {
                                 return palette.green;
                             } 
                             
@@ -2173,10 +3020,6 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         if (x === undefined) {
                             return 18;
                         }
-                        // position will be between 0 and 100
-                        // if(x > 50) {
-                        //  x = 50;
-                        // }
                         var minp = 0;
                         var maxp = maxNum;
                         // The result should be between 100 an 10000000
@@ -2187,36 +3030,19 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         return Math.exp(minv + scale*(x-minp));
                     }
 
-
-
-                    // Toggle children on click.
-                    function click(connections) {
-                        //.hide()
-                        // console.log(" ");
-                        // console.log(" ");
-                        for(var i = 0; i<connections.length; i++){
-                            // console.log(data.nodes[connections[i]].index);
-                           if (data.nodes[connections[i]].hide) {
-                                data.nodes[connections[i]]._hide= data.nodes[connections[i]].hide;
-                                data.nodes[connections[i]].hide = null;
-                            } else {
-                                data.nodes[connections[i]].hide = "true";
-                                data.nodes[connections[i]]._hide = null;
-                            }
-                        }
-                        // console.log(" ");
-                        // console.log(" ");
-                        $scope.update();
-                    }
-
-
-
                     var circleWidth = 5;
+
                     var vis = d3.select("#stealthforcechart")
-                        .append("svg:svg")
+                        .append("svg")
                         .attr("class", "stage")
                         .attr("width", width)
-                        .attr("height", height);
+                        .attr("height", height)
+                        .call(d3.behavior.zoom().scaleExtent([0.5, 4]).on("zoom", zoom))
+                        .append('g');
+
+                      function zoom() {
+                        vis.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+                      }
 
                     // Add tooltip
                     $scope.tip = d3.tip()
@@ -2225,38 +3051,55 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .html(function(d) {
                             var title = "<strong>Rules: </strong> <br />";
                             var rules = "";
-                            for(var i = 0; i < d.rules.length; i++) {
-                            //     if(d.rules[i].order === 1) {
-                            //         if(d.rules[i].rule !== "-"){
-                            //             ret += d.cois[i] + ":<br />" +
-                            //                 "&nbsp&nbsp&nbsp" + d.rules[i].order + " " + d.rules[i].rule + "<br />";
-                            //         } else {
-                            //             ret += d.cois[i] + "<br />";
-                            //         }
-                            //     } else {
-                                if(d.rules[i].rule !== "-"){
+                            for (var i = 0; i < d.rules.length; i++) {
+                                if (d.rules[i].rule !== "-") {
                                     rules += "&nbsp&nbsp&nbsp" + d.rules[i].order + " " + d.rules[i].rule + "<br />";
-                                }
-                            //     }
-                                
+                                }                                
                             }
-                            if(rules === "") {
+                            if (rules === "") {
                                 return title + "None";
                             }
                             else {
                                 return title + rules;
-                            }
-                            
+                            }                            
                         });
                         vis.call($scope.tip);
                    
-                    var force = d3.layout.force()
-                        
+                    var force = d3.layout.force()                        
                         .on("tick", tick)
-                        .gravity(0.20)
+                        .gravity(0.05)
                         .linkDistance(20)
                         .charge(-1500)
                         .size([width-50, height]);
+
+                    function dragstart(d, i) {
+                        d3.event.sourceEvent.stopPropagation();
+                        d.fixed = true;
+                        force.stop();
+                    }
+
+                    function dragmove(d, i) {
+                        d.fixed = true; 
+                        d.px += d3.event.dx;
+                        d.py += d3.event.dy;
+                        d.x += d3.event.dx;
+                        d.y += d3.event.dy;
+                        tick(); 
+                    }
+
+                    function dragend(d, i) {
+                        d.fixed = true; 
+                        $http({method: 'GET', url: '/stealth/stealth_deploy_config?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name+'&page_title=stealth_COI_map'}).
+                            success(function(data) { 
+                                if (data["force"].length>0) {
+                                    $http({method: 'POST', url: '/stealth/stealth_deploy_config', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_COI_map"}});
+                                }else{
+                                    $http({method: 'POST', url: '/stealth/stealth_deploy_config?type=insert', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_COI_map"}});
+                                }
+                            });
+                        tick();
+                        force.resume();
+                    }
 
                     $scope.update = function() {
                         force
@@ -2274,22 +3117,31 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                             .style("stroke-width", "5");
                         link.exit().remove();
 
+
+                        var node_drag = d3.behavior.drag()
+                            .on("dragstart", dragstart)
+                            .on("drag", dragmove)
+                            .on("dragend", dragend);       
+
                         node = vis.selectAll(".node")
                             .data(data.nodes);    
                         node
                             .enter()
                             .append("g")
                             .attr("class", "node")
-                            .call(force.drag);
+                            .call(node_drag);
 
                        // console.log("test");
                         var cldr;
                         //CIRCLE
                         var n = node.each(function(d){
+                            if ((d.type === "role") || (d.type === "group")) {
+                                d.fixed = true;
+                            } 
                             //console.log(d);
                             var elm = d3.select(this)
 
-                            if(d.hide !== "true"){
+                            if (d.hide !== "true") {
                                //console.log(d.index);
                                /* elm
                                     .attr('style', 'display:block');*/
@@ -2313,19 +3165,19 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                                             'l0.959-3.195l-2.882-1.775L24.715,19.976z')
                                         .attr('fill', '#595A5C');
                                 } else if (d.type === "user") {
-                                elm
-                                    .append("rect")
-                                    .attr("width", 22)
-                                    .attr("height", 22)
-                                   // .attr("connections", $scope.requery(d))
-                                   // .attr("connections", $scope.requery(d))
-                                    .attr("x", -11)
-                                    .attr("y", -11)
-                                    .attr("cx", function(d) { return d.x; })
-                                    .attr("cy", function(d) { return d.y; })
-                                    .attr("fill", function(d, i) { return  color(d.group, d.type); })
-                                    //.style("stroke-width", "1.5px");
-                                    //.style("stroke", "#fff");
+                                    //console.log(d);
+                                    elm
+                                            .attr('height', '23')
+                                            .attr('width', '23')
+                                        .append('svg:path')
+                                            .attr('transform', 'translate(-11,-11)')
+                                            .attr('d', 'M22,22.5h-3.4c0,0,0-3.5,0-3.5c0-0.5-0.4-1.1-0.9-1.1'+
+                                            'c-0.5,0-1,0.5-1,1.1c0,0,0,3.5,0,3.5H5.3c0,0,0-3.3,0-3.5c0-0.5-0.4-1.1-1-1.1c-0.5,0-1,0.5-1,1.1c0,0.1,0,3.5,0,3.5H0'+
+                                            'c0,0,0-5.3,0-6.2c0-2.7,2.2-4.8,4.9-4.8c0.2,0,12,0,12.2,0c2.6,0,4.7,1.9,4.9,4.4L22,22.5z M11.1,0C8.4,0,6.2,2.2,6.2,4.9'+
+                                            's2.2,4.9,4.9,4.9c2.7,0,4.9-2.2,4.9-4.9S13.8,0,11.1,0z')
+                                            .style('fill-rule', '#evenodd')
+                                            .style('clip-rule', '#evenodd')
+                                            .style('fill', function(d, i) { return  color(d.group, d.type);} );
                                 } else {
                                     elm
                                         .append("svg:circle")
@@ -2335,7 +3187,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                                        // .style("stroke-width", "1.5px")
                                        // .style("stroke", "#fff")
                                 }
-                                if(d.type === "user") {
+                                if (d.type === "user") {
                                     elm
                                         .on('mouseover', function(d){
                                             elm.style('cursor', 'pointer')
@@ -2395,21 +3247,29 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         // node.transition()
                         //     .attr("r", function(d) { return 10; });
                         node.exit().remove();
-
-
                     };
                     $scope.update();
 
-
                     function tick() {
+                        node[0].x = width;
+                        node[0].y = height;
+                        var value = 40; 
+
+                        node.attr("cx", function(d) { 
+                                return d.x = Math.max(value, Math.min(width - value, d.x)); 
+                            })
+                            .attr("cy", function(d) { 
+                                return d.y = Math.max(value, Math.min(height - (value*5.6), d.y)); });
+
+                        link.attr("x1", function(d) { return d.source.x; })
+                            .attr("y1", function(d) { return d.source.y; })
+                            .attr("x2", function(d) { return d.target.x; })
+                            .attr("y2", function(d) { return d.target.y; });
+
+
                         node.attr("transform", function(d, i) {
                             return "translate(" + d.x + "," + d.y + ")";
                         });
-
-                        link.attr("x1", function(d)   { return d.source.x; })
-                            .attr("y1", function(d)   { return d.source.y; })
-                            .attr("x2", function(d)   { return d.target.x; })
-                            .attr("y2", function(d)   { return d.target.y; })
                     }
 
 
@@ -2440,7 +3300,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .data(circle_legend_data)
                         .enter().append("g")
                         .attr("class", "circle_legend")
-                        .attr("transform", function(d, i) { return "translate(11," + (i+5) * 23 + ")"; });
+                        .attr("transform", function(d, i) { return "translate(11," + (i+5.5) * 24 + ")"; });
 
                     circle_legend.append("circle")
                         .attr("r", function (d) {return logslider(d["width"]) - 7; })
@@ -2459,7 +3319,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .data(legend_data)
                         .enter().append("g")
                         .attr("class", "legend")
-                        .attr("transform", function(d, i) { return "translate(2," + i * 20 + ")"; });
+                        .attr("transform", function(d, i) { return "translate(2," + (i+1) * 20 + ")"; });
 
                     legend.append("rect")
                         .attr("width", 18)
@@ -2476,7 +3336,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .data(["Cleartext COI"])
                         .enter().append("g")
                         .attr("class", "gateway_legend")
-                        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+                        .attr("transform", function(d, i) { return "translate(0," + (i+1) * 20 + ")"; });
 
                     gateway_legend.append('svg:path')
                         .attr('transform', 'translate(0,176)')
@@ -2500,7 +3360,6 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .attr("y", 194)
                         .attr("dy", ".35em")
                         .text(function(d) { return d; });
-
                     
                 }, 0, false);
             })
@@ -2585,801 +3444,252 @@ angular.module('mean.pages').directive('makeTreeChart', ['$timeout', '$rootScope
     };
 }]);
 
-angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'appIcon', '$rootScope', 'timeFormat', function ($timeout, $location, appIcon, $rootScope, timeFormat) {
+angular.module('mean.pages').directive('numbersOnly', function(){
+   return {
+     require: 'ngModel',
+     link: function(scope, element, attrs, modelCtrl) {
+       modelCtrl.$parsers.push(function (inputValue) {
+           // this next if is necessary for when using ng-required on your input. 
+           // In such cases, when a letter is typed first, this parser will be called
+           // again, and the 2nd time, the value will be undefined
+           if (inputValue == undefined) return '' 
+           var transformedInput = inputValue.replace(/[^0-9+.]/g, ''); 
+           if (transformedInput!=inputValue) {
+              modelCtrl.$setViewValue(transformedInput);
+              modelCtrl.$render();
+           }         
+           return transformedInput;         
+       });
+     }
+   };
+});
+
+angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScope', '$http', function ($timeout, $rootScope, $http) {
     return {
         link: function ($scope, element, attrs) {
-            $scope.$on('laneGraph', function() {
+            $scope.$on('chordChart', function (event, data) {
 
-                $.fn.scrollTo = function( target, options, callback ){
-                if (typeof options == 'function' && arguments.length == 2) { callback = options; options = target; }
-                    var settings = $.extend({
-                        scrollTarget  : target,
-                        offsetTop     : 0,
-                        duration      : 200,
-                        easing        : 'swing'
-                    }, options);
-                    return this.each(function(){
-                        var scrollPane = $(this);
-                        var scrollTarget = (typeof settings.scrollTarget == "number") ? settings.scrollTarget : $(settings.scrollTarget);
-                        var scrollY = (typeof scrollTarget == "number") ? scrollTarget + scrollPane.scrollTop() : scrollTarget.offset().top + scrollPane.scrollTop() - parseInt(settings.offsetTop);
-                        scrollPane.animate({scrollTop : scrollY }, parseInt(settings.duration), settings.easing, function(){
-                            if (typeof callback == 'function') { callback.call(this); }
-                        });
-                    });
-                }
 
-                $scope.$broadcast('spinnerHide')
+                // var infoDiv = d3.select('#chordchartinfo').append('table');
 
-                var itemsDimension = $scope.crossfilterData.dimension(function(d){ return d.time });
-                var items = itemsDimension.top(Infinity);
-                $scope.inTooDeep = {
-                    areWe: false,
-                    min: null,
-                    max: null
-                };
+                // $scope.appendInfo = function(data, type) { 
+                //     infoDiv.selectAll('tr').remove();
 
-                var laneLength = $scope.lanes.length;
-                var width = element.width();
-
-                var m = [5, 15, 15, 120], //top right bottom left
-                    w = width - m[1] - m[3],
-                    h = 470 - m[0] - m[2],
-                    miniHeight = 0,
-                    mainHeight = h - miniHeight - 50;
-
-                var queryThreshhold = 3600; // one hour in seconds
-
-                //scales
-                var x = d3.time.scale()
-                    .domain([new Date($scope.start), new Date($scope.end)])
-                    .range([0, w]);
-                var x1 = d3.time.scale()
-                    .domain([new Date($scope.start), new Date($scope.end)])
-                    .range([0, w]);
-                var y1 = d3.scale.linear()
-                    .domain([0, laneLength])
-                    .range([0, mainHeight]);
-
-                // current time div
-                var currentTimeSlice = d3.select("#lanegraph").append('div').attr('class', 'timeslice');
-                var currentTime = currentTimeSlice.append('div').style('float', 'left');
-
-                // enhanced view alert
-                $scope.alert = currentTimeSlice.append('div')
-                    .attr('class', 'laneAlert')
-                    .style('background-color', '#CC0000')
-                    .style('padding', '0 10px 0 10px')
-                    .style('text-align', 'center')
-                    .style('color', '#FFFFFF')
-                    .style('float', 'right')
-                    .style('display', 'none')
-                    .style('width', '140px');
-
-                $scope.alert.html('Enhanced drill-down view');
-
-                var chart = d3.select("#lanegraph")
-                    .append("svg")
-                    .attr("width", w + m[1] + m[3])
-                    .attr("height", h + m[0] + m[2])
-                    .on("dblclick", draw)
-                    .attr("class", "chart");
-            
-                chart.append("defs").append("clipPath")
-                    .attr("id", "clip")
-                    .append("rect")
-                    .attr("width", w)
-                    .attr("height", mainHeight);
-
-                var main = chart.append("g")
-                    .attr("transform", "translate(" + m[3] + "," + m[0] + ")")
-                    .attr("width", w)
-                    .attr("height", mainHeight)
-                    .attr("class", "main");
-
-                var xAxis = d3.svg.axis()
-                    .scale(x1)
-                    .orient('bottom')
-                     .tickFormat(d3.time.format('%H:%M'))
-                    .tickSize(1)
-                    .tickPadding(8);
-                
-                var xAxisBrush = chart.append("g")
-                    .attr("class", "x axis")
-                    .attr("transform", "translate(" + m[3] + "," + (mainHeight+9) + ")")
-                    .call(xAxis);
-
-                //main lanes and texts
-                main.append("g").selectAll(".laneLines")
-                    .data($scope.lanes)
-                    .enter().append("line")
-                    .attr("x1", m[1])
-                    .attr("y1", function(d, i) { return y1(i);})
-                    .attr("x2", w)
-                    .attr("y2", function(d, i) {return y1(i);})
-                    .attr("stroke", "#666");
-
-                main.append("g").selectAll(".laneText")
-                    .data($scope.lanes)
-                    .enter().append("text")
-                    .text(function(d) {return d;})
-                    .attr("x", -m[1])
-                    .attr("y", function(d, i) {return y1(i + .5);})
-                    .attr("dy", ".5ex")
-                    .attr("text-anchor", "end");
-
-                function colors(type) {
-                    switch(type){
-                        case 'Conn_ioc':
-                            return "#EFAA86";
-                        case 'DNS_ioc':
-                            return "#F3BD5D";
-                        case 'HTTP_ioc':
-                            return "#FFF2A0";
-                        case 'SSL_ioc':
-                            return "#D97373";
-                        case 'Email_ioc': 
-                            return "#F3BD5D";
-                        case 'File_ioc':
-                            return "#F68D55";
-                        default:
-                            return "#D8464A";
-                    }
-                }
-
-                $scope.point = function(element, type, name, id) {
-
-                    //console.log(type);
-                    if (type.search("ioc") !== -1) {
-                        element.attr('class', 'IOC');
-                        element = element.append('g')
-                            .attr('transform', 'translate(-18, -6)scale(0.8)');
-                        element.append('svg:path')
-                            .attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
-                            .attr('fill', colors(type));
-                        element.append('svg:polygon')
-                            .attr('points', '18.155,3.067 5.133,26.932 31.178,26.932 ')
-                            .attr('fill', '#595A5C');
-                        element.append('svg:polygon')
-                            .attr('points', '19.037,21.038 19.626,12.029 15.888,12.029 16.477,21.038 ')
-                            .attr('fill', colors(type));
-                        element.append('rect')
-                            .attr('x', 16.376)
-                            .attr('y', 22.045)
-                            .attr('fill', colors(type))
-                            .attr('width', 2.838)
-                            .attr('height', 2.448);
-                        return;
-                    } else { 
-                        element.attr('class', id);
-                        element = element.append('g').attr('transform', 'translate(-18, -6)scale(0.8)');
-                        switch(type){
-                            case 'secure':
-                                element.append('circle')
-                                    .attr('fill', function(d){ return '#A0BB71'; })
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:path')
-                                    .attr('d', 'M25.518,13.467h-0.002c0-0.003,0.002-0.006,0.002-0.008c0-4.064-3.297-7.359-7.359-7.359'+
-                                        'c-4.064,0-7.359,3.295-7.359,7.359c0,0.002,0,0.005,0,0.008v2.674H9.291V27.9h17.785v-11.76h-1.559V13.467z')
-                                    .attr('fill', '#595A5C');
-                                element.append('svg:path')
-                                    .attr('d', 'M18.184,8.754c-3.191,0-4.661,2.372-4.661,4.967'+
-                                        'c0,0.004,0,0.006,0,0.008v2.412h9.397v-2.412c0-0.002,0-0.004,0-0.008C22.92,11.126,21.315,8.754,18.184,8.754z')
-                                    .attr('fill', '#A0BB71');
-                                return;
-                            case 'Conn':
-                                element.append('circle')
-                                    .attr('fill', function(d){ return '#6FBF9B'; })
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:polygon')
-                                    .attr('points', '24.585,6.299 24.585,9.064 11.195,9.064 11.195,14.221 24.585,14.221 24.585,16.986 31.658,11.643 ')
-                                    .attr('fill', '#595A5C');
-                                element.append('svg:polygon')
-                                    .attr('points', '10.99,17.822 3.916,23.166 10.99,28.51 10.99,25.744 24.287,25.744 24.287,20.59 10.99,20.59 ')
-                                    .attr('fill', '#595A5C');
-                                return;
-                            case 'IOC Severity':
-                                var color;
-                                element.append('circle')
-                                    .attr('fill', function(d){ 
-                                        if(d.ioc_severity === 1){
-                                            color = '#377FC7'; 
-                                        }else if(d.ioc_severity === 2){
-                                            color = '#F5D800'; 
-                                        }else if(d.ioc_severity === 3){
-                                            color = '#F88B12'; 
-                                        }else if(d.ioc_severity === 4){
-                                            color = '#DD122A'; 
-                                        }else{
-                                            color = '#6FBF9B'; 
-                                        }
-                                        return color;
-                                    })
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:path')
-                                    .attr('d', 'M18,0C8.06,0,0,8.059,0,18s8.06,18,18,18c9.941,0,18-8.059,18-18S27.941,0,18,0z')
-                                    .attr('fill', color);
-                                element.append('svg:polygon')
-                                    .attr('points', '18.155,3.067 5.133,26.932 31.178,26.932 ')
-                                    .attr('fill', '#595A5C');
-                                element.append('svg:polygon')
-                                    .attr('points', '19.037,21.038 19.626,12.029 15.888,12.029 16.477,21.038 ')
-                                    .attr('fill', color);
-                                element.append('rect')
-                                    .attr('x', 16.376)
-                                    .attr('y', 22.045)
-                                    .attr('fill', color)
-                                    .attr('width', 2.838)
-                                    .attr('height', 2.448);
-                                return;
-                            case 'DNS':
-                                element.append('circle')
-                                    .attr('fill', function(d){ return '#708EBC'; })
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:path')
-                                    .attr('d', 'M20.909,13.115c0-0.07,0-0.106-0.071-0.106c-0.283,0-6.022,0.813-7.935,0.956'+
-                                        'c-0.036,0.955-0.071,2.053-0.071,3.009l2.267,0.106v8.707c0,0.071-0.035,0.143-0.142,0.178l-1.877,0.07'+
-                                        'c-0.035,0.92-0.035,1.982-0.035,2.938c1.452,0,3.33-0.036,4.818-0.036h4.888V26l-1.949-0.07'+
-                                        'C20.801,22.39,20.874,16.938,20.909,13.115z')
-                                    .attr('fill', '#595A5C');
-                                element.append('svg:path')
-                                    .attr('d', 'M17.473,10.921c1.771,0,3.329-1.274,3.329-3.187c0-1.486-1.098-2.867-3.152-2.867'+
-                                        'c-1.948,0-3.259,1.451-3.259,2.938C14.391,9.611,15.949,10.921,17.473,10.921z')
-                                    .attr('fill', '#595A5C');
-                                return;
-                            case 'HTTP':
-                                element.append('circle')
-                                    .attr('fill', function(d){ return '#67AAB5'; })
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:path')
-                                    .attr('d', 'M24.715,19.976l-2.057-1.122l-1.384-0.479l-1.051,0.857l-1.613-0.857l0.076-0.867l-1.062-0.325l0.31-1.146'+
-                                        'l-1.692,0.593l-0.724-1.616l0.896-1.049l1.108,0.082l0.918-0.511l0.806,1.629l0.447,0.087l-0.326-1.965l0.855-0.556l0.496-1.458'+
-                                        'l1.395-1.011l1.412-0.155l-0.729-0.7L22.06,9.039l1.984-0.283l0.727-0.568L22.871,6.41l-0.912,0.226L21.63,6.109l-1.406-0.352'+
-                                        'l-0.406,0.596l0.436,0.957l-0.485,1.201L18.636,7.33l-2.203-0.934l1.97-1.563L17.16,3.705l-2.325,0.627L8.91,3.678L6.39,6.285'+
-                                        'l2.064,1.242l1.479,1.567l0.307,2.399l1.009,1.316l1.694,2.576l0.223,0.177l-0.69-1.864l1.58,2.279l0.869,1.03'+
-                                        'c0,0,1.737,0.646,1.767,0.569c0.027-0.07,1.964,1.598,1.964,1.598l1.084,0.52L19.456,21.1l-0.307,1.775l1.17,1.996l0.997,1.242'+
-                                        'l-0.151,2.002L20.294,32.5l0.025,2.111l1.312-0.626c0,0,2.245-3.793,2.368-3.554c0.122,0.238,2.129-2.76,2.129-2.76l1.666-1.26'+
-                                        'l0.959-3.195l-2.882-1.775L24.715,19.976z')
-                                    .attr('fill', '#595A5C');
-                                return;
-                            case 'SSL':
-                                element.append('circle')
-                                    .attr('fill', function(d){ return '#A0BB71'; })
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:path')
-                                    .attr('fill', '#58595B')
-                                    .attr('d', 'M25.5,16.1v-2.7h0c0,0,0,0,0,0c0-4.1-3.3-7.4-7.4-7.4c-4.1,0-7.4,3.3-7.4,7.4c0,0,0,0,0,0v2.7H9.3'+
-                                    'v11.8h17.8V16.1H25.5z M22.9,13.7v2.4h-9.4v-2.4c0,0,0,0,0,0c0-2.6,1.5-5,4.7-5C21.3,8.8,22.9,11.1,22.9,13.7'+
-                                    'C22.9,13.7,22.9,13.7,22.9,13.7z');
-                                return;
-                            case 'Endpoint':
-                                element.append('circle')
-                                    .attr('fill', '#7E9E7B')
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:path')
-                                    .attr('d', 'M28.649,8.6H7.351c-0.684,0-1.238,0.554-1.238,1.238v14.363c0,0.684,0.554,1.238,1.238,1.238h7.529'+
-                                        'l-1.09,3.468v0.495h8.419v-0.495l-1.09-3.468h7.529c0.684,0,1.237-0.555,1.237-1.238V9.838C29.887,9.153,29.333,8.6,28.649,8.6z'+
-                                        'M28.477,22.072H7.635V10.074h20.842V22.072z')
-                                    .attr('fill', '#595A5C');
-                                return;
-                            case 'Stealth':
-                                element.append('circle')
-                                    .attr('fill', '#0080CE')
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:path')
-                                    .attr('fill', '#58595B')
-                                    .attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
-                                        'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
-                                        'C28.014,15.545,26.676,21.468,23.587,26.751z');
-                                element.append('svg:path')
-                                    .attr('fill', '#0080CE')
-                                    .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
-                                        'C11.076,16.238,11.938,20.26,13.699,23.661z');
-                                return;
-                            case 'Stealth_drop':
-                                element.append('svg:path')
-                                    .attr('fill', '#D8464A')
-                                    .attr('transform', 'translate (0,-8) scale (1.4)')
-                                    .attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
-                                        'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
-                                        'C28.014,15.545,26.676,21.468,23.587,26.751z');
-                                element.append('svg:path')
-                                    .attr('fill', '#58595B')
-                                    .attr('transform', 'translate (0,-8) scale (1.4)')
-                                    .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
-                                        'C11.076,16.238,11.938,20.26,13.699,23.661z');
-                                return;
-                            // case 'Stealth_drop':
-                            //     element.append('circle')
-                            //         .attr('fill', '#D8464A')
-                            //         .attr('fill-opacity', '.5')
-                            //         .attr('cx', 18)
-                            //         .attr('cy', 18)
-                            //         .attr('r', 18);
-                            //     element.append('svg:path')
-                            //         .attr('fill', '#58595B')
-                            //         .attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
-                            //             'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
-                            //             'C28.014,15.545,26.676,21.468,23.587,26.751z');
-                            //     element.append('svg:path')
-                            //         .attr('fill', '#D8464A')
-                            //         .attr('d', 'M13.699,23.661c1.801,3.481,2.743,4.875,4.457,4.875l0.011-19.85c0,0-2.988,2.794-7.09,3.251'+
-                            //             'C11.076,16.238,11.938,20.26,13.699,23.661z');
-                            //     return;
-                            case 'Email':
-                                element.append('circle')
-                                    .attr('fill', function(d){ return '#39BFC1'; })
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('polygon')
-                                    .style('fill', '#58595B')
-                                    .attr('points', '18,17.3 8.7,11.6 27.3,11.6 ');
-                                element.append('polygon')
-                                    .style('fill', '#58595B')
-                                    .attr('points', '28.4,24.4 7.6,24.4 7.6,13.1 18,19.7 28.4,13.1 ');
-                                return;
-                            case 'File':
-                                element.append('circle')
-                                    .attr('fill', function(d){ return '#B572AB'; })
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('svg:path')
-                                    .attr('d', 'M13.702,12.807h13.189c-0.436-0.655-1.223-1.104-2.066-1.104c0,0-7.713,0-8.361,0'+
-                                        'c-0.386-0.796-1.278-1.361-2.216-1.361H7.562c-1.625,0-1.968,0.938-1.839,2.025l2.104,11.42c0.146,0.797,0.791,1.461,1.594,1.735'+
-                                        'c0,0,2.237-10.702,2.378-11.308C12.005,13.334,12.403,12.807,13.702,12.807z')
-                                    .attr('fill', '#595A5C');
-                                element.append('svg:path')
-                                    .attr('d', 'M29.697,13.898c0,0-14.47-0.037-14.68-0.037c-1.021,0-1.435,0.647-1.562,1.289l-2.414,10.508h16.716'+
-                                        'c1.146,0,2.19-0.821,2.383-1.871l1.399-7.859C31.778,14.706,31.227,13.848,29.697,13.898z')
-                                    .attr('fill', '#595A5C');
-                                return;
-                            case 'Applications':
-                                element.append('circle')
-                                    .attr('fill', '#DEDEDE')
-                                    .attr('cx', 18)
-                                    .attr('cy', 18)
-                                    .attr('r', 18);
-                                element.append('rect')
-                                    .attr('x', 10)
-                                    .attr('y', 10)
-                                    .attr('height', 4)
-                                    .attr('width', 17)
-                                    .style('fill', '#5E5E5E');
-                                element.append('rect')
-                                    .attr('x', 10)
-                                    .attr('y', 16)
-                                    .attr('height', 4)
-                                    .attr('width', 17)
-                                    .style('fill', '#5E5E5E');
-                                element.append('rect')
-                                    .attr('x', 10)
-                                    .attr('y', 22)
-                                    .attr('height', 4)
-                                    .attr('width', 17)
-                                    .style('fill', '#5E5E5E');
-                                return;
-                            default:
-                                return;
-                        }
-                    }
-                }
- 
-                var brush = d3.svg.brush()
-                    .x(x1)
-                    .on("brushend", mouseup);
-                main.append("g")
-                    .attr("class", "x brush")
-                    .call(brush)
-                    .selectAll("rect")
-                    .attr("y", 1)
-                    .attr("height", mainHeight);
-
-                var itemRects = main.append("g")
-                    .attr("clip-path", "url(#clip)");
-                
-                // nav
-                var navArray = [], currentNavPos = 0;
-                var buttonHolder = d3.select("#lanegraph").append('div').attr('class', 'buttonHolder');
-                var resetBtn = buttonHolder
-                    .append('button')
-                    .html('Reset')
-                    .attr('class', 'resetButton')
-                    .on('click', function(){
-                        draw();
-                    });
-                var prevButton = buttonHolder.append('button')
-                    .html('Previous')
-                    .attr('class', 'prevButton')
-                    .on('click', function(){
-                        if (currentNavPos > 0) {
-                            nextButton.attr('disabled', null);
-                            currentNavPos--;
-                            mouseup('nav');
-                        }
-                    });
-                var nextButton = buttonHolder
-                    .append('button')
-                    .html('Next')
-                    .attr('class', 'prevButton')
-                    .on('click', function(){
-                        if (currentNavPos < navArray.length) {
-                            prevButton.attr('disabled', null);
-                            currentNavPos++;
-                            mouseup('nav');
-                        }
-                    });
-                var qMarkButton = buttonHolder
-                    .append('button')
-                    .html('?')
-                    .attr('class', 'qMarkButton')
-                    .on('click', function(){
-                        $scope.description(
-                            "This chart represents discrete events deemed significant to the IOC being examined "+
-                            "(i.e. it is related to the 3-tuple which includes local, remote and IOC information)."+
-                            "Discrete event categories available are: IOC - describing the indicator, conn - the "+
-                            "raw IP connection information, applications that were used by the use, DNS queries, "+
-                            "HTTP queries, SSL connections, File metadata, and Endpoint events)."+
-                            "To view details of any event, click the icon in the chart and details will be "+
-                            "highlighted in the table to the left.  Further information will be displayed by "+
-                            "clicking the \"+\" sign for each record."+
-                            "To view ALL event data in the chart, left mouse click and drag over the area to zoom."+
-                            "If the zoom area covers a time slice less than 60 minutes, an \"Enhanced View\" will "+
-                            "be displayed on the screen, showing every event triggered by the local endpoint within"+
-                            "the time slice.  This query can take a few seconds to display, depending on the amount"+
-                            "of information.  Once the enhanced view data is presented, you can continue to zoom as "+
-                            "needed.",
-                            "Event Timeline Navigation");
-                    });
-
-                // var timeShiftHolder = d3.select("#lanegraph").append('div').attr('class', 'timeShiftHolder');
-                // var nextTime = timeShiftHolder
-                //     .append('button')
-                //     .html('Prev')
-                //     .attr('class', 'prevButton')
-                //     .on('click', function(){
-                //         timeShift('prev');
-                //     });
-                // var prevTime = timeShiftHolder
-                //     .append('button')
-                //     .html('Next')
-                //     .attr('class', 'navButton')
-                //     .on('click', function(){
-                //         timeShift('next');
-                //     });
-
-                function laneInfoAppend(d) {
-                    var send = '';
-                    for (var i in d) {
-                        if (d[i].name === 'Time') {
-                            send += '<strong>'+d[i].name+':</strong> '+timeFormat(d[i].value, 'laneGraphExpanded')+'<br />';      
-                        } else {
-                            send += '<strong>'+d[i].name+':</strong> '+d[i].value+'<br />';
-                        }
-                    }
-                    return send;
-                }
-                // info div
-                var infoHeight = element.height();
-                var infoTitle = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
-                var infoDiv = d3.select("#lanegraphinfo").style('height', infoHeight+'px').style('overflow', 'scroll');
-
-                // function timeShift(cmd) {
-                //     // calculate what the current time shift would be (forward or back)
-                //     var minExtent = moment(navArray[currentNavPos].min).unix();
-                //     var maxExtent = moment(navArray[currentNavPos].max).unix();
-                //     var difference = maxExtent - minExtent;
-                //     // take a fraction of difference
-                //     var diff = difference * 0.90;
-                //     if (cmd === 'prev') {
-                //         var max = minExtent + (difference - diff);
-                //         var min = max - diff;
-                //     }
-                //     if (cmd === 'next') {
-                //         var min = maxExtent - (difference - diff);
-                //         var max = min + diff;
-                //     }
-                //     var minFormatted = moment(min).format('MMMM D, YYYY h:mm A');
-                //     var maxFormatted = moment(max).format('MMMM D, YYYY h:mm A');
-                //     $scope.requery(maxFormatted, minFormatted, function(data){
-                //         plot(data, maxFormatted, minFormatted);
-                //         navArray.push({'min': minFormatted, 'max': maxFormatted});
-                //         currentNavPos++;
-                //     })                
+                //     var divInfo = '';
+                //     if (type === "linkBetween") {
+                //         var uniqueNodes = $scope.forcedata.uniqueNodes;
+                //         var uniqueUsers = $scope.forcedata.uniqueUsers;
+                //         var unique = [];
+                //         var source = data.source.name;
+                //         var target = data.target.name;             
+                        
+                //         for (var i in uniqueNodes[source]) {
+                //             for (var j in uniqueNodes[target]) {
+                //                 if (i === j) { 
+                //                     unique.push(i);
+                //                 }
+                //             }         
+                //         }
+                //         for (var x=0; x<unique.length; x++) {
+                //             var divInfo = '';
+                //             divInfo += '<div><strong>'+unique[x]+'</strong></div>';
+                //             for (var k in uniqueUsers) {
+                //                 if (k === unique[x]) {
+                //                     for (var z in uniqueUsers[k]) {
+                //                         divInfo += '<div>'+z+'</div>';
+                //                     }
+                //                 }
+                //             }
+                //             var row = infoDiv.append('tr');
+                //             row
+                //                 .append('td')
+                //                 .html(divInfo);
+                //         }
+                //     } else if (type === "rules"){
+                //             var divInfo = '';
+                //             divInfo += '<div><strong>Rules: </strong><br />';
+                //             var rules = "";
+                //             for (var i = 0; i < data.rules.length; i++) {
+                //                 if (data.rules[i].rule !== "-"){
+                //                     var ruleString = data.rules[i].rule.replace(/Except/g , "<br />Except");
+                //                     divInfo += data.rules[i].order  + "<br />" + " " + ruleString + "<br />";
+                //                 } else {
+                //                     divInfo += "none <br />";
+                //                 }                                    
+                //             }
+                //             var row = infoDiv.append('tr');
+                //                 row
+                //                     .append('td')
+                //                     .html(divInfo);
+                //     } else {
+                //         for (var i in data) {
+                //             if (typeof data[i] === 'object') {
+                //                 var divInfo = '';
+                //                 for (var e in data[i]) {
+                //                     divInfo += '<div><strong>'+e+': </strong>'+data[i][e]+'</div>';
+                //                 }
+                //                 var row = infoDiv.append('tr');
+                //                     row
+                //                         .append('td')
+                //                         .html(divInfo);
+                //             } else {
+                //                 var row = infoDiv.append('tr');
+                //                     row
+                //                         .append('td')
+                //                         .html('<strong>'+dictionary(i)+'</strong>');
+                //                     row
+                //                         .append('td')
+                //                         .text(data[i]);
+                //             }
+                //         }                            
+                //     }  
                 // }
 
-                function draw() {
-                    // reset navagation array
-                    navArray = [];
-                    // set current position in nav array
-                    currentNavPos = 0;
-                    // disable all nav buttons
-                    prevButton.attr('disabled', 'disabled');
-                    nextButton.attr('disabled', 'disabled');
-                    resetBtn.attr('disabled', 'disabled');
-                    // push current time position to nav array
-                    navArray.push({'min': new Date($scope.start), 'max': new Date($scope.end)});
-                    // push time slice heading t odiv
-                    currentTime.html('Current Time Slice: <strong>'+$scope.start+'</strong> - <strong>'+$scope.end+'</strong>');
-                    // convert min and max to date object and send to plot function
-                    var min = new Date($scope.start);
-                    var max = new Date($scope.end);
-                    items.reverse()
-                    plot(items, min, max);
-                }
-                draw();
+                console.log(data.nodes)
+                console.log(data.links)
 
-                function mouseup(action) {
-                    // set variables
-                    var rects, labels, minExtent, maxExtent, visItems;
-                    // if a nav button is pressed
-                    if (action === 'nav') {
-                            // get max and min (date objects) from mav array
-                            minExtent = navArray[currentNavPos].min;
-                            maxExtent = navArray[currentNavPos].max;
-                        // disable previous button if all the way back
-                        if (currentNavPos === 0) {
-                            resetBtn.attr('disabled', 'disabled');
-                            prevButton.attr('disabled', 'disabled');
-                        // or disable next button if all the way forward 
-                        } else if (currentNavPos === navArray.length-1) {
-                            nextButton.attr('disabled', 'disabled');
-                        } else {
-                            // otherwise keep reset button open
-                            resetBtn.attr('disabled', null);
-                        }
-                    // otherwise if item brushed
-                    } else {
-                        // get max and min from click/drag
-                        minExtent = brush.extent()[0];
-                        maxExtent = brush.extent()[1];
-                        // step up nav array pos and push new values in;
-                        currentNavPos++;
-                        navArray.push({'min': minExtent, 'max': maxExtent});
-                        prevButton.attr('disabled', null);
-                        resetBtn.attr('disabled', null);
+                var matrix = [];
+                for (var i = 0; i < data.nodes.length; i++) {
+                    var row = [];
+                    for (var j = 0; j < data.nodes.length; j++) {
+                        row.push(0)
                     }
-                    // convert times returned to unix
-                    var minUnix = moment(minExtent).unix();
-                    var maxUnix = moment(maxExtent).unix();
-                    // should it requery?
-                    var msDifference = maxUnix - minUnix;
-                    // if difference is less than threshhold or is not a single time select (resulting in difference being 0)
-                    if ((msDifference < queryThreshhold) && (msDifference !== 0)) {
-                        // push to requery and then plot
-                        $scope.requery(minExtent, maxExtent, function(data){
-                            data.reverse();
-                            plot(data, minExtent, maxExtent);
-                        })
-                    } else {
-                        // reset if not within threshold
-                        $scope.inTooDeep.areWe = false;
-                        var data = items.filter(function(d) { if((d.dd < maxExtent) && (d.dd > minExtent)) {return true} ;}).reverse();
-                        $scope.alert.style('display', 'none');
-                        plot(data, minExtent, maxExtent);
-                    }
+                    matrix.push(row);
                 }
 
-                function scrollSide(id) {
-                    var elm = $('li#'+id);
-                    var ept  = elm.position().top;
-                    var eppt = elm.parent().position().top;
-                    var offset = ept - eppt;
-                    var totalHeight = $('#lanegraphinfo')[0].scrollHeight;
-                    var windowHeight = $('#lanegraphinfo').height();
-                    if(offset>(totalHeight-windowHeight)){
-                        offset = totalHeight-windowHeight;
-                    }
-                    $('#lanegraphinfo').scrollTo(offset);
+                for (var i = 0; i < data.links.length; i++) {
+                    matrix[data.links[i].source][data.links[i].target] = data.links[i].value;
+                    matrix[data.links[i].target][data.links[i].source] = data.links[i].value;
+                }
+                console.log(matrix);
+
+
+                // var matrix = [
+                //   [11975,  5871, 8916, 2868, 5000],
+                //   [ 1951, 10048, 2060, 6171, 5000],
+                //   [ 8010, 16145, 8090, 8045, 5000],
+                //   [ 8010, 16145, 8090, 8045, 5000],
+                //   [ 5000,   990,  940, 6907, 5000]
+                // ];
+                // var matrix = [
+                //     [ 0, 1, 1, 0, 0],
+                //     [ 1, 0, 6, 0, 1],
+                //     [ 1, 6, 0, 0, 0],
+                //     [ 0, 0, 0, 1, 0],
+                //     [ 0, 1, 0, 0, 0]
+                // ];
+
+                var chord = d3.layout.chord()
+                    .padding(.05)
+                    .sortSubgroups(d3.descending)
+                    .matrix(matrix);
+
+                var width = 960,
+                    height = 900,
+                    innerRadius = Math.min(width, height) * .31,
+                    outerRadius = innerRadius * 1.1;
+
+                var fill = d3.scale.ordinal()
+                    .domain(d3.range(10))
+                    .range(["#000000", "#FFDD89", "#957244", "#F26223", "#0f0", "#f0f", "#00f"]);
+
+                var svg = d3.select("#chordchart").append("svg")
+                    .attr("width", width)
+                    .attr("height", height)
+                    .append("g")
+                    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+                var g = svg.selectAll(".group")
+                      .data(chord.groups)
+                    .enter().append("g")
+                      .attr("class", "group");
+
+                g.append("path")
+                    .style("fill", function(d) { return fill(d.index); })
+                    .style("stroke", function(d) { return fill(d.index); })
+                    .attr("d", d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius))
+                    .on("mouseover", fade(.1))
+                    .on("mouseout", fade(1))
+                    // .on('click', function(d){
+                    //     $scope.appendInfo(data.links, 'linkBetween');
+                    //     //console.log("test")
+                    // });
+
+
+                g.append("text")
+                    .attr("class", "chordlabel")
+                    .each(function(d) { d.angle = (d.startAngle + d.endAngle) / 2; })
+                    .attr("dy", ".35em")
+                    .attr("transform", function(d) {
+                        return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
+                            + "translate(" + (outerRadius + 26) + ")"
+                            + (d.angle > Math.PI ? "rotate(180)" : "");
+                    })
+                    .style("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
+                    .text(function(d) { return data.nodes[d.index].name; });
+
+                var ticks = svg.append("g").selectAll("g")
+                        .data(chord.groups)
+                    .enter().append("g").selectAll("g")
+                        .data(groupTicks)
+                    .enter().append("g")
+                        .attr("transform", function(d) {
+                            return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
+                            + "translate(" + outerRadius + ",0)";
+                        });
+
+                ticks.append("line")
+                    .attr("x1", 1)
+                    .attr("y1", 0)
+                    .attr("x2", 5)
+                    .attr("y2", 0)
+                    .style("stroke", "#000");
+
+                ticks.append("text")
+                    .attr("x", 8)
+                    .attr("dy", ".35em")
+                    .attr("transform", function(d) { return d.angle > Math.PI ? "rotate(180)translate(-16)" : null; })
+                    .style("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
+                    .text(function(d) { return d.label; });                
+
+                svg.append("g")
+                    .attr("class", "chord")
+                  .selectAll("path")
+                    .data(chord.chords)
+                  .enter().append("path")
+                    .attr("d", d3.svg.chord().radius(innerRadius))
+                    .style("fill", function(d) { return fill(d.target.index); })
+                    .style("opacity", 1);
+
+                // Returns an array of tick angles and labels, given a group.
+                function groupTicks(d) {
+                  var k = (d.endAngle - d.startAngle) / d.value;
+                  return d3.range(0, d.value, 1).map(function(v, i) {
+                    return {
+                      angle: v * k + d.startAngle,
+                      //label: i % 5 ? null : v / 1000 + "k"
+                      label: v
+                    };
+                  });
                 }
 
-                function plot(data, min, max) {
-                    if (moment(max).unix() !== moment(min).unix()) {
-                        //////////////////
-                        /// LANE NODES ///
-                        //////////////////
-                        // set variables for info sidebar
-                        var prevPos = 0;
-                        var previousID = -1, previousElm = null;
-                        var lastExpandedId = null, isOpen = null;
-                        //console.log("plot");
-                        // update time slice above chart
-                        currentTime.html('Current Time Slice: <strong>'+moment(min).format('MMMM D, YYYY HH:MM A')+'</strong> - <strong>'+moment(max).format('MMMM D, YYYY HH:MM A')+'</strong>')
-                        // create transition effect of slider
-                        main.select('g.brush .extent')
-                            .transition()
-                            .duration(150)
-                            .attr('width', w)
-                            // .attr('x', function(d) {console.log(x); return x/2 })
-                            .transition()
-                            .duration(50)
-                            .attr('width', 0);
-                        // set new domain and transition x-axis
-                        x1.domain([min, max]);
-                        xAxisBrush.transition().duration(500).call(xAxis);
-                        // remove existing elements (perhaps this is innificent and should be modified to just transition)
-                        itemRects.selectAll('g').remove();
-                        var icons = itemRects.selectAll("g").data(data);
-                        // re-enter an append nodes (innificent as well)
-                        icons.enter().append("g").each(function(d){
-                            var elm = d3.select(this);
-
-                            elm
-                                .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane) + 10)+')')
-                                .attr("class", function(d) {return "mainItem" + d.lane;})
-                                .on("mouseover", function(d){
-                                    elm.style('cursor', 'pointer');
-                                })
-                                .on("click", function(d){
-
-                                    itemRects.selectAll('g').each(function(d){
-                                        var elm = d3.select(this);
-                                        elm.attr('class', null);
-                                    })
-                                    // un-highlight previous box
-                                    $('#'+previousID).attr('class', null);
-                                    // this closes the last expanded block if there is one
-                                    if (lastExpandedId !== null) {
-                                        $('div'+lastExpandedId+'.infoDivExpanded').hide();
-                                    }
-
-                                    if($('#autoexpand').is(':checked')){
-                                        if (isOpen === '#'+d.id) {
-                                            $('#'+d.id+' .infoDivExpanded').css('display', 'none');
-                                            isOpen = null;
-                                        } else {
-                                            $('#'+d.id+' .infoDivExpanded').css('display', 'block');
-                                            lastExpandedId = '#'+d.id;
-                                            isOpen = '#'+d.id;
-
-                                            $('#'+d.id+' .infoDivExpanded').html(laneInfoAppend(d.expand));
-                                        }
-                                    }
-                                    // deselect previous element if there is one
-                                    if (previousElm !== null) {
-                                        previousElm.attr('class', null);
-                                    }
-                                    // make current node active
-                                    elm.attr('class', 'pointactive');
-                                    // set class for active description
-                                    $('#'+d.id).attr('class', 'laneactive');
-                                    // scroll to position
-
-                                    scrollSide(d.id);
-                                    // prevPos = currPos;
-
-                                    // set ids for cross-refrence
-                                    previousID = d.id;
-                                    previousElm = elm;
-                                });
-                                // .attr("width", 5)
-                                // .attr("height", function(d) {return .8 * y1(1);});
-                            // generate points from point function
-                            if (d.type !== 'l7') {
-                                $scope.point(elm, d.type, null, d.id);
-                            } else {
-                                // push app name to point function if type is l7
-                                $scope.point(elm, d.type, d.l7_proto, d.id);
-                            }
-                        })
-                        icons.exit();
-
-                        ////////////////////
-                        /// SIDEBAR LIST ///
-                        ////////////////////
-
-
-                        infoDiv.selectAll('li').remove();
-                        infoDiv.selectAll('li').data(data).enter()
-                            .append('li').each(function(d){
-                                var elm = d3.select(this);
-                                elm
-                                    // append id to li from data object
-                                    .attr('id', function(d){return d.id })
-                                    .html(function(d){
-                                        // set d.postion (INIFFICENT!)
-                                        d.position = ($('li#'+d.id).offset().top - $('li#'+d.id).parent().offset().top);
-                                        return "<div class='lanegraphlist'><strong>"+timeFormat(d.time, 'laneGraphPreview')+':</strong> '+d.info+"</div>";
-                                    })
-                                    .on('click', function(){
-
-                                        scrollSide(d.id);
-                                        // close last expanded sections
-                                        if (lastExpandedId !== '#'+d.id) {
-                                            $('div'+lastExpandedId+'.infoDivExpanded').hide();
-                                        }
-                                        // clear previous node
-                                        if (previousElm !== null){
-                                            previousElm.attr('class', null);
-                                        }
-                                        // clear class of previous li item
-                                        $('#'+previousID).attr('class', null);
-
-                                        // console.log(d.id)
-                                        // // var thisNode = itemRects.select('g.'+d.id);
-                                         
-                                        // itemRects.selectAll('g').each(function(c){
-                                        //     var elm = d3.select(this);
-                                        //     if (c.id === d.id) {
-                                        //         previousElm.attr('class', null);
-                                        //         elm.attr('class', 'pointactive');
-                                        //         previousElm = elm;
-                                        //     }        
-                                        // })
-
-                                        // console.log(thisNode)
-                                        // // todo: select the current node somehow so i can apply style to it and creat e previousNode refrence
-                                        // // get this id
-
-                                        var row = d3.select(this);
-                                        var id = row.attr('id'); 
-                                            row.attr('class', 'laneactive');
-                                        // iterate through points
-                                        itemRects.selectAll('g').each(function(d){
-                                            var elm = d3.select(this);
-                                            // if id's (of just clicked) match
-                                            if (d.id.toString() === id.toString()) {
-                                                elm.attr('class', 'pointactive');
-                                                previousElm = elm;
-                                            } else {
-                                                elm.attr('class', null);
-                                            }
-                                        })
-
-                                        // set previous id
-                                        previousID = id;
-
-                                    })
-                                    // append expand buttons to list elements
-                                    .append('div')
-                                    .on('click', function(){
-                                        if (lastExpandedId !== '#'+d.id) {
-                                            $('div'+lastExpandedId+'.infoDivExpanded').hide();
-                                        }
-                                        if (isOpen === '#'+d.id) {
-                                            elm.select('.infoDivExpanded').style('display', 'none');
-                                            isOpen = null;
-                                        } else {
-                                            elm.select('.infoDivExpanded').style('display', 'block');
-                                            lastExpandedId = '#'+d.id;
-                                            isOpen = '#'+d.id;
-
-                                            elm.select('.infoDivExpanded').html(laneInfoAppend(d.expand));
-                                        }
-
-                                    })
-                                    .attr('class', 'infoDivExpandBtn')
-                                    .html('+');
-                                elm
-                                    .append('div')
-                                    .style('display', 'none')
-                                    .attr('class', 'infoDivExpanded')
-                                    .attr('id', d.id);
-                            });
-                        //infoDiv.selectAll('li')[0].reverse();
-                            //[0].reverse();
-                    }
+                // Returns an event handler for fading a given chord group.
+                function fade(opacity) {
+                  return function(g, i) {
+                    svg.selectAll(".chord path")
+                        .filter(function(d) { return d.source.index != i && d.target.index != i; })
+                      .transition()
+                        .style("opacity", opacity);
+                  };
                 }
-                
-                // function listItems
 
-            });
+
+
+
+
+
+
+            }); 
         }
     };
 }]);

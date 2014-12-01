@@ -22,9 +22,9 @@ module.exports = function(pool) {
                 query: 'SELECT '+
                             'count(*) AS count,'+
                             'max(`time`) AS time,'+
-                            '`stealth`,'+
+                            '`lan_stealth`,'+
                             '`lan_zone`,'+
-                            '`machine`,'+
+                            '`lan_machine`,'+
                             '`lan_user`,'+
                             '`lan_ip`,'+
                             'sum(`in_packets`) AS in_packets,'+
@@ -58,8 +58,7 @@ module.exports = function(pool) {
                             crumb: false
                         },
                     },
-                    { title: 'IOC Hits', select: 'count' },
-                    { title: 'Stealth', select: 'stealth', access: [3] },
+                    { title: 'Stealth', select: 'lan_stealth', access: [3] },
                     { title: 'ABP', select: 'proxy_blocked', access: [2] },
                     { title: 'Severity', select: 'ioc_severity' },
                     { title: 'IOC', select: 'ioc' },
@@ -67,7 +66,7 @@ module.exports = function(pool) {
                     { title: 'IOC Stage', select: 'ioc_typeInfection' },
                     { title: 'IOC Rule', select: 'ioc_rule' },
                     { title: 'Zone', select: 'lan_zone' },
-                    { title: 'Machine', select: 'machine' },
+                    { title: 'Local Machine', select: 'lan_machine' },
                     { title: 'Local User', select: 'lan_user' },
                     { title: 'Local IP', select: 'lan_ip' },
                     { title: 'Bytes to Remote', select: 'in_bytes'},

@@ -1,9 +1,9 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-    query = require('../constructors/query'),
-    config = require('../../config/config'),
-    async = require('async');
+    config = require('../../config/config'), 
+    async = require('async'),
+    query = require('../constructors/query');
 
 module.exports = function(pool) {
     return {
@@ -20,34 +20,34 @@ module.exports = function(pool) {
             var info = [];
             var table1 = {
                 query: 'SELECT '+
-                        'sum(`count`) AS `count`,'+
-                        'max(`time`) AS `time`,'+
-                        '`stealth`,'+
-                        '`lan_zone`,'+
-                        '`machine`,'+
-                        'lan_user,'+
-                        'lan_ip,'+
-                        '(sum(`in_bytes`) / 1048576) AS in_bytes,'+
-                        '(sum(`out_bytes`) / 1048576) AS out_bytes,'+
-                        'sum(`in_packets`) AS in_packets,'+
-                        'sum(`out_packets`) AS out_packets,'+
-                        'sum(`dns`) AS `dns`,'+
-                        'sum(`http`) AS `http`,'+
-                        'sum(`ssl`) AS `ssl`,'+
-                        'sum(`ssh`) AS `ssh`,'+
-                        'sum(`ftp`) AS `ftp`,'+
-                        'sum(`irc`) AS `irc`,'+
-                        'sum(`smtp`) AS `smtp`,'+
-                        'sum(`file`) AS `file`,'+
-                        'sum(`proxy_blocked`) AS proxy_blocked,'+
-                        'sum(`ioc_count`) AS `ioc_count` '+
-                    'FROM '+
-                        '`conn_local` '+
-                    'WHERE '+
-                        '`time` BETWEEN ? AND ? '+
-                    'GROUP BY '+
-                        '`lan_zone`,'+
-                        '`lan_ip`',
+                            'sum(`count`) AS `count`,'+
+                            'max(`time`) AS `time`,'+
+                            '`lan_stealth`,'+
+                            '`lan_zone`,'+
+                            '`lan_machine`,'+
+                            'lan_user,'+
+                            'lan_ip,'+
+                            '(sum(`in_bytes`) / 1048576) AS in_bytes,'+
+                            '(sum(`out_bytes`) / 1048576) AS out_bytes,'+
+                            'sum(`in_packets`) AS in_packets,'+
+                            'sum(`out_packets`) AS out_packets,'+
+                            'sum(`dns`) AS `dns`,'+
+                            'sum(`http`) AS `http`,'+
+                            'sum(`ssl`) AS `ssl`,'+
+                            'sum(`ssh`) AS `ssh`,'+
+                            'sum(`ftp`) AS `ftp`,'+
+                            'sum(`irc`) AS `irc`,'+
+                            'sum(`smtp`) AS `smtp`,'+
+                            'sum(`file`) AS `file`,'+
+                            'sum(`proxy_blocked`) AS proxy_blocked,'+
+                            'sum(`ioc_count`) AS `ioc_count` '+
+                        'FROM '+
+                            '`conn_local` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                        'GROUP BY '+
+                            '`lan_zone`,'+
+                            '`lan_ip`',
                 insert: [start, end],
                 params: [
                     {
@@ -61,10 +61,10 @@ module.exports = function(pool) {
                             crumb: false
                         },
                     },
-                    { title: 'Stealth', select: 'stealth', access: [3] },
+                    { title: 'Stealth', select: 'lan_stealth', access: [3] },
                     { title: 'ABP', select: 'proxy_blocked', access: [2] },
                     { title: 'Zone', select: 'lan_zone' },
-                    { title: 'Machine', select: 'machine' },
+                    { title: 'Local Machine', select: 'lan_machine' },
                     { title: 'Local User', select: 'lan_user' },
                     { title: 'Local IP', select: 'lan_ip' },
                     { title: 'MB to Remote', select: 'in_bytes' },

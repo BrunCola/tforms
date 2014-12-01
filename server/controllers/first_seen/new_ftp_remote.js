@@ -22,7 +22,7 @@ module.exports = function(pool) {
                 query: 'SELECT '+
                             'ftp_uniq_remote_ip.time AS `time`,'+
                             '`lan_zone`,'+
-                            '`machine`,'+
+                            '`lan_machine`,'+
                             'ftp_uniq_remote_ip.lan_ip,'+
                             '`lan_port`,'+
                             '`remote_ip`,'+
@@ -40,7 +40,7 @@ module.exports = function(pool) {
                 params: [
                     { title: 'Last Seen', select: 'time' },
                     { title: 'Zone', select: 'lan_zone' },
-                    { title: 'Machine Name', select: 'machine' },
+                    { title: 'Machine Name', select: 'lan_machine' },
                     { title: 'Local IP', select: 'lan_ip' },
                     { title: 'Local Port', select: 'lan_port' },
                     { title: 'FTP User', select: 'ftp_user' },

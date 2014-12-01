@@ -22,9 +22,9 @@ module.exports = function(pool) {
 					query: 'SELECT '+
 								'count(*) AS count, ' +
 								'max(smtp.time) as `time`, '+ // Last Seen
-								'`stealth`,'+
+								'`lan_stealth`,'+
 								'`lan_zone`,'+
-								'`machine`,'+
+								'`lan_machine`,'+
 								'`lan_user`,'+
 								'`lan_ip`,'+
 								'`lan_port`,'+
@@ -79,9 +79,9 @@ module.exports = function(pool) {
 						{ title: 'Indicator Type', select: 'ioc_typeIndicator' },
 						{ title: 'IOC Rule', select: 'ioc_rule' },
 						{ title: 'IOC Count', select: 'ioc_count' },
-						{ title: 'Stealth', select: 'stealth', access: [3] },
+						{ title: 'Stealth', select: 'lan_stealth', access: [3] },
 						{ title: 'Zone', select: 'lan_zone' },
-						{ title: 'Machine', select: 'machine' },
+						{ title: 'Local Machine', select: 'lan_machine' },
 						{ title: 'Local User', select: 'lan_user' },
 						{ title: 'Local IP', select: 'lan_ip' },
 						{ title: 'Local port', select: 'lan_port' },

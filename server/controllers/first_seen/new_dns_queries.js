@@ -24,7 +24,7 @@ module.exports = function(pool) {
 				query: 'SELECT '+
 						'dns_uniq_query.time AS `time`,'+
 						'`lan_zone`,'+
-						'`machine`,'+
+						'`lan_machine`,'+
 						'dns_uniq_query.lan_ip,'+
 						'`remote_ip`,'+
 						'`remote_port`,'+
@@ -54,7 +54,7 @@ module.exports = function(pool) {
 					{ title: 'Flag', select: 'remote_cc', },
 					{ title: 'Remote ASN', select: 'remote_asn_name' },
 					{ title: 'Zone', select: 'lan_zone' },
-					{ title: 'Machine Name', select: 'machine' },
+					{ title: 'Machine Name', select: 'lan_machine' },
 					{ title: 'Local IP', select: 'lan_ip' },
 				],
 				settings: {

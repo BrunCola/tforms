@@ -24,7 +24,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
         } else {
             return false;
         }
-    }
+    };
     $scope.parentClass = function (link) {
         var currentRoute = $location.path().substring(1) || 'home';
         // return page === currentRoute ? 'start active' : '';
@@ -120,6 +120,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'orphans': ['remote2local', 'shared']
                 },
                 {
+                    'title': 'DNS by Query Type',
+                    'url': 'dns_by_query_type',
+                    'icon': 'fa-level-down',
+                    'orphans': ['dns_by_query_type_local', 'dns_by_query_type_local_drill']
+                }, 
+                {
                     'title': 'Local FTP',
                     'url': 'ftp_local',
                     'icon': 'fa-file',
@@ -160,28 +166,58 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'url': 'irc_remote',
                     'icon': 'fa-comment',
                     'orphans': ['irc_remote2local', 'irc_shared']
-                },                
+                }, 
+                // {
+                //     'title': 'Firewall Rules',
+                //     'url': 'firewall',
+                //     'icon': 'fa-chevron-right',
+                //     'orphans': []
+                // },  
             ]
         },
         { // STEALTH
             'title': 'Stealth',
             'accessLevel': [3], 
             'url': '',
-            'icon': 'fa-sitemap',
+            'icon': 'fa-shield',
             'children':
             [
                 {
                     'title': 'Stealth Deploy Config',
-                    'url': 'stealth_COI_map',
+                    'url': 'stealth_deploy_config',
                     'icon': 'fa-code-fork',
                     'orphans': []
                 },
                 {
                     'title': 'Stealth Ops View',
-                    'url': 'local_COI_remote',
+                    'url': 'stealth_op_view',
                     'icon': 'fa-shield',
                     'orphans': []
                 },
+                {
+                    'title': 'Stealth User Connections',
+                    'url': 'stealth_conn',
+                    'icon': 'fa-user',
+                    'orphans': ['stealth_conn_by_user','stealth_conn_by_userANDremote']
+                },
+                {
+                    'title': 'Stealth Events',
+                    'url': 'stealth_events',
+                    'icon': 'fa-desktop',
+                    'orphans': ['stealth_events_by_type_and_user','stealth_events_full']
+                },
+                // {
+                //     'title': 'Stealth Quarantine',
+                //     'url': 'stealth_quarantine',
+                //     'icon': 'fa-user',
+                //     'orphans': []
+                // },
+                //{
+                //    'title': 'Stealth COI Connections',
+                //    'url': 'stealth_coi_conn_view',
+                //    'icon': 'fa-shield',
+                //    'orphans': []
+                //},
             ]
         },
         { // LOCAL EVENTS
@@ -191,15 +227,9 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
             'children':
             [
                 // {
-                //     'title': 'Local User Conn.',
-                //     'url': 'local_user_conn',
+                //     'title': 'Endpoint Map',
+                //     'url': 'endpoint_map',
                 //     'icon': 'fa-user',
-                //     'orphans': []
-                // },
-                // {
-                //     'title': 'Local Network Map',
-                //     'url': 'local_network_map',
-                //     'icon': 'fa-sitemap',
                 //     'orphans': []
                 // },
                 {
@@ -218,31 +248,11 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'title': 'Sharepoint Access',
                     'url': 'endpoint_events_sharepoint',
                     'icon': 'fa-desktop',
-                    'orphans': ['endpoint_events_sharepoint_drill']
+                    'orphans': ['endpoint_events_sharepoint_drill', 'endpoint_events_sharepoint_full']
                 }
             ]
         },
         //
-            // {
-            //     'title': 'DNS',
-            //     'url': '',
-            //     'icon': 'fa-level-up',
-            //     'children':
-            //     [
-            //         {
-            //             'title': 'Local DNS',
-            //             'url': 'dns_local',
-            //             'icon': 'fa-level-down',
-            //             'orphans': []
-            //         },
-            //         {
-            //             'title': 'Remote DNS',
-            //             'url': 'dns_remote',
-            //             'icon': 'fa-level-up',
-            //             'orphans': []
-            //         }
-            //     ]
-            // },
             // {
             //     'title': 'SSL',
             //     'url': '',
@@ -302,25 +312,31 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
             'children':
             [
                 {
-                    'title': 'HTTP by Domain',
+                    'title': 'By Domain',
                     'url': 'http_by_domain',
                     'icon': 'fa-arrows-h',
                     'orphans': ['http_by_domain_local', 'http_by_domain_local_drill']
                 },
                 {
-                    'title': 'Local HTTP',
+                    'title': 'By User Agent',
+                    'url': 'http_by_user_agent',
+                    'icon': 'fa-user',
+                    'orphans': ['http_by_user_agent_local', 'http_by_user_agent_local_drill']
+                },
+                {
+                    'title': 'By Local IP',
                     'url': 'http_local',
                     'icon': 'fa-long-arrow-left',
                     'orphans': ['http_local_by_domain', 'http_by_domain_local_drill']
                 },
                 {
-                    'title': 'Remote HTTP',
+                    'title': 'By Remote IP',
                     'url': 'http_remote',
                     'icon': 'fa-long-arrow-right',
                     'orphans': ['http_remote2local', 'http_remote2local_drill']
                 },
                 {
-                    'title': 'Local Blocked HTTP',
+                    'title': 'Blocked HTTP',
                     'accessLevel': [2],   
                     'url': 'http_local_blocked',
                     'icon': 'fa-times',
@@ -362,27 +378,27 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
             [
                 {
                     'title': 'By File Type',
-                    'url': 'by_mime_type',
+                    'url': 'files_by_mime_type',
                     'icon': 'fa-folder-open',
-                    'orphans': ['file_mime_local', 'file_local']
+                    'orphans': ['files_file_mime_local', 'files_local']
                 },
                 {
                     'title': 'By Local IP',
-                    'url': 'by_local_ip',
+                    'url': 'files_by_local_ip',
                     'icon': 'fa-folder-open',
-                    'orphans': ['by_file_name','file_local']
+                    'orphans': ['files_by_file_name','files_local']
                 },
                 {
                     'title': 'By Remote IP',
-                    'url': 'by_remote_ip',
+                    'url': 'files_by_remote_ip',
                     'icon': 'fa-folder-open',
-                    'orphans': ['by_file_name_remote','file_remote']
+                    'orphans': ['files_by_file_name_remote','files_remote']
                 },
                 {
                     'title': 'By Domain',
-                    'url': 'by_domain',
+                    'url': 'files_by_domain',
                     'icon': 'fa-folder-open',
-                    'orphans': ['by_domain_local', 'by_domain_local_mime', 'by_domain_local_mime_drill']
+                    'orphans': ['files_by_domain_local', 'files_by_domain_local_mime', 'files_by_domain_local_mime_drill']
                 }
             ]
         },
@@ -434,7 +450,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
             'title': 'Health',
             'url': '',
             'icon': 'fa-plus-square',        
-            'accessLevel': [3],    
+            'accessLevel': [4],    
             'children':
             [
                 {

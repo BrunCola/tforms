@@ -20,7 +20,7 @@ module.exports = function(pool) {
                 var table1 = {
                      query: 'SELECT '+
                                 '`time`,'+
-                                '`stealth`,'+
+                                '`lan_stealth`,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
                                 '`lan_user`,'+
@@ -41,7 +41,7 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_user, req.query.event_type],
                     params: [
                         { title: 'Time', select: 'time' },
-                        { title: 'Stealth', select: 'stealth', access: [3] },
+                        { title: 'Stealth', select: 'lan_stealth', access: [3] },
                         { title: 'Event Full Log', select: 'event_full' },
                         { title: 'Event ID', select: 'event_id', dView:false },
                         { title: 'Event Source', select: 'event_src', dView:false },

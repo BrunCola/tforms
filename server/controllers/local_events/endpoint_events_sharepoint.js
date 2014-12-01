@@ -1,8 +1,9 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-config = require('../../config/config'),
-async = require('async');
+    config = require('../../config/config'),
+    async = require('async'),
+    query = require('../constructors/query');
 
 module.exports = function(pool) {
     return {
@@ -15,80 +16,104 @@ module.exports = function(pool) {
                 end = req.query.end;
             }
             var tables = [];
+            var crossfilter = [];
+            var piechart = [];
             var info = [];
             var table1 = {
                 query: 'SELECT '+
                             'count(*) AS count,'+
-                            'max(`timestamp`) as time,'+
-                            '`sharepoint_user`,'+
-                            '`lan_ip`,'+
-                            '`machine`, ' +
-                            '`lan_zone`, ' +
-                            '`remote_ip`, ' +
-                            '`remote_port`, '  +
-                            '`remote_cc`, ' +
-                            '`remote_country`, ' +
-                            '`remote_asn_name`, ' +
-                            '`location`,'+
-                            '`event`,'+
+                            'max(`time`) AS `time`,'+
                             '`event_id`,'+
-                            '`event_location` '+
+                            '`event_src`,'+
+                            '`event_type`,'+
+                            '`event_type` AS `pie_dimension`,'+
+                            '`event_detail`,'+
+                            '`event_full` '+
                         'FROM '+
-                            '`sharepoint` '+
+                            '`sharepoint_events` '+
                         'WHERE '+
-                            '`timestamp` BETWEEN ? AND ? '+
+                            '`time` BETWEEN ? AND ? '+
                         'GROUP BY '+
-                            '`event`, '+
-                            '`lan_ip`, '+
-                            '`lan_zone`', 
+                            '`event_type`',
                 insert: [start, end],
                 params: [
                     {
                         title: 'Last Seen',
                         select: 'time',
-                        // link: {
-                        //     type: 'endpoint_events_sharepoint_drill',
-                        //     // val: the pre-evaluated values from the query above
-                        //     val: ['event_id', 'lan_ip'],
-                        //     crumb: false
-                        // },
+                        link: {
+                            type: 'endpoint_events_sharepoint_drill',
+                            val: ['event_type'],
+                            crumb: false
+                        },
                     },
                     { title: 'Events', select: 'count' },
-                    // { title: 'Machine', select: 'machine' },
-                    // { title: 'Zone', select: 'lan_zone' },
-                    { title: 'Local IP', select: 'lan_ip' },
-                    { title: 'Sharepoint User', select: 'sharepoint_user'},
-                    { title: 'Location', select: 'location' },
-                    { title: 'Event', select: 'event' },
-                    { title: 'Event ID', select: 'event_id'},
-                    { title: 'Event Location', select: 'event_location' },
-                    // { title: 'Remote IP', select: 'remote_ip'},
-                    // { title: 'Remote port', select: 'remote_port' },
-                    // { title: 'Flag', select: 'remote_cc' },
-                    // { title: 'Remote Country', select: 'remote_country' },
-                    // { title: 'Remote ASN Name', select: 'remote_asn_name' }
+                    { title: 'Event Type', select: 'event_type' },
+                    { title: 'Event Source', select: 'event_src'}
                 ],
                 settings: {
                     sort: [[0, 'desc']],
                     div: 'table',
-                    title: 'Sharepoint Events by IP'
+                    title: 'Sharepoint Events by Type',
+                    access: req.session.passport.user.level
                 }
+            }
+            var crossfilterQ = {
+                query: 'SELECT '+
+                            'count(*) AS count,'+
+                            '`time` '+
+                        'FROM '+
+                            '`sharepoint_events` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                        'GROUP BY '+
+                            'month(from_unixtime(`time`)),'+
+                            'day(from_unixtime(`time`)),'+
+                            'hour(from_unixtime(`time`))',
+                insert: [start, end]
+            }           
+            var piechartQ = {
+                query: 'SELECT '+
+                            'count(*) AS `count`,'+
+                            '`time`,'+
+                            '`event_type` AS `pie_dimension` '+
+                        'FROM '+
+                            '`sharepoint_events` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                        'GROUP BY '+
+                            '`event_type`',
+                insert: [start, end]
             }
             async.parallel([
                 // Table function(s)
                 function(callback) {
-                    new dataTable(table1, {database: database, pool: pool}, function(err,data){
+                    new dataTable(table1, {database: database, pool: pool}, function(err,data) {
                         tables.push(data);
                         callback();
                     });
                 },
+                // Crossfilter function
+                function(callback) {
+                    new query(crossfilterQ, {database: database, pool: pool}, function(err,data){
+                        crossfilter = data;
+                        callback();
+                    });
+                },
+                // Piechart function
+                function(callback) {
+                    new query(piechartQ, {database: database, pool: pool}, function(err,data){
+                        piechart = data;
+                        callback();
+                    });
+                }
             ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                 if (err) throw console.log(err);
                 var results = {
                     info: info,
-                    tables: tables
+                    tables: tables,
+                    crossfilter: crossfilter,
+                    piechart: piechart
                 };
-                //console.log(results);
                 res.json(results);
             });
         }

@@ -149,7 +149,7 @@ module.exports = function(pool) {
                     });
                     break;
                 case 'new_ssl':
-                    new query({query: 'SELECT `remote_ip` FROM `ssl_uniq_remote_ip` WHERE (`time` BETWEEN ? AND ?) GROUP BY `remote_ip`', insert: [start, end]}, {database: database, pool: pool}, function(err,data){
+                    new query({query: 'SELECT `remote_ip` FROM `ssl_uniq_server_name` WHERE (`time` BETWEEN ? AND ?) GROUP BY `remote_ip`', insert: [start, end]}, {database: database, pool: pool}, function(err,data){
                         if (data) {
                             res.json(data.length);
                         }
@@ -166,15 +166,16 @@ module.exports = function(pool) {
                 var table1 = {
                     query: 'SELECT '+
                                 'max(`time`) AS `time`,'+
-                                '`stealth`,'+
+                                '`lan_stealth`,'+
                                 '`lan_zone`,'+
-                                '`machine`,'+
+                                '`lan_machine`,'+
                                 '`lan_user`,'+
                                 '`lan_ip`,'+
                                 '`remote_ip`,'+
                                 '`remote_asn_name`,'+
                                 '`remote_country`,'+
                                 '`remote_cc`,'+
+                                '`ioc_childID`,'+
                                 'sum(`in_packets`) AS in_packets,'+
                                 'sum(`out_packets`) AS out_packets,'+
                                 'sum(`in_bytes`) AS in_bytes,'+
@@ -206,11 +207,11 @@ module.exports = function(pool) {
                             dView: true,
                             link: {
                                 type: 'ioc_events_drilldown',
-                                val: ['lan_zone','lan_ip','remote_ip','ioc','ioc_attrID'],
+                                val: ['lan_zone','lan_ip','remote_ip','ioc','ioc_attrID','lan_user','ioc_childID'],
                                 crumb: false
                             },
                         },
-                        { title: 'Stealth', select: 'stealth', access: [3] },
+                        { title: 'Stealth', select: 'lan_stealth', access: [3] },
                         { title: 'ABP', select: 'proxy_blocked', access: [2] },
                         { title: 'Severity', select: 'ioc_severity' },
                         { title: 'IOC Hits', select: 'ioc_count' },
@@ -219,7 +220,7 @@ module.exports = function(pool) {
                         { title: 'IOC Stage', select: 'ioc_typeInfection' },
                         { title: 'IOC Rule', select: 'ioc_rule' },
                         { title: 'Zone', select: 'lan_zone' },
-                        { title: 'Machine', select: 'machine' },
+                        { title: 'Local Machine', select: 'lan_machine' },
                         { title: 'Local User', select: 'lan_user' },
                         { title: 'Local IP', select: 'lan_ip' },
                         { title: 'Remote IP', select: 'remote_ip' },
@@ -228,7 +229,7 @@ module.exports = function(pool) {
                         { title: 'Remote ASN', select: 'remote_asn_name' },
                         { title: 'Bytes to Remote', select: 'in_bytes'},
                         { title: 'Bytes from Remote', select: 'out_bytes'},
-                        { title: 'Packets to Remote', select: 'in_packets', dView: false  },
+                        { title: 'Packets to Remote', select: 'in_packets', dView: true  },
                         { title: 'Packets from Remote', select: 'out_packets', dView: false  },
                         {
                             title: '',
@@ -269,7 +270,7 @@ module.exports = function(pool) {
                                 '`ioc_severity`,'+
                                 '`ioc` '+
                             'ORDER BY '+
-                                '`ioc_severity` DESC',
+                                '`ioc_severity` DESC ',
                     insert: [start, end]
                 }
                 async.parallel([
@@ -294,7 +295,6 @@ module.exports = function(pool) {
                         tables: tables,
                         crossfilter: crossfilter
                     };
-                    //console.log(results);
                     res.json(results);
                 });
             break;

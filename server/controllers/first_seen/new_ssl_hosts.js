@@ -1,9 +1,9 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-query = require('../constructors/query'),
-config = require('../../config/config'),
-async = require('async');
+    query = require('../constructors/query'),
+    config = require('../../config/config'),
+    async = require('async');
 
 module.exports = function(pool) {
     return {
@@ -20,10 +20,10 @@ module.exports = function(pool) {
             var info = [];
             var table1 = {
                 query: 'SELECT '+
-                            'ssl_uniq_remote_ip.time as `time`,'+
-                            '`stealth`,'+
+                            '`time`,'+
+                            '`lan_stealth`,'+
                             '`lan_zone`,'+
-                            '`machine`,'+
+                            '`lan_machine`,'+
                             '`lan_user`,'+
                             '`lan_ip`,'+
                             '`remote_ip`,'+
@@ -34,9 +34,9 @@ module.exports = function(pool) {
                             '`server_name`,'+
                             '`proxy_blocked` '+
                         'FROM '+
-                            '`ssl_uniq_remote_ip` '+
+                            '`ssl_uniq_server_name` '+
                         'WHERE '+
-                            'ssl_uniq_remote_ip.time BETWEEN ? AND ?',
+                            '`time` BETWEEN ? AND ?',
                 insert: [start, end],
                 params: [
                     {
@@ -50,7 +50,7 @@ module.exports = function(pool) {
                             crumb: false
                         },
                     },
-                    { title: 'Stealth', select: 'stealth', access: [3] },
+                    { title: 'Stealth', select: 'lan_stealth', access: [3] },
                     { title: 'ABP', select: 'proxy_blocked', access: [2] },
                     { title: 'Server Name', select: 'server_name' },
                     { title: 'Remote IP', select: 'remote_ip' },
@@ -58,14 +58,14 @@ module.exports = function(pool) {
                     { title: 'Flag', select: 'remote_cc', },
                     { title: 'Remote ASN', select: 'remote_asn_name' },
                     { title: 'Zone', select: 'lan_zone' },
-                    { title: 'Machine', select: 'machine' },
+                    { title: 'Local Machine', select: 'lan_machine' },
                     { title: 'Local User', select: 'lan_user' },
                     { title: 'Local IP', select: 'lan_ip' },
                 ],
                 settings: {
                     sort: [[1, 'desc']],
                     div: 'table',
-                    title: 'New Remote IP Addresses Detected'
+                    title: 'New Remote Servers Detected'
                 }
             }
             var crossfilterQ = {
@@ -74,7 +74,7 @@ module.exports = function(pool) {
                         'time,'+
                         '`remote_country` '+
                     'FROM '+
-                        '`ssl_uniq_remote_ip` '+
+                        '`ssl_uniq_server_name` '+
                     'WHERE '+
                         '`time` BETWEEN ? AND ? '+
                     'GROUP BY '+

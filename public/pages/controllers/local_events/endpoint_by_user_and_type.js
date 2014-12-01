@@ -10,6 +10,7 @@ angular.module('mean.pages').controller('endpointUserTypeController', ['$scope',
     }
     $http({method: 'GET', url: query}).
     success(function(data) {
+        console.log(data);
         if (data.tables[0] === null) {
             $scope.$broadcast('loadError');
         } else {

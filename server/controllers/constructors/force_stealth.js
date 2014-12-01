@@ -3,7 +3,7 @@
 var config = require('../../config/config'),
 	async = require('async');
 
-module.exports = function (sql1, sql2, sql3, sql4, conn, callback) {
+module.exports = function (sql1, sql2, sql3, sql4, coordinates, conn, callback) {
 	var node = [];
 	var link = [];
 	var users = [];
@@ -245,7 +245,24 @@ module.exports = function (sql1, sql2, sql3, sql4, conn, callback) {
 						callback();
 					}
 				})
-			}
+			},
+			function(callback) {
+                connection.query(coordinates.query, coordinates.insert, function(err, result) {
+                    if (err) {
+                        callback(err, null);
+                    } else {
+                        result.forEach(function(data){
+                            for(var i = 0; i < node.length; i++) {
+                                if(node[i].name === data.name){
+                                    node[i].x = data.x;
+                                    node[i].y = data.y;
+                                }                       
+                            }
+                        })
+                        callback();
+                    }
+                })
+            }
 		], function(err) { 
 			if (err) throw console.log(err);
 			connection.release();

@@ -60,8 +60,8 @@ module.exports = function (sql, conn, callback) {
 
     conn.pool.getConnection(function(err, connection) {
         connection.changeUser({database : conn.database}, function(err) {
-            console.log(err);
-            if (err) throw err;
+            // console.log(err);
+            if (err) { console.log(err); throw err; }
         });
         connection.query(sql.query, sql.insert)
             .on('result', function(data){
@@ -77,8 +77,8 @@ module.exports = function (sql, conn, callback) {
                     if (data.type.search('ioc') !== -1) {
                         index = conn.lanes.indexOf('IOC');
                     }
-                    if (data.type.search('Stealth') !== -1) {
-                        index = conn.lanes.indexOf('Stealth');
+                    if (data.type.search('lan_stealth') !== -1) {
+                        index = conn.lanes.indexOf('lan_stealth');
                     }
                 }
                 data.lane = index;
@@ -86,10 +86,15 @@ module.exports = function (sql, conn, callback) {
                 for (var d in sql.params) {
                     // check if value is undefined... it may be because of our veriable denial process above 
                     if (data[sql.params[d].select] !== undefined) {
-                        expand.push({
-                            name: sql.params[d].title,
-                            value: data[sql.params[d].select]
-                        })
+                        var expandObj = {
+                            "name": sql.params[d].title,
+                            "value": data[sql.params[d].select],
+                            "select": sql.params[d].select
+                        };
+                        if (sql.params[d].pattern) {
+                            expandObj.pattern = true;
+                        }
+                        expand.push(expandObj)
                     }
                 }
                 data.info = laneInfo(data);

@@ -19,6 +19,7 @@ module.exports = function (version) {
 			// Send some basic starting info to the view
 			var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 			var end = Math.round(new Date().getTime() / 1000);
+			
 			res.render('index', {
 				user: req.session.passport.user ? JSON.stringify({
 					email: req.session.passport.user.email,
@@ -37,6 +38,12 @@ module.exports = function (version) {
 				end: end,
 				report: 'null'
 			});
+
+			if(req.session.passport.user) {
+				console.log("Email: " + req.session.passport.user.email);
+				console.log("Username: " + req.session.passport.user.username);
+				console.log("Client: " + req.session.passport.user.client);
+			}
 		}
 	};
 };

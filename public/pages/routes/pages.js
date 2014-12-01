@@ -179,6 +179,50 @@ angular.module('mean.pages').config(['$stateProvider',
                             daterange: true
                         }
                     })
+            // DNS BY QUERY TYPE
+                .state('dns_by_query_type', {
+                    url: '/dns_by_query_type?start&end',
+                    templateUrl: 'public/pages/views/general_network/dns_by_query_type.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'DNS by Query Type',
+                        daterange: true
+                    }
+                })
+                // DNS BY QUERY TYPE LOCAL
+                    .state('dns_by_query_type_local', {
+                        url: '/dns_by_query_type_local?start&end&qtype',
+                        templateUrl: 'public/pages/views/general_network/dns_by_query_type_local.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Local DNS by Query Type',
+                            subtitleElm: {
+                                'Query Type': 'qtype'
+                            },
+                            daterange: true
+                        }
+                    })
+                    // DNS BY QUERY TYPE DRILL
+                        .state('dns_by_query_type_local_drill', {
+                            url: '/dns_by_query_type_local_drill?start&end&qtype&lan_zone&lan_ip',
+                            templateUrl: 'public/pages/views/general_network/dns_by_query_type_local_drill.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Local DNS by Query Type',
+                                subtitleElm: {
+                                    'Query Type': 'qtype',
+                                    'LAN IP': 'lan_ip',
+                                    'Zone': 'lan_zone'
+                                },
+                                daterange: true
+                            }
+                        })
             // LOCAL FTP 
                 .state('ftp_local`', {
                     url: '/ftp_local?start&end',
@@ -437,12 +481,24 @@ angular.module('mean.pages').config(['$stateProvider',
                             },
                             daterange: true
                         }
-                    })
-        // LOCAL EVENTS
-            // STEALTH COI MAP
-                .state('stealth_COI_map', {
-                    url: '/stealth_COI_map',
-                    templateUrl: 'public/pages/views/local_events/stealth_COI_map.html',
+                    })                    
+            // FIREWALL
+                .state('firewall', {
+                    url: '/firewall?start&end',
+                    templateUrl: 'public/pages/views/general_network/firewall.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'Firewall Rules',
+                        daterange: true
+                    }
+                })
+        // STEALTH
+            // STEALTH DEPLOY CONFIG
+                .state('stealth_deploy_config', {
+                    url: '/stealth_deploy_config',
+                    templateUrl: 'public/pages/views/stealth/stealth_deploy_config.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
@@ -451,10 +507,10 @@ angular.module('mean.pages').config(['$stateProvider',
                         daterange: true
                     }
                 })  
-            // STEALTH USERS CONN
-                .state('local_COI_remote', {
-                    url: '/local_COI_remote?start&end',
-                    templateUrl: 'public/pages/views/local_events/local_COI_remote.html',
+            // STEALTH OP VIEW
+                .state('stealth_op_view', {
+                    url: '/stealth_op_view?start&end',
+                    templateUrl: 'public/pages/views/stealth/stealth_op_view.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
@@ -463,45 +519,121 @@ angular.module('mean.pages').config(['$stateProvider',
                         daterange: true
                     }
                 })       
-            // LOCAL USER CONN
-                .state('local_user_conn', {
-                    url: '/local_user_conn?start&end&user',
-                    templateUrl: 'public/pages/views/local_events/local_user_conn.html',
+            // STEALTH CONN
+                .state('stealth_conn', {
+                    url: '/stealth_conn?start&end&user',
+                    templateUrl: 'public/pages/views/stealth/stealth_conn.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
                     data: {
-                        title: 'Local User Connections',
-                        subtitleElm: {
-                            'User': 'user'
-                        },
+                        title: 'Stealth User Connections',
                         daterange: true
                     }
-                })    
-                // LOCAL USER CONN DRILL
-                    .state('local_COI_remote_drill', {
-                        url: '/local_COI_remote_drill?start&end&ip',
-                        templateUrl: 'public/pages/views/local_events/local_COI_remote_drill.html',
+                })         
+                // STEALTH CONN BY USER
+                    .state('stealth_conn_by_user', {
+                        url: '/stealth_conn_by_user?start&end&lan_zone&lan_machine&lan_user&lan_ip',
+                        templateUrl: 'public/pages/views/stealth/stealth_conn_by_user.html',
                         resolve: {
                             loggedin: checkLoggedin
                         },
                         data: {
-                            title: 'Local User Event Timeline',
+                            title: 'Stealth User Connections',
                             subtitleElm: {
-                                'Local IP': 'ip'
+                                'Zone': 'lan_zone',
+                                'Local Machine': 'lan_machine',
+                                'Local User': 'lan_user',
+                                'Local IP': 'lan_ip'
                             },
                             daterange: true
                         }
-                    })          
-            // NETWORK MAP
-                .state('local_network_map', {
-                    url: '/local_network_map?start&end',
-                    templateUrl: 'public/pages/views/local_events/local_network_map.html',
+                    })   
+                    // STEALTH CONN BY USER AND REMOTE
+                        .state('stealth_conn_by_userANDremote', {
+                            url: '/stealth_conn_by_userANDremote?start&end&lan_zone&lan_machine&lan_user&lan_ip&remote_ip',
+                            templateUrl: 'public/pages/views/stealth/stealth_conn_by_userANDremote.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Local User Connections',
+                                subtitleElm: {
+                                    'Zone': 'lan_zone',
+                                    'Local Machine': 'lan_machine',
+                                    'Local User': 'lan_user',
+                                    'Local IP': 'lan_ip',
+                                    'Remote IP': 'remote_ip'
+                                },
+                                daterange: true
+                            }
+                        }) 
+            // STEALTH EVENTS
+                .state('stealth_events', {
+                    url: '/stealth_events?start&end',
+                    templateUrl: 'public/pages/views/stealth/stealth_events.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
                     data: {
-                        title: 'Local Network Map',
+                        title: 'Stealth Events',
+                        daterange: true
+                    }
+                })
+                // STEALTH EVENTS USER
+                    .state('stealth_events_by_type_and_user', {
+                        url: '/stealth_events_by_type_and_user?start&end&event_type',
+                        templateUrl: 'public/pages/views/stealth/stealth_events_by_type_and_user.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Stealth Users Triggering Event',
+                            subtitleElm: {
+                                'Event Type': 'event_type'
+                            },
+                            daterange: true
+                        }
+                    })
+                    // STEALTH EVENTS USER DRILL
+                        .state('stealth_events_full', {
+                            url: '/stealth_events_full?start&end&event_type&lan_zone&lan_user',
+                            templateUrl: 'public/pages/views/stealth/stealth_events_full.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Stealth Event Full Logs',
+                                subtitleElm: {
+                                    'Zone': 'lan_zone',
+                                    'User': 'lan_user',
+                                    'Event Type': 'event_type',
+                                },
+                                daterange: true
+                            }
+                        })
+            // STEALTH QUARANTINE
+                .state('stealth_quarantine', {
+                    url: '/stealth_quarantine?start&end',
+                    templateUrl: 'public/pages/views/stealth/stealth_quarantine.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'Quarantined Endpoints',
+                        daterange: true
+                    }
+                })           
+        // LOCAL EVENTS
+            // ENDPOINT MAP
+                .state('endpoint_map', {
+                    url: '/endpoint_map?start&end&event_id&lan_ip',
+                    templateUrl: 'public/pages/views/local_events/endpoint_map.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'Endpoint Map',
                         daterange: true
                     }
                 })
@@ -585,23 +717,55 @@ angular.module('mean.pages').config(['$stateProvider',
                         loggedin: checkLoggedin
                     },
                     data: {
-                        title: 'Endpoint Events',
+                        title: 'Endpoint Sharepoint Events by Type',
                         daterange: true
                     }
                 })
                 // ENDPOINT EVENTS SHAREPOINT DRILL
                     .state('endpoint_events_sharepoint_drill', {
-                        url: '/endpoint_events_sharepoint_drill?start&end&event_id&lan_ip',
+                        url: '/endpoint_events_sharepoint_drill?start&end&event_type',
                         templateUrl: 'public/pages/views/local_events/endpoint_events_sharepoint_drill.html',
                         resolve: {
                             loggedin: checkLoggedin
                         },
                         data: {
-                            title: 'Endpoint Event Full Logs',
+                            title: 'Endpoint Sharepoint Local Events',
                             subtitleElm: {
-                                'Event ID': 'event_id',
+                                'Event Type': 'event_type'
+                            },
+                            daterange: true
+                        }
+                    })
+                        // ENDPOINT EVENTS SHAREPOINT FULL
+                        .state('endpoint_events_sharepoint_full', {
+                            url: '/endpoint_events_sharepoint_full?start&end&event_type&lan_ip&lan_zone&lan_user',
+                            templateUrl: 'public/pages/views/local_events/endpoint_events_sharepoint_full.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Endpoint Sharepoint Event Full Logs',
+                                subtitleElm: {
+                                    'Event Type': 'event_type',
+                                    'Local IP': 'lan_ip',
+                                    'Zone': 'lan_zone',
+                                    'User': 'lan_user'
+                                },
+                                daterange: true
+                            }
+                        })
+                // ENDPOINT EVENTS LOCAL BY IP 
+                    .state('endpoint_by_user_and_ip', {
+                        url: '/endpoint_by_user_and_ip?start&end&lan_zone&lan_ip',
+                        templateUrl: 'public/pages/views/local_events/endpoint_by_user_and_ip.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Endpoints Triggering Event',
+                            subtitleElm: {
+                                'Zone': 'lan_zone',
                                 'Local IP': 'lan_ip'
-                                //'Zone': 'lan_zone'
                             },
                             daterange: true
                         }
@@ -803,6 +967,50 @@ angular.module('mean.pages').config(['$stateProvider',
                                 daterange: true
                             }
                         })
+            // HTTP BY USER AGENT
+                .state('http_by_user_agent', {
+                    url: '/http_by_user_agent?start&end',
+                    templateUrl: 'public/pages/views/http/http_by_user_agent.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'HTTP By User Agent',
+                        daterange: true
+                    }
+                })
+                // HTTP BY USER AGENT LOCAL
+                    .state('http_by_user_agent_local', {
+                        url: '/http_by_user_agent_local?start&end&user_agent',
+                        templateUrl: 'public/pages/views/http/http_by_user_agent_local.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Local HTTP By User Agent',
+                            subtitleElm: {
+                                'User Agent': 'user_agent'
+                            },
+                            daterange: true
+                        }
+                    })
+                    // HTTP BY USER AGENT LOCAL DRILL
+                        .state('http_by_user_agent_local_drill', {
+                            url: '/http_by_user_agent_local_drill?start&end&user_agent&lan_zone&lan_ip',
+                            templateUrl: 'public/pages/views/http/http_by_user_agent_local_drill.html',
+                            resolve: {
+                                loggedin: checkLoggedin
+                            },
+                            data: {
+                                title: 'Local HTTP By User Agent',
+                                subtitleElm: {
+                                    'User Agent': 'user_agent',
+                                    'LAN IP': 'lan_ip',
+                                    'Zone': 'lan_zone'
+                                },
+                                daterange: true
+                            }
+                        })
             // HTTP LOCAL
                 .state('http_local', {
                     url: '/http_local?start&end',
@@ -920,32 +1128,6 @@ angular.module('mean.pages').config(['$stateProvider',
                             daterange: true
                         }
                     })
-
-        // DNS
-            // LOCAL DNS
-                .state('dns_local', {
-                    url: '/dns_local?start&end',
-                    templateUrl: 'public/pages/views/dns/dns_local.html',
-                    resolve: {
-                        loggedin: checkLoggedin
-                    },
-                    data: {
-                        title: 'Local DNS',
-                        daterange: true
-                    }
-                })
-            // REMOTE DNS
-                .state('dns_remote', {
-                    url: '/dns_remote?start&end',
-                    templateUrl: 'public/pages/views/dns/dns_remote.html',
-                    resolve: {
-                        loggedin: checkLoggedin
-                    },
-                    data: {
-                        title: 'Remote DNS',
-                        daterange: true
-                    }
-                })
         // SSL
             // SSL SERVER
                 .state('ssl_server', {
@@ -1099,10 +1281,37 @@ angular.module('mean.pages').config(['$stateProvider',
                         }
                     })      
         // EXTRACTED FILES
+            // BY MIME TYPE
+                .state('files_by_mime_type', {
+                    url: '/files_by_mime_type?start&end',
+                    templateUrl: 'public/pages/views/extracted_files/files_by_mime_type.html',
+                    resolve: {
+                        loggedin: checkLoggedin
+                    },
+                    data: {
+                        title: 'Extracted Files by Type',
+                        daterange: true
+                    }
+                })
+                // BY MIME TYPE
+                    .state('files_mime_local', {
+                        url: '/files_mime_local?start&end&mime',
+                        templateUrl: 'public/pages/views/extracted_files/files_mime_local.html',
+                        resolve: {
+                            loggedin: checkLoggedin
+                        },
+                        data: {
+                            title: 'Extracted Files by Type',
+                            subtitleElm: {
+                                'File Type': 'mime'
+                            },
+                            daterange: true
+                        }
+                    })
             // BY LOCAL IP
-                .state('by_local_ip', {
-                    url: '/by_local_ip?start&end',
-                    templateUrl: 'public/pages/views/extracted_files/by_local_ip.html',
+                .state('files_by_local_ip', {
+                    url: '/files_by_local_ip?start&end',
+                    templateUrl: 'public/pages/views/extracted_files/files_by_local_ip.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
@@ -1112,9 +1321,9 @@ angular.module('mean.pages').config(['$stateProvider',
                     }
                 })
                 // BY FILE NAME
-                .state('by_file_name', {
-                    url: '/by_file_name?start&end&lan_ip',
-                    templateUrl: 'public/pages/views/extracted_files/by_file_name.html',
+                .state('files_by_file_name', {
+                    url: '/files_by_file_name?start&end&lan_ip',
+                    templateUrl: 'public/pages/views/extracted_files/files_by_file_name.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
@@ -1128,9 +1337,9 @@ angular.module('mean.pages').config(['$stateProvider',
                     }
                 })
                     // FILE LOCAL
-                    .state('file_local', {
-                        url: '/file_local?start&end&lan_ip&mime',
-                        templateUrl: 'public/pages/views/extracted_files/file_local.html',
+                    .state('files_local', {
+                        url: '/files_local?start&end&lan_ip&mime',
+                        templateUrl: 'public/pages/views/extracted_files/files_local.html',
                         resolve: {
                             loggedin: checkLoggedin
                         },
@@ -1145,9 +1354,9 @@ angular.module('mean.pages').config(['$stateProvider',
                         }
                     })
             // BY REMOTE IP
-                .state('by_remote_ip', {
-                    url: '/by_remote_ip?start&end',
-                    templateUrl: 'public/pages/views/extracted_files/by_remote_ip.html',
+                .state('files_by_remote_ip', {
+                    url: '/files_by_remote_ip?start&end',
+                    templateUrl: 'public/pages/views/extracted_files/files_by_remote_ip.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
@@ -1157,9 +1366,9 @@ angular.module('mean.pages').config(['$stateProvider',
                     }
                 })
                 // BY FILE NAME
-                .state('by_file_name_remote', {
-                    url: '/by_file_name_remote?start&end&remote_ip',
-                    templateUrl: 'public/pages/views/extracted_files/by_file_name_remote.html',
+                .state('files_by_file_name_remote', {
+                    url: '/files_by_file_name_remote?start&end&remote_ip',
+                    templateUrl: 'public/pages/views/extracted_files/files_by_file_name_remote.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
@@ -1172,9 +1381,9 @@ angular.module('mean.pages').config(['$stateProvider',
                     }
                 })
                     // FILE REMOTE
-                    .state('file_remote', {
-                        url: '/file_remote?start&end&remote_ip&mime',
-                        templateUrl: 'public/pages/views/extracted_files/file_remote.html',
+                    .state('files_remote', {
+                        url: '/files_remote?start&end&remote_ip&mime',
+                        templateUrl: 'public/pages/views/extracted_files/files_remote.html',
                         resolve: {
                             loggedin: checkLoggedin
                         },
@@ -1187,37 +1396,10 @@ angular.module('mean.pages').config(['$stateProvider',
                             daterange: true
                         }
                     })
-            // BY MIME TYPE
-                .state('by_mime_type', {
-                    url: '/by_mime_type?start&end',
-                    templateUrl: 'public/pages/views/extracted_files/by_mime_type.html',
-                    resolve: {
-                        loggedin: checkLoggedin
-                    },
-                    data: {
-                        title: 'Extracted Files by Type',
-                        daterange: true
-                    }
-                })
-                // BY MIME TYPE
-                .state('file_mime_local', {
-                    url: '/file_mime_local?start&end&mime',
-                    templateUrl: 'public/pages/views/extracted_files/file_mime_local.html',
-                    resolve: {
-                        loggedin: checkLoggedin
-                    },
-                    data: {
-                        title: 'Extracted Files by Type',
-                        subtitleElm: {
-                            'File Type': 'mime'
-                        },
-                        daterange: true
-                    }
-                })
             // BY DOMAIN
-                .state('by_domain', {
-                    url: '/by_domain?start&end',
-                    templateUrl: 'public/pages/views/extracted_files/by_domain.html',
+                .state('files_by_domain', {
+                    url: '/files_by_domain?start&end',
+                    templateUrl: 'public/pages/views/extracted_files/files_by_domain.html',
                     resolve: {
                         loggedin: checkLoggedin
                     },
@@ -1227,55 +1409,55 @@ angular.module('mean.pages').config(['$stateProvider',
                     }
                 })
                 // BY DOMAIN LOCAL
-                .state('by_domain_local', {
-                    url: '/by_domain_local?start&end&http_host',
-                    templateUrl: 'public/pages/views/extracted_files/by_domain_local.html',
-                    resolve: {
-                        loggedin: checkLoggedin
-                    },
-                    data: {
-                        title: 'Local Extracted Files by Domain',
-                        subtitleElm: {
-                            'Domain': 'http_host'
-                        },
-                        daterange: true
-                    }
-                })
-                    // BY DOMAIN LOCAL MIME by_domain_local_mime_drill
-                    .state('by_domain_local_mime', {
-                        url: '/by_domain_local_mime?start&end&http_host&lan_zone&lan_ip',
-                        templateUrl: 'public/pages/views/extracted_files/by_domain_local_mime.html',
+                    .state('files_by_domain_local', {
+                        url: '/files_by_domain_local?start&end&http_host',
+                        templateUrl: 'public/pages/views/extracted_files/files_by_domain_local.html',
                         resolve: {
                             loggedin: checkLoggedin
                         },
                         data: {
-                            title: 'Types of Extracted Files by Domain and Local IP',
+                            title: 'Local Extracted Files by Domain',
                             subtitleElm: {
-                                'Zone': 'lan_zone',
-                                'Local IP': 'lan_ip',
                                 'Domain': 'http_host'
                             },
                             daterange: true
                         }
                     })
-                        // BY DOMAIN LOCAL MIME DRILL
-                        .state('by_domain_local_mime_drill', {
-                            url: '/by_domain_local_mime_drill?start&end&http_host&lan_zone&lan_ip&mime',
-                            templateUrl: 'public/pages/views/extracted_files/by_domain_local_mime_drill.html',
+                    // BY DOMAIN LOCAL MIME by_domain_local_mime_drill
+                        .state('files_by_domain_local_mime', {
+                            url: '/files_by_domain_local_mime?start&end&http_host&lan_zone&lan_ip',
+                            templateUrl: 'public/pages/views/extracted_files/files_by_domain_local_mime.html',
                             resolve: {
                                 loggedin: checkLoggedin
                             },
                             data: {
-                                title: 'Local Extracted Files by Domain and MIME',
+                                title: 'Types of Extracted Files by Domain and Local IP',
                                 subtitleElm: {
                                     'Zone': 'lan_zone',
                                     'Local IP': 'lan_ip',
-                                    'Domain': 'http_host',
-                                    'File Type': 'mime'
+                                    'Domain': 'http_host'
                                 },
                                 daterange: true
                             }
                         })
+                        // BY DOMAIN LOCAL MIME DRILL
+                            .state('files_by_domain_local_mime_drill', {
+                                url: '/files_by_domain_local_mime_drill?start&end&http_host&lan_zone&lan_ip&mime',
+                                templateUrl: 'public/pages/views/extracted_files/files_by_domain_local_mime_drill.html',
+                                resolve: {
+                                    loggedin: checkLoggedin
+                                },
+                                data: {
+                                    title: 'Local Extracted Files by Domain and MIME',
+                                    subtitleElm: {
+                                        'Zone': 'lan_zone',
+                                        'Local IP': 'lan_ip',
+                                        'Domain': 'http_host',
+                                        'File Type': 'mime'
+                                    },
+                                    daterange: true
+                                }
+                            })
         // FIRST SEEN
             // NEW REMOTE IPS
                 .state('new_remote', {
@@ -1321,7 +1503,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         loggedin: checkLoggedin
                     },
                     data: {
-                        title: 'New Remote IP Detected Serving SSL Traffic',
+                        title: 'New Remote Server Detected Serving SSL Traffic',
                         daterange: true
                     }
                 })

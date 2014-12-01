@@ -2,7 +2,8 @@
 
 var dataTable = require('../constructors/datatable'),
     config = require('../../config/config'),
-    async = require('async');
+    async = require('async'),
+    query = require('../constructors/query');
 
 module.exports = function(pool) {
     return {
@@ -15,12 +16,14 @@ module.exports = function(pool) {
                 end = req.query.end;
             }
             var tables = [];
+            var crossfilter = [];
+            var piechart = [];
             var info = [];
             var table1 = {
                 query: 'SELECT '+
                             'count(*) AS count,'+
                             'max(`time`) AS `time`,'+
-                            '`stealth`,'+
+                            '`lan_stealth`,'+
                             '`lan_zone`,'+
                             '`lan_machine`, '+
                             '`lan_user`, '+
@@ -45,11 +48,19 @@ module.exports = function(pool) {
                         },
                     },
                     { title: 'Events', select: 'count' },
-                    { title: 'Stealth', select: 'stealth', access: [3] },
+                    { title: 'Stealth', select: 'lan_stealth', access: [3] },
                     { title: 'Zone', select: 'lan_zone' },
-                    { title: 'Machine', select: 'lan_machine'},
+                    { title: 'Local Machine', select: 'lan_machine'},
                     { title: 'Local User', select: 'lan_user' },
                     { title: 'Local IP', select: 'lan_ip' },
+                    {
+                        title: '',
+                        select: null,
+                        dView: true,
+                        link: {
+                            type: 'Upload Image',
+                        },
+                    },
                 ],
                 settings: {
                     sort: [[1, 'desc']],
@@ -57,6 +68,39 @@ module.exports = function(pool) {
                     title: 'Local Endpoint Events',
                     access: req.session.passport.user.level
                 }
+            }
+            var crossfilterQ = {
+                query: 'SELECT '+
+                        'count(*) AS count,'+
+                        'time '+
+                    'FROM '+
+                        '`endpoint_events` '+
+                    'WHERE '+
+                        '`time` BETWEEN ? AND ? '+
+                    'GROUP BY '+
+                        'month(from_unixtime(`time`)),'+
+                        'day(from_unixtime(`time`)),'+
+                        'hour(from_unixtime(`time`))',
+                insert: [start, end]
+            }           
+            var piechartQ = {
+                query: 'SELECT '+
+                         'time,'+
+                         '`lan_zone`,'+
+                         '`lan_user`, '+
+                         '`lan_ip`, '+
+                         'count(*) AS `count` '+
+                     'FROM '+
+                         '`endpoint_events` '+
+                     'WHERE '+
+                         '`time` BETWEEN ? AND ? '+
+                         'AND `lan_user` !=\'-\' '+
+                         'AND `lan_ip` !=\'-\' '+
+                     'GROUP BY '+
+                         '`lan_zone`,'+
+                         '`lan_user`, '+
+                         '`lan_ip` ',
+                insert: [start, end]
             }
             async.parallel([
                 // Table function(s)
@@ -66,11 +110,27 @@ module.exports = function(pool) {
                         callback();
                     });
                 },
+                // Crossfilter function
+                function(callback) {
+                    new query(crossfilterQ, {database: database, pool: pool}, function(err,data){
+                        crossfilter = data;
+                        callback();
+                    });
+                },
+                // Piechart function
+                function(callback) {
+                    new query(piechartQ, {database: database, pool: pool}, function(err,data){
+                        piechart = data;
+                        callback();
+                    });
+                }
             ], function(err) { // This function gets called after the two tasks have called their "task callbacks"
                 if (err) throw console.log(err);
                 var results = {
                     info: info,
-                    tables: tables
+                    tables: tables,
+                    crossfilter: crossfilter,
+                    piechart: piechart
                 };
                 res.json(results);
             });

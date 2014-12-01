@@ -1,0 +1,325 @@
+<div data-ng-controller="floorPlanController">
+    <script type="text/ng-template" id="uploadModal.html">
+        <div class="modal-header">
+            <h3>Upload Floorplan</h3>
+        </div>
+        <div class="modal-body">
+            <div style="width: 100%;margin: 0 auto;">               
+                <input type="text" ng-model="custom_fn" placeholder="Example floor name"/>
+                <div ng-show="cant_leave_blank" class="cant_leave_blank">
+                You must enter a floor name
+                </div>
+                <div ng-show="name_already_taken" class="cant_leave_blank">
+                The name has already been taken
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="button-success pure-button" ng-click="newBlank(custom_fn, building)">Create Floor</button>
+            <button class=" pure-button" ng-click="ok()">Close</button>
+        </div>
+    </script>
+    <script type="text/ng-template" id="uploadBuildingModal.html">
+        <div class="modal-header">
+            <h3>Upload Building</h3>
+        </div>
+        <div class="modal-body">
+            <div style="width: 100%;margin: 0 auto;">               
+                <input type="text" ng-model="custom_bn" placeholder="Example building name"/>
+                <div ng-show="cant_leave_blank" class="cant_leave_blank">
+                You must enter a name for the building
+                </div>
+                <div ng-show="name_already_taken" class="cant_leave_blank">
+                The name has already been taken
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="button-success pure-button" ng-click="newBlank(custom_bn)">Create Building</button>
+            <button class=" pure-button" ng-click="ok()">Close</button>
+        </div>
+    </script>
+    <script type="text/ng-template" id="uploadUserModal.html">
+        <div class="modal-header">
+            <h3>Upload User Image</h3>
+        </div>
+        <div class="modal-body">
+            <div style="width: 70%;margin: 0 auto;">
+                <div style="width: 70%;margin: 0 auto;">
+                    Upload file: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="file" ng-file-select="onFileSelect($files)" accept="image/*" onclick="this.value=null">
+                </div>
+                <br/>
+                <!--<div style="width: 70%;margin: 0 auto;">
+                    <div ng-show="dropSupported" class="drop-box" ng-file-drop="onFileSelect($files);" ng-file-drop-available="dropSupported=true">
+                        or drop image here
+                    </div>
+                </div>
+                <div ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
+                <br/>-->
+                <div ng-show="progress.length > 0" style="width: 70%;margin: 0 auto;">
+                    <div class="err" ng-show="errorMsg != null">{{errorMsg}}</div>
+                    Progress:
+                    <br/>
+                    <div ng-show="selectedFiles != null">
+                        <div class="sel-file" ng-repeat="f in selectedFiles">
+                            {{($index + 1) + '.'}}
+                            <img ng-show="dataUrls[$index]" ng-src="{{dataUrls[$index]}}">
+                            <button class="button" ng-click="start($index, custom_fn)" ng-show="progress[$index] < 0">Upload</button>
+                            <span class="progress" ng-show="progress[$index] >= 0">
+                                <div style="width:{{progress[$index]}}%">{{progress[$index]}}%</div>
+                            </span>
+                            <button class="button" ng-click="abort($index)" ng-show="hasUploader($index) && progress[$index] < 100">Abort</button>
+                            {{f.name}} - size: {{f.size}}B - type: {{f.type}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">Close</button>
+        </div>
+    </script>
+    <script type="text/ng-template" id="editModal.html">
+        <div class="modal-header">
+            <h3>Edit Floorplan</h3>
+        </div>
+        <div class="modal-body">
+            <form id="myform">
+                <select ng-model="floorplan.select">
+                  <option value="{{floor.asset_name}}" ng-repeat="floor in modalFloors">{{floor.custom_name}}</option>
+                </select><br />
+                <div ng-repeat="floor in modalFloors">
+                    <div ng-show="floorplan.select == floor.asset_name">
+                        Floor Name:&nbsp;<input type="text" ng-model="floor.custom_name" /><br />
+                        Scale:&nbsp;<input type="text" ng-model="floor.scale" numbers-only><br />
+                        User Scale:&nbsp;<input type="text" ng-model="floor.user_scale" numbers-only><br />
+                        Order:&nbsp;<input type="text" class="floorOrderInput" ng-model="floor.order_index" numbers-only/><br />
+                        Upload file: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="file" ng-file-select="onFileSelect($files, floor.asset_name)" accept="image/*" onclick="this.value=null"><br /><br /> 
+                        <div ng-show="floor.submitted" >
+                        Floor is saved!
+                        </div>
+                        <button type="button" class="button-success pure-button" ng-click="editFloors(0, floor)">Save</button>
+                        <button type="button" class="button-error pure-button" ng-click="deleteFloorplan(floorplan, modalFloors)">Delete</button>
+                        <button type="button" class="rndCrnBtn pure-button" ng-click="ok()">Close</button>                       
+                    </div>
+                        {{floorplan.select === floor.asset_name ? clearFiles(floor.asset_name) : "" }}
+                </div>
+            </form>
+        </div>
+    </script>  
+    <section head></section>
+    <section id="loading-error" loading-error></section>
+    <section id="loading-spinner" loading-spinner></section>
+    <div class="row-fluid">
+        <button type="button" class="rndCrnBtn pure-button" ng-show="toggleZoom"  ng-click="toggleViews()">Toggle View</button>
+        <button type="button" class="rndCrnBtn pure-button" ng-show="toggleZoom"  ng-click="toggleZooms()">Zoom Out</button>
+        <section id="floorplanpage">
+            <div id="listlocalusersspan">
+                <div class="jdash-header">Local Users</div>                 
+                <div id="localListWrapper">
+                    <svg id="listlocalusers" style="position: relative"></svg>
+                </div>
+            </div>
+            <div class="hidelocalusers" ></div>
+            <div id="floorplanspan" ng-show="toggleZoom && building.active" ng-repeat="building in buildings">
+                <div id="tabs" ng-show="toggleView" >
+                    <tabset>
+                        <tab select="alertMe()" ng-repeat="floor in building.floors" ng-click="setFloorActive(floor)" active="floor.active">
+                            <tab-heading>
+                                {{floor.custom_name}} 
+                            </tab-heading>
+                            <div style="background-color:#FFF;" class="box" >
+                                <div id="floorplan" floor-name="{{floor.id}}" make-floor-plan style="position: relative;">
+                                </div>
+                            </div>
+                        </tab>
+                        <tab ng-click="uploadOpen(building)">
+                            <tab-heading> + </tab-heading>     
+                            <div style="background-color:#FFF;" class="box"></div>                    
+                        </tab>
+                    <div id="editbuttons" class="bin epbuttons">
+                        <button type="button" class="rndCrnBtn pure-button" ng-click="editFloorPlan(building.floors)">Edit</button>
+                    </div>
+                    <div id="scalebuttons{{building.asset_name}}" class="bin epbuttons"></div>
+                    <div id="triggerbuttons{{building.asset_name}}" class="bin epbuttons" ></div>
+                    </tabset>
+                </div> 
+                 <div id="allfloorplanspan" ng-show="!toggleView">
+                    <div class="jdash-header">Floor View</div>  
+                    <div style="background-color:#FFF;" class="box" >
+                        <div id="allfloorplan" style="position: relative;">
+                            <div make-all-floor-plan style="position: relative;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <div id="buildingplanspan" ng-show="!toggleZoom">
+                <div class="jdash-header">Site View <button type="button" class="rndCrnBtn pure-button right" ng-click="createBuilding()">Create Site</button></div>  
+                <div style="background-color:#FFF;" class="box" >
+                    <div id="allfloorplan" style="position: relative;">
+                        <div make-building-plan style="position: relative;"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="localuserinformationspan">
+                <div class="jdash-header">User Information</div>
+                <div  style="background-color:#FFF;" class="box">
+                    <div id="localuserinformation"  ng-show="userinfo">
+                        <div class="luinfo" ng-show="userinfo.user_image"><span style="font-weight:bold">User Image: </span><button class='uUpload userfloorbutton' ng-dblclick="uploadUser(userinfo)" type='button' value='userinfo' href=''><img src='{{userinfo.user_image}}' width='48'/></button></div>
+                        <div class="luinfo" ng-show="userinfo.custom_user"><span style="font-weight:bold">Custom Name: </span><span>{{userinfo.custom_user}}</span></div>
+                        <div class="luinfo" ng-show="userinfo.lan_ip"><span style="font-weight:bold">Lan IP: </span><span>{{userinfo.lan_ip}}</span></div>
+                        <div class="luinfo" ng-show="userinfo.lan_user"><span style="font-weight:bold">Lan User: </span><span>{{userinfo.lan_user}}</span></div>
+                        <div class="luinfo" ng-show="userinfo.lan_zone"><span style="font-weight:bold">Lan Zone: </span><span>{{userinfo.lan_zone}}</span></div>
+                        <div class="luinfo" ng-show="userinfo.lan_machine"><span style="font-weight:bold">Lan Machine: </span><span>{{userinfo.lan_machine}}</span></div>
+                        <div class="luinfo" ng-show="userinfo.lan_type"><span style="font-weight:bold">Lan Type: </span><span>{{userinfo.lan_type}}</span></div>
+                        <div class="luinfo" ng-show="userinfo.lan_os"><span style="font-weight:bold">Lan OS: </span><span>{{userinfo.lan_os}}</span></div>
+                        <div class="luinfo" ng-show="userinfo.lan_mac"><span style="font-weight:bold">Lan Mac: </span><span>{{userinfo.lan_mac}}</span></div>
+                        <div class="luinfo" ng-show="userinfo.stealth"><span style="font-weight:bold">Stealth: </span><span>{{userinfo.stealth}}</span></div>
+                        <div class="luinfo" ng-show="userinfo.endpoint_agent"><span style="font-weight:bold">Endpoint Agent: </span><span>{{userinfo.endpoint_agent}}</span></div>
+                        <div class="luinfo" ng-show="userinfo.endpoint_agent_name"><span style="font-weight:bold">Endpoint Agent Name: </span><span>{{userinfo.endpoint_agent_name}}</span></div>
+                        <div class="luinfo" ng-if="userinfo.ioc_hits != 0">
+                            <span style="font-weight:bold">IOC Hits: </span><span class="epMapLink" ng-click="changePage('ioc_local_drill',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.ioc_hits}}</span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.ioc_hits == 0">
+                            <span style="font-weight:bold">IOC Hits: </span><span>{{userinfo.ioc_hits}}</span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.app_hits != 0">
+                            <span style="font-weight:bold">App Hits: </span><span class="epMapLink" ng-click="changePage('l7_local_app',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.app_hits}}</span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.app_hits == 0">
+                            <span style="font-weight:bold">App Hits: </span><span>{{userinfo.app_hits}}</span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.http_hits != 0">
+                            <span style="font-weight:bold">HTTP Hits: </span><span class="epMapLink" ng-click="changePage('http_local_by_domain',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.http_hits}}</span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.http_hits == 0">
+                            <span style="font-weight:bold">HTTP Hits: </span><span>{{userinfo.http_hits}}</span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.file_hits != 0">
+                            <span style="font-weight:bold">File Hits: </span><span class="epMapLink" ng-click="changePage('by_file_name',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.file_hits}}</span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.file_hits == 0">
+                            <span style="font-weight:bold">File Hits: </span><span>{{userinfo.file_hits}}</span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.endpoint_hits != 0">
+                            <span style="font-weight:bold">Endpoints Hits: </span><span class="epMapLink" ng-click="changePage('endpoint_by_user_and_ip',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.endpoint_hits}}</span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.endpoint_hits == 0">
+                            <span style="font-weight:bold">Endpoints Hits: </span><span>{{userinfo.endpoint_hits}}</span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.total_bw != 0 && userinfo.total_bw != null">
+                            <span style="font-weight:bold">Total Bandwidth in MB: </span><span class="epMapLink" ng-click="changePage('local2remote',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip,'lan_machine' : userinfo.lan_machine })" > {{userinfo.total_bw}}</span>
+                        </div>
+                        <div class="luinfo" ng-if="userinfo.total_bw == null">
+                            <span style="font-weight:bold">Total Bandwidth in MB: </span><span>0</span>
+                        </div>
+                        <div ng-show="userinfo.map"><button type="button" class="button-error pure-button" ng-click="removeEndUser(userinfo)">Remove User</button></div>
+                    </div>
+                    <div class="luinfo" ng-show="currentFloor">
+                        <table id="flus">
+                            <tr style="font-weight:bold">
+                                <td>IP</td><td>Host Name</td><td>User name</td>
+                            </tr>
+                            <tr  ng-repeat="user in currentFloor" ng-click="userLink(user)">
+                                <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
+                            </tr>
+                        </table> 
+                    </div>
+                    <div class="luinfo" ng-show="currentBuilding">
+                        <table id="flus">
+                            <tr>
+                                <button type="button" class="button-error pure-button" ng-click="removeBuilding(selectedBuilding)">Remove Site</button>
+                            </tr>
+                            <tr style="font-weight:bold">
+                                <td>IP</td><td>Host Name</td><td>User name</td>
+                            </tr>
+                            <tr  ng-repeat="user in currentBuilding" ng-click="userLink(user)">
+                                <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
+                            </tr>
+                        </table>  
+                    </div>
+                    <div class="luinfo" ng-show="currentSearchUsers">
+                        <table id="flus">
+                            <tr style="font-weight:bold">
+                                <td>IP</td><td>Host Name</td><td>User name</td>
+                            </tr>
+                            <tr  ng-repeat="user in currentSearchUsers" ng-click="userLinkTo(user)">
+                                <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
+                            </tr>
+                        </table>  
+                    </div>
+                </div>
+            </div>
+            <!-- <div id="localuserinformationspan" ng-show="currentFloor">
+                <div class="jdash-header">User Information</div>
+                <div  style="background-color:#FFF;" class="box">
+                     <div id="localuserinformation">
+                        <div class="luinfo" ng-show="currentFloor">
+                            <table id="flus">
+                                <tr style="font-weight:bold">
+                                    <td>IP</td><td>Host Name</td><td>User name</td>
+                                </tr>
+                                <tr  ng-repeat="user in currentFloor" ng-click="userLink(user)">
+                                    <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
+                                </tr>
+                            </table> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="localuserinformationspan" ng-show="currentBuilding">
+                <div class="jdash-header">User Information</div>
+                <div  style="background-color:#FFF;" class="box">
+                     <div id="localuserinformation">
+                        <div class="luinfo" ng-show="currentBuilding">
+                            <table id="flus">
+                                <tr>
+                                    <button type="button" class="button-error pure-button" ng-click="removeBuilding(selectedBuilding)">Remove Building</button>
+                                </tr>
+                                <tr style="font-weight:bold">
+                                    <td>IP</td><td>Host Name</td><td>User name</td>
+                                </tr>
+                                <tr  ng-repeat="user in currentBuilding" ng-click="userLink(user)">
+                                    <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
+                                </tr>
+                            </table>  
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+           
+        </section>
+    </div>
+</div>
+ <!--<div style="width: 100%;margin: 0 auto;">
+                    Upload Floor: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="file" ng-file-select="onFileSelect($files)" accept="image/*" onclick="this.value=null">
+                </div>
+                <br/>
+                <div style="width: 70%;margin: 0 auto;">
+                    <div ng-show="dropSupported" class="drop-box" ng-file-drop="onFileSelect($files);" ng-file-drop-available="dropSupported=true">
+                        or drop image here
+                    </div>
+                </div>
+                <div ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
+                <br/>
+                <div ng-show="progress.length > 0" style="width: 70%;margin: 0 auto;">
+                    <div class="err" ng-show="errorMsg != null">{{errorMsg}}</div>
+                    Progress:
+                    <br/>
+                    <div ng-show="selectedFiles != null">
+                        <div class="sel-file" ng-repeat="f in selectedFiles">
+                            {{($index + 1) + '.'}}
+                            <input type="text" ng-model="custom_fn" placeholder="Example floor name"/>
+                            <img ng-show="dataUrls[$index]" ng-src="{{dataUrls[$index]}}">
+                            <button class="button" ng-click="start($index, custom_fn)" ng-show="progress[$index] < 0">Upload</button>
+                            <span class="progress" ng-show="progress[$index] >= 0">
+                                <div style="width:{{progress[$index]}}%">{{progress[$index]}}%</div>
+                            </span>
+                            <button class="button" ng-click="abort($index)" ng-show="hasUploader($index) && progress[$index] < 100">Abort</button>
+                            {{f.name}} - size: {{f.size}}B - type: {{f.type}}
+                        </div>
+                    </div>
+                </div> -->

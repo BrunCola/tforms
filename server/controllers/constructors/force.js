@@ -31,17 +31,6 @@ conn.pool.getConnection(function(err, connection) {
 						width: data.count
 					});
 				}
-				link.push({
-					target: 0,
-					source: count++,
-					value: data.count
-				});
-
-			node.push({
-				name: data.remote_ip,
-				group: 2,
-				width: data.count
-			});
 
 			link.push({
 				target: 0,

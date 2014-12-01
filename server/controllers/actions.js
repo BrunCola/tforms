@@ -94,6 +94,46 @@ module.exports = function(pool) {
 			} else {
 				res.send(500);
 			}
+		},
+		add_user_to_map: function(req, res) {
+			var database = req.session.passport.user.database;
+			var lan_ip = req.body.lan_ip;
+			var lan_zone = req.body.lan_zone;
+			if (lan_ip !== undefined && lan_zone !== undefined) {
+				var update_user_ref = {
+					query: "UPDATE `users` SET `x`= ?, `y`=?, `map`=? WHERE `lan_ip` = ? AND `lan_zone` = ?",
+					insert: [req.body.x_coord, req.body.y_coord, req.body.map_name, req.body.lan_ip, req.body.lan_zone]
+				}
+				new query(update_user_ref, {database: database, pool: pool}, function(err,data){
+					if (err) {
+						res.send(500);
+					} else {
+						res.send(200);
+					}
+				});
+			}else{
+				res.send(500);
+			}
+		},
+		change_custom_user: function(req, res) {
+			var database = req.session.passport.user.database;
+			var lan_ip = req.body.lan_ip;
+			var lan_zone = req.body.lan_zone;
+			if (lan_ip !== undefined && lan_zone !== undefined) {
+				var update_user_ref = {
+					query: "UPDATE `users` SET `custom_user`= ? WHERE `lan_ip` = ? AND `lan_zone` = ?",
+					insert: [req.body.custom_user, req.body.lan_ip, req.body.lan_zone]
+				}
+				new query(update_user_ref, {database: database, pool: pool}, function(err,data){
+					if (err) {
+						res.send(500);
+					} else {
+						res.send(200);
+					}
+				});
+			}else{
+				res.send(500);
+			}
 		}
 	}
 }

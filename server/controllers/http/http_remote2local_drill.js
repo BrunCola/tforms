@@ -20,9 +20,9 @@ module.exports = function(pool) {
                 var table1 = {
                     query: 'SELECT ' +
                                 'time, '+
-                                '`stealth`, ' +
+                                '`lan_stealth`, ' +
                                 '`lan_zone`, ' +
-                                '`machine`, ' +
+                                '`lan_machine`, ' +
                                 '`lan_user`, ' +
                                 '`lan_ip`, ' +
                                 '`remote_ip`, ' +
@@ -49,6 +49,7 @@ module.exports = function(pool) {
                                 '`local_mime_types`, ' +
                                 '`remote_mime_types`, ' +
                                 '`proxy_blocked`, '+
+                                '`proxy_rule`, '+
                                 '`ioc_count` ' +
                             'FROM ' +
                                 '`http` ' +
@@ -60,8 +61,9 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip],
                     params: [
                         { title: 'Time',  select: 'time' },
-                        { title: 'Stealth', select: 'stealth', access: [3] },
+                        { title: 'Stealth', select: 'lan_stealth', access: [3] },
                         { title: 'ABP', select: 'proxy_blocked', access: [2] },
+                        { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
                         { title: 'Domain', select: 'host' },
                         { title: 'URI', select: 'uri' },
                         { title: 'URL', select: 'url' },
@@ -69,12 +71,12 @@ module.exports = function(pool) {
                         { title: 'User Agent', select: 'user_agent' },
                         { title: 'Depth', select: 'depth' },
                         { title: 'Method', select: 'method' },
-                        { title: 'Machine Name', select: 'machine' },
+                        { title: 'Machine Name', select: 'lan_machine' },
                         { title: 'Zone', select: 'lan_zone' },
                         { title: 'Local User', select: 'lan_user' },
                         { title: 'Local IP', select: 'lan_ip' },
                         { title: 'Remote IP', select: 'remote_ip'},
-                        { title: 'Remote port', select: 'remote_port' },
+                        { title: 'Remote Port', select: 'remote_port' },
                         { title: 'Flag', select: 'remote_cc' },
                         { title: 'Remote Country', select: 'remote_country' },
                         { title: 'Remote ASN Name', select: 'remote_asn_name' },

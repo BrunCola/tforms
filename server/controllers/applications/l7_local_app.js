@@ -23,9 +23,9 @@ module.exports = function(pool) {
                     query: 'SELECT '+
                                 'sum(`count`) AS `count`, '+
                                 'max(`time`) AS `time`,'+
-                                '`stealth`,'+
+                                '`lan_stealth`,'+
                                 '`lan_zone`, '+
-                                '`machine`,'+
+                                '`lan_machine`,'+
                                 '`lan_user`, '+
                                 '`lan_ip`, '+
                                 '`l7_proto`, '+
@@ -62,9 +62,9 @@ module.exports = function(pool) {
                                 },
                             },
                             { title: 'Applications', select: 'l7_proto' },
-                            { title: 'Stealth', select: 'stealth', access: [3]},
+                            { title: 'Stealth', select: 'lan_stealth', access: [3]},
                             { title: 'Zone', select: 'lan_zone', dView:false },
-                            { title: 'Machine', select: 'machine', dView:false },
+                            { title: 'Local Machine', select: 'lan_machine', dView:false },
                             { title: 'Local User', select: 'lan_user', dView:false },
                             { title: 'Local IP', select: 'lan_ip', dView:false },
                             { title: 'MB to Remote', select: 'in_bytes' },

@@ -57,8 +57,9 @@ module.exports = function (sql, queries, conn, callback) {
     function compareUsers(obj) {
         var user = obj.lan_user;
         if (user in uniqueLinks) {
-            for (var i in uniqueLinks[user]) {
-                var arr = Object.keys(uniqueLinks[user]);
+            //for (var i in uniqueLinks[user]) { // -- extra loop *** Prints double the nodes ***
+                var arr = [];
+                arr = Object.keys(uniqueLinks[user]);
                 for (var o = 0; o < arr.length; o++) {
                     if (arr[o] !== 'ClearText') {
                         // push a new entry for every single node
@@ -76,11 +77,13 @@ module.exports = function (sql, queries, conn, callback) {
                         userLinks.push({
                             "source": source,
                             "target": target,
-                            "class": 'child'
+                            "class": 'child',
+                            "allowed": obj.allow
                         })
+                        
                     }
                 }
-            }
+           // }
         }
     }
 
@@ -125,13 +128,13 @@ module.exports = function (sql, queries, conn, callback) {
             function(callback) {
                 connection.query(queries[0].query, queries[0].insert)
                     .on('result', function(data){
+                        // console.log(" ");
                         usersList.push(data);
                     })
                     .on('end', function(){
                         callback();
                     });
             },
-
             function(callback) {
                 connection.query(queries[1].query, queries[1].insert)
                     .on('result', function(data){
@@ -141,15 +144,60 @@ module.exports = function (sql, queries, conn, callback) {
                         callback();
                     });
             },
-            // function(callback) {
-            //     connection.query(queries[1].query, queries[1].insert)
-            //         .on('result', function(data){
-            //             usersList.push(data);
-            //         })
-            //         .on('end', function(){
-            //             callback();
-            //         });
-            // }
+            function(callback) {
+                connection.query(queries[2].query, queries[2].insert, function(err, result) {
+                    if (err) {
+                        callback(err, null);
+                    } else {
+                        result.forEach(function(data){
+                            for(var i = 0; i < nodes.length; i++) {
+                                if(nodes[i].name+"COI" === data.cois){
+                                    nodes[i].rules = [{
+                                        rule: data.rule, 
+                                        order: data.rule_order
+                                    }];                                       
+                                }
+                            }
+                        })
+                        callback();
+                    }
+                })
+            },
+            function(callback) {
+                connection.query(queries[3].query, queries[3].insert, function(err, result) {
+                    if (err) {
+                        callback(err, null);
+                    } else {
+                        result.forEach(function(data){
+                            for(var i = 0; i < nodes.length; i++) {
+                                if(nodes[i].name === data.name){
+                                    nodes[i].x = data.x;
+                                    nodes[i].y = data.y;
+                                }                       
+                            }
+                        })
+                        callback();
+                    }
+                })
+            },
+            function(callback) {
+                connection.query(queries[4].query, queries[4].insert)
+                    .on('result', function(data){
+                        usersList.push(data);
+                    })
+                    .on('end', function(){
+                        callback();
+                    });
+            },
+            function(callback) {
+                connection.query(queries[5].query, queries[5].insert)
+                    .on('result', function(data){
+                        usersList.push(data);
+                    })
+                    .on('end', function(){
+                        callback();
+                    });
+            },
         ], function(err) {
             if (err) throw console.log(err);
             connection.release();
