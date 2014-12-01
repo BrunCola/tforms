@@ -167,12 +167,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'icon': 'fa-comment',
                     'orphans': ['irc_remote2local', 'irc_shared']
                 }, 
-                {
-                    'title': 'Firewall Rules',
-                    'url': 'firewall',
-                    'icon': 'fa-chevron-right',
-                    'orphans': []
-                },  
+                // {
+                //     'title': 'Firewall Rules',
+                //     'url': 'firewall',
+                //     'icon': 'fa-chevron-right',
+                //     'orphans': []
+                // },  
             ]
         },
         { // STEALTH
@@ -206,12 +206,12 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'icon': 'fa-desktop',
                     'orphans': ['stealth_events_by_type_and_user','stealth_events_full']
                 },
-                {
-                    'title': 'Stealth Quarantine',
-                    'url': 'stealth_quarantine',
-                    'icon': 'fa-user',
-                    'orphans': []
-                },
+                // {
+                //     'title': 'Stealth Quarantine',
+                //     'url': 'stealth_quarantine',
+                //     'icon': 'fa-user',
+                //     'orphans': []
+                // },
                 //{
                 //    'title': 'Stealth COI Connections',
                 //    'url': 'stealth_coi_conn_view',
