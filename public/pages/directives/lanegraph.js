@@ -562,6 +562,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     setTimeout(function(){ // this is a temporary fix to an unknown issue reguarding this firing too soon
                         // highlight all nodes matching the uid
                         itemRects.selectAll('g').each(function(d){
+                            if (d.conn_uids === undefined) { return }
                             // select nodes that match
                             var elm = d3.select(this);
                             if ((d.conn_uids === data.conn_uids) && (d.id !== data.id)) {
@@ -871,6 +872,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .style('opacity', '0.4')
                                 .on('mouseover', function(d){
                                     var elm = d3.select(this.parentNode);
+                                    if (d.conn_uids === undefined) { return }
                                     hoverPoint(elm, 'mouseover', d.type);
                                 })
                                 .on('mouseout', function(d){
@@ -912,6 +914,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                     hoverPoint(elm, 'mouseover', d.type);
                                 })
                                 .on('mouseout', function(d){
+                                    if (d.conn_uids === undefined) {hoverPoint(elm, 'mouseout', d.type);}
                                     var elm = d3.select(this.parentNode);
                                     if (!(uidsMatch(d))){
                                         hoverPoint(elm, 'mouseout', d.type);
