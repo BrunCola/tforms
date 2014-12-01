@@ -195,7 +195,6 @@ p{
   height: 34px;
   left: 1px;
   top: 1px;
-
   background-color: #e6e6e6;
 }
 
@@ -213,7 +212,6 @@ p{
   border: 5px solid #666666;
   border-top: none;
   border-right: none;
-
   -webkit-transform: rotate(-45deg);
   -moz-transform: rotate(-45deg);
   -o-transform: rotate(-45deg);
@@ -255,10 +253,10 @@ p{
   padding-top: 50%;
 }
 
-
 .node{
   border: #f0f solid 1px !important;
 }
+
 #lanegraphinfo{
   /*overflow: hidden !important;*/
 }
@@ -272,7 +270,6 @@ p{
   display: none;
   width: 140px;
 }
-
 .laneInfo {
   list-style: none;
   min-height: 30px;
@@ -369,7 +366,6 @@ div#descModalID.modal-body {
   white-space: pre-wrap;
   float: left;
 }
-
 .modalTable {
   width: 90%;
   margin-left: -45%;
@@ -422,13 +418,10 @@ div#descModalID.modal-body {
  /* stroke: steelblue;
   stroke-width: 1.5px;*/
 }
-
 .conn {
   font: 10px sans-serif;
   fill: #000;
 }
-
-
 .conn_link {
   fill: none;
   stroke: #ccc;
@@ -483,34 +476,27 @@ td.file {
     border-radius: 4px !important;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2) !important;
 }
-
 .button-success {
     background: rgb(28, 184, 65) !important; /* this is a green */
 }
-
 .button-error {
     background: rgb(202, 60, 60) !important; /* this is a maroon */
 }
-
 .button-warning {
     background: rgb(223, 117, 20) !important; /* this is an orange */
 }
-
 .button-secondary {
     background: rgb(66, 184, 221) !important; /* this is a light blue */
 }
- .button-xsmall {
+.button-xsmall {
     font-size: 70% !important;
 }
-
 .button-small {
     font-size: 85% !important;
 }
-
 .button-large {
     font-size: 110% !important;
 }
-
 .button-xlarge {
     font-size: 125% !important;
 }
@@ -519,9 +505,7 @@ td.file {
     font-size: 12px;
     cursor: pointer;
 }
-
 /* axis */
-
 .axis { /* axis labels */
     fill: #808080;
     font-family: sans-serif;
@@ -532,66 +516,53 @@ td.file {
     font-family: sans-serif;
     font-size: 10px;
 }
-
 .axis line{ /* axis tick marks */
     stroke-width : 1;
   /*  stroke: grey;*/
     shape-rendering: crispEdges;
 }
-
 .axis path { /* axis line */
     stroke-width : 1;
    /* stroke: grey;*/
     shape-rendering: crispEdges;
 }
-
 /* timeline band */
-
 .band { /* band background */
     fill: #FAFAFA;
 }
-
 /* labels */
-
 .bandLabel {
     fill: #F0F0F0;
     font: 10px sans-serif;
     font-weight: bold;
 }
-
 .bandMinMaxLabel {
     fill: blue;
     font: 10px sans-serif;
     font-weight: bold;
 }
-
 .bandMidLabel {
     fill: red;
     font: 10px sans-serif;
     font-style: italic;
     font-weight: bold;
 }
-
 /* brush */
-
 .brush .extent {
     stroke: gray;
     fill: blue;
     fill-opacity: .1;
 }
-
 .chart {
     fill: #EEEEEE;
     margin-top: 20px;
 }
-
 .interval {
     fill: #AAFFFF;
     stroke-width: 6;
     cursor : default;
     pointer-events: true;
 }
-
 .swim-conn_ioc{
     fill: #000;
     stroke-width: 6;
@@ -622,31 +593,26 @@ td.file {
     cursor : default;
     /*pointer-events: true;*/
 }
-
 .instantLabel {
     fill : blue;
     font: 10px sans-serif;
     shape-rendering: crispEdges;
 }
-
 .intervalLabel {
     fill : black;
     font: 10px sans-serif;
     shape-rendering: crispEdges;
 }
-
 .item {
     cursor : default;
     pointer-events: auto;
 }
-
 /*.svg {
     border-style: solid;
     border-width: 1px;
     border-color: black;
     background-color: #FFFFFF;
 }*/
-
 .tooltip {
     width: auto;
     position: absolute;
@@ -660,45 +626,35 @@ td.file {
     pointer-events: none;
 }
 
-
 /* lanegraph */
-
-
-    #lanegraph .chart {
-      background: #3f3f3f;
-    }
-
-    .mini text {
-      font: 9px sans-serif; 
-    }
-
-    .main text {
-      font: 12px sans-serif;  
-    }
-
-    .miniItem0 {
-      fill: darksalmon;
-      stroke-width: 6;  
-    }
-
-    .miniItem1 {
-      fill: darkolivegreen;
-      fill-opacity: .7;
-      stroke-width: 6;  
-    }
-
-    .miniItem2 {
-      fill: slategray;
-      fill-opacity: .7;
-      stroke-width: 6;  
-    }
-
-    .brush .extent {
-      stroke: gray;
-      fill: dodgerblue;
-      fill-opacity: .365;
-    }
-
+#lanegraph .chart {
+  background: #3f3f3f;
+}
+.mini text {
+  font: 9px sans-serif; 
+}
+.main text {
+  font: 12px sans-serif;  
+}
+.miniItem0 {
+  fill: darksalmon;
+  stroke-width: 6;  
+}
+.miniItem1 {
+  fill: darkolivegreen;
+  fill-opacity: .7;
+  stroke-width: 6;  
+}
+.miniItem2 {
+  fill: slategray;
+  fill-opacity: .7;
+  stroke-width: 6;  
+}
+.brush .extent {
+  stroke: gray;
+  fill: dodgerblue;
+  fill-opacity: .365;
+}
 
 /**h2 .glossary {
   page-break-before: always;
