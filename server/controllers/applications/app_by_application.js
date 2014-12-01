@@ -106,7 +106,7 @@ module.exports = function(pool) {
                             'AND `l7_proto` !=\'-\' '+
                         'GROUP BY '+
                             '`l7_proto`',
-                insert: [start, end, start, end, start, end]
+                insert: [start, end]
             }
             async.parallel([
                 // Table function(s)
