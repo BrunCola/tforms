@@ -230,7 +230,7 @@ angular.module('mean.pages').factory('laneRowSymbols', [
                         .attr('fill', color1);
                     return;
                 case 'Stealth':
-                    element.append('svg:path')
+                    element.append('path')
                         .attr('fill', color1)
                         .attr('d', 'M23.587,26.751c-0.403,0.593-1.921,4.108-5.432,4.108c-3.421,0-5.099-3.525-5.27-3.828'+
                             'c-2.738-4.846-4.571-9.9-4.032-17.301c6.646,0,9.282-4.444,9.291-4.439c0.008-0.005,3.179,4.629,9.313,4.439'+
