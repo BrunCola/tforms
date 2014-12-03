@@ -221,7 +221,7 @@
                             <tr style="font-weight:bold">
                                 <td>IP</td><td>Host Name</td><td>User name</td>
                             </tr>
-                            <tr  ng-repeat="user in currentFloor" ng-click="userLink(user)">
+                            <tr  ng-repeat="user in currentFloor" ng-click="userLinkTo(user)">
                                 <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
                             </tr>
                         </table> 
@@ -234,7 +234,7 @@
                             <tr style="font-weight:bold">
                                 <td>IP</td><td>Host Name</td><td>User name</td>
                             </tr>
-                            <tr  ng-repeat="user in currentBuilding" ng-click="userLink(user)">
+                            <tr  ng-repeat="user in currentBuilding" ng-click="userLinkTo(user)">
                                 <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
                             </tr>
                         </table>  
@@ -253,13 +253,27 @@
             </div>           
         </section>
     </div>
-    <div id="hostlinksspan" >
-        <div class="jdash-header">Host Connections</div>  
-        <div style="background-color:#FFF;" class="box" >
-            <div id="hostlinks" style="position: relative;">
-                <div draw-links style="position: relative;"></div>
-                <!-- <div make-tree-chart style="position: relative;"></div> -->
+    <br/>
+    <div class="row-fluid">
+        <div class="span7">
+            <div id="hostlinksspan" >
+                <div class="jdash-header">Host Connections</div>  
+                <div style="background-color:#FFF;" class="box" >
+                    <div id="hostlinks" style="position: relative;">
+                        <div draw-links style="position: relative;"></div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </div>  
+        <div class="span5">
+            <div id="hostlinksspan" >
+                <div class="jdash-header">Connections Information</div>  
+                <div style="background-color:#FFF;" class="box" >
+                    <div id="hostlinks" style="position: relative;">
+                    </div>
+                </div>
+            </div>
+        </div>  
     </div>
+    <br/>
 </div>

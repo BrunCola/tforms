@@ -3,7 +3,8 @@
 var config = require('../../config/config'),
     async = require('async');
 
-module.exports = function (floors, bldg, conn, callback) {
+module.exports = function (users, floors, bldg, conn, callback) {
+    var usr = [];
     var flr = [];
     var bld = [];
     var groupedFloors = [];
@@ -31,9 +32,29 @@ module.exports = function (floors, bldg, conn, callback) {
                         callback();
                     });
             },
+            function(callback) {
+                connection.query(users.query, users.insert)
+                    .on('result', function(data){
+                        usr.push(data);
+                    })
+                    .on('end', function(){
+                        callback();
+                    });
+            },
         ], function(err) {
             if (err) throw console.log(err);
             connection.release();
+
+            for (var f in flr) {
+                var users = [];
+                users = usr.filter(function(u){
+                    if (u.map == flr[f].id){ 
+                        return true;
+                    }
+                });
+                flr[f].hosts = users;     
+            }
+
 	        for (var b in bld) {
 	            var floor = [];
 	            floor = flr.filter(function(fl){

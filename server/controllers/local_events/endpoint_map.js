@@ -223,6 +223,7 @@ module.exports = function(pool) {
                 }
 
                 var groupedFloors = [];
+                var buildingList = [];
                 var build = {
                     query: 'SELECT '+
                             '* '+
@@ -243,14 +244,8 @@ module.exports = function(pool) {
                     },
 
                     function(callback) {
-                        new buildings(floors, build, {database: database, pool: pool}, function(err,data){
+                        new buildings(floor_plan_users, floors, build, {database: database, pool: pool}, function(err,data){
                             groupedFloors = data;
-                            callback();
-                        });
-                    },
-                    function(callback) {
-                        new floor_plan(floors, {database: database, pool: pool}, function(err,data){
-                            floorplan = data;
                             callback();
                         });
                     },
@@ -264,8 +259,9 @@ module.exports = function(pool) {
                     if (err) throw console.log(err);
                     var results = { 
                         users: floorplanReturn,
-                        //floor: floorplan,
+                       // floor: floorplan,
                         buildings: groupedFloors,
+                       // buildingList: buildingList,
                         assets: assets
                     };
                     res.json(results);

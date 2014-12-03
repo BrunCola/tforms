@@ -332,10 +332,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 if (d.custom_user !== null){
                                     name = d.custom_user;
                                 }
-                                if ((name === "") && (name === null)){
+                                if ((name === "") || (name === null)){
                                     name = d.lan_ip;
                                 }
-                                if ((name === "") && (name === null)){
+                                if ((name === "") || (name === null)){
                                     name = d.lan_mac;
                                 }
                                 //if ((d.x === 0) && (d.y === 0)) {
@@ -633,10 +633,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                     if (d.custom_user !== null){
                                         name = d.custom_user;
                                     }
-                                    if ((name === "") && (name === null)){
+                                    if ((name === "") || (name === null)){
                                         name = d.lan_ip;
                                     }
-                                    if ((name === "") && (name === null)){
+                                    if ((name === "") || (name === null)){
                                         name = d.lan_mac;
                                     }
                                     var iconColour = getIconColour(d);
@@ -2721,16 +2721,29 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
     return {
         link: function ($scope, element, attrs) {
            
-            $scope.$on('plotLinks', function (event, root) {
+            $scope.$on('plotLinks', function (event, root, connections) {
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
-                    
-                    console.log(root)
+                    connections = angular.copy(connections)
 
-                    for (var i in root.children) {
-                        root.children[i].x = undefined;
-                        root.children[i].y = undefined;
+                    var buildings = angular.copy($scope.buildings);
+
+                    for (var b in buildings) {
+                            buildings[b].children = [];
+                        for (var f in buildings[b].floors) {
+                            buildings[b].floors[f].children = [];
+                            for (var c in connections) {
+                                if (buildings[b].floors[f].id == connections[c].map){
+                                    buildings[b].floors[f].children.push(connections[c])
+                                    if (root.children.indexOf(buildings[b]) == -1) {
+                                        root.children.push(buildings[b]);
+                                    }
+                                    if (buildings[b].children.indexOf(buildings[b].floors[f]) == -1) {
+                                        buildings[b].children.push(buildings[b].floors[f]);
+                                    }
+                                }
+                            }
+                        }
                     }
-
 
                     //var width = $("#hostlinks").parent().width(),
                         //height = params["height"];
@@ -2742,16 +2755,16 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
                     var nodeColor = function(severity) {
                         switch(severity) {
                             case 1:
-                                return "#377FC7";
+                                return "#34D4FF";
                                 break;
                             case 2:
-                                return "#F5D800";
+                                return "#009426";
                                 break;
                             case 3:
-                                return "#F88B12";
+                                return "#C40600";
                                 break;
                             case 4:
-                                return "#DD122A";
+                                return "#EE00FF";
                                 break;
                             default:
                             return "#377FC7";
@@ -2759,50 +2772,69 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
                     }
 
                     var diagonal = d3.svg.diagonal()
-                        .projection(function(d) { console.log(d); return [d.y, d.x]; });
+                        .projection(function(d) { return [d.y, d.x]; });
 
-                    var svg = d3.select("#hostlinks").append("svg")
+                    var hotLinks = d3.select("#hostlinks");
+
+                    hotLinks.selectAll('svg').remove();
+
+                    var svg = hotLinks.append("svg")
                         .attr("width", width)
                         .attr("height", height)
                         .append("g")
-                        .attr("transform", "translate(180,0)");
+                        .attr("transform", "translate(100,0)");
 
-                        var nodes = cluster.nodes(root),
-                        links = cluster.links(nodes);
-                        // console.log(nodes)
-                        // console.log(links)
+                    var nodes = cluster.nodes(root),
+                    links = cluster.links(nodes);
+                    // console.log(nodes)
+                    // console.log(links)
 
-                        var link = svg.selectAll(".link")
-                            .data(links)
-                            .enter().append("path")
-                            .attr("d", diagonal)
-                            .data(nodes)
-                            // .attr("stroke-width", function(d) { 
-                            //     console.log(d)
-                            //     return d.idRoute ? "1px" : "0"; 
-                            // })
-                            .attr("stroke-width", "1px")
-                            .attr("class", "conn_link");
+                    var link = svg.selectAll(".link")
+                        .data(links)
+                        .enter().append("path")
+                        .attr("d", diagonal)
+                        .data(nodes)
+                        // .attr("stroke-width", function(d) { 
+                        //     console.log(d)
+                        //     return d.idRoute ? "1px" : "0"; 
+                        // })
+                        .attr("stroke-width", "1px")
+                        .attr("class", "conn_link");
 
-                        var node = svg.selectAll(".conn")
-                            .data(nodes)
-                            .enter().append("g")
-                            .attr("class", "conn")
-                            .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+                    var node = svg.selectAll(".conn")
+                        .data(nodes)
+                        .enter().append("g")
+                        .attr("class", "conn")
+                        .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
 
-                        node.append("circle")
-                            .attr("fill",function(d){ return nodeColor(1); } )
-                            .attr("stroke", "#000")
-                            .attr("stroke-width", "0.7px")
-                            .attr("r", 10);
+                    node.append("circle")
+                        .attr("fill",function(d){ return nodeColor(d.nodeColor); } )
+                        .attr("stroke", "#000")
+                        .attr("stroke-width", "0.7px")
+                        .attr("r", 10)
+                        .on("click", function(d){
+                            $scope.userLinkTo(d);
+                        });
 
-                        node.append("text")
-                            .attr("dx", function(d) { return d.children ? -8 : 8; })
-                            .attr("dy", 3)
-                            .attr("font-weight", function(d) { return d.idRoute ? "bold" : 400; })
-                            // .attr("class", function(d){return aRoute(d.idRoute)})
-                            .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
-                            .text(function(d) { return d.lan_machine; });
+                    node.append("text")
+                        .attr("dx", function(d) { return d.children ? -12 : 12; })
+                        .attr("dy", 3)
+                        .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
+                        .text(function(d) { 
+                            var name = d.lan_machine;
+                            if (d.custom_user !== null){
+                                name = d.custom_user;
+                            }
+                            if ((name === "") || (name === null)){
+                                name = d.lan_ip;
+                            }
+                            if ((name === "") || (name === null)){
+                                name = d.lan_mac;
+                            }
+                            if ((name === "") || (name === null) || (name === undefined)){
+                                name = d.custom_name;
+                            }
+                            return name; });
                     d3.select(self.frameElement).style("height", height + "px");
 
                 }, 1000, false);
