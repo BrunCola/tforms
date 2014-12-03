@@ -2728,6 +2728,7 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
                     var buildings = angular.copy($scope.buildings);
 
                     for (var b in buildings) {
+
                             buildings[b].children = [];
                         for (var f in buildings[b].floors) {
                             buildings[b].floors[f].children = [];
@@ -2750,31 +2751,14 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
                         }
                     }
 
-                    //var width = $("#hostlinks").parent().width(),
+/*                    //var width = $("#hostlinks").parent().width(),
                         //height = params["height"];
                         var width = 755, height = 420;
 
                     var cluster = d3.layout.cluster()
                         .size([height, width - 230]);
 
-                    var nodeColor = function(severity) {
-                        switch(severity) {
-                            case 1:
-                                return "#34D4FF";
-                                break;
-                            case 2:
-                                return "#009426";
-                                break;
-                            case 3:
-                                return "#C40600";
-                                break;
-                            case 4:
-                                return "#EE00FF";
-                                break;
-                            default:
-                            return "#377FC7";
-                        }
-                    }
+                    
 
                     var diagonal = d3.svg.diagonal()
                         .projection(function(d) { return [d.y, d.x]; });
@@ -2789,10 +2773,12 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
                         .append("g")
                         .attr("transform", "translate(100,0)");
 
+                   
                     var nodes = cluster.nodes(root),
                     links = cluster.links(nodes);
-                    // console.log(nodes)
-                    // console.log(links)
+
+                    console.log(nodes)
+                    console.log(links)
 
                     var link = svg.selectAll(".link")
                         .data(links)
@@ -2840,10 +2826,217 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
                                 name = d.custom_name;
                             }
                             return name; });
-                    d3.select(self.frameElement).style("height", height + "px");
+                    
+                    // function collapse(d) {
+                    //     if (d.children) {
+                    //       d._children = d.children;
+                    //       d._children.forEach(collapse);
+                    //       d.children = null;
+                    //     }
+                    // }
+
+                      root.children.forEach(collapse);
+
+                    d3.select(self.frameElement).style("height", height + "px");*/
+
+                var nodeColor = function(severity) {
+                    switch(severity) {
+                        case 1:
+                            return "#34D4FF";
+                            break;
+                        case 2:
+                            return "#009426";
+                            break;
+                        case 3:
+                            return "#C40600";
+                            break;
+                        case 4:
+                            return "#EE00FF";
+                            break;
+                        default:
+                        return "#377FC7";
+                    }
+                }
+
+                var margin = {top: 20, right: 120, bottom: 20, left: 120};
+                
+                var width = 755, height = 420;
+                var i = 0,
+                    duration = 750;
+
+                var cluster = d3.layout.cluster()
+                    .size([height, width]);
+
+                var diagonal = d3.svg.diagonal()
+                    .projection(function(d) { return [d.y, d.x]; });
+
+                var hotLinks = d3.select("#hostlinks");
+
+                hotLinks.selectAll('svg').remove();
+
+                var svg = hotLinks.append("svg")
+                    .attr("width", width + margin.right + margin.left)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+
+            //d3.json("flare.json", function(error, flare) {
+              root.x0 = height / 2;
+              root.y0 = 0;
+
+              function collapse(d) {
+                if (d.children) {
+                  d._children = d.children;
+                  d._children.forEach(collapse);
+                  d.children = null;
+                }
+              }
+
+              // root.children.forEach(collapse);
+              update(root);
+            //});
+
+
+            d3.select(self.frameElement).style("height", "800px");
+
+            function update(source) {
+
+                // Compute the new tree layout.
+                var nodes = cluster.nodes(root).reverse(),
+                    links = cluster.links(nodes);
+
+                // Normalize for fixed-depth.
+                nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+                // Update the nodes…
+                var node = svg.selectAll("g.node")
+                    .data(nodes, function(d) { return d.idd || (d.idd = ++i); });
+
+                // Enter any new nodes at the parent's previous position.
+                var nodeEnter = node.enter().append("g")
+                    .attr("class", "node")
+                    .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+                    .on("click", click);
+
+                nodeEnter.append("circle")
+                    .attr("fill",function(d){ return nodeColor(d.nodeColor); } )
+                    .attr("stroke", "#000")
+                    .attr("stroke-width", "0.7px")
+                    .attr("r", 10)
+
+                nodeEnter.append("text")
+                    .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
+                    .attr("dy", ".35em")
+                    .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+                     .text(function(d) { 
+                            var name = d.lan_machine;
+                            if (d.custom_user !== null){
+                                name = d.custom_user;
+                            }
+                            if ((name === "") || (name === null)){
+                                name = d.lan_ip;
+                            }
+                            if ((name === "") || (name === null)){
+                                name = d.lan_mac;
+                            }
+                            if ((name === "") || (name === null) || (name === undefined)){
+                                name = d.custom_name;
+                            }
+                            return name; })
+                    .style("fill-opacity", "1");
+
+                // Transition nodes to their new position.
+                var nodeUpdate = node.transition()
+                    .duration(duration)
+                    .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+                nodeUpdate.select("circle")
+                    .attr("fill",function(d){ return nodeColor(d.nodeColor); } )
+                    .attr("stroke", "#000")
+                    .attr("stroke-width", "0.7px")
+                    .attr("r", 10)
+
+                nodeUpdate.select("text")
+                    .style("fill-opacity", 1);
+
+                // Transition exiting nodes to the parent's new position.
+                var nodeExit = node.exit().transition()
+                    .duration(duration)
+                    .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+                    .remove();
+
+                nodeExit.select("circle")
+                    .attr("fill",function(d){ return nodeColor(d.nodeColor); } )
+                    .attr("stroke", "#000")
+                    .attr("stroke-width", "0.7px")
+                    .attr("r", 10)
+
+                nodeExit.select("text")
+                    .style("fill-opacity", "1");
+
+                // Update the links…
+                var link = svg.selectAll(".link")
+                    .data(links, function(d) { return d.target.idd; });
+
+                // Enter any new links at the parent's previous position.
+                link.enter().insert("path", "g")
+                    .attr("d", function(d) {
+                        var o = {x: source.x0, y: source.y0};
+                        return diagonal({source: o, target: o});
+                    })
+                    .attr("class", "link")
+                    .attr("stroke-width", "1px");
+
+                // Transition links to their new position.
+                link.transition()
+                    .duration(duration)
+                    .attr("stroke-width", "1px")
+                    .attr("d", diagonal);
+
+                // Transition exiting nodes to the parent's new position.
+                link.exit().transition()
+                    .duration(duration)
+                    .attr("d", function(d) {
+                        var o = {x: source.x, y: source.y};
+                        return diagonal({source: o, target: o});
+                    })
+                    .remove();
+
+                // Stash the old positions for transition.
+                nodes.forEach(function(d) {
+                    d.x0 = d.x;
+                    d.y0 = d.y;
+                });
+            }
+
+            
+
+            // Toggle children on click.
+            function click(d) {
+              if (d.children) {
+                d._children = d.children;
+                d.children = null;
+              } else {
+                d.children = d._children;
+                d._children = null;
+              }
+              update(d);
+            }
+
+
+
+
+
+
 
                 }, 1000, false);
+
             })
+
+
+
         }
     };
 }]);

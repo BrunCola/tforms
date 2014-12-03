@@ -441,7 +441,13 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.selectedBuilding = undefined;
             $scope.currentSearchUsers = undefined;
          // get user image
-         if(type === "listusers") {
+         if (d === "clear") {
+            $scope.userinfo = undefined;
+            $scope.currentFloor = undefined;
+            $scope.currentBuilding = undefined;
+            $scope.selectedBuilding = undefined;
+            $scope.currentSearchUsers = undefined;
+         } else if(type === "listusers") {
             var users = $scope.userDimension.filter(function(dt){ 
                     if ((d.id == dt.map)){
                         return true;
