@@ -408,7 +408,6 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     $rootScope.userLinkTo = function (data) {
         $rootScope.toggleZoom = false;
         $rootScope.toggleView = false;
-        console.log(data)
         if (data !== undefined) {
              $scope.buildings.filter(function(d){ 
                 for(var f in d.floors) {                           

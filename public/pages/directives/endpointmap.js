@@ -2740,6 +2740,11 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
                                     if (buildings[b].children.indexOf(buildings[b].floors[f]) == -1) {
                                         buildings[b].children.push(buildings[b].floors[f]);
                                     }
+                                } 
+                                else if (connections[c].map === null) {
+                                    if (root.children.indexOf(connections[c]) == -1) {
+                                        root.children.push(connections[c]);
+                                    }
                                 }
                             }
                         }
