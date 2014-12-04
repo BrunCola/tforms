@@ -1483,22 +1483,42 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                                 .colors(["#193459"]);
                             filter = false;
                             break;
+                        case 'hostConnections':
+                            var setNewSize = function(width) {
+                                $scope.barChart
+                                    .width(width)
+                                    .height(width/3.5)
+                                    .margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+                                // $('#barchart').parent().height(width/3.5);
+                                d3.select('#barchart svg').attr('width', width).attr('height', width/3.5);
+                                // $scope.barChart.redraw();
+                            }
+                            $scope.barChart
+                                .group(group, "Count")
+                                .valueAccessor(function(d) { return d.value.count;})
+                                //.stack(group, "Count2", function(d){return d.value.count;})
+                                .legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
+                                .colors(d3.scale.ordinal().domain(["count"]).range(["#112F41","#068587"]));
+                            filter = false;
+                            break;
                     }
                     if (filter == true) {
                         $scope.barChart
                             .on("filtered", function(chart, filter){
                                 waitForFinalEvent(function(){
-                                    $scope.tableData.filterAll();
-                                    var arr = [];
-                                    for(var i in dimension.top(Infinity)) {
-                                        arr.push(dimension.top(Infinity)[i].time);
-                                    }
-                                    // console.log(dimension.group().top(Infinity))
-                                    //console.log(dimension.group().top(Infinity));
-                                    $scope.tableData.filter(function(d) { return arr.indexOf(d.time) >= 0; });
-                                    $scope.$broadcast('crossfilterToTable');
-                                    // console.log($scope.tableData.top(Infinity));
-                                    // console.log(timeDimension.top(Infinity))
+                                  if ($scope.tableData) {
+                                      $scope.tableData.filterAll();
+                                      var arr = [];
+                                      for(var i in dimension.top(Infinity)) {
+                                          arr.push(dimension.top(Infinity)[i].time);
+                                      }
+                                      // console.log(dimension.group().top(Infinity))
+                                      //console.log(dimension.group().top(Infinity));
+                                      $scope.tableData.filter(function(d) { return arr.indexOf(d.time) >= 0; });
+                                      $scope.$broadcast('crossfilterToTable');
+                                      // console.log($scope.tableData.top(Infinity));
+                                      // console.log(timeDimension.top(Infinity))
+                                  }
                                 }, 400, "filterWait");
                             })
                     }

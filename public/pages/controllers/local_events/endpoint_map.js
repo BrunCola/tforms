@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', 'searchFilter', '$upload', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, searchFilter, $upload) {
+angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', 'searchFilter', '$upload', 'timeFormat', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, searchFilter, $upload, timeFormat) {
     $scope.global = Global;
     var query = '/local_events/endpoint_map?';
     if ($location.$$search.start && $location.$$search.end) {
@@ -126,74 +126,15 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     }
 
     $scope.getConnections = function(d, conns) {//-----------------------------------------------------Should be upgraded!!-------------------------------------------------------------------
-        //$scope.removeLines();
-        $scope.removeFLines();
-        $scope.removeBLines();
-        var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=endpointconnection';
+
+        var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_machine='+d.lan_machine+'&type=endpointconnection';
             $scope.startend = ""; 
             if ($location.$$search.start && $location.$$search.end) {
-                query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=endpointconnection'; 
+                query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+d.lan_ip+'&lan_machine='+d.lan_machine+'&type=endpointconnection'; 
                 $scope.startend = 'start='+$location.$$search.start+'&end='+$location.$$search.end+'&'; 
             } 
             //$scope.selectedUser = "";
             $scope.results = [];
-
-            // for (var i = 1; i <= 4; i++) {
-            //     if (i%2 == 0){
-            //         $http({method: 'GET', url: query+'&typeinfo=getconn'+i}).
-            //         success(function(data) {
-            //             $scope.connectionOut = "";
-            //             //var results = [];
-            //             if (data[0] != undefined) {
-            //                 var host;
-            //                 var connections = data.map(function( da ) {
-            //                     var users = $scope.userDimension.filter(function(dt){ 
-            //                         if ((da.lan_ip === dt.lan_ip) && (da.lan_machine === dt.lan_machine)) {
-            //                             dt.depth=1;
-            //                             if ($scope.results.indexOf(dt) == -1) {
-            //                                 dt.nodeColor = i;
-            //                                 $scope.results.push(dt);
-            //                             }
-            //                         }
-            //                     });
-            //                 });
-            //                 // $scope.drawConnections(d,results,selectColor(2),conns);
-            //                 // $scope.drawFloorConns(d,results,selectColor(2));
-            //                 // $scope.drawBuildingConns(d,results,selectColor(2));
-            //                 //$scope.plotLinks(d,results,selectColor(2));
-            //             }
-            //         });
-            //     } else {                  
-            //         $scope.results = [];
-            //         $http({method: 'GET', url: query+'&typeinfo=getconn'+i}).
-            //             success(function(data) {
-            //                 $scope.connectionOut = "";
-            //                 if (data[0] != undefined) {
-            //                     var host;
-            //                     var connections = data.map(function( da ) {
-            //                         var users = $scope.userDimension.filter(function(dt){ 
-            //                             if ((da.remote_ip === dt.lan_ip)){
-            //                                 dt.depth=1;
-            //                                 if ($scope.results.indexOf(dt) == -1) {
-            //                                     dt.nodeColor = i;
-            //                                     $scope.results.push(dt);
-            //                                 }
-            //                                 // if ($scope.results.indexOf(dt) == -1) {
-            //                                 //     host = angular.copy(dt);
-            //                                 //     host.nodeColor = i;
-            //                                 //     $scope.results.push(host);
-            //                                 // }
-            //                             }
-            //                         });
-            //                     });
-            //                     // $scope.drawConnections(d,results,selectColor(1),conns);
-            //                     // $scope.drawFloorConns(d,results,selectColor(1));
-            //                     // $scope.drawBuildingConns(d,results,selectColor(1));
-            //                     //$scope.plotLinks(d,results,selectColor(1));
-            //                 }
-            //             });  
-            //     }             
-            // }
 
             $http({method: 'GET', url: query+'&typeinfo=getconn1'}).
                 success(function(data) {
@@ -201,7 +142,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                         var host;
                         var connections = data.map(function( da ) {
                             var users = $scope.userDimension.filter(function(dt){ 
-                                if ((da.remote_ip === dt.lan_ip)){
+                                if ((da.remote_ip === dt.lan_ip) && (da.remote_machine === dt.lan_machine)){
                                     dt.depth=1;
                                     if ($scope.results.indexOf(dt) == -1) {
                                         //host = angular.copy(dt);
@@ -243,7 +184,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                         var host;
                         var connections = data.map(function( da ) {
                             var users = $scope.userDimension.filter(function(dt){ 
-                                if ((da.remote_ip === dt.lan_ip)){ // && (da.lan_machine === dt.remote_machine)
+                                if ((da.remote_ip === dt.lan_ip)&& (da.remote_machine === dt.lan_machine)){ // && (da.lan_machine === dt.remote_machine)
                                     dt.depth=1;
                                     if ($scope.results.indexOf(dt) == -1) {
                                        // host = angular.copy(dt);
@@ -284,29 +225,55 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     }                                   //---------------^^^^^^^^^^^^^^^^-----------------------Should be upgraded!!--------------------------^^^^^^^^^^-------------------------
 
 
-    // $scope.connectionTimeline = function(startHost, endHost) { 
-    //     var query = '/local_events/endpoint_map?type=between_two';
-    //     $scope.startend = ""; 
-    //     if ($location.$$search.start && $location.$$search.end) {
-    //         query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&type=between_two'; 
-    //         $scope.startend = 'start='+$location.$$search.start+'&end='+$location.$$search.end+'&'; 
-    //     }
-    //     $http({method: 'GET', url: query+'&typeinfo=getconn1', data: {lan_ip: startHost.lan_ip, lan_machine: startHost.lan_machine, remote_ip: endHost.lan_ip, lan_ip: endHost.lan_machine}}).
-    //         success(function(data) {
-    //             console.log(data)
-    //             if (data[0] != undefined) {
-    //                 console.log(data[0])
-    //             }
-    //         });
-    // }
-
-
-
-
-
-
-
-
+    $scope.connectionTimeline = function(startHost, endHost) { 
+        var query = '/local_events/endpoint_map?type=between_two&lan_ip='+startHost.lan_ip+'&lan_machine='+startHost.lan_machine+'&remote_ip='+endHost.lan_ip+'&remote_machine='+endHost.lan_machine;
+        $scope.startend = ""; 
+        if ($location.$$search.start && $location.$$search.end) {
+            query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+startHost.lan_ip+'&lan_machine='+startHost.lan_machine+'&remote_ip='+endHost.lan_ip+'&remote_machine='+endHost.lan_machine+'&type=between_two'; 
+            $scope.startend = 'start='+$location.$$search.start+'&end='+$location.$$search.end+'&'; 
+        }
+        $scope.connectionHit=[];
+        for (var i=1; i<=4; i++) {
+            $http({method: 'GET', url: query+'&typeinfo=getconn'+i}).
+                success(function(data) {
+                    if (data != undefined) {
+                        data.forEach(function(d) {
+                            $scope.connectionHit.push(d);
+                        })
+                    }
+                });
+        }
+        setTimeout(function () {
+            console.log($scope.connectionHit)
+            $scope.connectionHit.forEach(function(d) {
+                d.dd = timeFormat(d.time, 'strdDateObj');
+                d.hour = d3.time.hour(d.dd);
+                d.count = parseInt(d.count);
+                d.count = +d.count;
+            });
+            $scope.crossfilterConns = crossfilter($scope.connectionHit);
+            var barDimension = $scope.crossfilterConns.dimension(function(d) { return d.hour });
+            var barGroupPre = barDimension.group();
+            var barGroup = barGroupPre.reduce(
+                function(p, v) {
+                    p.count += v.count;
+                    return p;
+                },
+                function(p, v) {
+                    p.count -= v.count;
+                    return p;
+                },
+                function() {
+                    return {
+                        count: 0,
+                    };
+                }
+            );
+            $scope.$broadcast('barChart', barDimension, barGroup, 'hostConnections');
+            $scope.barChartxAxis = '';
+            $scope.barChartyAxis = '# of Connection';
+        }, 1000);
+    }
 
     /*$scope.userLink = function(d) {//-----------------------------------------------------Should be upgraded!!-------------------------------------------------------------------
         //$scope.removeLines();

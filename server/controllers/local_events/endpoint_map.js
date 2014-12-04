@@ -132,68 +132,66 @@ module.exports = function(pool) {
             }  else if (req.query.type === 'endpointconnection') { 
                 switch (req.query.typeinfo) {
                     case 'getconn1':
-                        new query({query: 'SELECT `lan_ip`, `lan_machine`, `remote_ip`, `remote_machine`, sum(`in_bytes`), sum(`out_bytes`) FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `lan_ip` = ? GROUP BY `lan_ip`, `lan_machine`, `remote_ip`, `remote_machine`', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                        new query({query: 'SELECT `lan_ip`, `lan_machine`, `remote_ip`, `remote_machine`, sum(`in_bytes`), sum(`out_bytes`) FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `lan_ip` = ? AND `lan_machine` = ? GROUP BY `lan_ip`, `lan_machine`, `remote_ip`, `remote_machine`', insert: [start, end, req.query.lan_ip, req.query.lan_machine]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
                             }
                         }); 
                         break;
                     case 'getconn2':
-                        new query({query: 'SELECT `lan_ip`, `lan_machine`, `remote_ip`, `remote_machine`, sum(`in_bytes`), sum(`out_bytes`)  FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `remote_ip` = ? GROUP BY `lan_ip`, `lan_machine`, `remote_ip`, `remote_machine` ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                        new query({query: 'SELECT `lan_ip`, `lan_machine`, `remote_ip`, `remote_machine`, sum(`in_bytes`), sum(`out_bytes`)  FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `remote_ip` = ? AND `remote_machine` = ? GROUP BY `lan_ip`, `lan_machine`, `remote_ip`, `remote_machine` ', insert: [start, end, req.query.lan_ip, req.query.lan_machine]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
                             }
                         }); 
                         break;
                     case 'getconn3':
-                        new query({query: 'SELECT `lan_ip`, `lan_machine`, `remote_ip`, `remote_machine`, sum(`in_bytes`), sum(`out_bytes`) FROM `conn_l7_meta` WHERE time BETWEEN ? AND ? AND `l7_proto`="IPsec" AND `lan_ip` = ? GROUP BY `lan_ip`, `lan_machine`, `remote_ip`, `remote_machine`', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                        new query({query: 'SELECT `lan_ip`, `lan_machine`, `remote_ip`, `remote_machine`, sum(`in_bytes`), sum(`out_bytes`) FROM `conn_l7_meta` WHERE time BETWEEN ? AND ? AND `l7_proto`="IPsec" AND `lan_ip` = ? AND `lan_machine` = ? GROUP BY `lan_ip`, `lan_machine`, `remote_ip`, `remote_machine`', insert: [start, end, req.query.lan_ip, req.query.lan_machine]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
                             }
                         }); 
                         break;
                     case 'getconn4':
-                        new query({query: 'SELECT `lan_ip`, `lan_machine`, `remote_ip`, `remote_machine`, sum(`in_bytes`), sum(`out_bytes`) FROM `conn_l7_meta` WHERE time BETWEEN ? AND ? AND `l7_proto`="IPsec" AND `remote_ip` = ? GROUP BY `lan_ip`, `lan_machine`, `remote_ip`, `remote_machine`', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
+                        new query({query: 'SELECT `lan_ip`, `lan_machine`, `remote_ip`, `remote_machine`, sum(`in_bytes`), sum(`out_bytes`) FROM `conn_l7_meta` WHERE time BETWEEN ? AND ? AND `l7_proto`="IPsec" AND `remote_ip` = ? AND `remote_machine` = ? GROUP BY `lan_ip`, `lan_machine`, `remote_ip`, `remote_machine`', insert: [start, end, req.query.lan_ip, req.query.lan_machine]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
                             }
                         });  
                         break;
                 }
-            } 
-            // else if (req.query.type === 'between_two') { 
-            //     switch (req.query.typeinfo) {
-            //         case 'getconn1':
-            //             new query({query: 'SELECT count(*) AS conn_out FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `lan_ip` = ? AND `lan_machine`=? AND `remote_ip`=? AND `remote_machine`=? ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
-            //                 if (data) {
-            //                     res.json(data);
-            //                 }
-            //             }); 
-            //             break;
-            //         case 'getconn2':
-            //             new query({query: 'SELECT  count(*) AS conn_in FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `remote_ip`=? AND `remote_machine`=? AND `lan_ip` = ? AND `lan_machine`=? ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
-            //                 if (data) {
-            //                     res.json(data);
-            //                 }
-            //             }); 
-            //             break;
-            //         case 'getconn3':
-            //             new query({query: 'SELECT  count(*) AS stealth_out FROM `conn_l7_meta` WHERE time BETWEEN ? AND ? AND `l7_proto`="IPsec" AND `lan_ip` = ? AND `lan_machine`=? AND `remote_ip`=? AND `remote_machine`=? ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
-            //                 if (data) {
-            //                     res.json(data);
-            //                 }
-            //             }); 
-            //             break;
-            //         case 'getconn4':
-            //             new query({query: 'SELECT  count(*) AS stealth_in FROM `conn_l7_meta` WHERE time BETWEEN ? AND ? AND `l7_proto`="IPsec" AND `remote_ip`=? AND `remote_machine`=? AND `lan_ip` = ? AND `lan_machine`=? ', insert: [start, end, req.query.lan_ip]}, {database: database, pool: pool}, function(err,data){
-            //                 if (data) {
-            //                     res.json(data);
-            //                 }
-            //             });  
-            //             break;
-            //     }
-            // } 
-            else if (req.query.type === 'max_order') {
+            } else if (req.query.type === 'between_two') { 
+                switch (req.query.typeinfo) {
+                    case 'getconn1':
+                        new query({query: 'SELECT * FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `lan_ip` = ? AND `lan_machine`=? AND `remote_ip`=? AND `remote_machine`=? ', insert: [start, end, req.query.lan_ip, req.query.lan_machine, req.query.remote_ip, req.query.remote_machine]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        }); 
+                        break;
+                    case 'getconn2':
+                        new query({query: 'SELECT * FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `remote_ip`=? AND `remote_machine`=? AND `lan_ip` = ? AND `lan_machine`=? ', insert: [start, end, req.query.lan_ip, req.query.lan_machine, req.query.remote_ip, req.query.remote_machine]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        }); 
+                        break;
+                    case 'getconn3':
+                        new query({query: 'SELECT * FROM `conn_l7_meta` WHERE time BETWEEN ? AND ? AND `l7_proto`="IPsec" AND `lan_ip` = ? AND `lan_machine`=? AND `remote_ip`=? AND `remote_machine`=? ', insert: [start, end, req.query.lan_ip, req.query.lan_machine, req.query.remote_ip, req.query.remote_machine]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        }); 
+                        break;
+                    case 'getconn4':
+                        new query({query: 'SELECT * FROM `conn_l7_meta` WHERE time BETWEEN ? AND ? AND `l7_proto`="IPsec" AND `remote_ip`=? AND `remote_machine`=? AND `lan_ip` = ? AND `lan_machine`=? ', insert: [start, end, req.query.lan_ip, req.query.lan_machine, req.query.remote_ip, req.query.remote_machine]}, {database: database, pool: pool}, function(err,data){
+                            if (data) {
+                                res.json(data);
+                            }
+                        });  
+                        break;
+                }
+            } else if (req.query.type === 'max_order') {
                 new query({query: 'SELECT MAX(`order_index`) AS `max_order` FROM `assets` ', insert: []}, {database: database, pool: pool}, function(err,data){
                     if (data) {
                         res.json(data);
