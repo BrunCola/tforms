@@ -177,43 +177,43 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                         });
                     }
                 });
-            $http({method: 'GET', url: query+'&typeinfo=getconn3'}).
-                success(function(data) {
-                    //var results = [];
-                    if (data[0] != undefined) {
-                        var host;
-                        var connections = data.map(function( da ) {
-                            var users = $scope.userDimension.filter(function(dt){ 
-                                if ((da.remote_ip === dt.lan_ip)&& (da.remote_machine === dt.lan_machine)){ // && (da.lan_machine === dt.remote_machine)
-                                    dt.depth=1;
-                                    if ($scope.results.indexOf(dt) == -1) {
-                                       // host = angular.copy(dt);
-                                        dt.nodeColor = 3;
-                                        $scope.results.push(dt);
-                                    }
-                                }
-                            });
-                        });
-                    }
-                });
-            $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
-                success(function(data) {
-                    if (data[0] != undefined) {
-                        var host;
-                        var connections = data.map(function( da ) {
-                            var users = $scope.userDimension.filter(function(dt){ 
-                                if ((da.lan_ip === dt.lan_ip) && (da.lan_machine === dt.lan_machine)){
-                                    dt.depth=1;
-                                    if ($scope.results.indexOf(dt) == -1) {
-                                        //host = angular.copy(dt);
-                                        dt.nodeColor = 4;
-                                        $scope.results.push(dt);
-                                    }
-                                }
-                            });
-                        });
-                    }
-                });
+            // $http({method: 'GET', url: query+'&typeinfo=getconn3'}).
+            //     success(function(data) {
+            //         //var results = [];
+            //         if (data[0] != undefined) {
+            //             var host;
+            //             var connections = data.map(function( da ) {
+            //                 var users = $scope.userDimension.filter(function(dt){ 
+            //                     if ((da.remote_ip === dt.lan_ip)&& (da.remote_machine === dt.lan_machine)){ // && (da.lan_machine === dt.remote_machine)
+            //                         dt.depth=1;
+            //                         if ($scope.results.indexOf(dt) == -1) {
+            //                            // host = angular.copy(dt);
+            //                             dt.nodeColor = 3;
+            //                             $scope.results.push(dt);
+            //                         }
+            //                     }
+            //                 });
+            //             });
+            //         }
+            //     });
+            // $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
+            //     success(function(data) {
+            //         if (data[0] != undefined) {
+            //             var host;
+            //             var connections = data.map(function( da ) {
+            //                 var users = $scope.userDimension.filter(function(dt){ 
+            //                     if ((da.lan_ip === dt.lan_ip) && (da.lan_machine === dt.lan_machine)){
+            //                         dt.depth=1;
+            //                         if ($scope.results.indexOf(dt) == -1) {
+            //                             //host = angular.copy(dt);
+            //                             dt.nodeColor = 4;
+            //                             $scope.results.push(dt);
+            //                         }
+            //                     }
+            //                 });
+            //             });
+            //         }
+            //     });
 
                 d = angular.copy(d);
                 d.nodeColor = 0;

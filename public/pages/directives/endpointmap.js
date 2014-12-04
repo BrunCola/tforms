@@ -2477,11 +2477,11 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
                                 if (buildings[b].floors[f].id == connections[c].map){
                                     buildings[b].floors[f].children.push(connections[c])
                                     if (root.children.indexOf(buildings[b]) == -1) {
-                                        buildings[b].nodeColor = 5;
+                                        buildings[b].nodeColor = 3;
                                         root.children.push(buildings[b]);
                                     }
                                     if (buildings[b].children.indexOf(buildings[b].floors[f]) == -1) {
-                                        buildings[b].floors[f].nodeColor = 6;
+                                        buildings[b].floors[f].nodeColor = 4;
                                         buildings[b].children.push(buildings[b].floors[f]);
                                     }
                                 } 
@@ -2656,7 +2656,7 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
                     function nodeColor (color) {
                         switch(color) {
                             case 0:
-                                return "#FFEC00"; // aqua
+                                return "#FFEC00"; // yellow
                                 break;
                             case 1:
                                 return "#34D4FF"; // aqua
@@ -2665,15 +2665,9 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
                                 return "#009426"; // green
                                 break;
                             case 3:
-                                return "#C40600"; // red
-                                break;
-                            case 4:
-                                return "#C43C00"; // orange
-                                break;
-                            case 5:
                                 return "#383838"; // dark grey (building)
                                 break;
-                            case 6:
+                            case 4:
                                 return "#6E6E6E"; // light grey (floor)
                                 break;
                             default:
@@ -2696,7 +2690,7 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
                     ///  LEGEND  ///
                     ////////////////
                     var circle_legend = svg.selectAll(".circle_legend")
-                        .data(["Host","Connection Out","Connection In","Stealth Out","Stealth In","Site","Floor Plan"])
+                        .data(["Host","Connection Out","Connection In","Site","Floor Plan"])
                         .enter().append("g")
                         .attr("class", "circle_legend")
                         .attr("transform", function(d, i) { return "translate(-133," + ((i*18)-25) + ")"; });

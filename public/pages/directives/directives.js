@@ -1495,10 +1495,12 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                             }
                             $scope.barChart
                                 .group(group, "Count")
-                                .valueAccessor(function(d) { return d.value.count;})
+                                .valueAccessor(function(d) { 
+                                    return d.value.count;
+                                })
                                 //.stack(group, "Count2", function(d){return d.value.count;})
                                 .legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
-                                .colors(d3.scale.ordinal().domain(["count"]).range(["#112F41","#068587"]));
+                                .colors(d3.scale.ordinal().domain(["count"]).range(["#34D4FF","#009426","#C40600","#C43C00"]));
                             filter = false;
                             break;
                     }
