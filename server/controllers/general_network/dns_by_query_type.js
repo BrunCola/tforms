@@ -40,13 +40,11 @@ module.exports = function(pool) {
                         select: 'time',
                          link: {
                              type: 'dns_by_query_type_local', 
-                             // val: the pre-evaluated values from the query above
                              val: ['qtype'],
                              crumb: false
                         },
                     },
                     { title: 'Connections', select: 'count' },
-                    { title: 'Query Type', select: 'qtype' },
                     { title: 'Query Type Name', select: 'pie_dimension' },
                     { title: 'IOC Count', select: 'ioc_count' }
                 ],
