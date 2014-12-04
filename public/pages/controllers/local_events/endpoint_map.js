@@ -125,7 +125,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         }
     }
 
-     $scope.getConnections = function(d, conns) {//-----------------------------------------------------Should be upgraded!!-------------------------------------------------------------------
+    $scope.getConnections = function(d, conns) {//-----------------------------------------------------Should be upgraded!!-------------------------------------------------------------------
         //$scope.removeLines();
         $scope.removeFLines();
         $scope.removeBLines();
@@ -197,7 +197,6 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
 
             $http({method: 'GET', url: query+'&typeinfo=getconn1'}).
                 success(function(data) {
-                    $scope.connectionOut = "";
                     if (data[0] != undefined) {
                         var host;
                         var connections = data.map(function( da ) {
@@ -205,9 +204,9 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                                 if ((da.remote_ip === dt.lan_ip)){
                                     dt.depth=1;
                                     if ($scope.results.indexOf(dt) == -1) {
-                                        host = angular.copy(dt);
-                                        host.nodeColor = 1;
-                                        $scope.results.push(host);
+                                        //host = angular.copy(dt);
+                                        dt.nodeColor = 1;
+                                        $scope.results.push(dt);
                                     }
                                     // if ($scope.results.indexOf(dt) == -1) {
                                     //     host = angular.copy(dt);
@@ -217,17 +216,10 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                                 }
                             });
                         });
-                        // $scope.drawConnections(d,results,selectColor(1),conns);
-                        // $scope.drawFloorConns(d,results,selectColor(1));
-                        // $scope.drawBuildingConns(d,results,selectColor(1));
-                        //$scope.plotLinks(d,results,selectColor(1));
                     }
-                });  
-                
+                });                  
             $http({method: 'GET', url: query+'&typeinfo=getconn2'}).
                 success(function(data) {
-                    $scope.connectionOut = "";
-                    //var results = [];
                     if (data[0] != undefined) {
                         var host;
                         var connections = data.map(function( da ) {
@@ -235,23 +227,17 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                                 if ((da.lan_ip === dt.lan_ip) && (da.lan_machine === dt.lan_machine)) {
                                     dt.depth=1;
                                     if ($scope.results.indexOf(dt) == -1) {
-                                        host = angular.copy(dt);
-                                        host.nodeColor = 2;
-                                        $scope.results.push(host);
+                                       // host = angular.copy(dt);
+                                        dt.nodeColor = 2;
+                                        $scope.results.push(dt);
                                     }
                                 }
                             });
                         });
-                        // $scope.drawConnections(d,results,selectColor(2),conns);
-                        // $scope.drawFloorConns(d,results,selectColor(2));
-                        // $scope.drawBuildingConns(d,results,selectColor(2));
-                        //$scope.plotLinks(d,results,selectColor(2));
                     }
                 });
-
             $http({method: 'GET', url: query+'&typeinfo=getconn3'}).
                 success(function(data) {
-                    $scope.connStealthIn = "";
                     //var results = [];
                     if (data[0] != undefined) {
                         var host;
@@ -260,23 +246,17 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                                 if ((da.remote_ip === dt.lan_ip)){ // && (da.lan_machine === dt.remote_machine)
                                     dt.depth=1;
                                     if ($scope.results.indexOf(dt) == -1) {
-                                        host = angular.copy(dt);
-                                        host.nodeColor = 3;
-                                        $scope.results.push(host);
+                                       // host = angular.copy(dt);
+                                        dt.nodeColor = 3;
+                                        $scope.results.push(dt);
                                     }
                                 }
                             });
                         });
-                        // $scope.drawConnections(d,results,selectColor(3),conns);
-                        // $scope.drawFloorConns(d,results,selectColor(3));
-                        // $scope.drawBuildingConns(d,results,selectColor(3));
-                        //$scope.plotLinks(d,results,selectColor(3));
                     }
                 });
             $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
                 success(function(data) {
-                    $scope.connStealthOut = "";
-                    //var results = [];
                     if (data[0] != undefined) {
                         var host;
                         var connections = data.map(function( da ) {
@@ -284,39 +264,48 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                                 if ((da.lan_ip === dt.lan_ip) && (da.lan_machine === dt.lan_machine)){
                                     dt.depth=1;
                                     if ($scope.results.indexOf(dt) == -1) {
-                                        host = angular.copy(dt);
-                                        host.nodeColor = 4;
-                                        $scope.results.push(host);
+                                        //host = angular.copy(dt);
+                                        dt.nodeColor = 4;
+                                        $scope.results.push(dt);
                                     }
                                 }
                             });
                         });
-                        // $scope.drawConnections(d,results,selectColor(4),conns);
-                        // $scope.drawFloorConns(d,results,selectColor(4));
-                        // $scope.drawBuildingConns(d,results,selectColor(4));
-                        //$scope.plotLinks(d,results,selectColor(4));
                     }
                 });
 
-
-
-
-
-
                 d = angular.copy(d);
+                d.nodeColor = 0;
                 d.depth=0;
                 //d.children = $scope.results;
                 d.children = [];
-                //console.log($scope.results)
-               // $scope.plotLinks(d,selectColor(1));        
-                // if (d.childCount >= 35) {
-                //     var divHeight = d.childCount*12;
-                // } else {
-                //     var divHeight = 420;
-                // }
-
-                 $scope.$broadcast('plotLinks', d, $scope.results);
+                // $scope.plotLinks(d,selectColor(1));     
+                $scope.$broadcast('plotLinks', d, $scope.results);
     }                                   //---------------^^^^^^^^^^^^^^^^-----------------------Should be upgraded!!--------------------------^^^^^^^^^^-------------------------
+
+
+    // $scope.connectionTimeline = function(startHost, endHost) { 
+    //     var query = '/local_events/endpoint_map?type=between_two';
+    //     $scope.startend = ""; 
+    //     if ($location.$$search.start && $location.$$search.end) {
+    //         query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&type=between_two'; 
+    //         $scope.startend = 'start='+$location.$$search.start+'&end='+$location.$$search.end+'&'; 
+    //     }
+    //     $http({method: 'GET', url: query+'&typeinfo=getconn1', data: {lan_ip: startHost.lan_ip, lan_machine: startHost.lan_machine, remote_ip: endHost.lan_ip, lan_ip: endHost.lan_machine}}).
+    //         success(function(data) {
+    //             console.log(data)
+    //             if (data[0] != undefined) {
+    //                 console.log(data[0])
+    //             }
+    //         });
+    // }
+
+
+
+
+
+
+
 
 
     /*$scope.userLink = function(d) {//-----------------------------------------------------Should be upgraded!!-------------------------------------------------------------------

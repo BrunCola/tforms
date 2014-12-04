@@ -1585,5 +1585,17 @@ angular.module('mean.pages').config(['$stateProvider',
                     daterange: false
                 }
             })
+        // SITE SURVEY
+            .state('survey', {
+                url: '/survey',
+                templateUrl: 'public/pages/views/survey/survey.html',
+                resolve: {
+                    loggedin: checkLoggedin
+                },
+                data: {
+                    title: 'Site Survey',
+                    daterange: false
+                }
+            })
     }
 ]);

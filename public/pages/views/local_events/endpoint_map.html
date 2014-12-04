@@ -164,90 +164,92 @@
             </div>
             <div id="localuserinformationspan">
                 <div class="jdash-header">User Information</div>
-                <div  style="background-color:#FFF;" class="box">
-                    <div id="localuserinformation"  ng-show="userinfo">
-                        <div class="luinfo" ng-show="userinfo.user_image"><span style="font-weight:bold">User Image: </span><button class='uUpload userfloorbutton' ng-dblclick="uploadUser(userinfo)" type='button' value='userinfo' href=''><img src='{{userinfo.user_image}}' width='48'/></button></div>
-                        <div class="luinfo" ng-show="userinfo.custom_user"><span style="font-weight:bold">Custom Name: </span><span>{{userinfo.custom_user}}</span></div>
-                        <div class="luinfo" ng-show="userinfo.lan_ip"><span style="font-weight:bold">Lan IP: </span><span>{{userinfo.lan_ip}}</span></div>
-                        <div class="luinfo" ng-show="userinfo.lan_user"><span style="font-weight:bold">Lan User: </span><span>{{userinfo.lan_user}}</span></div>
-                        <div class="luinfo" ng-show="userinfo.lan_zone"><span style="font-weight:bold">Lan Zone: </span><span>{{userinfo.lan_zone}}</span></div>
-                        <div class="luinfo" ng-show="userinfo.lan_machine"><span style="font-weight:bold">Lan Machine: </span><span>{{userinfo.lan_machine}}</span></div>
-                        <div class="luinfo" ng-show="userinfo.lan_type"><span style="font-weight:bold">Lan Type: </span><span>{{userinfo.lan_type}}</span></div>
-                        <div class="luinfo" ng-show="userinfo.lan_os"><span style="font-weight:bold">Lan OS: </span><span>{{userinfo.lan_os}}</span></div>
-                        <div class="luinfo" ng-show="userinfo.lan_mac"><span style="font-weight:bold">Lan Mac: </span><span>{{userinfo.lan_mac}}</span></div>
-                        <div class="luinfo" ng-show="userinfo.stealth"><span style="font-weight:bold">Stealth: </span><span>{{userinfo.stealth}}</span></div>
-                        <div class="luinfo" ng-show="userinfo.endpoint_agent"><span style="font-weight:bold">Endpoint Agent: </span><span>{{userinfo.endpoint_agent}}</span></div>
-                        <div class="luinfo" ng-show="userinfo.endpoint_agent_name"><span style="font-weight:bold">Endpoint Agent Name: </span><span>{{userinfo.endpoint_agent_name}}</span></div>
-                        <div class="luinfo" ng-if="userinfo.ioc_hits != 0">
-                            <span style="font-weight:bold">IOC Hits: </span><span class="epMapLink" ng-click="changePage('ioc_local_drill',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.ioc_hits}}</span>
+                <div  style="background-color:#FFF;" class="box">                
+                    <div id="localInfoWrapper">
+                        <div id="localuserinformation"  ng-show="userinfo">
+                            <div class="luinfo" ng-show="userinfo.user_image"><span style="font-weight:bold">User Image: </span><button class='uUpload userfloorbutton' ng-dblclick="uploadUser(userinfo)" type='button' value='userinfo' href=''><img src='{{userinfo.user_image}}' width='48'/></button></div>
+                            <div class="luinfo" ng-show="userinfo.custom_user"><span style="font-weight:bold">Custom Name: </span><span>{{userinfo.custom_user}}</span></div>
+                            <div class="luinfo" ng-show="userinfo.lan_ip"><span style="font-weight:bold">Lan IP: </span><span>{{userinfo.lan_ip}}</span></div>
+                            <div class="luinfo" ng-show="userinfo.lan_user"><span style="font-weight:bold">Lan User: </span><span>{{userinfo.lan_user}}</span></div>
+                            <div class="luinfo" ng-show="userinfo.lan_zone"><span style="font-weight:bold">Lan Zone: </span><span>{{userinfo.lan_zone}}</span></div>
+                            <div class="luinfo" ng-show="userinfo.lan_machine"><span style="font-weight:bold">Lan Machine: </span><span>{{userinfo.lan_machine}}</span></div>
+                            <div class="luinfo" ng-show="userinfo.lan_type"><span style="font-weight:bold">Lan Type: </span><span>{{userinfo.lan_type}}</span></div>
+                            <div class="luinfo" ng-show="userinfo.lan_os"><span style="font-weight:bold">Lan OS: </span><span>{{userinfo.lan_os}}</span></div>
+                            <div class="luinfo" ng-show="userinfo.lan_mac"><span style="font-weight:bold">Lan Mac: </span><span>{{userinfo.lan_mac}}</span></div>
+                            <div class="luinfo" ng-show="userinfo.stealth"><span style="font-weight:bold">Stealth: </span><span>{{userinfo.stealth}}</span></div>
+                            <div class="luinfo" ng-show="userinfo.endpoint_agent"><span style="font-weight:bold">Endpoint Agent: </span><span>{{userinfo.endpoint_agent}}</span></div>
+                            <div class="luinfo" ng-show="userinfo.endpoint_agent_name"><span style="font-weight:bold">Endpoint Agent Name: </span><span>{{userinfo.endpoint_agent_name}}</span></div>
+                            <div class="luinfo" ng-if="userinfo.ioc_hits != 0">
+                                <span style="font-weight:bold">IOC Hits: </span><span class="epMapLink" ng-click="changePage('ioc_local_drill',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.ioc_hits}}</span>
+                            </div>
+                            <div class="luinfo" ng-if="userinfo.ioc_hits == 0">
+                                <span style="font-weight:bold">IOC Hits: </span><span>{{userinfo.ioc_hits}}</span>
+                            </div>
+                            <div class="luinfo" ng-if="userinfo.app_hits != 0">
+                                <span style="font-weight:bold">App Hits: </span><span class="epMapLink" ng-click="changePage('l7_local_app',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.app_hits}}</span>
+                            </div>
+                            <div class="luinfo" ng-if="userinfo.app_hits == 0">
+                                <span style="font-weight:bold">App Hits: </span><span>{{userinfo.app_hits}}</span>
+                            </div>
+                            <div class="luinfo" ng-if="userinfo.http_hits != 0">
+                                <span style="font-weight:bold">HTTP Hits: </span><span class="epMapLink" ng-click="changePage('http_local_by_domain',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.http_hits}}</span>
+                            </div>
+                            <div class="luinfo" ng-if="userinfo.http_hits == 0">
+                                <span style="font-weight:bold">HTTP Hits: </span><span>{{userinfo.http_hits}}</span>
+                            </div>
+                            <div class="luinfo" ng-if="userinfo.file_hits != 0">
+                                <span style="font-weight:bold">File Hits: </span><span class="epMapLink" ng-click="changePage('by_file_name',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.file_hits}}</span>
+                            </div>
+                            <div class="luinfo" ng-if="userinfo.file_hits == 0">
+                                <span style="font-weight:bold">File Hits: </span><span>{{userinfo.file_hits}}</span>
+                            </div>
+                            <div class="luinfo" ng-if="userinfo.endpoint_hits != 0">
+                                <span style="font-weight:bold">Endpoints Hits: </span><span class="epMapLink" ng-click="changePage('endpoint_by_user_and_ip',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.endpoint_hits}}</span>
+                            </div>
+                            <div class="luinfo" ng-if="userinfo.endpoint_hits == 0">
+                                <span style="font-weight:bold">Endpoints Hits: </span><span>{{userinfo.endpoint_hits}}</span>
+                            </div>
+                            <div class="luinfo" ng-if="userinfo.total_bw != 0 && userinfo.total_bw != null">
+                                <span style="font-weight:bold">Total Bandwidth in MB: </span><span class="epMapLink" ng-click="changePage('local2remote',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip,'lan_machine' : userinfo.lan_machine })" > {{userinfo.total_bw}}</span>
+                            </div>
+                            <div class="luinfo" ng-if="userinfo.total_bw == null">
+                                <span style="font-weight:bold">Total Bandwidth in MB: </span><span>0</span>
+                            </div>
+                            <div ng-show="userinfo.map"><button type="button" class="button-error pure-button" ng-click="removeEndUser(userinfo)">Remove User</button></div>
                         </div>
-                        <div class="luinfo" ng-if="userinfo.ioc_hits == 0">
-                            <span style="font-weight:bold">IOC Hits: </span><span>{{userinfo.ioc_hits}}</span>
+                        <div class="luinfo" ng-show="currentFloor">
+                            <table id="flus">
+                                <tr style="font-weight:bold">
+                                    <td>IP</td><td>Host Name</td><td>User name</td>
+                                </tr>
+                                <tr  ng-repeat="user in currentFloor" ng-click="userLinkTo(user)">
+                                    <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
+                                </tr>
+                            </table> 
                         </div>
-                        <div class="luinfo" ng-if="userinfo.app_hits != 0">
-                            <span style="font-weight:bold">App Hits: </span><span class="epMapLink" ng-click="changePage('l7_local_app',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.app_hits}}</span>
+                        <div class="luinfo" ng-show="currentBuilding">
+                            <table id="flus">
+                                <tr>
+                                    <button type="button" class="button-error pure-button" ng-click="removeBuilding(selectedBuilding)">Remove Site</button>
+                                </tr>
+                                <tr style="font-weight:bold">
+                                    <td>IP</td><td>Host Name</td><td>User name</td>
+                                </tr>
+                                <tr  ng-repeat="user in currentBuilding" ng-click="userLinkTo(user)">
+                                    <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
+                                </tr>
+                            </table>  
                         </div>
-                        <div class="luinfo" ng-if="userinfo.app_hits == 0">
-                            <span style="font-weight:bold">App Hits: </span><span>{{userinfo.app_hits}}</span>
+                        <div class="luinfo" ng-show="currentSearchUsers">
+                            <table id="flus">
+                                <tr style="font-weight:bold">
+                                    <td>IP</td><td>Host Name</td><td>User name</td>
+                                </tr>
+                                <tr  ng-repeat="user in currentSearchUsers" ng-click="userLinkTo(user)">
+                                    <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
+                                </tr>
+                            </table>  
                         </div>
-                        <div class="luinfo" ng-if="userinfo.http_hits != 0">
-                            <span style="font-weight:bold">HTTP Hits: </span><span class="epMapLink" ng-click="changePage('http_local_by_domain',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.http_hits}}</span>
-                        </div>
-                        <div class="luinfo" ng-if="userinfo.http_hits == 0">
-                            <span style="font-weight:bold">HTTP Hits: </span><span>{{userinfo.http_hits}}</span>
-                        </div>
-                        <div class="luinfo" ng-if="userinfo.file_hits != 0">
-                            <span style="font-weight:bold">File Hits: </span><span class="epMapLink" ng-click="changePage('by_file_name',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.file_hits}}</span>
-                        </div>
-                        <div class="luinfo" ng-if="userinfo.file_hits == 0">
-                            <span style="font-weight:bold">File Hits: </span><span>{{userinfo.file_hits}}</span>
-                        </div>
-                        <div class="luinfo" ng-if="userinfo.endpoint_hits != 0">
-                            <span style="font-weight:bold">Endpoints Hits: </span><span class="epMapLink" ng-click="changePage('endpoint_by_user_and_ip',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.endpoint_hits}}</span>
-                        </div>
-                        <div class="luinfo" ng-if="userinfo.endpoint_hits == 0">
-                            <span style="font-weight:bold">Endpoints Hits: </span><span>{{userinfo.endpoint_hits}}</span>
-                        </div>
-                        <div class="luinfo" ng-if="userinfo.total_bw != 0 && userinfo.total_bw != null">
-                            <span style="font-weight:bold">Total Bandwidth in MB: </span><span class="epMapLink" ng-click="changePage('local2remote',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip,'lan_machine' : userinfo.lan_machine })" > {{userinfo.total_bw}}</span>
-                        </div>
-                        <div class="luinfo" ng-if="userinfo.total_bw == null">
-                            <span style="font-weight:bold">Total Bandwidth in MB: </span><span>0</span>
-                        </div>
-                        <div ng-show="userinfo.map"><button type="button" class="button-error pure-button" ng-click="removeEndUser(userinfo)">Remove User</button></div>
-                    </div>
-                    <div class="luinfo" ng-show="currentFloor">
-                        <table id="flus">
-                            <tr style="font-weight:bold">
-                                <td>IP</td><td>Host Name</td><td>User name</td>
-                            </tr>
-                            <tr  ng-repeat="user in currentFloor" ng-click="userLinkTo(user)">
-                                <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
-                            </tr>
-                        </table> 
-                    </div>
-                    <div class="luinfo" ng-show="currentBuilding">
-                        <table id="flus">
-                            <tr>
-                                <button type="button" class="button-error pure-button" ng-click="removeBuilding(selectedBuilding)">Remove Site</button>
-                            </tr>
-                            <tr style="font-weight:bold">
-                                <td>IP</td><td>Host Name</td><td>User name</td>
-                            </tr>
-                            <tr  ng-repeat="user in currentBuilding" ng-click="userLinkTo(user)">
-                                <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
-                            </tr>
-                        </table>  
-                    </div>
-                    <div class="luinfo" ng-show="currentSearchUsers">
-                        <table id="flus">
-                            <tr style="font-weight:bold">
-                                <td>IP</td><td>Host Name</td><td>User name</td>
-                            </tr>
-                            <tr  ng-repeat="user in currentSearchUsers" ng-click="userLinkTo(user)">
-                                <td><span>{{user.lan_ip}}</span></td><td><span>{{user.lan_machine}}</span></td><td><span>{{user.lan_user}}</span></td>
-                            </tr>
-                        </table>  
                     </div>
                 </div>
             </div>           

@@ -60,9 +60,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     ///////////////////////////
                     ///  DIV/ELEMENT SETUP  ///
                     ///////////////////////////
-                    var userDivWrapper = d3.select("#localListWrapper").style('height', elementHeight+50+'px').style('overflow', 'auto');
+                    var userDivWrapper = d3.select("#localListWrapper").style('height', elementHeight+25+'px').style('overflow', 'auto');
                     var userDiv = d3.select("#listlocalusers").attr("width","100%");
-                    var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
+                    var infoDivWrapper = d3.select('#localInfoWrapper').style('height', elementHeight+'px').style('overflow', 'auto');
+                    var infoDiv = d3.select('#localuserinformation').append('table');
                     var floorDiv = d3.select(element[0]);
                     var floorPlanDiv = d3.select("#floorplan");
 
@@ -114,9 +115,9 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .attr("xlink:href", floor_path)
                         .attr("type", "image/svg+xml");
 
-                    var endpointConn = container.append("svg")
-                    .attr("class", "endpointConn")
-                    .attr("connName", floorName);
+                    // var endpointConn = container.append("svg")
+                    // .attr("class", "endpointConn")
+                    // .attr("connName", floorName);
 
                     // -- to hide <input> when changing custom username
                     container.on('click', function(e){
@@ -686,9 +687,9 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             lastUserRequeried = d.id;
 
                                             // draw line links   
-                                            var conns = endpointConn.selectAll(".endpointConns").data([""]);
-                                            $scope.getConnections(d,conns); 
-                                            endpointConn.selectAll('line').remove();     
+                                            //var conns = endpointConn.selectAll(".endpointConns").data([""]);
+                                            $scope.getConnections(d); 
+                                            //endpointConn.selectAll('line').remove();     
                                         });
                                         element
                                             .attr('height', '25')
@@ -1234,9 +1235,10 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                     ///////////////////////////
                     ///  DIV/ELEMENT SETUP  ///
                     ///////////////////////////
-                    var userDivWrapper = d3.select("#localListWrapper").style('height', elementHeight+50+'px').style('overflow', 'auto');
+                    var userDivWrapper = d3.select("#localListWrapper").style('height', elementHeight+25+'px').style('overflow', 'auto');
                     var userDiv = d3.select("#listlocalusers").attr("width","100%");
-                    var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
+                    var infoDivWrapper = d3.select('#localInfoWrapper').style('height', elementHeight+'px').style('overflow', 'auto');
+                    var infoDiv = d3.select('#localuserinformation').append('table');
                     var floorDiv = d3.select(element[0]);
 
                     var windowScale = $scope.standardWidth/element.outerWidth();
@@ -1287,8 +1289,8 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                         .attr("xlink:href", " ")
                         .attr("type", "image/svg+xml");     
 
-                    d3.select("#floorplanspan").append("svg")
-                    .attr("class", "endpointConns");
+                    // d3.select("#floorplanspan").append("svg")
+                    // .attr("class", "endpointConns");
                     // .attr("width", elementWidth)
                     // .attr("height", elementHeight);
 
@@ -2056,9 +2058,10 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                     ///////////////////////////
                     ///  DIV/ELEMENT SETUP  ///
                     ///////////////////////////
-                    var userDivWrapper = d3.select("#localListWrapper").style('height', elementHeight+50+'px').style('overflow', 'auto');
+                    var userDivWrapper = d3.select("#localListWrapper").style('height', elementHeight+25+'px').style('overflow', 'auto');
                     var userDiv = d3.select("#listlocalusers").attr("width","100%");
-                    var infoDiv = d3.select('#localuserinformation').append('table').style('overflow', 'auto');
+                    var infoDivWrapper = d3.select('#localInfoWrapper').style('height', elementHeight+'px').style('overflow', 'auto');
+                    var infoDiv = d3.select('#localuserinformation').append('table');
                     var floorDiv = d3.select(element[0]);
 
                     var windowScale = $scope.standardWidth/element.outerWidth();
@@ -2109,8 +2112,8 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                         .attr("xlink:href", " ")
                         .attr("type", "image/svg+xml");     
 
-                    var endpointConn = container.append("svg")
-                    .attr("class", "endpointConn");
+                    // var endpointConn = container.append("svg")
+                    // .attr("class", "endpointConn");
 
                     // -- to hide <input> when changing custom username
                     container.on('click', function(e){
@@ -2728,7 +2731,6 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
                     var buildings = angular.copy($scope.buildings);
 
                     for (var b in buildings) {
-
                             buildings[b].children = [];
                         for (var f in buildings[b].floors) {
                             buildings[b].floors[f].children = [];
@@ -2736,9 +2738,11 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
                                 if (buildings[b].floors[f].id == connections[c].map){
                                     buildings[b].floors[f].children.push(connections[c])
                                     if (root.children.indexOf(buildings[b]) == -1) {
+                                        buildings[b].nodeColor=5;
                                         root.children.push(buildings[b]);
                                     }
                                     if (buildings[b].children.indexOf(buildings[b].floors[f]) == -1) {
+                                        buildings[b].floors[f].nodeColor=6;
                                         buildings[b].children.push(buildings[b].floors[f]);
                                     }
                                 } 
@@ -2751,14 +2755,14 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
                         }
                     }
 
-/*                    //var width = $("#hostlinks").parent().width(),
-                        //height = params["height"];
-                        var width = 755, height = 420;
+                    var margin = {top: 20, right: 120, bottom: 20, left: 120};
+                    
+                    var width = 755, height = 420;
+                    var i = 0, duration = 750;
+                    var textOffset = 12;
 
                     var cluster = d3.layout.cluster()
-                        .size([height, width - 230]);
-
-                    
+                        .size([height, width]);
 
                     var diagonal = d3.svg.diagonal()
                         .projection(function(d) { return [d.y, d.x]; });
@@ -2768,275 +2772,203 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
                     hotLinks.selectAll('svg').remove();
 
                     var svg = hotLinks.append("svg")
-                        .attr("width", width)
-                        .attr("height", height)
+                        .attr("width", width + margin.right + margin.left)
+                        .attr("height", height + margin.top + margin.bottom)
                         .append("g")
-                        .attr("transform", "translate(100,0)");
-
-                   
-                    var nodes = cluster.nodes(root),
-                    links = cluster.links(nodes);
-
-                    console.log(nodes)
-                    console.log(links)
-
-                    var link = svg.selectAll(".link")
-                        .data(links)
-                        .enter().append("path")
-                        .attr("d", diagonal)
-                        .data(nodes)
-                        // .attr("stroke-width", function(d) { 
-                        //     console.log(d)
-                        //     return d.idRoute ? "1px" : "0"; 
-                        // })
-                        .attr("stroke-width", "1px")
-                        .attr("class", "conn_link");
-
-                    var node = svg.selectAll(".conn")
-                        .data(nodes)
-                        .enter().append("g")
-                        .attr("class", "conn")
-                        .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
-
-                    node.append("circle")
-                        .attr("fill",function(d){ return nodeColor(d.nodeColor); } )
-                        .attr("stroke", "#000")
-                        .attr("stroke-width", "0.7px")
-                        .attr("r", 10)
-                        .on("click", function(d){
-                            $scope.userLinkTo(d);
-                        });
-
-                    node.append("text")
-                        .attr("dx", function(d) { return d.children ? -12 : 12; })
-                        .attr("dy", 3)
-                        .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
-                        .text(function(d) { 
-                            var name = d.lan_machine;
-                            if (d.custom_user !== null){
-                                name = d.custom_user;
-                            }
-                            if ((name === "") || (name === null)){
-                                name = d.lan_ip;
-                            }
-                            if ((name === "") || (name === null)){
-                                name = d.lan_mac;
-                            }
-                            if ((name === "") || (name === null) || (name === undefined)){
-                                name = d.custom_name;
-                            }
-                            return name; });
-                    
-                    // function collapse(d) {
-                    //     if (d.children) {
-                    //       d._children = d.children;
-                    //       d._children.forEach(collapse);
-                    //       d.children = null;
-                    //     }
-                    // }
-
-                      root.children.forEach(collapse);
-
-                    d3.select(self.frameElement).style("height", height + "px");*/
-
-                var nodeColor = function(severity) {
-                    switch(severity) {
-                        case 1:
-                            return "#34D4FF";
-                            break;
-                        case 2:
-                            return "#009426";
-                            break;
-                        case 3:
-                            return "#C40600";
-                            break;
-                        case 4:
-                            return "#EE00FF";
-                            break;
-                        default:
-                        return "#377FC7";
-                    }
-                }
-
-                var margin = {top: 20, right: 120, bottom: 20, left: 120};
-                
-                var width = 755, height = 420;
-                var i = 0,
-                    duration = 750;
-
-                var cluster = d3.layout.cluster()
-                    .size([height, width]);
-
-                var diagonal = d3.svg.diagonal()
-                    .projection(function(d) { return [d.y, d.x]; });
-
-                var hotLinks = d3.select("#hostlinks");
-
-                hotLinks.selectAll('svg').remove();
-
-                var svg = hotLinks.append("svg")
-                    .attr("width", width + margin.right + margin.left)
-                    .attr("height", height + margin.top + margin.bottom)
-                    .append("g")
-                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-
-
-            //d3.json("flare.json", function(error, flare) {
-              root.x0 = height / 2;
-              root.y0 = 0;
-
-              function collapse(d) {
-                if (d.children) {
-                  d._children = d.children;
-                  d._children.forEach(collapse);
-                  d.children = null;
-                }
-              }
-
-              // root.children.forEach(collapse);
-              update(root);
-            //});
-
-
-            d3.select(self.frameElement).style("height", "800px");
-
-            function update(source) {
-
-                // Compute the new tree layout.
-                var nodes = cluster.nodes(root).reverse(),
-                    links = cluster.links(nodes);
-
-                // Normalize for fixed-depth.
-                nodes.forEach(function(d) { d.y = d.depth * 180; });
-
-                // Update the nodes…
-                var node = svg.selectAll("g.node")
-                    .data(nodes, function(d) { return d.idd || (d.idd = ++i); });
-
-                // Enter any new nodes at the parent's previous position.
-                var nodeEnter = node.enter().append("g")
-                    .attr("class", "node")
-                    .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-                    .on("click", click);
-
-                nodeEnter.append("circle")
-                    .attr("fill",function(d){ return nodeColor(d.nodeColor); } )
-                    .attr("stroke", "#000")
-                    .attr("stroke-width", "0.7px")
-                    .attr("r", 10)
-
-                nodeEnter.append("text")
-                    .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
-                    .attr("dy", ".35em")
-                    .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
-                     .text(function(d) { 
-                            var name = d.lan_machine;
-                            if (d.custom_user !== null){
-                                name = d.custom_user;
-                            }
-                            if ((name === "") || (name === null)){
-                                name = d.lan_ip;
-                            }
-                            if ((name === "") || (name === null)){
-                                name = d.lan_mac;
-                            }
-                            if ((name === "") || (name === null) || (name === undefined)){
-                                name = d.custom_name;
-                            }
-                            return name; })
-                    .style("fill-opacity", "1");
-
-                // Transition nodes to their new position.
-                var nodeUpdate = node.transition()
-                    .duration(duration)
-                    .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
-
-                nodeUpdate.select("circle")
-                    .attr("fill",function(d){ return nodeColor(d.nodeColor); } )
-                    .attr("stroke", "#000")
-                    .attr("stroke-width", "0.7px")
-                    .attr("r", 10)
-
-                nodeUpdate.select("text")
-                    .style("fill-opacity", 1);
-
-                // Transition exiting nodes to the parent's new position.
-                var nodeExit = node.exit().transition()
-                    .duration(duration)
-                    .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
-                    .remove();
-
-                nodeExit.select("circle")
-                    .attr("fill",function(d){ return nodeColor(d.nodeColor); } )
-                    .attr("stroke", "#000")
-                    .attr("stroke-width", "0.7px")
-                    .attr("r", 10)
-
-                nodeExit.select("text")
-                    .style("fill-opacity", "1");
-
-                // Update the links…
-                var link = svg.selectAll(".link")
-                    .data(links, function(d) { return d.target.idd; });
-
-                // Enter any new links at the parent's previous position.
-                link.enter().insert("path", "g")
-                    .attr("d", function(d) {
-                        var o = {x: source.x0, y: source.y0};
-                        return diagonal({source: o, target: o});
-                    })
-                    .attr("class", "link")
-                    .attr("stroke-width", "1px");
-
-                // Transition links to their new position.
-                link.transition()
-                    .duration(duration)
-                    .attr("stroke-width", "1px")
-                    .attr("d", diagonal);
-
-                // Transition exiting nodes to the parent's new position.
-                link.exit().transition()
-                    .duration(duration)
-                    .attr("d", function(d) {
-                        var o = {x: source.x, y: source.y};
-                        return diagonal({source: o, target: o});
-                    })
-                    .remove();
-
-                // Stash the old positions for transition.
-                nodes.forEach(function(d) {
-                    d.x0 = d.x;
-                    d.y0 = d.y;
-                });
-            }
-
+                            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
             
+                    root.x0 = height / 2;
+                    root.y0 = 0;
 
-            // Toggle children on click.
-            function click(d) {
-              if (d.children) {
-                d._children = d.children;
-                d.children = null;
-              } else {
-                d.children = d._children;
-                d._children = null;
-              }
-              update(d);
-            }
+                    // root.children.forEach(collapse);
+                    update(root);
 
+                    d3.select(self.frameElement).style("height", "800px");
 
+                    function update(source) {
 
+                        // Compute the new tree layout.
+                        var nodes = cluster.nodes(root).reverse(),
+                            links = cluster.links(nodes);
 
+                        // Normalize for fixed-depth.
+                        nodes.forEach(function(d) { d.y = d.depth * 180; });
 
+                        // Update the nodes…
+                        var node = svg.selectAll("g.node")
+                            .data(nodes, function(d) { return d.idd || (d.idd = ++i); });
 
+                        // Enter any new nodes at the parent's previous position.
+                        var nodeEnter = node.enter().append("g")
+                            .attr("class", "node")
+                            .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+                            .on("click", click);
+
+                        nodeEnter.append("circle")
+                            .attr("fill",function(d){ return nodeColor(d.nodeColor); } )
+                            .attr("stroke", "#000")
+                            .attr("stroke-width", "0.7px")
+                            .attr("r", 10)
+
+                        nodeEnter.append("text")
+                            .attr("x", function(d) { return d.children || d._children ? -textOffset : textOffset; })
+                            .attr("dy", ".35em")
+                            .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+                            .text(function(d) { 
+                                var name = d.lan_machine;
+                                if (d.custom_user !== null){
+                                    name = d.custom_user;
+                                }
+                                if ((name === "") || (name === null)){
+                                    name = d.lan_ip;
+                                }
+                                if ((name === "") || (name === null)){
+                                    name = d.lan_mac;
+                                }
+                                if ((name === "") || (name === null) || (name === undefined)){
+                                    name = d.custom_name;
+                                }
+                                return name; })
+                            .style("fill-opacity", "1");
+
+                        // Transition nodes to their new position.
+                        var nodeUpdate = node.transition()
+                            .duration(duration)
+                            .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+                        nodeUpdate.select("circle")
+                            .attr("fill",function(d){ return nodeColor(d.nodeColor); } )
+                            .attr("stroke", "#000")
+                            .attr("stroke-width", "0.7px")
+                            .attr("r", 10)
+
+                        nodeUpdate.select("text")
+                            .style("fill-opacity", 1);
+
+                        // Transition exiting nodes to the parent's new position.
+                        var nodeExit = node.exit().transition()
+                            .duration(duration)
+                            .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+                            .remove();
+
+                        nodeExit.select("circle")
+                            .attr("fill",function(d){ return nodeColor(d.nodeColor); } )
+                            .attr("stroke", "#000")
+                            .attr("stroke-width", "0.7px")
+                            .attr("r", 10)
+
+                        nodeExit.select("text")
+                            .style("fill-opacity", "1");
+
+                        // Update the links…
+                        var link = svg.selectAll(".conn_link")
+                            .data(links, function(d) { return d.target.idd; });
+
+                        // Enter any new links at the parent's previous position.
+                        link.enter().insert("path", "g")
+                            .attr("d", function(d) {
+                                var o = {x: source.x0, y: source.y0};
+                                return diagonal({source: o, target: o});
+                            })
+                            .attr("class", "conn_link")
+                            .attr("stroke-width", "1px");
+
+                        // Transition links to their new position.
+                        link.transition()
+                            .duration(duration)
+                            .attr("stroke-width", "1px")
+                            .attr("d", diagonal);
+
+                        // Transition exiting nodes to the parent's new position.
+                        link.exit().transition()
+                            .duration(duration)
+                            .attr("d", function(d) {
+                                var o = {x: source.x, y: source.y};
+                                return diagonal({source: o, target: o});
+                            })
+                            .remove();
+
+                        // Stash the old positions for transition.
+                        nodes.forEach(function(d) {
+                            d.x0 = d.x;
+                            d.y0 = d.y;
+                        });
+                    }
+
+                    // Toggle children on click.
+                    function click(d) {
+                        console.log(d)
+                        if (d.children === null) {
+                            $scope.connectionTimeline(host,d);
+                        }
+                        if (d.children) {
+                            d._children = d.children;
+                            d.children = null;
+                        } else {
+                            d.children = d._children;
+                            d._children = null;
+                        }
+                        update(d);
+                    }
+
+                    function nodeColor (color) {
+                        switch(color) {
+                            case 0:
+                                return "#FFEC00"; // aqua
+                                break;
+                            case 1:
+                                return "#34D4FF"; // aqua
+                                break;
+                            case 2:
+                                return "#009426"; // green
+                                break;
+                            case 3:
+                                return "#C40600"; // red
+                                break;
+                            case 4:
+                                return "#C43C00"; // orange
+                                break;
+                            case 5:
+                                return "#383838"; // dark grey (building)
+                                break;
+                            case 6:
+                                return "#6E6E6E"; // light grey (floor)
+                                break;
+                            default:
+                            return "#377FC7"; // bluish
+                        }
+                    }
+
+                    function collapse(d) {
+                        if (d.children) {
+                          d._children = d.children;
+                          d._children.forEach(collapse);
+                          d.children = null;
+                        }
+                    }
+
+                    ////////////////
+                    ///  LEGEND  ///
+                    ////////////////
+                    var circle_legend = svg.selectAll(".circle_legend")
+                        .data(["Host","Connection Out","Connection In","Stealth Out","Stealth In","Building","Floor"])
+                        .enter().append("g")
+                        .attr("class", "circle_legend")
+                        .attr("transform", function(d, i) { return "translate(-130," + ((i*22)-25) + ")"; });
+                    circle_legend.append('svg:circle')
+                        .attr('transform', 'translate(23,17)')
+                        .attr('r', 10)
+                        .attr("fill",function(d,i){ return nodeColor(i); } )
+                        .style("stroke-width", "0.7px")
+                        .style("stroke" , "#000");
+                    circle_legend.append("text")
+                        .attr("x", 38)
+                        .attr("y", 17)
+                        .attr("dy", ".35em")
+                        .text(function(d) { return d; });
 
                 }, 1000, false);
-
             })
-
-
-
         }
     };
 }]);
