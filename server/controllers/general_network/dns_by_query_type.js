@@ -21,15 +21,14 @@ module.exports = function(pool) {
             var info = [];
             var table1 = {
                 query: 'SELECT '+
-                            // 'sum(`count`) AS `count`,'+
-                            'count(*) AS `count`, '+
                             'max(`time`) AS `time`,'+
                             '`qtype`,'+
                             '`qtype_name`, '+
                             '`qtype_name` AS `pie_dimension`, '+
+                            'sum(`count`) AS `count`,'+
                             'sum(`ioc_count`) AS `ioc_count` '+
                         'FROM ' + 
-                            '`dns` '+
+                            '`dns_query_type` '+
                         'WHERE ' +
                             '`time` BETWEEN ? AND ? '+
                         'GROUP BY '+
@@ -60,12 +59,12 @@ module.exports = function(pool) {
             }
             var crossfilterQ = {
                 query: 'SELECT '+
-                        'count(*) AS count,'+
+                        'sum(`count`) AS count,'+
                         'time,'+
                         '`qtype`,'+
                         '`qtype_name` '+
                     'FROM '+
-                        '`dns` '+
+                        '`dns_query_type` '+
                     'WHERE '+
                         '`time` BETWEEN ? AND ? '+
                     'GROUP BY '+
@@ -81,7 +80,7 @@ module.exports = function(pool) {
                          '`qtype_name` AS `pie_dimension`, '+
                          'count(*) AS `count` '+
                      'FROM '+
-                         '`dns` '+
+                         '`dns_query_type` '+
                      'WHERE '+
                          '`time` BETWEEN ? AND ? '+
                          'AND `qtype_name` !=\'-\' '+
