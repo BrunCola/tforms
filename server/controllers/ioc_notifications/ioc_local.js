@@ -20,10 +20,9 @@ module.exports = function(pool) {
             var info = [];
             var table1 = {
                 query: 'SELECT '+
-                            'count(*) AS count,'+
-                            'max(`time`) AS time,'+
-                            '`lan_stealth`,'+
+                            'max(`time`) AS `time`,'+
                             '`lan_zone`,'+
+                            '`lan_stealth`,'+
                             '`lan_machine`,'+
                             '`lan_user`,'+
                             '`lan_ip`,'+
@@ -36,7 +35,8 @@ module.exports = function(pool) {
                             '`ioc_typeInfection`,'+
                             '`ioc_rule`,'+
                             '`ioc_severity`,'+
-                            'sum(`proxy_blocked`) AS proxy_blocked '+
+                            'sum(`ioc_count`) AS `ioc_count`,'+
+                            'sum(`proxy_blocked`) AS `proxy_blocked` '+
                         'FROM '+
                             '`conn_ioc` '+
                         'WHERE '+
@@ -61,6 +61,7 @@ module.exports = function(pool) {
                     { title: 'Stealth', select: 'lan_stealth', access: [3] },
                     { title: 'ABP', select: 'proxy_blocked', access: [2] },
                     { title: 'Severity', select: 'ioc_severity' },
+                    { title: 'IOC Hits', select: 'ioc_count' },
                     { title: 'IOC', select: 'ioc' },
                     { title: 'IOC Type', select: 'ioc_typeIndicator' },
                     { title: 'IOC Stage', select: 'ioc_typeInfection' },
@@ -83,8 +84,8 @@ module.exports = function(pool) {
             }
             var crossfilterQ = {
                 query: 'SELECT '+
-                            'count(*) as count,'+
-                            'time,'+
+                            'sum(`ioc_count`) AS count,'+
+                            '`time`,'+
                             '`ioc_severity`,'+
                             '`ioc` '+
                         'FROM '+

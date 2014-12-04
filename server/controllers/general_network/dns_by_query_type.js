@@ -45,7 +45,7 @@ module.exports = function(pool) {
                         },
                     },
                     { title: 'Connections', select: 'count' },
-                    { title: 'Query Type Name', select: 'pie_dimension' },
+                    { title: 'Query Type', select: 'pie_dimension' },
                     { title: 'IOC Count', select: 'ioc_count' }
                 ],
                 settings: {
@@ -69,7 +69,7 @@ module.exports = function(pool) {
                         'month(from_unixtime(`time`)),'+
                         'day(from_unixtime(`time`)),'+
                         'hour(from_unixtime(`time`)),'+
-                        '`qtype`',
+                        '`qtype_name`',
                 insert: [start, end]
             }
             var piechartQ = {

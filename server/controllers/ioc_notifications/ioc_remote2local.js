@@ -20,7 +20,7 @@ module.exports = function(pool) {
                 var info = [];
                 var table1 = {
                     query: 'SELECT '+
-                                'max(`time`) AS time,'+
+                                'max(`time`) AS `time`,'+
                                 '`lan_stealth`,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
@@ -35,12 +35,12 @@ module.exports = function(pool) {
                                 'sum(`in_bytes`) as in_bytes,'+
                                 'sum(`out_bytes`) as out_bytes,'+
                                 '`ioc`,'+
-                                '`ioc_severity`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`,'+
                                 '`ioc_rule`,'+
-                                'sum(`proxy_blocked`) AS proxy_blocked,'+
-                                'sum(`ioc_count`) AS ioc_count '+
+                                '`ioc_severity`,'+
+                                'sum(`ioc_count`) AS `ioc_count`,'+
+                                'sum(`proxy_blocked`) AS proxy_blocked '+
                             'FROM '+
                                 '`conn_ioc` '+
                             'WHERE '+
@@ -67,6 +67,7 @@ module.exports = function(pool) {
                         { title: 'Stealth', select: 'lan_stealth', access: [3] },
                         { title: 'ABP', select: 'proxy_blocked', access: [2] },
                         { title: 'Severity', select: 'ioc_severity' },
+                        { title: 'IOC Hits', select: 'ioc_count' },
                         { title: 'IOC', select: 'ioc' },
                         { title: 'IOC Type', select: 'ioc_typeIndicator' },
                         { title: 'IOC Stage', select: 'ioc_typeInfection' },
