@@ -55,8 +55,7 @@ module.exports = function(pool) {
                         { title: 'Local Machine', select: 'lan_machine' },
                         { title: 'Local User', select: 'lan_user' },
                         { title: 'Local IP', select: 'lan_ip' },
-                        { title: 'Query Type', select: 'qtype' },
-                        { title: 'Query Type Name', select: 'qtype_name' },
+                        { title: 'Query Type', select: 'qtype_name' },
                         { title: 'IOC Count', select: 'ioc_count' }
                     ],
                     settings: {
