@@ -800,33 +800,33 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
             $scope.socket = socket;
 
 
-            // $.fn.dataTableExt.aoFeatures.push( {
-            //     "fnInit": function( oSettings ) {
-            //         return new TableTools( { "oDTSettings": oSettings } );
-            //     },
-            //     "cFeature": "T",
-            //     "sFeature": "TableTools"
-            // } );
+            $.fn.dataTableExt.aoFeatures.push( {
+                "fnInit": function( oSettings ) {
+                    return new TableTools( { "oDTSettings": oSettings } );
+                },
+                "cFeature": "T",
+                "sFeature": "TableTools"
+            } );
 
-            // $(document).ready( function () {
-            //     $('#table').dataTable( {
-            //         "dom": 'T<"clear">lfrtip',
-            //         "TableTools": {
-            //             "sSwfPath": "http://cdn.datatables.net/tabletools/2.2.2/swf/copy_csv_xls_pdf.swf",
-            //             "aButtons": [
-            //                 "print", {
-            //                     "sExtends": "collection",
-            //                     "sButtonText": "Save", // button name 
-            //                     "aButtons": [
-            //                         "csv",
-            //                         "print"
-            //                     ]
-            //                 }
-            //             ]
-            //         }
+            $(document).ready( function () {
+                $('#table').dataTable( {
+                    "dom": 'T<"clear">',//lfrtip',
+                    "TableTools": {
+                        "sSwfPath": "http://cdn.datatables.net/tabletools/2.2.2/swf/copy_csv_xls_pdf.swf",
+                        "aButtons": [
+                            "print", {
+                                "sExtends": "collection",
+                                "sButtonText": "Save", // button name 
+                                "aButtons": [
+                                    "csv",
+                                    "print"
+                                ]
+                            }
+                        ]
+                    }
 
-            //     } );
-            // } );
+                } );
+            } );
 
             // $(document).ready( function () {
             //   var oTable = $('#table').dataTable();
@@ -1663,6 +1663,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                                         .x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width]));
                                         //$(element).height(hHeight);
                                         d3.select('#rowchart svg').attr('width', width).attr('height', hHeight);
+                                    $scope.rowChart.redraw();
                                 }
                             };
                             $scope.rowChart
