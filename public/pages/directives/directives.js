@@ -1324,7 +1324,9 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                         $scope.$broadcast('spinnerHide');
                         $(window).resize(function () {
                             waitForFinalEvent(function(){
+                              if (chartType !== "hostConnections"){
                                 $scope.pieChart.render();
+                              }
                             }, 200, "pieChartresize");
                         });
                         $(window).bind('resize', function() {
@@ -1341,7 +1343,9 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                             }
                         });
                         $rootScope.$watch('search', function(){
-                            $scope.pieChart.redraw();
+                            if (chartType !== "hostConnections"){
+                              $scope.pieChart.redraw();
+                            }
                         });
 
                     // var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});

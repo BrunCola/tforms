@@ -2401,7 +2401,7 @@ button.epbGrey:hover,button.epbGrey:active{
 #flus td span{
   cursor: pointer;
 }
-.epbuttons{
+button.right, .epbuttons{
   float:right;
 }
 
