@@ -799,6 +799,51 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
         link: function ($scope, element, attrs) {
             $scope.socket = socket;
 
+
+            // $.fn.dataTableExt.aoFeatures.push( {
+            //     "fnInit": function( oSettings ) {
+            //         return new TableTools( { "oDTSettings": oSettings } );
+            //     },
+            //     "cFeature": "T",
+            //     "sFeature": "TableTools"
+            // } );
+
+            // $(document).ready( function () {
+            //     $('#table').dataTable( {
+            //         "dom": 'T<"clear">lfrtip',
+            //         "TableTools": {
+            //             "sSwfPath": "http://cdn.datatables.net/tabletools/2.2.2/swf/copy_csv_xls_pdf.swf",
+            //             "aButtons": [
+            //                 "print", {
+            //                     "sExtends": "collection",
+            //                     "sButtonText": "Save", // button name 
+            //                     "aButtons": [
+            //                         "csv",
+            //                         "print"
+            //                     ]
+            //                 }
+            //             ]
+            //         }
+
+            //     } );
+            // } );
+
+            // $(document).ready( function () {
+            //   var oTable = $('#table').dataTable();
+            //   var oTableTools = new TableTools( oTable, {
+            //     "buttons": [
+            //       "copy",
+            //       "csv",
+            //       "xls",
+            //       "pdf",
+            //       { "type": "print", "buttonText": "Print me!" }
+            //     ]
+            //   } );
+              
+            //   // console.log(oTableTools);
+            //   $('#table').before( oTableTools.dom.container );
+            // } );
+
             function redrawTable(tableData) {
                 $('#table').dataTable().fnClearTable();
                 $('#table').dataTable().fnAddData(tableData.top(Infinity));
