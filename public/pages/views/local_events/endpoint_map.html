@@ -146,7 +146,7 @@
                     </tabset>
                 </div> 
                  <div id="allfloorplanspan" ng-show="!toggleView">
-                    <div class="jdash-header">Floor View</div>  
+                    <!-- <div class="jdash-header">Floor View</div>   -->
                     <div style="background-color:#FFF;" class="box" >
                         <div id="allfloorplan" style="position: relative;">
                             <div make-all-floor-plan style="position: relative;"></div>
@@ -155,7 +155,8 @@
                 </div>
             </div>
              <div id="buildingplanspan" ng-show="!toggleZoom">
-                <div class="jdash-header">Site View <button type="button" class="rndCrnBtn pure-button right" ng-click="createBuilding()">Create Site</button></div>  
+                <button type="button" class="rndCrnBtn pure-button right" ng-click="createBuilding()">Create Site</button> 
+                <!-- <div class="jdash-header">Site View <button type="button" class="rndCrnBtn pure-button right" ng-click="createBuilding()">Create Site</button></div>  -->
                 <div style="background-color:#FFF;" class="box" >
                     <div id="allfloorplan" style="position: relative;">
                         <div make-building-plan style="position: relative;"></div>
@@ -163,7 +164,7 @@
                 </div>
             </div>
             <div id="localuserinformationspan">
-                <div class="jdash-header">User Information</div>
+                <!-- <div class="jdash-header">User Information</div> -->
                 <div  style="background-color:#FFF;" class="box">                
                     <div id="localInfoWrapper">
                         <div id="localuserinformation"  ng-show="userinfo">
@@ -259,7 +260,7 @@
     <div class="row-fluid">
         <div class="span7">
             <div id="hostlinksspan" >
-                <div class="jdash-header">Host Connections</div>  
+                <!-- <div class="jdash-header">Host Connections</div>   -->
                 <div style="background-color:#FFF;" class="box" >
                     <div id="hostlinks" style="position: relative;">
                         <div draw-links style="position: relative;"></div>
@@ -268,10 +269,23 @@
             </div>
         </div>  
         <div class="span5">
-            <div class="jdash-header">Connections Information</div>  
+            <!-- <div class="jdash-header">Connections Information</div>   -->
             <div style="background-color:#FFF;" class="box" >
                 <div id="barchart" make-bar-chart></div>
             </div>
+            <br />
+            <div class="connInfoL">
+                <!-- <div class="jdash-header">Connections Information</div>   -->
+                <div style="background-color:#FFF;" class="box" >
+                    <div id="piechart" make-pie-chart></div>
+                </div>
+            </div> 
+           <!--  <div class="connInfoR">
+                <div class="jdash-header">Connections Information</div>  
+                <div style="background-color:#FFF;" class="box" >
+                    <div id="piechart" make-pie-chart></div>
+                </div>
+            </div>  -->
         </div>  
     </div>
     <br/>

@@ -238,6 +238,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 success(function(data) {
                     if (data != undefined) {
                         data.forEach(function(d) {
+                            console.log(d)
                             $scope.connectionHit.push(d);
                         })
                     }
@@ -249,27 +250,70 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 d.dd = timeFormat(d.time, 'strdDateObj');
                 d.hour = d3.time.hour(d.dd);
                 d.count = parseInt(d.count);
-                d.count = +d.count;
+                if (d.type === "conn_in") {
+                    d.conn_in = 1;
+                } else if (d.type === "conn_out") {
+                    d.conn_out = 1;
+                } else if (d.type === "stealth_in") {
+                    d.stealth_in = 1;
+                } else if (d.type === "stealth_out") {
+                    d.stealth_out = 1;
+                }        
+                // d.count = +d.count;
             });
             $scope.crossfilterConns = crossfilter($scope.connectionHit);
             var barDimension = $scope.crossfilterConns.dimension(function(d) { return d.hour });
             var barGroupPre = barDimension.group();
             var barGroup = barGroupPre.reduce(
                 function(p, v) {
+                    p.conn_in += v.conn_in;
+                    p.conn_out += v.conn_out;
+                    p.stealth_in += v.stealth_in;
+                    p.stealth_out += v.stealth_out;
                     p.count += v.count;
+                    p.in_bytes += v.in_bytes;
+                    p.out_bytes += v.out_bytes;
                     return p;
                 },
                 function(p, v) {
+                    p.conn_in -= v.conn_in;
+                    p.conn_out -= v.conn_out;
+                    p.stealth_in -= v.stealth_in;
+                    p.stealth_out -= v.stealth_out;
                     p.count -= v.count;
+                    p.in_bytes -= v.in_bytes;
+                    p.out_bytes -= v.out_bytes;
                     return p;
                 },
                 function() {
                     return {
+                        conn_in: 0,
+                        conn_out: 0,
+                        stealth_in: 0,
+                        stealth_out: 0,
                         count: 0,
+                        in_bytes: 0,
+                        out_bytes: 0
                     };
                 }
             );
+
+            var countDimension = $scope.crossfilterConns.dimension(function(d) { return d }).top(10).map(function(d){ return d.type });
+            $scope.appDimension = $scope.crossfilterConns.dimension(function(d) { 
+                if(countDimension.indexOf(d.type) !== -1) {
+                    return d.type;
+                } else {
+                    return "Other";
+                }
+            });                 
+            $scope.pieGroup = $scope.appDimension.group().reduceSum(function (d) {
+                return d.count;
+            });
+
             $scope.$broadcast('barChart', barDimension, barGroup, 'hostConnections');
+            $scope.$broadcast('pieChart', 'hostConnections');
+
+
             $scope.barChartxAxis = '';
             $scope.barChartyAxis = '# of Connection';
         }, 1000);

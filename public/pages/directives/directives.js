@@ -1157,7 +1157,7 @@ angular.module('mean.pages').directive('universalSearch', function() {
 angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '$rootScope', 'getSize', function ($timeout, $window, $rootScope, getSize) {
     return {
         link: function ($scope, element, attrs) {
-            $scope.$on('pieChart', function (event, chartType, params) {
+            $scope.$on('pieChart', function (event, chartType, dimension, group) {
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
                     //var arr = $scope.data.tables[0].aaData;
                     $scope.pieChart = dc.pieChart('#piechart');
@@ -1175,11 +1175,29 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                     })();
                     var filter;
                     var width = getSize(element, 'pieChart').width;
+                    if (chartType === "hostConnections"){
+                        width = width/2.5;
+                    }
                     var height = getSize(element, 'pieChart').height;
                     $scope.sevWidth = function() {
                         return getSize(element, 'pieChart').width;
                     }
                     filter = true;
+
+
+
+                    // if (chartType === "hostConnections"){
+                    //   width = width/2;
+                    //   filter = false;
+                    //   $scope.appDimension = dimension;
+                    //   console.log(dimension)
+                    //   console.log(group)
+                    //   $scope.pieGroup = group;
+                    // } 
+
+
+
+
                     // switch (chartType){
                     //  case 'bandwidth':
                     //      var setNewSize = function(width) {
@@ -1289,8 +1307,7 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 
                                 }, 400, "filterWait");
                             })
-                    }
-        
+                    }         
                     $scope.pieChart
                         .width(width) // (optional) define chart width, :default = 200
                         .height(height)
@@ -1316,10 +1333,12 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                             }, 150);
                         });
                         $('.sidebar-toggler').on("click", function() {
-                            setTimeout(function() {
-                                setNewSize($scope.sevWidth());
-                                $scope.pieChart.render();
-                            },10);
+                            if (chartType !== "hostConnections"){
+                              setTimeout(function() {
+                                  setNewSize($scope.sevWidth());
+                                  $scope.pieChart.render();
+                              },10);
+                            }
                         });
                         $rootScope.$watch('search', function(){
                             $scope.pieChart.redraw();
@@ -1336,8 +1355,8 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                             if ($scope.pie_dimension) {
                                 $scope.appDimension.filter(function(d) { return $scope.pie_dimension.indexOf(d) >= 0; });
                                 // $scope.pieGroup = $scope.appDimension.group().reduceSum(function (d) {
-                    //                 return d.count;
-                    //             });
+                                //    return d.count;
+                                // });
                             }
                             // console.log($scope.appDimension.top(Infinity));
 
@@ -1494,13 +1513,15 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                                 // $scope.barChart.redraw();
                             }
                             $scope.barChart
-                                .group(group, "Count")
+                                .group(group, "Conn Out")
                                 .valueAccessor(function(d) { 
-                                    return d.value.count;
+                                    return d.value.conn_out;
                                 })
-                                //.stack(group, "Count2", function(d){return d.value.count;})
+                                .stack(group, "Conn In", function(d){return d.value.conn_in;})
+                                .stack(group, "Stealth Out", function(d){return d.value.stealth_out;})
+                                .stack(group, "Stealth In", function(d){return d.value.stealth_in;})
                                 .legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
-                                .colors(d3.scale.ordinal().domain(["count"]).range(["#34D4FF","#009426","#C40600","#C43C00"]));
+                                .colors(d3.scale.ordinal().domain(["conn_out","conn_in","stealth_out","stealth_in"]).range(["#34D4FF","#009426","#C40600","#C43C00"]));
                             filter = false;
                             break;
                     }

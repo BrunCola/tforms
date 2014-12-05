@@ -2467,7 +2467,7 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
                     noSite.children = [];
                     noSite.map = undefined;
                     noSite.custom_name = "No Site Assigned";
-                    noSite.nodeColor = 5;
+                    noSite.nodeColor = 3;
 
                     for (var b in buildings) {
                             buildings[b].children = [];

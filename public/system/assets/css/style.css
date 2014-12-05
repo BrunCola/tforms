@@ -2401,9 +2401,10 @@ button.epbGrey:hover,button.epbGrey:active{
 #flus td span{
   cursor: pointer;
 }
-button.right, .epbuttons{
+.epbuttons{
   float:right;
 }
+
 .epbuttons button {
   margin: 0px 1px;  
   border-radius: 4px;
@@ -2447,4 +2448,11 @@ button.right, .epbuttons{
 }
 .patternInfoRight{
   color: #000;
+}
+.connInfoL, .connInfoR{
+  width: 48%;
+  float: left;
+}
+.connInfoR{
+  margin-left: 4%;
 }

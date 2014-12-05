@@ -163,28 +163,132 @@ module.exports = function(pool) {
             } else if (req.query.type === 'between_two') { 
                 switch (req.query.typeinfo) {
                     case 'getconn1':
-                        new query({query: 'SELECT * FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `lan_ip` = ? AND `lan_machine`=? AND `remote_ip`=? AND `remote_machine`=? ', insert: [start, end, req.query.lan_ip, req.query.lan_machine, req.query.remote_ip, req.query.remote_machine]}, {database: database, pool: pool}, function(err,data){
+                        new query({
+                            query: 'SELECT '+
+                                    '\'conn_out\' AS type,'+
+                                    '`count`, '+
+                                    '`time`, '+
+                                    '`lan_machine`, '+
+                                    '`lan_user`, '+
+                                    '`lan_zone`, '+
+                                    '`lan_ip`, '+
+                                    '`remote_ip`, '+
+                                    '`in_packets`, '+
+                                    '`in_bytes`, '+
+                                    '`out_packets`, '+
+                                    '`out_bytes`, '+
+                                    '`ioc_count`, '+
+                                    '`remote_user`, '+
+                                    '`remote_machine` '+
+                                'FROM '+
+                                    '`conn_meta` '+
+                                'WHERE '+
+                                    '`time` BETWEEN ? AND ? '+
+                                    'AND `lan_ip` = ? '+
+                                    'AND `lan_machine`= ? '+
+                                    'AND `remote_ip`= ? '+
+                                    'AND `remote_machine`=? ', 
+                            insert: [start, end, req.query.lan_ip, req.query.lan_machine, req.query.remote_ip, req.query.remote_machine]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
                             }
                         }); 
                         break;
                     case 'getconn2':
-                        new query({query: 'SELECT * FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `remote_ip`=? AND `remote_machine`=? AND `lan_ip` = ? AND `lan_machine`=? ', insert: [start, end, req.query.lan_ip, req.query.lan_machine, req.query.remote_ip, req.query.remote_machine]}, {database: database, pool: pool}, function(err,data){
+                        new query({
+                            query: 'SELECT '+
+                                    '\'conn_in\' AS type,'+
+                                    '`count`, '+
+                                    '`time`, '+
+                                    '`lan_machine`, '+
+                                    '`lan_user`, '+
+                                    '`lan_zone`, '+
+                                    '`lan_ip`, '+
+                                    '`remote_ip`, '+
+                                    '`in_packets`, '+
+                                    '`in_bytes`, '+
+                                    '`out_packets`, '+
+                                    '`out_bytes`, '+
+                                    '`ioc_count`, '+
+                                    '`remote_user`, '+
+                                    '`remote_machine` '+
+                                'FROM '+
+                                    '`conn_meta` '+
+                                'WHERE '+
+                                    '`time` BETWEEN ? AND ? '+
+                                    'AND `remote_ip`=? '+
+                                    'AND `remote_machine`=? '+
+                                    'AND `lan_ip` = ? '+
+                                    'AND `lan_machine`=? ', 
+                            insert: [start, end, req.query.lan_ip, req.query.lan_machine, req.query.remote_ip, req.query.remote_machine]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
                             }
                         }); 
                         break;
                     case 'getconn3':
-                        new query({query: 'SELECT * FROM `conn_l7_meta` WHERE time BETWEEN ? AND ? AND `l7_proto`="IPsec" AND `lan_ip` = ? AND `lan_machine`=? AND `remote_ip`=? AND `remote_machine`=? ', insert: [start, end, req.query.lan_ip, req.query.lan_machine, req.query.remote_ip, req.query.remote_machine]}, {database: database, pool: pool}, function(err,data){
+                        new query({
+                            query: 'SELECT '+
+                                    '\'stealth_out\' AS type,'+
+                                    '`count`, '+
+                                    '`time`, '+
+                                    '`lan_machine`, '+
+                                    '`lan_user`, '+
+                                    '`lan_zone`, '+
+                                    '`lan_ip`, '+
+                                    '`remote_ip`, '+
+                                    '`in_packets`, '+
+                                    '`in_bytes`, '+
+                                    '`out_packets`, '+
+                                    '`out_bytes`, '+
+                                    '`ioc_count`, '+
+                                    '`remote_user`, '+
+                                    '`remote_machine`, '+
+                                    '`l7_proto` '+
+                                'FROM '+
+                                    '`conn_l7_meta` '+
+                                'WHERE '+
+                                    '`time` BETWEEN ? AND ? '+
+                                    'AND `l7_proto`="IPsec" '+
+                                    'AND `lan_ip` = ? '+
+                                    'AND `lan_machine`=? '+
+                                    'AND `remote_ip`=? '+
+                                    'AND `remote_machine`=? ', 
+                            insert: [start, end, req.query.lan_ip, req.query.lan_machine, req.query.remote_ip, req.query.remote_machine]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
                             }
                         }); 
                         break;
                     case 'getconn4':
-                        new query({query: 'SELECT * FROM `conn_l7_meta` WHERE time BETWEEN ? AND ? AND `l7_proto`="IPsec" AND `remote_ip`=? AND `remote_machine`=? AND `lan_ip` = ? AND `lan_machine`=? ', insert: [start, end, req.query.lan_ip, req.query.lan_machine, req.query.remote_ip, req.query.remote_machine]}, {database: database, pool: pool}, function(err,data){
+                        new query({
+                            query: 'SELECT '+
+                                    '\'stealth_in\' AS type,'+
+                                    '`count`, '+
+                                    '`time`, '+
+                                    '`lan_machine`, '+
+                                    '`lan_user`, '+
+                                    '`lan_zone`, '+
+                                    '`lan_ip`, '+
+                                    '`remote_ip`, '+
+                                    '`in_packets`, '+
+                                    '`in_bytes`, '+
+                                    '`out_packets`, '+
+                                    '`out_bytes`, '+
+                                    '`ioc_count`, '+
+                                    '`remote_user`, '+
+                                    '`remote_machine`, '+
+                                    '`l7_proto` '+
+                                'FROM '+
+                                    '`conn_l7_meta` '+
+                                'WHERE '+
+                                    '`time` BETWEEN ? AND ? '+
+                                    'AND `l7_proto`="IPsec" '+
+                                    'AND `remote_ip`=? '+
+                                    'AND `remote_machine`=? '+
+                                    'AND `lan_ip` = ? '+
+                                    'AND `lan_machine`=? ', 
+                                    insert: [start, end, req.query.lan_ip, req.query.lan_machine, req.query.remote_ip, req.query.remote_machine]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
                             }
