@@ -21,15 +21,14 @@ module.exports = function(pool) {
             var info = [];
             var table1 = {
                 query: 'SELECT '+
-                            // 'sum(`count`) AS `count`,'+
-                            'count(*) AS `count`, '+
                             'max(`time`) AS `time`,'+
                             '`qtype`,'+
                             '`qtype_name`, '+
                             '`qtype_name` AS `pie_dimension`, '+
+                            'sum(`count`) AS `count`,'+
                             'sum(`ioc_count`) AS `ioc_count` '+
                         'FROM ' + 
-                            '`dns` '+
+                            '`dns_query_type` '+
                         'WHERE ' +
                             '`time` BETWEEN ? AND ? '+
                         'GROUP BY '+
@@ -41,14 +40,12 @@ module.exports = function(pool) {
                         select: 'time',
                          link: {
                              type: 'dns_by_query_type_local', 
-                             // val: the pre-evaluated values from the query above
                              val: ['qtype'],
                              crumb: false
                         },
                     },
                     { title: 'Connections', select: 'count' },
-                    { title: 'Query Type', select: 'qtype' },
-                    { title: 'Query Type Name', select: 'pie_dimension' },
+                    { title: 'Query Type', select: 'pie_dimension' },
                     { title: 'IOC Count', select: 'ioc_count' }
                 ],
                 settings: {
@@ -60,19 +57,19 @@ module.exports = function(pool) {
             }
             var crossfilterQ = {
                 query: 'SELECT '+
-                        'count(*) AS count,'+
+                        'sum(`count`) AS count,'+
                         'time,'+
                         '`qtype`,'+
                         '`qtype_name` '+
                     'FROM '+
-                        '`dns` '+
+                        '`dns_query_type` '+
                     'WHERE '+
                         '`time` BETWEEN ? AND ? '+
                     'GROUP BY '+
                         'month(from_unixtime(`time`)),'+
                         'day(from_unixtime(`time`)),'+
                         'hour(from_unixtime(`time`)),'+
-                        '`qtype`',
+                        '`qtype_name`',
                 insert: [start, end]
             }
             var piechartQ = {
@@ -81,7 +78,7 @@ module.exports = function(pool) {
                          '`qtype_name` AS `pie_dimension`, '+
                          'count(*) AS `count` '+
                      'FROM '+
-                         '`dns` '+
+                         '`dns_query_type` '+
                      'WHERE '+
                          '`time` BETWEEN ? AND ? '+
                          'AND `qtype_name` !=\'-\' '+

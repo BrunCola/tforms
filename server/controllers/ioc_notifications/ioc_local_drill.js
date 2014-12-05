@@ -21,14 +21,7 @@ module.exports = function(pool) {
                 var info = [];
                 var table1 = {
                     query: 'SELECT '+
-                                'count(*) AS count,'+
-                                'max(`time`) AS time,'+
-                                '`ioc_severity`,'+
-                                '`ioc`,'+
-                                '`ioc_attrID`,'+
-                                '`ioc_rule`,'+
-                                '`ioc_typeIndicator`,'+
-                                '`ioc_typeInfection`,'+
+                                'max(`time`) AS `time`,'+
                                 '`lan_stealth`,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
@@ -38,11 +31,18 @@ module.exports = function(pool) {
                                 '`remote_country`,'+
                                 '`remote_cc`,'+
                                 '`remote_asn_name`,'+
-                                'sum(`in_packets`) AS in_packets,'+
-                                'sum(`out_packets`) AS out_packets,'+
-                                'sum(`in_bytes`) AS in_bytes,'+
-                                'sum(`out_bytes`) AS out_bytes,'+
-                                'sum(`proxy_blocked`) AS proxy_blocked '+
+                                'sum(`in_packets`) AS `in_packets`,'+
+                                'sum(`out_packets`) AS `out_packets`,'+
+                                'sum(`in_bytes`) AS `in_bytes`,'+
+                                'sum(`out_bytes`) AS `out_bytes`,'+
+                                '`ioc`,'+
+                                '`ioc_typeIndicator`,'+
+                                '`ioc_typeInfection`,'+
+                                '`ioc_rule`,'+
+                                '`ioc_severity`,'+
+                                '`ioc_attrID`,'+
+                                'sum(`ioc_count`) AS `ioc_count`,'+
+                                'sum(`proxy_blocked`) AS `proxy_blocked` '+
                             'FROM '+
                                 '`conn_ioc` '+
                             'WHERE '+
@@ -69,7 +69,7 @@ module.exports = function(pool) {
                         { title: 'Stealth', select: 'lan_stealth', access: [3] },
                         { title: 'ABP', select: 'proxy_blocked', access: [2] },
                         { title: 'Severity', select: 'ioc_severity' },
-                        { title: 'IOC Hits', select: 'count' },
+                        { title: 'IOC Hits', select: 'ioc_count' },
                         { title: 'IOC', select: 'ioc' },
                         { title: 'IOC Type', select: 'ioc_typeIndicator' },
                         { title: 'IOC Stage', select: 'ioc_typeInfection' },
@@ -96,10 +96,10 @@ module.exports = function(pool) {
                 }
                 var crossfilterQ = {
                     query: 'SELECT '+
-                                'count(*) as count,'+
                                 '`time`,'+
+                                '`ioc`,'+
                                 '`ioc_severity`,'+
-                                '`ioc` '+
+                                'sum(`ioc_count`) AS `count` '+
                             'FROM '+
                                 '`conn_ioc` '+
                             'WHERE '+
@@ -116,10 +116,10 @@ module.exports = function(pool) {
                 }
                 var crossfilterQ = {
                     query: 'SELECT '+
-                                'count(*) as count,'+
                                 '`time`,'+
                                 '`ioc`,'+
-                                '`ioc_severity` '+
+                                '`ioc_severity`,'+
+                                'sum(`ioc_count`) AS `count` '+
                             'FROM '+
                                 '`conn_ioc` '+
                             'WHERE '+
@@ -129,9 +129,9 @@ module.exports = function(pool) {
                                 'AND `ioc_count` > 0 '+
                                 'AND `trash` IS NULL '+
                             'GROUP BY '+
-                                'month(from_unixtime(time)),'+
-                                'day(from_unixtime(time)),'+
-                                'hour(from_unixtime(time)),'+
+                                'month(from_unixtime(`time`)),'+
+                                'day(from_unixtime(`time`)),'+
+                                'hour(from_unixtime(`time`)),'+
                                 'ioc,'+
                                 'ioc_severity',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip]

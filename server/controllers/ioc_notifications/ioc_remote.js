@@ -20,22 +20,22 @@ module.exports = function(pool) {
             var info = [];
             var table1 = {
                 query: 'SELECT '+
-                            'max(`time`) AS time,'+
+                            'max(`time`) AS `time`,'+
+                            '`remote_ip`,'+
+                            '`remote_asn_name`,'+
+                            '`remote_country`,'+
+                            '`remote_cc`,'+
+                            'sum(`in_packets`) AS `in_packets`,'+
+                            'sum(`out_packets`) AS `out_packets`,'+
+                            'sum(`in_bytes`) AS `in_bytes`,'+
+                            'sum(`out_bytes`) AS `out_bytes`,'+
                             '`ioc_severity`,'+
                             '`ioc`,'+
                             '`ioc_typeIndicator`,'+
                             '`ioc_typeInfection`,'+
                             '`ioc_rule`,'+
-                            'sum(`ioc_count`) AS ioc_count,'+
-                            '`remote_ip`,'+
-                            '`remote_asn_name`,'+
-                            '`remote_country`,'+
-                            '`remote_cc`,'+
-                            'sum(`in_packets`) AS in_packets,'+
-                            'sum(`out_packets`) AS out_packets,'+
-                            'sum(`in_bytes`) AS in_bytes,'+
-                            'sum(`out_bytes`) AS out_bytes,'+
-                            'sum(`proxy_blocked`) AS proxy_blocked '+
+                            'sum(`ioc_count`) AS `ioc_count`,'+
+                            'sum(`proxy_blocked`) AS `proxy_blocked` '+
                         'FROM '+
                             '`conn_ioc` '+
                         'WHERE '+
@@ -74,7 +74,7 @@ module.exports = function(pool) {
                     { title: 'Packets from Remote', select: 'out_packets', dView: false },
                 ],
                 settings: {
-                    sort: [[2, 'desc']],
+                    sort: [[1, 'desc']],
                     div: 'table',
                     title: 'Indicators of Compromise (IOC) Notifications',
                     access: req.session.passport.user.level
@@ -82,11 +82,11 @@ module.exports = function(pool) {
             }
             var crossfilterQ = {
                 query: 'SELECT '+
-                            'count(*) as count,'+
                             '`time`,'+
                             '`remote_country`,'+
                             '`ioc`,'+
-                            '`ioc_severity` '+
+                            '`ioc_severity`,'+
+                            'sum(`ioc_count`) AS `count` '+
                         'FROM '+
                             '`conn_ioc` '+
                         'WHERE '+
@@ -94,12 +94,12 @@ module.exports = function(pool) {
                             'AND `ioc_count` > 0 '+
                             'AND `trash` IS NULL '+
                         'GROUP BY '+
-                            'month(from_unixtime(time)),'+
-                            'day(from_unixtime(time)),'+
-                            'hour(from_unixtime(time)),'+
-                            'remote_country,'+
-                            'ioc,'+
-                            'ioc_severity',
+                            'month(from_unixtime(`time`)),'+
+                            'day(from_unixtime(`time`)),'+
+                            'hour(from_unixtime(`time`)),'+
+                            '`remote_country`,'+
+                            '`ioc`,'+
+                            '`ioc_severity`',
                 insert: [start, end]
             }
             async.parallel([

@@ -1663,7 +1663,6 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                                         .x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width]));
                                         //$(element).height(hHeight);
                                         d3.select('#rowchart svg').attr('width', width).attr('height', hHeight);
-                                    $scope.rowChart.redraw();
                                 }
                             };
                             $scope.rowChart

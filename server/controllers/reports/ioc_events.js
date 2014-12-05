@@ -165,7 +165,7 @@ module.exports = function(pool) {
 					});
 					break;
 				case 'new_ssl':
-					new query({query: 'SELECT `remote_ip` FROM `ssl_uniq_remote_ip` WHERE (`time` between ? AND ?) GROUP BY `remote_ip`', insert: [start, end]}, {database: database, pool: pool}, function(err,data){
+					new query({query: 'SELECT `remote_ip` FROM `ssl_uniq_server_name` WHERE (`time` between ? AND ?) GROUP BY `remote_ip`', insert: [start, end]}, {database: database, pool: pool}, function(err,data){
 						if (data) {
 							res.json(data.length);
 						}

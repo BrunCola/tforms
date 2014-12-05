@@ -186,8 +186,8 @@ module.exports = function(pool) {
                                 '`ioc_rule`,'+
                                 '`ioc_severity`,'+
                                 '`ioc_attrID`,'+
-                                'sum(`proxy_blocked`) AS proxy_blocked,'+
-                                'sum(`ioc_count`) AS ioc_count '+
+                                'sum(`ioc_count`) AS `ioc_count`,'+
+                                'sum(`proxy_blocked`) AS `proxy_blocked` '+
                             'FROM '+
                                 '`conn_ioc` '+
                             'WHERE '+
@@ -249,13 +249,13 @@ module.exports = function(pool) {
                 }
                 var crossfilterQ = {
                     query: 'SELECT '+
-                                'count(*) as count,'+
                                 '`time`,'+
                                 '`remote_country`,'+
+                                '(sum(`in_bytes`) / 1048576) AS in_bytes,'+
+                                '(sum(`out_bytes`) / 1048576) AS out_bytes,'+
+                                '`ioc`,'+
                                 '`ioc_severity`,'+
-                                '`ioc`, '+
-                                '(sum(`in_bytes`) / 1048576) AS in_bytes, '+
-                                '(sum(`out_bytes`) / 1048576) AS out_bytes '+
+                                'sum(`ioc_count`) AS `count` '+
                             'FROM '+
                                 '`conn_ioc` '+
                             'WHERE '+
@@ -267,8 +267,8 @@ module.exports = function(pool) {
                                 'day(from_unixtime(`time`)),'+
                                 'hour(from_unixtime(`time`)),'+
                                 '`remote_country`,'+
-                                '`ioc_severity`,'+
-                                '`ioc` '+
+                                '`ioc`,'+
+                                '`ioc_severity` '+
                             'ORDER BY '+
                                 '`ioc_severity` DESC ',
                     insert: [start, end]
@@ -297,7 +297,7 @@ module.exports = function(pool) {
                     };
                     res.json(results);
                 });
-            break;
+                break;
             }
         }
     }
