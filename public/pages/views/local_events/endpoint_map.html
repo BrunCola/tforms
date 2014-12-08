@@ -257,7 +257,7 @@
     </div>
     <br/>
     <div class="row-fluid">
-        <div class="span7">
+        <div class="span7" ng-show="results">
             <div id="hostlinksspan" >
                 <!-- <div class="jdash-header">Host Connections</div>   -->
                 <div style="background-color:#FFF;" class="box" >
@@ -267,13 +267,13 @@
                 </div>
             </div>
         </div>  
-        <div class="span5">
+        <div class="span5" ng-show="connectionHit">
             <!-- <div class="jdash-header">Connections Information</div>   -->
             <div style="background-color:#FFF;" class="box" >
                 <div id="barchart" make-bar-chart></div>
             </div>
             <br />
-            <div class="connInfoL">
+            <div class="connInfoL" ng-show="connectionHit">
                 <!-- <div class="jdash-header">Connections Information</div>   -->
                 <div style="background-color:#FFF;" class="box" >
                     <div id="piechart" make-pie-chart></div>

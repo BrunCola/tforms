@@ -87,7 +87,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .attr('value', 'autoexpand')
                                 .attr('checked', true);
                 var infoHeight = h;
-                var infoDiv = rightSide.append('div').classed('divScroll', true).style('height', infoHeight+'px').style('overflow', 'scroll');
+                var infoDiv = rightSide.append('div').classed('divScroll', true).style('height', infoHeight+'px').style('overflow', 'auto');
                 
                 // current time div
                 var currentTimeSlice = leftSide.append('div').attr('class', 'timeslice');

@@ -1175,8 +1175,10 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                     })();
                     var filter;
                     var width = getSize(element, 'pieChart').width;
+                    var connMargin = 0;
                     if (chartType === "hostConnections"){
-                        width = width/2.5;
+                        width = width/2.3;
+                        connMargin = 110;
                     }
                     var height = getSize(element, 'pieChart').height;
                     $scope.sevWidth = function() {
@@ -1317,36 +1319,36 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                         .dimension($scope.appDimension) // set dimension
                         .group($scope.pieGroup) // set group
                         // .ordering($scope.pieGroup)
-                        .legend(dc.legend().x(width - 170).y(10).itemHeight(13).gap(5))
+                        .legend(dc.legend().x(width - 170+connMargin).y(10).itemHeight(13).gap(5))
                         .colors(d3.scale.category20());
 
                     $scope.pieChart.render();
-                        $scope.$broadcast('spinnerHide');
-                        $(window).resize(function () {
-                            waitForFinalEvent(function(){
-                              if (chartType !== "hostConnections"){
-                                $scope.pieChart.render();
-                              }
-                            }, 200, "pieChartresize");
-                        });
-                        $(window).bind('resize', function() {
-                            setTimeout(function(){
-                                setNewSize($scope.sevWidth());
-                            }, 150);
-                        });
-                        $('.sidebar-toggler').on("click", function() {
-                            if (chartType !== "hostConnections"){
-                              setTimeout(function() {
-                                  setNewSize($scope.sevWidth());
-                                  $scope.pieChart.render();
-                              },10);
-                            }
-                        });
-                        $rootScope.$watch('search', function(){
-                            if (chartType !== "hostConnections"){
-                              $scope.pieChart.redraw();
-                            }
-                        });
+                    $scope.$broadcast('spinnerHide');
+                    $(window).resize(function () {
+                        waitForFinalEvent(function(){
+                          if (chartType !== "hostConnections"){
+                            $scope.pieChart.render();
+                          }
+                        }, 200, "pieChartresize");
+                    });
+                    $(window).bind('resize', function() {
+                        setTimeout(function(){
+                            setNewSize($scope.sevWidth());
+                        }, 150);
+                    });
+                    $('.sidebar-toggler').on("click", function() {
+                        if (chartType !== "hostConnections"){
+                          setTimeout(function() {
+                              setNewSize($scope.sevWidth());
+                              //$scope.pieChart.render();
+                          },10);
+                        }
+                    });
+                    $rootScope.$watch('search', function(){
+                        if (chartType !== "hostConnections"){
+                          $scope.pieChart.redraw();
+                        }
+                    });
 
                     // var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
                     $rootScope.$watch('search', function(){
@@ -1552,7 +1554,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                                 .stack(group, "Conn In", function(d){return d.value.conn_in;})
                                 .stack(group, "Stealth Out", function(d){return d.value.stealth_out;})
                                 .stack(group, "Stealth In", function(d){return d.value.stealth_in;})
-                                .legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
+                                .legend(dc.legend().x(width - 100).y(10).itemHeight(13).gap(5))
                                 .colors(d3.scale.ordinal().domain(["conn_out","conn_in","stealth_out","stealth_in"]).range(["#34D4FF","#009426","#C40600","#C43C00"]));
                             filter = false;
                             break;

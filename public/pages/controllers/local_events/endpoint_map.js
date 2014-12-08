@@ -238,14 +238,14 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 success(function(data) {
                     if (data != undefined) {
                         data.forEach(function(d) {
-                            console.log(d)
+                            //console.log(d)
                             $scope.connectionHit.push(d);
                         })
                     }
                 });
         }
         setTimeout(function () {
-            console.log($scope.connectionHit)
+           // console.log($scope.connectionHit)
             $scope.connectionHit.forEach(function(d) {
                 d.dd = timeFormat(d.time, 'strdDateObj');
                 d.hour = d3.time.hour(d.dd);
