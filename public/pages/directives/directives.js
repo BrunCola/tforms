@@ -2167,6 +2167,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         .style("display", function(d){
                              if (d.allowed==="authorized") {
                                 return 'none';
+                                //return 'inline-block';
                             } else {
                                 return 'inline-block';
                             }
@@ -2467,6 +2468,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                 }
                             break;
                             case 'child':
+                                console.log(d.value.type)
                                 if (d.value.type === 'Stealth COI Mismatch') {
                                     elm.append("path")
                                         .attr('d', 'M14,3.1C9.4,3.3,7,0,7,0c0,0-2,3.1-7,3.1C-0.4,8.3,2.7,18,7,18C11.2,18,14.4,7.2,14,3.1z')
@@ -2474,13 +2476,13 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                         .style('fill', "#000")
                                         .style('border', "solid 1px #000")
                                         .attr('transform', 'translate(-8,-8) scale(1.1)')
-                                } else if (d.value.type === 'outside') {
-                                    elm.append("circle")
-                                        .attr("cx", function(d) { return d.x; })
-                                        .attr("cy", function(d) { return d.y; })
-                                        .attr("r", 8)
-                                        .attr("fill", "#000")
-                                        .style('border', "solid 1px #000")
+                                } else if (d.value.type === 'Stealth COI Mismatch v3') {
+                                    elm.append("path")
+                                        .attr('d', 'M14,3.1C9.4,3.3,7,0,7,0c0,0-2,3.1-7,3.1C-0.4,8.3,2.7,18,7,18C11.2,18,14.4,7.2,14,3.1z')
+                                        .attr('transform', 'translate(-25,-115) scale(0.7)')
+                                        .style('fill', "#666")
+                                        .style('border', "solid 1px #666")
+                                        .attr('transform', 'translate(-8,-8) scale(1.1)')
                                 } else if (d.value.type === 'Non-Stealth Internal Attack') {
                                     elm.append('rect')
                                         .attr('x', function(d) { return d.x; })
@@ -2490,7 +2492,14 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                         .style('fill', "#002E7F")
                                         .attr('transform', 'translate(-8,-8)')
                                         .style('fill-opacity', '1')
-                                }
+                                } else if (d.value.type === 'outside') {
+                                    elm.append("circle")
+                                        .attr("cx", function(d) { return d.x; })
+                                        .attr("cy", function(d) { return d.y; })
+                                        .attr("r", 8)
+                                        .attr("fill", "#000")
+                                        .style('border', "solid 1px #000")
+                                } 
                             break;
                         }
                     });

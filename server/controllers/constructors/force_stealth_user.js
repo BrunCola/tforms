@@ -198,11 +198,30 @@ module.exports = function (sql, queries, conn, callback) {
                         callback();
                     });
             },
+            function(callback) {
+                connection.query(queries[6].query, queries[6].insert)
+                    .on('result', function(data){
+                        usersList.push(data);
+                    })
+                    .on('end', function(){
+                        callback();
+                    });
+            },
+            function(callback) {
+                connection.query(queries[7].query, queries[7].insert)
+                    .on('result', function(data){
+                        usersList.push(data);
+                    })
+                    .on('end', function(){
+                        callback();
+                    });
+            },
         ], function(err) {
             if (err) throw console.log(err);
             connection.release();
             // LINK USERS QUERIES TO OUR MAIN NODES
             for (var i in usersList) {
+                console.log(usersList[i]);
                 compareUsers(usersList[i]);
             }
             // SETTING UP LINKS

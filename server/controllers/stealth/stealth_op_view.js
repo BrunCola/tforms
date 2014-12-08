@@ -115,7 +115,7 @@ module.exports = function(pool) {
                                     '`remote_ip` AS `Victim IP`, '+
                                     '\'blocked\' AS `allow` '+
                                 'FROM '+
-                                    ' `conn` '+
+                                    ' `conn_meta` '+
                                 'WHERE '+
                                     'time BETWEEN ? AND ? '+
                                     'AND `proto` != \'udp\' '+
@@ -143,6 +143,7 @@ module.exports = function(pool) {
                                     'AND `in_bytes` > 0 ',
                         insert: [start, end]
                     }
+
                     var local_authorized = {
                         query: 'SELECT DISTINCT '+
                                     '\'Non-Stealth Internal Connection\' AS type,'+
@@ -159,10 +160,53 @@ module.exports = function(pool) {
                                     ' `conn_meta` '+
                                 'WHERE '+
                                     'time BETWEEN ? AND ? '+
-                                    'AND `proto` != \'udp\' '+
+                                    'AND `proto` != \'udp\' '+ 
                                     'AND `remote_ip` REGEXP \'192.168.222\' '+
                                     'AND `out_bytes` > 0 '+
                                     'AND `in_bytes` > 0 ',
+                        insert: [start, end]
+                    }
+                    var stealth_authorized_v3 = {
+                        query: 'SELECT DISTINCT '+
+                                    '\'Stealth COI Allow v3\' AS type,'+
+                                    '`lan_zone` AS `Victim Zone`,'+
+                                    '`lan_machine` AS `Victim Machine`,'+
+                                    '`lan_user`,'+
+                                    '`lan_user` AS `Victim User`,'+
+                                    '`lan_ip` AS `Victim IP`,'+
+                                    '`remote_machine` AS `Attacker Machine`,'+
+                                    '`remote_user` AS `Attacker User`,'+
+                                    '`remote_ip` AS `Attacker IP`, '+
+                                    '`l7_proto` AS `Stealth`, '+
+                                    '\'authorized\' AS `allow` '+
+                                'FROM '+
+                                    '`conn_l7_meta` '+
+                                'WHERE '+
+                                    'time BETWEEN ? AND ? '+
+                                    'AND `l7_proto`="IPsec" '+
+                                    'AND `out_bytes` > 0 '+
+                                    'AND `in_bytes` > 0 ',
+                        insert: [start, end]
+                    }
+                    var stealth_drop_v3 = {
+                        query: 'SELECT DISTINCT '+
+                                    '\'Stealth COI Mismatch v3\' AS type,'+
+                                    '`lan_zone` AS `Victim Zone`,'+
+                                    '`lan_machine` AS `Victim Machine`,'+
+                                    '`lan_user`,'+
+                                    '`lan_user` AS `Victim User`,'+
+                                    '`lan_ip` AS `Victim IP`,'+
+                                    '`remote_machine` AS `Attacker Machine`,'+
+                                    '`remote_user` AS `Attacker User`,'+
+                                    '`remote_ip` AS `Attacker IP`, '+
+                                    '`l7_proto` AS `Stealth`, '+
+                                    '\'blocked\' AS `allow` '+
+                                'FROM '+
+                                    '`conn_l7_meta` '+
+                                'WHERE '+
+                                    'time BETWEEN ? AND ? '+
+                                    'AND `l7_proto`!="IPsec" '+
+                                    'AND `in_bytes` = 0 ',
                         insert: [start, end]
                     }
                     var rules = {
@@ -197,7 +241,9 @@ module.exports = function(pool) {
                                     rules, 
                                     coordinates, 
                                     stealth_authorized, 
-                                    local_authorized
+                                    local_authorized,
+                                    stealth_drop_v3,
+                                    stealth_authorized_v3
                                 ], { database: database, pool: pool }, function(err,data) {
                                     force = data;
                                     callback();
