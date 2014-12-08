@@ -1317,7 +1317,7 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                         .dimension($scope.appDimension) // set dimension
                         .group($scope.pieGroup) // set group
                         // .ordering($scope.pieGroup)
-                        .legend(dc.legend().x(width - 100).y(10).itemHeight(13).gap(5))
+                        .legend(dc.legend().x(width - 170).y(10).itemHeight(13).gap(5))
                         .colors(d3.scale.category20());
 
                     $scope.pieChart.render();
@@ -1422,8 +1422,36 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                                 .stack(group, "MB From Remote (Conn)", function(d){return d.value.out_bytes2;})
                                 .stack(group, "MB To Remote (Drop)", function(d){return d.value.in_bytes3;})
                                 .stack(group, "MB From Remote (Drop)", function(d){return d.value.out_bytes3;})
-                                .legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
+                                .legend(dc.legend().x(width - 153).y(10).itemHeight(13).gap(5))
                                 .colors(d3.scale.ordinal().domain(["in_bytes","out_bytes","in_bytes2","out_bytes2","in_bytes3","out_bytes3"]).range(["#034142","#068587","#1A4569","#3FA8FF","#73100A","#FF3628"]));
+                            filter = true;
+                            break;
+                        case 'stealthtraffic_v3':
+                            var setNewSize = function(width) {
+                                $scope.barChart
+                                    .width(width)
+                                    .height(width/3.5)
+                                    .margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
+                                // $('#barchart').parent().height(width/3.5);
+                                d3.select('#barchart svg').attr('width', width).attr('height', width/3.5);
+                                $scope.barChart.redraw();
+                            }
+                            $scope.barChart
+                                .group(group, "MB To Remote")
+                                .valueAccessor(function(d) {
+                                    return d.value.in_bytes;
+                                })
+                                .stack(group, "MB From Remote", function(d){return d.value.out_bytes;})
+                                .stack(group, "MB To Remote (Conn)", function(d){return d.value.in_bytes2;})
+                                .stack(group, "MB From Remote (Conn)", function(d){return d.value.out_bytes2;})
+                                .stack(group, "MB To Remote (Drop)", function(d){return d.value.in_bytes3;})
+                                .stack(group, "MB From Remote (Drop)", function(d){return d.value.out_bytes3;})
+                                .stack(group, "MB To Remote v3 (Conn)", function(d){return d.value.in_bytes4;})
+                                .stack(group, "MB From Remote v3 (Conn)", function(d){return d.value.out_bytes4;})
+                                .stack(group, "MB To Remote v3 (Drop)", function(d){return d.value.in_bytes5;})
+                                .stack(group, "MB From Remote v3 (Drop)", function(d){return d.value.out_bytes5;})
+                                .legend(dc.legend().x(width - 153).y(10).itemHeight(13).gap(5))
+                                .colors(d3.scale.ordinal().domain(["in_bytes","out_bytes","in_bytes2","out_bytes2","in_bytes3","out_bytes3","in_bytes4","out_bytes4","in_bytes5","out_bytes5"]).range(["#034142","#068587","#1A4569","#3FA8FF","#73100A","#FF3628","#001C01","#00692B","#280069","#463369 "]));
                             filter = true;
                             break;
                         case 'bandwidth':

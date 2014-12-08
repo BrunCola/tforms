@@ -2247,6 +2247,8 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
             $scope.$on('plotLinks', function (event, root, connections) {
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
                     connections = angular.copy(connections)
+                    console.log(root)
+                    console.log(connections)
 
                     var buildings = angular.copy($scope.buildings);
                     var noSite = [];

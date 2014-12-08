@@ -125,104 +125,104 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         }
     }
 
-    // $scope.getConnections = function(d, conns) {//-----------------------------------------------------Should be upgraded!!-------------------------------------------------------------------
+    $scope.getConnections = function(d, conns) {//-----------------------------------------------------Should be upgraded!!-------------------------------------------------------------------
 
-    //     var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_machine='+d.lan_machine+'&type=endpointconnection';
-    //         $scope.startend = ""; 
-    //         if ($location.$$search.start && $location.$$search.end) {
-    //             query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+d.lan_ip+'&lan_machine='+d.lan_machine+'&type=endpointconnection'; 
-    //             $scope.startend = 'start='+$location.$$search.start+'&end='+$location.$$search.end+'&'; 
-    //         } 
-    //         //$scope.selectedUser = "";
-    //         $scope.results = [];
+        var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_machine='+d.lan_machine+'&type=endpointconnection';
+            $scope.startend = ""; 
+            if ($location.$$search.start && $location.$$search.end) {
+                query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+d.lan_ip+'&lan_machine='+d.lan_machine+'&type=endpointconnection'; 
+                $scope.startend = 'start='+$location.$$search.start+'&end='+$location.$$search.end+'&'; 
+            } 
+            //$scope.selectedUser = "";
+            $scope.results = [];
 
-    //         $http({method: 'GET', url: query+'&typeinfo=getconn1'}).
-    //             success(function(data) {
-    //                 if (data[0] != undefined) {
-    //                     var host;
-    //                     var connections = data.map(function( da ) {
-    //                         var users = $scope.userDimension.filter(function(dt){ 
-    //                             if ((da.remote_ip === dt.lan_ip) && (da.remote_machine === dt.lan_machine)){
-    //                                 dt.depth=1;
-    //                                 if ($scope.results.indexOf(dt) == -1) {
-    //                                     //host = angular.copy(dt);
-    //                                     dt.nodeColor = 1;
-    //                                     $scope.results.push(dt);
-    //                                 }
-    //                                 // if ($scope.results.indexOf(dt) == -1) {
-    //                                 //     host = angular.copy(dt);
-    //                                 //     host.nodeColor = i;
-    //                                 //     $scope.results.push(host);
-    //                                 // }
-    //                             }
-    //                         });
-    //                     });
-    //                 }
-    //             });                  
-    //         $http({method: 'GET', url: query+'&typeinfo=getconn2'}).
-    //             success(function(data) {
-    //                 if (data[0] != undefined) {
-    //                     var host;
-    //                     var connections = data.map(function( da ) {
-    //                         var users = $scope.userDimension.filter(function(dt){ 
-    //                             if ((da.lan_ip === dt.lan_ip) && (da.lan_machine === dt.lan_machine)) {
-    //                                 dt.depth=1;
-    //                                 if ($scope.results.indexOf(dt) == -1) {
-    //                                    // host = angular.copy(dt);
-    //                                     dt.nodeColor = 2;
-    //                                     $scope.results.push(dt);
-    //                                 }
-    //                             }
-    //                         });
-    //                     });
-    //                 }
-    //             });
-    //         // $http({method: 'GET', url: query+'&typeinfo=getconn3'}).
-    //         //     success(function(data) {
-    //         //         //var results = [];
-    //         //         if (data[0] != undefined) {
-    //         //             var host;
-    //         //             var connections = data.map(function( da ) {
-    //         //                 var users = $scope.userDimension.filter(function(dt){ 
-    //         //                     if ((da.remote_ip === dt.lan_ip)&& (da.remote_machine === dt.lan_machine)){ // && (da.lan_machine === dt.remote_machine)
-    //         //                         dt.depth=1;
-    //         //                         if ($scope.results.indexOf(dt) == -1) {
-    //         //                            // host = angular.copy(dt);
-    //         //                             dt.nodeColor = 3;
-    //         //                             $scope.results.push(dt);
-    //         //                         }
-    //         //                     }
-    //         //                 });
-    //         //             });
-    //         //         }
-    //         //     });
-    //         // $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
-    //         //     success(function(data) {
-    //         //         if (data[0] != undefined) {
-    //         //             var host;
-    //         //             var connections = data.map(function( da ) {
-    //         //                 var users = $scope.userDimension.filter(function(dt){ 
-    //         //                     if ((da.lan_ip === dt.lan_ip) && (da.lan_machine === dt.lan_machine)){
-    //         //                         dt.depth=1;
-    //         //                         if ($scope.results.indexOf(dt) == -1) {
-    //         //                             //host = angular.copy(dt);
-    //         //                             dt.nodeColor = 4;
-    //         //                             $scope.results.push(dt);
-    //         //                         }
-    //         //                     }
-    //         //                 });
-    //         //             });
-    //         //         }
-    //         //     });
+            $http({method: 'GET', url: query+'&typeinfo=getconn1'}).
+                success(function(data) {
+                    if (data[0] != undefined) {
+                        var host;
+                        var connections = data.map(function( da ) {
+                            var users = $scope.userDimension.filter(function(dt){ 
+                                if ((da.remote_ip === dt.lan_ip) && (da.remote_machine === dt.lan_machine)){
+                                    dt.depth=1;
+                                    if ($scope.results.indexOf(dt) == -1) {
+                                        //host = angular.copy(dt);
+                                        dt.nodeColor = 1;
+                                        $scope.results.push(dt);
+                                    }
+                                    // if ($scope.results.indexOf(dt) == -1) {
+                                    //     host = angular.copy(dt);
+                                    //     host.nodeColor = i;
+                                    //     $scope.results.push(host);
+                                    // }
+                                }
+                            });
+                        });
+                    }
+                });                  
+            $http({method: 'GET', url: query+'&typeinfo=getconn2'}).
+                success(function(data) {
+                    if (data[0] != undefined) {
+                        var host;
+                        var connections = data.map(function( da ) {
+                            var users = $scope.userDimension.filter(function(dt){ 
+                                if ((da.lan_ip === dt.lan_ip) && (da.lan_machine === dt.lan_machine)) {
+                                    dt.depth=1;
+                                    if ($scope.results.indexOf(dt) == -1) {
+                                       // host = angular.copy(dt);
+                                        dt.nodeColor = 2;
+                                        $scope.results.push(dt);
+                                    }
+                                }
+                            });
+                        });
+                    }
+                });
+            // $http({method: 'GET', url: query+'&typeinfo=getconn3'}).
+            //     success(function(data) {
+            //         //var results = [];
+            //         if (data[0] != undefined) {
+            //             var host;
+            //             var connections = data.map(function( da ) {
+            //                 var users = $scope.userDimension.filter(function(dt){ 
+            //                     if ((da.remote_ip === dt.lan_ip)&& (da.remote_machine === dt.lan_machine)){ // && (da.lan_machine === dt.remote_machine)
+            //                         dt.depth=1;
+            //                         if ($scope.results.indexOf(dt) == -1) {
+            //                            // host = angular.copy(dt);
+            //                             dt.nodeColor = 3;
+            //                             $scope.results.push(dt);
+            //                         }
+            //                     }
+            //                 });
+            //             });
+            //         }
+            //     });
+            // $http({method: 'GET', url: query+'&typeinfo=getconn4'}).
+            //     success(function(data) {
+            //         if (data[0] != undefined) {
+            //             var host;
+            //             var connections = data.map(function( da ) {
+            //                 var users = $scope.userDimension.filter(function(dt){ 
+            //                     if ((da.lan_ip === dt.lan_ip) && (da.lan_machine === dt.lan_machine)){
+            //                         dt.depth=1;
+            //                         if ($scope.results.indexOf(dt) == -1) {
+            //                             //host = angular.copy(dt);
+            //                             dt.nodeColor = 4;
+            //                             $scope.results.push(dt);
+            //                         }
+            //                     }
+            //                 });
+            //             });
+            //         }
+            //     });
 
-    //             d = angular.copy(d);
-    //             d.nodeColor = 0;
-    //             d.depth=0;
-    //             //d.children = $scope.results;
-    //             d.children = [];
-    //             // $scope.plotLinks(d,selectColor(1));     
-    //             $scope.$broadcast('plotLinks', d, $scope.results);
-    // }                                   //---------------^^^^^^^^^^^^^^^^-----------------------Should be upgraded!!--------------------------^^^^^^^^^^-------------------------
+                d = angular.copy(d);
+                d.nodeColor = 0;
+                d.depth=0;
+                //d.children = $scope.results;
+                d.children = [];
+                // $scope.plotLinks(d,selectColor(1));     
+                $scope.$broadcast('plotLinks', d, $scope.results);
+    }                                   //---------------^^^^^^^^^^^^^^^^-----------------------Should be upgraded!!--------------------------^^^^^^^^^^-------------------------
 
 
     $scope.connectionTimeline = function(startHost, endHost) { 
