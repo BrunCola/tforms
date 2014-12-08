@@ -13091,14 +13091,7 @@
 		 *      "cFeature": "T"
 		 *    } );
 		 */
-		feature: [
-			// {
-		 //       "fnInit": function( oSettings ) {
-		 //         return new TableTools( { "oDTSettings": oSettings } );
-		 //       },
-		 //       "cFeature": "T"
-		 //    }
-		],
+		feature: [],
 	
 	
 		/**

@@ -808,41 +808,98 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                 "sFeature": "TableTools"
             } );
 
-            $(document).ready( function () {
-                $('#table').dataTable( {
-                    "dom": 'T<"clear">',//lfrtip',
-                    "TableTools": {
-                        "sSwfPath": "http://cdn.datatables.net/tabletools/2.2.2/swf/copy_csv_xls_pdf.swf",
-                        "aButtons": [
-                            "print", {
-                                "sExtends": "collection",
-                                "sButtonText": "Save", // button name 
-                                "aButtons": [
-                                    "csv",
-                                    "print"
-                                ]
-                            }
-                        ]
-                    }
-
-                } );
-            } );
 
             // $(document).ready( function () {
-            //   var oTable = $('#table').dataTable();
-            //   var oTableTools = new TableTools( oTable, {
-            //     "buttons": [
-            //       "copy",
-            //       "csv",
-            //       "xls",
-            //       "pdf",
-            //       { "type": "print", "buttonText": "Print me!" }
-            //     ]
-            //   } );
-              
-            //   // console.log(oTableTools);
-            //   $('#table').before( oTableTools.dom.container );
+            //     var table = $('#table').dataTable();
+            //     var tableTools = new $.fn.dataTable.TableTools( table, {
+            //         "buttons": [
+            //             "copy",
+            //             "csv",
+            //             "xls",
+            //             "pdf",
+            //             { "type": "print", "buttonText": "Print me!" }
+            //         ]
+            //     } );
+                  
+            //     var div = d3.select('#table_wrapper');
+            //     $( tableTools.fnContainer() ).insertAfter(div);
             // } );
+
+
+
+            // $(document).ready( function () {
+            //     $('#table').dataTable( {
+            //         "dom": 'T<"clear">',//lfrtip',
+            //         "TableTools": {
+            //             "sSwfPath": "http://cdn.datatables.net/tabletools/2.2.2/swf/copy_csv_xls_pdf.swf",
+            //             "aButtons": [
+            //                 "csv", {
+            //                     "sExtends": "collection",
+            //                     "sButtonText": "Save", // button name 
+            //                     "aButtons": [
+            //                         "csv"
+            //                     ]
+            //                 }
+            //             ]
+            //         }
+
+            //     } );
+            // } );
+
+            // $(document).ready(function() {
+            //     var table = $('#table').DataTable();
+            //     var tableTools = new $.fn.dataTable.TableTools( table, {
+            //         "buttons": [
+            //             "csv"
+            //         ]
+            //     } );
+             
+            //     $( tableTools.fnContainer() ).insertBefore('div.dataTables_wrapper');
+            // } );
+
+TableTools.BUTTONS.download = {
+    "sAction": "text",
+    "sTag": "default",
+    "sFieldBoundary": "",
+    "sFieldSeperator": "\t",
+    "sNewLine": "<br>",
+    "sToolTip": "",
+    "sButtonClass": "DTTT_button_text",
+    "sButtonClassHover": "DTTT_button_text_hover",
+    "sButtonText": "Download",
+    "mColumns": "all",
+    "bHeader": true,
+    "bFooter": true,
+    "sDiv": "",
+    "fnMouseover": null,
+    "fnMouseout": null,
+    "fnClick": function( nButton, oConfig ) {
+    var oParams = this.s.dt.oApi._fnAjaxParameters( this.s.dt );
+    var iframe = document.createElement('iframe');
+    iframe.style.height = "0px";
+    iframe.style.width = "0px";
+    iframe.src = oConfig.sUrl+"?"+$.param(oParams);
+    document.body.appendChild( iframe );
+    },
+    "fnSelect": null,
+    "fnComplete": null,
+    "fnInit": null
+};
+ 
+ 
+/* Example usage */
+$(document).ready( function () {
+    $('#table').dataTable( {
+        "sDom": 'T<"clear">lfrtip',
+        "oTableTools": {
+          "aButtons": [ {
+            "sExtends": "download",
+            "sButtonText": "Download CSV",
+            "sUrl": "/generate_csv.php"
+          } ]
+      }
+    } );
+} );
 
             function redrawTable(tableData) {
                 $('#table').dataTable().fnClearTable();
