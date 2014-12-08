@@ -2491,7 +2491,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                         .attr('width', 14)
                                         .style('fill', "#002E7F")
                                         .attr('transform', 'translate(-8,-8)')
-                                        .style('fill-opacity', '1')
+                                        .style('fill-opacity', '1') 
                                 } else if (d.value.type === 'outside') {
                                     elm.append("circle")
                                         .attr("cx", function(d) { return d.x; })
