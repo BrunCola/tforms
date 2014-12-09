@@ -11,7 +11,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 
 			// SET PARAMS
 			var tooltip = d3.select("#map").append("div").attr("class", "tooltip hidden");
-			var width = document.getElementById('map').offsetWidth-60;
+			var width = document.getElementById('map').offsetWidth;
 			var height = width / 1.7;
 			// var zoom = d3.behavior.zoom()
 			// 	.scaleExtent([1, 8])
@@ -27,9 +27,37 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 				.attr("width", width)
 				.attr("height", height)
 				.append("g")
-				.attr("transform", "translate(" + width / 2 + "," + height / 3 + ")");
+				.attr("transform", "translate(" + width / 2 + "," + height / 2.5 + ")");
 				// .call(zoom);
 			var g = svg.append("g");
+
+	        // Set the dimensions of the canvas / graph
+            var margin = {top: 30, right: 20, bottom: 30, left: 50},
+                lineChartWidth = document.getElementById('liveConnInfo').offsetWidth - margin.left - margin.right,
+                lineChartHeight = 150 - margin.top - margin.bottom;
+
+            // Set the ranges
+            var x = d3.time.scale().range([0, lineChartWidth]);
+            var y = d3.scale.linear().range([lineChartHeight, 0]);
+
+            // Define the axes
+            var xAxis = d3.svg.axis().scale(x)
+                .orient("bottom").ticks(30);
+
+            var yAxis = d3.svg.axis().scale(y)
+                .orient("left").ticks(5);
+                
+            // Adds the svg canvas
+            var liveConn = d3.select("#liveConnInfo");
+		    
+		    liveConn.selectAll("svg").remove();
+
+            var liveConnSvg = liveConn.append("svg")
+                    .attr("width", lineChartWidth + margin.left + margin.right)
+                    .attr("height", lineChartHeight + margin.top + margin.bottom)
+                .append("g")
+                    .attr("transform", 
+                          "translate(" + margin.left + "," + margin.top + ")");
 
 			function populateTable(array, dClass) {
 				function sortArrOfObjectsByParam(arrToSort, strObjParamToSortBy, sortAscending) {
@@ -205,6 +233,10 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 				node
 					.on('mouseover', tip.show)
 					.on('mouseout', tip.hide);
+
+
+                $scope.totalMap = $scope.totalMap.concat(data.features);
+
 				filterCurrentPoints();
 				// map.on("zoomend", update);
 				/*Filter map points by date*/
@@ -347,6 +379,61 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 						.ease(Math.sqrt)
 						.style("opacity", 0)
 						.remove();
+
+                    var filteredLineChart = $scope.totalMap.filter(function(d) { return d.time < start });
+
+		            // Define the line
+		            var priceline = d3.svg.line()
+		                .x(function(d) { return x(d.time); })
+		                .y(function(d) { return y(d.properties.count); });
+
+
+                    //liveConn.selectAll("svg").remove();
+					filteredLineChart.forEach(function(d) {
+                        //d.date = d.properties.date_filed;
+                        d.properties.count = +d.properties.count;
+                    });
+
+					if (start >= $scope.lineChartEnd) {
+						$scope.lineChartEnd += 540000;
+					}
+
+                    // Scale the range of the data
+                    //x.domain(d3.extent(filteredLineChart, function(d) { return d.time; }));
+                    x.domain([$scope.lineChartStart, $scope.lineChartEnd]);
+                    y.domain([0, d3.max(filteredLineChart, function(d) { return d.properties.count; })]); 
+
+                    // Nest the entries by symbol
+                    var lineChartDataNest = d3.nest()
+                        .key(function(d) {return d.type;})
+                        .entries(filteredLineChart);
+
+					liveConnSvg.selectAll(".lineChart").remove();
+					liveConnSvg.selectAll(".axis").remove();
+
+                    // Loop through each symbol / key
+                    lineChartDataNest.forEach(function(d) {
+                        liveConnSvg.append("path")
+                            .attr("class", "lineChart")
+   							.transition().duration(1000)
+                            .attr("d", priceline(d.values)); 
+                    });
+
+
+		            // Add the X Axis
+		            liveConnSvg.append("g")
+		                .attr("class", "x axis")
+		                .attr("transform", "translate(0," + lineChartHeight + ")")
+		                .call(xAxis);
+
+		            // Add the Y Axis
+		            liveConnSvg.append("g")
+		                .attr("class", "y axis")
+		                .call(yAxis);
+
+
+
+
 				}
 
 				function stepUp() {

@@ -1,62 +1,67 @@
 <section head></section>
 <div data-ng-controller="liveConnectionsController">
 	<!-- <div class="box-content"> -->
-		<div class="row-fluid" style="position:absolute;z-index:700">
-			<div class="span4">
-				<table class="livemapTable countriesTable" >
-					<thead>
-						<tr>
-							<th>Top Countries</th>
-							<th>Percentage</th>
-							<th>Count</th>
-							<th>Flag</th>
-						</tr>
-					</thead>
-					<tbody></tbody>
-				</table>
-			</div>
-			<div class="span4 offset3">
-				<table class="livemapTable protosTable">
-					<thead>
-						<tr>
-							<th>Top Applications</th>
-							<th>Percentage</th>
-							<th>Count</th>
-						</tr>
-					</thead>
-					<tbody></tbody>
-				</table>
-			</div>
+	<div class="row-fluid" style="position:fixed;z-index:700">
+		<div class="span4">
+			<table class="livemapTable countriesTable" >
+				<thead>
+					<tr>
+						<th>Top Countries</th>
+						<th>Percentage</th>
+						<th>Count</th>
+						<th>Flag</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
 		</div>
-		<div class="row-fluid" style="position:fixed; bottom:50px;z-index:700">
-			<div class="span4">
-				<table class="livemapTable localTable">
-					<thead>
-						<tr>
-							<th>Top Local IP's</th>
-							<th>Percentage</th>
-							<th>Count</th>
-						</tr>
-					</thead>
-					<tbody></tbody>
-				</table>
-			</div>
-			<div class="span4 offset3">
-				<table class="livemapTable remoteTable">
-					<thead>
-						<tr>
-							<th>Top Remote IP's</th>
-							<th>Percentage</th>
-							<th>Count</th>
-							<th>Flag</th>
-						</tr>
-					</thead>
-					<tbody></tbody>
-				</table>
-			</div>
+		<div class="span4 offset3">
+			<table class="livemapTable protosTable">
+				<thead>
+					<tr>
+						<th>Top Applications</th>
+						<th>Percentage</th>
+						<th>Count</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
 		</div>
-		<div style="height:900px;" id="map" make-map></div>
-	<!-- </div> -->
+	</div>
+	<div class="row-fluid" style="position:fixed; bottom:180px;z-index:700">
+		<div class="span4">
+			<table class="livemapTable localTable">
+				<thead>
+					<tr>
+						<th>Top Local IP's</th>
+						<th>Percentage</th>
+						<th>Count</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+		<div class="span4 offset3">
+			<table class="livemapTable remoteTable">
+				<thead>
+					<tr>
+						<th>Top Remote IP's</th>
+						<th>Percentage</th>
+						<th>Count</th>
+						<th>Flag</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+	</div>
+	<div style="height:900px;" id="map" make-map></div>
+<!-- </div> -->
+
+	<div class="row-fluid" style="position:fixed; width:86%; bottom:40px;z-index:700;">
+		<div id="liveConnInfo" style="height:150px;">
+		</div>
+	</div>
 </div>
 <br />
 </section>

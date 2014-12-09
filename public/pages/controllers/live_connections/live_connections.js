@@ -15,9 +15,14 @@ angular.module('mean.pages').controller('liveConnectionsController', ['$scope', 
                 }, 60000)
             } else {
                 $scope.$broadcast('map', data.map, data.start, data.end);
+                // $scope.$broadcast('lineChart', data.map, data.start, data.end);
             }
         });
     }
+
+    $scope.lineChartStart = moment().subtract('minutes', 9).unix()*1000;
+    $scope.lineChartEnd = Math.round(new Date().getTime());// + 3060000;
+    $scope.totalMap = [];
     getMap();
     $scope.$on('$destroy', function() {
         clearTimeout(timer);

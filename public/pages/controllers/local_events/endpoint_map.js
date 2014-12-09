@@ -392,7 +392,6 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 success(function(data) {
                     if (data[0] !== undefined) {
                         $scope.userinfo.user_image = data[0].path;
-                        //$rootScope.$broadcast('appendInfo', d, data[0].path, "assets");
                     } else {
                         $scope.userinfo.user_image = "public/system/assets/img/userplaceholder.jpg";
                     }
@@ -444,7 +443,6 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     }
 
     $scope.editFloorPlan = function (floors) {
-        //console.log(floors);
         $rootScope.modalFloors = floors;
         $scope.modalInstance = $modal.open({
             templateUrl: 'editModal.html',
@@ -647,34 +645,6 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                     xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
                 });
             };
-        } else {
-            // $scope.start = function(index, custom_fn) {
-            //     $scope.progress[index] = 0;
-            //     $scope.errorMsg = null;
-            //     $scope.upload[index] = $upload.upload({
-            //         url : '/uploads',
-            //         method: 'POST',
-            //         data : {
-            //             myModel : $scope.myModel,
-            //             custom_name: custom_fn,
-            //             imageType: 'map',
-            //             width: $scope.imageWidth,
-            //             height: $scope.imageHeight,
-            //             scale: 1
-            //         },
-            //         file: $scope.selectedFiles[index],
-            //     }).then(function(response) {
-            //         $scope.uploadResult.push(response.data);
-            //         console.log(response.data);
-            //     }, function(response) {
-            //         if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
-            //     }, function(evt) {
-            //         // Math.min is to fix IE which reports 200% sometimes
-            //         $scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-            //     }).xhr(function(xhr){
-            //         xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
-            //     });
-            // };
-        }
+        } 
     };
 }]);
