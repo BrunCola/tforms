@@ -85,6 +85,21 @@ p{
 */
 
 
+.support-button {
+  bottom: 0;
+  right: 0;
+  position: fixed;
+  padding: 8px;
+  background-color: #232323;
+}
+.support-button a {
+  color: #FFFFFF;
+}
+.support-button a:hover {
+  color: #FFFFFF;
+  cursor: pointer;
+}
+
 /*
 .patTitleRow {
   padding-bottom: 10px;
