@@ -799,107 +799,56 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
         link: function ($scope, element, attrs) {
             $scope.socket = socket;
 
+             function insert(){//(array, heading) {
+                console.log("TEST");
+                function isAllowed(word){
+                    var notAllowed = ['_typeCast', 'parse', 'id', 'child_id'];
+                    if (notAllowed.indexOf(word) !== -1) {
+                        return false;
+                    }
+                    return true;
+                }
+                //title
+                csv += heading;
+                // new line 
+                csv += '\n';
+                if (array.length > 0) {
+                    // get object 0 length
+                    var objlength = 0, tpos = 0;
+                    for (var i in array[0]) {
+                        objlength++;
+                    }
+                    for (var t in array[0]) {
+                        if (isAllowed(t)){
+                            csv += t;
+                            if (tpos < objlength-1) {
+                                // append comma if we're not at end of array
+                                csv += ',';
+                            }
+                            tpos++
+                        }
+                    }
+                    csv += '\n';
+                    for (var i in array) {
+                        for (var n in array[i]) {
+                            if ((typeof array[i][n] !== 'function') && (isAllowed(n))){
+                                if (array[i][n] === 0) {
+                                    csv += 'no,';
+                                } else if (array[i][n] === 1) {
+                                    csv += 'yes,';
+                                } else if (array[i][n] === null) {
+                                    csv += 'n/a,';
+                                } else {
+                                    csv += array[i][n]+',';
+                                }
+                            }
+                        }
+                        csv += '\n';
+                    }
+                    csv += '\n\n';
+                }
+            }
 
-            $.fn.dataTableExt.aoFeatures.push( {
-                "fnInit": function( oSettings ) {
-                    return new TableTools( { "oDTSettings": oSettings } );
-                },
-                "cFeature": "T",
-                "sFeature": "TableTools"
-            } );
-
-
-            // $(document).ready( function () {
-            //     var table = $('#table').dataTable();
-            //     var tableTools = new $.fn.dataTable.TableTools( table, {
-            //         "buttons": [
-            //             "copy",
-            //             "csv",
-            //             "xls",
-            //             "pdf",
-            //             { "type": "print", "buttonText": "Print me!" }
-            //         ]
-            //     } );
-                  
-            //     var div = d3.select('#table_wrapper');
-            //     $( tableTools.fnContainer() ).insertAfter(div);
-            // } );
-
-
-
-            // $(document).ready( function () {
-            //     $('#table').dataTable( {
-            //         "dom": 'T<"clear">',//lfrtip',
-            //         "TableTools": {
-            //             "sSwfPath": "http://cdn.datatables.net/tabletools/2.2.2/swf/copy_csv_xls_pdf.swf",
-            //             "aButtons": [
-            //                 "csv", {
-            //                     "sExtends": "collection",
-            //                     "sButtonText": "Save", // button name 
-            //                     "aButtons": [
-            //                         "csv"
-            //                     ]
-            //                 }
-            //             ]
-            //         }
-
-            //     } );
-            // } );
-
-            // $(document).ready(function() {
-            //     var table = $('#table').DataTable();
-            //     var tableTools = new $.fn.dataTable.TableTools( table, {
-            //         "buttons": [
-            //             "csv"
-            //         ]
-            //     } );
-             
-            //     $( tableTools.fnContainer() ).insertBefore('div.dataTables_wrapper');
-            // } );
-
-TableTools.BUTTONS.download = {
-    "sAction": "text",
-    "sTag": "default",
-    "sFieldBoundary": "",
-    "sFieldSeperator": "\t",
-    "sNewLine": "<br>",
-    "sToolTip": "",
-    "sButtonClass": "DTTT_button_text",
-    "sButtonClassHover": "DTTT_button_text_hover",
-    "sButtonText": "Download",
-    "mColumns": "all",
-    "bHeader": true,
-    "bFooter": true,
-    "sDiv": "",
-    "fnMouseover": null,
-    "fnMouseout": null,
-    "fnClick": function( nButton, oConfig ) {
-    var oParams = this.s.dt.oApi._fnAjaxParameters( this.s.dt );
-    var iframe = document.createElement('iframe');
-    iframe.style.height = "0px";
-    iframe.style.width = "0px";
-    iframe.src = oConfig.sUrl+"?"+$.param(oParams);
-    document.body.appendChild( iframe );
-    },
-    "fnSelect": null,
-    "fnComplete": null,
-    "fnInit": null
-};
- 
- 
-/* Example usage */
-$(document).ready( function () {
-    $('#table').dataTable( {
-        "sDom": 'T<"clear">lfrtip',
-        "oTableTools": {
-          "aButtons": [ {
-            "sExtends": "download",
-            "sButtonText": "Download CSV",
-            "sUrl": "/generate_csv.php"
-          } ]
-      }
-    } );
-} );
 
             function redrawTable(tableData) {
                 $('#table').dataTable().fnClearTable();
@@ -913,8 +862,8 @@ $(document).ready( function () {
                             $(element).prepend('<div class="row-fluid"> '+
                             '<div class="span12"> '+
                                     '<div class="jdash-header">'+params[t].title+'</div> '+
-                                    '<div class="box"> '+
-                                        '<div class="box-content"> '+
+                                    '<div class="box">'+
+                                        '<div class="box-content"> <button class="bCsv button pure-button" type="button" href="">insert</button>'+//<button type="button" class="rndCrnBtn pure-button right" ng-click="insert()">Print to .csv</button>'+
                                             '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="'+params[t].div+'" ></table>'+
                                         '</div> '+
                                     '</div> '+
@@ -1206,6 +1155,11 @@ $(document).ready( function () {
                                         $('table .bUpload').on('click',function(){
                                             var rowData = JSON.parse(this.value);
                                             $scope.uploadOpen(rowData);
+                                        });
+                                        $('box-content .bCsv').on('click',function(){
+                                          console.log("TETSTETSTETSt");
+                                            // var rowData = JSON.parse(this.value);
+                                            // $scope.uploadOpen(rowData);
                                         });
                                         $scope.country = [];
                                         $scope.ioc = [];
