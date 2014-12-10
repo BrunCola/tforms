@@ -105,7 +105,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
                 keyboard: true,
                 resolve: {
                     data: function() {                        
-                        return "There is currently "+$scope.firewall_count+" firewall rules.";
+                        return "There is currently "+$scope.firewall_count+" blocked threats.";
                     },
                     arquar: function() {
                         return "";
