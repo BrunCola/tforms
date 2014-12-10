@@ -204,6 +204,11 @@ angular.module('mean.pages').factory('laneRowSymbols', [
                         .attr('fill', color1);
                     return;
                 case 'HTTP': 
+                    element.append('circle')
+                        .style('fill', color1)
+                        .attr('cx', 18)
+                        .attr('cy', 18)
+                        .attr('r', 14);
                     element.append('svg:path')
                         .attr('d', 'M24.715,19.976l-2.057-1.122l-1.384-0.479l-1.051,0.857l-1.613-0.857l0.076-0.867l-1.062-0.325l0.31-1.146'+
                             'l-1.692,0.593l-0.724-1.616l0.896-1.049l1.108,0.082l0.918-0.511l0.806,1.629l0.447,0.087l-0.326-1.965l0.855-0.556l0.496-1.458'+
@@ -213,7 +218,8 @@ angular.module('mean.pages').factory('laneRowSymbols', [
                             'c0,0,1.737,0.646,1.767,0.569c0.027-0.07,1.964,1.598,1.964,1.598l1.084,0.52L19.456,21.1l-0.307,1.775l1.17,1.996l0.997,1.242'+
                             'l-0.151,2.002L20.294,32.5l0.025,2.111l1.312-0.626c0,0,2.245-3.793,2.368-3.554c0.122,0.238,2.129-2.76,2.129-2.76l1.666-1.26'+
                             'l0.959-3.195l-2.882-1.775L24.715,19.976z')
-                        .attr('fill', color1);
+                        .attr('fill', '#3f3f3f')
+                        .attr('transform', 'translate(4,4) scale(0.75)');
                     return;
                 case 'SSL':
                     element.append('svg:path')
