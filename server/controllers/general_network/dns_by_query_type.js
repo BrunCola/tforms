@@ -74,9 +74,9 @@ module.exports = function(pool) {
             }
             var piechartQ = {
                 query: 'SELECT '+
-                         'time,'+
-                         '`qtype_name` AS `pie_dimension`, '+
-                         'count(*) AS `count` '+
+                         'sum(`count`) AS `count`,'+
+                         '`time`,'+
+                         '`qtype_name` AS `pie_dimension` '+
                      'FROM '+
                          '`dns_query_type` '+
                      'WHERE '+

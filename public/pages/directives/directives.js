@@ -3791,76 +3791,101 @@ angular.module('mean.pages').directive('makeLineChart', ['$timeout', '$rootScope
         link: function ($scope, element, attrs) {
             $scope.$on('lineChart', function (event, mapData, start, end) {
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
+                    
+                    
 
-                    $scope.totalMap = $scope.totalMap.concat(mapData.features);
-                    var data = $scope.totalMap;
 
-                    // Set the dimensions of the canvas / graph
-                    var margin = {top: 30, right: 20, bottom: 30, left: 50},
-                        lineChartWidth = document.getElementById('liveConnInfo').offsetWidth - margin.left - margin.right,
-                        lineChartHeight = 150 - margin.top - margin.bottom;
 
-                    // Set the ranges
-                    var x = d3.time.scale().range([0, lineChartWidth]);
-                    var y = d3.scale.linear().range([lineChartHeight, 0]);
 
-                    // Define the axes
-                    var xAxis = d3.svg.axis().scale(x)
-                        .orient("bottom").ticks(20);
+                    var t = -1;
+                    var n = 10;
+                    var v = 0;
+                    var data = d3.range(n).map(next);
 
-                    var yAxis = d3.svg.axis().scale(y)
-                        .orient("left").ticks(5);
+                    function next () {
+                        return {
+                            time: ++t,
+                            value: v = Math.floor(Math.random()*20)
+                        };
+                    }   
+                     
+                    var margin = {top: 10, right: 10, bottom: 20, left: 40},
+                        width = document.getElementById('graph').offsetWidth - margin.left - margin.right,
+                        height = 150 - margin.top - margin.bottom;    
+                     
+                    var x = d3.scale.linear()
+                        .domain([0, n - 1])
+                        .range([0, width]);
+                     
+                    var y = d3.scale.linear()
+                        .domain([0, 20])
+                        .range([height, 0]);
+                     
+                    var line = d3.svg.line()
+                        .x(function(d, i) { return x(d.time); })
+                        .y(function(d, i) { return y(d.value); });
 
-                    // Define the line
-                    var priceline = d3.svg.line()
-                        .x(function(d) { return x(d.time); })
-                        .y(function(d) { return y(d.properties.count); });
+                    var lineFunction = d3.svg.line()
+                        .x(function(d, i) { return x(d.time); })
+                        .y(function(d, i) { return y(d.value); });
+                         
+                    var lineGraph = d3.select("#graph");
+                    lineGraph.selectAll("svg").remove();
+
+                    var svg = lineGraph.append("svg")
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom);
+                    
+                    var g = svg.append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
                         
-                    // Adds the svg canvas
-                    var liveConn = d3.select("#liveConnInfo");
-                    liveConn.selectAll("svg").remove();
+                    var graph = g.append("svg")
+                        .attr("width", width)
+                        .attr("height", height + margin.top + margin.bottom);   
+                     
+                    var xAxis = d3.svg.axis().scale(x).orient("bottom");
+                    var axis = graph.append("g")
+                        .attr("class", "x axis")
+                        .attr("transform", "translate(0," + height + ")")
+                        .call(xAxis);
+                     
+                    g.append("g")
+                        .attr("class", "y axis")
+                        .call(d3.svg.axis().scale(y).orient("left"));
 
-                    var liveConnSvg = liveConn.append("svg")
-                            .attr("width", lineChartWidth + margin.left + margin.right)
-                            .attr("height", lineChartHeight + margin.top + margin.bottom)
-                        .append("g")
-                            .attr("transform", 
-                                  "translate(" + margin.left + "," + margin.top + ")");
+                    var path = svg.append("path")
+                        .attr("d", line(data))
+                        .classed("line", true);
 
-                    // Get the data
-                   // d3.csv("https://localhost:3000/public/stocks.csv", function(error, data) {
-                        data.forEach(function(d) {
-                            //d.date = d.properties.date_filed;
-                            d.properties.count = +d.properties.count;
-                        });
+                   var pathold = svg.append("path")
+                        .attr("d", line(data))
+                        .classed("line", true);                        
 
-                        // Scale the range of the data
-                        x.domain(d3.extent(data, function(d) { return d.time; }));
-                        y.domain([0, d3.max(data, function(d) { return d.properties.count; })]); 
+                    tick();
+                         
+                    function tick() { 
 
-                        // Nest the entries by symbol
-                        var dataNest = d3.nest()
-                            .key(function(d) {return d.type;})
-                            .entries(data);
+                        // update domain
+                        x.domain([0, 40]);
 
-                        // Loop through each symbol / key
-                        dataNest.forEach(function(d) {
-                            liveConnSvg.append("path")
-                                .attr("class", "lineChart")
-                                .attr("d", priceline(d.values)); 
-                        });
+                        data.push(next());
 
-                        // Add the X Axis
-                        liveConnSvg.append("g")
-                            .attr("class", "x axis")
-                            .attr("transform", "translate(0," + lineChartHeight + ")")
-                            .call(xAxis);
+                        pathold.attr("d", line(data.slice(0, data.length-2)));
+                        path.attr("d", line(data.slice(data.length-3, data.length-1)));
 
-                        // Add the Y Axis
-                        liveConnSvg.append("g")
-                            .attr("class", "y axis")
-                            .call(yAxis);
-                   // });
+                        var pathLength= path.node().getTotalLength()
+                        path
+                          .attr("stroke-dasharray", pathLength + " " + pathLength)
+                          .attr("stroke-dashoffset", pathLength)
+                          .transition()
+                          .duration(2000)
+                          .ease("linear")
+                          .attr("stroke-dashoffset", 0)
+                          .each("end", tick);
+
+                    }
+
+
 
                 }, 0, false);
             })

@@ -31,33 +31,101 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 				// .call(zoom);
 			var g = svg.append("g");
 
-	        // Set the dimensions of the canvas / graph
-            var margin = {top: 30, right: 20, bottom: 30, left: 50},
-                lineChartWidth = document.getElementById('liveConnInfo').offsetWidth - margin.left - margin.right,
-                lineChartHeight = 150 - margin.top - margin.bottom;
 
-            // Set the ranges
-            var x = d3.time.scale().range([0, lineChartWidth]);
-            var y = d3.scale.linear().range([lineChartHeight, 0]);
 
-            // Define the axes
-            var xAxis = d3.svg.axis().scale(x)
-                .orient("bottom").ticks(30);
 
-            var yAxis = d3.svg.axis().scale(y)
-                .orient("left").ticks(5);
+
+
+ 			var margin = {top: 10, right: 10, bottom: 20, left: 40},
+                lineChartWidth = document.getElementById('graph').offsetWidth - margin.left - margin.right,
+                lineChartHeight = 150 - margin.top - margin.bottom;    
+             
+            var x = d3.time.scale()
+            	.range([0, lineChartWidth])
+                .domain([$scope.lineChartStart, $scope.lineChartEnd]);
+             
+            var y = d3.scale.linear()
+                .domain([0, 1])
+                .range([lineChartHeight, 0]);
+                 
+            var lineGraph = d3.select("#graph");
+            lineGraph.selectAll("svg").remove();
+
+            var svgLine = lineGraph.append("svg")
+                .attr("width", lineChartWidth + margin.left + margin.right)
+                .attr("height", lineChartHeight + margin.top + margin.bottom)
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");;
+            
+            var gLine = svgLine.append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
                 
-            // Adds the svg canvas
-            var liveConn = d3.select("#liveConnInfo");
-		    
-		    liveConn.selectAll("svg").remove();
+            var graphLine = gLine.append("svg")
+                .attr("width", lineChartWidth+50)
+                .attr("height", lineChartHeight + margin.top + margin.bottom);    
 
-            var liveConnSvg = liveConn.append("svg")
-                    .attr("width", lineChartWidth + margin.left + margin.right)
-                    .attr("height", lineChartHeight + margin.top + margin.bottom)
-                .append("g")
-                    .attr("transform", 
-                          "translate(" + margin.left + "," + margin.top + ")");
+            var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(30);
+
+        	var yAxis = d3.svg.axis().scale(y).orient("left").ticks(5);
+
+            var axisX = graphLine.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + lineChartHeight + ")")
+                .call(xAxis);
+             
+            var axisY =  gLine.append("g")
+                .attr("class", "y axis")
+                .call(yAxis);
+
+            var pathLine = gLine.append("path").classed("line", true).attr("d", "M1337.3903121519193,0L1337.3903121519193,0");
+
+            var pathLineOld = gLine.append("path").classed("line", true).attr("d", "M1337.3903121519193,0L1337.3903121519193,0");
+
+            var lineFunction = d3.svg.line()
+                .x(function(d, i) { return x(d.time); })
+                .y(function(d, i) { return y(d.properties.count); });
+
+
+            var filteredLineChart;
+            var filteredLineChartOld;
+
+
+
+
+	     //    // Set the dimensions of the canvas / graph
+      //       var margin = {top: 30, right: 20, bottom: 30, left: 50},
+      //           lineChartWidth = document.getElementById('liveConnInfo').offsetWidth - margin.left - margin.right,
+      //           lineChartHeight = 150 - margin.top - margin.bottom;
+
+      //       // Set the ranges
+      //       var x = d3.time.scale().range([0, lineChartWidth]);
+      //       var y = d3.scale.linear().range([lineChartHeight, 0]);
+
+      //       // Define the axes
+      //       var xAxis = d3.svg.axis().scale(x)
+      //           .orient("bottom").ticks(30);
+
+      //       var yAxis = d3.svg.axis().scale(y)
+      //           .orient("left").ticks(5);
+                
+      //       // Adds the svg canvas
+      //       var liveConn = d3.select("#liveConnInfo");
+		    
+		    // liveConn.selectAll("svg").remove();
+
+      //       var liveConnSvg = liveConn.append("svg")
+      //               .attr("width", lineChartWidth + margin.left + margin.right)
+      //               .attr("height", lineChartHeight + margin.top + margin.bottom)
+      //           .append("g")
+      //               .attr("transform", 
+      //                     "translate(" + margin.left + "," + margin.top + ")");
+
+
+
+
+
+
+
+
 
 			function populateTable(array, dClass) {
 				function sortArrOfObjectsByParam(arrToSort, strObjParamToSortBy, sortAscending) {
@@ -380,19 +448,53 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 						.style("opacity", 0)
 						.remove();
 
-                    var filteredLineChart = $scope.totalMap.filter(function(d) { return d.time < start });
-
-		            // Define the line
-		            var priceline = d3.svg.line()
-		                .x(function(d) { return x(d.time); })
-		                .y(function(d) { return y(d.properties.count); });
 
 
-                    //liveConn.selectAll("svg").remove();
-					filteredLineChart.forEach(function(d) {
-                        //d.date = d.properties.date_filed;
-                        d.properties.count = +d.properties.count;
-                    });
+
+
+
+
+
+     //                var filteredLineChart = $scope.totalMap.filter(function(d) { return d.time < start });
+
+     //                //liveConn.selectAll("svg").remove();
+					// filteredLineChart.forEach(function(d) {
+     //                    //d.date = d.properties.date_filed;
+     //                    d.properties.count = +d.properties.count;
+     //                });
+
+					// if (start >= $scope.lineChartEnd) {
+					// 	$scope.lineChartEnd += 540000;
+     //                	x.domain([$scope.lineChartStart, $scope.lineChartEnd]);
+					// }
+
+     //                // Scale the range of the data
+     //                //x.domain(d3.extent(filteredLineChart, function(d) { return d.time; }));
+     //                y.domain([0, d3.max(filteredLineChart, function(d) { return d.properties.count; })]); 
+
+     //                // Nest the entries by symbol
+     //                var lineChartDataNest = d3.nest()
+     //                    .key(function(d) {return d.type;})
+     //                    .entries(filteredLineChart);
+
+					// liveConnSvg.selectAll(".lineChart").remove();
+					// liveConnSvg.selectAll(".axis").remove();
+
+     //                // Loop through each symbol / key
+     //                lineChartDataNest.forEach(function(d) {
+     //                    liveConnSvg.append("path")
+     //                        .attr("class", "lineChart")
+   		// 					.transition().duration(1000)
+     //                        .attr("d", priceline(d.values)); 
+     //                });
+
+
+
+
+		   			filteredLineChartOld = filteredLineChart;
+
+                    filteredLineChart = $scope.totalMap.filter(function(d) {  return d.time < start });
+		            //console.log(filteredLineChart)
 
 					if (start >= $scope.lineChartEnd) {
 						$scope.lineChartEnd += 540000;
@@ -400,39 +502,72 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 
                     // Scale the range of the data
                     //x.domain(d3.extent(filteredLineChart, function(d) { return d.time; }));
+                    //console.log(d3.max(filteredLineChart, function(d) { return d.properties.count; }))
                     x.domain([$scope.lineChartStart, $scope.lineChartEnd]);
                     y.domain([0, d3.max(filteredLineChart, function(d) { return d.properties.count; })]); 
 
-                    // Nest the entries by symbol
-                    var lineChartDataNest = d3.nest()
-                        .key(function(d) {return d.type;})
-                        .entries(filteredLineChart);
+		            // liveConnSvg.append("g")
+		            //     .attr("class", "x axis")
+		            //     .attr("transform", "translate(0," + lineChartHeight + ")")
+		            //     .call(xAxis);
 
-					liveConnSvg.selectAll(".lineChart").remove();
-					liveConnSvg.selectAll(".axis").remove();
-
-                    // Loop through each symbol / key
-                    lineChartDataNest.forEach(function(d) {
-                        liveConnSvg.append("path")
-                            .attr("class", "lineChart")
-   							.transition().duration(1000)
-                            .attr("d", priceline(d.values)); 
-                    });
+		            // // Add the Y Axis
+		            // liveConnSvg.append("g")
+		            //     .attr("class", "y axis")
+		            //     .call(yAxis);
 
 
-		            // Add the X Axis
-		            liveConnSvg.append("g")
-		                .attr("class", "x axis")
-		                .attr("transform", "translate(0," + lineChartHeight + ")")
-		                .call(xAxis);
+     //                // Nest the entries by symbol
+     //                var lineChartDataNest = d3.nest()
+     //                    .key(function(d) {return d.type;})
+     //                    .entries(filteredLineChart);
 
-		            // Add the Y Axis
-		            liveConnSvg.append("g")
-		                .attr("class", "y axis")
-		                .call(yAxis);
+					// lineGraph.selectAll(".line").remove();
+					// lineGraph.selectAll(".axis").remove();
+
+		   //          // Add the X Axis
+		   //          graphLine.append("g")
+		   //              .attr("class", "x axis")
+		   //              .attr("transform", "translate(0," + lineChartHeight + ")")
+		   //              .call(xAxis);
+
+		   //          // Add the Y Axis
+		   //          gLine.append("g")
+		   //              .attr("class", "y axis")
+		   //              .call(yAxis);
 
 
+		           	axisX.call(xAxis);
 
+		            axisY.call(yAxis);
+
+		            if (filteredLineChart !== undefined) {
+		            	if (filteredLineChartOld === undefined) {
+		            		var lengthLineOld = 0;
+		            		filteredLineChartOld = [];
+		            	}else {
+			            	var lengthLineOld = filteredLineChartOld.length;
+		            	}
+
+			            var lengthLine = filteredLineChart.length;
+			            var jump = lengthLine - lengthLineOld;
+		            }
+
+                    if (jump > 0) {
+                    	
+                    	pathLineOld.attr("d", lineFunction(filteredLineChart.slice(0, filteredLineChart.length-jump-1)));
+                    	pathLine.attr("d", lineFunction(filteredLineChart.slice(filteredLineChart.length-jump-2, filteredLineChart.length-1)));
+
+                    	var pathLength= pathLine.node().getTotalLength();
+
+	                    pathLine
+	                      	.attr("stroke-dasharray", pathLength + " " + pathLength)
+		                    .attr("stroke-dashoffset", pathLength)
+		                    .transition()
+		                    .duration(750)
+		                    .ease("linear")
+		                    .attr("stroke-dashoffset", 0);
+                    }
 
 				}
 

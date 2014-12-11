@@ -2472,7 +2472,7 @@ button.right, .epbuttons{
   margin-left: 4%;
 }
 
-path.lineChart { 
+/*path.lineChart { 
     stroke: steelblue;
     stroke-width: 2;
     fill: none;
@@ -2484,4 +2484,34 @@ path.lineChart {
     stroke: grey;
     stroke-width: 1;
     shape-rendering: crispEdges;
+}*/
+
+#graph .axis {
+    stroke-width: 1;
+}
+#graph .axis .tick line {
+    stroke: black;
+}
+#graph .axis .tick text {
+    fill: black;
+    font-size: 1em;
+}
+#graph .axis .domain {
+    fill: none;
+    stroke: black;
+}
+#graph .group {
+    fill: none;
+    stroke: black;
+    stroke-width: 1.5;
+}
+.axis path, .axis line {
+    fill: none;
+    stroke: #555555;
+    shape-rendering: crispEdges;
+}
+.line {
+    fill: none;
+    stroke: orange;
+    stroke-width: 1px;
 }
