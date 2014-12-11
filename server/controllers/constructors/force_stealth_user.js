@@ -64,7 +64,7 @@ module.exports = function (sql, queries, conn, callback) {
                 var arr = [];
                 arr = Object.keys(uniqueLinks[user]);
                 for (var o = 0; o < arr.length; o++) {
-                    if (arr[o] !== 'ClearText') {
+                    if ((arr[o] !== 'ClearText') || (arr[o] !== 'ClearTextCOI')) {
                         // push a new entry for every single node
                         nodes.push({
                             "name": obj.lan_user,

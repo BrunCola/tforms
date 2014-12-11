@@ -2287,7 +2287,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     .attr("fill", '#fff')
                                     .style("stroke-width", "14px")
                                     .style('stroke', function(d){
-                                        if (d.name === 'Quarantine'){
+                                        if (d.name === 'QuarantineCOI'){
                                             return '#ff0000';
                                         } else {
                                             return '#259286';
@@ -2397,7 +2397,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     })
 
                                 switch(d.name){
-                                    case 'ClearText':
+                                    case 'ClearTextCOI':
                                         elm.append('path')
                                             .style('fill', '#259286')
                                             .attr('d', 'M36.8,12.2L19.6,15l4.4-12L36.8,0V12.2z M3.8,20.8l9.2-3.7l5.4-11.4L3.8,20.8z M36.8,16.5l-18.6,3.8'+
@@ -2426,7 +2426,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                             .style('fill-opacity', '0.3');
                                             });
                                         break;
-                                    case 'Quarantine':
+                                    case 'QuarantineCOI':
                                         elm.append('path')
                                             .style('fill', '#ff0000')
                                             .attr('d','M36.6,32.1c1.4-2.2,2.4-4.7,2.9-7.3c-8.1-3.3-13.8-11.2-13.8-20.5c0-1.1,0.1-2.1,0.2-3.1 C23.7,0.4,21.3,0,18.8,0c-0.2,0-0.4,0-0.6,0'+
