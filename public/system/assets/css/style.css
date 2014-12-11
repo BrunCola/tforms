@@ -2503,15 +2503,13 @@ button.right, .epbuttons{
 #graph .group {
     fill: none;
     stroke: black;
-    stroke-width: 1.5;
+    stroke-width: 1;
 }
 .axis path, .axis line {
     fill: none;
-    stroke: #555555;
     shape-rendering: crispEdges;
 }
-.line {
+.lineChart {
     fill: none;
-    stroke: orange;
     stroke-width: 1px;
 }
