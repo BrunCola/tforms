@@ -24,9 +24,7 @@ module.exports = function(pool) {
                             '`type`,'+
                             '`rule` '+
                         'FROM '+
-                            '`firewall` '+
-                        'WHERE '+
-                            '`time` BETWEEN ? AND ? ',
+                            '`firewall` ',
                 insert: [start, end],
                 params: [
                     { title: 'Time', select: 'time' },
