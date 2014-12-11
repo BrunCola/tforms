@@ -83,8 +83,7 @@ module.exports = function(pool) {
                        // query: 'SELECT `lan_user`, `group` FROM `stealth_user',
                         query: 'SELECT '+
                                 'u.lan_user, '+
-                                'g.group, '+
-                                'c.cois '+
+                                'c.cois AS `group` '+
                             'FROM '+
                                 '`stealth_role_group` '+
                             'AS g INNER JOIN '+
