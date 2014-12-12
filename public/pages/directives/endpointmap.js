@@ -721,17 +721,14 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                                 element.append('path')
                                                     .attr("class", "userColor")
                                                     .style('fill', iconColour)
-                                                    .attr("class", "serverBox")
                                                     .attr('d', 'M24,13H5v4h19V13z M8,16H6v-2h2V16z');
                                                 element.append('path')
                                                     .attr("class", "userColor")
                                                     .style('fill', iconColour)
-                                                    .attr("class", "serverBox")
                                                     .attr('d', 'M24,7H5v4h19V7z M8,10H6V8h2V10z');
                                                 element.append('path')
                                                     .attr("class", "userColor")
                                                     .style('fill', iconColour)
-                                                    .attr("class", "serverBox")
                                                     .attr('d', 'M24,1H5v4h19V1z M8,4H6V2h2V4z');
                                                 break;
                                             case 'mobile':
