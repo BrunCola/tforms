@@ -23,7 +23,7 @@ var express = require('express'),
     util = require('./util'),
     assetmanager = require('assetmanager');
 
-module.exports = function(app, version, io, pool) {
+module.exports = function(app, version, pool) {
     // app.param('end', /^[0-9]{1,10}$/);
     app.set('showStackError', true);
 
@@ -154,7 +154,7 @@ module.exports = function(app, version, io, pool) {
             // used and shared by routes as further middlewares and is not a
             // route by itself
             util.walk(appPath + '/server/routes', 'middlewares', function(path) {
-                require(path)(app, version, io, pool);
+                require(path)(app, version, pool);
             });
         }
 

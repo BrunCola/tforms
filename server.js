@@ -60,9 +60,8 @@ https = require('https'),
 server = https.createServer(options, app),
 io = require('socket.io').listen(server);
 
-require(appPath + '/server/config/express')(app, version, io, db);
+require(appPath + '/server/config/express')(app, version, db);
 
-require('./server/config/socket.js')(app, io, db);
 require('./server/config/report.js')(db);
 
 var SSLport = process.env.sslPORT || config.SSLport;
