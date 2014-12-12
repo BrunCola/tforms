@@ -12,7 +12,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
             // SET PARAMS
             var tooltip = d3.select("#map").append("div").attr("class", "tooltip hidden");
             var width = document.getElementById('map').offsetWidth;
-            var height = width / 1.7;
+            var height = width / 1.9;
             // var zoom = d3.behavior.zoom()
             //  .scaleExtent([1, 8])
             //  .on("zoom", move);
@@ -27,7 +27,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
-                .attr("transform", "translate(" + width / 2 + "," + height / 2.5 + ")");
+                .attr("transform", "translate(" + width / 2 + "," + height / 2.5 + ")scale(1)");
                 // .call(zoom);
             var g = svg.append("g");
 
@@ -419,19 +419,21 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                     //     .entries(distinctHits);
 
                     gLine.selectAll('.lineChart').remove();
-                    var jump = 0;
 
-                    var count = 0;
+                    var y1 = 0;
+                    var y2 = 0;
                     // Loop through each symbol / key
                     dataNest.forEach(function(lines) {
+                        y1 = y2;
+                        y2 = y1 + (1/dataNest.length);
                         for (var l in lines.values) {
                            // console.log(lines.values[l].time)
                             pathLine.append('line')
                                 .classed("lineChart", true)
                                 .attr('x1', x(lines.values[l].time))
-                                .attr('y1', y(0.1+count))
+                                .attr('y1', y(y1))
                                 .attr('x2', x(lines.values[l].time))
-                                .attr('y2', y(0.25+count))
+                                .attr('y2', y(y2))
                                 // .attr('transform', null)
                                 .style("stroke", lineColor(lines.key))
                                 .style("cursor", "pointer")
@@ -439,7 +441,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                                     console.log(lines.values[l].properties)
                                 });
                         }
-                        count += 0.15;
+                        //count += (0.8/dataNest.length);
                     });
                 }
 
