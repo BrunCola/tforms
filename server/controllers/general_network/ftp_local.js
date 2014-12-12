@@ -40,10 +40,10 @@ module.exports = function(pool) {
                             '`dc_resp_h`,'+
                             '`dc_resp_p`,'+
                             '`ioc`,'+
-                            '`ioc_severity`,'+
                             '`ioc_typeInfection`,'+
                             '`ioc_typeIndicator`,'+
                             '`ioc_rule`,'+
+                            '`ioc_severity`,'+
                             'sum(`ioc_count`) AS `ioc_count` '+
                         'FROM '+ 
                             '`ftp` '+
@@ -83,10 +83,10 @@ module.exports = function(pool) {
                     { title: 'DC Resp H', select: 'dc_resp_h' },
                     { title: 'DC Resp P', select: 'dc_resp_p' },
                     { title: 'IOC', select: 'ioc' },
-                    { title: 'IOC Severity', select: 'ioc_severity' },
-                    { title: 'Infection Stage', select: 'ioc_typeInfection' },
-                    { title: 'Indicator Type', select: 'ioc_typeIndicator' },
+                    { title: 'IOC Type', select: 'ioc_typeIndicator' },
+                    { title: 'IOC Stage', select: 'ioc_typeInfection' },
                     { title: 'IOC Rule', select: 'ioc_rule' },
+                    { title: 'IOC Severity', select: 'ioc_severity' },
                     { title: 'IOC Count', select: 'ioc_count' }
                 ],
                 settings: {

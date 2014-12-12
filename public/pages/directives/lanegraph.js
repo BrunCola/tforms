@@ -1210,7 +1210,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
         }
     };
 }]);
-
+// the following is for the second screen after analyze pattern
 angular.module('mean.pages').directive('appendRowIcon', ['laneRowSymbols', function (laneRowSymbols) {
     return {
         link: function($scope, element, attrs) {
