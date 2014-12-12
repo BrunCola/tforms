@@ -3,7 +3,7 @@
 // User routes use users controller
 var users = require('../controllers/users');
 
-module.exports = function (app, version, io, pool) {
+module.exports = function (app, version, pool) {
 
 	// User routes use users controller
 	var users = require('../controllers/users')(pool);

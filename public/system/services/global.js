@@ -12,10 +12,3 @@ angular.module('mean.system').factory('Global', [
         return _this._data;
     }
 ]);
-
-angular.module('mean.system').factory('socket', ['$location',
-    function($location) {
-        var socket = io.connect('https://'+$location.$$host+':'+$location.$$port, {secure: true});
-        return socket;
-    }
-]);

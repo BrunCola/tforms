@@ -2,7 +2,7 @@
 
 
 
-module.exports = function(app, version, io, pool) {
+module.exports = function(app, version, pool) {
 	var auth = require('./middlewares/authorization')();
 
 	// Home route
