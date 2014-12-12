@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('stealthCoiConnViewController', ['$scope
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/stealth/stealth_coi_conn_view?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/api/stealth/stealth_coi_conn_view?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/stealth/stealth_coi_conn_view?';
+        query = '/api/stealth/stealth_coi_conn_view?';
     }
     $http({method: 'GET', url: query}).
     success(function(data) {

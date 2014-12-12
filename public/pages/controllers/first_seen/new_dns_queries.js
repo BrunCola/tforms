@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('newDnsQueriesController', ['$scope', '$
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/first_seen/new_dns_queries?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/api/first_seen/new_dns_queries?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/first_seen/new_dns_queries?';
+        query = '/api/first_seen/new_dns_queries?';
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

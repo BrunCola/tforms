@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('overviewController', ['$scope', '$state
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/health/overview?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/api/health/overview?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/health/overview?';
+        query = '/api/health/overview?';
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

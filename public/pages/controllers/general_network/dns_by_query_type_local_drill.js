@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('dnsByQueryTypeLocalDrillController', ['
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/general_network/dns_by_query_type_local_drill?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&qtype='+$location.$$search.qtype;
+        query = '/api/general_network/dns_by_query_type_local_drill?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&qtype='+$location.$$search.qtype;
     } else {
-        query = '/general_network/dns_by_query_type_local_drill?lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&qtype='+$location.$$search.qtype;
+        query = '/api/general_network/dns_by_query_type_local_drill?lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&qtype='+$location.$$search.qtype;
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

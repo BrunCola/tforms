@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('ftpRemoteController', ['$scope', '$stat
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/general_network/ftp_remote?start='+$location.$$search.start+'&end='+$location.$$search.end;
+		query = '/api/general_network/ftp_remote?start='+$location.$$search.start+'&end='+$location.$$search.end;
 	} else {
-		query = '/general_network/ftp_remote?';
+		query = '/api/general_network/ftp_remote?';
 	}
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {

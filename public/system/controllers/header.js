@@ -1,14 +1,17 @@
 'use strict';
 
-angular.module('mean.system').controller('HeaderController', ['$scope', '$rootScope', 'Global', '$location', 'socket', '$modal', 'iocIcon', '$http', '$state', '$upload', '$timeout',
-    function($scope, $rootScope, Global, $location, socket, $modal, iocIcon, $http, $state, $upload, $timeout) {
+angular.module('mean.system').controller('HeaderController', ['$scope', '$rootScope', 'Global', '$location', '$modal', 'iocIcon', '$http', '$state', '$upload', '$timeout', '$window',
+    function($scope, $rootScope, Global, $location, $modal, iocIcon, $http, $state, $upload, $timeout, $window) {
         $scope.global = Global;
-        $scope.socket = socket;
+        $rootScope.$watch('user', function(user) {
+            $scope.global.user = user;
+        })
+        $scope.logout = function() {
+            delete $window.sessionStorage.token;
+            $location.url('/login');
+        }
         $scope.reload = function ( path ) {
-            var searchObj = {};
-            searchObj.start = moment().subtract('days', 1).unix();
-            searchObj.end = moment().unix();
-            $state.go('ioc_events', searchObj);
+            $location.url(path);
         };
         // session modal settings
         $scope.$watch('search', function() {
@@ -30,11 +33,7 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
                 $modalInstance.close(window.location.href = '/logout');
             };
         };
-        $scope.retest = function() {
-            console.log('boom');
-            socket.emit('checkreport');
-            $http.post('/uploads', {test: 'test'}).success(successCallback);
-        };
+
         // User Settings Modal
         $scope.userSettings = function () {
             $scope.modalInstance = $modal.open({
@@ -80,27 +79,6 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
                 templateUrl: 'reportModal.html',
                 controller: reportCtrl
             });
-        };
-        // console.log(window.user);
-        var reportCtrl = function ($scope, $modalInstance) {
-            $scope.ok = function () {
-                // $modalInstance.close(window.location.href = '/signout');
-                $modalInstance.close();
-            };
-            $scope.report = {};
-            $scope.submitForm = function(form) {
-                // check to make sure the form is completely valid
-                // console.log($scope.user)
-                if (form.$valid) {
-                    socket.emit('report_generate', {
-                        email: $scope.report.email,
-                        subject: $scope.report.subject,
-                        body: $scope.report.body,
-                        file: $scope.report.file,
-                        database: $scope.report.database
-                    });
-                }
-            };
         };
         // UPLOAD PANE
         $scope.uploadOpen = function () {
@@ -169,58 +147,10 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
                 });
             };
         };
-        // IOC notification settings
-        var disconnect = false;
-        $scope.socket.on('connection', function() {
-            disconnect = false;
-            console.log('connected again')
-        })
-        $scope.socket.on('disconnect', function() {
-            disconnect = true;
-            setTimeout(function(){
-                if (disconnect === true) {
-                    $scope.open();
-                }
-            }, 3600);
-        });
-        //$scope.iocalerts = [];
-        //$scope.socket.emit('init', {username: $scope.global.user.username, checkpoint: $scope.global.user.checkpoint, database: $scope.global.user.database});
-        // $scope.socket.on('initial iocs', function(data, count) {
-        //     $scope.iocCount = 0;
-        //     if (count > 0) {
-        //         $scope.iocCount = count;
-        //     }
-        //     data.forEach(function(d){
-        //         if (d.newIOC == true) {
-        //             d.class = 'flagged_drop';
-        //         }
-        //         d.icon = iocIcon(d.ioc_severity);
-        //     });
-        //     $scope.iocalerts = data;
-        //     $scope.$apply();
-        // });
-        // $scope.socket.on('newIOC', function(data, iCount) {
-        //     $scope.iocCount += iCount;
-        //     $scope.iocalerts.splice(0, data.length);
-        //     data.forEach(function(d){
-        //         $rootScope.$broadcast('newNoty', d.ioc);
-        //         if (d.newIOC == true) {
-        //             d.class = 'flagged_drop';
-        //         }
-        //         d.icon = iocIcon(d.ioc_severity);
-        //         $scope.iocalerts.splice(0, 0, d);
-        //     });
-        //     $scope.$apply();
-        // });
-        // $scope.checkpoint = function() {
-        //     $scope.iocCount = 0;
-        //     $scope.socket.emit('checkpoint', {username: $scope.global.user.username, id: $scope.global.user.id, database: $scope.global.user.database});
-        //     $rootScope.$broadcast('killNoty');
-        //     $scope.flagged_drop = '';
-        //     for (var i in $scope.iocalerts) {
-        //         $scope.iocalerts[i].class = '';
-        //         $scope.iocalerts[i].newIOC = false;
-        //     }
-        // };
+
+        // session modal
+        // $scope.open();
+
+
     }
 ]);

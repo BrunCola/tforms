@@ -8,7 +8,7 @@ var map = require('../constructors/map'),
 module.exports = function(pool) {
     return {
         render: function(req, res) {
-            var database = req.session.passport.user.database;
+            var database = req.user.database;
             var start = moment().subtract('minutes', 9).unix();
             var end = moment().subtract('minutes', 8).unix();
             var queryResult;

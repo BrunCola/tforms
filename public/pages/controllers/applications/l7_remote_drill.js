@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('l7RemoteDrillController', ['$scope', '$
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/applications/l7_remote_drill?start='+$location.$$search.start+'&end='+$location.$$search.end+'&remote_ip='+$location.$$search.remote_ip+'&l7_proto='+$location.$$search.l7_proto;
+        query = '/api/applications/l7_remote_drill?start='+$location.$$search.start+'&end='+$location.$$search.end+'&remote_ip='+$location.$$search.remote_ip+'&l7_proto='+$location.$$search.l7_proto;
     } else {
-        query = '/applications/l7_remote_drill?remote_ip='+$location.$$search.remote_ip+'&l7_proto='+$location.$$search.l7_proto;
+        query = '/api/applications/l7_remote_drill?remote_ip='+$location.$$search.remote_ip+'&l7_proto='+$location.$$search.l7_proto;
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

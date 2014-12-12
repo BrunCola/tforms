@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('appByLocalIpController', ['$scope', '$s
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/applications/app_by_local_ip?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/api/applications/app_by_local_ip?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/applications/app_by_local_ip?';
+        query = '/api/applications/app_by_local_ip?';
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

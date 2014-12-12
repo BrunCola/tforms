@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('ircRemote2localController', ['$scope', 
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/general_network/irc_remote2local?start='+$location.$$search.start+'&end='+$location.$$search.end+'&remote_ip='+$location.$$search.remote_ip;
+        query = '/api/general_network/irc_remote2local?start='+$location.$$search.start+'&end='+$location.$$search.end+'&remote_ip='+$location.$$search.remote_ip;
     } else {
-        query = '/general_network/irc_remote2local?remote_ip='+$location.$$search.remote_ip;
+        query = '/api/general_network/irc_remote2local?remote_ip='+$location.$$search.remote_ip;
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

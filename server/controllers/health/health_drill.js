@@ -10,7 +10,7 @@ var permissions = [3];
 module.exports = function(pool) {
 	return {
 		render: function(req, res) {
-			var database = req.session.passport.user.database;
+			var database = req.user.database;
 			// var database = null;
 			var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 			var end = Math.round(new Date().getTime() / 1000);
@@ -18,7 +18,7 @@ module.exports = function(pool) {
 				start = req.query.start;
 				end = req.query.end;
 			}
-			if ((req.query.client, req.query.zone) && (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1)) {
+			if ((req.query.client, req.query.zone) && (permissions.indexOf(parseInt(req.user.level)) !== -1)) {
 				//var results = [];
 				var tables = [];
 				var info = [];

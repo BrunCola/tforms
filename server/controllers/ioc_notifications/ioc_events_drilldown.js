@@ -19,7 +19,7 @@ module.exports = function(pool) {
                     return callback();
                 }
             }
-            var database = req.session.passport.user.database;
+            var database = req.user.database;
             var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
             var end = Math.round(new Date().getTime() / 1000);
             if (req.query.start && req.query.end) {
@@ -33,7 +33,7 @@ module.exports = function(pool) {
                 pointGroup = 1;
             }
             var lanes;
-            if (req.session.passport.user.level === 3) {
+            if (req.user.level === 3) {
                 lanes = ['IOC', 'IOC Severity', 'Conn', 'Stealth', 'Applications', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
             } else {
                 lanes = ['IOC', 'IOC Severity', 'Conn', 'Applications', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
@@ -97,7 +97,7 @@ module.exports = function(pool) {
                         { title: 'IOC Severity', select: 'ioc_severity' },
                     ],
                     settings: {
-                        access: req.session.passport.user.level
+                        access: req.user.level
                     }
                 }
                 var iocseverity = {
@@ -154,7 +154,7 @@ module.exports = function(pool) {
                         { title: 'IOC Count', select: 'ioc_count' },
                     ],
                     settings: {
-                        access: req.session.passport.user.level
+                        access: req.user.level
                     }
                 }
                 var conn = {
@@ -217,7 +217,7 @@ module.exports = function(pool) {
                         { title: 'IOC Count', select: 'ioc_count' },
                     ],
                     settings: {
-                        access: req.session.passport.user.level
+                        access: req.user.level
                     }
                 }
                 var application = {
@@ -268,7 +268,7 @@ module.exports = function(pool) {
                         { title: 'Bytes from Remote', select: 'out_bytes' },
                     ],
                     settings: {
-                        access: req.session.passport.user.level
+                        access: req.user.level
                     }
                 }
                 var stealth_conn = {
@@ -311,7 +311,7 @@ module.exports = function(pool) {
                         { title: 'Packets to Remote', select: 'out_packets' }
                     ],
                     settings: {
-                        access: req.session.passport.user.level
+                        access: req.user.level
                     }
                 }
                 var stealth_drop = {
@@ -352,7 +352,7 @@ module.exports = function(pool) {
                         { title: 'Packets to Remote', select: 'out_packets' }
                     ],
                     settings: {
-                        access: req.session.passport.user.level
+                        access: req.user.level
                     }
                 }
                 var dns = {
@@ -395,7 +395,7 @@ module.exports = function(pool) {
                         { title: 'IOC Severity', select: 'ioc_severity' },
                     ],
                     settings: {
-                        access: req.session.passport.user.level
+                        access: req.user.level
                     }
                 }
                 var http = {
@@ -445,7 +445,7 @@ module.exports = function(pool) {
                         { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
                     ],
                     settings: {
-                        access: req.session.passport.user.level
+                        access: req.user.level
                     }
                 }   
                 var ssl = {
@@ -491,7 +491,7 @@ module.exports = function(pool) {
                         { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
                     ],
                     settings: {
-                        access: req.session.passport.user.level
+                        access: req.user.level
                     }
                 }
                 var email = {
@@ -546,7 +546,7 @@ module.exports = function(pool) {
                         { title: 'IOC Count', select: 'ioc_count' },
                     ],
                     settings: {
-                        access: req.session.passport.user.level
+                        access: req.user.level
                     }
                 }
                 var file = {
@@ -590,7 +590,7 @@ module.exports = function(pool) {
                         { title: 'IOC Severity', select: 'ioc_severity' },
                     ],
                     settings: {
-                        access: req.session.passport.user.level
+                        access: req.user.level
                     }
                 }
                 var endpoint = {
@@ -626,7 +626,7 @@ module.exports = function(pool) {
                         { title: 'Event ID', select: 'event_id', pattern: true },
                     ],
                     settings: {
-                        access: req.session.passport.user.level
+                        access: req.user.level
                     }
                 }
                 async.parallel([
@@ -652,7 +652,7 @@ module.exports = function(pool) {
                         });
                     },
                     function(callback) { // stealth conn
-                        if (req.session.passport.user.level === 3) {
+                        if (req.user.level === 3) {
                             new lanegraph(stealth_conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                 handleReturn(data, callback);
                             });
@@ -661,7 +661,7 @@ module.exports = function(pool) {
                         }
                     },
                     function(callback) { // stealth drop
-                        if (req.session.passport.user.level === 3) {
+                        if (req.user.level === 3) {
                             new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                 handleReturn(data, callback);
                             });
@@ -850,7 +850,7 @@ module.exports = function(pool) {
                             { title: 'IOC Severity', select: 'ioc_severity' },
                         ],
                         settings: {
-                            access: req.session.passport.user.level
+                            access: req.user.level
                         }
                     }
                     var iocseverity = {
@@ -907,7 +907,7 @@ module.exports = function(pool) {
                             { title: 'IOC Count', select: 'ioc_count' },
                         ],
                         settings: {
-                            access: req.session.passport.user.level
+                            access: req.user.level
                         }
                     }
                     var conn = {
@@ -970,7 +970,7 @@ module.exports = function(pool) {
                             { title: 'IOC Count', select: 'ioc_count' },
                         ],
                         settings: {
-                            access: req.session.passport.user.level
+                            access: req.user.level
                         }
                     }
                     var application = {
@@ -1023,7 +1023,7 @@ module.exports = function(pool) {
                             { title: 'Bytes from Remote', select: 'out_bytes' },
                         ],
                         settings: {
-                            access: req.session.passport.user.level
+                            access: req.user.level
                         }
                     }
                     var stealth_drop = {
@@ -1065,7 +1065,7 @@ module.exports = function(pool) {
                             { title: 'Packets to Remote', select: 'out_packets' }
                         ],
                         settings: {
-                            access: req.session.passport.user.level
+                            access: req.user.level
                         }
                     } 
                     var dns = {
@@ -1107,7 +1107,7 @@ module.exports = function(pool) {
                             { title: 'IOC Severity', select: 'ioc_severity' },
                         ],
                         settings: {
-                            access: req.session.passport.user.level
+                            access: req.user.level
                         }
                     }
                     var http = {
@@ -1157,7 +1157,7 @@ module.exports = function(pool) {
                             { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
                         ],
                         settings: {
-                            access: req.session.passport.user.level
+                            access: req.user.level
                         }
                     }
                     var ssl = {
@@ -1203,7 +1203,7 @@ module.exports = function(pool) {
                             { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
                         ],
                         settings: {
-                            access: req.session.passport.user.level
+                            access: req.user.level
                         }
                     }
                     var email = {
@@ -1258,7 +1258,7 @@ module.exports = function(pool) {
                             { title: 'IOC Count', select: 'ioc_count' },
                         ],
                         settings: {
-                            access: req.session.passport.user.level
+                            access: req.user.level
                         }
                     }
                     var file = {
@@ -1301,7 +1301,7 @@ module.exports = function(pool) {
                             { title: 'IOC Severity', select: 'ioc_severity' },
                         ],
                         settings: {
-                            access: req.session.passport.user.level
+                            access: req.user.level
                         }
                     }
                     var endpoint = {
@@ -1337,7 +1337,7 @@ module.exports = function(pool) {
                             { title: 'Event ID', select: 'event_id', pattern: true },
                         ],
                         settings: {
-                            access: req.session.passport.user.level
+                            access: req.user.level
                         }
                     }
                     var info = {};
@@ -1441,7 +1441,7 @@ module.exports = function(pool) {
                             });
                         },
                         function(callback) { // stealth block
-                            if (req.session.passport.user.level === 3) {
+                            if (req.user.level === 3) {
                                 new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                     handleReturn(data, callback);
                                 });
@@ -1520,7 +1520,7 @@ module.exports = function(pool) {
             }
         },
         set_info: function(req, res) {
-            var database = req.session.passport.user.database;
+            var database = req.user.database;
             if (req.query.trigger_type === 'Quarantine' || req.query.trigger_type === 'rQuarantine') {
                 var update_flag = {
                     query: "INSERT INTO `script_trigger` (`type`, `flag`,`time`, `email`) VALUES (?,?,?,?)",
@@ -1562,7 +1562,7 @@ module.exports = function(pool) {
         },
         pattern: function(req, res) {
             // set the datbase the user queries
-            var database = req.session.passport.user.database;
+            var database = req.user.database;
             // we make a whitelist since we will be relying on the front end to send up custom selects
             var allowedSelects = ['lan_user', 'lan_ip', 'lan_machine'];
             function makeQueries() {

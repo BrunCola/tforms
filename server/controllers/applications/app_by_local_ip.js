@@ -8,7 +8,7 @@ async = require('async');
 module.exports = function(pool) {
     return {
         render: function(req, res) {
-            var database = req.session.passport.user.database;
+            var database = req.user.database;
             var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
             var end = Math.round(new Date().getTime() / 1000);
             if (req.query.start && req.query.end) {
@@ -82,7 +82,7 @@ module.exports = function(pool) {
                     sort: [[1, 'desc']],
                     div: 'table',
                     title: 'Application Bandwidth Usage',
-                    access: req.session.passport.user.level
+                    access: req.user.level
                 }
             }
             var crossfilterQ = {

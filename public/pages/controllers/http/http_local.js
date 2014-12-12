@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('httpLocalController', ['$scope', '$stat
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/http/http_local?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/api/http/http_local?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/http/http_local?';
+        query = '/api/http/http_local?';
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

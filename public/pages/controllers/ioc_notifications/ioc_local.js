@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('iocLocalController', ['$scope', '$state
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/ioc_notifications/ioc_local?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/api/ioc_notifications/ioc_local?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/ioc_notifications/ioc_local?';
+        query = '/api/ioc_notifications/ioc_local?';
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

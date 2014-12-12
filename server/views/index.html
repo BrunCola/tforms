@@ -1,10 +1,9 @@
 {% extends 'layouts/default.html' %}
 {% block content %}
-    <section data-ui-view />
-    <script type="text/javascript">
-        window.user = {{user|safe}}
-        window.modules = {{modules|safe}}
-        window.startTime = {{start|safe}}
-        window.endTime = {{end|safe}}
-    </script>
+	<section data-ui-view />
+	<script type="text/javascript">
+		window.startTime = {{start|safe}};
+		window.endTime = {{end|safe}};
+		window.version = '{{version}}';
+	</script>
 {% endblock %}

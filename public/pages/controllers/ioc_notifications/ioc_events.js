@@ -5,38 +5,28 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
     var query;
     var crossfilterTimeDimension, tableTimeDimension, rowDimension, rowGroup, geoDimension, geoGroup, barDimension, barGroup;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/ioc_notifications/ioc_events?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/api/ioc_notifications/ioc_events?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/ioc_notifications/ioc_events?';
+        query = '/api/ioc_notifications/ioc_events?';
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {
-    // console.log($location.$$search);
     success(function(data) {
-        console.log('data returnd')
         if (data.tables[0] === null) {
             $scope.$broadcast('loadError');
         } else { 
-            console.log('recognizes data')
             data.crossfilter.forEach(function(d) {
                 d.dd = timeFormat(d.time, 'strdDateObj');
                 d.hour = d3.time.hour(d.dd);
                 d.count = +d.count;
-                console.log('adding data to crossfilter')
-                console.log(d)
             });
-            console.log('done adding')
             $scope.crossfilterData = crossfilter(data.crossfilter);
             $scope.data = data;
-            console.log('done crossfiltering')
             crossfilterTimeDimension = $scope.crossfilterData.dimension(function(d) { return d.time; });
-            console.log('about to load table')
             $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
             $scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
             $scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
-            console.log('loading table time-dimension')
             tableTimeDimension = $scope.tableCrossfitler.dimension(function(d) { return d.time; });
-            console.log('rowchart groups and dimensions')
             rowDimension = $scope.crossfilterData.dimension(function(d) { return d.ioc + d.ioc_severity; });
             var rowGroupPre = rowDimension.group().reduceSum(function(d) { return d.count; });
             rowGroup = rowGroupPre.reduce(
@@ -62,7 +52,6 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
                 }
             );
             $scope.$broadcast('rowChart', rowDimension, rowGroup, 'severity');
-            console.log('geochart groups and dimesnions')
             geoDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
             geoGroup = geoDimension.group().reduceSum(function (d) {
                 return d.count;
@@ -118,13 +107,11 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
                 }
             );
             $scope.$broadcast('barChart', barDimension, barGroup, 'severity');
-            console.log('setting axis\'')
             $scope.barChartxAxis = '';
             $scope.barChartyAxis = '# IOC / Hour';
             $scope.$broadcast('severityLoad');
         }
     });
-    console.log('getsummaryinfo query?')
     //first time through, call to populate summary sections
     getSummaryInfo(query);
 
@@ -132,7 +119,6 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
     //*****************
     // AUTO REFRESH
     //*****************
-    console.log('setting variables')
     //auto refresh using angular interval
     var refreshPeriod = 60000; //in milliseconds (60 seconds)
     var newIocFound = false; //flag to track if a new IOC was found - gets reset after the new IOC is pushed to the directives
@@ -140,11 +126,9 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
     //default values for newEnd and newStart
     var newEnd, newStart;
     if($location.$$search.start && $location.$$search.end) {
-        console.log('setting vars')
         newEnd = parseInt($location.$$search.end) + refreshPeriod / 1000;
         newStart = $location.$$search.end;
     } else {
-        console.log('setting vars')
         newEnd = new Date().getTime() / 1000; 
         newStart = newEnd - refreshPeriod / 1000;
     }
@@ -153,7 +137,6 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
     var oldStart = Math.round(new Date().getTime() / 1000)-((3600*24)); //default date range is usually 1 day
     //timeout interval - repeated until user navigates away from page
     var promise = $interval(function() {
-        console.log('inside promise function')
         if ($location.$$search.start && $location.$$search.end) {
             newEnd = newEnd + refreshPeriod / 1000; //move newEnd forward
             if(newIocFound) {//only update $location.$$search.end (which controls newStart) if new IOC is found, 
@@ -163,7 +146,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
                 newStart = $location.$$search.end; //update newStart...
                 newIocFound = false; //reset the flag
             }         
-            query = '/ioc_notifications/ioc_events?start='+newStart+'&end='+newEnd;
+            query = '/api/ioc_notifications/ioc_events?start='+newStart+'&end='+newEnd;
 
             //update $location.$$search.start to use it for filtering out old data
             $location.$$search.start = "" + (parseInt($location.$$search.start) + refreshPeriod / 1000);
@@ -174,13 +157,12 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
                 newStart = newEnd - (refreshPeriod / 1000) * 5; 
                 newIocFound = false; //reset the flag
             } //otherwise keep the newStart the same, so that the timeslice grows
-            query = '/ioc_notifications/ioc_events?start='+newStart+'&end='+newEnd;
+            query = '/api/ioc_notifications/ioc_events?start='+newStart+'&end='+newEnd;
 
             oldStart = oldStart + refreshPeriod / 1000; //move the start forward by a refresh period to use for filtering old data
         }
         $http({method: 'GET', url: query}).
         success(function(data) {
-            console.log('refetched')
             processData(data);
         });
     }, refreshPeriod);
@@ -191,7 +173,6 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
         }
     ); 
 
-    console.log('reached function - this may be an issue since it\'s definaed later on')
     function processData(data) {
         //*******************
         // CROSSFILTER
@@ -262,9 +243,9 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
         if(newCrossfilterData || newTableData) {
             var query;
             if($location.$$search.start && $location.$$search.end) {
-                query = '/ioc_notifications/ioc_events?start='+$location.$$search.start+'&end='+newEnd;
+                query = '/api/ioc_notifications/ioc_events?start='+$location.$$search.start+'&end='+newEnd;
             } else {
-                query = '/ioc_notifications/ioc_events?start='+oldStart+'&end='+newEnd;
+                query = '/api/ioc_notifications/ioc_events?start='+oldStart+'&end='+newEnd;
             }
             getSummaryInfo(query);
         }
@@ -273,7 +254,6 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
     //*******************
     // SUMMARY SECTIONS
     //*******************
-    console.log('reached function 2 - this may be an issue since it\'s definaed later on')
     function getSummaryInfo(query) {
         $http({method: 'GET', url: query+'&type=ioc_notifications'}).
         success(function(data) {

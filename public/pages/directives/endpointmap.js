@@ -210,7 +210,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             itemData.y = divPos.top;
                             itemData.map = attrs.floorName;
 
-                            $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: attrs.floorName, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
+                            $http({method: 'POST', url: '/api/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: attrs.floorName, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
                             plot(data, attrs.floorName); 
                             d3.select('.user-'+itemId).classed("selected", true);
                         } 
@@ -274,7 +274,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         d3.select('.user-'+d.id).classed("selected", true);
                         $scope.requery(d, 'flooruser');
                         lastUserRequeried = d.id;
-                        $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: setAdjustedCoor(d.x), y_coord: setAdjustedCoor(d.y), map_name: floorName, lan_ip: d.lan_ip, lan_zone: d.lan_zone}});
+                        $http({method: 'POST', url: '/api/actions/add_user_to_map', data: {x_coord: setAdjustedCoor(d.x), y_coord: setAdjustedCoor(d.y), map_name: floorName, lan_ip: d.lan_ip, lan_zone: d.lan_zone}});
                         d3.select(this).classed("dragging", false);
                     }
                     // -- updates username
@@ -952,7 +952,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .html('Users with IOC')
                         .attr('class', 'pure-button epbRed')
                         .on('click', function(){
-                            var query = '/local_events/endpoint_map?type=floorquery';
+                            var query = '/api/local_events/endpoint_map?type=floorquery';
                             var triggerData;
                             var triggerType;
                             $http({method: 'GET', url: query+'&typeinfo=iocusers'}).
@@ -964,7 +964,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .html('Active Users')
                         .attr('class', 'pure-button epbGreen')
                         .on('click', function(){
-                            var query = '/local_events/endpoint_map?type=floorquery';
+                            var query = '/api/local_events/endpoint_map?type=floorquery';
                             if ($location.$$search.start && $location.$$search.end) {
                                 query = query +'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
                             }
@@ -978,7 +978,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .html('Active Stealth Users')
                         .attr('class', 'pure-button epbGrey')
                         .on('click', function(){
-                            var query = '/local_events/endpoint_map?type=floorquery';
+                            var query = '/api/local_events/endpoint_map?type=floorquery';
                             if ($location.$$search.start && $location.$$search.end) {
                                 query = query +'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
                             }
@@ -994,7 +994,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .attr('class', 'epbuttons pure-button')
                         .on('click', function (d) {
                             if ($scope.floor.active) {
-                                $http({method: 'POST', url: '/local_events/endpoint_map?type=saveFloorScale', data: {scale: scale,floor: $scope.floor}});
+                                $http({method: 'POST', url: '/api/local_events/endpoint_map?type=saveFloorScale', data: {scale: scale,floor: $scope.floor}});
                             }
                         });
 
@@ -1280,7 +1280,7 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                     }
                     // -- handles the end of when a user is dragged
                     function dragended(d) {
-                        $http({method: 'POST', url: '/local_events/endpoint_map?type=editFloorPos', data: {x: d.x, y: d.y, map_name: d.asset_name}});
+                        $http({method: 'POST', url: '/api/local_events/endpoint_map?type=editFloorPos', data: {x: d.x, y: d.y, map_name: d.asset_name}});
                         d3.select(this).classed("dragging", false);
                     }
                     // -- updates username
@@ -1877,7 +1877,7 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                     }
                     // -- handles the end of when a user is dragged
                     function dragended(d) {
-                        $http({method: 'POST', url: '/local_events/endpoint_map?type=editFloorPos', data: {x: d.x, y: d.y, map_name: d.asset_name}});
+                        $http({method: 'POST', url: '/api/local_events/endpoint_map?type=editFloorPos', data: {x: d.x, y: d.y, map_name: d.asset_name}});
                         d3.select(this).classed("dragging", false);
                     }
                     // -- updates username
@@ -2213,6 +2213,7 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                                  element
                                     .attr('width', '60')
                                     .attr('height', '95')
+
                                 element.append('svg:path')
                                     .attr('d', 'M60.8,20.7v-1.3h-2.7V14H43.8V7.2h8.7V5.5h-8.7V4.2h-5.8V0H18.9v4.2H13V14H2.1v5.5H0v1.3h2.1V95h3.8V81.5h10.6V95h38h3.6h1.1V78.4h-1.1V20.7H60.8z M13.8,78H8.7V67.4h5.1V78zM13.8,63.2H8.7V52.5h5.1V63.2z M13.8,49.1H8.7V38.4h5.1V49.1z M13.8,33.6H8.7V22h5.1V33.6z M29.4,90.5h-5.1v-8.1h5.1V90.5zM29.4,78h-5.1V67.4h5.1V78z M29.4,63.2h-5.1V52.5h5.1V63.2z M29.4,49.1h-5.1V38.4h5.1V49.1z M30,33.6h-8.3V22H30V33.6z M32,14.2H21.7V6.9H32V14.2z M39.1,90.5H34v-8.1h5.1V90.5z M39.1,78H34V67.4h5.1V78z M39.1,63.2H34V52.5h5.1V63.2z M39.1,49.1H34V38.4h5.1V49.1z M39.1,33.6H32V22h7.1V33.6z M55.1,90.5H43.9v-8.1h11.2V90.5z M56,78H45.1V67.4H56V78z M56,63.2H45.1V52.5H56V63.2z M56,49.1H45.1V38.4H56V49.1z M56,33.6H45.1V22H56V33.6z')
                                     .style('fill-rule', '#evenodd')

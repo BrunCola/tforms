@@ -3,7 +3,7 @@
 angular.module('mean.pages').controller('stealthDeployConfigController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
     $scope.global = Global;
     var query;
-    query = '/stealth/stealth_deploy_config?';
+    query = '/api/stealth/stealth_deploy_config?';
     $http({method: 'GET', url: query}).
     success(function(data) {
         if (!data.force) {
@@ -36,7 +36,7 @@ angular.module('mean.pages').controller('stealthDeployConfigController', ['$scop
         return results;
     }
     $scope.triggerScript = function(){
-        var query = '/stealth/stealth_deploy_config?';
+        var query = '/api/stealth/stealth_deploy_config?';
         $http({method: 'POST', url: query+"trigger_type=ldap&flag=1"});
     }
 }]);

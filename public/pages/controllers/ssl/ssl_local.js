@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('sslLocalController', ['$scope', '$state
 	$scope.global = Global;
 	var query;
 	if ($location.$$search.start && $location.$$search.end) {
-		query = '/ssl/ssl_local?start='+$location.$$search.start+'&end='+$location.$$search.end;
+		query = '/api/ssl/ssl_local?start='+$location.$$search.start+'&end='+$location.$$search.end;
 	} else {
-		query = '/ssl/ssl_local?';
+		query = '/api/ssl/ssl_local?';
 	}
 	$http({method: 'GET', url: query}).
 	//success(function(data, status, headers, config) {

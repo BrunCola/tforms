@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('appByApplicationController', ['$scope',
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/applications/app_by_application?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/api/applications/app_by_application?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/applications/app_by_application?';
+        query = '/api/applications/app_by_application?';
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

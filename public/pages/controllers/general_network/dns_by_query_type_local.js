@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('dnsByQueryTypeLocalController', ['$scop
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/general_network/dns_by_query_type_local?start='+$location.$$search.start+'&end='+$location.$$search.end+'&qtype='+$location.$$search.qtype;
+        query = '/api/general_network/dns_by_query_type_local?start='+$location.$$search.start+'&end='+$location.$$search.end+'&qtype='+$location.$$search.qtype;
     } else {
-        query = '/general_network/dns_by_query_type_local?qtype='+$location.$$search.qtype;
+        query = '/api/general_network/dns_by_query_type_local?qtype='+$location.$$search.qtype;
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

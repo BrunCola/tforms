@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('byMimeTypeController', ['$scope', '$sta
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/extracted_files/files_by_mime_type?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/api/extracted_files/files_by_mime_type?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/extracted_files/files_by_mime_type?';
+        query = '/api/extracted_files/files_by_mime_type?';
     }
     $http({method: 'GET', url: query}).
     success(function(data) {

@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('httpRemote2localController', ['$scope',
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/http/http_remote2local?start='+$location.$$search.start+'&end='+$location.$$search.end+'&remote_ip='+$location.$$search.remote_ip;
+        query = '/api/http/http_remote2local?start='+$location.$$search.start+'&end='+$location.$$search.end+'&remote_ip='+$location.$$search.remote_ip;
     } else {
-        query = '/http/http_remote2local?remote_ip='+$location.$$search.remote_ip;
+        query = '/api/http/http_remote2local?remote_ip='+$location.$$search.remote_ip;
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

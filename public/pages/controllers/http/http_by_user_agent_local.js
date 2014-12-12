@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('httpByUserAgentLocalController', ['$sco
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/http/http_by_user_agent_local?start='+$location.$$search.start+'&end='+$location.$$search.end+'&user_agent='+$location.$$search.user_agent;
+        query = '/api/http/http_by_user_agent_local?start='+$location.$$search.start+'&end='+$location.$$search.end+'&user_agent='+$location.$$search.user_agent;
     } else {
-        query = '/http/http_by_user_agent_local?user_agent='+$location.$$search.user_agent;
+        query = '/api/http/http_by_user_agent_local?user_agent='+$location.$$search.user_agent;
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

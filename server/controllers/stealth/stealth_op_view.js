@@ -10,7 +10,7 @@ var permissions = [3];
 module.exports = function(pool) {
     return {
         render: function(req, res) {
-            var database = req.session.passport.user.database;
+            var database = req.user.database;
             var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
             var end = Math.round(new Date().getTime() / 1000);
             if (req.query.start && req.query.end) {
@@ -18,9 +18,9 @@ module.exports = function(pool) {
                 end = req.query.end;
             }
             var force;
-            if (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1) {
+            if (permissions.indexOf(parseInt(req.user.level)) !== -1) {
                 if (req.query.type === 'checkCoor') {
-                    var database = req.session.passport.user.database;
+                    var database = req.user.database;
                     var select_coordinates = {
                         query: "SELECT * from `stealth_view_coordinates` WHERE `user_login` = ? AND name = ? AND `page_title` = ? ",
                         insert: [req.query.user_login, req.query.name, req.query.page_title]
@@ -230,7 +230,7 @@ module.exports = function(pool) {
                                 'WHERE '+
                                 '`user_login` = ? '+
                                 'AND `page_title` = "stealth_op_view"',
-                        insert: [req.session.passport.user.email]
+                        insert: [req.user.email]
                     }
                     async.parallel([
                         // Crossfilter function
@@ -263,7 +263,7 @@ module.exports = function(pool) {
             }
         },
         set_info: function(req, res) {
-            var database = req.session.passport.user.database;
+            var database = req.user.database;
             if (req.query.type === 'insert') {
                 var update_coordinates = {
                     query: "INSERT into `stealth_view_coordinates` VALUES (?,?,?,?,?)",

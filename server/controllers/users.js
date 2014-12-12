@@ -1,37 +1,38 @@
 'use strict';
 
-/**
- * Auth callback
- */
-exports.authCallback = function(req, res) {
-	res.redirect('/');
-};
+var config = require('../config/config'),
+    bcrypt = require('bcrypt'),
+    jwt = jwt = require('jsonwebtoken');
 
-/**
- * Show login form
- */
-exports.signin = function(req, res) {
-	if(req.isAuthenticated()) {
-		return res.redirect('/');
-	}
-	res.redirect('#!/login');
-};
-
-/**
- * Logout
- */
-exports.signout = function(req, res) {
-	req.logout();
-	res.redirect('/');
-};
-
-/**
- * Session
- */
-exports.session = function(req, res) {
-	res.redirect('/');
-};
-
-exports.me = function(req, res) {
-	res.jsonp(req.user || null);
+module.exports = function(pool) {
+    return {
+        login: function(req, res) {
+            pool.query("SELECT * FROM user WHERE email = ? limit 1", [req.body.email], function(err, data){
+                var time = new Date();
+                console.log('Email/login: '+data[0].email+', Database:'+data[0].database+', Time: '+time)
+                if (data.length !== 1) { res.send(401, 'Wrong user or password'); return; }
+                var profile = data[0];
+                bcrypt.compare(req.body.password, profile.password, function(err, doesMatch){
+                    if (doesMatch){
+                        var token = jwt.sign(profile, config.sessionSecret, { expiresInMinutes: 60*5 });
+                        res.json({ token: token });
+                        return;
+                    } else {
+                        res.send(401, 'Wrong user or password');
+                        return;
+                    }
+                });
+            });
+        },
+        loggedin: function(req, res) {
+            // console.log(req.user);
+            // console.log('LIMIT THIS RETURN')
+            if (req.user) {
+                res.send(200, req.user)
+            } else {
+                console.log('NOT LOGGED IN')
+                res.send(401)
+            }
+        }
+    }
 };

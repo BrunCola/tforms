@@ -6,7 +6,7 @@ var query = require('./constructors/query'),
 module.exports = function(pool) {
 	return {
 		archive: function(req, res) {
-			var database = req.session.passport.user.database;
+			var database = req.user.database;
 			var archive = {
 				query: "UPDATE `conn_ioc` SET `trash` = UNIX_TIMESTAMP(NOW()) WHERE `lan_ip`= ? AND `remote_ip`= ? AND ioc= ?",
 				insert: [req.body.lan_ip, req.body.remote_ip, req.body.ioc]
@@ -20,7 +20,7 @@ module.exports = function(pool) {
 			});
 		},
 		restore: function(req, res) {
-			var database = req.session.passport.user.database;
+			var database = req.user.database;
 			var restore = {
 				query: "UPDATE `conn_ioc` SET `trash` = null WHERE `lan_ip`= ? AND `remote_ip`= ? AND ioc= ?",
 				insert: [req.body.lan_ip, req.body.remote_ip, req.body.ioc]
@@ -34,7 +34,7 @@ module.exports = function(pool) {
 			});
 		},
 		clear: function(req, res) {
-			var database = req.session.passport.user.database;
+			var database = req.user.database;
 			var clear = {
 				query: "DELETE FROM `conn_ioc` WHERE `trash` IS NOT NULL",
 				insert: []
@@ -53,7 +53,7 @@ module.exports = function(pool) {
 					if (err) { res.send(500) }
 					var update = {
 						query: "UPDATE `user` SET `email`= ?, `password`= ? WHERE `email` = ?",
-						insert: [req.body.newemail, bcryptedPassword, req.session.passport.user.email]
+						insert: [req.body.newemail, bcryptedPassword, req.user.email]
 					}
 					new query(update, {database: 'rp_users', pool: pool}, function(err,data){
 						if (err) {
@@ -66,7 +66,7 @@ module.exports = function(pool) {
 			} else {
 				var update = {
 					query: "UPDATE `user` SET `email`= ? WHERE `email` = ?",
-					insert: [req.body.newemail, req.session.passport.user.email]
+					insert: [req.body.newemail, req.user.email]
 				}
 				new query(update, {database: 'rp_users', pool: pool}, function(err,data){
 					if (err) {
@@ -82,7 +82,7 @@ module.exports = function(pool) {
 			if (zone !== undefined) {
 				var clear = {
 					query: "SELECT zone_cc, zone_country FROM zone WHERE `database` = ? AND zone = ?",
-					insert: [req.session.passport.user.database, zone]
+					insert: [req.user.database, zone]
 				}
 				new query(clear, {database: 'rp_users', pool: pool}, function(err,data){
 					if (err) {
@@ -96,7 +96,7 @@ module.exports = function(pool) {
 			}
 		},
 		add_user_to_map: function(req, res) {
-			var database = req.session.passport.user.database;
+			var database = req.user.database;
 			var lan_ip = req.body.lan_ip;
 			var lan_zone = req.body.lan_zone;
 			if (lan_ip !== undefined && lan_zone !== undefined) {
@@ -116,7 +116,7 @@ module.exports = function(pool) {
 			}
 		},
 		change_custom_user: function(req, res) {
-			var database = req.session.passport.user.database;
+			var database = req.user.database;
 			var lan_ip = req.body.lan_ip;
 			var lan_zone = req.body.lan_zone;
 			if (lan_ip !== undefined && lan_zone !== undefined) {

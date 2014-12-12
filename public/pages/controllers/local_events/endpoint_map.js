@@ -2,9 +2,9 @@
 
 angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', 'searchFilter', '$upload', 'timeFormat', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, searchFilter, $upload, timeFormat) {
     $scope.global = Global;
-    var query = '/local_events/endpoint_map?';
+    var query = '/api/local_events/endpoint_map?';
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/api/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } 
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {
@@ -56,7 +56,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         }
 
         if ($location.$$search.lan_ip && $location.$$search.lan_zone && $location.$$search.type && $location.$$search.typeinfo){
-            var query = '/local_events/endpoint_map?lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&type=flooruser';
+            var query = '/api/local_events/endpoint_map?lan_ip='+$location.$$search.lan_ip+'&lan_zone='+$location.$$search.lan_zone+'&type=flooruser';
             $http({method: 'GET', url: query+'&typeinfo=userinfoload'}).
                 success(function(data) {
                     if (data[0] !== undefined) {
@@ -127,10 +127,10 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
 
     $scope.getConnections = function(d, conns) {//-----------------------------------------------------Should be upgraded!!-------------------------------------------------------------------
 
-        var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_machine='+d.lan_machine+'&type=endpointconnection';
+        var query = '/api/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_machine='+d.lan_machine+'&type=endpointconnection';
             $scope.startend = ""; 
             if ($location.$$search.start && $location.$$search.end) {
-                query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+d.lan_ip+'&lan_machine='+d.lan_machine+'&type=endpointconnection'; 
+                query = '/api/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+d.lan_ip+'&lan_machine='+d.lan_machine+'&type=endpointconnection'; 
                 $scope.startend = 'start='+$location.$$search.start+'&end='+$location.$$search.end+'&'; 
             } 
             //$scope.selectedUser = "";
@@ -224,12 +224,11 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 $scope.$broadcast('plotLinks', d, $scope.results);
     }                                   //---------------^^^^^^^^^^^^^^^^-----------------------Should be upgraded!!--------------------------^^^^^^^^^^-------------------------
 
-
     $scope.connectionTimeline = function(startHost, endHost) { 
-        var query = '/local_events/endpoint_map?type=between_two&lan_ip='+startHost.lan_ip+'&lan_machine='+startHost.lan_machine+'&remote_ip='+endHost.lan_ip+'&remote_machine='+endHost.lan_machine;
+        var query = '/api/local_events/endpoint_map?type=between_two&lan_ip='+startHost.lan_ip+'&lan_machine='+startHost.lan_machine+'&remote_ip='+endHost.lan_ip+'&remote_machine='+endHost.lan_machine;
         $scope.startend = ""; 
         if ($location.$$search.start && $location.$$search.end) {
-            query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+startHost.lan_ip+'&lan_machine='+startHost.lan_machine+'&remote_ip='+endHost.lan_ip+'&remote_machine='+endHost.lan_machine+'&type=between_two'; 
+            query = '/api/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+startHost.lan_ip+'&lan_machine='+startHost.lan_machine+'&remote_ip='+endHost.lan_ip+'&remote_machine='+endHost.lan_machine+'&type=between_two'; 
             $scope.startend = 'start='+$location.$$search.start+'&end='+$location.$$search.end+'&'; 
         }
         $scope.connectionHit=[];
@@ -381,10 +380,10 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
          } else if(type === "listsearch") {
             $scope.currentSearchUsers = d;
          } else if ($scope.lan_ip !== '-') {
-            var query = '/local_events/endpoint_map?lan_ip='+d.lan_ip+'&l an_zone='+d.lan_zone+'&type=flooruser';
+            var query = '/api/local_events/endpoint_map?lan_ip='+d.lan_ip+'&l an_zone='+d.lan_zone+'&type=flooruser';
             $scope.startend = ""; 
             if ($location.$$search.start && $location.$$search.end) {
-                query = '/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser'; 
+                query = '/api/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser'; 
                 $scope.startend = 'start='+$location.$$search.start+'&end='+$location.$$search.end+'&'; 
             } 
 
@@ -432,12 +431,12 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     }
 
     $scope.removeEndUser = function (user) {
-        $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: 0, y_coord: 0, map_name: null, lan_ip: user.lan_ip, lan_zone: user.lan_zone}});
+        $http({method: 'POST', url: '/api/actions/add_user_to_map', data: {x_coord: 0, y_coord: 0, map_name: null, lan_ip: user.lan_ip, lan_zone: user.lan_zone}});
         $scope.redrawFloor();
     }
 
     $scope.removeBuilding = function (building) {
-        $http({method: 'POST', url: '/local_events/endpoint_map?type=removeBuilding', data: {asset_name: building.asset_name, type:building.type}});
+        $http({method: 'POST', url: '/api/local_events/endpoint_map?type=removeBuilding', data: {asset_name: building.asset_name, type:building.type}});
         $scope.requery("clear");
         $scope.redrawBuilding(building);
     }
@@ -461,7 +460,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     };
 
     $scope.change_customuser = function(item,value) {
-        $http({method: 'POST', url: '/actions/change_custom_user', data: {custom_user: value, lan_ip: item.lan_ip, lan_zone: item.lan_zone}});
+        $http({method: 'POST', url: '/api/actions/change_custom_user', data: {custom_user: value, lan_ip: item.lan_ip, lan_zone: item.lan_zone}});
     }
 
     $scope.uploadOpen = function (building) {
@@ -571,7 +570,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                     xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
                 });
             } else { 
-                $http({method: 'POST', url: '/local_events/endpoint_map?type=editFloorInfo', data: {edited_floor: edited_floor}});
+                $http({method: 'POST', url: '/api/local_events/endpoint_map?type=editFloorInfo', data: {edited_floor: edited_floor}});
             }
         };
 
@@ -590,9 +589,9 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                     $scope.cant_leave_blank = false;
                     $scope.name_already_taken = false;
                     if (building !== undefined) {
-                        $http({method: 'POST', url: '/local_events/endpoint_map?type=newFloor', data: {custom_name: name, building: building.asset_name, asset_name: new_asset_name}});
+                        $http({method: 'POST', url: '/api/local_events/endpoint_map?type=newFloor', data: {custom_name: name, building: building.asset_name, asset_name: new_asset_name}});
                     }else {
-                        $http({method: 'POST', url: '/local_events/endpoint_map?type=newBuilding', data: {custom_name: name, asset_name: new_asset_name}});
+                        $http({method: 'POST', url: '/api/local_events/endpoint_map?type=newBuilding', data: {custom_name: name, asset_name: new_asset_name}});
                     }
                     $scope.ok();
                 }
@@ -603,7 +602,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         };
 
         $scope.deleteFPImage = function(floor_name, imagePath) {
-            $http({method: 'POST', url: '/local_events/endpoint_map?type=deletefp', data: {asset_name: floor_name, path: imagePath}});
+            $http({method: 'POST', url: '/api/local_events/endpoint_map?type=deletefp', data: {asset_name: floor_name, path: imagePath}});
         };
 
         $scope.deleteFloorplan = function(floor_name, floors) {
@@ -615,7 +614,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                     building = floors[f].building;
                 }
             }
-            $http({method: 'POST', url: '/local_events/endpoint_map?type=deletefp&rem=removeFloorPlan', data: {asset_name: floor_name.select, path: imagePath, building: building}});
+            $http({method: 'POST', url: '/api/local_events/endpoint_map?type=deletefp&rem=removeFloorPlan', data: {asset_name: floor_name.select, path: imagePath, building: building}});
             $scope.ok();
         };
 

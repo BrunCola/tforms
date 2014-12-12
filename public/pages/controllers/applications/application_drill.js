@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('applicationDrillController', ['$scope',
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/applications/application_drill?start='+$location.$$search.start+'&end='+$location.$$search.end+'&l7_proto='+$location.$$search.l7_proto;
+        query = '/api/applications/application_drill?start='+$location.$$search.start+'&end='+$location.$$search.end+'&l7_proto='+$location.$$search.l7_proto;
     } else {
-        query = '/applications/application_drill?l7_proto='+$location.$$search.l7_proto;
+        query = '/api/applications/application_drill?l7_proto='+$location.$$search.l7_proto;
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

@@ -7,7 +7,7 @@ var dataTable = require('../constructors/datatable'),
 module.exports = function(pool) {
     return {
         render: function(req, res) {
-            var database = req.session.passport.user.database;
+            var database = req.user.database;
             // var database = null;
             var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
             var end = Math.round(new Date().getTime() / 1000);
@@ -62,7 +62,7 @@ module.exports = function(pool) {
                         sort: [[1, 'desc']],
                         div: 'table',
                         title: 'Local Endpoints Triggering Event',
-                        access: req.session.passport.user.level
+                        access: req.user.level
                     }
                 }
                 async.parallel([

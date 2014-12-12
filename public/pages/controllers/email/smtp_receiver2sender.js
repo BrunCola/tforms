@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('smtpReceiver2SenderController', ['$scop
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/email/smtp_receiver2sender?start='+$location.$$search.start+'&end='+$location.$$search.end+'&receiptto='+$location.$$search.receiptto;
+        query = '/api/email/smtp_receiver2sender?start='+$location.$$search.start+'&end='+$location.$$search.end+'&receiptto='+$location.$$search.receiptto;
     } else {
-        query = '/email/smtp_receiver2sender?&receiptto='+$location.$$search.receiptto;
+        query = '/api/email/smtp_receiver2sender?&receiptto='+$location.$$search.receiptto;
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

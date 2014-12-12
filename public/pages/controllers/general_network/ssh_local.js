@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('sshLocalController', ['$scope', '$state
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/general_network/ssh_local?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/api/general_network/ssh_local?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/general_network/ssh_local?';
+        query = '/api/general_network/ssh_local?';
     }
     $http({method: 'GET', url: query}).
     success(function(data) {

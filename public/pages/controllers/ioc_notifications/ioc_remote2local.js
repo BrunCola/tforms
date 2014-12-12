@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('iocRemote2localController', ['$scope', 
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/ioc_notifications/ioc_remote2local?start='+$location.$$search.start+'&end='+$location.$$search.end+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc;
+        query = '/api/ioc_notifications/ioc_remote2local?start='+$location.$$search.start+'&end='+$location.$$search.end+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc;
     } else {
-        query = '/ioc_notifications/ioc_remote2local?remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc;
+        query = '/api/ioc_notifications/ioc_remote2local?remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc;
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

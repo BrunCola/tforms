@@ -3,9 +3,9 @@ angular.module('mean.system').controller('archiveController', ['$scope', 'Global
     $scope.socket = socket;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/archive?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/api/archive?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/archive'
+        query = '/api/archive'
     }
     $scope.archiveBtn = false;
     $http({method: 'GET', url: query}).
@@ -23,7 +23,7 @@ angular.module('mean.system').controller('archiveController', ['$scope', 'Global
             $scope.emptyarchive = function() {
                 var r = confirm("Are you sure?");
                 if (r === true) {
-                    $http({method: 'POST', url: '/actions/clear'}).
+                    $http({method: 'POST', url: '/api/actions/clear'}).
                     success(function(data, status, headers, config) {
                         // $route.reload();
                         $location.path('/');

@@ -4,7 +4,6 @@
  * Module dependencies.
  */
 var fs = require('fs'),
-    passport = require('passport'),
     config = require('./server/config/config'),
     mysql = require('mysql'),
     express = require('express'),
@@ -51,9 +50,6 @@ var d = new Date();
 var n = d.getFullYear();
 var version = n +' Phirelight Security Solutions - rapidPHIRE version: '+pjson.version;
 
-// Bootstrap passport config
-require(appPath + '/server/config/passport')(passport, db);
-
 // Express settings
 var app = express();
 
@@ -64,9 +60,8 @@ https = require('https'),
 server = https.createServer(options, app),
 io = require('socket.io').listen(server);
 
-require(appPath + '/server/config/express')(app, passport, version, io, db);
+require(appPath + '/server/config/express')(app, version, db);
 
-require('./server/config/socket.js')(app, passport, io, db);
 require('./server/config/report.js')(db);
 
 var SSLport = process.env.sslPORT || config.SSLport;
@@ -82,9 +77,6 @@ server.listen(SSLport);
 http.listen(HTTPport);
 
 console.log('rapidPHIRE has started on port '+SSLport);
-
-// Initializing logger
-// logger.init(app, passport, mongoose);
 
 // Expose app
 exports = module.exports = app;

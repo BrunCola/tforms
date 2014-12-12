@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('fileMimeLocalController', ['$scope', '$
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/extracted_files/files_mime_local?start='+$location.$$search.start+'&end='+$location.$$search.end+'&mime='+$location.$$search.mime;
+        query = '/api/extracted_files/files_mime_local?start='+$location.$$search.start+'&end='+$location.$$search.end+'&mime='+$location.$$search.mime;
     } else {
-        query = '/extracted_files/files_mime_local?mime='+$location.$$search.mime;
+        query = '/api/extracted_files/files_mime_local?mime='+$location.$$search.mime;
     }
     $http({method: 'GET', url: query}).
     success(function(data) {
