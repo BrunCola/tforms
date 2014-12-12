@@ -798,8 +798,8 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
     return {
         link: function ($scope, element, attrs) {
             $scope.socket = socket;
-            var csv = "";
-            function insert(array, heading){
+            var csv = "data:text/csv;charset=utf-8,\n";
+            function makeCsv(array, heading){
                 // console.log("TEST");
                 function isAllowed(word){
                     var notAllowed = ['_typeCast', 'parse', 'id', 'child_id'];
@@ -1156,28 +1156,36 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                             var rowData = JSON.parse(this.value);
                                             $scope.uploadOpen(rowData);
                                         });
-                                        $('.bCsv').on('click',function(){
-                                            console.log("TEST CLICK");
-
-
-
-                                            var csvContent = "data:text/csv;charset=utf-8,\ntest1,test2,test3,\n1,2,3";
-                                            
-
-                                //             tableData.top(Infinity),
-                                // 'aoColumns': params[t].params,
-                                            var paramArray = [];
+                                        $('.bCsv').on('click',function(){                                           
+                                            var array = [];
+                                            array[0] = [];
+                                            //array[0] is the array of column headers
                                             for (var t in params) {
+                                                console.log(params[t]);
                                                 for (var p in params[t].params) {
-                                                    console.log(params[t].params[p].sTitle);
-                                                    paramArray.push(params[t].params[p].sTitle);
+                                                    if(params[t].params[p].sTitle != "") {
+                                                        array[0].push(params[t].params[p].sTitle);
+                                                    }
                                                 }
-                                                
-                                            }
+                                                for (var i in params[t].aaData) {
+                                                    //need to sort each value set into the order of the columns
+                                                    var sortedRow = [];
 
-                                            console.log(tableData.top(Infinity));
+                                                    for (var p in params[t].params){
+                                                        for (var property in params[t].aaData[i]) {
+                                                            if(params[t].params[p].mData == property) {
+                                                                sortedRow.push(params[t].aaData[i][property]);
+                                                            } 
+                                                        }
+                                                        
+                                                    }
+                                                    array.push(sortedRow);//push each sorted row as an array to the main array
+                                                }
+                                                makeCsv(array, params[t].title);//create the csv
+                                            }                                     
 
-                                            var encodedUri = encodeURI(csvContent);
+                                            //create the download
+                                            var encodedUri = encodeURI(csv);
                                             window.open(encodedUri);
 
                                         });
