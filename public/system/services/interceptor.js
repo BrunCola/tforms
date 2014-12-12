@@ -11,7 +11,7 @@ angular.module('mean-factory-interceptor',[])
                 return config;
             },
             response: function (response) {
-                if (response.status === 401) {
+                if ((response.status === 401) || (response.status === 500)) {
                     $location.url('/login');
                 }
                 return response || $q.when(response);
