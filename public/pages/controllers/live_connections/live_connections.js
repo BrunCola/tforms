@@ -1,8 +1,7 @@
 'use strict';
 
-angular.module('mean.pages').controller('liveConnectionsController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', 'socket', function ($scope, $stateParams, $location, Global, $rootScope, $http, socket) {
+angular.module('mean.pages').controller('liveConnectionsController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
     $scope.global = Global;
-    $scope.socket = socket;
     var timer;
     var query = '/api/live_connections/live_connections';
     function getMap() {
