@@ -31,12 +31,12 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                 // .call(zoom);
             var g = svg.append("g");
 
-            var margin = {top: 10, right: 10, bottom: 20, left: 40},
+            var margin = {top: 10, right: 10, bottom: 20, left: 10},
                 lineChartWidth = document.getElementById('graph').offsetWidth - margin.left - margin.right,
-                lineChartHeight = 150 - margin.top - margin.bottom;    
+                lineChartHeight = 100 - margin.top - margin.bottom;    
              
             var x = d3.time.scale()
-                .range([0, lineChartWidth])
+                .range([lineChartWidth, 0])
                 .domain([$scope.lineChartStart, $scope.lineChartEnd]);
              
             var y = d3.scale.linear()
@@ -58,7 +58,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                 .attr("width", lineChartWidth+50)
                 .attr("height", lineChartHeight + margin.top + margin.bottom);    
 
-            var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(30);
+            var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5);
 
             var yAxis = d3.svg.axis().scale(y).orient("left").ticks(5);
 
@@ -66,10 +66,6 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                 .attr("class", "x axis")
                 .attr("transform", "translate(0," + lineChartHeight + ")")
                 .call(xAxis);
-             
-            var axisY =  gLine.append("g")
-                .attr("class", "y axis")
-                .call(yAxis);
 
             var pathLine = gLine.append("g");
 
@@ -404,63 +400,56 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                         .style("opacity", 0)
                         .remove();
 
-                    filteredLineChartOld = filteredLineChart;
+                    //filteredLineChartOld = filteredLineChart;
 
                     filteredLineChart = $scope.totalMap.filter(function(d) {  return d.time < start });
 
-                    if (start >= $scope.lineChartEnd) {
-                        $scope.lineChartEnd += 250000;
-                    }
+                    //var distinctHits = filteredLineChart.filter(function(obj) { return filteredLineChartOld.indexOf(obj) == -1; });
 
-                    x.domain([$scope.lineChartStart, $scope.lineChartEnd]);
-                    y.domain([0, d3.max(filteredLineChart, function(d) { return d.properties.count; })]); 
+                    // if (start >= $scope.lineChartEnd) {
+                    //     $scope.lineChartEnd += 250000;
+                    // }
+
+                   x.domain([ start-300000 , start]);
+                    //y.domain([0, d3.max(filteredLineChart, function(d) { return d.properties.count; })]); 
                     //y.domain([0, 20]); 
 
-                    axisX.call(xAxis);
-                    axisY.call(yAxis);
+                    // Slide x-axis left
+                    axisX.transition()
+                        .duration(1000)
+                        .ease('linear')
+                        .call(xAxis)
 
                     var dataNest = d3.nest()
                         .key(function(d) {return d.properties.l7_proto;})
                         .entries(filteredLineChart);
 
-                    if (filteredLineChartOld !== undefined) {
-                        var dataNestOld = d3.nest()
-                            .key(function(d) {return d.properties.l7_proto;})
-                            .entries(filteredLineChartOld);
-
-                        var oldArrayInfo = [];
-                        dataNestOld.forEach(function(oldLines) {
-                            oldArrayInfo[""+oldLines.key] = oldLines.values.length;
-                        });
-                    }
+                    // var dataNestNew = d3.nest()
+                    //     .key(function(d) {return d.properties.l7_proto;})
+                    //     .entries(distinctHits);
 
                     gLine.selectAll('.lineChart').remove();
                     var jump = 0;
 
+                    var count = 0;
                     // Loop through each symbol / key
                     dataNest.forEach(function(lines) {
-
-                        if (oldArrayInfo !== undefined) {
-                            if (oldArrayInfo[""+lines.key] !== undefined) {
-                                jump = lines.values.length - oldArrayInfo[""+lines.key];
-                                //console.log(lines.key + "..." +lines.values.length + "-" + oldArrayInfo[""+lines.key] + " = "+ jump)
-                            } else {
-                                jump = 0;
-                            }
+                        for (var l in lines.values) {
+                           // console.log(lines.values[l].time)
+                            pathLine.append('line')
+                                .classed("lineChart", true)
+                                .attr('x1', x(lines.values[l].time))
+                                .attr('y1', y(0.1+count))
+                                .attr('x2', x(lines.values[l].time))
+                                .attr('y2', y(0.25+count))
+                                // .attr('transform', null)
+                                .style("stroke", lineColor(lines.key))
+                                .style("cursor", "pointer")
+                                .on('click', function(){
+                                    console.log(lines.values[l].properties)
+                                });
                         }
-                        pathLineOld.append('path').classed("lineChart", true).style("stroke", lineColor(lines.key)).attr("d", lineFunction(lines.values.slice(0, lines.values.length-jump-1)));
-                        var pl = pathLine.append('path').classed("lineChart", true).style("stroke", lineColor(lines.key)).attr("d", lineFunction(lines.values.slice(lines.values.length-jump-2, lines.values.length-1)));
-
-                        var pathLength= pl.node().getTotalLength();
-
-                        pl
-                            .attr("stroke-dasharray", pathLength + " " + pathLength)
-                            .attr("stroke-dashoffset", pathLength)
-                            .transition()
-                            .duration(750)
-                            .ease("linear")
-                            .attr("stroke-dashoffset", 0);
-                        jump = 0;
+                        count += 0.15;
                     });
                 }
 
@@ -492,6 +481,9 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                             break;
                         case "AppleiTunes":
                             return "#0fff0f"; //
+                            break;
+                        case "sFlow":
+                            return "#123456"; //
                             break;
                         case "Unknown":
                             return "#00f0f0"; //

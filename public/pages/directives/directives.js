@@ -3797,93 +3797,264 @@ angular.module('mean.pages').directive('makeLineChart', ['$timeout', '$rootScope
 
 
 
-                    var t = -1;
-                    var n = 10;
-                    var v = 0;
-                    var data = d3.range(n).map(next);
+              // var t = -1;
+              //     var n = 1;
+              //     var v = 0;
+              //     var data = d3.range(n).map(next);
+                
+              //     function next () {
+              //         return {
+              //             time: ++t,
+              //             value: v = Math.floor(Math.random()*1)
+              //         };
+              //     } 
+                 
+              //     var margin = {top: 10, right: 10, bottom: 20, left: 40},
+              //       lineChartWidth = document.getElementById('graph').offsetWidth - margin.left - margin.right,
+              //       lineChartHeight = 150 - margin.top - margin.bottom;    
+                 
+              //     var x = d3.scale.linear()
+              //         .domain([0, n - 1])
+              //         .range([lineChartWidth, 0]);
+                 
+              //     var y = d3.scale.linear()
+              //         .domain([0, 1])
+              //         .range([lineChartHeight, 0]);
+                 
+              //     var line = d3.svg.line()
+              //         .x(function(d, i) { return x(d.time); })
+              //         .y(function(d, i) { return y(d.value); });
 
-                    function next () {
-                        return {
-                            time: ++t,
-                            value: v = Math.floor(Math.random()*20)
-                        };
-                    }   
-                     
-                    var margin = {top: 10, right: 10, bottom: 20, left: 40},
-                        width = document.getElementById('graph').offsetWidth - margin.left - margin.right,
-                        height = 150 - margin.top - margin.bottom;    
-                     
-                    var x = d3.scale.linear()
-                        .domain([0, n - 1])
-                        .range([0, width]);
-                     
-                    var y = d3.scale.linear()
-                        .domain([0, 20])
-                        .range([height, 0]);
-                     
-                    var line = d3.svg.line()
-                        .x(function(d, i) { return x(d.time); })
-                        .y(function(d, i) { return y(d.value); });
+              //     var gra = d3.select("#graph");
+              //     gra.selectAll('svg').remove();
+                   
+              //     var svg = gra.append("svg")
+              //         .attr("width", lineChartWidth + margin.left + margin.right)
+              //         .attr("height", lineChartHeight + margin.top + margin.bottom);
+                
+              //     var g = svg.append("g")
+              //         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                  
+              //     var graph = g.append("svg")
+              //         .attr("width", lineChartWidth)
+              //         .attr("height", lineChartHeight + margin.top + margin.bottom); 
+                 
+              //     var xAxis = d3.svg.axis().scale(x).orient("bottom");
+              //     var axis = graph.append("g")
+              //         .attr("class", "x axis")
+              //         .attr("transform", "translate(0," + lineChartHeight + ")")
+              //         .call(xAxis);
+                 
+              //     g.append("g")
+              //         .attr("class", "y axis")
+              //         .call(d3.svg.axis().scale(y).orient("left"));
+                 
+              //   var path = graph.append("g")
+              //     // .append("path")
+              //     // .data([data])
+              //     // .attr("class", "line")
+              //     // .attr("d", line);
+                  
+              //     tick();
+                   
+              //     function tick() { 
+              //         // push a new data point onto the back
+              //         data.push(next());
 
-                    var lineFunction = d3.svg.line()
-                        .x(function(d, i) { return x(d.time); })
-                        .y(function(d, i) { return y(d.value); });
-                         
-                    var lineGraph = d3.select("#graph");
-                    lineGraph.selectAll("svg").remove();
+              //         // update domain
+              //         x.domain([0, t]);
+                
+              //         // // redraw path, shift path left
+              //         // path
+              //         //     .attr("d", line)
+              //         //     .attr("transform", null)
+              //         //     .transition()
+              //         //     .duration(500)
+              //         //     .ease("linear")
+              //         //     .attr("transform", "translate(" + (t) + ")")
+              //         //     .each("end", tick);
 
-                    var svg = lineGraph.append("svg")
-                        .attr("width", width + margin.left + margin.right)
-                        .attr("height", height + margin.top + margin.bottom);
-                    
-                    var g = svg.append("g")
-                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-                        
-                    var graph = g.append("svg")
-                        .attr("width", width)
-                        .attr("height", height + margin.top + margin.bottom);   
-                     
-                    var xAxis = d3.svg.axis().scale(x).orient("bottom");
-                    var axis = graph.append("g")
-                        .attr("class", "x axis")
-                        .attr("transform", "translate(0," + height + ")")
-                        .call(xAxis);
-                     
-                    g.append("g")
-                        .attr("class", "y axis")
-                        .call(d3.svg.axis().scale(y).orient("left"));
+              //         var line = path.append('line')
+              //           .classed("line", true)
+              //           .attr('x1', x(t))
+              //           .attr('y1', y(0.2))
+              //           .attr('x2', x(t))
+              //           .attr('y2', y(0.8))
+              //           .attr("transform", null);
 
-                    var path = svg.append("path")
-                        .attr("d", line(data))
-                        .classed("line", true);
+              //           for (var l in data) {
 
-                   var pathold = svg.append("path")
-                        .attr("d", line(data))
-                        .classed("line", true);                        
+              //           }
 
-                    tick();
-                         
-                    function tick() { 
+              //           line 
+              //           .transition()
+              //           .duration(500)
+              //           .ease("linear")
+              //           .attr("transform", "translate(" + (t) + ")")
+              //           .each("end", tick);
+                
+              //         // shift axis left
+              //         axis
+              //             .transition()
+              //             .duration(500)
+              //             .ease("linear")
+              //             .call(d3.svg.axis().scale(x).orient("bottom"));
+                 
+              //         // pop the old data point off the front
+              //         //data.shift();  
+              //     } 
 
-                        // update domain
-                        x.domain([0, 40]);
 
-                        data.push(next());
 
-                        pathold.attr("d", line(data.slice(0, data.length-2)));
-                        path.attr("d", line(data.slice(data.length-3, data.length-1)));
 
-                        var pathLength= path.node().getTotalLength()
-                        path
-                          .attr("stroke-dasharray", pathLength + " " + pathLength)
-                          .attr("stroke-dashoffset", pathLength)
-                          .transition()
-                          .duration(2000)
-                          .ease("linear")
-                          .attr("stroke-dashoffset", 0)
-                          .each("end", tick);
 
-                    }
+
+
+
+
+
+
+
+
+
+var initialDate = new Date();
+
+
+
+
+ var limit = 60 * 1,
+            duration = 750,
+            now = new Date(Date.now() - duration)
+
+        var margin = {top: 10, right: 10, bottom: 20, left: 40},
+            width = document.getElementById('graph').offsetWidth - margin.left - margin.right,
+            height = 150 - margin.top - margin.bottom;   
+
+        var groups = {
+            current: {
+                value: 0,
+                color: 'orange',
+                data: d3.range(limit).map(function() {
+                    return 0
+                })
+            },
+            target: {
+                value: 0,
+                color: 'green',
+                data: d3.range(limit).map(function() {
+                    return 0
+                })
+            },
+            output: {
+                value: 0,
+                color: 'grey',
+                data: d3.range(limit).map(function() {
+                    return 0
+                })
+            }
+        }
+
+        var x = d3.time.scale()
+            .domain([now - (limit - 2), now - duration])
+            .range([0, width])
+
+        var y = d3.scale.linear()
+            .domain([0, 100])
+            .range([height, 0])
+
+        var line = d3.svg.line()
+            .interpolate('basis')
+            .x(function(d, i) {
+                return x(now - (limit - 1 - i) * duration)
+            })
+            .y(function(d) {
+                return y(d)
+            })
+
+        var svg = d3.select('#graph').append('svg')
+            .attr('class', 'chart')
+            .attr('width', width)
+            .attr('height', height + 50)
+
+        var axis = svg.append('g')
+            .attr('class', 'x axis')
+            .attr('transform', 'translate(0,' + height + ')')
+            .call(x.axis = d3.svg.axis().scale(x).orient('bottom'))
+
+        var paths = svg.append('g')
+
+        for (var name in groups) {
+            var group = groups[name]
+            group.path = paths.append('path')
+                .data([group.data])
+                .attr('class', name + ' group')
+                .style('stroke', group.color)
+        }
+
+        function tick() {
+            now = new Date()
+
+            // Add new values
+            for (var name in groups) {
+                var group = groups[name]
+                //group.data.push(group.value) // Real values arrive at irregular intervals
+                group.data.push(20 + Math.random() * 100)
+                group.path.attr('d', line)
+            }
+
+
+            // Shift domain
+            x.domain([initialDate, now])
+
+            // Slide x-axis left
+            axis.transition()
+                .duration(duration)
+                .ease('linear')
+                .call(x.axis)
+
+            // Slide paths left
+            paths
+                .attr('transform', 'translate(' + x(now) + ')')
+                .transition()
+                .duration(duration)
+                .ease('linear')
+                .attr('transform', 'translate(' + x(now+1) + ')')
+                .each('end', tick)
+
+            // Remove oldest data point from each group
+            for (var name in groups) {
+                var group = groups[name]
+                group.data.shift()
+            }
+        }
+
+        tick()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
