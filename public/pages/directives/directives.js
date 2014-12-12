@@ -798,9 +798,9 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
     return {
         link: function ($scope, element, attrs) {
             $scope.socket = socket;
-
-             function insert(){//(array, heading) {
-                console.log("TEST");
+            var csv = "";
+            function insert(array, heading){
+                // console.log("TEST");
                 function isAllowed(word){
                     var notAllowed = ['_typeCast', 'parse', 'id', 'child_id'];
                     if (notAllowed.indexOf(word) !== -1) {
@@ -863,7 +863,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                             '<div class="span12"> '+
                                     '<div class="jdash-header">'+params[t].title+'</div> '+
                                     '<div class="box">'+
-                                        '<div class="box-content"> <button class="bCsv button pure-button" type="button" href="">insert</button>'+//<button type="button" class="rndCrnBtn pure-button right" ng-click="insert()">Print to .csv</button>'+
+                                        '<div class="box-content"> <button class="bCsv button pure-button right" type="button" href="">insert</button>'+//<button type="button" class="rndCrnBtn pure-button right" ng-click="insert()">Print to .csv</button>'+
                                             '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="'+params[t].div+'" ></table>'+
                                         '</div> '+
                                     '</div> '+
@@ -1156,10 +1156,30 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                             var rowData = JSON.parse(this.value);
                                             $scope.uploadOpen(rowData);
                                         });
-                                        $('box-content .bCsv').on('click',function(){
-                                          console.log("TETSTETSTETSt");
-                                            // var rowData = JSON.parse(this.value);
-                                            // $scope.uploadOpen(rowData);
+                                        $('.bCsv').on('click',function(){
+                                            console.log("TEST CLICK");
+
+
+
+                                            var csvContent = "data:text/csv;charset=utf-8,\ntest1,test2,test3,\n1,2,3";
+                                            
+
+                                //             tableData.top(Infinity),
+                                // 'aoColumns': params[t].params,
+                                            var paramArray = [];
+                                            for (var t in params) {
+                                                for (var p in params[t].params) {
+                                                    console.log(params[t].params[p].sTitle);
+                                                    paramArray.push(params[t].params[p].sTitle);
+                                                }
+                                                
+                                            }
+
+                                            console.log(tableData.top(Infinity));
+
+                                            var encodedUri = encodeURI(csvContent);
+                                            window.open(encodedUri);
+
                                         });
                                         $scope.country = [];
                                         $scope.ioc = [];
