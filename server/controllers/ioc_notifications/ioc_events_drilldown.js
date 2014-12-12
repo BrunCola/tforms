@@ -45,7 +45,7 @@ module.exports = function(pool) {
             if (req.query.type === 'drill') {
                 var conn_ioc = {
                     query: 'SELECT '+
-                                '\'Conn_ioc\' AS type,'+
+                                '\'Conn_ioc\' AS `type`,'+
                                 '`time`,'+
                                 '`lan_stealth`,'+
                                 '`lan_zone`,'+
@@ -77,30 +77,24 @@ module.exports = function(pool) {
                                 'AND `lan_ip` = ? '+
                                 'AND `remote_ip` = ? '+
                                 'AND `ioc` = ? '+
+                            'ORDER BY `time` DESC '+
                             'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                     params: [
-                        {title: "Time", select: "time"},
-                        {title: 'Stealth', select: 'lan_stealth', access: [3] },
-                        {title: 'ABP', select: 'proxy_blocked', access: [2] },
-                        {title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
-                        {title: "Zone", select: "lan_zone"},
-                        {title: "Machine", select: "lan_machine", pattern: true},
-                        {title: "Local User", select: "lan_user", pattern: true},
-                        {title: "Local IP", select: "lan_ip", pattern: true},
-                        // {title: "Local Port", select: "lan_port", pattern: true},
-                        {title: "Remote IP", select: "remote_ip", pattern: true},
-                        // {title: "Remote Port", select: "remote_port", pattern: true},
-                        // {title: "Remote Country", select: "remote_country", pattern: true},
-                        // {title: "Remote ASN", select: "remote_asn_name", pattern: true},
-                        // {title: "Application", select: "l7_proto", pattern: true},
-                        // {title: "Bytes to Remote", select: "in_bytes"},
-                        // {title: "Bytes from  Remote", select: "out_bytes"},
-                        {title: "IOC", select: "ioc"},
-                        // {title: "IOC Type", select: "ioc_typeIndicator"},
-                        // {title: "IOC Stage", select: "ioc_typeInfection"},
-                        {title: "IOC Rule", select: "ioc_rule"},
-                        {title: "IOC Severity", select: "ioc_severity"},
+                        { title: 'Time', select: 'time' },
+                        { title: 'Stealth', select: 'lan_stealth', access: [3] },
+                        { title: 'ABP', select: 'proxy_blocked', access: [2] },
+                        { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                        { title: 'Zone', select: 'lan_zone' },
+                        { title: 'Local Machine', select: 'lan_machine', pattern: true },
+                        { title: 'Local User', select: 'lan_user', pattern: true },
+                        { title: 'Local IP', select: 'lan_ip', pattern: true },
+                        { title: 'Remote IP', select: 'remote_ip', pattern: true },
+                        { title: 'IOC', select: 'ioc', pattern: true },
+                        { title: 'IOC Type', select: 'ioc_typeIndicator' },
+                        { title: 'IOC Stage', select: 'ioc_typeInfection' },
+                        { title: 'IOC Rule', select: 'ioc_rule', pattern: true },
+                        { title: 'IOC Severity', select: 'ioc_severity' },
                     ],
                     settings: {
                         access: req.session.passport.user.level
@@ -108,7 +102,7 @@ module.exports = function(pool) {
                 }
                 var iocseverity = {
                     query: 'SELECT '+
-                                '\'IOC Severity\' AS type,'+
+                                '\'IOC Severity\' AS `type`,'+
                                 '`time`,'+
                                 '`lan_stealth`,'+
                                 '`lan_zone`,'+
@@ -138,32 +132,26 @@ module.exports = function(pool) {
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_zone` = ? '+
                                 'AND `lan_ip` = ? '+
-                                'AND `ioc_severity` > 0 ' + 
+                                'AND `ioc_severity` > 0 '+
+                            'ORDER BY `time` DESC '+
                             'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
-                        {title: "Time", select: "time"},
-                        {title: 'Stealth', select: 'lan_stealth', access: [3] },
-                        {title: 'ABP', select: 'proxy_blocked', access: [2] },
-                        // {title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
-                        {title: "Zone", select: "lan_zone"},
-                        // {title: "Machine", select: "lan_machine", pattern: true},
-                        {title: "Local User", select: "lan_user", pattern: true},
-                        {title: "Local IP", select: "lan_ip", pattern: true},
-                        // {title: "Local Port", select: "lan_port", pattern: true},
-                        {title: "Remote IP", select: "remote_ip", pattern: true},
-                        // {title: "Remote Port", select: "remote_port", pattern: true},
-                        {title: "Remote Country", select: "remote_country", pattern: true},
-                        // {title: "Remote ASN", select: "remote_asn_name", pattern: true},
-                        // {title: "Application", select: "l7_proto", pattern: true},
-                        // {title: "Bytes to Remote", select: "in_bytes"},
-                        // {title: "Bytes from Remote", select: "out_bytes"},
-                        {title: "IOC", select: "ioc"},
-                        {title: "IOC Type", select: "ioc_typeIndicator"},
-                        {title: "IOC Stage", select: "ioc_typeInfection"},
-                        {title: "IOC Rule", select: "ioc_rule"},
-                        {title: "IOC Severity", select: "ioc_severity"},
-                        {title: "IOC Count", select: "ioc_count"},
+                        { title: 'Time', select: 'time' },
+                        { title: 'Stealth', select: 'lan_stealth', access: [3] },
+                        { title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
+                        { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                        { title: 'Zone', select: 'lan_zone' },
+                        { title: 'Local Machine', select: 'lan_machine', pattern: true },
+                        { title: 'Local User', select: 'lan_user', pattern: true },
+                        { title: 'Local IP', select: 'lan_ip', pattern: true },
+                        { title: 'Remote IP', select: 'remote_ip', pattern: true },
+                        { title: 'IOC', select: 'ioc', pattern: true },
+                        { title: 'IOC Type', select: 'ioc_typeIndicator' },
+                        { title: 'IOC Stage', select: 'ioc_typeInfection' },
+                        { title: 'IOC Rule', select: 'ioc_rule', pattern: true },
+                        { title: 'IOC Severity', select: 'ioc_severity' },
+                        { title: 'IOC Count', select: 'ioc_count' },
                     ],
                     settings: {
                         access: req.session.passport.user.level
@@ -171,7 +159,7 @@ module.exports = function(pool) {
                 }
                 var conn = {
                     query: 'SELECT '+
-                                '\'Conn\' AS type,'+
+                                '\'Conn\' AS `type`,'+
                                 '`time`,'+
                                 '`lan_stealth`,'+
                                 '`lan_zone`,'+
@@ -201,31 +189,32 @@ module.exports = function(pool) {
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_zone` = ? '+
                                 'AND `lan_ip` = ? '+
+                            'ORDER BY `time` DESC '+
                             'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
-                        {title: "Time", select: "time"},
-                        {title: 'Stealth', select: 'lan_stealth', access: [3] },
-                        {title: 'ABP', select: 'proxy_blocked', access: [2] },
-                        {title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
-                        {title: "Zone", select: "lan_zone"},
-                        {title: "Machine", select: "lan_machine", pattern: true},
-                        {title: "Local User", select: "lan_user", pattern: true},
-                        {title: "Local IP", select: "lan_ip", pattern: true},
-                        {title: "Local Port", select: "lan_port", pattern: true},
-                        {title: "Remote IP", select: "remote_ip", pattern: true},
-                        {title: "Remote Port", select: "remote_port", pattern: true},
-                        {title: "Remote Country", select: "remote_country", pattern: true},
-                        {title: "Remote ASN", select: "remote_asn_name", pattern: true},
-                        {title: "Application", select: "l7_proto", pattern: true},
-                        {title: "Bytes to Remote", select: "in_bytes"},
-                        {title: "Bytes from Remote", select: "out_bytes"},
-                        {title: "IOC", select: "ioc"},
-                        {title: "IOC Type", select: "ioc_typeIndicator"},
-                        {title: "IOC Stage", select: "ioc_typeInfection"},
-                        {title: "IOC Rule", select: "ioc_rule"},
-                        {title: "IOC Severity", select: "ioc_severity"},
-                        {title: "IOC Count", select: "ioc_count"},
+                        { title: 'Time', select: 'time' },
+                        { title: 'Stealth', select: 'lan_stealth', access: [3] },
+                        { title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
+                        { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                        { title: 'Zone', select: 'lan_zone' },
+                        { title: 'Local Machine', select: 'lan_machine', pattern: true },
+                        { title: 'Local User', select: 'lan_user', pattern: true },
+                        { title: 'Local IP', select: 'lan_ip', pattern: true },
+                        { title: 'Local Port', select: 'lan_port', pattern: true },
+                        { title: 'Remote IP', select: 'remote_ip', pattern: true },
+                        { title: 'Remote Port', select: 'remote_port', pattern: true },
+                        { title: 'Remote Country', select: 'remote_country', pattern: true },
+                        { title: 'Remote ASN', select: 'remote_asn_name', pattern: true },
+                        { title: 'Application', select: 'l7_proto', pattern: true },
+                        { title: 'Bytes to Remote', select: 'in_bytes' },
+                        { title: 'Bytes from Remote', select: 'out_bytes' },
+                        { title: 'IOC', select: 'ioc', pattern: true },
+                        { title: 'IOC Type', select: 'ioc_typeIndicator', pattern: true },
+                        { title: 'IOC Stage', select: 'ioc_typeInfection' },
+                        { title: 'IOC Rule', select: 'ioc_rule', pattern: true },
+                        { title: 'IOC Severity', select: 'ioc_severity' },
+                        { title: 'IOC Count', select: 'ioc_count' },
                     ],
                     settings: {
                         access: req.session.passport.user.level
@@ -233,7 +222,7 @@ module.exports = function(pool) {
                 }
                 var application = {
                     query: 'SELECT '+
-                                '\'Applications\' AS type,'+
+                                '\'Applications\' AS `type`,'+
                                 '`time`,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
@@ -262,27 +251,21 @@ module.exports = function(pool) {
                                 'AND `lan_zone` = ? '+
                                 'AND `lan_ip` = ? '+
                                 'AND `l7_proto` != \'-\' '+
+                            'ORDER BY `time` DESC '+
                             'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
-                        {title: "Time", select: "time"},
-                        {title: "Zone", select: "lan_zone"},
-                        {title: "Machine", select: "lan_machine", pattern: true},
-                        {title: "Local IP", select: "lan_ip", pattern: true},
-                        {title: "Local Port", select: "lan_port", pattern: true},
-                        {title: "Remote IP", select: "remote_ip", pattern: true},
-                        {title: "Remote Port", select: "remote_port", pattern: true},
-                        {title: "Remote Country", select: "remote_country", pattern: true},
-                        // {title: "Remote ASN", select: "remote_asn_name", pattern: true},
-                        {title: "Application", select: "l7_proto", pattern: true},
-                        {title: "Bytes to Remote", select: "in_bytes"},
-                        {title: "Bytes from Remote", select: "out_bytes"},
-                        // {title: "IOC", select: "ioc"},
-                        // {title: "IOC Type", select: "ioc_typeIndicator"},
-                        // {title: "IOC Stage", select: "ioc_typeInfection"},
-                        // {title: "IOC Rule", select: "ioc_rule"},
-                        // {title: "IOC Severity", select: "ioc_severity"},
-                        {title: "IOC Count", select: "ioc_count"},
+                        { title: 'Time', select: 'time' },
+                        { title: 'Zone', select: 'lan_zone' },
+                        { title: 'Local Machine', select: 'lan_machine', pattern: true },
+                        { title: 'Local User', select: 'lan_user', pattern: true },
+                        { title: 'Local IP', select: 'lan_ip', pattern: true },
+                        { title: 'Local Port', select: 'lan_port', pattern: true },
+                        { title: 'Remote IP', select: 'remote_ip', pattern: true },
+                        { title: 'Remote Port', select: 'remote_port', pattern: true },
+                        { title: 'Application', select: 'l7_proto', pattern: true },
+                        { title: 'Bytes to Remote', select: 'in_bytes' },
+                        { title: 'Bytes from Remote', select: 'out_bytes' },
                     ],
                     settings: {
                         access: req.session.passport.user.level
@@ -290,7 +273,7 @@ module.exports = function(pool) {
                 }
                 var stealth_conn = {
                     query: 'SELECT '+
-                            '\'Stealth\' AS type,'+
+                            '\'Stealth\' AS `type`,'+
                             '`time`,'+
                             '`lan_machine`,'+
                             '`lan_user`,'+
@@ -299,8 +282,8 @@ module.exports = function(pool) {
                             '`remote_user`,'+
                             '`remote_ip`,'+
                             '`conn_uids`,'+
-                            '(`in_bytes` / 1048576) as in_bytes,'+
-                            '(`out_bytes` / 1048576) as out_bytes,'+
+                            '(`in_bytes` / 1048576) AS in_bytes,'+
+                            '(`out_bytes` / 1048576) AS out_bytes,'+
                             '`in_packets`,'+
                             '`out_packets` '+
                         'FROM '+
@@ -311,20 +294,21 @@ module.exports = function(pool) {
                             'AND `lan_ip`= ? '+
                             'AND `in_bytes` > 0 '+
                             'AND `out_bytes` > 0 '+
+                        'ORDER BY `time` DESC '+
                         'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
-                        {title: "Time", select: "time"},
-                        {title: "Source Machine", select: "lan_machine"},
-                        {title: "Source User", select: "lan_user"},
-                        {title: "Source IP", select: "lan_ip"},
-                        {title: "Destination Machine", select: "remote_machine"},
-                        {title: "Destination User", select: "remote_user"},
-                        {title: "Destination IP", select: "remote_ip"},
-                        {title: "MB from Remote", select: "in_bytes"},
-                        {title: "MB to Remote", select: "out_bytes"},
-                        {title: "Packets from Remote", select: "in_packets"},
-                        {title: "Packets to Remote", select: "out_packets"}
+                        { title: 'Time', select: 'time' },
+                        { title: 'Source Machine', select: 'lan_machine', pattern: true },
+                        { title: 'Source User', select: 'lan_user', pattern: true },
+                        { title: 'Source IP', select: 'lan_ip', pattern: true },
+                        { title: 'Destination Machine', select: 'remote_machine', pattern: true },
+                        { title: 'Destination User', select: 'remote_user', pattern: true },
+                        { title: 'Destination IP', select: 'remote_ip', pattern: true },
+                        { title: 'MB from Remote', select: 'in_bytes' },
+                        { title: 'MB to Remote', select: 'out_bytes' },
+                        { title: 'Packets from Remote', select: 'in_packets' },
+                        { title: 'Packets to Remote', select: 'out_packets' }
                     ],
                     settings: {
                         access: req.session.passport.user.level
@@ -332,39 +316,40 @@ module.exports = function(pool) {
                 }
                 var stealth_drop = {
                     query: 'SELECT '+
-                                '\'Stealth_drop\' AS type,'+
+                                '\'Stealth_drop\' AS `type`,'+
                                 '`time`,'+
-                                '`lan_machine`, '+
-                                '`lan_user`, '+
-                                '`lan_ip`, '+
-                                '`remote_machine`, '+
-                                '`remote_user`, '+
-                                '`remote_ip`, '+
-                                '(`in_bytes` / 1048576) as in_bytes, '+
-                                '(`out_bytes` / 1048576) as out_bytes, '+
-                                '`in_packets`, '+
+                                '`lan_machine`,'+
+                                '`lan_user`,'+
+                                '`lan_ip`,'+
+                                '`remote_machine`,'+
+                                '`remote_user`,'+
+                                '`remote_ip`,'+
+                                '(`in_bytes` / 1048576) AS in_bytes,'+
+                                '(`out_bytes` / 1048576) AS out_bytes,'+
+                                '`in_packets`,'+
                                 '`out_packets` '+
                             'FROM '+
                                 '`stealth_conn_meta` '+
                             'WHERE '+
-                                'time BETWEEN ? AND ? '+
+                                '`time` BETWEEN ? AND ? '+
                                 'AND `lan_zone` = ? '+
                                 'AND `lan_ip` = ? '+
                                 'AND (`in_bytes` = 0 OR `out_bytes` = 0) '+
+                            'ORDER BY `time` DESC '+
                             'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
-                        {title: "Time", select: "time"},
-                        {title: "Source Machine", select: "lan_machine"},
-                        {title: "Source User", select: "lan_user"},
-                        {title: "Source IP", select: "lan_ip"},
-                        {title: "Destination Machine", select: "remote_machine"},
-                        {title: "Destination User", select: "remote_user"},
-                        {title: "Destination IP", select: "remote_ip"},
-                        {title: "MB from Remote", select: "in_bytes"},
-                        {title: "MB to Remote", select: "out_bytes"},
-                        {title: "Packets from Remote", select: "in_packets"},
-                        {title: "Packets to Remote", select: "out_packets"}
+                        { title: 'Time', select: 'time' },
+                        { title: 'Source Machine', select: 'lan_machine', pattern: true },
+                        { title: 'Source User', select: 'lan_user', pattern: true },
+                        { title: 'Source IP', select: 'lan_ip', pattern: true },
+                        { title: 'Destination Machine', select: 'remote_machine', pattern: true },
+                        { title: 'Destination User', select: 'remote_user', pattern: true },
+                        { title: 'Destination IP', select: 'remote_ip', pattern: true },
+                        { title: 'MB from Remote', select: 'in_bytes' },
+                        { title: 'MB to Remote', select: 'out_bytes' },
+                        { title: 'Packets from Remote', select: 'in_packets' },
+                        { title: 'Packets to Remote', select: 'out_packets' }
                     ],
                     settings: {
                         access: req.session.passport.user.level
@@ -372,7 +357,7 @@ module.exports = function(pool) {
                 }
                 var dns = {
                     query: 'SELECT '+
-                                '\'DNS\' AS type,'+
+                                '\'DNS\' AS `type`,'+
                                 '`time`,'+
                                 '`proto`,'+
                                 '`qclass_name`,'+
@@ -392,21 +377,22 @@ module.exports = function(pool) {
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_zone` = ? '+
                                 'AND `lan_ip` = ? '+
+                            'ORDER BY `time` DESC '+
                             'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
-                        {title: "Time", select: "time"},
-                        {title: "Protocol", select: "proto"},
-                        {title: "Query Class", select: "qclass_name"},
-                        {title: "Query Type", select: "qtype_name"},
-                        {title: "Query", select: "query"},
-                        {title: "Answers", select: "answers"},
-                        {title: "TTLs", select: "TTLs"},
-                        {title: "IOC", select: "ioc"},
-                        {title: "IOC Type", select: "ioc_typeIndicator"},
-                        {title: "IOC Stage", select: "ioc_typeInfection"},
-                        {title: "IOC Rule", select: "ioc_rule"},
-                        {title: "IOC Severity", select: "ioc_severity"},
+                        { title: 'Time', select: 'time' },
+                        { title: 'Protocol', select: 'proto' },
+                        { title: 'Query Class', select: 'qclass_name', pattern: true },
+                        { title: 'Query Type', select: 'qtype_name', pattern: true },
+                        { title: 'Query', select: 'query', pattern: true },
+                        { title: 'Answers', select: 'answers' },
+                        { title: 'TTLs', select: 'TTLs', pattern: true },
+                        { title: 'IOC', select: 'ioc', pattern: true },
+                        { title: 'IOC Type', select: 'ioc_typeIndicator' },
+                        { title: 'IOC Stage', select: 'ioc_typeInfection' },
+                        { title: 'IOC Rule', select: 'ioc_rule', pattern: true },
+                        { title: 'IOC Severity', select: 'ioc_severity' },
                     ],
                     settings: {
                         access: req.session.passport.user.level
@@ -414,7 +400,7 @@ module.exports = function(pool) {
                 }
                 var http = {
                     query: 'SELECT '+
-                                '\'HTTP\' AS type,'+
+                                '\'HTTP\' AS `type`,'+
                                 '`time`,'+
                                 '`ioc_count`,'+
                                 '`host`,'+
@@ -441,21 +427,22 @@ module.exports = function(pool) {
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_zone` = ? '+
                                 'AND `lan_ip` = ? '+
+                            'ORDER BY `time` DESC '+
                             'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
-                        {title: "Time", select: "time"},
-                        {title: "Host", select: "host"},
-                        {title: "URI", select: "uri"},
-                        {title: "Referrer", select: "referrer"},
-                        {title: "User Agent", select: "user_agent"},
-                        {title: "IOC", select: "ioc"},
-                        {title: "IOC Severity", select: "ioc_severity"},
-                        {title: "IOC Type", select: "ioc_typeIndicator"},
-                        {title: "IOC Stage", select: "ioc_typeInfection"},
-                        {title: "IOC Rule", select: "ioc_rule"},
-                        {title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
-                        {title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                        { title: 'Time', select: 'time' },
+                        { title: 'Host', select: 'host', pattern: true },
+                        { title: 'URI', select: 'uri', pattern: true },
+                        { title: 'Referrer', select: 'referrer', pattern: true },
+                        { title: 'User Agent', select: 'user_agent', pattern: true },
+                        { title: 'IOC', select: 'ioc', pattern: true },
+                        { title: 'IOC Type', select: 'ioc_typeIndicator' },
+                        { title: 'IOC Stage', select: 'ioc_typeInfection' },
+                        { title: 'IOC Rule', select: 'ioc_rule', pattern: true },
+                        { title: 'IOC Severity', select: 'ioc_severity' },
+                        { title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
+                        { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
                     ],
                     settings: {
                         access: req.session.passport.user.level
@@ -463,14 +450,14 @@ module.exports = function(pool) {
                 }   
                 var ssl = {
                     query: 'SELECT '+
-                                '\'SSL\' AS type, '+
+                                '\'SSL\' AS `type`,'+
                                 '`time`,'+
+                                '`conn_uids`,'+
                                 '`server_name`,'+
                                 '`version`,'+
                                 '`cipher`,'+
                                 '`subject`,'+
                                 '`issuer_subject`,'+
-                                '`conn_uids`,'+
                                 '`ioc`,'+
                                 '`ioc_typeIndicator`,'+
                                 '`ioc_typeInfection`,'+    
@@ -485,22 +472,23 @@ module.exports = function(pool) {
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_zone` = ? '+
                                 'AND `lan_ip` = ? '+
+                            'ORDER BY `time` DESC '+
                             'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
-                        {title: 'Time', select: 'time'},
-                        {title: 'Server Name', select: 'server_name', pattern: true},
-                        {title: 'Version', select: 'version'},
-                        {title: 'Cipher', select: 'cipher'},
-                        {title: 'Subject', select: 'subject'},
-                        {title: 'Issuer', select: 'issuer_subject'},
-                        {title: 'IOC', select: 'ioc'},
-                        {title: 'IOC Type', select: 'ioc_typeIndicator'},
-                        {title: 'IOC Stage', select: 'ioc_typeInfection'},
-                        {title: 'IOC Rule', select: 'ioc_rule'},
-                        {title: 'IOC Severity', select: 'ioc_severity'},
-                        {title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
-                        {title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                        { title: 'Time', select: 'time' },
+                        { title: 'Server Name', select: 'server_name', pattern: true },
+                        { title: 'Version', select: 'version', pattern: true },
+                        { title: 'Cipher', select: 'cipher', pattern: true },
+                        { title: 'Subject', select: 'subject', pattern: true },
+                        { title: 'Issuer', select: 'issuer_subject', pattern: true },
+                        { title: 'IOC', select: 'ioc', pattern: true },
+                        { title: 'IOC Type', select: 'ioc_typeIndicator' },
+                        { title: 'IOC Stage', select: 'ioc_typeInfection' },
+                        { title: 'IOC Rule', select: 'ioc_rule', pattern: true },
+                        { title: 'IOC Severity', select: 'ioc_severity' },
+                        { title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
+                        { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
                     ],
                     settings: {
                         access: req.session.passport.user.level
@@ -508,10 +496,11 @@ module.exports = function(pool) {
                 }
                 var email = {
                     query: 'SELECT '+
-                                '\'Email\' AS type, '+
-                                'time, '+
-                                '`lan_machine`,'+
+                                '\'Email\' AS `type`,'+
+                                '`time`,'+
                                 '`lan_zone`,'+
+                                '`lan_machine`,'+
+                                '`lan_user`,'+
                                 '`lan_ip`,'+
                                 '`remote_ip`,'+
                                 '`remote_country`,'+
@@ -523,7 +512,7 @@ module.exports = function(pool) {
                                 '`conn_uids`,'+
                                 '`ioc`,'+
                                 '`ioc_typeIndicator`,'+
-                                '`ioc_typeInfection`, '+    
+                                '`ioc_typeInfection`,'+    
                                 '`ioc_rule`,'+
                                 '`ioc_severity`,'+
                                 '`ioc_count` '+
@@ -533,26 +522,28 @@ module.exports = function(pool) {
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_zone` = ? '+
                                 'AND `lan_ip` = ? '+
+                            'ORDER BY `time` DESC '+
                             'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
-                        {title: "Time", select: "time"},
-                        {title: 'Zone', select: 'lan_zone' },
-                        {title: 'Machine Name', select: 'lan_machine', pattern: true},
-                        {title: 'Local IP', select: 'lan_ip', pattern: true },
-                        {title: 'Remote IP', select: 'remote_ip', pattern: true },
-                        {title: 'Remote Country', select: 'remote_country', pattern: true },
-                        {title: 'From', select: 'mailfrom' },
-                        {title: 'To', select: 'receiptto' },
-                        {title: 'Reply To', select: 'reply_to' },
-                        {title: 'In Reply To', select: 'in_reply_to' },
-                        {title: 'Subject', select: 'subject' },
-                        {title: "IOC", select: "ioc"},
-                        {title: "IOC Type", select: "ioc_typeIndicator"},
-                        {title: "IOC Stage", select: "ioc_typeInfection"},
-                        {title: "IOC Rule", select: "ioc_rule"},
-                        {title: "IOC Severity", select: "ioc_severity"},
-                        {title: "IOC Count", select: "ioc_count"},
+                        { title: 'Time', select: 'time' },
+                        { title: 'Zone', select: 'lan_zone' },
+                        { title: 'Local Machine', select: 'lan_machine', pattern: true },
+                        { title: 'Local User', select: 'lan_user', pattern: true },
+                        { title: 'Local IP', select: 'lan_ip', pattern: true },
+                        { title: 'Remote IP', select: 'remote_ip', pattern: true },
+                        { title: 'Remote Country', select: 'remote_country', pattern: true },
+                        { title: 'From', select: 'mailfrom', pattern: true },
+                        { title: 'To', select: 'receiptto', pattern: true },
+                        { title: 'Reply To', select: 'reply_to', pattern: true },
+                        { title: 'In Reply To', select: 'in_reply_to', pattern: true },
+                        { title: 'Subject', select: 'subject', pattern: true },
+                        { title: 'IOC', select: 'ioc', pattern: true },
+                        { title: 'IOC Type', select: 'ioc_typeIndicator' },
+                        { title: 'IOC Stage', select: 'ioc_typeInfection' },
+                        { title: 'IOC Rule', select: 'ioc_rule', pattern: true },
+                        { title: 'IOC Severity', select: 'ioc_severity' },
+                        { title: 'IOC Count', select: 'ioc_count' },
                     ],
                     settings: {
                         access: req.session.passport.user.level
@@ -560,8 +551,8 @@ module.exports = function(pool) {
                 }
                 var file = {
                     query: 'SELECT '+
-                                '\'File\' AS type, '+
-                                '`time`, '+
+                                '\'File\' AS `type`,'+
+                                '`time`,'+
                                 '`mime`,'+
                                 '`name`,'+
                                 '`size`,'+
@@ -582,20 +573,21 @@ module.exports = function(pool) {
                                 'AND `lan_ip` = ? '+
                                 'AND `mime` NOT REGEXP \'text\' '+
                                 'AND `mime` != \'-\' '+
+                            'ORDER BY `time` DESC '+
                             'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
-                        {title: "Time", select: "time"},
-                        {title: "File Type", select: "mime", pattern: true},
-                        {title: "Name", select: "name", pattern: true},
-                        {title: "Size", select: "size", pattern: true},
-                        {title: "MD5", select: "md5", pattern: true},
-                        {title: "SHA1", select: "sha1", pattern: true},
-                        {title: "IOC", select: "ioc"},
-                        {title: "IOC Type", select: "ioc_typeIndicator"},
-                        {title: "IOC Stage", select: "ioc_typeInfection"},
-                        {title: "IOC Rule", select: "ioc_rule"},
-                        {title: "IOC Severity", select: "ioc_severity"},
+                        { title: 'Time', select: 'time' },
+                        { title: 'File Type', select: 'mime', pattern: true },
+                        { title: 'Name', select: 'name', pattern: true },
+                        { title: 'Size', select: 'size', pattern: true },
+                        { title: 'MD5', select: 'md5', pattern: true },
+                        { title: 'SHA1', select: 'sha1', pattern: true },
+                        { title: 'IOC', select: 'ioc', pattern: true },
+                        { title: 'IOC Type', select: 'ioc_typeIndicator' },
+                        { title: 'IOC Stage', select: 'ioc_typeInfection' },
+                        { title: 'IOC Rule', select: 'ioc_rule', pattern: true },
+                        { title: 'IOC Severity', select: 'ioc_severity' },
                     ],
                     settings: {
                         access: req.session.passport.user.level
@@ -603,8 +595,8 @@ module.exports = function(pool) {
                 }
                 var endpoint = {
                     query: 'SELECT '+
-                                '\'Endpoint\' AS type,'+
-                                'time,'+
+                                '\'Endpoint\' AS `type`,'+
+                                '`time`,'+
                                 '`lan_zone`,'+
                                 '`lan_machine`,'+
                                 '`lan_user`,'+
@@ -619,18 +611,19 @@ module.exports = function(pool) {
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_zone` = ? '+
                                 'AND `lan_ip` = ? '+
-                        'LIMIT 2500',
+                            'ORDER BY `time` DESC '+
+                            'LIMIT 2500',
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
-                        {title: "Time", select: "time"},
-                        {title: "Zone", select: "lan_zone"},
-                        {title: "Machine Name", select: "lan_machine", pattern: true},
-                        {title: "User", select: "lan_user", pattern: true},
-                        {title: "Lan IP", select: "lan_ip", pattern: true},
-                        {title: "Event Type", select: "event_type"},
-                        {title: "Event Detail", select: "event_detail"},
-                        {title: "Event Source", select: "event_src"},
-                        {title: "Event ID", select: "event_id"},
+                        { title: 'Time', select: 'time' },
+                        { title: 'Zone', select: 'lan_zone' },
+                        { title: 'Local Machine', select: 'lan_machine', pattern: true },
+                        { title: 'Local User', select: 'lan_user', pattern: true },
+                        { title: 'Local IP', select: 'lan_ip', pattern: true },
+                        { title: 'Event Type', select: 'event_type', pattern: true },
+                        { title: 'Event Detail', select: 'event_detail', pattern: true },
+                        { title: 'Event Source', select: 'event_src', pattern: true },
+                        { title: 'Event ID', select: 'event_id', pattern: true },
                     ],
                     settings: {
                         access: req.session.passport.user.level
@@ -718,7 +711,7 @@ module.exports = function(pool) {
                         res.json(data);
                     }
                 });   
-            }  else if (req.query.trigger_type === 'firewall') {
+            } else if (req.query.trigger_type === 'firewall') {
                 new query({query: 'SELECT count(*) AS firewall_count FROM `firewall` ', insert: []}, {database: database, pool: pool}, function(err,data){
                     if (data) {
                         res.json(data);
@@ -805,7 +798,7 @@ module.exports = function(pool) {
                     var crossfilter;
                     var conn_ioc = {
                         query: 'SELECT '+
-                                    '\'Conn_ioc\' AS type,'+
+                                    '\'Conn_ioc\' AS `type`,'+
                                     '`time`,'+
                                     '`lan_stealth`,'+
                                     '`lan_zone`,'+
@@ -837,30 +830,24 @@ module.exports = function(pool) {
                                     'AND `lan_ip` = ? '+
                                     'AND `remote_ip` = ? '+
                                     'AND `ioc`= ? '+
+                                'ORDER BY `time` DESC '+
                                 'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                         params: [
-                            {title: "Time", select: "time"},
-                            {title: 'Stealth', select: 'lan_stealth', access: [3] },
-                            {title: "Zone", select: "lan_zone"},
-                            {title: "Machine", select: "lan_machine", pattern: true},
-                            {title: "Local User", select: "lan_user", pattern: true},
-                            {title: "Local IP", select: "lan_ip", pattern: true},
-                            {title: "Local Port", select: "lan_port", pattern: true},
-                            {title: "Remote IP", select: "remote_ip", pattern: true},
-                            {title: "Remote Port", select: "remote_port", pattern: true},
-                            {title: "Remote Country", select: "remote_country", pattern: true},
-                            {title: "Remote ASN", select: "remote_asn_name", pattern: true},
-                            {title: "Application", select: "l7_proto", pattern: true},
-                            {title: "Bytes to Remote", select: "in_bytes"},
-                            {title: "Bytes from  Remote", select: "out_bytes"},
-                            {title: "IOC", select: "ioc"},
-                            {title: "IOC Type", select: "ioc_typeIndicator"},
-                            {title: "IOC Stage", select: "ioc_typeInfection"},
-                            {title: "IOC Rule", select: "ioc_rule"},
-                            {title: "IOC Severity", select: "ioc_severity"},
-                            {title: 'ABP', select: 'proxy_blocked', access: [2] },
-                            {title: 'Proxy Block Policy', select: 'proxy_rule', access: [2]  },
+                            { title: 'Time', select: 'time' },
+                            { title: 'Stealth', select: 'lan_stealth', access: [3] },
+                            { title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
+                            { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                            { title: 'Zone', select: 'lan_zone' },
+                            { title: 'Local Machine', select: 'lan_machine', pattern: true },
+                            { title: 'Local User', select: 'lan_user', pattern: true },
+                            { title: 'Local IP', select: 'lan_ip', pattern: true },
+                            { title: 'Remote IP', select: 'remote_ip', pattern: true },
+                            { title: 'IOC', select: 'ioc', pattern: true },
+                            { title: 'IOC Type', select: 'ioc_typeIndicator' },
+                            { title: 'IOC Stage', select: 'ioc_typeInfection' },
+                            { title: 'IOC Rule', select: 'ioc_rule', pattern: true },
+                            { title: 'IOC Severity', select: 'ioc_severity' },
                         ],
                         settings: {
                             access: req.session.passport.user.level
@@ -868,7 +855,7 @@ module.exports = function(pool) {
                     }
                     var iocseverity = {
                         query: 'SELECT '+
-                                    '\'IOC Severity\' AS type, '+
+                                    '\'IOC Severity\' AS `type`,'+
                                     '`time`,'+
                                     '`lan_stealth`,'+
                                     '`lan_zone`,'+
@@ -898,31 +885,26 @@ module.exports = function(pool) {
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_zone`= ? '+
                                     'AND `lan_ip`= ? '+
-                                    'AND `ioc_severity` >= 1 ' +  
+                                    'AND `ioc_severity` >= 1 '+
+                                'ORDER BY `time` DESC '+
                                 'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
-                            {title: "Time", select: "time"},
-                            // {title: 'Stealth', select: 'lan_stealth', access: [3] },
-                            // {title: 'ABP', select: 'proxy_blocked', access: [2] },
-                            // {title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
-                            {title: "Zone", select: "lan_zone"},
-                            {title: "Machine", select: "lan_machine", pattern: true},
-                            {title: "Local User", select: "lan_user", pattern: true},
-                            {title: "Local IP", select: "lan_ip", pattern: true},
-                            {title: "Local Port", select: "lan_port", pattern: true},
-                            {title: "Remote IP", select: "remote_ip", pattern: true},
-                            {title: "Remote Port", select: "remote_port", pattern: true},
-                            {title: "Remote Country", select: "remote_country", pattern: true},
-                            {title: "Remote ASN", select: "remote_asn_name", pattern: true},
-                            {title: "Application", select: "l7_proto", pattern: true},
-                            {title: "Bytes to Remote", select: "in_bytes"},
-                            {title: "Bytes from Remote", select: "out_bytes"},
-                            {title: "IOC", select: "ioc"},
-                            {title: "IOC Type", select: "ioc_typeIndicator"},
-                            {title: "IOC Stage", select: "ioc_typeInfection"},
-                            {title: "IOC Rule", select: "ioc_rule"},
-                            {title: "IOC Severity", select: "ioc_severity"},
+                            { title: 'Time', select: 'time' },
+                            { title: 'Stealth', select: 'lan_stealth', access: [3] },
+                            { title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
+                            { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                            { title: 'Zone', select: 'lan_zone' },
+                            { title: 'Local Machine', select: 'lan_machine', pattern: true },
+                            { title: 'Local User', select: 'lan_user', pattern: true },
+                            { title: 'Local IP', select: 'lan_ip', pattern: true },
+                            { title: 'Remote IP', select: 'remote_ip', pattern: true },
+                            { title: 'IOC', select: 'ioc', pattern: true },
+                            { title: 'IOC Type', select: 'ioc_typeIndicator' },
+                            { title: 'IOC Stage', select: 'ioc_typeInfection' },
+                            { title: 'IOC Rule', select: 'ioc_rule', pattern: true },
+                            { title: 'IOC Severity', select: 'ioc_severity' },
+                            { title: 'IOC Count', select: 'ioc_count' },
                         ],
                         settings: {
                             access: req.session.passport.user.level
@@ -930,7 +912,7 @@ module.exports = function(pool) {
                     }
                     var conn = {
                         query: 'SELECT '+
-                                '\'Conn\' AS type, '+
+                                '\'Conn\' AS `type`,'+
                                 '`time`,'+
                                 '`lan_stealth`,'+
                                 '`lan_zone`,'+
@@ -960,84 +942,43 @@ module.exports = function(pool) {
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `lan_zone`= ? '+
                                 'AND `lan_ip`= ? '+
+                            'ORDER BY `time` DESC '+
                             'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
-                            {title: "Time", select: "time"},
-                            {title: 'Stealth', select: 'lan_stealth', access: [3] },
-                            {title: "Zone", select: "lan_zone"},
-                            {title: "Machine", select: "lan_machine", pattern: true},
-                            {title: "Local User", select: "lan_user", pattern: true},
-                            {title: "Local IP", select: "lan_ip", pattern: true},
-                            {title: "Local Port", select: "lan_port", pattern: true},
-                            {title: "Remote IP", select: "remote_ip", pattern: true},
-                            {title: "Remote Port", select: "remote_port", pattern: true},
-                            {title: "Remote Country", select: "remote_country", pattern: true},
-                            {title: "Remote ASN", select: "remote_asn_name", pattern: true},
-                            {title: "Application", select: "l7_proto", pattern: true},
-                            {title: "Bytes to Remote", select: "in_bytes"},
-                            {title: "Bytes from Remote", select: "out_bytes"},
-                            {title: "IOC", select: "ioc"},
-                            {title: "IOC Type", select: "ioc_typeIndicator"},
-                            {title: "IOC Stage", select: "ioc_typeInfection"},
-                            {title: "IOC Rule", select: "ioc_rule"},
-                            {title: "IOC Severity", select: "ioc_severity"},
-                            {title: "IOC Count", select: "ioc_count"},
-                            {title: 'ABP', select: 'proxy_blocked', access: [2] },
-                            {title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                           { title: 'Time', select: 'time' },
+                            { title: 'Stealth', select: 'lan_stealth', access: [3] },
+                            { title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
+                            { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                            { title: 'Zone', select: 'lan_zone' },
+                            { title: 'Local Machine', select: 'lan_machine', pattern: true },
+                            { title: 'Local User', select: 'lan_user', pattern: true },
+                            { title: 'Local IP', select: 'lan_ip', pattern: true },
+                            { title: 'Local Port', select: 'lan_port', pattern: true },
+                            { title: 'Remote IP', select: 'remote_ip', pattern: true },
+                            { title: 'Remote Port', select: 'remote_port', pattern: true },
+                            { title: 'Remote Country', select: 'remote_country', pattern: true },
+                            { title: 'Remote ASN', select: 'remote_asn_name', pattern: true },
+                            { title: 'Application', select: 'l7_proto', pattern: true },
+                            { title: 'Bytes to Remote', select: 'in_bytes' },
+                            { title: 'Bytes from Remote', select: 'out_bytes' },
+                            { title: 'IOC', select: 'ioc', pattern: true },
+                            { title: 'IOC Type', select: 'ioc_typeIndicator', pattern: true },
+                            { title: 'IOC Stage', select: 'ioc_typeInfection' },
+                            { title: 'IOC Rule', select: 'ioc_rule', pattern: true },
+                            { title: 'IOC Severity', select: 'ioc_severity' },
+                            { title: 'IOC Count', select: 'ioc_count' },
                         ],
                         settings: {
                             access: req.session.passport.user.level
                         }
                     }
-                    var stealth_drop = {
-                        query: 'SELECT '+
-                                '\'Stealth_drop\' AS type, '+
-                                'time,'+
-                                '`lan_zone`,'+
-                                '`lan_machine`,'+
-                                '`lan_user`,'+
-                                '`lan_ip`,'+
-                                '`remote_machine`,'+
-                                '`remote_user`,'+
-                                '`remote_ip`,'+
-                                '(`in_bytes` / 1048576) AS in_bytes,'+
-                                '(`out_bytes` / 1048576) AS out_bytes,'+
-                                '`in_packets`, '+
-                                '`out_packets` '+
-                            'FROM '+
-                                '`stealth_conn_meta` '+
-                            'WHERE '+
-                                'time BETWEEN ? AND ? '+
-                                'AND `lan_zone` = ? '+
-                                'AND `lan_ip` = ? '+
-                                'AND (`in_bytes` = 0 OR `out_bytes` = 0)'+
-                            'LIMIT 2500',
-                        insert: [start, end, req.query.lan_zone, req.query.lan_ip],
-                        params: [
-                            {title: "Time", select: "time"},
-                            {title: "Zone", select: "lan_zone"},
-                            {title: "Source Machine", select: "lan_machine"},
-                            {title: "Source User", select: "lan_user"},
-                            {title: "Source IP", select: "lan_ip"},
-                            {title: "Destination Machine", select: "remote_machine"},
-                            {title: "Destination User", select: "remote_user"},
-                            {title: "Destination IP", select: "remote_ip"},
-                            {title: "MB from Remote", select: "in_bytes"},
-                            {title: "MB to Remote", select: "out_bytes"},
-                            {title: "Packets from Remote", select: "in_packets"},
-                            {title: "Packets to Remote", select: "out_packets"}
-                        ],
-                        settings: {
-                            access: req.session.passport.user.level
-                        }
-                    } 
                     var application = {
                         query: 'SELECT '+
-                                    '\'Applications\' AS type,'+
+                                    '\'Applications\' AS `type`,'+
                                     '`time`,'+
-                                    '`lan_stealth`,'+
                                     '`lan_zone`,'+
+                                    '`lan_stealth`,'+
                                     '`lan_machine`,'+
                                     '`lan_user`,'+
                                     '`lan_ip`,'+
@@ -1065,39 +1006,71 @@ module.exports = function(pool) {
                                     'AND `lan_zone` = ? '+
                                     'AND `lan_ip` = ? '+
                                     'AND `l7_proto` != \'-\' '+
+                                'ORDER BY `time` DESC '+
                                 'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
-                            {title: "Time", select: "time"},
-                            // {title: 'Stealth', select: 'lan_stealth', access: [3] },
-                            // {title: "Zone", select: "lan_zone"},
-                            {title: "Machine", select: "lan_machine", pattern: true},
-                            {title: "Local User", select: "lan_user", pattern: true},
-                            {title: "Local IP", select: "lan_ip", pattern: true},
-                            {title: "Local Port", select: "lan_port", pattern: true},
-                            {title: "Remote IP", select: "remote_ip", pattern: true},
-                            {title: "Remote Port", select: "remote_port", pattern: true},
-                            {title: "Remote Country", select: "remote_country", pattern: true},
-                            // {title: "Remote ASN", select: "remote_asn_name", pattern: true},
-                            {title: "Application", select: "l7_proto", pattern: true},
-                            {title: "Bytes to Remote", select: "in_bytes"},
-                            {title: "Bytes from Remote", select: "out_bytes"},
-                            // {title: "IOC", select: "ioc"},
-                            // {title: "IOC Type", select: "ioc_typeIndicator"},
-                            // {title: "IOC Stage", select: "ioc_typeInfection"},
-                            // {title: "IOC Rule", select: "ioc_rule"},
-                            // {title: "IOC Severity", select: "ioc_severity"},
-                            {title: "IOC Count", select: "ioc_count"},
-                            // {title: 'ABP', select: 'proxy_blocked', access: [2] },
-                            // {title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                            { title: 'Time', select: 'time' },
+                            { title: 'Zone', select: 'lan_zone' },
+                            { title: 'Local Machine', select: 'lan_machine', pattern: true },
+                            { title: 'Local User', select: 'lan_user', pattern: true },
+                            { title: 'Local IP', select: 'lan_ip', pattern: true },
+                            { title: 'Local Port', select: 'lan_port', pattern: true },
+                            { title: 'Remote IP', select: 'remote_ip', pattern: true },
+                            { title: 'Remote Port', select: 'remote_port', pattern: true },
+                            { title: 'Application', select: 'l7_proto', pattern: true },
+                            { title: 'Bytes to Remote', select: 'in_bytes' },
+                            { title: 'Bytes from Remote', select: 'out_bytes' },
                         ],
                         settings: {
                             access: req.session.passport.user.level
                         }
                     }
+                    var stealth_drop = {
+                        query: 'SELECT '+
+                                '\'Stealth_drop\' AS `type`,'+
+                                'time,'+
+                                '`lan_zone`,'+
+                                '`lan_machine`,'+
+                                '`lan_user`,'+
+                                '`lan_ip`,'+
+                                '`remote_machine`,'+
+                                '`remote_user`,'+
+                                '`remote_ip`,'+
+                                '(`in_bytes` / 1048576) AS in_bytes,'+
+                                '(`out_bytes` / 1048576) AS out_bytes,'+
+                                '`in_packets`,'+
+                                '`out_packets` '+
+                            'FROM '+
+                                '`stealth_conn_meta` '+
+                            'WHERE '+
+                                'time BETWEEN ? AND ? '+
+                                'AND `lan_zone` = ? '+
+                                'AND `lan_ip` = ? '+
+                                'AND (`in_bytes` = 0 OR `out_bytes` = 0) '+
+                            'ORDER BY `time` DESC '+
+                            'LIMIT 2500',
+                        insert: [start, end, req.query.lan_zone, req.query.lan_ip],
+                        params: [
+                            { title: 'Time', select: 'time' },
+                            { title: 'Source Machine', select: 'lan_machine', pattern: true },
+                            { title: 'Source User', select: 'lan_user', pattern: true },
+                            { title: 'Source IP', select: 'lan_ip', pattern: true },
+                            { title: 'Destination Machine', select: 'remote_machine', pattern: true },
+                            { title: 'Destination User', select: 'remote_user', pattern: true },
+                            { title: 'Destination IP', select: 'remote_ip', pattern: true },
+                            { title: 'MB from Remote', select: 'in_bytes' },
+                            { title: 'MB to Remote', select: 'out_bytes' },
+                            { title: 'Packets from Remote', select: 'in_packets' },
+                            { title: 'Packets to Remote', select: 'out_packets' }
+                        ],
+                        settings: {
+                            access: req.session.passport.user.level
+                        }
+                    } 
                     var dns = {
                         query: 'SELECT '+
-                                    '\'DNS\' AS type,'+
+                                    '\'DNS\' AS `type`,'+
                                     '`time`,'+
                                     '`proto`,'+
                                     '`qclass_name`,'+
@@ -1120,18 +1093,18 @@ module.exports = function(pool) {
                                 'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
-                            {title: "Time", select: "time"},
-                            {title: "Protocol", select: "proto"},
-                            {title: "Query Class", select: "qclass_name"},
-                            {title: "Query Type", select: "qtype_name"},
-                            {title: "Query", select: "query"},
-                            {title: "Answers", select: "answers"},
-                            {title: "TTLs", select: "TTLs"},
-                            {title: "IOC", select: "ioc"},
-                            {title: "IOC Type", select: "ioc_typeIndicator"},
-                            {title: "IOC Stage", select: "ioc_typeInfection"},
-                            {title: "IOC Rule", select: "ioc_rule"},
-                            {title: "IOC Severity", select: "ioc_severity"},
+                            { title: 'Time', select: 'time' },
+                            { title: 'Protocol', select: 'proto' },
+                            { title: 'Query Class', select: 'qclass_name', pattern: true },
+                            { title: 'Query Type', select: 'qtype_name', pattern: true },
+                            { title: 'Query', select: 'query', pattern: true },
+                            { title: 'Answers', select: 'answers' },
+                            { title: 'TTLs', select: 'TTLs', pattern: true },
+                            { title: 'IOC', select: 'ioc', pattern: true },
+                            { title: 'IOC Type', select: 'ioc_typeIndicator' },
+                            { title: 'IOC Stage', select: 'ioc_typeInfection' },
+                            { title: 'IOC Rule', select: 'ioc_rule', pattern: true },
+                            { title: 'IOC Severity', select: 'ioc_severity' },
                         ],
                         settings: {
                             access: req.session.passport.user.level
@@ -1139,7 +1112,7 @@ module.exports = function(pool) {
                     }
                     var http = {
                         query: 'SELECT '+
-                                    '\'HTTP\' AS type,'+
+                                    '\'HTTP\' AS `type`,'+
                                     '`time`,'+
                                     '`host`,'+
                                     '`uri`,'+
@@ -1166,21 +1139,22 @@ module.exports = function(pool) {
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_zone` = ? '+
                                     'AND `lan_ip` = ? '+
+                                'ORDER BY `time` DESC '+
                                 'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
-                            {title: "Time", select: "time"},
-                            {title: "Host", select: "host"},
-                            {title: "URI", select: "uri"},
-                            {title: "Referrer", select: "referrer"},
-                            {title: "User Agent", select: "user_agent"},
-                            {title: "IOC", select: "ioc"},
-                            {title: "IOC Type", select: "ioc_typeIndicator"},
-                            {title: "IOC Stage", select: "ioc_typeInfection"},
-                            {title: "IOC Rule", select: "ioc_rule"},
-                            {title: "IOC Severity", select: "ioc_severity"},
-                            {title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
-                            {title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                            { title: 'Time', select: 'time' },
+                            { title: 'Host', select: 'host', pattern: true },
+                            { title: 'URI', select: 'uri', pattern: true },
+                            { title: 'Referrer', select: 'referrer', pattern: true },
+                            { title: 'User Agent', select: 'user_agent', pattern: true },
+                            { title: 'IOC', select: 'ioc', pattern: true },
+                            { title: 'IOC Type', select: 'ioc_typeIndicator' },
+                            { title: 'IOC Stage', select: 'ioc_typeInfection' },
+                            { title: 'IOC Rule', select: 'ioc_rule', pattern: true },
+                            { title: 'IOC Severity', select: 'ioc_severity' },
+                            { title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
+                            { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
                         ],
                         settings: {
                             access: req.session.passport.user.level
@@ -1188,7 +1162,7 @@ module.exports = function(pool) {
                     }
                     var ssl = {
                         query: 'SELECT '+
-                                    '\'SSL\' AS type,'+
+                                    '\'SSL\' AS `type`,'+
                                     '`time`,'+
                                     '`ioc_count`,'+
                                     '`version`,'+
@@ -1208,24 +1182,25 @@ module.exports = function(pool) {
                                     '`ssl_ioc` '+
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
-                                    'AND `lan_zone`= ?'+
-                                    'AND `lan_ip`= ?'+
+                                    'AND `lan_zone` = ? '+
+                                    'AND `lan_ip` = ? '+
+                                'ORDER BY `time` DESC '+
                                 'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
-                            {title: "Time", select: "time"},
-                            {title: "Server Name", select: "server_name", pattern: true},
-                            {title: "Version", select: "version"},
-                            {title: "cipher", select: "cipher"},
-                            {title: "Subject", select: "subject"},
-                            {title: "Issuer", select: "issuer_subject"},
-                            {title: "IOC", select: "ioc"},
-                            {title: "IOC Type", select: "ioc_typeIndicator"},
-                            {title: "IOC Stage", select: "ioc_typeInfection"},
-                            {title: "IOC Rule", select: "ioc_rule"},
-                            {title: "IOC Severity", select: "ioc_severity"},
-                            {title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
-                            {title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                            { title: 'Time', select: 'time' },
+                            { title: 'Server Name', select: 'server_name', pattern: true },
+                            { title: 'Version', select: 'version', pattern: true },
+                            { title: 'Cipher', select: 'cipher', pattern: true },
+                            { title: 'Subject', select: 'subject', pattern: true },
+                            { title: 'Issuer', select: 'issuer_subject', pattern: true },
+                            { title: 'IOC', select: 'ioc', pattern: true },
+                            { title: 'IOC Type', select: 'ioc_typeIndicator' },
+                            { title: 'IOC Stage', select: 'ioc_typeInfection' },
+                            { title: 'IOC Rule', select: 'ioc_rule', pattern: true },
+                            { title: 'IOC Severity', select: 'ioc_severity' },
+                            { title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
+                            { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
                         ],
                         settings: {
                             access: req.session.passport.user.level
@@ -1233,10 +1208,11 @@ module.exports = function(pool) {
                     }
                     var email = {
                         query: 'SELECT '+
-                                    '\'Email\' AS type, '+
-                                    'time, '+
-                                    '`lan_machine`,'+
+                                    '\'Email\' AS `type`,'+
+                                    '`time`,'+
                                     '`lan_zone`,'+
+                                    '`lan_machine`,'+
+                                    '`lan_user`,'+
                                     '`lan_ip`,'+
                                     '`remote_ip`,'+
                                     '`remote_country`,'+
@@ -1248,7 +1224,7 @@ module.exports = function(pool) {
                                     '`conn_uids`,'+
                                     '`ioc`,'+
                                     '`ioc_typeIndicator`,'+
-                                    '`ioc_typeInfection`, '+    
+                                    '`ioc_typeInfection`,'+    
                                     '`ioc_rule`,'+
                                     '`ioc_severity`,'+
                                     '`ioc_count` '+
@@ -1258,26 +1234,28 @@ module.exports = function(pool) {
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_zone` = ? '+
                                     'AND `lan_ip` = ? '+
+                                'ORDER BY `time` DESC '+
                                 'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
-                            {title: "Time", select: "time"},
-                            {title: 'Zone', select: 'lan_zone' },
-                            {title: 'Machine Name', select: 'lan_machine' },
-                            {title: 'Local IP', select: 'lan_ip' },
-                            {title: 'Remote IP', select: 'remote_ip', pattern: true },
-                            {title: 'Remote Country', select: 'remote_country', pattern: true },
-                            {title: 'From', select: 'mailfrom' },
-                            {title: 'To', select: 'receiptto' },
-                            {title: 'Reply To', select: 'reply_to' },
-                            {title: 'In Reply To', select: 'in_reply_to' },
-                            {title: 'Subject', select: 'subject' },
-                            {title: "IOC", select: "ioc"},
-                            {title: "IOC Type", select: "ioc_typeIndicator"},
-                            {title: "IOC Stage", select: "ioc_typeInfection"},
-                            {title: "IOC Rule", select: "ioc_rule"},
-                            {title: "IOC Severity", select: "ioc_severity"},
-                            {title: "IOC Count", select: "ioc_count"},
+                            { title: 'Time', select: 'time' },
+                            { title: 'Zone', select: 'lan_zone' },
+                            { title: 'Local Machine', select: 'lan_machine', pattern: true },
+                            { title: 'Local User', select: 'lan_user', pattern: true },
+                            { title: 'Local IP', select: 'lan_ip', pattern: true },
+                            { title: 'Remote IP', select: 'remote_ip', pattern: true },
+                            { title: 'Remote Country', select: 'remote_country', pattern: true },
+                            { title: 'From', select: 'mailfrom', pattern: true },
+                            { title: 'To', select: 'receiptto', pattern: true },
+                            { title: 'Reply To', select: 'reply_to', pattern: true },
+                            { title: 'In Reply To', select: 'in_reply_to', pattern: true },
+                            { title: 'Subject', select: 'subject', pattern: true },
+                            { title: 'IOC', select: 'ioc', pattern: true },
+                            { title: 'IOC Type', select: 'ioc_typeIndicator' },
+                            { title: 'IOC Stage', select: 'ioc_typeInfection' },
+                            { title: 'IOC Rule', select: 'ioc_rule', pattern: true },
+                            { title: 'IOC Severity', select: 'ioc_severity' },
+                            { title: 'IOC Count', select: 'ioc_count' },
                         ],
                         settings: {
                             access: req.session.passport.user.level
@@ -1285,7 +1263,7 @@ module.exports = function(pool) {
                     }
                     var file = {
                         query: 'SELECT '+
-                                    '\'File\' AS type,'+
+                                    '\'File\' AS `type`,'+
                                     '`time`,'+
                                     '`mime`,'+
                                     '`name`,'+
@@ -1306,20 +1284,21 @@ module.exports = function(pool) {
                                     'AND `lan_zone` = ? '+
                                     'AND `lan_ip` = ? '+
                                     'AND `mime` NOT REGEXP \'text\' '+
-                            'LIMIT 2500',
+                                'ORDER BY `time` DESC '+
+                                'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
-                            {title: "Time", select: "time"},
-                            {title: "File Type", select: "mime", pattern: true},
-                            {title: "Name", select: "name", pattern: true},
-                            {title: "Size", select: "size", pattern: true},
-                            {title: "MD5", select: "md5", pattern: true},
-                            {title: "SHA1", select: "sha1", pattern: true},
-                            {title: "IOC", select: "ioc"},
-                            {title: "IOC Severity", select: "ioc_severity"},
-                            {title: "IOC Type", select: "ioc_typeIndicator"},
-                            {title: "IOC Stage", select: "ioc_typeInfection"},
-                            {title: "IOC Rule", select: "ioc_rule"},
+                            { title: 'Time', select: 'time' },
+                            { title: 'File Type', select: 'mime', pattern: true },
+                            { title: 'Name', select: 'name', pattern: true },
+                            { title: 'Size', select: 'size', pattern: true },
+                            { title: 'MD5', select: 'md5', pattern: true },
+                            { title: 'SHA1', select: 'sha1', pattern: true },
+                            { title: 'IOC', select: 'ioc', pattern: true },
+                            { title: 'IOC Type', select: 'ioc_typeIndicator' },
+                            { title: 'IOC Stage', select: 'ioc_typeInfection' },
+                            { title: 'IOC Rule', select: 'ioc_rule', pattern: true },
+                            { title: 'IOC Severity', select: 'ioc_severity' },
                         ],
                         settings: {
                             access: req.session.passport.user.level
@@ -1327,7 +1306,7 @@ module.exports = function(pool) {
                     }
                     var endpoint = {
                        query: 'SELECT '+
-                                    '\'Endpoint\' AS type,'+
+                                    '\'Endpoint\' AS `type`,'+
                                     '`time`,'+
                                     '`lan_zone`,'+
                                     '`lan_machine`,'+
@@ -1343,18 +1322,19 @@ module.exports = function(pool) {
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `lan_zone` = ? '+
                                     'AND `lan_ip` = ? '+
+                                'ORDER BY `time` DESC '+
                                 'LIMIT 2500',
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
-                            {title: "Time", select: "time"},
-                            {title: "Zone", select: "lan_zone"},
-                            {title: "Machine Name", select: "lan_machine", pattern: true},
-                            {title: "User", select: "lan_user", pattern: true},
-                            {title: "Lan IP", select: "lan_ip", pattern: true},
-                            {title: "Event Type", select: "event_type"},
-                            {title: "Event Detail", select: "event_detail"},
-                            {title: "Event Source", select: "event_src"},
-                            {title: "Event ID", select: "event_id"},
+                            { title: 'Time', select: 'time' },
+                            { title: 'Zone', select: 'lan_zone' },
+                            { title: 'Local Machine', select: 'lan_machine', pattern: true },
+                            { title: 'Local User', select: 'lan_user', pattern: true },
+                            { title: 'Local IP', select: 'lan_ip', pattern: true },
+                            { title: 'Event Type', select: 'event_type', pattern: true },
+                            { title: 'Event Detail', select: 'event_detail', pattern: true },
+                            { title: 'Event Source', select: 'event_src', pattern: true },
+                            { title: 'Event ID', select: 'event_id', pattern: true },
                         ],
                         settings: {
                             access: req.session.passport.user.level
@@ -1363,25 +1343,25 @@ module.exports = function(pool) {
                     var info = {};
                     var InfoSQL = {
                         query: 'SELECT '+
-                                    '`id`, '+
-                                    '`time`, '+
-                                    'min(`time`) as first, '+
-                                    'max(`time`) as last, '+
-                                    'sum(`in_packets`) as in_packets, '+
-                                    'sum(`out_packets`) as out_packets, '+
-                                    'sum(`in_bytes`) as in_bytes, '+
-                                    'sum(`out_bytes`) as out_bytes, '+
-                                    '`lan_machine`, '+
-                                    '`lan_zone`, '+
-                                    '`lan_user`, '+
-                                    '`lan_port`, '+
-                                    '`remote_port`, '+
-                                    '`remote_cc`, '+
-                                    '`remote_country`, '+
-                                    '`remote_asn`, '+
-                                    '`remote_asn_name`, '+
-                                    '`l7_proto`, '+
-                                    '`ioc_rule`, '+
+                                    '`id`,'+
+                                    '`time`,'+
+                                    'min(`time`) as first,'+
+                                    'max(`time`) as last,'+
+                                    'sum(`in_packets`) as in_packets,'+
+                                    'sum(`out_packets`) as out_packets,'+
+                                    'sum(`in_bytes`) as in_bytes,'+
+                                    'sum(`out_bytes`) as out_bytes,'+
+                                    '`lan_machine`,'+
+                                    '`lan_zone`,'+
+                                    '`lan_user`,'+
+                                    '`lan_port`,'+
+                                    '`remote_port`,'+
+                                    '`remote_cc`,'+
+                                    '`remote_country`,'+
+                                    '`remote_asn`,'+
+                                    '`remote_asn_name`,'+
+                                    '`l7_proto`,'+
+                                    '`ioc_rule`,'+
                                     '`ioc_typeIndicator` '+
                                 'FROM '+
                                     '`conn_ioc` '+
@@ -1405,11 +1385,11 @@ module.exports = function(pool) {
                     var treereturn = [];
                     var treeSQL = {
                         query: 'SELECT '+
-                                    'ioc_attrID, '+
-                                    'ioc_childID, '+
-                                    'ioc_parentID, '+
-                                    'ioc_typeIndicator, '+
-                                    'ioc_severity, '+
+                                    'ioc_attrID,'+
+                                    'ioc_childID,'+
+                                    'ioc_parentID,'+
+                                    'ioc_typeIndicator,'+
+                                    'ioc_severity,'+
                                     'conn_ioc.ioc '+
                                 'FROM '+
                                     '`conn_ioc` '+
@@ -1417,15 +1397,15 @@ module.exports = function(pool) {
                                     'time BETWEEN ? AND ? '+
                                     'AND `lan_ip` = ? '+
                                 'GROUP BY '+
-                                    'ioc_parentID, '+
-                                    'ioc_childID, '+
+                                    'ioc_parentID,'+
+                                    'ioc_childID,'+
                                     'ioc_attrID',
                         insert: [start, end, req.query.lan_ip]
                     }
                     var forcereturn = [];
                     var forceSQL = {
                         query: 'SELECT '+
-                                    '`remote_ip`, '+
+                                    '`remote_ip`,'+
                                     'count(*) as count '+
                                 'FROM '+
                                     '`conn_ioc` '+
@@ -1617,14 +1597,29 @@ module.exports = function(pool) {
                             case 'Conn':
                                 queryString += '`conn`';
                             break;
-                            case 'File':
-                                queryString += '`file`';
+                            case 'Stealth':
+                                queryString += '`stealth_conn_meta`';
+                            break;
+                            case 'Stealth_drop':
+                                queryString += '`stealth_conn_meta`';
+                            break;
+                            case 'DNS':
+                                queryString += '`dns`';
+                            break;
+                            case 'HTTP':
+                                queryString += '`http`';
                             break;
                             case 'SSL':
                                 queryString += '`ssl`';
                             break;
                             case 'Email':
                                 queryString += '`smtp`';
+                            break;
+                            case 'File':
+                                queryString += '`file`';
+                            break;
+                            case 'Endpoint':
+                                queryString += '`endpoint_events`';
                             break;
                             default:
                                 queryString += '`conn`';
