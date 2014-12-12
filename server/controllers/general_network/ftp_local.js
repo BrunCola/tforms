@@ -40,10 +40,10 @@ module.exports = function(pool) {
                             '`dc_resp_h`,'+
                             '`dc_resp_p`,'+
                             '`ioc`,'+
-                            '`ioc_severity`,'+
                             '`ioc_typeInfection`,'+
                             '`ioc_typeIndicator`,'+
                             '`ioc_rule`,'+
+                            '`ioc_severity`,'+
                             'sum(`ioc_count`) AS `ioc_count` '+
                         'FROM '+ 
                             '`ftp` '+

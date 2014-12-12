@@ -57,7 +57,7 @@ module.exports = function(pool) {
                                 '`time` BETWEEN ? AND ? '+
                                 'AND `remote_ip` = ? '+
                             'GROUP BY '+
-                                '`lan_ip',
+                                '`lan_ip`',
                     insert: [start, end, req.query.remote_ip],
                     params: [
                         {
