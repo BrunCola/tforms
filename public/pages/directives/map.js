@@ -60,8 +60,6 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 
             var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5);
 
-            var yAxis = d3.svg.axis().scale(y).orient("left").ticks(5);
-
             var axisX = graphLine.append("g")
                 .attr("class", "x axis")
                 .attr("transform", "translate(0," + lineChartHeight + ")")
@@ -69,15 +67,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 
             var pathLine = gLine.append("g");
 
-            var pathLineOld = gLine.append("g");
-
-            var lineFunction = d3.svg.line()
-                .x(function(d, i) { return x(d.time); })
-                .y(function(d, i) { return y(d.properties.count); });
-                //.y(function(d, i) { return y(Math.floor(Math.random()*20)); });
-
             var filteredLineChart;
-            var filteredLineChartOld;
 
             function populateTable(array, dClass) {
                 function sortArrOfObjectsByParam(arrToSort, strObjParamToSortBy, sortAscending) {
