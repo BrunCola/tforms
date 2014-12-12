@@ -798,7 +798,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
     return {
         link: function ($scope, element, attrs) {
             $scope.socket = socket;
-            var csv = "data:text/csv;charset=utf-8,\n";
+            var csv = "data:text/csv;charset=utf-8,";
             function makeCsv(array, heading){
                 // console.log("TEST");
                 function isAllowed(word){
@@ -818,16 +818,16 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                     for (var i in array[0]) {
                         objlength++;
                     }
-                    for (var t in array[0]) {
-                        if (isAllowed(t)){
-                            csv += t;
-                            if (tpos < objlength-1) {
-                                // append comma if we're not at end of array
-                                csv += ',';
-                            }
-                            tpos++
-                        }
-                    }
+                    // for (var t in array[0]) {
+                    //     if (isAllowed(t)){
+                    //         csv += t;
+                    //         if (tpos < objlength-1) {
+                    //             // append comma if we're not at end of array
+                    //             csv += ',';
+                    //         }
+                    //         tpos++
+                    //     }
+                    // }
                     csv += '\n';
                     for (var i in array) {
                         for (var n in array[i]) {
@@ -1188,6 +1188,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                             var encodedUri = encodeURI(csv);
                                             window.open(encodedUri);
 
+                                            csv = "data:text/csv;charset=utf-8,";
                                         });
                                         $scope.country = [];
                                         $scope.ioc = [];
