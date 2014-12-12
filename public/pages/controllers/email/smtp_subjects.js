@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('smtpSubjectsController', ['$scope', '$s
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/email/smtp_subjects?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/api/email/smtp_subjects?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/email/smtp_subjects?';
+        query = '/api/email/smtp_subjects?';
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

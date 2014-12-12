@@ -1,0 +1,20 @@
+ <div class="page-header-fixed">
+    <div class="header navbar navbar-inverse navbar-fixed-top" data-ng-include="'public/system/views/header.html'" data-role="navigation"></div>
+    <div class="page-container">
+        <!-- SIDEBAR -->
+        <div class="page-sidebar nav-collapse collapse">
+            <div data-ng-include="'public/system/views/sidebar.html'"></div>
+        </div>
+        <!-- CONTENT -->
+        <div class="page-content">
+            <div class="container-fluid">
+                <div ui-view></div>
+            </div>
+        </div>
+    </div>
+    <div class='footer'>
+        <div class='footer-inner'>
+            <!-- &copy; {{global.version}} -->
+        </div>
+    </div>
+</div>

@@ -9,8 +9,8 @@ var express = require('express'),
     compression = require('compression'),
     bodyParser = require('body-parser'),
     methodOverride = require('method-override'),
-    cookieParser = require('cookie-parser'),
-    session = require('express-session'),
+    expressJwt = require('express-jwt'),
+    jwt = require('jsonwebtoken'),
     multer = require('multer'),
     errorHandler = require('errorhandler'),
     mean = require('./meanio'),
@@ -23,7 +23,7 @@ var express = require('express'),
     util = require('./util'),
     assetmanager = require('assetmanager');
 
-module.exports = function(app, passport, version, io, pool) {
+module.exports = function(app, version, io, pool) {
     // app.param('end', /^[0-9]{1,10}$/);
     app.set('showStackError', true);
 
@@ -45,6 +45,8 @@ module.exports = function(app, passport, version, io, pool) {
     if (process.env.NODE_ENV === 'development') {
        app.use(morgan('dev'));
     } 
+
+    app.use('/api', expressJwt({secret: config.sessionSecret}));
 
     //
     // replace in morgan/index.js for slightly more interesting logging
@@ -94,16 +96,12 @@ module.exports = function(app, passport, version, io, pool) {
     // Enable jsonp
     app.enable('jsonp callback');
 
-    // The cookieParser should be above session
-    app.use(cookieParser());
-
     // Request body parsing middleware should be above methodOverride
     app.use(expressValidator());
     // app.use(bodyParser());
 
     app.use(bodyParser());
     app.use(methodOverride());
-    app.use(cookieParser());
     app.use(multer());
     // app.set('pool', pool);
     // Import your asset file
@@ -121,20 +119,8 @@ module.exports = function(app, passport, version, io, pool) {
         next();
     });
 
-    // Express/Mongo session storage
-    app.use(session({
-        secret: config.sessionSecret,
-        cookie: {
-            maxAge : 36000000
-        }
-    }));
-
     // Dynamic helpers
     app.use(helpers(config.app.name));
-
-    // Use passport session
-    app.use(passport.initialize());
-    app.use(passport.session());
 
     //mean middleware from modules before routes
     app.use(mean.chainware.before);
@@ -168,7 +154,7 @@ module.exports = function(app, passport, version, io, pool) {
             // used and shared by routes as further middlewares and is not a
             // route by itself
             util.walk(appPath + '/server/routes', 'middlewares', function(path) {
-                require(path)(app, passport, version, io, pool);
+                require(path)(app, version, io, pool);
             });
         }
 

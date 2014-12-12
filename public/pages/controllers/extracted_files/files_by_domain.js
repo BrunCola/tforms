@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('byDomainController', ['$scope', '$state
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/extracted_files/files_by_domain?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/api/extracted_files/files_by_domain?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/extracted_files/files_by_domain?';
+        query = '/api/extracted_files/files_by_domain?';
     }
     $http({method: 'GET', url: query}).
     success(function(data) {

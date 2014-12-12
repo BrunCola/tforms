@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('endpointEventsSharepointController', ['
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/local_events/endpoint_events_sharepoint?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/api/local_events/endpoint_events_sharepoint?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/local_events/endpoint_events_sharepoint?';
+        query = '/api/local_events/endpoint_events_sharepoint?';
     }
     $http({method: 'GET', url: query}).
     success(function(data) {

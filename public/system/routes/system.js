@@ -2,42 +2,71 @@
 
 //Setting up route
 angular.module('mean.system').config(['$stateProvider', '$urlRouterProvider',
-		function($stateProvider, $urlRouterProvider) {
+        function($stateProvider, $urlRouterProvider) {
+            var checkLoggedIn = function($q, $timeout, $http, $location, $window, $rootScope) {
+                // Initialize a new promise
+                var deferred = $q.defer();
+                // Make an AJAX call to check if the user is logged in
+                if ($window.sessionStorage.token) {
+                    $http.get('/api/loggedin')
+                        .success(function(user) {
+                            $rootScope.user = user;
+                            $timeout(deferred.resolve);
+                        })
+                        .error(function(user) {
+                            $timeout(deferred.reject);
+                            $location.url('/login');
+                        })
+                } else {
+                    $timeout(deferred.reject);
+                    $location.url('/login');
+                }
+                return deferred.promise;
+            };
 
-			var checkLoggedin = function($q, $timeout, $http, $location) {
-				// Initialize a new promise
-				var deferred = $q.defer();
+            // Check if the user is not conntected
+            var checkLoggedOut = function($q, $timeout, $http, $location, $window) {
+                // Initialize a new promise
+                var deferred = $q.defer();
+                // if there's still a token, take them back home (not login page)
+                if ($window.sessionStorage.token) {
+                    $http.get('/api/loggedin')
+                        .success(function(user) {
+                            // if success
+                            $timeout(deferred.reject);
+                            // go home
+                            $location.url('/ioc_events');
+                        })
+                        .error(function(user) {
+                            $timeout(deferred.resolve);
+                        })
+                } else {
+                    $timeout(deferred.resolve);
+                }
+                return deferred.promise;
+            };
 
-				// Make an AJAX call to check if the user is logged in
-				$http.get('/loggedin').success(function(user) {
-					// Authenticated
-					if (user !== '0')
-						$timeout(deferred.resolve, 0);
+            // For unmatched routes:
+            $urlRouterProvider.otherwise('/ioc_events');
+            // states for my app
+            $stateProvider
+                .state('auth', {
+                    templateUrl: 'public/auth/views/index.html',
+                    resolve: {
+                        loggedin: checkLoggedOut
+                    }
+                })
+                .state('pages', {
+                    templateUrl: 'public/pages/views/index.html',
+                    resolve: {
+                        loggedin: checkLoggedIn
+                    },
+                });
 
-					// Not Authenticated
-					else {
-						$timeout(function() {
-							deferred.reject();
-						}, 0);
-						$location.url('/login');
-					}
-				});
-
-				return deferred.promise;
-			};
-
-			// For unmatched routes:
-			$urlRouterProvider.otherwise('/ioc_events');
-
-			// states for my app
-			$stateProvider
-				.state('auth', {
-					templateUrl: 'public/auth/views/index.html'
-				});
-		}
-	])
-	.config(['$locationProvider',
-		function($locationProvider) {
-			$locationProvider.hashPrefix('!');
-		}
-	]);
+        }
+    ])
+    .config(['$locationProvider',
+        function($locationProvider) {
+            $locationProvider.hashPrefix('!');
+        }
+    ]);

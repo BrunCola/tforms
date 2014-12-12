@@ -4,11 +4,11 @@ angular.module('mean.pages').controller('iocEventsReportController', ['$scope', 
     $scope.global = Global;
     var query;
     if ($location.$$search.database){
-        query = '/reports/ioc_events?start='+$location.$$search.start+'&end='+$location.$$search.end+'&database='+$location.$$search.database;
+        query = '/api/reports/ioc_events?start='+$location.$$search.start+'&end='+$location.$$search.end+'&database='+$location.$$search.database;
     } else if ($location.$$search.start && $location.$$search.end) {
-        query = '/reports/ioc_events?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/api/reports/ioc_events?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/reports/ioc_events?';
+        query = '/api/reports/ioc_events?';
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

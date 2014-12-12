@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('smtpSendersController', ['$scope', '$st
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/email/smtp_senders?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/api/email/smtp_senders?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/email/smtp_senders?';
+        query = '/api/email/smtp_senders?';
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('newSslHostsController', ['$scope', '$st
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/first_seen/new_ssl_hosts?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/api/first_seen/new_ssl_hosts?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/first_seen/new_ssl_hosts?';
+        query = '/api/first_seen/new_ssl_hosts?';
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

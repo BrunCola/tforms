@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('httpLocalControllerBlocked', ['$scope',
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/http/http_local_blocked?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/api/http/http_local_blocked?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/http/http_local_blocked?';
+        query = '/api/http/http_local_blocked?';
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

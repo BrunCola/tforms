@@ -9,7 +9,7 @@ var permissions = [3];
 module.exports = function(pool) {
 	return {
 		render: function(req, res) {
-			var database = req.session.passport.user.database;
+			var database = req.user.database;
 			// var database = null;
 			var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
 			var end = Math.round(new Date().getTime() / 1000);
@@ -17,26 +17,26 @@ module.exports = function(pool) {
 				start = req.query.start;
 				end = req.query.end;
 			}
-			if (permissions.indexOf(parseInt(req.session.passport.user.level)) !== -1) {
+			if (permissions.indexOf(parseInt(req.user.level)) !== -1) {
 				var tables = [];
 				var info = [];
 				var table1 = { 
 					query: 'SELECT * FROM process_health b ' + 
-			                'INNER JOIN (SELECT client, zone, process_name, MAX(timestamp) ' + 
-			                'AS maxtimestamp FROM process_health ' + 
-			                'GROUP BY client, zone, process_name) a ' +
-			                'ON a.zone = b.zone AND a.maxtimestamp = b.timestamp AND a.process_name = b.process_name AND a.client = b.client ' + 
-			                'GROUP BY a.client, a.zone, a.process_name ORDER BY a.process_name',
-	                insert: [],
+							'INNER JOIN (SELECT client, zone, process_name, MAX(timestamp) ' + 
+							'AS maxtimestamp FROM process_health ' + 
+							'GROUP BY client, zone, process_name) a ' +
+							'ON a.zone = b.zone AND a.maxtimestamp = b.timestamp AND a.process_name = b.process_name AND a.client = b.client ' + 
+							'GROUP BY a.client, a.zone, a.process_name ORDER BY a.process_name',
+					insert: [],
 					params: [
 						{
 							title: 'Last Seen',
 							select: 'timestamp',
 							 link: {
-							 	type: 'health_drill', 
-							 	// val: the pre-evaluated values from the query above
-							 	val: ['client', 'zone'],
-							 	crumb: false
+								type: 'health_drill', 
+								// val: the pre-evaluated values from the query above
+								val: ['client', 'zone'],
+								crumb: false
 							},
 						},
 						{ title: 'Client', select: 'client' },
@@ -85,49 +85,49 @@ module.exports = function(pool) {
 					//iterate over unique zones
 					arr.forEach(function(d) {
 						var broStatus = "Not Installed";
-			            var clamscanStatus = "Not Installed";
-			            var nodeStatus = "Not Installed";
-			            var nprobeStatus = "Not Installed";
-			            //populate process status
-			            tables.forEach(function(t){
-			            	for(var i = 0; i<t.length; i++) {	
+						var clamscanStatus = "Not Installed";
+						var nodeStatus = "Not Installed";
+						var nprobeStatus = "Not Installed";
+						//populate process status
+						tables.forEach(function(t){
+							for(var i = 0; i<t.length; i++) {	
 
-				                if (t[i].zone == d.zone) {
+								if (t[i].zone == d.zone) {
 
-				                    switch (t[i].process_name) {
-				                        case "bro":
-				                            broStatus = t[i].status;
-				                            break;
-				                        case "clamscan":
-				                            clamscanStatus = t[i].status;
-				                            break;
-				                        case "node":
-				                            nodeStatus = t[i].status;
-				                            break;
-				                        case "nprobe":
-				                            nprobeStatus = t[i].status;
-				                            break;
-				                    }
-				                }
-			            	}
-			            })
-			            //create object to push to view
-			            proc_obj.push({
-			                client: d.client,
-			                zone: d.zone,
-			                timestamp: d.timestamp,
-			                bro: broStatus,
-			                clamscan: clamscanStatus,
-			                node: nodeStatus,
-			                nprobe: nprobeStatus
-			                //timeSinceUpdate: clientsZones[i].timeSinceUpdate
-			            });	
+									switch (t[i].process_name) {
+										case "bro":
+											broStatus = t[i].status;
+											break;
+										case "clamscan":
+											clamscanStatus = t[i].status;
+											break;
+										case "node":
+											nodeStatus = t[i].status;
+											break;
+										case "nprobe":
+											nprobeStatus = t[i].status;
+											break;
+									}
+								}
+							}
+						})
+						//create object to push to view
+						proc_obj.push({
+							client: d.client,
+							zone: d.zone,
+							timestamp: d.timestamp,
+							bro: broStatus,
+							clamscan: clamscanStatus,
+							node: nodeStatus,
+							nprobe: nprobeStatus
+							//timeSinceUpdate: clientsZones[i].timeSinceUpdate
+						});	
 
 
 					})
 
-			        
-			        for (var d in table1.params) {
+					
+					for (var d in table1.params) {
 						if (table1.params[d].dView === undefined) {
 							table1.params[d].dView = true;
 						}

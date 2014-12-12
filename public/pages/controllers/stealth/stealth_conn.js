@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('stealthConnController', ['$scope', '$st
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/stealth/stealth_conn?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/api/stealth/stealth_conn?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/stealth/stealth_conn?';
+        query = '/api/stealth/stealth_conn?';
     }
     $http({method: 'GET', url: query}).
     success(function(data) {

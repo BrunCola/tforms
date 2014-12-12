@@ -1083,7 +1083,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         });
                                         $('table .bArchive').on('click',function(){
                                             var rowData = JSON.parse(this.value);
-                                            $http({method: 'POST', url: '/actions/archive', data: {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc}}).
+                                            $http({method: 'POST', url: '/api/actions/archive', data: {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc}}).
                                                 success(function(data, status, headers, config) {
                                                     var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
                                                     $scope.tableCrossfitler.remove(fil);
@@ -1093,7 +1093,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         });
                                         $('table .bRestore').on('click',function(){
                                             var rowData = JSON.parse(this.value);
-                                            $http({method: 'POST', url: '/actions/restore', data: {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc}}).
+                                            $http({method: 'POST', url: '/api/actions/restore', data: {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc}}).
                                                 success(function(data, status, headers, config) {
                                                     var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
                                                     $scope.tableCrossfitler.remove(fil);
@@ -2179,12 +2179,12 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
 
                     function dragend(d, i) {
                         d.fixed = true; 
-                        $http({method: 'GET', url: '/stealth/stealth_op_view?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name+'&page_title=stealth_op_view'}).
+                        $http({method: 'GET', url: '/api/stealth/stealth_op_view?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name+'&page_title=stealth_op_view'}).
                             success(function(data) { 
                                 if (data["result"].length>0) {
-                                    $http({method: 'POST', url: '/stealth/stealth_op_view', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_op_view"}});
+                                    $http({method: 'POST', url: '/api/stealth/stealth_op_view', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_op_view"}});
                                 }else{
-                                    $http({method: 'POST', url: '/stealth/stealth_op_view?type=insert', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_op_view"}});
+                                    $http({method: 'POST', url: '/api/stealth/stealth_op_view?type=insert', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_op_view"}});
                                 }
                             });
                         tick();
@@ -3089,12 +3089,12 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 
                     function dragend(d, i) {
                         d.fixed = true; 
-                        $http({method: 'GET', url: '/stealth/stealth_deploy_config?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name+'&page_title=stealth_COI_map'}).
+                        $http({method: 'GET', url: '/api/stealth/stealth_deploy_config?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name+'&page_title=stealth_COI_map'}).
                             success(function(data) { 
                                 if (data["force"].length>0) {
-                                    $http({method: 'POST', url: '/stealth/stealth_deploy_config', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_COI_map"}});
+                                    $http({method: 'POST', url: '/api/stealth/stealth_deploy_config', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_COI_map"}});
                                 }else{
-                                    $http({method: 'POST', url: '/stealth/stealth_deploy_config?type=insert', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_COI_map"}});
+                                    $http({method: 'POST', url: '/api/stealth/stealth_deploy_config?type=insert', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_COI_map"}});
                                 }
                             });
                         tick();

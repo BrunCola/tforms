@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('endpointEventsSharepointDrillController
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/local_events/endpoint_events_sharepoint_drill?start='+$location.$$search.start+'&end='+$location.$$search.end+'&event_type='+$location.$$search.event_type;
+        query = '/api/local_events/endpoint_events_sharepoint_drill?start='+$location.$$search.start+'&end='+$location.$$search.end+'&event_type='+$location.$$search.event_type;
     } else {
-        query = '/local_events/endpoint_events_sharepoint_drill?event_type='+$location.$$search.event_type;
+        query = '/api/local_events/endpoint_events_sharepoint_drill?event_type='+$location.$$search.event_type;
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

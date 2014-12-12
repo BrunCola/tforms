@@ -8,8 +8,8 @@ var dataTable = require('../constructors/datatable'),
 module.exports = function(pool) {
 	return {
 		render: function(req, res) {
-			var database = req.session.passport.user.database;
-			if ((req.session.passport.user.email === config.reports.email) && (req.query.database !== null)) {
+			var database = req.user.database;
+			if ((req.user.email === config.reports.email) && (req.query.database !== null)) {
 				database = req.query.database;
 			}
 			// var database = null;

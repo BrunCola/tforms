@@ -13,7 +13,7 @@ module.exports = function(pool) {
 				//console.log(req.query);
 
 				//set the directory path for the final upload to public/uploads/<client>/
-				var dirPath = config.localUploads.directory + req.session.passport.user.client + "/";
+				var dirPath = config.localUploads.directory + req.user.client + "/";
 				for (var i in req.files) {
 					//check if the directory /public/uploads_<client>/ exists yet. 
 					fs.stat(dirPath, function(err, stats) {
@@ -33,7 +33,7 @@ module.exports = function(pool) {
 						//var newName = "floor_plan." + nameSplit[1];
 						var newName = req.files[i].name;
 						var custom_name = req.body.custom_name;
-                    	var asset_name = custom_name.replace(new RegExp(" ", 'g'), "_")
+						var asset_name = custom_name.replace(new RegExp(" ", 'g'), "_")
 					} else if (req.body.imageType === 'user') { //if this is a user image
 						var newName;
 						if(req.body.lan_ip != undefined) {
@@ -65,7 +65,7 @@ module.exports = function(pool) {
 						//write the file to the directory and the path to the DB, send back status code
 						fs.writeFile(newPath, data, function (err) {
 							//Upload floor plan name and path to DB
-							var database = req.session.passport.user.database;
+							var database = req.user.database;
 							if(req.body.imageType === 'map') {
 								if (req.body.updateFile === "update") {
 									var insert_map_image = {
@@ -87,7 +87,7 @@ module.exports = function(pool) {
 							} else if(req.body.imageType === 'user') {
 								var update_user_image = {
 									query: "INSERT INTO `assets` (`type`, `file`, `asset_name`, `lan_zone`, `lan_ip`, `lan_user`, `path`) VALUES ('user',?,?,?,?,?,?)",
-									insert: [newName, req.session.passport.user.client + "/" + newName, req.body.lan_zone, req.body.lan_ip, req.body.lan_user, newPath]
+									insert: [newName, req.user.client + "/" + newName, req.body.lan_zone, req.body.lan_ip, req.body.lan_user, newPath]
 								}
 								new query(update_user_image, {database: database, pool: pool}, function(err,data){
 									res.send(200);
@@ -95,7 +95,7 @@ module.exports = function(pool) {
 							} else {
 								var insert_other_image = {
 									query: "INSERT INTO `assets` (`type`, `file`, `asset_name`, `path`) VALUES ('other',?,?,?)",
-									insert: [newName, req.session.passport.user.client + "/" + newName, newPath]
+									insert: [newName, req.user.client + "/" + newName, newPath]
 								}
 								new query(insert_other_image, {database: database, pool: pool}, function(err,data){
 									res.send(200);

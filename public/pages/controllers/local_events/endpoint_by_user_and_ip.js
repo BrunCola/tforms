@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('endpointUserIpController', ['$scope', '
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/local_events/endpoint_by_user_and_ip?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip;
+        query = '/api/local_events/endpoint_by_user_and_ip?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip;
     } else {
-        query = '/local_events/endpoint_by_user_and_ip?lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip;
+        query = '/api/local_events/endpoint_by_user_and_ip?lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip;
     }
     $http({method: 'GET', url: query}).
     success(function(data) {

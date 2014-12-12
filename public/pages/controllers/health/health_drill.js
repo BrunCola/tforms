@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('healthDrillController', ['$scope', '$st
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/health/health_drill?start='+$location.$$search.start+'&end='+$location.$$search.end+'&zone='+$location.$$search.zone+'&client='+$location.$$search.client;
+        query = '/api/health/health_drill?start='+$location.$$search.start+'&end='+$location.$$search.end+'&zone='+$location.$$search.zone+'&client='+$location.$$search.client;
     } else {
-        query = '/health/health_drill?zone='+$location.$$search.zone+'&client='+$location.$$search.client;
+        query = '/api/health/health_drill?zone='+$location.$$search.zone+'&client='+$location.$$search.client;
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

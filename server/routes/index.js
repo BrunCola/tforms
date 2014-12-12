@@ -2,7 +2,7 @@
 
 
 
-module.exports = function(app, passport, version, io, pool) {
+module.exports = function(app, version, io, pool) {
 	var auth = require('./middlewares/authorization')();
 
 	// Home route
@@ -14,31 +14,31 @@ module.exports = function(app, passport, version, io, pool) {
 		.get(index.render);
 
 	// ioc Actions
-	app.route('/actions/archive')
+	app.route('/api/actions/archive')
 		.post(auth.permission, actions.archive);
 
-	app.route('/actions/restore')
+	app.route('/api/actions/restore')
 		.post(auth.permission, actions.restore);
 
-	app.route('/actions/clear')
+	app.route('/api/actions/clear')
 		.post(auth.permission, actions.clear);
 
-	app.route('/actions/update')
+	app.route('/api/actions/update')
 		.post(auth.permission, actions.update);
 
-	app.route('/actions/local_cc')
+	app.route('/api/actions/local_cc')
 		.post(auth.permission, actions.local_cc);
 
 	//other actions
 
-	app.route('/actions/add_user_to_map')
+	app.route('/api/actions/add_user_to_map')
 		.post(auth.permission, actions.add_user_to_map);
 		
-	app.route('/actions/change_custom_user')
+	app.route('/api/actions/change_custom_user')
 		.post(auth.permission, actions.change_custom_user);
 
 	//upload file
-	app.route('/upload/render')
+	app.route('/api/upload/render')
 		.post(auth.permission, upload.render);
 
 };

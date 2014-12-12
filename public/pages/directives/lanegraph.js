@@ -579,7 +579,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     if (compareObj.length > 0) {
                         loading('start');
                         // construct queries
-                        $http({method: 'POST', url: '/ioc_notifications/ioc_events_drilldown/patterns', data: compareObj}).
+                        $http({method: 'POST', url: '/api/ioc_notifications/ioc_events_drilldown/patterns', data: compareObj}).
                             success(function(data, status, headers, config) {
                                 // send info to pattern pane
                                 patternPane(data);
@@ -1062,7 +1062,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             max: maxUnix
                         };
                         //  grab more from api
-                        var query = '/ioc_notifications/ioc_events_drilldown?start='+minUnix+'&end='+maxUnix+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc+'&ioc_attrID='+$location.$$search.ioc_attrID+'&type=drill'+'&lan_user='+$location.$$search.lan_user;
+                        var query = '/api/ioc_notifications/ioc_events_drilldown?start='+minUnix+'&end='+maxUnix+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc+'&ioc_attrID='+$location.$$search.ioc_attrID+'&type=drill'+'&lan_user='+$location.$$search.lan_user;
                         $http({method: 'GET', url: query}).
                             success(function(data) {
                                 var id = 0;

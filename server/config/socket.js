@@ -2,7 +2,7 @@
 var mysql = require('mysql'),
     config = require('./config');
 
-module.exports = function(app, passport, io, pool) {
+module.exports = function(app, io, pool) {
     var alerts = [];
     var isInitIoc = false;
     var socketCount = 0;

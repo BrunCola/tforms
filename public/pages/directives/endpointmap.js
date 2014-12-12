@@ -213,7 +213,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                             itemData.y = divPos.top;
                             itemData.map = attrs.floorName;
 
-                            $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: attrs.floorName, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
+                            $http({method: 'POST', url: '/api/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: attrs.floorName, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
                             plot(data, attrs.floorName); 
                             d3.select('.user-'+itemId).classed("selected", true);
                         } 
@@ -277,7 +277,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         d3.select('.user-'+d.id).classed("selected", true);
                         $scope.requery(d, 'flooruser');
                         lastUserRequeried = d.id;
-                        $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: setAdjustedCoor(d.x), y_coord: setAdjustedCoor(d.y), map_name: floorName, lan_ip: d.lan_ip, lan_zone: d.lan_zone}});
+                        $http({method: 'POST', url: '/api/actions/add_user_to_map', data: {x_coord: setAdjustedCoor(d.x), y_coord: setAdjustedCoor(d.y), map_name: floorName, lan_ip: d.lan_ip, lan_zone: d.lan_zone}});
                         d3.select(this).classed("dragging", false);
                     }
                     // -- updates username
@@ -955,7 +955,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .html('Users with IOC')
                         .attr('class', 'pure-button epbRed')
                         .on('click', function(){
-                            var query = '/local_events/endpoint_map?type=floorquery';
+                            var query = '/api/local_events/endpoint_map?type=floorquery';
                             var triggerData;
                             var triggerType;
                             $http({method: 'GET', url: query+'&typeinfo=iocusers'}).
@@ -967,7 +967,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .html('Active Users')
                         .attr('class', 'pure-button epbGreen')
                         .on('click', function(){
-                            var query = '/local_events/endpoint_map?type=floorquery';
+                            var query = '/api/local_events/endpoint_map?type=floorquery';
                             if ($location.$$search.start && $location.$$search.end) {
                                 query = query +'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
                             }
@@ -981,7 +981,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .html('Active Stealth Users')
                         .attr('class', 'pure-button epbGrey')
                         .on('click', function(){
-                            var query = '/local_events/endpoint_map?type=floorquery';
+                            var query = '/api/local_events/endpoint_map?type=floorquery';
                             if ($location.$$search.start && $location.$$search.end) {
                                 query = query +'&start='+$location.$$search.start+'&end='+$location.$$search.end; 
                             }
@@ -997,7 +997,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         .attr('class', 'epbuttons pure-button')
                         .on('click', function (d) {
                             if ($scope.floor.active) {
-                                $http({method: 'POST', url: '/local_events/endpoint_map?type=saveFloorScale', data: {scale: scale,floor: $scope.floor}});
+                                $http({method: 'POST', url: '/api/local_events/endpoint_map?type=saveFloorScale', data: {scale: scale,floor: $scope.floor}});
                             }
                         });
 
@@ -1399,7 +1399,7 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                         //     d3.event.translate = (0,0);
                         //     itemData.map = attrs.floorName;
 
-                        //     // $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: attrs.floorName, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
+                        //     // $http({method: 'POST', url: '/api/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: attrs.floorName, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
                         //     plot(data, attrs.fluserScaleoorName); 
                         //     // d3.select('.user-'+itemId).classed("selected", true);
                         // } 
@@ -1436,7 +1436,7 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                     }
                     // -- handles the end of when a user is dragged
                     function dragended(d) {
-                        $http({method: 'POST', url: '/local_events/endpoint_map?type=editFloorPos', data: {x: d.x, y: d.y, map_name: d.asset_name}});
+                        $http({method: 'POST', url: '/api/local_events/endpoint_map?type=editFloorPos', data: {x: d.x, y: d.y, map_name: d.asset_name}});
                         d3.select(this).classed("dragging", false);
                         $scope.drawFloorConns("#23FF1C");
                     }
@@ -2178,7 +2178,7 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                     }
                     // -- handles the end of when a user is dragged
                     function dragended(d) {
-                        $http({method: 'POST', url: '/local_events/endpoint_map?type=editFloorPos', data: {x: d.x, y: d.y, map_name: d.asset_name}});
+                        $http({method: 'POST', url: '/api/local_events/endpoint_map?type=editFloorPos', data: {x: d.x, y: d.y, map_name: d.asset_name}});
                         d3.select(this).classed("dragging", false);
                         $scope.drawFloorConns("#23FF1C");
                     }
@@ -2620,7 +2620,7 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                                 //         d3.event.translate = (0,0);
                                 //         itemData.map = attrs.floorName;
 
-                                //         $http({method: 'POST', url: '/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: attrs.floorName, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
+                                //         $http({method: 'POST', url: '/api/actions/add_user_to_map', data: {x_coord: divPos.left, y_coord: divPos.top, map_name: attrs.floorName, lan_ip: itemData.lan_ip, lan_zone: itemData.lan_zone}});
                                 //         plot(data, attrs.fluserScaleoorName); 
                                 //         d3.select('.user-'+itemId).classed("selected", true);
                                 //     } 

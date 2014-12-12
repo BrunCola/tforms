@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('fileRemoteController', ['$scope', '$sta
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/extracted_files/files_remote?start='+$location.$$search.start+'&end='+$location.$$search.end+'&remote_ip='+$location.$$search.remote_ip+'&mime='+$location.$$search.mime;
+        query = '/api/extracted_files/files_remote?start='+$location.$$search.start+'&end='+$location.$$search.end+'&remote_ip='+$location.$$search.remote_ip+'&mime='+$location.$$search.mime;
     } else {
-        query = '/extracted_files/files_remote?remote_ip='+$location.$$search.remote_ip+'&mime='+$location.$$search.mime;
+        query = '/api/extracted_files/files_remote?remote_ip='+$location.$$search.remote_ip+'&mime='+$location.$$search.mime;
     }
     $http({method: 'GET', url: query}).
     success(function(data) {

@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('remoteController', ['$scope', '$statePa
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/general_network/remote?start='+$location.$$search.start+'&end='+$location.$$search.end;
+        query = '/api/general_network/remote?start='+$location.$$search.start+'&end='+$location.$$search.end;
     } else {
-        query = '/general_network/remote?';
+        query = '/api/general_network/remote?';
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

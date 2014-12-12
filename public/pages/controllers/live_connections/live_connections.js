@@ -4,7 +4,7 @@ angular.module('mean.pages').controller('liveConnectionsController', ['$scope', 
     $scope.global = Global;
     $scope.socket = socket;
     var timer;
-    var query = '/live_connections/live_connections';
+    var query = '/api/live_connections/live_connections';
     function getMap() {
         $http({method: 'GET', url: query}).
         success(function(data) {

@@ -1,14 +1,18 @@
 'use strict';
 
-angular.module('mean.system').controller('HeaderController', ['$scope', '$rootScope', 'Global', '$location', 'socket', '$modal', 'iocIcon', '$http', '$state', '$upload', '$timeout',
-    function($scope, $rootScope, Global, $location, socket, $modal, iocIcon, $http, $state, $upload, $timeout) {
+angular.module('mean.system').controller('HeaderController', ['$scope', '$rootScope', 'Global', '$location', 'socket', '$modal', 'iocIcon', '$http', '$state', '$upload', '$timeout', '$window',
+    function($scope, $rootScope, Global, $location, socket, $modal, iocIcon, $http, $state, $upload, $timeout, $window) {
         $scope.global = Global;
         $scope.socket = socket;
+        $rootScope.$watch('user', function(user) {
+            $scope.global.user = user;
+        })
+        $scope.logout = function() {
+            delete $window.sessionStorage.token;
+            $location.url('/login');
+        }
         $scope.reload = function ( path ) {
-            var searchObj = {};
-            searchObj.start = moment().subtract('days', 1).unix();
-            searchObj.end = moment().unix();
-            $state.go('ioc_events', searchObj);
+            $location.url(path);
         };
         // session modal settings
         $scope.$watch('search', function() {

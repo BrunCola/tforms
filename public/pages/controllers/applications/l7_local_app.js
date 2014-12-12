@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('l7LocalAppController', ['$scope', '$sta
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/applications/l7_local_app?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip;
+        query = '/api/applications/l7_local_app?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip;
     } else {
-        query = '/applications/l7_local_app?lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip;
+        query = '/api/applications/l7_local_app?lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip;
     }
     $http({method: 'GET', url: query}).
     //success(function(data, status, headers, config) {

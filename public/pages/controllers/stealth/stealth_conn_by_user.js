@@ -4,9 +4,9 @@ angular.module('mean.pages').controller('stealthConnByUserController', ['$scope'
     $scope.global = Global;
     var query;
     if ($location.$$search.start && $location.$$search.end) {
-        query = '/stealth/stealth_conn_by_user?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_zone='+$location.$$search.lan_zone+'&lan_machine='+$location.$$search.lan_machine+'&lan_user='+$location.$$search.lan_user+'&lan_ip='+$location.$$search.lan_ip;
+        query = '/api/stealth/stealth_conn_by_user?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_zone='+$location.$$search.lan_zone+'&lan_machine='+$location.$$search.lan_machine+'&lan_user='+$location.$$search.lan_user+'&lan_ip='+$location.$$search.lan_ip;
     } else {
-        query = '/stealth/stealth_conn_by_user?lan_zone='+$location.$$search.lan_zone+'&lan_machine='+$location.$$search.lan_machine+'&lan_user='+$location.$$search.lan_user+'&lan_ip='+$location.$$search.lan_ip;
+        query = '/api/stealth/stealth_conn_by_user?lan_zone='+$location.$$search.lan_zone+'&lan_machine='+$location.$$search.lan_machine+'&lan_user='+$location.$$search.lan_user+'&lan_ip='+$location.$$search.lan_ip;
     }
     $http({method: 'GET', url: query}).
     success(function(data) {

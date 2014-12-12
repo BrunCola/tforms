@@ -1,24 +1,21 @@
 'use strict';
 
 angular.module('mean-factory-interceptor',[])
-    .factory('httpInterceptor', ['$q','$location',function ($q,$location) {
-        return {
-            'response': function(response) {
+    .factory('httpInterceptor', ['$q', '$location', '$window', function ($q, $location, $window) {
+         return {
+            request: function (config) {
+                config.headers = config.headers || {};
+                if ($window.sessionStorage.token) {
+                    config.headers.Authorization = 'Bearer ' + $window.sessionStorage.token;
+                }
+                return config;
+            },
+            response: function (response) {
                 if (response.status === 401) {
-                    $location.path('/login');
-                    return $q.reject(response);
+                    $location.url('/login');
                 }
                 return response || $q.when(response);
-            },
-
-            'responseError': function(rejection) {
-                if (rejection.status === 401) {
-                    $location.url('/login');
-                    return $q.reject(rejection);
-                }
-                return $q.reject(rejection);
             }
-
         };
     }
     ])
