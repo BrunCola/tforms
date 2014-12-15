@@ -55,6 +55,142 @@ angular.module('mean.pages').factory('searchFilter', ['$rootScope',
     }
 ]);
 
+angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location',
+    function($rootScope, $http, $location) {
+        var runPage = function($scope, data, query, refreshRate) {
+            if (!refreshRate) { refreshRate === 60000 } // defaults to 1 minute in case refresh is enabled on any visual, but isnt defined calling the function
+            var functions = {
+                visuals_: {
+                    rowchart: function(params, crossfilterObj) {
+                        var group = false;
+                        var dimension = params.dimension(crossfilterObj);
+                        if (params.group && (typeof params.group === 'function')) {
+                            group = params.group(dimension);
+                        }
+                        $scope.$broadcast('rowChart', dimension, group, 'severity');
+                    },
+                    barchart: function(params, crossfilterObj) {
+                        var group = false;
+                        var dimension = params.dimension(crossfilterObj);
+                        if (params.group && (typeof params.group === 'function')) {
+                            group = params.group(dimension);
+                        }
+                        // add params in here for axis labels and graph types (along with a default)
+                        $scope.$broadcast('barChart', dimension, group, 'severity');
+                    },
+                    geochart: function(params, crossfilterObj) {
+                        var group = false;
+                        var dimension = params.dimension(crossfilterObj);
+                        if (params.group && (typeof params.group === 'function')) {
+                            group = params.group(dimension);
+                        }
+                        $scope.$broadcast('geoChart', dimension, group);
+                    }
+                },
+                // build urls from arrays
+                constructUrl_: function(array, query) {
+                    var string = '', count = 0;
+                    if (query.slice(-1) !== '?') {
+                        query += '?';
+                    }
+                    string += query;
+                    for (var i in array) {
+                        if (count > 0) {
+                            string += '&';
+                        }
+                        string += array[i].type+'='+array[i].value;
+                        count++;
+                    }
+                    return string;
+                },
+                // this handles strings or arrays
+                checkGET_: function(get) {
+                    if (typeof get === 'object') {
+                        return this.constructUrl_(get, query);
+                    }
+                    return get;
+                },
+                getData_: function(link, key, time, callback) {
+                    var Rest;
+                    if (time) {
+                        Rest = $resource(link, {start: time.start, end: time.end});
+                    } else {
+                        Rest = $resource(link);
+                    }
+                    $http({method: 'GET', url: link}).
+                    success(function(data) {
+                        if (key) { // check for key in data to return
+                            callback(data[key]);
+                        } else {
+                            callback(data);
+                        }
+                    });
+                },
+                timeObj_: function() {
+                    if ($location.$$search.start && $location.$$search.start)
+                },
+                variables: function(params) {
+                    if (!params.get) { params.get = query } // if specific url isn't defined use the page query
+                    var this_ = this; // this is so we can access 'this' from within our return function
+                    this_.getData_(this_.checkGET_(params.get), params.key, function(result) {
+                        // only run our crossfilter-add function if there is a value associated with result
+                        if (result) {
+                            if (params.run && (typeof params.run === 'function')) {
+                                params.run(result);
+                            }
+                            // add-remove data function call here
+                            params.crossfilterObj.add(result);
+                        }
+                        // assign result to name in scope (specified in )
+                    })
+                },
+                crossfilter: function(params) {
+                    if (!params.get) { params.get = query } // if specific url isn't defined use the page query
+                    var this_ = this; // this is so we can access 'this' from within our return function
+                    var time = ();
+                    this_.getData_(this_.checkGET_(params.get), params.key, time, function(result) {
+                        // only run our crossfilter-add function if there is a value associated with result
+                        if (result) {
+                            if (params.run && (typeof params.run === 'function')) {
+                                params.run(result);
+                            }
+                            // add-remove data function call here
+                            params.crossfilterObj.add(result);
+                        }
+                        for (var i in params.visuals) {
+                            switch (params.visuals[i].type) {
+                                case 'rowchart':
+                                    this_.visuals_.rowchart(params.visuals[i], params.crossfilterObj);
+                                    break;
+                                case 'barchart':
+                                    this_.visuals_.barchart(params.visuals[i], params.crossfilterObj);
+                                    break;
+                                case 'geochart':
+                                    this_.visuals_.geochart(params.visuals[i], params.crossfilterObj);
+                                    break;
+                            }
+                        }
+                    })
+                }
+            }
+            for (var v in data) {
+                switch (data[v].type) {
+                    case 'crossfilter':
+                        functions.crossfilter(data[v]);
+                    break;
+                    // case 'var':
+                    //     functions.variable(data[v]);
+                    // break;
+                    // case 'table':
+                    //     functions.table(data[v]);
+                    // break;
+                }
+            }
+        }
+        return runPage;
+    }
+]);
+
 angular.module('mean.pages').factory('getSize', ['$rootScope',
     function($rootScope) {
         var getSize = function(element, type, width) {

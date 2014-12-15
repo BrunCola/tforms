@@ -12,8 +12,10 @@ module.exports = function(app, version, pool) {
     // IOC NOTIFICATIONS
         // IOC EVENTS
             var ioc_events = require('../controllers/ioc_notifications/ioc_events')(pool);
-            app.route('/api/ioc_notifications/ioc_events')
-            .get(auth.permission, ioc_events.render);
+                // crossfilter
+                app.route('/api/ioc_notifications/ioc_events/crossfilter').get(auth.permission, ioc_events.crossfilter);
+
+
             // IOC EVENTS DRILLDOWN
                 var ioc_events_drilldown = require('../controllers/ioc_notifications/ioc_events_drilldown')(pool);
                 app.route('/api/ioc_notifications/ioc_events_drilldown')
