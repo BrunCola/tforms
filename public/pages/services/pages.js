@@ -55,8 +55,8 @@ angular.module('mean.pages').factory('searchFilter', ['$rootScope',
     }
 ]);
 
-angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location',
-    function($rootScope, $http, $location) {
+angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location', '$resource',
+    function($rootScope, $http, $location, $resource) {
         var runPage = function($scope, data, query, refreshRate) {
             if (!refreshRate) { refreshRate === 60000 } // defaults to 1 minute in case refresh is enabled on any visual, but isnt defined calling the function
             var functions = {
@@ -127,7 +127,11 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                     });
                 },
                 timeObj_: function() {
-                    if ($location.$$search.start && $location.$$search.start)
+                    if ($location.$$search.start && $location.$$search.start) {
+                        return { start: $location.$$search.start, end: $location.$$search.end }
+                    } else {
+                        return false;
+                    }
                 },
                 variables: function(params) {
                     if (!params.get) { params.get = query } // if specific url isn't defined use the page query
@@ -147,7 +151,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                 crossfilter: function(params) {
                     if (!params.get) { params.get = query } // if specific url isn't defined use the page query
                     var this_ = this; // this is so we can access 'this' from within our return function
-                    var time = ();
+                    var time = this_.timeObj_();
                     this_.getData_(this_.checkGET_(params.get), params.key, time, function(result) {
                         // only run our crossfilter-add function if there is a value associated with result
                         if (result) {
