@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', '$http', '$location', 'searchFilter', 'anchorSmoothScroll' ,function ($timeout, $rootScope, $http, $location, searchFilter, anchorSmoothScroll) {
+angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', '$http', '$location', 'searchFilter',function ($timeout, $rootScope, $http, $location, searchFilter) {
     return {
         link: function ($scope, element, attrs) {
             //$scope.$on('floorPlan', function (event) {
@@ -1047,14 +1047,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     //////////////////////////
                     ///  $SCOPE FUNCTIONS  ///
                     //////////////////////////
-                    $("#scrollToBottom").click(function() {
-                        $scope.gotoElement('hostConnections');  
-                    });
-
-                    $scope.gotoElement = function (eID){
-                        $location.hash('bottom');
-                        anchorSmoothScroll.scrollTo(eID);                          
-                    };
 
                     // -- redraws the floor (used when user is deleted from floorplan)
                     $rootScope.redrawFloor = function () {
@@ -1705,7 +1697,7 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
     };
 }]);
 
-angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootScope', '$http', '$location', 'searchFilter', function ($timeout, $rootScope, $http, $location, searchFilter) {
+angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootScope', '$http', '$location', 'searchFilter', 'anchorSmoothScroll', function ($timeout, $rootScope, $http, $location, searchFilter, anchorSmoothScroll) {
     return {
         link: function ($scope, element, attrs) {
             //$scope.$on('floorPlan', function (event) {
@@ -2227,6 +2219,15 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                     }
                     plot(data, buildings);
 
+                    $("#scrollToBottom").click(function() {
+                        $scope.gotoElement('hostConnections');  
+                    });
+
+                    $scope.gotoElement = function (eID){
+                        $location.hash('bottom');
+                        anchorSmoothScroll.scrollTo(eID);                          
+                    };
+
             }, 1000);
         }
     };
@@ -2497,8 +2498,6 @@ angular.module('mean.pages').service('anchorSmoothScroll', function(){
         var startY = currentYPosition();
         var stopY = elmYPosition(eID);
         var distance = stopY > startY ? stopY - startY : startY - stopY;
-        console.log("startY = " + startY);
-        console.log("stopY = " + stopY);
         if (distance < 100) {
             //scrollTo(0, stopY); return;
         }

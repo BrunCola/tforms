@@ -12,7 +12,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
             // SET PARAMS
             var tooltip = d3.select("#map").append("div").attr("class", "tooltip hidden");
             var width = document.getElementById('map').offsetWidth;
-            var height = width / 1.7;
+            var height = width / 2.15;
             // var zoom = d3.behavior.zoom()
             //  .scaleExtent([1, 8])
             //  .on("zoom", move);
@@ -27,7 +27,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
-                .attr("transform", "translate(" + width / 2 + "," + height / 2.5 + ")scale(1)");
+                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(1)");
                 // .call(zoom);
             var g = svg.append("g");
 

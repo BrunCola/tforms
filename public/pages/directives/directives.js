@@ -592,7 +592,7 @@ angular.module('mean.system').directive('loadingSpinner', ['$rootScope', functio
                 if ($rootScope.rootpage !== false) {
                     $('#loading-spinner').data('spinner').stop();
                 }
-                $('html, body').animate({scrollTop:0}, 'slow');
+                // /$('html, body').animate({scrollTop:0}, 'slow');
                 window.onscroll = function (event) {
                     $('html, body').stop( true, true ).animate();
                 }
