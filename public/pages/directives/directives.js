@@ -798,6 +798,8 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
     return {
         link: function ($scope, element, attrs) {
             $scope.socket = socket;
+
+            //function for export to csv
             var csv = "data:text/csv;charset=utf-8,";
             function makeCsv(array, heading){
                 // console.log("TEST");
@@ -818,6 +820,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                     for (var i in array[0]) {
                         objlength++;
                     }
+                    // The commented block adds a row of indexes to the csv
                     // for (var t in array[0]) {
                     //     if (isAllowed(t)){
                     //         csv += t;
@@ -863,7 +866,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                             '<div class="span12"> '+
                                     '<div class="jdash-header">'+params[t].title+'</div> '+
                                     '<div class="box">'+
-                                        '<div class="box-content"> <button class="bCsv button pure-button right" type="button" href="">insert</button>'+//<button type="button" class="rndCrnBtn pure-button right" ng-click="insert()">Print to .csv</button>'+
+                                        '<div class="box-content"> <button class="bCsv button pure-button right" type="button" href="">Print to CSV</button>'+//<button type="button" class="rndCrnBtn pure-button right" ng-click="insert()">Print to .csv</button>'+
                                             '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="'+params[t].div+'" ></table>'+
                                         '</div> '+
                                     '</div> '+
@@ -1127,6 +1130,22 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                     }
                                 },
                                 'fnDrawCallback': function( oSettings ) {
+
+                                    function sortFunction(a, b) {
+                                        var tableSort = $("#table").dataTable().fnSettings().aaSorting;
+                                        var sortIndex = tableSort[0][0];
+                                        var sortDirection = tableSort[0][1];
+                                        if (a[sortIndex] === b[sortIndex]) {
+                                            return 0;
+                                        }
+                                        else {
+                                            if(sortDirection == "asc") {
+                                                return (a[sortIndex] < b[sortIndex]) ? -1 : 1
+                                            } else {
+                                                return (a[sortIndex] > b[sortIndex]) ? -1 : 1
+                                            }                                     }
+                                    }
+
                                     if (notReport) {
                                         $('table .bPage').click(function(){
                                             var link = JSON.parse(this.value);
@@ -1158,15 +1177,8 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                         });
                                         $('.bCsv').on('click',function(){                                           
                                             var array = [];
-                                            array[0] = [];
-                                            //array[0] is the array of column headers
+                                            //array[0] will be the array of column headers
                                             for (var t in params) {
-                                                console.log(params[t]);
-                                                for (var p in params[t].params) {
-                                                    if(params[t].params[p].sTitle != "") {
-                                                        array[0].push(params[t].params[p].sTitle);
-                                                    }
-                                                }
                                                 for (var i in params[t].aaData) {
                                                     //need to sort each value set into the order of the columns
                                                     var sortedRow = [];
@@ -1181,6 +1193,20 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                                     }
                                                     array.push(sortedRow);//push each sorted row as an array to the main array
                                                 }
+
+                                                //sort array by the sort of the datatable
+                                                array.sort(sortFunction);
+
+                                                var headerRow = [];
+                                                for (var p in params[t].params) {
+                                                    if(params[t].params[p].sTitle != "") {
+                                                        headerRow.push(params[t].params[p].sTitle);
+                                                    }
+                                                }
+
+                                                //add the header row to the start of the array
+                                                array.unshift(headerRow);
+
                                                 makeCsv(array, params[t].title);//create the csv
                                             }                                     
 
