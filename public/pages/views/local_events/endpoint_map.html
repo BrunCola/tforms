@@ -215,7 +215,10 @@
                             <div class="luinfo" ng-if="userinfo.total_bw == null">
                                 <span style="font-weight:bold">Total Bandwidth in MB: </span><span>0</span>
                             </div>
-                            <div ng-show="userinfo.map"><button type="button" class="button-error pure-button" ng-click="removeEndUser(userinfo)">Remove User</button></div>
+                            <div ng-show="userinfo.map">
+                                <button type="button" class="button-error pure-button" ng-click="removeEndUser(userinfo)">Remove User</button>
+                                <button type="button" class="pure-button" id="scrollToBottom">Show Connections</button>
+                            </div>
                         </div>
                         <div class="luinfo" ng-show="currentFloor">
                             <table id="flus">
@@ -256,8 +259,8 @@
         </section>
     </div>
     <br/>
-    <div class="row-fluid">
-        <div class="span7" ng-show="results">
+    <div id="hostConnections" class="row-fluid">
+        <div class="span7" ng-show="showTree">
             <div id="hostlinksspan" >
                 <!-- <div class="jdash-header">Host Connections</div>   -->
                 <div style="background-color:#FFF;" class="box" >
@@ -267,13 +270,13 @@
                 </div>
             </div>
         </div>  
-        <div class="span5" ng-show="connectionHit">
+        <div class="span5" ng-show="showCharts">
             <!-- <div class="jdash-header">Connections Information</div>   -->
             <div style="background-color:#FFF;" class="box" >
                 <div id="barchart" make-bar-chart></div>
             </div>
             <br />
-            <div class="connInfoL" ng-show="connectionHit">
+            <div class="connInfoL" ng-show="showCharts">
                 <!-- <div class="jdash-header">Connections Information</div>   -->
                 <div style="background-color:#FFF;" class="box" >
                     <div id="piechart" make-pie-chart></div>

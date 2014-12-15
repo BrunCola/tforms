@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', 'searchFilter', '$upload', 'timeFormat', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, searchFilter, $upload, timeFormat) {
+angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', 'searchFilter', '$upload', 'timeFormat', '$anchorScroll', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, searchFilter, $upload, timeFormat, $anchorScroll) {
     $scope.global = Global;
     var query = '/api/local_events/endpoint_map?';
     if ($location.$$search.start && $location.$$search.end) {
@@ -66,7 +66,6 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
         }
     });
 
-
     $scope.setFloorActive = function (floor) {
         $scope.buildings.filter(function(d){ 
             for(var f in d.floors) {                           
@@ -126,7 +125,6 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
     }
 
     $scope.getConnections = function(d, conns) {//-----------------------------------------------------Should be upgraded!!-------------------------------------------------------------------
-
         var query = '/api/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_machine='+d.lan_machine+'&type=endpointconnection';
             $scope.startend = ""; 
             if ($location.$$search.start && $location.$$search.end) {
@@ -316,6 +314,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.barChartxAxis = '';
             $scope.barChartyAxis = '# of Connection';
         }, 1000);
+            $scope.showCharts = true;
     }
 
     $rootScope.userLinkTo = function (data) {

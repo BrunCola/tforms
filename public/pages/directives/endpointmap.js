@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', '$http', '$location', 'searchFilter', function ($timeout, $rootScope, $http, $location, searchFilter) {
+angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', '$http', '$location', 'searchFilter', 'anchorSmoothScroll' ,function ($timeout, $rootScope, $http, $location, searchFilter, anchorSmoothScroll) {
     return {
         link: function ($scope, element, attrs) {
             //$scope.$on('floorPlan', function (event) {
@@ -685,7 +685,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                             // draw line links   
                                             //var conns = endpointConn.selectAll(".endpointConns").data([""]);
                                             $scope.getConnections(d); 
-                                            //endpointConn.selectAll('line').remove();     
+                                            //endpointConn.selectAll('line').remove(); 
                                         });
                                         element
                                             .attr('height', '25')
@@ -1047,20 +1047,14 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     //////////////////////////
                     ///  $SCOPE FUNCTIONS  ///
                     //////////////////////////
+                    $("#scrollToBottom").click(function() {
+                        $scope.gotoElement('hostConnections');  
+                    });
 
-
-                    // wait(function(){
-                    //     lineCount = 0;
-                    //     drawConnections(elm[0][0], $scope.selectedUser, $scope.connectionIn, "#34D4FF");
-                    //     drawConnections(elm[0][0], $scope.selectedUser, $scope.connectionOut, "#009426");
-                    //     drawConnections(elm[0][0], $scope.selectedUser, $scope.connStealthIn, "#C40600");
-                    //     drawConnections(elm[0][0], $scope.selectedUser, $scope.connStealthOut, "#EE00FF");                                                 
-                    // }, 400);  
-
-
-                    // $rootScope.removeLines = function () {
-                    //     endpointConn.selectAll('line').remove();
-                    // }
+                    $scope.gotoElement = function (eID){
+                        $location.hash('bottom');
+                        anchorSmoothScroll.scrollTo(eID);                          
+                    };
 
                     // -- redraws the floor (used when user is deleted from floorplan)
                     $rootScope.redrawFloor = function () {
@@ -2243,6 +2237,8 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
         link: function ($scope, element, attrs) {
            
             $scope.$on('plotLinks', function (event, root, connections) {
+                $scope.showTree = true;
+
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
                     connections = angular.copy(connections)
 
@@ -2490,8 +2486,57 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
                         .attr("dy", ".35em")
                         .text(function(d) { return d; });
 
-                }, 1000, false);
+               }, 1000, false);
             })
         }
     };
 }]);
+
+angular.module('mean.pages').service('anchorSmoothScroll', function(){    
+    this.scrollTo = function(eID) {        
+        var startY = currentYPosition();
+        var stopY = elmYPosition(eID);
+        var distance = stopY > startY ? stopY - startY : startY - stopY;
+        console.log("startY = " + startY);
+        console.log("stopY = " + stopY);
+        if (distance < 100) {
+            //scrollTo(0, stopY); return;
+        }
+        var speed = Math.round(distance / 50);
+        if (speed >= 20) speed = 20;
+        var step = Math.round(distance / 40);
+        var leapY = stopY > startY ? startY + step : startY - step;
+        var timer = 0;
+        if (stopY > startY) {
+            for ( var i=startY; i<stopY; i+=step ) {
+                setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
+                leapY += step; if (leapY > stopY) leapY = stopY; timer++;
+            } return;
+        }
+        for ( var i=startY; i>stopY; i-=step ) {
+            setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
+            leapY -= step; if (leapY < stopY) leapY = stopY; timer++;
+        }
+        
+        function currentYPosition() {
+            // Firefox, Chrome, Opera, Safari
+            if (self.pageYOffset) return self.pageYOffset;
+            // Internet Explorer 6 - standards mode
+            if (document.documentElement && document.documentElement.scrollTop)
+                return document.documentElement.scrollTop;
+            // Internet Explorer 6, 7 and 8
+            if (document.body.scrollTop) return document.body.scrollTop;
+            return 0;
+        }
+        
+        function elmYPosition(eID) {
+            var elm = document.getElementById(eID);
+            var y = elm.offsetTop;
+            var node = elm;
+            while (node.offsetParent && node.offsetParent != document.body) {
+                node = node.offsetParent;
+                y += node.offsetTop;
+            } return y;
+        }
+    };    
+});
