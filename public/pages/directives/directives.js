@@ -799,10 +799,25 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
         link: function ($scope, element, attrs) {
             $scope.socket = socket;
 
+            //2d array sort for sorting data for csv print
+            function sortFunction(a, b) {
+                var tableSort = $("#table").dataTable().fnSettings().aaSorting;
+                var sortIndex = tableSort[0][0];
+                var sortDirection = tableSort[0][1];
+                if (a[sortIndex] === b[sortIndex]) {
+                    return 0;
+                }
+                else {
+                    if(sortDirection == "asc") {
+                        return (a[sortIndex] < b[sortIndex]) ? -1 : 1
+                    } else {
+                        return (a[sortIndex] > b[sortIndex]) ? -1 : 1
+                    }                                     }
+            }
+
             //function for export to csv
             var csv = "data:text/csv;charset=utf-8,";
             function makeCsv(array, heading){
-                // console.log("TEST");
                 function isAllowed(word){
                     var notAllowed = ['_typeCast', 'parse', 'id', 'child_id'];
                     if (notAllowed.indexOf(word) !== -1) {
@@ -1130,22 +1145,6 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                     }
                                 },
                                 'fnDrawCallback': function( oSettings ) {
-
-                                    function sortFunction(a, b) {
-                                        var tableSort = $("#table").dataTable().fnSettings().aaSorting;
-                                        var sortIndex = tableSort[0][0];
-                                        var sortDirection = tableSort[0][1];
-                                        if (a[sortIndex] === b[sortIndex]) {
-                                            return 0;
-                                        }
-                                        else {
-                                            if(sortDirection == "asc") {
-                                                return (a[sortIndex] < b[sortIndex]) ? -1 : 1
-                                            } else {
-                                                return (a[sortIndex] > b[sortIndex]) ? -1 : 1
-                                            }                                     }
-                                    }
-
                                     if (notReport) {
                                         $('table .bPage').click(function(){
                                             var link = JSON.parse(this.value);
@@ -1175,47 +1174,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                             var rowData = JSON.parse(this.value);
                                             $scope.uploadOpen(rowData);
                                         });
-                                        $('.bCsv').on('click',function(){                                           
-                                            var array = [];
-                                            //array[0] will be the array of column headers
-                                            for (var t in params) {
-                                                for (var i in params[t].aaData) {
-                                                    //need to sort each value set into the order of the columns
-                                                    var sortedRow = [];
-
-                                                    for (var p in params[t].params){
-                                                        for (var property in params[t].aaData[i]) {
-                                                            if(params[t].params[p].mData == property) {
-                                                                sortedRow.push(params[t].aaData[i][property]);
-                                                            } 
-                                                        }
-                                                        
-                                                    }
-                                                    array.push(sortedRow);//push each sorted row as an array to the main array
-                                                }
-
-                                                //sort array by the sort of the datatable
-                                                array.sort(sortFunction);
-
-                                                var headerRow = [];
-                                                for (var p in params[t].params) {
-                                                    if(params[t].params[p].sTitle != "") {
-                                                        headerRow.push(params[t].params[p].sTitle);
-                                                    }
-                                                }
-
-                                                //add the header row to the start of the array
-                                                array.unshift(headerRow);
-
-                                                makeCsv(array, params[t].title);//create the csv
-                                            }                                     
-
-                                            //create the download
-                                            var encodedUri = encodeURI(csv);
-                                            window.open(encodedUri);
-
-                                            csv = "data:text/csv;charset=utf-8,";
-                                        });
+                                        
                                         $scope.country = [];
                                         $scope.ioc = [];
                                         $scope.severity = [];
@@ -1239,6 +1198,47 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                             // new $.fn.dataTable.FixedHeader( params[t].div );
                             $.fn.dataTableExt.sErrMode = 'throw';
                         }
+                        
+                        $('.bCsv').on('click',function(){                                     
+                            var array = [];
+                            
+                            for (var t in params) {
+                                for (var i in params[t].aaData) {
+                                    //need to sort each value set into the order of the columns
+                                    var sortedRow = [];
+
+                                    for (var p in params[t].params){
+                                        for (var property in params[t].aaData[i]) {
+                                            if(params[t].params[p].mData == property) {
+                                                sortedRow.push(params[t].aaData[i][property]);
+                                            } 
+                                        }
+                                        
+                                    }
+                                    array.push(sortedRow);//push each sorted row as an array to the main array
+                                }
+
+                                //sort array by the sort of the datatable
+                                array.sort(sortFunction);
+
+                                var headerRow = [];
+                                for (var p in params[t].params) {
+                                    if(params[t].params[p].sTitle != "") {
+                                        headerRow.push(params[t].params[p].sTitle);
+                                    }
+                                }
+
+                                //add the header row to the start of the array
+                                array.unshift(headerRow);//array[0] will be the array of column headers 
+
+                                makeCsv(array, params[t].title);//create the csv
+                            }                                     
+
+                            //create the download
+                            var encodedUri = encodeURI(csv);
+                            window.open(encodedUri);
+                            csv = "data:text/csv;charset=utf-8,";
+                        });
                     break;
                 }
             });
@@ -1423,7 +1423,7 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                         });
                         $(window).bind('resize', function() {
                             setTimeout(function(){
-                                setNewSize($scope.sevWidth());
+                               // setNewSize($scope.sevWidth());
                             }, 150);
                         });
                         $('.sidebar-toggler').on("click", function() {
