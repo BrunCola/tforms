@@ -31,6 +31,9 @@ module.exports = function (sql, conn, callback) {
 			.on('end', function(){
 				result.forEach(function(d){
 					if (d.remote_country !== '-' && ((d.remote_lat !== 0) && (d.remote_long !== 0))) {
+						if (d.l7_proto === "-") {
+							d.l7_proto = "Unknown";
+						}
 						mapData.features.push({
 							'type':'Feature',
 							'properties':{

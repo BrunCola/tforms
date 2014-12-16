@@ -478,11 +478,11 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                         case "sFlow":
                             return "#123456"; //
                             break;
-                        case "Unknown":
-                            return "#00f0f0"; //
-                            break;
                         case "Other":
                             return "#f0f000"; //
+                            break;
+                        case "Unknown":
+                            return "#000000"; //
                             break;
                         case "-":
                             return "#000000"; //
