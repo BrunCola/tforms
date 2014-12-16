@@ -881,7 +881,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                             '<div class="span12"> '+
                                     '<div class="jdash-header">'+params[t].title+'</div> '+
                                     '<div class="box">'+
-                                        '<div class="box-content"> <button class="bCsv button pure-button right" type="button" href="">Print to CSV</button>'+//<button type="button" class="rndCrnBtn pure-button right" ng-click="insert()">Print to .csv</button>'+
+                                        '<div class="box-content"> <button class="bCsv button ColVis_MasterButton right" type="button" href="">Print to CSV</button>'+//<button type="button" class="rndCrnBtn pure-button right" ng-click="insert()">Print to .csv</button>'+
                                             '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="'+params[t].div+'" ></table>'+
                                         '</div> '+
                                     '</div> '+
