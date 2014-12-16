@@ -80,7 +80,19 @@ module.exports = function(pool) {
                     });
                 } else {
                     var sql = {
-                        query: 'SELECT `lan_user`, `group` FROM `stealth_user',
+                       // query: 'SELECT `lan_user`, `group` FROM `stealth_user',
+                        query: 'SELECT '+
+                                'u.lan_user, '+
+                                'c.cois AS `group` '+
+                            'FROM '+
+                                '`stealth_role_group` '+
+                            'AS g INNER JOIN '+
+                                '`stealth_role_coi` '+
+                                'c ON g.role = c.role '+
+                            'INNER JOIN '+
+                                '`stealth_user` '+
+                            'AS u ON '+ 
+                                'u.group = g.group',
                         insert: []
                     }
                     var stealth_drop = {

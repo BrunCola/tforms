@@ -2520,3 +2520,10 @@ button.right, .epbuttons{
   fill: #000;
   stroke: #F30;
 }
+
+button.printCSVButton {
+  display: inline;
+  float:right; 
+  margin:0px 135px -30px 0px; 
+  z-index: 200;
+}

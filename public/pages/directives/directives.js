@@ -798,6 +798,75 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
     return {
         link: function ($scope, element, attrs) {
 
+            //2d array sort for sorting data for csv print
+            function sortFunction(a, b) {
+                var tableSort = $("#table").dataTable().fnSettings().aaSorting;
+                var sortIndex = tableSort[0][0];
+                var sortDirection = tableSort[0][1];
+                if (a[sortIndex] === b[sortIndex]) {
+                    return 0;
+                }
+                else {
+                    if(sortDirection == "asc") {
+                        return (a[sortIndex] < b[sortIndex]) ? -1 : 1
+                    } else {
+                        return (a[sortIndex] > b[sortIndex]) ? -1 : 1
+                    }                                     }
+            }
+
+            //function for export to csv
+            var csv = "data:text/csv;charset=utf-8,";
+            function makeCsv(array, heading){
+                function isAllowed(word){
+                    var notAllowed = ['_typeCast', 'parse', 'id', 'child_id'];
+                    if (notAllowed.indexOf(word) !== -1) {
+                        return false;
+                    }
+                    return true;
+                }
+                //title
+                csv += heading;
+                // new line 
+                csv += '\n';
+                if (array.length > 0) {
+                    // get object 0 length
+                    var objlength = 0, tpos = 0;
+                    for (var i in array[0]) {
+                        objlength++;
+                    }
+                    // The commented block adds a row of indexes to the csv
+                    // for (var t in array[0]) {
+                    //     if (isAllowed(t)){
+                    //         csv += t;
+                    //         if (tpos < objlength-1) {
+                    //             // append comma if we're not at end of array
+                    //             csv += ',';
+                    //         }
+                    //         tpos++
+                    //     }
+                    // }
+                    csv += '\n';
+                    for (var i in array) {
+                        for (var n in array[i]) {
+                            if ((typeof array[i][n] !== 'function') && (isAllowed(n))){
+                                if (array[i][n] === 0) {
+                                    csv += 'no,';
+                                } else if (array[i][n] === 1) {
+                                    csv += 'yes,';
+                                } else if (array[i][n] === null) {
+                                    csv += 'n/a,';
+                                } else {
+                                    csv += array[i][n]+',';
+                                }
+                            }
+                        }
+                        csv += '\n';
+                    }
+                    csv += '\n\n';
+                }
+            }
+
+
             function redrawTable(tableData) {
                 $('#table').dataTable().fnClearTable();
                 $('#table').dataTable().fnAddData(tableData.top(Infinity));
@@ -810,8 +879,8 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                             $(element).prepend('<div class="row-fluid"> '+
                             '<div class="span12"> '+
                                     '<div class="jdash-header">'+params[t].title+'</div> '+
-                                    '<div class="box"> '+
-                                        '<div class="box-content"> '+
+                                    '<div class="box">'+
+                                        '<div class="box-content"> <button class="ColVis_Button bCsv ColVis_MasterButton printCSVButton" type="button" href="">Print to CSV</button>'+//<button type="button" class="rndCrnBtn pure-button right" ng-click="insert()">Print to .csv</button>'+
                                             '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="'+params[t].div+'" ></table>'+
                                         '</div> '+
                                     '</div> '+
@@ -1104,6 +1173,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                             var rowData = JSON.parse(this.value);
                                             $scope.uploadOpen(rowData);
                                         });
+                                        
                                         $scope.country = [];
                                         $scope.ioc = [];
                                         $scope.severity = [];
@@ -1127,6 +1197,47 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                             // new $.fn.dataTable.FixedHeader( params[t].div );
                             $.fn.dataTableExt.sErrMode = 'throw';
                         }
+                        
+                        $('.bCsv').on('click',function(){                                     
+                            var array = [];
+                            
+                            for (var t in params) {
+                                for (var i in params[t].aaData) {
+                                    //need to sort each value set into the order of the columns
+                                    var sortedRow = [];
+
+                                    for (var p in params[t].params){
+                                        for (var property in params[t].aaData[i]) {
+                                            if(params[t].params[p].mData == property) {
+                                                sortedRow.push(params[t].aaData[i][property]);
+                                            } 
+                                        }
+                                        
+                                    }
+                                    array.push(sortedRow);//push each sorted row as an array to the main array
+                                }
+
+                                //sort array by the sort of the datatable
+                                array.sort(sortFunction);
+
+                                var headerRow = [];
+                                for (var p in params[t].params) {
+                                    if(params[t].params[p].sTitle != "") {
+                                        headerRow.push(params[t].params[p].sTitle);
+                                    }
+                                }
+
+                                //add the header row to the start of the array
+                                array.unshift(headerRow);//array[0] will be the array of column headers 
+
+                                makeCsv(array, params[t].title);//create the csv
+                            }                                     
+
+                            //create the download
+                            var encodedUri = encodeURI(csv);
+                            window.open(encodedUri);
+                            csv = "data:text/csv;charset=utf-8,";
+                        });
                     break;
                 }
             });
@@ -1322,7 +1433,7 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                         });
                         $(window).bind('resize', function() {
                             setTimeout(function(){
-                              setNewSize($scope.sevWidth());
+                              //setNewSize($scope.sevWidth());
                             }, 150);
                         });
                         $('.sidebar-toggler').on("click", function() {
@@ -1335,7 +1446,6 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                             $scope.pieChart.redraw();
                         });
                     }
-
                     // var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
                     $rootScope.$watch('search', function(){
 
@@ -1688,6 +1798,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                                         .x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width]));
                                         //$(element).height(hHeight);
                                         d3.select('#rowchart svg').attr('width', width).attr('height', hHeight);
+                                    $scope.rowChart.redraw();
                                 }
                             };
                             $scope.rowChart
@@ -2280,7 +2391,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     .attr("fill", '#fff')
                                     .style("stroke-width", "14px")
                                     .style('stroke', function(d){
-                                        if (d.name === 'Quarantine'){
+                                        if (d.name === 'QuarantineCOI'){
                                             return '#ff0000';
                                         } else {
                                             return '#259286';
@@ -2390,7 +2501,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                     })
 
                                 switch(d.name){
-                                    case 'ClearText':
+                                    case 'ClearTextCOI':
                                         elm.append('path')
                                             .style('fill', '#259286')
                                             .attr('d', 'M36.8,12.2L19.6,15l4.4-12L36.8,0V12.2z M3.8,20.8l9.2-3.7l5.4-11.4L3.8,20.8z M36.8,16.5l-18.6,3.8'+
@@ -2419,7 +2530,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                             .style('fill-opacity', '0.3');
                                             });
                                         break;
-                                    case 'Quarantine':
+                                    case 'QuarantineCOI':
                                         elm.append('path')
                                             .style('fill', '#ff0000')
                                             .attr('d','M36.6,32.1c1.4-2.2,2.4-4.7,2.9-7.3c-8.1-3.3-13.8-11.2-13.8-20.5c0-1.1,0.1-2.1,0.2-3.1 C23.7,0.4,21.3,0,18.8,0c-0.2,0-0.4,0-0.6,0'+

@@ -11,6 +11,7 @@ module.exports = function (sql, queries, conn, callback) {
     var clearTextIndex = -1;
 
     function uniqueUsers(user, group) {
+        user = user.toString().toLowerCase();
         // if lan_user is not in unique object
         if (!(user in uniqueLinks)) {
             // add user to object and add value to unique nodes
@@ -34,6 +35,7 @@ module.exports = function (sql, queries, conn, callback) {
     }
 
     function uniqueNodesCompare(user, group) {
+        user = user.toString().toLowerCase();
         // if lan_user is not in unique object
         if (!(group in nodesObject)) {
             // add user to object and add value to unique nodes
@@ -56,12 +58,13 @@ module.exports = function (sql, queries, conn, callback) {
 
     function compareUsers(obj) {
         var user = obj.lan_user;
+        user = user.toString().toLowerCase();
         if (user in uniqueLinks) {
             //for (var i in uniqueLinks[user]) { // -- extra loop *** Prints double the nodes ***
                 var arr = [];
                 arr = Object.keys(uniqueLinks[user]);
                 for (var o = 0; o < arr.length; o++) {
-                    if (arr[o] !== 'ClearText') {
+                    if ((arr[o] !== 'ClearText') || (arr[o] !== 'ClearTextCOI')) {
                         // push a new entry for every single node
                         nodes.push({
                             "name": obj.lan_user,
@@ -116,8 +119,8 @@ module.exports = function (sql, queries, conn, callback) {
                             nodes[index].count++;
                         }
                         // SETTING UP LOGIC FOR LINK RELATIONSHIPS
-                        uniqueUsers(data.lan_user, data.group);
-                        uniqueNodesCompare(data.lan_user, data.group);
+                        uniqueUsers(data.lan_user.toString().toLowerCase(), data.group);
+                        uniqueNodesCompare(data.lan_user.toString().toLowerCase(), data.group);
                     })
                     .on('end', function(){
                         callback();
@@ -221,7 +224,7 @@ module.exports = function (sql, queries, conn, callback) {
             connection.release();
             // LINK USERS QUERIES TO OUR MAIN NODES
             for (var i in usersList) {
-                console.log(usersList[i]);
+                //console.log(usersList[i]);
                 compareUsers(usersList[i]);
             }
             // SETTING UP LINKS
