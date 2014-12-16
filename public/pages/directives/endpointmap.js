@@ -45,10 +45,10 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     } 
 
 
-                    if (($('#floorplanspan')[0].offsetWidth-25) != -25) {
-                        //console.log("test")
-                        $scope.elementWidth = ($('#floorplanspan')[0].offsetWidth-25)
-                    }
+                    // if (($('#floorplanspan')[0].offsetWidth-25) != -25) {
+                    //     //console.log("test")
+                    //     $scope.elementWidth = ($('#floorplanspan')[0].offsetWidth-25)
+                    // }
                     //console.log($scope.elementWidth)
                     //var elementWidth = ($('#floorplanspan')[0].offsetWidth-25);
                     var elementWidth = 959;
@@ -1725,10 +1725,10 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                     var scale = 1;
                     var lineCount = 0;
 
-                    if (($('#buildingplanspan')[0].offsetWidth-25) != -25) {
-                        //console.log("test")
-                        $scope.elementWidth = ($('#buildingplanspan')[0].offsetWidth-25)
-                    }
+                    // if (($('#buildingplanspan')[0].offsetWidth-25) != -25) {
+                    //     //console.log("test")
+                    //     $scope.elementWidth = ($('#buildingplanspan')[0].offsetWidth-25)
+                    // }
                     //console.log($scope.elementWidth)
                     // var elementWidth = ($('#buildingplanspan')[0].offsetWidth-25);
                     // var elementHeight = (($('#allfloorplanspan')[0].offsetWidth-25)/imageRatio);
