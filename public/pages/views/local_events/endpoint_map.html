@@ -270,13 +270,18 @@
                 </div>
             </div>
         </div>  
+        <div class="span5" ng-show="!showCharts && showTree">
+            <div style="background-color:#FFF;" class="box" >
+                Click on end node to view more information
+            </div>
+        </div>  
         <div class="span5" ng-show="showCharts">
             <!-- <div class="jdash-header">Connections Information</div>   -->
             <div style="background-color:#FFF;" class="box" >
                 <div id="barchart" make-bar-chart></div>
             </div>
             <br />
-            <div class="connInfoL" ng-show="showCharts">
+            <div class="connInfoL">
                 <!-- <div class="jdash-header">Connections Information</div>   -->
                 <div style="background-color:#FFF;" class="box" >
                     <div id="piechart" make-pie-chart></div>
