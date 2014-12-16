@@ -111,20 +111,25 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                     return get;
                 },
                 getData_: function(link, key, time, callback) {
-                    var Rest;
-                    if (time) {
-                        Rest = $resource(link, {start: time.start, end: time.end});
-                    } else {
-                        Rest = $resource(link);
-                    }
-                    $http({method: 'GET', url: link}).
-                    success(function(data) {
-                        if (key) { // check for key in data to return
+                    var Rest, param = {};
+                    if (time) { timeParam = time }
+                    if (key) {
+                        // if the result is a piece of an object..
+                        Rest = $resource(link, param, {
+                            query: { method: 'GET', params: {}, isArray: false }
+                        })
+                        Rest.query(function(data){
                             callback(data[key]);
-                        } else {
+                        })
+                    } else {
+                        // if the result is an array
+                        Rest = $resource(link, param, {
+                            query: { method: 'GET', params: {}, isArray: true }
+                        });
+                        Rest.query(function(data){
                             callback(data);
-                        }
-                    });
+                        })
+                    }
                 },
                 timeObj_: function() {
                     if ($location.$$search.start && $location.$$search.start) {
@@ -136,7 +141,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                 variables: function(params) {
                     if (!params.get) { params.get = query } // if specific url isn't defined use the page query
                     var this_ = this; // this is so we can access 'this' from within our return function
-                    this_.getData_(this_.checkGET_(params.get), params.key, function(result) {
+                    this_.getData_(this_.checkGET_(params.get), params.key, this_.timeObj_(), function(result) {
                         // only run our crossfilter-add function if there is a value associated with result
                         if (result) {
                             if (params.run && (typeof params.run === 'function')) {

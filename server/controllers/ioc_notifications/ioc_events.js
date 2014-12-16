@@ -32,9 +32,9 @@ module.exports = function(pool) {
                         '`ioc` '+
                     'ORDER BY '+
                         '`ioc_severity` DESC ',
-                insert: [start, end]
+                insert: [req.query.start, req.query.end]
             }
-            new query(get, {database: database, pool: pool}, function(err,data){
+            new query(get, {database: req.user.database, pool: pool}, function(err,data){
                 res.json(data);
             });
         },
