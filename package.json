@@ -1,7 +1,7 @@
 {
   "name": "rapidPHIRE",
   "description": "rapidPHIRE - fight fire with PHIRE.",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "private": true,
   "engines": {
     "node": "0.10.x",
