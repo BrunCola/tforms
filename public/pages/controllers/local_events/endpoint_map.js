@@ -246,15 +246,22 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
             $scope.connectionHit.forEach(function(d) {
                 d.dd = timeFormat(d.time, 'strdDateObj');
                 d.hour = d3.time.hour(d.dd);
-                d.count = parseInt(d.count);
+                // d.count = parseInt(d.count);
+                // d.in_bytes = parseInt(d.in_bytes);
+                // d.out_bytes = parseInt(d.out_bytes);
+                // d.count = +d.count;
+                d.conn_in =  0;
+                d.conn_out =  0;
+                d.stealth_in =  0;
+                d.stealth_out =  0;
                 if (d.type === "conn_in") {
-                    d.conn_in = 1;
+                    d.conn_in++;
                 } else if (d.type === "conn_out") {
-                    d.conn_out = 1;
+                    d.conn_out++;
                 } else if (d.type === "stealth_in") {
-                    d.stealth_in = 1;
+                    d.stealth_in++;;
                 } else if (d.type === "stealth_out") {
-                    d.stealth_out = 1;
+                    d.stealth_out++;
                 }        
                 // d.count = +d.count;
             });
@@ -267,9 +274,9 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                     p.conn_out += v.conn_out;
                     p.stealth_in += v.stealth_in;
                     p.stealth_out += v.stealth_out;
-                    p.count += v.count;
-                    p.in_bytes += v.in_bytes;
-                    p.out_bytes += v.out_bytes;
+                    // p.count += v.count;
+                    // p.in_bytes += v.in_bytes;
+                    // p.out_bytes += v.out_bytes;
                     return p;
                 },
                 function(p, v) {
@@ -277,9 +284,9 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                     p.conn_out -= v.conn_out;
                     p.stealth_in -= v.stealth_in;
                     p.stealth_out -= v.stealth_out;
-                    p.count -= v.count;
-                    p.in_bytes -= v.in_bytes;
-                    p.out_bytes -= v.out_bytes;
+                    //p.count -= v.count;
+                    // p.in_bytes -= v.in_bytes;
+                    // p.out_bytes -= v.out_bytes;
                     return p;
                 },
                 function() {
@@ -288,26 +295,29 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                         conn_out: 0,
                         stealth_in: 0,
                         stealth_out: 0,
-                        count: 0,
-                        in_bytes: 0,
-                        out_bytes: 0
+                        count: 0
+                        // in_bytes: 0,
+                        // out_bytes: 0
                     };
                 }
             );
+            $scope.$broadcast('barChart', barDimension, barGroup, 'hostConnections');
 
-            var countDimension = $scope.crossfilterConns.dimension(function(d) { return d }).top(10).map(function(d){ return d.type });
+            var countDimension = $scope.crossfilterConns.dimension(function(d) { return d.count }).top(10).map(function(d){ return d.l7_proto });
             $scope.appDimension = $scope.crossfilterConns.dimension(function(d) { 
-                if(countDimension.indexOf(d.type) !== -1) {
-                    return d.type;
+                if(countDimension.indexOf(d.l7_proto) !== -1) {
+                    if (d.l7_proto === "-") {
+                        d.l7_proto = "Unknown";
+                    }
+                    return d.l7_proto;
                 } else {
-                    return "Other";
+                    return "Unknown";
                 }
             });                 
             $scope.pieGroup = $scope.appDimension.group().reduceSum(function (d) {
                 return d.count;
             });
 
-            $scope.$broadcast('barChart', barDimension, barGroup, 'hostConnections');
             $scope.$broadcast('pieChart', 'hostConnections');
 
 

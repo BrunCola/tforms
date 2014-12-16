@@ -179,15 +179,20 @@ module.exports = function(pool) {
                                     '`out_bytes`, '+
                                     '`ioc_count`, '+
                                     '`remote_user`, '+
-                                    '`remote_machine` '+
+                                    '`remote_machine`, '+
+                                    '`l7_proto` '+
                                 'FROM '+
-                                    '`conn_meta` '+
+                                    '`conn_l7_meta` '+
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
+                                    'AND `l7_proto`!="IPsec" '+
                                     'AND `lan_ip` = ? '+
                                     'AND `lan_machine`= ? '+
                                     'AND `remote_ip`= ? '+
-                                    'AND `remote_machine`=? ', 
+                                    'AND `remote_machine`=? '+
+                                   // 'AND `l7_proto` !=\'-\' '+
+                                'GROUP BY '+
+                                    '`time`', 
                             insert: [start, end, req.query.lan_ip, req.query.lan_machine, req.query.remote_ip, req.query.remote_machine]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
@@ -211,15 +216,20 @@ module.exports = function(pool) {
                                     '`out_bytes`, '+
                                     '`ioc_count`, '+
                                     '`remote_user`, '+
-                                    '`remote_machine` '+
+                                    '`remote_machine`, '+
+                                    '`l7_proto` '+
                                 'FROM '+
-                                    '`conn_meta` '+
+                                    '`conn_l7_meta` '+
                                 'WHERE '+
                                     '`time` BETWEEN ? AND ? '+
+                                    'AND `l7_proto`!="IPsec" '+
                                     'AND `remote_ip`=? '+
                                     'AND `remote_machine`=? '+
                                     'AND `lan_ip` = ? '+
-                                    'AND `lan_machine`=? ', 
+                                    'AND `lan_machine`=? '+
+                                    //'AND `l7_proto` !=\'-\' '+
+                                'GROUP BY '+
+                                    '`time`', 
                             insert: [start, end, req.query.lan_ip, req.query.lan_machine, req.query.remote_ip, req.query.remote_machine]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
@@ -253,7 +263,9 @@ module.exports = function(pool) {
                                     'AND `lan_ip` = ? '+
                                     'AND `lan_machine`=? '+
                                     'AND `remote_ip`=? '+
-                                    'AND `remote_machine`=? ', 
+                                    'AND `remote_machine`=? '+
+                                'GROUP BY '+
+                                    '`time`', 
                             insert: [start, end, req.query.lan_ip, req.query.lan_machine, req.query.remote_ip, req.query.remote_machine]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
@@ -287,7 +299,9 @@ module.exports = function(pool) {
                                     'AND `remote_ip`=? '+
                                     'AND `remote_machine`=? '+
                                     'AND `lan_ip` = ? '+
-                                    'AND `lan_machine`=? ', 
+                                    'AND `lan_machine`=? '+
+                                'GROUP BY '+
+                                    '`time`', 
                                     insert: [start, end, req.query.lan_ip, req.query.lan_machine, req.query.remote_ip, req.query.remote_machine]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
