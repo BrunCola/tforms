@@ -14,6 +14,9 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
     // var query = '/ioc_notifications/ioc_events'; // string with no '?' at end - function should have a check for url construction
 
     var page = [
+        /////////////////
+        // CROSSFILTER //
+        /////////////////
         {
             type: 'crossfilter', // required
             crossfilterObj: $scope.crossfilterData, // required (if crossfilter)
@@ -125,6 +128,9 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
                 }
             ]
         },
+        /////////////////
+        ///// TABLE /////
+        /////////////////
         {
             type: 'table', // required either array or single object
             crossfilterObj: tableCrossfitler, // required (if crossfilter)
@@ -133,14 +139,16 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
             searchable: true, // optional search param.. no if undefined
             // get: '' // no get default to main url, strings will replace the default
         },
+        //////////////////
+        /////  VARS  /////
+        //////////////////
         {
             type: 'var',
             name: 'ioc_notifications', // required (if var)
             refresh: true, // optional, no if undefined
-            get: [{ // array of values that will build query ur
-                name: 'type',
-                value: 'ioc_notifications'
-            }],
+            key: 'count',
+            // GETparams: [],
+            get: '/api/ioc_notifications/ioc_events/ioc_notifications'
             // run: function() { // optional run function that can handle the return and assign it to the scope obj
 
             // }
@@ -149,84 +157,65 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
             type: 'var',
             name: 'ioc_groups', // required (if var)
             refresh: true, // optional, no if undefined
-            get: [{ // array of values that will build query ur
-                name: 'type',
-                value: 'ioc_groups'
-            }]
+            key: 'count',
+            // params: [],
+            get: '/api/ioc_notifications/ioc_events/ioc_groups'
         },
         {
             type: 'var',
             name: 'local_ips', // required (if var)
             refresh: true, // optional, no if undefined
-            get: [{ // array of values that will build query ur
-                name: 'type',
-                value: 'local_ips'
-            }]
+            key: 'count',
+            get: '/api/ioc_notifications/ioc_events/ioc_notifications/local_ips'
         },
         {
             type: 'var',
             name: 'remote_ip', // required (if var)
             refresh: true, // optional, no if undefined
-            get: [{ // array of values that will build query ur
-                name: 'type',
-                value: 'remote_ip'
-            }]
+            key: 'count',
+            get: '/api/ioc_notifications/ioc_events/ioc_notifications/remote_ip'
         },
         {
             type: 'var',
             name: 'query', // required (if var)
             refresh: true, // optional, no if undefined
-            get: [{ // array of values that will build query ur
-                name: 'type',
-                value: 'query'
-            }]
+            key: 'count',
+            get: '/api/ioc_notifications/ioc_events/ioc_notifications/query'
         },
         {
             type: 'var',
             name: 'host', // required (if var)
             refresh: true, // optional, no if undefined
-            get: [{ // array of values that will build query ur
-                name: 'type',
-                value: 'host'
-            }]
+            key: 'count',
+            get: '/api/ioc_notifications/ioc_events/ioc_notifications/host'
         },
         {
             type: 'var',
             name: 'remote_ip_ssl', // required (if var)
             refresh: true, // optional, no if undefined
-            get: [{ // array of values that will build query ur
-                name: 'type',
-                value: 'remote_ip_ssl'
-            }]
+            key: 'count',
+            get: '/api/ioc_notifications/ioc_events/ioc_notifications/remote_ip_ssl'
         },
         {
             type: 'var',
             name: 'file_name', // required (if var)
             refresh: true, // optional, no if undefined
-            get: [{ // array of values that will build query ur
-                name: 'type',
-                value: 'name'
-            }]
+            key: 'count',
+            get: '/api/ioc_notifications/ioc_events/ioc_notifications/name'
         },
         {
             type: 'var',
             name: 'remote_country', // required (if var)
             refresh: true, // optional, no if undefined
-            get: [{ // array of values that will build query ur
-                name: 'type',
-                value: 'remote_country'
-            }]
+            key: 'count',
+            get: '/api/ioc_notifications/ioc_events/ioc_notifications/remote_country'
         },
-        //////////////////////////////////
-        //////////////////////////////////
         {
             type: 'var',
             name: 'bandwidth_in', // required (if var)
             refresh: true, // optional, no if undefined
-            get: [{ // array of values that will build query ur
-                name: 'type',
-                value: 'bandwidth_in'
-            }],
+            key: 'bandwidth',
+            get: '/api/ioc_notifications/ioc_events/ioc_notifications/bandwidth_in',
             run: function(data) {
                 return data+' Kb/s';
             }
@@ -235,10 +224,8 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
             type: 'var',
             name: 'bandwidth_out', // required (if var)
             refresh: true, // optional, no if undefined
-            get: [{ // array of values that will build query ur
-                name: 'type',
-                value: 'bandwidth_out'
-            }],
+            key: 'bandwidth',
+            get: '/api/ioc_notifications/ioc_events/ioc_notifications/bandwidth_out',
             run: function(data) {
                 return data+' Kb/s';
             }
@@ -247,76 +234,60 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
             type: 'var',
             name: 'new_ip', // required (if var)
             refresh: true, // optional, no if undefined
-            get: [{ // array of values that will build query ur
-                name: 'type',
-                value: 'new_ip'
-            }]
+            key: 'count',
+            get: '/api/ioc_notifications/ioc_events/ioc_notifications/new_ip'
         },
         {
             type: 'var',
             name: 'new_dns', // required (if var)
             refresh: true, // optional, no if undefined
-            get: [{ // array of values that will build query ur
-                name: 'type',
-                value: 'new_dns'
-            }]
+            key: 'count',
+            get: '/api/ioc_notifications/ioc_events/ioc_notifications/new_dns'
         },
         {
             type: 'var',
             name: 'new_http', // required (if var)
             refresh: true, // optional, no if undefined
-            get: [{ // array of values that will build query ur
-                name: 'type',
-                value: 'new_http'
-            }]
+            key: 'count',
+            get: '/api/ioc_notifications/ioc_events/ioc_notifications/new_http'
         },
         {
             type: 'var',
             name: 'new_ssl', // required (if var)
             refresh: true, // optional, no if undefined
-            get: [{ // array of values that will build query ur
-                name: 'type',
-                value: 'new_ssl'
-            }]
+            key: 'count',
+            get: '/api/ioc_notifications/ioc_events/ioc_notifications/new_ssl'
         },
         {
             type: 'var',
             name: 'new_layer7', // required (if var)
             refresh: true, // optional, no if undefined
-            get: [{ // array of values that will build query ur
-                name: 'type',
-                value: 'new_layer7'
-            }]
+            key: 'count',
+            get: '/api/ioc_notifications/ioc_events/ioc_notifications/new_layer7'
         },
         {
             type: 'var',
             name: 'conn_meta', // required (if var)
             refresh: true, // optional, no if undefined
-            get: [{ // array of values that will build query ur
-                name: 'type',
-                value: 'conn_meta'
-            }]
+            key: 'count',
+            get: '/api/ioc_notifications/ioc_events/ioc_notifications/conn_meta'
         },
         {
             type: 'var',
             name: 'remote_ip_conn_meta', // required (if var)
             refresh: true, // optional, no if undefined
-            get: [{ // array of values that will build query ur
-                name: 'type',
-                value: 'remote_ip_conn_meta'
-            }]
+            key: 'count',
+            get: '/api/ioc_notifications/ioc_events/ioc_notifications/remote_ip_conn_meta'
         },
         {
             type: 'var',
             name: 'remote_country_conn_meta', // required (if var)
             refresh: true, // optional, no if undefined
-            get: [{ // array of values that will build query ur
-                name: 'type',
-                value: 'remote_country_conn_meta'
-            }]
+            key: 'count',
+            get: '/api/ioc_notifications/ioc_events/ioc_notifications/remote_country_conn_meta'
         },
     ];
-    runPage($scope, page, query);
+    runPage($scope, page);
 
     // $http({method: 'GET', url: query}).
     // //success(function(data, status, headers, config) {

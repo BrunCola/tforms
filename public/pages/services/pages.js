@@ -57,7 +57,7 @@ angular.module('mean.pages').factory('searchFilter', ['$rootScope',
 
 angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location', '$resource',
     function($rootScope, $http, $location, $resource) {
-        var runPage = function($scope, data, query, refreshRate) {
+        var runPage = function($scope, data, refreshRate) {
             if (!refreshRate) { refreshRate === 60000 } // defaults to 1 minute in case refresh is enabled on any visual, but isnt defined calling the function
             var functions = {
                 visuals_: {
@@ -88,42 +88,43 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                     }
                 },
                 // build urls from arrays
-                constructUrl_: function(array, query) {
-                    var string = '', count = 0;
-                    if (query.slice(-1) !== '?') {
-                        query += '?';
-                    }
-                    string += query;
-                    for (var i in array) {
-                        if (count > 0) {
-                            string += '&';
-                        }
-                        string += array[i].type+'='+array[i].value;
-                        count++;
-                    }
-                    return string;
-                },
-                // this handles strings or arrays
-                checkGET_: function(get) {
-                    if (typeof get === 'object') {
-                        return this.constructUrl_(get, query);
-                    }
-                    return get;
-                },
-                getData_: function(link, key, time, callback) {
-                    var Rest, param = {};
+                // constructUrl_: function(array, query) {
+                //     var string = '', count = 0;
+                //     if (query.slice(-1) !== '?') {
+                //         query += '?';
+                //     }
+                //     string += query;
+                //     for (var i in array) {
+                //         if (count > 0) {
+                //             string += '&';
+                //         }
+                //         string += array[i].type+'='+array[i].value;
+                //         count++;
+                //     }
+                //     return string;
+                // },
+                // // this handles strings or arrays
+                // checkGET_: function(GETparams) {
+                //     if (typeof GETparams === 'object') {
+                //         return this.constructUrl_(get);
+                //     }
+                //     return;
+                // },
+                getData_: function(vis, time, callback) {
+                    // TODO - add getparams to time if exists
+                    var Rest, timeParam = {};
                     if (time) { timeParam = time }
-                    if (key) {
+                    if (vis.key) {
                         // if the result is a piece of an object..
-                        Rest = $resource(link, param, {
+                        Rest = $resource(vis.get, timeParam, {
                             query: { method: 'GET', params: {}, isArray: false }
                         })
                         Rest.query(function(data){
-                            callback(data[key]);
+                            callback(data[vis.key]);
                         })
                     } else {
                         // if the result is an array
-                        Rest = $resource(link, param, {
+                        Rest = $resource(vis.get, timeParam, {
                             query: { method: 'GET', params: {}, isArray: true }
                         });
                         Rest.query(function(data){
@@ -138,26 +139,28 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         return false;
                     }
                 },
-                variables: function(params) {
-                    if (!params.get) { params.get = query } // if specific url isn't defined use the page query
+                variable: function(params) {
+                    if (!params.get) { return } // if specific url isn't defined use the page query
+                    var GETparams = false;
+                    if (params.GETparams) { GETparams = params.GETparams }
                     var this_ = this; // this is so we can access 'this' from within our return function
-                    this_.getData_(this_.checkGET_(params.get), params.key, this_.timeObj_(), function(result) {
+                    this_.getData_(params, this_.timeObj_(), function(result) {
                         // only run our crossfilter-add function if there is a value associated with result
                         if (result) {
                             if (params.run && (typeof params.run === 'function')) {
-                                params.run(result);
+                                $scope[params.name] = params.run(result);
+                            } else {
+                                $scope[params.name] = result;
                             }
-                            // add-remove data function call here
-                            params.crossfilterObj.add(result);
                         }
-                        // assign result to name in scope (specified in )
                     })
                 },
                 crossfilter: function(params) {
-                    if (!params.get) { params.get = query } // if specific url isn't defined use the page query
+                    if (!params.get) { return } // if specific url isn't defined use the page query
+                    var GETparams = false;
+                    if (params.GETparams) { GETparams = params.GETparams }
                     var this_ = this; // this is so we can access 'this' from within our return function
-                    var time = this_.timeObj_();
-                    this_.getData_(this_.checkGET_(params.get), params.key, time, function(result) {
+                    this_.getData_(params, this_.timeObj_(), function(result) {
                         // only run our crossfilter-add function if there is a value associated with result
                         if (result) {
                             if (params.run && (typeof params.run === 'function')) {
@@ -187,9 +190,9 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                     case 'crossfilter':
                         functions.crossfilter(data[v]);
                     break;
-                    // case 'var':
-                    //     functions.variable(data[v]);
-                    // break;
+                    case 'var':
+                        functions.variable(data[v]);
+                    break;
                     // case 'table':
                     //     functions.table(data[v]);
                     // break;
