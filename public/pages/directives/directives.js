@@ -1178,6 +1178,7 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                     if (chartType === "hostConnections"){
                         width = width/2.3;
                         connMargin = 110;
+                        filter = false;
                     }
                     var height = getSize(element, 'pieChart').height;
                     $scope.sevWidth = function() {
@@ -1269,13 +1270,12 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                     //      break;
                     // }
 
-                    if (filter == true) {
+                    if ((filter == true) && (chartType !== "hostConnections")) {
                         $scope.pieChart
                             .on("filtered", function(chart, filter){
                                 waitForFinalEvent(function(){
                                     $scope.tableData.filterAll();
                                     var arr = [];
-                                    console.log("Test")
                                     for(var i in $scope.appDimension.top(Infinity)) {
                                         if ($scope.appDimension.top(Infinity)[i].pie_dimension !== undefined) {
                                             arr.push($scope.appDimension.top(Infinity)[i].pie_dimension);
@@ -1313,33 +1313,28 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 
                     $scope.pieChart.render();
                     $scope.$broadcast('spinnerHide');
-                    $(window).resize(function () {
-                        waitForFinalEvent(function(){
-                          if (chartType !== "hostConnections"){
-                            $scope.pieChart.render();
-                          }
-                        }, 200, "pieChartresize");
-                    });
-                    $(window).bind('resize', function() {
-                        setTimeout(function(){
-                          if (chartType !== "hostConnections"){
-                            setNewSize($scope.sevWidth());
-                          }
-                        }, 150);
-                    });
-                    $('.sidebar-toggler').on("click", function() {
-                        if (chartType !== "hostConnections"){
-                          setTimeout(function() {
+
+                    if (chartType !== "hostConnections"){
+                        $(window).resize(function () {
+                            waitForFinalEvent(function(){
+                              $scope.pieChart.render();
+                            }, 200, "pieChartresize");
+                        });
+                        $(window).bind('resize', function() {
+                            setTimeout(function(){
                               setNewSize($scope.sevWidth());
-                              //$scope.pieChart.render();
-                          },10);
-                        }
-                    });
-                    $rootScope.$watch('search', function(){
-                        if (chartType !== "hostConnections"){
-                          $scope.pieChart.redraw();
-                        }
-                    });
+                            }, 150);
+                        });
+                        $('.sidebar-toggler').on("click", function() {
+                              setTimeout(function() {
+                                setNewSize($scope.sevWidth());
+                                //$scope.pieChart.render();
+                              },10);
+                        });
+                        $rootScope.$watch('search', function(){
+                            $scope.pieChart.redraw();
+                        });
+                    }
 
                     // var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
                     $rootScope.$watch('search', function(){
