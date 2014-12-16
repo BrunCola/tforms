@@ -1713,11 +1713,11 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                                 $scope.barChart.render();
                             }, 200, "barchartresize");
                         });
-                        $(window).bind('resize', function() {
-                            setTimeout(function(){
-                                setNewSize($scope.sevWidth());
-                            }, 150);
-                        });
+                        // $(window).bind('resize', function() {
+                        //     setTimeout(function(){
+                        //         setNewSize($scope.sevWidth());
+                        //     }, 150);
+                        // });
                         $('.sidebar-toggler').on("click", function() {
                             setTimeout(function() {
                                 setNewSize($scope.sevWidth());
