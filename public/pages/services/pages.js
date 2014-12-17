@@ -137,7 +137,11 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         if (params.searchable && params.crossfilterObj) {
                             if (params.searchable === true) {
                                 var searchDimension = params.crossfilterObj.dimension(function(d){return d});
-                                searchable.push(searchDimension);
+                                searchable.push({
+                                    type: 'crossfilter',
+                                    dimension: searchDimension,
+                                    params: params
+                                });
                             }
                         }
                         functions.getData_(params, functions.timeObj_(), function(result) {
@@ -190,6 +194,9 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             }
                             $scope.$broadcast('geoChart', dimension, group);
                         }
+                    },
+                    update_: function(data, term) {
+                        console.log(data)
                     }
                 },
                 table: {
@@ -200,7 +207,11 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         if (params.searchable && params.crossfilterObj) {
                             if (params.searchable === true) {
                                 var searchDimension = params.crossfilterObj.dimension(function(d){return d});
-                                searchable.push(searchDimension);
+                                searchable.push({
+                                    type: 'table',
+                                    dimension: searchDimension,
+                                    params: params
+                                });
                             }
                         }
                         functions.getData_(params, functions.timeObj_(), function(result) {
@@ -218,24 +229,38 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                     draw_: function(result, crossfilterObj, params) {
                         var dimension = crossfilterObj.dimension(function(d){return d});
                         $scope.$broadcast('table', result, dimension, params);
+                    },
+                    update_: function(data, term) {
+                        console.log(data)
                     }
                 },
-                handleSearchBox: function(dimensionArray, params) {
-                    var this_ = this;
-                    $scope.$watch('search', function(d){
-                        if (d === undefined) { return }
-                        for (var i in dimensionArray) {
-                            searchFilter(dimensionArray[i]);
-                            this_.table.update;
+                textBoxWatch: {
+                    handleSearchBox: function(searchableArray) {
+                        var this_ = this;
+                        $scope.$watch('search', function(searchTerm){
+                            if (searchTerm === undefined) { return }
+                            for (var i in searchableArray) {
+                                this_.handleUpdates(searchableArray[i], searchTerm);
+                            }
+                        })
+                    },
+                    handleUpdates: function(data, term) { // search box updates
+                        // handle updates by switching through types
+                        switch(data.type) {
+                            case 'crossfilter':
+                                functions.crossfilter.update_(data, term);
+                            break;
+                            case 'table':
+                                functions.table.update_(data, term)
+                            break;
                         }
-                    })
+                    }
                 }
             }
             var searchable = [];
             for (var v in data) {
                 switch (data[v].type) {
                     case 'crossfilter':
-                        console.log(functions.crossfilter)
                         functions.crossfilter.get(data[v]);
                     break;
                     case 'var':
@@ -251,7 +276,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
             // TODO - fade non-searchable items when active
             // NOTE: this happens here because we only want scope.watch to run once on search
             if (searchable.length > 0) {
-                functions.handleSearchBox(searchable, data);
+                functions.textBoxWatch.handleSearchBox(searchable);
             }
         }
         return runPage;
