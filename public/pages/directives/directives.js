@@ -1060,6 +1060,11 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                 //     table.dataTable().fnFilter('');
                 // }, 10000)
                 // new $.fn.dataTable.FixedHeader( data[t].div );
+                // 
+                
+                // filter function
+                // 
+
                 $.fn.dataTableExt.sErrMode = 'throw';
 
                 $('.bCsv').on('click',function(){                                     

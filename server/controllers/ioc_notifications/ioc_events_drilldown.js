@@ -1528,9 +1528,9 @@ module.exports = function(pool) {
                 }
                 new query(update_flag, {database: database, pool: pool}, function(err,data){
                     if (err) {
-                        res.send(500);
+                        res.status(500).end();
                     } else {
-                        res.send(200);
+                        res.status(200).end();
                     }
                 });
 
@@ -1541,9 +1541,9 @@ module.exports = function(pool) {
                 }
                 new query(update_quarantine, {database: database, pool: pool}, function(err,data){
                     if (err) {
-                        res.send(500);
+                        res.status(500).end();
                     } else {
-                        res.send(200);
+                        res.status(200).end();
                     }
                 });
             } */else if (req.query.trigger_type === 'firewall') {
@@ -1553,9 +1553,9 @@ module.exports = function(pool) {
                 }
                 new query(update_firewall, {database: database, pool: pool}, function(err,data){
                     if (err) {
-                        res.send(500);
+                        res.status(500).end();
                     } else {
-                        res.send(200);
+                        res.status(200).end();
                     }
                 });
             }

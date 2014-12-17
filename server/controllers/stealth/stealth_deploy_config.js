@@ -151,9 +151,9 @@ module.exports = function(pool) {
                 }                
                 new query(update_coordinates, {database: database, pool: pool}, function(err,data){
                     if (err) {
-                        res.send(500);
+                        res.status(500).end();
                     } else {
-                        res.send(200);
+                        res.status(200).end();
                     }
                 });
             } else if (req.query.type === 'insert') {
@@ -163,9 +163,9 @@ module.exports = function(pool) {
                 }                
                 new query(update_coordinates, {database: database, pool: pool}, function(err,data){
                     if (err) {
-                        res.send(500);
+                        res.status(500).end();
                     } else {
-                        res.send(200);
+                        res.status(200).end();
                     }
                 });
             } else {
@@ -175,9 +175,9 @@ module.exports = function(pool) {
                 }                
                 new query(update_coordinates, {database: database, pool: pool}, function(err,data){
                     if (err) {
-                        res.send(500);
+                        res.status(500).end();
                     } else {
-                        res.send(200);
+                        res.status(200).end();
                     }
                 });
             }

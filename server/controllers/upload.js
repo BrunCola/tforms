@@ -73,7 +73,7 @@ module.exports = function(pool) {
 										insert: [newName, newPath, custom_name, req.body.width, req.body.height, req.body.order_index, req.body.scale, req.body.user_scale, req.body.asset_name, req.body.building]
 									}
 									new query(insert_map_image, {database: database, pool: pool}, function(err,data){
-										res.send(200);
+										res.status(200).end();
 									});
 								} else {
 									var insert_map_image = {
@@ -81,7 +81,7 @@ module.exports = function(pool) {
 										insert: [req.body.imageType ,newName, asset_name, newPath, custom_name, req.body.width,req.body.height, req.body.scale]
 									}
 									new query(insert_map_image, {database: database, pool: pool}, function(err,data){
-										res.send(200);
+										res.status(200).end();
 									});
 								}								
 							} else if(req.body.imageType === 'user') {
@@ -90,7 +90,7 @@ module.exports = function(pool) {
 									insert: [newName, req.user.client + "/" + newName, req.body.lan_zone, req.body.lan_ip, req.body.lan_user, newPath]
 								}
 								new query(update_user_image, {database: database, pool: pool}, function(err,data){
-									res.send(200);
+									res.status(200).end();
 								});
 							} else {
 								var insert_other_image = {
@@ -98,7 +98,7 @@ module.exports = function(pool) {
 									insert: [newName, req.user.client + "/" + newName, newPath]
 								}
 								new query(insert_other_image, {database: database, pool: pool}, function(err,data){
-									res.send(200);
+									res.status(200).end();
 								});
 							}
 						});
