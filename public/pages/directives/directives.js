@@ -815,7 +815,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
             }
 
             //function for export to csv
-            var csv = "data:text/csv;charset=utf-8,";
+            var csv = "data:text/csv;&charset=utf-8,";
             function makeCsv(array, heading){
                 function isAllowed(word){
                     var notAllowed = ['_typeCast', 'parse', 'id', 'child_id'];
@@ -1211,8 +1211,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                             if(params[t].params[p].mData == property) {
                                                 sortedRow.push(params[t].aaData[i][property]);
                                             } 
-                                        }
-                                        
+                                        }                                        
                                     }
                                     array.push(sortedRow);//push each sorted row as an array to the main array
                                 }
@@ -1229,13 +1228,13 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 
                                 //add the header row to the start of the array
                                 array.unshift(headerRow);//array[0] will be the array of column headers 
-
                                 makeCsv(array, params[t].title);//create the csv
                             }                                     
 
+
+                            var fileName = $location.url().replace("/", "");
                             //create the download
-                            var encodedUri = encodeURI(csv);
-                            window.open(encodedUri);
+                            download(csv, fileName+"_CSV.csv", "text/csv");
                             csv = "data:text/csv;charset=utf-8,";
                         });
                     break;
@@ -1244,6 +1243,38 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
             $scope.$on('tableUpdate', function (event, tableData, params, tableType) {
                 redrawTable(tableData);
             });
+
+            function download(strData, strFileName, strMimeType) {
+                var D = document,
+                    a = D.createElement("a");
+                    strMimeType = strMimeType;
+
+                if (navigator.msSaveBlob) { // IE10
+                    return navigator.msSaveBlob(new Blob([strData], {type: strMimeType}), strFileName);
+                } 
+
+                if ('download' in a) { //html5 A[download]
+                    a.href = "data:" + strMimeType + "," + encodeURIComponent(strData);
+                    a.setAttribute("download", strFileName);
+                    a.innerHTML = "downloading...";
+                    D.body.appendChild(a);
+                    setTimeout(function() {
+                        a.click();
+                        D.body.removeChild(a);
+                    }, 66);
+                    return true;
+                } 
+
+                //do iframe dataURL download (old ch+FF):
+                var f = D.createElement("iframe");
+                D.body.appendChild(f);
+                f.src = "data:" +  strMimeType   + "," + encodeURIComponent(strData);
+
+                setTimeout(function() {
+                    D.body.removeChild(f);
+                }, 333);
+                return true;
+            } 
         }
     };
 }]);
