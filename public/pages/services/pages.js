@@ -143,6 +143,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         return false;
                     }
                 },
+                // inital loads
                 variable: function(params) {
                     if (!params.get) { return } // if specific url isn't defined use the page query
                     var this_ = this; // this is so we can access 'this' from within our return function
@@ -182,6 +183,13 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                     break;
                             }
                         }
+                        // handle searching (if enabled)
+                        if (params.searchable && params.crossfilterObj) {
+                            if (params.searchable === true) {
+                                var searchDimension = params.crossfilterObj.dimension(function(d){return d});
+                                this_.handleSearch(searchDimension);
+                            }
+                        }
                     })
                 },
                 table: function(params) {
@@ -197,7 +205,14 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         }
                         this_.visuals_.table(result, params.crossfilterObj, params);
                     })
+                },
+                handleSearch: function(dimension) {
+                    $rootScope.$watch('search', function(d){
+                        if (d === undefined) { return }
+                        console.log(d)
+                    })
                 }
+                // update functions
             }
             for (var v in data) {
                 switch (data[v].type) {

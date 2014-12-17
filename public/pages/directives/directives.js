@@ -877,7 +877,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                     notReport = false;
                     stateSave = false;
                 }
-                data.div = $('#'+data.div).dataTable({
+                var table = $('#'+data.div).dataTable({
                     'aaData': dimension.top(Infinity),
                     'aoColumns': data.params,
                     'bDeferRender': bDeferRender,
@@ -1046,11 +1046,19 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                         }
                     }
                 });
-                $scope.$on('crossfilterToTable', function () {
-                    $('#table').dataTable().fnClearTable();
-                    $('#table').dataTable().fnAddData(dimension.top(Infinity));
-                    $('#table').dataTable().fnDraw();
-                });
+                // $scope.$on('crossfilterToTable', function () {
+                //     $('#table').dataTable().fnClearTable();
+                //     $('#table').dataTable().fnAddData(dimension.top(Infinity));
+                //     $('#table').dataTable().fnDraw();
+                // });
+                // setTimeout(function(){
+                //     // $('#table').dataTable().fnFilter($scope.search);
+                //     table.dataTable().fnFilter('test');
+                // }, 5000)
+                // setTimeout(function(){
+                //     // $('#table').dataTable().fnFilter($scope.search);
+                //     table.dataTable().fnFilter('');
+                // }, 10000)
                 // new $.fn.dataTable.FixedHeader( data[t].div );
                 $.fn.dataTableExt.sErrMode = 'throw';
 
@@ -1085,9 +1093,9 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                     csv = "data:text/csv;charset=utf-8,";
                 });
             });
-            $scope.$on('tableUpdate', function (event, dimension, data, tableType) {
-                redrawTable(dimension);
-            });
+            // $scope.$on('tableUpdate', function (event, dimension, data, tableType) {
+            //     redrawTable(dimension);
+            // });
 
             function download(strData, strFileName, strMimeType) {
                 var D = document,
@@ -1124,21 +1132,21 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
     };
 }]);
 
-angular.module('mean.pages').directive('universalSearch', function() {
-    return {
-        link: function($scope, element, attrs) {
-            $scope.$watch('search', function(){
-                if ($scope.search) {
-                    if (($scope.search !== null) || ($scope.search !== '')) {
-                        $('#table').dataTable().fnFilter($scope.search);
-                        // var testSearch = searchFilter($scope.crossfilterData);
-                        // console.log(testSearch);
-                    }
-                }
-            });
-        }
-    };
-});
+// angular.module('mean.pages').directive('universalSearch', function() {
+//     return {
+//         link: function($scope, element, attrs) {
+//             $scope.$watch('search', function(){
+//                 if ($scope.search) {
+//                     if (($scope.search !== null) || ($scope.search !== '')) {
+//                         $('#table').dataTable().fnFilter($scope.search);
+//                         // var testSearch = searchFilter($scope.crossfilterData);
+//                         // console.log(testSearch);
+//                     }
+//                 }
+//             });
+//         }
+//     };
+// });
 
 angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '$rootScope', 'getSize', function ($timeout, $window, $rootScope, getSize) {
     return {
@@ -1318,32 +1326,32 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                                 //$scope.pieChart.render();
                               },10);
                         });
-                        $rootScope.$watch('search', function(){
-                            $scope.pieChart.redraw();
-                        });
+                        // $rootScope.$watch('search', function(){
+                        //     $scope.pieChart.redraw();
+                        // });
                     }
                     // var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
-                    $rootScope.$watch('search', function(){
+                    // $rootScope.$watch('search', function(){
 
-                        if ($rootScope.search === null) {
-                            $scope.appDimension.filterAll();
-                        } else {
-                            $scope.appDimension.filterAll();
-                            // console.log($scope.appDimension.top(Infinity));
-                            if ($scope.pie_dimension) {
-                                $scope.appDimension.filter(function(d) { return $scope.pie_dimension.indexOf(d) >= 0; });
-                                // $scope.pieGroup = $scope.appDimension.group().reduceSum(function (d) {
-                                //    return d.count;
-                                // });
-                            }
-                            // console.log($scope.appDimension.top(Infinity));
+                    //     if ($rootScope.search === null) {
+                    //         $scope.appDimension.filterAll();
+                    //     } else {
+                    //         $scope.appDimension.filterAll();
+                    //         // console.log($scope.appDimension.top(Infinity));
+                    //         if ($scope.pie_dimension) {
+                    //             $scope.appDimension.filter(function(d) { return $scope.pie_dimension.indexOf(d) >= 0; });
+                    //             // $scope.pieGroup = $scope.appDimension.group().reduceSum(function (d) {
+                    //             //    return d.count;
+                    //             // });
+                    //         }
+                    //         // console.log($scope.appDimension.top(Infinity));
 
-                        }
-                        $scope.pieChart.dimension($scope.appDimension);
-                        $scope.pieChart.group($scope.pieGroup); // set group
-                        $scope.pieChart.redraw();
-                        // $scope.pieChart.render();
-                    });
+                    //     }
+                    //     $scope.pieChart.dimension($scope.appDimension);
+                    //     $scope.pieChart.group($scope.pieGroup); // set group
+                    //     $scope.pieChart.redraw();
+                    //     // $scope.pieChart.render();
+                    // });
                 }, 0, false);
             })
         }
@@ -1600,9 +1608,9 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                                 $scope.barChart.render();
                             },10);
                         });
-                        $rootScope.$watch('search', function(){
-                            $scope.barChart.redraw();
-                        });
+                        // $rootScope.$watch('search', function(){
+                        //     $scope.barChart.redraw();
+                        // });
                 }, 0, false);
             })
         }
@@ -1750,21 +1758,21 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                                 $scope.rowChart.render();
                             },10);
                         });
-                        var rowFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
-                        $rootScope.$watch('search', function(){
-                            $scope.tableToRowChart = function () {
-                                if ($rootScope.search === null) {
-                                    rowFilterDimension.filterAll();
-                                } else {
-                                    rowFilterDimension.filterAll();
-                                    if ($scope.country) {
-                                        rowFilterDimension.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
-                                    }
-                                }
-                            }
-                            $scope.tableToRowChart();
-                            $scope.rowChart.redraw();
-                        });
+                        // var rowFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
+                        // $rootScope.$watch('search', function(){
+                        //     $scope.tableToRowChart = function () {
+                        //         if ($rootScope.search === null) {
+                        //             rowFilterDimension.filterAll();
+                        //         } else {
+                        //             rowFilterDimension.filterAll();
+                        //             if ($scope.country) {
+                        //                 rowFilterDimension.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
+                        //             }
+                        //         }
+                        //     }
+                        //     $scope.tableToRowChart();
+                        //     $scope.rowChart.redraw();
+                        // });
                 }, 0, false);
             });
         }
@@ -1866,18 +1874,18 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
                             setNewSize($scope.geoWidth());
                         },10);
                     });
-                    var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
-                    $rootScope.$watch('search', function(){
-                        if ($rootScope.search === null) {
-                                geoFilterDimension.filterAll();
-                            } else {
-                                geoFilterDimension.filterAll();
-                                if ($scope.country) {
-                                    geoFilterDimension.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
-                                }
-                            }
-                        $scope.geoChart.redraw();
-                    });
+                    // var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
+                    // $rootScope.$watch('search', function(){
+                    //     if ($rootScope.search === null) {
+                    //             geoFilterDimension.filterAll();
+                    //         } else {
+                    //             geoFilterDimension.filterAll();
+                    //             if ($scope.country) {
+                    //                 geoFilterDimension.filter(function(d) { return $scope.country.indexOf(d) >= 0; });
+                    //             }
+                    //         }
+                    //     $scope.geoChart.redraw();
+                    // });
                     $scope.$broadcast('spinnerHide');
                 }, 200, false);
             })
