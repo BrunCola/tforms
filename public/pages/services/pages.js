@@ -60,38 +60,6 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
         var runPage = function($scope, data, refreshRate) {
             if (!refreshRate) { refreshRate === 60000 } // defaults to 1 minute in case refresh is enabled on any visual, but isnt defined calling the function
             var functions = {
-                visuals_: {
-                    // INIT INDIVIDUAL VISUALS
-                    rowchart: function(params, crossfilterObj) {
-                        var group = false;
-                        var dimension = params.dimension(crossfilterObj);
-                        if (params.group && (typeof params.group === 'function')) {
-                            group = params.group(dimension);
-                        }
-                        $scope.$broadcast('rowChart', dimension, group, 'severity');
-                    },
-                    barchart: function(params, crossfilterObj) {
-                        var group = false;
-                        var dimension = params.dimension(crossfilterObj);
-                        if (params.group && (typeof params.group === 'function')) {
-                            group = params.group(dimension);
-                        }
-                        // add params in here for axis labels and graph types (along with a default)
-                        $scope.$broadcast('barChart', dimension, group, 'severity');
-                    },
-                    geochart: function(params, crossfilterObj) {
-                        var group = false;
-                        var dimension = params.dimension(crossfilterObj);
-                        if (params.group && (typeof params.group === 'function')) {
-                            group = params.group(dimension);
-                        }
-                        $scope.$broadcast('geoChart', dimension, group);
-                    },
-                    table: function(result, crossfilterObj, params) {
-                        var dimension = crossfilterObj.dimension(function(d){return d});
-                        $scope.$broadcast('table', result, dimension, params);
-                    }
-                },
                 // build urls from arrays
                 // constructUrl_: function(array, query) {
                 //     var string = '', count = 0;
@@ -145,8 +113,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                     }
                 },
 
-
-                // INIT VISUAL TYPES
+                // INIT VISUAL TYPES & METHODS
                 variable: function(params) {
                     if (!params.get) { return } // if specific url isn't defined use the page query
                     var this_ = this; // this is so we can access 'this' from within our return function
@@ -161,61 +128,97 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         }
                     })
                 },
-                crossfilter: function(params) {
-                    if (!params.get) { return } // if specific url isn't defined use the page query
-                    var this_ = this; // this is so we can access 'this' from within our return function
-                    // handle searching (if enabled) - we don't need to wait for a data return for this
-                    if (params.searchable && params.crossfilterObj) {
-                        if (params.searchable === true) {
-                            var searchDimension = params.crossfilterObj.dimension(function(d){return d});
-                            searchable.push(searchDimension);
+                crossfilter:  {
+                    get: function(params) {
+                        if (!params.get) { return } // if specific url isn't defined use the page query
+                         // this is so we can access 'this' from within our return function
+                        // handle searching (if enabled) - we don't need to wait for a data return for this
+                        var this_ = this;
+                        if (params.searchable && params.crossfilterObj) {
+                            if (params.searchable === true) {
+                                var searchDimension = params.crossfilterObj.dimension(function(d){return d});
+                                searchable.push(searchDimension);
+                            }
+                        }
+                        functions.getData_(params, functions.timeObj_(), function(result) {
+                            // only run our crossfilter-add function if there is a value associated with result
+                            if (result) {
+                                if (params.run && (typeof params.run === 'function')) {
+                                    params.run(result);
+                                }
+                                // add-remove data function call here
+                                params.crossfilterObj.add(result);
+                            }
+                            for (var i in params.visuals) {
+                                switch (params.visuals[i].type) {
+                                    case 'rowchart':
+                                       this_.draw_.rowchart(params.visuals[i], params.crossfilterObj);
+                                        break;
+                                    case 'barchart':
+                                       this_.draw_.barchart(params.visuals[i], params.crossfilterObj);
+                                        break;
+                                    case 'geochart':
+                                       this_.draw_.geochart(params.visuals[i], params.crossfilterObj);
+                                        break;
+                                }
+                            }
+                        })
+                    },
+                    draw_: {
+                        rowchart: function(params, crossfilterObj) {
+                            var group = false;
+                            var dimension = params.dimension(crossfilterObj);
+                            if (params.group && (typeof params.group === 'function')) {
+                                group = params.group(dimension);
+                            }
+                            $scope.$broadcast('rowChart', dimension, group, 'severity');
+                        },
+                        barchart: function(params, crossfilterObj) {
+                            var group = false;
+                            var dimension = params.dimension(crossfilterObj);
+                            if (params.group && (typeof params.group === 'function')) {
+                                group = params.group(dimension);
+                            }
+                            // add params in here for axis labels and graph types (along with a default)
+                            $scope.$broadcast('barChart', dimension, group, 'severity');
+                        },
+                        geochart: function(params, crossfilterObj) {
+                            var group = false;
+                            var dimension = params.dimension(crossfilterObj);
+                            if (params.group && (typeof params.group === 'function')) {
+                                group = params.group(dimension);
+                            }
+                            $scope.$broadcast('geoChart', dimension, group);
                         }
                     }
-                    this_.getData_(params, this_.timeObj_(), function(result) {
-                        // only run our crossfilter-add function if there is a value associated with result
-                        if (result) {
-                            if (params.run && (typeof params.run === 'function')) {
-                                params.run(result);
-                            }
-                            // add-remove data function call here
-                            params.crossfilterObj.add(result);
-                        }
-                        for (var i in params.visuals) {
-                            switch (params.visuals[i].type) {
-                                case 'rowchart':
-                                    this_.visuals_.rowchart(params.visuals[i], params.crossfilterObj);
-                                    break;
-                                case 'barchart':
-                                    this_.visuals_.barchart(params.visuals[i], params.crossfilterObj);
-                                    break;
-                                case 'geochart':
-                                    this_.visuals_.geochart(params.visuals[i], params.crossfilterObj);
-                                    break;
-                            }
-                        }
-                    })
                 },
-                table: function(params) {
-                    if (!params.get) { return }
-                    var this_ = this; // this is so we can access 'this' from within our return function
-                    // handle searching (if enabled) - we don't need to wait for a data return for this
-                    if (params.searchable && params.crossfilterObj) {
-                        if (params.searchable === true) {
-                            var searchDimension = params.crossfilterObj.dimension(function(d){return d});
-                            searchable.push(searchDimension);
-                        }
-                    }
-                    this_.getData_(params, this_.timeObj_(), function(result) {
-                        if (result) {
-                            if (params.run && (typeof params.run === 'function')) {
-                                params.run(result);
+                table: {
+                    get: function(params) {
+                        if (!params.get) { return }
+                        var this_ = this; // this is so we can access 'this' from within our return function
+                        // handle searching (if enabled) - we don't need to wait for a data return for this
+                        if (params.searchable && params.crossfilterObj) {
+                            if (params.searchable === true) {
+                                var searchDimension = params.crossfilterObj.dimension(function(d){return d});
+                                searchable.push(searchDimension);
                             }
-                            // add-remove data function call here
-                            params.crossfilterObj.add(result.aaData);
                         }
-                        this_.visuals_.table(result, params.crossfilterObj, params);
-                        
-                    })
+                        functions.getData_(params, functions.timeObj_(), function(result) {
+                            if (result) {
+                                if (params.run && (typeof params.run === 'function')) {
+                                    params.run(result);
+                                }
+                                // add-remove data function call here
+                                params.crossfilterObj.add(result.aaData);
+                            }
+                            this_.draw_(result, params.crossfilterObj, params);
+                            
+                        })
+                    },
+                    draw_: function(result, crossfilterObj, params) {
+                        var dimension = crossfilterObj.dimension(function(d){return d});
+                        $scope.$broadcast('table', result, dimension, params);
+                    }
                 },
                 handleSearchBox: function(dimensionArray, params) {
                     var this_ = this;
@@ -232,13 +235,14 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
             for (var v in data) {
                 switch (data[v].type) {
                     case 'crossfilter':
-                        functions.crossfilter(data[v]);
+                        console.log(functions.crossfilter)
+                        functions.crossfilter.get(data[v]);
                     break;
                     case 'var':
                         functions.variable(data[v]);
                     break;
                     case 'table':
-                        functions.table(data[v]);
+                        functions.table.get(data[v]);
                     break;
                 }
             }
