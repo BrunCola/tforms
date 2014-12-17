@@ -1246,6 +1246,16 @@ angular.module('mean.pages').config(['$stateProvider',
                     title: 'Site Survey',
                     daterange: false
                 }
-            })
+            })        
+        // USERS
+            // CREATE USER
+                .state('pages.create_user', {
+                    url: '/create_user',
+                    templateUrl: 'public/pages/views/users/create_user.html',
+                    data: {
+                        title: 'Create User',
+                        daterange: false
+                    }
+                })
     }
 ]);
