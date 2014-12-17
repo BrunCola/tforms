@@ -25,7 +25,7 @@ angular.module('mean.pages').controller('sshStatusController', ['$scope', '$stat
 
             $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
             $scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
-            $scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
+            $scope.$broadcast('table', $scope.data.tables[0], $scope.tableData);
 
             var barDimension = $scope.crossfilterData.dimension(function(d) { return d.hour });
             var barGroupPre = barDimension.group();

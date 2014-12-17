@@ -324,7 +324,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
     //         crossfilterTimeDimension = $scope.crossfilterData.dimension(function(d) { return d.time; });
     //         $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
     //         $scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
-    //         $scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
+    //         $scope.$broadcast('table', $scope.data.tables[0], $scope.tableData);
     //         tableTimeDimension = $scope.tableCrossfitler.dimension(function(d) { return d.time; });
     //         rowDimension = $scope.crossfilterData.dimension(function(d) { return d.ioc + d.ioc_severity; });
     //         var rowGroupPre = rowDimension.group().reduceSum(function(d) { return d.count; });

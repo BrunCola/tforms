@@ -43,7 +43,7 @@ angular.module('mean.pages').controller('local2remoteController', ['$scope', '$s
             $scope.$broadcast('barChart', barDimension, barGroup, 'bandwidth');
             $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
             $scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
-            $scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
+            $scope.$broadcast('table', $scope.data.tables[0], $scope.tableData);
             $scope.barChartxAxis = '';
             $scope.barChartyAxis = '# MB / Hour';
         }
