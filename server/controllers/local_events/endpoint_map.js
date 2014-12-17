@@ -129,7 +129,7 @@ module.exports = function(pool) {
                         });  
                         break;
                 }
-            }  else if (req.query.type === 'endpointconnection') { 
+            } else if (req.query.type === 'endpointconnection') { 
                 switch (req.query.typeinfo) {
                     case 'getconn1':
                         new query({query: 'SELECT `lan_ip`, `lan_machine`, `remote_ip`, `remote_machine`, sum(`in_bytes`), sum(`out_bytes`) FROM `conn_meta` WHERE time BETWEEN ? AND ? AND `lan_ip` = ? AND `lan_machine` = ? GROUP BY `lan_ip`, `lan_machine`, `remote_ip`, `remote_machine`', insert: [start, end, req.query.lan_ip, req.query.lan_machine]}, {database: database, pool: pool}, function(err,data){
