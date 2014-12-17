@@ -55,12 +55,13 @@ angular.module('mean.pages').factory('searchFilter', ['$rootScope',
     }
 ]);
 
-angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location', '$resource',
-    function($rootScope, $http, $location, $resource) {
+angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location', '$resource', 'searchFilter',
+    function($rootScope, $http, $location, $resource, searchFilter) {
         var runPage = function($scope, data, refreshRate) {
             if (!refreshRate) { refreshRate === 60000 } // defaults to 1 minute in case refresh is enabled on any visual, but isnt defined calling the function
             var functions = {
                 visuals_: {
+                    // INIT INDIVIDUAL VISUALS
                     rowchart: function(params, crossfilterObj) {
                         var group = false;
                         var dimension = params.dimension(crossfilterObj);
@@ -143,7 +144,9 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         return false;
                     }
                 },
-                // inital loads
+
+
+                // INIT VISUAL TYPES
                 variable: function(params) {
                     if (!params.get) { return } // if specific url isn't defined use the page query
                     var this_ = this; // this is so we can access 'this' from within our return function
@@ -161,6 +164,13 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                 crossfilter: function(params) {
                     if (!params.get) { return } // if specific url isn't defined use the page query
                     var this_ = this; // this is so we can access 'this' from within our return function
+                    // handle searching (if enabled) - we don't need to wait for a data return for this
+                    if (params.searchable && params.crossfilterObj) {
+                        if (params.searchable === true) {
+                            var searchDimension = params.crossfilterObj.dimension(function(d){return d});
+                            searchable.push(searchDimension);
+                        }
+                    }
                     this_.getData_(params, this_.timeObj_(), function(result) {
                         // only run our crossfilter-add function if there is a value associated with result
                         if (result) {
@@ -183,18 +193,18 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                     break;
                             }
                         }
-                        // handle searching (if enabled)
-                        if (params.searchable && params.crossfilterObj) {
-                            if (params.searchable === true) {
-                                var searchDimension = params.crossfilterObj.dimension(function(d){return d});
-                                this_.handleSearch(searchDimension);
-                            }
-                        }
                     })
                 },
                 table: function(params) {
                     if (!params.get) { return }
                     var this_ = this; // this is so we can access 'this' from within our return function
+                    // handle searching (if enabled) - we don't need to wait for a data return for this
+                    if (params.searchable && params.crossfilterObj) {
+                        if (params.searchable === true) {
+                            var searchDimension = params.crossfilterObj.dimension(function(d){return d});
+                            searchable.push(searchDimension);
+                        }
+                    }
                     this_.getData_(params, this_.timeObj_(), function(result) {
                         if (result) {
                             if (params.run && (typeof params.run === 'function')) {
@@ -204,16 +214,21 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             params.crossfilterObj.add(result.aaData);
                         }
                         this_.visuals_.table(result, params.crossfilterObj, params);
+                        
                     })
                 },
-                handleSearch: function(dimension) {
-                    $rootScope.$watch('search', function(d){
+                handleSearchBox: function(dimensionArray, params) {
+                    var this_ = this;
+                    $scope.$watch('search', function(d){
                         if (d === undefined) { return }
-                        console.log(d)
+                        for (var i in dimensionArray) {
+                            searchFilter(dimensionArray[i]);
+                            this_.table.update;
+                        }
                     })
                 }
-                // update functions
             }
+            var searchable = [];
             for (var v in data) {
                 switch (data[v].type) {
                     case 'crossfilter':
@@ -226,6 +241,13 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         functions.table(data[v]);
                     break;
                 }
+            }
+            // run searchbox if anything on page is searchable
+            // TODO - disable box otherwise
+            // TODO - fade non-searchable items when active
+            // NOTE: this happens here because we only want scope.watch to run once on search
+            if (searchable.length > 0) {
+                functions.handleSearchBox(searchable, data);
             }
         }
         return runPage;

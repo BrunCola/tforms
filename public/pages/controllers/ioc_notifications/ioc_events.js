@@ -306,6 +306,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
             }
         },
     ];
+    $rootScope.search = $scope.search;
     runPage($scope, page);
 
     // $http({method: 'GET', url: query}).
