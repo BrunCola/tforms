@@ -166,14 +166,20 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
             name: 'local_ips', // required (if var)
             refresh: true, // optional, no if undefined
             key: 'count',
-            get: '/api/ioc_notifications/ioc_events/local_ips'
+            get: '/api/ioc_notifications/ioc_events/local_ips',
+            run: function(data) {
+                return data+' unique IPs';
+            }
         },
         {
             type: 'var',
             name: 'remote_ip', // required (if var)
             refresh: true, // optional, no if undefined
             key: 'count',
-            get: '/api/ioc_notifications/ioc_events/remote_ip'
+            get: '/api/ioc_notifications/ioc_events/remote_ip',
+            run: function(data) {
+                return data+' unique IPs';
+            }
         },
         {
             type: 'var',
@@ -184,10 +190,17 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
         },
         {
             type: 'var',
-            name: 'host', // required (if var)
+            name: 'hostt', // required (if var)
             refresh: true, // optional, no if undefined
             key: 'count',
             get: '/api/ioc_notifications/ioc_events/host'
+        },
+        {
+            type: 'var',
+            name: 'l7_protoo', // required (if var)
+            refresh: true, // optional, no if undefined
+            key: 'count',
+            get: '/api/ioc_notifications/ioc_events/l7_proto'
         },
         {
             type: 'var',
@@ -270,21 +283,27 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
             name: 'conn_meta', // required (if var)
             refresh: true, // optional, no if undefined
             key: 'count',
-            get: '/api/ioc_notifications/ioc_events/conn_meta'
+            get: '/api/ioc_notifications/ioc_events/conn_meta',
         },
         {
             type: 'var',
             name: 'remote_ip_conn_meta', // required (if var)
             refresh: true, // optional, no if undefined
             key: 'count',
-            get: '/api/ioc_notifications/ioc_events/remote_ip_conn_meta'
+            get: '/api/ioc_notifications/ioc_events/remote_ip_conn_meta',
+            run: function(data) {
+                return data+' unique IPs';
+            }
         },
         {
             type: 'var',
             name: 'remote_country_conn_meta', // required (if var)
             refresh: true, // optional, no if undefined
             key: 'count',
-            get: '/api/ioc_notifications/ioc_events/remote_country_conn_meta'
+            get: '/api/ioc_notifications/ioc_events/remote_country_conn_meta',
+            run: function(data) {
+                return data+' unique IPs';
+            }
         },
     ];
     runPage($scope, page);

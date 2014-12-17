@@ -13,6 +13,7 @@ module.exports = function(app, version, pool) {
             app.route('/api/ioc_notifications/ioc_events/remote_ip').get(auth.permission, ioc_events.remote_ip);
             app.route('/api/ioc_notifications/ioc_events/query').get(auth.permission, ioc_events.query);
             app.route('/api/ioc_notifications/ioc_events/host').get(auth.permission, ioc_events.host);
+            app.route('/api/ioc_notifications/ioc_events/l7_proto').get(auth.permission, ioc_events.l7_proto);
             app.route('/api/ioc_notifications/ioc_events/remote_ip_ssl').get(auth.permission, ioc_events.remote_ip_ssl);
             app.route('/api/ioc_notifications/ioc_events/name').get(auth.permission, ioc_events.name);
             app.route('/api/ioc_notifications/ioc_events/remote_country').get(auth.permission, ioc_events.remote_country);
