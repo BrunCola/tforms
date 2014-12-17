@@ -17,9 +17,9 @@ angular.module('mean.pages').directive('wordCloud', function() {
     return {
         link: function($scope, element) {
 
-//////////////////////////////////////////////////////////////////////////
-//word cloud functions start here ////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    //word cloud functions start here ////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 
                             (function() {
                               function cloud() {
@@ -421,9 +421,9 @@ angular.module('mean.pages').directive('wordCloud', function() {
                               else (d3.layout || (d3.layout = {})).cloud = cloud;
                             })();
 
-//////////////////////////////////////////////////////////////////////////
-//TO HERE ////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    //TO HERE ////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 
                         var myVars = [{"text":"study","size":40},{"text":"motion","size":15},{"text":"forces","size":10},{"text":"electricity","size":15},{"text":"movement","size":10},{"text":"relation","size":5},{"text":"things","size":10},{"text":"force","size":5},{"text":"ad","size":5},{"text":"w3","size":85},{"text":"living","size":5},{"text":"nonliving","size":5},{"text":"laws","size":15},{"text":"speed","size":45},{"text":"velocity","size":30},{"text":"define","size":5},{"text":"constraints","size":5},{"text":"universe","size":10},{"text":"youtube","size":120},{"text":"describing","size":5},{"text":"matter","size":90},{"text":"physics-the","size":5},{"text":"world","size":10},{"text":"works","size":10},{"text":"science","size":70},{"text":"interactions","size":30},{"text":"studies","size":5},{"text":"properties","size":45},{"text":"nature","size":40},{"text":"branch","size":30},{"text":"concerned","size":25},{"text":"source","size":40},{"text":"google","size":10},{"text":"defintions","size":5},{"text":"two","size":15},{"text":"grouped","size":15},{"text":"traditional","size":15},{"text":"fields","size":15},{"text":"acoustics","size":15},{"text":"optics","size":15},{"text":"mechanics","size":20},{"text":"thermodynamics","size":15},{"text":"electromagnetism","size":15},{"text":"modern","size":15},{"text":"extensions","size":15},{"text":"thefreedictionary","size":15},{"text":"interaction","size":15},{"text":"org","size":25},{"text":"answers","size":5},{"text":"natural","size":15},{"text":"objects","size":5},{"text":"treats","size":10},{"text":"acting","size":5},{"text":"department","size":5},{"text":"gravitation","size":5},{"text":"heat","size":10},{"text":"light","size":10},{"text":"magnetism","size":10},{"text":"modify","size":5},{"text":"general","size":10},{"text":"bodies","size":5},{"text":"philosophy","size":5},{"text":"brainyquote","size":5},{"text":"words","size":5},{"text":"ph","size":5},{"text":"html","size":5},{"text":"lrl","size":5},{"text":"zgzmeylfwuy","size":5},{"text":"subject","size":5},{"text":"distinguished","size":5},{"text":"chemistry","size":5},{"text":"biology","size":5},{"text":"includes","size":5},{"text":"radiation","size":5},{"text":"sound","size":5},{"text":"structure","size":5},{"text":"atoms","size":5},{"text":"including","size":10},{"text":"atomic","size":10},{"text":"nuclear","size":10},{"text":"cryogenics","size":10},{"text":"solid-state","size":10},{"text":"particle","size":10},{"text":"plasma","size":10},{"text":"deals","size":5},{"text":"merriam-webster","size":5},{"text":"dictionary","size":10},{"text":"analysis","size":5},{"text":"conducted","size":5},{"text":"order","size":5},{"text":"understand","size":5},{"text":"behaves","size":5},{"text":"en","size":5},{"text":"wikipedia","size":5},{"text":"wiki","size":5},{"text":"physics-","size":5},{"text":"physical","size":5},{"text":"behaviour","size":5},{"text":"collinsdictionary","size":5},{"text":"english","size":5},{"text":"time","size":35},{"text":"distance","size":35},{"text":"wheels","size":5},{"text":"revelations","size":5},{"text":"minute","size":5},{"text":"acceleration","size":20},{"text":"torque","size":5},{"text":"wheel","size":5},{"text":"rotations","size":5},{"text":"resistance","size":5},{"text":"momentum","size":5},{"text":"measure","size":10},{"text":"direction","size":10},{"text":"car","size":5},{"text":"add","size":5},{"text":"traveled","size":5},{"text":"weight","size":5},{"text":"electrical","size":5},{"text":"power","size":5}];
 
@@ -797,7 +797,6 @@ angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '
 angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$rootScope', 'iocIcon', 'appIcon', 'mimeIcon', '$http', 'timeFormat', function ($timeout, $location, $rootScope, iocIcon, appIcon, mimeIcon, $http, timeFormat) {
     return {
         link: function ($scope, element, attrs) {
-
             //2d array sort for sorting data for csv print
             function sortFunction(a, b) {
                 var tableSort = $("#table").dataTable().fnSettings().aaSorting;
@@ -805,26 +804,17 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                 var sortDirection = tableSort[0][1];
                 if (a[sortIndex] === b[sortIndex]) {
                     return 0;
-                }
-                else {
+                } else {
                     if(sortDirection == "asc") {
                         return (a[sortIndex] < b[sortIndex]) ? -1 : 1
                     } else {
                         return (a[sortIndex] > b[sortIndex]) ? -1 : 1
-                    }                                     }
+                    }
+                }
             }
-
             //function for export to csv
             var csv = "data:text/csv;charset=utf-8,";
             function makeCsv(array, heading){
-                function isAllowed(word){
-                    var notAllowed = ['_typeCast', 'parse', 'id', 'child_id'];
-                    if (notAllowed.indexOf(word) !== -1) {
-                        return false;
-                    }
-                    return true;
-                }
-                //title
                 csv += heading;
                 // new line 
                 csv += '\n';
@@ -834,415 +824,270 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                     for (var i in array[0]) {
                         objlength++;
                     }
-                    // The commented block adds a row of indexes to the csv
-                    // for (var t in array[0]) {
-                    //     if (isAllowed(t)){
-                    //         csv += t;
-                    //         if (tpos < objlength-1) {
-                    //             // append comma if we're not at end of array
-                    //             csv += ',';
-                    //         }
-                    //         tpos++
-                    //     }
-                    // }
-                    csv += '\n';
-                    for (var i in array) {
-                        for (var n in array[i]) {
-                            if ((typeof array[i][n] !== 'function') && (isAllowed(n))){
-                                if (array[i][n] === 0) {
-                                    csv += 'no,';
-                                } else if (array[i][n] === 1) {
-                                    csv += 'yes,';
-                                } else if (array[i][n] === null) {
-                                    csv += 'n/a,';
-                                } else {
-                                    csv += array[i][n]+',';
-                                }
-                            }
-                        }
-                        csv += '\n';
-                    }
                     csv += '\n\n';
                 }
             }
-
-
-            function redrawTable(tableData) {
+            function redrawTable(dimension) {
                 $('#table').dataTable().fnClearTable();
-                $('#table').dataTable().fnAddData(tableData.top(Infinity));
+                $('#table').dataTable().fnAddData(dimension.top(Infinity));
                 $('#table').dataTable().fnDraw();
             }
-            $scope.$on('tableLoad', function (event, tableData, params, tableType) {
-                for (var t in params) {
-                    if (params[t] != null) {
-                        if ($location.$$absUrl.search('/report#!/') === -1) {
-                            $(element).prepend('<div class="row-fluid"> '+
+            // $scope.$on('tableLoad', function (event, tableData, params, tableType) {
+            $scope.$on('table', function (event, data, dimension, params) {
+                if ($location.$$absUrl.search('/report#!/') === -1) {
+                    $(element).prepend('<div class="row-fluid"> '+
+                    '<div class="span12"> '+
+                            '<div class="jdash-header">'+data.title+'</div> '+
+                            '<div class="box">'+
+                                '<div class="box-content"> <button class="ColVis_Button bCsv ColVis_MasterButton printCSVButton" type="button" href="">Print to CSV</button>'+//<button type="button" class="rndCrnBtn pure-button right" ng-click="insert()">Print to .csv</button>'+
+                                    '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="'+data.div+'" ></table>'+
+                                '</div> '+
+                            '</div> '+
+                        '</div> '+
+                    '</div><br />');
+                } else {
+                    $(element).prepend('<div style="margin-bottom:17px;margin-left:0;"> '+
+                        '<div class="row-fluid"> '+
                             '<div class="span12"> '+
-                                    '<div class="jdash-header">'+params[t].title+'</div> '+
-                                    '<div class="box">'+
-                                        '<div class="box-content"> <button class="ColVis_Button bCsv ColVis_MasterButton printCSVButton" type="button" href="">Print to CSV</button>'+//<button type="button" class="rndCrnBtn pure-button right" ng-click="insert()">Print to .csv</button>'+
-                                            '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="'+params[t].div+'" ></table>'+
-                                        '</div> '+
+                                '<div class="jdash-header">'+data.title+'</div> '+
+                                '<div  class="box"> '+
+                                    '<div class="box-content"> '+
+                                        '<table class="table report-table" id="'+data.div+'" ></table>'+
                                     '</div> '+
                                 '</div> '+
-                            '</div><br />');
-                        } else {
-                            $(element).prepend('<div style="margin-bottom:17px;margin-left:0;"> '+
-                                '<div class="row-fluid"> '+
-                                    '<div class="span12"> '+
-                                        '<div class="jdash-header">'+params[t].title+'</div> '+
-                                        '<div  class="box"> '+
-                                            '<div class="box-content"> '+
-                                                '<table class="table report-table" id="'+params[t].div+'" ></table>'+
-                                            '</div> '+
-                                        '</div> '+
-                                    '</div> '+
-                                '</div> '+
-                            '</div><br />');
-                        }
-                    }
-                    if (params[t]) {
-                        if (params[t].pagebreakBefore === true) {
-                            $(element).prepend('<div style="page-break-before: always;"></div>');
-                        }
-                    }
+                            '</div> '+
+                        '</div> '+
+                    '</div><br />');
+                }
+                // prepend a page break if it's defined
+                if (data.pagebreakBefore === true) {
+                    $(element).prepend('<div style="page-break-before: always;"></div>');
                 }
                 var bFilter,iDisplayLength,bStateSave,bPaginate,sDom,bDeferRender,notReport,stateSave;
-                switch(tableType) {
-                    case 'drill':
-                        if ($location.$$absUrl.search('/report#!/') === -1) {
-                            iDisplayLength = 5;
-                            bDeferRender: true
-                            notReport = true;
-                            sDom = '<"clear"><"clear">rC<"table_overflow"t>ip';
-                            stateSave: true;
-                        } else {
-                            iDisplayLength = 99999;
-                            bDeferRender = true;
-                            sDom = 'r<t>';
-                            notReport = false;
-                            stateSave: false;
-                        }
-                        for (var t in params) {
-                            if (params[t] != null) {
-                            // $('#'+params[t].div).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table-'+params[t].div+'" ></table>');
-                                $('#'+params[t].div).dataTable({
-                                    'aaData': params[t].aaData,
-                                    'aoColumns': params[t].params,
-                                    'bDeferRender': bDeferRender,
-                                    'bDestroy': true,
-                                    'oColVis': {
-                                        'iOverlayFade': 400
-                                    },
-                                    'stateSave': stateSave,
-                                    //'bProcessing': true,
-                                    //'bRebuild': true,
-                                    'aaSorting': params[t].sort,
-                                    //'bFilter': true,
-                                    // 'bPaginate': bPaginate,
-                                    'sDom': sDom,
-                                    'iDisplayLength': iDisplayLength,
-                                    'fnPreDrawCallback': function( oSettings ) {
-                                        $scope.r = [];
-                                        for (var a in oSettings.aoColumns) {
-                                            // find the index of column rows so they can me modified below
-                                            if (oSettings.aoColumns[a].bVisible === true) {
-                                                $scope.r.push(oSettings.aoColumns[a].mData);
-                                            }
-                                        }
-                                    },
-                                    'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                                        if (aData.ioc_severity && $scope.r.indexOf('ioc_severity') !== -1) {
-                                            var rIndex = $scope.r.indexOf("ioc_severity");
-                                            $('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa '+iocIcon(aData.ioc_severity)+' fa-stack-1x fa-inverse"></i></span>');
-                                        }
-                                        if (aData.remote_cc && $scope.r.indexOf('remote_cc') !== -1) {
-                                            $('td:eq('+$scope.r.indexOf("remote_cc")+')', nRow).html('<div class="f32"><span class="flag '+aData.remote_cc.toLowerCase()+'"></span></div>');
-                                        }
-                                        if (aData.l7_proto && $scope.r.indexOf('l7_proto') !== -1) {
-                                            $('td:eq('+$scope.r.indexOf("l7_proto")+')', nRow).html(appIcon(aData.l7_proto));
-                                        }
-                                        if (aData.mime && $scope.r.indexOf('mime') !== -1) {
-                                            $('td:eq('+$scope.r.indexOf("mime")+')', nRow).html(mimeIcon(aData.mime));
-                                        }
-                                        if (aData.mailfrom && $scope.r.indexOf('mailfrom') !== -1) {
-                                            var newVar = aData.mailfrom.replace(/[\<\>]/g,'');
-                                            $('td:eq('+$scope.r.indexOf("mailfrom")+')', nRow).html(newVar);
-                                        }
-                                        if (aData.receiptto && $scope.r.indexOf('receiptto') !== -1) {
-                                            var newVar = aData.receiptto.replace(/[\<\>]/g,'');
-                                            $('td:eq('+$scope.r.indexOf("receiptto")+')', nRow).html(newVar);
-                                        }
-                                        if (aData.time && $scope.r.indexOf('time') !== -1) {
-                                            $('td:eq('+$scope.r.indexOf("time")+')', nRow).html('<div style="min-width:100px">'+timeFormat(aData.time, 'tables')+'</div>');
-                                        }
-                                        if (!notReport) {
-                                            if (aData.icon_in_bytes !== undefined){
-                                                var bIndex = $scope.r.indexOf("icon_in_bytes");
-                                                if ((aData.icon_in_bytes > 0) && (aData.icon_out_bytes > 0)) {
-                                                    $('td:eq('+bIndex+')', nRow).html('<span><i style="font-size:16px !important" class="fa fa-arrow-up"></i><i style="font-size:16px !important" class="fa fa-arrow-down"></i></span>');
-                                                } else if ((aData.icon_in_bytes == 0) && (aData.icon_out_bytes > 0)) {
-                                                    $('td:eq('+bIndex+')', nRow).html('<span><i style="opacity:0.25 !important;font-size:16px !important" class="fa fa-arrow-up"></i><i style="font-size:16px !important" class="fa fa-arrow-down"></i></span>');
-                                                } else if ((aData.icon_in_bytes > 0) && (aData.icon_out_bytes == 0)) {
-                                                    $('td:eq('+bIndex+')', nRow).html('<span><i style="font-size:16px !important" class="fa fa-arrow-up"></i><i style="opacity:0.25 !important;font-size:16px !important" class="fa fa-arrow-down"></i></span>');
-                                                } else {
-                                                    $('td:eq('+bIndex+')', nRow).html('<span><i style="opacity:0.25 !important;font-size:16px !important" class="fa fa-arrow-up"></i><i style="opacity:0.25 !important;font-size:16px !important" class="fa fa-arrow-down"></i></span>');
-                                                }
-                                            }
-                                        }
-                                    },
-                                    'fnDrawCallback': function( oSettings ) {
-                                        // $('.paginate_button').on('click', function(){
-                                        //  console.log('poo')
-                                        //  $('html, body').animate({scrollTop:0}, 'slow');
-                                        // })
-                                    }
-                                });
+                if ($location.$$absUrl.search('/report#!/') === -1) {
+                    iDisplayLength = 50;
+                    bDeferRender = true;
+                    sDom = '<"clear">T<"clear">lCr<"table_overflow"t>ip';
+                    notReport = true;
+                    stateSave = true;
+                } else {
+                    iDisplayLength = 99999;
+                    bDeferRender = true;
+                    sDom = 'r<t>';
+                    notReport = false;
+                    stateSave = false;
+                }
+                data.div = $('#'+data.div).dataTable({
+                    'aaData': dimension.top(Infinity),
+                    'aoColumns': data.params,
+                    'bDeferRender': bDeferRender,
+                    'bDestroy': true,
+                    //'bProcessing': true,
+                    //'bRebuild': true,
+                    'aaSorting': data.sort,
+                    //'bFilter': true,
+                    //'bPaginate': true,
+                    'stateSave': stateSave,
+                    'sDom': sDom,
+                    'iDisplayLength': iDisplayLength,
+                     'fnPreDrawCallback': function( oSettings ) {
+                        //console.log(oSettings.aoColumns);
+                        $scope.r = [], $scope.e = [];
+                        for (var a in oSettings.aoColumns) {
+                            // find the index of column rows so they can me modified below
+                            if (oSettings.aoColumns[a].bVisible === true) {
+                                $scope.r.push(oSettings.aoColumns[a].mData);
+                            }
+                            // push unique to link builder
+                            if (oSettings.aoColumns[a].link) {
+                                $scope.e.push(oSettings.aoColumns[a]);
                             }
                         }
-                        break;
-                    default:
-                        if ($location.$$absUrl.search('/report#!/') === -1) {
-                            iDisplayLength = 50;
-                            bDeferRender = true;
-                            sDom = '<"clear">T<"clear">lCr<"table_overflow"t>ip';
-                            notReport = true;
-                            stateSave = true;
-                        } else {
-                            iDisplayLength = 99999;
-                            bDeferRender = true;
-                            sDom = 'r<t>';
-                            notReport = false;
-                            stateSave = false;
+                    },
+                    'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                        if (aData.ioc_severity && $scope.r.indexOf('ioc_severity') !== -1) {
+                            var rIndex = $scope.r.indexOf("ioc_severity");
+                            $('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa '+iocIcon(aData.ioc_severity)+' fa-stack-1x fa-inverse"></i></span>');
                         }
-                        // $(element).html('<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="table" ></table>');
-                        for (var t in params) {
-                            params[t].div = $('#'+params[t].div).dataTable({
-                                'aaData': tableData.top(Infinity),
-                                'aoColumns': params[t].params,
-                                'bDeferRender': bDeferRender,
-                                'bDestroy': true,
-                                //'bProcessing': true,
-                                //'bRebuild': true,
-                                'aaSorting': params[t].sort,
-                                //'bFilter': true,
-                                //'bPaginate': true,
-                                'stateSave': stateSave,
-                                'sDom': sDom,
-                                'iDisplayLength': iDisplayLength,
-                                 'fnPreDrawCallback': function( oSettings ) {
-                                    //console.log(oSettings.aoColumns);
-                                    $scope.r = [], $scope.e = [];
-                                    for (var a in oSettings.aoColumns) {
-                                        // find the index of column rows so they can me modified below
-                                        if (oSettings.aoColumns[a].bVisible === true) {
-                                            $scope.r.push(oSettings.aoColumns[a].mData);
-                                        }
-                                        // push unique to link builder
-                                        if (oSettings.aoColumns[a].link) {
-                                            $scope.e.push(oSettings.aoColumns[a]);
-                                        }
-                                    }
-                                },
-                                'fnRowCallback': function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                                    if (aData.ioc_severity && $scope.r.indexOf('ioc_severity') !== -1) {
-                                        var rIndex = $scope.r.indexOf("ioc_severity");
-                                        $('td:eq('+rIndex+')', nRow).html('<span class="aTable'+aData.ioc_severity+' fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa '+iocIcon(aData.ioc_severity)+' fa-stack-1x fa-inverse"></i></span>');
-                                    }
-                                    if (aData.remote_cc && $scope.r.indexOf('remote_cc') !== -1) {
-                                        $('td:eq('+$scope.r.indexOf("remote_cc")+')', nRow).html('<div class="f32"><span class="flag '+aData.remote_cc.toLowerCase()+'"></span></div>');
-                                    }
-                                    if (aData.l7_proto && $scope.r.indexOf('l7_proto') !== -1) {
-                                        // var div = $('td:eq('+$scope.r.indexOf("l7_proto")+')', nRow);
-                                        // appIcon(d3.select(div[0]), aData.l7_proto);
-
-                                        $('td:eq('+$scope.r.indexOf("l7_proto")+')', nRow).html(appIcon(aData.l7_proto));
-                                    }
-                                    if (aData.mime && $scope.r.indexOf('mime') !== -1) {
-                                        $('td:eq('+$scope.r.indexOf("mime")+')', nRow).html(mimeIcon(aData.mime));
-                                    }
-                                    if (aData.mailfrom && $scope.r.indexOf('mailfrom') !== -1) {
-                                        var newVar = aData.mailfrom.replace(/[\<\>]/g,'');
-                                        $('td:eq('+$scope.r.indexOf("mailfrom")+')', nRow).html(newVar);
-                                    }
-                                    if ((aData.lan_stealth !== undefined) && ($scope.r.indexOf('lan_stealth') !== -1)) {      
-                                        if (aData.lan_stealth > 0){
-                                            $('td:eq('+$scope.r.indexOf("lan_stealth")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-shield fa-stack-1x fa-inverse"></i></span>');
-                                        }else {
-                                          $('td:eq('+$scope.r.indexOf("lan_stealth")+')', nRow).html('');
-                                        }
-                                    }
-                                    if (aData.proxy_blocked !== undefined && $scope.r.indexOf('proxy_blocked') !== -1) {
-                                        if (aData.proxy_blocked == 0){
-                                            $('td:eq('+$scope.r.indexOf("proxy_blocked")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-check fa-stack-1x fa-inverse"></i></span>');
-                                        } else if (aData.proxy_blocked > 0) {
-                                            $('td:eq('+$scope.r.indexOf("proxy_blocked")+')', nRow).html('<span style="color:#E71010 " class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-times fa-stack-1x fa-inverse"></i></span>');
-                                        }
-                                    }
-                                    if (aData.receiptto && $scope.r.indexOf('receiptto') !== -1) {
-                                        var newVar = aData.receiptto.replace(/[\<\>]/g,'');
-                                        $('td:eq('+$scope.r.indexOf("receiptto")+')', nRow).html(newVar);
-                                    }
-                                    if (aData.time && $scope.r.indexOf('time') !== -1) {
-                                        $('td:eq('+$scope.r.indexOf("time")+')', nRow).html('<div style="min-width:100px">'+timeFormat(aData.time, 'tables')+'</div>');
-                                    }
-                                    if (aData.lan_ip && $scope.r.indexOf('lan_ip') !== -1) {
-                                        $('td:eq('+$scope.r.indexOf("lan_ip")+')', nRow).html(aData.lan_ip);
-                                    }
-                                    if (aData.file !== undefined) {                                        
-                                        if (aData.file && $scope.r.indexOf('file') !== -1) {
-                                            if (aData.file > 0){                                                
-                                                $('td:eq('+$scope.r.indexOf("file")+')', nRow).html(aData.file);    
-                                            }
-                                        } else {
-                                            $('td:eq('+$scope.r.indexOf("file")+')', nRow).html("0"); 
-                                        }
-                                    }
-                                    if (notReport) {
-                                        // url builder
-                                        for (var c in $scope.e) {
-                                            var type = $scope.e[c].link.type;
-                                            if ($scope.e[c].bVisible !== undefined) {
-                                              if ($scope.e[c].bVisible) {
-                                                  switch(type) {
-                                                      case 'Archive':
-                                                          $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
-                                                      break;
-                                                      case 'Restore':
-                                                          $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bRestore button-success pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Restore</button>");
-                                                      break;
-                                                      case 'Upload Image':
-                                                          $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bUpload button-success pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Upload Image</button>");
-                                                      break;
-                                                      default:
-                                                          var obj = new Object();
-                                                          //var all = new Object();
-                                                          if ($location.$$search.start && $location.$$search.end) {
-                                                              obj.start = $location.$$search.start;
-                                                              obj.end = $location.$$search.end;
-                                                          }
-                                                          for (var l in $scope.e[c].link.val) {
-                                                              if ((aData[$scope.e[c].link.val[l]] !== null) && (aData[$scope.e[c].link.val[l]] !== undefined)) {
-                                                                  var newVar = aData[$scope.e[c].link.val[l]].toString();
-                                                                  obj[$scope.e[c].link.val[l]] = newVar.replace("'", "&#39;");
-                                                              }
-                                                          }
-                                                          var links = JSON.stringify({
-                                                              type: $scope.e[c].link.type,
-                                                              objlink: obj
-                                                          });
-                                                          if ($scope.e[c].mData === 'time') {
-                                                              $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
-                                                          } else {
-                                                              $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button>");
-                                                          }
-                                                      break;
-                                                  }  
-                                              }   
-                                            }                                         
-                                        }
-                                    }
-                                },
-                                'fnDrawCallback': function( oSettings ) {
-                                    if (notReport) {
-                                        $('table .bPage').click(function(){
-                                            var link = JSON.parse(this.value);
-                                            $scope.$apply($location.path(link.type).search(link.objlink));
-                                        });
-                                        $('table .bArchive').on('click',function(){
-                                            var rowData = JSON.parse(this.value);
-                                            $http({method: 'POST', url: '/api/actions/archive', data: {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc}}).
-                                                success(function(data, status, headers, config) {
-                                                    var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
-                                                    $scope.tableCrossfitler.remove(fil);
-                                                    tableData.filterAll();
-                                                    redrawTable(tableData);
-                                                })
-                                        });
-                                        $('table .bRestore').on('click',function(){
-                                            var rowData = JSON.parse(this.value);
-                                            $http({method: 'POST', url: '/api/actions/restore', data: {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc}}).
-                                                success(function(data, status, headers, config) {
-                                                    var fil = tableData.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
-                                                    $scope.tableCrossfitler.remove(fil);
-                                                    tableData.filterAll();
-                                                    redrawTable(tableData);
-                                                })
-                                        });
-                                        $('table .bUpload').on('click',function(){
-                                            var rowData = JSON.parse(this.value);
-                                            $scope.uploadOpen(rowData);
-                                        });
-                                        
-                                        $scope.country = [];
-                                        $scope.ioc = [];
-                                        $scope.severity = [];
-                                        $scope.l7_proto = [];
-                                        for (var d in oSettings.aiDisplay) {
-                                            $scope.l7_proto.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.l7_proto);
-                                            $scope.country.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.remote_country);
-                                            $scope.ioc.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc);
-                                            $scope.severity.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc_severity);
-                                        }
-                                        $scope.$broadcast('severityUpdate');
-                                    }
+                        if (aData.remote_cc && $scope.r.indexOf('remote_cc') !== -1) {
+                            $('td:eq('+$scope.r.indexOf("remote_cc")+')', nRow).html('<div class="f32"><span class="flag '+aData.remote_cc.toLowerCase()+'"></span></div>');
+                        }
+                        if (aData.l7_proto && $scope.r.indexOf('l7_proto') !== -1) {
+                            // var div = $('td:eq('+$scope.r.indexOf("l7_proto")+')', nRow);
+                            // appIcon(d3.select(div[0]), aData.l7_proto);
+                            $('td:eq('+$scope.r.indexOf("l7_proto")+')', nRow).html(appIcon(aData.l7_proto));
+                        }
+                        if (aData.mime && $scope.r.indexOf('mime') !== -1) {
+                            $('td:eq('+$scope.r.indexOf("mime")+')', nRow).html(mimeIcon(aData.mime));
+                        }
+                        if (aData.mailfrom && $scope.r.indexOf('mailfrom') !== -1) {
+                            var newVar = aData.mailfrom.replace(/[\<\>]/g,'');
+                            $('td:eq('+$scope.r.indexOf("mailfrom")+')', nRow).html(newVar);
+                        }
+                        if ((aData.lan_stealth !== undefined) && ($scope.r.indexOf('lan_stealth') !== -1)) {      
+                            if (aData.lan_stealth > 0){
+                                $('td:eq('+$scope.r.indexOf("lan_stealth")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-shield fa-stack-1x fa-inverse"></i></span>');
+                            }else {
+                              $('td:eq('+$scope.r.indexOf("lan_stealth")+')', nRow).html('');
+                            }
+                        }
+                        if (aData.proxy_blocked !== undefined && $scope.r.indexOf('proxy_blocked') !== -1) {
+                            if (aData.proxy_blocked == 0){
+                                $('td:eq('+$scope.r.indexOf("proxy_blocked")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-check fa-stack-1x fa-inverse"></i></span>');
+                            } else if (aData.proxy_blocked > 0) {
+                                $('td:eq('+$scope.r.indexOf("proxy_blocked")+')', nRow).html('<span style="color:#E71010 " class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-times fa-stack-1x fa-inverse"></i></span>');
+                            }
+                        }
+                        if (aData.receiptto && $scope.r.indexOf('receiptto') !== -1) {
+                            var newVar = aData.receiptto.replace(/[\<\>]/g,'');
+                            $('td:eq('+$scope.r.indexOf("receiptto")+')', nRow).html(newVar);
+                        }
+                        if (aData.time && $scope.r.indexOf('time') !== -1) {
+                            $('td:eq('+$scope.r.indexOf("time")+')', nRow).html('<div style="min-width:100px">'+timeFormat(aData.time, 'tables')+'</div>');
+                        }
+                        if (aData.lan_ip && $scope.r.indexOf('lan_ip') !== -1) {
+                            $('td:eq('+$scope.r.indexOf("lan_ip")+')', nRow).html(aData.lan_ip);
+                        }
+                        if (aData.file !== undefined) {                                        
+                            if (aData.file && $scope.r.indexOf('file') !== -1) {
+                                if (aData.file > 0){                                                
+                                    $('td:eq('+$scope.r.indexOf("file")+')', nRow).html(aData.file);    
                                 }
-                            });
-                            $scope.$on('crossfilterToTable', function () {
-                                $('#table').dataTable().fnClearTable();
-                                $('#table').dataTable().fnAddData(tableData.top(Infinity));
-                                $('#table').dataTable().fnDraw();
-                            });
-
-                            // new $.fn.dataTable.FixedHeader( params[t].div );
-                            $.fn.dataTableExt.sErrMode = 'throw';
+                            } else {
+                                $('td:eq('+$scope.r.indexOf("file")+')', nRow).html("0"); 
+                            }
                         }
-                        
-                        $('.bCsv').on('click',function(){                                     
-                            var array = [];
+                        if (notReport) {
+                            // url builder
+                            for (var c in $scope.e) {
+                                var type = $scope.e[c].link.type;
+                                if ($scope.e[c].bVisible !== undefined) {
+                                    if ($scope.e[c].bVisible) {
+                                        switch(type) {
+                                            case 'Archive':
+                                                $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bArchive button-error pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Archive</button>");
+                                            break;
+                                            case 'Restore':
+                                                $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bRestore button-success pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Restore</button>");
+                                            break;
+                                            case 'Upload Image':
+                                                $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bUpload button-success pure-button' type='button' value='"+JSON.stringify(aData)+"' href=''>Upload Image</button>");
+                                            break;
+                                            default:
+                                                var obj = new Object();
+                                                if ($location.$$search.start && $location.$$search.end) {
+                                                    obj.start = $location.$$search.start;
+                                                    obj.end = $location.$$search.end;
+                                                }
+                                                for (var l in $scope.e[c].link.val) {
+                                                    if ((aData[$scope.e[c].link.val[l]] !== null) && (aData[$scope.e[c].link.val[l]] !== undefined)) {
+                                                        var newVar = aData[$scope.e[c].link.val[l]].toString();
+                                                        obj[$scope.e[c].link.val[l]] = newVar.replace("'", "&#39;");
+                                                    }
+                                                }
+                                                var links = JSON.stringify({
+                                                    type: $scope.e[c].link.type,
+                                                    objlink: obj
+                                                });
+                                                if ($scope.e[c].mData === 'time') {
+                                                    $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<div style='height:50px;max-width:120px'><button class='bPage button-secondary pure-button' value='"+links+"'>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button><br /><span style='font-size:9px; float:right;' data-livestamp='"+aData[$scope.e[c].mData]+"'></span></div>");
+                                                } else {
+                                                    $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button>");
+                                                }
+                                            break;
+                                        }  
+                                    }   
+                                }                                         
+                            }
+                        }
+                    },
+                    'fnDrawCallback': function( oSettings ) {
+                        if (notReport) {
+                            $('table .bPage').click(function(){
+                                var link = JSON.parse(this.value);
+                                $scope.$apply($location.path(link.type).search(link.objlink));
+                            });
+                            $('table .bArchive').on('click',function(){
+                                var rowData = JSON.parse(this.value);
+                                $http({method: 'POST', url: '/api/actions/archive', data: {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc}}).
+                                    success(function(data, status, headers, config) {
+                                        var fil = dimension.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
+                                        $scope.tableCrossfitler.remove(fil);
+                                        dimension.filterAll();
+                                        redrawTable(dimension);
+                                    })
+                            });
+                            $('table .bRestore').on('click',function(){
+                                var rowData = JSON.parse(this.value);
+                                $http({method: 'POST', url: '/api/actions/restore', data: {lan_ip: rowData.lan_ip, remote_ip: rowData.remote_ip, ioc: rowData.ioc}}).
+                                    success(function(data, status, headers, config) {
+                                        var fil = dimension.filter(function(d) { if (d.time === rowData.time) {return rowData; }}).top(Infinity);
+                                        $scope.tableCrossfitler.remove(fil);
+                                        dimension.filterAll();
+                                        redrawTable(dimension);
+                                    })
+                            });
+                            $('table .bUpload').on('click',function(){
+                                var rowData = JSON.parse(this.value);
+                                $scope.uploadOpen(rowData);
+                            });
                             
-                            for (var t in params) {
-                                for (var i in params[t].aaData) {
-                                    //need to sort each value set into the order of the columns
-                                    var sortedRow = [];
+                            $scope.country = [];
+                            $scope.ioc = [];
+                            $scope.severity = [];
+                            $scope.l7_proto = [];
+                            for (var d in oSettings.aiDisplay) {
+                                $scope.l7_proto.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.l7_proto);
+                                $scope.country.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.remote_country);
+                                $scope.ioc.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc);
+                                $scope.severity.push(oSettings.aoData[oSettings.aiDisplay[d]]._aData.ioc_severity);
+                            }
+                            $scope.$broadcast('severityUpdate');
+                        }
+                    }
+                });
+                $scope.$on('crossfilterToTable', function () {
+                    $('#table').dataTable().fnClearTable();
+                    $('#table').dataTable().fnAddData(dimension.top(Infinity));
+                    $('#table').dataTable().fnDraw();
+                });
+                // new $.fn.dataTable.FixedHeader( data[t].div );
+                $.fn.dataTableExt.sErrMode = 'throw';
 
-                                    for (var p in params[t].params){
-                                        for (var property in params[t].aaData[i]) {
-                                            if(params[t].params[p].mData == property) {
-                                                sortedRow.push(params[t].aaData[i][property]);
-                                            } 
-                                        }
-                                        
-                                    }
-                                    array.push(sortedRow);//push each sorted row as an array to the main array
-                                }
+                $('.bCsv').on('click',function(){                                     
+                    var array = [];
+                    for (var i in data.aaData) {
+                        //need to sort each value set into the order of the columns
+                        var sortedRow = [];
+                        for (var p in data.params){
+                            for (var property in data.aaData[i]) {
+                                if (data.params[p].mData == property) {
+                                    sortedRow.push(data.aaData[i][property]);
+                                } 
+                            }
+                        }
+                        array.push(sortedRow);//push each sorted row as an array to the main array
+                    }
+                    //sort array by the sort of the datatable
+                    array.sort(sortFunction);
+                    var headerRow = [];
+                    for (var p in data.params) {
+                        if(data.data[p].sTitle != "") {
+                            headerRow.push(data.data[p].sTitle);
+                        }
+                    }
+                    //add the header row to the start of the array
+                    array.unshift(headerRow);//array[0] will be the array of column headers 
+                    makeCsv(array, data.title);//create the csv
+                    //create the download
+                    var encodedUri = encodeURI(csv);
+                    window.open(encodedUri);
+                    csv = "data:text/csv;charset=utf-8,";
+                });
 
-                                //sort array by the sort of the datatable
-                                array.sort(sortFunction);
-
-                                var headerRow = [];
-                                for (var p in params[t].params) {
-                                    if(params[t].params[p].sTitle != "") {
-                                        headerRow.push(params[t].params[p].sTitle);
-                                    }
-                                }
-
-                                //add the header row to the start of the array
-                                array.unshift(headerRow);//array[0] will be the array of column headers 
-
-                                makeCsv(array, params[t].title);//create the csv
-                            }                                     
-
-                            //create the download
-                            var encodedUri = encodeURI(csv);
-                            window.open(encodedUri);
-                            csv = "data:text/csv;charset=utf-8,";
-                        });
-                    break;
-                }
             });
-            $scope.$on('tableUpdate', function (event, tableData, params, tableType) {
-                redrawTable(tableData);
+            $scope.$on('tableUpdate', function (event, dimension, data, tableType) {
+                redrawTable(dimension);
             });
         }
     };

@@ -85,6 +85,10 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             group = params.group(dimension);
                         }
                         $scope.$broadcast('geoChart', dimension, group);
+                    },
+                    table: function(result, crossfilterObj, params) {
+                        var dimension = crossfilterObj.dimension(function(d){return d});
+                        $scope.$broadcast('table', result, dimension, params);
                     }
                 },
                 // build urls from arrays
@@ -111,7 +115,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                 //     return;
                 // },
                 getData_: function(vis, time, callback) {
-                    // TODO - add getparams to time if exists
+                    // TODO - ADD viz.GETparams to time if exists
                     var Rest, timeParam = {};
                     if (time) { timeParam = time }
                     if (vis.key) {
@@ -141,8 +145,6 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                 },
                 variable: function(params) {
                     if (!params.get) { return } // if specific url isn't defined use the page query
-                    var GETparams = false;
-                    if (params.GETparams) { GETparams = params.GETparams }
                     var this_ = this; // this is so we can access 'this' from within our return function
                     this_.getData_(params, this_.timeObj_(), function(result) {
                         // only run our crossfilter-add function if there is a value associated with result
@@ -157,8 +159,6 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                 },
                 crossfilter: function(params) {
                     if (!params.get) { return } // if specific url isn't defined use the page query
-                    var GETparams = false;
-                    if (params.GETparams) { GETparams = params.GETparams }
                     var this_ = this; // this is so we can access 'this' from within our return function
                     this_.getData_(params, this_.timeObj_(), function(result) {
                         // only run our crossfilter-add function if there is a value associated with result
@@ -183,6 +183,20 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             }
                         }
                     })
+                },
+                table: function(params) {
+                    if (!params.get) { return }
+                    var this_ = this; // this is so we can access 'this' from within our return function
+                    this_.getData_(params, this_.timeObj_(), function(result) {
+                        if (result) {
+                            if (params.run && (typeof params.run === 'function')) {
+                                params.run(result);
+                            }
+                            // add-remove data function call here
+                            params.crossfilterObj.add(result.aaData);
+                        }
+                        this_.visuals_.table(result, params.crossfilterObj, params);
+                    })
                 }
             }
             for (var v in data) {
@@ -193,9 +207,9 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                     case 'var':
                         functions.variable(data[v]);
                     break;
-                    // case 'table':
-                    //     functions.table(data[v]);
-                    // break;
+                    case 'table':
+                        functions.table(data[v]);
+                    break;
                 }
             }
         }
