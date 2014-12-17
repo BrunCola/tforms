@@ -16,12 +16,15 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
         if ((accessLevel === undefined) || (accessLevel.length === 0)) {
             return true;
         } else if (accessLevel.length > 0) {
-            if ($scope.global.user.level === undefined) { return false }
-            if (accessLevel.indexOf($scope.global.user.level) !== -1) {
-                return true;
+            if ($scope.global.user.level !== undefined) {
+                if (accessLevel.indexOf($scope.global.user.level) !== -1) {
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
                 return false;
-            }
+            }            
         } else {
             return false;
         }
