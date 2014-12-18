@@ -1087,19 +1087,19 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                         $scope.barChart
                             .on("filtered", function(chart, filter){
                                 waitForFinalEvent(function(){
-                                  if ($scope.tableData) {
-                                      $scope.tableData.filterAll();
-                                      var arr = [];
-                                      for(var i in dimension.top(Infinity)) {
-                                          arr.push(dimension.top(Infinity)[i].time);
-                                      }
-                                      // console.log(dimension.group().top(Infinity))
-                                      //console.log(dimension.group().top(Infinity));
-                                      $scope.tableData.filter(function(d) { return arr.indexOf(d.time) >= 0; });
-                                      $scope.$broadcast('crossfilterToTable');
-                                      // console.log($scope.tableData.top(Infinity));
-                                      // console.log(timeDimension.top(Infinity))
-                                  }
+                                if ($scope.tableData) {
+                                    $scope.tableData.filterAll();
+                                    var arr = [];
+                                    for(var i in dimension.top(Infinity)) {
+                                    arr.push(dimension.top(Infinity)[i].time);
+                                    }
+                                    // console.log(dimension.group().top(Infinity))
+                                    //console.log(dimension.group().top(Infinity));
+                                    $scope.tableData.filter(function(d) { return arr.indexOf(d.time) >= 0; });
+                                    $scope.$broadcast('crossfilterToTable');
+                                    // console.log($scope.tableData.top(Infinity));
+                                    // console.log(timeDimension.top(Infinity))
+                                    }
                                 }, 400, "filterWait");
                             })
                     }
