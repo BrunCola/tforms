@@ -596,6 +596,10 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                 //     $('#table').dataTable().fnAddData(dimension.top(Infinity));
                 //     $('#table').dataTable().fnDraw();
                 // });
+                
+                $scope.$on('table-redraw', function (event, term){
+                    table.dataTable().fnFilter(term);
+                })
 
                 $.fn.dataTableExt.sErrMode = 'throw';
 
@@ -898,7 +902,7 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '$rootScope', function ($timeout, $window, $rootScope) {
     return {
         link: function ($scope, element, attrs) {
-            $scope.$on('barChart', function (event, dimension, group, chartType, params) {
+            $scope.$on('barchart', function (event, dimension, group, chartType, params) {
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
                     //var arr = $scope.data.tables[0].aaData;
                     $scope.barChart = dc.barChart('#barchart');
@@ -1128,26 +1132,30 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                         .title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
                         .renderTitle(true); // (optional) whether chart should render titles, :default = fal
                     $scope.barChart.render();
-                        $scope.$broadcast('spinnerHide');
-                        $(window).resize(function () {
-                            waitForFinalEvent(function(){
-                                $scope.barChart.render();
-                            }, 200, "barchartresize");
-                        });
-                        // $(window).bind('resize', function() {
-                        //     setTimeout(function(){
+
+                    $scope.$on('barchart-redraw', function (event) {
+                        $scope.barChart.redraw();
+                    })
+                        // $scope.$broadcast('spinnerHide');
+                        // $(window).resize(function () {
+                        //     waitForFinalEvent(function(){
+                        //         $scope.barChart.render();
+                        //     }, 200, "barchartresize");
+                        // });
+                        // // $(window).bind('resize', function() {
+                        // //     setTimeout(function(){
+                        // //         setNewSize($scope.sevWidth());
+                        // //     }, 150);
+                        // // });
+                        // $('.sidebar-toggler').on("click", function() {
+                        //     setTimeout(function() {
                         //         setNewSize($scope.sevWidth());
-                        //     }, 150);
+                        //         $scope.barChart.render();
+                        //     },10);
                         // });
-                        $('.sidebar-toggler').on("click", function() {
-                            setTimeout(function() {
-                                setNewSize($scope.sevWidth());
-                                $scope.barChart.render();
-                            },10);
-                        });
-                        // $rootScope.$watch('search', function(){
-                        //     $scope.barChart.redraw();
-                        // });
+                        // // $rootScope.$watch('search', function(){
+                        // //     $scope.barChart.redraw();
+                        // // });
                 }, 0, false);
             })
         }
@@ -1157,7 +1165,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
 angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
     return {
         link: function ($scope, element, attrs) {
-            $scope.$on('rowChart', function (event, dimension, group, chartType) {
+            $scope.$on('rowchart', function (event, dimension, group, chartType) {
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
 
                     var waitForFinalEvent = (function () {
@@ -1172,6 +1180,9 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                         timers[uniqueId] = setTimeout(callback, ms);
                         };
                     })();
+
+
+
                     var hHeight, lOffset;
                     var count = group.top(Infinity).length; ///CHANGE THIS to count return rows
                     if (count < 7) {
@@ -1219,7 +1230,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                                         .x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width]));
                                         //$(element).height(hHeight);
                                         d3.select('#rowchart svg').attr('width', width).attr('height', hHeight);
-                                    $scope.rowChart.redraw();
+                                    // $scope.rowChart.redraw();
                                 }
                             };
                             $scope.rowChart
@@ -1254,8 +1265,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                         return Math.abs(x - Math.floor(x)) < 0.3 ? numberFormat(d) : "";
                     }
                     $scope.rowChart
-                    .width(width)
-                        //.height(width/2 + barExpand)
+                        .width(width)
                         .height(hHeight)
                         .margins({top: 5, left: 0, right: 0, bottom: 20})
                         .group(group)
@@ -1279,22 +1289,29 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                         .scale($scope.rowChart.x())
                         .tickFormat(logFormat);
                         $scope.rowChart.render();
-                        $(window).bind('resize', function() {
-                            setTimeout(function(){
-                                setNewSize($scope.rowWidth());
-                            }, 150);
-                        });
-                        $(window).resize(function () {
-                            waitForFinalEvent(function(){
-                                $scope.rowChart.render();
-                            }, 200, "rowchartresize");
-                        });
-                        $('.sidebar-toggler').on("click", function() {
-                            setTimeout(function() {
-                                setNewSize($scope.rowWidth());
-                                $scope.rowChart.render();
-                            },10);
-                        });
+
+                        $scope.$on('rowchart-redraw', function (event) {
+                            $scope.rowChart.redraw();
+                        })
+
+
+
+                        // $(window).bind('resize', function() {
+                        //     setTimeout(function(){
+                        //         setNewSize($scope.rowWidth());
+                        //     }, 150);
+                        // });
+                        // $(window).resize(function () {
+                        //     waitForFinalEvent(function(){
+                        //         $scope.rowChart.render();
+                        //     }, 200, "rowchartresize");
+                        // });
+                        // $('.sidebar-toggler').on("click", function() {
+                        //     setTimeout(function() {
+                        //         setNewSize($scope.rowWidth());
+                        //         $scope.rowChart.render();
+                        //     },10);
+                        // });
                         // var rowFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
                         // $rootScope.$watch('search', function(){
                         //     $scope.tableToRowChart = function () {
@@ -1387,30 +1404,33 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
                     }
                     d3.json("public/system/assets/world.json", MapCallbackFunction(this));
 
-                    $scope.geoWidth = function() {
-                        return $('#geochart').parent().width();
-                    }
-                    var setNewSize = function(width) {
-                        if (width > 0) {
-                            $scope.geoChart
-                                .width(width)
-                                .height(width/3.3)
-                                .projection(d3.geo.mercator().precision(0.1).scale((width + 1) / 2 / Math.PI).translate([width / 2.1, width / 2.4]))
-                                $(element).height(width/1.628);
-                                d3.select('#geochart svg').attr('width', width).attr('height', width/1.628);
-                            $scope.geoChart.redraw();
-                        }
-                    }
-                    $(window).bind('resize', function() {
-                        setTimeout(function(){
-                            setNewSize($scope.geoWidth());
-                        }, 150);
-                    });
-                    $('.sidebar-toggler').on("click", function() {
-                        setTimeout(function() {
-                            setNewSize($scope.geoWidth());
-                        },10);
-                    });
+                    $scope.$on('geochart-redraw', function (event) {
+                        $scope.geoChart.redraw();
+                    })
+                    // $scope.geoWidth = function() {
+                    //     return $('#geochart').parent().width();
+                    // }
+                    // var setNewSize = function(width) {
+                    //     if (width > 0) {
+                    //         $scope.geoChart
+                    //             .width(width)
+                    //             .height(width/3.3)
+                    //             .projection(d3.geo.mercator().precision(0.1).scale((width + 1) / 2 / Math.PI).translate([width / 2.1, width / 2.4]))
+                    //             $(element).height(width/1.628);
+                    //             d3.select('#geochart svg').attr('width', width).attr('height', width/1.628);
+                    //         $scope.geoChart.redraw();
+                    //     }
+                    // }
+                    // $(window).bind('resize', function() {
+                    //     setTimeout(function(){
+                    //         setNewSize($scope.geoWidth());
+                    //     }, 150);
+                    // });
+                    // $('.sidebar-toggler').on("click", function() {
+                    //     setTimeout(function() {
+                    //         setNewSize($scope.geoWidth());
+                    //     },10);
+                    // });
                     // var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
                     // $rootScope.$watch('search', function(){
                     //     if ($rootScope.search === null) {

@@ -13,7 +13,7 @@
 // })();
 angular.module('mean.pages').factory('searchFilter', ['$rootScope',
     function($rootScope) {
-        var searchFilter = function(dimension, sort) {
+        var searchFilter = function(dimension, term, callback) {
             // $rootScope.waitForFinalEvent = (function () {
                 // var timers = {};
                 // return function (callback, ms, uniqueId) {
@@ -27,12 +27,12 @@ angular.module('mean.pages').factory('searchFilter', ['$rootScope',
                 // };
             // })();
             // our filter function
-            function filtah(obj) {
+            function filtah(obj, callback) {
                 for (var i in obj) {
                     // continue if value is defined
                     if ((obj[i] !== undefined) && (obj[i] !== null)){
                         var name = obj[i].toString().toLowerCase();
-                        if (name.toLowerCase().indexOf($rootScope.search.toLowerCase()) > -1) {
+                        if (name.toLowerCase().indexOf(term.toLowerCase()) > -1) {
                             // jump out if search is defined
                             return true;
                         }
@@ -46,8 +46,9 @@ angular.module('mean.pages').factory('searchFilter', ['$rootScope',
             // clears existing filter
             // wait(function(){
                 dimension.filterAll(null);
-                if ($rootScope.search.length > 0) {
+                if (term.length > 0) {
                     dimension.filter(filtah);
+                    callback()
                 }
             // }, 200, "filtertWait");
         }
@@ -174,7 +175,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             if (params.group && (typeof params.group === 'function')) {
                                 group = params.group(dimension);
                             }
-                            $scope.$broadcast('rowChart', dimension, group, 'severity');
+                            $scope.$broadcast('rowchart', dimension, group, 'severity');
                         },
                         barchart: function(params, crossfilterObj) {
                             var group = false;
@@ -183,7 +184,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 group = params.group(dimension);
                             }
                             // add params in here for axis labels and graph types (along with a default)
-                            $scope.$broadcast('barChart', dimension, group, 'severity');
+                            $scope.$broadcast('barchart', dimension, group, 'severity');
                         },
                         geochart: function(params, crossfilterObj) {
                             var group = false;
@@ -196,16 +197,16 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                     },
                     update_: function(data, term) {
                         // run through called chart types and call their update functions
-                        for (var v in data.visuals) {
-                            switch(data.visuals[v].type) {
+                        for (var v in data.params.visuals) {
+                            switch(data.params.visuals[v].type) {
                                 case 'rowchart':
-                                    //
+                                    $scope.$broadcast('rowchart-redraw');
                                 break;
                                 case 'barchart':
-                                    //
+                                    $scope.$broadcast('barchart-redraw');
                                 break;
                                 case 'geochart':
-                                    //
+                                    $scope.$broadcast('geochart-redraw');
                                 break;
                             }
                         }
@@ -243,7 +244,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         $scope.$broadcast('table', result, dimension, params);
                     },
                     update_: function(data, term) {
-                        console.log(data)
+                        $scope.$broadcast('table-redraw', term);
                     }
                 },
                 textBoxWatch: {
@@ -260,7 +261,9 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         // handle updates by switching through types
                         switch(data.type) {
                             case 'crossfilter':
-                                functions.crossfilter.update_(data, term);
+                                searchFilter(data.dimension, term, function() {
+                                    functions.crossfilter.update_(data, term);
+                                })
                             break;
                             case 'table':
                                 functions.table.update_(data, term)
