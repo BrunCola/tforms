@@ -112,7 +112,6 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         return false;
                     }
                 },
-
                 // INIT VISUAL TYPES & METHODS
                 variable: function(params) {
                     if (!params.get) { return } // if specific url isn't defined use the page query
@@ -196,7 +195,20 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         }
                     },
                     update_: function(data, term) {
-                        console.log(data)
+                        // run through called chart types and call their update functions
+                        for (var v in data.visuals) {
+                            switch(data.visuals[v].type) {
+                                case 'rowchart':
+                                    //
+                                break;
+                                case 'barchart':
+                                    //
+                                break;
+                                case 'geochart':
+                                    //
+                                break;
+                            }
+                        }
                     }
                 },
                 table: {
