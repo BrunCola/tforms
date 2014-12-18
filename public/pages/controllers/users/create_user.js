@@ -16,31 +16,46 @@ angular.module('mean.pages').controller('createUserController', ['$scope', '$sta
                     $scope.databases.push(db.database)
                 }
             });
+                
             $scope.showEdit = false;
         }
     });
     setTimeout(function () {
         if ($scope.global.user !== undefined) {
-            if ($scope.global.user.level <= 1) {
+            if (($scope.global.user.user_level !== "superadmin") && ($scope.global.user.user_level !== "admin")) {
                 $location.path("/");
                 $scope.$apply();
             }
         }
     }, 0 );
 
+    $scope.setForm = function (form) {
+        $scope.createUser = form;
+    }
+
     $scope.createUsers = function (user) {
-        //console.log(user);
         if (user.$valid === true) {
             if ((user.password === user.password2) && (user.password !== undefined)) {
-                $http({method: 'POST', url: '/api/users/create_user?type=createNewUser', data: { email: user.email, username: user.username, password: user.password, db: user.database, level: user.level }})
+                if ($scope.global.user.user_level !== "superadmin") {
+                    user.database = "-";
+                }
+                $http({method: 'POST', url: '/api/users/create_user?type=createNewUser', data: { email: user.email, username: user.username, password: user.password, db: user.database, user_level: user.user_level }})
                 .success(function() {
+                    if ($scope.global.user.user_level === "admin") {
+                        user.database = $scope.global.user.database;
+                    }
                     $scope.users.push({
                         email: user.email,
                         database: user.database,
-                        level: user.level
+                        user_level: user.user_level
                     })
                     $scope.createUser = [];
                 })
+                .error(function(data, status, headers, config) {
+                    if (status == 500) {
+                        alert("email already in use");
+                    }
+                });
             } else {
                 alert("passwords do not match or is null");
             }
@@ -54,31 +69,40 @@ angular.module('mean.pages').controller('createUserController', ['$scope', '$sta
             success(function(data) {
             if (data[0] !== undefined) { 
                 $scope.showEdit = true;
-                $scope.createUser = data[0];
+                for (var d in data[0]) {
+                    // if ((d === "hide_proxy") || (d === "hide_stealth")) {
+                    //     $scope.accessInfo[d] = data[0][d];
+                    // }
+                    $scope.createUser[d] = data[0][d];
+                }
             }
         });           
     }
 
     $scope.submitEditUser = function (user) {
-        //console.log(user);
-        if ((user.password === user.password2) && (user.password !== undefined)) {
-            $http({method: 'POST', url: '/api/users/create_user?type=submitEditUser', data: { email: user.email, username: user.username, password: user.password, db: user.database, level: user.level }})
-            .success(function() {
-                $scope.users.map(function(d, i){
-                    if (d.email === user.email) {
-                        $scope.users.splice(i, 1);
-                    }
-                })
-                $scope.users.push({
-                    email: user.email,
-                    database: user.database,
-                    level: user.level
-                })
-                $scope.createUser = [];
-            })  
+        if (user.$valid === true) {
+            if ((user.password === user.password2) && (user.password !== undefined)) {
+                $http({method: 'POST', url: '/api/users/create_user?type=submitEditUser', data: { email: user.email, username: user.username, password: user.password, db: user.database, user_level: user.user_level }})
+                .success(function() {
+                    $scope.users.map(function(d, i){
+                        if (d.email === user.email) {
+                            $scope.users.splice(i, 1);
+                        }
+                    })
+                    $scope.users.push({
+                        email: user.email,
+                        database: user.database,
+                        user_level: user.user_level
+                    })
+                    $scope.showEdit = false;  
+                    $scope.createUser = [];
+                })  
+            } else {
+                alert("passwords do not match or is null");
+            }   
         } else {
-            alert("passwords do not match or is null");
-        }        
+            alert("Not all fields are filled correctly");
+        }
     }
 
     $scope.deleteUser = function (user) {
@@ -89,6 +113,15 @@ angular.module('mean.pages').controller('createUserController', ['$scope', '$sta
                     $scope.users.splice(i, 1);
                 }
             })
+        })
+    }
+
+    $scope.setAccessInfo = function (data) {
+         $http({method: 'POST', url: '/api/users/create_user?type=editAccess', data: { email: data.email, hide_stealth: data.hide_stealth, hide_proxy: data.hide_proxy }})
+        .success(function() {
+            // $scope.showEdit = false;  
+            // $scope.createUser = [];
+            alert("Access Levels are saved!")
         })
     }
 

@@ -1253,7 +1253,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     url: '/create_user',
                     templateUrl: 'public/pages/views/users/create_user.html',
                     data: {
-                        title: 'Create User',
+                        title: 'User Management',
                         daterange: false
                     }
                 })

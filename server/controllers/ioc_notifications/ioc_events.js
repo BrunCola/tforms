@@ -211,8 +211,8 @@ module.exports = function(pool) {
                                 crumb: false
                             },
                         },
-                        { title: 'Stealth', select: 'lan_stealth', access: [3] },
-                        { title: 'ABP', select: 'proxy_blocked', access: [2] },
+                        { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
+                        { title: 'ABP', select: 'proxy_blocked', hide_proxy: [1] },
                         { title: 'Severity', select: 'ioc_severity' },
                         { title: 'IOC Hits', select: 'ioc_count' },
                         { title: 'IOC', select: 'ioc' },
@@ -244,7 +244,8 @@ module.exports = function(pool) {
                         sort: [[0, 'desc']],
                         div: 'table',
                         title: 'Indicators of Compromise (IOC) Notifications',
-                        access: req.user.level
+                        hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                     }
                 }
                 var crossfilterQ = {

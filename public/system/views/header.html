@@ -161,7 +161,7 @@
 					<!-- <li><a href="javascript:void(0);" onclick="javascript:page('null','get_cron', null, null, null);"><i class="icon-envelope"></i> Manage Reports</a></li> -->
 					<!-- <li><a href="javascript:void(0);" onclick="#"><i class="fa fa-user"></i> Manage Users</a></li> -->
 					<!-- <li class="divider"></li> -->
-					<li ng-show="global.user.level > 1"><a ng-click="go('create_user')"><i class="fa fa-user"></i> Create User</a></li>
+					<li ng-show="global.user.user_level === 'superadmin' || global.user.user_level === 'admin'"><a ng-click="go('create_user')"><i class="fa fa-user"></i> User Management</a></li>
 					<li><a ng-click="logout()"><i class="fa fa-power-off"></i> Logout</a></li>
 				</ul>
 			</li>

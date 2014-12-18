@@ -53,7 +53,7 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.status_code],
                     params: [
                         { title: 'Time', select: 'time' },
-                        { title: 'Stealth', select: 'lan_stealth', access: [3] },
+                        { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
                         { title: 'Zone', select: 'lan_zone' },
                         { title: 'Local Machine', select: 'lan_machine' },
                         { title: 'Local User', select: 'lan_user' },
@@ -79,7 +79,7 @@ module.exports = function(pool) {
                         sort: [[1, 'desc']],
                         div: 'table',
                         title: 'Local SSH Connections by Status',
-                        access: req.user.level
+                        hide_stealth: req.user.hide_stealth
                     }
                 }
                 var table2 = {

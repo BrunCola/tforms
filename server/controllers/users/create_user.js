@@ -3,6 +3,7 @@
 var fs = require('fs'),
     config = require('../../config/config'),
     query = require('../constructors/query'),
+    user = require('../constructors/user'),
     bcrypt = require('bcrypt'),
     async = require('async');
 
@@ -21,34 +22,54 @@ module.exports = function(pool) {
             }
 
             if (req.query.type === 'editUser') {
-                if (req.user.level > 1) {
+                if (req.user.user_level === "superadmin") {
                     new query({query: 'SELECT * FROM `user` WHERE `email` = ? ', insert: [req.query.userEmail]}, {database: database, pool: pool}, function(err,data){
                         if (data) {
-                            console.log(data)
+                            res.json(data);
+                        }
+                    });  
+                } else if (req.user.user_level === "admin") {
+                    new user({query: 'SELECT * FROM `user` WHERE `email` = ? ', insert: [req.query.userEmail]}, {database: database, pool: pool}, function(err,data){
+                        if (data) {
                             res.json(data);
                         }
                     });  
                 }
             } else {
                 var allUsers = false;    
-                if (req.user.level > 1) {
+                if (req.user.user_level === "superadmin") {
                     var list_users = {
                         query: 'SELECT '+
                                     '`email`, '+
                                     '`database`, '+
-                                    '`level` '+
+                                    '`user_level` '+
+                                'FROM '+
+                                    '`user` ',
+                        insert: [req.user.user_level]
+                    }
+                } else if (req.user.user_level === "admin") {
+                    var list_users = {
+                        query: 'SELECT '+
+                                    '`email`, '+
+                                    '`user_level` '+
                                 'FROM '+
                                     '`user` '+
                                 'WHERE '+
-                                    '`level` <= ?',
-                        insert: [req.user.level]
+                                    '`user_level` != "superadmin" '+
+                                    'AND `database` = ?',
+                        insert: [req.user.database]
                     }
-                }
+                } 
                 async.parallel([
                     // Table function(s)                
                     function(callback) {
-                        if (req.user.level > 1) {
+                        if (req.user.user_level === "superadmin") {
                             new query(list_users, {database: database, pool: pool}, function(err,data){
+                                allUsers = data;
+                                callback();
+                            });
+                        } else if (req.user.user_level === "admin") {
+                            new user(list_users, {database: database, pool: pool}, function(err,data){
                                 allUsers = data;
                                 callback();
                             });
@@ -67,15 +88,28 @@ module.exports = function(pool) {
         },
         insert: function(req, res) {
             var database = "rp_users";
+
+            var db = "-";
+            if (req.user.user_level === "superadmin") { 
+                db = req.body.db;
+            } else if (req.user.user_level === "admin") {
+                db = req.user.database;
+            }
+
             if (req.query.type === 'createNewUser') {
                 var d = new Date()
                 var date = d.getFullYear() + "-" + (d.getMonth()+1) + "-" +d.getDate();
-                if (req.user.level > 1 ) {     
+                if ((req.user.user_level === "superadmin") || (req.user.user_level === "admin")) { 
+                    if (req.user.user_level === "superadmin") { 
+                        db = req.body.db;
+                    } else if (req.user.user_level === "admin") {
+                        db = req.user.database;
+                    }    
                     bcrypt.genSalt(10, function(err, salt) {
                         bcrypt.hash(req.body.password, salt, function(err, hash) {
                             var create_user = {
-                                query: "INSERT INTO `user` (`email`,  `username`, `password`, `database`, `joined`, `level`) VALUES (?,?,?,?,?,?)",
-                                insert: [req.body.email, req.body.username, hash, req.body.db, date, req.body.level]
+                                query: "INSERT INTO `user` (`email`, `username`, `password`, `database`, `joined`, `user_level`) VALUES (?,?,?,?,?,?)",
+                                insert: [req.body.email, req.body.username, hash, db, date, req.body.user_level]
                             }
                             new query(create_user, {database: database, pool: pool}, function(err,data){
                                 if (err) {
@@ -86,16 +120,16 @@ module.exports = function(pool) {
                             });
                         });
                     });
-                }
+                }               
             } else if (req.query.type === 'submitEditUser') {
-                if (req.user.level > 1 ) {     
+                if ((req.user.user_level === "superadmin") || (req.user.user_level === "admin")) {     
                     bcrypt.genSalt(10, function(err, salt) {
                         bcrypt.hash(req.body.password, salt, function(err, hash) {
-                            var create_user = {
-                                query: "UPDATE `user` SET `username`=?, `password`=?, `database`=?, `level`=? WHERE `email`=?",
-                                insert: [req.body.username, hash, req.body.db, req.body.level, req.body.email]
+                            var edit_user = {
+                                query: "UPDATE `user` SET `username`=?, `password`=?, `database`=?, `user_level`=? WHERE `email`=?",
+                                insert: [req.body.username, hash, db, req.body.user_level, req.body.email]
                             }
-                            new query(create_user, {database: database, pool: pool}, function(err,data){
+                            new query(edit_user, {database: database, pool: pool}, function(err,data){
                                 if (err) {
                                     res.status(500).end();
                                     return;
@@ -103,15 +137,30 @@ module.exports = function(pool) {
                                 res.status(200).end();
                             });
                         });
+                    });
+                }
+            } else if (req.query.type === 'editAccess') {
+                if ((req.user.user_level === "superadmin") || (req.user.user_level === "admin")) {
+
+                    var update_user = {
+                        query: "UPDATE `user` SET `hide_stealth`=?, `hide_proxy`=? WHERE `email`=?",
+                        insert: [req.body.hide_stealth, req.body.hide_proxy, req.body.email]
+                    }
+                    new query(update_user, {database: database, pool: pool}, function(err,data){
+                        if (err) {
+                            res.status(500).end();
+                            return;
+                        } 
+                        res.status(200).end();
                     });
                 }
             } else if (req.query.type === 'deleteUser') {
-                if (req.user.level > 1 ) {     
-                    var create_user = {
+                if ((req.user.user_level === "superadmin") || (req.user.user_level === "admin")) {     
+                    var delete_user = {
                         query: "DELETE FROM `user` WHERE `email`=?",
                         insert: [req.body.email]
                     }
-                    new query(create_user, {database: database, pool: pool}, function(err,data){
+                    new query(delete_user, {database: database, pool: pool}, function(err,data){
                         if (err) {
                             res.status(500).end();
                             return;

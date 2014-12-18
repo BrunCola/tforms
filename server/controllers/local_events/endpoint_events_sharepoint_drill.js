@@ -55,7 +55,7 @@ module.exports = function(pool) {
 							}
 						},
 						{ title: 'Events', select: 'count'},
-						{ title: 'Stealth', select: 'lan_stealth', access: [3] },
+						{ title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
 						{ title: 'Zone', select: 'lan_zone'},
 						{ title: 'Local Machine', select: 'lan_machine'},
 						{ title: 'Local User', select: 'lan_user'},
@@ -68,7 +68,8 @@ module.exports = function(pool) {
 					settings: {
 						sort: [[0, 'desc']],
 						div: 'table',
-						title: 'Full Endpoint Event Logs'
+						title: 'Full Endpoint Event Logs',
+						hide_stealth: req.user.hide_stealth
 					}
 				}
 				async.parallel([

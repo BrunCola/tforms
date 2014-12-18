@@ -48,7 +48,7 @@ module.exports = function(pool) {
                         },
                     },
                     { title: 'Events', select: 'count' },
-                    { title: 'Stealth', select: 'lan_stealth', access: [3] },
+                    { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
                     { title: 'Zone', select: 'lan_zone' },
                     { title: 'Local Machine', select: 'lan_machine'},
                     { title: 'Local User', select: 'lan_user' },
@@ -66,7 +66,7 @@ module.exports = function(pool) {
                     sort: [[1, 'desc']],
                     div: 'table',
                     title: 'Local Endpoint Events',
-                    access: req.user.level
+                    hide_stealth: req.user.hide_stealth
                 }
             }
             var crossfilterQ = {

@@ -41,7 +41,7 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_user, req.query.event_type],
                     params: [
                         { title: 'Time', select: 'time' },
-                        { title: 'Stealth', select: 'lan_stealth', access: [3] },
+                        { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
                         { title: 'Event Full Log', select: 'event_full' },
                         { title: 'Event ID', select: 'event_id', dView:false },
                         { title: 'Event Source', select: 'event_src', dView:false },
@@ -52,7 +52,7 @@ module.exports = function(pool) {
                         sort: [[0, 'desc']],
                         div: 'table',
                         title: 'Full Endpoint Event Logs',
-                        access: req.user.level
+                        hide_stealth: req.user.hide_stealth
                     }
                 }
                 async.parallel([

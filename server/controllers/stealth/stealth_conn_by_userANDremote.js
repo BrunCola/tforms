@@ -59,8 +59,7 @@ module.exports = function(pool) {
                     settings: {
                         sort: [[0, 'desc']],
                         div: 'table',
-                        title: 'Full Endpoint Event Logs',
-                        access: req.user.level
+                        title: 'Full Endpoint Event Logs'
                     }
                 }
                 async.parallel([

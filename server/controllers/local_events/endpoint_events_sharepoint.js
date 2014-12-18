@@ -53,8 +53,7 @@ module.exports = function(pool) {
                 settings: {
                     sort: [[0, 'desc']],
                     div: 'table',
-                    title: 'Sharepoint Events by Type',
-                    access: req.user.level
+                    title: 'Sharepoint Events by Type'
                 }
             }
             var crossfilterQ = {

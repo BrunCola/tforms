@@ -54,7 +54,7 @@ module.exports = function(pool) {
 							title: 'Time',
 							select: 'time'
 						},
-						{ title: 'Stealth', select: 'lan_stealth', access: [3] },
+						{ title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
 						{ title: 'Zone', select: 'lan_zone' },
 						{ title: 'Local Machine', select: 'lan_machine' },
 						{ title: 'Local User', select: 'lan_user' },
@@ -79,7 +79,7 @@ module.exports = function(pool) {
 						sort: [[0, 'desc']],
 						div: 'table',
 						title: 'Common IRC Connections between Remote and Local Host',
-						access: req.user.level
+						hide_stealth: req.user.hide_stealth
 					}
 				}
 				async.parallel([

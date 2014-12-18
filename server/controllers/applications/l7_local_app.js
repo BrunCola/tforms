@@ -62,7 +62,7 @@ module.exports = function(pool) {
                                 },
                             },
                             { title: 'Applications', select: 'l7_proto' },
-                            { title: 'Stealth', select: 'lan_stealth', access: [3]},
+                            { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1]},
                             { title: 'Zone', select: 'lan_zone', dView:false },
                             { title: 'Local Machine', select: 'lan_machine', dView:false },
                             { title: 'Local User', select: 'lan_user', dView:false },
@@ -84,7 +84,8 @@ module.exports = function(pool) {
                     settings: {
                         sort: [[1, 'desc']],
                         div: 'table',
-                        title: 'Local IP Bandwidth Usage'
+                        title: 'Local IP Bandwidth Usage',
+                        hide_stealth: req.user.hide_stealth
                     }
                 }
                 var crossfilterQ = {
