@@ -3,9 +3,6 @@
 angular.module('mean.system').controller('HeaderController', ['$scope', '$rootScope', 'Global', '$location', '$modal', 'iocIcon', '$http', '$state', '$upload', '$timeout', '$window',
     function($scope, $rootScope, Global, $location, $modal, iocIcon, $http, $state, $upload, $timeout, $window) {
         $scope.global = Global;
-        $rootScope.$watch('user', function(user) {
-            $scope.global.user = user;
-        })
         $scope.logout = function() {
             delete $window.sessionStorage.token;
             $location.url('/login');

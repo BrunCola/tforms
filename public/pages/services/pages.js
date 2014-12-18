@@ -45,10 +45,11 @@ angular.module('mean.pages').factory('searchFilter', ['$rootScope',
             }
             // clears existing filter
             // wait(function(){
-                dimension.filterAll(null);
                 if (term.length > 0) {
                     dimension.filter(filtah);
                     callback()
+                } else if ((term === '') || (term === null) || (term === undefined)) {
+                    dimension.filterAll(null);
                 }
             // }, 200, "filtertWait");
         }
@@ -56,8 +57,30 @@ angular.module('mean.pages').factory('searchFilter', ['$rootScope',
     }
 ]);
 
-angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location', '$resource', 'searchFilter',
-    function($rootScope, $http, $location, $resource, searchFilter) {
+
+angular.module('mean.pages').factory('tableFilter', ['$rootScope',
+    function($rootScope) {
+        var tableFilter = function(term, obj) {
+             for (var i in obj) {
+                // continue if value is defined
+                if ((obj[i] !== undefined) && (obj[i] !== null)){
+                    var name = obj[i].toString().toLowerCase();
+                    if (name.toLowerCase().indexOf(term.toLowerCase()) > -1) {
+                        // jump out if search is defined
+                        return obj;
+                    }
+                }
+                if (i === obj[obj.length-1]) {
+                    return false;
+                }
+            }
+        }
+        return tableFilter;
+    }
+]);
+
+angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location', '$resource', 'searchFilter', 'tableFilter',
+    function($rootScope, $http, $location, $resource, searchFilter, tableFilter) {
         var runPage = function($scope, data, refreshRate) {
             if (!refreshRate) { refreshRate === 60000 } // defaults to 1 minute in case refresh is enabled on any visual, but isnt defined calling the function
             var functions = {
@@ -219,10 +242,13 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         // handle searching (if enabled) - we don't need to wait for a data return for this
                         if (params.searchable && params.crossfilterObj) {
                             if (params.searchable === true) {
-                                var searchDimension = params.crossfilterObj.dimension(function(d){return d});
+                                // var searchDimension = params.crossfilterObj.dimension(function(d){return d});
+                                params.crossfilterObj.addDimension('searchBox', function search(d) {
+                                    return d;
+                                });
                                 searchable.push({
                                     type: 'table',
-                                    dimension: searchDimension,
+                                    dimension: params.crossfilterObj,
                                     params: params
                                 });
                             }
@@ -233,18 +259,19 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                     params.run(result);
                                 }
                                 // add-remove data function call here
-                                params.crossfilterObj.add(result.aaData);
+                                params.crossfilterObj.addModels(result.aaData);
                             }
                             this_.draw_(result, params.crossfilterObj, params);
                             
                         })
                     },
                     draw_: function(result, crossfilterObj, params) {
-                        var dimension = crossfilterObj.dimension(function(d){return d});
-                        $scope.$broadcast('table', result, dimension, params);
+                        $scope.$broadcast('sevTable', result, crossfilterObj, params);
                     },
                     update_: function(data, term) {
-                        $scope.$broadcast('table-redraw', term);
+                        data.dimension.unfilterAll();
+                        data.dimension.filterBy('searchBox', term, tableFilter);
+                        $scope.$broadcast('table-redraw');
                     }
                 },
                 textBoxWatch: {
@@ -266,7 +293,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 })
                             break;
                             case 'table':
-                                functions.table.update_(data, term)
+                                functions.table.update_(data, term);
                             break;
                         }
                     }

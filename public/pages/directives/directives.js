@@ -689,6 +689,90 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 //     };
 // });
 
+// angular.module('mean.pages').directive('sevTable', ['$timeout', 'ngTableParams', '$filter', '$rootScope', 'searchFilter', '$location', function ($timeout, ngTableParams, $filter, $rootScope, searchFilter, $location) {
+//     return {
+//         restrict: 'E',
+//         templateUrl : 'public/pages/views/sevtable.html',
+//         transclude : true,
+//         link: function($scope, element) {
+//             $scope.$on('sevTable', function (event, result, dimension, params) {
+//                 $scope.dat = dimension.top(Infinity);
+//                 $scope.$watch('dat', function(d){
+//                     console.log(d)
+//                 })
+//                 $scope.columns = result.params;
+//                 $scope.colCount = $.grep(result.params, function(d){ return (d.visible) }).length + 1;
+//                 $scope.tTotal = result.aaData.length;
+//                 $scope.tableParams = new ngTableParams({
+//                     page: 1,            // show first page
+//                     count: 15,          // count per page
+//                     // filter: {
+//                     //     ioc: 'M'       // initial filter
+//                     // }
+//                     sorting: result.sort // sort object
+//                 }, {
+//                     total: $scope.tTotal, // length of data
+//                     getData: function($defer, params) {
+//                         // use build-in angular filter
+//                         var orderedData = params.sorting() ? $filter('orderBy')(dimension.top(Infinity), params.orderBy()) : dimension.top(Infinity);
+//                         $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+//                     }
+//                 });
+//                 $scope.openId = -1;
+//                 $scope.toggle =  function(pid) {
+//                     if (pid === $scope.openId) {
+//                         $scope.openId = -1;
+//                     } else { 
+//                         $scope.openId = pid;
+//                     }
+//                 }
+//                 // var searchFired = false;
+//                 // $rootScope.$watch('search', function(){
+//                 //     if (searchFired === true) {
+//                 //         searchFilter(dimension, $rootScope.search);
+//                 //         $scope.tableParams.reload();
+//                 //     }
+//                 //     searchFired = true;
+//                 // })
+//                 $scope.$on('table-redraw', function(event){
+//                     $scope.tableParams.reload();
+//                 })
+//                 $scope.openLink = function(obj, row) {
+//                     var page = obj.type;
+//                     var params = {};
+//                     for (var i in obj.val) {
+//                         params[obj.val[i]] = row[obj.val[i]];
+//                     }
+//                     if ($location.$$search.start && $location.$$search.end) {
+//                         params.start = $location.$$search.start;
+//                         params.end = $location.$$search.end;
+//                     }
+//                     $location.path(page).search(params);
+//                 }
+//                 // $scope.expandTable = results.expand;
+//                 $scope.$broadcast('spinnerHide');
+//             })
+//         }
+//     };
+// }]);
+
+angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$rootScope', '$location', function ($timeout, $filter, $rootScope, $location) {
+    return {
+        restrict: 'E',
+        templateUrl : 'public/pages/views/sevtable.html',
+        transclude : true,
+        link: function($scope, element) {
+            $scope.$on('sevTable', function (event, result, crossfilterObj, params) {
+                $scope.tableData = crossfilterObj.collection();
+                $scope.$on('table-redraw', function (event){
+                    $scope.tableData = crossfilterObj.collection();
+                })
+            })
+        }
+    };
+}]);
+
+
 angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '$rootScope', 'getSize', function ($timeout, $window, $rootScope, getSize) {
     return {
         link: function ($scope, element, attrs) {
