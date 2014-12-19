@@ -419,11 +419,19 @@ div#descModalID.modal-body {
 */
 
 .livemapTable {
-  width: 90%;
+  width: 100%;
   text-align: left;
+  margin: 20px 0px;
 }
 #map{
   z-index:500 !important;
+  width: 75%;
+  float: left;
+}
+#mapInfo{
+  width: 24%;
+  float: right;
+  margin-left: 1%;
 }
 /*tree chart*/
 .conn circle {
@@ -2541,9 +2549,16 @@ table.listUser tr{
 table.listUser td{
     padding: 5px 0px 5px 0px !important;
 }
-#accessLevel .formLabel {
+#accessLevel .formLabel, #mapInfo .formLabel{
     display: inline-block;
 }
 #accessLevel input[type="checkbox"] {
     margin:-3px 0px 0px 5px;
+}
+#mapInfo input[type="checkbox"] {
+    margin:-3px 5px 0px 0px;
+}
+#liveConns{
+    margin: 20px 0px 0px 0px;
+    clear: both;
 }

@@ -5,6 +5,7 @@
     <section id="floorplanpage">
         <div class="row-fluid">
             <div class="span6">
+                <div class="jdash-header">User Table</div>
                 <div class="box" style="background-color:#FFF;"> 
                     <table class="listUser">
                         <tr style="font-weight:bold">
@@ -21,6 +22,8 @@
                 </div>
             </div>
             <div class="span2">
+                <div class="jdash-header" ng-hide="showEdit">Create User</div>
+                <div class="jdash-header" ng-show="showEdit">Edit User</div>
                 <div class="box" style="background-color:#FFF;"> 
                     <form name="createUser" > 
                         <div ng-init="setForm(createUser);">
@@ -50,6 +53,7 @@
                 </div>
             </div>
             <div class="span2" ng-show="showEdit">
+                <div class="jdash-header">Content Access</div> 
                 <div class="box" style="background-color:#FFF;"> 
                     <form name="createUser" id="accessLevel" > 
                         <label class="formLabel">Hide Stealth:</label>  <input type="checkbox" ng-model="createUser.hide_stealth" ng-checked="createUser.hide_stealth" ><br />

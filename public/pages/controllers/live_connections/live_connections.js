@@ -18,6 +18,10 @@ angular.module('mean.pages').controller('liveConnectionsController', ['$scope', 
             }
         });
     }
+    $scope.mapCountries = true;
+    // $scope.mapApplications = false;
+    // $scope.mapLocalIp = false;
+    // $scope.mapRemoteIp = false;
 
     $scope.lineChartStart = moment().subtract('minutes', 9).unix()*1000;
     $scope.lineChartEnd = Math.round(new Date().getTime()) - 254000; //- 504000;// + 3060000;

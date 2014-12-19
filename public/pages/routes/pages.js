@@ -9,7 +9,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 url: '/live_connections',
                 templateUrl: 'public/pages/views/live_connections/live_connections.html',
                 data: {
-                    title: 'Live Connections',
+                    // title: 'Live Connections',
                     daterange: false
                 }
             })
