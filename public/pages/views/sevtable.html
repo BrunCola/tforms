@@ -1,94 +1,36 @@
-<!-- <table ng-table="tableParams" show-filter="true" class="table">
+<table class="table table-striped table-condensed table-hover">
     <thead>
         <tr>
-            <th ng-repeat="column in columns" ng-show="column.bVisible" 
-                class="text-center sortable" ng-class="{
-                    'sort-asc': tableParams.isSortBy(column.mData, 'asc'),
-                    'sort-desc': tableParams.isSortBy(column.mData, 'desc')
-                }"
-            ng-click="tableParams.sorting(column.mData, tableParams.isSortBy(column.mData, 'asc') ? 'desc' : 'asc')">
-            {{column.sTitle}}
-            </th>
+            <th class="{{heading.mData}}" ng-repeat="heading in tableColumns" custom-sort order="heading.mData" sort="sort">{{heading.sTitle}}&nbsp;</th>
         </tr>
     </thead>
-    <tbody ng-repeat="row in $data">
-        <tr id="tr{{row.id}}" ng-class-odd="'odd'" ng-class-even="'even'">
-            <td ng-repeat="column in columns" ng-show="column.bVisible" sortable="column.mData">
-                <section ng-switch="column.mData">
-                    <section ng-switch-when="mime"> 
-                       <div file-replace>{{ row[column.mData].toLowerCase() }}</div>
-                    </section>
-                    <section ng-switch-when="l7_proto"> 
-                       <div app-replace>{{ row[column.mData].toLowerCase() }}</div>
-                    </section>
-                    <section ng-switch-when="remote_cc"> 
-                        <div style='min-width:120px'>
-                            <div class="f32"><span class="flag {{row[column.mData].toLowerCase()}}"></span></div>
-                            <div class="remote_country">{{ row['remote_country'] }}</div>
-                        </div>
-                    </section>
-                    <section ng-switch-when="ioc_severity">
-                        <div class="tablesev sev{{ row[column.mData] }}"></div>
-                    </section>
-                    <section ng-switch-when="stealth">
-                        <section ng-if="row[column.mData] > 0">
-                            <span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-shield fa-stack-1x fa-inverse"></i></span>
-                        </section>
-                        <section ng-if="row[column.mData] <= 0">
-                            {{ row[column.mData] }}
-                        </section>
-                    </section>
-                    <section ng-switch-when="time">
-                        <div ng-if="!row[column.mData].link" style='min-width:100px'>
-                            <span class="livestamp" data-livestamp='{{ row[column.mData] }}'></span><br />
-                            <div class="timestamp">{{ row[column.mData] }}</div>
-                        </div>
-                        <div ng-if="row[column.mData].link" style='min-width:100px'>
-                            <button class='button-error pure-button' type='button' ng-click='openLink(column.link, row)'>
-                                <span class="livestamp" data-livestamp='{{ row[column.mData] }}'></span><br />
-                                <div class="timestamp">{{ row[column.mData] }}</div>
-                            </button>
-                        </div>
-                    </section>
-                    <section ng-switch-when="Archive">
-                        <button class='button-error pure-button' type='button' ng-click='openLink(column.link, row)'>
-                            <span class="livestamp" data-livestamp='{{ row[column.mData] }}'></span><br />
-                            <div class="timestamp">{{ row[column.mData] }}</div>
-                        </button>
-                    </section>
-                    <section ng-switch-default> 
-                        {{row[column.mData]}}
-                    </section>
-                </section>
-            </td>
-            <td ng-if="expandTable" class="open-button-container" sortable="false">
-                <div id="editRowBtn{{row.id}}" ng-click="toggle(row.id)">
-                    <div ng-class="openId === row.id ? 'open-button-expanded' : 'open-button'">
-                        <div class="square-content">
-                            <div><span>{{openId === row.id ? 'x' : '+'}}</span></div>
-                        </div>
-                    </div>
-                </div>
-            </td>
-        </tr>
-        <tr class="expand-table expand-color{{row.ioc_severity}}" ng-show="openId===row.id" ng-if="openId===row.id">
-            <td colspan="{{colCount}}">
-                <table class="noborder" width="100%">
-                    <tr>
-                        <td class="expand-heading" ng-repeat="col in columns" ng-show="!col.visible">
-                           <strong>{{col.title}}</strong>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="expand-row" ng-repeat="col in columns" ng-show="!col.visible">
-                            {{row[col.field]}}
-                        </td>
-                </table>
-            </td>
+    <tfoot>
+        <td colspan="6">
+            <div class="pagination pull-right">
+                <ul>
+                    <li ng-class="{disabled: currentPage == 0}">
+                        <a href ng-click="prevPage()">« Prev</a>
+                    </li>
+                
+                    <li ng-repeat="n in range(pagedItems.length, currentPage, currentPage + gap) "
+                        ng-class="{active: n == currentPage}"
+                    ng-click="setPage()">
+                        <a href ng-bind="n + 1">1</a>
+                    </li>
+                 
+                    <li ng-class="{disabled: (currentPage) == pagedItems.length - 1}">
+                        <a href ng-click="nextPage()">Next »</a>
+                    </li>
+                </ul>
+            </div>
+        </td>
+    </tfoot>
+   <!--  <pre>pagedItems.length: {{tableData.collection().length|json}}</pre>
+    <pre>currentPage: {{currentPage|json}}</pre>
+    <pre>currentPage: {{sort|json}}</pre> -->
+    <tbody>
+        <tr ng-repeat="item in pagedItems[currentPage] | orderBy:sort.sortingOrder:sort.reverse">
+            <td>{{item.ioc}}</td>
         </tr>
     </tbody>
-</table> -->
-
-<div ng-repeat="row in tableData">
-    {{row.ioc}} <br />
-</div>
+</table>
