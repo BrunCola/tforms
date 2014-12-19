@@ -191,7 +191,7 @@ angular.module('mean.system').directive('sidebar', function() {
             App.init();
         }
     };
-});https://localhost:3000/#!/stealth_coi_conn_view
+});
 
 angular.module('mean.pages').directive('severityLevels', ['$timeout', function ($timeout) {
     return {
@@ -763,6 +763,9 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
         transclude : true,
         link: function($scope, element) {
             $scope.$on('sevTable', function (event, result, crossfilterObj, params) {
+                // on sevTable = $scope.table[name] = data
+                // here create table div from element + name
+                // TODO - add unique name in controller to post this in a key (in case direcive gets called multiple times)- i.e. $scope[name].table = this
                 $scope.tableData = crossfilterObj.collection();
                 $scope.$on('table-redraw', function (event){
                     $scope.tableData = crossfilterObj.collection();

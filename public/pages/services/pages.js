@@ -1,31 +1,8 @@
 'use strict';
-// var wait = (function () {
-//     var timers = {};
-//     return function (callback, ms, uniqueId) {
-//         if (!uniqueId) {
-//             uniqueId = "filterWait"; //Don't call this twice without a uniqueId
-//         }
-//         if (timers[uniqueId]) {
-//             clearTimeout (timers[uniqueId]);
-//         }
-//         timers[uniqueId] = setTimeout(callback, ms);
-//     };
-// })();
-angular.module('mean.pages').factory('searchFilter', ['$rootScope',
-    function($rootScope) {
-        var searchFilter = function(dimension, term, callback) {
-            // $rootScope.waitForFinalEvent = (function () {
-                // var timers = {};
-                // return function (callback, ms, uniqueId) {
-                    // if (!uniqueId) {
-                        // uniqueId = "filterWait"; //Don't call this twice without a uniqueId
-                    // }
-                    // if (timers[uniqueId]) {
-                        // clearTimeout (timers[uniqueId]);
-                    // }
-                    // timers[uniqueId] = setTimeout(callback, ms);
-                // };
-            // })();
+
+angular.module('mean.pages').factory('dimensionFilter',
+    function() {
+        var dimensionFilter = function(dimension, term, callback) {
             // our filter function
             function filtah(obj, callback) {
                 for (var i in obj) {
@@ -43,23 +20,19 @@ angular.module('mean.pages').factory('searchFilter', ['$rootScope',
                     }
                 }
             }
-            // clears existing filter
-            // wait(function(){
-                if (term.length > 0) {
-                    dimension.filter(filtah);
-                    callback()
-                } else if ((term === '') || (term === null) || (term === undefined)) {
-                    dimension.filterAll(null);
-                }
-            // }, 200, "filtertWait");
+            if (term.length > 0) {
+                dimension.filter(filtah);
+                callback();
+            } else if ((term === '') || (term === null) || (term === undefined)) {
+                dimension.filterAll(null);
+                callback();
+            }
         }
-        return searchFilter;
+        return dimensionFilter;
     }
-]);
-
-
-angular.module('mean.pages').factory('tableFilter', ['$rootScope',
-    function($rootScope) {
+);
+angular.module('mean.pages').factory('tableFilter',
+    function() {
         var tableFilter = function(term, obj) {
              for (var i in obj) {
                 // continue if value is defined
@@ -77,10 +50,9 @@ angular.module('mean.pages').factory('tableFilter', ['$rootScope',
         }
         return tableFilter;
     }
-]);
-
-angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location', '$resource', 'searchFilter', 'tableFilter',
-    function($rootScope, $http, $location, $resource, searchFilter, tableFilter) {
+);
+angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location', '$resource', 'dimensionFilter', 'tableFilter',
+    function($rootScope, $http, $location, $resource, dimensionFilter, tableFilter) {
         var runPage = function($scope, data, refreshRate) {
             if (!refreshRate) { refreshRate === 60000 } // defaults to 1 minute in case refresh is enabled on any visual, but isnt defined calling the function
             var functions = {
@@ -288,7 +260,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         // handle updates by switching through types
                         switch(data.type) {
                             case 'crossfilter':
-                                searchFilter(data.dimension, term, function() {
+                                dimensionFilter(data.dimension, term, function() {
                                     functions.crossfilter.update_(data, term);
                                 })
                             break;
