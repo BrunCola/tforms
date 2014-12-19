@@ -445,15 +445,15 @@ module.exports = function(app, version, pool) {
             var new_ftp_remote = require('../controllers/first_seen/new_ftp_remote')(pool);
             app.route('/api/first_seen/new_ftp_remote')
             .get(auth.permission, new_ftp_remote.render);
-    // HEALTH
-        //OVERVIEW
-            var overview = require('../controllers/health/overview')(pool); 
-             app.route('/api/health/overview')
-            .get(auth.permission, overview.render);
-            //HEALTH DRILL
-                var health_drill = require('../controllers/health/health_drill')(pool);
-                app.route('/api/health/health_drill')
-                .get(auth.permission, health_drill.render);
+    // // HEALTH
+    //     //OVERVIEW
+    //         var overview = require('../controllers/health/overview')(pool); 
+    //          app.route('/api/health/overview')
+    //         .get(auth.permission, overview.render);
+    //         //HEALTH DRILL
+    //             var health_drill = require('../controllers/health/health_drill')(pool);
+    //             app.route('/api/health/health_drill')
+    //             .get(auth.permission, health_drill.render);
     // REPORTS
         // IOC EVENTS REPORT
             var ioc_events_report = require('../controllers/reports/ioc_events')(pool);

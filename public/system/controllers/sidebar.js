@@ -463,12 +463,13 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'orphans': []
                 }
             ]
-        },
+        }
+        /*,
         { // HEALTH
             'title': 'Health',
             'url': '',
             'icon': 'fa-plus-square',        
-            'accessLevel': [4],    
+            'accessLevel': [$s],    
             'children':
             [
                 {
@@ -478,6 +479,6 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                     'orphans': ['health_drill']
                 }
             ]
-        }
+        }*/
     ];
 }]);
