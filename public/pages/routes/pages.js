@@ -1248,12 +1248,21 @@ angular.module('mean.pages').config(['$stateProvider',
                 }
             })        
         // USERS
-            // CREATE USER
+            // USER MANAGEMENT
                 .state('pages.create_user', {
                     url: '/create_user',
                     templateUrl: 'public/pages/views/users/create_user.html',
                     data: {
                         title: 'User Management',
+                        daterange: false
+                    }
+                })
+            // FIRST LOGIN
+                .state('pages.first_login', {
+                    url: '/first_login',
+                    templateUrl: 'public/pages/views/users/first_login.html',
+                    data: {
+                        title: 'Set Initial Password',
                         daterange: false
                     }
                 })

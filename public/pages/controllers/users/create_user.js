@@ -2,7 +2,6 @@
 
 angular.module('mean.pages').controller('createUserController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
     $scope.global = Global;
-    var timer;
     var query = '/api/users/create_user';
     $http({method: 'GET', url: query}).
     success(function(data) {
@@ -20,14 +19,11 @@ angular.module('mean.pages').controller('createUserController', ['$scope', '$sta
             $scope.showEdit = false;
         }
     });
-    setTimeout(function () {
-        if ($scope.global.user !== undefined) {
-            if (($scope.global.user.user_level !== "superadmin") && ($scope.global.user.user_level !== "admin")) {
-                $location.path("/");
-                $scope.$apply();
-            }
+    if ($scope.global.user !== undefined) {
+        if (($scope.global.user.user_level !== "superadmin") && ($scope.global.user.user_level !== "admin")) {
+            $location.path("/");
         }
-    }, 0 );
+    }
 
     $scope.setForm = function (form) {
         $scope.createUser = form;
