@@ -3618,7 +3618,7 @@ angular.module('mean.pages').directive('makeTreeChart', ['$timeout', '$rootScope
                     }
 
                     var diagonal = d3.svg.diagonal()
-                        .projection(function(d) { console.log(d);  return [d.y, d.x]; });
+                        .projection(function(d) { return [d.y, d.x]; });
 
                     var svg = d3.select("#treechart").append("svg")
                         .attr("width", width)
