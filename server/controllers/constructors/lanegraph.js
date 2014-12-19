@@ -46,14 +46,32 @@ module.exports = function (sql, conn, callback) {
     }
     var index = null; var count = 0; var type = null;
 
+    // var denied = [];
+    // (function() {
+    //     if (sql.settings === undefined) {return}
+    //     if (sql.settings.access === undefined) {return}
+    //     sql.params.forEach(function(item){
+    //         if (item.access === undefined) {return}
+    //         if (item.access.indexOf(sql.settings.access) === -1) {
+    //             denied.push(item.select);
+    //         }
+    //     })
+    // })();
+
     var denied = [];
     (function() {
         if (sql.settings === undefined) {return}
-        if (sql.settings.access === undefined) {return}
+        if ((sql.settings.hide_stealth === undefined) && (sql.settings.hide_proxy === undefined)) {return}
         sql.params.forEach(function(item){
-            if (item.access === undefined) {return}
-            if (item.access.indexOf(sql.settings.access) === -1) {
-                denied.push(item.select);
+            if (item.hide_stealth !== undefined) {
+                if (item.hide_stealth.indexOf(sql.settings.hide_stealth) !== -1) {
+                    denied.push(item.select);
+                }
+            }
+            if (item.hide_proxy !== undefined) {
+                if (item.hide_proxy.indexOf(sql.settings.hide_proxy) !== -1) {
+                    denied.push(item.select);
+                }
             }
         })
     })();

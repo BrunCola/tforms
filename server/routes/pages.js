@@ -445,15 +445,15 @@ module.exports = function(app, version, pool) {
             var new_ftp_remote = require('../controllers/first_seen/new_ftp_remote')(pool);
             app.route('/api/first_seen/new_ftp_remote')
             .get(auth.permission, new_ftp_remote.render);
-    // HEALTH
-        //OVERVIEW
-            var overview = require('../controllers/health/overview')(pool); 
-             app.route('/api/health/overview')
-            .get(auth.permission, overview.render);
-            //HEALTH DRILL
-                var health_drill = require('../controllers/health/health_drill')(pool);
-                app.route('/api/health/health_drill')
-                .get(auth.permission, health_drill.render);
+    // // HEALTH
+    //     //OVERVIEW
+    //         var overview = require('../controllers/health/overview')(pool); 
+    //          app.route('/api/health/overview')
+    //         .get(auth.permission, overview.render);
+    //         //HEALTH DRILL
+    //             var health_drill = require('../controllers/health/health_drill')(pool);
+    //             app.route('/api/health/health_drill')
+    //             .get(auth.permission, health_drill.render);
     // REPORTS
         // IOC EVENTS REPORT
             var ioc_events_report = require('../controllers/reports/ioc_events')(pool);
@@ -468,9 +468,14 @@ module.exports = function(app, version, pool) {
         app.route('/api/uploads')
         .post(auth.permission, upload.render); 
     // USERS
-        // CREATE USER
+        // USER MANAGEMENT
             var create_user = require('../controllers/users/create_user')(pool);
             app.route('/api/users/create_user')
             .get(auth.permission, create_user.render)
             .post(auth.permission, create_user.insert); 
+        // FIRST LOGIN
+            var first_login = require('../controllers/users/first_login')(pool);
+            app.route('/api/users/first_login')
+            .get(auth.permission, first_login.render)
+            .post(auth.permission, first_login.insert); 
 };
