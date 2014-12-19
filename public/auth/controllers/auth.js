@@ -11,14 +11,11 @@ angular.module('mean.controllers.login', [])
             $http.post('/login', $scope.user)
                 .success(function(user){
                     $window.sessionStorage.token = user.token;
-                    setTimeout(function () {
-                        console.log($scope.global.user.first_login)
-                        if ($scope.global.user.first_login === 1) {
-                            $location.url('/first_login');
-                        } else {
-                            $location.url('/home');
-                        }   
-                    }, 1000);
+                    if ($scope.global.user.first_login === 1) {
+                        $location.url('/first_login');
+                    } else {
+                        $location.url('/home');
+                    }   
                 })
                 .error(function() {
                     $scope.loginerror = 'Error: Invalid user or password';
