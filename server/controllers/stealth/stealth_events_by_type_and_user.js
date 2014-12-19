@@ -61,8 +61,7 @@ module.exports = function(pool) {
                     settings: {
                         sort: [[1, 'desc']],
                         div: 'table',
-                        title: 'Local Endpoints Triggering Event',
-                        access: req.user.level
+                        title: 'Local Endpoints Triggering Event'
                     }
                 }
                 async.parallel([

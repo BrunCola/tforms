@@ -62,7 +62,7 @@ module.exports = function(pool) {
 					params: [
 						{ title: 'Time', select: 'time' },
 						{ title: 'Applications', select: 'l7_proto' },
-						{ title: 'Stealth', select: 'lan_stealth', access: [3] },
+						{ title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
 						{ title: 'Zone', select: 'lan_zone' },
 						{ title: 'Local Machine', select: 'lan_machine' },
 						{ title: 'Local User', select: 'lan_user' },
@@ -95,7 +95,8 @@ module.exports = function(pool) {
 					settings: {
 						sort: [[0, 'desc']],
 						div: 'table',
-						title: 'Common IP Connections between Remote and Local Host'
+						title: 'Common IP Connections between Remote and Local Host',
+						hide_stealth: req.user.hide_stealth
 					}
 				}
 				async.parallel([

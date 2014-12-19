@@ -519,7 +519,7 @@ th {
     pointer-events: none;
 }
 
-**/.table_overflow {
+.table_overflow {
     overflow: auto;
     width:100%;
 }

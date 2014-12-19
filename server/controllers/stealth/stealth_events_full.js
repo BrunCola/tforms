@@ -49,8 +49,7 @@ module.exports = function(pool) {
                     settings: {
                         sort: [[0, 'desc']],
                         div: 'table',
-                        title: 'Full Stealth Event Logs',
-                        access: req.user.level
+                        title: 'Full Stealth Event Logs'
                     }
                 }
                 async.parallel([

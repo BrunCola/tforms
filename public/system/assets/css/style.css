@@ -2527,3 +2527,23 @@ button.printCSVButton {
   margin:0px 135px -30px 0px; 
   z-index: 200;
 }
+.redMismatch{
+    color: #F00;
+    display: inline;
+    margin: 0px 0px 0px 5px;
+}
+table.listUser{
+    width: 100%;
+}
+table.listUser tr{
+    border-bottom: #ccc solid 1px;
+}
+table.listUser td{
+    padding: 5px 0px 5px 0px !important;
+}
+#accessLevel .formLabel {
+    display: inline-block;
+}
+#accessLevel input[type="checkbox"] {
+    margin:-3px 0px 0px 5px;
+}

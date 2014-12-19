@@ -12,21 +12,35 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
             $.noty.closeAll();
         }
     };
+    // $scope.display = function (accessLevel) {
+    //     console.log(accessLevel)
+    //     if ((accessLevel === undefined) || (accessLevel.length === 0)) {
+    //         return true;
+    //     } else if (accessLevel.length > 0) {
+    //         if ($scope.global.user !== undefined) {
+    //             if (accessLevel.indexOf($scope.global.user.level) !== -1) {
+    //                 return true;
+    //             } else {
+    //                 return false;
+    //             }
+    //         } else {
+    //             return false;
+    //         }            
+    //     } else {
+    //         return false;
+    //     }
+    // };    
     $scope.display = function (accessLevel) {
         if ((accessLevel === undefined) || (accessLevel.length === 0)) {
             return true;
         } else if (accessLevel.length > 0) {
-            if ($scope.global.user.level !== undefined) {
-                if (accessLevel.indexOf($scope.global.user.level) !== -1) {
-                    return true;
-                } else {
+                if (accessLevel.indexOf(1) !== -1) {
                     return false;
-                }
-            } else {
-                return false;
-            }            
+                } else {
+                    return true;
+                }          
         } else {
-            return false;
+            return true;
         }
     };
     $scope.parentClass = function (link) {
@@ -181,7 +195,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
         },
         { // STEALTH
             'title': 'Stealth',
-            'accessLevel': [3], 
+            'accessLevel': [$scope.global.user.hide_stealth],
             'url': '',
             'icon': 'fa-shield',
             'children':
@@ -341,7 +355,7 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
                 },
                 {
                     'title': 'Blocked HTTP',
-                    'accessLevel': [2],   
+                    'accessLevel': [$scope.global.user.hide_proxy],   
                     'url': 'http_local_blocked',
                     'icon': 'fa-times',
                     'orphans': ['http_local_by_domain_blocked', 'http_by_domain_local_drill_blocked']

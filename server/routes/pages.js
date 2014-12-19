@@ -466,5 +466,11 @@ module.exports = function(app, version, pool) {
     // UPLOAD
         var upload = require('../controllers/upload')(pool);
         app.route('/api/uploads')
-        .post(auth.permission, upload.render);   
+        .post(auth.permission, upload.render); 
+    // USERS
+        // CREATE USER
+            var create_user = require('../controllers/users/create_user')(pool);
+            app.route('/api/users/create_user')
+            .get(auth.permission, create_user.render)
+            .post(auth.permission, create_user.insert); 
 };

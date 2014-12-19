@@ -47,7 +47,7 @@ module.exports = function(pool) {
                         },
                     },
                     { title: 'Connections', select: 'count' },
-                    { title: 'Stealth', select: 'lan_stealth', access: [3] },
+                    { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
                     { title: 'ABP', select: 'proxy_blocked' },
                     { title: 'Zone', select: 'lan_zone' },
                     { title: 'Local Machine', select: 'lan_machine' },
@@ -59,7 +59,7 @@ module.exports = function(pool) {
                     sort: [[1, 'desc']],
                     div: 'table',
                     title: 'Blocked HTTP',
-                    access: req.user.level
+                    hide_stealth: req.user.hide_stealth
                 }
             }
             async.parallel([

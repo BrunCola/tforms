@@ -61,8 +61,8 @@ module.exports = function(pool) {
                             crumb: false
                         },
                     },
-                    { title: 'Stealth', select: 'lan_stealth', access: [3] },
-                    { title: 'ABP', select: 'proxy_blocked', access: [2] },
+                    { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
+                    { title: 'ABP', select: 'proxy_blocked', hide_proxy: [1] },
                     { title: 'Zone', select: 'lan_zone' },
                     { title: 'Local Machine', select: 'lan_machine' },
                     { title: 'Local User', select: 'lan_user' },
@@ -86,7 +86,8 @@ module.exports = function(pool) {
                     sort: [[1, 'desc']],
                     div: 'table',
                     title: 'Local IP Traffic',
-                    access: req.user.level
+                    hide_stealth: req.user.hide_stealth,
+                    hide_proxy: req.user.hide_proxy,
                 }
             }
             var crossfilterQ = {

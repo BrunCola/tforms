@@ -97,7 +97,7 @@ module.exports = function(pool) {
                         { title: 'IOC Severity', select: 'ioc_severity' },
                     ],
                     settings: {
-                        access: req.user.level
+                        access: req.user.access
                     }
                 }
                 var iocseverity = {
@@ -154,7 +154,7 @@ module.exports = function(pool) {
                         { title: 'IOC Count', select: 'ioc_count' },
                     ],
                     settings: {
-                        access: req.user.level
+                        access: req.user.access
                     }
                 }
                 var conn = {
@@ -217,7 +217,7 @@ module.exports = function(pool) {
                         { title: 'IOC Count', select: 'ioc_count' },
                     ],
                     settings: {
-                        access: req.user.level
+                        access: req.user.access
                     }
                 }
                 var application = {
@@ -445,7 +445,7 @@ module.exports = function(pool) {
                         { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
                     ],
                     settings: {
-                        access: req.user.level
+                        access: req.user.access
                     }
                 }   
                 var ssl = {
@@ -491,7 +491,7 @@ module.exports = function(pool) {
                         { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
                     ],
                     settings: {
-                        access: req.user.level
+                        access: req.user.access
                     }
                 }
                 var email = {
@@ -850,7 +850,7 @@ module.exports = function(pool) {
                             { title: 'IOC Severity', select: 'ioc_severity' },
                         ],
                         settings: {
-                            access: req.user.level
+                            access: req.user.access
                         }
                     }
                     var iocseverity = {

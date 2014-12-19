@@ -59,7 +59,7 @@ module.exports = function(pool) {
                             title: 'Time',
                             select: 'time'
                         },
-                        { title: 'Stealth', select: 'lan_stealth', access: [3] },
+                        { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
                         { title: 'Protocol', select: 'proto' },
                         { title: 'Trans Is', select: 'trans_is' },
                         { title: 'Query', select: 'query' },
@@ -87,7 +87,7 @@ module.exports = function(pool) {
                         sort: [[0, 'desc']],
                         div: 'table',
                         title: 'DNS Connections Query Type and Local Host',
-                        access: req.user.level
+                        hide_stealth: req.user.hide_stealth
                     }
                 }
                 async.parallel([

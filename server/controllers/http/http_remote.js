@@ -49,7 +49,7 @@ module.exports = function(pool) {
                         },
                     },
                     { title: 'Connections', select: 'count' },
-                    { title: 'ABP', select: 'proxy_blocked', access: [2] },
+                    { title: 'ABP', select: 'proxy_blocked', hide_proxy: [1] },
                     { title: 'Remote IP', select: 'pie_dimension'},
                     { title: 'Remote port', select: 'remote_port' },
                     { title: 'Flag', select: 'remote_cc' },
@@ -61,7 +61,7 @@ module.exports = function(pool) {
                     sort: [[1, 'desc']],
                     div: 'table',
                     title: 'Remote HTTP',
-                    access: req.user.level
+                    hide_proxy: req.user.hide_proxy
                 }
             }
             var crossfilterQ = {
