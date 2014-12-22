@@ -40,6 +40,7 @@ module.exports = function (sql, conn, callback) {
 								'date_filed': d.time,
 								'severity': d.ioc_severity,
 								'ioc': d.ioc,
+								'lan_zone': d.lan_zone,
 								'l7_proto': d.l7_proto,
 								'units': d.ioc_count,
 								'count': d.count,
@@ -54,6 +55,8 @@ module.exports = function (sql, conn, callback) {
 									d.remote_long,
 									d.remote_lat
 								]
+							},
+							'zone':{
 							}
 						});
 					}
