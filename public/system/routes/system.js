@@ -11,7 +11,11 @@ angular.module('mean.system').config(['$stateProvider', '$urlRouterProvider',
                     $http.get('/api/loggedin')
                         .success(function(user) {
                             Global.user = user;
-                            $timeout(deferred.resolve);
+                            if (user.first_login === 1) {
+                                $location.url('/first_login');
+                            } else {
+                                $timeout(deferred.resolve);
+                            }   
                         })
                         .error(function(user) {
                             $timeout(deferred.reject);

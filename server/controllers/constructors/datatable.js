@@ -5,8 +5,20 @@ var config = require('../../config/config');
 module.exports = function (sql, conn, callback) {
     var arr = [];
     function check(obj) {
-        if (obj.access !== undefined) {
-            if (obj.access.indexOf(sql.settings.access) === -1) {
+
+        // if (obj.access !== undefined) {
+        //     if (obj.access.indexOf(sql.settings.access) === -1) {
+        //         console.log(obj)
+        //         return;
+        //     }
+        // }
+        if (obj.hide_stealth !== undefined) {
+            if (obj.hide_stealth.indexOf(sql.settings.hide_stealth) !== -1) {
+                return;
+            }
+        }
+        if (obj.hide_proxy !== undefined) {
+            if (obj.hide_proxy.indexOf(sql.settings.hide_proxy) !== -1) {
                 return;
             }
         }

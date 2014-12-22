@@ -9,7 +9,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 url: '/live_connections',
                 templateUrl: 'public/pages/views/live_connections/live_connections.html',
                 data: {
-                    title: 'Live Connections',
+                    // title: 'Live Connections',
                     daterange: false
                 }
             })
@@ -1196,29 +1196,29 @@ angular.module('mean.pages').config(['$stateProvider',
                         daterange: true
                     }
                 })
-        // SYSTEM HEALTH
-            // OVERVIEW
-                .state('pages.overview', {
-                    url: '/overview?start&end',
-                    templateUrl: 'public/pages/views/health/overview.html',
-                    data: {
-                        title: 'RapidPHIRE Health',
-                        daterange: true
-                    }
-                })
-                // HEALTH DRILL
-                .state('pages.health_drill', {
-                    url: '/health_drill?start&end&client&zone',
-                    templateUrl: 'public/pages/views/health/health_drill.html',
-                    data: {
-                        title: 'Overall Zone Health',
-                        subtitleElm: {
-                            'Client': 'client',
-                            'Zone': 'zone'
-                        },
-                        daterange: true
-                    }
-                })
+        // // SYSTEM HEALTH
+        //     // OVERVIEW
+        //         .state('pages.overview', {
+        //             url: '/overview?start&end',
+        //             templateUrl: 'public/pages/views/health/overview.html',
+        //             data: {
+        //                 title: 'RapidPHIRE Health',
+        //                 daterange: true
+        //             }
+        //         })
+        //         // HEALTH DRILL
+        //         .state('pages.health_drill', {
+        //             url: '/health_drill?start&end&client&zone',
+        //             templateUrl: 'public/pages/views/health/health_drill.html',
+        //             data: {
+        //                 title: 'Overall Zone Health',
+        //                 subtitleElm: {
+        //                     'Client': 'client',
+        //                     'Zone': 'zone'
+        //                 },
+        //                 daterange: true
+        //             }
+        //         })
         // REPORTS
             // IOC EVENTS
                 .state('pages.ioc_events_report', {
@@ -1246,6 +1246,25 @@ angular.module('mean.pages').config(['$stateProvider',
                     title: 'Site Survey',
                     daterange: false
                 }
-            })
+            })        
+        // USERS
+            // USER MANAGEMENT
+                .state('pages.create_user', {
+                    url: '/create_user',
+                    templateUrl: 'public/pages/views/users/create_user.html',
+                    data: {
+                        title: 'User Management',
+                        daterange: false
+                    }
+                })
+            // FIRST LOGIN
+                .state('pages.first_login', {
+                    url: '/first_login',
+                    templateUrl: 'public/pages/views/users/first_login.html',
+                    data: {
+                        title: 'Set Initial Password',
+                        daterange: false
+                    }
+                })
     }
 ]);

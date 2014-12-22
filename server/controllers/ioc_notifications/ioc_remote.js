@@ -57,7 +57,7 @@ module.exports = function(pool) {
                             crumb: false
                         },
                     },
-                    { title: 'ABP', select: 'proxy_blocked', access: [2] },
+                    { title: 'ABP', select: 'proxy_blocked', hide_proxy: [1] },
                     { title: 'Severity', select: 'ioc_severity' },
                     { title: 'IOC Hits', select: 'ioc_count' },
                     { title: 'IOC', select: 'ioc' },
@@ -77,7 +77,7 @@ module.exports = function(pool) {
                     sort: [[1, 'desc']],
                     div: 'table',
                     title: 'Indicators of Compromise (IOC) Notifications',
-                    access: req.user.level
+                    hide_proxy: req.user.hide_proxy
                 }
             }
             var crossfilterQ = {

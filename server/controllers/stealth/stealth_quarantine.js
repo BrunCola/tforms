@@ -35,8 +35,7 @@ module.exports = function(pool) {
                 settings: {
                     sort: [[0, 'desc']],
                     div: 'table',
-                    title: 'Quarantined Endpoints',
-                    access: req.user.level
+                    title: 'Quarantined Endpoints'
                 }
             }
             async.parallel([

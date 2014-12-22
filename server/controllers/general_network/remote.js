@@ -58,7 +58,7 @@ module.exports = function(pool) {
                             crumb: false
                         },
                     },
-                    { title: 'ABP', select: 'proxy_blocked', access: [2] },
+                    { title: 'ABP', select: 'proxy_blocked', hide_proxy: [1] },
                     { title: 'Remote IP', select: 'remote_ip' },
                     { title: 'Remote Country', select: 'remote_country' },
                     { title: 'Flag', select: 'remote_cc', },
@@ -82,7 +82,7 @@ module.exports = function(pool) {
                     sort: [[0, 'desc']],
                     div: 'table',
                     title: 'Remote IP Traffic',
-                    access: req.user.level
+                    hide_proxy: req.user.hide_proxy
                 }
             }
             var crossfilterQ = {

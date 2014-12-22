@@ -41,12 +41,13 @@ module.exports = function(pool) {
                         },
                     },
                     { title: 'Connections', select: 'count' },
-                    { title: 'ABP', select: 'proxy_blocked', access: [2] },
+                    { title: 'ABP', select: 'proxy_blocked', hide_proxy: [1] },
                     { title: 'Domain', select: 'host' },
                     { title: 'IOC Count', select: 'ioc_count' }
                 ],
                 settings: {
-                    access: req.user.level, // NOTE: THIS IS IF ACCESS IS DEFINED IN COLUMNS ABOVE
+                    //access: req.user.level, // NOTE: THIS IS IF ACCESS IS DEFINED IN COLUMNS ABOVE
+                    hide_proxy: req.user.hide_proxy,
                     sort: [[1, 'desc']],
                     div: 'table',
                     title: 'HTTP by Domain',

@@ -35,8 +35,7 @@ module.exports = function(pool) {
                 settings: {
                     sort: [[0, 'desc']],
                     div: 'table',
-                    title: 'Firewall Rules',
-                    access: req.user.level
+                    title: 'Firewall Rules'
                 }
             }
             async.parallel([

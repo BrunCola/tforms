@@ -82,9 +82,9 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                     params: [
                         { title: 'Time', select: 'time' },
-                        { title: 'Stealth', select: 'lan_stealth', access: [3] },
-                        { title: 'ABP', select: 'proxy_blocked', access: [2] },
-                        { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                        { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
+                        { title: 'ABP', select: 'proxy_blocked', hide_proxy: [1] },
+                        { title: 'Proxy Block Policy', select: 'proxy_rule', hide_proxy: [1] },
                         { title: 'Zone', select: 'lan_zone' },
                         { title: 'Local Machine', select: 'lan_machine', pattern: true },
                         { title: 'Local User', select: 'lan_user', pattern: true },
@@ -97,7 +97,8 @@ module.exports = function(pool) {
                         { title: 'IOC Severity', select: 'ioc_severity' },
                     ],
                     settings: {
-                        access: req.user.level
+                        hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                     }
                 }
                 var iocseverity = {
@@ -138,9 +139,9 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         { title: 'Time', select: 'time' },
-                        { title: 'Stealth', select: 'lan_stealth', access: [3] },
-                        { title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
-                        { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                        { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
+                        { title: 'Allowed By Proxy', select: 'proxy_blocked', hide_proxy: [1] },
+                        { title: 'Proxy Block Policy', select: 'proxy_rule', hide_proxy: [1] },
                         { title: 'Zone', select: 'lan_zone' },
                         { title: 'Local Machine', select: 'lan_machine', pattern: true },
                         { title: 'Local User', select: 'lan_user', pattern: true },
@@ -154,7 +155,8 @@ module.exports = function(pool) {
                         { title: 'IOC Count', select: 'ioc_count' },
                     ],
                     settings: {
-                        access: req.user.level
+                        hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                     }
                 }
                 var conn = {
@@ -194,9 +196,9 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                     params: [
                         { title: 'Time', select: 'time' },
-                        { title: 'Stealth', select: 'lan_stealth', access: [3] },
-                        { title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
-                        { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                        { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
+                        { title: 'Allowed By Proxy', select: 'proxy_blocked', hide_proxy: [1] },
+                        { title: 'Proxy Block Policy', select: 'proxy_rule', hide_proxy: [1] },
                         { title: 'Zone', select: 'lan_zone' },
                         { title: 'Local Machine', select: 'lan_machine', pattern: true },
                         { title: 'Local User', select: 'lan_user', pattern: true },
@@ -217,7 +219,8 @@ module.exports = function(pool) {
                         { title: 'IOC Count', select: 'ioc_count' },
                     ],
                     settings: {
-                        access: req.user.level
+                        hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                     }
                 }
                 var application = {
@@ -268,7 +271,8 @@ module.exports = function(pool) {
                         { title: 'Bytes from Remote', select: 'out_bytes' },
                     ],
                     settings: {
-                        access: req.user.level
+                        hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                     }
                 }
                 var stealth_conn = {
@@ -311,7 +315,8 @@ module.exports = function(pool) {
                         { title: 'Packets to Remote', select: 'out_packets' }
                     ],
                     settings: {
-                        access: req.user.level
+                        hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                     }
                 }
                 var stealth_drop = {
@@ -352,7 +357,8 @@ module.exports = function(pool) {
                         { title: 'Packets to Remote', select: 'out_packets' }
                     ],
                     settings: {
-                        access: req.user.level
+                        hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                     }
                 }
                 var dns = {
@@ -395,7 +401,8 @@ module.exports = function(pool) {
                         { title: 'IOC Severity', select: 'ioc_severity' },
                     ],
                     settings: {
-                        access: req.user.level
+                        hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                     }
                 }
                 var http = {
@@ -441,11 +448,12 @@ module.exports = function(pool) {
                         { title: 'IOC Stage', select: 'ioc_typeInfection' },
                         { title: 'IOC Rule', select: 'ioc_rule', pattern: true },
                         { title: 'IOC Severity', select: 'ioc_severity' },
-                        { title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
-                        { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                        { title: 'Allowed By Proxy', select: 'proxy_blocked', hide_proxy: [1] },
+                        { title: 'Proxy Block Policy', select: 'proxy_rule', hide_proxy: [1] },
                     ],
                     settings: {
-                        access: req.user.level
+                        hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                     }
                 }   
                 var ssl = {
@@ -487,11 +495,12 @@ module.exports = function(pool) {
                         { title: 'IOC Stage', select: 'ioc_typeInfection' },
                         { title: 'IOC Rule', select: 'ioc_rule', pattern: true },
                         { title: 'IOC Severity', select: 'ioc_severity' },
-                        { title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
-                        { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                        { title: 'Allowed By Proxy', select: 'proxy_blocked', hide_proxy: [1] },
+                        { title: 'Proxy Block Policy', select: 'proxy_rule', hide_proxy: [1] },
                     ],
                     settings: {
-                        access: req.user.level
+                        hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                     }
                 }
                 var email = {
@@ -546,7 +555,8 @@ module.exports = function(pool) {
                         { title: 'IOC Count', select: 'ioc_count' },
                     ],
                     settings: {
-                        access: req.user.level
+                        hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                     }
                 }
                 var file = {
@@ -590,7 +600,8 @@ module.exports = function(pool) {
                         { title: 'IOC Severity', select: 'ioc_severity' },
                     ],
                     settings: {
-                        access: req.user.level
+                        hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                     }
                 }
                 var endpoint = {
@@ -626,7 +637,8 @@ module.exports = function(pool) {
                         { title: 'Event ID', select: 'event_id', pattern: true },
                     ],
                     settings: {
-                        access: req.user.level
+                        hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                     }
                 }
                 async.parallel([
@@ -835,9 +847,9 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.remote_ip, req.query.ioc],
                         params: [
                             { title: 'Time', select: 'time' },
-                            { title: 'Stealth', select: 'lan_stealth', access: [3] },
-                            { title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
-                            { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                            { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
+                            { title: 'Allowed By Proxy', select: 'proxy_blocked', hide_proxy: [1] },
+                            { title: 'Proxy Block Policy', select: 'proxy_rule', hide_proxy: [1] },
                             { title: 'Zone', select: 'lan_zone' },
                             { title: 'Local Machine', select: 'lan_machine', pattern: true },
                             { title: 'Local User', select: 'lan_user', pattern: true },
@@ -850,7 +862,8 @@ module.exports = function(pool) {
                             { title: 'IOC Severity', select: 'ioc_severity' },
                         ],
                         settings: {
-                            access: req.user.level
+                            hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                         }
                     }
                     var iocseverity = {
@@ -891,9 +904,9 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                             { title: 'Time', select: 'time' },
-                            { title: 'Stealth', select: 'lan_stealth', access: [3] },
-                            { title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
-                            { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                            { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
+                            { title: 'Allowed By Proxy', select: 'proxy_blocked', hide_proxy: [1] },
+                            { title: 'Proxy Block Policy', select: 'proxy_rule', hide_proxy: [1] },
                             { title: 'Zone', select: 'lan_zone' },
                             { title: 'Local Machine', select: 'lan_machine', pattern: true },
                             { title: 'Local User', select: 'lan_user', pattern: true },
@@ -907,7 +920,8 @@ module.exports = function(pool) {
                             { title: 'IOC Count', select: 'ioc_count' },
                         ],
                         settings: {
-                            access: req.user.level
+                            hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                         }
                     }
                     var conn = {
@@ -947,9 +961,9 @@ module.exports = function(pool) {
                         insert: [start, end, req.query.lan_zone, req.query.lan_ip],
                         params: [
                            { title: 'Time', select: 'time' },
-                            { title: 'Stealth', select: 'lan_stealth', access: [3] },
-                            { title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
-                            { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                            { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
+                            { title: 'Allowed By Proxy', select: 'proxy_blocked', hide_proxy: [1] },
+                            { title: 'Proxy Block Policy', select: 'proxy_rule', hide_proxy: [1] },
                             { title: 'Zone', select: 'lan_zone' },
                             { title: 'Local Machine', select: 'lan_machine', pattern: true },
                             { title: 'Local User', select: 'lan_user', pattern: true },
@@ -970,7 +984,8 @@ module.exports = function(pool) {
                             { title: 'IOC Count', select: 'ioc_count' },
                         ],
                         settings: {
-                            access: req.user.level
+                            hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                         }
                     }
                     var application = {
@@ -1023,7 +1038,8 @@ module.exports = function(pool) {
                             { title: 'Bytes from Remote', select: 'out_bytes' },
                         ],
                         settings: {
-                            access: req.user.level
+                            hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                         }
                     }
                     var stealth_drop = {
@@ -1065,7 +1081,8 @@ module.exports = function(pool) {
                             { title: 'Packets to Remote', select: 'out_packets' }
                         ],
                         settings: {
-                            access: req.user.level
+                            hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                         }
                     } 
                     var dns = {
@@ -1107,7 +1124,8 @@ module.exports = function(pool) {
                             { title: 'IOC Severity', select: 'ioc_severity' },
                         ],
                         settings: {
-                            access: req.user.level
+                            hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                         }
                     }
                     var http = {
@@ -1153,11 +1171,12 @@ module.exports = function(pool) {
                             { title: 'IOC Stage', select: 'ioc_typeInfection' },
                             { title: 'IOC Rule', select: 'ioc_rule', pattern: true },
                             { title: 'IOC Severity', select: 'ioc_severity' },
-                            { title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
-                            { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                            { title: 'Allowed By Proxy', select: 'proxy_blocked', hide_proxy: [1] },
+                            { title: 'Proxy Block Policy', select: 'proxy_rule', hide_proxy: [1] },
                         ],
                         settings: {
-                            access: req.user.level
+                            hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                         }
                     }
                     var ssl = {
@@ -1199,11 +1218,12 @@ module.exports = function(pool) {
                             { title: 'IOC Stage', select: 'ioc_typeInfection' },
                             { title: 'IOC Rule', select: 'ioc_rule', pattern: true },
                             { title: 'IOC Severity', select: 'ioc_severity' },
-                            { title: 'Allowed By Proxy', select: 'proxy_blocked', access: [2] },
-                            { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                            { title: 'Allowed By Proxy', select: 'proxy_blocked', hide_proxy: [1] },
+                            { title: 'Proxy Block Policy', select: 'proxy_rule', hide_proxy: [1] },
                         ],
                         settings: {
-                            access: req.user.level
+                            hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                         }
                     }
                     var email = {
@@ -1258,7 +1278,8 @@ module.exports = function(pool) {
                             { title: 'IOC Count', select: 'ioc_count' },
                         ],
                         settings: {
-                            access: req.user.level
+                            hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                         }
                     }
                     var file = {
@@ -1301,7 +1322,8 @@ module.exports = function(pool) {
                             { title: 'IOC Severity', select: 'ioc_severity' },
                         ],
                         settings: {
-                            access: req.user.level
+                            hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                         }
                     }
                     var endpoint = {
@@ -1337,7 +1359,8 @@ module.exports = function(pool) {
                             { title: 'Event ID', select: 'event_id', pattern: true },
                         ],
                         settings: {
-                            access: req.user.level
+                            hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                         }
                     }
                     var info = {};

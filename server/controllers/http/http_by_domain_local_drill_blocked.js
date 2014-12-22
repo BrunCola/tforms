@@ -62,9 +62,9 @@ module.exports = function(pool) {
                     insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.host],
                     params: [
                         { title: 'Time', select: 'time' },
-                        { title: 'Stealth', select: 'lan_stealth', access: [3] },
-                        { title: 'ABP', select: 'proxy_blocked', access: [2] },
-                        { title: 'Proxy Block Policy', select: 'proxy_rule', access: [2] },
+                        { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
+                        { title: 'ABP', select: 'proxy_blocked', hide_proxy: [1] },
+                        { title: 'Proxy Block Policy', select: 'proxy_rule', hide_proxy: [1] },
                         { title: 'Domain', select: 'host' },
                         { title: 'URI', select: 'uri' },
                         { title: 'URL', select: 'url' },
@@ -98,7 +98,8 @@ module.exports = function(pool) {
                         sort: [[0, 'desc']],
                         div: 'table',
                         title: 'Blocked HTTP Connections between Domain and Local Host',
-                        access: req.user.level
+                        hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxy
                     }
                 }
                 async.parallel([

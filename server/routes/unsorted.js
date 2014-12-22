@@ -7,13 +7,13 @@ module.exports = function(app, version, pool) {
         app.route('/api/live_connections/live_connections').get(auth.permission, live_connections.render);
     // HEALTH
     //OVERVIEW
-        var overview = require('../controllers/health/overview')(pool); 
-         app.route('/api/health/overview')
-            .get(auth.permission, overview.render);
-        //HEALTH DRILL
-            var health_drill = require('../controllers/health/health_drill')(pool);
-            app.route('/api/health/health_drill')
-            .get(auth.permission, health_drill.render);
+        // var overview = require('../controllers/health/overview')(pool); 
+        //  app.route('/api/health/overview')
+        //     .get(auth.permission, overview.render);
+        // //HEALTH DRILL
+        //     var health_drill = require('../controllers/health/health_drill')(pool);
+        //     app.route('/api/health/health_drill')
+        //     .get(auth.permission, health_drill.render);
     // REPORTS
         // IOC EVENTS REPORT
             var ioc_events_report = require('../controllers/reports/ioc_events')(pool);

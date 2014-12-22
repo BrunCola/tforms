@@ -50,7 +50,7 @@ module.exports = function(pool) {
                             },
                         },
                         { title: 'Total Extracted Files', select: 'count' },
-                        { title: 'Stealth', select: 'lan_stealth', access: [3] },
+                        { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
                         { title: 'Zone', select: 'lan_zone', dView: false },
                         { title: 'Local Machine', select: 'lan_machine', dView: false },
                         { title: 'Local User', select: 'lan_user', dView: false },
@@ -63,7 +63,7 @@ module.exports = function(pool) {
                         sort: [[1, 'desc']],
                         div: 'table',
                         title: 'Extracted File Types',
-                        access: req.user.level
+                        hide_stealth: req.user.hide_stealth
                     }
                 }
                 async.parallel([

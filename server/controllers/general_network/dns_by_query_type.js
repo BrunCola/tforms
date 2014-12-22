@@ -51,8 +51,7 @@ module.exports = function(pool) {
                 settings: {
                     sort: [[1, 'desc']],
                     div: 'table',
-                    title: 'DNS by Query Type',
-                    access: req.user.level
+                    title: 'DNS by Query Type'
                 }
             }
             var crossfilterQ = {

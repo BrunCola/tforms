@@ -215,8 +215,8 @@ module.exports = function(pool) {
                             crumb: false
                         },
                     },
-                    { title: 'Stealth', select: 'lan_stealth', access: [3] },
-                    { title: 'ABP', select: 'proxy_blocked', access: [2] },
+                    { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
+                    { title: 'ABP', select: 'proxy_blocked', hide_proxy: [1] },
                     { title: 'Severity', select: 'ioc_severity' },
                     { title: 'IOC Hits', select: 'ioc_count' },
                     { title: 'IOC', select: 'ioc' },
@@ -242,14 +242,14 @@ module.exports = function(pool) {
                         link: {
                             type: 'Archive',
                         },
-                    },
-                ],
-                settings: {
-                    sort: [[0, 'desc']],
-                    div: 'table',
-                    title: 'Indicators of Compromise (IOC) Notifications',
-                    access: req.user.level
-                }
+                    }],
+                    settings: {
+                        sort: [[0, 'desc']],
+                        div: 'table',
+                        title: 'Indicators of Compromise (IOC) Notifications',
+                        hide_stealth: req.user.hide_stealth,
+                        hide_proxy: req.user.hide_proxys
+                    }
             }
             new dataTable(table, {database: req.user.database, pool: pool}, function(err,data){
                 if (err) { res.status(500).end(); return }
