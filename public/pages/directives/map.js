@@ -27,7 +27,12 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                 .scale(width / 2 / Math.PI);
             var path = d3.geo.path()
                 .projection(projection);
-            var svg = d3.select("#map").append("svg")
+            var mapp = d3.select("#map");
+            
+            var leg = mapp.append("svg")
+                        .style("position","absolute");
+
+            var svg = mapp.append("svg")
                 .attr("width", width)
                 .attr("height", height)
                 .attr("transform", "translate(0,0)scale(1)")
@@ -257,7 +262,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                     if (d.properties.severity === 0){
                         parentt.append("circle")
                             .attr("transform", function(d) {return "translate(" + projection([d.geometry.coordinates[0],d.geometry.coordinates[1]]) + ")";})
-                            .attr("r", 4)
+                            .attr("r", 2)
                             .attr("class",  "center")
                             .style("stroke", function(d) {
                                 return cc[d.properties.lan_zone];
@@ -295,7 +300,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                     }
                     parentt.append("circle")
                         .attr("transform", function(d) {return "translate(" + projection([d.zone.coordinates[0],d.zone.coordinates[1]]) + ")";})
-                        .attr("r", 3)
+                        .attr("r", 2)
                         .attr("class",  "center")
                         .style("stroke", function(d) {
                             //return cc[d.properties.lan_zone];
@@ -626,6 +631,28 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                 //  var up = map.getZoom()/13;
                 //  node.attr("transform", function(d) {return "translate(" +  map.latLngToLayerPoint(d.LatLng).x + "," + map.latLngToLayerPoint(d.LatLng).y + ") scale("+up+")"});
                 // }
+
+            
+                //LEGEND
+                var legend = leg.selectAll(".legend")
+                    .data(zones)
+                    .enter().append("g")
+                    .attr("class", "legend")
+                    .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+                legend.append('svg:circle')
+                    .attr('transform', 'translate(15,15) scale(0.5)')
+                    .attr('r', 15)
+                    .style("stroke", function(d) {
+                        return cc[d.zone];
+                    })
+                    .style("fill", function(d) {
+                        return cc[d.zone];
+                    });
+                legend.append("text")
+                    .attr("x", 30)
+                    .attr("y", 15)
+                    .attr("dy", ".35em")
+                    .text(function(d) { return d.zone; });
 
             });
         }
