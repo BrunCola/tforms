@@ -18,8 +18,8 @@ angular.module('mean.pages').controller('liveConnectionsController', ['$scope', 
             }
         });
     }
-    $scope.mapCountries = true;
-    // $scope.mapApplications = false;
+    // $scope.mapCountries = true;
+    $scope.mapApplications = true;
     // $scope.mapLocalIp = false;
     // $scope.mapRemoteIp = false;
 

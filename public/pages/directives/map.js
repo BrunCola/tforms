@@ -70,6 +70,52 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
 
             var filteredLineChart;
 
+            function lineColor (color) {
+                switch(color) {
+                    case "DNS":
+                        return "#34D4FF"; // aqua
+                        break;
+                    case "NTP":
+                        return "#FFEC00"; // yellow
+                        break;
+                    case "HTTP":
+                        return "#0f0f0f"; //
+                        break;
+                    case "SSL":
+                        return "#0f0f0f"; //
+                        break;
+                    case "BitTorrent":
+                        return "#009426"; // green
+                        break;
+                    case "Google":
+                        return "#0ff00f"; //
+                        break;
+                    case "YouTube":
+                        return "#0f00ff"; //
+                        break;
+                    case "Facebook":
+                        return "#000f0f"; //
+                        break;
+                    case "AppleiTunes":
+                        return "#0fff0f"; //
+                        break;
+                    case "sFlow":
+                        return "#123456"; //
+                        break;
+                    case "Other":
+                        return "#f0f000"; //
+                        break;
+                    case "Unknown":
+                        return "#000000"; //
+                        break;
+                    case "-":
+                        return "#000000"; //
+                        break;
+                    default:
+                    return "#377FC7"; // bluish
+                }
+            }
+
             function populateTable(array, dClass) {
                 function sortArrOfObjectsByParam(arrToSort, strObjParamToSortBy, sortAscending) {
                 if(sortAscending == undefined) sortAscending = true;  // default to true
@@ -109,6 +155,8 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                                 .attr('class', 'f16')
                                 .append('span')
                                 .attr('class', 'flag '+array[i].flag)
+                        } else if (dClass == 'protosTable') {
+                            row.style("color", lineColor(array[i].display))
                         }
                     }
                 }
@@ -428,7 +476,6 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                         y1 = y2;
                         y2 = y1 + (1/dataNest.length);
                         for (var l in lines.values) {
-                           // console.log(lines.values[l].time)
                             pathLine.append('line')
                                 .classed("lineChart", true)
                                 .attr('x1', x(lines.values[l].time))
@@ -442,54 +489,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                                     console.log(lines.values[l].properties)
                                 });
                         }
-                        //count += (0.8/dataNest.length);
                     });
-                }
-
-                function lineColor (color) {
-                    switch(color) {
-                        case "DNS":
-                            return "#FFEC00"; // yellow
-                            break;
-                        case "NTP":
-                            return "#34D4FF"; // aqua
-                            break;
-                        case "HTTP":
-                            return "#0f0f0f"; //
-                            break;
-                        case "SSL":
-                            return "#0f0f0f"; //
-                            break;
-                        case "BitTorrent":
-                            return "#009426"; // green
-                            break;
-                        case "Google":
-                            return "#0ff00f"; //
-                            break;
-                        case "YouTube":
-                            return "#0f00ff"; //
-                            break;
-                        case "Facebook":
-                            return "#000f0f"; //
-                            break;
-                        case "AppleiTunes":
-                            return "#0fff0f"; //
-                            break;
-                        case "sFlow":
-                            return "#123456"; //
-                            break;
-                        case "Other":
-                            return "#f0f000"; //
-                            break;
-                        case "Unknown":
-                            return "#000000"; //
-                            break;
-                        case "-":
-                            return "#000000"; //
-                            break;
-                        default:
-                        return "#377FC7"; // bluish
-                    }
                 }
 
                 function stepUp() {
