@@ -80,7 +80,7 @@ module.exports = function(pool) {
                             'u.lan_type, '+
                             'u.lan_os, '+
                             'u.lan_mac, '+
-                            'u.stealth, '+
+                            'u.lan_stealth, '+
                             'u.endpoint_agent, '+
                             'u.endpoint_agent_name, '+
                             'u.x, '+
@@ -319,21 +319,20 @@ module.exports = function(pool) {
                 var floorplanReturn = [];
                 var floor_plan_users = {
                     query: 'SELECT '+
-                            'u.lan_user, '+
-                            'u.lan_ip, '+
-                            'u.lan_zone, '+
-                            'u.lan_machine, '+
-                            'u.map, '+
-                            'u.lan_type, '+
-                            'u.lan_os, '+
-                            'u.lan_mac, '+
-                            'u.stealth, '+
-                            'u.endpoint_agent, '+
-                            'u.endpoint_agent_name, '+
-                            'u.x, '+
-                            'u.y, '+
-                            'u.map, '+
-                            'u.custom_user '+
+                                'u.lan_zone, '+
+                                'u.lan_stealth, '+
+                                'u.lan_type, '+
+                                'u.lan_machine, '+
+                                'u.lan_os, '+
+                                'u.lan_user, '+
+                                'u.lan_mac, '+
+                                'u.lan_ip, '+
+                                'u.endpoint_agent, '+
+                                'u.endpoint_agent_name, '+
+                                'u.x, '+
+                                'u.y, '+
+                                'u.map, '+
+                                'u.custom_user '+
                             'FROM '+
                                 'users u '+
                             'INNER JOIN '+
