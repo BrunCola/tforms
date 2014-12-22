@@ -294,7 +294,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                             });
                     }
                     parentt.append("circle")
-                        .attr("transform", function(d) {return "translate(" + projection([d.zone.coordinates[1],d.zone.coordinates[0]]) + ")";})
+                        .attr("transform", function(d) {return "translate(" + projection([d.zone.coordinates[0],d.zone.coordinates[1]]) + ")";})
                         .attr("r", 3)
                         .attr("class",  "center")
                         .style("stroke", function(d) {
@@ -471,7 +471,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                             .append("circle")
                             .attr("r", 2)
                             .style("fill-opacity", 0.9)
-                            .attr("transform", function(d) {return "translate(" + projection([d.zone.coordinates[1],d.zone.coordinates[0]]) + ")";})
+                            .attr("transform", function(d) {return "translate(" + projection([d.zone.coordinates[0],d.zone.coordinates[1]]) + ")";})
                             .transition()
                             .duration(function(d) {
                                 return 800 / (d.properties.count/5);

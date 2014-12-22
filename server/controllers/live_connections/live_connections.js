@@ -74,24 +74,12 @@ module.exports = function(pool) {
                             queryResult.features[i].zone = {
                                 'zone': zoneResult[y].zone,
                                 'coordinates':[
-                                    zoneResult[y].zone_lat,
-                                    zoneResult[y].zone_long
+                                    zoneResult[y].zone_long,
+                                    zoneResult[y].zone_lat
                                 ]}
                         }
                     }
                 }
-                // queryResult.features.map(function(qr) {
-                //     zoneResult.filter(function(zr){ 
-                //         if (qr.properties.lan_zone === zr.zone) {
-                //             qr.zone = {
-                //                 'zone':d.lan_zone,
-                //                 'coordinates':[
-                //                     zr.zone_lat,
-                //                     zr.zone_long
-                //                 ]}
-                //         }
-                //     });
-                // });
                 var results = {
                     map: queryResult,
                     zone: zoneResult,

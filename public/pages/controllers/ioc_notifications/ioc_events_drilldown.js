@@ -22,6 +22,12 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             })
             $scope.crossfilterData.add(parent);
         });
+
+        var endd = moment($scope.end).unix();
+        var startt = moment($scope.start).unix();
+        endd += ((endd - startt)/24);
+        $scope.end = moment(endd*1000).format('MMMM D, YYYY HH:MM ')
+
         $scope.$broadcast('laneGraph');
         $scope.description = function (d, e) {
             $scope.mData = d;
