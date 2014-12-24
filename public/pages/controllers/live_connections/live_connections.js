@@ -13,7 +13,7 @@ angular.module('mean.pages').controller('liveConnectionsController', ['$scope', 
                     getMap();
                 }, 60000)
             } else {
-                $scope.$broadcast('map', data.map, data.start, data.end);
+                $scope.$broadcast('map', data.map, data.start, data.end, data.zone);
                 // $scope.$broadcast('lineChart', data.map, data.start, data.end);
             }
         });

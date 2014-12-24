@@ -14,9 +14,12 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
             var width = document.getElementById('map').offsetWidth;
             // var height = width / 2.15;
             var height = window.innerHeight-105;
-            // var zoom = d3.behavior.zoom()
-            //  .scaleExtent([1, 8])
-            //  .on("zoom", move);
+           
+            var zoom = d3.behavior.zoom()
+                .translate([0, 0])
+                .scale(1)
+                .scaleExtent([0.5, 5])
+                .on("zoom", zoomed);
 
             // BUILD SVG LAYER
             var projection = d3.geo.mercator()
@@ -24,12 +27,19 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                 .scale(width / 2 / Math.PI);
             var path = d3.geo.path()
                 .projection(projection);
-            var svg = d3.select("#map").append("svg")
+            var mapp = d3.select("#map");
+            
+            var leg = mapp.append("svg")
+                        .style("position","absolute");
+
+            var svg = mapp.append("svg")
                 .attr("width", width)
                 .attr("height", height)
+                .attr("transform", "translate(0,0)scale(1)")
+                .call(zoom)
                 .append("g")
-                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(1)");
-                // .call(zoom);
+                .attr("transform", "translate(" + width/2 + "," + height / 2 + ")scale(1)");
+
             var g = svg.append("g");
 
             var margin = {top: 10, right: 10, bottom: 20, left: 10},
@@ -69,6 +79,10 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
             var pathLine = gLine.append("g");
 
             var filteredLineChart;
+
+            function zoomed() {
+                svg.attr("transform", "translate(" + (d3.event.translate[0]+(width/2)*d3.event.scale) + "," + (d3.event.translate[1]+(height/2)*d3.event.scale) + ")scale(" + d3.event.scale + ")");
+            }
 
             function lineColor (color) {
                 switch(color) {
@@ -110,6 +124,15 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                         break;
                     case "-":
                         return "#000000"; //
+                        break;
+                    case "Stealth":
+                        return "#f30"; //
+                        break;
+                    case "Corp":
+                        return "#0f0"; //
+                        break;
+                    case "Dev":
+                        return "#f0f"; //
                         break;
                     default:
                     return "#377FC7"; // bluish
@@ -210,7 +233,17 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
             var topRemotelist = [];
             // Country labels arr
             var labelList = [];
-            $scope.$on('map', function (event, data, start, end) {
+            $scope.$on('map', function (event, data, start, end, zones) {
+
+                var rainbow = new Rainbow();
+                rainbow.setNumberRange(0, zones.length-1);
+                rainbow.setSpectrum("#FF0000", "#00FF00", "#0000FF");
+                var cc = [];
+                for (var i = 0; i < zones.length; i++) {
+                    // /var hexColour = rainbow.colourAt(i);
+                    cc[""+zones[i].zone] = '#' + rainbow.colourAt(i);
+                }
+
                 /*Animation Timing Variables*/
                 var step = 1000; // 1 second
                 var timer, percent;
@@ -224,15 +257,17 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                 var node = svg.selectAll(".node").data(data.features).enter().insert('g')
                     .each(function(d) {
                     var parentt = d3.select(this);
+
                     // d.properties.severity = 1;
                     if (d.properties.severity === 0){
                         parentt.append("circle")
-                        .attr("transform", function(d) {return "translate(" + projection([d.geometry.coordinates[0],d.geometry.coordinates[1]]) + ")";})
-                        .attr("r", 5)
-                        .attr("class",  "center")
-                        .style("stroke", function(d) {
-                            return "#f30";
-                        });
+                            .attr("transform", function(d) {return "translate(" + projection([d.geometry.coordinates[0],d.geometry.coordinates[1]]) + ")";})
+                            .attr("r", 2)
+                            .attr("class",  "center")
+                            .style("stroke", function(d) {
+                                return cc[d.properties.lan_zone];
+                            });
+                       // / .style("stroke",lineColor (d.properties.lan_zone));
                     } else if ('properties' in d){
                         parentt.append("g")
                             .attr("transform", function(d) {return "translate(" + projection([d.geometry.coordinates[0]+.4,d.geometry.coordinates[1]+2]) + ")rotate(180)scale(0.06)";})
@@ -263,6 +298,14 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                                 }
                             });
                     }
+                    parentt.append("circle")
+                        .attr("transform", function(d) {return "translate(" + projection([d.zone.coordinates[0],d.zone.coordinates[1]]) + ")";})
+                        .attr("r", 2)
+                        .attr("class",  "center")
+                        .style("stroke", function(d) {
+                            //return cc[d.properties.lan_zone];
+                            return "#f0f";
+                        })
                 });
                 /*show node info on mouseover*/
                 var tip = d3.tip().attr('class', 'd3-tip')
@@ -423,12 +466,31 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                                     return '#DD122A';
                                 break;
                                 default:
-                                return 'red';
+                                return cc[d.properties.lan_zone];
                                 break;
                             }
                         })
                         .style("fill-opacity", 1e-6)
                         .remove();
+                     point
+                            .append("circle")
+                            .attr("r", 2)
+                            .style("fill-opacity", 0.9)
+                            .attr("transform", function(d) {return "translate(" + projection([d.zone.coordinates[0],d.zone.coordinates[1]]) + ")";})
+                            .transition()
+                            .duration(function(d) {
+                                return 800 / (d.properties.count/5);
+                            })
+                            .ease(Math.sqrt)
+                            .attr("r", function(d) {
+                                return d.properties.count*50;
+                            })
+                            .style('fill', function(d){
+                                //return cc[d.properties.lan_zone];
+                                return "#f0f";
+                            })
+                            .style("fill-opacity", 1e-6)
+                            .remove();
                     point
                         .transition()
                         .duration(function(d){
@@ -569,6 +631,28 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                 //  var up = map.getZoom()/13;
                 //  node.attr("transform", function(d) {return "translate(" +  map.latLngToLayerPoint(d.LatLng).x + "," + map.latLngToLayerPoint(d.LatLng).y + ") scale("+up+")"});
                 // }
+
+            
+                //LEGEND
+                var legend = leg.selectAll(".legend")
+                    .data(zones)
+                    .enter().append("g")
+                    .attr("class", "legend")
+                    .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+                legend.append('svg:circle')
+                    .attr('transform', 'translate(15,15) scale(0.5)')
+                    .attr('r', 15)
+                    .style("stroke", function(d) {
+                        return cc[d.zone];
+                    })
+                    .style("fill", function(d) {
+                        return cc[d.zone];
+                    });
+                legend.append("text")
+                    .attr("x", 30)
+                    .attr("y", 15)
+                    .attr("dy", ".35em")
+                    .text(function(d) { return d.zone; });
 
             });
         }
