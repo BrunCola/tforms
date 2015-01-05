@@ -11,7 +11,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
     // }
     // $scope.crossfilterData = new crossfilter();
     // // $scope.tableCrossfitler = crossfilter();
-    $scope.tableCrossfitler = new Crossfilter([]);
+    $scope.tableCrossfitler = new Crossfilter([], '$id', 'persistent');
     // var query = '/ioc_notifications/ioc_events'; // string with no '?' at end - function should have a check for url construction
     var page = [
         /////////////////

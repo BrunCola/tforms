@@ -230,6 +230,16 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 if (params.run && (typeof params.run === 'function')) {
                                     params.run(result);
                                 }
+                                // 
+                                // create sort dimensions for table coulumns
+                                // if (result.aaData.length > 0) {
+                                //     for (var n in result.aaData[0]) {
+                                //         var dim = n.toString();
+                                //         console.log(dim)
+                                //         params.crossfilterObj.addDimension(dim, function search(d) { return d[dim]; });
+                                //     }
+                                // }
+                                // 
                                 // add-remove data function call here
                                 params.crossfilterObj.addModels(result.aaData);
                             }
