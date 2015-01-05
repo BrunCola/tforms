@@ -805,8 +805,6 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 $scope.tableColumns = result.params;
                 $scope.tableData = crossfilterObj;
 
-                console.log($scope.tableColumns)
-
                 $scope.sort = {       
                     sortingOrder : 'ioc',
                     reverse : false
@@ -854,7 +852,7 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 };
                 $scope.range = function (size,start, end) {
                     var ret = [];        
-                    console.log(size,start, end);
+                    // console.log(size,start, end);
                                   
                     if (size < end) {
                         end = size;
