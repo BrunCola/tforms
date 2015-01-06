@@ -3,15 +3,19 @@
 //Setting up route
 angular.module('mean.system').config(['$stateProvider', '$urlRouterProvider',
         function($stateProvider, $urlRouterProvider) {
-            var checkLoggedIn = function($q, $timeout, $http, $location, $window, $rootScope) {
+            var checkLoggedIn = function($q, $timeout, $http, $location, $window, Global) {
                 // Initialize a new promise
                 var deferred = $q.defer();
                 // Make an AJAX call to check if the user is logged in
                 if ($window.sessionStorage.token) {
                     $http.get('/api/loggedin')
                         .success(function(user) {
-                            $rootScope.user = user;
-                            $timeout(deferred.resolve);
+                            Global.user = user;
+                            if (user.first_login === 1) {
+                                $location.url('/first_login');
+                            } else {
+                                $timeout(deferred.resolve);
+                            }   
                         })
                         .error(function(user) {
                             $timeout(deferred.reject);

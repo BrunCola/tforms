@@ -18,7 +18,7 @@ module.exports = function(pool) {
                         res.json({ token: token });
                         return;
                     } else {
-                        res.send(401, 'Wrong user or password');
+                        res.status(401).body('Wrong user or password');
                         return;
                     }
                 });
@@ -28,10 +28,10 @@ module.exports = function(pool) {
             // console.log(req.user);
             // console.log('LIMIT THIS RETURN')
             if (req.user) {
-                res.send(200, req.user)
+                res.status(200).json(req.user)
             } else {
                 console.log('NOT LOGGED IN')
-                res.send(401)
+                res.status(401)
             }
         }
     }

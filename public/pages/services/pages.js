@@ -1,38 +1,15 @@
 'use strict';
-// var wait = (function () {
-//     var timers = {};
-//     return function (callback, ms, uniqueId) {
-//         if (!uniqueId) {
-//             uniqueId = "filterWait"; //Don't call this twice without a uniqueId
-//         }
-//         if (timers[uniqueId]) {
-//             clearTimeout (timers[uniqueId]);
-//         }
-//         timers[uniqueId] = setTimeout(callback, ms);
-//     };
-// })();
-angular.module('mean.pages').factory('searchFilter', ['$rootScope',
-    function($rootScope) {
-        var searchFilter = function(dimension, sort) {
-            // $rootScope.waitForFinalEvent = (function () {
-                // var timers = {};
-                // return function (callback, ms, uniqueId) {
-                    // if (!uniqueId) {
-                        // uniqueId = "filterWait"; //Don't call this twice without a uniqueId
-                    // }
-                    // if (timers[uniqueId]) {
-                        // clearTimeout (timers[uniqueId]);
-                    // }
-                    // timers[uniqueId] = setTimeout(callback, ms);
-                // };
-            // })();
+
+angular.module('mean.pages').factory('dimensionFilter',
+    function() {
+        var dimensionFilter = function(dimension, term, callback) {
             // our filter function
-            function filtah(obj) {
+            function filtah(obj, callback) {
                 for (var i in obj) {
                     // continue if value is defined
                     if ((obj[i] !== undefined) && (obj[i] !== null)){
                         var name = obj[i].toString().toLowerCase();
-                        if (name.toLowerCase().indexOf($rootScope.search.toLowerCase()) > -1) {
+                        if (name.toLowerCase().indexOf(term.toLowerCase()) > -1) {
                             // jump out if search is defined
                             return true;
                         }
@@ -43,15 +20,290 @@ angular.module('mean.pages').factory('searchFilter', ['$rootScope',
                     }
                 }
             }
-            // clears existing filter
-            // wait(function(){
+            if (term.length > 0) {
+                dimension.filter(filtah);
+                callback();
+            } else if ((term === '') || (term === null) || (term === undefined)) {
                 dimension.filterAll(null);
-                if ($rootScope.search.length > 0) {
-                    dimension.filter(filtah);
-                }
-            // }, 200, "filtertWait");
+                callback();
+            }
         }
-        return searchFilter;
+        return dimensionFilter;
+    }
+);
+angular.module('mean.pages').factory('tableFilter',
+    function() {
+        var tableFilter = function(term, obj) {
+             for (var i in obj) {
+                // continue if value is defined
+                if ((obj[i] !== undefined) && (obj[i] !== null)){
+                    var name = obj[i].toString().toLowerCase();
+                    if (name.toLowerCase().indexOf(term.toLowerCase()) > -1) {
+                        // jump out if search is defined
+                        return obj;
+                    }
+                }
+                if (i === obj[obj.length-1]) {
+                    return false;
+                }
+            }
+        }
+        return tableFilter;
+    }
+);
+angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location', '$resource', 'dimensionFilter', 'tableFilter',
+    function($rootScope, $http, $location, $resource, dimensionFilter, tableFilter) {
+        var runPage = function($scope, data, refreshRate) {
+            if (!refreshRate) { refreshRate === 60000 } // defaults to 1 minute in case refresh is enabled on any visual, but isnt defined calling the function
+            var functions = {
+                // build urls from arrays
+                // constructUrl_: function(array, query) {
+                //     var string = '', count = 0;
+                //     if (query.slice(-1) !== '?') {
+                //         query += '?';
+                //     }
+                //     string += query;
+                //     for (var i in array) {
+                //         if (count > 0) {
+                //             string += '&';
+                //         }
+                //         string += array[i].type+'='+array[i].value;
+                //         count++;
+                //     }
+                //     return string;
+                // },
+                // // this handles strings or arrays
+                // checkGET_: function(GETparams) {
+                //     if (typeof GETparams === 'object') {
+                //         return this.constructUrl_(get);
+                //     }
+                //     return;
+                // },
+                getData_: function(vis, time, callback) {
+                    // TODO - ADD viz.GETparams to time if exists
+                    var Rest, timeParam = {};
+                    if (time) { timeParam = time }
+                    if (vis.key) {
+                        // if the result is a piece of an object..
+                        Rest = $resource(vis.get, timeParam, {
+                            query: { method: 'GET', params: {}, isArray: false }
+                        })
+                        Rest.query(function(data){
+                            callback(data[vis.key]);
+                        })
+                    } else {
+                        // if the result is an array
+                        Rest = $resource(vis.get, timeParam, {
+                            query: { method: 'GET', params: {}, isArray: true }
+                        });
+                        Rest.query(function(data){
+                            callback(data);
+                        })
+                    }
+                },
+                timeObj_: function() {
+                    if ($location.$$search.start && $location.$$search.start) {
+                        return { start: $location.$$search.start, end: $location.$$search.end }
+                    } else {
+                        return false;
+                    }
+                },
+                // INIT VISUAL TYPES & METHODS
+                variable: function(params) {
+                    if (!params.get) { return } // if specific url isn't defined use the page query
+                    var this_ = this; // this is so we can access 'this' from within our return function
+                    this_.getData_(params, this_.timeObj_(), function(result) {
+                        // only run our crossfilter-add function if there is a value associated with result
+                        if (result) {
+                            if (params.run && (typeof params.run === 'function')) {
+                                $scope[params.name] = params.run(result);
+                            } else {
+                                $scope[params.name] = result;
+                            }
+                        }
+                    })
+                },
+                crossfilter:  {
+                    get: function(params) {
+                        if (!params.get) { return } // if specific url isn't defined use the page query
+                         // this is so we can access 'this' from within our return function
+                        // handle searching (if enabled) - we don't need to wait for a data return for this
+                        var this_ = this;
+                        if (params.searchable && params.crossfilterObj) {
+                            if (params.searchable === true) {
+                                var searchDimension = params.crossfilterObj.dimension(function(d){return d});
+                                searchable.push({
+                                    type: 'crossfilter',
+                                    dimension: searchDimension,
+                                    params: params
+                                });
+                            }
+                        }
+                        functions.getData_(params, functions.timeObj_(), function(result) {
+                            // only run our crossfilter-add function if there is a value associated with result
+                            if (result) {
+                                if (params.run && (typeof params.run === 'function')) {
+                                    params.run(result);
+                                }
+                                // add-remove data function call here
+                                params.crossfilterObj.add(result);
+                            }
+                            for (var i in params.visuals) {
+                                switch (params.visuals[i].type) {
+                                    case 'rowchart':
+                                       this_.draw_.rowchart(params.visuals[i], params.crossfilterObj);
+                                        break;
+                                    case 'barchart':
+                                       this_.draw_.barchart(params.visuals[i], params.crossfilterObj);
+                                        break;
+                                    case 'geochart':
+                                       this_.draw_.geochart(params.visuals[i], params.crossfilterObj);
+                                        break;
+                                }
+                            }
+                        })
+                    },
+                    draw_: {
+                        rowchart: function(params, crossfilterObj) {
+                            var group = false;
+                            var dimension = params.dimension(crossfilterObj);
+                            if (params.group && (typeof params.group === 'function')) {
+                                group = params.group(dimension);
+                            }
+                            $scope.$broadcast('rowchart', dimension, group, 'severity');
+                        },
+                        barchart: function(params, crossfilterObj) {
+                            var group = false;
+                            var dimension = params.dimension(crossfilterObj);
+                            if (params.group && (typeof params.group === 'function')) {
+                                group = params.group(dimension);
+                            }
+                            // add params in here for axis labels and graph types (along with a default)
+                            $scope.$broadcast('barchart', dimension, group, 'severity');
+                        },
+                        geochart: function(params, crossfilterObj) {
+                            var group = false;
+                            var dimension = params.dimension(crossfilterObj);
+                            if (params.group && (typeof params.group === 'function')) {
+                                group = params.group(dimension);
+                            }
+                            $scope.$broadcast('geoChart', dimension, group);
+                        }
+                    },
+                    update_: function(data, term) {
+                        // run through called chart types and call their update functions
+                        for (var v in data.params.visuals) {
+                            switch(data.params.visuals[v].type) {
+                                case 'rowchart':
+                                    $scope.$broadcast('rowchart-redraw');
+                                break;
+                                case 'barchart':
+                                    $scope.$broadcast('barchart-redraw');
+                                break;
+                                case 'geochart':
+                                    $scope.$broadcast('geochart-redraw');
+                                break;
+                            }
+                        }
+                    }
+                },
+                table: {
+                    get: function(params) {
+                        if (!params.get) { return }
+                        var this_ = this; // this is so we can access 'this' from within our return function
+                        // handle searching (if enabled) - we don't need to wait for a data return for this
+                        if (params.searchable && params.crossfilterObj) {
+                            if (params.searchable === true) {
+                                // var searchDimension = params.crossfilterObj.dimension(function(d){return d});
+                                params.crossfilterObj.addDimension('searchBox', function search(d) {
+                                    return d;
+                                });
+                                searchable.push({
+                                    type: 'table',
+                                    dimension: params.crossfilterObj,
+                                    params: params
+                                });
+                            }
+                        }
+                        functions.getData_(params, functions.timeObj_(), function(result) {
+                            if (result) {
+                                if (params.run && (typeof params.run === 'function')) {
+                                    params.run(result);
+                                }
+                                // 
+                                // create sort dimensions for table coulumns
+                                // if (result.aaData.length > 0) {
+                                //     for (var n in result.aaData[0]) {
+                                //         var dim = n.toString();
+                                //         console.log(dim)
+                                //         params.crossfilterObj.addDimension(dim, function search(d) { return d[dim]; });
+                                //     }
+                                // }
+                                // 
+                                // add-remove data function call here
+                                params.crossfilterObj.addModels(result.aaData);
+                            }
+                            this_.draw_(result, params.crossfilterObj, params);
+                            
+                        })
+                    },
+                    draw_: function(result, crossfilterObj, params) {
+                        $scope.$broadcast('sevTable', result, crossfilterObj, params);
+                    },
+                    update_: function(data, term) {
+                        data.dimension.unfilterAll();
+                        data.dimension.filterBy('searchBox', term, tableFilter);
+                        $scope.$broadcast('table-redraw');
+                    }
+                },
+                textBoxWatch: {
+                    handleSearchBox: function(searchableArray) {
+                        var this_ = this;
+                        $scope.$watch('search', function(searchTerm){
+                            if (searchTerm === undefined) { return }
+                            for (var i in searchableArray) {
+                                this_.handleUpdates(searchableArray[i], searchTerm);
+                            }
+                        })
+                    },
+                    handleUpdates: function(data, term) { // search box updates
+                        // handle updates by switching through types
+                        switch(data.type) {
+                            case 'crossfilter':
+                                dimensionFilter(data.dimension, term, function() {
+                                    functions.crossfilter.update_(data, term);
+                                })
+                            break;
+                            case 'table':
+                                functions.table.update_(data, term);
+                            break;
+                        }
+                    }
+                }
+            }
+            var searchable = [];
+            for (var v in data) {
+                switch (data[v].type) {
+                    case 'crossfilter':
+                        functions.crossfilter.get(data[v]);
+                    break;
+                    case 'var':
+                        functions.variable(data[v]);
+                    break;
+                    case 'table':
+                        functions.table.get(data[v]);
+                    break;
+                }
+            }
+            // run searchbox if anything on page is searchable
+            // TODO - disable box otherwise
+            // TODO - fade non-searchable items when active
+            // NOTE: this happens here because we only want scope.watch to run once on search
+            if (searchable.length > 0) {
+                functions.textBoxWatch.handleSearchBox(searchable);
+            }
+        }
+        return runPage;
     }
 ]);
 
