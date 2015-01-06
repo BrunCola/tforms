@@ -9,6 +9,7 @@ module.exports = function(pool) {
         login: function(req, res) {
             pool.query("SELECT * FROM user WHERE email = ? limit 1", [req.body.email], function(err, data){
                 var ts = Math.round((new Date()).getTime() / 1000);
+                console.log("TEST");
                 console.log('Email/login: '+data[0].email+', Database:'+data[0].database+', Time: '+ts)
                 if (data.length !== 1) { res.send(401, 'Wrong user or password'); return; }
                 var profile = data[0];
