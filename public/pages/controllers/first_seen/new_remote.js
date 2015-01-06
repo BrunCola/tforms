@@ -24,7 +24,7 @@ angular.module('mean.pages').controller('newRemoteController', ['$scope', '$stat
 
             $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
             $scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
-            $scope.$broadcast('tableLoad', $scope.tableData, $scope.data.tables, null);
+            $scope.$broadcast('table', $scope.data.tables[0], $scope.tableData);
 
             var geoDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
             var geoGroup = geoDimension.group().reduceSum(function (d) {

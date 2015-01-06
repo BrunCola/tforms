@@ -45,6 +45,7 @@
             "public/system/lib/d3-tip/index.js",
             "public/system/lib/dcjs/dc.min.js",
             "public/system/lib/crossfilter/crossfilter.min.js",
+            "public/system/lib/ng-crossfilter/dist/ng-crossfilter.min.js",
             "public/system/lib/moment/min/moment.min.js",
             "public/system/lib/livestampjs/livestamp.min.js",
             "public/system/lib/bootstrap-daterangepicker/daterangepicker.js",
