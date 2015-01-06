@@ -8,6 +8,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
     } else {
         query = '/api/ioc_notifications/ioc_events_drilldown?lan_zone='+$location.$$search.lan_zone+'&lan_ip='+$location.$$search.lan_ip+'&remote_ip='+$location.$$search.remote_ip+'&ioc='+$location.$$search.ioc+'&ioc_attrID='+$location.$$search.ioc_attrID+'&lan_user='+$location.$$search.lan_user;
     }
+
     $http({method: 'GET', url: query}).
     success(function(data) {
         $scope.crossfilterData = crossfilter();
