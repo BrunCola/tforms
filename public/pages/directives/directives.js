@@ -1598,7 +1598,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                                 .valueAccessor(function(d) {
                                     return d.value.in_bytes;
                                 })
-                                .stack(group, "MB From Remote", function(d){return d.value.out_bytes;})
+                                .stack(group, "MB From Remote", function(d){ return d.value.out_bytes;})
                                 .legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
                                 .colors(d3.scale.ordinal().domain(["in_bytes","out_bytes"]).range(["#112F41","#068587"]));
                             filter = true;
@@ -1645,7 +1645,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                                 .stack(group, "(5) Endpoint", function(d){return d.value.ossec;})
                                 .stack(group, "(6) Total Connections", function(d){return d.value.connections;})
                                 .colors(d3.scale.ordinal().domain(["dns","http","ssl","file","ossec","connections"]).range(["#cb2815","#e29e23","#a3c0ce","#5c5e7d","#e3cdc9","#524A4F"]));
-                            filter = false;
+                            filter = true;
                             height = width/1.63;
                             break;
                         case 'bar':
@@ -1661,7 +1661,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                             $scope.barChart
                                 .group(group)
                                 .colors(["#193459"]);
-                            filter = false;
+                            filter = true;
                             break;
                         case 'hostConnections':
                             var setNewSize = function(width) {
@@ -1693,19 +1693,25 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                         $scope.barChart
                             .on("filtered", function(chart, filter){
                                 waitForFinalEvent(function(){
-                                  if ($scope.tableData) {
-                                      $scope.tableData.filterAll();
-                                      var arr = [];
-                                      for(var i in dimension.top(Infinity)) {
-                                          arr.push(dimension.top(Infinity)[i].time);
-                                      }
-                                      // console.log(dimension.group().top(Infinity))
-                                      //console.log(dimension.group().top(Infinity));
-                                      $scope.tableData.filter(function(d) { return arr.indexOf(d.time) >= 0; });
-                                      $scope.$broadcast('crossfilterToTable');
-                                      // console.log($scope.tableData.top(Infinity));
-                                      // console.log(timeDimension.top(Infinity))
-                                  }
+                                    if ($scope.tableData) {
+                                        //$scope.tableData.filterAll();
+                                        var arr = [];
+                                        for(var i in dimension.top(Infinity)) {
+                                            arr.push(dimension.top(Infinity)[i].time);
+                                        }
+                                        // $scope.tableData.filter(function(d) { 
+                                        //     for (var s = 0; s<arr.length; s++) {
+                                        //         if ((d.time >= arr[s]-3600) && (d.time < arr[s])) {
+                                        //             return true;
+                                        //         }
+                                        //     }
+                                        // })
+                                        $scope.tableData.filter(function(d) { return arr.indexOf(d.time) >= 0; });
+                                        //});
+                                        $scope.$broadcast('crossfilterToTable');
+                                        // console.log($scope.tableData.top(Infinity));
+                                        // console.log(timeDimension.top(Infinity))
+                                    }
                                 }, 400, "filterWait");
                             })
                     }
