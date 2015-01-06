@@ -1,4 +1,4 @@
-<table class="table table-striped table-condensed table-hover">
+<!-- <table class="table table-striped table-condensed table-hover">
     <thead>
         <tr>
             <th class="{{heading.mData}}" ng-repeat="heading in tableColumns" custom-sort order="heading.mData" sort="sort">{{heading.sTitle}}&nbsp;</th>
@@ -25,12 +25,43 @@
             </div>
         </td>
     </tfoot>
-   <!--  <pre>pagedItems.length: {{tableData.collection().length|json}}</pre>
-    <pre>currentPage: {{currentPage|json}}</pre>
-    <pre>currentPage: {{sort|json}}</pre> -->
+
     <tbody>
         <tr ng-repeat="item in pagedItems[currentPage] | orderBy:sort.sortingOrder:sort.reverse">
             <td>{{item.ioc}}</td>
         </tr>
     </tbody>
+</table> -->
+
+<table>
+    <tr>
+        <th ng-repeat="col in tableColumns">{{col.sTitle}}</th>
+        <!-- <th ng-click="tableData.sortBy('wordCount')">Length</th> -->
+        <!-- <th><span class="glyphicon glyphicon-filter"></span></th> -->
+    </tr>
+    <tr ng-show="!loading && tableData.collection().length == 0">
+        <td colspan="3">
+            Oops! Everything disappeared &ndash;
+            <a ng-click="word = ''; tableData.unfilterAll()">clear all filters</a>.
+        </td>
+    </tr>
+    <tr ng-repeat="row in tableData.collection() | limitTo: pageNumber | limitTo: -50">
+        <td ng-repeat="col in tableColumns">{{row[col.mData]}}</td>
+    </tr>
+    <tr>
+        <td class="etc" colspan="4">
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-xs btn-default"
+                        ng-click="pageNumber = pageNumber - 10">
+                    &lt; Previous Page
+                </button>
+                <button type="button" class="btn btn-xs btn-default"
+                        ng-click="pageNumber = pageNumber + 10">
+                    Next Page &gt;
+                </button>
+            </div>
+
+        </td>
+    </tr>
 </table>

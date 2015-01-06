@@ -756,41 +756,41 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 //     };
 // }]);
 // 
-angular.module('mean.pages').directive('customSort', ['$filter', function ($filter) {
-    return {
-        restrict: 'A',
-        transclude: true,    
-        scope: {
-          order: '=',
-          sort: '='
-        },
-        template : 
-          ' <a ng-click="sort_by(order)" style="color: #555555;">'+
-          '    <span ng-transclude></span>'+
-          '    <i ng-class="selectedCls(order)"></i>'+
-          '</a>',
-        link: function(scope) {                
-            // change sorting order
-            scope.sort_by = function(newSortingOrder) {       
-                var sort = scope.sort;
+// angular.module('mean.pages').directive('customSort', ['$filter', function ($filter) {
+//     return {
+//         restrict: 'A',
+//         transclude: true,    
+//         scope: {
+//           order: '=',
+//           sort: '='
+//         },
+//         template : 
+//           ' <a ng-click="sort_by(order)" style="color: #555555;">'+
+//           '    <span ng-transclude></span>'+
+//           '    <i ng-class="selectedCls(order)"></i>'+
+//           '</a>',
+//         link: function(scope) {                
+//             // change sorting order
+//             scope.sort_by = function(newSortingOrder) {       
+//                 var sort = scope.sort;
                 
-                if (sort.sortingOrder == newSortingOrder){
-                    sort.reverse = !sort.reverse;
-                }                    
+//                 if (sort.sortingOrder == newSortingOrder){
+//                     sort.reverse = !sort.reverse;
+//                 }                    
 
-                sort.sortingOrder = newSortingOrder;        
-            };
-            scope.selectedCls = function(column) {
-                if(column == scope.sort.sortingOrder){
-                    return ('icon-chevron-' + ((scope.sort.reverse) ? 'down' : 'up'));
-                }
-                else{            
-                    return'icon-sort' 
-                } 
-            };      
-        }// end link
-    }
-}]);
+//                 sort.sortingOrder = newSortingOrder;        
+//             };
+//             scope.selectedCls = function(column) {
+//                 if(column == scope.sort.sortingOrder){
+//                     return ('icon-chevron-' + ((scope.sort.reverse) ? 'down' : 'up'));
+//                 }
+//                 else{            
+//                     return'icon-sort' 
+//                 } 
+//             };      
+//         }// end link
+//     }
+// }]);
 
 angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$rootScope', '$location', function ($timeout, $filter, $rootScope, $location) {
     return {
@@ -804,83 +804,60 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 // TODO - add unique name in controller to post this in a key (in case direcive gets called multiple times)- i.e. $scope[name].table = this
                 $scope.tableColumns = result.params;
                 $scope.tableData = crossfilterObj;
-
                 console.log($scope.tableColumns)
+                console.log($scope.tableData.collection())
 
-                $scope.sort = {       
-                    sortingOrder : 'ioc',
-                    reverse : false
+
+                $scope.words = {};
+                $scope.word = '';
+                $scope.pageNumber = 50;
+                $scope.countGrouped = [];
+                $scope.currentCountFilter = 0;
+
+                // When the Crossfilter collection has been updated.
+                $scope.$on('crossfilter/updated', function crossfilterUpdated() {
+                    if ($angular.isDefined($scope.words.groupBy)) {
+                        $scope.countGrouped = $scope.words.groupBy('wordCount');
+                    }
+                });
+
+                /**
+                 * @method toggleCountFilter
+                 * @param count {Number}
+                 * @return {void}
+                 */
+                $scope.toggleCountFilter = function toggleCountFilter(count) {
+                    if ($scope.currentCountFilter == count) {
+                        $scope.currentCountFilter = null;
+                        $scope.words.unfilterBy('wordCount');
+                        return;
+                    }
+                    $scope.currentCountFilter = count;
+                    $scope.words.filterBy('wordCount', count);
                 };
 
-                $scope.filteredItems = [];
-                $scope.groupedItems = [];
-                $scope.itemsPerPage = 10;
-                $scope.pagedItems = [];
-                $scope.currentPage = 0;
+                // Fetch all of the words to create the Crossfilter from.
+                // $http.get('words.json').then(function then(response) {
+                //     // Voila!
+                //     $scope.words = new Crossfilter(response.data, '$id', 'persistent');
+                //     $scope.words.addDimension('wordCount', function wordCount(model) {
+                //         return model.word.length;
+                //     });
+                //     $scope.countGrouped = $scope.words.groupBy('wordCount');
+                // });
 
-                var searchMatch = function (haystack, needle) {
-                    if (!needle) {
-                        return true;
-                    }
-                    return haystack.toLowerCase().indexOf(needle.toLowerCase()) !== -1;
+                /**
+                 * @method applyWordFilter
+                 * @param word {String}
+                 * @param customFilter {Function}
+                 * @return {void}
+                 */
+                $scope.applyWordFilter = function applyWordFilter(word, customFilter) {
+                    $scope.pageNumber = 50;
+                    $scope.words.filterBy('word', word, customFilter);
+                    $scope.word = word;
                 };
-                // init the filtered items
-                $scope.searchtable = function () {
-                    $scope.filteredItems = $filter('filter')($scope.tableData.collection(), function (item) {
-                        for(var attr in item) {
-                            if (searchMatch(item[attr], $scope.query))
-                                return true;
-                        }
-                        return false;
-                    });
-                    // take care of the sorting order
-                    if ($scope.sort.sortingOrder !== '') {
-                        $scope.filteredItems = $filter('orderBy')($scope.filteredItems, $scope.sort.sortingOrder, $scope.sort.reverse);
-                    }
-                    $scope.currentPage = 0;
-                    // now group by pages
-                    $scope.groupToPages();
-                };
-                // calculate page in place
-                $scope.groupToPages = function () {
-                    $scope.pagedItems = [];
-                    for (var i = 0; i < $scope.filteredItems.length; i++) {
-                        if (i % $scope.itemsPerPage === 0) {
-                            $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [ $scope.filteredItems[i] ];
-                        } else {
-                            $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push($scope.filteredItems[i]);
-                        }
-                    }
-                };
-                $scope.range = function (size,start, end) {
-                    var ret = [];        
-                    console.log(size,start, end);
-                                  
-                    if (size < end) {
-                        end = size;
-                        start = size-$scope.gap;
-                    }
-                    for (var i = start; i < end; i++) {
-                        ret.push(i);
-                    }        
-                     console.log(ret);        
-                    return ret;
-                };
-                $scope.prevPage = function () {
-                    if ($scope.currentPage > 0) {
-                        $scope.currentPage--;
-                    }
-                };
-                $scope.nextPage = function () {
-                    if ($scope.currentPage < $scope.pagedItems.length - 1) {
-                        $scope.currentPage++;
-                    }
-                };
-                $scope.setPage = function () {
-                    $scope.currentPage = this.n;
-                };
-                // functions have been describe process the data for display
-                $scope.searchtable();
+
 
             })
         }
