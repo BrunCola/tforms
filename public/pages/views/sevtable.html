@@ -35,9 +35,7 @@
 
 <table>
     <tr>
-        <th ng-repeat="col in tableColumns">{{col.sTitle}}</th>
-        <!-- <th ng-click="tableData.sortBy('wordCount')">Length</th> -->
-        <!-- <th><span class="glyphicon glyphicon-filter"></span></th> -->
+        <th ng-repeat="col in tableColumns"><a ng-click="tableData.sortBy(col.mData)">{{col.sTitle}}</a></th>
     </tr>
     <tr ng-show="!loading && tableData.collection().length == 0">
         <td colspan="3">

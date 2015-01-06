@@ -232,14 +232,13 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 }
                                 // 
                                 // create sort dimensions for table coulumns
-                                // if (result.aaData.length > 0) {
-                                //     for (var n in result.aaData[0]) {
-                                //         var dim = n.toString();
-                                //         console.log(dim)
-                                //         params.crossfilterObj.addDimension(dim, function search(d) { return d[dim]; });
-                                //     }
-                                // }
-                                // 
+                                if (result.params.length > 0) { // check if the there are any columns (remember it should always exist since we're in table maker)
+                                    for (var n in result.params) {  
+                                        var dim = result.params[n].mData
+                                        console.log(dim)
+                                        params.crossfilterObj.addDimension(dim, function sort(d) { return d[dim]; });
+                                    }
+                                }
                                 // add-remove data function call here
                                 params.crossfilterObj.addModels(result.aaData);
                             }

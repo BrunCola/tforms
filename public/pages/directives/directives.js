@@ -804,10 +804,7 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 // TODO - add unique name in controller to post this in a key (in case direcive gets called multiple times)- i.e. $scope[name].table = this
                 $scope.tableColumns = result.params;
                 $scope.tableData = crossfilterObj;
-                console.log($scope.tableColumns)
-                console.log($scope.tableData.collection())
-
-
+                console.log(crossfilterObj)
                 $scope.words = {};
                 $scope.word = '';
                 $scope.pageNumber = 50;
@@ -816,9 +813,9 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
 
                 // When the Crossfilter collection has been updated.
                 $scope.$on('crossfilter/updated', function crossfilterUpdated() {
-                    if ($angular.isDefined($scope.words.groupBy)) {
-                        $scope.countGrouped = $scope.words.groupBy('wordCount');
-                    }
+                    // if ($angular.isDefined($scope.words.groupBy)) {
+                    //     $scope.countGrouped = $scope.words.groupBy('wordCount');
+                    // }
                 });
 
                 /**
