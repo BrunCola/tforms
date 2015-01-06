@@ -273,6 +273,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                             .attr("transform", function(d) {return "translate(" + projection([d.geometry.coordinates[0]+.4,d.geometry.coordinates[1]+2]) + ")rotate(180)scale(0.06)";})
                             // .attr("transform", "translate(15,-200)")
                             .append('svg:path')
+                            .on("click", function(d) {console.log(d)})
                             .attr('d', 'M8.09-224.929 '+
                                 'C-13.491-93.344-86.594-49.482-129.756,23.621c-9.923,19.925-15.32,42.241-15.32,65.793c0,84.739,72.053,153.516,160.826,153.516 '+
                                 'c88.78,0,160.826-68.777,160.826-153.516c0-23.566-5.382-45.867-15.32-65.793C118.094-49.482,44.991-93.344,8.09-224.929z '+
