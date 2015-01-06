@@ -1,6 +1,6 @@
 {
     "name": "rapidPHIRE",
-    "version": "0.3.0",
+    "version": "1.6.4",
     "dependencies": {
         "angular": "latest",
         "angular-resource": "latest",

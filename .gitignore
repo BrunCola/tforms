@@ -9,6 +9,7 @@ ssl/*
 temp/*.pdf
 npm-debug.log
 ._*
+*~
 .DS_Store
 .DS_Store?
 .Spotlight-V100
