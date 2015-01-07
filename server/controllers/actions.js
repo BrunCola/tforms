@@ -52,8 +52,8 @@ module.exports = function(pool) {
 				bcrypt.hash(req.body.newPass, 10, function( err, bcryptedPassword) {
 					if (err) { res.send(500) }
 					var update = {
-						query: "UPDATE `user` SET `email`= ?, `password`= ? WHERE `email` = ?",
-						insert: [req.body.newemail, bcryptedPassword, req.user.email]
+						query: "UPDATE `user` SET `email`= ?, `password`= ?, two_step_auth = ? WHERE `email` = ?",
+						insert: [req.body.newemail, bcryptedPassword, req.user.email, req.user.twoStepAuth]
 					}
 					new query(update, {database: 'rp_users', pool: pool}, function(err,data){
 						if (err) {
