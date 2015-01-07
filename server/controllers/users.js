@@ -14,7 +14,7 @@ module.exports = function(pool) {
                 var profile = data[0];
                 bcrypt.compare(req.body.password, profile.password, function(err, doesMatch){
                     if (doesMatch){
-                        var token = jwt.sign(profile, config.sessionSecret, { expiresInMinutes: 0.1 }); // 60*10
+                        var token = jwt.sign(profile, config.sessionSecret, { expiresInMinutes: 60*10 }); // 60*10
                         res.json({ token: token });
                         return;
                     } else {

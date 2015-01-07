@@ -8,7 +8,7 @@ angular.module('mean.controllers.login', [])
         $scope.version = $scope.global.version;
         // Register the login() function
         $scope.login = function(){
-            $http.post('/login', $scope.user)
+            $http.post('/auth', $scope.user)
                 .success(function(user){
                     $window.sessionStorage.token = user.token;
                     $location.url('/home');

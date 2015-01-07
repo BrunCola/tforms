@@ -4,6 +4,7 @@
  * Module dependencies.
  */
 var express = require('express'),
+    fs = require('fs'),
     favicon = require('serve-favicon'),
     morgan = require('morgan'),
     compression = require('compression'),
@@ -47,6 +48,21 @@ module.exports = function(app, version, pool) {
     } 
 
     app.use('/api', expressJwt({secret: config.sessionSecret}));
+    // IMPORTANT: this automatically sets all the angular url routes in node (by parsing the public/pages/routes file)
+    var index = require('../controllers/index')(version);
+    fs.readFile(appPath + '/public/pages/routes/pages.js', 'utf8', function(err, data) {
+        if (err) {
+            console.log(err)
+        } else {
+            var routes = [];
+            routes.push('/login');
+            var urls = data.match(/url:\s?'(\/.*)'/g);
+            for (var i in urls) {
+                routes.push(urls[i].match(/'(.*)'/)[1]);
+            }
+            app.use(routes, index.render)
+        }
+    });
 
     //
     // replace in morgan/index.js for slightly more interesting logging
@@ -148,7 +164,6 @@ module.exports = function(app, version, pool) {
             app.use('/' + name, express.static(config.root + '/' + mean.modules[name].source + '/' + name + '/public'));
         }
 
-        console.log(version)
         function bootstrapRoutes() {
             // Skip the app/routes/middlewares directory as it is meant to be
             // used and shared by routes as further middlewares and is not a
