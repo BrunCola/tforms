@@ -28,6 +28,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 /////  VARIABLES  /////
                 ///////////////////////
                 var itemsDimension = $scope.crossfilterData.dimension(function(d){ return d.dd });
+                var typeDimension = $scope.crossfilterData.dimension(function(d){ return d.type });
                 var deepDimension = $scope.crossfilterData.dimension(function(d){ return d.deep });
                 var uniqueIds = []; // this is so we do not add duplicate items into our crossfitler
                 // set our in-to-deep variable
@@ -152,6 +153,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .data($scope.lanes)
                     .enter().append("text")
                     .text(function(d) {return d;})
+                    .style("cursor","pointer")
+                    .on("click", function(d){ labelSelect(d);})
                     .attr("x", -m[1] *3)
                     .attr("y", function(d, i) {return y1(i);})
                     .attr("dy", ".5ex")
@@ -162,6 +165,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .data($scope.lanes)
                     .enter()
                     .append('g')
+                    .style("cursor","pointer")
+                    .on("click", function(d){ labelSelect(d);})
                     .attr('transform', function(d, i) { return 'translate('+(-m[1]*2.4)+','+(y1(i) -m[1])+') scale(0.8)'});
 
                 // here's the rectangle
@@ -554,7 +559,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 }
                                 return color2;
                             })
-                            .attr('width', 36)
+                       typeDimension     .attr('width', 36)
                             .attr('height', 36);
                             laneRowSymbols(data.type, element, color1, color2);
                     }
@@ -716,7 +721,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     // disable all nav buttons
                     prevButton.attr('disabled', 'disabled');
                     nextButton.attr('disabled', 'disabled');
-                    resetBtn.attr('disabled', 'disabled');
+                    //resetBtn.attr('disabled', 'disabled');
                     $scope.alert.style('display', 'none');
                     $scope.highlightedPoint = false;
                     clearVerticalLine();
@@ -727,6 +732,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     // convert min and max to date object and send to plot function
                     var min = new Date($scope.start);
                     var max = new Date($scope.end);
+                    typeDimension.filter(null);
+                    itemsDimension.filter(null);
                     plot(itemsDimension, min, max);
                 }
                 // this function finds what's clicked on brush and adds flag to values for redraw highlighting
@@ -741,6 +748,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     // "turn on" points that are in our pattern object that fall within the time slice (if paterns are turned on)
                 }
                 function navCrtl(action) {
+                    console.log(action)
                     // clear all lines drawn
                     clearVerticalLine();
                     // remove lines before doing anything
@@ -794,11 +802,17 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         // reset if not within threshold
                         $scope.inTooDeep.areWe = false;
                         // var data = itemsDimension.filter(function(d) { if ((d.deep === false) && ((d.dd < maxExtent) && (d.dd > minExtent))) {return true};});
-                        deepDimension.filter(function(d){return (!(d))});
+                        deepDimension.filter(function(d){return (!(d))});                    
                         var data = itemsDimension.filter(function(d) { return ((d < maxExtent) && (d > minExtent))});
+
                         $scope.alert.style('display', 'none');
                         plot(data, minExtent, maxExtent);
                     }
+                }
+                function labelSelect(label) {
+                    var data = typeDimension.filter(function(d) { return (d === label)}); 
+                    $scope.alert.style('display', 'none');
+                    plot(data, navArray[currentNavPos].min, navArray[currentNavPos].max);
                 }
                 function scrollSide(id) {
                     var elm = $('li#'+id);

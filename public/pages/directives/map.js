@@ -333,6 +333,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                     .offset([-12, 0]);
                 node.call(tip);
                 node
+                    .on("click", function(d) {console.log(d)})
                     .on('mouseover', tip.show)
                     .on('mouseout', tip.hide);
 
