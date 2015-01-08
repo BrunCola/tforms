@@ -7,18 +7,55 @@ var dataTable = require('../constructors/datatable'),
 
 module.exports = function(pool) {
     return {
-        render: function(req, res) {
-            var database = req.user.database;
-            var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
-            var end = Math.round(new Date().getTime() / 1000);
-            if (req.query.start && req.query.end) {
-                start = req.query.start;
-                end = req.query.end;
+            // var piechartQ = {
+            //     query: 'SELECT '+
+            //                 'time,'+
+            //                 '`http_host` AS `pie_dimension`, '+
+            //                 'count(*) AS `count` '+
+            //             'FROM '+
+            //                 '`file` '+
+            //             'WHERE '+
+            //                 '`time` BETWEEN ? AND ? '+
+            //                 'AND `http_host` !=\'-\' '+
+            //             'GROUP BY '+
+            //                 '`http_host`',
+            //     insert: [start, end]
+            // }
+            // async.parallel([
+            //     // Piechart function
+            //     function(callback) {
+            //         new query(piechartQ, {database: database, pool: pool}, function(err,data){
+            //             piechart = data;
+            //             callback();
+            //         });
+            //     }
+            // ]
+
+        crossfilter: function(req, res) {
+            var get = {
+                query: 'SELECT '+
+                            'count(*) AS count,'+
+                            'time '+
+                        'FROM '+
+                            '`file` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                        'GROUP BY '+
+                            'month(from_unixtime(`time`)),'+
+                            'day(from_unixtime(`time`)),'+
+                            'hour(from_unixtime(`time`))',
+                insert: [req.query.start, req.query.end]
             }
-            var crossfilter = [];
-            var piechart = [];
-            var tables = [];
-            var table1 = {
+            new query(get, {database: req.user.database, pool: pool}, function(err,data){
+                if (err) { res.status(500).end(); return }
+                res.json(data);
+            });
+        },
+        //////////////////////
+        /////   TABLE   //////
+        //////////////////////
+        table: function(req, res){
+            var table = {
                 query: 'SELECT '+
                             'count(*) as count, '+
                             'max(`time`) AS `time`,'+
@@ -32,7 +69,7 @@ module.exports = function(pool) {
                             '`time` BETWEEN ? AND ? '+
                         'GROUP BY '+
                             '`http_host`',
-                insert: [start, end],
+                insert: [req.query.start, req.query.end],
                 params: [
                     {
                         title: 'Last Seen',
@@ -55,64 +92,9 @@ module.exports = function(pool) {
                     title: 'Extracted Files by Domain'
                 }
             }
-            var crossfilterQ = {
-                query: 'SELECT '+
-                            'count(*) AS count,'+
-                            'time '+
-                        'FROM '+
-                            '`file` '+
-                        'WHERE '+
-                            '`time` BETWEEN ? AND ? '+
-                        'GROUP BY '+
-                            'month(from_unixtime(`time`)),'+
-                            'day(from_unixtime(`time`)),'+
-                            'hour(from_unixtime(`time`))',
-                insert: [start, end]
-            }           
-            var piechartQ = {
-                query: 'SELECT '+
-                            'time,'+
-                            '`http_host` AS `pie_dimension`, '+
-                            'count(*) AS `count` '+
-                        'FROM '+
-                            '`file` '+
-                        'WHERE '+
-                            '`time` BETWEEN ? AND ? '+
-                            'AND `http_host` !=\'-\' '+
-                        'GROUP BY '+
-                            '`http_host`',
-                insert: [start, end]
-            }
-            async.parallel([
-                // Table function(s)
-                function(callback) {
-                    new dataTable(table1, {database: database, pool: pool}, function(err,data){
-                        tables.push(data);
-                        callback();
-                    });
-                },
-                // Crossfilter function
-                function(callback) {
-                    new query(crossfilterQ, {database: database, pool: pool}, function(err,data){
-                        crossfilter = data;
-                        callback();
-                    });
-                },
-                // Piechart function
-                function(callback) {
-                    new query(piechartQ, {database: database, pool: pool}, function(err,data){
-                        piechart = data;
-                        callback();
-                    });
-                }
-            ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
-                if (err) throw console.log(err);
-                var results = {
-                    tables: tables,
-                    crossfilter: crossfilter,
-                    piechart: piechart
-                };
-                res.json(results);
+            new dataTable(table, {database: req.user.database, pool: pool}, function(err,data){
+                if (err) { res.status(500).end(); return }
+                res.json({table: data});
             });
         }
     }

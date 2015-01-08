@@ -5,8 +5,8 @@ module.exports = function(app, version, pool) {
     // HTTP
         // HTTP BY DOMAIN
             var http_by_domain = require('../../controllers/http/http_by_domain')(pool);
-            app.route('/api/http/http_by_domain')
-            .get(auth.permission, http_by_domain.render);
+            // TABLE
+            app.route('/api/http/http_by_domain/table').get(auth.permission, http_by_domain.table);
             // HTTP BY DOMAIN LOCAL
                 var http_by_domain_local = require('../../controllers/http/http_by_domain_local')(pool);
                 app.route('/api/http/http_by_domain_local')
@@ -17,8 +17,10 @@ module.exports = function(app, version, pool) {
                     .get(auth.permission, http_by_domain_local_drill.render);
         // HTTP BY USER AGENT
             var http_by_user_agent = require('../../controllers/http/http_by_user_agent')(pool);
-            app.route('/api/http/http_by_user_agent')
-            .get(auth.permission, http_by_user_agent.render);
+            // CROSSFILTER
+            app.route('/api/http/http_by_user_agent/crossfilter').get(auth.permission, http_by_user_agent.crossfilter);
+            // TABLE
+            app.route('/api/http/http_by_user_agent/table').get(auth.permission, http_by_user_agent.table);
             // HTTP BY USER AGENT LOCAL
                 var http_by_user_agent_local = require('../../controllers/http/http_by_user_agent_local')(pool);
                 app.route('/api/http/http_by_user_agent_local')
@@ -28,17 +30,19 @@ module.exports = function(app, version, pool) {
                     app.route('/api/http/http_by_user_agent_local_drill')
                     .get(auth.permission, http_by_user_agent_local_drill.render);
         // HTTP LOCAL
-            var http_local = require('../../controllers/http/http_local')(pool);
-            app.route('/api/http/http_local')
-            .get(auth.permission, http_local.render);    
+            var http_local = require('../../controllers/http/http_local')(pool);   
+            // TABLE
+            app.route('/api/http/http_local/table').get(auth.permission, http_local.table); 
             // HTTP LOCAL BY DOMAIN
                 var http_local_by_domain = require('../../controllers/http/http_local_by_domain')(pool);
                 app.route('/api/http/http_local_by_domain')
                 .get(auth.permission, http_local_by_domain.render);
         // HTTP REMOTE
             var http_remote = require('../../controllers/http/http_remote')(pool);
-            app.route('/api/http/http_remote')
-            .get(auth.permission, http_remote.render);
+            // CROSSFILTER
+            app.route('/api/http/http_remote/crossfilter').get(auth.permission, http_remote.crossfilter);
+            // TABLE
+            app.route('/api/http/http_remote/table').get(auth.permission, http_remote.table);
             // HTTP REMOTE2LOCAL
                 var http_remote2local = require('../../controllers/http/http_remote2local')(pool);
                 app.route('/api/http/http_remote2local')

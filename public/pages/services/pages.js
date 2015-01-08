@@ -179,7 +179,17 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 group = params.group(dimension);
                             }
                             // add params in here for axis labels and graph types (along with a default)
-                            $scope.$broadcast('barchart', dimension, group, 'severity');
+                            switch (params.settings.type) {
+                                case 'severity':
+                                    $scope.$broadcast('barchart', dimension, group, 'severity');
+                                    break;
+                                case 'bandwidth':
+                                    $scope.$broadcast('barchart', dimension, group, 'bandwidth');
+                                    break;
+                                case 'bar':
+                                    $scope.$broadcast('barchart', dimension, group, 'bar');
+                                    break;
+                            }
                         },
                         geochart: function(params, crossfilterObj) {
                             var group = false;
