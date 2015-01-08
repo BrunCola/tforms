@@ -8,6 +8,7 @@ var dataTable = require('../constructors/datatable'),
 module.exports = function(pool) {
     return {
         crossfilter: function(req, res) {
+        console.log(req.query)
             var get = {
                 query: 'SELECT '+
                             '`time`,'+

@@ -86,7 +86,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                     if (vis.key) {
                         // if the result is a piece of an object..
                         Rest = $resource(vis.get, timeParam, {
-                            query: { method: 'GET', params: {}, isArray: false }
+                            query: { method: 'GET', params: $location.$$search, isArray: false }
                         })
                         Rest.query(function(data){
                             callback(data[vis.key]);
@@ -94,7 +94,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                     } else {
                         // if the result is an array
                         Rest = $resource(vis.get, timeParam, {
-                            query: { method: 'GET', params: {}, isArray: true }
+                            query: { method: 'GET', params: $location.$$search, isArray: true }
                         });
                         Rest.query(function(data){
                             callback(data);
