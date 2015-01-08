@@ -805,11 +805,11 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 // TODO - add unique name in controller to post this in a key (in case direcive gets called multiple times)- i.e. $scope[name].table = this
                 $scope.tableColumns = result.params;
                 $scope.tableData = crossfilterObj;
-                console.log(crossfilterObj)
+                
                 $scope.words = {};
                 $scope.word = '';
                 $scope.pageNumber = 50;
-                $scope.countGrouped = [];
+                // $scope.countGrouped = [];
                 $scope.currentCountFilter = 0;
 
                 // When the Crossfilter collection has been updated.
@@ -818,6 +818,23 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     //     $scope.countGrouped = $scope.words.groupBy('wordCount');
                     // }
                 });
+
+                $scope.generateLink = function(data, column) {
+                    var searchObj = {};
+                    // add url date params to new page if they exist
+                    if ($location.$$search.start && $location.$$search.end) {
+                        searchObj.start = $location.$$search.start;
+                        searchObj.end = $location.$$search.end;
+                    }
+                    // loop through defined links to genereate search object
+                    if (column.link.val.length > 0) {
+                        for (var i in column.link.val) {
+                            searchObj[column.link.val[i]] = data[column.link.val[i]];
+                        }
+                    }
+                    // finally hit page being requested with search params
+                    $location.path(column.link.type).search(searchObj);
+                }
 
                 /**
                  * @method toggleCountFilter
@@ -852,7 +869,7 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                  */
                 $scope.applyWordFilter = function applyWordFilter(word, customFilter) {
                     $scope.pageNumber = 50;
-                    $scope.words.filterBy('word', word, customFilter);
+                    // $scope.words.filterBy('word', word, customFilter);
                     $scope.word = word;
                 };
 

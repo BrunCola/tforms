@@ -71,6 +71,7 @@ angular.module('mean.system').config(['$stateProvider', '$urlRouterProvider',
     ])
     .config(['$locationProvider',
         function($locationProvider) {
-            $locationProvider.hashPrefix('!');
+            // $locationProvider.hashPrefix('!'); // previous url config
+            $locationProvider.html5Mode(true); // new url config (no #! prepended)
         }
     ]);
