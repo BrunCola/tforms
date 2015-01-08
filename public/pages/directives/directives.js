@@ -799,6 +799,7 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
         transclude : true,
         link: function($scope, element) {
             $scope.$on('sevTable', function (event, result, crossfilterObj, params) {
+                $scope.$broadcast('spinnerHide');
                 // on sevTable = $scope.table[name] = data
                 // here create table div from element + name
                 // TODO - add unique name in controller to post this in a key (in case direcive gets called multiple times)- i.e. $scope[name].table = this

@@ -31,27 +31,34 @@ module.exports = function(app, version, pool) {
             app.route('/api/ioc_notifications/ioc_events/table').get(auth.permission, ioc_events.table);
 
 
-    // IOC EVENTS DRILLDOWN
-    var ioc_events_drilldown = require('../../controllers/ioc_notifications/ioc_events_drilldown')(pool);
-        app.route('/api/ioc_notifications/ioc_events_drilldown')
-            .get(auth.permission, ioc_events_drilldown.render)
-            .post(auth.permission, ioc_events_drilldown.set_info);
-        app.route('/api/ioc_notifications/ioc_events_drilldown/patterns')
-            .post(auth.permission, ioc_events_drilldown.pattern);
-    // IOC REMOTE
-    var ioc_remote = require('../../controllers/ioc_notifications/ioc_remote')(pool);
-         app.route('/api/ioc_notifications/ioc_remote')
-        .get(auth.permission, ioc_remote.render);
-        // IOC REMOTE2LOCAL
-            var ioc_remote2local = require('../../controllers/ioc_notifications/ioc_remote2local')(pool);
-            app.route('/api/ioc_notifications/ioc_remote2local')
-            .get(auth.permission, ioc_remote2local.render);
-    // IOC LOCAL
+        // IOC EVENTS DRILLDOWN
+        var ioc_events_drilldown = require('../../controllers/ioc_notifications/ioc_events_drilldown')(pool);
+            app.route('/api/ioc_notifications/ioc_events_drilldown')
+                .get(auth.permission, ioc_events_drilldown.render)
+                .post(auth.permission, ioc_events_drilldown.set_info);
+            app.route('/api/ioc_notifications/ioc_events_drilldown/patterns')
+                .post(auth.permission, ioc_events_drilldown.pattern);
+        // IOC REMOTE
+        var ioc_remote = require('../../controllers/ioc_notifications/ioc_remote')(pool);
+            // CROSSFILTER
+            app.route('/api/ioc_notifications/ioc_remote/crossfilter').get(auth.permission, ioc_remote.crossfilter);
+            // TABLE
+            app.route('/api/ioc_notifications/ioc_remote/table').get(auth.permission, ioc_remote.table);
+            
+            // IOC REMOTE2LOCAL
+                var ioc_remote2local = require('../../controllers/ioc_notifications/ioc_remote2local')(pool);
+                app.route('/api/ioc_notifications/ioc_remote2local')
+                .get(auth.permission, ioc_remote2local.render);
+
+        // IOC LOCAL
         var ioc_local = require('../../controllers/ioc_notifications/ioc_local')(pool);
-        app.route('/api/ioc_notifications/ioc_local')
-        .get(auth.permission, ioc_local.render);
-        // IOC LOCAL DRILL
+            // CROSSFILTER
+            app.route('/api/ioc_notifications/ioc_local/crossfilter').get(auth.permission, ioc_local.crossfilter);
+            // TABLE
+            app.route('/api/ioc_notifications/ioc_local/table').get(auth.permission, ioc_local.table);
+        
+            // IOC LOCAL DRILL
             var ioc_local_drill = require('../../controllers/ioc_notifications/ioc_local_drill')(pool);
-            app.route('/api/ioc_notifications/ioc_local_drill')
-            .get(auth.permission, ioc_local_drill.render);
+                app.route('/api/ioc_notifications/ioc_local_drill')
+                .get(auth.permission, ioc_local_drill.render);
 };

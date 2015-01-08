@@ -10,8 +10,10 @@ module.exports = function(app, version, pool) {
             .post(auth.permission, endpoint_map.updatefp); 
         // ENDPOINT BY TYPE
             var endpoint_by_type = require('../../controllers/local_events/endpoint_by_type')(pool);
-            app.route('/api/local_events/endpoint_by_type')
-            .get(auth.permission, endpoint_by_type.render);
+            // CROSSFILTER
+            app.route('/api/local_events/endpoint_by_type/crossfilter').get(auth.permission, endpoint_by_type.crossfilter);
+            // TABLE
+            app.route('/api/local_events/endpoint_by_type/table').get(auth.permission, endpoint_by_type.table);
             // ENDPOINT EVENTS USER
                 var endpoint_by_type_and_user = require('../../controllers/local_events/endpoint_by_type_and_user')(pool);
                 app.route('/api/local_events/endpoint_by_type_and_user')
@@ -22,16 +24,20 @@ module.exports = function(app, version, pool) {
                     .get(auth.permission, endpoint_full.render);
         // ENDPOINT BY USER
             var endpoint_by_user = require('../../controllers/local_events/endpoint_by_user')(pool);
-            app.route('/api/local_events/endpoint_by_user')
-            .get(auth.permission, endpoint_by_user.render);
+            // CROSSFILTER
+            app.route('/api/local_events/endpoint_by_user/crossfilter').get(auth.permission, endpoint_by_user.crossfilter);
+            // TABLE
+            app.route('/api/local_events/endpoint_by_user/table').get(auth.permission, endpoint_by_user.table);
             // ENDPOINT EVENTS LOCAL BY ALERT INFO
                 var endpoint_by_user_and_type = require('../../controllers/local_events/endpoint_by_user_and_type')(pool);
                 app.route('/api/local_events/endpoint_by_user_and_type')
                 .get(auth.permission, endpoint_by_user_and_type.render);
         // ENDPOINT EVENTS SHAREPOINT
             var endpoint_events_sharepoint = require('../../controllers/local_events/endpoint_events_sharepoint')(pool);
-            app.route('/api/local_events/endpoint_events_sharepoint')
-            .get(auth.permission, endpoint_events_sharepoint.render);
+            // CROSSFILTER
+            app.route('/api/local_events/endpoint_events_sharepoint/crossfilter').get(auth.permission, endpoint_events_sharepoint.crossfilter);
+            // TABLE
+            app.route('/api/local_events/endpoint_events_sharepoint/table').get(auth.permission, endpoint_events_sharepoint.table);
             // ENDPOINT EVENTS SHAREPOINT DRILL
                 var endpoint_events_sharepoint_drill = require('../../controllers/local_events/endpoint_events_sharepoint_drill')(pool);
                 app.route('/api/local_events/endpoint_events_sharepoint_drill')

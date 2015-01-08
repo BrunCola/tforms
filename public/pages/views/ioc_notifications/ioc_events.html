@@ -1,90 +1,89 @@
 <!-- <div style="margin-top:30px" class="pull-right">
-	<button data-ng-controller="HeaderController" ng-click="report($event)" class="pure-button pure-button-primary small">
-		<i class="fa fa-file-text-o"></i>
-		Generate Report
-	</button>
-	<button  class="pure-button small">
-		<i class="fa fa-trash-o"></i>
-		Archive All
-	</button>
+    <button data-ng-controller="HeaderController" ng-click="report($event)" class="pure-button pure-button-primary small">
+        <i class="fa fa-file-text-o"></i>
+        Generate Report
+    </button>
+    <button  class="pure-button small">
+        <i class="fa fa-trash-o"></i>
+        Archive All
+    </button>
 </div> -->
 <section head></section>
 <section data-ng-controller="iocEventsController">
-	<section id="new-notification" new-notification></section>
-	<section id="loading-error" loading-error></section>
-	<section id="loading-spinner" loading-spinner></section>
-	<section severity-levels></section>
-	<div class="row-fluid">
-		<div class="span6">
-			<div class="jdash-header">IOC Classes (Quantity of IOC Notifications)</div>
-			<div style="background-color:#FFF;" class="box">
-				<div class="box-content">
-					<div id="rowchart" make-row-chart></div>
-				</div>
-			</div>
-		</div>
-		<div class="span3">
-			<div  style="background-color:#FFF;" class="box">
-				<div class="box-content">
-					<h4>IOC Summary</h4>
-					<span style="font-weight:bold">Local IPs: </span><span>{{local_ips}}</span><br />
-					<span style="font-weight:bold">Remote IPs: </span><span>{{remote_ip}}</span><br />
-					<span style="font-weight:bold">Remote Countries: </span><span>{{remote_country}}</span><br />
-					<span style="font-weight:bold">IOC Notifications: </span><span>{{ioc_notifications}}</span><br />
-					<span style="font-weight:bold">IOC Groups: </span><span>{{ioc_groups}}</span><br />
-					<span style="font-weight:bold">IOC File Names: </span><span>{{file_name}}</span><br />
-					<span style="font-weight:bold">IOC DNS queries: </span><span>{{query}}</span><br />
-					<span style="font-weight:bold">IOC HTTP Hosts: </span><span>{{hostt}}</span><br />
-					<span style="font-weight:bold">IOC SSL Hosts: </span><span>{{remote_ip_ssl}}</span><br />
-					<span style="font-weight:bold">IOC L7 Protocols: </span><span>{{l7_protoo}}</span><br />
-				</div>
-			</div>
-		</div>
-		<div class="span3">
-			<div  style="background-color:#FFF;" class="box">
-				<div class="box-content">
-					<h4>Network Summary</h4>
-					<span style="font-weight:bold !important;">Local IPs: </span><span>{{conn_meta}}</span><br />
-					<span style="font-weight:bold !important;">Remote IPs: </span><span>{{remote_ip_conn_meta}}</span><br />
-					<span style="font-weight:bold !important;">Remote Countries: </span><span>{{remote_country_conn_meta}}</span><br />
-					<span style="font-weight:bold !important;">Avg B/w to Remote: </span><span>{{bandwidth_in}}</span><br />
-					<span style="font-weight:bold !important;">Avg B/w from Remote: </span><span>{{bandwidth_out}}</span><br />
-					<span style="font-weight:bold !important;">New Remote IP: </span><span>{{new_ip}}</span><br />
-					<span style="font-weight:bold !important;">New DNS Query: </span><span>{{new_dns}}</span><br />
-					<span style="font-weight:bold !important;">New HTTP Hosts: </span><span>{{new_http}}</span><br />
-					<span style="font-weight:bold !important;">New SSL Hosts: </span><span>{{new_ssl}}</span><br />
-					<span style="font-weight:bold !important;">L7 Protocols Detected: </span><span>{{new_layer7}}</span><br />
-				</div>
-			</div>
-		</div>
-	</div>
-	<br />
-	<div class="row-fluid">
-		<div class="span4">
-			<div class="jdash-header">Remote IP Locations</div>
-			<div  style="background-color:#FFF;" class="box">
-				<div class="box-content">
-					<div id="geochart" make-geo-chart></div>
-				</div>
-			</div>
-		</div>
-		<div class="span8">
-			<div class="jdash-header">IOC Notifications Per Hour</div>
-			<div  style="background-color:#FFF;" class="box">
-				<div class="box-content">
-					<div id="barchart" make-bar-chart></div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<br />
-	<!-- <div make-table></div> -->
-	<div class="tablesection">
-		<div class="heading col-md-12 col-lg-1">
-			title
-		</div>
-		<div class="tablecontainer col-md-12 col-lg-11">
-			<sev-table>
-		</div>
-	</div>
+    <section id="new-notification" new-notification></section>
+    <section id="loading-error" loading-error></section>
+    <section id="loading-spinner" loading-spinner></section>
+    <section severity-levels></section>
+    <div class="row-fluid">
+        <div class="span6">
+            <div class="jdash-header">IOC Classes (Quantity of IOC Notifications)</div>
+            <div style="background-color:#FFF;" class="box">
+                <div class="box-content">
+                    <div id="rowchart" make-row-chart></div>
+                </div>
+            </div>
+        </div>
+        <div class="span3">
+            <div  style="background-color:#FFF;" class="box">
+                <div class="box-content">
+                    <h4>IOC Summary</h4>
+                    <span style="font-weight:bold">Local IPs: </span><span>{{local_ips}}</span><br />
+                    <span style="font-weight:bold">Remote IPs: </span><span>{{remote_ip}}</span><br />
+                    <span style="font-weight:bold">Remote Countries: </span><span>{{remote_country}}</span><br />
+                    <span style="font-weight:bold">IOC Notifications: </span><span>{{ioc_notifications}}</span><br />
+                    <span style="font-weight:bold">IOC Groups: </span><span>{{ioc_groups}}</span><br />
+                    <span style="font-weight:bold">IOC File Names: </span><span>{{file_name}}</span><br />
+                    <span style="font-weight:bold">IOC DNS queries: </span><span>{{query}}</span><br />
+                    <span style="font-weight:bold">IOC HTTP Hosts: </span><span>{{hostt}}</span><br />
+                    <span style="font-weight:bold">IOC SSL Hosts: </span><span>{{remote_ip_ssl}}</span><br />
+                    <span style="font-weight:bold">IOC L7 Protocols: </span><span>{{l7_protoo}}</span><br />
+                </div>
+            </div>
+        </div>
+        <div class="span3">
+            <div  style="background-color:#FFF;" class="box">
+                <div class="box-content">
+                    <h4>Network Summary</h4>
+                    <span style="font-weight:bold !important;">Local IPs: </span><span>{{conn_meta}}</span><br />
+                    <span style="font-weight:bold !important;">Remote IPs: </span><span>{{remote_ip_conn_meta}}</span><br />
+                    <span style="font-weight:bold !important;">Remote Countries: </span><span>{{remote_country_conn_meta}}</span><br />
+                    <span style="font-weight:bold !important;">Avg B/w to Remote: </span><span>{{bandwidth_in}}</span><br />
+                    <span style="font-weight:bold !important;">Avg B/w from Remote: </span><span>{{bandwidth_out}}</span><br />
+                    <span style="font-weight:bold !important;">New Remote IP: </span><span>{{new_ip}}</span><br />
+                    <span style="font-weight:bold !important;">New DNS Query: </span><span>{{new_dns}}</span><br />
+                    <span style="font-weight:bold !important;">New HTTP Hosts: </span><span>{{new_http}}</span><br />
+                    <span style="font-weight:bold !important;">New SSL Hosts: </span><span>{{new_ssl}}</span><br />
+                    <span style="font-weight:bold !important;">L7 Protocols Detected: </span><span>{{new_layer7}}</span><br />
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row-fluid">
+        <div class="span4">
+            <div class="jdash-header">Remote IP Locations</div>
+            <div  style="background-color:#FFF;" class="box">
+                <div class="box-content">
+                    <div id="geochart" make-geo-chart></div>
+                </div>
+            </div>
+        </div>
+        <div class="span8">
+            <div class="jdash-header">IOC Notifications Per Hour</div>
+            <div  style="background-color:#FFF;" class="box">
+                <div class="box-content">
+                    <div id="barchart" make-bar-chart></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="tablesection">
+        <div class="heading col-md-12 col-lg-1">
+            title
+        </div>
+        <div class="tablecontainer col-md-12 col-lg-11">
+            <sev-table>
+        </div>
+    </div>
 </section>

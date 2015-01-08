@@ -7,17 +7,11 @@ var dataTable = require('../constructors/datatable'),
 
 module.exports = function(pool) {
 	return {
-		render: function(req, res) {
-			var database = req.user.database;
-			var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
-			var end = Math.round(new Date().getTime() / 1000);
-			if (req.query.start && req.query.end) {
-				start = req.query.start;
-				end = req.query.end;
-			}
-			var tables = [];
-			var info = [];
-			var table1 = {
+		//////////////////////
+        /////   TABLE   //////
+        //////////////////////
+        table: function(req, res){
+            var table = {
 				query: 'SELECT '+
 							'count(*) AS count,'+
 							'max(ssh.time) AS `time`, '+
@@ -34,8 +28,8 @@ module.exports = function(pool) {
 						'GROUP BY '+
 							'`lan_zone`,'+
 							'ssh.lan_ip',
-				insert: [start, end],
-				params: [
+                insert: [req.query.start, req.query.end],
+                params: [
 					{
 						title: 'Last Seen',
 						select: 'time',
@@ -59,23 +53,11 @@ module.exports = function(pool) {
 					title: 'SSH',
 					hide_stealth: req.user.hide_stealth
 				}
-			}
-			async.parallel([
-				// Table function(s)
-				function(callback) {
-					new dataTable(table1, {database: database, pool: pool}, function(err,data){
-						tables.push(data);
-						callback();
-					});
-				},
-			], function(err) { //This function gets called after the two tasks have called their "task callbacks"
-				if (err) throw console.log(err);
-				var results = {
-					info: info,
-					tables: tables
-				};
-				res.json(results);
-			});
-		}
+            }
+            new dataTable(table, {database: req.user.database, pool: pool}, function(err,data){
+                if (err) { res.status(500).end(); return }
+                res.json({table: data});
+            });
+        }
 	}
 };
