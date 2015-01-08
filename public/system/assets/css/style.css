@@ -2562,3 +2562,19 @@ table.listUser td{
     margin: 20px 0px 0px 0px;
     clear: both;
 }
+.surveyBox{
+    margin: 10px auto;
+}
+.page-header-fixed-survey{
+    background: #fff;
+    height: 100vh;
+    position: relative;
+}
+.page-container-survey{
+    margin:0px 0px 0px 0px !important;
+    padding: 0px !important;
+    display: block;
+}
+.page-content-survey{
+    background: none;
+}

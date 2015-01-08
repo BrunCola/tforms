@@ -1237,15 +1237,6 @@ angular.module('mean.pages').config(['$stateProvider',
                     title: 'Archive',
                     daterange: false
                 }
-            })
-        // SITE SURVEY
-            .state('pages.survey', {
-                url: '/survey',
-                templateUrl: 'public/pages/views/survey/survey.html',
-                data: {
-                    title: 'Site Survey',
-                    daterange: false
-                }
             })        
         // USERS
             // USER MANAGEMENT

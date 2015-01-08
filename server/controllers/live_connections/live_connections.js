@@ -69,7 +69,6 @@ module.exports = function(pool) {
                 
                 for (var i in queryResult.features) {
                     for (var y in zoneResult) {
-                        console.log(queryResult.features[i])
                         if (queryResult.features[i].properties.lan_zone === zoneResult[y].zone) {
                             queryResult.features[i].zone = {
                                 'zone': zoneResult[y].zone,
