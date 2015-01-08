@@ -55,10 +55,11 @@ module.exports = function(app, version, pool) {
             // CROSSFILTER
             app.route('/api/ioc_notifications/ioc_local/crossfilter').get(auth.permission, ioc_local.crossfilter);
             // TABLE
-            app.route('/api/ioc_notifications/ioc_local/table').get(auth.permission, ioc_local.table);
-        
+            app.route('/api/ioc_notifications/ioc_local/table').get(auth.permission, ioc_local.table);        
             // IOC LOCAL DRILL
-            var ioc_local_drill = require('../../controllers/ioc_notifications/ioc_local_drill')(pool);
-                app.route('/api/ioc_notifications/ioc_local_drill')
-                .get(auth.permission, ioc_local_drill.render);
+                var ioc_local_drill = require('../../controllers/ioc_notifications/ioc_local_drill')(pool);
+                // CROSSFILTER
+                app.route('/api/ioc_notifications/ioc_local_drill/crossfilter').get(auth.permission, ioc_local_drill.crossfilter);
+                // TABLE
+                app.route('/api/ioc_notifications/ioc_local_drill/table').get(auth.permission, ioc_local_drill.table);
 };
