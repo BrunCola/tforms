@@ -235,7 +235,6 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 if (result.params.length > 0) { // check if the there are any columns (remember it should always exist since we're in table maker)
                                     for (var n in result.params) {  
                                         var dim = result.params[n].mData
-                                        console.log(dim)
                                         params.crossfilterObj.addDimension(dim, function sort(d) { return d[dim]; });
                                     }
                                 }

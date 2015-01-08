@@ -52,9 +52,11 @@ module.exports = function(app, version, pool) {
     var index = require('../controllers/index')(version);
     fs.readFile(appPath + '/public/pages/routes/pages.js', 'utf8', function(err, data) {
         if (err) {
+            conosle.log('ERROR GENERATING ANGULAR PAGE ROUTES - SERVER RESTART REQUIRED')
             console.log(err)
         } else {
             var routes = [];
+            // push the only route not in the pages file (login)
             routes.push('/login');
             var urls = data.match(/url:\s?'(\/.*)'/g);
             for (var i in urls) {

@@ -44,7 +44,14 @@
         </td>
     </tr>
     <tr ng-repeat="row in tableData.collection() | limitTo: pageNumber | limitTo: -50">
-        <td ng-repeat="col in tableColumns">{{row[col.mData]}}</td>
+        <td ng-repeat="col in tableColumns">
+            <section ng-if="col.link">
+                <a ng-click="generateLink(row, col)">{{row[col.mData]}}</a>
+            </section>
+            <section ng-if="!col.link">
+                {{row[col.mData]}}
+            </section>
+        </td>
     </tr>
     <tr>
         <td class="etc" colspan="4">
