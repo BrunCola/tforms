@@ -245,7 +245,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                     for (var n in result.params) {  
                                         var dim = result.params[n].mData
                                         console.log(dim)
-                                        params.crossfilterObj.addDimension(dim, function(d) {console.log(this); return d });
+                                        params.crossfilterObj.addDimension(dim, function(d) { return d });
                                     }
                                 }
                                 // add-remove data function call here
