@@ -4,15 +4,17 @@ module.exports = function(app, version, pool) {
     var auth = require('../middlewares/authorization')();
     // GENERAL NETWORK
         // LOCAL
-        var local = require('../../controllers/general_network/local')(pool);
+            var local = require('../../controllers/general_network/local')(pool);
             // CROSSFILTER
             app.route('/api/general_network/local/crossfilter').get(auth.permission, local.crossfilter);
             // TABLE
             app.route('/api/general_network/local/table').get(auth.permission, local.table);
                 // LOCAL2REMOTE
-                var local2remote = require('../../controllers/general_network/local2remote')(pool);
-                    app.route('/api/general_network/local2remote')
-                    .get(auth.permission, local2remote.render);
+                    var local2remote = require('../../controllers/general_network/local2remote')(pool);
+                    // CROSSFILTER
+                    app.route('/api/general_network/local2remote/crossfilter').get(auth.permission, local2remote.crossfilter);
+                    // TABLE
+                    app.route('/api/general_network/local2remote/table').get(auth.permission, local2remote.table);
         // REMOTE
         var remote = require('../../controllers/general_network/remote')(pool);
             // CROSSFILTER
@@ -21,23 +23,25 @@ module.exports = function(app, version, pool) {
             app.route('/api/general_network/remote/table').get(auth.permission, remote.table);
                 // REMOTE2LOCAL
                 var remote2local = require('../../controllers/general_network/remote2local')(pool);
-                    app.route('/api/general_network/remote2local')
-                    .get(auth.permission, remote2local.render);
-                    // SHARED
-                    var shared = require('../../controllers/general_network/shared')(pool);
-                        app.route('/api/general_network/shared')
-                        .get(auth.permission, shared.render);
+                    // CROSSFILTER
+                    app.route('/api/general_network/remote2local/crossfilter').get(auth.permission, remote2local.crossfilter);
+                    // TABLE
+                    app.route('/api/general_network/remote2local/table').get(auth.permission, remote2local.table);
+                        // SHARED
+                        var shared = require('../../controllers/general_network/shared')(pool);
+                        // TABLE
+                        app.route('/api/general_network/shared/table').get(auth.permission, shared.table);
         // DNS BY QUERY TYPE
             var dns_by_query_type = require('../../controllers/general_network/dns_by_query_type')(pool);
             // CROSSFILTER
             app.route('/api/general_network/dns_by_query_type/crossfilter').get(auth.permission, dns_by_query_type.crossfilter);
             // TABLE
             app.route('/api/general_network/dns_by_query_type/table').get(auth.permission, dns_by_query_type.table);
-            // DNS BY QUERY TYPE LOCAL
+                // DNS BY QUERY TYPE LOCAL
                 var dns_by_query_type_local = require('../../controllers/general_network/dns_by_query_type_local')(pool);
-                app.route('/api/general_network/dns_by_query_type_local')
-                .get(auth.permission, dns_by_query_type_local.render);
-                // DNS BY QUERY TYPE DRILL
+                // TABLE
+                app.route('/api/general_network/dns_by_query_type_local/table').get(auth.permission, dns_by_query_type_local.table);
+                    // DNS BY QUERY TYPE DRILL
                     var dns_by_query_type_local_drill = require('../../controllers/general_network/dns_by_query_type_local_drill')(pool);
                     app.route('/api/general_network/dns_by_query_type_local_drill')
                     .get(auth.permission, dns_by_query_type_local_drill.render);
