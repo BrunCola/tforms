@@ -16,7 +16,7 @@ angular.module('mean.pages').controller('sshLocalController', ['$scope', '$state
             key: 'table', // bound to the response, wrap entire source if undefined
             refresh: true,
             searchable: true, // optional search param.. no if undefined
-            get: '/api/general_network/ssh_status/table',
+            get: '/api/general_network/ssh_local/table',
             run: function(data) {
                 // TODO - check if this is needed for all tables, if so - place this in the service
                 var id = 0;

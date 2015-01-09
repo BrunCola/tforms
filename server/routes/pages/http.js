@@ -9,8 +9,8 @@ module.exports = function(app, version, pool) {
             app.route('/api/http/http_by_domain/table').get(auth.permission, http_by_domain.table);
             // HTTP BY DOMAIN LOCAL
                 var http_by_domain_local = require('../../controllers/http/http_by_domain_local')(pool);
-                app.route('/api/http/http_by_domain_local')
-                .get(auth.permission, http_by_domain_local.render);
+                // TABLE
+                app.route('/api/http/http_by_domain_local/table').get(auth.permission, http_by_domain_local.table);
                 // HTTP BY DOMAIN LOCAL DRILL
                     var http_by_domain_local_drill = require('../../controllers/http/http_by_domain_local_drill')(pool);
                     app.route('/api/http/http_by_domain_local_drill')

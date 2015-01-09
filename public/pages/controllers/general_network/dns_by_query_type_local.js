@@ -16,7 +16,7 @@ angular.module('mean.pages').controller('dnsByQueryTypeLocalController', ['$scop
             key: 'table', // bound to the response, wrap entire source if undefined
             refresh: true,
             searchable: true, // optional search param.. no if undefined
-            get: '/api/ioc_notifications/ioc_events/table',
+            get: '/api/general_network/dns_by_query_type_local/table',
             run: function(data) {
                 // TODO - check if this is needed for all tables, if so - place this in the service
                 var id = 0;

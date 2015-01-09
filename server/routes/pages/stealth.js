@@ -15,8 +15,10 @@ module.exports = function(app, version, pool) {
             .post(auth.permission, stealth_op_view.set_info);
         // STEALTH CONN
             var stealth_conn = require('../../controllers/stealth/stealth_conn')(pool);
-            app.route('/api/stealth/stealth_conn')
-            .get(auth.permission, stealth_conn.render);
+            // // CROSSFILTER
+            // app.route('/api/stealth/stealth_conn/crossfilter').get(auth.permission, stealth_conn.crossfilter);
+            // // TABLE
+            // app.route('/api/stealth/stealth_conn/table').get(auth.permission, stealth_conn.table);
             // STEALTH CONN BY USER
                 var stealth_conn_by_user = require('../../controllers/stealth/stealth_conn_by_user')(pool);
                 app.route('/api/stealth/stealth_conn_by_user')

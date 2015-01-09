@@ -23,7 +23,7 @@ angular.module('mean.pages').controller('httpByUserAgentController', ['$scope', 
                     d.count = +d.count;
                 });
             },
-            get: '/api/ioc_notifications/ioc_events/crossfilter', // no get default to main url, strings will replace the default (otherwise /[from root])
+            get: '/api/http/http_by_user_agent/crossfilter', // no get default to main url, strings will replace the default (otherwise /[from root])
             visuals: [
                 {
                     type: 'barchart',
@@ -66,7 +66,7 @@ angular.module('mean.pages').controller('httpByUserAgentController', ['$scope', 
             key: 'table', // bound to the response, wrap entire source if undefined
             refresh: true,
             searchable: true, // optional search param.. no if undefined
-            get: '/api/ioc_notifications/ioc_events/table',
+            get: '/api/http/http_by_user_agent/table',
             run: function(data) {
                 // TODO - check if this is needed for all tables, if so - place this in the service
                 var id = 0;

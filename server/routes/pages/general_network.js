@@ -43,28 +43,28 @@ module.exports = function(app, version, pool) {
                 app.route('/api/general_network/dns_by_query_type_local/table').get(auth.permission, dns_by_query_type_local.table);
                     // DNS BY QUERY TYPE DRILL
                     var dns_by_query_type_local_drill = require('../../controllers/general_network/dns_by_query_type_local_drill')(pool);
-                    app.route('/api/general_network/dns_by_query_type_local_drill')
-                    .get(auth.permission, dns_by_query_type_local_drill.render);
+                    // TABLE
+                    app.route('/api/general_network/dns_by_query_type_local_drill/table').get(auth.permission, dns_by_query_type_local_drill.table);
         // SSH
         var ssh_local = require('../../controllers/general_network/ssh_local')(pool);
             // TABLE
             app.route('/api/general_network/ssh_local/table').get(auth.permission, ssh_local.table);
             // SSH REMOTE2LOCAL SSH
                 var ssh_local2remote = require('../../controllers/general_network/ssh_local2remote')(pool);
-                app.route('/api/general_network/ssh_local2remote')
-                .get(auth.permission, ssh_local2remote.render);
+                // TABLE
+                app.route('/api/general_network/ssh_local2remote/table').get(auth.permission, ssh_local2remote.table);
                 // SSH REMOTE SHARED
                     var ssh_shared = require('../../controllers/general_network/ssh_shared')(pool);
-                    app.route('/api/general_network/ssh_shared')
-                    .get(auth.permission, ssh_shared.render);
+                    // TABLE
+                    app.route('/api/general_network/ssh_shared/table').get(auth.permission, ssh_shared.table);
         // SSH REMOTE
             var ssh_remote = require('../../controllers/general_network/ssh_remote')(pool);
             // TABLE
             app.route('/api/general_network/ssh_remote/table').get(auth.permission, ssh_remote.table);
             // SSH REMOTE
                 var ssh_remote2local = require('../../controllers/general_network/ssh_remote2local')(pool);
-                app.route('/api/general_network/ssh_remote2local')
-                .get(auth.permission, ssh_remote2local.render);
+                // TABLE
+                app.route('/api/general_network/ssh_remote2local/table').get(auth.permission, ssh_remote2local.table);
         // SSH STATUS
         var ssh_status = require('../../controllers/general_network/ssh_status')(pool);
             // CROSSFILTER
@@ -73,52 +73,52 @@ module.exports = function(app, version, pool) {
             app.route('/api/general_network/ssh_status/table').get(auth.permission, ssh_status.table);
             // SSH STATUS LOCAL
                 var ssh_status_local = require('../../controllers/general_network/ssh_status_local')(pool);
-                app.route('/api/general_network/ssh_status_local')
-                .get(auth.permission, ssh_status_local.render);
+                // TABLE
+                app.route('/api/general_network/ssh_status_local/table').get(auth.permission, ssh_status_local.table);
                 // SSH STATUS LOCAL DRILL
                     var ssh_status_local_drill = require('../../controllers/general_network/ssh_status_local_drill')(pool);
-                    app.route('/api/general_network/ssh_status_local_drill')
-                    .get(auth.permission, ssh_status_local_drill.render);
+                    // TABLE
+                    app.route('/api/general_network/ssh_status_local_drill/table').get(auth.permission, ssh_status_local_drill.table);
         // LOCAL IRC
             var irc_local = require('../../controllers/general_network/irc_local')(pool);
             // TABLE
             app.route('/api/general_network/irc_local/table').get(auth.permission, irc_local.table);
             // LOCAL2REMOTE IRC
                 var irc_local2remote = require('../../controllers/general_network/irc_local2remote')(pool);
-                app.route('/api/general_network/irc_local2remote')
-                .get(auth.permission, irc_local2remote.render);
+            // TABLE
+            app.route('/api/general_network/irc_local2remote/table').get(auth.permission, irc_local2remote.table);
                 // IRC SHARED
                     var irc_shared = require('../../controllers/general_network/irc_shared')(pool);
-                    app.route('/api/general_network/irc_shared')
-                    .get(auth.permission, irc_shared.render);
+            // TABLE
+            app.route('/api/general_network/irc_shared/table').get(auth.permission, irc_shared.table);
         // REMOTE IRC
             var irc_remote = require('../../controllers/general_network/irc_remote')(pool);
             // TABLE
             app.route('/api/general_network/irc_remote/table').get(auth.permission, irc_remote.table);
             // REMOTE2LOCAL IRC
                 var irc_remote2local = require('../../controllers/general_network/irc_remote2local')(pool);
-                app.route('/api/general_network/irc_remote2local')
-                .get(auth.permission, irc_remote2local.render);
+            // TABLE
+            app.route('/api/general_network/irc_remote2local/table').get(auth.permission, irc_remote2local.table);
         // LOCAL FTP
             var ftp_local = require('../../controllers/general_network/ftp_local')(pool);
             // TABLE
             app.route('/api/general_network/ftp_local/table').get(auth.permission, ftp_local.table);
             // LOCAL2REMOTE FTP
                 var ftp_local2remote = require('../../controllers/general_network/ftp_local2remote')(pool);
-                app.route('/api/general_network/ftp_local2remote')
-                .get(auth.permission, ftp_local2remote.render);
-                // FTP SHARED
-                var ftp_shared = require('../../controllers/general_network/ftp_shared')(pool);
-                app.route('/api/general_network/ftp_shared')
-                .get(auth.permission, ftp_shared.render);
+                // TABLE
+                app.route('/api/general_network/ftp_local2remote/table').get(auth.permission, ftp_local2remote.table);
+                    // FTP SHARED
+                        var ftp_shared = require('../../controllers/general_network/ftp_shared')(pool);
+                        // TABLE
+                        app.route('/api/general_network/ftp_shared/table').get(auth.permission, ftp_shared.table);
         // REMOTE FTP
             var ftp_remote = require('../../controllers/general_network/ftp_remote')(pool);
             // TABLE
             app.route('/api/general_network/ftp_remote/table').get(auth.permission, ftp_remote.table);
             // REMOTE2LOCAL FTP
                 var ftp_remote2local = require('../../controllers/general_network/ftp_remote2local')(pool);
-                app.route('/api/general_network/ftp_remote2local')
-                .get(auth.permission, ftp_remote2local.render);
+                // TABLE
+                app.route('/api/general_network/ftp_remote2local/table').get(auth.permission, ftp_remote2local.table);
         // FIREWALL
             var firewall = require('../../controllers/general_network/firewall')(pool); 
             // TABLE
