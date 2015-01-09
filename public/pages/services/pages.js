@@ -232,10 +232,13 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 if (result.params.length > 0) { // check if the there are any columns (remember it should always exist since we're in table maker)
                                     for (var n in result.params) {  
                                         var dim = result.params[n].mData;
+                                        // push all dimension names to array
                                         dimensions.push(result.params[n].mData);
                                     }
                                 }
+                                // generate crossfilter object with our dimension names
                                 params.crossfilterObj = new Crossfilter([], '', 'persistent', dimensions);
+                                // if search is enabled, create a search dimension and push it to the search array handler
                                 if (params.searchable) {
                                     if (params.searchable === true) {
                                         // var searchDimension = params.crossfilterObj.dimension(function(d){return d});
