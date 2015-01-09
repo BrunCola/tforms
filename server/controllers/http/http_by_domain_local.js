@@ -1,9 +1,6 @@
 'use strict';
 
-var dataTable = require('../constructors/datatable'),
-    query = require('../constructors/query'),
-    config = require('../../config/config'),
-    async = require('async');
+var dataTable = require('../constructors/datatable');
 
 module.exports = function(pool) {
     return {
