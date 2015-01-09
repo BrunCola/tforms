@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$interval', 'timeFormat', 'runPage', function ($scope, $stateParams, $location, Global, $rootScope, $http, $interval, timeFormat, runPage, Crossfilter) {
+angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$interval', 'timeFormat', 'runPage', function ($scope, $stateParams, $location, Global, $rootScope, $http, $interval, timeFormat, runPage) {
     $scope.global = Global;
     var query;
     // var crossfilterTimeDimension, tableTimeDimension, rowDimension, rowGroup, geoDimension, geoGroup, barDimension, barGroup;

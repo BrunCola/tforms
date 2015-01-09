@@ -261,11 +261,20 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                     },
                     draw_: function(result, crossfilterObj, params) {
                         $scope.$broadcast('sevTable', result, crossfilterObj, params);
+                        // init wait for incoming filter
+                        $scope.$on('outFilter', function(type, value){
+                            this._inFilter(type, value)
+                        })
                     },
                     update_: function(data, term) {
                         data.dimension.unfilterAll();
                         data.dimension.filterBy('searchBox', term, tableFilter);
                         $scope.$broadcast('table-redraw');
+                    },
+                    _inFilter: function(type, vlaue) {
+                        // draw function inits a wait for incoming filter broadcasts, then applies filters that match
+                        console.log(type);
+                        console.log(value);
                     }
                 },
                 textBoxWatch: {

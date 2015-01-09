@@ -1441,13 +1441,15 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                     if (filter == true) {
                         $scope.rowChart
                             .on("filtered", function(chart, filter){
-                                $scope.tableData.filterAll();
-                                var arr = [];
-                                for(var i in dimension.top(Infinity)) {
-                                    arr.push(dimension.top(Infinity)[i].ioc);
-                                }
-                                $scope.tableData.filter(function(d) { return arr.indexOf(d.ioc) >= 0; });
-                                $scope.$broadcast('crossfilterToTable');
+                                // $scope.tableData.filterAll();
+                                // var arr = [];
+                                // for(var i in dimension.top(Infinity)) {
+                                //     arr.push(dimension.top(Infinity)[i].ioc);
+                                // }
+                                // $scope.tableData.filter(function(d) { return arr.indexOf(d.ioc) >= 0; });
+                                // $scope.$broadcast('crossfilterToTable');
+                                console.log(chart);
+                                console.log(filter)
                             });
                     }
                     if (count > 0) {
