@@ -51,8 +51,8 @@ angular.module('mean.pages').factory('tableFilter',
         return tableFilter;
     }
 );
-angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location', '$resource', 'dimensionFilter', 'tableFilter',
-    function($rootScope, $http, $location, $resource, dimensionFilter, tableFilter) {
+angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location', '$resource', 'dimensionFilter', 'tableFilter', 'Crossfilter',
+    function($rootScope, $http, $location, $resource, dimensionFilter, tableFilter, Crossfilter) {
         var runPage = function($scope, data, refreshRate) {
             if (!refreshRate) { refreshRate === 60000 } // defaults to 1 minute in case refresh is enabled on any visual, but isnt defined calling the function
             var functions = {
@@ -126,10 +126,11 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                 crossfilter:  {
                     get: function(params) {
                         if (!params.get) { return } // if specific url isn't defined use the page query
-                         // this is so we can access 'this' from within our return function
+                        params.crossfilterObj = new crossfilter();
+                        // this is so we can access 'this' from within our return function
                         // handle searching (if enabled) - we don't need to wait for a data return for this
                         var this_ = this;
-                        if (params.searchable && params.crossfilterObj) {
+                        if (params.searchable) {
                             if (params.searchable === true) {
                                 var searchDimension = params.crossfilterObj.dimension(function(d){return d});
                                 searchable.push({
@@ -221,31 +222,34 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                     get: function(params) {
                         if (!params.get) { return }
                         var this_ = this; // this is so we can access 'this' from within our return function
-                        // handle searching (if enabled) - we don't need to wait for a data return for this
-                        if (params.searchable && params.crossfilterObj) {
-                            if (params.searchable === true) {
-                                // var searchDimension = params.crossfilterObj.dimension(function(d){return d});
-                                params.crossfilterObj.addDimension('searchBox', function search(d) {
-                                    return d;
-                                });
-                                searchable.push({
-                                    type: 'table',
-                                    dimension: params.crossfilterObj,
-                                    params: params
-                                });
-                            }
-                        }
                         functions.getData_(params, functions.timeObj_(), function(result) {
                             if (result) {
                                 if (params.run && (typeof params.run === 'function')) {
                                     params.run(result);
-                                }
-                                // 
+                                }                                
                                 // create sort dimensions for table coulumns
+                                var dimensions = [];
                                 if (result.params.length > 0) { // check if the there are any columns (remember it should always exist since we're in table maker)
                                     for (var n in result.params) {  
-                                        var dim = result.params[n].mData
-                                        params.crossfilterObj.addDimension(dim, function sort(d) { return d[dim]; });
+                                        var dim = result.params[n].mData;
+                                        // push all dimension names to array
+                                        dimensions.push(result.params[n].mData);
+                                    }
+                                }
+                                // generate crossfilter object with our dimension names
+                                params.crossfilterObj = new Crossfilter([], '', 'persistent', dimensions);
+                                // if search is enabled, create a search dimension and push it to the search array handler
+                                if (params.searchable) {
+                                    if (params.searchable === true) {
+                                        // var searchDimension = params.crossfilterObj.dimension(function(d){return d});
+                                        params.crossfilterObj.addDimension('searchBox', function search(d) {
+                                            return d;
+                                        });
+                                        searchable.push({
+                                            type: 'table',
+                                            dimension: params.crossfilterObj,
+                                            params: params
+                                        });
                                     }
                                 }
                                 // add-remove data function call here

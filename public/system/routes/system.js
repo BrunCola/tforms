@@ -65,8 +65,15 @@ angular.module('mean.system').config(['$stateProvider', '$urlRouterProvider',
                     resolve: {
                         loggedin: checkLoggedIn
                     },
+                })
+                .state('survey', {
+                    url: '/survey',
+                    templateUrl: 'public/pages/views/survey/survey.html',
+                    data: {
+                        title: 'Site Survey',
+                        daterange: false
+                    },
                 });
-
         }
     ])
     .config(['$locationProvider',

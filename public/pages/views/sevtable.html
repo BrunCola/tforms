@@ -37,12 +37,6 @@
     <tr>
         <th ng-repeat="col in tableColumns"><a ng-click="tableData.sortBy(col.mData)">{{col.sTitle}}</a></th>
     </tr>
-    <tr ng-show="!loading && tableData.collection().length == 0">
-        <td colspan="3">
-            Oops! Everything disappeared &ndash;
-            <a ng-click="word = ''; tableData.unfilterAll()">clear all filters</a>.
-        </td>
-    </tr>
     <tr ng-repeat="row in tableData.collection() | limitTo: pageNumber | limitTo: -50">
         <td ng-repeat="col in tableColumns">
             <section ng-if="col.link">
