@@ -18,7 +18,7 @@ angular.module('mean.controllers.login', [])
                     }   
                 })
                 .error(function() {
-                    $scope.loginerror = 'Error: Invalid user or password';
+                    $scope.loginerror = 'Error: Invalid user, password, or two-step authentication code';
                     // Erase the token if the user fails to log in
                     delete $window.sessionStorage.token;
                 });

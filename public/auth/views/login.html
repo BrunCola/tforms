@@ -29,6 +29,15 @@
                         </div>
                     </div>
                     <div class="control-group">
+                        <label class="control-label visible-ie8 visible-ie9">6-Digit Code (for two step authentication)</label>
+                        <div class="controls">
+                            <div class="input-icon left">
+                                <i class="fa fa-clock-o"></i>
+                                 <input id="twostep" type="text" name="twostep" placeholder="6-Digit Code (Optional)" class="m-wrap placeholder-no-fix" ng-minlength="6" ng-maxlength="6" ng-model="user.twoStepCode"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group">
                         <input class="btn red pull-right" type="submit" name="action" value="Login" id="login_button" />
                     <br/></div>
                 </form>
