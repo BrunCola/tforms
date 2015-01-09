@@ -1,10 +1,10 @@
 'use strict';
 
-angular.module('mean.pages').controller('applicationLocalController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', 'timeFormat', 'runPage', 'Crossfilter', function ($scope, $stateParams, $location, Global, $rootScope, $http, timeFormat, runPage, Crossfilter) {
+angular.module('mean.pages').controller('applicationLocalController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', 'timeFormat', 'runPage', function ($scope, $stateParams, $location, Global, $rootScope, $http, timeFormat, runPage, Crossfilter) {
     $scope.global = Global;
     var query;
     
-    $scope.tableCrossfitler = new Crossfilter([], '$id', 'persistent');
+    
     // var query = '/ioc_notifications/ioc_events'; // string with no '?' at end - function should have a check for url construction
     var page = [
         /////////////////
@@ -12,7 +12,6 @@ angular.module('mean.pages').controller('applicationLocalController', ['$scope',
         /////////////////
         {
             type: 'crossfilter', // required
-            crossfilterObj: new crossfilter(), // required (if crossfilter)
             // key: 'crossfilter', // bound to the response, wrap entire source if undefined
             refresh: true,
             searchable: true, // optional search param.. no if undefined
@@ -72,7 +71,6 @@ angular.module('mean.pages').controller('applicationLocalController', ['$scope',
         /////////////////
         {
             type: 'table', // required either array or single object
-            crossfilterObj: $scope.tableCrossfitler, // required (if crossfilter)
             key: 'table', // bound to the response, wrap entire source if undefined
             refresh: true,
             searchable: true, // optional search param.. no if undefined

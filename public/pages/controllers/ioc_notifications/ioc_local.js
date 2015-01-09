@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.pages').controller('iocLocalController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', 'timeFormat', 'runPage', 'Crossfilter', function ($scope, $stateParams, $location, Global, $rootScope, $http, timeFormat, runPage, Crossfilter) {
+angular.module('mean.pages').controller('iocLocalController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', 'timeFormat', 'runPage', function ($scope, $stateParams, $location, Global, $rootScope, $http, timeFormat, runPage, Crossfilter) {
     $scope.global = Global;
     var query;
     // if ($location.$$search.start && $location.$$search.end) {
@@ -8,7 +8,7 @@ angular.module('mean.pages').controller('iocLocalController', ['$scope', '$state
     // } else {
     //     query = '/api/ioc_notifications/ioc_local?';
     // }
-    $scope.tableCrossfitler = new Crossfilter([], '$id', 'persistent');
+    
 
     var page = [
         /////////////////
@@ -16,7 +16,6 @@ angular.module('mean.pages').controller('iocLocalController', ['$scope', '$state
         /////////////////
         {
             type: 'crossfilter', // required
-            crossfilterObj: new crossfilter(), // required (if crossfilter)
             // key: 'crossfilter', // bound to the response, wrap entire source if undefined
             refresh: true,
             searchable: true, // optional search param.. no if undefined
@@ -95,7 +94,6 @@ angular.module('mean.pages').controller('iocLocalController', ['$scope', '$state
         /////////////////
         {
             type: 'table', // required either array or single object
-            crossfilterObj: $scope.tableCrossfitler, // required (if crossfilter)
             key: 'table', // bound to the response, wrap entire source if undefined
             refresh: true,
             searchable: true, // optional search param.. no if undefined

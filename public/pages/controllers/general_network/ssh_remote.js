@@ -1,10 +1,10 @@
 'use strict';
 
-angular.module('mean.pages').controller('sshRemoteController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', 'runPage', 'Crossfilter', function ($scope, $stateParams, $location, Global, $rootScope, $http, runPage, Crossfilter) {
+angular.module('mean.pages').controller('sshRemoteController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', 'runPage', function ($scope, $stateParams, $location, Global, $rootScope, $http, runPage, Crossfilter) {
     $scope.global = Global;
     var query;
 
-    $scope.tableCrossfitler = new Crossfilter([], '$id', 'persistent');
+    
     // var query = '/ioc_notifications/ioc_events'; // string with no '?' at end - function should have a check for url construction
     var page = [
         /////////////////
@@ -12,7 +12,6 @@ angular.module('mean.pages').controller('sshRemoteController', ['$scope', '$stat
         /////////////////
         {
             type: 'table', // required either array or single object
-            crossfilterObj: $scope.tableCrossfitler, // required (if crossfilter)
             key: 'table', // bound to the response, wrap entire source if undefined
             refresh: true,
             searchable: true, // optional search param.. no if undefined

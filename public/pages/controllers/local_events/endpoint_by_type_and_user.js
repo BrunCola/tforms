@@ -1,9 +1,11 @@
 'use strict';
 
-angular.module('mean.pages').controller('endpointTypeUserController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', 'runPage', 'Crossfilter', function ($scope, $stateParams, $location, Global, $rootScope, $http, runPage, Crossfilter) {
+angular.module('mean.pages').controller('endpointTypeUserController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', 'runPage', function ($scope, $stateParams, $location, Global, $rootScope, $http, runPage, Crossfilter) {
     $scope.global = Global;
 
-    var query;$scope.tableCrossfitler = new Crossfilter([], '$id', 'persistent');
+    var query;
+
+    
 
     var page = [
         /////////////////
@@ -11,7 +13,6 @@ angular.module('mean.pages').controller('endpointTypeUserController', ['$scope',
         /////////////////
         {
             type: 'table', // required either array or single object
-            crossfilterObj: $scope.tableCrossfitler, // required (if crossfilter)
             key: 'table', // bound to the response, wrap entire source if undefined
             refresh: true,
             searchable: true, // optional search param.. no if undefined
