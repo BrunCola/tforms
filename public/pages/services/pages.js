@@ -171,7 +171,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             if (params.group && (typeof params.group === 'function')) {
                                 group = params.group(dimension);
                             }
-                            $scope.$broadcast('rowchart', dimension, group, 'severity');
+                            $scope.$broadcast('rowchart', dimension, group, 'severity', params);
                         },
                         barchart: function(params, crossfilterObj) {
                             var group = false;
@@ -262,8 +262,9 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                     draw_: function(result, crossfilterObj, params) {
                         $scope.$broadcast('sevTable', result, crossfilterObj, params);
                         // init wait for incoming filter
-                        $scope.$on('outFilter', function(type, value){
-                            this._inFilter(type, value)
+                        var _this = this;
+                        $scope.$on('outFilter', function (event, type, value){
+                            _this._inFilter(type, value)
                         })
                     },
                     update_: function(data, term) {
@@ -271,7 +272,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         data.dimension.filterBy('searchBox', term, tableFilter);
                         $scope.$broadcast('table-redraw');
                     },
-                    _inFilter: function(type, vlaue) {
+                    _inFilter: function(type, value) {
                         // draw function inits a wait for incoming filter broadcasts, then applies filters that match
                         console.log(type);
                         console.log(value);
