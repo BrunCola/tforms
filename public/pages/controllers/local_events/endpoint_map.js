@@ -1,6 +1,7 @@
 'use strict';
 
-angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', 'searchFilter', '$upload', 'timeFormat', '$anchorScroll', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, searchFilter, $upload, timeFormat, $anchorScroll) {
+//angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', 'searchFilter', '$upload', 'timeFormat', '$anchorScroll', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, searchFilter, $upload, timeFormat, $anchorScroll) {
+angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', '$upload', 'timeFormat', '$anchorScroll', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, $upload, timeFormat, $anchorScroll) {
     $scope.global = Global;
     var query = '/api/local_events/endpoint_map?';
     if ($location.$$search.start && $location.$$search.end) {

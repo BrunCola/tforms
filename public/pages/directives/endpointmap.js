@@ -1,20 +1,21 @@
 'use strict';
 
-angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', '$http', '$location', 'searchFilter',function ($timeout, $rootScope, $http, $location, searchFilter) {
+//angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', '$http', '$location', 'searchFilter',function ($timeout, $rootScope, $http, $location, searchFilter) {
+angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope', '$http', '$location', function ($timeout, $rootScope, $http, $location) {
     return {
         link: function ($scope, element, attrs) {
             //$scope.$on('floorPlan', function (event) {
                 setTimeout(function () {
 
-                    // watch global search for changes.. then filter
-                    $scope.$watch('search', function(){
-                        if ($scope.searchFired === true) {
-                            //console.log($scope.searchDimension.top(Infinity))
-                            searchFilter($scope.searchDimension, $rootScope.search);
-                            $scope.$broadcast('searchUsers',$scope.searchDimension.top(Infinity));
-                        }
-                        $scope.searchFired = true;
-                    })
+                    // // watch global search for changes.. then filter
+                    // $scope.$watch('search', function(){
+                    //     if ($scope.searchFired === true) {
+                    //         //console.log($scope.searchDimension.top(Infinity))
+                    //         searchFilter($scope.searchDimension, $rootScope.search);
+                    //         $scope.$broadcast('searchUsers',$scope.searchDimension.top(Infinity));
+                    //     }
+                    //     $scope.searchFired = true;
+                    // })
 
                     var lastUserRequeried = -1;
                     var wait = (function () {
@@ -1064,40 +1065,40 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                         d3.select('.user-'+selected.id).classed("selected", true);
                     }
 
-                    ////////////////
-                    ///  SEARCH  ///
-                    ////////////////
-                    // -- display users after
-                    $scope.$on('searchUsers', function (event, filteredData){
-                        //if ($scope.floor.active) {
-                        // console.log(floorName)
-                        plot(filteredData, floorName);
-                        wait(function(){
-                            if (filteredData.length > 0) {
-                                //if (lastUserRequeried !== filteredData[0].id) {
+                    // ////////////////
+                    // ///  SEARCH  ///
+                    // ////////////////
+                    // // -- display users after
+                    // $scope.$on('searchUsers', function (event, filteredData){
+                    //     //if ($scope.floor.active) {
+                    //     // console.log(floorName)
+                    //     plot(filteredData, floorName);
+                    //     wait(function(){
+                    //         if (filteredData.length > 0) {
+                    //             //if (lastUserRequeried !== filteredData[0].id) {
 
-                                    // $scope.buildings.filter(function(d){ 
-                                    //     if (d.active = true) {
-                                    //         console.log(filteredData[0])
-                                    //         console.log(d)
-                                    //         // if ((filteredData[0].map === d.asset_name)) { 
-                                    //         //     d.active = true; 
-                                    //         // }}); // doesnt switch floors
-                                    //     }
-                                    // });
+                    //                 // $scope.buildings.filter(function(d){ 
+                    //                 //     if (d.active = true) {
+                    //                 //         console.log(filteredData[0])
+                    //                 //         console.log(d)
+                    //                 //         // if ((filteredData[0].map === d.asset_name)) { 
+                    //                 //         //     d.active = true; 
+                    //                 //         // }}); // doesnt switch floors
+                    //                 //     }
+                    //                 // });
 
-                                    $scope.requery(filteredData, 'listsearch');
-                                    //lastUserRequeried = filteredData[0].id;
-                                //} 
-                                d3.select('.user-'+filteredData[0].id).classed("selected", true);
-                            } else {
-                                // remove the info pane
-                                lastUserRequeried = -1;
-                                $scope.requery("clear", 'flooruser');   
-                            }
-                        }, 0, "filtertWait");  
-                        //}          
-                    })
+                    //                 $scope.requery(filteredData, 'listsearch');
+                    //                 //lastUserRequeried = filteredData[0].id;
+                    //             //} 
+                    //             d3.select('.user-'+filteredData[0].id).classed("selected", true);
+                    //         } else {
+                    //             // remove the info pane
+                    //             lastUserRequeried = -1;
+                    //             $scope.requery("clear", 'flooruser');   
+                    //         }
+                    //     }, 0, "filtertWait");  
+                    //     //}          
+                    // })
                     plot(data, floorName);
 
             }, 0);
@@ -1105,7 +1106,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
     };
 }]);
 
-angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootScope', '$http', '$location', 'searchFilter', function ($timeout, $rootScope, $http, $location, searchFilter) {
+angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootScope', '$http', '$location', function ($timeout, $rootScope, $http, $location) {
     return {
         link: function ($scope, element, attrs) {
             //$scope.$on('floorPlan', function (event) {
@@ -1697,7 +1698,7 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
     };
 }]);
 
-angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootScope', '$http', '$location', 'searchFilter', 'anchorSmoothScroll', function ($timeout, $rootScope, $http, $location, searchFilter, anchorSmoothScroll) {
+angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootScope', '$http', '$location', 'anchorSmoothScroll', function ($timeout, $rootScope, $http, $location, anchorSmoothScroll) {
     return {
         link: function ($scope, element, attrs) {
             //$scope.$on('floorPlan', function (event) {

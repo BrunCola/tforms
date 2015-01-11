@@ -265,5 +265,131 @@ module.exports = function(pool) {
                 res.json(results);
             });
         }
+
+        // crossfilter: function(req, res) {
+        //     var get = {
+        //         query: 'SELECT '+
+        //                 'count(*) as count,'+
+        //                 '`time`,'+
+        //                 '`remote_country`,'+
+        //                 '`ioc_severity`,'+
+        //                 '`ioc`, '+
+        //                 '(sum(`in_bytes`) / 1048576) AS in_bytes, '+
+        //                 '(sum(`out_bytes`) / 1048576) AS out_bytes '+
+        //             'FROM '+
+        //                 '`conn_ioc` '+
+        //             'WHERE '+
+        //                 '`time` BETWEEN ? AND ? '+
+        //                 'AND `ioc_count` > 0 '+
+        //                 'AND `trash` IS NULL '+
+        //             'GROUP BY '+
+        //                 'month(from_unixtime(`time`)),'+
+        //                 'day(from_unixtime(`time`)),'+
+        //                 'hour(from_unixtime(`time`)),'+
+        //                 '`remote_country`,'+
+        //                 '`ioc_severity`,'+
+        //                 '`ioc` '+
+        //             'ORDER BY '+
+        //                 '`ioc_severity` DESC ',
+        //         insert: [req.query.start, req.query.end]
+        //     }
+        //     new query(get, {database: req.user.database, pool: pool}, function(err,data){
+        //         if (err) { res.status(500).end(); return }
+        //         res.json(data);
+        //     });
+        // },
+        // //////////////////////
+        // /////   TABLE   //////
+        // //////////////////////
+        // table: function(req, res){
+        //     var table = {
+        //         query: 'SELECT '+
+        //                     'max(`time`) AS `time`,'+
+        //                     '`lan_stealth`,'+
+        //                     '`lan_zone`,'+
+        //                     '`lan_machine`,'+
+        //                     '`lan_user`,'+
+        //                     '`lan_ip`,'+
+        //                     '`remote_ip`,'+
+        //                     '`remote_asn_name`,'+
+        //                     '`remote_country`,'+
+        //                     '`remote_cc`,'+
+        //                     '`ioc_childID`,'+
+        //                     'sum(`in_packets`) AS in_packets,'+
+        //                     'sum(`out_packets`) AS out_packets,'+
+        //                     'sum(`in_bytes`) AS in_bytes,'+
+        //                     'sum(`out_bytes`) AS out_bytes,'+
+        //                     '`ioc`,'+
+        //                     '`ioc_typeIndicator`,'+
+        //                     '`ioc_typeInfection`,'+
+        //                     '`ioc_rule`,'+
+        //                     '`ioc_severity`,'+
+        //                     '`ioc_attrID`,'+
+        //                     'sum(`proxy_blocked`) AS proxy_blocked,'+
+        //                     'sum(`ioc_count`) AS ioc_count '+
+        //                 'FROM '+
+        //                     '`conn_ioc` '+
+        //                 'WHERE '+
+        //                     '`time` BETWEEN ? AND ? '+
+        //                     'AND `ioc_count` > 0 '+
+        //                     'AND `trash` IS NULL '+
+        //                 'GROUP BY '+
+        //                     '`lan_zone`,'+
+        //                     '`lan_ip`,'+
+        //                     '`remote_ip`,'+
+        //                     '`ioc`',
+        //         insert: [req.query.start, req.query.end],
+        //         params: [
+        //             {
+        //                 title: 'Last Seen',
+        //                 select: 'time',
+        //                 dView: true,
+        //                 link: {
+        //                     type: 'ioc_events_drilldown',
+        //                     val: ['lan_zone','lan_ip','remote_ip','ioc','ioc_attrID','lan_user','ioc_childID'],
+        //                     crumb: false
+        //                 },
+        //             },
+        //             { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
+        //             { title: 'ABP', select: 'proxy_blocked', hide_proxy: [1] },
+        //             { title: 'Severity', select: 'ioc_severity' },
+        //             { title: 'IOC Hits', select: 'ioc_count' },
+        //             { title: 'IOC', select: 'ioc' },
+        //             { title: 'IOC Type', select: 'ioc_typeIndicator' },
+        //             { title: 'IOC Stage', select: 'ioc_typeInfection' },
+        //             { title: 'IOC Rule', select: 'ioc_rule' },
+        //             { title: 'Zone', select: 'lan_zone' },
+        //             { title: 'Local Machine', select: 'lan_machine' },
+        //             { title: 'Local User', select: 'lan_user' },
+        //             { title: 'Local IP', select: 'lan_ip' },
+        //             { title: 'Remote IP', select: 'remote_ip' },
+        //             { title: 'Remote Country', select: 'remote_country' },
+        //             { title: 'Flag', select: 'remote_cc', },
+        //             { title: 'Remote ASN', select: 'remote_asn_name' },
+        //             { title: 'Bytes to Remote', select: 'in_bytes'},
+        //             { title: 'Bytes from Remote', select: 'out_bytes'},
+        //             { title: 'Packets to Remote', select: 'in_packets', dView: true  },
+        //             { title: 'Packets from Remote', select: 'out_packets', dView: false  },
+        //             {
+        //                 title: '',
+        //                 select: null,
+        //                 dView: true,
+        //                 link: {
+        //                     type: 'Archive',
+        //                 },
+        //             }],
+        //             settings: {
+        //                 sort: [[0, 'desc']],
+        //                 div: 'table',
+        //                 title: 'Indicators of Compromise (IOC) Notifications',
+        //                 hide_stealth: req.user.hide_stealth,
+        //                 hide_proxy: req.user.hide_proxys
+        //             }
+        //     }
+        //     new dataTable(table, {database: req.user.database, pool: pool}, function(err,data){
+        //         if (err) { res.status(500).end(); return }
+        //         res.json({table: data});
+        //     });
+        // }
     }
 };
