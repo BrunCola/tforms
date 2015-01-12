@@ -21,7 +21,7 @@ module.exports = function(pool) {
                             return;
                         } else {
                             var ts = Math.round((new Date()).getTime() / 1000);
-                            console.log('Email/login: '+profle.email+', Database: '+profle.database+', Time: '+ts);
+                            console.log('Email/login: '+profile.email+', Database: '+profile.database+', Time: '+ts);
                             var token = jwt.sign(profile, config.sessionSecret, { expiresInMinutes: 60*10 });
                             res.json({ token: token, twoAuth: false }).end();
                             return;
