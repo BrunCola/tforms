@@ -48,6 +48,7 @@ module.exports = function(app, version, pool) {
     } 
 
     app.use('/api', expressJwt({secret: config.sessionSecret}));
+    app.use('/2factor', expressJwt({secret: config.twoAuthSecret}));
     // IMPORTANT: this automatically sets all the angular url routes in node (by parsing the public/pages/routes file)
     var index = require('../controllers/index')(version);
     fs.readFile(appPath + '/public/pages/routes/pages.js', 'utf8', function(err, data) {
@@ -58,6 +59,8 @@ module.exports = function(app, version, pool) {
             var routes = [];
             // push the only route not in the pages file (login)
             routes.push('/login');
+            // also push 2factor page
+            routes.push('/2step');
             var urls = data.match(/url:\s?'(\/.*)'/g);
             for (var i in urls) {
                 routes.push(urls[i].match(/'(.*)'/)[1]);

@@ -15,4 +15,7 @@ module.exports = function (app, version, pool) {
 	app.route('/auth')
 		.post(users.login);
 
+	app.route('/2factor/verify')
+		.post(users.twoStep);
+
 };
