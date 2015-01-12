@@ -77,7 +77,16 @@ angular.module('mean.pages').controller('sshStatusController', ['$scope', '$stat
                         xAxis: '',
                         yAxis: ''
                     },
-                    dimension: function(cfObj) { return cfObj.dimension(function(d) {return d.pie_dimension })},
+                    dimension: function(cfObj) { 
+                        var countDimension = cfObj.dimension(function(d) { return d.count }).top(10).map(function(d){ return d.pie_dimension });
+                        return cfObj.dimension(function(d) { 
+                            if(countDimension.indexOf(d.pie_dimension) !== -1) {
+                                return d.pie_dimension;
+                            } else {
+                                return "Other";
+                            }
+                        });
+                    },
                     group: function(dimension){ // groups are optional and should default to a reduce if undefined
                         return dimension.group().reduceSum(function (d) { return d.count; });
                     },
@@ -107,10 +116,6 @@ angular.module('mean.pages').controller('sshStatusController', ['$scope', '$stat
     ];
     $rootScope.search = $scope.search;
     runPage($scope, page);
-
-
-
-
 
 
 
