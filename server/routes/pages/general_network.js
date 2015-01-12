@@ -35,6 +35,8 @@ module.exports = function(app, version, pool) {
             var dns_by_query_type = require('../../controllers/general_network/dns_by_query_type')(pool);
             // CROSSFILTER
             app.route('/api/general_network/dns_by_query_type/crossfilter').get(auth.permission, dns_by_query_type.crossfilter);
+            // CROSSFILTER PIE
+            app.route('/api/general_network/dns_by_query_type/crossfilterpie').get(auth.permission, dns_by_query_type.crossfilterpie);
             // TABLE
             app.route('/api/general_network/dns_by_query_type/table').get(auth.permission, dns_by_query_type.table);
                 // DNS BY QUERY TYPE LOCAL

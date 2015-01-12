@@ -7,6 +7,8 @@ module.exports = function(app, version, pool) {
         var app_by_application = require('../../controllers/applications/app_by_application')(pool);
             // CROSSFILTER
             app.route('/api/applications/app_by_application/crossfilter').get(auth.permission, app_by_application.crossfilter);
+            // CROSSFILTER PIE
+            app.route('/api/applications/app_by_application/crossfilterpie').get(auth.permission, app_by_application.crossfilterpie);
             // TABLE
             app.route('/api/applications/app_by_application/table').get(auth.permission, app_by_application.table);
             // APPLICATION DRILL
@@ -47,6 +49,8 @@ module.exports = function(app, version, pool) {
         var app_by_remote_ip = require('../../controllers/applications/app_by_remote_ip')(pool);
             // CROSSFILTER
             app.route('/api/applications/app_by_remote_ip/crossfilter').get(auth.permission, app_by_remote_ip.crossfilter);
+            // CROSSFILTER PIE
+            app.route('/api/applications/app_by_remote_ip/crossfilterpie').get(auth.permission, app_by_remote_ip.crossfilterpie);
             // TABLE
             app.route('/api/applications/app_by_remote_ip/table').get(auth.permission, app_by_remote_ip.table);
         // L7 REMOTE APP

@@ -1,37 +1,10 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-config = require('../../config/config'),
-async = require('async'),
 query = require('../constructors/query');
 
 module.exports = function(pool) {
     return {
-            // var piechartQ = {
-            //     query: 'SELECT '+
-            //              'time,'+
-            //              '`event_type` AS `pie_dimension`, '+
-            //              'count(*) AS `count` '+
-            //          'FROM '+
-            //              '`endpoint_events` '+
-            //          'WHERE '+
-            //              '`time` BETWEEN ? AND ? '+
-            //              'AND `event_type` !=\'-\' '+
-            //          'GROUP BY '+
-            //              '`event_type`',
-            //     insert: [start, end]
-            // }
-            // async.parallel([
-            //     // Piechart function
-            //     function(callback) {
-            //         new query(piechartQ, {database: database, pool: pool}, function(err,data){
-            //             piechart = data;
-            //             callback();
-            //         });
-            //     }
-            // ]
-
-
         crossfilter: function(req, res) {
             var get = {
                 query: 'SELECT '+
@@ -48,6 +21,26 @@ module.exports = function(pool) {
                 insert: [req.query.start, req.query.end]
             }
             new query(get, {database: req.user.database, pool: pool}, function(err,data){
+                if (err) { res.status(500).end(); return }
+                res.json(data);
+            });
+        },
+        crossfilterpie: function(req, res) {
+            var piechart = {
+                query: 'SELECT '+
+                        'time,'+
+                        '`event_type` AS `pie_dimension`, '+
+                        'count(*) AS `count` '+
+                    'FROM '+
+                        '`endpoint_events` '+
+                    'WHERE '+
+                        '`time` BETWEEN ? AND ? '+
+                        'AND `event_type` !=\'-\' '+
+                    'GROUP BY '+
+                        '`event_type`',
+                insert: [req.query.start, req.query.end]
+            }
+            new query(piechart, {database: req.user.database, pool: pool}, function(err,data){
                 if (err) { res.status(500).end(); return }
                 res.json(data);
             });

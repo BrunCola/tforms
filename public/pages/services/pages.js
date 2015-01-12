@@ -193,6 +193,9 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 case 'bar':
                                     $scope.$broadcast('barchart', dimension, group, 'bar');
                                     break;
+                                case 'stealthtraffic_v3':
+                                    $scope.$broadcast('barchart', dimension, group, 'stealthtraffic_v3');
+                                    break;
                             }
                         },
                         piechart: function(params, crossfilterObj) {
