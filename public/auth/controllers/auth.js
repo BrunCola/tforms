@@ -10,6 +10,7 @@ angular.module('mean.controllers.login', [])
         $scope.login = function(){
             $http.post('/login', $scope.user)
                 .success(function(user){
+                    console.log($scope.global.user)
                     $window.sessionStorage.token = user.token;
                     if ($scope.global.user.first_login === 1) {
                         $location.url('/first_login');
