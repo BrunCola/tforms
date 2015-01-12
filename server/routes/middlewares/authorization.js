@@ -1,5 +1,7 @@
 'use strict';
 
+var config = require('../../config/config')
+
 module.exports = function() {
     return {
         // test: function(req, res, next) {
@@ -18,6 +20,12 @@ module.exports = function() {
         //     next();
         // },
         permission: function(req, res, next) {
+            // insert 24 hour window if there is no time defined in query
+            if (!(req.query.start && req.query.end)) {
+                req.query.start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
+                req.query.end = Math.round(new Date().getTime() / 1000);
+            }
+
         //     if (req.user === undefined) { return }
         //     req.user.blacklist = []; // remove this once check function is created
         //     // check if logged in

@@ -12,7 +12,7 @@ module.exports = function (app, version, pool) {
 		.get(users.loggedin)
 		
 	// Setting the local strategy route
-	app.route('/login')
+	app.route('/auth')
 		.post(users.login);
 
 };

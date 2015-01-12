@@ -13,9 +13,9 @@ module.exports = function(pool) {
 			}
 			new query(archive, {database: database, pool: pool}, function(err,data){
 				if (err) {
-					res.send(500);
+					res.status(500).end();
 				} else {
-					res.send(200);
+					res.status(200).end();
 				}
 			});
 		},
@@ -27,9 +27,9 @@ module.exports = function(pool) {
 			}
 			new query(restore, {database: database, pool: pool}, function(err,data){
 				if (err) {
-					res.send(500);
+					res.status(500).end();
 				} else {
-					res.send(200);
+					res.status(200).end();
 				}
 			});
 		},
@@ -41,9 +41,9 @@ module.exports = function(pool) {
 			}
 			new query(clear, {database: database, pool: pool}, function(err,data){
 				if (err) {
-					res.send(500);
+					res.status(500).end();
 				} else {
-					res.send(200);
+					res.status(200).end();
 				}
 			});
 		},
@@ -51,16 +51,16 @@ module.exports = function(pool) {
 			console.log(req.body.twoStepAuth);
 			if (req.body.newPass) {
 				bcrypt.hash(req.body.newPass, 10, function( err, bcryptedPassword) {
-					if (err) { res.send(500) }
+					if (err) { res.status(500).end() }
 					var update = {
 						query: "UPDATE `user` SET `email`= ?, `password`= ?, two_step_auth = ? WHERE `email` = ?",
 						insert: [req.body.newemail, bcryptedPassword, req.body.twoStepAuth, req.user.email]
 					}
 					new query(update, {database: 'rp_users', pool: pool}, function(err,data){
 						if (err) {
-							res.send(500);
+							res.status(500).end();
 						} else {
-							res.send(200);
+							res.status(200).end();
 						}
 					});
 				});
@@ -71,9 +71,9 @@ module.exports = function(pool) {
 				}
 				new query(update, {database: 'rp_users', pool: pool}, function(err,data){
 					if (err) {
-						res.send(500);
+						res.status(500).end();
 					} else {
-						res.send(200);
+						res.status(200).end();
 					}
 				});
 			}
@@ -87,13 +87,13 @@ module.exports = function(pool) {
 				}
 				new query(clear, {database: 'rp_users', pool: pool}, function(err,data){
 					if (err) {
-						res.send(500);
+						res.status(500).end();
 					} else {
 						res.json(data[0]);
 					}
 				});
 			} else {
-				res.send(500);
+				res.status(500).end();
 			}
 		},
 		add_user_to_map: function(req, res) {
@@ -107,13 +107,13 @@ module.exports = function(pool) {
 				}
 				new query(update_user_ref, {database: database, pool: pool}, function(err,data){
 					if (err) {
-						res.send(500);
+						res.status(500).end();
 					} else {
-						res.send(200);
+						res.status(200).end();
 					}
 				});
 			}else{
-				res.send(500);
+				res.status(500).end();
 			}
 		},
 		change_custom_user: function(req, res) {
@@ -127,13 +127,13 @@ module.exports = function(pool) {
 				}
 				new query(update_user_ref, {database: database, pool: pool}, function(err,data){
 					if (err) {
-						res.send(500);
+						res.status(500).end();
 					} else {
-						res.send(200);
+						res.status(200).end();
 					}
 				});
 			}else{
-				res.send(500);
+				res.status(500).end();
 			}
 		}
 	}

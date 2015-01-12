@@ -450,9 +450,9 @@ module.exports = function(pool) {
                     }                
                     new query(delete_floor, {database: database, pool: pool}, function(err,data){
                         if (err) {
-                            res.send(500);
+                            res.status(500).end();
                         } else {
-                            res.send(200);
+                            res.status(200).end();
                         }
                     });
                 }
@@ -463,9 +463,9 @@ module.exports = function(pool) {
                     }                
                     new query(delete_building, {database: database, pool: pool}, function(err,data){
                         if (err) {
-                            res.send(500);
+                            res.status(500).end();
                         } else {
-                            res.send(200);
+                            res.status(200).end();
                         }
                     });
             } else if (req.query.type === 'saveFloorScale') {
@@ -475,7 +475,7 @@ module.exports = function(pool) {
                 }                
                 new query(update_floor, {database: database, pool: pool}, function(err,data){
                     if (err) {
-                        res.send(500);
+                        res.status(500).end();
                     }
                 });
             } else if (req.query.type === 'editFloorInfo') {
@@ -485,7 +485,7 @@ module.exports = function(pool) {
                 }                
                 new query(update_floor, {database: database, pool: pool}, function(err,data){
                     if (err) {
-                        res.send(500);
+                        res.status(500).end();
                     }
                 });
             } else if (req.query.type === 'newFloor') {
@@ -495,7 +495,7 @@ module.exports = function(pool) {
                         insert: ["",req.body.asset_name,"","map",req.body.custom_name,800,600,1,req.body.building]
                     }
                     new query(insert_map_image, {database: database, pool: pool}, function(err,data){
-                        res.send(200);
+                        res.status(200).end();
                     });
                 }
             } else if (req.query.type === 'newBuilding') {
@@ -505,7 +505,7 @@ module.exports = function(pool) {
                         insert: ["",req.body.asset_name,"","building",req.body.custom_name,800,600,1,null]
                     }
                     new query(insert_building, {database: database, pool: pool}, function(err,data){
-                        res.send(200);
+                        res.status(200).end();
                     });
                 }
             } else if (req.query.type === 'editFloorPos') {
@@ -514,7 +514,7 @@ module.exports = function(pool) {
                     insert: [req.body.x, req.body.y, req.body.map_name]
                 }
                 new query(edit_floor_pos, {database: database, pool: pool}, function(err,data){
-                    res.send(200);
+                    res.status(200).end();
                 });
             }
         }

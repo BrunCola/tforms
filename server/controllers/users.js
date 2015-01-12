@@ -2,8 +2,12 @@
 
 var config = require('../config/config'),
     bcrypt = require('bcrypt'),
+<<<<<<< HEAD
     jwt = jwt = require('jsonwebtoken'),
     jsSHA = require('jssha');
+=======
+    jwt = require('jsonwebtoken');
+>>>>>>> stateless2
 
 module.exports = function(pool) {
     return {
@@ -53,12 +57,13 @@ module.exports = function(pool) {
             }
             pool.query("SELECT * FROM user WHERE email = ? limit 1", [req.body.email], function(err, data){
                 var ts = Math.round((new Date()).getTime() / 1000);
-                console.log('Email/login: '+data[0].email+', Database:'+data[0].database+', Time: '+ts)
-                if (data.length !== 1) { res.send(401, 'Wrong user or password'); return; }
+                console.log('Email/login: '+data[0].email+', Database: '+data[0].database+', Time: '+ts)
+                if (data.length !== 1) { res.send(401, 'Wrong user or password').end(); return; }
                 var profile = data[0];
                 bcrypt.compare(req.body.password, profile.password, function(err, doesMatch){
                     console.log(profile)
                     if (doesMatch){
+<<<<<<< HEAD
                         //check if the user has opted to use two step authentication
                         if (profile.two_step_auth) {
                             if(req.body.twoStepCode) {//if they have entered a code
@@ -82,8 +87,13 @@ module.exports = function(pool) {
                             res.json({ token: token });
                             return;
                         }
+=======
+                        var token = jwt.sign(profile, config.sessionSecret, { expiresInMinutes: 60*10 }); // 60*10
+                        res.json({ token: token });
+                        return;
+>>>>>>> stateless2
                     } else {
-                        res.send(401, 'Wrong user or password');
+                        res.status(401).body('Wrong user or password');
                         return;
                     }
 
@@ -102,13 +112,12 @@ module.exports = function(pool) {
             });
         },
         loggedin: function(req, res) {
-            // console.log(req.user);
             // console.log('LIMIT THIS RETURN')
             if (req.user) {
-                res.send(200, req.user)
+                res.status(200).json(req.user);
             } else {
                 console.log('NOT LOGGED IN')
-                res.send(401)
+                res.status(401).end();
             }
         }
     }

@@ -8,15 +8,11 @@ angular.module('mean.controllers.login', [])
         $scope.version = $scope.global.version;
         // Register the login() function
         $scope.login = function(){
-            $http.post('/login', $scope.user)
+            $http.post('/auth', $scope.user)
                 .success(function(user){
                     console.log($scope.global.user)
                     $window.sessionStorage.token = user.token;
-                    if ($scope.global.user.first_login === 1) {
-                        $location.url('/first_login');
-                    } else {
-                        $location.url('/home');
-                    }   
+                    $location.url('/home');
                 })
                 .error(function() {
                     $scope.loginerror = 'Error: Invalid user, password, or two-step authentication code';

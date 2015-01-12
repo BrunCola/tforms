@@ -16,7 +16,7 @@ angular.module('mean.pages').config(['$stateProvider',
         // IOC NOTIFICATIONS
             // IOC EVENTS
                 .state('pages.ioc_events', {
-                    url: '/ioc_events?start&end',
+                    url: '/ioc_events',
                     templateUrl: 'public/pages/views/ioc_notifications/ioc_events.html',
                     data: {
                         title: 'Indicator of Compromise Events',
@@ -25,7 +25,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
             // IOC EVENTS DRILLDOWN
                 .state('pages.ioc_events_drilldown', {
-                        url: '/ioc_events_drilldown?start&end&lan_ip&remote_ip&ioc',
+                        url: '/ioc_events_drilldown',
                         templateUrl: 'public/pages/views/ioc_notifications/ioc_events_drilldown.html',
                         data: {
                             title: 'Indicator of Compromise Events',
@@ -34,7 +34,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
             // IOC REMOTE IPS
                 .state('pages.ioc_remote', {
-                    url: '/ioc_remote?start&end',
+                    url: '/ioc_remote',
                     templateUrl: 'public/pages/views/ioc_notifications/ioc_remote.html',
                     data: {
                         title: 'Indicator of Compromise Events Sorted by Remote IP',
@@ -43,7 +43,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // IOC REMOTE2LOCAL
                     .state('pages.ioc_remote2local', {
-                        url: '/ioc_remote2local?start&end&remote_ip&ioc',
+                        url: '/ioc_remote2local',
                         templateUrl: 'public/pages/views/ioc_notifications/ioc_remote2local.html',
                         data: {
                             title: 'Indicator of Compromise Events Sorted by Remote IP',
@@ -52,7 +52,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
             // IOC LOCAL IPS
                 .state('pages.ioc_local', {
-                    url: '/ioc_local?start&end',
+                    url: '/ioc_local',
                     templateUrl: 'public/pages/views/ioc_notifications/ioc_local.html',
                     data: {
                         title: 'Indicator of Compromise Events Sorted by Local IP',
@@ -61,7 +61,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // IOC LOCAL IPS DRILL
                     .state('pages.ioc_local_drill', {
-                        url: '/ioc_local_drill?start&end&lan_zone&lan_ip',
+                        url: '/ioc_local_drill',
                         templateUrl: 'public/pages/views/ioc_notifications/ioc_local_drill.html',
                         data: {
                             title: 'Indicator of Compromise Events Sorted by Local IP',
@@ -71,7 +71,7 @@ angular.module('mean.pages').config(['$stateProvider',
         // GENERAL NETWORK
             // LOCAL IPS
                 .state('pages.local', {
-                    url: '/local?start&end',
+                    url: '/local',
                     templateUrl: 'public/pages/views/general_network/local.html',
                     data: {
                         title: 'Local IP Bandwidth Use',
@@ -80,7 +80,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // REMOTE2LOCAL
                     .state('pages.local2remote', {
-                        url: '/local2remote?start&end&lan_zone&lan_ip',
+                        url: '/local2remote',
                         templateUrl: 'public/pages/views/general_network/local2remote.html',
                         data: {
                             title: 'Local / Remote Bandwidth Use',
@@ -93,7 +93,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
                     // IPS SHARED
                         .state('pages.shared', {
-                            url: '/shared?start&end&lan_ip&lan_zone&remote_ip',
+                            url: '/shared',
                             templateUrl: 'public/pages/views/general_network/shared.html',
                             data: {
                                 title: 'Conn Local/Remote Shared',
@@ -107,7 +107,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         })
             // REMOTE IPS
                 .state('pages.remote', {
-                    url: '/remote?start&end',
+                    url: '/remote',
                     templateUrl: 'public/pages/views/general_network/remote.html',
                     data: {
                         title: 'Remote IP Bandwidth Use',
@@ -116,7 +116,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // REMOTE2LOCAL
                     .state('pages.remote2Local', {
-                        url: '/remote2local?start&end&remote_ip',
+                        url: '/remote2local',
                         templateUrl: 'public/pages/views/general_network/remote2local.html',
                         data: {
                             title: 'New Remote IPs Detected',
@@ -128,7 +128,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
             // DNS BY QUERY TYPE
                 .state('pages.dns_by_query_type', {
-                    url: '/dns_by_query_type?start&end',
+                    url: '/dns_by_query_type',
                     templateUrl: 'public/pages/views/general_network/dns_by_query_type.html',
                     data: {
                         title: 'DNS by Query Type',
@@ -137,7 +137,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // DNS BY QUERY TYPE LOCAL
                     .state('pages.dns_by_query_type_local', {
-                        url: '/dns_by_query_type_local?start&end&qtype',
+                        url: '/dns_by_query_type_local',
                         templateUrl: 'public/pages/views/general_network/dns_by_query_type_local.html',
                         data: {
                             title: 'Local DNS by Query Type',
@@ -149,7 +149,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
                     // DNS BY QUERY TYPE DRILL
                         .state('pages.dns_by_query_type_local_drill', {
-                            url: '/dns_by_query_type_local_drill?start&end&qtype&lan_zone&lan_ip',
+                            url: '/dns_by_query_type_local_drill',
                             templateUrl: 'public/pages/views/general_network/dns_by_query_type_local_drill.html',
                             data: {
                                 title: 'Local DNS by Query Type',
@@ -163,7 +163,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         })
             // LOCAL FTP 
                 .state('pages.ftp_local`', {
-                    url: '/ftp_local?start&end',
+                    url: '/ftp_local',
                     templateUrl: 'public/pages/views/general_network/ftp_local.html',
                     data: {
                         title: 'Local FTP',
@@ -172,7 +172,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // LOCAL2REMOTE FTP
                     .state('pages.ftp_local2remote', {
-                        url: '/ftp_local2remote?start&end&lan_ip&lan_zone',
+                        url: '/ftp_local2remote',
                         templateUrl: 'public/pages/views/general_network/ftp_local2remote.html',
                         data: {
                             title: 'Local to Remote FTP',
@@ -185,7 +185,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
                     // FTP SHARED
                         .state('pages.ftp_shared', {
-                            url: '/ftp_shared?start&end&lan_ip&lan_zone&remote_ip',
+                            url: '/ftp_shared',
                             templateUrl: 'public/pages/views/general_network/ftp_shared.html',
                             data: {
                                 title: 'FTP Local/Remote Shared',
@@ -199,7 +199,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         })
             // REMOTE FTP 
                 .state('pages.ftp_remote', {
-                    url: '/ftp_remote?start&end',
+                    url: '/ftp_remote',
                     templateUrl: 'public/pages/views/general_network/ftp_remote.html',
                     data: {
                         title: 'Remote FTP',
@@ -208,7 +208,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // REMOTE2LOCAL FTP
                     .state('pages.ftp_remote2local', {
-                        url: '/ftp_remote2local?start&end&remote_ip',
+                        url: '/ftp_remote2local',
                         templateUrl: 'public/pages/views/general_network/ftp_remote2local.html',
                         data: {
                             title: 'Remote to Local FTP',
@@ -220,7 +220,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
             // SSH STATUS
                 .state('pages.ssh_status', {
-                    url: '/ssh_status?start&end',
+                    url: '/ssh_status',
                     templateUrl: 'public/pages/views/general_network/ssh_status.html',
                     data: {
                         title: 'SSH Status',
@@ -229,7 +229,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // SSH STATUS LOCAL
                     .state('pages.ssh_status_local', {
-                        url: '/ssh_status_local?start&end&status_code',
+                        url: '/ssh_status_local',
                         templateUrl: 'public/pages/views/general_network/ssh_status_local.html',
                         data: {
                             title: 'Local SSH Status',
@@ -241,7 +241,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
                     // SSH STATUS LOCAL DRILL
                         .state('pages.ssh_status_local_drill', {
-                            url: '/ssh_status_local_drill?start&end&lan_ip&lan_zone&status_code',
+                            url: '/ssh_status_local_drill',
                             templateUrl: 'public/pages/views/general_network/ssh_status_local_drill.html',
                             data: {
                                 title: 'SSH Local/Remote Shared',
@@ -255,7 +255,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         })
             // SSH LOCAL
                 .state('pages.ssh_local', {
-                    url: '/ssh_local?start&end',
+                    url: '/ssh_local',
                     templateUrl: 'public/pages/views/general_network/ssh_local.html',
                     data: {
                         title: 'Local SSH',
@@ -264,7 +264,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // SSH LOCAL2REMOTE
                     .state('pages.ssh_local2remote', {
-                        url: '/ssh_local2remote?start&end&lan_ip',
+                        url: '/ssh_local2remote',
                         templateUrl: 'public/pages/views/general_network/ssh_local2remote.html',
                         data: {
                             title: 'SSH Local to Remote',
@@ -276,7 +276,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
                     // SSH SHARED
                     .state('pages.ssh_shared', {
-                        url: '/ssh_shared?start&end&lan_ip&lan_zone&remote_ip',
+                        url: '/ssh_shared',
                         templateUrl: 'public/pages/views/general_network/ssh_shared.html',
                         data: {
                             title: 'SSH Local/Remote Shared',
@@ -290,7 +290,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
             // SSH REMOTE
                 .state('pages.ssh_remote', {
-                    url: '/ssh_remote?start&end',
+                    url: '/ssh_remote',
                     templateUrl: 'public/pages/views/general_network/ssh_remote.html',
                     data: {
                         title: 'Remote SSH',
@@ -299,7 +299,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // SSH REMOTE2LOCAL
                     .state('pages.ssh_remote2local', {
-                        url: '/ssh_remote2local?start&end&remote_ip',
+                        url: '/ssh_remote2local',
                         templateUrl: 'public/pages/views/general_network/ssh_remote2local.html',
                         data: {
                             title: 'SSH Remote to Local',
@@ -311,7 +311,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
             // LOCAL IRC
                 .state('pages.irc_local', {
-                    url: '/irc_local?start&end',
+                    url: '/irc_local',
                     templateUrl: 'public/pages/views/general_network/irc_local.html',
                     data: {
                         title: 'Local IRC',
@@ -320,7 +320,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // LOCAL2REMOTE IRC
                     .state('pages.irc_local2remote', {
-                        url: '/irc_local2remote?start&end&lan_ip&lan_zone',
+                        url: '/irc_local2remote',
                         templateUrl: 'public/pages/views/general_network/irc_local2remote.html',
                         data: {
                             title: 'Local to Remote IRC',
@@ -333,7 +333,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
                     // IRC SHARED
                         .state('pages.irc_shared', {
-                            url: '/irc_shared?start&end&lan_ip&lan_zone&remote_ip',
+                            url: '/irc_shared',
                             templateUrl: 'public/pages/views/general_network/irc_shared.html',
                             data: {
                                 title: 'IRC Local/Remote Shared',
@@ -347,7 +347,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         })
             // REMOTE IRC
                 .state('pages.irc_remote', {
-                    url: '/irc_remote?start&end',
+                    url: '/irc_remote',
                     templateUrl: 'public/pages/views/general_network/irc_remote.html',
                     data: {
                         title: 'Remote IRC',
@@ -356,7 +356,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // REMOTE2LOCAL IRC
                     .state('pages.irc_remote2local', {
-                        url: '/irc_remote2local?start&end&remote_ip',
+                        url: '/irc_remote2local',
                         templateUrl: 'public/pages/views/general_network/irc_remote2local.html',
                         data: {
                             title: 'Remote to Local IRC',
@@ -368,7 +368,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })                    
             // FIREWALL
                 .state('pages.firewall', {
-                    url: '/firewall?start&end',
+                    url: '/firewall',
                     templateUrl: 'public/pages/views/general_network/firewall.html',
                     data: {
                         title: 'Firewall Rules',
@@ -387,7 +387,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })  
             // STEALTH OP VIEW
                 .state('pages.stealth_op_view', {
-                    url: '/stealth_op_view?start&end',
+                    url: '/stealth_op_view',
                     templateUrl: 'public/pages/views/stealth/stealth_op_view.html',
                     data: {
                         title: 'Stealth Operational View',
@@ -396,7 +396,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })       
             // STEALTH CONN
                 .state('pages.stealth_conn', {
-                    url: '/stealth_conn?start&end&user',
+                    url: '/stealth_conn',
                     templateUrl: 'public/pages/views/stealth/stealth_conn.html',
                     data: {
                         title: 'Stealth User Connections',
@@ -405,7 +405,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })         
                 // STEALTH CONN BY USER
                     .state('pages.stealth_conn_by_user', {
-                        url: '/stealth_conn_by_user?start&end&lan_zone&lan_machine&lan_user&lan_ip',
+                        url: '/stealth_conn_by_user',
                         templateUrl: 'public/pages/views/stealth/stealth_conn_by_user.html',
                         data: {
                             title: 'Stealth User Connections',
@@ -420,7 +420,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })   
                     // STEALTH CONN BY USER AND REMOTE
                         .state('pages.stealth_conn_by_userANDremote', {
-                            url: '/stealth_conn_by_userANDremote?start&end&lan_zone&lan_machine&lan_user&lan_ip&remote_ip',
+                            url: '/stealth_conn_by_userANDremote',
                             templateUrl: 'public/pages/views/stealth/stealth_conn_by_userANDremote.html',
                             data: {
                                 title: 'Local User Connections',
@@ -436,7 +436,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         }) 
             // STEALTH EVENTS
                 .state('pages.stealth_events', {
-                    url: '/stealth_events?start&end',
+                    url: '/stealth_events',
                     templateUrl: 'public/pages/views/stealth/stealth_events.html',
                     data: {
                         title: 'Stealth Events',
@@ -445,7 +445,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // STEALTH EVENTS USER
                     .state('pages.stealth_events_by_type_and_user', {
-                        url: '/stealth_events_by_type_and_user?start&end&event_type',
+                        url: '/stealth_events_by_type_and_user',
                         templateUrl: 'public/pages/views/stealth/stealth_events_by_type_and_user.html',
                         data: {
                             title: 'Stealth Users Triggering Event',
@@ -457,7 +457,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
                     // STEALTH EVENTS USER DRILL
                         .state('pages.stealth_events_full', {
-                            url: '/stealth_events_full?start&end&event_type&lan_zone&lan_user',
+                            url: '/stealth_events_full',
                             templateUrl: 'public/pages/views/stealth/stealth_events_full.html',
                             data: {
                                 title: 'Stealth Event Full Logs',
@@ -471,7 +471,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         })
             // STEALTH QUARANTINE
                 .state('pages.stealth_quarantine', {
-                    url: '/stealth_quarantine?start&end',
+                    url: '/stealth_quarantine',
                     templateUrl: 'public/pages/views/stealth/stealth_quarantine.html',
                     data: {
                         title: 'Quarantined Endpoints',
@@ -481,7 +481,7 @@ angular.module('mean.pages').config(['$stateProvider',
         // LOCAL EVENTS
             // ENDPOINT MAP
                 .state('pages.endpoint_map', {
-                    url: '/endpoint_map?start&end&event_id&lan_ip',
+                    url: '/endpoint_map',
                     templateUrl: 'public/pages/views/local_events/endpoint_map.html',
                     data: {
                         title: 'Endpoint Map',
@@ -490,7 +490,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
             // ENDPOINT BY TYPE
                 .state('pages.endpoint_by_type', {
-                    url: '/endpoint_by_type?start&end',
+                    url: '/endpoint_by_type',
                     templateUrl: 'public/pages/views/local_events/endpoint_by_type.html',
                     data: {
                         title: 'Endpoint Events By Type',
@@ -499,7 +499,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // ENDPOINT EVENTS USER
                     .state('pages.endpoint_by_type_and_user', {
-                        url: '/endpoint_by_type_and_user?start&end&event_type',
+                        url: '/endpoint_by_type_and_user',
                         templateUrl: 'public/pages/views/local_events/endpoint_by_type_and_user.html',
                         data: {
                             title: 'Endpoints Triggering Event',
@@ -511,7 +511,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
                     // ENDPOINT EVENTS USER DRILL
                         .state('pages.endpoint_full', {
-                            url: '/endpoint_full?start&end&event_type&lan_zone&lan_user',
+                            url: '/endpoint_full',
                             templateUrl: 'public/pages/views/local_events/endpoint_full.html',
                             data: {
                                 title: 'Endpoint Event Full Logs',
@@ -525,7 +525,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         })
             // ENDPOINT BY LOCAL IP
                 .state('pages.endpoint_by_user', {
-                    url: '/endpoint_by_user?start&end',
+                    url: '/endpoint_by_user',
                     templateUrl: 'public/pages/views/local_events/endpoint_by_user.html',
                     data: {
                         title: 'Endpoint Events By Local IP',
@@ -534,7 +534,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // ENDPOINT EVENTS LOCAL BY ALERT INFO 
                     .state('pages.endpoint_by_user_and_type', {
-                        url: '/endpoint_by_user_and_type?start&end&lan_zone&lan_user',
+                        url: '/endpoint_by_user_and_type',
                         templateUrl: 'public/pages/views/local_events/endpoint_by_user_and_type.html',
                         data: {
                             title: 'Endpoints Triggering Event',
@@ -547,7 +547,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
             // ENDPOINT EVENTS SHAREPOINT
                 .state('pages.endpoint_events_sharepoint', {
-                    url: '/endpoint_events_sharepoint?start&end',
+                    url: '/endpoint_events_sharepoint',
                     templateUrl: 'public/pages/views/local_events/endpoint_events_sharepoint.html',
                     data: {
                         title: 'Endpoint Sharepoint Events by Type',
@@ -556,7 +556,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // ENDPOINT EVENTS SHAREPOINT DRILL
                     .state('pages.endpoint_events_sharepoint_drill', {
-                        url: '/endpoint_events_sharepoint_drill?start&end&event_type',
+                        url: '/endpoint_events_sharepoint_drill',
                         templateUrl: 'public/pages/views/local_events/endpoint_events_sharepoint_drill.html',
                         data: {
                             title: 'Endpoint Sharepoint Local Events',
@@ -568,7 +568,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
                         // ENDPOINT EVENTS SHAREPOINT FULL
                         .state('pages.endpoint_events_sharepoint_full', {
-                            url: '/endpoint_events_sharepoint_full?start&end&event_type&lan_ip&lan_zone&lan_user',
+                            url: '/endpoint_events_sharepoint_full',
                             templateUrl: 'public/pages/views/local_events/endpoint_events_sharepoint_full.html',
                             data: {
                                 title: 'Endpoint Sharepoint Event Full Logs',
@@ -583,7 +583,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         })
                 // ENDPOINT EVENTS LOCAL BY IP 
                     .state('pages.endpoint_by_user_and_ip', {
-                        url: '/endpoint_by_user_and_ip?start&end&lan_zone&lan_ip',
+                        url: '/endpoint_by_user_and_ip',
                         templateUrl: 'public/pages/views/local_events/endpoint_by_user_and_ip.html',
                         data: {
                             title: 'Endpoints Triggering Event',
@@ -597,7 +597,7 @@ angular.module('mean.pages').config(['$stateProvider',
         // APPLICATIONS
             // BY APPLICATION
                 .state('pages.app_by_application', {
-                    url: '/app_by_application?start&end',
+                    url: '/app_by_application',
                     templateUrl: 'public/pages/views/applications/app_by_application.html',
                     data: {
                         title: 'Applications',
@@ -606,7 +606,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // APPLICATION DRILL
                     .state('pages.application_drill', {
-                        url: '/application_drill?start&end&l7_proto',
+                        url: '/application_drill',
                         templateUrl: 'public/pages/views/applications/application_drill.html',
                         data: {
                             title: 'Applications',
@@ -618,7 +618,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
                     // APPLICATION LOCAL
                         .state('pages.application_local', {
-                            url: '/application_local?start&end&lan_ip&l7_proto',
+                            url: '/application_local',
                             templateUrl: 'public/pages/views/applications/application_local.html',
                             data: {
                                 title: 'Applications',
@@ -632,7 +632,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         })
             // BY LOCAL IP
                 .state('pages.app_by_local_ip', {
-                    url: '/app_by_local_ip?start&end',
+                    url: '/app_by_local_ip',
                     templateUrl: 'public/pages/views/applications/app_by_local_ip.html',
                     data: {
                         title: 'Applications',
@@ -641,7 +641,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // L7 LOCAL APP
                     .state('pages.l7_local_app', {
-                        url: '/l7_local_app?start&end&l7_proto&lan_ip',
+                        url: '/l7_local_app',
                         templateUrl: 'public/pages/views/applications/l7_local_app.html',
                         data: {
                             title: 'Applications',
@@ -655,7 +655,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
                     // L7 LOCAL DRILL
                     .state('pages.l7_local_drill', {
-                        url: '/l7_local_drill?start&end&lan_ip&l7_proto',
+                        url: '/l7_local_drill',
                         templateUrl: 'public/pages/views/applications/l7_local_drill.html',
                         data: {
                             title: 'Applications',
@@ -669,7 +669,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
                         // L7 SHARED
                         .state('pages.l7_shared', {
-                            url: '/l7_shared?start&end&lan_ip&l7_proto&remote_ip&lan_zone',
+                            url: '/l7_shared',
                             templateUrl: 'public/pages/views/applications/l7_shared.html',
                             data: {
                                 title: 'Applications Shared',
@@ -683,7 +683,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         })
             // BY REMOTE IP
                 .state('pages.app_by_remote_ip', {
-                    url: '/app_by_remote_ip?start&end',
+                    url: '/app_by_remote_ip',
                     templateUrl: 'public/pages/views/applications/app_by_remote_ip.html',
                     data: {
                         title: 'Applications',
@@ -692,7 +692,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // L7 REMOTE APP
                     .state('pages.l7_remote_app', {
-                        url: '/l7_remote_app?start&end&l7_proto&remote_ip',
+                        url: '/l7_remote_app',
                         templateUrl: 'public/pages/views/applications/l7_remote_app.html',
                         data: {
                             title: 'Applications',
@@ -705,7 +705,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
                     // L7 REMOTE DRILL
                     .state('pages.l7_remote_drill', {
-                        url: '/l7_remote_drill?start&end&remote_ip&l7_proto',
+                        url: '/l7_remote_drill',
                         templateUrl: 'public/pages/views/applications/l7_remote_drill.html',
                         data: {
                             title: 'Applications',
@@ -719,7 +719,7 @@ angular.module('mean.pages').config(['$stateProvider',
         // HTTP
             // HTTP BY DOMAIN
                 .state('pages.http_by_domain', {
-                    url: '/http_by_domain?start&end',
+                    url: '/http_by_domain',
                     templateUrl: 'public/pages/views/http/http_by_domain.html',
                     data: {
                         title: 'HTTP By Domain',
@@ -728,7 +728,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // HTTP BY DOMAIN LOCAL
                     .state('pages.http_by_domain_local', {
-                        url: '/http_by_domain_local?start&end&host',
+                        url: '/http_by_domain_local',
                         templateUrl: 'public/pages/views/http/http_by_domain_local.html',
                         data: {
                             title: 'Local HTTP By Domain',
@@ -740,7 +740,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
                     // HTTP BY DOMAIN LOCAL DRILL
                         .state('pages.http_by_domain_local_drill', {
-                            url: '/http_by_domain_local_drill?start&end&host&lan_zone&lan_ip',
+                            url: '/http_by_domain_local_drill',
                             templateUrl: 'public/pages/views/http/http_by_domain_local_drill.html',
                             data: {
                                 title: 'Local HTTP By Domain',
@@ -754,7 +754,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         })
             // HTTP BY USER AGENT
                 .state('pages.http_by_user_agent', {
-                    url: '/http_by_user_agent?start&end',
+                    url: '/http_by_user_agent',
                     templateUrl: 'public/pages/views/http/http_by_user_agent.html',
                     data: {
                         title: 'HTTP By User Agent',
@@ -763,7 +763,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // HTTP BY USER AGENT LOCAL
                     .state('pages.http_by_user_agent_local', {
-                        url: '/http_by_user_agent_local?start&end&user_agent',
+                        url: '/http_by_user_agent_local',
                         templateUrl: 'public/pages/views/http/http_by_user_agent_local.html',
                         data: {
                             title: 'Local HTTP By User Agent',
@@ -775,7 +775,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
                     // HTTP BY USER AGENT LOCAL DRILL
                         .state('pages.http_by_user_agent_local_drill', {
-                            url: '/http_by_user_agent_local_drill?start&end&user_agent&lan_zone&lan_ip',
+                            url: '/http_by_user_agent_local_drill',
                             templateUrl: 'public/pages/views/http/http_by_user_agent_local_drill.html',
                             data: {
                                 title: 'Local HTTP By User Agent',
@@ -789,7 +789,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         })
             // HTTP LOCAL
                 .state('pages.http_local', {
-                    url: '/http_local?start&end',
+                    url: '/http_local',
                     templateUrl: 'public/pages/views/http/http_local.html',
                     data: {
                         title: 'Local HTTP',
@@ -798,7 +798,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // HTTP LOCAL BY DOMAIN
                     .state('pages.http_local_by_domain', {
-                        url: '/http_local_by_domain?start&end&lan_ip&lan_zone',
+                        url: '/http_local_by_domain',
                         templateUrl: 'public/pages/views/http/http_local_by_domain.html',
                         data: {
                             title: 'Local HTTP by Domain',
@@ -811,7 +811,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
             // HTTP REMOTE
                 .state('pages.http_remote', {
-                    url: '/http_remote?start&end',
+                    url: '/http_remote',
                     templateUrl: 'public/pages/views/http/http_remote.html',
                     data: {
                         title: 'Remote HTTP',
@@ -820,7 +820,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // HTTP REMOTE2LOCAL
                     .state('pages.http_remote2local', {
-                        url: '/http_remote2local?start&end&remote_ip',
+                        url: '/http_remote2local',
                         templateUrl: 'public/pages/views/http/http_remote2local.html',
                         data: {
                             title: 'Remote to Local HTTP',
@@ -832,7 +832,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
                     // HTTP REMOTE2LOCAL DRILL
                         .state('pages.http_remote2local_drill', {
-                            url: '/http_remote2local_drill?start&end&lan_ip&lan_zone&remote_ip',
+                            url: '/http_remote2local_drill',
                             templateUrl: 'public/pages/views/http/http_remote2local_drill.html',
                             data: {
                                 title: 'Local/Remote HTTP',
@@ -846,7 +846,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         })
             // HTTP LOCAL BLOCKED
                 .state('pages.http_local_blocked', {
-                    url: '/http_local_blocked?start&end',
+                    url: '/http_local_blocked',
                     templateUrl: 'public/pages/views/http/http_local_blocked.html',
                     data: {
                         title: 'Local HTTP Blocked By Web Proxy',
@@ -855,7 +855,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // HTTP LOCAL BY DOMAIN BLOCKED
                     .state('pages.http_local_by_domain_blocked', {
-                        url: '/http_local_by_domain_blocked?start&end&lan_ip&lan_zone',
+                        url: '/http_local_by_domain_blocked',
                         templateUrl: 'public/pages/views/http/http_local_by_domain_blocked.html',
                         data: {
                             title: 'Local HTTP by Domain Blocked By Web Proxy',
@@ -868,7 +868,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
                     // HTTP BY DOMAIN LOCAL DRILL BLOCKED
                     .state('pages.http_by_domain_local_drill_blocked', {
-                        url: '/http_by_domain_local_drill_blocked?start&end&lan_zone&lan_ip&host',
+                        url: '/http_by_domain_local_drill_blocked',
                         templateUrl: 'public/pages/views/http/http_by_domain_local_drill_blocked.html',
                         data: {
                             title: 'Local HTTP By Domain Blocked By Web Proxy',
@@ -883,7 +883,7 @@ angular.module('mean.pages').config(['$stateProvider',
         // SSL
             // SSL SERVER
                 .state('pages.ssl_server', {
-                    url: '/ssl_server?start&end',
+                    url: '/ssl_server',
                     templateUrl: 'public/pages/views/ssl/ssl_server.html',
                     data: {
                         title: 'SSL Server',
@@ -892,7 +892,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
             // LOCAL SSL
                 .state('pages.ssl_local', {
-                    url: '/ssl_local?start&end',
+                    url: '/ssl_local',
                     templateUrl: 'public/pages/views/ssl/ssl_local.html',
                     data: {
                         title: 'Local SSL',
@@ -901,7 +901,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
             // REMOTE SSL
                 .state('pages.ssl_remote', {
-                    url: '/ssl_remote?start&end',
+                    url: '/ssl_remote',
                     templateUrl: 'public/pages/views/ssl/ssl_remote.html',
                     data: {
                         title: 'Remote SSL',
@@ -911,7 +911,7 @@ angular.module('mean.pages').config(['$stateProvider',
         // EMAIL
             // LOCAL SMTP 
                 .state('pages.smtp_senders', {
-                    url: '/smtp_senders?start&end',
+                    url: '/smtp_senders',
                     templateUrl: 'public/pages/views/email/smtp_senders.html',
                     data: {
                         title: 'Email Senders',
@@ -920,7 +920,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // SMTP SENDER2RECEIVER
                     .state('pages.smtp_sender2receiver', {
-                        url: '/smtp_sender2receiver?start&end&mailfrom',
+                        url: '/smtp_sender2receiver',
                         templateUrl: 'public/pages/views/email/smtp_sender2receiver.html',
                         data: {
                             title: 'Senders/Reveivers',
@@ -932,7 +932,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
                     // SMTP FROM SENDER 
                         .state('pages.smtp_from_sender', {
-                            url: '/smtp_from_sender?start&end&mailfrom&receiptto',
+                            url: '/smtp_from_sender',
                             templateUrl: 'public/pages/views/email/smtp_from_sender.html',
                             data: {
                                 title: 'Emails From Sender to Receiver',
@@ -945,7 +945,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         })
             // SMTP RECEIVERS 
                 .state('pages.smtp_receivers', {
-                    url: '/smtp_receivers?start&end',
+                    url: '/smtp_receivers',
                     templateUrl: 'public/pages/views/email/smtp_receivers.html',
                     data: {
                         title: 'Email Receivers',
@@ -954,7 +954,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // SMTP RECEIVER2SENDER
                     .state('pages.smtp_receiver2sender', {
-                        url: '/smtp_receiver2sender?start&end&receiptto',
+                        url: '/smtp_receiver2sender',
                         templateUrl: 'public/pages/views/email/smtp_receiver2sender.html',
                         data: {
                             title: 'Receivers/Senders',
@@ -966,7 +966,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
             // SMTP SUBJECTS 
                 .state('pages.smtp_subjects', {
-                    url: '/smtp_subjects?start&end',
+                    url: '/smtp_subjects',
                     templateUrl: 'public/pages/views/email/smtp_subjects.html',
                     data: {
                         title: 'Email Subjects',
@@ -975,7 +975,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // SMTP SUBJECTS SENDER RECEIVER PAIRS
                 .state('pages.smtp_subject_sender_receiver_pairs', {
-                    url: '/smtp_subject_sender_receiver_pairs?start&end&subject',
+                    url: '/smtp_subject_sender_receiver_pairs',
                     templateUrl: 'public/pages/views/email/smtp_subject_sender_receiver_pairs.html',
                     data: {
                         title: 'Receiver/Sender pairs for Subject',
@@ -987,7 +987,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                     // SMTP FROM SENDER BY SUBJECT
                     .state('pages.smtp_from_sender_by_subject', {
-                        url: '/smtp_from_sender_by_subject?start&end&receiptto&mailfrom&subject',
+                        url: '/smtp_from_sender_by_subject',
                         templateUrl: 'public/pages/views/email/smtp_from_sender_by_subject.html',
                         data: {
                             title: 'Email from Sender to Receiver for Subject',
@@ -1002,7 +1002,7 @@ angular.module('mean.pages').config(['$stateProvider',
         // EXTRACTED FILES
             // BY MIME TYPE
                 .state('pages.files_by_mime_type', {
-                    url: '/files_by_mime_type?start&end',
+                    url: '/files_by_mime_type',
                     templateUrl: 'public/pages/views/extracted_files/files_by_mime_type.html',
                     data: {
                         title: 'Extracted Files by Type',
@@ -1011,7 +1011,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // BY MIME TYPE
                     .state('pages.files_mime_local', {
-                        url: '/files_mime_local?start&end&mime',
+                        url: '/files_mime_local',
                         templateUrl: 'public/pages/views/extracted_files/files_mime_local.html',
                         data: {
                             title: 'Extracted Files by Type',
@@ -1023,7 +1023,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
             // BY LOCAL IP
                 .state('pages.files_by_local_ip', {
-                    url: '/files_by_local_ip?start&end',
+                    url: '/files_by_local_ip',
                     templateUrl: 'public/pages/views/extracted_files/files_by_local_ip.html',
                     data: {
                         title: 'Extracted Files by Local IP',
@@ -1032,7 +1032,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // BY FILE NAME
                 .state('pages.files_by_file_name', {
-                    url: '/files_by_file_name?start&end&lan_ip',
+                    url: '/files_by_file_name',
                     templateUrl: 'public/pages/views/extracted_files/files_by_file_name.html',
                     data: {
                         title: 'File Types',
@@ -1045,7 +1045,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                     // FILE LOCAL
                     .state('pages.files_local', {
-                        url: '/files_local?start&end&lan_ip&mime',
+                        url: '/files_local',
                         templateUrl: 'public/pages/views/extracted_files/files_local.html',
                         data: {
                             title: 'Extracted Files for Local IP',
@@ -1059,7 +1059,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
             // BY REMOTE IP
                 .state('pages.files_by_remote_ip', {
-                    url: '/files_by_remote_ip?start&end',
+                    url: '/files_by_remote_ip',
                     templateUrl: 'public/pages/views/extracted_files/files_by_remote_ip.html',
                     data: {
                         title: 'Extracted Files by Remote IP',
@@ -1068,7 +1068,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // BY FILE NAME
                 .state('pages.files_by_file_name_remote', {
-                    url: '/files_by_file_name_remote?start&end&remote_ip',
+                    url: '/files_by_file_name_remote',
                     templateUrl: 'public/pages/views/extracted_files/files_by_file_name_remote.html',
                     data: {
                         title: 'File Types',
@@ -1080,7 +1080,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                     // FILE REMOTE
                     .state('pages.files_remote', {
-                        url: '/files_remote?start&end&remote_ip&mime',
+                        url: '/files_remote',
                         templateUrl: 'public/pages/views/extracted_files/files_remote.html',
                         data: {
                             title: 'Extracted Files for Remote IP',
@@ -1093,7 +1093,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
             // BY DOMAIN
                 .state('pages.files_by_domain', {
-                    url: '/files_by_domain?start&end',
+                    url: '/files_by_domain',
                     templateUrl: 'public/pages/views/extracted_files/files_by_domain.html',
                     data: {
                         title: 'Extracted Files by Domain',
@@ -1102,7 +1102,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
                 // BY DOMAIN LOCAL
                     .state('pages.files_by_domain_local', {
-                        url: '/files_by_domain_local?start&end&http_host',
+                        url: '/files_by_domain_local',
                         templateUrl: 'public/pages/views/extracted_files/files_by_domain_local.html',
                         data: {
                             title: 'Local Extracted Files by Domain',
@@ -1114,7 +1114,7 @@ angular.module('mean.pages').config(['$stateProvider',
                     })
                     // BY DOMAIN LOCAL MIME by_domain_local_mime_drill
                         .state('pages.files_by_domain_local_mime', {
-                            url: '/files_by_domain_local_mime?start&end&http_host&lan_zone&lan_ip',
+                            url: '/files_by_domain_local_mime',
                             templateUrl: 'public/pages/views/extracted_files/files_by_domain_local_mime.html',
                             data: {
                                 title: 'Types of Extracted Files by Domain and Local IP',
@@ -1128,7 +1128,7 @@ angular.module('mean.pages').config(['$stateProvider',
                         })
                         // BY DOMAIN LOCAL MIME DRILL
                             .state('pages.files_by_domain_local_mime_drill', {
-                                url: '/files_by_domain_local_mime_drill?start&end&http_host&lan_zone&lan_ip&mime',
+                                url: '/files_by_domain_local_mime_drill',
                                 templateUrl: 'public/pages/views/extracted_files/files_by_domain_local_mime_drill.html',
                                 data: {
                                     title: 'Local Extracted Files by Domain and MIME',
@@ -1144,7 +1144,7 @@ angular.module('mean.pages').config(['$stateProvider',
         // FIRST SEEN
             // NEW REMOTE IPS
                 .state('pages.new_remote', {
-                    url: '/new_remote?start&end',
+                    url: '/new_remote',
                     templateUrl: 'public/pages/views/first_seen/new_remote.html',
                     data: {
                         title: 'New Remote IPs Detected',
@@ -1153,7 +1153,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
             // NEW DNS QUERIES
                 .state('pages.new_dns_queries', {
-                    url: '/new_dns_queries?start&end',
+                    url: '/new_dns_queries',
                     templateUrl: 'public/pages/views/first_seen/new_dns_queries.html',
                     data: {
                         title: 'New DNS Queries Detected',
@@ -1162,7 +1162,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
             // NEW HTTP HOSTS
                 .state('pages.new_http_domains', {
-                    url: '/new_http_domains?start&end',
+                    url: '/new_http_domains',
                     templateUrl: 'public/pages/views/first_seen/new_http_domains.html',
                     data: {
                         title: 'New HTTP Domains Detected',
@@ -1171,7 +1171,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
             // NEW SSL HOSTS
                 .state('pages.new_ssl_hosts', {
-                    url: '/new_ssl_hosts?start&end',
+                    url: '/new_ssl_hosts',
                     templateUrl: 'public/pages/views/first_seen/new_ssl_hosts.html',
                     data: {
                         title: 'New Remote Server Detected Serving SSL Traffic',
@@ -1180,7 +1180,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
             // NEW SSL REMOTE IPS
                 .state('pages.new_ssh_remote', {
-                    url: '/new_ssh_remote?start&end',
+                    url: '/new_ssh_remote',
                     templateUrl: 'public/pages/views/first_seen/new_ssh_remote.html',
                     data: {
                         title: 'New Remote IP Detected Serving SSH Traffic',
@@ -1189,7 +1189,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
             // NEW FTP REMOTE IPS
                 .state('pages.new_ftp_remote', {
-                    url: '/new_ftp_remote?start&end',
+                    url: '/new_ftp_remote',
                     templateUrl: 'public/pages/views/first_seen/new_ftp_remote.html',
                     data: {
                         title: 'New Remote IP Detected Serving FTP Traffic',
@@ -1199,7 +1199,7 @@ angular.module('mean.pages').config(['$stateProvider',
         // // SYSTEM HEALTH
         //     // OVERVIEW
         //         .state('pages.overview', {
-        //             url: '/overview?start&end',
+        //             url: '/overview',
         //             templateUrl: 'public/pages/views/health/overview.html',
         //             data: {
         //                 title: 'RapidPHIRE Health',
@@ -1208,7 +1208,7 @@ angular.module('mean.pages').config(['$stateProvider',
         //         })
         //         // HEALTH DRILL
         //         .state('pages.health_drill', {
-        //             url: '/health_drill?start&end&client&zone',
+        //             url: '/health_drill',
         //             templateUrl: 'public/pages/views/health/health_drill.html',
         //             data: {
         //                 title: 'Overall Zone Health',
@@ -1222,7 +1222,7 @@ angular.module('mean.pages').config(['$stateProvider',
         // REPORTS
             // IOC EVENTS
                 .state('pages.ioc_events_report', {
-                    url: '/ioc_events_report?start&end',
+                    url: '/ioc_events_report',
                     templateUrl: 'public/pages/views/reports/ioc_events.html',
                     data: {
                         title: 'IOC Events Report',
@@ -1231,7 +1231,7 @@ angular.module('mean.pages').config(['$stateProvider',
                 })
         // ARCHIVE
             .state('pages.archive', {
-                url: '/archive?start&end',
+                url: '/archive',
                 templateUrl: 'public/pages/views/archive.html',
                 data: {
                     title: 'Archive',

@@ -7,45 +7,67 @@ var dataTable = require('../constructors/datatable'),
 
 module.exports = function(pool) {
     return {
-        render: function(req, res) {
-            var database = req.user.database;
-            var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
-            var end = Math.round(new Date().getTime() / 1000);
-            if (req.query.start && req.query.end) {
-                start = req.query.start;
-                end = req.query.end;
-            }
-            var tables = [];
-            var crossfilter = [];
-            var info = [];
-            var table1 = {
+        crossfilter: function(req, res) {
+            var get = {
                 query: 'SELECT '+
-                            'max(`time`) AS `time`,'+
-                            '`remote_ip`,'+
-                            '`remote_asn_name`,'+
-                            '`remote_country`,'+
-                            '`remote_cc`,'+
-                            'sum(`in_packets`) AS `in_packets`,'+
-                            'sum(`out_packets`) AS `out_packets`,'+
-                            'sum(`in_bytes`) AS `in_bytes`,'+
-                            'sum(`out_bytes`) AS `out_bytes`,'+
-                            '`ioc_severity`,'+
-                            '`ioc`,'+
-                            '`ioc_typeIndicator`,'+
-                            '`ioc_typeInfection`,'+
-                            '`ioc_rule`,'+
-                            'sum(`ioc_count`) AS `ioc_count`,'+
-                            'sum(`proxy_blocked`) AS `proxy_blocked` '+
-                        'FROM '+
-                            '`conn_ioc` '+
-                        'WHERE '+
-                            '`time` BETWEEN ? AND ? '+
-                            'AND `ioc_count` > 0 '+
-                            'AND `trash` IS NULL '+
-                        'GROUP BY '+
-                            '`remote_ip`,'+
-                            '`ioc`',
-                insert: [start, end],
+                        '`time`,'+
+                        '`remote_country`,'+
+                        '`ioc`,'+
+                        '`ioc_severity`,'+
+                        'sum(`ioc_count`) AS `count` '+
+                    'FROM '+
+                        '`conn_ioc` '+
+                    'WHERE '+
+                        '`time` BETWEEN ? AND ? '+
+                        'AND `ioc_count` > 0 '+
+                        'AND `trash` IS NULL '+
+                    'GROUP BY '+
+                        'month(from_unixtime(`time`)),'+
+                        'day(from_unixtime(`time`)),'+
+                        'hour(from_unixtime(`time`)),'+
+                        '`remote_country`,'+
+                        '`ioc`,'+
+                        '`ioc_severity`',
+                insert: [req.query.start, req.query.end]
+            }
+            new query(get, {database: req.user.database, pool: pool}, function(err,data){
+                if (err) { res.status(500).end(); return }
+                res.json(data);
+            });
+        },             
+
+        //////////////////////
+        /////   TABLE   //////
+        //////////////////////
+        table: function(req, res){
+            var table = {
+                query: 'SELECT '+
+                        'max(`time`) AS `time`,'+
+                        '`remote_ip`,'+
+                        '`remote_asn_name`,'+
+                        '`remote_country`,'+
+                        '`remote_cc`,'+
+                        'sum(`in_packets`) AS `in_packets`,'+
+                        'sum(`out_packets`) AS `out_packets`,'+
+                        'sum(`in_bytes`) AS `in_bytes`,'+
+                        'sum(`out_bytes`) AS `out_bytes`,'+
+                        '`ioc_severity`,'+
+                        '`ioc`,'+
+                        '`ioc_typeIndicator`,'+
+                        '`ioc_typeInfection`,'+
+                        '`ioc_rule`,'+
+                        'sum(`ioc_count`) AS `ioc_count`,'+
+                        'sum(`proxy_blocked`) AS `proxy_blocked` '+
+                    'FROM '+
+                        '`conn_ioc` '+
+                    'WHERE '+
+                        '`time` BETWEEN ? AND ? '+
+                        'AND `ioc_count` > 0 '+
+                        'AND `trash` IS NULL '+
+                    'GROUP BY '+
+                        '`remote_ip`,'+
+                        '`ioc`',
+                insert: [req.query.start, req.query.end],
                 params: [
                     {
                         title: 'Last Seen',
@@ -80,51 +102,9 @@ module.exports = function(pool) {
                     hide_proxy: req.user.hide_proxy
                 }
             }
-            var crossfilterQ = {
-                query: 'SELECT '+
-                            '`time`,'+
-                            '`remote_country`,'+
-                            '`ioc`,'+
-                            '`ioc_severity`,'+
-                            'sum(`ioc_count`) AS `count` '+
-                        'FROM '+
-                            '`conn_ioc` '+
-                        'WHERE '+
-                            '`time` BETWEEN ? AND ? '+
-                            'AND `ioc_count` > 0 '+
-                            'AND `trash` IS NULL '+
-                        'GROUP BY '+
-                            'month(from_unixtime(`time`)),'+
-                            'day(from_unixtime(`time`)),'+
-                            'hour(from_unixtime(`time`)),'+
-                            '`remote_country`,'+
-                            '`ioc`,'+
-                            '`ioc_severity`',
-                insert: [start, end]
-            }
-            async.parallel([
-                // Table function(s)
-                function(callback) {
-                    new dataTable(table1, {database: database, pool: pool}, function(err,data){
-                        tables.push(data);
-                        callback();
-                    });
-                },
-                // Crossfilter function
-                function(callback) {
-                    new query(crossfilterQ, {database: database, pool: pool}, function(err,data){
-                        crossfilter = data;
-                        callback();
-                    });
-                }
-            ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
-                if (err) throw console.log(err);
-                var results = {
-                    info: info,
-                    tables: tables,
-                    crossfilter: crossfilter
-                };
-                res.json(results);
+            new dataTable(table, {database: req.user.database, pool: pool}, function(err,data){
+                if (err) { res.status(500).end(); return }
+                res.json({table: data});
             });
         }
     }
