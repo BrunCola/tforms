@@ -10,8 +10,6 @@ module.exports = function(pool) {
         login: function(req, res) {
             pool.query("SELECT * FROM user WHERE email = ? limit 1", [req.body.email], function(err, data){
                 if (data.length !== 1) { res.status(401).send('Wrong user or password').end(); return; }
-                var ts = Math.round((new Date()).getTime() / 1000);
-                console.log('Email/login: '+data[0].email+', Database: '+data[0].database+', Time: '+ts)
                 var profile = data[0];
                 bcrypt.compare(req.body.password, profile.password, function(err, doesMatch){
                     if (doesMatch){
@@ -22,6 +20,8 @@ module.exports = function(pool) {
                             res.json({ token: token, twoAuth: true }).end();
                             return;
                         } else {
+                            var ts = Math.round((new Date()).getTime() / 1000);
+                            console.log('Email/login: '+profle.email+', Database: '+profle.database+', Time: '+ts);
                             var token = jwt.sign(profile, config.sessionSecret, { expiresInMinutes: 60*10 });
                             res.json({ token: token, twoAuth: false }).end();
                             return;
@@ -34,7 +34,6 @@ module.exports = function(pool) {
             });
         },
         twoStep: function(req, res) {
-            console.log('test')
             //One time password generator for 2 step authentication
             var TOTP = function() {
                 var dec2hex = function(s) {
@@ -78,12 +77,14 @@ module.exports = function(pool) {
                     return otp;
                 };
             }
-            if (req.body.twoStepCode) { //if they have entered a code
+            if (req.body.twoStepCode && req.user) { //if they have entered a code
                 var totpObj = new TOTP(); //generate the current code
                 var otp = totpObj.getOTP("K6JVY3EDAOP57CX2");
                 if (otp == req.body.twoStepCode) {
                     // authorize
-                    var token = jwt.sign(req.user, config.sessionSecret, { expiresInMinutes: 60*10 });
+                    var ts = Math.round((new Date()).getTime() / 1000);
+                    console.log('Email/login: '+req.user.email+', Database: '+req.user.database+', Time: '+ts);
+                    var token = jwt.sign(req.user, config.sessionSecret, { expiresInMinutes: (60*24*7) });
                     res.json({ token: token });
                     return;
                 } else {

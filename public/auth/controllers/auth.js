@@ -30,14 +30,18 @@ angular.module('mean.controllers.twoStep', [])
     .controller('twoStep', ['$scope','Global','$rootScope','$http','$location','$window', function($scope, Global, $rootScope, $http, $location, $window) {
         $scope.global = Global;
         $scope.login = function(){
-            $http.post('/2factor/verify', $scope.user)
-                .success(function(user){
-                    // assign new token (by replacing old one)
-                    $window.sessionStorage.token = user.token;
-                    $location.url('/ioc_events');
-                })
-                .error(function() {
-                    $scope.loginerror = 'Error: Invalid two-step authentication code';
-                });
+            if ($scope.user.twoStepCode) {
+                // make sure number entered is a number
+                $scope.user.twoStepCode = parseInt($scope.user.twoStepCode);
+                $http.post('/2factor/verify', $scope.user)
+                    .success(function(user){
+                        // assign new token (by replacing old one)
+                        $window.sessionStorage.token = user.token;
+                        $location.url('/ioc_events');
+                    })
+                    .error(function() {
+                        $scope.loginerror = 'Error: Invalid two-step authentication code';
+                    });
+            }
         };
     }])
