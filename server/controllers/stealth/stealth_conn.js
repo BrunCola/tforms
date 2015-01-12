@@ -96,7 +96,7 @@ module.exports = function(pool) {
             }
             var crossfilter,cf_stealth_conn,cf_stealth_drop,cf_stealth_conn_v3,cf_stealth_drop_v3;
             async.parallel([
-                // Crossfilter function
+                //Crossfilter function
                 function(callback) {
                     new query(crossfilterQ, {database: req.user.database, pool: pool}, function(err,data){
                         crossfilter = data;
@@ -129,7 +129,7 @@ module.exports = function(pool) {
                 },
             ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                 if (err) { res.status(500).end(); return }
-                var data = crossfilter.concat(cf_stealth_conn,cf_stealth_drop,cf_stealth_conn_v3,cf_stealth_drop_v3);
+                var data = crossfilter.concat(cf_stealth_conn, cf_stealth_drop, cf_stealth_conn_v3, cf_stealth_drop_v3);
                 res.json(data);
             });
         },
@@ -252,8 +252,16 @@ module.exports = function(pool) {
                 },
             ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
                 if (err) { res.status(500).end(); return }
-                table_data1.aaData = table_data1.aaData.concat(table_data2.aaData);
-                res.json({table: table_data1});
+                if ((table_data1 == null) && (table_data2 != null)){
+                    res.json({table: table_data2});
+                } else if ((table_data1 != null) && (table_data2 == null)){
+                    res.json({table: table_data1});
+                } else if ((table_data1 == null) && (table_data2 == null)){
+                    return
+                } else {
+                    table_data1.aaData = table_data1.aaData.concat(table_data2.aaData);
+                    res.json({table: table_data1});
+                }
             });
         }
     }
