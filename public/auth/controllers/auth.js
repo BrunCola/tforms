@@ -6,18 +6,42 @@ angular.module('mean.controllers.login', [])
         // This object will be filled by the form
         $scope.user = {};
         $scope.version = $scope.global.version;
+        // delete any tokens upon visit
+        // delete $window.sessionStorage.token;
         // Register the login() function
         $scope.login = function(){
             $http.post('/auth', $scope.user)
                 .success(function(user){
-                    console.log($scope.global.user)
                     $window.sessionStorage.token = user.token;
-                    $location.url('/home');
+                    if (user.twoAuth) {
+                        $location.url('/2step');
+                    } else {
+                        $location.url('/ioc_events');
+                    }
                 })
                 .error(function() {
-                    $scope.loginerror = 'Error: Invalid user, password, or two-step authentication code';
+                    $scope.loginerror = 'Error: Invalid user or password';
                     // Erase the token if the user fails to log in
                     delete $window.sessionStorage.token;
                 });
+        };
+    }])
+angular.module('mean.controllers.twoStep', [])
+    .controller('twoStep', ['$scope','Global','$rootScope','$http','$location','$window', function($scope, Global, $rootScope, $http, $location, $window) {
+        $scope.global = Global;
+        $scope.login = function(){
+            if ($scope.user.twoStepCode) {
+                // make sure number entered is a number
+                $scope.user.twoStepCode = parseInt($scope.user.twoStepCode);
+                $http.post('/2factor/verify', $scope.user)
+                    .success(function(user){
+                        // assign new token (by replacing old one)
+                        $window.sessionStorage.token = user.token;
+                        $location.url('/ioc_events');
+                    })
+                    .error(function() {
+                        $scope.loginerror = 'Error: Invalid two-step authentication code';
+                    });
+            }
         };
     }])

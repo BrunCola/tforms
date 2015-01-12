@@ -8,6 +8,32 @@ var config = require('../config/config'),
 module.exports = function(pool) {
     return {
         login: function(req, res) {
+            pool.query("SELECT * FROM user WHERE email = ? limit 1", [req.body.email], function(err, data){
+                if (data.length !== 1) { res.status(401).send('Wrong user or password').end(); return; }
+                var profile = data[0];
+                bcrypt.compare(req.body.password, profile.password, function(err, doesMatch){
+                    if (doesMatch){
+                        // check if the user has opted to use two step authentication
+                        // if user has opted in, send a 2auth token and flag to redirect to different page
+                        if (profile.two_step_auth) {
+                            var token = jwt.sign(profile, config.twoAuthSecret, { expiresInMinutes: 10 });
+                            res.json({ token: token, twoAuth: true }).end();
+                            return;
+                        } else {
+                            var ts = Math.round((new Date()).getTime() / 1000);
+                            console.log('Email/login: '+profile.email+', Database: '+profile.database+', Time: '+ts);
+                            var token = jwt.sign(profile, config.sessionSecret, { expiresInMinutes: 60*10 });
+                            res.json({ token: token, twoAuth: false }).end();
+                            return;
+                        }
+                    } else {
+                        res.status(401).send('Wrong user or password').end();
+                        return;
+                    }
+                });
+            });
+        },
+        twoStep: function(req, res) {
             //One time password generator for 2 step authentication
             var TOTP = function() {
                 var dec2hex = function(s) {
@@ -51,57 +77,24 @@ module.exports = function(pool) {
                     return otp;
                 };
             }
-            pool.query("SELECT * FROM user WHERE email = ? limit 1", [req.body.email], function(err, data){
-                var ts = Math.round((new Date()).getTime() / 1000);
-                console.log(err)
-                console.log(data)
-                console.log('Email/login: '+data[0].email+', Database: '+data[0].database+', Time: '+ts)
-                if (data.length !== 1) { res.send(401).body('Wrong user or password').end(); return; }
-                var profile = data[0];
-                bcrypt.compare(req.body.password, profile.password, function(err, doesMatch){
-                    console.log(profile)
-                    if (doesMatch){
-                        //check if the user has opted to use two step authentication
-                        if (profile.two_step_auth) {
-                            if(req.body.twoStepCode) {//if they have entered a code
-                                var totpObj = new TOTP();//generate the current code
-                                var otp = totpObj.getOTP("K6JVY3EDAOP57CX2");
-                                if(otp == req.body.twoStepCode) {
-                                    //authorize
-                                    var token = jwt.sign(profile, config.sessionSecret, { expiresInMinutes: 60*5 });
-                                    res.json({ token: token });
-                                    return;
-                                } else {
-                                    res.send(401).body('Wrong two-step authentication code');
-                                    return;
-                                }
-                            } else {
-                                res.send(401).body('Two-step authentication code required');
-                                return;
-                            }
-                        } else {
-                            var token = jwt.sign(profile, config.sessionSecret, { expiresInMinutes: 60*5 });
-                            res.json({ token: token });
-                            return;
-                        }
-                    } else {
-                        res.status(401).body('Wrong user or password');
-                        return;
-                    }
-
-
-                    // if (doesMatch){
-                    //     if (profile.two_step_auth) {
-                    //         // send flag to render 
-                    //     } else {
-
-                    //     }
-                    // } else {
-                    //     res.send(401, 'Wrong user or password').end();
-                    //     return;
-                    // }
-                });
-            });
+            if (req.body.twoStepCode && req.user) { //if they have entered a code
+                var totpObj = new TOTP(); //generate the current code
+                var otp = totpObj.getOTP("K6JVY3EDAOP57CX2");
+                if (otp == req.body.twoStepCode) {
+                    // authorize
+                    var ts = Math.round((new Date()).getTime() / 1000);
+                    console.log('Email/login: '+req.user.email+', Database: '+req.user.database+', Time: '+ts);
+                    var token = jwt.sign(req.user, config.sessionSecret, { expiresInMinutes: (60*24*7) });
+                    res.json({ token: token });
+                    return;
+                } else {
+                    res.status(401).send('Wrong 2-factor authentication code.').end();
+                    return;
+                }
+            } else {
+                res.status(401).send('Wrong 2-factor authentication code.').end();
+                return;
+            }
         },
         loggedin: function(req, res) {
             // console.log('LIMIT THIS RETURN')
