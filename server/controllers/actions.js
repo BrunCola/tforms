@@ -48,12 +48,13 @@ module.exports = function(pool) {
 			});
 		},
 		update: function(req, res) {
+			console.log(req.body.twoStepAuth);
 			if (req.body.newPass) {
 				bcrypt.hash(req.body.newPass, 10, function( err, bcryptedPassword) {
 					if (err) { res.status(500).end() }
 					var update = {
-						query: "UPDATE `user` SET `email`= ?, `password`= ? WHERE `email` = ?",
-						insert: [req.body.newemail, bcryptedPassword, req.user.email]
+						query: "UPDATE `user` SET `email`= ?, `password`= ?, two_step_auth = ? WHERE `email` = ?",
+						insert: [req.body.newemail, bcryptedPassword, req.body.twoStepAuth, req.user.email]
 					}
 					new query(update, {database: 'rp_users', pool: pool}, function(err,data){
 						if (err) {
@@ -65,8 +66,8 @@ module.exports = function(pool) {
 				});
 			} else {
 				var update = {
-					query: "UPDATE `user` SET `email`= ? WHERE `email` = ?",
-					insert: [req.body.newemail, req.user.email]
+					query: "UPDATE `user` SET `email`= ?, two_step_auth = ? WHERE `email` = ?",
+					insert: [req.body.newemail, req.body.twoStepAuth, req.user.email]
 				}
 				new query(update, {database: 'rp_users', pool: pool}, function(err,data){
 					if (err) {

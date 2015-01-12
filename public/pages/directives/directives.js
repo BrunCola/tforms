@@ -1365,7 +1365,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
 angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
     return {
         link: function ($scope, element, attrs) {
-            $scope.$on('rowchart', function (event, dimension, group, chartType) {
+            $scope.$on('rowchart', function (event, dimension, group, chartType, params) {
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
 
                     var waitForFinalEvent = (function () {
@@ -1444,13 +1444,14 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                     if (filter == true) {
                         $scope.rowChart
                             .on("filtered", function(chart, filter){
-                                $scope.tableData.filterAll();
-                                var arr = [];
-                                for(var i in dimension.top(Infinity)) {
-                                    arr.push(dimension.top(Infinity)[i].ioc);
-                                }
-                                $scope.tableData.filter(function(d) { return arr.indexOf(d.ioc) >= 0; });
-                                $scope.$broadcast('crossfilterToTable');
+                                // $scope.tableData.filterAll();
+                                // var arr = [];
+                                // for(var i in dimension.top(Infinity)) {
+                                //     arr.push(dimension.top(Infinity)[i].ioc);
+                                // }
+                                // $scope.tableData.filter(function(d) { return arr.indexOf(d.ioc) >= 0; });
+                                // $scope.$broadcast('crossfilterToTable');
+                                $scope.$broadcast('outFilter', params.outgoingFilter, filter)
                             });
                     }
                     if (count > 0) {

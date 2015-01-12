@@ -49,6 +49,19 @@
 							<p ng-show=" userForm.cpassword.$viewValue != userForm.password.$viewValue" class="help-block">Passwords dont match</p>
 						</div>
 					</div>
+
+
+					<div class="control-group" >	
+						<label class="control-label">Two Step Authentication</label>
+                        <div class="controls"><input type="checkbox" ng-model="user.twoStepAuth"/></div>
+                    </div>
+					<div class="control-group" ng-show="user.twoStepAuth">	
+						<text>	Please scan the below QR code for your 6 digit OTP.</text>	
+						<br/>
+						<label class="control-label">QR Code</label>
+                        <div class="controls"><img id="qrImg" src="{{imageSource}}" /></div>
+                    </div>
+
 					<div class="control-group">
 						<div class="controls">
 							<button type="submit" class="pure-button">Submit</button>
