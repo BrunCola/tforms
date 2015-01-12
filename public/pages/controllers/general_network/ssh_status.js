@@ -56,6 +56,35 @@ angular.module('mean.pages').controller('sshStatusController', ['$scope', '$stat
                 }
             ]
         },
+        {
+            type: 'crossfilter', // required
+            // key: 'crossfilter', // bound to the response, wrap entire source if undefined
+            refresh: true,
+            searchable: true, // optional search param.. no if undefined
+            run: function(data) { // optional run function to run after data has been fetched (takes an array of data)
+                data.forEach(function(d) {
+                    d.dd = timeFormat(d.time, 'strdDateObj');
+                    d.hour = d3.time.hour(d.dd);
+                    d.count = +d.count;
+                });
+            },
+            get: '/api/general_network/ssh_status/crossfilterpie', // no get default to main url, strings will replace the default (otherwise /[from root])
+            visuals: [
+                {
+                    type: 'piechart',
+                    settings: { 
+                        type: 'application',
+                        xAxis: '',
+                        yAxis: ''
+                    },
+                    dimension: function(cfObj) { return cfObj.dimension(function(d) {return d.pie_dimension })},
+                    group: function(dimension){ // groups are optional and should default to a reduce if undefined
+                        return dimension.group().reduceSum(function (d) { return d.count; });
+                    },
+                    // outgoingFilter: ['hour'] // Optional and ingests an array of KEYS for other visuals not of this type to match
+                }
+            ]
+        },
         /////////////////
         ///// TABLE /////
         /////////////////

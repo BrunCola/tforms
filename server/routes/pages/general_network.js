@@ -69,6 +69,8 @@ module.exports = function(app, version, pool) {
         var ssh_status = require('../../controllers/general_network/ssh_status')(pool);
             // CROSSFILTER
             app.route('/api/general_network/ssh_status/crossfilter').get(auth.permission, ssh_status.crossfilter);
+            // CROSSFILTER PIE
+            app.route('/api/general_network/ssh_status/crossfilterpie').get(auth.permission, ssh_status.crossfilterpie);
             // TABLE
             app.route('/api/general_network/ssh_status/table').get(auth.permission, ssh_status.table);
             // SSH STATUS LOCAL

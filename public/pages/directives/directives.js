@@ -883,22 +883,22 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
 angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '$rootScope', 'getSize', function ($timeout, $window, $rootScope, getSize) {
     return {
         link: function ($scope, element, attrs) {
-            $scope.$on('pieChart', function (event, chartType, dimension, group) {
+            $scope.$on('pieChart', function (event, dimension, group, chartType) {
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
                     //var arr = $scope.data.tables[0].aaData;
                     $scope.pieChart = dc.pieChart('#piechart');
-                    var waitForFinalEvent = (function () {
-                        var timers = {};
-                        return function (callback, ms, uniqueId) {
-                            if (!uniqueId) {
-                                uniqueId = "piechartWait"; //Don't call this twice without a uniqueId
-                            }
-                            if (timers[uniqueId]) {
-                                clearTimeout (timers[uniqueId]);
-                            }
-                            timers[uniqueId] = setTimeout(callback, ms);
-                        };
-                    })();
+                    // var waitForFinalEvent = (function () {
+                    //     var timers = {};
+                    //     return function (callback, ms, uniqueId) {
+                    //         if (!uniqueId) {
+                    //             uniqueId = "piechartWait"; //Don't call this twice without a uniqueId
+                    //         }
+                    //         if (timers[uniqueId]) {
+                    //             clearTimeout (timers[uniqueId]);
+                    //         }
+                    //         timers[uniqueId] = setTimeout(callback, ms);
+                    //     };
+                    // })();
                     var filter;
                     var width = getSize(element, 'pieChart').width;
                     var connMargin = 0;
@@ -912,7 +912,6 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                         return getSize(element, 'pieChart').width;
                     }
                     filter = true;
-
 
                     // switch (chartType){
                     //  case 'bandwidth':
@@ -1001,15 +1000,15 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                         $scope.pieChart
                             .on("filtered", function(chart, filter){
                                 waitForFinalEvent(function(){
-                                    $scope.tableData.filterAll();
+                                    //$scope.tableData.filterAll();
                                     var arr = [];
-                                    for(var i in $scope.appDimension.top(Infinity)) {
-                                        if ($scope.appDimension.top(Infinity)[i].pie_dimension !== undefined) {
-                                            arr.push($scope.appDimension.top(Infinity)[i].pie_dimension);
-                                        } else if ($scope.appDimension.top(Infinity)[i].l7_proto !== undefined) {
-                                            arr.push($scope.appDimension.top(Infinity)[i].l7_proto);
+                                    for(var i in dimension.top(Infinity)) {
+                                        if (dimension.top(Infinity)[i].pie_dimension !== undefined) {
+                                            arr.push(dimension.top(Infinity)[i].pie_dimension);
+                                        } else if (dimension.top(Infinity)[i].l7_proto !== undefined) {
+                                            arr.push(dimension.top(Infinity)[i].l7_proto);
                                         } else {
-                                            arr.push($scope.appDimension.top(Infinity)[i].lan_user + $scope.appDimension.top(Infinity)[i].lan_zone + $scope.appDimension.top(Infinity)[i].lan_ip);
+                                            arr.push(dimension.top(Infinity)[i].lan_user + dimension.top(Infinity)[i].lan_zone + dimension.top(Infinity)[i].lan_ip);
                                         }
                                     }
                                     $scope.tableData.filter(function(d) { 
@@ -1032,8 +1031,8 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                         .transitionDuration(500) // (optional) define chart transition duration, :default = 500
                         // .margins(margin) // (optional) define margins
                         .ordering(function(d) { return 1 - d.value; })
-                        .dimension($scope.appDimension) // set dimension
-                        .group($scope.pieGroup) // set group
+                        .dimension(dimension) // set dimension
+                        .group(group) // set group
                         // .ordering($scope.pieGroup)
                         .legend(dc.legend().x(width - 170+connMargin).y(10).itemHeight(13).gap(5))
                         .colors(d3.scale.category20());
@@ -1062,6 +1061,10 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                         //     $scope.pieChart.redraw();
                         // });
                     }
+
+                    $scope.$on('piechart-redraw', function (event) {
+                        $scope.piechart.redraw();
+                    })
                     // var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
                     // $rootScope.$watch('search', function(){
 

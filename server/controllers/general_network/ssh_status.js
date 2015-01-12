@@ -55,6 +55,26 @@ module.exports = function(pool) {
                 res.json(data);
             });
         },
+        crossfilterpie: function(req, res) {
+            var piechart = {
+                query: 'SELECT '+
+                         'time,'+
+                         '`status_code` AS `pie_dimension`, '+
+                         'count(*) AS `count` '+
+                     'FROM '+
+                         '`ssh` '+
+                     'WHERE '+
+                         '`time` BETWEEN ? AND ? '+
+                         'AND `status_code` !=\'-\' '+
+                     'GROUP BY '+
+                         '`status_code`',
+                insert: [req.query.start, req.query.end]
+            }
+            new query(piechart, {database: req.user.database, pool: pool}, function(err,data){
+                if (err) { res.status(500).end(); return }
+                res.json(data);
+            });
+        },
         //////////////////////
         /////   TABLE   //////
         //////////////////////

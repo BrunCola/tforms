@@ -157,6 +157,9 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                     case 'barchart':
                                        this_.draw_.barchart(params.visuals[i], params.crossfilterObj);
                                         break;
+                                    case 'piechart':
+                                       this_.draw_.piechart(params.visuals[i], params.crossfilterObj);
+                                        break;
                                     case 'geochart':
                                        this_.draw_.geochart(params.visuals[i], params.crossfilterObj);
                                         break;
@@ -192,6 +195,22 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                     break;
                             }
                         },
+                        piechart: function(params, crossfilterObj) {
+                            var group = false;
+                            var dimension = params.dimension(crossfilterObj);
+                            if (params.group && (typeof params.group === 'function')) {
+                                group = params.group(dimension);
+                            }
+                            // add params in here for axis labels and graph types (along with a default)
+                            switch (params.settings.type) {
+                                case 'application':
+                                    $scope.$broadcast('pieChart', dimension, group, 'application');
+                                    break;
+                                case 'hostConnections':
+                                    $scope.$broadcast('pieChart', dimension, group, 'hostConnections');
+                                    break;
+                            }
+                        },
                         geochart: function(params, crossfilterObj) {
                             var group = false;
                             var dimension = params.dimension(crossfilterObj);
@@ -210,6 +229,9 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 break;
                                 case 'barchart':
                                     $scope.$broadcast('barchart-redraw');
+                                break;
+                                case 'piechart':
+                                    $scope.$broadcast('piechart-redraw');
                                 break;
                                 case 'geochart':
                                     $scope.$broadcast('geochart-redraw');
