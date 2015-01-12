@@ -215,7 +215,7 @@ module.exports = function(pool) {
                             crumb: false
                         },
                     },
-                    { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
+                    { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1], },
                     { title: 'ABP', select: 'proxy_blocked', hide_proxy: [1] },
                     { title: 'Severity', select: 'ioc_severity' },
                     { title: 'IOC Hits', select: 'ioc_count' },
@@ -237,7 +237,7 @@ module.exports = function(pool) {
                     { title: 'Packets from Remote', select: 'out_packets', dView: false  },
                     {
                         title: '',
-                        select: null,
+                        select: 'Archive',
                         dView: true,
                         link: {
                             type: 'Archive',

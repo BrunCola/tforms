@@ -2582,5 +2582,15 @@ table#sevTable{
     width:100%;
 }
 table#sevTable tr{
-    text-align: left;
+    text-align: center;
+}
+table#sevTable tr td{
+  margin: 0px;
+  padding: 3px 0px;
+}
+table#sevTable button.tableTime{
+    width:120px;
+}
+table#sevTable tr:nth-child(even){
+  background-color: #ddd;
 }

@@ -21,8 +21,10 @@ module.exports = function(app, version, pool) {
             .get(auth.permission, ioc_events_report.render);
     // ARCHIVE
         var archive = require('../controllers/archive')(pool);
-        app.route('/api/archive')
-        .get(auth.permission, archive.render);
+        // CROSSFILTER
+        app.route('/api/archive/crossfilter').get(auth.permission, archive.crossfilter);
+        // TABLE
+        app.route('/api/archive/table').get(auth.permission, archive.table);
     // UPLOAD
         var upload = require('../controllers/upload')(pool);
         app.route('/api/uploads')

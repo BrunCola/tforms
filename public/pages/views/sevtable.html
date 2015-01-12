@@ -38,12 +38,71 @@
         <th ng-repeat="col in tableColumns"><a ng-click="tableData.sortBy(col.mData)">{{col.sTitle}}</a></th>
     </tr>
     <tr ng-repeat="row in tableData.collection() | limitTo: pageNumber | limitTo: -50">
-        <td ng-repeat="col in tableColumns">
-            <section ng-if="col.link">
-                <a ng-click="generateLink(row, col)">{{row[col.mData]}}</a>
-            </section>
-            <section ng-if="!col.link">
-                {{row[col.mData]}}
+        <td ng-repeat="col in tableColumns">           
+            <section ng-switch="col.mData">
+                <section ng-switch-when="mime"> 
+                   <div file-replace>{{ row[col.mData].toLowerCase() }}</div>
+                </section>
+                <section ng-switch-when="l7_proto"> 
+                   <div app-replace>{{ row[col.mData].toLowerCase() }}</div>
+                </section>
+                <section ng-switch-when="remote_cc"> 
+                    <div style='min-width:120px'>
+                        <div class="f32"><span class="flag {{row[col.mData].toLowerCase()}}"></span></div>
+                        <!-- <div class="remote_country">{{ row['remote_country'] }}</div> -->
+                    </div>
+                </section>
+                <section ng-switch-when="ioc_severity">
+                    <!-- <div class="tablesev sev{{ row[col.mData] }}"></div> -->
+                    <span class="aTable{{ row[col.mData] }} fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bullhorn fa-stack-1x fa-inverse"></i></span>
+                </section>
+                <section ng-switch-when="lan_stealth">
+                    <section ng-if="row[col.mData] > 0">
+                        <span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-shield fa-stack-1x fa-inverse"></i></span>
+                    </section>
+                    <section ng-if="row[col.mData] <= 0">
+                        {{ row[col.mData] }}
+                    </section>
+                </section>
+                <section ng-switch-when="proxy_blocked">
+                    <section ng-if="row[col.mData] > 0">
+                        <span style="color:#E71010 " class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-times fa-stack-1x fa-inverse"></i></span>
+                    </section>
+                    <section ng-if="row[col.mData] <= 0">
+                        <span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-check fa-stack-1x fa-inverse"></i></span>
+                    </section>
+                </section>
+                <section ng-switch-when="time">
+                    <div ng-if="!col.link"  style='min-width:100px'>
+                        <span class="livestamp" data-livestamp='{{ row[col.mData] }}'></span><br />
+                        <div class="timestamp">{{ row[col.mData] }}</div>
+                    </div>
+                    <div ng-if="col.link" style='min-width:100px'>
+                        <button class='tableTime bPage button-secondary pure-button' type='button' ng-click='generateLink(row, col)'>
+                            <div class="timestamp">{{ row[col.mData] }}</div>
+                        </button><br />
+                        <span class="livestamp" data-livestamp='{{ row[col.mData] }}'></span><br />
+                    </div>
+                </section>
+                <section ng-switch-when="null">
+                    <section ng-if="col.link.type == 'Archive'">
+                        <button class='bArchive button-error pure-button' type='button' ng-click='generateButton(col.link.type, row)'>Archive</button>
+                    </section>
+                    <section ng-if="col.link.type == 'Restore'">
+                        <button class='bRestore button-success pure-button' type='button' ng-click='generateButton(col.link.type, row)' >Restore</button>
+                    </section>
+                    <section ng-if="col.link.type == 'Upload Image'">
+                        <button class='bUpload button-success pure-button' type='button' ng-click='generateButton(col.link.type, row)'>Upload Image</button>
+                    </section>
+                </section>
+                <section ng-switch-default> 
+                    <section ng-if="col.link">
+                        <a ng-click="generateLink(row, col)">{{row[col.mData]}}</a>
+                    </section>
+                    <section ng-if="!col.link">
+                        {{row[col.mData]}}
+                    </section>      
+                </section>
             </section>
         </td>
     </tr>
