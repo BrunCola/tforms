@@ -2,12 +2,8 @@
 
 var config = require('../config/config'),
     bcrypt = require('bcrypt'),
-<<<<<<< HEAD
-    jwt = jwt = require('jsonwebtoken'),
+    jwt = require('jsonwebtoken'),
     jsSHA = require('jssha');
-=======
-    jwt = require('jsonwebtoken');
->>>>>>> stateless2
 
 module.exports = function(pool) {
     return {
@@ -57,13 +53,14 @@ module.exports = function(pool) {
             }
             pool.query("SELECT * FROM user WHERE email = ? limit 1", [req.body.email], function(err, data){
                 var ts = Math.round((new Date()).getTime() / 1000);
+                console.log(err)
+                console.log(data)
                 console.log('Email/login: '+data[0].email+', Database: '+data[0].database+', Time: '+ts)
-                if (data.length !== 1) { res.send(401, 'Wrong user or password').end(); return; }
+                if (data.length !== 1) { res.send(401).body('Wrong user or password').end(); return; }
                 var profile = data[0];
                 bcrypt.compare(req.body.password, profile.password, function(err, doesMatch){
                     console.log(profile)
                     if (doesMatch){
-<<<<<<< HEAD
                         //check if the user has opted to use two step authentication
                         if (profile.two_step_auth) {
                             if(req.body.twoStepCode) {//if they have entered a code
@@ -75,11 +72,11 @@ module.exports = function(pool) {
                                     res.json({ token: token });
                                     return;
                                 } else {
-                                    res.send(401, 'Wrong two-step authentication code');
+                                    res.send(401).body('Wrong two-step authentication code');
                                     return;
                                 }
                             } else {
-                                res.send(401, 'Two-step authentication code required');
+                                res.send(401).body('Two-step authentication code required');
                                 return;
                             }
                         } else {
@@ -87,11 +84,6 @@ module.exports = function(pool) {
                             res.json({ token: token });
                             return;
                         }
-=======
-                        var token = jwt.sign(profile, config.sessionSecret, { expiresInMinutes: 60*10 }); // 60*10
-                        res.json({ token: token });
-                        return;
->>>>>>> stateless2
                     } else {
                         res.status(401).body('Wrong user or password');
                         return;
