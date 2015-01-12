@@ -1,24 +1,15 @@
 'use strict';
 
-var dataTable = require('../constructors/datatable'),
-    config = require('../../config/config'),
-    async = require('async');
+var dataTable = require('../constructors/datatable');
 
 module.exports = function(pool) {
     return {
-        render: function(req, res) {
-            var database = req.user.database;
-            var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
-            var end = Math.round(new Date().getTime() / 1000);
-            if (req.query.start && req.query.end) {
-                start = req.query.start;
-                end = req.query.end;
-            }
-            if (req.query.lan_zone && req.query.lan_ip && req.query.host) {
-                var tables = [];
-                var info = [];
-                var table1 = {
-                    query: 'SELECT ' +
+        //////////////////////
+        /////   TABLE   //////
+        //////////////////////
+        table: function(req, res){
+            var table = {
+                query: 'SELECT ' +
                                 '`time`, '+
                                 '`lan_stealth`, ' +
                                 '`lan_machine`, ' +
@@ -59,7 +50,7 @@ module.exports = function(pool) {
                                 'AND `lan_ip` = ? ' +
                                 'AND proxy_blocked > 0 '+
                                 'AND `host` = ?',
-                    insert: [start, end, req.query.lan_zone, req.query.lan_ip, req.query.host],
+                    insert: [req.query.start, req.query.end, req.query.lan_zone, req.query.lan_ip, req.query.host],
                     params: [
                         { title: 'Time', select: 'time' },
                         { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
@@ -101,26 +92,11 @@ module.exports = function(pool) {
                         hide_stealth: req.user.hide_stealth,
                         hide_proxy: req.user.hide_proxy
                     }
-                }
-                async.parallel([
-                    // Table function(s)
-                    function(callback) {
-                        new dataTable(table1, {database: database, pool: pool}, function(err,data){
-                            tables.push(data);
-                            callback();
-                        });
-                    },
-                ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
-                    if (err) throw console.log(err)
-                    var results = {
-                        info: info,
-                        tables: tables
-                    };
-                    res.json(results);
-                });
-            } else {
-                res.redirect('/');
             }
+            new dataTable(table, {database: req.user.database, pool: pool}, function(err,data){
+                if (err) { res.status(500).end(); return }
+                res.json({table: data});
+            });
         }
     }
 };

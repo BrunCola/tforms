@@ -2578,3 +2578,6 @@ table.listUser td{
 .page-content-survey{
     background: none;
 }
+table#sevTable{
+    width:100%;
+}

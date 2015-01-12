@@ -1,10 +1,10 @@
 'use strict';
 
-angular.module('mean.pages').controller('httpByUserAgentController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', 'timeFormat', 'runPage', 'Crossfilter', function ($scope, $stateParams, $location, Global, $rootScope, $http, timeFormat, runPage, Crossfilter) {
+angular.module('mean.pages').controller('httpByUserAgentController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', 'timeFormat', 'runPage', function ($scope, $stateParams, $location, Global, $rootScope, $http, timeFormat, runPage, Crossfilter) {
     $scope.global = Global;
     var query;
     
-    $scope.tableCrossfitler = new Crossfilter([], '$id', 'persistent');
+    
     // var query = '/ioc_notifications/ioc_events'; // string with no '?' at end - function should have a check for url construction
     var page = [
         /////////////////
@@ -12,7 +12,6 @@ angular.module('mean.pages').controller('httpByUserAgentController', ['$scope', 
         /////////////////
         {
             type: 'crossfilter', // required
-            crossfilterObj: new crossfilter(), // required (if crossfilter)
             // key: 'crossfilter', // bound to the response, wrap entire source if undefined
             refresh: true,
             searchable: true, // optional search param.. no if undefined
@@ -23,7 +22,7 @@ angular.module('mean.pages').controller('httpByUserAgentController', ['$scope', 
                     d.count = +d.count;
                 });
             },
-            get: '/api/ioc_notifications/ioc_events/crossfilter', // no get default to main url, strings will replace the default (otherwise /[from root])
+            get: '/api/http/http_by_user_agent/crossfilter', // no get default to main url, strings will replace the default (otherwise /[from root])
             visuals: [
                 {
                     type: 'barchart',
@@ -62,11 +61,10 @@ angular.module('mean.pages').controller('httpByUserAgentController', ['$scope', 
         /////////////////
         {
             type: 'table', // required either array or single object
-            crossfilterObj: $scope.tableCrossfitler, // required (if crossfilter)
             key: 'table', // bound to the response, wrap entire source if undefined
             refresh: true,
             searchable: true, // optional search param.. no if undefined
-            get: '/api/ioc_notifications/ioc_events/table',
+            get: '/api/http/http_by_user_agent/table',
             run: function(data) {
                 // TODO - check if this is needed for all tables, if so - place this in the service
                 var id = 0;

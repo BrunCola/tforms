@@ -1,10 +1,10 @@
 'use strict';
 
-angular.module('mean.pages').controller('byLocalIpController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', 'runPage', 'Crossfilter', function ($scope, $stateParams, $location, Global, $rootScope, $http, runPage, Crossfilter) {
+angular.module('mean.pages').controller('byLocalIpController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', 'runPage', function ($scope, $stateParams, $location, Global, $rootScope, $http, runPage, Crossfilter) {
     $scope.global = Global;
     var query;
     
-    $scope.tableCrossfitler = new Crossfilter([], '$id', 'persistent');
+    
     // var query = '/ioc_notifications/ioc_events'; // string with no '?' at end - function should have a check for url construction
     var page = [
         /////////////////
@@ -12,7 +12,6 @@ angular.module('mean.pages').controller('byLocalIpController', ['$scope', '$stat
         /////////////////
         {
             type: 'table', // required either array or single object
-            crossfilterObj: $scope.tableCrossfitler, // required (if crossfilter)
             key: 'table', // bound to the response, wrap entire source if undefined
             refresh: true,
             searchable: true, // optional search param.. no if undefined
@@ -30,24 +29,4 @@ angular.module('mean.pages').controller('byLocalIpController', ['$scope', '$stat
     ];
     $rootScope.search = $scope.search;
     runPage($scope, page);
-
-
-
-    // if ($location.$$search.start && $location.$$search.end) {
-    //     query = '/api/extracted_files/files_by_local_ip?start='+$location.$$search.start+'&end='+$location.$$search.end;
-    // } else {
-    //     query = '/api/extracted_files/files_by_local_ip?';
-    // }
-    // $http({method: 'GET', url: query}).
-    // success(function(data) {
-    //     if (data.tables[0] === null) {
-    //         $scope.$broadcast('loadError');
-    //     } else {
-    //         $scope.data = data;
-    //         $scope.tableCrossfitler = crossfilter($scope.data.tables[0].aaData);
-    //         $scope.tableData = $scope.tableCrossfitler.dimension(function(d){return d;});
-    //         $scope.$broadcast('table', $scope.data.tables[0], $scope.tableData);
-    //         $scope.$broadcast('spinnerHide');
-    //     }
-    // });
 }]);

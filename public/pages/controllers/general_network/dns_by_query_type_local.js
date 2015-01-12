@@ -1,10 +1,10 @@
 'use strict';
 
-angular.module('mean.pages').controller('dnsByQueryTypeLocalController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', 'runPage', 'Crossfilter', function ($scope, $stateParams, $location, Global, $rootScope, $http, runPage, Crossfilter) {
+angular.module('mean.pages').controller('dnsByQueryTypeLocalController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', 'runPage', function ($scope, $stateParams, $location, Global, $rootScope, $http, runPage, Crossfilter) {
     $scope.global = Global;
     var query;
     
-    $scope.tableCrossfitler = new Crossfilter([], '$id', 'persistent');
+    
 
     var page = [
         /////////////////
@@ -12,11 +12,10 @@ angular.module('mean.pages').controller('dnsByQueryTypeLocalController', ['$scop
         /////////////////
         {
             type: 'table', // required either array or single object
-            crossfilterObj: $scope.tableCrossfitler, // required (if crossfilter)
             key: 'table', // bound to the response, wrap entire source if undefined
             refresh: true,
             searchable: true, // optional search param.. no if undefined
-            get: '/api/ioc_notifications/ioc_events/table',
+            get: '/api/general_network/dns_by_query_type_local/table',
             run: function(data) {
                 // TODO - check if this is needed for all tables, if so - place this in the service
                 var id = 0;

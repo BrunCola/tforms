@@ -15,8 +15,10 @@ module.exports = function(app, version, pool) {
             .post(auth.permission, stealth_op_view.set_info);
         // STEALTH CONN
             var stealth_conn = require('../../controllers/stealth/stealth_conn')(pool);
-            app.route('/api/stealth/stealth_conn')
-            .get(auth.permission, stealth_conn.render);
+            // // CROSSFILTER
+            // app.route('/api/stealth/stealth_conn/crossfilter').get(auth.permission, stealth_conn.crossfilter);
+            // // TABLE
+            // app.route('/api/stealth/stealth_conn/table').get(auth.permission, stealth_conn.table);
             // STEALTH CONN BY USER
                 var stealth_conn_by_user = require('../../controllers/stealth/stealth_conn_by_user')(pool);
                 app.route('/api/stealth/stealth_conn_by_user')
@@ -27,16 +29,18 @@ module.exports = function(app, version, pool) {
                     .get(auth.permission, stealth_conn_by_userANDremote.render);
         // STEALTH EVENTS
             var stealth_events = require('../../controllers/stealth/stealth_events')(pool); 
-            app.route('/api/stealth/stealth_events')
-            .get(auth.permission, stealth_events.render);
+            // CROSSFILTER
+            app.route('/api/stealth/stealth_events/crossfilter').get(auth.permission, stealth_events.crossfilter);
+            // TABLE
+            app.route('/api/stealth/stealth_events/table').get(auth.permission, stealth_events.table);
             // STEALTH EVENTS USER
                 var stealth_events_by_type_and_user = require('../../controllers/stealth/stealth_events_by_type_and_user')(pool);
-                app.route('/api/stealth/stealth_events_by_type_and_user')
-                .get(auth.permission, stealth_events_by_type_and_user.render);
+                // TABLE
+                app.route('/api/stealth/stealth_events_by_type_and_user/table').get(auth.permission, stealth_events_by_type_and_user.table);
                 // STEALTH EVENTS USER DRILL
                     var stealth_events_full = require('../../controllers/stealth/stealth_events_full')(pool);
-                    app.route('/api/stealth/stealth_events_full')
-                    .get(auth.permission, stealth_events_full.render);
+                // TABLE
+                app.route('/api/stealth/stealth_events_full/table').get(auth.permission, stealth_events_full.table);
         // STEALTH QUARANTINE
             var stealth_quarantine = require('../../controllers/stealth/stealth_quarantine')(pool); 
             app.route('/api/stealth/stealth_quarantine')

@@ -6,21 +6,12 @@ var dataTable = require('../constructors/datatable'),
 
 module.exports = function(pool) {
     return {
-        render: function(req, res) {
-            var database = req.user.database;
-            // var database = null;
-            var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
-            var end = Math.round(new Date().getTime() / 1000);
-            if (req.query.start && req.query.end) {
-                start = req.query.start;
-                end = req.query.end;
-            }
-            //var results = [];
-            if (req.query.event_type) {
-                var tables = [];
-                var info = [];
-                var table1 = {
-                     query: 'SELECT '+
+        //////////////////////
+        /////   TABLE   //////
+        //////////////////////
+        table: function(req, res){
+            var table = {
+                query: 'SELECT '+
                                 'count(*) AS count,'+
                                 'max(`time`) AS `time`,'+
                                 '`lan_stealth`,'+
@@ -40,7 +31,7 @@ module.exports = function(pool) {
                             'GROUP BY '+
                                 '`lan_zone`,'+
                                 '`lan_user`',
-                    insert: [start, end, req.query.event_type],
+                    insert: [req.query.start, req.query.end, req.query.event_type],
                     params: [
                         {
                             title: 'Last Seen',
@@ -68,26 +59,11 @@ module.exports = function(pool) {
                         title: 'Local Endpoints Triggering Event',
                         hide_stealth: req.user.hide_stealth
                     }
-                }
-                async.parallel([
-                    // Table function(s)
-                    function(callback) {
-                        new dataTable(table1, {database: database, pool: pool}, function(err,data){
-                            tables.push(data);
-                            callback();
-                        });
-                    },
-                ], function(err) { //This function gets called after the two tasks have called their "task callbacks"
-                    if (err) throw console.log(err)
-                    var results = {
-                        info: info,
-                        tables: tables
-                    };
-                    res.json(results);
-                });
-            } else {
-                res.redirect('/');
             }
+            new dataTable(table, {database: req.user.database, pool: pool}, function(err,data){
+                if (err) { res.status(500).end(); return }
+                res.json({table: data});
+            });
         }
     }
 };
