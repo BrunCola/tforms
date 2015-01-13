@@ -51,5 +51,4 @@ module.exports = {
     sessionCollection: 'sessions',
     // 2auth secret is a temporart token ONLY for the user who is 1/2 way through the login process
     twoAuthSecret: '+2{B}M?0b5^.78j',
-    passwordHash: 't4JN2Pt17bP28E9q'
 };

@@ -17,6 +17,21 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
                     callback();
                 });
         }
+        function enable2factor(email, passcode, callback) {
+            $http({method: 'POST', url: '/api/users/enable2factor', data: {email: email, passcode: passcode}}).
+                success(function(data, status, headers, config) {
+                    callback(null, true);
+                }).
+                error(function(data, status, headers, config) {
+                    callback(true, null);
+                });
+        }
+        function disable2factor(email, callback) {
+            $http({method: 'POST', url: '/api/users/disable2factor', data: {email: email}}).
+                success(function(data, status, headers, config) {
+                    callback();
+                })
+        }
         $scope.logout = function() {
             delete $window.sessionStorage.token;
             $location.url('/login');
@@ -58,12 +73,17 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
             });
         };
         var settingsCtrl = function ($scope, $modalInstance, user) {
+            // theres another $scope.logout instance here so it can be local to this function/modal
+            $scope.logout = function() {
+                $modalInstance.close();
+                delete $window.sessionStorage.token;
+                $location.url('/login');
+            }
             var count = 0;      
             $scope.googleSrc = function(){
                 count++;
                 if ($scope.user.twoStepAuth == 1) {
-                    console.log(user)
-                    return 'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/'+user.username+'@rapidphire.com%3Fsecret%3D' + user.twoAuthHash;
+                    return 'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/'+user.username+'@rapidphire.com%3Fsecret%3D'+user.twoAuthHash+'&issuer=rapidPHIRE';
                 }
             }
             $scope.user = {
@@ -74,15 +94,22 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
                 prevTwoStepAuth: user.two_step_auth
             };
 
-            $scope.enable2Auth = function() {
-                console.log('enable')
-            }
-
             $scope.disable2Auth = function() {
-                console.log('enable')
+                disable2factor(user.email, function(){
+                    $modalInstance.close();
+                    $scope.logout();
+                })
             }
 
-
+            $scope.submit2Auth = function(form) {
+                if (form.$valid) {
+                    enable2factor(user.email, $scope.user.verify, function(err, result){
+                        if (err) { $scope.twoFactorError = 'Wrong passcode'; return }
+                        $modalInstance.close();
+                        $scope.logout();
+                    })
+                }
+            }
             $scope.ok = function () {
                 $modalInstance.close();
             };
@@ -90,13 +117,6 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
             $scope.submitForm = function(form) {
                 // check to make sure the form is completely valid
                 if (form.$valid) {
-                    //convert checkbox value to 0 or 1
-                    var twoStepTinyInt;
-                    if ($scope.user.twoStepAuth == true) { 
-                        twoStepTinyInt = 1; 
-                    } else {
-                        twoStepTinyInt = 0;
-                    }
                     async.parallel([
                         function(callback){
                             if (($scope.user.password) && ($scope.user.cpassword === $scope.user.password)) {
@@ -119,8 +139,7 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
                     ],
                     function(err){
                         $modalInstance.close();
-                        delete $window.sessionStorage.token;
-                        $location.url('/login');
+                        $scope.logout();
                     });
                 }
             };
