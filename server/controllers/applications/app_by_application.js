@@ -7,30 +7,6 @@ async = require('async');
 
 module.exports = function(pool) {
     return {
-            // var piechartQ = {
-            //     query: 'SELECT '+
-            //                 'time,'+
-            //                 '`l7_proto` AS `pie_dimension`, '+
-            //                 '(sum(in_bytes + out_bytes) / 1048576) AS `count` '+
-            //             'FROM '+
-            //                 '`conn_l7_proto` '+
-            //             'WHERE '+
-            //                 '`time` BETWEEN ? AND ? '+
-            //                 'AND `l7_proto` !=\'-\' '+
-            //             'GROUP BY '+
-            //                 '`l7_proto`',
-            //     insert: [start, end]
-            // }
-            // async.parallel([
-            //     // Piechart function
-            //     function(callback) {
-            //         new query(piechartQ, {database: database, pool: pool}, function(err,data){
-            //             piechart = data;
-            //             callback();
-            //         });
-            //     }
-            // ]
-
         crossfilter: function(req, res) {
             var get = {
                 query: 'SELECT '+
@@ -51,6 +27,26 @@ module.exports = function(pool) {
                 insert: [req.query.start, req.query.end]
             }
             new query(get, {database: req.user.database, pool: pool}, function(err,data){
+                if (err) { res.status(500).end(); return }
+                res.json(data);
+            });
+        },
+        crossfilterpie: function(req, res) {
+            var piechart = {
+                query: 'SELECT '+
+                            'time,'+
+                            '`l7_proto` AS `pie_dimension`, '+
+                            '(sum(in_bytes + out_bytes) / 1048576) AS `count` '+
+                        'FROM '+
+                            '`conn_l7_proto` '+
+                        'WHERE '+
+                            '`time` BETWEEN ? AND ? '+
+                            'AND `l7_proto` !=\'-\' '+
+                        'GROUP BY '+
+                            '`l7_proto`',
+                insert: [req.query.start, req.query.end]
+            }
+            new query(piechart, {database: req.user.database, pool: pool}, function(err,data){
                 if (err) { res.status(500).end(); return }
                 res.json(data);
             });

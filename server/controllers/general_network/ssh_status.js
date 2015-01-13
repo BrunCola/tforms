@@ -1,37 +1,10 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-    config = require('../../config/config'),
-    async = require('async'),
     query = require('../constructors/query');
 
 module.exports = function(pool) {
     return {           
-            // var piechartQ = {
-            //     query: 'SELECT '+
-            //              'time,'+
-            //              '`status_code` AS `pie_dimension`, '+
-            //              'count(*) AS `count` '+
-            //          'FROM '+
-            //              '`ssh` '+
-            //          'WHERE '+
-            //              '`time` BETWEEN ? AND ? '+
-            //              'AND `status_code` !=\'-\' '+
-            //          'GROUP BY '+
-            //              '`status_code`',
-            //     insert: [start, end, start, end, start, end]
-            // }
-            // async.parallel([
-               
-            //     // Piechart function
-            //     function(callback) {
-            //         new query(piechartQ, {database: database, pool: pool}, function(err,data){
-            //             piechart = data;
-            //             callback();
-            //         });
-            //     }
-            // ], 
-
         crossfilter: function(req, res) {
             var get = {
                 query: 'SELECT '+

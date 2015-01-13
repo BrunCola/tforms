@@ -14,5 +14,5 @@ module.exports = function(app, version, pool) {
             var first_login = require('../controllers/users/first_login')(pool);
             app.route('/api/users/first_login')
             .get(auth.permission, first_login.render)
-            .post(auth.permission, first_login.insert); 
+            .post(auth.permission, first_login.insert);
 };

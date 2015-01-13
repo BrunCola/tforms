@@ -19,6 +19,8 @@ module.exports = function(app, version, pool) {
             var http_by_user_agent = require('../../controllers/http/http_by_user_agent')(pool);
             // CROSSFILTER
             app.route('/api/http/http_by_user_agent/crossfilter').get(auth.permission, http_by_user_agent.crossfilter);
+            // CROSSFILTER PIE
+            app.route('/api/http/http_by_user_agent/crossfilterpie').get(auth.permission, http_by_user_agent.crossfilterpie);
             // TABLE
             app.route('/api/http/http_by_user_agent/table').get(auth.permission, http_by_user_agent.table);
             // HTTP BY USER AGENT LOCAL
@@ -41,6 +43,8 @@ module.exports = function(app, version, pool) {
             var http_remote = require('../../controllers/http/http_remote')(pool);
             // CROSSFILTER
             app.route('/api/http/http_remote/crossfilter').get(auth.permission, http_remote.crossfilter);
+            // CROSSFILTER PIE
+            app.route('/api/http/http_remote/crossfilterpie').get(auth.permission, http_remote.crossfilterpie);
             // TABLE
             app.route('/api/http/http_remote/table').get(auth.permission, http_remote.table);
             // HTTP REMOTE2LOCAL

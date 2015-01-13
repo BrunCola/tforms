@@ -1,27 +1,38 @@
 'use strict';
 
 var dataTable = require('./constructors/datatable'),
-query = require('./constructors/query'),
-config = require('../config/config'),
-async = require('async');
+query = require('./constructors/query');
 
 module.exports = function(pool) {
 	return {
-		render: function(req, res) {
-			var database = req.user.database;
-			// var database = null;
-			var start = Math.round(new Date().getTime() / 1000)-((3600*24)*config.defaultDateRange);
-			var end = Math.round(new Date().getTime() / 1000);
-			if (req.query.start && req.query.end) {
-				start = req.query.start;
-				end = req.query.end;
-			}
-			//var results = [];
-			var tables = [];
-			var crossfilter = [];
-			var info = [];
-			var table1 = {
+		crossfilter: function(req, res) {
+            var get = {
 				query: 'SELECT '+
+					// SELECTS
+					'time, '+ // Last Seen
+					'`remote_country`, '+
+					'ioc_severity, '+
+					'count(*) as count, '+
+					'`ioc` '+
+					// !SELECTS
+					'FROM conn_ioc '+
+					'WHERE time BETWEEN ? AND ? '+
+					'AND `ioc_count` > 0 '+
+					'AND `trash` IS NOT NULL '+
+					'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country, ioc_severity, ioc',
+                insert: [req.query.start, req.query.end]
+            }
+            new query(get, {database: req.user.database, pool: pool}, function(err,data){
+                if (err) { res.status(500).end(); return }
+                res.json(data);
+            });
+        },
+        //////////////////////
+        /////   TABLE   //////
+        //////////////////////
+        table: function(req, res){
+            var table = {
+                query: 'SELECT '+
 					// SELECTS
 					'max(`time`) AS `time`,'+ // Last Seen
 					'`ioc_severity`, '+
@@ -48,7 +59,7 @@ module.exports = function(pool) {
 					'AND `ioc_count` > 0 '+
 					'AND `trash` IS NOT NULL '+
 					'GROUP BY `lan_ip`,`remote_ip`,`ioc`',
-				insert: [start, end],
+				insert: [req.query.start, req.query.end],
 				params: [
 					{
 						title: 'Last Seen',
@@ -93,48 +104,11 @@ module.exports = function(pool) {
 					div: 'table',
 					title: 'Archived Indicators of Compromise (IOC) Notifications'
 				}
-			}
-			var crossfilterQ = {
-				query: 'SELECT '+
-					// SELECTS
-					'time, '+ // Last Seen
-					'`remote_country`, '+
-					'ioc_severity, '+
-					'count(*) as count, '+
-					'`ioc` '+
-					// !SELECTS
-					'FROM conn_ioc '+
-					'WHERE time BETWEEN ? AND ? '+
-					'AND `ioc_count` > 0 '+
-					'AND `trash` IS NOT NULL '+
-					'GROUP BY month(from_unixtime(time)), day(from_unixtime(time)), hour(from_unixtime(time)), remote_country, ioc_severity, ioc',
-				insert: [start, end]
-			}
-			async.parallel([
-				// Table function(s)
-				function(callback) {
-					new dataTable(table1, {database: database, pool: pool}, function(err,data){
-						tables.push(data);
-						callback();
-					});
-				},
-				// Crossfilter function
-				function(callback) {
-					new query(crossfilterQ, {database: database, pool: pool}, function(err,data){
-						crossfilter = data;
-						callback();
-					});
-				}
-			], function(err) { //This function gets called after the two tasks have called their "task callbacks"
-				if (err) throw console.log(err);
-				var results = {
-					info: info,
-					tables: tables,
-					crossfilter: crossfilter
-				};
-				//console.log(results);
-				res.jsonp(results);
-			});
-		}
+            }
+            new dataTable(table, {database: req.user.database, pool: pool}, function(err,data){
+                if (err) { res.status(500).end(); return }
+                res.json({table: data});
+            });
+        }
 	}
 };

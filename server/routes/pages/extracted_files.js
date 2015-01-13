@@ -7,6 +7,8 @@ module.exports = function(app, version, pool) {
             var files_by_mime_type = require('../../controllers/extracted_files/files_by_mime_type')(pool);
             // CROSSFILTER
             app.route('/api/extracted_files/files_by_mime_type/crossfilter').get(auth.permission, files_by_mime_type.crossfilter);
+            // CROSSFILTER PIE
+            app.route('/api/extracted_files/files_by_mime_type/crossfilterpie').get(auth.permission, files_by_mime_type.crossfilterpie);
             // TABLE
             app.route('/api/extracted_files/files_by_mime_type/table').get(auth.permission, files_by_mime_type.table);
             // FILE MIME LOCAL
@@ -29,6 +31,8 @@ module.exports = function(app, version, pool) {
             var files_by_remote_ip = require('../../controllers/extracted_files/files_by_remote_ip')(pool);
             // CROSSFILTER
             app.route('/api/extracted_files/files_by_remote_ip/crossfilter').get(auth.permission, files_by_remote_ip.crossfilter);
+            // CROSSFILTER PIE
+            app.route('/api/extracted_files/files_by_remote_ip/crossfilterpie').get(auth.permission, files_by_remote_ip.crossfilterpie);
             // TABLE
             app.route('/api/extracted_files/files_by_remote_ip/table').get(auth.permission, files_by_remote_ip.table);
             // BY FILE NAME REMOTE
@@ -43,6 +47,8 @@ module.exports = function(app, version, pool) {
             var files_by_domain = require('../../controllers/extracted_files/files_by_domain')(pool);
             // CROSSFILTER
             app.route('/api/extracted_files/files_by_domain/crossfilter').get(auth.permission, files_by_domain.crossfilter);
+            // CROSSFILTER PIE
+            app.route('/api/extracted_files/files_by_domain/crossfilterpie').get(auth.permission, files_by_domain.crossfilterpie);
             // TABLE
             app.route('/api/extracted_files/files_by_domain/table').get(auth.permission, files_by_domain.table);
             // BY DOMAIN LOCAL

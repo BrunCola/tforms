@@ -1,43 +1,10 @@
 'use strict';
 
 var dataTable = require('../constructors/datatable'),
-    config = require('../../config/config'),
-    async = require('async'),
     query = require('../constructors/query');
 
 module.exports = function(pool) {
     return {        
-            // var piechartQ = {
-            //     query: 'SELECT '+
-            //              'time,'+
-            //              '`lan_zone`,'+
-            //              '`lan_user`, '+
-            //              '`lan_ip`, '+
-            //              'count(*) AS `count` '+
-            //          'FROM '+
-            //              '`endpoint_events` '+
-            //          'WHERE '+
-            //              '`time` BETWEEN ? AND ? '+
-            //              'AND `lan_user` !=\'-\' '+
-            //              'AND `lan_ip` !=\'-\' '+
-            //          'GROUP BY '+
-            //              '`lan_zone`,'+
-            //              '`lan_user`, '+
-            //              '`lan_ip` ',
-            //     insert: [start, end]
-            // }
-            // async.parallel([
-
-            //     // Piechart function
-            //     function(callback) {
-            //         new query(piechartQ, {database: database, pool: pool}, function(err,data){
-            //             piechart = data;
-            //             callback();
-            //         });
-            //     }
-            // ]
-
-
         crossfilter: function(req, res) {
             var get = {
                 query: 'SELECT '+
@@ -54,6 +21,31 @@ module.exports = function(pool) {
                 insert: [req.query.start, req.query.end]
             }
             new query(get, {database: req.user.database, pool: pool}, function(err,data){
+                if (err) { res.status(500).end(); return }
+                res.json(data);
+            });
+        },
+        crossfilterpie: function(req, res) {
+            var piechart = {
+                query: 'SELECT '+
+                        'time,'+
+                        '`lan_zone`,'+
+                        '`lan_user`, '+
+                        '`lan_ip`, '+
+                        'count(*) AS `count` '+
+                    'FROM '+
+                        '`endpoint_events` '+
+                    'WHERE '+
+                        '`time` BETWEEN ? AND ? '+
+                        'AND `lan_user` !=\'-\' '+
+                        'AND `lan_ip` !=\'-\' '+
+                    'GROUP BY '+
+                        '`lan_zone`,'+
+                        '`lan_user`, '+
+                        '`lan_ip` ',
+                insert: [req.query.start, req.query.end]
+            }
+            new query(piechart, {database: req.user.database, pool: pool}, function(err,data){
                 if (err) { res.status(500).end(); return }
                 res.json(data);
             });
@@ -98,7 +90,7 @@ module.exports = function(pool) {
                     { title: 'Local IP', select: 'lan_ip' },
                     {
                         title: '',
-                        select: null,
+                        select: '',
                         dView: true,
                         link: {
                             type: 'Upload Image',

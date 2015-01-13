@@ -861,6 +861,35 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 //     $scope.countGrouped = $scope.words.groupBy('wordCount');
                 // });
 
+                $scope.generateButton = function(type, data) {
+                    switch(type){
+                        case 'Archive':
+                            // $http({method: 'POST', url: '/api/actions/archive', data: {lan_ip: data.lan_ip, remote_ip: data.remote_ip, ioc: data.ioc}}).
+                            //     success(function(data, status, headers, config) {
+                            //         var fil = dimension.filter(function(d) { if (d.time === data.time) {return data; }}).top(Infinity);
+                            //         $scope.tableCrossfitler.remove(fil);
+                            //         dimension.filterAll();
+                            //         redrawTable(dimension);
+                            //     })
+                            console.log(data);
+                        break;
+                        case 'Restore':
+                            // $http({method: 'POST', url: '/api/actions/restore', data: {lan_ip: data.lan_ip, remote_ip: data.remote_ip, ioc: data.ioc}}).
+                            //     success(function(data, status, headers, config) {
+                            //         var fil = dimension.filter(function(d) { if (d.time === data.time) {return data; }}).top(Infinity);
+                            //         $scope.tableCrossfitler.remove(fil);
+                            //         dimension.filterAll();
+                            //         redrawTable(dimension);
+                            //     })
+                            console.log(data);
+                        break;
+                        case 'Upload Image':     
+                            // $scope.uploadOpen(data);
+                            console.log(data);
+                        break;
+                    }
+                }
+
                 /**
                  * @method applyWordFilter
                  * @param word {String}
@@ -879,6 +908,27 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
     };
 }]);
 
+angular.module('mean.pages').directive('fileReplace', ['$rootScope', '$timeout', 'mimeIcon', function ($rootScope, $timeout, mimeIcon) {
+    return {
+        link: function($scope, element, attrs) {
+            $timeout(function() {
+                var mime = $(element).html();
+                $(element).html(mimeIcon(mime));
+            }, 10)
+        }
+    };
+}]);
+
+angular.module('mean.pages').directive('appReplace', ['$rootScope', '$timeout', 'appIcon', function ($rootScope, $timeout, appIcon) {
+    return {
+        link: function($scope, element, attrs) {
+            $timeout(function() {
+                var l7_proto = $(element).html();
+                $(element).html(appIcon(l7_proto));
+            }, 10)
+        }
+    };
+}]);
 
 angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '$rootScope', 'getSize', function ($timeout, $window, $rootScope, getSize) {
     return {

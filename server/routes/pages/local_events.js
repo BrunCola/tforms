@@ -12,6 +12,8 @@ module.exports = function(app, version, pool) {
             var endpoint_by_type = require('../../controllers/local_events/endpoint_by_type')(pool);
             // CROSSFILTER
             app.route('/api/local_events/endpoint_by_type/crossfilter').get(auth.permission, endpoint_by_type.crossfilter);
+            // CROSSFILTER PIE
+            app.route('/api/local_events/endpoint_by_type/crossfilterpie').get(auth.permission, endpoint_by_type.crossfilterpie);
             // TABLE
             app.route('/api/local_events/endpoint_by_type/table').get(auth.permission, endpoint_by_type.table);
             // ENDPOINT EVENTS USER
@@ -26,6 +28,8 @@ module.exports = function(app, version, pool) {
             var endpoint_by_user = require('../../controllers/local_events/endpoint_by_user')(pool);
             // CROSSFILTER
             app.route('/api/local_events/endpoint_by_user/crossfilter').get(auth.permission, endpoint_by_user.crossfilter);
+            // CROSSFILTER PIE
+            app.route('/api/local_events/endpoint_by_user/crossfilterpie').get(auth.permission, endpoint_by_user.crossfilterpie);
             // TABLE
             app.route('/api/local_events/endpoint_by_user/table').get(auth.permission, endpoint_by_user.table);
             // ENDPOINT EVENTS LOCAL BY ALERT INFO
@@ -36,6 +40,8 @@ module.exports = function(app, version, pool) {
             var endpoint_events_sharepoint = require('../../controllers/local_events/endpoint_events_sharepoint')(pool);
             // CROSSFILTER
             app.route('/api/local_events/endpoint_events_sharepoint/crossfilter').get(auth.permission, endpoint_events_sharepoint.crossfilter);
+            // CROSSFILTER PIE
+            app.route('/api/local_events/endpoint_events_sharepoint/crossfilterpie').get(auth.permission, endpoint_events_sharepoint.crossfilterpie);
             // TABLE
             app.route('/api/local_events/endpoint_events_sharepoint/table').get(auth.permission, endpoint_events_sharepoint.table);
             // ENDPOINT EVENTS SHAREPOINT DRILL
@@ -48,6 +54,6 @@ module.exports = function(app, version, pool) {
                     app.route('/api/local_events/endpoint_events_sharepoint_full/table').get(auth.permission, endpoint_events_sharepoint_full.table);
             // ENDPOINT BY LOCAL BY IP
                 var endpoint_by_user_and_ip = require('../../controllers/local_events/endpoint_by_user_and_ip')(pool);
-                app.route('/api/local_events/endpoint_by_user_and_ip')
-                .get(auth.permission, endpoint_by_user_and_ip.render); 
+                // TABLE
+                app.route('/api/local_events/endpoint_by_user_and_ip/table').get(auth.permission, endpoint_by_user_and_ip.table);
 };

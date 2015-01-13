@@ -4,8 +4,6 @@ angular.module('mean.pages').controller('endpointEventsSharepointDrillController
     $scope.global = Global;
     var query;
 
-    
-
     var page = [
         /////////////////
         ///// TABLE /////
