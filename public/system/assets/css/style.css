@@ -2589,8 +2589,11 @@ table#sevTable tr td{
   padding: 3px 0px;
 }
 table#sevTable button.tableTime{
-    width:120px;
+    max-width:125px;
 }
 table#sevTable tr:nth-child(even){
   background-color: #ddd;
+}
+table#sevTable tr:last-child{
+  background-color: #fff;
 }

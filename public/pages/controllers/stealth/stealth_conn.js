@@ -25,7 +25,7 @@ angular.module('mean.pages').controller('stealthConnController', ['$scope', '$st
                 {
                     type: 'barchart',
                     settings: { 
-                        type: 'stealthtraffic_v3',
+                        type: 'stealthtraffic',
                         xAxis: '',
                         yAxis: '# MB / Hour'
                     },
