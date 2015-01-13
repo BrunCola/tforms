@@ -26,5 +26,13 @@ module.exports = function (app, version, pool) {
     app.route('/api/users/updateemail')
         .post(auth.permission, users.updateEmail);
 
+    // enable 2 factor
+    app.route('/api/users/enable2factor')
+        .post(auth.permission, users.enableTwoFactor);
+
+    // disable 2 factor
+    app.route('/api/users/disable2factor')
+        .post(auth.permission, users.disableTwoFactor);
+
 
 };
