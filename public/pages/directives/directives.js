@@ -800,6 +800,7 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
         link: function($scope, element) {
             $scope.$on('sevTable', function (event, result, crossfilterObj, params) {
                 $scope.$broadcast('spinnerHide');
+                if (result === null) { return; }
                 // on sevTable = $scope.table[name] = data
                 // here create table div from element + name
                 // TODO - add unique name in controller to post this in a key (in case direcive gets called multiple times)- i.e. $scope[name].table = this
@@ -894,7 +895,6 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     // $scope.words.filterBy('word', word, customFilter);
                     $scope.word = word;
                 };
-
 
             })
         }
@@ -1172,46 +1172,52 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                                 d3.select('#barchart svg').attr('width', width).attr('height', width/3.5);
                                 $scope.barChart.redraw();
                             }
+
+                            var in1=0, in2=0, in3=0, in4=0, in5=0, out1=0, out2=0, out3=0, out4=0, out5=0;
+
+                            group.top(Infinity).map(function(d){
+                                in1 += d.value.in_bytes;
+                                in2 += d.value.in_bytes2;
+                                in3 += d.value.in_bytes3;
+                                in4 += d.value.in_bytes4;
+                                in5 += d.value.in_bytes5;
+                                out1 += d.value.out_bytes;
+                                out2 += d.value.out_bytes2;
+                                out3 += d.value.out_bytes3;
+                                out4 += d.value.out_bytes4;
+                                out5 += d.value.out_bytes5;
+                            })
+
                             $scope.barChart
                                 .group(group, "MB To Remote")
                                 .valueAccessor(function(d) {
                                     return d.value.in_bytes;
                                 })
                                 .stack(group, "MB From Remote", function(d){return d.value.out_bytes;})
-                                .stack(group, "MB To Remote (Conn)", function(d){return d.value.in_bytes2;})
-                                .stack(group, "MB From Remote (Conn)", function(d){return d.value.out_bytes2;})
-                                .stack(group, "MB To Remote (Drop)", function(d){return d.value.in_bytes3;})
-                                .stack(group, "MB From Remote (Drop)", function(d){return d.value.out_bytes3;})
-                                .legend(dc.legend().x(width - 153).y(10).itemHeight(13).gap(5))
-                                .colors(d3.scale.ordinal().domain(["in_bytes","out_bytes","in_bytes2","out_bytes2","in_bytes3","out_bytes3"]).range(["#034142","#068587","#1A4569","#3FA8FF","#73100A","#FF3628"]));
-                            filter = true;
-                            break;
-                        case 'stealthtraffic_v3':
-                            var setNewSize = function(width) {
-                                $scope.barChart
-                                    .width(width)
-                                    .height(width/3.5)
-                                    .margins({top: 10, right: 30, bottom: 25, left: 43}); // (optional) define margins
-                                // $('#barchart').parent().height(width/3.5);
-                                d3.select('#barchart svg').attr('width', width).attr('height', width/3.5);
-                                $scope.barChart.redraw();
-                            }
-                            $scope.barChart
-                                .group(group, "MB To Remote")
-                                .valueAccessor(function(d) {
-                                    return d.value.in_bytes;
-                                })
-                                .stack(group, "MB From Remote", function(d){return d.value.out_bytes;})
-                                .stack(group, "MB To Remote (Conn)", function(d){return d.value.in_bytes2;})
-                                .stack(group, "MB From Remote (Conn)", function(d){return d.value.out_bytes2;})
-                                .stack(group, "MB To Remote (Drop)", function(d){return d.value.in_bytes3;})
-                                .stack(group, "MB From Remote (Drop)", function(d){return d.value.out_bytes3;})
-                                .stack(group, "MB To Remote v3 (Conn)", function(d){return d.value.in_bytes4;})
-                                .stack(group, "MB From Remote v3 (Conn)", function(d){return d.value.out_bytes4;})
-                                .stack(group, "MB To Remote v3 (Drop)", function(d){return d.value.in_bytes5;})
-                                .stack(group, "MB From Remote v3 (Drop)", function(d){return d.value.out_bytes5;})
                                 .legend(dc.legend().x(width - 153).y(10).itemHeight(13).gap(5))
                                 .colors(d3.scale.ordinal().domain(["in_bytes","out_bytes","in_bytes2","out_bytes2","in_bytes3","out_bytes3","in_bytes4","out_bytes4","in_bytes5","out_bytes5"]).range(["#034142","#068587","#1A4569","#3FA8FF","#73100A","#FF3628","#001C01","#00692B","#280069","#463369 "]));
+
+                            if ((in2 > 0) || (out2 > 0)) {
+                                $scope.barChart
+                                    .stack(group, "MB To Remote (Conn)", function(d){return d.value.in_bytes2;})
+                                    .stack(group, "MB From Remote (Conn)", function(d){return d.value.out_bytes2;})
+                            }
+                            if ((in3 > 0) || (out3 > 0)) {
+                                $scope.barChart
+                                    .stack(group, "MB To Remote (Drop)", function(d){return d.value.in_bytes3;})
+                                    .stack(group, "MB From Remote (Drop)", function(d){return d.value.out_bytes3;})
+                            }
+                            if ((in4 > 0) || (out4 > 0)) {
+                                $scope.barChart
+                                    .stack(group, "MB To Remote v3 (Conn)", function(d){return d.value.in_bytes4;})
+                                    .stack(group, "MB From Remote v3 (Conn)", function(d){return d.value.out_bytes4;})
+                            }
+                            if ((in5 > 0) || (out5 > 0)) {
+                                $scope.barChart
+                                    .stack(group, "MB To Remote v3 (Drop)", function(d){return d.value.in_bytes5;})
+                                    .stack(group, "MB From Remote v3 (Drop)", function(d){return d.value.out_bytes5;})
+                            }
+
                             filter = true;
                             break;
                         case 'bandwidth':
