@@ -792,7 +792,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 //     }
 // }]);
 
-angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$rootScope', '$location', function ($timeout, $filter, $rootScope, $location) {
+angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$rootScope', '$location', '$http', 'timeFormat', function ($timeout, $filter, $rootScope, $location, $http, timeFormat) {
     return {
         restrict: 'E',
         templateUrl : 'public/pages/views/sevtable.html',
@@ -805,7 +805,9 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 // TODO - add unique name in controller to post this in a key (in case direcive gets called multiple times)- i.e. $scope[name].table = this
                 $scope.tableColumns = result.params;
                 $scope.tableData = crossfilterObj;
-                
+
+                $scope.tableData.collection().map(function(d) {d.time = timeFormat(d.time, 'tables')})
+
                 $scope.words = {};
                 $scope.word = '';
                 $scope.pageNumber = 50;
@@ -864,28 +866,19 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 $scope.generateButton = function(type, data) {
                     switch(type){
                         case 'Archive':
-                            // $http({method: 'POST', url: '/api/actions/archive', data: {lan_ip: data.lan_ip, remote_ip: data.remote_ip, ioc: data.ioc}}).
-                            //     success(function(data, status, headers, config) {
-                            //         var fil = dimension.filter(function(d) { if (d.time === data.time) {return data; }}).top(Infinity);
-                            //         $scope.tableCrossfitler.remove(fil);
-                            //         dimension.filterAll();
-                            //         redrawTable(dimension);
-                            //     })
-                            console.log(data);
+                            $http({method: 'POST', url: '/api/actions/archive', data: {lan_ip: data.lan_ip, remote_ip: data.remote_ip, ioc: data.ioc}}).
+                                success(function(dataa, status, headers, config) {
+                                    $scope.tableData.deleteModel(data);
+                                })
                         break;
                         case 'Restore':
-                            // $http({method: 'POST', url: '/api/actions/restore', data: {lan_ip: data.lan_ip, remote_ip: data.remote_ip, ioc: data.ioc}}).
-                            //     success(function(data, status, headers, config) {
-                            //         var fil = dimension.filter(function(d) { if (d.time === data.time) {return data; }}).top(Infinity);
-                            //         $scope.tableCrossfitler.remove(fil);
-                            //         dimension.filterAll();
-                            //         redrawTable(dimension);
-                            //     })
-                            console.log(data);
+                            $http({method: 'POST', url: '/api/actions/restore', data: {lan_ip: data.lan_ip, remote_ip: data.remote_ip, ioc: data.ioc}}).
+                                success(function(dataa, status, headers, config) {
+                                    $scope.tableData.deleteModel(data);
+                                })
                         break;
                         case 'Upload Image':     
-                            // $scope.uploadOpen(data);
-                            console.log(data);
+                            $scope.uploadOpen(data);
                         break;
                     }
                 }

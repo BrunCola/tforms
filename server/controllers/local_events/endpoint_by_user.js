@@ -90,7 +90,7 @@ module.exports = function(pool) {
                     { title: 'Local IP', select: 'lan_ip' },
                     {
                         title: '',
-                        select: '',
+                        select: null,
                         dView: true,
                         link: {
                             type: 'Upload Image',
