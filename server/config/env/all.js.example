@@ -4,49 +4,52 @@ var path = require('path');
 var rootPath = path.normalize(__dirname + '/../../..');
 
 module.exports = {
-	defaultDateRange: 1,
-	root: rootPath,
-	SSLport: process.env.sslPORT || 8080,
-	HTTPport: process.env.httpPORT || 8081,
-	httpRedirect: {
-		link: 'https://localhost', // no trailing slashes
-		portEnabled: true
-	},
-	sslAssets: {
-		key: './ssl/server.key',
-		cert: './ssl/server.crt'
-	},
-	mailer: {
-		user: "",
-		pass: "",
-		host: "",
-		port: 465,
-		secure: true
-	},
-	reports: {
-		active: false,
-		autoDelete: true,
-		schedule: '23 * * * *', // NOTE: recorded time is cron-time + 2 minutes & email-to-client wait is cron-time + 4 minutes
-		url: 'https://localhost:3000',
-		email: 'cron@rapidphire.com',
-		pass: ''
-	},
-	db: {
-		port: 3306,
-		host: '192.168.0.28',
-		user: 'andrew',
-		password: 'BlowItOutTheWater',
-		database: 'rp_users',
-		connectionLimit: 10000
-	},
-	localUploads: {
-		enabled: false,
-		// remeber this is also set in .gitignore if you plan on moving it
-		directory: './public/uploads/' // with trailing slash
-	},
-	templateEngine: 'swig',
-	// The secret should be set to a non-guessable string that
-	// is used to compute a session hash
-	sessionSecret: 'har4aC6Mix3Vot7',
-	sessionCollection: 'sessions'
+    defaultDateRange: 1,
+    root: rootPath,
+    SSLport: process.env.sslPORT || 8080,
+    HTTPport: process.env.httpPORT || 8081,
+    httpRedirect: {
+        link: 'https://localhost', // no trailing slashes
+        portEnabled: true
+    },
+    sslAssets: {
+        key: './ssl/server.key',
+        cert: './ssl/server.crt'
+    },
+    mailer: {
+        user: "",
+        pass: "",
+        host: "",
+        port: 465,
+        secure: true
+    },
+    reports: {
+        active: false,
+        autoDelete: true,
+        schedule: '23 * * * *', // NOTE: recorded time is cron-time + 2 minutes & email-to-client wait is cron-time + 4 minutes
+        url: 'https://localhost:3000',
+        email: 'cron@rapidphire.com',
+        pass: ''
+    },
+    db: {
+        port: 3306,
+        host: '192.168.0.28',
+        user: 'andrew',
+        password: 'BlowItOutTheWater',
+        database: 'rp_users',
+        connectionLimit: 10000
+    },
+    localUploads: {
+        enabled: false,
+        // remeber this is also set in .gitignore if you plan on moving it
+        directory: './public/uploads/' // with trailing slash
+    },
+    templateEngine: 'swig',
+    // The secret should be set to a non-guessable string that
+    // is used to compute a session hash
+    sessionSecret: 'har4aC6Mix3Vot7',
+    sessionCollection: 'sessions',
+    // 2auth secret is a temporart token ONLY for the user who is 1/2 way through the login process
+    twoAuthSecret: '+2{B}M?0b5^.78j',
+    passwordHash: 't4JN2Pt17bP28E9q'
 };
