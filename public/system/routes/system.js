@@ -57,7 +57,7 @@ angular.module('mean.system').config(['$stateProvider', '$urlRouterProvider',
                 .state('auth', {
                     templateUrl: 'public/auth/views/index.html',
                     resolve: {
-                        loggedin: checkLoggedOut
+                        loggedout: checkLoggedOut
                     }
                 })
                 .state('pages', {

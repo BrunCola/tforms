@@ -8,5 +8,9 @@ angular.module('mean.auth').config(['$stateProvider',
                 url: '/login',
                 templateUrl: 'public/auth/views/login.html'
             })
+            .state('auth.twoStep', {
+                url: '/2step',
+                templateUrl: 'public/auth/views/2step.html'
+            })
     }
 ]);
