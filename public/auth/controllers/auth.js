@@ -40,7 +40,8 @@ angular.module('mean.controllers.twoStep', [])
                         $location.url('/ioc_events');
                     })
                     .error(function() {
-                        $scope.loginerror = 'Error: Invalid two-step authentication code';
+                        delete $window.sessionStorage.token;
+                        $location.url('/login');
                     });
             }
         };
