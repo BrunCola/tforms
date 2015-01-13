@@ -3,7 +3,10 @@
 var config = require('../config/config'),
     bcrypt = require('bcrypt'),
     jwt = require('jsonwebtoken'),
-    jsSHA = require('jssha');
+    jsSHA = require('jssha'),
+    base32 = require('base32'),
+    query = require('./constructors/query');
+
 
 module.exports = function(pool) {
     return {
@@ -20,11 +23,18 @@ module.exports = function(pool) {
                             res.json({ token: token, twoAuth: true }).end();
                             return;
                         } else {
-                            var ts = Math.round((new Date()).getTime() / 1000);
-                            console.log('Email/login: '+profile.email+', Database: '+profile.database+', Time: '+ts);
-                            var token = jwt.sign(profile, config.sessionSecret, { expiresInMinutes: 60*10 });
-                            res.json({ token: token, twoAuth: false }).end();
-                            return;
+                            // if not acivated, create potential 2auth phrase on login
+                            bcrypt.genSalt(10, function(err, salt) {
+                                bcrypt.hash("B4c0/\/", salt, function(err, hash) {
+                                    // assign 2auth hash for this session to our profile value
+                                    profile.twoAuthHash = base32tohex(hash);
+                                    var ts = Math.round((new Date()).getTime() / 1000);
+                                    console.log('Email/login: '+profile.email+', Database: '+profile.database+', Time: '+ts);
+                                    var token = jwt.sign(profile, config.sessionSecret, { expiresInMinutes: 60*10 });
+                                    res.json({ token: token, twoAuth: false }).end();
+                                    return;
+                                });
+                            });
                         }
                     } else {
                         res.status(401).send('Wrong user or password').end();
@@ -79,7 +89,7 @@ module.exports = function(pool) {
             }
             if (req.body.twoStepCode && req.user) { //if they have entered a code
                 var totpObj = new TOTP(); //generate the current code
-                var otp = totpObj.getOTP("K6JVY3EDAOP57CX2");
+                var otp = totpObj.getOTP(req.user.access_id);
                 if (otp == req.body.twoStepCode) {
                     // authorize
                     var ts = Math.round((new Date()).getTime() / 1000);
@@ -100,10 +110,54 @@ module.exports = function(pool) {
             // console.log('LIMIT THIS RETURN')
             if (req.user) {
                 res.status(200).json(req.user);
+                return;
             } else {
                 console.log('NOT LOGGED IN')
                 res.status(401).end();
+                return;
             }
+        },
+        updatePassword: function(req, res) {
+            // make sure new password in body, and it is the authorized user making the request
+            if (req.body.newPass && (req.body.email === req.user.email)) {
+                bcrypt.genSalt(10, function(err, salt) {
+                    bcrypt.hash(req.body.newPass, salt, function(err, hash) {
+                        var update = {
+                            query: "UPDATE `user` SET `password`= ? WHERE `email` = ?",
+                            insert: [hash, req.user.email]
+                        }
+                        new query(update, {database: 'rp_users', pool: pool}, function(err,data){
+                            if (err) { res.status(500).end(); return; } 
+                            res.status(200).end();
+                            return;
+                        });
+                    });
+                });
+            } else {
+                // not authorized to make any requests
+                res.status(401).end();
+                return;
+            }
+        },
+        updateEmail: function(req, res){
+            if (req.body.newEmail && (req.body.email === req.user.email)) {
+                var update = {
+                    query: "UPDATE `user` SET `email`= ? WHERE `email` = ?",
+                    insert: [req.body.newEmail, req.user.email]
+                }
+                new query(update, {database: 'rp_users', pool: pool}, function(err,data){
+                    if (err) { res.status(500).end(); return; }
+                    res.status(200).end();
+                    return;
+                });
+            } else {
+                // not authorized to make any requests
+                res.status(401).end();
+                return;
+            }
+        },
+        updateTwoFactor: function(req, res){
+            
         }
     }
 };

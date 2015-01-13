@@ -43,9 +43,6 @@ module.exports = function(app, version, pool) {
     app.route('/api/actions/clear')
         .post(auth.permission, actions.clear);
 
-    app.route('/api/actions/update')
-        .post(auth.permission, actions.update);
-
     app.route('/api/actions/local_cc')
         .post(auth.permission, actions.local_cc);
 
