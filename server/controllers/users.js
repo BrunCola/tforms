@@ -4,9 +4,52 @@ var config = require('../config/config'),
     bcrypt = require('bcrypt'),
     jwt = require('jsonwebtoken'),
     jsSHA = require('jssha'),
-    base32 = require('base32'),
+    speakeasy = require('speakeasy'),
     query = require('./constructors/query');
 
+// we put our 2factor function outside our module exports so it can be sued by multiple controllers
+var TOTP = function() {
+    var dec2hex = function(s) {
+        return (s < 15.5 ? "0" : "") + Math.round(s).toString(16);
+    };
+    var hex2dec = function(s) {
+        return parseInt(s, 16);
+    };
+    var leftpad = function(s, l, p) {
+        if(l + 1 >= s.length) {
+            s = Array(l + 1 - s.length).join(p) + s;
+        }
+        return s;
+    };
+    var base32tohex = function(base32) {
+        var base32chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+        var bits = "";
+        var hex = "";
+        for(var i = 0; i < base32.length; i++) {
+            var val = base32chars.indexOf(base32.charAt(i).toUpperCase());
+            bits += leftpad(val.toString(2), 5, '0');
+        }
+        for(var i = 0; i + 4 <= bits.length; i+=4) {
+            var chunk = bits.substr(i, 4);
+            hex = hex + parseInt(chunk, 2).toString(16) ;
+        }
+        return hex;
+    };
+    this.getOTP = function(secret) {
+        try {
+            var epoch = Math.round(new Date().getTime() / 1000.0);
+            var time = leftpad(dec2hex(Math.floor(epoch / 30)), 16, "0");
+            var hmacObj = new jsSHA(time, "HEX");
+            var hmac = hmacObj.getHMAC(base32tohex(secret), "HEX", "SHA-1", "HEX");
+            var offset = hex2dec(hmac.substring(hmac.length - 1));
+            var otp = (hex2dec(hmac.substr(offset * 2, 8)) & hex2dec("7fffffff")) + "";
+            otp = (otp).substr(otp.length - 6, 6);
+        } catch (error) {
+            throw error;
+        }
+        return otp;
+    };
+}
 
 module.exports = function(pool) {
     return {
@@ -24,17 +67,14 @@ module.exports = function(pool) {
                             return;
                         } else {
                             // if not acivated, create potential 2auth phrase on login
-                            bcrypt.genSalt(10, function(err, salt) {
-                                bcrypt.hash("B4c0/\/", salt, function(err, hash) {
-                                    // assign 2auth hash for this session to our profile value
-                                    profile.twoAuthHash = base32tohex(hash);
-                                    var ts = Math.round((new Date()).getTime() / 1000);
-                                    console.log('Email/login: '+profile.email+', Database: '+profile.database+', Time: '+ts);
-                                    var token = jwt.sign(profile, config.sessionSecret, { expiresInMinutes: 60*10 });
-                                    res.json({ token: token, twoAuth: false }).end();
-                                    return;
-                                });
-                            });
+                            // NOTE: we're using a different library to generate keys vs checking them for obvious reasons
+                            profile.twoAuthHash = speakeasy.generate_key({length: 20}).base32;
+                            // assign to our profile value
+                            var ts = Math.round((new Date()).getTime() / 1000);
+                            console.log('Email/login: '+profile.email+', Database: '+profile.database+', Time: '+ts);
+                            var token = jwt.sign(profile, config.sessionSecret, { expiresInMinutes: 60*10 });
+                            res.json({ token: token, twoAuth: false }).end();
+                            return;
                         }
                     } else {
                         res.status(401).send('Wrong user or password').end();
@@ -45,48 +85,6 @@ module.exports = function(pool) {
         },
         twoStep: function(req, res) {
             //One time password generator for 2 step authentication
-            var TOTP = function() {
-                var dec2hex = function(s) {
-                    return (s < 15.5 ? "0" : "") + Math.round(s).toString(16);
-                };
-                var hex2dec = function(s) {
-                    return parseInt(s, 16);
-                };
-                var leftpad = function(s, l, p) {
-                    if(l + 1 >= s.length) {
-                        s = Array(l + 1 - s.length).join(p) + s;
-                    }
-                    return s;
-                };
-                var base32tohex = function(base32) {
-                    var base32chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-                    var bits = "";
-                    var hex = "";
-                    for(var i = 0; i < base32.length; i++) {
-                        var val = base32chars.indexOf(base32.charAt(i).toUpperCase());
-                        bits += leftpad(val.toString(2), 5, '0');
-                    }
-                    for(var i = 0; i + 4 <= bits.length; i+=4) {
-                        var chunk = bits.substr(i, 4);
-                        hex = hex + parseInt(chunk, 2).toString(16) ;
-                    }
-                    return hex;
-                };
-                this.getOTP = function(secret) {
-                    try {
-                        var epoch = Math.round(new Date().getTime() / 1000.0);
-                        var time = leftpad(dec2hex(Math.floor(epoch / 30)), 16, "0");
-                        var hmacObj = new jsSHA(time, "HEX");
-                        var hmac = hmacObj.getHMAC(base32tohex(secret), "HEX", "SHA-1", "HEX");
-                        var offset = hex2dec(hmac.substring(hmac.length - 1));
-                        var otp = (hex2dec(hmac.substr(offset * 2, 8)) & hex2dec("7fffffff")) + "";
-                        otp = (otp).substr(otp.length - 6, 6);
-                    } catch (error) {
-                        throw error;
-                    }
-                    return otp;
-                };
-            }
             if (req.body.twoStepCode && req.user) { //if they have entered a code
                 var totpObj = new TOTP(); //generate the current code
                 var otp = totpObj.getOTP(req.user.access_id);
@@ -139,7 +137,7 @@ module.exports = function(pool) {
                 return;
             }
         },
-        updateEmail: function(req, res){
+        updateEmail: function(req, res) {
             if (req.body.newEmail && (req.body.email === req.user.email)) {
                 var update = {
                     query: "UPDATE `user` SET `email`= ? WHERE `email` = ?",
@@ -156,8 +154,47 @@ module.exports = function(pool) {
                 return;
             }
         },
-        updateTwoFactor: function(req, res){
-            
+        enableTwoFactor: function(req, res) {
+            if (req.body.passcode && (req.body.email === req.user.email)) {
+                var totpObj = new TOTP(); //generate the current code
+                var otp = totpObj.getOTP(req.user.twoAuthHash);
+                if (otp == req.body.passcode) {
+                    // 2factor enable was a success, update the user table
+                    var update = {
+                        query: "UPDATE `user` SET `access_id`= ?, `two_step_auth`= 1 WHERE `email` = ?",
+                        insert: [req.user.twoAuthHash, req.user.email]
+                    }
+                    new query(update, {database: 'rp_users', pool: pool}, function(err,data){
+                        if (err) { res.status(500).end(); return; }
+                        res.status(200).end();
+                        return;
+                    });
+                } else {
+                    res.status(401).send('Wrong 2-factor authentication code.').end();
+                    return;
+                }
+            } else {
+                // must be a mistake with the request
+                res.status(401).end();
+                return;
+            }
+        },
+        disableTwoFactor: function(req, res) {
+            if (req.body.email === req.user.email) {
+                var update = {
+                    query: "UPDATE `user` SET `access_id`= 0, `two_step_auth`= 0 WHERE `email` = ?",
+                    insert: [req.user.email]
+                }
+                new query(update, {database: 'rp_users', pool: pool}, function(err,data){
+                    if (err) { res.status(500).end(); return; }
+                    res.status(200).end();
+                    return;
+                });
+            } else {
+                // must be a mistake with the request
+                res.status(401).end();
+                return;
+            }
         }
     }
 };

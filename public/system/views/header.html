@@ -24,69 +24,84 @@
                 <h3>User settings</h3>
             </div>
             <div class="modal-body">
-                 form name="userForm" class="form-horizontal" ng-submit="submitForm(userForm)" novalidate>
-                    <!-- EMAIL -->
-                    <div class="control-group" ng-class="{ 'has-error' : userForm.email.$invalid && !userForm.email.$pristine }">
-                        <label class="control-label">Email *</label>
-                        <div class="controls">
-                            <input type="email" name="email" class="form-control" ng-model="user.email">
-                            <p ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="help-block">Enter a valid email.</p>
-                        </div>
-                    </div>
-                    <!-- NEW PASSWORD -->
-                    <div class="control-group" ng-class="{ 'has-error' : userForm.password.$invalid }">
-                        <label class="control-label">New Password</label>
-                        <div class="controls">
-                            <input type="password" name="password" class="form-control" placeholder="Password (optional)" ng-model="user.password" ng-minlength="8" ng-maxlength="100">
-                            <p ng-show="userForm.password.$error.minlength" class="help-block">Password is too short.</p>
-                            <p ng-show="userForm.password.$error.maxlength" class="help-block">Password is too long.</p>
-                        </div>
-                    </div>
-                    <div class="control-group" ng-class="{ 'has-error' : userForm.cpassword.$viewValue != userForm.password.$viewValue }">
-                        <label class="control-label">Repeat Password</label>
-                        <div class="controls">
-                            <input type="password" name="cpassword" class="form-control" placeholder="Repeat password" ng-model="user.cpassword" ng-minlength="8" ng-maxlength="100">
-                            <p ng-show=" userForm.cpassword.$viewValue != userForm.password.$viewValue" class="help-block">Passwords dont match</p>
-                        </div>
-                    </div>
 
-                    <div class="control-group">
-                        <div class="controls">
-                            <button type="submit" class="pure-button">Submit</button>
-                        </div>
-                    </div>
-                </form>
 
-                <form name="authForm" class="form-horizontal" ng-submit="submit2Auth(authForm)" novalidate>
-                    <div class="control-group" >    
-                        <label class="control-label">Two Step Authentication</label>
-                        <section ng-if="user.prevTwoStepAuth == 1">
-                            Two-step auth is active. <a ng-click="disable2Auth()">Click here to disable.</a>
-                        </section>
-                        <section ng-if="user.prevTwoStepAuth == 0">
-                            <div class="controls"><input type="checkbox" ng-model="user.twoStepAuth"/></div>
-                            <div class="control-group" ng-show="user.twoStepAuth">  
-                                <text>  Please scan the below QR code for your 6 digit OTP.</text>  
-                                <br/>
-                                <label class="control-label">QR Code</label>
-                                <div class="controls"><img id="qrImg" ng-src="{{googleSrc()}}" /></div>
-                            </div>
-                            <div ng-show="user.twoStepAuth" class="control-group" ng-class="{ 'has-error' : authForm.verify.$invalid }">
-                                <label class="control-label">Verify 2-step</label>
+                <tabset>
+                    <tab>
+                        <tab-heading>
+                            General Settings
+                        </tab-heading>
+                        <form name="userForm" class="form-horizontal" ng-submit="submitForm(userForm)" novalidate>
+                            <!-- EMAIL -->
+                            <div class="control-group" ng-class="{ 'has-error' : userForm.email.$invalid && !userForm.email.$pristine }">
+                                <label class="control-label">Email *</label>
                                 <div class="controls">
-                                    <input type="verify" name="verify" class="form-control" placeholder="Confirm 6 digit code" ng-model="user.verify" ng-minlength="6" ng-maxlength="6">
-                                    <p ng-show="authForm.verify.$error.minlength" class="help-block">verify is too short.</p>
-                                    <p ng-show="authForm.verify.$error.maxlength" class="help-block">verify is too long.</p>
+                                    <input type="email" name="email" class="form-control" ng-model="user.email">
+                                    <p ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="help-block">Enter a valid email.</p>
                                 </div>
                             </div>
-                            <div ng-show="(user.twoStepAuth == 1) && (user.prevTwoStepAuth == 0)" class="control-group">
+                            <!-- NEW PASSWORD -->
+                            <div class="control-group" ng-class="{ 'has-error' : userForm.password.$invalid }">
+                                <label class="control-label">New Password</label>
+                                <div class="controls">
+                                    <input type="password" name="password" class="form-control" placeholder="Password (optional)" ng-model="user.password" ng-minlength="8" ng-maxlength="100">
+                                    <p ng-show="userForm.password.$error.minlength" class="help-block">Password is too short.</p>
+                                    <p ng-show="userForm.password.$error.maxlength" class="help-block">Password is too long.</p>
+                                </div>
+                            </div>
+                            <div class="control-group" ng-class="{ 'has-error' : userForm.cpassword.$viewValue != userForm.password.$viewValue }">
+                                <label class="control-label">Repeat Password</label>
+                                <div class="controls">
+                                    <input type="password" name="cpassword" class="form-control" placeholder="Repeat password" ng-model="user.cpassword" ng-minlength="8" ng-maxlength="100">
+                                    <p ng-show=" userForm.cpassword.$viewValue != userForm.password.$viewValue" class="help-block">Passwords dont match</p>
+                                </div>
+                            </div>
+
+                            <div class="control-group">
                                 <div class="controls">
                                     <button type="submit" class="pure-button">Submit</button>
                                 </div>
                             </div>
-                        </section>
-                    </div>
-                </form>
+                        </form>
+                    </tab>
+                    <tab>
+                        <tab-heading>
+                            2 Step Authentication
+                        </tab-heading>
+                                <form name="authForm" class="form-horizontal" ng-submit="submit2Auth(authForm)" novalidate>
+                            <div class="control-group" >    
+                                <label class="control-label">Two Step Authentication</label>
+                                <section ng-if="user.prevTwoStepAuth == 1">
+                                    Two-step auth is active. <a ng-click="disable2Auth()">Click here to disable.</a>
+                                </section>
+                                <section ng-if="user.prevTwoStepAuth == 0">
+                                    <div class="controls"><input type="checkbox" ng-model="user.twoStepAuth"/></div>
+                                    <div class="control-group" ng-show="user.twoStepAuth">  
+                                        <text>  Please scan the below QR code</text>  
+                                        <br/>
+                                        <label class="control-label">QR Code</label>
+                                        <div class="controls"><img id="qrImg" ng-src="{{googleSrc()}}" /></div>
+                                    </div>
+                                    <div ng-show="user.twoStepAuth" class="control-group" ng-class="{ 'has-error' : authForm.verify.$invalid }">
+                                        <label class="control-label">Verify 2-step</label>
+                                        <div class="controls">
+                                            <p ng-show="twoFactorError" class="help-block">{{twoFactorError}}</p>
+                                            <input type="verify" required name="verify" class="form-control" placeholder="Confirm 6 digit code" ng-model="user.verify" ng-minlength="6" ng-maxlength="6">
+                                            <p ng-show="authForm.verify.$error.minlength" class="help-block">code is too short.</p>
+                                            <p ng-show="authForm.verify.$error.maxlength" class="help-block">code is too long.</p>
+                                        </div>
+                                    </div>
+                                    <div ng-show="(user.twoStepAuth == 1) && (user.prevTwoStepAuth == 0)" class="control-group">
+                                        <div class="controls">
+                                            <button type="submit" class="pure-button">Submit</button>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </form>
+                    </tab>
+                </tabset>
+
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" ng-click="ok()">Close</button>
