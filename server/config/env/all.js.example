@@ -48,5 +48,7 @@ module.exports = {
 	// The secret should be set to a non-guessable string that
 	// is used to compute a session hash
 	sessionSecret: 'har4aC6Mix3Vot7',
-	sessionCollection: 'sessions'
+	sessionCollection: 'sessions,
+	// 2auth secret is a temporart token ONLY for the user who is 1/2 way through the login process
+	twoAuthSecret: '+2{B}M?0b5^.78j',
 };
