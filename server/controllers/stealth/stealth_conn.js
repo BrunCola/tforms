@@ -67,7 +67,6 @@ module.exports = function(pool) {
                         'WHERE '+
                             '`time` BETWEEN ? AND ? '+
                             'AND `l7_proto` = "IPsec" '+
-                            //'AND `l7_proto` = "testNoWay" '+
                             'AND `in_bytes` > 0 '+
                             'AND `out_bytes` > 0 '+
                         'GROUP BY '+
@@ -86,7 +85,6 @@ module.exports = function(pool) {
                         'WHERE '+
                             'time BETWEEN ? AND ? '+
                             'AND `l7_proto` != "IPsec" '+
-                            //'AND `l7_proto` = "testNoWay" '+
                             'AND (`in_bytes` = 0 OR `out_bytes` = 0) '+
                         'GROUP BY '+
                             'month(from_unixtime(`time`)),'+
@@ -257,7 +255,7 @@ module.exports = function(pool) {
                 } else if ((table_data1 != null) && (table_data2 == null)){
                     res.json({table: table_data1});
                 } else if ((table_data1 == null) && (table_data2 == null)){
-                    return
+                    res.json({table: table_data1});
                 } else {
                     table_data1.aaData = table_data1.aaData.concat(table_data2.aaData);
                     res.json({table: table_data1});
