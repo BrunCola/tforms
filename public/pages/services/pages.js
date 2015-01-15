@@ -275,7 +275,8 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                     }
                                 }
                                 // generate crossfilter object with our dimension names
-                                params.crossfilterObj = new Crossfilter([], '', 'persistent', dimensions);
+                                params.crossfilterObj = new Crossfilter([], '', 'persistent');
+ 
                                 // if search is enabled, create a search dimension and push it to the search array handler
                                 if (params.searchable) {
                                     if (params.searchable === true) {
@@ -301,6 +302,9 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         $scope.$broadcast('sevTable', result, params);
                         // init wait for incoming filter
                         var _this = this;
+                        // $scope.$on('outFilter', function (event, type, value){
+                        //     _this._inFilter(crossfilterObj, type, value, dimensions)
+                        // })
                         $scope.$on('outFilter', function (event, type, value){
                             _this._inFilter(crossfilterObj, type, value, dimensions)
                         })
@@ -308,16 +312,21 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                     update_: function(data, term) {
                         data.dimension.unfilterAll();
                         data.dimension.filterBy('searchBox', term, tableFilter);
-                        $scope.$broadcast('table-redraw');
+                        //$scope.$broadcast('table-redraw');
                     },
                     _inFilter: function(crossfilterObj, dimType, value, dimensions) {
+                    //_inFilter: function(data, term) {
                         // if (typeof dimType != 'object'){ return }
                         // for (var i in dimType) {
                             // check to make sure the table has the dimesion in its system
                             // if (dimensions.indexOf(dimType[i]) !== -1){
+                                // console.log(crossfilterObj.crossfilter())
+                                // console.log(value)
+
                                 crossfilterObj.unfilterAll();
-                                crossfilterObj.filterBy('ioc', 'Suspicious Behavior');
-                                $scope.$broadcast('table-redraw');
+                               // crossfilterObj.filter("ioc2", value, tableFilter);
+                                crossfilterObj.filterBy("ioc", value);
+                                //$scope.$broadcast('table-redraw');
                             // }
                         // }
                     }
@@ -342,6 +351,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             break;
                             case 'table':
                                 functions.table.update_(data, term);
+                                // functions.table._inFilter(data, term);
                             break;
                         }
                     }

@@ -11,8 +11,8 @@ module.exports = function(pool) {
         render: function(req, res) {
             var database = req.user.database;
             //var database = "rp_users";
-            var start = moment().subtract('minutes', 9).unix();
-            var end = moment().subtract('minutes', 8).unix();
+            var start = moment().subtract('minutes', 15).unix();
+            var end = moment().subtract('minutes', 14).unix();
             var queryResult, zoneResult;
             var mapSQL = {
                 query: 'SELECT '+
@@ -45,9 +45,11 @@ module.exports = function(pool) {
                             '`zone_lat`'+
                         'FROM '+
                             '`zone` '+
+                        'WHERE '+
+                            '`database` = ?'+
                         'GROUP BY '+
-                            '`zone`',
-                insert: [start, end]
+                            '`zone` ',
+                insert: [database]
             }
             async.parallel([
             function(callback) {

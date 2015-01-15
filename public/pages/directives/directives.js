@@ -598,6 +598,8 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                 // });
                 
                 $scope.$on('table-redraw', function (event, term){
+                    console.log(event)
+                    console.log(term)
                     table.dataTable().fnFilter(term);
                 })
 
@@ -801,18 +803,29 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
             $scope.$on('sevTable', function (event, result, params) {
                 $scope.$broadcast('spinnerHide');
                 if (result === null) { return; }
+                $scope.$broadcast('tableIndex', params);
                 // on sevTable = $scope.table[name] = data
                 // here create table div from element + name
                 // TODO - add unique name in controller to post this in a key (in case direcive gets called multiple times)- i.e. $scope[name].table = this
+                // result.sort = 22;
+
                 $scope.tableColumns = result.params;
                 $scope.tableData = params.crossfilterObj;
+                $scope.tableData.sortBy('id');
 
                 $scope.tableData.collection().map(function(d) {d.time = timeFormat(d.time, 'tables')})
                 $scope.words = {};
                 $scope.word = '';
                 $scope.pageNumber = 50;
+                $scope.pageConstant = 50;
+                $scope.pageOffset = -50;
+                $scope.maxLength = $scope.tableData.collection().length;
                 // $scope.countGrouped = [];
                 $scope.currentCountFilter = 0;
+
+
+                $scope.nextButton = false;
+                $scope.prevButton = true;
 
                 // // When the Crossfilter collection has been updated.
                 // $scope.$on('crossfilter/updated', function crossfilterUpdated() {
@@ -836,7 +849,49 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     }
                     // finally hit page being requested with search params
                     $location.path(column.link.type).search(searchObj);
+                
                 }
+
+                function checkButtons () {
+                    if ($scope.pageNumber <=50) {
+                        $scope.prevButton = true;
+                        $scope.nextButton = false;
+                    } else if ($scope.pageNumber >= $scope.maxLength) {
+                        $scope.prevButton = false;
+                        $scope.nextButton = true;
+                    } else {
+                        $scope.prevButton = false;
+                        $scope.nextButton = false;
+                    } 
+                }
+
+                $scope.decreasePage = function(n) {
+                    $scope.pageNumber += n;
+                    if ($scope.pageNumber <= 50) {
+                        $scope.pageNumber = 50;
+                    } 
+                    $scope.pageOffset = -50;
+                    checkButtons();
+                }
+
+                $scope.setPage = function(n) {
+                    $scope.pageNumber = (n+1)*50;
+                    $scope.increasePage(0);
+                }
+
+                $scope.increasePage = function(n) {
+                    $scope.pageNumber += n;
+                    if (($scope.maxLength - $scope.pageNumber) < 0) {
+                        $scope.pageOffset = -49 + ($scope.pageNumber-$scope.maxLength);
+                    } else {
+                        $scope.pageOffset = -50;
+                    }
+                    checkButtons(); 
+                    if ($scope.pageNumber >= $scope.maxLength) {
+                        $scope.pageNumber = ($scope.maxLength-1);
+                    }
+                }
+
                 // $scope.$on('outFilter', function(event, dimType, value){
                 //     if (typeof dimType != 'object'){ return }
                 //     for (var i in dimType) {
@@ -912,6 +967,28 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
         }
     };
 }]);
+
+angular.module('mean.pages').filter('makeRange', function() {
+        return function(input) {
+            var lowBound, highBound;
+            switch (input.length) {
+            case 1:
+                lowBound = 0;
+                highBound = parseInt(input[0]) - 1;
+                break;
+            case 2:
+                lowBound = parseInt(input[0]);
+                highBound = parseInt(input[1]);
+                break;
+            default:
+                return input;
+            }
+            var result = [];
+            for (var i = lowBound; i <= highBound; i++)
+                result.push(i);
+            return result;
+        };
+    });
 
 angular.module('mean.pages').directive('fileReplace', ['$rootScope', '$timeout', 'mimeIcon', function ($rootScope, $timeout, mimeIcon) {
     return {
@@ -1512,7 +1589,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                                 // }
                                 // $scope.tableData.filter(function(d) { return arr.indexOf(d.ioc) >= 0; });
                                 // $scope.$broadcast('crossfilterToTable');
-                                $scope.$broadcast('outFilter', params.outgoingFilter, filter)
+                                $scope.$broadcast('outFilter', params.outgoingFilter, filter.replace(/[0-9]/,''))
                             });
                     }
                     if (count > 0) {

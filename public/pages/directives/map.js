@@ -235,10 +235,14 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
             var labelList = [];
             $scope.$on('map', function (event, data, start, end, zones) {
 
-                var rainbow = new Rainbow();
-                rainbow.setNumberRange(0, zones.length-1);
-                rainbow.setSpectrum("#FF0000", "#00FF00", "#0000FF");
                 var cc = [];
+                var zLen = 1;
+                if (zones.length > 2) {
+                    zLen = zones.length-1;
+                }
+                var rainbow = new Rainbow();
+                rainbow.setNumberRange(0, zLen);
+                rainbow.setSpectrum("#FF0000", "#00FF00", "#0000FF");
                 for (var i = 0; i < zones.length; i++) {
                     // /var hexColour = rainbow.colourAt(i);
                     cc[""+zones[i].zone] = '#' + rainbow.colourAt(i);

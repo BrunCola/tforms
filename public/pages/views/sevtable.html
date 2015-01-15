@@ -37,9 +37,10 @@
     <tr>
         <th ng-repeat="col in tableColumns"><a ng-click="tableData.sortBy(col.mData)">{{col.sTitle}}</a></th>
     </tr>
-    <tr ng-repeat="row in tableData.collection() | limitTo: pageNumber | limitTo: -50">
+    <tr ng-repeat="row in tableData.collection() | limitTo: pageNumber | limitTo: pageOffset">
         <td ng-repeat="col in tableColumns">           
             <section ng-switch="col.mData">
+            {{row.id}}
                 <section ng-switch-when="mime"> 
                    <div file-replace>{{ row[col.mData].toLowerCase() }}</div>
                 </section>
@@ -108,18 +109,18 @@
     </tr>
     <tr>
         <td class="etc" colspan="4">
-
+        <span ng-repeat="n in [0,(maxLength/pageConstant)] | makeRange"><span ng-click="setPage(n)"> {{n}} </span></span>
+        <div>{{pageNumber}}</div>
             <div class="btn-group">
                 <button type="button" class="btn btn-xs btn-default"
-                        ng-click="pageNumber = pageNumber - 10">
+                        ng-click="decreasePage(pageOffset)" ng-disabled="prevButton">
                     &lt; Previous Page
                 </button>
                 <button type="button" class="btn btn-xs btn-default"
-                        ng-click="pageNumber = pageNumber + 10">
+                        ng-click="increasePage(50)" ng-disabled="nextButton">
                     Next Page &gt;
                 </button>
             </div>
-
         </td>
     </tr>
 </table>
