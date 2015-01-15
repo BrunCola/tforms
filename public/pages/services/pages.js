@@ -54,7 +54,20 @@ angular.module('mean.pages').factory('tableFilter',
 angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location', '$resource', 'dimensionFilter', 'tableFilter', 'Crossfilter',
     function($rootScope, $http, $location, $resource, dimensionFilter, tableFilter, Crossfilter) {
         var runPage = function($scope, data, refreshRate) {
+            ////////////////////////////////
+            /// Global Variables Defined ///
+            ////////////////////////////////
+            var refreshArray = [];
+            var searchable = [];
+            // our simple function to push data into refresh object (if it is defined in particular viz settings)
+            function refreshCheck(viz) {
+                if ((!viz.refresh) || (viz.refresh !== true)) { return }
+                refreshArray.push(viz);
+            }
             if (!refreshRate) { refreshRate === 60000 } // defaults to 1 minute in case refresh is enabled on any visual, but isnt defined calling the function
+            ////////////////////////////////
+            ///  Main Functions Object   ///
+            ////////////////////////////////
             var functions = {
                 // build urls from arrays
                 // constructUrl_: function(array, query) {
@@ -280,16 +293,16 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 // add-remove data function call here
                                 params.crossfilterObj.addModels(result.aaData);
                             }
-                            this_.draw_(result, params.crossfilterObj, params);
+                            this_.draw_(result, params.crossfilterObj, params, dimensions);
                             
                         })
                     },
-                    draw_: function(result, crossfilterObj, params) {
-                        $scope.$broadcast('sevTable', result, crossfilterObj, params);
+                    draw_: function(result, crossfilterObj, params, dimensions) {
+                        $scope.$broadcast('sevTable', result, params);
                         // init wait for incoming filter
                         var _this = this;
                         $scope.$on('outFilter', function (event, type, value){
-                            _this._inFilter(type, value)
+                            _this._inFilter(crossfilterObj, type, value, dimensions)
                         })
                     },
                     update_: function(data, term) {
@@ -297,10 +310,16 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         data.dimension.filterBy('searchBox', term, tableFilter);
                         $scope.$broadcast('table-redraw');
                     },
-                    _inFilter: function(type, value) {
-                        // draw function inits a wait for incoming filter broadcasts, then applies filters that match
-                        console.log(type);
-                        console.log(value);
+                    _inFilter: function(crossfilterObj, dimType, value, dimensions) {
+                        // if (typeof dimType != 'object'){ return }
+                        // for (var i in dimType) {
+                            // check to make sure the table has the dimesion in its system
+                            // if (dimensions.indexOf(dimType[i]) !== -1){
+                                crossfilterObj.unfilterAll();
+                                crossfilterObj.filterBy('ioc', 'Suspicious Behavior');
+                                $scope.$broadcast('table-redraw');
+                            // }
+                        // }
                     }
                 },
                 textBoxWatch: {
@@ -328,8 +347,8 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                     }
                 }
             }
-            var searchable = [];
             for (var v in data) {
+                refreshCheck(data[v]);
                 switch (data[v].type) {
                     case 'crossfilter':
                         functions.crossfilter.get(data[v]);
@@ -348,6 +367,10 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
             // NOTE: this happens here because we only want scope.watch to run once on search
             if (searchable.length > 0) {
                 functions.textBoxWatch.handleSearchBox(searchable);
+            }
+            // run refresh handler if our array is populated
+            if (refreshArray.length > 0) {
+                console.log(refreshArray)
             }
         }
         return runPage;

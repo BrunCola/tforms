@@ -798,29 +798,28 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
         templateUrl : 'public/pages/views/sevtable.html',
         transclude : true,
         link: function($scope, element) {
-            $scope.$on('sevTable', function (event, result, crossfilterObj, params) {
+            $scope.$on('sevTable', function (event, result, params) {
                 $scope.$broadcast('spinnerHide');
                 if (result === null) { return; }
                 // on sevTable = $scope.table[name] = data
                 // here create table div from element + name
                 // TODO - add unique name in controller to post this in a key (in case direcive gets called multiple times)- i.e. $scope[name].table = this
                 $scope.tableColumns = result.params;
-                $scope.tableData = crossfilterObj;
+                $scope.tableData = params.crossfilterObj;
 
                 $scope.tableData.collection().map(function(d) {d.time = timeFormat(d.time, 'tables')})
-
                 $scope.words = {};
                 $scope.word = '';
                 $scope.pageNumber = 50;
                 // $scope.countGrouped = [];
                 $scope.currentCountFilter = 0;
 
-                // When the Crossfilter collection has been updated.
-                $scope.$on('crossfilter/updated', function crossfilterUpdated() {
-                    // if ($angular.isDefined($scope.words.groupBy)) {
-                    //     $scope.countGrouped = $scope.words.groupBy('wordCount');
-                    // }
-                });
+                // // When the Crossfilter collection has been updated.
+                // $scope.$on('crossfilter/updated', function crossfilterUpdated() {
+                //     // if ($angular.isDefined($scope.words.groupBy)) {
+                //     //     $scope.countGrouped = $scope.words.groupBy('wordCount');
+                //     // }
+                // });
 
                 $scope.generateLink = function(data, column) {
                     var searchObj = {};
@@ -838,21 +837,34 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     // finally hit page being requested with search params
                     $location.path(column.link.type).search(searchObj);
                 }
+                // $scope.$on('outFilter', function(event, dimType, value){
+                //     if (typeof dimType != 'object'){ return }
+                //     for (var i in dimType) {
+                //         // check to make sure the table has the dimesion in its system
+                //         if (dimensions.indexOf(dimType[i]) !== -1){
+                //             console.log(params.crossfilterObj)
+                //             console.log('filter')
+                //             $scope.tableData.unfilterAll();
+                //             $scope.tableData.filterBy('ioc', value);
+                //             $scope.$broadcast('table-redraw');
+                //         }
+                //     }
+                // })
 
                 /**
                  * @method toggleCountFilter
                  * @param count {Number}
                  * @return {void}
                  */
-                $scope.toggleCountFilter = function toggleCountFilter(count) {
-                    if ($scope.currentCountFilter == count) {
-                        $scope.currentCountFilter = null;
-                        $scope.words.unfilterBy('wordCount');
-                        return;
-                    }
-                    $scope.currentCountFilter = count;
-                    $scope.words.filterBy('wordCount', count);
-                };
+                // $scope.toggleCountFilter = function toggleCountFilter(count) {
+                //     if ($scope.currentCountFilter == count) {
+                //         $scope.currentCountFilter = null;
+                //         $scope.words.unfilterBy('wordCount');
+                //         return;
+                //     }
+                //     $scope.currentCountFilter = count;
+                //     $scope.words.filterBy('wordCount', count);
+                // };
 
                 // Fetch all of the words to create the Crossfilter from.
                 // $http.get('words.json').then(function then(response) {
@@ -890,11 +902,11 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                  * @param customFilter {Function}
                  * @return {void}
                  */
-                $scope.applyWordFilter = function applyWordFilter(word, customFilter) {
-                    $scope.pageNumber = 50;
-                    // $scope.words.filterBy('word', word, customFilter);
-                    $scope.word = word;
-                };
+                // $scope.applyWordFilter = function applyWordFilter(word, customFilter) {
+                //     $scope.pageNumber = 50;
+                //     // $scope.words.filterBy('word', word, customFilter);
+                //     $scope.word = word;
+                // };
 
             })
         }
@@ -1602,13 +1614,14 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
                     if (filter == true) {
                         $scope.geoChart
                             .on("filtered", function(chart, filter){
-                                $scope.tableData.filterAll();
-                                var arr = [];
-                                for(var c in dimension.top(Infinity)) {
-                                    arr.push(dimension.top(Infinity)[c].remote_country);
-                                }
-                                $scope.tableData.filter(function(d) { return arr.indexOf(d.remote_country) >= 0; });
-                                $scope.$broadcast('crossfilterToTable');
+                                // $scope.tableData.filterAll();
+                                // var arr = [];
+                                // for(var c in dimension.top(Infinity)) {
+                                //     arr.push(dimension.top(Infinity)[c].remote_country);
+                                // }
+                                // $scope.tableData.filter(function(d) { return arr.indexOf(d.remote_country) >= 0; });
+                                // $scope.$broadcast('crossfilterToTable');
+                                $scope.$broadcast('outFilter', params.outgoingFilter, filter)
                             });
                     }
                     var numberFormat = d3.format(".2f");
