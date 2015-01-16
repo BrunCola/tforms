@@ -4,8 +4,6 @@ angular.module('mean.pages').controller('endpointTypeController', ['$scope', '$s
     $scope.global = Global;
     var query;
 
-    
-
     var page = [
         /////////////////
         // CROSSFILTER //

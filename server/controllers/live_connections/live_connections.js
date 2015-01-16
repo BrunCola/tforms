@@ -45,9 +45,11 @@ module.exports = function(pool) {
                             '`zone_lat`'+
                         'FROM '+
                             '`zone` '+
+                        'WHERE '+
+                            '`database` = ?'+
                         'GROUP BY '+
-                            '`zone`',
-                insert: [start, end]
+                            '`zone` ',
+                insert: [database]
             }
             async.parallel([
             function(callback) {

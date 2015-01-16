@@ -43,6 +43,7 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
         $scope.$watch('search', function() {
             $rootScope.search = $scope.search;
         });
+
         $scope.go = function ( path ) {
             $location.path(path);
         };

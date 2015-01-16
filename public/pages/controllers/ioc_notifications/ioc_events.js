@@ -56,7 +56,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
                             }
                         )
                     },
-                    outgoingFilter: ['ioc'] // Optional and ingests an array of KEYS for other visuals not of this visual type (crossfilter)
+                    outgoingFilter: 'ioc' // Optional and ingests an array of KEYS for other visuals not of this visual type (crossfilter)
                 },
                 {
                     type: 'barchart',
@@ -115,7 +115,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
                             }
                         );
                     },
-                    // outgoingFilter: ['hour'] // Optional and ingests an array of KEYS for other visuals not of this type to match
+                    outgoingFilter: 'time' // Optional and ingests an array of KEYS for other visuals not of this type to match
                 },
                 {
                     type: 'geochart',
@@ -125,7 +125,7 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
                             return d.count;
                         });
                     },
-                    outgoingFilter: ['remote_country'] // Optional and ingests an array of KEYS for other visuals not of this type to match
+                    outgoingFilter: 'remote_country' // Optional and ingests an array of KEYS for other visuals not of this type to match
                 }
             ]
         },

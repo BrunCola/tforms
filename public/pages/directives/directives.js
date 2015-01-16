@@ -603,6 +603,8 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                 // });
                 
                 $scope.$on('table-redraw', function (event, term){
+                    console.log(event)
+                    console.log(term)
                     table.dataTable().fnFilter(term);
                 })
 
@@ -809,22 +811,35 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 // on sevTable = $scope.table[name] = data
                 // here create table div from element + name
                 // TODO - add unique name in controller to post this in a key (in case direcive gets called multiple times)- i.e. $scope[name].table = this
+                // result.sort = 22;
+
                 $scope.tableColumns = result.params;
-                $scope.tableData = params.crossfilterObj;
+                $rootScope.tableData = params.crossfilterObj;
+                $scope.tableData.sortBy('id');
 
                 $scope.tableData.collection().map(function(d) {d.time = timeFormat(d.time, 'tables')})
                 $scope.words = {};
                 $scope.word = '';
                 $scope.pageNumber = 50;
+                $scope.pageConstant = 50;
+                $scope.pageOffset = -50;
+                $scope.maxLength = $scope.tableData.collection().length;
                 // $scope.countGrouped = [];
                 $scope.currentCountFilter = 0;
 
-                // // When the Crossfilter collection has been updated.
-                // $scope.$on('crossfilter/updated', function crossfilterUpdated() {
-                //     // if ($angular.isDefined($scope.words.groupBy)) {
-                //     //     $scope.countGrouped = $scope.words.groupBy('wordCount');
-                //     // }
-                // });
+
+                $scope.nextButton = false;
+                $scope.prevButton = true;
+
+                // $scope.$on('outFilter', function (event, type, value){
+                //         console.log(type)
+                //         console.log(value)
+                //         console.log(params.crossfilterObj)
+                //         $scope.tableData.unfilterAll();
+                //         $scope.tableData.filterBy("ioc",value);
+                //         // _this._inFilter(crossfilterObj, type, value, dimensions)
+                //         console.log("test")
+                // })
 
                 $scope.generateLink = function(data, column) {
                     var searchObj = {};
@@ -841,7 +856,49 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     }
                     // finally hit page being requested with search params
                     $location.path(column.link.type).search(searchObj);
+                
                 }
+
+                function checkButtons () {
+                    if ($scope.pageNumber <=50) {
+                        $scope.prevButton = true;
+                        $scope.nextButton = false;
+                    } else if ($scope.pageNumber >= $scope.maxLength) {
+                        $scope.prevButton = false;
+                        $scope.nextButton = true;
+                    } else {
+                        $scope.prevButton = false;
+                        $scope.nextButton = false;
+                    } 
+                }
+
+                $scope.decreasePage = function(n) {
+                    $scope.pageNumber += n;
+                    if ($scope.pageNumber <= 50) {
+                        $scope.pageNumber = 50;
+                    } 
+                    $scope.pageOffset = -50;
+                    checkButtons();
+                }
+
+                $scope.setPage = function(n) {
+                    $scope.pageNumber = (n+1)*50;
+                    $scope.increasePage(0);
+                }
+
+                $scope.increasePage = function(n) {
+                    $scope.pageNumber += n;
+                    if (($scope.maxLength - $scope.pageNumber) < 0) {
+                        $scope.pageOffset = -49 + ($scope.pageNumber-$scope.maxLength);
+                    } else {
+                        $scope.pageOffset = -50;
+                    }
+                    checkButtons(); 
+                    if ($scope.pageNumber >= $scope.maxLength) {
+                        $scope.pageNumber = ($scope.maxLength-1);
+                    }
+                }
+
                 // $scope.$on('outFilter', function(event, dimType, value){
                 //     if (typeof dimType != 'object'){ return }
                 //     for (var i in dimType) {
@@ -918,6 +975,28 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
     };
 }]);
 
+angular.module('mean.pages').filter('makeRange', function() {
+        return function(input) {
+            var lowBound, highBound;
+            switch (input.length) {
+            case 1:
+                lowBound = 0;
+                highBound = parseInt(input[0]) - 1;
+                break;
+            case 2:
+                lowBound = parseInt(input[0]);
+                highBound = parseInt(input[1]);
+                break;
+            default:
+                return input;
+            }
+            var result = [];
+            for (var i = lowBound; i <= highBound; i++)
+                result.push(i);
+            return result;
+        };
+    });
+
 angular.module('mean.pages').directive('fileReplace', ['$rootScope', '$timeout', 'mimeIcon', function ($rootScope, $timeout, mimeIcon) {
     return {
         link: function($scope, element, attrs) {
@@ -943,7 +1022,7 @@ angular.module('mean.pages').directive('appReplace', ['$rootScope', '$timeout', 
 angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '$rootScope', 'getSize', function ($timeout, $window, $rootScope, getSize) {
     return {
         link: function ($scope, element, attrs) {
-            $scope.$on('pieChart', function (event, dimension, group, chartType) {
+            $scope.$on('pieChart', function (event, dimension, group, chartType, params) {
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
                     //var arr = $scope.data.tables[0].aaData;
                     $scope.pieChart = dc.pieChart('#piechart');
@@ -1056,35 +1135,41 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                     //      break;
                     // }
 
-                    if ((filter == true) && (chartType !== "hostConnections")) {
-                        $scope.pieChart
-                            .on("filtered", function(chart, filter){
-                                waitForFinalEvent(function(){
-                                    //$scope.tableData.filterAll();
-                                    var arr = [];
-                                    for(var i in dimension.top(Infinity)) {
-                                        if (dimension.top(Infinity)[i].pie_dimension !== undefined) {
-                                            arr.push(dimension.top(Infinity)[i].pie_dimension);
-                                        } else if (dimension.top(Infinity)[i].l7_proto !== undefined) {
-                                            arr.push(dimension.top(Infinity)[i].l7_proto);
-                                        } else {
-                                            arr.push(dimension.top(Infinity)[i].lan_user + dimension.top(Infinity)[i].lan_zone + dimension.top(Infinity)[i].lan_ip);
-                                        }
-                                    }
-                                    $scope.tableData.filter(function(d) { 
-                                        if (d.pie_dimension !== undefined) {
-                                            return arr.indexOf(d.pie_dimension) >= 0; 
-                                        } else if (d.l7_proto !== undefined) {
-                                            return arr.indexOf(d.l7_proto) >= 0; 
-                                        } else {
-                                            return (arr.indexOf(d.lan_user+d.lan_zone+d.lan_ip)) >= 0;
-                                        }
-                                    });
-                                    $scope.$broadcast('crossfilterToTable');
+                    // if ((filter == true) && (chartType !== "hostConnections")) {
+                    //     $scope.pieChart
+                    //         .on("filtered", function(chart, filter){
+                    //             waitForFinalEvent(function(){
+                    //                 //$scope.tableData.filterAll();
+                    //                 var arr = [];
+                    //                 for(var i in dimension.top(Infinity)) {
+                    //                     if (dimension.top(Infinity)[i].pie_dimension !== undefined) {
+                    //                         arr.push(dimension.top(Infinity)[i].pie_dimension);
+                    //                     } else if (dimension.top(Infinity)[i].l7_proto !== undefined) {
+                    //                         arr.push(dimension.top(Infinity)[i].l7_proto);
+                    //                     } else {
+                    //                         arr.push(dimension.top(Infinity)[i].lan_user + dimension.top(Infinity)[i].lan_zone + dimension.top(Infinity)[i].lan_ip);
+                    //                     }
+                    //                 }
+                    //                 $scope.tableData.filter(function(d) { 
+                    //                     if (d.pie_dimension !== undefined) {
+                    //                         return arr.indexOf(d.pie_dimension) >= 0; 
+                    //                     } else if (d.l7_proto !== undefined) {
+                    //                         return arr.indexOf(d.l7_proto) >= 0; 
+                    //                     } else {
+                    //                         return (arr.indexOf(d.lan_user+d.lan_zone+d.lan_ip)) >= 0;
+                    //                     }
+                    //                 });
+                    //                 $scope.$broadcast('crossfilterToTable');
 
-                                }, 400, "filterWait");
-                            })
-                    }         
+                    //             }, 400, "filterWait");
+                    //         })
+                    // }         
+
+                    if (filter == true) {
+                        $scope.pieChart.on("filtered", function(chart, filter){
+                            $scope.$broadcast('outFilter', params.outgoingFilter, filter)
+                        });
+                    }
                     $scope.pieChart
                         .width(width) // (optional) define chart width, :default = 200
                         .height(height)
@@ -1100,7 +1185,7 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                     $scope.pieChart.render();
                     $scope.$broadcast('spinnerHide');
 
-                    if (chartType !== "hostConnections"){
+                 /*   if (chartType !== "hostConnections"){
                         $(window).resize(function () {
                             waitForFinalEvent(function(){
                               $scope.pieChart.render();
@@ -1124,7 +1209,7 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 
                     $scope.$on('piechart-redraw', function (event) {
                         $scope.piechart.redraw();
-                    })
+                    })*/
                     // var geoFilterDimension = $scope.crossfilterData.dimension(function(d){ return d.remote_country;});
                     // $rootScope.$watch('search', function(){
 
@@ -1157,6 +1242,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
     return {
         link: function ($scope, element, attrs) {
             $scope.$on('barchart', function (event, dimension, group, chartType, params) {
+
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
                     //var arr = $scope.data.tables[0].aaData;
                     $scope.barChart = dc.barChart('#barchart');
@@ -1344,30 +1430,9 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                             break;
                     }
                     if (filter == true) {
-                        $scope.barChart
-                            .on("filtered", function(chart, filter){
-                                waitForFinalEvent(function(){
-                                    if ($scope.tableData) {
-                                        //$scope.tableData.filterAll();
-                                        var arr = [];
-                                        for(var i in dimension.top(Infinity)) {
-                                            arr.push(dimension.top(Infinity)[i].time);
-                                        }
-                                        // $scope.tableData.filter(function(d) { 
-                                        //     for (var s = 0; s<arr.length; s++) {
-                                        //         if ((d.time >= arr[s]-3600) && (d.time < arr[s])) {
-                                        //             return true;
-                                        //         }
-                                        //     }
-                                        // })
-                                        $scope.tableData.filter(function(d) { return arr.indexOf(d.time) >= 0; });
-                                        //});
-                                        $scope.$broadcast('crossfilterToTable');
-                                        // console.log($scope.tableData.top(Infinity));
-                                        // console.log(timeDimension.top(Infinity))
-                                    }
-                                }, 400, "filterWait");
-                            })
+                        $scope.barChart.on("filtered", function(chart, filter){
+                            $scope.$broadcast('outFilter', params.outgoingFilter, filter)
+                        })
                     }
                     if (($scope.barChartxAxis == null) && ($scope.barChartyAxis == null)) {
                         var margin = {top: 10, right: 20, bottom: 10, left: 20};
@@ -1447,8 +1512,6 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                         };
                     })();
 
-
-
                     var hHeight, lOffset;
                     var count = group.top(Infinity).length; ///CHANGE THIS to count return rows
                     if (count < 7) {
@@ -1508,16 +1571,8 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                             break;
                     }
                     if (filter == true) {
-                        $scope.rowChart
-                            .on("filtered", function(chart, filter){
-                                // $scope.tableData.filterAll();
-                                // var arr = [];
-                                // for(var i in dimension.top(Infinity)) {
-                                //     arr.push(dimension.top(Infinity)[i].ioc);
-                                // }
-                                // $scope.tableData.filter(function(d) { return arr.indexOf(d.ioc) >= 0; });
-                                // $scope.$broadcast('crossfilterToTable');
-                                $scope.$broadcast('outFilter', params.outgoingFilter, filter)
+                        $scope.rowChart.on("filtered", function(chart, filter){
+                                $scope.$broadcast('outFilter', params.outgoingFilter, filter.replace(/[0-9]/,''))
                             });
                     }
                     if (count > 0) {
@@ -1594,7 +1649,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                         //     $scope.tableToRowChart();
                         //     $scope.rowChart.redraw();
                         // });
-                }, 0, false);
+                }, 0, true);
             });
         }
     }
@@ -1603,7 +1658,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
 angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
     return {
         link: function ($scope, element, attrs) {
-            $scope.$on('geoChart', function (event, dimension, group, chartType) {
+            $scope.$on('geoChart', function (event, dimension, group, chartType, params) {
                 // console.log(chartType)
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
                     $scope.geoChart = dc.geoChoroplethChart('#geochart');
@@ -1615,19 +1670,6 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
                         default:
                             filter = true;
                             break;
-                    }
-                    if (filter == true) {
-                        $scope.geoChart
-                            .on("filtered", function(chart, filter){
-                                // $scope.tableData.filterAll();
-                                // var arr = [];
-                                // for(var c in dimension.top(Infinity)) {
-                                //     arr.push(dimension.top(Infinity)[c].remote_country);
-                                // }
-                                // $scope.tableData.filter(function(d) { return arr.indexOf(d.remote_country) >= 0; });
-                                // $scope.$broadcast('crossfilterToTable');
-                                $scope.$broadcast('outFilter', params.outgoingFilter, filter)
-                            });
                     }
                     var numberFormat = d3.format(".2f");
                     //var dimension = crossfilterData.dimension(function(d){ return d.remote_country;});
@@ -1672,6 +1714,11 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
                     }
                     d3.json("public/system/assets/world.json", MapCallbackFunction(this));
 
+                    if (filter == true) {
+                        $scope.geoChart.on("filtered", function(chart, filter){
+                                $scope.$broadcast('outFilter', params.outgoingFilter, filter.replace(/[0-9]/,''))
+                            });
+                    }
                     $scope.$on('geochart-redraw', function (event) {
                         $scope.geoChart.redraw();
                     })

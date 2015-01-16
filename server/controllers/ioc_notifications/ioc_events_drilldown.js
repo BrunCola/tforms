@@ -33,7 +33,7 @@ module.exports = function(pool) {
                 pointGroup = 1;
             }
             var lanes;
-            if (req.user.level === 3) {
+            if (req.user.hide_stealth === 0) {
                 lanes = ['IOC', 'IOC Severity', 'Conn', 'Stealth', 'Applications', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
             } else {
                 lanes = ['IOC', 'IOC Severity', 'Conn', 'Applications', 'DNS', 'HTTP', 'SSL', 'Email', 'File', 'Endpoint'];
@@ -664,7 +664,7 @@ module.exports = function(pool) {
                         });
                     },
                     function(callback) { // stealth conn
-                        if (req.user.level === 3) {
+                        if (req.user.hide_stealth === 0) {
                             new lanegraph(stealth_conn, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                 handleReturn(data, callback);
                             });
@@ -673,7 +673,7 @@ module.exports = function(pool) {
                         }
                     },
                     function(callback) { // stealth drop
-                        if (req.user.level === 3) {
+                        if (req.user.hide_stealth === 0) {
                             new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                 handleReturn(data, callback);
                             });
@@ -1464,7 +1464,7 @@ module.exports = function(pool) {
                             });
                         },
                         function(callback) { // stealth block
-                            if (req.user.level === 3) {
+                            if (req.user.hide_stealth === 0) {
                                 new lanegraph(stealth_drop, {database: database, pool:pool, lanes: lanes}, function(err, data){
                                     handleReturn(data, callback);
                                 });

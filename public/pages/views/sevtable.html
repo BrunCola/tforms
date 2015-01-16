@@ -32,14 +32,14 @@
         </tr>
     </tbody>
 </table> -->
-
 <table id="sevTable">
     <tr>
         <th ng-repeat="col in tableColumns"><a ng-click="tableData.sortBy(col.mData)">{{col.sTitle}}</a></th>
     </tr>
-    <tr ng-repeat="row in tableData.collection() | limitTo: pageNumber | limitTo: -50">
+    <tr ng-repeat="row in tableData.collection() | limitTo: pageNumber | limitTo: pageOffset">
         <td ng-repeat="col in tableColumns">           
             <section ng-switch="col.mData">
+            {{row.id}}
                 <section ng-switch-when="mime"> 
                    <div file-replace>{{ row[col.mData].toLowerCase() }}</div>
                 </section>
@@ -49,11 +49,9 @@
                 <section ng-switch-when="remote_cc"> 
                     <div style='min-width:120px'>
                         <div class="f32"><span class="flag {{row[col.mData].toLowerCase()}}"></span></div>
-                        <!-- <div class="remote_country">{{ row['remote_country'] }}</div> -->
                     </div>
                 </section>
                 <section ng-switch-when="ioc_severity">
-                    <!-- <div class="tablesev sev{{ row[col.mData] }}"></div> -->
                     <span class="aTable{{ row[col.mData] }} fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bullhorn fa-stack-1x fa-inverse"></i></span>
                 </section>
                 <section ng-switch-when="lan_stealth">
@@ -108,18 +106,18 @@
     </tr>
     <tr>
         <td class="etc" colspan="4">
-
+        <span ng-repeat="n in [0,(maxLength/pageConstant)] | makeRange"><span ng-click="setPage(n)"> {{n}} </span></span>
+        <div>{{pageNumber}}</div>
             <div class="btn-group">
                 <button type="button" class="btn btn-xs btn-default"
-                        ng-click="pageNumber = pageNumber - 10">
+                        ng-click="decreasePage(pageOffset)" ng-disabled="prevButton">
                     &lt; Previous Page
                 </button>
                 <button type="button" class="btn btn-xs btn-default"
-                        ng-click="pageNumber = pageNumber + 10">
+                        ng-click="increasePage(50)" ng-disabled="nextButton">
                     Next Page &gt;
                 </button>
             </div>
-
         </td>
     </tr>
 </table>

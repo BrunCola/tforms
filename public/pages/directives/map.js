@@ -235,10 +235,14 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
             var labelList = [];
             $scope.$on('map', function (event, data, start, end, zones) {
 
-                var rainbow = new Rainbow();
-                rainbow.setNumberRange(0, zones.length-1);
-                rainbow.setSpectrum("#FF0000", "#00FF00", "#0000FF");
                 var cc = [];
+                var zLen = 1;
+                if (zones.length > 2) {
+                    zLen = zones.length-1;
+                }
+                var rainbow = new Rainbow();
+                rainbow.setNumberRange(0, zLen);
+                rainbow.setSpectrum("#FF0000", "#00FF00", "#0000FF");
                 for (var i = 0; i < zones.length; i++) {
                     // /var hexColour = rainbow.colourAt(i);
                     cc[""+zones[i].zone] = '#' + rainbow.colourAt(i);
@@ -298,14 +302,16 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                                 }
                             });
                     }
-                    parentt.append("circle")
-                        .attr("transform", function(d) {return "translate(" + projection([d.zone.coordinates[0],d.zone.coordinates[1]]) + ")";})
-                        .attr("r", 2)
-                        .attr("class",  "center")
-                        .style("stroke", function(d) {
-                            //return cc[d.properties.lan_zone];
-                            return "#f0f";
-                        })
+                    //       -------------------------------------------------- local ping
+                    // parentt.append("circle")
+                    //     .attr("transform", function(d) {return "translate(" + projection([d.zone.coordinates[0],d.zone.coordinates[1]]) + ")";})
+                    //     .attr("r", 2)
+                    //     .attr("class",  "center")
+                    //     .style("stroke", function(d) {
+                    //         //return cc[d.properties.lan_zone];
+                    //         return "#f0f";
+                    //     })
+                    //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   local ping
                 });
                 /*show node info on mouseover*/
                 var tip = d3.tip().attr('class', 'd3-tip')
@@ -473,25 +479,28 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                         })
                         .style("fill-opacity", 1e-6)
                         .remove();
-                     point
-                            .append("circle")
-                            .attr("r", 2)
-                            .style("fill-opacity", 0.9)
-                            .attr("transform", function(d) {return "translate(" + projection([d.zone.coordinates[0],d.zone.coordinates[1]]) + ")";})
-                            .transition()
-                            .duration(function(d) {
-                                return 800 / (d.properties.count/5);
-                            })
-                            .ease(Math.sqrt)
-                            .attr("r", function(d) {
-                                return d.properties.count*50;
-                            })
-                            .style('fill', function(d){
-                                //return cc[d.properties.lan_zone];
-                                return "#f0f";
-                            })
-                            .style("fill-opacity", 1e-6)
-                            .remove();
+
+                     //       -------------------------------------------------- local ping
+                     // point
+                     //        .append("circle")
+                     //        .attr("r", 2)
+                     //        .style("fill-opacity", 0.9)
+                     //        .attr("transform", function(d) {return "translate(" + projection([d.zone.coordinates[0],d.zone.coordinates[1]]) + ")";})
+                     //        .transition()
+                     //        .duration(function(d) {
+                     //            return 800 / (d.properties.count/5);
+                     //        })
+                     //        .ease(Math.sqrt)
+                     //        .attr("r", function(d) {
+                     //            return d.properties.count*50;
+                     //        })
+                     //        .style('fill', function(d){
+                     //            //return cc[d.properties.lan_zone];
+                     //            return "#f0f";
+                     //        })
+                     //        .style("fill-opacity", 1e-6)
+                     //        .remove();
+                     //-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ local ping
                     point
                         .transition()
                         .duration(function(d){
