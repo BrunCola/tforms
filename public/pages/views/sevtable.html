@@ -32,7 +32,6 @@
         </tr>
     </tbody>
 </table> -->
-
 <table id="sevTable">
     <tr>
         <th ng-repeat="col in tableColumns"><a ng-click="tableData.sortBy(col.mData)">{{col.sTitle}}</a></th>
@@ -50,11 +49,9 @@
                 <section ng-switch-when="remote_cc"> 
                     <div style='min-width:120px'>
                         <div class="f32"><span class="flag {{row[col.mData].toLowerCase()}}"></span></div>
-                        <!-- <div class="remote_country">{{ row['remote_country'] }}</div> -->
                     </div>
                 </section>
                 <section ng-switch-when="ioc_severity">
-                    <!-- <div class="tablesev sev{{ row[col.mData] }}"></div> -->
                     <span class="aTable{{ row[col.mData] }} fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bullhorn fa-stack-1x fa-inverse"></i></span>
                 </section>
                 <section ng-switch-when="lan_stealth">

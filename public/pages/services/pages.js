@@ -51,6 +51,7 @@ angular.module('mean.pages').factory('tableFilter',
         return tableFilter;
     }
 );
+
 angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location', '$resource', 'dimensionFilter', 'tableFilter', 'Crossfilter',
     function($rootScope, $http, $location, $resource, dimensionFilter, tableFilter, Crossfilter) {
         var runPage = function($scope, data, refreshRate) {
@@ -59,6 +60,33 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
             ////////////////////////////////
             var refreshArray = [];
             var searchable = [];
+            var filterArray = [];
+
+            function checkAddFilterArray (newFilter) {                       
+                if (filterArray.indexOf(newFilter) !== -1){
+                    filterArray.splice(filterArray.indexOf(newFilter), 1);
+                } else {
+                    filterArray.push(newFilter)
+                }          
+            }
+
+            function fuzzyFilter(filters, value) {
+                if (filters.length === 0) {return true;}
+                for (var i=0; i<filters.length; i++) {
+                    if (filters[i] === value) {
+                        return true;
+                    } 
+                }
+            }
+
+            function fuzzyFilterObject(filters, value) {
+                if (filters===null) {return true}
+                if (((Date.parse(filters[0])/1000) <= value) && ((Date.parse(filters[1])/1000) >= value)) {
+                    return true;
+                }             
+            }
+
+
             // our simple function to push data into refresh object (if it is defined in particular viz settings)
             function refreshCheck(viz) {
                 if ((!viz.refresh) || (viz.refresh !== true)) { return }
@@ -198,16 +226,16 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             // add params in here for axis labels and graph types (along with a default)
                             switch (params.settings.type) {
                                 case 'severity':
-                                    $scope.$broadcast('barchart', dimension, group, 'severity');
+                                    $scope.$broadcast('barchart', dimension, group, 'severity', params);
                                     break;
                                 case 'bandwidth':
-                                    $scope.$broadcast('barchart', dimension, group, 'bandwidth');
+                                    $scope.$broadcast('barchart', dimension, group, 'bandwidth', params);
                                     break;
                                 case 'bar':
-                                    $scope.$broadcast('barchart', dimension, group, 'bar');
+                                    $scope.$broadcast('barchart', dimension, group, 'bar', params);
                                     break;
                                 case 'stealthtraffic':
-                                    $scope.$broadcast('barchart', dimension, group, 'stealthtraffic');
+                                    $scope.$broadcast('barchart', dimension, group, 'stealthtraffic', params);
                                     break;
                             }
                         },
@@ -220,10 +248,10 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             // add params in here for axis labels and graph types (along with a default)
                             switch (params.settings.type) {
                                 case 'application':
-                                    $scope.$broadcast('pieChart', dimension, group, 'application');
+                                    $scope.$broadcast('pieChart', dimension, group, 'application', params);
                                     break;
                                 case 'hostConnections':
-                                    $scope.$broadcast('pieChart', dimension, group, 'hostConnections');
+                                    $scope.$broadcast('pieChart', dimension, group, 'hostConnections', params);
                                     break;
                             }
                         },
@@ -233,7 +261,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             if (params.group && (typeof params.group === 'function')) {
                                 group = params.group(dimension);
                             }
-                            $scope.$broadcast('geoChart', dimension, group);
+                            $scope.$broadcast('geoChart', dimension, group, 'geo', params);
                         }
                     },
                     update_: function(data, term) {
@@ -276,7 +304,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 }
                                 // generate crossfilter object with our dimension names
                                 params.crossfilterObj = new Crossfilter([], '', 'persistent');
- 
+
                                 // if search is enabled, create a search dimension and push it to the search array handler
                                 if (params.searchable) {
                                     if (params.searchable === true) {
@@ -294,41 +322,36 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 // add-remove data function call here
                                 params.crossfilterObj.addModels(result.aaData);
                             }
-                            this_.draw_(result, params.crossfilterObj, params, dimensions);
+                            this_.draw_(result, params, dimensions);
                             
                         })
                     },
-                    draw_: function(result, crossfilterObj, params, dimensions) {
+                    draw_: function(result, params, dimensions) {
                         $scope.$broadcast('sevTable', result, params);
                         // init wait for incoming filter
                         var _this = this;
-                        // $scope.$on('outFilter', function (event, type, value){
-                        //     _this._inFilter(crossfilterObj, type, value, dimensions)
-                        // })
                         $scope.$on('outFilter', function (event, type, value){
-                            _this._inFilter(crossfilterObj, type, value, dimensions)
+                            _this._inFilter(params, type, value, dimensions)
                         })
                     },
                     update_: function(data, term) {
-                        data.dimension.unfilterAll();
+                        data.dimension.unfilterBy('searchBox');
                         data.dimension.filterBy('searchBox', term, tableFilter);
                         //$scope.$broadcast('table-redraw');
                     },
-                    _inFilter: function(crossfilterObj, dimType, value, dimensions) {
-                    //_inFilter: function(data, term) {
-                        // if (typeof dimType != 'object'){ return }
-                        // for (var i in dimType) {
-                            // check to make sure the table has the dimesion in its system
-                            // if (dimensions.indexOf(dimType[i]) !== -1){
-                                // console.log(crossfilterObj.crossfilter())
-                                // console.log(value)
-
-                                crossfilterObj.unfilterAll();
-                               // crossfilterObj.filter("ioc2", value, tableFilter);
-                                crossfilterObj.filterBy("ioc", value);
-                                //$scope.$broadcast('table-redraw');
-                            // }
-                        // }
+                    _inFilter: function(params, dimType, value, dimensions) {
+                        if (typeof dimType != 'string'){ return }
+                        if (typeof value === 'object'){ 
+                            $scope.$apply(function () {
+                                params.crossfilterObj.filterBy(dimType, value, fuzzyFilterObject);
+                            });
+                        } else {
+                            console.log(filterArray)
+                            checkAddFilterArray(value);
+                            $scope.$apply(function () {
+                                params.crossfilterObj.filterBy(dimType, filterArray, fuzzyFilter);
+                            });
+                        }
                     }
                 },
                 textBoxWatch: {
@@ -351,7 +374,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             break;
                             case 'table':
                                 functions.table.update_(data, term);
-                                // functions.table._inFilter(data, term);
+                                //functions.table._inFilter(data, term);
                             break;
                         }
                     }
@@ -1208,7 +1231,6 @@ angular.module('mean.pages').factory('treeIcon', [
         return treeIcon;
     }
 ]);
-
 
 angular.module('mean.pages').factory('appIcon', [
     function() {

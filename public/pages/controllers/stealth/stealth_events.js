@@ -33,7 +33,7 @@ angular.module('mean.pages').controller('stealthEventsController', ['$scope', '$
                     group: function(dimension){ // groups are optional and should default to a reduce if undefined
                         return dimension.group().reduceSum(function(d) { return d.count });
                     },
-                    // outgoingFilter: ['hour'] // Optional and ingests an array of KEYS for other visuals not of this type to match
+                    outgoingFilter: 'time' // Optional and ingests an array of KEYS for other visuals not of this type to match
                 }
             ]
         },
@@ -71,7 +71,7 @@ angular.module('mean.pages').controller('stealthEventsController', ['$scope', '$
                     group: function(dimension){ // groups are optional and should default to a reduce if undefined
                         return dimension.group().reduceSum(function (d) { return d.count; });
                     },
-                    // outgoingFilter: ['hour'] // Optional and ingests an array of KEYS for other visuals not of this type to match
+                    outgoingFilter: 'pie_dimension' // Optional and ingests an array of KEYS for other visuals not of this type to match
                 }
             ]
         },
