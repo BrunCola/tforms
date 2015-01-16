@@ -33,7 +33,7 @@ angular.module('mean.pages').factory('dimensionFilter',
 );
 angular.module('mean.pages').factory('tableFilter',
     function() {
-        var tableFilter = function(term, obj) {
+        return function(term, obj) {
              for (var i in obj) {
                 // continue if value is defined
                 if ((obj[i] !== undefined) && (obj[i] !== null)){
@@ -48,15 +48,24 @@ angular.module('mean.pages').factory('tableFilter',
                 }
             }
         }
-        return tableFilter;
     }
 );
-angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location', '$resource', 'dimensionFilter', 'tableFilter', 'Crossfilter',
-    function($rootScope, $http, $location, $resource, dimensionFilter, tableFilter, Crossfilter) {
+
+angular.module('mean.pages').factory('dateRange',
+    function() {
+        return function(value) {
+            console.log(value)
+        }
+    }
+);
+
+angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location', '$resource', 'dimensionFilter', 'tableFilter', 'Crossfilter', '$state', 'dateRange',
+    function($rootScope, $http, $location, $resource, dimensionFilter, tableFilter, Crossfilter, $state, dateRange) {
         var runPage = function($scope, data, refreshRate) {
             ////////////////////////////////
             /// Global Variables Defined ///
             ////////////////////////////////
+            dateRange('test')
             var refreshArray = [];
             var searchable = [];
             // our simple function to push data into refresh object (if it is defined in particular viz settings)
@@ -275,7 +284,15 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                     }
                                 }
                                 // generate crossfilter object with our dimension names
-                                params.crossfilterObj = new Crossfilter([], '', 'persistent', dimensions);
+                                params.crossfilterObj = new Crossfilter([], '', 'persistent');
+                                // for (var e in dimensions) {
+                                //     if (dimensions[e] !== null) {
+                                //         console.log(dimensions[e])
+                                //         params.crossfilterObj.addDimension(dimensions[e], function search(d) {
+                                //             return d[dimensions[e]];
+                                //         });
+                                //     }
+                                // }
                                 // if search is enabled, create a search dimension and push it to the search array handler
                                 if (params.searchable) {
                                     if (params.searchable === true) {
@@ -308,16 +325,18 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                     update_: function(data, term) {
                         data.dimension.unfilterAll();
                         data.dimension.filterBy('searchBox', term, tableFilter);
-                        $scope.$broadcast('table-redraw');
                     },
                     _inFilter: function(crossfilterObj, dimType, value, dimensions) {
+                        console.log(crossfilterObj)
                         // if (typeof dimType != 'object'){ return }
                         // for (var i in dimType) {
                             // check to make sure the table has the dimesion in its system
                             // if (dimensions.indexOf(dimType[i]) !== -1){
-                                crossfilterObj.unfilterAll();
-                                crossfilterObj.filterBy('ioc', 'Suspicious Behavior');
-                                $scope.$broadcast('table-redraw');
+                                // crossfilterObj.unfilterAll();
+                                console.log(dimType)
+                                console.log(value)
+                                crossfilterObj.filterBy('ioc', value);
+                                // $scope.$broadcast('table-redraw');
                             // }
                         // }
                     }
@@ -345,6 +364,28 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             break;
                         }
                     }
+                },
+                vizUpdate: {
+                    // initial run function that performs all date checks and starts all timers
+                    run: function() {
+                        console.log('running function')
+                        console.log($state.current)
+                        // $scope.$watch('global', function(value){
+                            // console.log(value)
+                            // if ($location.$$search.start && $location.$$search.end) {
+                            //     $scope.start = moment.unix($location.$$search.start).format('MMMM D, YYYY h:mm A');
+                            //     $scope.end = moment.unix($location.$$search.end).format('MMMM D, YYYY h:mm A');
+                            //     $rootScope.start = moment.unix($location.$$search.start).format('MMMM D, YYYY h:mm A');
+                            //     $rootScope.end = moment.unix($location.$$search.end).format('MMMM D, YYYY h:mm A');
+                            // } else {
+                            //     $scope.start = moment.unix($scope.global.startTime).format('MMMM D, YYYY h:mm A');
+                            //     $scope.end = moment.unix($scope.global.endTime).format('MMMM D, YYYY h:mm A');
+                            //     $rootScope.start = moment.unix($scope.global.startTime).format('MMMM D, YYYY h:mm A');
+                            //     $rootScope.end = moment.unix($scope.global.endTime).format('MMMM D, YYYY h:mm A');
+                            // }
+                        // })
+                        // $rootScope.$broadcast('dateTime', {start: 'test', end: 'test2'})
+                    }
                 }
             }
             for (var v in data) {
@@ -370,7 +411,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
             }
             // run refresh handler if our array is populated
             if (refreshArray.length > 0) {
-                console.log(refreshArray)
+                functions.vizUpdate.run();
             }
         }
         return runPage;
