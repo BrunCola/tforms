@@ -812,9 +812,10 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 // here create table div from element + name
                 // TODO - add unique name in controller to post this in a key (in case direcive gets called multiple times)- i.e. $scope[name].table = this
                 // result.sort = 22;
+                
 
                 $scope.tableColumns = result.params;
-                $rootScope.tableData = params.crossfilterObj;
+                $scope.tableData = params.crossfilterObj;
                 $scope.tableData.sortBy('id');
 
                 $scope.tableData.collection().map(function(d) {d.time = timeFormat(d.time, 'tables')})
@@ -830,16 +831,6 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
 
                 $scope.nextButton = false;
                 $scope.prevButton = true;
-
-                // $scope.$on('outFilter', function (event, type, value){
-                //         console.log(type)
-                //         console.log(value)
-                //         console.log(params.crossfilterObj)
-                //         $scope.tableData.unfilterAll();
-                //         $scope.tableData.filterBy("ioc",value);
-                //         // _this._inFilter(crossfilterObj, type, value, dimensions)
-                //         console.log("test")
-                // })
 
                 $scope.generateLink = function(data, column) {
                     var searchObj = {};
@@ -899,19 +890,50 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     }
                 }
 
-                // $scope.$on('outFilter', function(event, dimType, value){
-                //     if (typeof dimType != 'object'){ return }
-                //     for (var i in dimType) {
-                //         // check to make sure the table has the dimesion in its system
-                //         if (dimensions.indexOf(dimType[i]) !== -1){
-                //             console.log(params.crossfilterObj)
-                //             console.log('filter')
-                //             $scope.tableData.unfilterAll();
-                //             $scope.tableData.filterBy('ioc', value);
-                //             $scope.$broadcast('table-redraw');
-                //         }
-                //     }
-                // })
+                //////////////////////////////
+                ////// INCOMING FILTERS //////
+                //////////////////////////////
+                var activeFilters = {};
+                function checkFilter(type, value, callback) {
+                    if (type in activeFilters) { // if type is already defined
+                        var index = activeFilters[type].indexOf(value);
+                        if (index !== -1) { // if value is already in type
+                            // remove it
+                            activeFilters[type].splice(index, 1);
+                            // delete array if its empty
+                            callback();
+                            return;
+                        } else { // if no value in type
+                            activeFilters[type].push(value);
+                            callback();
+                            return;
+                        }
+                    } else { // no type in filter
+                        activeFilters[type] = [value];
+                        callback();
+                        return;
+                    }
+                }
+                $scope.$on('outFilter', function (event, type, value){
+                    if ((typeof type != 'object') || (!'table' in type)) { return }
+                    var type = type['table'];
+                    if (typeof value === 'object'){ // only if its time
+                        $scope.$apply(function () {
+                            // params.crossfilterObj.filterBy(type, value, fuzzyFilterObject);
+                        });
+                    } else {
+                        checkFilter(type, value, function(){
+                            $scope.$apply(function() {
+                                var filter = activeFilters[type];
+                                if (filter.length === 0) {
+                                    $scope.tableData.filterBy(type, filter, $scope.tableData.filters.inArray());
+                                } else {
+                                    $scope.tableData.filterBy(type, filter, $scope.tableData.filters.inArray('some'));
+                                }
+                            })
+                        })
+                    }
+                })
 
                 /**
                  * @method toggleCountFilter

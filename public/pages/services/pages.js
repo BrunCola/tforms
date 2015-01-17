@@ -65,17 +65,32 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
             ////////////////////////////////
             /// Global Variables Defined ///
             ////////////////////////////////
-            dateRange('test')
             var refreshArray = [];
             var searchable = [];
-            var filterArray = [];
+            var activeFilters = [];
 
-            function checkAddFilterArray (newFilter) {                       
-                if (filterArray.indexOf(newFilter) !== -1){
-                    filterArray.splice(filterArray.indexOf(newFilter), 1);
-                } else {
-                    filterArray.push(newFilter)
-                }          
+            function checkAddactiveFilters (value, dimension, params, callback) {                       
+                // if (activeFilters.indexOf(newFilter) !== -1){
+                //     activeFilters.splice(activeFilters.indexOf(newFilter), 1);
+                // } else {
+                //     activeFilters.push(newFilter);
+                // }      
+                console.log(value)
+                console.log(dimension)
+                console.log(params)
+                $scope.$apply(function() {
+                    if (value in params.activeFilters) {
+                        console.log('deleting')
+                        delete params.activeFilters[value];
+                        params.crossfilterObj.unfilterBy(dimension, value);
+                        callback();
+                    }  else {
+                        console.log('adding')
+                        params.crossfilterObj.filterBy(dimension, value);
+                        params.activeFilters[value] = true;
+                        callback();
+                    }
+                })
             }
 
             function fuzzyFilter(filters, value) {
@@ -272,7 +287,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             $scope.$broadcast('geoChart', dimension, group, 'geo', params);
                         }
                     },
-                    update_: function(data, term) {
+                    searchUpdate_: function(data, term) {
                         // run through called chart types and call their update functions
                         for (var v in data.params.visuals) {
                             switch(data.params.visuals[v].type) {
@@ -334,30 +349,53 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         })
                     },
                     draw_: function(result, params, dimensions) {
+                        var _this = this;
+                        params.activeFilters = {}; // this may need to be moved for when requery function is built 
                         $scope.$broadcast('sevTable', result, params);
                         // init wait for incoming filter
-                        var _this = this;
-                        $scope.$on('outFilter', function (event, type, value){
-                            _this._inFilter(params, type, value, dimensions)
-                        })
+                        // $scope.$on('outFilter', function (event, type, value){
+                        //     _this._inFilter(params, type, value, dimensions);
+                        // })
                     },
-                    update_: function(data, term) {
+                    searchUpdate_: function(data, term) {
                         data.dimension.unfilterBy('searchBox');
                         data.dimension.filterBy('searchBox', term, tableFilter);
                     },
                     _inFilter: function(params, dimType, value, dimensions) {
-                        if (typeof dimType != 'string'){ return }
-                        if (typeof value === 'object'){ // only if its time
-                            $scope.$apply(function () {
-                                params.crossfilterObj.filterBy(dimType, value, fuzzyFilterObject);
-                            });
-                        } else {
-                            console.log(filterArray)
-                            checkAddFilterArray(value);
-                            $scope.$apply(function () {
-                                params.crossfilterObj.filterBy(dimType, filterArray, fuzzyFilter);
-                            });
-                        }
+                        // if ((typeof dimType != 'object') || (!'table' in dimType)) { return }
+                        // var dimType = dimType['table'];
+                        // if (typeof value === 'object'){ // only if its time
+                        //     $scope.$apply(function () {
+                        //         params.crossfilterObj.filterBy(dimType, value, fuzzyFilterObject);
+                        //     });
+                        // } else {
+                        //     // console.log(params)
+                        //     // console.log(activeFilters)
+                        //     // checkAddactiveFilters(value, dimType, params, function(action){
+                        //         // console.log(params)
+                        //         // console.log('action')
+                        //         // $scope.$apply();
+                        //         // console.log('success')
+                        //         // $scope.$apply(function () {
+                        //         //     params.crossfilterObj.filterBy(dimType, params.activeFilters, fuzzyFilter);
+                        //         // });
+                        //         // 
+                        //         $scope.$apply(function() {
+                        //             if (value in params.activeFilters) {
+                        //                 console.log('deleting')
+                        //                 delete params.activeFilters[value];
+                        //                 params.crossfilterObj.unfilterBy(dimType, value);
+                        //                 // callback();
+                        //             }  else {
+                        //                 console.log('adding')
+                        //                 params.crossfilterObj.filterBy(dimType, value);
+                        //                 params.activeFilters[value] = true;
+                        //                 // callback();
+                        //             }
+                        //         })
+                        //         console.log(params.activeFilters)
+                        //     // });
+                        // }
                     }
                 },
                 textBoxWatch: {
@@ -375,11 +413,11 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         switch(data.type) {
                             case 'crossfilter':
                                 dimensionFilter(data.dimension, term, function() {
-                                    functions.crossfilter.update_(data, term);
+                                    functions.crossfilter.searchUpdate_(data, term);
                                 })
                             break;
                             case 'table':
-                                functions.table.update_(data, term);
+                                functions.table.searchUpdate_(data, term);
                                 //functions.table._inFilter(data, term);
                             break;
                         }
