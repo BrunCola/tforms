@@ -37,9 +37,9 @@
         <th ng-repeat="col in tableColumns"><a ng-click="tableData.sortBy(col.mData)">{{col.sTitle}}</a></th>
     </tr>
     <tr ng-repeat="row in tableData.collection() | limitTo: pageNumber | limitTo: pageOffset">
-        <td ng-repeat="col in tableColumns">           
+        <td ng-repeat="col in tableColumns">  
+            {{row.id}}         
             <section ng-switch="col.mData">
-            {{row.id}}
                 <section ng-switch-when="mime"> 
                    <div file-replace>{{ row[col.mData].toLowerCase() }}</div>
                 </section>
@@ -105,19 +105,30 @@
         </td>
     </tr>
     <tr>
-        <td class="etc" colspan="4">
-        <span ng-repeat="n in [0,(maxLength/pageConstant)] | makeRange"><span ng-click="setPage(n)"> {{n}} </span></span>
-        <div>{{pageNumber}}</div>
-            <div class="btn-group">
-                <button type="button" class="btn btn-xs btn-default"
-                        ng-click="decreasePage(pageOffset)" ng-disabled="prevButton">
-                    &lt; Previous Page
-                </button>
-                <button type="button" class="btn btn-xs btn-default"
-                        ng-click="increasePage(50)" ng-disabled="nextButton">
-                    Next Page &gt;
-                </button>
-            </div>
+        <td class="etc tableIndex" colspan="4">
+        Showing {{pageNumber+pageOffset+1}} to {{pageNumber}} of {{maxLength}} entries <br />
+        <a ng-click="decreasePage(pageOffset)" ng-class="{disabled: prevButton}">Previous</a>
+        <span ng-repeat="n in [0,(maxIndex)] | makeRange">
+            <span ng-if="n == 0" ><a ng-click="setPage(n)" ng-class="{current: n==currentIndex-1}"> 1</a></span>
+            <span ng-show="currentIndex < 5 && currentIndex > 0" ng-if="n < 5 && n > 0" >
+                <a ng-click="setPage(n)" ng-class="{current: n==currentIndex-1}"> {{n+1}}</a>
+                <span ng-show="n == 4"> ... </span>
+            </span>
+            <span ng-show="currentIndex >= 5 && currentIndex <= maxIndex-4" >
+                <span ng-show="n == currentIndex-2"> ... </span>
+                <span ng-show="n == currentIndex -2 || n == currentIndex-1 || n == currentIndex">
+                    <a ng-click="setPage(n)" ng-class="{current: n==currentIndex-1}"> {{n+1}}</a>
+                </span>
+                <span ng-show="n == currentIndex"> ... </span>
+            </span>
+            <span ng-show="currentIndex < maxIndex+1 && currentIndex > maxIndex-4" ng-if="n < maxIndex-1 && n > maxIndex-6" >
+                <span ng-show="n == maxIndex-5"> ... </span>
+                <a ng-click="setPage(n)" ng-class="{current: n==currentIndex-1}"> {{n+1}}</a>
+            </span>
+            <span ng-if="n == maxIndex-1" class="tableIndex"><a ng-click="setPage(n)" ng-class="{current: n==currentIndex-1}"> {{maxIndex}}</a></span>
+        </span>
+        <a ng-if="pageNumber<maxLength" ng-click="increasePage(pageConstant)" ng-class="{disabled: nextButton}" >  Next</a>
+        <a ng-if="pageNumber>=maxLength" ng-class="{disabled: nextButton}" >  Next</a>
         </td>
     </tr>
 </table>

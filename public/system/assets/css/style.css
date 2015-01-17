@@ -2597,3 +2597,15 @@ table#sevTable tr:nth-child(even){
 table#sevTable tr:last-child{
   background-color: #fff;
 }
+.tableIndex a{ 
+    margin: 0px 2px;
+    text-align: center;
+}
+.disabled, .disabled:hover{
+    color:#666;
+    cursor:auto;
+    text-decoration: none;
+}
+.current {
+    text-decoration: underline;
+}
