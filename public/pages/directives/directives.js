@@ -817,17 +817,39 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 $scope.tableData.collection().map(function(d) {d.time = timeFormat(d.time, 'tables')})
                 $scope.words = {};
                 $scope.word = '';
-                $scope.pageNumber = 50;
-                $scope.pageConstant = 50;
-                $scope.pageOffset = -50;
+
+                // -------------------table indexing variables ------------
+                $scope.pageNumber = 5;
+                $scope.pageConstant = 5;
+                $scope.pageOffset = -5;
                 $scope.maxLength = $scope.tableData.collection().length;
-                // $scope.countGrouped = [];
-                $scope.currentCountFilter = 0;
-
-
+                $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
+                $scope.maxIndex = Math.round($scope.maxLength/$scope.pageConstant);
                 $scope.nextButton = false;
                 $scope.prevButton = true;
+                // ^^^^^^^^^^^^^^^^^^^ table indexing variables ^^^^^^^^^^
 
+                $scope.showHide = function(col) {
+                    // if (col.mData === "lan_stealth") {
+                    //     console.log(col)
+                    //     if (col.hide_stealth === $scope.global.user.hide_stealth) {
+                    //         return false
+                    //     } else {
+                    //         return true;
+                    //     }
+                    // }
+                    // if (col.mData === "proxy_blocked") {
+                    //     console.log(col)
+                    //     console.log($scope.global.user.hide_proxy)
+                    //     if (col.proxy_blocked === $scope.global.user.hide_proxy) {
+                    //         return false
+                    //     } else {
+                    //         return true;
+                    //     }
+                    // }
+                    return col.bVisible;
+                }
+                
                 $scope.generateLink = function(data, column) {
                     var searchObj = {};
                     // add url date params to new page if they exist
@@ -843,11 +865,10 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     }
                     // finally hit page being requested with search params
                     $location.path(column.link.type).search(searchObj);
-                
                 }
 
                 function checkButtons () {
-                    if ($scope.pageNumber <=50) {
+                    if ($scope.pageNumber <=$scope.pageConstant) {
                         $scope.prevButton = true;
                         $scope.nextButton = false;
                     } else if ($scope.pageNumber >= $scope.maxLength) {
@@ -861,29 +882,31 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
 
                 $scope.decreasePage = function(n) {
                     $scope.pageNumber += n;
-                    if ($scope.pageNumber <= 50) {
-                        $scope.pageNumber = 50;
+                    if ($scope.pageNumber <= $scope.pageConstant) {
+                        $scope.pageNumber = $scope.pageConstant;
                     } 
-                    $scope.pageOffset = -50;
+                    $scope.pageOffset = -$scope.pageConstant;
                     checkButtons();
+                    $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
                 }
 
                 $scope.setPage = function(n) {
-                    $scope.pageNumber = (n+1)*50;
+                    $scope.pageNumber = (n+1)*$scope.pageConstant;
                     $scope.increasePage(0);
                 }
 
                 $scope.increasePage = function(n) {
                     $scope.pageNumber += n;
-                    if (($scope.maxLength - $scope.pageNumber) < 0) {
-                        $scope.pageOffset = -49 + ($scope.pageNumber-$scope.maxLength);
+                    if (($scope.maxLength - $scope.pageNumber) <=0) {
+                        $scope.pageOffset = -($scope.pageConstant) + ($scope.pageNumber-$scope.maxLength);
                     } else {
-                        $scope.pageOffset = -50;
+                        $scope.pageOffset = -$scope.pageConstant;
                     }
                     checkButtons(); 
                     if ($scope.pageNumber >= $scope.maxLength) {
-                        $scope.pageNumber = ($scope.maxLength-1);
+                        $scope.pageNumber = ($scope.maxLength);
                     }
+                    $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
                 }
 
                 //////////////////////////////
@@ -994,26 +1017,26 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
 }]);
 
 angular.module('mean.pages').filter('makeRange', function() {
-        return function(input) {
-            var lowBound, highBound;
-            switch (input.length) {
-            case 1:
-                lowBound = 0;
-                highBound = parseInt(input[0]) - 1;
-                break;
-            case 2:
-                lowBound = parseInt(input[0]);
-                highBound = parseInt(input[1]);
-                break;
-            default:
-                return input;
-            }
-            var result = [];
-            for (var i = lowBound; i <= highBound; i++)
-                result.push(i);
-            return result;
-        };
-    });
+    return function(input) {
+        var lowBound, highBound;
+        switch (input.length) {
+        case 1:
+            lowBound = 0;
+            highBound = parseInt(input[0]) - 1;
+            break;
+        case 2:
+            lowBound = parseInt(input[0]);
+            highBound = parseInt(input[1]);
+            break;
+        default:
+            return input;
+        }
+        var result = [];
+        for (var i = lowBound; i <= highBound; i++)
+            result.push(i);
+        return result;
+    };
+});
 
 angular.module('mean.pages').directive('fileReplace', ['$rootScope', '$timeout', 'mimeIcon', function ($rootScope, $timeout, mimeIcon) {
     return {
