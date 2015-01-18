@@ -2578,6 +2578,28 @@ table.listUser td{
 .page-content-survey{
     background: none;
 }
+#sTable{
+    overflow: auto;
+}
+#sTable a.tableRight{
+    float: right;
+    cursor: pointer;
+}
+#showHide{ 
+    right:0;
+    margin: 25px 0px 10px 0px;
+    width: auto;
+    position: absolute;
+    background: #fff;
+    padding: 10px;
+    border-radius: 8px; 
+}
+#showHide .tableLabel{
+    margin: 0px 0px 20px 0px;
+}
+#showHide input[type=checkbox]{
+    margin: -3px 5px 0px 8px;
+}
 table#sevTable{
     width:100%;
 }
@@ -2600,10 +2622,11 @@ table#sevTable tr:last-child{
 .tableIndex a{ 
     margin: 0px 2px;
     text-align: center;
+    cursor: pointer;
 }
 .disabled, .disabled:hover{
     color:#666;
-    cursor:auto;
+    cursor:auto !important;
     text-decoration: none;
 }
 .current {

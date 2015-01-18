@@ -839,6 +839,27 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 //         console.log("test")
                 // })
 
+                $scope.showHide = function(col) {
+                    // if (col.mData === "lan_stealth") {
+                    //     console.log(col)
+                    //     if (col.hide_stealth === $scope.global.user.hide_stealth) {
+                    //         return false
+                    //     } else {
+                    //         return true;
+                    //     }
+                    // }
+                    // if (col.mData === "proxy_blocked") {
+                    //     console.log(col)
+                    //     console.log($scope.global.user.hide_proxy)
+                    //     if (col.proxy_blocked === $scope.global.user.hide_proxy) {
+                    //         return false
+                    //     } else {
+                    //         return true;
+                    //     }
+                    // }
+                    return col.bVisible;
+                }
+
                 $scope.generateLink = function(data, column) {
                     var searchObj = {};
                     // add url date params to new page if they exist
@@ -854,7 +875,6 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     }
                     // finally hit page being requested with search params
                     $location.path(column.link.type).search(searchObj);
-                
                 }
 
                 function checkButtons () {
