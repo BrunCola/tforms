@@ -51,13 +51,15 @@ angular.module('mean.pages').factory('tableFilter',
     }
 );
 
-angular.module('mean.pages').factory('dateRange',
-    function() {
-        return function(value) {
-            console.log(value)
+angular.module('mean.pages').factory('dateRange', ['$state', 
+    function($state) {
+        return function(scope) { // scope is being passed to this function for now, since runPage initiates the call
+            // scope.$apply
+            scope.start = 'test'
+            console.log(scope)
         }
     }
-);
+]);
 
 angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location', '$resource', 'dimensionFilter', 'tableFilter', 'Crossfilter', '$state', 'dateRange',
     function($rootScope, $http, $location, $resource, dimensionFilter, tableFilter, Crossfilter, $state, dateRange) {
@@ -67,47 +69,31 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
             ////////////////////////////////
             var refreshArray = [];
             var searchable = [];
-            var activeFilters = [];
 
-            function checkAddactiveFilters (value, dimension, params, callback) {                       
-                // if (activeFilters.indexOf(newFilter) !== -1){
-                //     activeFilters.splice(activeFilters.indexOf(newFilter), 1);
-                // } else {
-                //     activeFilters.push(newFilter);
-                // }      
-                console.log(value)
-                console.log(dimension)
-                console.log(params)
-                $scope.$apply(function() {
-                    if (value in params.activeFilters) {
-                        console.log('deleting')
-                        delete params.activeFilters[value];
-                        params.crossfilterObj.unfilterBy(dimension, value);
-                        callback();
-                    }  else {
-                        console.log('adding')
-                        params.crossfilterObj.filterBy(dimension, value);
-                        params.activeFilters[value] = true;
-                        callback();
-                    }
+            // for daterange we have to wait to run our handler since the directive loads first
+            if ($state.current.data.daterange) {
+                console.log('initiate wait')
+                $scope.$on('dateRangeLoaded', function(){
+                    // dateRange($scope);
+                    console.log('WORK DAMN YOU')
                 })
             }
 
-            function fuzzyFilter(filters, value) {
-                if (filters.length === 0) {return true;}
-                for (var i=0; i<filters.length; i++) {
-                    if (filters[i] === value) {
-                        return true;
-                    } 
-                }
-            }
+            // function fuzzyFilter(filters, value) {
+            //     if (filters.length === 0) {return true;}
+            //     for (var i=0; i<filters.length; i++) {
+            //         if (filters[i] === value) {
+            //             return true;
+            //         } 
+            //     }
+            // }
 
-            function fuzzyFilterObject(filters, value) {
-                if (filters===null) {return true}
-                if (((Date.parse(filters[0])/1000) <= value) && ((Date.parse(filters[1])/1000) >= value)) {
-                    return true;
-                }             
-            }
+            // function fuzzyFilterObject(filters, value) {
+            //     if (filters===null) {return true}
+            //     if (((Date.parse(filters[0])/1000) <= value) && ((Date.parse(filters[1])/1000) >= value)) {
+            //         return true;
+            //     }             
+            // }
 
 
             // our simple function to push data into refresh object (if it is defined in particular viz settings)
@@ -362,40 +348,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         data.dimension.filterBy('searchBox', term, tableFilter);
                     },
                     _inFilter: function(params, dimType, value, dimensions) {
-                        // if ((typeof dimType != 'object') || (!'table' in dimType)) { return }
-                        // var dimType = dimType['table'];
-                        // if (typeof value === 'object'){ // only if its time
-                        //     $scope.$apply(function () {
-                        //         params.crossfilterObj.filterBy(dimType, value, fuzzyFilterObject);
-                        //     });
-                        // } else {
-                        //     // console.log(params)
-                        //     // console.log(activeFilters)
-                        //     // checkAddactiveFilters(value, dimType, params, function(action){
-                        //         // console.log(params)
-                        //         // console.log('action')
-                        //         // $scope.$apply();
-                        //         // console.log('success')
-                        //         // $scope.$apply(function () {
-                        //         //     params.crossfilterObj.filterBy(dimType, params.activeFilters, fuzzyFilter);
-                        //         // });
-                        //         // 
-                        //         $scope.$apply(function() {
-                        //             if (value in params.activeFilters) {
-                        //                 console.log('deleting')
-                        //                 delete params.activeFilters[value];
-                        //                 params.crossfilterObj.unfilterBy(dimType, value);
-                        //                 // callback();
-                        //             }  else {
-                        //                 console.log('adding')
-                        //                 params.crossfilterObj.filterBy(dimType, value);
-                        //                 params.activeFilters[value] = true;
-                        //                 // callback();
-                        //             }
-                        //         })
-                        //         console.log(params.activeFilters)
-                        //     // });
-                        // }
+                        
                     }
                 },
                 textBoxWatch: {

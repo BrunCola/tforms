@@ -146,12 +146,12 @@ angular.module('mean.pages').controller('iocEventsController', ['$scope', '$stat
             get: '/api/ioc_notifications/ioc_events/table',
             run: function(data) {
                 // TODO - check if this is needed for all tables, if so - place this in the service
-                var id = 0;
-                data.aaData.forEach(function(d){
-                    if (!d.id) {
-                        d.id = id++;
-                    }
-                })
+                // var id = 0;
+                // data.aaData.forEach(function(d){
+                //     if (!d.id) {
+                //         d.id = id++;
+                //     }
+                // })
             }
         },
         //////////////////
