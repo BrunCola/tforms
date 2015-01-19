@@ -62,8 +62,8 @@ angular.module('mean.pages').factory('dateRange', ['$state', '$location',
             } else {
                 // otherwise set start and end to the values set on load
                 // NOTE: we'll have to update these values (global) when updating the last time change
-                start = scope.global.startTime;
-                end = scope.global.endTime;
+                end = new Date().getTime() / 1000;
+                start = end - (3600*24);
             }
             // send the values back to the directive
             callback({start: start, end: end});
@@ -183,6 +183,9 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         return false;
                     }
                 },
+                ////////////////////////////
+                ///////// VARIABLES ////////
+                ////////////////////////////
                 // INIT VISUAL TYPES & METHODS
                 variable: function(params) {
                     if (!params.get) { return } // if specific url isn't defined use the page query
@@ -198,6 +201,9 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         }
                     })
                 },
+                ////////////////////////////
+                /////// CROSSFILTER ////////
+                ////////////////////////////
                 crossfilter:  {
                     get: function(params) {
                         if (!params.get) { return } // if specific url isn't defined use the page query
@@ -205,9 +211,10 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         // this is so we can access 'this' from within our return function
                         // handle searching (if enabled) - we don't need to wait for a data return for this
                         var this_ = this;
+                        var searchDimension;
                         if (params.searchable) {
                             if (params.searchable === true) {
-                                var searchDimension = params.crossfilterObj.dimension(function(d){return d});
+                                searchDimension = params.crossfilterObj.dimension(function(d){return d});
                                 searchable.push({
                                     type: 'crossfilter',
                                     dimension: searchDimension,
@@ -326,7 +333,13 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         var this_ = this; // this is so we can access 'this' from within our return function
                         // query new time selection
                         functions.getData_(params, time.query, function(result) {
-                            params.crossfilterObj.add(result);                
+                            if (result) {
+                                if (params.run && (typeof params.run === 'function')) {
+                                    params.run(result);
+                                }
+                                // // add-remove data function call here
+                                params.crossfilterObj.add(result);
+                            }            
                         })
                         //////////////////////////////////
                         /// filter and delete old data ///
@@ -360,6 +373,9 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         $scope.$broadcast('crossfilter-redraw');
                     }
                 },
+                ////////////////////////////
+                /////// TABLE VISUAL ///////
+                ////////////////////////////
                 table: {
                     get: function(params) {
                         if (!params.get) { return }
@@ -447,9 +463,13 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         var this_ = this; // this is so we can access 'this' from within our return function
                         // query new time selection
                         functions.getData_(params, time.query, function(result) {
-                            if (!result) { return }
-                            if (!result.aaData) { return }
-                            params.crossfilterObj.addModels(result.aaData);
+                            if (result) {
+                                if (params.run && (typeof params.run === 'function')) {
+                                    params.run(result);
+                                }
+                                // add-remove data function call here
+                                params.crossfilterObj.addModels(result.aaData);
+                            }
                         })
                         // filter and delete old data
                         params.crossfilterObj.filterBy('timeFilter', time, filterTime);
