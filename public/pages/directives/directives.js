@@ -35,7 +35,7 @@ angular.module('mean.pages').directive('iocDesc', function() {
     };
 });
 
-angular.module('mean.pages').directive('modalWindow', function() {
+ angular.module('mean.pages').directive('modalWindow', function() {
     return {
         // restrict: 'EA',
         link: function($scope, element) {
@@ -393,7 +393,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                     '<div class="span12"> '+
                             '<div class="jdash-header">'+data.title+'</div> '+
                             '<div class="box">'+
-                                '<div class="box-content"> <button class="ColVis_Button bCsv ColVis_MasterButton printCSVButton" type="button" href="">Print to CSV</button>'+//<button type="button" class="rndCrnBtn pure-button right" ng-click="insert()">Print to .csv</button>'+
+                                '<div class="box-content"> <button class="ColVis_Button bCsv ColVis_MasterButton printCSVButton" type="button" href="">Print to CSV</button>'+
                                     '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="'+data.div+'" ></table>'+
                                 '</div> '+
                             '</div> '+
@@ -817,7 +817,6 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 // TODO - add unique name in controller to post this in a key (in case direcive gets called multiple times)- i.e. $scope[name].table = this
                 // result.sort = 22;
                 
-
                 $scope.tableColumns = result.params;
                 $scope.tableData = params.crossfilterObj;
                 // $scope.tableData.sortBy('id');
@@ -859,7 +858,130 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     // }
                     return col.bVisible;
                 }
-                
+
+                //2d array sort for sorting data for csv print
+                function sortFunction(a, b) {
+                    // var tableSort = $("#table").dataTable().fnSettings().aaSorting;
+                    // console.log($("#sevTable").dataTable());
+                    // var tableSort = $("#sTable").dataTable().fnSettings().aaSorting;
+                    var tableSort = result.sort[0];//TEMPORARILY
+                    var sortIndex = tableSort[0][0];
+                    var sortDirection = tableSort[0][1];
+                    if (a[sortIndex] === b[sortIndex]) {
+                        return 0;
+                    } else {
+                        if(sortDirection == "asc") {
+                            return (a[sortIndex] < b[sortIndex]) ? -1 : 1
+                        } else {
+                            return (a[sortIndex] > b[sortIndex]) ? -1 : 1
+                        }
+                    }
+                }
+                //function for export to csv
+                var csv = "data:text/csv;&charset=utf-8,";
+                function makeCsv(array, heading){
+                    function isAllowed(word){
+                        var notAllowed = ['_typeCast', 'parse', 'id', 'child_id'];
+                        if (notAllowed.indexOf(word) !== -1) {
+                            return false;
+                        }
+                        return true;
+                    }
+                    //title
+                    csv += heading;
+                    // new line 
+                    csv += '\n';
+                    if (array.length > 0) {
+                        // get object 0 length
+                        var objlength = 0, tpos = 0;
+                        for (var i in array[0]) {
+                            objlength++;
+                        }
+                        csv += '\n';
+                        for (var i in array) {
+                            for (var n in array[i]) {
+                                if ((typeof array[i][n] !== 'function') && (isAllowed(n))){
+                                    if (array[i][n] === 0) {
+                                        csv += 'no,';
+                                    } else if (array[i][n] === 1) {
+                                        csv += 'yes,';
+                                    } else if (array[i][n] === null) {
+                                        csv += 'n/a,';
+                                    } else {
+                                        csv += array[i][n]+',';
+                                    }
+                                }
+                            }
+                            csv += '\n';
+                        }
+                        csv += '\n\n';
+                    }
+                }
+
+                $('.bCsv').on('click',function(){               
+                    var array = [];
+                    for (var i in result.aaData) {
+                        //need to sort each value set into the order of the columns
+                        var sortedRow = [];
+                        for (var p in result.params){
+                            for (var property in result.aaData[i]) {
+                                if (result.params[p].mData == property) {
+                                    sortedRow.push(result.aaData[i][property]);
+                                } 
+                            }
+                        }
+
+                        array.push(sortedRow);//push each sorted row as an array to the main array
+                    }
+                    //sort array by the sort of the datatable
+                    array.sort(sortFunction);
+                    var headerRow = [];
+                    for (var p in result.params) {
+                        if(result.params[p].sTitle != "") {
+                            headerRow.push(result.params[p].sTitle);
+                        }
+                    }
+                    //add the header row to the start of the array
+                    array.unshift(headerRow);//array[0] will be the array of column headers 
+                    makeCsv(array, result.title);//create the csv
+                    var fileName = $location.url().replace("/", "");
+                    //create the download
+                    download(csv, fileName+"_CSV.csv", "text/csv");
+                    csv = "data:text/csv;charset=utf-8,";
+                });
+
+                function download(strData, strFileName, strMimeType) {
+                    var D = document,
+                        a = D.createElement("a");
+                        strMimeType = strMimeType;
+
+                    if (navigator.msSaveBlob) { // IE10
+                        return navigator.msSaveBlob(new Blob([strData], {type: strMimeType}), strFileName);
+                    } 
+
+                    if ('download' in a) { //html5 A[download]
+                        a.href = "data:" + strMimeType + "," + encodeURIComponent(strData);
+                        a.setAttribute("download", strFileName);
+                        a.innerHTML = "downloading...";
+                        D.body.appendChild(a);
+                        setTimeout(function() {
+                            a.click();
+                            D.body.removeChild(a);
+                        }, 66);
+                        return true;
+                    } 
+
+                    //do iframe dataURL download (old ch+FF):
+                    var f = D.createElement("iframe");
+                    D.body.appendChild(f);
+                    f.src = "data:" +  strMimeType   + "," + encodeURIComponent(strData);
+
+                    setTimeout(function() {
+                        D.body.removeChild(f);
+                    }, 333);
+                    return true;
+                }
+
                 $scope.generateLink = function(data, column) {
                     var searchObj = {};
                     // add url date params to new page if they exist
