@@ -2610,7 +2610,6 @@ table#sevTable .first{
 }
 table#sevTable .firstTitle{
     text-align: left !important;
-    width:125px;
     padding: 1px 1px 1px 11px;
 }
 table#sevTable tr .last{
@@ -2621,9 +2620,6 @@ table#sevTable tr .last{
 }
 table#sevTable tr .timestampText{
     float: right;
-}
-table#sevTable tr .right{
-
 }
 table#sevTable tr{
     text-align: center;

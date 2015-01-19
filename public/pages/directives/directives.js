@@ -847,11 +847,12 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 $scope.word = '';
                 $scope.show_hide = false;
 
-                // for (var i in $scope.tableColumns) {
-                //     $window.sessionStorage.setItem($scope.tableColumns[i].mData, $scope.tableColumns[i].bVisible);
-                // }
-                // // $window.sessionStorage.setItem("tableColumns", JSON.stringify($scope.tableColumns));
-                // console.log($window.sessionStorage)
+                if ($window.sessionStorage[$window.location.pathname.replace("/", '')] !== undefined) {
+                    $scope.tableColumns = angular.fromJson($window.sessionStorage[$window.location.pathname.replace("/", '')])
+                } else {
+                    window.sessionStorage.setItem($window.location.pathname.replace("/", ''), JSON.stringify($scope.tableColumns));
+                }               
+
                 // -------------------table indexing variables ------------
                 $scope.pageNumber = 50;
                 $scope.pageConstant = 50;
@@ -881,36 +882,12 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     checkButtons(); 
                 }, true);
 
-                // $scope.showHide = function(col) {
-                //     // if (col.mData === "lan_stealth") {
-                //     //     console.log(col)
-                //     //     if (col.hide_stealth === $scope.global.user.hide_stealth) {
-                //     //         return false
-                //     //     } else {
-                //     //         return true;
-                //     //     }
-                //     // }
-                //     // if (col.mData === "proxy_blocked") {
-                //     //     console.log(col)
-                //     //     console.log($scope.global.user.hide_proxy)
-                //     //     if (col.proxy_blocked === $scope.global.user.hide_proxy) {
-                //     //         return false
-                //     //     } else {
-                //     //         return true;
-                //     //     }
-                //     // }
-                //     // console.log($window.sessionStorage)
-                //     // $window.sessionStorage.col.bVisible = col.bVisible;
-                //     // console.log(col)
-                //     console.log(col)
-                //     $window.sessionStorage.setItem(col.mData, col.bVisible);
-                //     console.log($window.sessionStorage)
-                //     // return col.bVisible;
-                // }
-
-                // d3.select('.showHideBox').on('click', function (d) {
-
-                // }
+                $scope.showHide = function(col) {
+                    setTimeout(function () {
+                        $window.sessionStorage.setItem($window.location.pathname.replace("/", ''), JSON.stringify($scope.tableColumns));
+                        $scope.tableColumns = angular.fromJson($window.sessionStorage[$window.location.pathname.replace("/", '')])
+                    }, 0);
+                }
                 
                 $scope.generateLink = function(data, column) {
                     var searchObj = {};

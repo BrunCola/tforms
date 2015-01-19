@@ -36,7 +36,7 @@
     <a ng-click="toggleShow()" class="tableRight" >Hide / show columns</a>
     <div id="showHide" ng-show="show_hide">
         <span class="tableLabel"  ng-repeat="col in tableColumns">
-            <span>{{col.sTitle}}</span><input type="checkbox" ng-model="col.bVisible"> <br />
+            <span>{{col.sTitle}}</span><input type="checkbox" ng-click="showHide(col)" ng-model="col.bVisible"> <br />
         </span>
     </div>
     <table id="sevTable">
