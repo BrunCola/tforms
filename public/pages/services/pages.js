@@ -33,7 +33,7 @@ angular.module('mean.pages').factory('dimensionFilter',
 );
 angular.module('mean.pages').factory('tableFilter',
     function() {
-        var tableFilter = function(term, obj) {
+        return function(term, obj) {
              for (var i in obj) {
                 // continue if value is defined
                 if ((obj[i] !== undefined) && (obj[i] !== null)){
@@ -48,44 +48,78 @@ angular.module('mean.pages').factory('tableFilter',
                 }
             }
         }
-        return tableFilter;
     }
 );
 
-angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location', '$resource', 'dimensionFilter', 'tableFilter', 'Crossfilter',
-    function($rootScope, $http, $location, $resource, dimensionFilter, tableFilter, Crossfilter) {
+angular.module('mean.pages').factory('dateRange', ['$state', '$location',
+    function($state, $location) {
+        return function(scope, callback) {
+            var start, end;
+            if ($location.$$search.start && $location.$$search.end){
+                // set start and end if they exist in the url
+                start = $location.$$search.start;
+                end = $location.$$search.end;
+            } else {
+                // otherwise set start and end to the values set on load
+                // NOTE: we'll have to update these values (global) when updating the last time change
+                start = scope.global.startTime;
+                end = scope.global.endTime;
+            }
+            // send the values back to the directive
+            callback({start: start, end: end});
+            return;
+        }
+    }
+]);
+
+// this runs on header load to see if realtime should be activated
+// NOTE.. add check to see if it has already been actived on a previous page (rootscope) 
+angular.module('mean.pages').factory('realTimeCheck', ['$state', '$window', '$rootScope', '$location',
+    function($state, $window, $rootScope, $location) {
+        return function(callback) {
+            // if the setting has already been deactivated, do not run
+            var status, disabled;
+            var realtime = angular.fromJson($window.sessionStorage.realtime);
+            // enable or disable element if time is fixed
+            if ($location.$$search.start && $location.$$search.end) {
+                disabled = true;
+            } else {
+                disabled = false;
+            }
+            // immediately set status and return if realtime is set to false
+            if (realtime === false) {
+                status = false;
+                // place it in rootscope so we can use it for our interval function later
+                $rootScope.realtimeTimer = status;
+                callback(status, disabled);
+                return;
+            }
+            // if no time in url and realtime no realtime set
+            if (!($location.$$search.start && $location.$$search.end) && (realtime === undefined)) {
+                status = true;
+            // if it is explicitly set, return true
+            } else if (realtime === true){
+                status = true;
+            // otherwise if there is a set time in the url, don't run
+            } else {
+                status = false;
+            }
+            // place it in rootscope so we can use it for our interval function later
+            $rootScope.realtimeTimer = status;
+            callback(status, disabled);
+            return;
+        }
+    }
+]);
+
+angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location', '$resource', 'dimensionFilter', 'tableFilter', 'Crossfilter', '$state', 'dateRange',
+    function($rootScope, $http, $location, $resource, dimensionFilter, tableFilter, Crossfilter, $state, dateRange) {
         var runPage = function($scope, data, refreshRate) {
             ////////////////////////////////
             /// Global Variables Defined ///
             ////////////////////////////////
             var refreshArray = [];
             var searchable = [];
-            var filterArray = [];
-
-            function checkAddFilterArray (newFilter) {                       
-                if (filterArray.indexOf(newFilter) !== -1){
-                    filterArray.splice(filterArray.indexOf(newFilter), 1);
-                } else {
-                    filterArray.push(newFilter)
-                }          
-            }
-
-            function fuzzyFilter(filters, value) {
-                if (filters.length === 0) {return true;}
-                for (var i=0; i<filters.length; i++) {
-                    if (filters[i] === value) {
-                        return true;
-                    } 
-                }
-            }
-
-            function fuzzyFilterObject(filters, value) {
-                if (filters===null) {return true}
-                if (((Date.parse(filters[0])/1000) <= value) && ((Date.parse(filters[1])/1000) >= value)) {
-                    return true;
-                }             
-            }
-
 
             // our simple function to push data into refresh object (if it is defined in particular viz settings)
             function refreshCheck(viz) {
@@ -207,6 +241,10 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 }
                             }
                         })
+                        // init wait for incoming dataPicker updated broadcast
+                        $rootScope.$on('datePickerUpdated', function (event, time){
+                            this_.reloadData_(params, time);
+                        })
                     },
                     draw_: {
                         rowchart: function(params, crossfilterObj) {
@@ -264,24 +302,24 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             $scope.$broadcast('geoChart', dimension, group, 'geo', params);
                         }
                     },
-                    update_: function(data, term) {
-                        // run through called chart types and call their update functions
-                        for (var v in data.params.visuals) {
-                            switch(data.params.visuals[v].type) {
-                                case 'rowchart':
-                                    $scope.$broadcast('rowchart-redraw');
-                                break;
-                                case 'barchart':
-                                    $scope.$broadcast('barchart-redraw');
-                                break;
-                                case 'piechart':
-                                    $scope.$broadcast('piechart-redraw');
-                                break;
-                                case 'geochart':
-                                    $scope.$broadcast('geochart-redraw');
-                                break;
+                    reloadData_: function(params, time, oldData) {
+                        if (!params.get) { return }
+                        var this_ = this; // this is so we can access 'this' from within our return function
+                        functions.getData_(params, time, function(result) {
+                            if (result) {
+                                if (params.run && (typeof params.run === 'function')) {
+                                    params.run(result);
+                                }
+                                // // add-remove data function call here
+                                params.crossfilterObj.remove();
+                                params.crossfilterObj.add(result);
+                                $scope.$broadcast('crossfilter-render');
                             }
-                        }
+                        })
+                    },
+                    searchUpdate_: function(data, term) {
+                        // run through called chart types and call their update functions
+                        $scope.$broadcast('crossfilter-redraw');
                     }
                 },
                 table: {
@@ -299,12 +337,13 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                     for (var n in result.params) {  
                                         var dim = result.params[n].mData;
                                         // push all dimension names to array
-                                        dimensions.push(result.params[n].mData);
+                                        if (dim !== null) {
+                                            dimensions.push(result.params[n].mData);
+                                        }
                                     }
                                 }
                                 // generate crossfilter object with our dimension names
-                                params.crossfilterObj = new Crossfilter([], '', 'persistent');
-
+                                params.crossfilterObj = new Crossfilter([], '', 'persistent', dimensions);
                                 // if search is enabled, create a search dimension and push it to the search array handler
                                 if (params.searchable) {
                                     if (params.searchable === true) {
@@ -327,31 +366,49 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         })
                     },
                     draw_: function(result, params, dimensions) {
-                        $scope.$broadcast('sevTable', result, params);
-                        // init wait for incoming filter
                         var _this = this;
-                        $scope.$on('outFilter', function (event, type, value){
-                            _this._inFilter(params, type, value, dimensions)
+                        params.activeFilters = {}; // this may need to be moved for when requery function is built 
+                        // $scope.tableData = params.crossfilterObj;
+                        $scope.$broadcast('sevTable', result, params);
+                        // init wait for incoming dataPicker updated broadcast
+                        $rootScope.$on('datePickerUpdated', function (event, time){
+                            _this.reloadData_(params, time);
+                        })
+                        $rootScope.$on('updateData', function (event, time) {
+                            _this.updateData_(params, time)
                         })
                     },
-                    update_: function(data, term) {
+                    reloadData_: function(params, time, oldData) {
+                        if (!params.get) { return }
+                        var this_ = this; // this is so we can access 'this' from within our return function
+                        functions.getData_(params, time, function(result) {
+                            if (result) {
+                                if (params.run && (typeof params.run === 'function')) {
+                                    params.run(result);
+                                }
+                                // add-remove data function call here
+                                params.crossfilterObj.deleteModels(params.crossfilterObj.collection());
+                                params.crossfilterObj.addModels(result.aaData);
+                            }                            
+                        })
+                    },
+                    updateData_: function(params) {
+                        if (!params.get) { return }
+                        var this_ = this; // this is so we can access 'this' from within our return function
+                        // functions.getData_(params, time, function(result) {
+                        //     if (result) {
+                        //         if (params.run && (typeof params.run === 'function')) {
+                        //             params.run(result);
+                        //         }
+                        //         // add-remove data function call here
+                        //         params.crossfilterObj.deleteModels(params.crossfilterObj.collection());
+                        //         params.crossfilterObj.addModels(result.aaData);
+                        //     }                            
+                        // })
+                    },
+                    searchUpdate_: function(data, term) {
                         data.dimension.unfilterBy('searchBox');
                         data.dimension.filterBy('searchBox', term, tableFilter);
-                        //$scope.$broadcast('table-redraw');
-                    },
-                    _inFilter: function(params, dimType, value, dimensions) {
-                        if (typeof dimType != 'string'){ return }
-                        if (typeof value === 'object'){ 
-                            $scope.$apply(function () {
-                                params.crossfilterObj.filterBy(dimType, value, fuzzyFilterObject);
-                            });
-                        } else {
-                            console.log(filterArray)
-                            checkAddFilterArray(value);
-                            $scope.$apply(function () {
-                                params.crossfilterObj.filterBy(dimType, filterArray, fuzzyFilter);
-                            });
-                        }
                     }
                 },
                 textBoxWatch: {
@@ -369,14 +426,42 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         switch(data.type) {
                             case 'crossfilter':
                                 dimensionFilter(data.dimension, term, function() {
-                                    functions.crossfilter.update_(data, term);
+                                    functions.crossfilter.searchUpdate_(data, term);
                                 })
                             break;
                             case 'table':
-                                functions.table.update_(data, term);
+                                functions.table.searchUpdate_(data, term);
                                 //functions.table._inFilter(data, term);
                             break;
                         }
+                    }
+                },
+                vizUpdate: {
+                    // initial run function that performs all date checks and starts all timers
+                    run: function() {
+                        var interval;
+                        $rootScope.$watch('realtimeTimer', function(value){
+                            if (value) {
+                                interval = setInterval(function(){
+                                    // here's were we do the math on the old/new starts and ends
+                                    var time = {
+                                        query: {
+                                            start: Math.round(new Date().getTime() / 1000)-((3600*24)+refreshRate),
+                                            end: Math.round(new Date().getTime() / 1000)-((3600*24))
+                                        },
+                                        remove: {
+                                            // get current time minus refresh rate
+                                            start: Math.round(new Date().getTime() / 1000)-(refreshRate),
+                                            end: Math.round(new Date().getTime() / 1000)
+                                        }
+                                    }
+                                    
+                                    // $scope.$broadcast('updateData')
+                                }, refreshRate);
+                            } else {
+                                clearInterval(interval);
+                            }
+                        })
                     }
                 }
             }
@@ -403,7 +488,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
             }
             // run refresh handler if our array is populated
             if (refreshArray.length > 0) {
-                console.log(refreshArray)
+                functions.vizUpdate.run();
             }
         }
         return runPage;

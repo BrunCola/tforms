@@ -10,10 +10,13 @@
                         <h3 class="pull-left">{{ title }}</h3> <br />
                     </div>
                     <div class="span5">
-                        <div ng-show="daterange" id="reportrange" class="pull-right dashboard-date-range tooltips no-tooltip-on-touch-device responsive" data-tablet="" data-desktop="tooltips" data-placement="top" data-original-title="Change dashboard date range" date-picker>
-                                <i style="color:#fff" class="fa fa-calendar"></i>
-                                <span>{{start}} - {{end}}</span>
-                                <i style="color:#fff" class="fa fa-angle-down"></i>
+                        <div date-picker>
+                            Real-time <input type="checkbox" ng-disabled="realtimeElement" ng-model="realtime">
+                            <div ng-show="daterange" id="daterange" class="pull-right dashboard-date-range tooltips no-tooltip-on-touch-device responsive" data-tablet="" data-desktop="tooltips" data-placement="top" data-original-title="Change dashboard date range">
+                                    <i style="color:#fff" class="fa fa-calendar"></i>
+                                    <span>{{start}} - {{end}}</span>
+                                    <i style="color:#fff" class="fa fa-angle-down"></i>
+                            </div>
                         </div>
                     </div>
                 </div>

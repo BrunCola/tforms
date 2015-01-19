@@ -300,40 +300,69 @@ angular.module('mean.pages').directive('severityLevels', ['$timeout', function (
     };
 }]);
 
-angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '$rootScope', '$state', function ($timeout, $location, $rootScope, $state) {
+angular.module('mean.pages').directive('datePicker', ['$window', '$timeout', '$location', '$rootScope', '$state', '$stateParams', 'Global', 'dateRange', 'realTimeCheck', function ($window, $timeout, $location, $rootScope, $state, $stateParams, Global, dateRange, realTimeCheck) {
     return {
         link: function ($scope, element, attrs) {
             $timeout(function () {
-                var searchObj;
-                if ($scope.daterange !== false) {
-                    $(element).daterangepicker(
-                        {
-                        ranges: {
-                            'Today': [moment().startOf('day'), moment()],
-                            'Yesterday': [moment().subtract('days', 1).startOf('day'), moment().subtract('days', 1).endOf('day')],
-                            'Last 7 Days': [moment().subtract('days', 6), moment()],
-                            'Last 30 Days': [moment().subtract('days', 29), moment()],
-                            'This Month': [moment().startOf('month'), moment().endOf('month')],
-                            'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
-                        },
-                            format: 'MMMM D, YYYY h:mm A',
-                            timePicker: true,
-                            timePickerIncrement: 5,
-                            startDate: $scope.start,
-                            endDate: $scope.end
-                        },
-                        function(start, end) {
-                            $('#reportrange span').html(start.format('MMMM D, YYYY h:mm A') + ' - ' + end.format('MMMM D, YYYY h:mm A'));
-                            searchObj = $location.$$search;
-                            searchObj.start = moment(start.format('MMMM D, YYYY h:mm A')).unix();
-                            searchObj.end = moment(end.format('MMMM D, YYYY h:mm A')).unix();
+                // check to see if realtime should be active on load
+                realTimeCheck(function(status, elm){
+                    $scope.$apply(function(){
+                        $scope.realtime = status;
+                        // enable and disable button where appropriate
+                        $scope.realtimeElement = elm;
+                    })
+                    // add watch here to activate/disable reloads based on realtimecheck status
+                    $scope.$watch('realtime', function(value){
+                        $rootScope.realtimeTimer = value;
+                        // store whatever change happens in session
+                        if ($scope.realtime !== status) {
+                            // place it in rootscope so we can use it for our interval function later
+                            $window.sessionStorage.realtime = angular.toJson($scope.realtime);
                         }
-                    );
-                    $('#reportrange').on('apply', function(ev, picker) {
-                        // some kind of clear option is needed here
-                        $state.go($state.current.name, searchObj);
-                    });
-                }
+                    })
+                });
+                
+                dateRange($scope, function(time){
+                    // recieve time from service and set it in local scope
+                    $scope.start = moment.unix(time.start).format('MMMM D, YYYY h:mm A');
+                    $scope.end = moment.unix(time.end).format('MMMM D, YYYY h:mm A');
+                    if ($scope.daterange) {
+                        $('#daterange').daterangepicker(
+                            {
+                            ranges: {
+                                'Today': [moment().startOf('day'), moment()],
+                                'Yesterday': [moment().subtract('days', 1).startOf('day'), moment().subtract('days', 1).endOf('day')],
+                                'Last 7 Days': [moment().subtract('days', 6), moment()],
+                                'Last 30 Days': [moment().subtract('days', 29), moment()],
+                                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                                'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+                            },
+                                format: 'MMMM D, YYYY h:mm A',
+                                timePicker: true,
+                                timePickerIncrement: 5,
+                                startDate: $scope.start,
+                                endDate: $scope.end
+                            },
+                            function(start, end) {
+                                $scope.$apply(function(){
+                                    $scope.start = moment(start).format('MMMM D, YYYY h:mm A');
+                                    $scope.end = moment(end).format('MMMM D, YYYY h:mm A');
+                                })
+                            }
+                        );
+                        $('#daterange').on('apply', function(ev, picker) {
+                            // disable realtime checkbox
+                            $scope.realtimeElement = true;
+                            // update url
+                            var search = $location.$$search;
+                            search.start = moment($scope.start).unix();
+                            search.end = moment($scope.end).unix();
+                            $location.search(search);
+                            // broadcast to update functions
+                            $rootScope.$broadcast('datePickerUpdated', {start: search.start, end: search.end}); // start and end are sent as unix
+                        });
+                    }
+                })
             }, 0, false);
         }
     };
@@ -807,10 +836,11 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 // here create table div from element + name
                 // TODO - add unique name in controller to post this in a key (in case direcive gets called multiple times)- i.e. $scope[name].table = this
                 // result.sort = 22;
+                
 
                 $scope.tableColumns = result.params;
-                $rootScope.tableData = params.crossfilterObj;
-                $scope.tableData.sortBy('id');
+                $scope.tableData = params.crossfilterObj;
+                // $scope.tableData.sortBy('id');
 
                 $scope.tableData.collection().map(function(d) {d.time = timeFormat(d.time, 'tables')})
                 $scope.words = {};
@@ -826,18 +856,8 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 $scope.nextButton = false;
                 $scope.prevButton = true;
                 // ^^^^^^^^^^^^^^^^^^^ table indexing variables ^^^^^^^^^^
-
-
-
-                // $scope.$on('outFilter', function (event, type, value){
-                //         console.log(type)
-                //         console.log(value)
-                //         console.log(params.crossfilterObj)
-                //         $scope.tableData.unfilterAll();
-                //         $scope.tableData.filterBy("ioc",value);
-                //         // _this._inFilter(crossfilterObj, type, value, dimensions)
-                //         console.log("test")
-                // })
+                // 
+                // 
 
                 $scope.updateIndex = function () {
                     console.log ($scope.tableData.collection().length)
@@ -863,7 +883,7 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     // }
                     return col.bVisible;
                 }
-
+                
                 $scope.generateLink = function(data, column) {
                     var searchObj = {};
                     // add url date params to new page if they exist
@@ -923,19 +943,68 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
                 }
 
-                // $scope.$on('outFilter', function(event, dimType, value){
-                //     if (typeof dimType != 'object'){ return }
-                //     for (var i in dimType) {
-                //         // check to make sure the table has the dimesion in its system
-                //         if (dimensions.indexOf(dimType[i]) !== -1){
-                //             console.log(params.crossfilterObj)
-                //             console.log('filter')
-                //             $scope.tableData.unfilterAll();
-                //             $scope.tableData.filterBy('ioc', value);
-                //             $scope.$broadcast('table-redraw');
-                //         }
-                //     }
-                // })
+                //////////////////////////////
+                ////// INCOMING FILTERS //////
+                //////////////////////////////
+                var activeFilters = {};
+                function timeFilter(filters, value) {
+                    if (filters===null) {return true}
+                    if (((Date.parse(filters[0])/1000) <= value) && ((Date.parse(filters[1])/1000) >= value)) {
+                        return true;
+                    }             
+                }
+                function checkFilter(type, value, callback) {
+                    if (type in activeFilters) { // if type is already defined
+                        var index = activeFilters[type].indexOf(value);
+                        if (index !== -1) { // if value is already in type
+                            // remove it
+                            activeFilters[type].splice(index, 1);
+                            // delete array if its empty
+                            callback();
+                            return;
+                        } else { // if no value in type
+                            activeFilters[type].push(value);
+                            callback();
+                            return;
+                        }
+                    } else { // no type in filter
+                        activeFilters[type] = [value];
+                        callback();
+                        return;
+                    }
+                }
+                $scope.$on('outFilter', function (event, type, value){
+                    if ((typeof type != 'object') || (!'table' in type)) { return }
+                    var type = type['table'];
+                    if (typeof value === 'object'){ // only if its time
+                        $scope.$apply(function () {
+                            params.crossfilterObj.filterBy(type, value, timeFilter);
+                        });
+                    } else {
+                        checkFilter(type, value, function(){
+                            $scope.$apply(function() {
+                                var filter = activeFilters[type];
+                                if (filter.length === 0) {
+                                    $scope.tableData.filterBy(type, filter, $scope.tableData.filters.inArray());
+                                } else {
+                                    $scope.tableData.filterBy(type, filter, $scope.tableData.filters.inArray('some'));
+                                }
+                            })
+                        })
+                    }
+                })
+                
+                //////////////////////////////
+                //////  TABLE UPDATING  //////
+                //////////////////////////////
+                // $scope.$on('updateTable', function(params) {
+                //     $scope.tableData = params.crossfilterObj;
+                // });
+                // setTimeout(function(){
+                //     console.log('running')
+                //     $scope.tableData.deleteModels();
+                //     console.log($scope.tableData.collection())
+                // }, 5000)
 
                 /**
                  * @method toggleCountFilter
@@ -1262,11 +1331,26 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
     };
 }]);
 
-angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '$rootScope', function ($timeout, $window, $rootScope) {
+angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '$rootScope', '$location', function ($timeout, $window, $rootScope, $location) {
     return {
         link: function ($scope, element, attrs) {
             $scope.$on('barchart', function (event, dimension, group, chartType, params) {
-
+                function currentTime(callback) {
+                    var time;
+                    if ($location.$$search.start && $location.$$search.start) {
+                        time = {
+                            start: $location.$$search.start,
+                            end: $location.$$search.end
+                        }
+                    } else {
+                        time = {
+                            start: $scope.global.startTime,
+                            end: $scope.global.endTime
+                        }
+                    }
+                    callback(time);
+                    return;
+                }
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
                     //var arr = $scope.data.tables[0].aaData;
                     $scope.barChart = dc.barChart('#barchart');
@@ -1455,8 +1539,8 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                     }
                     if (filter == true) {
                         $scope.barChart.on("filtered", function(chart, filter){
-                                $scope.$broadcast('outFilter', params.outgoingFilter, filter)
-                            })
+                            $scope.$broadcast('outFilter', params.outgoingFilter, filter)
+                        })
                     }
                     if (($scope.barChartxAxis == null) && ($scope.barChartyAxis == null)) {
                         var margin = {top: 10, right: 20, bottom: 10, left: 20};
@@ -1467,29 +1551,39 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                           var margin = {top: 10, right: 30, bottom: 25, left: 43};
                         }
                     }
-                    $scope.barChart
-                        .width(width) // (optional) define chart width, :default = 200
-                        .height(height)
-                        .transitionDuration(500) // (optional) define chart transition duration, :default = 500
-                        .margins(margin) // (optional) define margins
-                        .dimension(dimension) // set dimension
-                        //.group(group[g]) // set group
-                        //.stack(group, "0 - Other", function(d){return d.value.other;})
-                        .xAxisLabel($scope.barChartxAxis) // (optional) render an axis label below the x axis
-                        .yAxisLabel($scope.barChartyAxis) // (optional) render a vertical axis lable left of the y axis
-                        .elasticY(true) // (optional) whether chart should rescale y axis to fit data, :default = false
-                        .elasticX(false) // (optional) whether chart should rescale x axis to fit data, :default = false
-                        .x(d3.time.scale().domain([moment($scope.start), moment($scope.end)])) // define x scale
-                        .xUnits(d3.time.hours) // define x axis units
-                        .renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
-                        .renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
-                        //.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
-                        .title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
-                        .renderTitle(true); // (optional) whether chart should render titles, :default = fal
-                    $scope.barChart.render();
 
-                    $scope.$on('barchart-redraw', function (event) {
+                    currentTime(function(time) {
+                        $scope.barChart
+                            .width(width) // (optional) define chart width, :default = 200
+                            .height(height)
+                            .transitionDuration(500) // (optional) define chart transition duration, :default = 500
+                            .margins(margin) // (optional) define margins
+                            .dimension(dimension) // set dimension
+                            //.group(group[g]) // set group
+                            //.stack(group, "0 - Other", function(d){return d.value.other;})
+                            .xAxisLabel($scope.barChartxAxis) // (optional) render an axis label below the x axis
+                            .yAxisLabel($scope.barChartyAxis) // (optional) render a vertical axis lable left of the y axis
+                            .elasticY(true) // (optional) whether chart should rescale y axis to fit data, :default = false
+                            .elasticX(false) // (optional) whether chart should rescale x axis to fit data, :default = false
+                            .x(d3.time.scale().domain([moment.unix(time.start), moment.unix(time.end)])) // define x scale
+                            .xUnits(d3.time.hours) // define x axis units
+                            .renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
+                            .renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
+                            //.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
+                            .title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
+                            .renderTitle(true); // (optional) whether chart should render titles, :default = fal
+                        $scope.barChart.render();
+                    })
+                   
+
+                    $scope.$on('crossfilter-redraw', function (event) {
                         $scope.barChart.redraw();
+                    })
+                    $scope.$on('crossfilter-render', function (event) {
+                        currentTime(function(time){
+                            $scope.barChart.x(d3.time.scale().domain([moment.unix(time.start), moment.unix(time.end)]))
+                            $scope.barChart.render();
+                        })  
                     })
                         // $scope.$broadcast('spinnerHide');
                         // $(window).resize(function () {
@@ -1636,10 +1730,25 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                         .tickFormat(logFormat);
                         $scope.rowChart.render();
 
-                        $scope.$on('rowchart-redraw', function (event) {
+                        $scope.$on('crossfilter-redraw', function (event) {
                             $scope.rowChart.redraw();
                         })
-
+                        $scope.$on('crossfilter-render', function (event) {
+                            // update height of rowchart
+                            var count = group.top(Infinity).length; ///CHANGE THIS to count return rows
+                            if (count < 7) {
+                                lOffset = 17+(count*0.2);
+                                hHeight = 25+(count*35);
+                            }
+                            else if (count >= 7) {
+                                lOffset = 12.7+(count*0.2);
+                                hHeight = 25+(count*28);
+                            }
+                            d3.select('#rowchart svg').attr('width', width).attr('height', hHeight);
+                            $(element).height(hHeight);
+                            $scope.rowChart.height(hHeight);
+                            $scope.rowChart.render();
+                        })
 
 
                         // $(window).bind('resize', function() {
@@ -1743,8 +1852,11 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
                                 $scope.$broadcast('outFilter', params.outgoingFilter, filter.replace(/[0-9]/,''))
                             });
                     }
-                    $scope.$on('geochart-redraw', function (event) {
+                    $scope.$on('crossfilter-redraw', function (event) {
                         $scope.geoChart.redraw();
+                    })
+                    $scope.$on('crossfilter-render', function (event) {
+                        $scope.geoChart.render();
                     })
                     // $scope.geoWidth = function() {
                     //     return $('#geochart').parent().width();
