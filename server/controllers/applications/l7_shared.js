@@ -23,13 +23,10 @@ module.exports = function(pool) {
 						'`remote_port`,'+
 						'`remote_cc`,'+
 						'`remote_country`,'+
-						'`remote_asn`,'+
-						'`remote_asn_name`,'+
+						'CONCAT(`remote_asn_name`, ' (', remote_asn, ')') AS remote_asn,'+
 						'`l7_proto`,'+
 						'(`in_bytes` / 1024) AS `in_bytes`,'+
 						'(`out_bytes` / 1024) AS `out_bytes`,'+
-						'`in_packets`,'+
-						'`out_packets`,'+
 						'`dns`,'+
 						'`http`,'+
 						'`ssl`,'+
@@ -65,7 +62,7 @@ module.exports = function(pool) {
 					{ title: 'Remote Port', select: 'remote_port' },
 					{ title: 'Remote Country', select: 'remote_country' },
 					{ title: 'Flag', select: 'remote_cc' },
-					{ title: 'Remote ASN', select: 'remote_asn_name' },
+					{ title: 'Remote ASN', select: 'remote_asn' },
 					{ title: 'IOC', select: 'ioc' },
 					{ title: 'Infection Stage', select: 'ioc_typeInfection' },
 					{ title: 'Indicator Type', select: 'ioc_typeIndicator' },
@@ -74,8 +71,6 @@ module.exports = function(pool) {
 					{ title: 'IOC Count', select: 'ioc_count' },
 					{ title: 'KB to Remote', select: 'in_bytes' },
 					{ title: 'KB from Remote', select: 'out_bytes'},
-					{ title: 'Packets to Remote', select: 'in_packets', dView:false },
-					{ title: 'Packets from Remote', select: 'out_packets', dView:false },
 					{ title: 'DNS', select: 'dns' },
 					{ title: 'HTTP', select: 'http' },
 					{ title: 'SSL', select: 'ssl' },

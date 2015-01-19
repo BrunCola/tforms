@@ -24,8 +24,7 @@ module.exports = function(pool) {
                         '`remote_port`, '  +
                         '`remote_cc`, ' +
                         '`remote_country`, ' +
-                        '`remote_asn`, ' +
-                        '`remote_asn_name`, ' +
+                        'CONCAT(`remote_asn_name`, ' (', remote_asn, ')') AS remote_asn, ' +
                         '`in_bytes`, ' +
                         '`out_bytes`, ' +
                         '`dns`, ' +
@@ -68,13 +67,12 @@ module.exports = function(pool) {
                     { title: 'Flag', select: 'remote_cc' },
                     { title: 'Remote Country', select: 'remote_country' },
                     { title: 'Remote ASN', select: 'remote_asn' },
-                    { title: 'Remote ASN Name', select: 'remote_asn_name' },
-                    { title: 'B to Remote', select: 'in_bytes' },
-                    { title: 'B from Remote', select: 'out_bytes'},
+                    { title: 'Bytes to Remote', select: 'in_bytes' },
+                    { title: 'Bytes from Remote', select: 'out_bytes'},
                     { title: 'IOC', select: 'ioc' },
                     { title: 'IOC Severity', select: 'ioc_severity' },
-                    { title: 'Infection Stage', select: 'ioc_typeInfection' },
-                    { title: 'Indicator Type', select: 'ioc_typeIndicator' },
+                    { title: 'IOC Stage', select: 'ioc_typeInfection' },
+                    { title: 'IOC Type', select: 'ioc_typeIndicator' },
                     { title: 'IOC Rule', select: 'ioc_rule' },
                     { title: 'IOC Count', select: 'ioc_count' },
                     { title: 'DNS', select: 'dns', dView:false },

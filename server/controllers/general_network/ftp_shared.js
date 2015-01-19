@@ -24,7 +24,7 @@ module.exports = function(pool) {
                         '`remote_port`,'+
                         '`remote_cc`,'+
                         '`remote_country`,'+
-                        '`remote_asn_name`,'+
+                        'CONCAT(`remote_asn_name`, ' (', remote_asn, ')') AS remote_asn,'+
                         '`user` AS `ftp_user`,'+
                         '`password`,'+
                         '`command`,'+
@@ -41,8 +41,7 @@ module.exports = function(pool) {
                         '`ioc_severity`,'+
                         '`ioc_typeInfection`,'+
                         '`ioc_typeIndicator`,'+
-                        '`ioc_rule`,'+
-                        '`ioc_count` '+
+                        '`ioc_rule` '+
                     'FROM '+
                         '`ftp` '+
                     'WHERE '+ 
@@ -63,7 +62,7 @@ module.exports = function(pool) {
                     { title: 'Remote Port', select: 'remote_port' },
                     { title: 'Flag', select: 'remote_cc' },
                     { title: 'Remote Country', select: 'remote_country' },
-                    { title: 'Remote ASN Name', select: 'remote_asn_name' },
+                    { title: 'Remote ASN Name', select: 'remote_asn' },
                     { title: 'User', select: 'ftp_user' },
                     { title: 'Password', select: 'password' },
                     { title: 'Command', select: 'command' },
@@ -78,10 +77,9 @@ module.exports = function(pool) {
                     { title: 'DC Resp P', select: 'dc_resp_p' },
                     { title: 'IOC', select: 'ioc' },
                     { title: 'IOC Severity', select: 'ioc_severity' },
-                    { title: 'Infection Stage', select: 'ioc_typeInfection' },
-                    { title: 'Indicator Type', select: 'ioc_typeIndicator' },
+                    { title: 'IOC Stage', select: 'ioc_typeInfection' },
+                    { title: 'IOC Type', select: 'ioc_typeIndicator' },
                     { title: 'IOC Rule', select: 'ioc_rule' },
-                    { title: 'IOC Count', select: 'ioc_count' }
                 ],
                 settings: {
                     sort: [[1, 'desc']],
