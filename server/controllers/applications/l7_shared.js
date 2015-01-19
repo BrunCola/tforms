@@ -23,7 +23,7 @@ module.exports = function(pool) {
 						'`remote_port`,'+
 						'`remote_cc`,'+
 						'`remote_country`,'+
-						'CONCAT(`remote_asn_name`, ' (', remote_asn, ')') AS remote_asn,'+
+						'CONCAT(`remote_asn_name`, \' (\', remote_asn, \')\') AS remote_asn,'+
 						'`l7_proto`,'+
 						'(`in_bytes` / 1024) AS `in_bytes`,'+
 						'(`out_bytes` / 1024) AS `out_bytes`,'+
