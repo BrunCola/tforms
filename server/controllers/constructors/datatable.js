@@ -18,7 +18,9 @@ module.exports = function (sql, conn, callback) {
             }
         }
         if (obj.hide_proxy !== undefined) {
+            console.log("!== undefined")
             if (obj.hide_proxy.indexOf(sql.settings.hide_proxy) !== -1) {
+                console.log("!== -1")
                 return;
             }
         }

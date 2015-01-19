@@ -90,7 +90,7 @@
                             </div>
                         </div>
                     </div>  
-                    <div class='{{ user.hide_stealth == 1 ? "span4" : "span3"}}' style="border-right:1px solid #ccc; margin-bottom:10px;">
+                    <div class='{{ global.user.hide_stealth == 1 ? "span4" : "span3"}}' style="border-right:1px solid #ccc; margin-bottom:10px;">
                         <h4 style="margin-top:-5px">Remote IP</h4>
                         <div class="row-fluid">
                             <div class="span6">
@@ -107,7 +107,7 @@
                             </div>
                         </div>
                     </div>     
-                    <div class="span4" style='{{ user.hide_stealth == 1 ? "margin-bottom:10px;" : "border-right:1px solid #ccc; margin-bottom:10px; padding-right: 10px;"}}'>
+                    <div class="span4" style='{{ global.user.hide_stealth == 1 ? "margin-bottom:10px;" : "border-right:1px solid #ccc; margin-bottom:10px; padding-right: 10px;"}}'>
                         <h4 style="margin-top:-5px">IOC Information</h4>
                         <div class="row-fluid">
                             <strong>IOC: </strong>{{iocc}}<br />
@@ -117,7 +117,7 @@
                             <!-- <strong>IOC Rule: </strong>{{ioc_rule}}<span ioc-desc><br /> -->
                         </div>
                     </div> 
-                    <div class="span2" ng-hide="user.hide_stealth == 1">
+                    <div class="span2" ng-hide="global.user.hide_stealth == 1">
                         <h4 style="margin-top:-5px">Actions</h4>
                         <div class="row-fluid">
                             <div>

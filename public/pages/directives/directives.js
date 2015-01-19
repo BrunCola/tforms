@@ -823,7 +823,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 //     }
 // }]);
 
-angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$rootScope', '$location', '$http', 'timeFormat', function ($timeout, $filter, $rootScope, $location, $http, timeFormat) {
+angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$rootScope', '$location', '$http', 'timeFormat', '$window', function ($timeout, $filter, $rootScope, $location, $http, timeFormat, $window) {
     return {
         restrict: 'E',
         templateUrl : 'public/pages/views/sevtable.html',
@@ -840,16 +840,22 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
 
                 $scope.tableColumns = result.params;
                 $scope.tableData = params.crossfilterObj;
-                // $scope.tableData.sortBy('id');
+                $scope.tableData.sortBy('time', 'desc');
 
                 $scope.tableData.collection().map(function(d) {d.time = timeFormat(d.time, 'tables')})
                 $scope.words = {};
                 $scope.word = '';
+                $scope.show_hide = false;
 
+                // for (var i in $scope.tableColumns) {
+                //     $window.sessionStorage.setItem($scope.tableColumns[i].mData, $scope.tableColumns[i].bVisible);
+                // }
+                // // $window.sessionStorage.setItem("tableColumns", JSON.stringify($scope.tableColumns));
+                // console.log($window.sessionStorage)
                 // -------------------table indexing variables ------------
-                $scope.pageNumber = 5;
-                $scope.pageConstant = 5;
-                $scope.pageOffset = -5;
+                $scope.pageNumber = 50;
+                $scope.pageConstant = 50;
+                $scope.pageOffset = -50;
                 $scope.maxLength = $scope.tableData.collection().length;
                 $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
                 $scope.maxIndex = Math.round($scope.maxLength/$scope.pageConstant);
@@ -859,30 +865,52 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 // 
                 // 
 
-                $scope.updateIndex = function () {
-                    console.log ($scope.tableData.collection().length)
+                $scope.toggleShow = function () {
+                    if ($scope.show_hide) {
+                        $scope.show_hide = false;
+                    } else {
+                        $scope.show_hide = true;
+                    }
                 }
 
-                $scope.showHide = function(col) {
-                    // if (col.mData === "lan_stealth") {
-                    //     console.log(col)
-                    //     if (col.hide_stealth === $scope.global.user.hide_stealth) {
-                    //         return false
-                    //     } else {
-                    //         return true;
-                    //     }
-                    // }
-                    // if (col.mData === "proxy_blocked") {
-                    //     console.log(col)
-                    //     console.log($scope.global.user.hide_proxy)
-                    //     if (col.proxy_blocked === $scope.global.user.hide_proxy) {
-                    //         return false
-                    //     } else {
-                    //         return true;
-                    //     }
-                    // }
-                    return col.bVisible;
-                }
+                $scope.$watch("tableData.collection()", function(){
+                    $scope.pageNumber = 50;
+                    $scope.maxLength = $scope.tableData.collection().length;
+                    $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
+                    $scope.maxIndex = Math.round($scope.maxLength/$scope.pageConstant);
+                    checkButtons(); 
+                }, true);
+
+                // $scope.showHide = function(col) {
+                //     // if (col.mData === "lan_stealth") {
+                //     //     console.log(col)
+                //     //     if (col.hide_stealth === $scope.global.user.hide_stealth) {
+                //     //         return false
+                //     //     } else {
+                //     //         return true;
+                //     //     }
+                //     // }
+                //     // if (col.mData === "proxy_blocked") {
+                //     //     console.log(col)
+                //     //     console.log($scope.global.user.hide_proxy)
+                //     //     if (col.proxy_blocked === $scope.global.user.hide_proxy) {
+                //     //         return false
+                //     //     } else {
+                //     //         return true;
+                //     //     }
+                //     // }
+                //     // console.log($window.sessionStorage)
+                //     // $window.sessionStorage.col.bVisible = col.bVisible;
+                //     // console.log(col)
+                //     console.log(col)
+                //     $window.sessionStorage.setItem(col.mData, col.bVisible);
+                //     console.log($window.sessionStorage)
+                //     // return col.bVisible;
+                // }
+
+                // d3.select('.showHideBox').on('click', function (d) {
+
+                // }
                 
                 $scope.generateLink = function(data, column) {
                     var searchObj = {};
