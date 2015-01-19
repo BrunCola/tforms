@@ -101,10 +101,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 //////////////////////////
                 //scales
                 var x = d3.time.scale()
-                    .domain([new Date($rootScope.start), new Date($scope.end)])
+                    .domain([new Date($rootScope.start), new Date($rootScope.end)])
                     .range([0, w]);
                 var x1 = d3.time.scale()
-                    .domain([new Date($rootScope.start), new Date($scope.end)])
+                    .domain([new Date($rootScope.start), new Date($rootScope.end)])
                     .range([0, w]);
                 var y1 = d3.scale.linear()
                     .domain([0, laneLength])
@@ -715,6 +715,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                 }
                 function draw() {
+                    console.log($rootScope.start)
+                    console.log($rootScope.end)
+                    console.log(new Date ($rootScope.start))
+                    console.log(new Date ($rootScope.end))
                     // reset navagation array
                     navArray = [];
                     // set current position in nav array
@@ -727,12 +731,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     $scope.highlightedPoint = false;
                     clearVerticalLine();
                     // push current time position to nav array
-                    navArray.push({'min': new Date($rootScope.start), 'max': new Date($scope.end)});
+                    navArray.push({'min': new Date($rootScope.start), 'max': new Date($rootScope.end)});
                     // push time slice heading t odiv
-                    currentTime.html('Current Time Slice: <strong>'+$rootScope.start+'</strong> - <strong>'+$scope.end+'</strong>');
+                    currentTime.html('Current Time Slice: <strong>'+$rootScope.start+'</strong> - <strong>'+$rootScope.end+'</strong>');
                     // convert min and max to date object and send to plot function
                     var min = new Date($rootScope.start);
-                    var max = new Date($scope.end);
+                    var max = new Date($rootScope.end);
                     typeDimension.filter(null);
                     itemsDimension.filter(null);
                     plot(itemsDimension, min, max);

@@ -8,6 +8,12 @@ angular.module('mean.pages').controller('headController', ['$scope', 'Global', '
 
     $rootScope.start = moment.unix($scope.global.startTime);
     $rootScope.end = moment.unix($scope.global.endTime);
+    if ($location.$$search.start !== undefined) {        
+        $rootScope.start = moment.unix($location.$$search.start);
+    }
+    if ($location.$$search.end !== undefined) {        
+        $rootScope.end = moment.unix($location.$$search.end);
+    }
 
     if ($location.$$absUrl.search('/report#!/') === -1) {
         $scope.isReport = false;
