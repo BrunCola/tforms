@@ -845,11 +845,10 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 // here create table div from element + name
                 // TODO - add unique name in controller to post this in a key (in case direcive gets called multiple times)- i.e. $scope[name].table = this
                 // result.sort = 22;
-                
 
                 $scope.tableColumns = result.params;
                 $scope.tableData = params.crossfilterObj;
-                $scope.tableData.sortBy('time', 'desc');
+                $scope.tableData.sortBy($scope.tableColumns[result.sort[0][0]].mData, result.sort[0][1]);
 
                 $scope.tableData.collection().map(function(d) {d.time = timeFormat(d.time, 'tables')})
                 $scope.words = {};
@@ -1283,6 +1282,8 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 
                     if (filter == true) {
                         $scope.pieChart.on("filtered", function(chart, filter){
+                            // console.log(chart)
+                            // console.log(filter)
                             $scope.$broadcast('outFilter', params.outgoingFilter, filter)
                         });
                     }
@@ -1530,7 +1531,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                                 $scope.barChart.redraw();
                             }
                             $scope.barChart
-                                .group(group, "Remote IP")
+                                .group(group, "")
                                 .valueAccessor(function(d) {
                                     return d.value;
                                 })
