@@ -6,6 +6,9 @@ angular.module('mean.pages').controller('headController', ['$scope', 'Global', '
     $scope.title = $state.current.data.title;
     $scope.daterange = $state.current.data.daterange;
 
+    $rootScope.start = moment.unix(scope.global.startTime);
+    $rootScope.end = moment.unix(scope.global.endTime);
+
     if ($location.$$absUrl.search('/report#!/') === -1) {
         $scope.isReport = false;
         $scope.isNotReport = true;
