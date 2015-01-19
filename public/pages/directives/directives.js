@@ -1572,7 +1572,11 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                     })
                    
 
-                    $scope.$on('crossfilter-redraw', function (event) {
+                    $scope.$on('crossfilter-redraw', function (event, time) {
+                        if (time) {
+                            var start = time.query.end - (refreshRate / 1000);
+                            $scope.barChart.x(d3.time.scale().domain([moment.unix(start), moment.unix(time.query.end)]))
+                        }
                         $scope.barChart.redraw();
                     })
                     $scope.$on('crossfilter-render', function (event) {
@@ -1726,7 +1730,10 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                         .tickFormat(logFormat);
                         $scope.rowChart.render();
 
-                        $scope.$on('crossfilter-redraw', function (event) {
+                        $scope.$on('crossfilter-redraw', function (event, time) {
+                            if (time) {
+                                $scope.rowChart.x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width]));
+                            }
                             $scope.rowChart.redraw();
                         })
                         $scope.$on('crossfilter-render', function (event) {
