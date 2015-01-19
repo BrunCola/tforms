@@ -100,6 +100,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 /////  D3 VIZ SETUP  /////
                 //////////////////////////
                 //scales
+                console.log($rootScope.start)
                 var x = d3.time.scale()
                     .domain([new Date($rootScope.start), new Date($scope.end)])
                     .range([0, w]);
@@ -953,9 +954,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .attr('width', 0);
                         // set new domain and transition x-axis
                         x1.domain([min, max]);
-                        console.log(x1)
-                        console.log(min)
-                        console.log(max)
                         xAxisBrush.transition().duration(500).call(xAxis);
                         // remove existing elements (perhaps this is innificent and should be modified to just transition)
                         itemRects.selectAll('g').remove();
@@ -963,8 +961,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         // re-enter an append nodes (innificent as well)
                         icons.enter().append("g").each(function(d){
                             var elm = d3.select(this);
-                            console.log(x1(d.time))
-                            console.log(d)
                             elm
                                 .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane)-10)+')')
                                 .on("mouseover", function(d){
