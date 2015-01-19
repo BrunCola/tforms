@@ -452,8 +452,6 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             params.crossfilterObj.addModels(result.aaData);
                         })
                         // filter and delete old data
-                        console.log('running')
-                        // var toDeleteObj = params.crossfilterObj;
                         params.crossfilterObj.filterBy('timeFilter', time, filterTime);
                         params.crossfilterObj.deleteModels(params.crossfilterObj.collection());
                         params.crossfilterObj.unfilterBy('timeFilter');
@@ -508,6 +506,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                         }
                                     }
                                     $scope.$broadcast('updateData', time);
+                                    $rootScope.$broadcast('updateTime', time); // emit call down the chain to the datepicker directive
                                 }, refreshRate);
                             } else {
                                 clearInterval(interval);
