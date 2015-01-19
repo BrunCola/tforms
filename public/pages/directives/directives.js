@@ -108,7 +108,7 @@ angular.module('mean.pages').directive('newNotification', function() {
     };
 });
 
-angular.module('mean.system').directive('loadingSpinner', ['$rootScope', function ($rootScope) {
+angular.module('mean.pages').directive('loadingSpinner', ['$rootScope', function ($rootScope) {
     return {
         link: function($scope, element, attrs) {
             $('.page-content').fadeTo(500, 0.7);
@@ -142,6 +142,16 @@ angular.module('mean.system').directive('loadingSpinner', ['$rootScope', functio
                     $('html, body').stop( true, true ).animate();
                 }
                 $(".page-content").fadeTo(500, 1);
+            });
+            $rootScope.$on('spinnerShow', function (event) {
+                $('.page-content').fadeTo(500, 0.7);
+                var target = document.getElementById('loading-spinner');
+                var spinner = new Spinner(opts).spin(target);
+                $(target).data('spinner', spinner);
+                // // /$('html, body').animate({scrollTop:0}, 'slow');
+                window.onscroll = function (event) {
+                    $('html, body').start( true, true ).animate();
+                }
             });
         }
     };
@@ -360,6 +370,7 @@ angular.module('mean.pages').directive('datePicker', ['$window', '$timeout', '$l
                             }
                         );
                         $('#daterange').on('apply', function(ev, picker) {
+                            $rootScope.$broadcast('spinnerShow');
                             // disable realtime checkbox
                             $scope.realtimeElement = true;
                             // update url
@@ -866,8 +877,8 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 $scope.pageNumber = $scope.pageConstant;
                 $scope.pageOffset = -$scope.pageConstant;
                 $scope.maxLength = $scope.tableData.collection().length;
-                $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
-                $scope.maxIndex = Math.round($scope.maxLength/$scope.pageConstant);
+                $scope.currentIndex = Math.ceil($scope.pageNumber/$scope.pageConstant);
+                $scope.maxIndex = Math.ceil($scope.maxLength/$scope.pageConstant);
                 $scope.nextButton = false;
                 $scope.prevButton = true;
                 // ^^^^^^^^^^^^^^^^^^^ table indexing variables ^^^^^^^^^^
@@ -894,9 +905,10 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     if ($scope.maxLength === 0) {
                         $scope.pageOffset = -1;
                     }
-                    $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
-                    $scope.maxIndex = Math.round($scope.maxLength/$scope.pageConstant);
+                    $scope.currentIndex = Math.ceil($scope.pageNumber/$scope.pageConstant);
+                    $scope.maxIndex = Math.ceil($scope.maxLength/$scope.pageConstant);
                     checkButtons(); 
+                    $scope.$broadcast('spinnerHide');
                 }, true);
 
                 $scope.showHide = function(col) {
@@ -943,7 +955,7 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     } 
                     $scope.pageOffset = -$scope.pageConstant;
                     checkButtons();
-                    $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
+                    $scope.currentIndex = Math.ceil($scope.pageNumber/$scope.pageConstant);
                 }
 
                 $scope.setPage = function(n) {
@@ -962,7 +974,7 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     if ($scope.pageNumber >= $scope.maxLength) {
                         $scope.pageNumber = ($scope.maxLength);
                     }
-                    $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
+                    $scope.currentIndex = Math.ceil($scope.pageNumber/$scope.pageConstant);
                 }
 
                 //////////////////////////////

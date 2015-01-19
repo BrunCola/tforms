@@ -114,7 +114,7 @@
                 <span ng-if="n == 0" ><a ng-click="setPage(n)" ng-class="{current: n==currentIndex-1}"> 1</a></span>
                 <span ng-show="currentIndex < 5 && currentIndex > 0 && n < maxIndex" ng-if="n < 5 && n > 0" >
                     <a ng-click="setPage(n)" ng-class="{current: n==currentIndex-1}"> {{n+1}}</a>
-                    <span ng-show="n == 4 && n < maxIndex-1"> ... </span>
+                    <span ng-show="n == 4 && maxIndex > 6"> ... </span>
                 </span>
                 <span ng-show="currentIndex >= 5 && currentIndex <= maxIndex-4" >
                     <span ng-show="n == currentIndex-2"> ... </span>
@@ -123,11 +123,11 @@
                     </span>
                     <span ng-show="n == currentIndex"> ... </span>
                 </span>
-                <span ng-show="currentIndex < maxIndex+1 && currentIndex > maxIndex-4 && n != 0" ng-if="n < maxIndex && n > maxIndex-6" >
-                    <span ng-show="n == maxIndex-5 && n < maxIndex-6"> ... </span>
+                <span ng-show="currentIndex <= maxIndex && currentIndex > maxIndex-4 " ng-if="n < maxIndex-1 && n > maxIndex-6 && currentIndex > 4" >
+                    <span ng-show="n == maxIndex-5"> ... </span>
                     <a ng-click="setPage(n)" ng-class="{current: n==currentIndex-1}"> {{n+1}}</a>
                 </span>
-                <span ng-if="n == maxIndex-1 && maxIndex > 5" class="tableIndex"><a ng-click="setPage(n)" ng-class="{current: n==currentIndex-1}"> {{maxIndex}}</a></span>
+                <span ng-if="n == maxIndex-1 && maxIndex > 5" class="tableIndex"><a ng-click="setPage(n)" ng-class="{current: n==currentIndex-1}"> {{n+1}}</a></span>
             </span>
             <a ng-if="pageNumber<maxLength" ng-click="increasePage(pageConstant)" ng-class="{disabled: nextButton}" >  Next</a>
             <a ng-if="pageNumber>=maxLength" ng-class="{disabled: nextButton}" >  Next</a>
