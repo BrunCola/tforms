@@ -839,6 +839,10 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 //         console.log("test")
                 // })
 
+                $scope.updateIndex = function () {
+                    console.log ($scope.tableData.collection().length)
+                }
+
                 $scope.showHide = function(col) {
                     // if (col.mData === "lan_stealth") {
                     //     console.log(col)
