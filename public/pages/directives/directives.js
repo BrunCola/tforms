@@ -300,16 +300,34 @@ angular.module('mean.pages').directive('severityLevels', ['$timeout', function (
     };
 }]);
 
-angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '$rootScope', '$state', '$stateParams', 'Global', 'dateRange', function ($timeout, $location, $rootScope, $state, $stateParams, Global, dateRange) {
+angular.module('mean.pages').directive('datePicker', ['$window', '$timeout', '$location', '$rootScope', '$state', '$stateParams', 'Global', 'dateRange', 'realTimeCheck', function ($window, $timeout, $location, $rootScope, $state, $stateParams, Global, dateRange, realTimeCheck) {
     return {
         link: function ($scope, element, attrs) {
             $timeout(function () {
+                // check to see if realtime should be active on load
+                realTimeCheck(function(status, elm){
+                    $scope.$apply(function(){
+                        $scope.realtime = status;
+                        // enable and disable button where appropriate
+                        $scope.realtimeElement = elm;
+                    })
+                    // add watch here to activate/disable reloads based on realtimecheck status
+                    $scope.$watch('realtime', function(value){
+                        $rootScope.realtimeTimer = value;
+                        // store whatever change happens in session
+                        if ($scope.realtime !== status) {
+                            // place it in rootscope so we can use it for our interval function later
+                            $window.sessionStorage.realtime = angular.toJson($scope.realtime);
+                        }
+                    })
+                });
+                
                 dateRange($scope, function(time){
                     // recieve time from service and set it in local scope
                     $scope.start = moment.unix(time.start).format('MMMM D, YYYY h:mm A');
                     $scope.end = moment.unix(time.end).format('MMMM D, YYYY h:mm A');
                     if ($scope.daterange) {
-                        $(element).daterangepicker(
+                        $('#daterange').daterangepicker(
                             {
                             ranges: {
                                 'Today': [moment().startOf('day'), moment()],
@@ -332,7 +350,9 @@ angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '
                                 })
                             }
                         );
-                        $('#reportrange').on('apply', function(ev, picker) {
+                        $('#daterange').on('apply', function(ev, picker) {
+                            // disable realtime checkbox
+                            $scope.realtimeElement = true;
                             // update url
                             var search = $location.$$search;
                             search.start = moment($scope.start).unix();
