@@ -62,7 +62,7 @@ module.exports = function(pool) {
                     { title: 'Remote Port', select: 'remote_port' },
                     { title: 'Flag', select: 'remote_cc' },
                     { title: 'Remote Country', select: 'remote_country' },
-                    { title: 'Remote ASN Name', select: 'remote_asn' },
+                    { title: 'Remote ASN', select: 'remote_asn' },
                     { title: 'User', select: 'ftp_user' },
                     { title: 'Password', select: 'password' },
                     { title: 'Command', select: 'command' },

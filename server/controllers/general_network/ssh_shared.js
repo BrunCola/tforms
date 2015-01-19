@@ -24,8 +24,7 @@ module.exports = function(pool) {
                         '`remote_port`,'+
                         '`remote_cc`,'+
                         '`remote_country`,'+
-                        '`remote_asn`,'+
-                        '`remote_asn_name`,'+
+                        'CONCAT(`remote_asn_name`, ' (', remote_asn, ')') AS remote_asn, '+
                         '`status_code`,'+
                         '`direction`,'+
                         '`lan_client`,'+
@@ -59,7 +58,6 @@ module.exports = function(pool) {
                     { title: 'Remote Country', select: 'remote_country' },
                     { title: 'Flag', select: 'remote_cc' },
                     { title: 'Remote ASN', select: 'remote_asn' },
-                    { title: 'Remote ASN Name', select: 'remote_asn_name' },
                     { title: 'Status Code', select: 'status_code' },
                     { title: 'IOC', select: 'ioc' },
                     { title: 'Infection Stage', select: 'ioc_typeInfection' },

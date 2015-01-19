@@ -47,7 +47,7 @@ module.exports = function(pool) {
                         '`lan_user`,'+
                         '`lan_ip`,'+
                         '`remote_ip`,'+
-                        '`remote_asn_name`,'+
+                        'CONCAT(`remote_asn_name`, ' (', remote_asn, ')') AS remote_asn, '+
                         '`remote_country`,'+
                         '`remote_cc`,'+
                         '(sum(in_bytes) / 1048576) as in_bytes,'+
@@ -92,7 +92,7 @@ module.exports = function(pool) {
                     { title: 'Remote IP', select: 'remote_ip' },
                     { title: 'Remote Country', select: 'remote_country' },
                     { title: 'Flag', select: 'remote_cc', },
-                    { title: 'Remote ASN', select: 'remote_asn_name' },
+                    { title: 'Remote ASN', select: 'remote_asn' },
                     { title: 'MB to Remote', select: 'in_bytes' },
                     { title: 'MB from Remote', select: 'out_bytes'},
                     { title: 'Packets to Remote', select: 'in_packets', dView:false },

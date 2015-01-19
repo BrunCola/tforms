@@ -40,13 +40,11 @@ module.exports = function(pool) {
                             'sum(`count`) AS `count`,'+
                             'max(`time`) AS `time`,'+
                             '`remote_ip`,'+
-                            '`remote_asn_name`,'+
+                            'CONCAT(`remote_asn_name`, ' (', remote_asn, ')') AS remote_asn,'+
                             '`remote_country`,'+
                             '`remote_cc`,'+
                             '(sum(`in_bytes`) / 1048576) AS `in_bytes`,'+
                             '(sum(`out_bytes`) / 1048576) AS `out_bytes`,'+
-                            'sum(`in_packets`) AS `in_packets`,'+
-                            'sum(`out_packets`) AS `out_packets`,'+
                             'sum(`dns`) AS `dns`,'+
                             'sum(`http`) AS `http`,'+
                             'sum(`ssl`) AS `ssl`,'+
@@ -79,11 +77,9 @@ module.exports = function(pool) {
                     { title: 'Remote IP', select: 'remote_ip' },
                     { title: 'Remote Country', select: 'remote_country' },
                     { title: 'Flag', select: 'remote_cc', },
-                    { title: 'Remote ASN', select: 'remote_asn_name' },
+                    { title: 'Remote ASN', select: 'remote_asn' },
                     { title: 'MB to Remote', select: 'in_bytes' },
                     { title: 'MB from Remote', select: 'out_bytes'},
-                    { title: 'Packets to Remote', select: 'in_packets', dView:false },
-                    { title: 'Packets from Remote', select: 'out_packets', dView:false },
                     { title: 'IOC Hits', select: 'ioc_count' },
                     { title: 'Connections', select: 'count', dView:false },
                     { title: 'DNS', select: 'dns', dView:false },

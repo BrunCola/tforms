@@ -19,13 +19,11 @@ module.exports = function(pool) {
                         '`lan_user`,'+
                         '`lan_zone`,'+
                         '`lan_machine`,'+
-                        'irc.lan_ip,'+
-                        '`lan_port`,'+
+                        '`lan_ip`,'+
                         '`remote_ip`,'+
-                        '`remote_port`,'+
                         '`remote_cc`,'+
                         '`remote_country`,'+
-                        '`remote_asn_name`,'+
+                        'CONCAT(`remote_asn_name`, ' (', remote_asn, ')') AS remote_asn, '+
                         '`nick`,'+
                         '`user` AS `irc_user`,'+
                         '`command`,'+
@@ -59,12 +57,10 @@ module.exports = function(pool) {
                     { title: 'Local Machine', select: 'lan_machine' },
                     { title: 'Local User', select: 'lan_user' },
                     { title: 'Local IP', select: 'lan_ip' },
-                    { title: 'Local Port', select: 'lan_port' },
                     { title: 'Remote IP', select: 'remote_ip'},
-                    { title: 'Remote Port', select: 'remote_port' },
                     { title: 'Flag', select: 'remote_cc' },
                     { title: 'Remote Country', select: 'remote_country' },
-                    { title: 'Remote ASN Name', select: 'remote_asn_name' },
+                    { title: 'Remote ASN', select: 'remote_asn' },
                     { title: 'Nick', select: 'nick' },
                     { title: 'IRC User', select: 'irc_user' },
                     { title: 'Command', select: 'command' },
