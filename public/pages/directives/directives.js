@@ -923,6 +923,12 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 ////// INCOMING FILTERS //////
                 //////////////////////////////
                 var activeFilters = {};
+                function timeFilter(filters, value) {
+                    if (filters===null) {return true}
+                    if (((Date.parse(filters[0])/1000) <= value) && ((Date.parse(filters[1])/1000) >= value)) {
+                        return true;
+                    }             
+                }
                 function checkFilter(type, value, callback) {
                     if (type in activeFilters) { // if type is already defined
                         var index = activeFilters[type].indexOf(value);
@@ -948,7 +954,7 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     var type = type['table'];
                     if (typeof value === 'object'){ // only if its time
                         $scope.$apply(function () {
-                            // params.crossfilterObj.filterBy(type, value, fuzzyFilterObject);
+                            params.crossfilterObj.filterBy(type, value, timeFilter);
                         });
                     } else {
                         checkFilter(type, value, function(){
@@ -1304,7 +1310,7 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '$rootScope', function ($timeout, $window, $rootScope) {
     return {
         link: function ($scope, element, attrs) {
-            $scope.$on('barchart', function (event, dimension, group, chartType, params) {
+            $scope.$on('barchart', function (event, dimension, group, chartType, params, time) {
 
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
                     //var arr = $scope.data.tables[0].aaData;
@@ -1518,7 +1524,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                         .yAxisLabel($scope.barChartyAxis) // (optional) render a vertical axis lable left of the y axis
                         .elasticY(true) // (optional) whether chart should rescale y axis to fit data, :default = false
                         .elasticX(false) // (optional) whether chart should rescale x axis to fit data, :default = false
-                        .x(d3.time.scale().domain([moment($scope.start), moment($scope.end)])) // define x scale
+                        .x(d3.time.scale().domain([moment.unix(time.start), moment.unix(time.end)])) // define x scale
                         .xUnits(d3.time.hours) // define x axis units
                         .renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
                         .renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
@@ -1529,6 +1535,9 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
 
                     $scope.$on('crossfilter-redraw', function (event) {
                         $scope.barChart.redraw();
+                    })
+                    $scope.$on('crossfilter-render', function (event) {
+                        $scope.barChart.render();
                     })
                         // $scope.$broadcast('spinnerHide');
                         // $(window).resize(function () {
@@ -1676,20 +1685,22 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                         $scope.rowChart.render();
 
                         $scope.$on('crossfilter-redraw', function (event) {
-                            // $scope.rowChart.height(width*0.613);
                             $scope.rowChart.redraw();
+                        })
+                        $scope.$on('crossfilter-render', function (event) {
                             // update height of rowchart
-                            // var count = group.top(Infinity).length; ///CHANGE THIS to count return rows
-                            // if (count < 7) {
-                            //     lOffset = 17+(count*0.2);
-                            //     hHeight = 25+(count*35);
-                            // }
-                            // else if (count >= 7) {
-                            //     lOffset = 12.7+(count*0.2);
-                            //     hHeight = 25+(count*28);
-                            // }
-                            // d3.select('#rowchart svg').attr('width', width).attr('height', hHeight);
-                            // $(element).height(hHeight);
+                            var count = group.top(Infinity).length; ///CHANGE THIS to count return rows
+                            if (count < 7) {
+                                lOffset = 17+(count*0.2);
+                                hHeight = 25+(count*35);
+                            }
+                            else if (count >= 7) {
+                                lOffset = 12.7+(count*0.2);
+                                hHeight = 25+(count*28);
+                            }
+                            d3.select('#rowchart svg').attr('width', width).attr('height', hHeight);
+                            $(element).height(hHeight);
+                            $scope.rowChart.render();
                         })
 
 
@@ -1796,6 +1807,9 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
                     }
                     $scope.$on('crossfilter-redraw', function (event) {
                         $scope.geoChart.redraw();
+                    })
+                    $scope.$on('crossfilter-render', function (event) {
+                        $scope.geoChart.render();
                     })
                     // $scope.geoWidth = function() {
                     //     return $('#geochart').parent().width();

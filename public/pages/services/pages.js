@@ -80,32 +80,6 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
             var refreshArray = [];
             var searchable = [];
 
-            // for daterange we have to wait to run our handler since the directive loads first
-            // if ($state.current.data.daterange) {
-            //     console.log('initiate wait')
-            //     $scope.$on('dateRangeLoaded', function(){
-            //         // dateRange($scope);
-            //         console.log('WORK DAMN YOU')
-            //     })
-            // }
-
-            // function fuzzyFilter(filters, value) {
-            //     if (filters.length === 0) {return true;}
-            //     for (var i=0; i<filters.length; i++) {
-            //         if (filters[i] === value) {
-            //             return true;
-            //         } 
-            //     }
-            // }
-
-            // function fuzzyFilterObject(filters, value) {
-            //     if (filters===null) {return true}
-            //     if (((Date.parse(filters[0])/1000) <= value) && ((Date.parse(filters[1])/1000) >= value)) {
-            //         return true;
-            //     }             
-            // }
-
-
             // our simple function to push data into refresh object (if it is defined in particular viz settings)
             function refreshCheck(viz) {
                 if ((!viz.refresh) || (viz.refresh !== true)) { return }
@@ -246,19 +220,26 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             if (params.group && (typeof params.group === 'function')) {
                                 group = params.group(dimension);
                             }
+                            var time = functions.timeObj_();
+                            if (!time) {
+                                time = {
+                                    start: $scope.global.startTime,
+                                    end: $scope.global.endTime
+                                }
+                            }
                             // add params in here for axis labels and graph types (along with a default)
                             switch (params.settings.type) {
                                 case 'severity':
-                                    $scope.$broadcast('barchart', dimension, group, 'severity', params);
+                                    $scope.$broadcast('barchart', dimension, group, 'severity', params, time);
                                     break;
                                 case 'bandwidth':
-                                    $scope.$broadcast('barchart', dimension, group, 'bandwidth', params);
+                                    $scope.$broadcast('barchart', dimension, group, 'bandwidth', params, time);
                                     break;
                                 case 'bar':
-                                    $scope.$broadcast('barchart', dimension, group, 'bar', params);
+                                    $scope.$broadcast('barchart', dimension, group, 'bar', params, time);
                                     break;
                                 case 'stealthtraffic':
-                                    $scope.$broadcast('barchart', dimension, group, 'stealthtraffic', params);
+                                    $scope.$broadcast('barchart', dimension, group, 'stealthtraffic', params, time);
                                     break;
                             }
                         },
@@ -298,7 +279,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 // // add-remove data function call here
                                 params.crossfilterObj.remove();
                                 params.crossfilterObj.add(result);
-                                $scope.$broadcast('crossfilter-redraw');
+                                $scope.$broadcast('crossfilter-render');
                             }
                         })
                     },
