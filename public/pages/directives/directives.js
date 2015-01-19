@@ -300,41 +300,48 @@ angular.module('mean.pages').directive('severityLevels', ['$timeout', function (
     };
 }]);
 
-angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '$rootScope', '$state', 'Global', function ($timeout, $location, $rootScope, $state, Global) {
+angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '$rootScope', '$state', '$stateParams', 'Global', 'dateRange', function ($timeout, $location, $rootScope, $state, $stateParams, Global, dateRange) {
     return {
         link: function ($scope, element, attrs) {
-            $scope.$broadcast('dateRangeLoaded')
             $timeout(function () {
-                var searchObj;
-                if ($scope.daterange) {
-                    $(element).daterangepicker(
-                        {
-                        ranges: {
-                            'Today': [moment().startOf('day'), moment()],
-                            'Yesterday': [moment().subtract('days', 1).startOf('day'), moment().subtract('days', 1).endOf('day')],
-                            'Last 7 Days': [moment().subtract('days', 6), moment()],
-                            'Last 30 Days': [moment().subtract('days', 29), moment()],
-                            'This Month': [moment().startOf('month'), moment().endOf('month')],
-                            'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
-                        },
-                            format: 'MMMM D, YYYY h:mm A',
-                            timePicker: true,
-                            timePickerIncrement: 5,
-                            startDate: $scope.start,
-                            endDate: $scope.end
-                        },
-                        function(start, end) {
-                            $('#reportrange span').html(start.format('MMMM D, YYYY h:mm A') + ' - ' + end.format('MMMM D, YYYY h:mm A'));
-                            searchObj = $location.$$search;
-                            searchObj.start = moment(start.format('MMMM D, YYYY h:mm A')).unix();
-                            searchObj.end = moment(end.format('MMMM D, YYYY h:mm A')).unix();
-                        }
-                    );
-                    $('#reportrange').on('apply', function(ev, picker) {
-                        // some kind of clear option is needed here
-                        $state.go($state.current.name, searchObj);
-                    });
-                }
+                dateRange($scope, function(time){
+                    // recieve time from service and set it in local scope
+                    $scope.start = moment.unix(time.start).format('MMMM D, YYYY h:mm A');
+                    $scope.end = moment.unix(time.end).format('MMMM D, YYYY h:mm A');
+                    if ($scope.daterange) {
+                        $(element).daterangepicker(
+                            {
+                            ranges: {
+                                'Today': [moment().startOf('day'), moment()],
+                                'Yesterday': [moment().subtract('days', 1).startOf('day'), moment().subtract('days', 1).endOf('day')],
+                                'Last 7 Days': [moment().subtract('days', 6), moment()],
+                                'Last 30 Days': [moment().subtract('days', 29), moment()],
+                                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                                'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+                            },
+                                format: 'MMMM D, YYYY h:mm A',
+                                timePicker: true,
+                                timePickerIncrement: 5,
+                                startDate: $scope.start,
+                                endDate: $scope.end
+                            },
+                            function(start, end) {
+                                $scope.$apply(function(){
+                                    $scope.start = moment(start).format('MMMM D, YYYY h:mm A');
+                                    $scope.end = moment(end).format('MMMM D, YYYY h:mm A');
+                                })
+                            }
+                        );
+                        $('#reportrange').on('apply', function(ev, picker) {
+                            // update url
+                            var search = $location.$$search;
+                            search.start = moment($scope.start).unix();
+                            search.end = moment($scope.end).unix();
+                            $location.search(search);
+                            // broadcast to update functions
+                        });
+                    }
+                })
             }, 0, false);
         }
     };

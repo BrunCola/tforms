@@ -51,12 +51,22 @@ angular.module('mean.pages').factory('tableFilter',
     }
 );
 
-angular.module('mean.pages').factory('dateRange', ['$state', 
-    function($state) {
-        return function(scope) { // scope is being passed to this function for now, since runPage initiates the call
-            // scope.$apply
-            scope.start = 'test'
-            console.log(scope)
+angular.module('mean.pages').factory('dateRange', ['$state', '$location',
+    function($state, $location) {
+        return function(scope, callback) {
+            var start, end;
+            if ($location.$$search.start && $location.$$search.end){
+                // set start and end if they exist in the url
+                start = $location.$$search.start;
+                end = $location.$$search.end;
+            } else {
+                // otherwise set start and end to the values set on load
+                // NOTE: we'll have to update these values (global) when updating the last time change
+                start = scope.global.startTime;
+                end = scope.global.endTime;
+            }
+            // send the values back to the directive
+            callback({start: start, end: end});
         }
     }
 ]);
@@ -71,13 +81,13 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
             var searchable = [];
 
             // for daterange we have to wait to run our handler since the directive loads first
-            if ($state.current.data.daterange) {
-                console.log('initiate wait')
-                $scope.$on('dateRangeLoaded', function(){
-                    // dateRange($scope);
-                    console.log('WORK DAMN YOU')
-                })
-            }
+            // if ($state.current.data.daterange) {
+            //     console.log('initiate wait')
+            //     $scope.$on('dateRangeLoaded', function(){
+            //         // dateRange($scope);
+            //         console.log('WORK DAMN YOU')
+            //     })
+            // }
 
             // function fuzzyFilter(filters, value) {
             //     if (filters.length === 0) {return true;}
