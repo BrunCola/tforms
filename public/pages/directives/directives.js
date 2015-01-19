@@ -947,13 +947,7 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                         $scope.show_hide = true;
                     }
                 }
-
-<<<<<<< HEAD
                 $scope.$watch('tableData', function(olddata, newdata){
-                    $scope.pageNumber = 50;
-=======
-                $scope.$watch("tableData.collection()", function(){
->>>>>>> filtering
                     $scope.maxLength = $scope.tableData.collection().length;
                     if ($scope.pageNumber > $scope.maxLength) {
                         $scope.pageNumber = $scope.maxLength;
