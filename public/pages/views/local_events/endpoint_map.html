@@ -179,35 +179,35 @@
                             <div class="luinfo" ng-show="userinfo.stealth"><span style="font-weight:bold">Stealth: </span><span>{{userinfo.stealth}}</span></div>
                             <div class="luinfo" ng-show="userinfo.endpoint_agent"><span style="font-weight:bold">Endpoint Agent: </span><span>{{userinfo.endpoint_agent}}</span></div>
                             <div class="luinfo" ng-show="userinfo.endpoint_agent_name"><span style="font-weight:bold">Endpoint Agent Name: </span><span>{{userinfo.endpoint_agent_name}}</span></div>
-                            <div class="luinfo" ng-if="userinfo.ioc_hits != 0">
+                            <div class="luinfo" ng-if="userinfo.ioc_hits != 0 && userinfo.ioc_hits != null">
                                 <span style="font-weight:bold">IOC Hits: </span><span class="epMapLink" ng-click="changePage('ioc_local_drill',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.ioc_hits}}</span>
                             </div>
-                            <div class="luinfo" ng-if="userinfo.ioc_hits == 0">
-                                <span style="font-weight:bold">IOC Hits: </span><span>{{userinfo.ioc_hits}}</span>
+                            <div class="luinfo" ng-if="userinfo.ioc_hits == 0 || userinfo.ioc_hits == null">
+                                <span style="font-weight:bold">IOC Hits: </span><span>0</span>
                             </div>
-                            <div class="luinfo" ng-if="userinfo.app_hits != 0">
+                            <div class="luinfo" ng-if="userinfo.app_hits != 0 && userinfo.app_hits != null">
                                 <span style="font-weight:bold">App Hits: </span><span class="epMapLink" ng-click="changePage('l7_local_app',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.app_hits}}</span>
                             </div>
-                            <div class="luinfo" ng-if="userinfo.app_hits == 0">
-                                <span style="font-weight:bold">App Hits: </span><span>{{userinfo.app_hits}}</span>
+                            <div class="luinfo" ng-if="userinfo.app_hits == 0 || userinfo.app_hits == null">
+                                <span style="font-weight:bold">App Hits: </span><span>0</span>
                             </div>
-                            <div class="luinfo" ng-if="userinfo.http_hits != 0">
+                            <div class="luinfo" ng-if="userinfo.http_hits != 0 && userinfo.http_hits != null">
                                 <span style="font-weight:bold">HTTP Hits: </span><span class="epMapLink" ng-click="changePage('http_local_by_domain',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.http_hits}}</span>
                             </div>
-                            <div class="luinfo" ng-if="userinfo.http_hits == 0">
-                                <span style="font-weight:bold">HTTP Hits: </span><span>{{userinfo.http_hits}}</span>
+                            <div class="luinfo" ng-if="userinfo.http_hits == 0 || userinfo.http_hits == null">
+                                <span style="font-weight:bold">HTTP Hits: </span><span>0</span>
                             </div>
-                            <div class="luinfo" ng-if="userinfo.file_hits != 0">
+                            <div class="luinfo" ng-if="userinfo.file_hits != 0 && userinfo.file_hits != null">
                                 <span style="font-weight:bold">File Hits: </span><span class="epMapLink" ng-click="changePage('by_file_name',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.file_hits}}</span>
                             </div>
-                            <div class="luinfo" ng-if="userinfo.file_hits == 0">
-                                <span style="font-weight:bold">File Hits: </span><span>{{userinfo.file_hits}}</span>
+                            <div class="luinfo" ng-if="userinfo.file_hits == 0 || userinfo.file_hits == null">
+                                <span style="font-weight:bold">File Hits: </span><span>0</span>
                             </div>
-                            <div class="luinfo" ng-if="userinfo.endpoint_hits != 0">
+                            <div class="luinfo" ng-if="userinfo.endpoint_hits != 0 && userinfo.endpoint_hits != null">
                                 <span style="font-weight:bold">Endpoints Hits: </span><span class="epMapLink" ng-click="changePage('endpoint_by_user_and_ip',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip})" > {{userinfo.endpoint_hits}}</span>
                             </div>
-                            <div class="luinfo" ng-if="userinfo.endpoint_hits == 0">
-                                <span style="font-weight:bold">Endpoints Hits: </span><span>{{userinfo.endpoint_hits}}</span>
+                            <div class="luinfo" ng-if="userinfo.endpoint_hits == 0 || userinfo.endpoint_hits == null">
+                                <span style="font-weight:bold">Endpoints Hits: </span><span>0</span>
                             </div>
                             <div class="luinfo" ng-if="userinfo.total_bw != 0 && userinfo.total_bw != null">
                                 <span style="font-weight:bold">Total Bandwidth in MB: </span><span class="epMapLink" ng-click="changePage('local2remote',{'lan_zone':userinfo.lan_zone, 'lan_ip' : userinfo.lan_ip,'lan_machine' : userinfo.lan_machine })" > {{userinfo.total_bw}}</span>
