@@ -67,6 +67,47 @@ angular.module('mean.pages').factory('dateRange', ['$state', '$location',
             }
             // send the values back to the directive
             callback({start: start, end: end});
+            return;
+        }
+    }
+]);
+
+// this runs on header load to see if realtime should be activated
+// NOTE.. add check to see if it has already been actived on a previous page (rootscope) 
+angular.module('mean.pages').factory('realTimeCheck', ['$state', '$window', '$rootScope', '$location',
+    function($state, $window, $rootScope, $location) {
+        return function(callback) {
+            // if the setting has already been deactivated, do not run
+            var status, disabled;
+            var realtime = angular.fromJson($window.sessionStorage.realtime);
+            // enable or disable element if time is fixed
+            if ($location.$$search.start && $location.$$search.end) {
+                disabled = true;
+            } else {
+                disabled = false;
+            }
+            // immediately set status and return if realtime is set to false
+            if (realtime === false) {
+                status = false;
+                // place it in rootscope so we can use it for our interval function later
+                $rootScope.realtimeTimer = status;
+                callback(status, disabled);
+                return;
+            }
+            // if no time in url and realtime no realtime set
+            if (!($location.$$search.start && $location.$$search.end) && (realtime === undefined)) {
+                status = true;
+            // if it is explicitly set, return true
+            } else if (realtime === true){
+                status = true;
+            // otherwise if there is a set time in the url, don't run
+            } else {
+                status = false;
+            }
+            // place it in rootscope so we can use it for our interval function later
+            $rootScope.realtimeTimer = status;
+            callback(status, disabled);
+            return;
         }
     }
 ]);
@@ -202,7 +243,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         })
                         // init wait for incoming dataPicker updated broadcast
                         $rootScope.$on('datePickerUpdated', function (event, time){
-                            this_.updateData_(params, time);
+                            this_.reloadData_(params, time);
                         })
                     },
                     draw_: {
@@ -261,7 +302,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             $scope.$broadcast('geoChart', dimension, group, 'geo', params);
                         }
                     },
-                    updateData_: function(params, time, oldData) {
+                    reloadData_: function(params, time, oldData) {
                         if (!params.get) { return }
                         var this_ = this; // this is so we can access 'this' from within our return function
                         functions.getData_(params, time, function(result) {
@@ -331,10 +372,13 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         $scope.$broadcast('sevTable', result, params);
                         // init wait for incoming dataPicker updated broadcast
                         $rootScope.$on('datePickerUpdated', function (event, time){
-                            _this.updateData_(params, time);
+                            _this.reloadData_(params, time);
+                        })
+                        $rootScope.$on('updateData', function (event, time) {
+                            _this.updateData_(params, time)
                         })
                     },
-                    updateData_: function(params, time, oldData) {
+                    reloadData_: function(params, time, oldData) {
                         if (!params.get) { return }
                         var this_ = this; // this is so we can access 'this' from within our return function
                         functions.getData_(params, time, function(result) {
@@ -347,6 +391,20 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 params.crossfilterObj.addModels(result.aaData);
                             }                            
                         })
+                    },
+                    updateData_: function(params) {
+                        if (!params.get) { return }
+                        var this_ = this; // this is so we can access 'this' from within our return function
+                        // functions.getData_(params, time, function(result) {
+                        //     if (result) {
+                        //         if (params.run && (typeof params.run === 'function')) {
+                        //             params.run(result);
+                        //         }
+                        //         // add-remove data function call here
+                        //         params.crossfilterObj.deleteModels(params.crossfilterObj.collection());
+                        //         params.crossfilterObj.addModels(result.aaData);
+                        //     }                            
+                        // })
                     },
                     searchUpdate_: function(data, term) {
                         data.dimension.unfilterBy('searchBox');
@@ -381,8 +439,29 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                 vizUpdate: {
                     // initial run function that performs all date checks and starts all timers
                     run: function() {
-                        // TODO
-                        // here we create the functions that start the time rolling
+                        var interval;
+                        $rootScope.$watch('realtimeTimer', function(value){
+                            if (value) {
+                                interval = setInterval(function(){
+                                    // here's were we do the math on the old/new starts and ends
+                                    var time = {
+                                        query: {
+                                            start: Math.round(new Date().getTime() / 1000)-((3600*24)+refreshRate),
+                                            end: Math.round(new Date().getTime() / 1000)-((3600*24))
+                                        },
+                                        remove: {
+                                            // get current time minus refresh rate
+                                            start: Math.round(new Date().getTime() / 1000)-(refreshRate),
+                                            end: Math.round(new Date().getTime() / 1000)
+                                        }
+                                    }
+                                    
+                                    // $scope.$broadcast('updateData')
+                                }, refreshRate);
+                            } else {
+                                clearInterval(interval);
+                            }
+                        })
                     }
                 }
             }
