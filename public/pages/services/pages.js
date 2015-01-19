@@ -126,7 +126,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                 if ((!viz.refresh) || (viz.refresh !== true)) { return }
                 refreshArray.push(viz);
             }
-            if (!refreshRate) { refreshRate === 60000 } // defaults to 1 minute in case refresh is enabled on any visual, but isnt defined calling the function
+            if (!refreshRate) { refreshRate = 60000 } // defaults to 1 minute in case refresh is enabled on any visual, but isnt defined calling the function
             ////////////////////////////////
             ///  Main Functions Object   ///
             ////////////////////////////////
@@ -245,6 +245,10 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         $rootScope.$on('datePickerUpdated', function (event, time){
                             this_.reloadData_(params, time);
                         })
+                        // initiate update wait
+                        $scope.$on('updateData', function (event, time) {
+                            this_.updateData_(params, time, searchDimension);
+                        })
                     },
                     draw_: {
                         rowchart: function(params, crossfilterObj) {
@@ -317,6 +321,40 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             }
                         })
                     },
+                    updateData_: function(params, time, dimension) {
+                        if (!params.get) { return }
+                        var this_ = this; // this is so we can access 'this' from within our return function
+                        // query new time selection
+                        functions.getData_(params, time.query, function(result) {
+                            params.crossfilterObj.add(result);                
+                        })
+                        //////////////////////////////////
+                        /// filter and delete old data ///
+                        //////////////////////////////////
+                        // clear all existing filters
+                        dimension.filterAll();
+                        // refilter down to what needs to be removed
+                        dimension.filter(function(d){
+                            return d.time < time.remove;
+                        });
+                        // delete the data that has been filtered
+                        params.crossfilterObj.remove();
+                        // clear the filter again
+                        dimension.filterAll();
+                        // restore searchbox filter (if exists)
+                        if (params.searchable) {
+                            var search = $scope.search;
+                            if (search && (search.length > 0)) {
+                                dimensionFilter(dimension, search, function() {
+                                    $scope.$broadcast('crossfilter-redraw', time);
+                                })
+                            } else {
+                                $scope.$broadcast('crossfilter-redraw', time);
+                            }
+                        } else {
+                            $scope.$broadcast('crossfilter-redraw', time);
+                        }
+                    },
                     searchUpdate_: function(data, term) {
                         // run through called chart types and call their update functions
                         $scope.$broadcast('crossfilter-redraw');
@@ -351,6 +389,10 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                         params.crossfilterObj.addDimension('searchBox', function search(d) {
                                             return d;
                                         });
+                                        // this dimension is for our time filter
+                                        params.crossfilterObj.addDimension('timeFilter', function search(d) {
+                                            return d.time;
+                                        });
                                         searchable.push({
                                             type: 'table',
                                             dimension: params.crossfilterObj,
@@ -374,11 +416,11 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         $rootScope.$on('datePickerUpdated', function (event, time){
                             _this.reloadData_(params, time);
                         })
-                        $rootScope.$on('updateData', function (event, time) {
-                            _this.updateData_(params, time)
+                        $scope.$on('updateData', function (event, time) {
+                            _this.updateData_(params, time);
                         })
                     },
-                    reloadData_: function(params, time, oldData) {
+                    reloadData_: function(params, time) {
                         if (!params.get) { return }
                         var this_ = this; // this is so we can access 'this' from within our return function
                         functions.getData_(params, time, function(result) {
@@ -389,22 +431,31 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 // add-remove data function call here
                                 params.crossfilterObj.deleteModels(params.crossfilterObj.collection());
                                 params.crossfilterObj.addModels(result.aaData);
-                            }                            
+                            }
                         })
                     },
-                    updateData_: function(params) {
+                    updateData_: function(params, time) {
                         if (!params.get) { return }
+                        var filterTime = function(expected, actual) {
+                            if (actual === null) {return false}
+                            if (actual < expected.remove) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        }
                         var this_ = this; // this is so we can access 'this' from within our return function
-                        // functions.getData_(params, time, function(result) {
-                        //     if (result) {
-                        //         if (params.run && (typeof params.run === 'function')) {
-                        //             params.run(result);
-                        //         }
-                        //         // add-remove data function call here
-                        //         params.crossfilterObj.deleteModels(params.crossfilterObj.collection());
-                        //         params.crossfilterObj.addModels(result.aaData);
-                        //     }                            
-                        // })
+                        // query new time selection
+                        functions.getData_(params, time.query, function(result) {
+                            if (!result) { return }
+                            if (!result.aaData) { return }
+                            params.crossfilterObj.addModels(result.aaData);
+                        })
+                        // filter and delete old data
+                        params.crossfilterObj.filterBy('timeFilter', time, filterTime);
+                        params.crossfilterObj.deleteModels(params.crossfilterObj.collection());
+                        params.crossfilterObj.unfilterBy('timeFilter');
+
                     },
                     searchUpdate_: function(data, term) {
                         data.dimension.unfilterBy('searchBox');
@@ -444,19 +495,18 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             if (value) {
                                 interval = setInterval(function(){
                                     // here's were we do the math on the old/new starts and ends
+                                    var end = new Date().getTime() / 1000;
+                                    var start = end - (refreshRate / 1000);
                                     var time = {
+                                        remove: end - (3600*24), 
                                         query: {
-                                            start: Math.round(new Date().getTime() / 1000)-((3600*24)+refreshRate),
-                                            end: Math.round(new Date().getTime() / 1000)-((3600*24))
-                                        },
-                                        remove: {
                                             // get current time minus refresh rate
-                                            start: Math.round(new Date().getTime() / 1000)-(refreshRate),
-                                            end: Math.round(new Date().getTime() / 1000)
+                                            start: start,
+                                            end: end
                                         }
                                     }
-                                    
-                                    // $scope.$broadcast('updateData')
+                                    $scope.$broadcast('updateData', time);
+                                    $rootScope.$broadcast('updateTime', time); // emit call down the chain to the datepicker directive
                                 }, refreshRate);
                             } else {
                                 clearInterval(interval);

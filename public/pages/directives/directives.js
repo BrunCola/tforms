@@ -320,8 +320,14 @@ angular.module('mean.pages').directive('datePicker', ['$window', '$timeout', '$l
                             $window.sessionStorage.realtime = angular.toJson($scope.realtime);
                         }
                     })
+                    $rootScope.$on('updateTime', function (event, time){
+                        $scope.end = moment.unix(time.query.end).format('MMMM D, YYYY h:mm A');
+                        $scope.start = moment.unix(time.remove).format('MMMM D, YYYY h:mm A');
+                        // TEMPORARY for the lanegraph!!!!!!!!
+                        $rootScope.end = moment.unix(time.query.end);
+                        $rootScope.start = moment.unix(time.remove);
+                    })
                 });
-                
                 dateRange($scope, function(time){
                     // recieve time from service and set it in local scope
                     $scope.start = moment.unix(time.start).format('MMMM D, YYYY h:mm A');
@@ -347,6 +353,9 @@ angular.module('mean.pages').directive('datePicker', ['$window', '$timeout', '$l
                                 $scope.$apply(function(){
                                     $scope.start = moment(start).format('MMMM D, YYYY h:mm A');
                                     $scope.end = moment(end).format('MMMM D, YYYY h:mm A');
+                                    // TEMPORARY for the lanegraph!!!!!!!!
+                                    $rootScope.start = moment(start);
+                                    $rootScope.end = moment(end);
                                 })
                             }
                         );
@@ -1581,7 +1590,11 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                     })
                    
 
-                    $scope.$on('crossfilter-redraw', function (event) {
+                    $scope.$on('crossfilter-redraw', function (event, time) {
+                        if (time) {
+                            var start = time.query.end - (3600*24);
+                            $scope.barChart.x(d3.time.scale().domain([moment.unix(start), moment.unix(time.query.end)]))
+                        }
                         $scope.barChart.redraw();
                     })
                     $scope.$on('crossfilter-render', function (event) {
@@ -1735,7 +1748,10 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                         .tickFormat(logFormat);
                         $scope.rowChart.render();
 
-                        $scope.$on('crossfilter-redraw', function (event) {
+                        $scope.$on('crossfilter-redraw', function (event, time) {
+                            if (time) {
+                                $scope.rowChart.x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width]));
+                            }
                             $scope.rowChart.redraw();
                         })
                         $scope.$on('crossfilter-render', function (event) {
