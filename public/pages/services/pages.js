@@ -245,6 +245,9 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                     case 'geochart':
                                        this_.draw_.geochart(params.visuals[i], params.crossfilterObj);
                                         break;
+                                    case 'severityLevels':
+                                       this_.draw_.severityLevels(params.visuals[i], params.crossfilterObj);
+                                        break;
                                 }
                             }
                         })
@@ -311,6 +314,14 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 group = params.group(dimension);
                             }
                             $scope.$broadcast('geoChart', dimension, group, 'geo', params);
+                        },
+                        severityLevels: function(params, crossfilterObj) {
+                            var group = false;
+                            var dimension = params.dimension(crossfilterObj);
+                            if (params.group && (typeof params.group === 'function')) {
+                                group = params.group(dimension);
+                            }
+                            $scope.$broadcast('severityLevels', dimension, group, params);
                         }
                     },
                     reloadData_: function(params, time, oldData) {

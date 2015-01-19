@@ -193,109 +193,164 @@ angular.module('mean.system').directive('sidebar', function() {
     };
 });
 
+// angular.module('mean.pages').directive('severityLevels', ['$timeout', function ($timeout) {
+//     return {
+//         link: function ($scope, element, attrs) {
+//             $('.alert').on('click',function(){
+//                 alert('test');
+//             });
+//             function updateSevCounts(sevcounts) {
+//                 $('#severity').children().addClass('severity-deselect');
+//                 for (var s in sevcounts) {
+//                     if (sevcounts[s].value === 0) {
+//                         $('#al'+sevcounts[s].key).html(' '+sevcounts[s].value+' ');
+//                         $('.alert'+sevcounts[s].key).addClass('severity-deselect');
+//                     } else {
+//                         $('#al'+sevcounts[s].key).html(' '+sevcounts[s].value+' ');
+//                         $('.alert'+sevcounts[s].key).removeClass('severity-deselect');
+//                     }
+//                 }
+//             }
+
+//             $scope.$on('severityLoad', function () {
+//                 $('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert1 alert"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> 0 </span></button>');
+//                 $('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert2 alert"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> 0 </span></button>');
+//                 $('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert3 alert"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> 0 </span></button>');
+//                 $('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
+//                 $scope.severityDim = $scope.crossfilterData.dimension(function(d){return d.ioc_severity;});
+//                 $scope.sevcounts = $scope.severityDim.group().reduceSum(function(d) {return d.count;}).top(Infinity);
+//                 updateSevCounts($scope.sevcounts);
+//                 $('.alert1').on('click',function(){
+//                     $scope.severityDim.filterAll();
+//                     var arr = [];
+//                     if ($('.alert1').hasClass('selected')) {
+//                         $('.alert1').removeClass('selected');
+//                     } else {
+//                         for(var i in $scope.severityDim.top(Infinity)) {
+//                             if ($scope.severityDim.top(Infinity)[i].ioc_severity === 1) {
+//                                 arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
+//                             }
+//                         }
+//                         $scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
+//                         $('.alert1').addClass('selected');
+//                     }
+//                     $scope.$broadcast('crossfilterToTable');
+//                     dc.redrawAll();
+//                     updateSevCounts($scope.sevcounts);
+//                 });
+//                 $('.alert2').on('click',function(){
+//                     $scope.severityDim.filterAll();
+//                     var arr = [];
+//                     if ($('.alert2').hasClass('selected')) {
+//                         $('.alert2').removeClass('selected');
+//                     } else {
+//                         for(var i in $scope.severityDim.top(Infinity)) {
+//                             if ($scope.severityDim.top(Infinity)[i].ioc_severity === 2) {
+//                                 arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
+//                             }
+//                         }
+//                         $scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
+//                         $('.alert2').addClass('selected');
+//                     }
+//                     $scope.$broadcast('crossfilterToTable');
+//                     dc.redrawAll();
+//                     updateSevCounts($scope.sevcounts);
+//                 });
+//                 $('.alert3').on('click',function(){
+//                     $scope.severityDim.filterAll();
+//                     var arr = [];
+//                     if ($('.alert3').hasClass('selected')) {
+//                         $('.alert3').removeClass('selected');
+//                     } else {
+//                         for(var i in $scope.severityDim.top(Infinity)) {
+//                             if ($scope.severityDim.top(Infinity)[i].ioc_severity === 3) {
+//                                 arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
+//                             }
+//                         }
+//                         $scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
+//                         $('.alert3').addClass('selected');
+//                     }
+//                     $scope.$broadcast('crossfilterToTable');
+//                     dc.redrawAll();
+//                     updateSevCounts($scope.sevcounts);
+//                 });
+//                 $('.alert4').on('click',function(){
+//                     $scope.severityDim.filterAll();
+//                     var arr = [];
+//                     if ($('.alert4').hasClass('selected')) {
+//                         $('.alert4').removeClass('selected');
+//                     } else {
+//                         for(var i in $scope.severityDim.top(Infinity)) {
+//                             if ($scope.severityDim.top(Infinity)[i].ioc_severity === 4) {
+//                                 arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
+//                             }
+//                         }
+//                         $scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
+//                         $('.alert4').addClass('selected');
+//                     }
+//                     $scope.$broadcast('crossfilterToTable');
+//                     dc.redrawAll();
+//                     updateSevCounts($scope.sevcounts);
+//                 });
+//             });
+//             $scope.$on('severityUpdate', function () {
+//                 updateSevCounts($scope.sevcounts);
+//             });
+//         }
+//     };
+// }]);
+
 angular.module('mean.pages').directive('severityLevels', ['$timeout', function ($timeout) {
     return {
-        link: function ($scope, element, attrs) {
-            $('.alert').on('click',function(){
-                alert('test');
-            });
-            function updateSevCounts(sevcounts) {
-                $('#severity').children().addClass('severity-deselect');
-                for (var s in sevcounts) {
-                    if (sevcounts[s].value === 0) {
-                        $('#al'+sevcounts[s].key).html(' '+sevcounts[s].value+' ');
-                        $('.alert'+sevcounts[s].key).addClass('severity-deselect');
-                    } else {
-                        $('#al'+sevcounts[s].key).html(' '+sevcounts[s].value+' ');
-                        $('.alert'+sevcounts[s].key).removeClass('severity-deselect');
-                    }
-                }
+        restrict: 'A',
+        scope : {
+            title : '@'
+        },
+        template : '<button style="min-width:120px" class="severity-btn btn mini alert1 alert"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> {{levels.guarded}} </span></button>'+
+            '<button style="min-width:120px" class="severity-btn btn mini alert2 alert"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> {{levels.elevated}} </span></button>'+
+            '<button style="min-width:120px" class="severity-btn btn mini alert3 alert"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> {{levels.high}} </span></button>'+
+            '<button style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> {{levels.severe}} </span></button>',
+        transclude : true,
+        link: function($scope, element, attrs) {
+            $scope.levels = {
+                guarded: 0,
+                elevated: 0,
+                high: 0,
+                severe: 0
             }
-
-            $scope.$on('severityLoad', function () {
-                $('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert1 alert"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> 0 </span></button>');
-                $('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert2 alert"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> 0 </span></button>');
-                $('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert3 alert"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> 0 </span></button>');
-                $('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
-                $scope.severityDim = $scope.crossfilterData.dimension(function(d){return d.ioc_severity;});
-                $scope.sevcounts = $scope.severityDim.group().reduceSum(function(d) {return d.count;}).top(Infinity);
-                updateSevCounts($scope.sevcounts);
-                $('.alert1').on('click',function(){
-                    $scope.severityDim.filterAll();
-                    var arr = [];
-                    if ($('.alert1').hasClass('selected')) {
-                        $('.alert1').removeClass('selected');
-                    } else {
-                        for(var i in $scope.severityDim.top(Infinity)) {
-                            if ($scope.severityDim.top(Infinity)[i].ioc_severity === 1) {
-                                arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
-                            }
+            // $scope.$broadcast('outFilter', params.outgoingFilter, 'severityTYPE')
+            $scope.$on('severityLevels', function (event, dimension, group, params) {
+                function update() {
+                    group.top(Infinity).map(function(d){
+                        switch(d.key) {
+                            case 1:
+                                $scope.levels.guarded = d.value;
+                                break;
+                            case 2:
+                                $scope.levels.elevated = d.value;
+                                break;
+                            case 3:
+                                $scope.levels.high = d.value;
+                                break;
+                            case 4:
+                                $scope.levels.severe = d.value;
+                                break;
                         }
-                        $scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
-                        $('.alert1').addClass('selected');
-                    }
-                    $scope.$broadcast('crossfilterToTable');
-                    dc.redrawAll();
-                    updateSevCounts($scope.sevcounts);
+                    })
+                }
+                update();
+                $scope.$on('crossfilter-render', function () {
+                    update();
                 });
-                $('.alert2').on('click',function(){
-                    $scope.severityDim.filterAll();
-                    var arr = [];
-                    if ($('.alert2').hasClass('selected')) {
-                        $('.alert2').removeClass('selected');
-                    } else {
-                        for(var i in $scope.severityDim.top(Infinity)) {
-                            if ($scope.severityDim.top(Infinity)[i].ioc_severity === 2) {
-                                arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
-                            }
-                        }
-                        $scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
-                        $('.alert2').addClass('selected');
-                    }
-                    $scope.$broadcast('crossfilterToTable');
-                    dc.redrawAll();
-                    updateSevCounts($scope.sevcounts);
+                $scope.$on('crossfilter-redraw', function () {
+                    update();
                 });
-                $('.alert3').on('click',function(){
-                    $scope.severityDim.filterAll();
-                    var arr = [];
-                    if ($('.alert3').hasClass('selected')) {
-                        $('.alert3').removeClass('selected');
-                    } else {
-                        for(var i in $scope.severityDim.top(Infinity)) {
-                            if ($scope.severityDim.top(Infinity)[i].ioc_severity === 3) {
-                                arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
-                            }
-                        }
-                        $scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
-                        $('.alert3').addClass('selected');
-                    }
-                    $scope.$broadcast('crossfilterToTable');
-                    dc.redrawAll();
-                    updateSevCounts($scope.sevcounts);
+                $scope.$on('outFilter', function () {
+                    $timeout(function(){
+                        update();
+                    }, 0, true);
                 });
-                $('.alert4').on('click',function(){
-                    $scope.severityDim.filterAll();
-                    var arr = [];
-                    if ($('.alert4').hasClass('selected')) {
-                        $('.alert4').removeClass('selected');
-                    } else {
-                        for(var i in $scope.severityDim.top(Infinity)) {
-                            if ($scope.severityDim.top(Infinity)[i].ioc_severity === 4) {
-                                arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
-                            }
-                        }
-                        $scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
-                        $('.alert4').addClass('selected');
-                    }
-                    $scope.$broadcast('crossfilterToTable');
-                    dc.redrawAll();
-                    updateSevCounts($scope.sevcounts);
-                });
-            });
-            $scope.$on('severityUpdate', function () {
-                updateSevCounts($scope.sevcounts);
-            });
+            })
         }
     };
 }]);
@@ -883,7 +938,7 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     }
                 }
 
-                $scope.$watch("tableData.collection()", function(){
+                $scope.$watch('tableData', function(olddata, newdata){
                     $scope.pageNumber = 50;
                     $scope.maxLength = $scope.tableData.collection().length;
                     $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
