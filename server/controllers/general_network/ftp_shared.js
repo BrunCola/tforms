@@ -72,7 +72,7 @@ module.exports = function(pool) {
                     { title: 'File Size', select: 'file_size' },
                     { title: 'Reply Code', select: 'reply_code' },
                     { title: 'Reply Message', select: 'reply_msg' },
-                    { title: 'DC Passive', select: 'dc_passive' },
+                    // { title: 'DC Passive', select: 'dc_passive' },
                     { title: 'DC Orig P', select: 'dc_orig_h' },
                     { title: 'DC Resp H', select: 'dc_resp_h' },
                     { title: 'DC Resp P', select: 'dc_resp_p' },

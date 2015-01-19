@@ -35,7 +35,9 @@ angular.module('mean.pages').controller('endpointUserController', ['$scope', '$s
                     group: function(dimension){ // groups are optional and should default to a reduce if undefined
                         return dimension.group().reduceSum(function(d) { return d.count });
                     },
-                    // outgoingFilter: ['hour'] // Optional and ingests an array of KEYS for other visuals not of this type to match
+                    outgoingFilter: { // Optional and ingests an array of KEYS for other visuals not of this type to match
+                        'table': 'time'
+                    }
                 }
             ]
         },
@@ -61,10 +63,10 @@ angular.module('mean.pages').controller('endpointUserController', ['$scope', '$s
                         yAxis: ''
                     },
                     dimension: function(cfObj) { 
-                        var countDimension = cfObj.dimension(function(d) { return d.count }).top(10).map(function(d){ return d.pie_dimension });
+                        var countDimension = cfObj.dimension(function(d) { return d.count }).top(10).map(function(d){ return d.lan_user });
                         return cfObj.dimension(function(d) { 
-                            if(countDimension.indexOf(d.pie_dimension) !== -1) {
-                                return d.pie_dimension;
+                            if(countDimension.indexOf(d.lan_user) !== -1) {
+                                return d.lan_user;
                             } else {
                                 return "Other";
                             }
@@ -73,7 +75,9 @@ angular.module('mean.pages').controller('endpointUserController', ['$scope', '$s
                     group: function(dimension){ // groups are optional and should default to a reduce if undefined
                         return dimension.group().reduceSum(function (d) { return d.count; });
                     },
-                    // outgoingFilter: ['hour'] // Optional and ingests an array of KEYS for other visuals not of this type to match
+                    outgoingFilter: { // Optional and ingests an array of KEYS for other visuals not of this type to match
+                        'table': 'lan_user'
+                    }
                 }
             ]
         },

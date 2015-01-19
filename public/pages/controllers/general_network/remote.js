@@ -51,7 +51,9 @@ angular.module('mean.pages').controller('remoteController', ['$scope', '$statePa
                             }
                         );
                     },
-                    // outgoingFilter: ['hour'] // Optional and ingests an array of KEYS for other visuals not of this type to match
+                    outgoingFilter: { // Optional and ingests an array of KEYS for other visuals not of this type to match
+                        'table': 'time'
+                    }
                 },
                 {
                     type: 'geochart',
@@ -61,7 +63,9 @@ angular.module('mean.pages').controller('remoteController', ['$scope', '$statePa
                             return d.count;
                         });
                     },
-                    outgoingFilter: ['remote_country'] // Optional and ingests an array of KEYS for other visuals not of this type to match
+                    outgoingFilter: { // Optional and ingests an array of KEYS for other visuals not of this type to match
+                        'table': 'remote_country'
+                    }
                 }
             ]
         },

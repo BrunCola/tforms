@@ -63,7 +63,7 @@ module.exports = function(pool) {
                     { title: 'URL', select: 'url' },
                     { title: 'Referrer', select: 'referrer' },
                     { title: 'User Agent', select: 'user_agent' },
-                    { title: 'Depth', select: 'depth' },
+                    // { title: 'Depth', select: 'depth' },
                     { title: 'Method', select: 'method' },
                     { title: 'Zone', select: 'lan_zone' },
                     { title: 'Local Machine', select: 'lan_machine' },

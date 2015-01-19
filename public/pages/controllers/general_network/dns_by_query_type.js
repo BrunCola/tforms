@@ -35,7 +35,9 @@ angular.module('mean.pages').controller('dnsByQueryTypeController', ['$scope', '
                     group: function(dimension){ // groups are optional and should default to a reduce if undefined
                         return dimension.group().reduceSum(function(d) { return d.count });
                     },
-                    // outgoingFilter: ['hour'] // Optional and ingests an array of KEYS for other visuals not of this type to match
+                    outgoingFilter: { // Optional and ingests an array of KEYS for other visuals not of this type to match
+                        'table': 'time'
+                    }
                 }
             ]
         },
@@ -73,7 +75,9 @@ angular.module('mean.pages').controller('dnsByQueryTypeController', ['$scope', '
                     group: function(dimension){ // groups are optional and should default to a reduce if undefined
                         return dimension.group().reduceSum(function (d) { return d.count; });
                     },
-                    // outgoingFilter: ['hour'] // Optional and ingests an array of KEYS for other visuals not of this type to match
+                    outgoingFilter: { // Optional and ingests an array of KEYS for other visuals not of this type to match
+                        'table': 'pie_dimension'
+                    }
                 }
             ]
         },
