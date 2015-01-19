@@ -1307,11 +1307,26 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
     };
 }]);
 
-angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '$rootScope', function ($timeout, $window, $rootScope) {
+angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '$rootScope', '$location', function ($timeout, $window, $rootScope, $location) {
     return {
         link: function ($scope, element, attrs) {
-            $scope.$on('barchart', function (event, dimension, group, chartType, params, time) {
-
+            $scope.$on('barchart', function (event, dimension, group, chartType, params) {
+                function currentTime(callback) {
+                    var time;
+                    if ($location.$$search.start && $location.$$search.start) {
+                        time = {
+                            start: $location.$$search.start,
+                            end: $location.$$search.end
+                        }
+                    } else {
+                        time = {
+                            start: $scope.global.startTime,
+                            end: $scope.global.endTime
+                        }
+                    }
+                    callback(time);
+                    return;
+                }
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
                     //var arr = $scope.data.tables[0].aaData;
                     $scope.barChart = dc.barChart('#barchart');
@@ -1512,32 +1527,39 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                           var margin = {top: 10, right: 30, bottom: 25, left: 43};
                         }
                     }
-                    $scope.barChart
-                        .width(width) // (optional) define chart width, :default = 200
-                        .height(height)
-                        .transitionDuration(500) // (optional) define chart transition duration, :default = 500
-                        .margins(margin) // (optional) define margins
-                        .dimension(dimension) // set dimension
-                        //.group(group[g]) // set group
-                        //.stack(group, "0 - Other", function(d){return d.value.other;})
-                        .xAxisLabel($scope.barChartxAxis) // (optional) render an axis label below the x axis
-                        .yAxisLabel($scope.barChartyAxis) // (optional) render a vertical axis lable left of the y axis
-                        .elasticY(true) // (optional) whether chart should rescale y axis to fit data, :default = false
-                        .elasticX(false) // (optional) whether chart should rescale x axis to fit data, :default = false
-                        .x(d3.time.scale().domain([moment.unix(time.start), moment.unix(time.end)])) // define x scale
-                        .xUnits(d3.time.hours) // define x axis units
-                        .renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
-                        .renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
-                        //.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
-                        .title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
-                        .renderTitle(true); // (optional) whether chart should render titles, :default = fal
-                    $scope.barChart.render();
+
+                    currentTime(function(time) {
+                        $scope.barChart
+                            .width(width) // (optional) define chart width, :default = 200
+                            .height(height)
+                            .transitionDuration(500) // (optional) define chart transition duration, :default = 500
+                            .margins(margin) // (optional) define margins
+                            .dimension(dimension) // set dimension
+                            //.group(group[g]) // set group
+                            //.stack(group, "0 - Other", function(d){return d.value.other;})
+                            .xAxisLabel($scope.barChartxAxis) // (optional) render an axis label below the x axis
+                            .yAxisLabel($scope.barChartyAxis) // (optional) render a vertical axis lable left of the y axis
+                            .elasticY(true) // (optional) whether chart should rescale y axis to fit data, :default = false
+                            .elasticX(false) // (optional) whether chart should rescale x axis to fit data, :default = false
+                            .x(d3.time.scale().domain([moment.unix(time.start), moment.unix(time.end)])) // define x scale
+                            .xUnits(d3.time.hours) // define x axis units
+                            .renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
+                            .renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
+                            //.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
+                            .title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
+                            .renderTitle(true); // (optional) whether chart should render titles, :default = fal
+                        $scope.barChart.render();
+                    })
+                   
 
                     $scope.$on('crossfilter-redraw', function (event) {
                         $scope.barChart.redraw();
                     })
                     $scope.$on('crossfilter-render', function (event) {
-                        $scope.barChart.render();
+                        currentTime(function(time){
+                            $scope.barChart.x(d3.time.scale().domain([moment.unix(time.start), moment.unix(time.end)]))
+                            $scope.barChart.render();
+                        })  
                     })
                         // $scope.$broadcast('spinnerHide');
                         // $(window).resize(function () {
@@ -1700,6 +1722,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                             }
                             d3.select('#rowchart svg').attr('width', width).attr('height', hHeight);
                             $(element).height(hHeight);
+                            $scope.rowChart.height(hHeight);
                             $scope.rowChart.render();
                         })
 

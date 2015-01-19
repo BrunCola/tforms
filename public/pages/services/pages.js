@@ -220,26 +220,19 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             if (params.group && (typeof params.group === 'function')) {
                                 group = params.group(dimension);
                             }
-                            var time = functions.timeObj_();
-                            if (!time) {
-                                time = {
-                                    start: $scope.global.startTime,
-                                    end: $scope.global.endTime
-                                }
-                            }
                             // add params in here for axis labels and graph types (along with a default)
                             switch (params.settings.type) {
                                 case 'severity':
-                                    $scope.$broadcast('barchart', dimension, group, 'severity', params, time);
+                                    $scope.$broadcast('barchart', dimension, group, 'severity', params);
                                     break;
                                 case 'bandwidth':
-                                    $scope.$broadcast('barchart', dimension, group, 'bandwidth', params, time);
+                                    $scope.$broadcast('barchart', dimension, group, 'bandwidth', params);
                                     break;
                                 case 'bar':
-                                    $scope.$broadcast('barchart', dimension, group, 'bar', params, time);
+                                    $scope.$broadcast('barchart', dimension, group, 'bar', params);
                                     break;
                                 case 'stealthtraffic':
-                                    $scope.$broadcast('barchart', dimension, group, 'stealthtraffic', params, time);
+                                    $scope.$broadcast('barchart', dimension, group, 'stealthtraffic', params);
                                     break;
                             }
                         },
