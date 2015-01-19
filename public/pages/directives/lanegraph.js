@@ -101,10 +101,10 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 //////////////////////////
                 //scales
                 var x = d3.time.scale()
-                    .domain([new Date($scope.start), new Date($scope.end)])
+                    .domain([new Date($rootScope.start), new Date($scope.end)])
                     .range([0, w]);
                 var x1 = d3.time.scale()
-                    .domain([new Date($scope.start), new Date($scope.end)])
+                    .domain([new Date($rootScope.start), new Date($scope.end)])
                     .range([0, w]);
                 var y1 = d3.scale.linear()
                     .domain([0, laneLength])
@@ -559,7 +559,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 }
                                 return color2;
                             })
-                       typeDimension     .attr('width', 36)
+                       typeDimension     
+                            .attr('width', 36)
                             .attr('height', 36);
                             laneRowSymbols(data.type, element, color1, color2);
                     }
@@ -726,11 +727,11 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     $scope.highlightedPoint = false;
                     clearVerticalLine();
                     // push current time position to nav array
-                    navArray.push({'min': new Date($scope.start), 'max': new Date($scope.end)});
+                    navArray.push({'min': new Date($rootScope.start), 'max': new Date($scope.end)});
                     // push time slice heading t odiv
-                    currentTime.html('Current Time Slice: <strong>'+$scope.start+'</strong> - <strong>'+$scope.end+'</strong>');
+                    currentTime.html('Current Time Slice: <strong>'+$rootScope.start+'</strong> - <strong>'+$scope.end+'</strong>');
                     // convert min and max to date object and send to plot function
-                    var min = new Date($scope.start);
+                    var min = new Date($rootScope.start);
                     var max = new Date($scope.end);
                     typeDimension.filter(null);
                     itemsDimension.filter(null);
@@ -952,6 +953,9 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             .attr('width', 0);
                         // set new domain and transition x-axis
                         x1.domain([min, max]);
+                        console.log(x1)
+                        console.log(min)
+                        console.log(max)
                         xAxisBrush.transition().duration(500).call(xAxis);
                         // remove existing elements (perhaps this is innificent and should be modified to just transition)
                         itemRects.selectAll('g').remove();
@@ -959,6 +963,8 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                         // re-enter an append nodes (innificent as well)
                         icons.enter().append("g").each(function(d){
                             var elm = d3.select(this);
+                            console.log(x1(d.time))
+                            console.log(d)
                             elm
                                 .attr('transform', 'translate('+x1(d.dd)+','+(y1(d.lane)-10)+')')
                                 .on("mouseover", function(d){

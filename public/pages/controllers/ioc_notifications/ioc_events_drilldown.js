@@ -176,8 +176,10 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 
         $http({method: 'POST', url: '/api/actions/local_cc', data: {zone: $scope.infoData.lan_zone}}).
         success(function(data) {
-            $scope.zone_cc = data.zone_cc.toLowerCase();
-            $scope.zone_country = data.zone_country;
+            if (data.zone_cc !== undefined) {
+                $scope.zone_cc = data.zone_cc.toLowerCase();
+                $scope.zone_country = data.zone_country;
+            }
         })
 
         $http({method: 'GET', url: '/api/ioc_notifications/ioc_events_drilldown?trigger_type=Quarantine&user_quarantine='+$scope.infoData.lan_user}).
