@@ -100,7 +100,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 /////  D3 VIZ SETUP  /////
                 //////////////////////////
                 //scales
-                console.log($rootScope.start)
                 var x = d3.time.scale()
                     .domain([new Date($rootScope.start), new Date($scope.end)])
                     .range([0, w]);
@@ -750,7 +749,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     // "turn on" points that are in our pattern object that fall within the time slice (if paterns are turned on)
                 }
                 function navCrtl(action) {
-                    console.log(action)
                     // clear all lines drawn
                     clearVerticalLine();
                     // remove lines before doing anything
