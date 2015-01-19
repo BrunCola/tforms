@@ -4,8 +4,6 @@ angular.module('mean.pages').controller('applicationLocalController', ['$scope',
     $scope.global = Global;
     var query;
     
-    
-    // var query = '/ioc_notifications/ioc_events'; // string with no '?' at end - function should have a check for url construction
     var page = [
         /////////////////
         // CROSSFILTER //
@@ -52,7 +50,9 @@ angular.module('mean.pages').controller('applicationLocalController', ['$scope',
                             }
                         );
                     },
-                    // outgoingFilter: ['hour'] // Optional and ingests an array of KEYS for other visuals not of this type to match
+                    outgoingFilter: { // Optional and ingests an array of KEYS for other visuals not of this type to match
+                        'table': 'time'
+                    }
                 },
                 {
                     type: 'geochart',
@@ -62,7 +62,9 @@ angular.module('mean.pages').controller('applicationLocalController', ['$scope',
                             return d.count;
                         });
                     },
-                    outgoingFilter: ['remote_country'] // Optional and ingests an array of KEYS for other visuals not of this type to match
+                    outgoingFilter: { // Optional and ingests an array of KEYS for other visuals not of this type to match
+                        'table': 'remote_country'
+                    }
                 }
             ]
         },

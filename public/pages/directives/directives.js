@@ -863,9 +863,9 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 }               
 
                 // -------------------table indexing variables ------------
-                $scope.pageNumber = 50;
                 $scope.pageConstant = 50;
-                $scope.pageOffset = -50;
+                $scope.pageNumber = $scope.pageConstant;
+                $scope.pageOffset = -$scope.pageConstant;
                 $scope.maxLength = $scope.tableData.collection().length;
                 $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
                 $scope.maxIndex = Math.round($scope.maxLength/$scope.pageConstant);
@@ -884,8 +884,17 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 }
 
                 $scope.$watch("tableData.collection()", function(){
-                    $scope.pageNumber = 50;
                     $scope.maxLength = $scope.tableData.collection().length;
+                    if ($scope.pageNumber > $scope.maxLength) {
+                        $scope.pageNumber = $scope.maxLength;
+                        $scope.pageOffset = -($scope.maxLength)
+                    } else {
+                        $scope.pageNumber = $scope.pageConstant;
+                        $scope.pageOffset = -$scope.pageConstant;
+                    }
+                    if ($scope.maxLength === 0) {
+                        $scope.pageOffset = -1;
+                    }
                     $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
                     $scope.maxIndex = Math.round($scope.maxLength/$scope.pageConstant);
                     checkButtons(); 
@@ -1521,8 +1530,11 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                                 $scope.barChart.redraw();
                             }
                             $scope.barChart
-                                .group(group)
-                                .colors(["#193459"]);
+                                .group(group, "Remote IP")
+                                .valueAccessor(function(d) {
+                                    return d.value;
+                                })
+                               .colors(d3.scale.ordinal().domain([]).range(["#112F41"]));
                             filter = true;
                             break;
                         case 'hostConnections':

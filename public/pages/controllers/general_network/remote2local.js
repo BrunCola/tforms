@@ -52,7 +52,9 @@ angular.module('mean.pages').controller('remote2localController', ['$scope', '$s
                             }
                         );
                     },
-                    // outgoingFilter: ['hour'] // Optional and ingests an array of KEYS for other visuals not of this type to match
+                    outgoingFilter: { // Optional and ingests an array of KEYS for other visuals not of this type to match
+                        'table': 'time'
+                    }
                 }
             ]
         },
