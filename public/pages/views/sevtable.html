@@ -33,40 +33,38 @@
     </tbody>
 </table> -->
 <div id="sTable"> 
-    <a ng-click="show_hide = true" class="tableRight" >Hide / show columns</a>
+    <a ng-click="toggleShow()" class="tableRight" >Hide / show columns</a>
     <div id="showHide" ng-show="show_hide">
         <span class="tableLabel"  ng-repeat="col in tableColumns">
-            <span>{{col.sTitle}}</span><input type="checkbox" ng-model="col.bVisible"> <br />
+            <span>{{col.sTitle}}</span><input type="checkbox" ng-click="showHide(col)" ng-model="col.bVisible"> <br />
         </span>
     </div>
     <table id="sevTable">
-        <tr><th ng-repeat="col in tableColumns"><a ng-click="tableData.sortBy(col.mData)" ng-show="showHide(col)">{{col.sTitle}}</a></th></tr>
-        <tr ng-repeat="row in tableData.collection() | limitTo: pageNumber | limitTo: pageOffset">
+        <tr><th ng-repeat="col in tableColumns" ng-class="{ 'firstTitle': $first }"><a ng-click="tableData.sortBy(col.mData)" ng-show="col.bVisible">{{col.sTitle}}</a></th></tr>
+        <tr ng-repeat="row in tableData.collection() | limitTo: pageNumber | limitTo: pageOffset" >
             <td ng-repeat="col in tableColumns">  
                 <section ng-switch="col.mData">
-                    <section ng-switch-when="mime" ng-show="showHide(col)"> 
+                    <section ng-switch-when="mime" ng-show="col.bVisible"> 
                        <div file-replace>{{ row[col.mData].toLowerCase() }}</div>
                     </section>
-                    <section ng-switch-when="l7_proto" ng-show="showHide(col)"> 
+                    <section ng-switch-when="l7_proto" ng-show="col.bVisible"> 
                        <div app-replace>{{ row[col.mData].toLowerCase() }}</div>
                     </section>
-                    <section ng-switch-when="remote_cc" ng-show="showHide(col)"> 
+                    <section ng-switch-when="remote_cc" ng-show="col.bVisible"> 
                         <div style='min-width:120px'>
                             <div class="f32"><span class="flag {{row[col.mData].toLowerCase()}}"></span></div>
                         </div>
                     </section>
-                    <section ng-switch-when="ioc_severity" ng-show="showHide(col)">
+                    <section ng-switch-when="ioc_severity" ng-show="col.bVisible">
                         <span class="aTable{{ row[col.mData] }} fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-bullhorn fa-stack-1x fa-inverse"></i></span>
                     </section>
-                    <section ng-switch-when="lan_stealth" ng-show="showHide(col)">
+                    <section ng-switch-when="lan_stealth" ng-show="col.bVisible">
                         <section ng-if="row[col.mData] > 0">
                             <span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-shield fa-stack-1x fa-inverse"></i></span>
                         </section>
-                        <section ng-if="row[col.mData] <= 0">
-                            {{ row[col.mData] }}
-                        </section>
+                        <section ng-if="row[col.mData] <= 0"></section>
                     </section>
-                    <section ng-switch-when="proxy_blocked" ng-show="showHide(col)">
+                    <section ng-switch-when="proxy_blocked" ng-show="col.bVisible">
                         <section ng-if="row[col.mData] > 0">
                             <span style="color:#E71010 " class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-times fa-stack-1x fa-inverse"></i></span>
                         </section>
@@ -74,30 +72,30 @@
                             <span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-check fa-stack-1x fa-inverse"></i></span>
                         </section>
                     </section>
-                    <section ng-switch-when="time" ng-show="showHide(col)">
-                        <div ng-if="!col.link"  style='min-width:100px'>
+                    <section ng-switch-when="time" ng-show="col.bVisible">
+                        <div ng-if="!col.link"  style='min-width:100px' class="first">
                             <span class="livestamp" data-livestamp='{{ row[col.mData] }}'></span><br />
-                            <div class="timestamp">{{ row[col.mData] }}</div>
+                            <div class="timestamp timestampText">{{ row[col.mData] }}</div>
                         </div>
-                        <div ng-if="col.link" style='min-width:100px'>
+                        <div ng-if="col.link" style='min-width:100px' class="first">
                             <button class='tableTime bPage button-secondary pure-button' type='button' ng-click='generateLink(row, col)'>
                                 <div class="timestamp" >{{row[col.mData]}}</div>
                             </button><br />
-                            <span class="livestamp" data-livestamp='{{ row[col.mData] }}'></span><br />
+                            <span class="livestamp timestampText" data-livestamp='{{ row[col.mData] }}'></span><br />
                         </div>
                     </section>
-                    <section ng-switch-when="null" ng-show="showHide(col)">
-                        <section ng-if="col.link.type == 'Archive'">
+                    <section ng-switch-when="null" ng-show="col.bVisible">
+                        <section ng-if="col.link.type == 'Archive'" class="last">
                             <button class='bArchive button-error pure-button' type='button' ng-click='generateButton(col.link.type, row)'>Archive</button>
                         </section>
-                        <section ng-if="col.link.type == 'Restore'">
+                        <section ng-if="col.link.type == 'Restore'" class="last">
                             <button class='bRestore button-success pure-button' type='button' ng-click='generateButton(col.link.type, row)' >Restore</button>
                         </section>
-                        <section ng-if="col.link.type == 'Upload Image'">
+                        <section ng-if="col.link.type == 'Upload Image'" class="last">
                             <button class='bUpload button-success pure-button' type='button' ng-click='generateButton(col.link.type, row)'>Upload Image</button>
                         </section>
                     </section>
-                    <section ng-switch-default ng-show="showHide(col)"> 
+                    <section ng-switch-default ng-show="col.bVisible"> 
                         <section ng-if="col.link">
                             <a ng-click="generateLink(row, col)">{{row[col.mData]}}</a>
                         </section>
@@ -114,9 +112,9 @@
             <a ng-click="decreasePage(pageOffset)" ng-class="{disabled: prevButton}">Previous</a>
             <span ng-repeat="n in [0,(maxIndex)] | makeRange">
                 <span ng-if="n == 0" ><a ng-click="setPage(n)" ng-class="{current: n==currentIndex-1}"> 1</a></span>
-                <span ng-show="currentIndex < 5 && currentIndex > 0" ng-if="n < 5 && n > 0" >
+                <span ng-show="currentIndex < 5 && currentIndex > 0 && n < maxIndex" ng-if="n < 5 && n > 0" >
                     <a ng-click="setPage(n)" ng-class="{current: n==currentIndex-1}"> {{n+1}}</a>
-                    <span ng-show="n == 4"> ... </span>
+                    <span ng-show="n == 4 && n < maxIndex-1"> ... </span>
                 </span>
                 <span ng-show="currentIndex >= 5 && currentIndex <= maxIndex-4" >
                     <span ng-show="n == currentIndex-2"> ... </span>
@@ -125,15 +123,16 @@
                     </span>
                     <span ng-show="n == currentIndex"> ... </span>
                 </span>
-                <span ng-show="currentIndex < maxIndex+1 && currentIndex > maxIndex-4" ng-if="n < maxIndex-1 && n > maxIndex-6" >
-                    <span ng-show="n == maxIndex-5"> ... </span>
+                <span ng-show="currentIndex < maxIndex+1 && currentIndex > maxIndex-4 && n != 0" ng-if="n < maxIndex && n > maxIndex-6" >
+                    <span ng-show="n == maxIndex-5 && n < maxIndex-6"> ... </span>
                     <a ng-click="setPage(n)" ng-class="{current: n==currentIndex-1}"> {{n+1}}</a>
                 </span>
-                <span ng-if="n == maxIndex-1" class="tableIndex"><a ng-click="setPage(n)" ng-class="{current: n==currentIndex-1}"> {{maxIndex}}</a></span>
+                <span ng-if="n == maxIndex-1 && maxIndex > 5" class="tableIndex"><a ng-click="setPage(n)" ng-class="{current: n==currentIndex-1}"> {{maxIndex}}</a></span>
             </span>
             <a ng-if="pageNumber<maxLength" ng-click="increasePage(pageConstant)" ng-class="{disabled: nextButton}" >  Next</a>
             <a ng-if="pageNumber>=maxLength" ng-class="{disabled: nextButton}" >  Next</a>
             </td>
         </tr>
     </table>
+    <div ng-model="tableColumns" ng-change="updateIndex()"></div>
 </div>

@@ -832,7 +832,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 //     }
 // }]);
 
-angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$rootScope', '$location', '$http', 'timeFormat', function ($timeout, $filter, $rootScope, $location, $http, timeFormat) {
+angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$rootScope', '$location', '$http', 'timeFormat', '$window', function ($timeout, $filter, $rootScope, $location, $http, timeFormat, $window) {
     return {
         restrict: 'E',
         templateUrl : 'public/pages/views/sevtable.html',
@@ -849,16 +849,23 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
 
                 $scope.tableColumns = result.params;
                 $scope.tableData = params.crossfilterObj;
-                // $scope.tableData.sortBy('id');
+                $scope.tableData.sortBy('time', 'desc');
 
                 $scope.tableData.collection().map(function(d) {d.time = timeFormat(d.time, 'tables')})
                 $scope.words = {};
                 $scope.word = '';
+                $scope.show_hide = false;
+
+                if ($window.sessionStorage[$window.location.pathname.replace("/", '')] !== undefined) {
+                    $scope.tableColumns = angular.fromJson($window.sessionStorage[$window.location.pathname.replace("/", '')])
+                } else {
+                    window.sessionStorage.setItem($window.location.pathname.replace("/", ''), JSON.stringify($scope.tableColumns));
+                }               
 
                 // -------------------table indexing variables ------------
-                $scope.pageNumber = 5;
-                $scope.pageConstant = 5;
-                $scope.pageOffset = -5;
+                $scope.pageNumber = 50;
+                $scope.pageConstant = 50;
+                $scope.pageOffset = -50;
                 $scope.maxLength = $scope.tableData.collection().length;
                 $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
                 $scope.maxIndex = Math.round($scope.maxLength/$scope.pageConstant);
@@ -868,25 +875,27 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 // 
                 // 
 
+                $scope.toggleShow = function () {
+                    if ($scope.show_hide) {
+                        $scope.show_hide = false;
+                    } else {
+                        $scope.show_hide = true;
+                    }
+                }
+
+                $scope.$watch("tableData.collection()", function(){
+                    $scope.pageNumber = 50;
+                    $scope.maxLength = $scope.tableData.collection().length;
+                    $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
+                    $scope.maxIndex = Math.round($scope.maxLength/$scope.pageConstant);
+                    checkButtons(); 
+                }, true);
+
                 $scope.showHide = function(col) {
-                    // if (col.mData === "lan_stealth") {
-                    //     console.log(col)
-                    //     if (col.hide_stealth === $scope.global.user.hide_stealth) {
-                    //         return false
-                    //     } else {
-                    //         return true;
-                    //     }
-                    // }
-                    // if (col.mData === "proxy_blocked") {
-                    //     console.log(col)
-                    //     console.log($scope.global.user.hide_proxy)
-                    //     if (col.proxy_blocked === $scope.global.user.hide_proxy) {
-                    //         return false
-                    //     } else {
-                    //         return true;
-                    //     }
-                    // }
-                    return col.bVisible;
+                    setTimeout(function () {
+                        $window.sessionStorage.setItem($window.location.pathname.replace("/", ''), JSON.stringify($scope.tableColumns));
+                        $scope.tableColumns = angular.fromJson($window.sessionStorage[$window.location.pathname.replace("/", '')])
+                    }, 0);
                 }
                 
                 $scope.generateLink = function(data, column) {

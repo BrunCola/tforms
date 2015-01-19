@@ -2603,6 +2603,24 @@ table.listUser td{
 table#sevTable{
     width:100%;
 }
+table#sevTable .first{
+    text-align: left !important;
+    width:135px;
+    padding: 1px;
+}
+table#sevTable .firstTitle{
+    text-align: left !important;
+    padding: 1px 1px 1px 11px;
+}
+table#sevTable tr .last{
+    text-align: right !important;
+    float: right;
+    padding: 1px 10px 1px 1px;
+    width:auto;
+}
+table#sevTable tr .timestampText{
+    float: right;
+}
 table#sevTable tr{
     text-align: center;
 }
@@ -2612,6 +2630,9 @@ table#sevTable tr td{
 }
 table#sevTable button.tableTime{
     max-width:125px;
+    float: right;
+    font-size: 11px;
+    padding: 4px 10px;
 }
 table#sevTable tr:nth-child(even){
   background-color: #ddd;
@@ -2622,6 +2643,11 @@ table#sevTable tr:last-child{
 .tableIndex a{ 
     margin: 0px 2px;
     text-align: center;
+    cursor: pointer;
+}
+.tableIndex a.first{ 
+    margin: 0px 2px;
+    text-align: left !important;
     cursor: pointer;
 }
 .disabled, .disabled:hover{

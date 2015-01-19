@@ -248,7 +248,7 @@ module.exports = function(pool) {
                         div: 'table',
                         title: 'Indicators of Compromise (IOC) Notifications',
                         hide_stealth: req.user.hide_stealth,
-                        hide_proxy: req.user.hide_proxys
+                        hide_proxy: req.user.hide_proxy
                     }
             }
             new dataTable(table, {database: req.user.database, pool: pool}, function(err,data){
