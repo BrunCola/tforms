@@ -22,7 +22,7 @@ module.exports = function(pool) {
                             '`remote_ip`,'+
                             '`remote_cc`,'+
                             '`remote_country`,'+
-                            'CONCAT(`remote_asn_name`, ' (', remote_asn, ')') AS remote_asn, '+
+                            'CONCAT(`remote_asn_name`, \' (\', remote_asn, \')\') AS remote_asn, '+
                             '`status_code`,'+
                             '`direction`,'+
                             '`lan_client`,'+

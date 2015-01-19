@@ -47,7 +47,7 @@ module.exports = function(pool) {
                         '`lan_user`,'+
                         '`lan_ip`,'+
                         '`remote_ip`,'+
-                        'CONCAT(`remote_asn_name`, ' (', remote_asn, ')') AS remote_asn, '+
+                        'CONCAT(`remote_asn_name`, \' (\', remote_asn, \')\') AS remote_asn, '+
                         '`remote_country`,'+
                         '`remote_cc`,'+
                         '(sum(in_bytes) / 1048576) as in_bytes,'+

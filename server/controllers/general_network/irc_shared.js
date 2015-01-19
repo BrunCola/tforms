@@ -24,7 +24,7 @@ module.exports = function(pool) {
 						'`remote_port`,'+
 						'`remote_cc`,'+
 						'`remote_country`,'+
-						'CONCAT(`remote_asn_name`, ' (', remote_asn, ')') AS remote_asn, '+
+						'CONCAT(`remote_asn_name`, \' (\', remote_asn, \')\') AS remote_asn, '+
 						'`nick`,'+
 						'irc.user AS irc_user,'+
 						'`command`,'+
