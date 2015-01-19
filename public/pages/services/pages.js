@@ -226,6 +226,10 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 }
                             }
                         })
+                        // init wait for incoming dataPicker updated broadcast
+                        $rootScope.$on('datePickerUpdated', function (event, time){
+                            this_.updateData_(params, time);
+                        })
                     },
                     draw_: {
                         rowchart: function(params, crossfilterObj) {
@@ -283,24 +287,24 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             $scope.$broadcast('geoChart', dimension, group, 'geo', params);
                         }
                     },
+                    updateData_: function(params, time, oldData) {
+                        if (!params.get) { return }
+                        var this_ = this; // this is so we can access 'this' from within our return function
+                        functions.getData_(params, time, function(result) {
+                            if (result) {
+                                if (params.run && (typeof params.run === 'function')) {
+                                    params.run(result);
+                                }
+                                // // add-remove data function call here
+                                params.crossfilterObj.remove();
+                                params.crossfilterObj.add(result);
+                                $scope.$broadcast('crossfilter-redraw');
+                            }
+                        })
+                    },
                     searchUpdate_: function(data, term) {
                         // run through called chart types and call their update functions
-                        for (var v in data.params.visuals) {
-                            switch(data.params.visuals[v].type) {
-                                case 'rowchart':
-                                    $scope.$broadcast('rowchart-redraw');
-                                break;
-                                case 'barchart':
-                                    $scope.$broadcast('barchart-redraw');
-                                break;
-                                case 'piechart':
-                                    $scope.$broadcast('piechart-redraw');
-                                break;
-                                case 'geochart':
-                                    $scope.$broadcast('geochart-redraw');
-                                break;
-                            }
-                        }
+                        $scope.$broadcast('crossfilter-redraw');
                     }
                 },
                 table: {
@@ -318,11 +322,13 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                     for (var n in result.params) {  
                                         var dim = result.params[n].mData;
                                         // push all dimension names to array
-                                        dimensions.push(result.params[n].mData);
+                                        if (dim !== null) {
+                                            dimensions.push(result.params[n].mData);
+                                        }
                                     }
                                 }
                                 // generate crossfilter object with our dimension names
-                                params.crossfilterObj = new Crossfilter([], '', 'persistent');
+                                params.crossfilterObj = new Crossfilter([], '', 'persistent', dimensions);
                                 // if search is enabled, create a search dimension and push it to the search array handler
                                 if (params.searchable) {
                                     if (params.searchable === true) {
@@ -347,18 +353,30 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                     draw_: function(result, params, dimensions) {
                         var _this = this;
                         params.activeFilters = {}; // this may need to be moved for when requery function is built 
+                        // $scope.tableData = params.crossfilterObj;
                         $scope.$broadcast('sevTable', result, params);
-                        // init wait for incoming filter
-                        // $scope.$on('outFilter', function (event, type, value){
-                        //     _this._inFilter(params, type, value, dimensions);
-                        // })
+                        // init wait for incoming dataPicker updated broadcast
+                        $rootScope.$on('datePickerUpdated', function (event, time){
+                            _this.updateData_(params, time);
+                        })
+                    },
+                    updateData_: function(params, time, oldData) {
+                        if (!params.get) { return }
+                        var this_ = this; // this is so we can access 'this' from within our return function
+                        functions.getData_(params, time, function(result) {
+                            if (result) {
+                                if (params.run && (typeof params.run === 'function')) {
+                                    params.run(result);
+                                }
+                                // add-remove data function call here
+                                params.crossfilterObj.deleteModels(params.crossfilterObj.collection());
+                                params.crossfilterObj.addModels(result.aaData);
+                            }                            
+                        })
                     },
                     searchUpdate_: function(data, term) {
                         data.dimension.unfilterBy('searchBox');
                         data.dimension.filterBy('searchBox', term, tableFilter);
-                    },
-                    _inFilter: function(params, dimType, value, dimensions) {
-                        
                     }
                 },
                 textBoxWatch: {
@@ -389,23 +407,8 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                 vizUpdate: {
                     // initial run function that performs all date checks and starts all timers
                     run: function() {
-                        console.log('running function')
-                        console.log($state.current)
-                        // $scope.$watch('global', function(value){
-                            // console.log(value)
-                            // if ($location.$$search.start && $location.$$search.end) {
-                            //     $scope.start = moment.unix($location.$$search.start).format('MMMM D, YYYY h:mm A');
-                            //     $scope.end = moment.unix($location.$$search.end).format('MMMM D, YYYY h:mm A');
-                            //     $rootScope.start = moment.unix($location.$$search.start).format('MMMM D, YYYY h:mm A');
-                            //     $rootScope.end = moment.unix($location.$$search.end).format('MMMM D, YYYY h:mm A');
-                            // } else {
-                            //     $scope.start = moment.unix($scope.global.startTime).format('MMMM D, YYYY h:mm A');
-                            //     $scope.end = moment.unix($scope.global.endTime).format('MMMM D, YYYY h:mm A');
-                            //     $rootScope.start = moment.unix($scope.global.startTime).format('MMMM D, YYYY h:mm A');
-                            //     $rootScope.end = moment.unix($scope.global.endTime).format('MMMM D, YYYY h:mm A');
-                            // }
-                        // })
-                        // $rootScope.$broadcast('dateTime', {start: 'test', end: 'test2'})
+                        // TODO
+                        // here we create the functions that start the time rolling
                     }
                 }
             }

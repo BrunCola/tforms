@@ -339,6 +339,7 @@ angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '
                             search.end = moment($scope.end).unix();
                             $location.search(search);
                             // broadcast to update functions
+                            $rootScope.$broadcast('datePickerUpdated', {start: search.start, end: search.end}); // start and end are sent as unix
                         });
                     }
                 })
@@ -835,6 +836,8 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 $scope.nextButton = false;
                 $scope.prevButton = true;
                 // ^^^^^^^^^^^^^^^^^^^ table indexing variables ^^^^^^^^^^
+                // 
+                // 
 
                 $scope.showHide = function(col) {
                     // if (col.mData === "lan_stealth") {
@@ -960,6 +963,18 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                         })
                     }
                 })
+                
+                //////////////////////////////
+                //////  TABLE UPDATING  //////
+                //////////////////////////////
+                // $scope.$on('updateTable', function(params) {
+                //     $scope.tableData = params.crossfilterObj;
+                // });
+                // setTimeout(function(){
+                //     console.log('running')
+                //     $scope.tableData.deleteModels();
+                //     console.log($scope.tableData.collection())
+                // }, 5000)
 
                 /**
                  * @method toggleCountFilter
@@ -1512,7 +1527,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                         .renderTitle(true); // (optional) whether chart should render titles, :default = fal
                     $scope.barChart.render();
 
-                    $scope.$on('barchart-redraw', function (event) {
+                    $scope.$on('crossfilter-redraw', function (event) {
                         $scope.barChart.redraw();
                     })
                         // $scope.$broadcast('spinnerHide');
@@ -1660,10 +1675,22 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                         .tickFormat(logFormat);
                         $scope.rowChart.render();
 
-                        $scope.$on('rowchart-redraw', function (event) {
+                        $scope.$on('crossfilter-redraw', function (event) {
+                            // $scope.rowChart.height(width*0.613);
                             $scope.rowChart.redraw();
+                            // update height of rowchart
+                            // var count = group.top(Infinity).length; ///CHANGE THIS to count return rows
+                            // if (count < 7) {
+                            //     lOffset = 17+(count*0.2);
+                            //     hHeight = 25+(count*35);
+                            // }
+                            // else if (count >= 7) {
+                            //     lOffset = 12.7+(count*0.2);
+                            //     hHeight = 25+(count*28);
+                            // }
+                            // d3.select('#rowchart svg').attr('width', width).attr('height', hHeight);
+                            // $(element).height(hHeight);
                         })
-
 
 
                         // $(window).bind('resize', function() {
@@ -1767,7 +1794,7 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
                                 $scope.$broadcast('outFilter', params.outgoingFilter, filter.replace(/[0-9]/,''))
                             });
                     }
-                    $scope.$on('geochart-redraw', function (event) {
+                    $scope.$on('crossfilter-redraw', function (event) {
                         $scope.geoChart.redraw();
                     })
                     // $scope.geoWidth = function() {
