@@ -845,11 +845,10 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 // here create table div from element + name
                 // TODO - add unique name in controller to post this in a key (in case direcive gets called multiple times)- i.e. $scope[name].table = this
                 // result.sort = 22;
-                
 
                 $scope.tableColumns = result.params;
                 $scope.tableData = params.crossfilterObj;
-                $scope.tableData.sortBy('time', 'desc');
+                $scope.tableData.sortBy($scope.tableColumns[result.sort[0][0]].mData, result.sort[0][1]);
 
                 $scope.tableData.collection().map(function(d) {d.time = timeFormat(d.time, 'tables')})
                 $scope.words = {};
@@ -863,9 +862,9 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 }               
 
                 // -------------------table indexing variables ------------
-                $scope.pageNumber = 50;
                 $scope.pageConstant = 50;
-                $scope.pageOffset = -50;
+                $scope.pageNumber = $scope.pageConstant;
+                $scope.pageOffset = -$scope.pageConstant;
                 $scope.maxLength = $scope.tableData.collection().length;
                 $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
                 $scope.maxIndex = Math.round($scope.maxLength/$scope.pageConstant);
@@ -884,8 +883,17 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 }
 
                 $scope.$watch("tableData.collection()", function(){
-                    $scope.pageNumber = 50;
                     $scope.maxLength = $scope.tableData.collection().length;
+                    if ($scope.pageNumber > $scope.maxLength) {
+                        $scope.pageNumber = $scope.maxLength;
+                        $scope.pageOffset = -($scope.maxLength)
+                    } else {
+                        $scope.pageNumber = $scope.pageConstant;
+                        $scope.pageOffset = -$scope.pageConstant;
+                    }
+                    if ($scope.maxLength === 0) {
+                        $scope.pageOffset = -1;
+                    }
                     $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
                     $scope.maxIndex = Math.round($scope.maxLength/$scope.pageConstant);
                     checkButtons(); 
@@ -1274,6 +1282,8 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 
                     if (filter == true) {
                         $scope.pieChart.on("filtered", function(chart, filter){
+                            // console.log(chart)
+                            // console.log(filter)
                             $scope.$broadcast('outFilter', params.outgoingFilter, filter)
                         });
                     }
@@ -1521,8 +1531,11 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                                 $scope.barChart.redraw();
                             }
                             $scope.barChart
-                                .group(group)
-                                .colors(["#193459"]);
+                                .group(group, "")
+                                .valueAccessor(function(d) {
+                                    return d.value;
+                                })
+                               .colors(d3.scale.ordinal().domain([]).range(["#112F41"]));
                             filter = true;
                             break;
                         case 'hostConnections':

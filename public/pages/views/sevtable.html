@@ -74,8 +74,8 @@
                     </section>
                     <section ng-switch-when="time" ng-show="col.bVisible">
                         <div ng-if="!col.link"  style='min-width:100px' class="first">
-                            <span class="livestamp" data-livestamp='{{ row[col.mData] }}'></span><br />
                             <div class="timestamp timestampText">{{ row[col.mData] }}</div>
+                            <span class="livestamp timestampText" data-livestamp='{{ row[col.mData] }}'></span><br />
                         </div>
                         <div ng-if="col.link" style='min-width:100px' class="first">
                             <button class='tableTime bPage button-secondary pure-button' type='button' ng-click='generateLink(row, col)'>

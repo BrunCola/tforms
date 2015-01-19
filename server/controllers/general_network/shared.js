@@ -74,15 +74,15 @@ module.exports = function(pool) {
                     { title: 'IOC Stage', select: 'ioc_typeInfection' },
                     { title: 'IOC Type', select: 'ioc_typeIndicator' },
                     { title: 'IOC Rule', select: 'ioc_rule' },
-                    { title: 'IOC Count', select: 'ioc_count' },
-                    { title: 'DNS', select: 'dns', dView:false },
-                    { title: 'HTTP', select: 'http', dView:false },
-                    { title: 'SSL', select: 'ssl', dView:false },
-                    { title: 'SSH', select: 'ssh', dView:false },
-                    { title: 'FTP', select: 'ftp', dView:false },
-                    { title: 'IRC', select: 'irc', dView:false },
-                    { title: 'SMTP', select: 'smtp', dView:false },
-                    { title: 'File', select: 'file', dView:false }
+                    { title: 'IOC Count', select: 'ioc_count' }
+                    // { title: 'DNS', select: 'dns', dView:false },
+                    // { title: 'HTTP', select: 'http', dView:false },
+                    // { title: 'SSL', select: 'ssl', dView:false },
+                    // { title: 'SSH', select: 'ssh', dView:false },
+                    // { title: 'FTP', select: 'ftp', dView:false },
+                    // { title: 'IRC', select: 'irc', dView:false },
+                    // { title: 'SMTP', select: 'smtp', dView:false },
+                    // { title: 'File', select: 'file', dView:false }
                 ],
                 settings: {
                     sort: [[1, 'desc']],

@@ -76,7 +76,7 @@ module.exports = function(pool) {
                         },
                     },
                     { title: 'Events', select: 'count' },
-                    { title: 'Event Type', select: 'event_type' },
+                    { title: 'Event Type', select: 'pie_dimension' },
                     { title: 'Event Source', select: 'event_src'}
                 ],
                 settings: {
