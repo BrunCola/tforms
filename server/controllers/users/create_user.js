@@ -108,8 +108,8 @@ module.exports = function(pool) {
                     bcrypt.genSalt(10, function(err, salt) {
                         bcrypt.hash(req.body.password, salt, function(err, hash) {
                             var create_user = {
-                                query: "INSERT INTO `user` (`email`, `username`, `password`, `database`, `joined`, `user_level`) VALUES (?,?,?,?,?,?)",
-                                insert: [req.body.email, req.body.username, hash, db, date, req.body.user_level]
+                                query: "INSERT INTO `user` (`email`, `username`, `password`, `database`, `joined`, `user_level`, `level`) VALUES (?,?,?,?,?,?,?)",
+                                insert: [req.body.email, req.body.username, hash, db, date, req.body.user_level,3]
                             }
                             new query(create_user, {database: database, pool: pool}, function(err,data){
                                 if (err) {
@@ -126,7 +126,7 @@ module.exports = function(pool) {
                     bcrypt.genSalt(10, function(err, salt) {
                         bcrypt.hash(req.body.password, salt, function(err, hash) {
                             var edit_user = {
-                                query: "UPDATE `user` SET `username`=?, `password`=?, `database`=?, `user_level`=? WHERE `email`=?",
+                                query: "UPDATE `user` SET `username`=?, `password`=?, `database`=?, `user_level`=?, `level`=3 WHERE `email`=?",
                                 insert: [req.body.username, hash, db, req.body.user_level, req.body.email]
                             }
                             new query(edit_user, {database: database, pool: pool}, function(err,data){

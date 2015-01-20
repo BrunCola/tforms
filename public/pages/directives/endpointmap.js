@@ -2297,6 +2297,8 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
                 $scope.showTree = true;
 
                 $timeout(function () { // You might need this timeout to be sure its run after DOM render
+                    console.log(root)
+                    console.log(connections)
                     connections = angular.copy(connections)
 
                     var buildings = angular.copy($scope.buildings);
@@ -2543,7 +2545,7 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
                         .attr("dy", ".35em")
                         .text(function(d) { return d; });
 
-               }, 1000, false);
+               }, 2000, false);
             })
         }
     };
