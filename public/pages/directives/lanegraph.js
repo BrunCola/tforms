@@ -402,21 +402,23 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             nElm.attr('transform', 'scale(1)');
                         }
                     } else {
-                        var nElm = elm.select('.hover-square');
-                        if (action === 'mouseover') {
-                            elm.classed('hover-active', true);
-                            nElm
-                                .attr('transform', 'scale(2.4) translate(-3, -5) ')
-                                .attr('stroke', '#fff')
-                                .attr('stroke-width', '1');
-                        } else if (action === 'mouseout') {
-                            elm.classed('hover-active', false);
-                            nElm
-                                .transition()
-                                .duration(550)
-                                .attr('transform', 'scale(1)')
-                                .attr('stroke', 'none')
-                                .attr('stroke-width', '0');
+                        if (elm !== undefined) {                            
+                            var nElm = elm.select('.hover-square');
+                            if (action === 'mouseover') {
+                                elm.classed('hover-active', true);
+                                nElm
+                                    .attr('transform', 'scale(2.4) translate(-3, -5) ')
+                                    .attr('stroke', '#fff')
+                                    .attr('stroke-width', '1');
+                            } else if (action === 'mouseout') {
+                                elm.classed('hover-active', false);
+                                nElm
+                                    .transition()
+                                    .duration(550)
+                                    .attr('transform', 'scale(1)')
+                                    .attr('stroke', 'none')
+                                    .attr('stroke-width', '0');
+                            }
                         }
                     }
                     return;
@@ -923,12 +925,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .attr('height', 12)
                                 .style('opacity', '0.6')
                                 .on('mouseover', function(d){
-                                    var elm = d3.select(this.parentNode);
+                                    var elm = d3.select(this.parentNode);                                    
                                     hoverPoint(elm, 'mouseover', d.type);
                                 })
                                 .on('mouseout', function(d){
-                                    if (d.conn_uids === undefined) {hoverPoint(elm, 'mouseout', d.type);}
                                     var elm = d3.select(this.parentNode);
+                                    if (d.conn_uids === undefined) { hoverPoint(elm, 'mouseout', d.type);}
                                     if (!(uidsMatch(d))){
                                         hoverPoint(elm, 'mouseout', d.type);
                                     }
