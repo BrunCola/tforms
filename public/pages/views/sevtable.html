@@ -36,7 +36,7 @@
     <a ng-click="toggleShow()" class="tableRight" >Hide / show columns</a>
     <div id="showHide" ng-show="show_hide">
         <span class="tableLabel"  ng-repeat="col in tableColumns">
-            <span>{{col.sTitle}}</span><input type="checkbox" ng-click="showHide(col)" ng-model="col.bVisible"> <br />
+            <span>{{col.sTitle}}</span><input type="checkbox" ng-click="showHide(col)" ng-model="col.bVisible" ng-checked="col.bVisible"> <br />
         </span>
     </div>
     <table id="sevTable">
@@ -100,7 +100,7 @@
                             <a ng-click="generateLink(row, col)">{{row[col.mData]}}</a>
                         </section>
                         <section ng-if="!col.link">
-                            {{row[col.mData]}}
+                            {{row[col.mData]}}                            
                         </section>      
                     </section>
                 </section>

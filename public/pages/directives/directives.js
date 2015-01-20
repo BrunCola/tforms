@@ -974,12 +974,8 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 $scope.tableData.collection().map(function(d) {d.time = timeFormat(d.time, 'tables')})
                 $scope.show_hide = false;
 
-                console.log($window.sessionStorage)
-                console.log($scope.tableData.collection())
-                console.log($scope.tableColumns)
-
                 if ($window.sessionStorage[$window.location.pathname.replace("/", '')] !== undefined) {
-                    $scope.tableColumns = angular.fromJson($window.sessionStorage[$window.location.pathname.replace("/", '')])
+                    $scope.tableColumns = angular.fromJson($window.sessionStorage[$window.location.pathname.replace("/", '')]);
                 } else {
                     window.sessionStorage.setItem($window.location.pathname.replace("/", ''), JSON.stringify($scope.tableColumns));
                 }
@@ -1027,7 +1023,7 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     setTimeout(function () {
                         $window.sessionStorage.setItem($window.location.pathname.replace("/", ''), JSON.stringify($scope.tableColumns));
                         $scope.tableColumns = angular.fromJson($window.sessionStorage[$window.location.pathname.replace("/", '')])
-                    }, 0);
+                    }, 100, false);
                 }
 
                 $scope.generateLink = function(data, column) {
