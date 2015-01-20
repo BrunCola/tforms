@@ -176,7 +176,7 @@ module.exports = function(pool) {
                             '`lan_user`,'+
                             '`lan_ip`,'+
                             '`remote_ip`,'+
-                            // '`remote_asn_name`,'+
+                            '`remote_asn_name`,'+
                             '`remote_country`,'+
                             '`remote_cc`,'+
                             '`ioc_childID`,'+
@@ -230,7 +230,7 @@ module.exports = function(pool) {
                     { title: 'Remote IP', select: 'remote_ip' },
                     { title: 'Remote Country', select: 'remote_country' },
                     { title: 'Flag', select: 'remote_cc' },
-                    // { title: 'Remote ASN', select: 'remote_asn_name' },
+                    { title: 'Remote ASN', select: 'remote_asn_name' },
                     { title: 'Bytes to Remote', select: 'in_bytes'},
                     { title: 'Bytes from Remote', select: 'out_bytes'},
                     // { title: 'Packets to Remote', select: 'in_packets', dView: true  },
