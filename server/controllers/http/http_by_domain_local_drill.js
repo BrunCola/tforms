@@ -28,8 +28,8 @@ module.exports = function(pool) {
                             '`url`, ' +
                             '`referrer`, ' +
                             '`user_agent`, ' +
-                            '`request_body_len`, ' +
-                            '`response_body_len`, ' +
+                            // '`request_body_len`, ' +
+                            // '`response_body_len`, ' +
                             '`status_code`, ' +
                             '`status_msg`, ' +
                             '`info_code`, ' +
@@ -37,8 +37,8 @@ module.exports = function(pool) {
                             '`filename`, ' +
                             '`tags`, ' +
                             '`proxied`, ' +
-                            '`local_mime_types`, ' +
-                            '`remote_mime_types`, ' +
+                            // '`local_mime_types`, ' +
+                            // '`remote_mime_types`, ' +
                             '`proxy_blocked`, '+
                             '`proxy_rule`, '+
                             '`ioc_count` ' +
@@ -51,10 +51,7 @@ module.exports = function(pool) {
                             'AND `host` = ?',
                 insert: [req.query.start, req.query.end, req.query.lan_zone, req.query.lan_ip, req.query.host],
                 params: [
-                    {
-                        title: 'Time',
-                        select: 'time'
-                    },
+                    { title: 'Time', select: 'time' },
                     { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
                     { title: 'ABP', select: 'proxy_blocked', hide_proxy: [1] },
                     { title: 'Proxy Block Policy', select: 'proxy_rule', hide_proxy: [1] },
@@ -63,7 +60,7 @@ module.exports = function(pool) {
                     { title: 'URL', select: 'url' },
                     { title: 'Referrer', select: 'referrer' },
                     { title: 'User Agent', select: 'user_agent' },
-                    { title: 'Depth', select: 'depth' },
+                    // { title: 'Depth', select: 'depth' },
                     { title: 'Method', select: 'method' },
                     { title: 'Zone', select: 'lan_zone' },
                     { title: 'Local Machine', select: 'lan_machine' },
@@ -83,8 +80,8 @@ module.exports = function(pool) {
                     { title: 'File Name', select: 'filename', dView:false },
                     { title: 'Tags', select: 'tags', dView:false },
                     { title: 'Proxied', select: 'proxied', dView:false },
-                    { title: 'Local File Type', select: 'local_mime_types', dView:false },
-                    { title: 'Remote File Type', select: 'remote_mime_types', dView:false },
+                    // { title: 'Local File Type', select: 'local_mime_types', dView:false },
+                    // { title: 'Remote File Type', select: 'remote_mime_types', dView:false },
                     { title: 'IOC Count', select: 'ioc_count' }
                 ],
                 settings: {

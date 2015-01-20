@@ -19,8 +19,7 @@ module.exports = function(pool) {
                             '`remote_port`, '  +
                             '`remote_cc`, ' +
                             '`remote_country`, ' +
-                            '`remote_asn`, ' +
-                            '`remote_asn_name`, ' +
+                            'CONCAT(`remote_asn_name`, \' (\', remote_asn, \')\') AS remote_asn, ' +
                             '`user`, ' +
                             '`password`, ' +
                             '`command`, ' +
@@ -63,7 +62,6 @@ module.exports = function(pool) {
                     { title: 'Flag', select: 'remote_cc' },
                     { title: 'Remote Country', select: 'remote_country' },
                     { title: 'Remote ASN', select: 'remote_asn' },
-                    { title: 'Remote ASN Name', select: 'remote_asn_name' },
                     { title: 'User', select: 'user' },
                     { title: 'Password', select: 'password' },
                     { title: 'Command', select: 'command' },

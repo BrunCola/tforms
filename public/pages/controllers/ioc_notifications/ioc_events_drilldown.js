@@ -24,10 +24,10 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
             $scope.crossfilterData.add(parent);
         });
 
-        var endd = moment($scope.end).unix();
-        var startt = moment($scope.start).unix();
-        endd += ((endd - startt)/24);
-        $scope.end = moment(endd*1000).format('MMMM D, YYYY HH:MM ')
+        // var endd = moment($rootScope.end).unix();
+        // var startt = moment($rootScope.start).unix();
+        // endd += ((endd - startt)/24);
+        // $scope.end = moment(endd*1000).format('MMMM D, YYYY HH:MM ')
 
         $scope.$broadcast('laneGraph');
         $scope.description = function (d, e) {
@@ -176,8 +176,10 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 
         $http({method: 'POST', url: '/api/actions/local_cc', data: {zone: $scope.infoData.lan_zone}}).
         success(function(data) {
-            $scope.zone_cc = data.zone_cc.toLowerCase();
-            $scope.zone_country = data.zone_country;
+            if (data.zone_cc !== undefined) {
+                $scope.zone_cc = data.zone_cc.toLowerCase();
+                $scope.zone_country = data.zone_country;
+            }
         })
 
         $http({method: 'GET', url: '/api/ioc_notifications/ioc_events_drilldown?trigger_type=Quarantine&user_quarantine='+$scope.infoData.lan_user}).

@@ -304,6 +304,30 @@ angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '
     return {
         link: function ($scope, element, attrs) {
             $timeout(function () {
+                // check to see if realtime should be active on load
+                realTimeCheck(function(status, elm){
+                    $scope.$apply(function(){
+                        $scope.realtime = status;
+                        // enable and disable button where appropriate
+                        $scope.realtimeElement = elm;
+                    })
+                    // add watch here to activate/disable reloads based on realtimecheck status
+                    $scope.$watch('realtime', function(value){
+                        $rootScope.realtimeTimer = value;
+                        // store whatever change happens in session
+                        if ($scope.realtime !== status) {
+                            // place it in rootscope so we can use it for our interval function later
+                            $window.sessionStorage.realtime = angular.toJson($scope.realtime);
+                        }
+                    })
+                    $rootScope.$on('updateTime', function (event, time){
+                        $scope.end = moment.unix(time.query.end).format('MMMM D, YYYY h:mm A');
+                        $scope.start = moment.unix(time.remove).format('MMMM D, YYYY h:mm A');
+                        // TEMPORARY for the lanegraph!!!!!!!!
+                        $rootScope.end = moment.unix(time.query.end);
+                        $rootScope.start = moment.unix(time.remove);
+                    })
+                });
                 dateRange($scope, function(time){
                     // recieve time from service and set it in local scope
                     $scope.start = moment.unix(time.start).format('MMMM D, YYYY h:mm A');
@@ -329,6 +353,9 @@ angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '
                                 $scope.$apply(function(){
                                     $scope.start = moment(start).format('MMMM D, YYYY h:mm A');
                                     $scope.end = moment(end).format('MMMM D, YYYY h:mm A');
+                                    // TEMPORARY for the lanegraph!!!!!!!!
+                                    $rootScope.start = moment(start);
+                                    $rootScope.end = moment(end);
                                 })
                             }
                         );
@@ -803,7 +830,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 //     }
 // }]);
 
-angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$rootScope', '$location', '$http', 'timeFormat', function ($timeout, $filter, $rootScope, $location, $http, timeFormat) {
+angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$rootScope', '$location', '$http', 'timeFormat', '$window', function ($timeout, $filter, $rootScope, $location, $http, timeFormat, $window) {
     return {
         restrict: 'E',
         templateUrl : 'public/pages/views/sevtable.html',
@@ -816,19 +843,26 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 // here create table div from element + name
                 // TODO - add unique name in controller to post this in a key (in case direcive gets called multiple times)- i.e. $scope[name].table = this
                 // result.sort = 22;
-                
+
                 $scope.tableColumns = result.params;
                 $scope.tableData = params.crossfilterObj;
-                // $scope.tableData.sortBy('id');
+                $scope.tableData.sortBy($scope.tableColumns[result.sort[0][0]].mData, result.sort[0][1]);
 
                 $scope.tableData.collection().map(function(d) {d.time = timeFormat(d.time, 'tables')})
                 $scope.words = {};
                 $scope.word = '';
+                $scope.show_hide = false;
+
+                if ($window.sessionStorage[$window.location.pathname.replace("/", '')] !== undefined) {
+                    $scope.tableColumns = angular.fromJson($window.sessionStorage[$window.location.pathname.replace("/", '')])
+                } else {
+                    window.sessionStorage.setItem($window.location.pathname.replace("/", ''), JSON.stringify($scope.tableColumns));
+                }               
 
                 // -------------------table indexing variables ------------
-                $scope.pageNumber = 5;
-                $scope.pageConstant = 5;
-                $scope.pageOffset = -5;
+                $scope.pageConstant = 50;
+                $scope.pageNumber = $scope.pageConstant;
+                $scope.pageOffset = -$scope.pageConstant;
                 $scope.maxLength = $scope.tableData.collection().length;
                 $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
                 $scope.maxIndex = Math.round($scope.maxLength/$scope.pageConstant);
@@ -838,25 +872,36 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 // 
                 // 
 
+                $scope.toggleShow = function () {
+                    if ($scope.show_hide) {
+                        $scope.show_hide = false;
+                    } else {
+                        $scope.show_hide = true;
+                    }
+                }
+
+                $scope.$watch("tableData.collection()", function(){
+                    $scope.maxLength = $scope.tableData.collection().length;
+                    if ($scope.pageNumber > $scope.maxLength) {
+                        $scope.pageNumber = $scope.maxLength;
+                        $scope.pageOffset = -($scope.maxLength)
+                    } else {
+                        $scope.pageNumber = $scope.pageConstant;
+                        $scope.pageOffset = -$scope.pageConstant;
+                    }
+                    if ($scope.maxLength === 0) {
+                        $scope.pageOffset = -1;
+                    }
+                    $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
+                    $scope.maxIndex = Math.round($scope.maxLength/$scope.pageConstant);
+                    checkButtons(); 
+                }, true);
+
                 $scope.showHide = function(col) {
-                    // if (col.mData === "lan_stealth") {
-                    //     console.log(col)
-                    //     if (col.hide_stealth === $scope.global.user.hide_stealth) {
-                    //         return false
-                    //     } else {
-                    //         return true;
-                    //     }
-                    // }
-                    // if (col.mData === "proxy_blocked") {
-                    //     console.log(col)
-                    //     console.log($scope.global.user.hide_proxy)
-                    //     if (col.proxy_blocked === $scope.global.user.hide_proxy) {
-                    //         return false
-                    //     } else {
-                    //         return true;
-                    //     }
-                    // }
-                    return col.bVisible;
+                    setTimeout(function () {
+                        $window.sessionStorage.setItem($window.location.pathname.replace("/", ''), JSON.stringify($scope.tableColumns));
+                        $scope.tableColumns = angular.fromJson($window.sessionStorage[$window.location.pathname.replace("/", '')])
+                    }, 0);
                 }
 
                 $scope.generateLink = function(data, column) {
@@ -1366,6 +1411,8 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 
                     if (filter == true) {
                         $scope.pieChart.on("filtered", function(chart, filter){
+                            // console.log(chart)
+                            // console.log(filter)
                             $scope.$broadcast('outFilter', params.outgoingFilter, filter)
                         });
                     }
@@ -1613,8 +1660,11 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                                 $scope.barChart.redraw();
                             }
                             $scope.barChart
-                                .group(group)
-                                .colors(["#193459"]);
+                                .group(group, "")
+                                .valueAccessor(function(d) {
+                                    return d.value;
+                                })
+                               .colors(d3.scale.ordinal().domain([]).range(["#112F41"]));
                             filter = true;
                             break;
                         case 'hostConnections':
@@ -1682,7 +1732,11 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                     })
                    
 
-                    $scope.$on('crossfilter-redraw', function (event) {
+                    $scope.$on('crossfilter-redraw', function (event, time) {
+                        if (time) {
+                            var start = time.query.end - (3600*24);
+                            $scope.barChart.x(d3.time.scale().domain([moment.unix(start), moment.unix(time.query.end)]))
+                        }
                         $scope.barChart.redraw();
                     })
                     $scope.$on('crossfilter-render', function (event) {
@@ -1836,7 +1890,10 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                         .tickFormat(logFormat);
                         $scope.rowChart.render();
 
-                        $scope.$on('crossfilter-redraw', function (event) {
+                        $scope.$on('crossfilter-redraw', function (event, time) {
+                            if (time) {
+                                $scope.rowChart.x(d3.scale.log().domain([1, $scope.rowDomain]).range([0,width]));
+                            }
                             $scope.rowChart.redraw();
                         })
                         $scope.$on('crossfilter-render', function (event) {

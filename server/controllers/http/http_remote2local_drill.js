@@ -10,7 +10,7 @@ module.exports = function(pool) {
         table: function(req, res){
             var table = {
                 query: 'SELECT ' +
-                            'time, '+
+                            '`time`, ' +
                             '`lan_stealth`, ' +
                             '`lan_zone`, ' +
                             '`lan_machine`, ' +
@@ -28,8 +28,8 @@ module.exports = function(pool) {
                             '`url`, ' +
                             '`referrer`, ' +
                             '`user_agent`, ' +
-                            '`request_body_len`, ' +
-                            '`response_body_len`, ' +
+                            // '`request_body_len`, ' +
+                            // '`response_body_len`, ' +
                             '`status_code`, ' +
                             '`status_msg`, ' +
                             '`info_code`, ' +
@@ -37,8 +37,8 @@ module.exports = function(pool) {
                             '`filename`, ' +
                             '`tags`, ' +
                             '`proxied`, ' +
-                            '`local_mime_types`, ' +
-                            '`remote_mime_types`, ' +
+                            // '`local_mime_types`, ' +
+                            // '`remote_mime_types`, ' +
                             '`proxy_blocked`, '+
                             '`proxy_rule`, '+
                             '`ioc_count` ' +
@@ -61,7 +61,7 @@ module.exports = function(pool) {
                     { title: 'Referrer', select: 'referrer' },
                     { title: 'User Agent', select: 'user_agent' },
                     { title: 'Depth', select: 'depth' },
-                    { title: 'Method', select: 'method' },
+                    // { title: 'Method', select: 'method' },
                     { title: 'Machine Name', select: 'lan_machine' },
                     { title: 'Zone', select: 'lan_zone' },
                     { title: 'Local User', select: 'lan_user' },
@@ -80,8 +80,8 @@ module.exports = function(pool) {
                     { title: 'File Name', select: 'filename', dView:false },
                     { title: 'Tags', select: 'tags', dView:false },
                     { title: 'Proxied', select: 'proxied', dView:false },
-                    { title: 'Local File Type', select: 'local_mime_types', dView:false },
-                    { title: 'Reemote File Type', select: 'remote_mime_types', dView:false },
+                    // { title: 'Local File Type', select: 'local_mime_types', dView:false },
+                    // { title: 'Remote File Type', select: 'remote_mime_types', dView:false },
                     { title: 'IOC Count', select: 'ioc_count' }
                 ],
                 settings: {

@@ -23,8 +23,7 @@ module.exports = function(pool) {
                             '`remote_ip`,'+
                             '`remote_cc`,'+
                             '`remote_country`,'+
-                            '`remote_asn`,'+
-                            '`remote_asn_name`,'+
+                            'CONCAT(`remote_asn_name`, \' (\', remote_asn, \')\') AS remote_asn, '+
                             'sum(`ioc_count`) AS ioc_count ' +
                         'FROM '+
                             '`ssh` '+
@@ -55,7 +54,6 @@ module.exports = function(pool) {
                     { title: 'Remote Country', select: 'remote_country' },
                     { title: 'Flag', select: 'remote_cc' },
                     { title: 'Remote ASN', select: 'remote_asn' },
-                    { title: 'Remote ASN Name', select: 'remote_asn_name' },
                     { title: 'IOC Count', select: 'ioc_count' }
                 ],
                 settings: {
