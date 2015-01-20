@@ -46,7 +46,9 @@ module.exports = function(pool) {
                         'FROM '+
                             '`zone` '+
                         'WHERE '+
-                            '`database` = ?'+
+                            '`database` = ? '+
+                            'AND '+
+                            '`zone` != "main" '+
                         'GROUP BY '+
                             '`zone` ',
                 insert: [database]

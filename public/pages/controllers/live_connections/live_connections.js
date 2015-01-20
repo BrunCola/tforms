@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.pages').controller('liveConnectionsController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', function ($scope, $stateParams, $location, Global, $rootScope, $http) {
+angular.module('mean.pages').controller('liveConnectionsController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$window', function ($scope, $stateParams, $location, Global, $rootScope, $http, $window) {
     $scope.global = Global;
     var timer;
     var query = '/api/live_connections/live_connections';
@@ -18,10 +18,21 @@ angular.module('mean.pages').controller('liveConnectionsController', ['$scope', 
             }
         });
     }
-    // $scope.mapCountries = true;
-    $scope.mapApplications = true;
-    // $scope.mapLocalIp = false;
-    // $scope.mapRemoteIp = false;
+
+    $scope.mapChecked =  {mapCountries : true, mapApplications : true, mapLocalIp : true, mapRemoteIp : true};
+
+    if ($window.sessionStorage[$window.location.pathname.replace("/", '')] !== undefined) {
+        $scope.mapChecked = angular.fromJson($window.sessionStorage[$window.location.pathname.replace("/", '')])
+    } else {
+        window.sessionStorage.setItem($window.location.pathname.replace("/", ''), JSON.stringify($scope.mapChecked));
+    } 
+
+    $scope.showHide = function(mapChecked) {
+        setTimeout(function () {
+            $window.sessionStorage.setItem($window.location.pathname.replace("/", ''), JSON.stringify($scope.mapChecked));
+            $scope.mapChecked = angular.fromJson($window.sessionStorage[$window.location.pathname.replace("/", '')])
+        }, 0);
+    }
 
     $scope.lineChartStart = moment().subtract('minutes', 9).unix()*1000;
     $scope.lineChartEnd = Math.round(new Date().getTime()) - 254000; //- 504000;// + 3060000;

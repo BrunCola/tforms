@@ -170,7 +170,7 @@ angular.module('mean.pages').controller('iocEventsDrilldownController', ['$scope
 
         $scope.iocc = $location.$$search.ioc;
 
-        if (data.info.desc[0] !== undefined) {
+        if (data.info.desc !== null) {
             $scope.$broadcast('iocDesc', data.info.desc[0].description)
         }
 

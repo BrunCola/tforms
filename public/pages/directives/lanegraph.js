@@ -29,6 +29,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                 ///////////////////////
                 var itemsDimension = $scope.crossfilterData.dimension(function(d){ return d.dd });
                 var typeDimension = $scope.crossfilterData.dimension(function(d){ return d.type });
+                console.log(typeDimension)
                 var deepDimension = $scope.crossfilterData.dimension(function(d){ return d.deep });
                 var uniqueIds = []; // this is so we do not add duplicate items into our crossfitler
                 // set our in-to-deep variable
@@ -562,7 +563,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                        typeDimension     
                             .attr('width', 36)
                             .attr('height', 36);
-                            laneRowSymbols(data.type, element, color1, color2);
+                        laneRowSymbols(data.type, element, color1, color2);
                     }
                     // a few functions may not want to highight same nodes on brush, so its set as a parameter
                     setTimeout(function(){ // this is a temporary fix to an unknown issue reguarding this firing too soon
@@ -715,10 +716,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                 }
                 function draw() {
-                    console.log($rootScope.start)
-                    console.log($rootScope.end)
-                    console.log(new Date ($rootScope.start))
-                    console.log(new Date ($rootScope.end))
                     // reset navagation array
                     navArray = [];
                     // set current position in nav array

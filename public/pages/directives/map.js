@@ -14,16 +14,18 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
             var width = document.getElementById('map').offsetWidth;
             // var height = width / 2.15;
             var height = window.innerHeight-105;
+
+            var scale = 1.2;
            
             var zoom = d3.behavior.zoom()
-                .translate([0, 0])
-                .scale(1)
-                .scaleExtent([0.5, 5])
+                .translate([-(width/6.9), 0])
+                .scale(scale)
+                .scaleExtent([0.75, 4])
                 .on("zoom", zoomed);
 
             // BUILD SVG LAYER
             var projection = d3.geo.mercator()
-                .translate([0, 150])
+                .translate([0, 0])
                 .scale(width / 2 / Math.PI);
             var path = d3.geo.path()
                 .projection(projection);
@@ -38,7 +40,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                 .attr("transform", "translate(0,0)scale(1)")
                 .call(zoom)
                 .append("g")
-                .attr("transform", "translate(" + width/2 + "," + height / 2 + ")scale(1)");
+                .attr("transform", "translate(" + width/(2.2) + "," + height/(2/scale) + ")scale("+scale+")");
 
             var g = svg.append("g");
 
@@ -93,10 +95,10 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                         return "#FFEC00"; // yellow
                         break;
                     case "HTTP":
-                        return "#0f0f0f"; //
+                        return "#FF0000"; //
                         break;
                     case "SSL":
-                        return "#0f0f0f"; //
+                        return "#C45200"; //
                         break;
                     case "BitTorrent":
                         return "#009426"; // green
@@ -242,7 +244,7 @@ angular.module('mean.pages').directive('makeMap', ['$timeout', '$location', '$ro
                 }
                 var rainbow = new Rainbow();
                 rainbow.setNumberRange(0, zLen);
-                rainbow.setSpectrum("#FF0000", "#00FF00", "#0000FF");
+                rainbow.setSpectrum("#FF0000", "#00BB00", "#0000FF");
                 for (var i = 0; i < zones.length; i++) {
                     // /var hexColour = rainbow.colourAt(i);
                     cc[""+zones[i].zone] = '#' + rainbow.colourAt(i);

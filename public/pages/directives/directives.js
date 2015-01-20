@@ -1362,7 +1362,7 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                         .dimension(dimension) // set dimension
                         .group(group) // set group
                         // .ordering($scope.pieGroup)
-                        .legend(dc.legend().x(width - 170+connMargin).y(10).itemHeight(13).gap(5))
+                        .legend(dc.legend().x(0).y(10).itemHeight(13).gap(5))
                         .colors(d3.scale.category20());
 
                     $scope.pieChart.render();
@@ -1647,7 +1647,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                         })
                     }
                     if (($scope.barChartxAxis == null) && ($scope.barChartyAxis == null)) {
-                        var margin = {top: 10, right: 20, bottom: 10, left: 20};
+                        var margin = {top: 10, right: 20, bottom: 10, left: 45};
                     } else {
                         if (chartType === "hostConnections") {
                           var margin = {top: 10, right: 10, bottom: 10, left: 43};
@@ -1665,8 +1665,8 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                             .dimension(dimension) // set dimension
                             //.group(group[g]) // set group
                             //.stack(group, "0 - Other", function(d){return d.value.other;})
-                            .xAxisLabel($scope.barChartxAxis) // (optional) render an axis label below the x axis
-                            .yAxisLabel($scope.barChartyAxis) // (optional) render a vertical axis lable left of the y axis
+                            .xAxisLabel(params.settings.xAxis) // (optional) render an axis label below the x axis
+                            .yAxisLabel(params.settings.yAxis) // (optional) render a vertical axis lable left of the y axis
                             .elasticY(true) // (optional) whether chart should rescale y axis to fit data, :default = false
                             .elasticX(false) // (optional) whether chart should rescale x axis to fit data, :default = false
                             .x(d3.time.scale().domain([moment.unix(time.start), moment.unix(time.end)])) // define x scale
