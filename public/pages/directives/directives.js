@@ -316,34 +316,50 @@ angular.module('mean.pages').directive('severityLevels', ['$timeout', function (
         scope : {
             title : '@'
         },
-        template : '<button style="min-width:120px" class="severity-btn btn mini alert1 alert"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> {{levels.guarded}} </span></button>'+
-            '<button style="min-width:120px" class="severity-btn btn mini alert2 alert"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> {{levels.elevated}} </span></button>'+
-            '<button style="min-width:120px" class="severity-btn btn mini alert3 alert"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> {{levels.high}} </span></button>'+
-            '<button style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> {{levels.severe}} </span></button>',
+        template : '<button ng-click="clicked(1)" style="min-width:120px" ng-class="({levels.guarded.clicked}) ? \'severity-btn btn mini alert2 alert selected\' : \'severity-btn btn mini alert2 alert\'" ><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> {{levels.guarded.value}} </span></button>',
+            // '<button ng-click="clicked(2)" style="min-width:120px" ng-class="{{levels.guarded.clicked ? \'[severity-btn, btn, mini, alert2, alert, selected]\' : \'[severity-btn, btn, mini, alert2, alert]\'}}"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> {{levels.elevated.value}} </span></button>'+
+            // '<button ng-click="clicked(3)" style="min-width:120px" ng-class="{{levels.guarded.clicked ? \'[severity-btn, btn, mini, alert2, alert, selected]\' : \'[severity-btn, btn, mini, alert2, alert]\'}}"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> {{levels.high.value}} </span></button>'+
+            // '<button ng-click="clicked(4)" style="min-width:120px" ng-class="{{levels.guarded.clicked ? \'[severity-btn, btn, mini, alert2, alert, selected]\' : \'[severity-btn, btn, mini, alert2, alert]\'}}"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> {{levels.severe.value}} </span></button>',
         transclude : true,
         link: function($scope, element, attrs) {
             $scope.levels = {
-                guarded: 0,
-                elevated: 0,
-                high: 0,
-                severe: 0
+                guarded: {
+                    value: 0,
+                    clicked: true
+                },
+                elevated: {
+                    value: 0,
+                    clicked: false
+                },
+                high: {
+                    value: 0,
+                    clicked: false
+                },
+                severe: {
+                    value: 0,
+                    clicked: false
+                }
             }
             // $scope.$broadcast('outFilter', params.outgoingFilter, 'severityTYPE')
             $scope.$on('severityLevels', function (event, dimension, group, params) {
+                var activeFilters = {}
+                $scope.clicked = function(type) {
+                    console.log(type)
+                }
                 function update() {
                     group.top(Infinity).map(function(d){
                         switch(d.key) {
                             case 1:
-                                $scope.levels.guarded = d.value;
+                                $scope.levels.guarded.value = d.value;
                                 break;
                             case 2:
-                                $scope.levels.elevated = d.value;
+                                $scope.levels.elevated.value = d.value;
                                 break;
                             case 3:
-                                $scope.levels.high = d.value;
+                                $scope.levels.high.value = d.value;
                                 break;
                             case 4:
-                                $scope.levels.severe = d.value;
+                                $scope.levels.severe.value = d.value;
                                 break;
                         }
                     })
@@ -1081,44 +1097,9 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                         })
                     }
                 })
-                
                 //////////////////////////////
-                //////  TABLE UPDATING  //////
+                //////  TABLE BUTTONS   //////
                 //////////////////////////////
-                // $scope.$on('updateTable', function(params) {
-                //     $scope.tableData = params.crossfilterObj;
-                // });
-                // setTimeout(function(){
-                //     console.log('running')
-                //     $scope.tableData.deleteModels();
-                //     console.log($scope.tableData.collection())
-                // }, 5000)
-
-                /**
-                 * @method toggleCountFilter
-                 * @param count {Number}
-                 * @return {void}
-                 */
-                // $scope.toggleCountFilter = function toggleCountFilter(count) {
-                //     if ($scope.currentCountFilter == count) {
-                //         $scope.currentCountFilter = null;
-                //         $scope.words.unfilterBy('wordCount');
-                //         return;
-                //     }
-                //     $scope.currentCountFilter = count;
-                //     $scope.words.filterBy('wordCount', count);
-                // };
-
-                // Fetch all of the words to create the Crossfilter from.
-                // $http.get('words.json').then(function then(response) {
-                //     // Voila!
-                //     $scope.words = new Crossfilter(response.data, '$id', 'persistent');
-                //     $scope.words.addDimension('wordCount', function wordCount(model) {
-                //         return model.word.length;
-                //     });
-                //     $scope.countGrouped = $scope.words.groupBy('wordCount');
-                // });
-
                 $scope.generateButton = function(type, data) {
                     switch(type){
                         case 'Archive':
@@ -1138,18 +1119,6 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                         break;
                     }
                 }
-
-                /**
-                 * @method applyWordFilter
-                 * @param word {String}
-                 * @param customFilter {Function}
-                 * @return {void}
-                 */
-                // $scope.applyWordFilter = function applyWordFilter(word, customFilter) {
-                //     $scope.pageNumber = 50;
-                //     // $scope.words.filterBy('word', word, customFilter);
-                //     $scope.word = word;
-                // };
 
             })
         }
