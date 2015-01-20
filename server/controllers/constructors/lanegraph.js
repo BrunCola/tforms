@@ -119,7 +119,6 @@ module.exports = function (sql, conn, callback) {
                 results.push(data);
             })
             .on('end', function(){
-                console.log(type+': '+count)
                 callback(null, results);
             });
         connection.release();

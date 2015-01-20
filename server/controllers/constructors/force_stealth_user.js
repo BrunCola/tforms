@@ -64,7 +64,7 @@ module.exports = function (sql, queries, conn, callback) {
                 var arr = [];
                 arr = Object.keys(uniqueLinks[user]);
                 for (var o = 0; o < arr.length; o++) {
-                    if ((arr[o] !== 'ClearText') || (arr[o] !== 'ClearTextCOI')) {
+                    if ((arr[o] !== 'ClearText') && (arr[o] !== 'ClearTextCOI')) {
                         // push a new entry for every single node
                         nodes.push({
                             "name": obj.lan_user,
@@ -154,7 +154,7 @@ module.exports = function (sql, queries, conn, callback) {
                     } else {
                         result.forEach(function(data){
                             for(var i = 0; i < nodes.length; i++) {
-                                if(nodes[i].name+"COI" === data.cois){
+                                if ((nodes[i].name+"COI" === data.cois) || (nodes[i].name === data.cois)){
                                     nodes[i].rules = [{
                                         rule: data.rule, 
                                         order: data.rule_order

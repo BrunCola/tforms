@@ -189,11 +189,12 @@ module.exports = function(pool) {
                                     'AND `lan_ip` = ? '+
                                     'AND `lan_machine`= ? '+
                                     'AND `remote_ip`= ? '+
-                                    'AND `remote_machine`=? '+
+                                    // 'AND `remote_machine`=? '+
                                    // 'AND `l7_proto` !=\'-\' '+
                                 'GROUP BY '+
                                     '`time`', 
-                            insert: [start, end, req.query.lan_ip, req.query.lan_machine, req.query.remote_ip, req.query.remote_machine]}, {database: database, pool: pool}, function(err,data){
+                            //insert: [start, end, req.query.lan_ip, req.query.lan_machine, req.query.remote_ip, req.query.remote_machine]}, {database: database, pool: pool}, function(err,data){
+                            insert: [start, end, req.query.lan_ip, req.query.lan_machine, req.query.remote_ip]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
                             }
@@ -224,13 +225,14 @@ module.exports = function(pool) {
                                     '`time` BETWEEN ? AND ? '+
                                     'AND `l7_proto`!="IPsec" '+
                                     'AND `remote_ip`=? '+
-                                    'AND `remote_machine`=? '+
+                                    // 'AND `remote_machine`=? '+
                                     'AND `lan_ip` = ? '+
                                     'AND `lan_machine`=? '+
                                     //'AND `l7_proto` !=\'-\' '+
                                 'GROUP BY '+
                                     '`time`', 
-                            insert: [start, end, req.query.lan_ip, req.query.lan_machine, req.query.remote_ip, req.query.remote_machine]}, {database: database, pool: pool}, function(err,data){
+                            // insert: [start, end, req.query.lan_ip, req.query.lan_machine, req.query.remote_ip, req.query.remote_machine]}, {database: database, pool: pool}, function(err,data){
+                            insert: [start, end, req.query.lan_ip, req.query.remote_ip, req.query.remote_machine]}, {database: database, pool: pool}, function(err,data){
                             if (data) {
                                 res.json(data);
                             }

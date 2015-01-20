@@ -2551,6 +2551,7 @@ table.listUser td{
 }
 #accessLevel .formLabel, #mapInfo .formLabel{
     display: inline-block;
+    font-size: 12px;
 }
 #accessLevel input[type="checkbox"] {
     margin:-3px 0px 0px 5px;
@@ -2610,7 +2611,7 @@ table#sevTable .first{
 }
 table#sevTable .firstTitle{
     text-align: left !important;
-    padding: 1px 1px 1px 11px;
+    padding: 1px 1px 1px 0px;
 }
 table#sevTable tr .last{
     text-align: right !important;
@@ -2621,12 +2622,17 @@ table#sevTable tr .last{
 table#sevTable tr .timestampText{
     float: right;
 }
+table#sevTable tr th.tableTitles{
+    margin: 0px 3px;
+    padding: 0px 10px;
+    min-width: 100% !important;
+}
 table#sevTable tr{
     text-align: center;
 }
 table#sevTable tr td{
-  margin: 0px;
-  padding: 3px 0px;
+    margin: 0px;
+    padding: 3px 0px;
 }
 table#sevTable button.tableTime{
     max-width:125px;

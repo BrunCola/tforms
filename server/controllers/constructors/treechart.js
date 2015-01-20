@@ -54,7 +54,6 @@ module.exports = function (sql, conn, lanIP, attrID, callback) {
 					for (var c in newarr[v].children) {
 						var cn = [];
 						for (var y in tree) {
-							console.log(tree[y]);
 							if (newarr[v].children[c].name === tree[y].ioc_childID){
 								if (tree[y].ioc_attrID === iocID) {
 									newarr[v].children[c].idRoute = true;

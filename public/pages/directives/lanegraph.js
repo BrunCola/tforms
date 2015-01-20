@@ -105,7 +105,7 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     .range([0, w]);
                 var x1 = d3.time.scale()
                     .domain([new Date($rootScope.start), new Date($rootScope.end)])
-                    .range([0, w]);
+                    .range([0, w-15]);
                 var y1 = d3.scale.linear()
                     .domain([0, laneLength])
                     .range([30, mainHeight]);
@@ -402,21 +402,23 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                             nElm.attr('transform', 'scale(1)');
                         }
                     } else {
-                        var nElm = elm.select('.hover-square');
-                        if (action === 'mouseover') {
-                            elm.classed('hover-active', true);
-                            nElm
-                                .attr('transform', 'scale(2.4) translate(-3, -5) ')
-                                .attr('stroke', '#fff')
-                                .attr('stroke-width', '1');
-                        } else if (action === 'mouseout') {
-                            elm.classed('hover-active', false);
-                            nElm
-                                .transition()
-                                .duration(550)
-                                .attr('transform', 'scale(1)')
-                                .attr('stroke', 'none')
-                                .attr('stroke-width', '0');
+                        if (elm !== undefined) {                            
+                            var nElm = elm.select('.hover-square');
+                            if (action === 'mouseover') {
+                                elm.classed('hover-active', true);
+                                nElm
+                                    .attr('transform', 'scale(2.4) translate(-3, -5) ')
+                                    .attr('stroke', '#fff')
+                                    .attr('stroke-width', '1');
+                            } else if (action === 'mouseout') {
+                                elm.classed('hover-active', false);
+                                nElm
+                                    .transition()
+                                    .duration(550)
+                                    .attr('transform', 'scale(1)')
+                                    .attr('stroke', 'none')
+                                    .attr('stroke-width', '0');
+                            }
                         }
                     }
                     return;
@@ -559,7 +561,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 }
                                 return color2;
                             })
-                       typeDimension     
                             .attr('width', 36)
                             .attr('height', 36);
                             laneRowSymbols(data.type, element, color1, color2);
@@ -715,10 +716,6 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                     }
                 }
                 function draw() {
-                    console.log($rootScope.start)
-                    console.log($rootScope.end)
-                    console.log(new Date ($rootScope.start))
-                    console.log(new Date ($rootScope.end))
                     // reset navagation array
                     navArray = [];
                     // set current position in nav array
@@ -928,12 +925,12 @@ angular.module('mean.pages').directive('laneGraph', ['$timeout', '$location', 'a
                                 .attr('height', 12)
                                 .style('opacity', '0.6')
                                 .on('mouseover', function(d){
-                                    var elm = d3.select(this.parentNode);
+                                    var elm = d3.select(this.parentNode);                                    
                                     hoverPoint(elm, 'mouseover', d.type);
                                 })
                                 .on('mouseout', function(d){
-                                    if (d.conn_uids === undefined) {hoverPoint(elm, 'mouseout', d.type);}
                                     var elm = d3.select(this.parentNode);
+                                    if (d.conn_uids === undefined) { hoverPoint(elm, 'mouseout', d.type);}
                                     if (!(uidsMatch(d))){
                                         hoverPoint(elm, 'mouseout', d.type);
                                     }

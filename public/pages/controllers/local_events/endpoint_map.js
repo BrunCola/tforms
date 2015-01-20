@@ -1,7 +1,7 @@
 'use strict';
 
 //angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', 'searchFilter', '$upload', 'timeFormat', '$anchorScroll', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, searchFilter, $upload, timeFormat, $anchorScroll) {
-angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', '$upload', 'timeFormat', '$anchorScroll', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, $upload, timeFormat, $anchorScroll) {
+angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stateParams', '$location', 'Global', '$rootScope', '$http', '$modal', '$upload', 'timeFormat', '$anchorScroll', 'runPage', function ($scope, $stateParams, $location, Global, $rootScope, $http, $modal, $upload, timeFormat, $anchorScroll, runPage) {
     $scope.global = Global;
     var query = '/api/local_events/endpoint_map?';
     if ($location.$$search.start && $location.$$search.end) {
@@ -141,7 +141,10 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                         var host;
                         var connections = data.map(function( da ) {
                             var users = $scope.userDimension.filter(function(dt){ 
-                                if ((da.remote_ip === dt.lan_ip) && (da.remote_machine === dt.lan_machine)){
+                                // console.log(da.remote_ip + "="+ dt.lan_ip)
+                                // console.log(da.remote_machine + "=" + dt.lan_machine)
+                                //if ((da.remote_ip == dt.lan_ip) && (da.remote_machine == dt.lan_machine)){
+                                if (da.remote_ip == dt.lan_ip){
                                     dt.depth=1;
                                     if ($scope.results.indexOf(dt) == -1) {
                                         //host = angular.copy(dt);
@@ -164,7 +167,8 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                         var host;
                         var connections = data.map(function( da ) {
                             var users = $scope.userDimension.filter(function(dt){ 
-                                if ((da.lan_ip === dt.lan_ip) && (da.lan_machine === dt.lan_machine)) {
+                               // if ((da.lan_ip == dt.lan_ip) && (da.lan_machine == dt.lan_machine)) {
+                                if (da.lan_ip == dt.lan_ip) {
                                     dt.depth=1;
                                     if ($scope.results.indexOf(dt) == -1) {
                                        // host = angular.copy(dt);
@@ -302,7 +306,10 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                     };
                 }
             );
-            $scope.$broadcast('barChart', barDimension, barGroup, 'hostConnections');
+            $scope.$broadcast('barchart', barDimension, barGroup, 'hostConnections');
+
+            $scope.barChartxAxis = '';
+            $scope.barChartyAxis = '# of Connection';
 
             var countDimension = $scope.crossfilterConns.dimension(function(d) { return d.count }).top(10).map(function(d){ return d.l7_proto });
             $scope.appDimension = $scope.crossfilterConns.dimension(function(d) { 
@@ -319,14 +326,77 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
                 return d.count;
             });
 
-            $scope.$broadcast('pieChart', 'hostConnections');
+            $scope.$broadcast('pieChart', $scope.appDimension, $scope.pieGroup, 'hostConnections');
 
-
-            $scope.barChartxAxis = '';
-            $scope.barChartyAxis = '# of Connection';
         }, 1000);
             $scope.showCharts = true;
     }
+
+
+
+
+
+    // var page = [
+    //     /////////////////
+    //     // CROSSFILTER //
+    //     /////////////////
+    //     {
+    //         type: 'crossfilter', // required
+    //         // key: 'crossfilter', // bound to the response, wrap entire source if undefined
+    //         refresh: true,
+    //         searchable: true, // optional search param.. no if undefined
+    //         run: function(data) { // optional run function to run after data has been fetched (takes an array of data)
+    //             data.forEach(function(d) {
+    //                 d.dd = timeFormat(d.time, 'strdDateObj');
+    //                 d.hour = d3.time.hour(d.dd);
+    //                 d.count = +d.count;
+    //             });
+    //         },
+    //         get: '/api/ioc_notifications/ioc_events/crossfilter', // no get default to main url, strings will replace the default (otherwise /[from root])
+    //             {
+    //                 type: 'barchart',
+    //                 settings: { 
+    //                     type: 'severity',
+    //                     xAxis: '',
+    //                     yAxis: '# IOC / Hour'
+    //                 },
+    //                 dimension: function(cfObj) { return cfObj.dimension(function(d) { return d.hour; })},
+    //                 group: function(dimension){ // groups are optional and should default to a reduce if undefined
+    //                     return dimension.group().reduce(
+    //                         function(p, v) {
+    //                             p.severity = v.ioc_severity - 1;
+    //                             p.count += v.count;
+    //                             return p;
+    //                         },
+    //                         function(p, v) {
+    //                             p.severity = v.ioc_severity - 1;
+    //                             p.count -= v.count;
+    //                             return p;
+    //                         },
+    //                         function() {
+    //                             return {count: 0, severity: 0};
+    //                         }
+    //                     );
+    //                 },
+    //                 outgoingFilter: { // Optional and ingests an array of KEYS for other visuals not of this type to match
+    //                     'table': 'time'
+    //                 }
+    //             }
+    //     }
+    // ];
+    // $rootScope.search = $scope.search;
+    // runPage($scope, page);
+
+
+
+
+
+
+
+
+
+
+
 
     $rootScope.userLinkTo = function (data) {
         $rootScope.toggleZoom = false;
@@ -390,7 +460,7 @@ angular.module('mean.pages').controller('floorPlanController', ['$scope', '$stat
          } else if(type === "listsearch") {
             $scope.currentSearchUsers = d;
          } else if ($scope.lan_ip !== '-') {
-            var query = '/api/local_events/endpoint_map?lan_ip='+d.lan_ip+'&l an_zone='+d.lan_zone+'&type=flooruser';
+            var query = '/api/local_events/endpoint_map?lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser';
             $scope.startend = ""; 
             if ($location.$$search.start && $location.$$search.end) {
                 query = '/api/local_events/endpoint_map?start='+$location.$$search.start+'&end='+$location.$$search.end+'&lan_ip='+d.lan_ip+'&lan_zone='+d.lan_zone+'&type=flooruser'; 

@@ -47,8 +47,6 @@ module.exports = function (sql, options, callback) {
 			})
 			.on('end', function(){
 				// ROUND ALL TIMES TOGETHER
-				console.log(options.end);
-				console.log(options.start);
 
 				var dateRange = (options.end - options.start)/3.08;
 				dat.forEach(function (item){

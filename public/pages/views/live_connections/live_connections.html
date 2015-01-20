@@ -3,11 +3,11 @@
 	<!-- <div class="box-content"> -->
 	<div class="row-fluid" >
 		<div id="mapInfo">
-			<label class="formLabel">Countries:</label>  <input type="checkbox" ng-model="mapCountries" ng-checked="mapCountries" >
-			<label class="formLabel">Applications:</label>  <input type="checkbox" ng-model="mapApplications" ng-checked="mapApplications" >
-			<label class="formLabel">Local IP's:</label>  <input type="checkbox" ng-model="mapLocalIp" ng-checked="mapLocalIp" >
-			<label class="formLabel">Remote IP's:</label>  <input type="checkbox" ng-model="mapRemoteIp" ng-checked="mapRemoteIp" ><br />
-			<table class="livemapTable countriesTable" ng-show="mapCountries" >
+			<label class="formLabel">Countries:</label>  <input type="checkbox" ng-model="mapChecked.mapCountries" ng-click="showHide(mapChecked)" ng-checked="mapChecked.mapCountries" >
+			<label class="formLabel">Applications:</label>  <input type="checkbox" ng-model="mapChecked.mapApplications" ng-click="showHide(mapChecked)" ng-checked="mapChecked.mapApplications" >
+			<label class="formLabel">Local IP's:</label>  <input type="checkbox" ng-model="mapChecked.mapLocalIp" ng-click="showHide(mapChecked)" ng-checked="mapChecked.mapLocalIp" >
+			<label class="formLabel">Remote IP's:</label>  <input type="checkbox" ng-model="mapChecked.mapRemoteIp" ng-click="showHide(mapChecked)" ng-checked="mapChecked.mapRemoteIp" ><br />
+			<table class="livemapTable countriesTable" ng-show="mapChecked.mapCountries" >
 				<thead>
 					<tr>
 						<th>Top Countries</th>
@@ -18,7 +18,7 @@
 				</thead>
 				<tbody></tbody>
 			</table>
-			<table class="livemapTable protosTable" ng-show="mapApplications">
+			<table class="livemapTable protosTable" ng-show="mapChecked.mapApplications">
 				<thead>
 					<tr>
 						<th>Top Applications</th>
@@ -28,7 +28,7 @@
 				</thead>
 				<tbody></tbody>
 			</table>
-			<table class="livemapTable localTable" ng-show="mapLocalIp">
+			<table class="livemapTable localTable" ng-show="mapChecked.mapLocalIp">
 				<thead>
 					<tr>
 						<th>Top Local IP's</th>
@@ -38,7 +38,7 @@
 				</thead>
 				<tbody></tbody>
 			</table>
-			<table class="livemapTable remoteTable" ng-show="mapRemoteIp">
+			<table class="livemapTable remoteTable" ng-show="mapChecked.mapRemoteIp">
 				<thead>
 					<tr>
 						<th>Top Remote IP's</th>
