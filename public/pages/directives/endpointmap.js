@@ -2543,7 +2543,7 @@ angular.module('mean.pages').directive('drawLinks', ['$timeout', '$rootScope', '
                         .attr("dy", ".35em")
                         .text(function(d) { return d; });
 
-               }, 1000, false);
+               }, 1500, false);
             })
         }
     };
