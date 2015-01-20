@@ -74,14 +74,14 @@ angular.module('mean.pages').controller('appByApplicationController', ['$scope',
             visuals: [
                 {
                     type: 'piechart',
-                    settings: { 
+                    settings: {
                         type: 'application',
                         xAxis: '',
                         yAxis: ''
                     },
-                    dimension: function(cfObj) { 
+                    dimension: function(cfObj) {
                         var countDimension = cfObj.dimension(function(d) { return d.count }).top(10).map(function(d){ return d.pie_dimension });
-                        return cfObj.dimension(function(d) { 
+                        return cfObj.dimension(function(d) {
                             if(countDimension.indexOf(d.pie_dimension) !== -1) {
                                 return d.pie_dimension;
                             } else {
@@ -93,7 +93,10 @@ angular.module('mean.pages').controller('appByApplicationController', ['$scope',
                         return dimension.group().reduceSum(function (d) { return d.count; });
                     },
                     outgoingFilter: { // Optional and ingests an array of KEYS for other visuals not of this type to match
-                        'table': 'l7_proto'
+                        'table': 'l7_proto',
+                        'crossfilter': {
+                            'barchart': 'l7_proto'
+                        }
                     }
                 }
             ]

@@ -972,8 +972,6 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 $scope.tableData.sortBy($scope.tableColumns[result.sort[0][0]].mData, result.sort[0][1]);
 
                 $scope.tableData.collection().map(function(d) {d.time = timeFormat(d.time, 'tables')})
-                $scope.words = {};
-                $scope.word = '';
                 $scope.show_hide = false;
 
                 if ($window.sessionStorage[$window.location.pathname.replace("/", '')] !== undefined) {
@@ -1358,7 +1356,7 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                         $scope.pieChart.on("filtered", function(chart, filter){
                             // console.log(chart)
                             // console.log(filter)
-                            $scope.$broadcast('outFilter', params.outgoingFilter, filter)
+                            $scope.$broadcast('outFilter', params, filter)
                         });
                     }
                     $scope.pieChart
