@@ -948,7 +948,8 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                         $scope.show_hide = true;
                     }
                 }
-                $scope.$watch('tableData', function(olddata, newdata){
+
+                $scope.$watch("tableData.collection()", function(){
                     $scope.maxLength = $scope.tableData.collection().length;
                     if ($scope.pageNumber > $scope.maxLength) {
                         $scope.pageNumber = $scope.maxLength;
@@ -1493,8 +1494,7 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 
                     if (filter == true) {
                         $scope.pieChart.on("filtered", function(chart, filter){
-                            // console.log(chart)
-                            // console.log(filter)
+                            console.log(params)
                             $scope.$broadcast('outFilter', params.outgoingFilter, filter)
                         });
                     }
@@ -1512,6 +1512,17 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 
                     $scope.pieChart.render();
                     $scope.$broadcast('spinnerHide');
+
+                    // $scope.$on('outFilter', function (event, type, value){
+                    //     if ((typeof type != 'object') || (!'piechart' in type)) { return }
+                    //     var type = type['piechart'];
+                        
+                    //     console.log(event)
+                    //     console.log(type)
+                    //     console.log(value)
+                    //     $scope.pieChart.redraw();
+
+                    // })
 
                  /*   if (chartType !== "hostConnections"){
                         $(window).resize(function () {

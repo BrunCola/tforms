@@ -36,7 +36,8 @@ angular.module('mean.pages').controller('endpointUserController', ['$scope', '$s
                         return dimension.group().reduceSum(function(d) { return d.count });
                     },
                     outgoingFilter: { // Optional and ingests an array of KEYS for other visuals not of this type to match
-                        'table': 'time'
+                        'table': 'time',
+                        // 'piechart': 'lan_user'
                     }
                 }
             ]
@@ -76,7 +77,8 @@ angular.module('mean.pages').controller('endpointUserController', ['$scope', '$s
                         return dimension.group().reduceSum(function (d) { return d.count; });
                     },
                     outgoingFilter: { // Optional and ingests an array of KEYS for other visuals not of this type to match
-                        'table': 'lan_user'
+                        'table': 'lan_user',
+                        crossfilter:{'barchart' : 'lan_user' }
                     }
                 }
             ]
