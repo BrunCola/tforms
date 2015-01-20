@@ -2632,7 +2632,7 @@ table#sevTable tr{
 }
 table#sevTable tr td{
     margin: 0px;
-    padding: 3px 0px;
+    padding: 3px 3px;
 }
 table#sevTable button.tableTime{
     max-width:125px;

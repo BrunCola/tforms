@@ -921,12 +921,12 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 $scope.word = '';
                 $scope.show_hide = false;
 
+                $window.sessionStorage.clear();
                 if ($window.sessionStorage[$window.location.pathname.replace("/", '')] !== undefined) {
-                    $scope.tableColumns = angular.fromJson($window.sessionStorage[$window.location.pathname.replace("/", '')])
+                    $scope.tableColumns = angular.fromJson($window.sessionStorage[$window.location.pathname.replace("/", '')]);
                 } else {
                     window.sessionStorage.setItem($window.location.pathname.replace("/", ''), JSON.stringify($scope.tableColumns));
                 }               
-
                 // -------------------table indexing variables ------------
                 $scope.pageConstant = 50;
                 $scope.pageNumber = $scope.pageConstant;
