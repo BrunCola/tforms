@@ -970,7 +970,7 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     setTimeout(function () {
                         $window.sessionStorage.setItem($window.location.pathname.replace("/", ''), JSON.stringify($scope.tableColumns));
                         $scope.tableColumns = angular.fromJson($window.sessionStorage[$window.location.pathname.replace("/", '')])
-                    }, 0);
+                    }, 0, false);
                 }
                 
                 $scope.generateLink = function(data, column) {
