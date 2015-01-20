@@ -328,19 +328,19 @@ angular.module('mean.pages').directive('severityLevels', ['$timeout', function (
             $scope.levels = {
                 guarded: {
                     value: 0,
-                    active: false
+                    active: true
                 },
                 elevated: {
                     value: 0,
-                    active: false
+                    active: true
                 },
                 high: {
                     value: 0,
-                    active: false
+                    active: true
                 },
                 severe: {
                     value: 0,
-                    active: false
+                    active: true
                 }
             }
             // $scope.$broadcast('outFilter', params.outgoingFilter, 'severityTYPE')
@@ -350,7 +350,9 @@ angular.module('mean.pages').directive('severityLevels', ['$timeout', function (
                     if (type in activeFilters) {
                         delete activeFilters[type];
                     } else {
-                        activeFilters[type] = true;
+                        if ($scope.levels[type].value !== 0) {
+                            activeFilters[type] = true;
+                        }
                     }                    
                     // set everything other than the one selected or in our current active filters to false
                     for (var i in $scope.levels) {
@@ -372,26 +374,34 @@ angular.module('mean.pages').directive('severityLevels', ['$timeout', function (
                     }                   
                 }
                 function update() {
-                    group.top(Infinity).map(function(d){
+                    var data = group.top(Infinity);
+                    data.map(function(d){
                         switch(d.key) {
                             case 1:
                                 $scope.levels.guarded.value = d.value;
-                                $scope.levels.guarded.active = true;
                                 break;
                             case 2:
                                 $scope.levels.elevated.value = d.value;
-                                $scope.levels.elevated.active = true;
                                 break;
                             case 3:
                                 $scope.levels.high.value = d.value;
-                                $scope.levels.high.active = true;
                                 break;
                             case 4:
                                 $scope.levels.severe.value = d.value;
-                                $scope.levels.severe.active = true;
                                 break;
                         }
                     })
+                    if (data.length < 4) {
+                        var dictionary = {1: 'guarded', 2: 'elevated', 3: 'high', 4: 'severe'}
+                        var expected = [1,2,3,4];
+                        var result = data.map(function(d){ return d.key });
+                        for (var a in expected) {
+                            if (result.indexOf(expected[a]) === -1) {
+                                $scope.levels[dictionary[expected[a]]].value = 0;
+                                $scope.levels[dictionary[expected[a]]].active = false;
+                            }
+                        }
+                    }
                 }
                 update();
                 $scope.$on('crossfilter-render', function () {
