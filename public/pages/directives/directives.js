@@ -149,9 +149,9 @@ angular.module('mean.pages').directive('loadingSpinner', ['$rootScope', function
                 var spinner = new Spinner(opts).spin(target);
                 $(target).data('spinner', spinner);
                 // // /$('html, body').animate({scrollTop:0}, 'slow');
-                window.onscroll = function (event) {
-                    $('html, body').start( true, true ).animate();
-                }
+                // window.onscroll = function (event) {
+                //     $('html, body').start( true, true ).animate();
+                // }
             });
         }
     };
@@ -316,50 +316,79 @@ angular.module('mean.pages').directive('severityLevels', ['$timeout', function (
         scope : {
             title : '@'
         },
-        template : '<button ng-click="clicked(1)" style="min-width:120px" ng-class="({levels.guarded.clicked}) ? \'severity-btn btn mini alert2 alert selected\' : \'severity-btn btn mini alert2 alert\'" ><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> {{levels.guarded.value}} </span></button>',
-            // '<button ng-click="clicked(2)" style="min-width:120px" ng-class="{{levels.guarded.clicked ? \'[severity-btn, btn, mini, alert2, alert, selected]\' : \'[severity-btn, btn, mini, alert2, alert]\'}}"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> {{levels.elevated.value}} </span></button>'+
-            // '<button ng-click="clicked(3)" style="min-width:120px" ng-class="{{levels.guarded.clicked ? \'[severity-btn, btn, mini, alert2, alert, selected]\' : \'[severity-btn, btn, mini, alert2, alert]\'}}"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> {{levels.high.value}} </span></button>'+
-            // '<button ng-click="clicked(4)" style="min-width:120px" ng-class="{{levels.guarded.clicked ? \'[severity-btn, btn, mini, alert2, alert, selected]\' : \'[severity-btn, btn, mini, alert2, alert]\'}}"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> {{levels.severe.value}} </span></button>',
+        template : '<button ng-click="clicked(\'guarded\')" style="min-width:120px" ng-class="(levels.guarded.active) ? \'severity-btn btn mini alert1 alert\' : \'severity-btn btn mini alert1 alert severity-deselect\'"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> {{levels.guarded.value}} </span></button>'+
+            '<button ng-click="clicked(\'elevated\')" style="min-width:120px" ng-class="(levels.elevated.active) ? \'severity-btn btn mini alert2 alert\' : \'severity-btn btn mini alert2 alert severity-deselect\'"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> {{levels.elevated.value}} </span></button>'+
+            '<button ng-click="clicked(\'high\')" style="min-width:120px" ng-class="(levels.high.active) ? \'severity-btn btn mini alert3 alert\' : \'severity-btn btn mini alert3 alert severity-deselect\'"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> {{levels.high.value}} </span></button>'+
+            '<button ng-click="clicked(\'severe\')" style="min-width:120px" ng-class="(levels.severe.active) ? \'severity-btn btn mini alert4 alert\' : \'severity-btn btn mini alert4 alert severity-deselect\'"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> {{levels.severe.value}} </span></button>',
         transclude : true,
         link: function($scope, element, attrs) {
+            // create an empty object called active filter
+            var activeFilters = {};
+            // on load set all buttons to active
             $scope.levels = {
                 guarded: {
                     value: 0,
-                    clicked: true
+                    active: false
                 },
                 elevated: {
                     value: 0,
-                    clicked: false
+                    active: false
                 },
                 high: {
                     value: 0,
-                    clicked: false
+                    active: false
                 },
                 severe: {
                     value: 0,
-                    clicked: false
+                    active: false
                 }
             }
             // $scope.$broadcast('outFilter', params.outgoingFilter, 'severityTYPE')
             $scope.$on('severityLevels', function (event, dimension, group, params) {
-                var activeFilters = {}
                 $scope.clicked = function(type) {
-                    console.log(type)
+                    // add/remove it to/from activeFitlers
+                    if (type in activeFilters) {
+                        delete activeFilters[type];
+                    } else {
+                        activeFilters[type] = true;
+                    }                    
+                    // set everything other than the one selected or in our current active filters to false
+                    for (var i in $scope.levels) {
+                        if (!(i in activeFilters)) {
+                            $scope.levels[i].active = false;
+                        } else {
+                            if ($scope.levels[i].value !== 0) { // only activate if the value > 0
+                                $scope.levels[i].active = true;
+                            }
+                        }
+                    }
+                    // if the fitler array is empty, reactivate all the buttons
+                    if (jQuery.isEmptyObject(activeFilters)) {
+                        for (var a in $scope.levels){
+                            if ($scope.levels[a].value !== 0) { // only activate if the value > 0
+                                $scope.levels[a].active = true;
+                            }
+                        }
+                    }                   
                 }
                 function update() {
                     group.top(Infinity).map(function(d){
                         switch(d.key) {
                             case 1:
                                 $scope.levels.guarded.value = d.value;
+                                $scope.levels.guarded.active = true;
                                 break;
                             case 2:
                                 $scope.levels.elevated.value = d.value;
+                                $scope.levels.elevated.active = true;
                                 break;
                             case 3:
                                 $scope.levels.high.value = d.value;
+                                $scope.levels.high.active = true;
                                 break;
                             case 4:
                                 $scope.levels.severe.value = d.value;
+                                $scope.levels.severe.active = true;
                                 break;
                         }
                     })

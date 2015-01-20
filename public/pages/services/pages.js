@@ -456,8 +456,10 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                     params.run(result);
                                 }
                                 // add-remove data function call here
-                                params.crossfilterObj.deleteModels(params.crossfilterObj.collection());
-                                params.crossfilterObj.addModels(result.aaData);
+                                if (params.crossfilterObj.collection().length > 0) {
+                                    params.crossfilterObj.deleteModels(params.crossfilterObj.collection());
+                                    params.crossfilterObj.addModels(result.aaData);
+                                }
                             }
                         })
                     },
