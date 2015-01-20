@@ -42,7 +42,7 @@
         </span>
     </div>
     <table id="sevTable">
-        <tr><th ng-repeat="col in tableColumns"><a ng-click="tableData.sortBy(col.mData)" ng-show="showHide(col)">{{col.sTitle}}</a></th></tr>
+        <tr><th ng-repeat="col in tableColumns"><a ng-click="tableData.sortBy(col.mData); saveSortState(col.mData)" ng-show="showHide(col)">{{col.sTitle}}</a></th></tr>
         <!-- <a ng-click="makeCSV()" class="tableLeft" >Print to CSV</a> -->
         <tr ng-repeat="row in tableData.collection() | limitTo: pageNumber | limitTo: pageOffset">
             <td ng-repeat="col in tableColumns">  
