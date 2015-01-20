@@ -730,8 +730,10 @@ module.exports = function(pool) {
                     }
                 });   
             } else if (req.query.type === 'child_id') {
-                new query({query: 'SELECT `ioc`, `typeIndicator`, `type` FROM `ioc` WHERE id_child = ? ', insert: [req.query.ioc_childID]}, {database: 'cyrin', pool: pool}, function(err,data){
+                new query({query: 'SELECT `ioc`, `typeIndicator`, `type` FROM `ioc` WHERE `id_child` = ? ', insert: [req.query.ioc_childID]}, {database: 'cyrin', pool: pool}, function(err,data){
                     if (data) {
+                        console.log("data")
+                        console.log(req.query.ioc_childID)
                         //need to know if only IP is given, or both IP and Port
                         var ioc_ip;
                         var ioc_port;
@@ -771,6 +773,8 @@ module.exports = function(pool) {
                         
 
                         res.json({data: ui_data, highlight: toHighlight});
+                    } else {
+                        console.log("no data")
                     }
                 });  
             } else if (req.query.type === 'assets') {

@@ -154,8 +154,6 @@ module.exports = function (sql, queries, conn, callback) {
                     } else {
                         result.forEach(function(data){
                             for(var i = 0; i < nodes.length; i++) {
-                                console.log(nodes[i])
-                                console.log(data.cois)
                                 if ((nodes[i].name+"COI" === data.cois) || (nodes[i].name === data.cois)){
                                     nodes[i].rules = [{
                                         rule: data.rule, 

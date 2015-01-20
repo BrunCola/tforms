@@ -15,7 +15,6 @@ module.exports = function (params, conn, callback) {
 		});
 		connection.query(params.query, params.insert)
 			.on('result', function(data){
-				console.log(data)
 				data.class = params.sClass;
 				data.title = params.title;
 				data.id = count++;

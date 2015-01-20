@@ -8,7 +8,6 @@ module.exports = function (params, conn, callback) {
 	var src = []; //unique nodes
 	var links = []; //{source, target, value}
 	var totalCount = 0;
-	console.log(params.insert)
 	conn.pool.getConnection(function(err, connection) {
 		connection.changeUser({database : conn.database}, function(err) {
 			if (err) throw err;

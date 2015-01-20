@@ -237,7 +237,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                     }
                     // -- handles the beginging of a user being dragged
                     function dragstarted(d) {
-
                         d3.event.sourceEvent.stopPropagation();
                         d3.select(this).classed("dragging", true);
                         userDiv.selectAll('button').each(function(d){
@@ -324,6 +323,7 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                 .attr("class", function(d){
                                     return 'userTrans-'+d.id;
                                 })
+                                .call(drag)
                             .append('xhtml:button').each(function(d){
                                 var iconColour = '#29ABE2'; 
                                 var name = d.lan_machine;
@@ -571,7 +571,6 @@ angular.module('mean.pages').directive('makeFloorPlan', ['$timeout', '$rootScope
                                      var elm2 = $(this);
                                     // console.log(el)
                                      //console.log(elm2[0])
-
 
                                     el.draggable = true;
                                     el.addEventListener(
@@ -1350,7 +1349,7 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                                             var elm = d3.select(this);
                                             $(elm[0]).removeClass('selected');
                                         })
-                                        el.classList.add('selected');
+                                        this.classList.add('selected');
                                         lastUserRequeried = d.id;
                                     });
                                 var element = elm
@@ -1546,7 +1545,36 @@ angular.module('mean.pages').directive('makeAllFloorPlan', ['$timeout', '$rootSc
                                         .on('blur', function(e){
                                             doneEditing(elm, e, this.value)
                                         })
-                                        //.html(name+"");                               
+                                        //.html(name+""); 
+
+                                var el = elel[0];
+
+                                     var elm2 = $(this);
+                                    // console.log(el)
+                                     //console.log(elm2[0])
+
+                                    el.draggable = true;
+                                    el.addEventListener(
+                                        'dragstart',
+                                        function(e) {
+                                            e.dataTransfer.effectAllowed = 'move';
+                                            e.dataTransfer.setData('Text', this.id);
+                                            this.classList.add('drag');
+                                            return false;
+                                        },
+                                        false
+                                    );
+
+                                    el.addEventListener(
+                                        'dragend',
+                                        function(e) {
+                                            $scope.requery(d, 'flooruser');
+                                            lastUserRequeried = d.id;
+                                            this.classList.remove('drag');
+                                            return false;
+                                        },
+                                        false
+                                    );                              
                             });
                         userDiv.style('height', (count+1)*nodeHeight+'px');
 
@@ -2145,7 +2173,34 @@ angular.module('mean.pages').directive('makeBuildingPlan', ['$timeout', '$rootSc
                                         })
                                         //.html(name+"");
     
-                                var el = elel[0];                               
+                                var el = elel[0]; 
+
+                                 var elm2 = $(this);
+                                // console.log(el)
+                                 //console.log(elm2[0])
+
+                                el.draggable = true;
+                                el.addEventListener(
+                                    'dragstart',
+                                    function(e) {
+                                        e.dataTransfer.effectAllowed = 'move';
+                                        e.dataTransfer.setData('Text', this.id);
+                                        this.classList.add('drag');
+                                        return false;
+                                    },
+                                    false
+                                );
+
+                                el.addEventListener(
+                                    'dragend',
+                                    function(e) {
+                                        $scope.requery(d, 'flooruser');
+                                        lastUserRequeried = d.id;
+                                        this.classList.remove('drag');
+                                        return false;
+                                    },
+                                    false
+                                );                              
                             });
                         userDiv.style('height', (count+1)*nodeHeight+'px');
 
