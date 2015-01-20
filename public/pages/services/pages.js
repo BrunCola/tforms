@@ -290,6 +290,17 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                     $scope.$broadcast('barchart', dimension, group, 'stealthtraffic', params);
                                     break;
                             }
+
+                            // $scope.$on('outFilter', function (event, type, value){
+                            //     if ((typeof type != 'object') || (!'barchart' in type.crossfilter)) { return }
+                            //     var type = type.crossfilter['barchart'];                                
+                            //     // console.log(event)
+                            //     // console.log(type)
+                            //     // console.log(value)
+                            //     // crossfilterObj.dimension.filter(function (d) {
+                            //     //     console.log(d)
+                            //     // })
+                            // })
                         },
                         piechart: function(params, crossfilterObj) {
                             var group = false;
