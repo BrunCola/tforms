@@ -73,7 +73,7 @@ angular.module('mean.pages').factory('dateRange', ['$state', '$location',
 ]);
 
 // this runs on header load to see if realtime should be activated
-// NOTE.. add check to see if it has already been actived on a previous page (rootscope) 
+// NOTE.. add check to see if it has already been actived on a previous page (rootscope)
 angular.module('mean.pages').factory('realTimeCheck', ['$state', '$window', '$rootScope', '$location',
     function($state, $window, $rootScope, $location) {
         return function(callback) {
@@ -154,6 +154,26 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                 //     }
                 //     return;
                 // },
+                checkFilter_: function(type, value, activeFilters, callback) {
+                    if (type in activeFilters) { // if type is already defined
+                        var index = activeFilters[type].indexOf(value);
+                        if (index !== -1) { // if value is already in type
+                            // remove it
+                            activeFilters[type].splice(index, 1);
+                            // delete array if its empty
+                            callback();
+                            return;
+                        } else { // if no value in type
+                            activeFilters[type].push(value);
+                            callback();
+                            return;
+                        }
+                    } else { // no type in filter
+                        activeFilters[type] = [value];
+                        callback();
+                        return;
+                    }
+                },
                 getData_: function(vis, time, callback) {
                     // TODO - ADD viz.GETparams to time if exists
                     var Rest, timeParam = {};
@@ -234,19 +254,19 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             for (var i in params.visuals) {
                                 switch (params.visuals[i].type) {
                                     case 'rowchart':
-                                       this_.draw_.rowchart(params.visuals[i], params.crossfilterObj);
+                                       this_.draw_.rowchart(params.visuals[i], params.crossfilterObj, searchDimension);
                                         break;
                                     case 'barchart':
-                                       this_.draw_.barchart(params.visuals[i], params.crossfilterObj);
+                                       this_.draw_.barchart(params.visuals[i], params.crossfilterObj, searchDimension);
                                         break;
-                                    case 'piechart':
-                                       this_.draw_.piechart(params.visuals[i], params.crossfilterObj);
+                                     case 'piechart':
+                                       this_.draw_.piechart(params.visuals[i], params.crossfilterObj, searchDimension);
                                         break;
                                     case 'geochart':
-                                       this_.draw_.geochart(params.visuals[i], params.crossfilterObj);
+                                       this_.draw_.geochart(params.visuals[i], params.crossfilterObj, searchDimension);
                                         break;
                                     case 'severityLevels':
-                                       this_.draw_.severityLevels(params.visuals[i], params.crossfilterObj);
+                                       this_.draw_.severityLevels(params.visuals[i], params.crossfilterObj, searchDimension);
                                         break;
                                 }
                             }
@@ -261,7 +281,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                         })
                     },
                     draw_: {
-                        rowchart: function(params, crossfilterObj) {
+                        rowchart: function(params, crossfilterObj, searchDimension) {
                             var group = false;
                             var dimension = params.dimension(crossfilterObj);
                             if (params.group && (typeof params.group === 'function')) {
@@ -269,7 +289,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             }
                             $scope.$broadcast('rowchart', dimension, group, 'severity', params);
                         },
-                        barchart: function(params, crossfilterObj) {
+                        barchart: function(params, crossfilterObj, searchDimension) {
                             var group = false;
                             var dimension = params.dimension(crossfilterObj);
                             if (params.group && (typeof params.group === 'function')) {
@@ -290,19 +310,8 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                     $scope.$broadcast('barchart', dimension, group, 'stealthtraffic', params);
                                     break;
                             }
-
-                            // $scope.$on('outFilter', function (event, type, value){
-                            //     if ((typeof type != 'object') || (!'barchart' in type.crossfilter)) { return }
-                            //     var type = type.crossfilter['barchart'];                                
-                            //     // console.log(event)
-                            //     // console.log(type)
-                            //     // console.log(value)
-                            //     // crossfilterObj.dimension.filter(function (d) {
-                            //     //     console.log(d)
-                            //     // })
-                            // })
                         },
-                        piechart: function(params, crossfilterObj) {
+                        piechart: function(params, crossfilterObj, searchDimension) {
                             var group = false;
                             var dimension = params.dimension(crossfilterObj);
                             if (params.group && (typeof params.group === 'function')) {
@@ -318,7 +327,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                     break;
                             }
                         },
-                        geochart: function(params, crossfilterObj) {
+                        geochart: function(params, crossfilterObj, searchDimension) {
                             var group = false;
                             var dimension = params.dimension(crossfilterObj);
                             if (params.group && (typeof params.group === 'function')) {
@@ -326,7 +335,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             }
                             $scope.$broadcast('geoChart', dimension, group, 'geo', params);
                         },
-                        severityLevels: function(params, crossfilterObj) {
+                        severityLevels: function(params, crossfilterObj, searchDimension) {
                             var group = false;
                             var dimension = params.dimension(crossfilterObj);
                             if (params.group && (typeof params.group === 'function')) {
@@ -361,7 +370,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 }
                                 // // add-remove data function call here
                                 params.crossfilterObj.add(result);
-                            }            
+                            }
                         })
                         //////////////////////////////////
                         /// filter and delete old data ///
@@ -406,11 +415,11 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                             if (result) {
                                 if (params.run && (typeof params.run === 'function')) {
                                     params.run(result);
-                                }                                
+                                }
                                 // create sort dimensions for table coulumns
                                 var dimensions = [];
                                 if (result.params.length > 0) { // check if the there are any columns (remember it should always exist since we're in table maker)
-                                    for (var n in result.params) {  
+                                    for (var n in result.params) {
                                         var dim = result.params[n].mData;
                                         // push all dimension names to array
                                         if (dim !== null) {
@@ -442,12 +451,12 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 params.crossfilterObj.addModels(result.aaData);
                             }
                             this_.draw_(result, params, dimensions);
-                            
+
                         })
                     },
                     draw_: function(result, params, dimensions) {
                         var _this = this;
-                        params.activeFilters = {}; // this may need to be moved for when requery function is built 
+                        params.activeFilters = {}; // this may need to be moved for when requery function is built
                         // $scope.tableData = params.crossfilterObj;
                         $scope.$broadcast('sevTable', result, params);
                         // init wait for incoming dataPicker updated broadcast
@@ -467,8 +476,10 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                     params.run(result);
                                 }
                                 // add-remove data function call here
-                                params.crossfilterObj.deleteModels(params.crossfilterObj.collection());
-                                params.crossfilterObj.addModels(result.aaData);
+                                if (params.crossfilterObj.collection().length > 0) {
+                                    params.crossfilterObj.deleteModels(params.crossfilterObj.collection());
+                                    params.crossfilterObj.addModels(result.aaData);
+                                }
                             }
                         })
                     },
@@ -541,7 +552,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                     var end = new Date().getTime() / 1000;
                                     var start = end - (refreshRate / 1000);
                                     var time = {
-                                        remove: end - (3600*24), 
+                                        remove: end - (3600*24),
                                         query: {
                                             // get current time minus refresh rate
                                             start: start,
@@ -699,7 +710,7 @@ angular.module('mean.pages').factory('laneRowSymbols', [
     function() {
         var laneRowSymbols = function(type, element, color1, color2) {
             switch(type){
-                case 'Conn':  
+                case 'Conn':
                     element.append('svg:polygon')
                         .attr('points', '24.585,6.299 24.585,9.064 11.195,9.064 11.195,14.221 24.585,14.221 24.585,16.986 31.658,11.643 ')
                         .attr('fill', color1);
@@ -707,7 +718,7 @@ angular.module('mean.pages').factory('laneRowSymbols', [
                         .attr('points', '10.99,17.822 3.916,23.166 10.99,28.51 10.99,25.744 24.287,25.744 24.287,20.59 10.99,20.59 ')
                         .attr('fill', color1);
                     return;
-                case 'IOC Severity':    
+                case 'IOC Severity':
                     element.append('svg:polygon')
                         .attr('transform', 'translate(0, 3)')
                         .attr('points', '18.155,3.067 5.133,26.932 31.178,26.932 ')
@@ -724,7 +735,7 @@ angular.module('mean.pages').factory('laneRowSymbols', [
                         .attr('width', 2.838)
                         .attr('height', 2.448);
                     return;
-                case 'DNS': 
+                case 'DNS':
                     element.append('svg:path')
                         .attr('d', 'M20.909,13.115c0-0.07,0-0.106-0.071-0.106c-0.283,0-6.022,0.813-7.935,0.956'+
                             'c-0.036,0.955-0.071,2.053-0.071,3.009l2.267,0.106v8.707c0,0.071-0.035,0.143-0.142,0.178l-1.877,0.07'+
@@ -736,7 +747,7 @@ angular.module('mean.pages').factory('laneRowSymbols', [
                             'c-1.948,0-3.259,1.451-3.259,2.938C14.391,9.611,15.949,10.921,17.473,10.921z')
                         .attr('fill', color1);
                     return;
-                case 'HTTP': 
+                case 'HTTP':
                     element.append('circle')
                         .style('fill', color1)
                         .attr('cx', 18)
@@ -761,7 +772,7 @@ angular.module('mean.pages').factory('laneRowSymbols', [
                         'v11.8h17.8V16.1H25.5z M22.9,13.7v2.4h-9.4v-2.4c0,0,0,0,0,0c0-2.6,1.5-5,4.7-5C21.3,8.8,22.9,11.1,22.9,13.7'+
                         'C22.9,13.7,22.9,13.7,22.9,13.7z');
                     return;
-                case 'Endpoint': 
+                case 'Endpoint':
                     element.append('svg:path')
                         .attr('d', 'M28.649,8.6H7.351c-0.684,0-1.238,0.554-1.238,1.238v14.363c0,0.684,0.554,1.238,1.238,1.238h7.529'+
                             'l-1.09,3.468v0.495h8.419v-0.495l-1.09-3.468h7.529c0.684,0,1.237-0.555,1.237-1.238V9.838C29.887,9.153,29.333,8.6,28.649,8.6z'+
@@ -809,7 +820,7 @@ angular.module('mean.pages').factory('laneRowSymbols', [
                             'c1.146,0,2.19-0.821,2.383-1.871l1.399-7.859C31.778,14.706,31.227,13.848,29.697,13.898z')
                         .attr('fill', color1);
                     return;
-                case 'Applications': 
+                case 'Applications':
                     element.append('rect')
                         .attr('x', 10)
                         .attr('y', 10)
@@ -849,8 +860,8 @@ angular.module('mean.pages').factory('laneRowSymbols', [
 //      return appIcon;
 //  }
 // ]);
-// 
-// 
+//
+//
 
 angular.module('mean.pages').factory('treeIcon', [
     function() {
@@ -1759,7 +1770,7 @@ angular.module('mean.pages').factory('appIcon', [
                     em
                         .append('polygon')
                         .style('fill', '#EC2227')
-                        .attr('points', '22.926,16.321 20.339,18.913 17.725,16.311 16.12,16.316 '+ 
+                        .attr('points', '22.926,16.321 20.339,18.913 17.725,16.311 16.12,16.316 '+
                         '16.12,22.629 17.428,22.629 17.432,17.672 20.37,20.168 23.363,17.631 23.363,22.629 24.576,22.629 24.576,16.316 ');
                     return div;
                 case 'amazon':
@@ -1836,7 +1847,7 @@ angular.module('mean.pages').factory('appIcon', [
                     em
                         .append('polygon')
                         .style('fill', '#397ABE')
-                        .attr('points', '21.397,19.972 17.047,23.173 14.833,21.833 14.833,22.849 21.382,27.224 28.08,22.878 28.08,21.833 '+ 
+                        .attr('points', '21.397,19.972 17.047,23.173 14.833,21.833 14.833,22.849 21.382,27.224 28.08,22.878 28.08,21.833 '+
                         '25.794,23.298 ');
                     em
                         .append('path')
@@ -3134,7 +3145,7 @@ angular.module('mean.pages').factory('mimeIcon', [
                             return div;
                         case 'x-debian-package':
                             em
-                                .append('polygon') 
+                                .append('polygon')
                                 .style('fill', '#c3c3c3')
                                 .attr('points', '10.467,25.523 10.769,37.056 21.318,40.852 33.12,36.923 33.501,26.235 21.446,28.821 ');
                             em
@@ -3321,7 +3332,7 @@ angular.module('mean.pages').factory('mimeIcon', [
                     em
                         .append('polygon')
                         .style('fill', '#D0C7FF')
-                        .attr('points', '27.774,16.602 23.422,9.973 27.263,4.023 23.643,4.023 21.552,7.61 19.394,4.023 15.756,4.023 '+ 
+                        .attr('points', '27.774,16.602 23.422,9.973 27.263,4.023 23.643,4.023 21.552,7.61 19.394,4.023 15.756,4.023 '+
                         '19.648,9.905 15.246,16.602 18.833,16.602 21.417,12.148 24.136,16.602 ');
                     em
                         .append('path')
@@ -3394,7 +3405,7 @@ angular.module('mean.pages').factory('mimeIcon', [
                                 .attr('font-family', 'ITCAvantGardeStd-Bk')
                                 .attr('font-size', 14)
                                 .text('asm');
-                            return div;                 
+                            return div;
                         case 'troff':
                             em
                                 .append('text')

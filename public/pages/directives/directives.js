@@ -29,7 +29,7 @@ angular.module('mean.pages').directive('iocDesc', function() {
                     $(element).on('click', function(){
                         $scope.description(description);
                     });
-                }                                
+                }
             });
         }
     };
@@ -149,9 +149,9 @@ angular.module('mean.pages').directive('loadingSpinner', ['$rootScope', function
                 var spinner = new Spinner(opts).spin(target);
                 $(target).data('spinner', spinner);
                 // // /$('html, body').animate({scrollTop:0}, 'slow');
-                window.onscroll = function (event) {
-                    $('html, body').start( true, true ).animate();
-                }
+                // window.onscroll = function (event) {
+                //     $('html, body').start( true, true ).animate();
+                // }
             });
         }
     };
@@ -316,37 +316,92 @@ angular.module('mean.pages').directive('severityLevels', ['$timeout', function (
         scope : {
             title : '@'
         },
-        template : '<button style="min-width:120px" class="severity-btn btn mini alert1 alert"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> {{levels.guarded}} </span></button>'+
-            '<button style="min-width:120px" class="severity-btn btn mini alert2 alert"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> {{levels.elevated}} </span></button>'+
-            '<button style="min-width:120px" class="severity-btn btn mini alert3 alert"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> {{levels.high}} </span></button>'+
-            '<button style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> {{levels.severe}} </span></button>',
+        template : '<button ng-click="clicked(\'guarded\')" style="min-width:120px" ng-class="(levels.guarded.active) ? \'severity-btn btn mini alert1 alert\' : \'severity-btn btn mini alert1 alert severity-deselect\'"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> {{levels.guarded.value}} </span></button>'+
+            '<button ng-click="clicked(\'elevated\')" style="min-width:120px" ng-class="(levels.elevated.active) ? \'severity-btn btn mini alert2 alert\' : \'severity-btn btn mini alert2 alert severity-deselect\'"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> {{levels.elevated.value}} </span></button>'+
+            '<button ng-click="clicked(\'high\')" style="min-width:120px" ng-class="(levels.high.active) ? \'severity-btn btn mini alert3 alert\' : \'severity-btn btn mini alert3 alert severity-deselect\'"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> {{levels.high.value}} </span></button>'+
+            '<button ng-click="clicked(\'severe\')" style="min-width:120px" ng-class="(levels.severe.active) ? \'severity-btn btn mini alert4 alert\' : \'severity-btn btn mini alert4 alert severity-deselect\'"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> {{levels.severe.value}} </span></button>',
         transclude : true,
         link: function($scope, element, attrs) {
+            // create an empty object called active filter
+            var activeFilters = {};
+            // on load set all buttons to active
             $scope.levels = {
-                guarded: 0,
-                elevated: 0,
-                high: 0,
-                severe: 0
+                guarded: {
+                    value: 0,
+                    active: true
+                },
+                elevated: {
+                    value: 0,
+                    active: true
+                },
+                high: {
+                    value: 0,
+                    active: true
+                },
+                severe: {
+                    value: 0,
+                    active: true
+                }
             }
             // $scope.$broadcast('outFilter', params.outgoingFilter, 'severityTYPE')
             $scope.$on('severityLevels', function (event, dimension, group, params) {
+                $scope.clicked = function(type) {
+                    // add/remove it to/from activeFitlers
+                    if (type in activeFilters) {
+                        delete activeFilters[type];
+                    } else {
+                        if ($scope.levels[type].value !== 0) {
+                            activeFilters[type] = true;
+                        }
+                    }
+                    // set everything other than the one selected or in our current active filters to false
+                    for (var i in $scope.levels) {
+                        if (!(i in activeFilters)) {
+                            $scope.levels[i].active = false;
+                        } else {
+                            if ($scope.levels[i].value !== 0) { // only activate if the value > 0
+                                $scope.levels[i].active = true;
+                            }
+                        }
+                    }
+                    // if the fitler array is empty, reactivate all the buttons
+                    if (jQuery.isEmptyObject(activeFilters)) {
+                        for (var a in $scope.levels){
+                            if ($scope.levels[a].value !== 0) { // only activate if the value > 0
+                                $scope.levels[a].active = true;
+                            }
+                        }
+                    }
+                }
                 function update() {
-                    group.top(Infinity).map(function(d){
+                    var data = group.top(Infinity);
+                    data.map(function(d){
                         switch(d.key) {
                             case 1:
-                                $scope.levels.guarded = d.value;
+                                $scope.levels.guarded.value = d.value;
                                 break;
                             case 2:
-                                $scope.levels.elevated = d.value;
+                                $scope.levels.elevated.value = d.value;
                                 break;
                             case 3:
-                                $scope.levels.high = d.value;
+                                $scope.levels.high.value = d.value;
                                 break;
                             case 4:
-                                $scope.levels.severe = d.value;
+                                $scope.levels.severe.value = d.value;
                                 break;
                         }
                     })
+                    if (data.length < 4) {
+                        var dictionary = {1: 'guarded', 2: 'elevated', 3: 'high', 4: 'severe'}
+                        var expected = [1,2,3,4];
+                        var result = data.map(function(d){ return d.key });
+                        for (var a in expected) {
+                            if (result.indexOf(expected[a]) === -1) {
+                                $scope.levels[dictionary[expected[a]]].value = 0;
+                                $scope.levels[dictionary[expected[a]]].active = false;
+                            }
+                        }
+                    }
                 }
                 update();
                 $scope.$on('crossfilter-render', function () {
@@ -466,7 +521,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
             var csv = "data:text/csv;&charset=utf-8,";
             function makeCsv(array, heading){
                 csv += heading;
-                // new line 
+                // new line
                 csv += '\n';
                 if (array.length > 0) {
                     // get object 0 length
@@ -574,7 +629,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                             var newVar = aData.mailfrom.replace(/[\<\>]/g,'');
                             $('td:eq('+$scope.r.indexOf("mailfrom")+')', nRow).html(newVar);
                         }
-                        if ((aData.lan_stealth !== undefined) && ($scope.r.indexOf('lan_stealth') !== -1)) {      
+                        if ((aData.lan_stealth !== undefined) && ($scope.r.indexOf('lan_stealth') !== -1)) {
                             if (aData.lan_stealth > 0){
                                 $('td:eq('+$scope.r.indexOf("lan_stealth")+')', nRow).html('<span style="color:#000" class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i style="color:#fff" class="fa fa-shield fa-stack-1x fa-inverse"></i></span>');
                             }else {
@@ -598,13 +653,13 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                         if (aData.lan_ip && $scope.r.indexOf('lan_ip') !== -1) {
                             $('td:eq('+$scope.r.indexOf("lan_ip")+')', nRow).html(aData.lan_ip);
                         }
-                        if (aData.file !== undefined) {                                        
+                        if (aData.file !== undefined) {
                             if (aData.file && $scope.r.indexOf('file') !== -1) {
-                                if (aData.file > 0){                                                
-                                    $('td:eq('+$scope.r.indexOf("file")+')', nRow).html(aData.file);    
+                                if (aData.file > 0){
+                                    $('td:eq('+$scope.r.indexOf("file")+')', nRow).html(aData.file);
                                 }
                             } else {
-                                $('td:eq('+$scope.r.indexOf("file")+')', nRow).html("0"); 
+                                $('td:eq('+$scope.r.indexOf("file")+')', nRow).html("0");
                             }
                         }
                         if (notReport) {
@@ -645,9 +700,9 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                                     $('td:eq('+$scope.r.indexOf($scope.e[c].mData)+')', nRow).html("<button class='bPage btn btn-link' type='button' value='"+links+"' href=''>"+timeFormat(aData[$scope.e[c].mData], 'tables')+"</button>");
                                                 }
                                             break;
-                                        }  
-                                    }   
-                                }                                         
+                                        }
+                                    }
+                                }
                             }
                         }
                     },
@@ -681,7 +736,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                                 var rowData = JSON.parse(this.value);
                                 $scope.uploadOpen(rowData);
                             });
-                            
+
                             $scope.country = [];
                             $scope.ioc = [];
                             $scope.severity = [];
@@ -701,7 +756,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                 //     $('#table').dataTable().fnAddData(dimension.top(Infinity));
                 //     $('#table').dataTable().fnDraw();
                 // });
-                
+
                 $scope.$on('table-redraw', function (event, term){
                     console.log(event)
                     console.log(term)
@@ -710,7 +765,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 
                 $.fn.dataTableExt.sErrMode = 'throw';
 
-                $('.bCsv').on('click',function(){                                     
+                $('.bCsv').on('click',function(){
                     var array = [];
                     for (var i in data.aaData) {
                         //need to sort each value set into the order of the columns
@@ -719,7 +774,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                             for (var property in data.aaData[i]) {
                                 if (data.params[p].mData == property) {
                                     sortedRow.push(data.aaData[i][property]);
-                                } 
+                                }
                             }
                         }
                         array.push(sortedRow);//push each sorted row as an array to the main array
@@ -733,7 +788,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                         }
                     }
                     //add the header row to the start of the array
-                    array.unshift(headerRow);//array[0] will be the array of column headers 
+                    array.unshift(headerRow);//array[0] will be the array of column headers
                     makeCsv(array, data.title);//create the csv
                     var fileName = $location.url().replace("/", "");
                     //create the download
@@ -752,7 +807,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 
                 if (navigator.msSaveBlob) { // IE10
                     return navigator.msSaveBlob(new Blob([strData], {type: strMimeType}), strFileName);
-                } 
+                }
 
                 if ('download' in a) { //html5 A[download]
                     a.href = "data:" + strMimeType + "," + encodeURIComponent(strData);
@@ -764,7 +819,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                         D.body.removeChild(a);
                     }, 66);
                     return true;
-                } 
+                }
 
                 //do iframe dataURL download (old ch+FF):
                 var f = D.createElement("iframe");
@@ -775,7 +830,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                     D.body.removeChild(f);
                 }, 333);
                 return true;
-            } 
+            }
         }
     };
 }]);
@@ -829,7 +884,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 //                 $scope.toggle =  function(pid) {
 //                     if (pid === $scope.openId) {
 //                         $scope.openId = -1;
-//                     } else { 
+//                     } else {
 //                         $scope.openId = pid;
 //                     }
 //                 }
@@ -862,39 +917,39 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
 //         }
 //     };
 // }]);
-// 
+//
 // angular.module('mean.pages').directive('customSort', ['$filter', function ($filter) {
 //     return {
 //         restrict: 'A',
-//         transclude: true,    
+//         transclude: true,
 //         scope: {
 //           order: '=',
 //           sort: '='
 //         },
-//         template : 
+//         template :
 //           ' <a ng-click="sort_by(order)" style="color: #555555;">'+
 //           '    <span ng-transclude></span>'+
 //           '    <i ng-class="selectedCls(order)"></i>'+
 //           '</a>',
-//         link: function(scope) {                
+//         link: function(scope) {
 //             // change sorting order
-//             scope.sort_by = function(newSortingOrder) {       
+//             scope.sort_by = function(newSortingOrder) {
 //                 var sort = scope.sort;
-                
+
 //                 if (sort.sortingOrder == newSortingOrder){
 //                     sort.reverse = !sort.reverse;
-//                 }                    
+//                 }
 
-//                 sort.sortingOrder = newSortingOrder;        
+//                 sort.sortingOrder = newSortingOrder;
 //             };
 //             scope.selectedCls = function(column) {
 //                 if(column == scope.sort.sortingOrder){
 //                     return ('icon-chevron-' + ((scope.sort.reverse) ? 'down' : 'up'));
 //                 }
-//                 else{            
-//                     return'icon-sort' 
-//                 } 
-//             };      
+//                 else{
+//                     return'icon-sort'
+//                 }
+//             };
 //         }// end link
 //     }
 // }]);
@@ -918,15 +973,14 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 $scope.tableData.sortBy($scope.tableColumns[result.sort[0][0]].mData, result.sort[0][1]);
 
                 $scope.tableData.collection().map(function(d) {d.time = timeFormat(d.time, 'tables')})
-                $scope.words = {};
-                $scope.word = '';
                 $scope.show_hide = false;
 
                 if ($window.sessionStorage[$window.location.pathname.replace("/", '')] !== undefined) {
                     $scope.tableColumns = angular.fromJson($window.sessionStorage[$window.location.pathname.replace("/", '')]);
                 } else {
                     window.sessionStorage.setItem($window.location.pathname.replace("/", ''), JSON.stringify($scope.tableColumns));
-                }               
+                }
+
                 // -------------------table indexing variables ------------
                 $scope.pageConstant = 50;
                 $scope.pageNumber = $scope.pageConstant;
@@ -937,8 +991,8 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 $scope.nextButton = false;
                 $scope.prevButton = true;
                 // ^^^^^^^^^^^^^^^^^^^ table indexing variables ^^^^^^^^^^
-                // 
-                // 
+                //
+                //
 
                 $scope.toggleShow = function () {
                     if ($scope.show_hide) {
@@ -962,7 +1016,7 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     }
                     $scope.currentIndex = Math.ceil($scope.pageNumber/$scope.pageConstant);
                     $scope.maxIndex = Math.ceil($scope.maxLength/$scope.pageConstant);
-                    checkButtons(); 
+                    checkButtons();
                     $scope.$broadcast('spinnerHide');
                 }, true);
 
@@ -1000,14 +1054,14 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     } else {
                         $scope.prevButton = false;
                         $scope.nextButton = false;
-                    } 
+                    }
                 }
 
                 $scope.decreasePage = function(n) {
                     $scope.pageNumber += n;
                     if ($scope.pageNumber <= $scope.pageConstant) {
                         $scope.pageNumber = $scope.pageConstant;
-                    } 
+                    }
                     $scope.pageOffset = -$scope.pageConstant;
                     checkButtons();
                     $scope.currentIndex = Math.ceil($scope.pageNumber/$scope.pageConstant);
@@ -1025,7 +1079,7 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     } else {
                         $scope.pageOffset = -$scope.pageConstant;
                     }
-                    checkButtons(); 
+                    checkButtons();
                     if ($scope.pageNumber >= $scope.maxLength) {
                         $scope.pageNumber = ($scope.maxLength);
                     }
@@ -1040,7 +1094,7 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     if (filters===null) {return true}
                     if (((Date.parse(filters[0])/1000) <= value) && ((Date.parse(filters[1])/1000) >= value)) {
                         return true;
-                    }             
+                    }
                 }
                 function checkFilter(type, value, callback) {
                     if (type in activeFilters) { // if type is already defined
@@ -1082,44 +1136,9 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                         })
                     }
                 })
-                
                 //////////////////////////////
-                //////  TABLE UPDATING  //////
+                //////  TABLE BUTTONS   //////
                 //////////////////////////////
-                // $scope.$on('updateTable', function(params) {
-                //     $scope.tableData = params.crossfilterObj;
-                // });
-                // setTimeout(function(){
-                //     console.log('running')
-                //     $scope.tableData.deleteModels();
-                //     console.log($scope.tableData.collection())
-                // }, 5000)
-
-                /**
-                 * @method toggleCountFilter
-                 * @param count {Number}
-                 * @return {void}
-                 */
-                // $scope.toggleCountFilter = function toggleCountFilter(count) {
-                //     if ($scope.currentCountFilter == count) {
-                //         $scope.currentCountFilter = null;
-                //         $scope.words.unfilterBy('wordCount');
-                //         return;
-                //     }
-                //     $scope.currentCountFilter = count;
-                //     $scope.words.filterBy('wordCount', count);
-                // };
-
-                // Fetch all of the words to create the Crossfilter from.
-                // $http.get('words.json').then(function then(response) {
-                //     // Voila!
-                //     $scope.words = new Crossfilter(response.data, '$id', 'persistent');
-                //     $scope.words.addDimension('wordCount', function wordCount(model) {
-                //         return model.word.length;
-                //     });
-                //     $scope.countGrouped = $scope.words.groupBy('wordCount');
-                // });
-
                 $scope.generateButton = function(type, data) {
                     switch(type){
                         case 'Archive':
@@ -1134,12 +1153,11 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                                     $scope.tableData.deleteModel(data);
                                 })
                         break;
-                        case 'Upload Image':     
+                        case 'Upload Image':
                             $scope.uploadOpen(data);
                         break;
                     }
                 }
-
                 /**
                  * @method applyWordFilter
                  * @param word {String}
@@ -1294,8 +1312,6 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     }, 333);
                     return true;
                 }
-
-
             })
         }
     };
@@ -1476,11 +1492,11 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                     //                         arr.push(dimension.top(Infinity)[i].lan_user + dimension.top(Infinity)[i].lan_zone + dimension.top(Infinity)[i].lan_ip);
                     //                     }
                     //                 }
-                    //                 $scope.tableData.filter(function(d) { 
+                    //                 $scope.tableData.filter(function(d) {
                     //                     if (d.pie_dimension !== undefined) {
-                    //                         return arr.indexOf(d.pie_dimension) >= 0; 
+                    //                         return arr.indexOf(d.pie_dimension) >= 0;
                     //                     } else if (d.l7_proto !== undefined) {
-                    //                         return arr.indexOf(d.l7_proto) >= 0; 
+                    //                         return arr.indexOf(d.l7_proto) >= 0;
                     //                     } else {
                     //                         return (arr.indexOf(d.lan_user+d.lan_zone+d.lan_ip)) >= 0;
                     //                     }
@@ -1489,11 +1505,13 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 
                     //             }, 400, "filterWait");
                     //         })
-                    // }         
+                    // }
 
                     if (filter == true) {
                         $scope.pieChart.on("filtered", function(chart, filter){
-                            $scope.$broadcast('outFilter', params.outgoingFilter, filter)
+                            // console.log(chart)
+                            // console.log(filter)
+                            // $scope.$broadcast('outFilter', params, filter)
                         });
                     }
                     $scope.pieChart
@@ -1846,8 +1864,6 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                             $scope.barChart.render();
                         })      
                     }
-                   
-                   
 
                     $scope.$on('crossfilter-redraw', function (event, time) {
                         if (time) {
@@ -1860,7 +1876,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                         currentTime(function(time){
                             $scope.barChart.x(d3.time.scale().domain([moment.unix(time.start), moment.unix(time.end)]))
                             $scope.barChart.render();
-                        })  
+                        })
                     })
                         // $scope.$broadcast('spinnerHide');
                         // $(window).resize(function () {
@@ -2251,7 +2267,7 @@ angular.module('mean.pages').directive('makeForceChart', ['$timeout', '$rootScop
                     }
 
                     var circleWidth = 5;
-                    
+
                     var vis = d3.select("#forcechart")
                         .append("svg:svg")
                         .attr("class", "stage")
@@ -2421,7 +2437,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         var scale = (maxv-minv) / (maxp-minp);
                         return Math.exp(minv + scale*(x-minp));
                     }
-                    
+
                     // define the zoomListener which calls the zoom function on the "zoom" event constrained within the scaleExtents
                     var zoomListener = d3.behavior.zoom().scaleExtent([0.7, 3]).on("zoom", zoom);
 
@@ -2440,14 +2456,14 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                     var force = d3.layout.force()
                         .nodes(data.nodes)
                         .links(data.links)
-                        .gravity(function(d) { 
+                        .gravity(function(d) {
                             if (d.class === 'child') {
                                return  0.2;
                             } else {
                                return  0;
                             }
                         })
-                        .linkDistance(function(d) { 
+                        .linkDistance(function(d) {
                             if (d.class === 'child') {
                                 return  130;
                             } else {
@@ -2518,23 +2534,23 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
 
                     function dragstart(d, i) {
                         d3.event.sourceEvent.stopPropagation();
-                        d.fixed = true; 
+                        d.fixed = true;
                         force.stop();
                     }
 
                     function dragmove(d, i) {
-                        d.fixed = true; 
+                        d.fixed = true;
                         d.px += d3.event.dx;
                         d.py += d3.event.dy;
                         d.x += d3.event.dx;
                         d.y += d3.event.dy;
-                        tick(); 
+                        tick();
                     }
 
                     function dragend(d, i) {
-                        d.fixed = true; 
+                        d.fixed = true;
                         $http({method: 'GET', url: '/api/stealth/stealth_op_view?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name+'&page_title=stealth_op_view'}).
-                            success(function(data) { 
+                            success(function(data) {
                                 if (data["result"].length>0) {
                                     $http({method: 'POST', url: '/api/stealth/stealth_op_view', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_op_view"}});
                                 }else{
@@ -2796,7 +2812,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                         .attr('width', 14)
                                         .style('fill', "#002E7F")
                                         .attr('transform', 'translate(-8,-8)')
-                                        .style('fill-opacity', '1') 
+                                        .style('fill-opacity', '1')
                                 } else if (d.value.type === 'outside') {
                                     elm.append("circle")
                                         .attr("cx", function(d) { return d.x; })
@@ -2804,12 +2820,12 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                         .attr("r", 8)
                                         .attr("fill", "#000")
                                         .style('border', "solid 1px #000")
-                                } 
+                                }
                             break;
                         }
                     });
-                    
-                    $scope.appendInfo = function(data, type) { 
+
+                    $scope.appendInfo = function(data, type) {
                         infoDiv.selectAll('tr').remove();
 
                         var divInfo = '';
@@ -2818,14 +2834,14 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                             var uniqueUsers = $scope.forcedata.uniqueUsers;
                             var unique = [];
                             var source = data.source.name;
-                            var target = data.target.name;             
-                            
+                            var target = data.target.name;
+
                             for (var i in uniqueNodes[source]) {
                                 for (var j in uniqueNodes[target]) {
-                                    if (i === j) { 
+                                    if (i === j) {
                                         unique.push(i);
                                     }
-                                }         
+                                }
                             }
                             for (var x=0; x<unique.length; x++) {
                                 var divInfo = '';
@@ -2852,7 +2868,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                         divInfo += data.rules[i].order  + "<br />" + " " + ruleString + "<br />";
                                     } else {
                                         divInfo += "none <br />";
-                                    }                                    
+                                    }
                                 }
                                 var row = infoDiv.append('tr');
                                     row
@@ -2878,8 +2894,8 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                             .append('td')
                                             .text(data[i]);
                                 }
-                            }                            
-                        }  
+                            }
+                        }
                     }
 
 
@@ -2905,7 +2921,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                                         .append('td')
                                         .text(data[i]);
                             }
-                        }                       
+                        }
                     }
 
                     var linktext = d3.selectAll('.linkgroup');
@@ -2923,17 +2939,17 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                     function tick() {
                         node[0].x = width;
                         node[0].y = height;
-                        var value = 120; 
+                        var value = 120;
 
-                        node.attr("cx", function(d) { 
+                        node.attr("cx", function(d) {
                                 if (d.group === "child") {
                                     value = 0;
                                 } else {
                                     value = 120;
                                 }
-                                return d.x = Math.max(value, Math.min(width - value, d.x)); 
+                                return d.x = Math.max(value, Math.min(width - value, d.x));
                             })
-                            .attr("cy", function(d) { 
+                            .attr("cy", function(d) {
                                 if (d.group === "child") {
                                     value = 0;
                                 } else {
@@ -3059,14 +3075,14 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         .attr('d', 'M36.6,32.1c1.4-2.2,2.4-4.7,2.9-7.3c-8.1-3.3-13.8-11.2-13.8-20.5c0-1.1,0.1-2.1,0.2-3.1 C23.7,0.4,21.3,0,18.8,0c-0.2,0-0.4,0-0.6,0'+
                         'c-0.2,1.4-0.3,2.9-0.3,4.3C17.9,16.9,25.6,27.7,36.6,32.1z M94.3,36.2c-4.3,5-10.6,8.1-17.7,8.1c-12.9,0-23.4-10.4-23.4-23.3c0-3.8,0.9-7.5,2.6-10.7'+
                         'l-2.8-1.6 c-1.2,1.4-3.1,2.4-5.1,2.4c-2.1,0-3.9-0.9-5.1-2.4l-3,1.8c1.6,3.2,2.5,6.8,2.5,10.6c0,12.9-10.5,23.3-23.4,23.3 c-7,0-13.3-3.1-17.6-7.9'+
-                        'L0,37.1c6.2,8,15.9,13.1,26.7,13.1c8,0,15.3-2.8,21.1-7.4c5.8,4.6,13.1,7.4,21.1,7.4 c10.9,0,20.6-5.2,26.7-13.1L94.3,36.2z');   
+                        'L0,37.1c6.2,8,15.9,13.1,26.7,13.1c8,0,15.3-2.8,21.1-7.4c5.8,4.6,13.1,7.4,21.1,7.4 c10.9,0,20.6-5.2,26.7-13.1L94.3,36.2z');
                     quar_legend.append('svg:path')
                         .attr('transform', 'rotate(240,54,70) scale(0.25)')
                         .style('fill', '#ff0000')
                         .attr('d', 'M36.6,32.1c1.4-2.2,2.4-4.7,2.9-7.3c-8.1-3.3-13.8-11.2-13.8-20.5c0-1.1,0.1-2.1,0.2-3.1 C23.7,0.4,21.3,0,18.8,0c-0.2,0-0.4,0-0.6,0'+
                         'c-0.2,1.4-0.3,2.9-0.3,4.3C17.9,16.9,25.6,27.7,36.6,32.1z M94.3,36.2c-4.3,5-10.6,8.1-17.7,8.1c-12.9,0-23.4-10.4-23.4-23.3c0-3.8,0.9-7.5,2.6-10.7'+
                         'l-2.8-1.6 c-1.2,1.4-3.1,2.4-5.1,2.4c-2.1,0-3.9-0.9-5.1-2.4l-3,1.8c1.6,3.2,2.5,6.8,2.5,10.6c0,12.9-10.5,23.3-23.4,23.3 c-7,0-13.3-3.1-17.6-7.9'+
-                        'L0,37.1c6.2,8,15.9,13.1,26.7,13.1c8,0,15.3-2.8,21.1-7.4c5.8,4.6,13.1,7.4,21.1,7.4 c10.9,0,20.6-5.2,26.7-13.1L94.3,36.2z');                  
+                        'L0,37.1c6.2,8,15.9,13.1,26.7,13.1c8,0,15.3-2.8,21.1-7.4c5.8,4.6,13.1,7.4,21.1,7.4 c10.9,0,20.6-5.2,26.7-13.1L94.3,36.2z');
                     quar_legend.append("text")
                         .attr("x", 38)
                         .attr("y", 140)
@@ -3083,14 +3099,14 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         .attr('transform', 'translate(-85 -93) scale(0.5)')
                         .attr('d', 'M193.6,542.1c-0.5,0-8.8-14.6-8.8-14.6l8-3.6l1.6,8.4c0,0,19.9-22.3,21.7-23.9l4.3-0.2'+
                                         'C220.3,508.2,194.1,542.1,193.6,542.1z')
-                        .style('fill', '#000000');                
+                        .style('fill', '#000000');
                     checkmark_legend.append("text")
                         .attr("x", 38)
                         .attr("y", 170)
                         .attr("dy", ".35em")
                         .text(function(d) { return d; });
 
-                    
+
                     var redx_legend = vis.selectAll(".redx_legend")
                         .data(["Dropped Connections"])
                         .enter().append("g")
@@ -3101,7 +3117,7 @@ angular.module('mean.pages').directive('makeCoiChart', ['$timeout', '$rootScope'
                         .attr('d', 'M0,29.9c0-0.6,11.3-12,11.8-12.6c0.5-0.5-3.3-13-3.3-14.6C8.4,1.5,10.7,0,11.2,0'+
                                     'c2.1,0,9.4,9.1,9.4,9.1s11-8.2,12.3-7.8c2.5,0.8,3.5,3,2,4.4c-2.3,2.5-11,11.8-11,13.9c0,1,5.3,8.7,4.7,9.5l-3.1,4.5'+
                                     'c-0.6,0.9-10-7.7-10-7.7S5.3,35.8,4.9,35.8C4.5,35.8,0,30.5,0,29.9z')
-                        .attr('style', 'fill:#f60000;fill-opacity:1;stroke:none;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1');    
+                        .attr('style', 'fill:#f60000;fill-opacity:1;stroke:none;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1');
                     redx_legend.append("text")
                         .attr("x", 38)
                         .attr("y", 194)
@@ -3177,7 +3193,7 @@ angular.module('mean.pages').directive('makeNetworkTree', ['$timeout', '$rootSco
 
                         var customNode = nodeEnter.append("g")
                             .attr("class", "points")
-                            .append("text") 
+                            .append("text")
                             .attr("x", function(d) { return d.children || d._children ? -32 : 18; })
                             .attr("dy", ".35em")
                             .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
@@ -3363,8 +3379,8 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                                 return palette.purple;
                             } else if (type === "coi") {
                                 return palette.green;
-                            } 
-                            
+                            }
+
                         } else if (group === 1) { //IP node with 1 COI group
                             return palette.blue;
                         } else if (group === 2) { //IP node with 2 COI groups
@@ -3415,18 +3431,18 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                             for (var i = 0; i < d.rules.length; i++) {
                                 if (d.rules[i].rule !== "-") {
                                     rules += "&nbsp&nbsp&nbsp" + d.rules[i].order + " " + d.rules[i].rule + "<br />";
-                                }                                
+                                }
                             }
                             if (rules === "") {
                                 return title + "None";
                             }
                             else {
                                 return title + rules;
-                            }                            
+                            }
                         });
                         vis.call($scope.tip);
-                   
-                    var force = d3.layout.force()                        
+
+                    var force = d3.layout.force()
                         .on("tick", tick)
                         .gravity(0.05)
                         .linkDistance(20)
@@ -3440,18 +3456,18 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                     }
 
                     function dragmove(d, i) {
-                        d.fixed = true; 
+                        d.fixed = true;
                         d.px += d3.event.dx;
                         d.py += d3.event.dy;
                         d.x += d3.event.dx;
                         d.y += d3.event.dy;
-                        tick(); 
+                        tick();
                     }
 
                     function dragend(d, i) {
-                        d.fixed = true; 
+                        d.fixed = true;
                         $http({method: 'GET', url: '/api/stealth/stealth_deploy_config?type=checkCoor&user_login='+$scope.global.user.email+'&name='+d.name+'&page_title=stealth_COI_map'}).
-                            success(function(data) { 
+                            success(function(data) {
                                 if (data["force"].length>0) {
                                     $http({method: 'POST', url: '/api/stealth/stealth_deploy_config', data: {x: d.x, y: d.y, user_login: $scope.global.user.email, name: d.name, page_title: "stealth_COI_map"}});
                                 }else{
@@ -3470,7 +3486,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
 
                         link = vis.selectAll(".link")
                             .data(data.links);
-                            
+
                         link.enter().append("line")
                             .attr("class", "link")
                             .attr("stroke", "#CCC")
@@ -3482,10 +3498,10 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         var node_drag = d3.behavior.drag()
                             .on("dragstart", dragstart)
                             .on("drag", dragmove)
-                            .on("dragend", dragend);       
+                            .on("dragend", dragend);
 
                         node = vis.selectAll(".node")
-                            .data(data.nodes);    
+                            .data(data.nodes);
                         node
                             .enter()
                             .append("g")
@@ -3498,7 +3514,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         var n = node.each(function(d){
                             if ((d.type === "role") || (d.type === "group")) {
                                 d.fixed = true;
-                            } 
+                            }
                             //console.log(d);
                             var elm = d3.select(this)
 
@@ -3554,9 +3570,9 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                                             elm.style('cursor', 'pointer')
                                         })
                                         .on('click', function (d){
-                                            cldr = $scope.requery(d);   
+                                            cldr = $scope.requery(d);
                                            // $scope.update();
-                                           return click(cldr);   
+                                           return click(cldr);
                                         });
                                         // .on("click", function (d){
                                         //     var link = {user: d.name};
@@ -3572,7 +3588,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                                             elm.style('cursor', 'pointer')
                                         })
                                         .on('click', function (d){
-                                            cldr = $scope.requery(d);   
+                                            cldr = $scope.requery(d);
                                            // $scope.update();
                                            return click(cldr);
                                         })
@@ -3585,7 +3601,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                                         })
                                         .on('mouseout', "")
                                         .on('click', function (d){
-                                            cldr = $scope.requery(d);   
+                                            cldr = $scope.requery(d);
                                            // $scope.update();
                                            return click(cldr);
                                         });
@@ -3604,7 +3620,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                             // .attr("font-family",  "Bree Serif")
                             // .attr("fill",         function(d, i) {  return  palette.paleryellow;  })
                             .attr("font-size",    function(d, i) {  return  "1em"; })
-                            .attr("text-anchor",  function(d, i) { return  "beginning"; })  
+                            .attr("text-anchor",  function(d, i) { return  "beginning"; })
                         // node.transition()
                         //     .attr("r", function(d) { return 10; });
                         node.exit().remove();
@@ -3614,12 +3630,12 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                     function tick() {
                         node[0].x = width;
                         node[0].y = height;
-                        var value = 40; 
+                        var value = 40;
 
-                        node.attr("cx", function(d) { 
-                                return d.x = Math.max(value, Math.min(width - value, d.x)); 
+                        node.attr("cx", function(d) {
+                                return d.x = Math.max(value, Math.min(width - value, d.x));
                             })
-                            .attr("cy", function(d) { 
+                            .attr("cy", function(d) {
                                 return d.y = Math.max(value, Math.min(height - (value*5.6), d.y)); });
 
                         link.attr("x1", function(d) { return d.source.x; })
@@ -3637,11 +3653,11 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                     //LEGEND
 
                     var legend_color = function(legend_item) {
-                        if (legend_item === "Stealth Role") { 
+                        if (legend_item === "Stealth Role") {
                             return palette.pink;
-                        } else if (legend_item === "AD Group") { 
+                        } else if (legend_item === "AD Group") {
                             return palette.purple;
-                        } else if (legend_item === "Stealth COI") { 
+                        } else if (legend_item === "Stealth COI") {
                             return palette.green;
                         } else if (legend_item === "User with one COI") { //IP node with 1 COI group
                             return palette.blue;
@@ -3673,7 +3689,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .attr("dy", ".35em")
                         .text(function(d) { return d; });
 
-                    var legend_data = ["User with one COI", "User with two COIs", 
+                    var legend_data = ["User with one COI", "User with two COIs",
                         "User with three COIs", "User with four COIs", "User with five or more COIs"];
 
                     var legend = vis.selectAll(".legend")
@@ -3721,7 +3737,7 @@ angular.module('mean.pages').directive('makeStealthForceChart', ['$timeout', '$r
                         .attr("y", 194)
                         .attr("dy", ".35em")
                         .text(function(d) { return d; });
-                    
+
                 }, 0, false);
             })
         }
@@ -3810,16 +3826,16 @@ angular.module('mean.pages').directive('numbersOnly', function(){
      require: 'ngModel',
      link: function(scope, element, attrs, modelCtrl) {
        modelCtrl.$parsers.push(function (inputValue) {
-           // this next if is necessary for when using ng-required on your input. 
+           // this next if is necessary for when using ng-required on your input.
            // In such cases, when a letter is typed first, this parser will be called
            // again, and the 2nd time, the value will be undefined
-           if (inputValue == undefined) return '' 
-           var transformedInput = inputValue.replace(/[^0-9+.]/g, ''); 
+           if (inputValue == undefined) return ''
+           var transformedInput = inputValue.replace(/[^0-9+.]/g, '');
            if (transformedInput!=inputValue) {
               modelCtrl.$setViewValue(transformedInput);
               modelCtrl.$render();
-           }         
-           return transformedInput;         
+           }
+           return transformedInput;
        });
      }
    };
@@ -3833,7 +3849,7 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
 
                 // var infoDiv = d3.select('#chordchartinfo').append('table');
 
-                // $scope.appendInfo = function(data, type) { 
+                // $scope.appendInfo = function(data, type) {
                 //     infoDiv.selectAll('tr').remove();
 
                 //     var divInfo = '';
@@ -3842,14 +3858,14 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
                 //         var uniqueUsers = $scope.forcedata.uniqueUsers;
                 //         var unique = [];
                 //         var source = data.source.name;
-                //         var target = data.target.name;             
-                        
+                //         var target = data.target.name;
+
                 //         for (var i in uniqueNodes[source]) {
                 //             for (var j in uniqueNodes[target]) {
-                //                 if (i === j) { 
+                //                 if (i === j) {
                 //                     unique.push(i);
                 //                 }
-                //             }         
+                //             }
                 //         }
                 //         for (var x=0; x<unique.length; x++) {
                 //             var divInfo = '';
@@ -3876,7 +3892,7 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
                 //                     divInfo += data.rules[i].order  + "<br />" + " " + ruleString + "<br />";
                 //                 } else {
                 //                     divInfo += "none <br />";
-                //                 }                                    
+                //                 }
                 //             }
                 //             var row = infoDiv.append('tr');
                 //                 row
@@ -3902,8 +3918,8 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
                 //                         .append('td')
                 //                         .text(data[i]);
                 //             }
-                //         }                            
-                //     }  
+                //         }
+                //     }
                 // }
 
                 console.log(data.nodes)
@@ -4011,7 +4027,7 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
                     .attr("dy", ".35em")
                     .attr("transform", function(d) { return d.angle > Math.PI ? "rotate(180)translate(-16)" : null; })
                     .style("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
-                    .text(function(d) { return d.label; });                
+                    .text(function(d) { return d.label; });
 
                 svg.append("g")
                     .attr("class", "chord")
@@ -4050,7 +4066,7 @@ angular.module('mean.pages').directive('makeChordChart', ['$timeout', '$rootScop
 
 
 
-            }); 
+            });
         }
     };
 }]);
