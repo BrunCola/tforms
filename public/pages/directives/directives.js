@@ -921,6 +921,10 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 $scope.word = '';
                 $scope.show_hide = false;
 
+                console.log($window.sessionStorage)
+                console.log($scope.tableData.collection())
+                console.log($scope.tableColumns)
+
                 if ($window.sessionStorage[$window.location.pathname.replace("/", '')] !== undefined) {
                     $scope.tableColumns = angular.fromJson($window.sessionStorage[$window.location.pathname.replace("/", '')])
                 } else {
