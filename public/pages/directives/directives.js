@@ -1349,7 +1349,6 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
 
                     if (filter == true) {
                         $scope.pieChart.on("filtered", function(chart, filter){
-                            console.log(params)
                             $scope.$broadcast('outFilter', params.outgoingFilter, filter)
                         });
                     }
@@ -1656,28 +1655,54 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                         }
                     }
 
-                    currentTime(function(time) {
-                        $scope.barChart
-                            .width(width) // (optional) define chart width, :default = 200
-                            .height(height)
-                            .transitionDuration(500) // (optional) define chart transition duration, :default = 500
-                            .margins(margin) // (optional) define margins
-                            .dimension(dimension) // set dimension
-                            //.group(group[g]) // set group
-                            //.stack(group, "0 - Other", function(d){return d.value.other;})
-                            .xAxisLabel(params.settings.xAxis) // (optional) render an axis label below the x axis
-                            .yAxisLabel(params.settings.yAxis) // (optional) render a vertical axis lable left of the y axis
-                            .elasticY(true) // (optional) whether chart should rescale y axis to fit data, :default = false
-                            .elasticX(false) // (optional) whether chart should rescale x axis to fit data, :default = false
-                            .x(d3.time.scale().domain([moment.unix(time.start), moment.unix(time.end)])) // define x scale
-                            .xUnits(d3.time.hours) // define x axis units
-                            .renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
-                            .renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
-                            //.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
-                            .title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
-                            .renderTitle(true); // (optional) whether chart should render titles, :default = fal
-                        $scope.barChart.render();
-                    })
+                    if (params === undefined) {
+                        currentTime(function(time) {
+                            $scope.barChart
+                                .width(width) // (optional) define chart width, :default = 200
+                                .height(height)
+                                .transitionDuration(500) // (optional) define chart transition duration, :default = 500
+                                .margins(margin) // (optional) define margins
+                                .dimension(dimension) // set dimension
+                                //.group(group[g]) // set group
+                                //.stack(group, "0 - Other", function(d){return d.value.other;})
+                                .xAxisLabel($scope.barChartxAxis) // (optional) render an axis label below the x axis
+                                .yAxisLabel($scope.barChartyAxis) // (optional) render a vertical axis lable left of the y axis
+                                .elasticY(true) // (optional) whether chart should rescale y axis to fit data, :default = false
+                                .elasticX(false) // (optional) whether chart should rescale x axis to fit data, :default = false
+                                .x(d3.time.scale().domain([moment.unix(time.start), moment.unix(time.end)])) // define x scale
+                                .xUnits(d3.time.hours) // define x axis units
+                                .renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
+                                .renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
+                                //.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
+                                .title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
+                                .renderTitle(true); // (optional) whether chart should render titles, :default = fal
+                            $scope.barChart.render();
+                        })
+                    } else {
+                        currentTime(function(time) {
+                            $scope.barChart
+                                .width(width) // (optional) define chart width, :default = 200
+                                .height(height)
+                                .transitionDuration(500) // (optional) define chart transition duration, :default = 500
+                                .margins(margin) // (optional) define margins
+                                .dimension(dimension) // set dimension
+                                //.group(group[g]) // set group
+                                //.stack(group, "0 - Other", function(d){return d.value.other;})
+                                .xAxisLabel(params.settings.xAxis) // (optional) render an axis label below the x axis
+                                .yAxisLabel(params.settings.yAxis) // (optional) render a vertical axis lable left of the y axis
+                                .elasticY(true) // (optional) whether chart should rescale y axis to fit data, :default = false
+                                .elasticX(false) // (optional) whether chart should rescale x axis to fit data, :default = false
+                                .x(d3.time.scale().domain([moment.unix(time.start), moment.unix(time.end)])) // define x scale
+                                .xUnits(d3.time.hours) // define x axis units
+                                .renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
+                                .renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
+                                //.legend(dc.legend().x(width - 140).y(10).itemHeight(13).gap(5))
+                                .title(function(d) { return "Value: " + d.value; })// (optional) whether svg title element(tooltip) should be generated for each bar using the given function, :default=no
+                                .renderTitle(true); // (optional) whether chart should render titles, :default = fal
+                            $scope.barChart.render();
+                        })      
+                    }
+                   
                    
 
                     $scope.$on('crossfilter-redraw', function (event, time) {
