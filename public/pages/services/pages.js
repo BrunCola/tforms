@@ -310,39 +310,6 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                     $scope.$broadcast('barchart', dimension, group, 'stealthtraffic', params);
                                     break;
                             }
-                            var activeFilters = {};
-                            $scope.$on('outFilter', function (event, incomingParams, value){
-                                if (!'outgoingFilter' in incomingParams) { return }
-                                var type = incomingParams.outgoingFilter;
-                                if ((typeof type != 'object') || (!'crossfilter' in type)) { return }
-                                type = type['crossfilter'];
-                                if ((typeof type != 'object') || (!'barchart' in type)) { return }
-                                type = type['barchart'];
-                                functions.checkFilter_(type, value, activeFilters, function(){
-                                    var filtah = activeFilters[type];
-                                    searchDimension.filter(function(d){
-                                        return d[type] === filtah
-                                    })
-                                })
-
-                                // var type = type['table'];
-                                // if (typeof value === 'object'){ // only if its time
-                                //     $scope.$apply(function () {
-                                //         params.crossfilterObj.filterBy(type, value, timeFilter);
-                                //     });
-                                // } else {
-                                //     checkFilter(type, value, function(){
-                                //         $scope.$apply(function() {
-                                //             var filter = activeFilters[type];
-                                //             if (filter.length === 0) {
-                                //                 $scope.tableData.filterBy(type, filter, $scope.tableData.filters.inArray());
-                                //             } else {
-                                //                 $scope.tableData.filterBy(type, filter, $scope.tableData.filters.inArray('some'));
-                                //             }
-                                //         })
-                                //     })
-                                // }
-                            })
                         },
                         piechart: function(params, crossfilterObj, searchDimension) {
                             var group = false;

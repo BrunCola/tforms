@@ -1361,7 +1361,7 @@ angular.module('mean.pages').directive('makePieChart', ['$timeout', '$window', '
                         $scope.pieChart.on("filtered", function(chart, filter){
                             // console.log(chart)
                             // console.log(filter)
-                            $scope.$broadcast('outFilter', params, filter)
+                            // $scope.$broadcast('outFilter', params, filter)
                         });
                     }
                     $scope.pieChart
