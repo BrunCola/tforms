@@ -93,8 +93,20 @@ angular.module('mean.pages').controller('iocRemoteController', ['$scope', '$stat
                             return d.count;
                         });
                     },
-                    outgoingFilter: { // Optional and ingests an array of KEYS for other visuals not of this type to match
+                    outgoingFilter: {
                         'table': 'remote_country'
+                    } // Optional and ingests an array of KEYS for other visuals not of this type to match
+                },
+                {
+                    type: 'severityLevels',
+                    dimension: function(cfObj) { return cfObj.dimension(function(d) { return d.ioc_severity; })},
+                    group: function(dimension) {
+                        return dimension.group().reduceSum(function (d) {
+                            return d.count;
+                        })
+                    },
+                    outgoingFilter: {
+                        'table': 'ioc_severity'
                     }
                 }
             ]

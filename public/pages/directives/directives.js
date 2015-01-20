@@ -108,7 +108,7 @@ angular.module('mean.pages').directive('newNotification', function() {
     };
 });
 
-angular.module('mean.system').directive('loadingSpinner', ['$rootScope', function ($rootScope) {
+angular.module('mean.pages').directive('loadingSpinner', ['$rootScope', function ($rootScope) {
     return {
         link: function($scope, element, attrs) {
             $('.page-content').fadeTo(500, 0.7);
@@ -142,6 +142,16 @@ angular.module('mean.system').directive('loadingSpinner', ['$rootScope', functio
                     $('html, body').stop( true, true ).animate();
                 }
                 $(".page-content").fadeTo(500, 1);
+            });
+            $rootScope.$on('spinnerShow', function (event) {
+                $('.page-content').fadeTo(500, 0.7);
+                var target = document.getElementById('loading-spinner');
+                var spinner = new Spinner(opts).spin(target);
+                $(target).data('spinner', spinner);
+                // // /$('html, body').animate({scrollTop:0}, 'slow');
+                window.onscroll = function (event) {
+                    $('html, body').start( true, true ).animate();
+                }
             });
         }
     };
@@ -193,109 +203,164 @@ angular.module('mean.system').directive('sidebar', function() {
     };
 });
 
+// angular.module('mean.pages').directive('severityLevels', ['$timeout', function ($timeout) {
+//     return {
+//         link: function ($scope, element, attrs) {
+//             $('.alert').on('click',function(){
+//                 alert('test');
+//             });
+//             function updateSevCounts(sevcounts) {
+//                 $('#severity').children().addClass('severity-deselect');
+//                 for (var s in sevcounts) {
+//                     if (sevcounts[s].value === 0) {
+//                         $('#al'+sevcounts[s].key).html(' '+sevcounts[s].value+' ');
+//                         $('.alert'+sevcounts[s].key).addClass('severity-deselect');
+//                     } else {
+//                         $('#al'+sevcounts[s].key).html(' '+sevcounts[s].value+' ');
+//                         $('.alert'+sevcounts[s].key).removeClass('severity-deselect');
+//                     }
+//                 }
+//             }
+
+//             $scope.$on('severityLoad', function () {
+//                 $('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert1 alert"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> 0 </span></button>');
+//                 $('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert2 alert"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> 0 </span></button>');
+//                 $('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert3 alert"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> 0 </span></button>');
+//                 $('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
+//                 $scope.severityDim = $scope.crossfilterData.dimension(function(d){return d.ioc_severity;});
+//                 $scope.sevcounts = $scope.severityDim.group().reduceSum(function(d) {return d.count;}).top(Infinity);
+//                 updateSevCounts($scope.sevcounts);
+//                 $('.alert1').on('click',function(){
+//                     $scope.severityDim.filterAll();
+//                     var arr = [];
+//                     if ($('.alert1').hasClass('selected')) {
+//                         $('.alert1').removeClass('selected');
+//                     } else {
+//                         for(var i in $scope.severityDim.top(Infinity)) {
+//                             if ($scope.severityDim.top(Infinity)[i].ioc_severity === 1) {
+//                                 arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
+//                             }
+//                         }
+//                         $scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
+//                         $('.alert1').addClass('selected');
+//                     }
+//                     $scope.$broadcast('crossfilterToTable');
+//                     dc.redrawAll();
+//                     updateSevCounts($scope.sevcounts);
+//                 });
+//                 $('.alert2').on('click',function(){
+//                     $scope.severityDim.filterAll();
+//                     var arr = [];
+//                     if ($('.alert2').hasClass('selected')) {
+//                         $('.alert2').removeClass('selected');
+//                     } else {
+//                         for(var i in $scope.severityDim.top(Infinity)) {
+//                             if ($scope.severityDim.top(Infinity)[i].ioc_severity === 2) {
+//                                 arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
+//                             }
+//                         }
+//                         $scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
+//                         $('.alert2').addClass('selected');
+//                     }
+//                     $scope.$broadcast('crossfilterToTable');
+//                     dc.redrawAll();
+//                     updateSevCounts($scope.sevcounts);
+//                 });
+//                 $('.alert3').on('click',function(){
+//                     $scope.severityDim.filterAll();
+//                     var arr = [];
+//                     if ($('.alert3').hasClass('selected')) {
+//                         $('.alert3').removeClass('selected');
+//                     } else {
+//                         for(var i in $scope.severityDim.top(Infinity)) {
+//                             if ($scope.severityDim.top(Infinity)[i].ioc_severity === 3) {
+//                                 arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
+//                             }
+//                         }
+//                         $scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
+//                         $('.alert3').addClass('selected');
+//                     }
+//                     $scope.$broadcast('crossfilterToTable');
+//                     dc.redrawAll();
+//                     updateSevCounts($scope.sevcounts);
+//                 });
+//                 $('.alert4').on('click',function(){
+//                     $scope.severityDim.filterAll();
+//                     var arr = [];
+//                     if ($('.alert4').hasClass('selected')) {
+//                         $('.alert4').removeClass('selected');
+//                     } else {
+//                         for(var i in $scope.severityDim.top(Infinity)) {
+//                             if ($scope.severityDim.top(Infinity)[i].ioc_severity === 4) {
+//                                 arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
+//                             }
+//                         }
+//                         $scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
+//                         $('.alert4').addClass('selected');
+//                     }
+//                     $scope.$broadcast('crossfilterToTable');
+//                     dc.redrawAll();
+//                     updateSevCounts($scope.sevcounts);
+//                 });
+//             });
+//             $scope.$on('severityUpdate', function () {
+//                 updateSevCounts($scope.sevcounts);
+//             });
+//         }
+//     };
+// }]);
+
 angular.module('mean.pages').directive('severityLevels', ['$timeout', function ($timeout) {
     return {
-        link: function ($scope, element, attrs) {
-            $('.alert').on('click',function(){
-                alert('test');
-            });
-            function updateSevCounts(sevcounts) {
-                $('#severity').children().addClass('severity-deselect');
-                for (var s in sevcounts) {
-                    if (sevcounts[s].value === 0) {
-                        $('#al'+sevcounts[s].key).html(' '+sevcounts[s].value+' ');
-                        $('.alert'+sevcounts[s].key).addClass('severity-deselect');
-                    } else {
-                        $('#al'+sevcounts[s].key).html(' '+sevcounts[s].value+' ');
-                        $('.alert'+sevcounts[s].key).removeClass('severity-deselect');
-                    }
-                }
+        restrict: 'A',
+        scope : {
+            title : '@'
+        },
+        template : '<button style="min-width:120px" class="severity-btn btn mini alert1 alert"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> {{levels.guarded}} </span></button>'+
+            '<button style="min-width:120px" class="severity-btn btn mini alert2 alert"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> {{levels.elevated}} </span></button>'+
+            '<button style="min-width:120px" class="severity-btn btn mini alert3 alert"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> {{levels.high}} </span></button>'+
+            '<button style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> {{levels.severe}} </span></button>',
+        transclude : true,
+        link: function($scope, element, attrs) {
+            $scope.levels = {
+                guarded: 0,
+                elevated: 0,
+                high: 0,
+                severe: 0
             }
-
-            $scope.$on('severityLoad', function () {
-                $('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert1 alert"><i class="fa fa-flag"></i> GUARDED -<span id="al1" style="font-weight:bold"> 0 </span></button>');
-                $('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert2 alert"><i class="fa fa-bullhorn"></i> ELEVATED -<span id="al2" style="font-weight:bold"> 0 </span></button>');
-                $('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert3 alert"><i class="fa fa-bell"></i> HIGH -<span id="al3" style="font-weight:bold"> 0 </span></button>');
-                $('#severity').append('<button style="min-width:120px" class="severity-btn btn mini alert4 alert"><i class="fa fa-exclamation-circle"></i> SEVERE -<span id="al4" style="font-weight:bold"> 0 </span></button>');
-                $scope.severityDim = $scope.crossfilterData.dimension(function(d){return d.ioc_severity;});
-                $scope.sevcounts = $scope.severityDim.group().reduceSum(function(d) {return d.count;}).top(Infinity);
-                updateSevCounts($scope.sevcounts);
-                $('.alert1').on('click',function(){
-                    $scope.severityDim.filterAll();
-                    var arr = [];
-                    if ($('.alert1').hasClass('selected')) {
-                        $('.alert1').removeClass('selected');
-                    } else {
-                        for(var i in $scope.severityDim.top(Infinity)) {
-                            if ($scope.severityDim.top(Infinity)[i].ioc_severity === 1) {
-                                arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
-                            }
+            // $scope.$broadcast('outFilter', params.outgoingFilter, 'severityTYPE')
+            $scope.$on('severityLevels', function (event, dimension, group, params) {
+                function update() {
+                    group.top(Infinity).map(function(d){
+                        switch(d.key) {
+                            case 1:
+                                $scope.levels.guarded = d.value;
+                                break;
+                            case 2:
+                                $scope.levels.elevated = d.value;
+                                break;
+                            case 3:
+                                $scope.levels.high = d.value;
+                                break;
+                            case 4:
+                                $scope.levels.severe = d.value;
+                                break;
                         }
-                        $scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
-                        $('.alert1').addClass('selected');
-                    }
-                    $scope.$broadcast('crossfilterToTable');
-                    dc.redrawAll();
-                    updateSevCounts($scope.sevcounts);
+                    })
+                }
+                update();
+                $scope.$on('crossfilter-render', function () {
+                    update();
                 });
-                $('.alert2').on('click',function(){
-                    $scope.severityDim.filterAll();
-                    var arr = [];
-                    if ($('.alert2').hasClass('selected')) {
-                        $('.alert2').removeClass('selected');
-                    } else {
-                        for(var i in $scope.severityDim.top(Infinity)) {
-                            if ($scope.severityDim.top(Infinity)[i].ioc_severity === 2) {
-                                arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
-                            }
-                        }
-                        $scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
-                        $('.alert2').addClass('selected');
-                    }
-                    $scope.$broadcast('crossfilterToTable');
-                    dc.redrawAll();
-                    updateSevCounts($scope.sevcounts);
+                $scope.$on('crossfilter-redraw', function () {
+                    update();
                 });
-                $('.alert3').on('click',function(){
-                    $scope.severityDim.filterAll();
-                    var arr = [];
-                    if ($('.alert3').hasClass('selected')) {
-                        $('.alert3').removeClass('selected');
-                    } else {
-                        for(var i in $scope.severityDim.top(Infinity)) {
-                            if ($scope.severityDim.top(Infinity)[i].ioc_severity === 3) {
-                                arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
-                            }
-                        }
-                        $scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
-                        $('.alert3').addClass('selected');
-                    }
-                    $scope.$broadcast('crossfilterToTable');
-                    dc.redrawAll();
-                    updateSevCounts($scope.sevcounts);
+                $scope.$on('outFilter', function () {
+                    $timeout(function(){
+                        update();
+                    }, 0, true);
                 });
-                $('.alert4').on('click',function(){
-                    $scope.severityDim.filterAll();
-                    var arr = [];
-                    if ($('.alert4').hasClass('selected')) {
-                        $('.alert4').removeClass('selected');
-                    } else {
-                        for(var i in $scope.severityDim.top(Infinity)) {
-                            if ($scope.severityDim.top(Infinity)[i].ioc_severity === 4) {
-                                arr.push($scope.severityDim.top(Infinity)[i].ioc_severity);
-                            }
-                        }
-                        $scope.severityDim.filter(function(d) { return arr.indexOf(d) >= 0; });
-                        $('.alert4').addClass('selected');
-                    }
-                    $scope.$broadcast('crossfilterToTable');
-                    dc.redrawAll();
-                    updateSevCounts($scope.sevcounts);
-                });
-            });
-            $scope.$on('severityUpdate', function () {
-                updateSevCounts($scope.sevcounts);
-            });
+            })
         }
     };
 }]);
@@ -359,7 +424,11 @@ angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '
                                 })
                             }
                         );
-                        $('#reportrange').on('apply', function(ev, picker) {
+
+                        $('#daterange').on('apply', function(ev, picker) {
+                            $rootScope.$broadcast('spinnerShow');
+                            // disable realtime checkbox
+                            $scope.realtimeElement = true;
                             // update url
                             var search = $location.$$search;
                             search.start = moment($scope.start).unix();
@@ -864,8 +933,8 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 $scope.pageNumber = $scope.pageConstant;
                 $scope.pageOffset = -$scope.pageConstant;
                 $scope.maxLength = $scope.tableData.collection().length;
-                $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
-                $scope.maxIndex = Math.round($scope.maxLength/$scope.pageConstant);
+                $scope.currentIndex = Math.ceil($scope.pageNumber/$scope.pageConstant);
+                $scope.maxIndex = Math.ceil($scope.maxLength/$scope.pageConstant);
                 $scope.nextButton = false;
                 $scope.prevButton = true;
                 // ^^^^^^^^^^^^^^^^^^^ table indexing variables ^^^^^^^^^^
@@ -879,8 +948,7 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                         $scope.show_hide = true;
                     }
                 }
-
-                $scope.$watch("tableData.collection()", function(){
+                $scope.$watch('tableData', function(olddata, newdata){
                     $scope.maxLength = $scope.tableData.collection().length;
                     if ($scope.pageNumber > $scope.maxLength) {
                         $scope.pageNumber = $scope.maxLength;
@@ -892,9 +960,10 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     if ($scope.maxLength === 0) {
                         $scope.pageOffset = -1;
                     }
-                    $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
-                    $scope.maxIndex = Math.round($scope.maxLength/$scope.pageConstant);
+                    $scope.currentIndex = Math.ceil($scope.pageNumber/$scope.pageConstant);
+                    $scope.maxIndex = Math.ceil($scope.maxLength/$scope.pageConstant);
                     checkButtons(); 
+                    $scope.$broadcast('spinnerHide');
                 }, true);
 
                 $scope.showHide = function(col) {
@@ -941,7 +1010,7 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     } 
                     $scope.pageOffset = -$scope.pageConstant;
                     checkButtons();
-                    $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
+                    $scope.currentIndex = Math.ceil($scope.pageNumber/$scope.pageConstant);
                 }
 
                 $scope.setPage = function(n) {
@@ -960,7 +1029,7 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                     if ($scope.pageNumber >= $scope.maxLength) {
                         $scope.pageNumber = ($scope.maxLength);
                     }
-                    $scope.currentIndex = Math.round($scope.pageNumber/$scope.pageConstant);
+                    $scope.currentIndex = Math.ceil($scope.pageNumber/$scope.pageConstant);
                 }
 
                 //////////////////////////////
@@ -1086,38 +1155,59 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 //////////////////////////////////
                 //////  PRINT TABLE TO CSV  //////
                 //////////////////////////////////
-                $scope.saveSortState = function(colData) {
-                    console.log(colData);
+                var sortCol;
+                var sortDir;
+                var sortIndex;
+                $scope.saveSortState = function(col) {
+                    if(sortCol === col) {
+                        if(sortDir === "asc") {
+                            sortDir = "desc";
+                        } else {
+                            sortDir = "asc";
+                        }
+                    } else {
+                        sortCol = col;
+                        sortDir = "desc";
+                        for(var i in result.params) {
+                            if(result.params[i].mData === col) {
+                                sortIndex = i;
+                                break;
+                            }
+                        }
+                    }
                 }
 
                 //2d array sort for sorting data for csv print
                 function sortFunction(a, b) {
-                    // var tableSort = $("#table").dataTable().fnSettings().aaSorting;
-                    // console.log($scope.tableData);    
-                    // var tableSort = $("#sTable").dataTable().fnSettings().aaSorting;
-                    var tableSort = result.sort[0];//TEMPORARILY
-                    var sortIndex = tableSort[0][0];
-                    var sortDirection = tableSort[0][1];
-                    if (a[sortIndex] === b[sortIndex]) {
+                    var tableSort;
+                    if(sortIndex) {
+                        tableSort = [[sortIndex, sortDir]];
+                    } else {
+                        tableSort = result.sort[0];//default
+                    }
+
+                    var index = tableSort[0][0];
+                    var direction = tableSort[0][1];
+                    if (a[index] === b[index]) {
                         return 0;
                     } else {
-                        if(sortDirection == "asc") {
-                            return (a[sortIndex] < b[sortIndex]) ? -1 : 1
+                        if(direction == "asc") {
+                            return (a[index] < b[index]) ? -1 : 1
                         } else {
-                            return (a[sortIndex] > b[sortIndex]) ? -1 : 1
+                            return (a[index] > b[index]) ? -1 : 1
                         }
                     }
                 }
                 //function for export to csv
                 var csv = "data:text/csv;&charset=utf-8,";
                 function makeCsv(array, heading){
-                    function isAllowed(word){
-                        var notAllowed = ['_typeCast', 'parse', 'id', 'child_id'];
-                        if (notAllowed.indexOf(word) !== -1) {
-                            return false;
-                        }
-                        return true;
-                    }
+                    // function isAllowed(word){
+                    //     var notAllowed = ['_typeCast', 'parse', 'id', 'child_id'];
+                    //     if (notAllowed.indexOf(word) !== -1) {
+                    //         return false;
+                    //     }
+                    //     return true;
+                    // }
                     //title
                     csv += heading;
                     // new line 
@@ -1131,17 +1221,9 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                         csv += '\n';
                         for (var i in array) {
                             for (var n in array[i]) {
-                                if ((typeof array[i][n] !== 'function') && (isAllowed(n))){
-                                    if (array[i][n] === 0) {
-                                        csv += 'no,';
-                                    } else if (array[i][n] === 1) {
-                                        csv += 'yes,';
-                                    } else if (array[i][n] === null) {
-                                        csv += 'n/a,';
-                                    } else {
-                                        csv += array[i][n]+',';
-                                    }
-                                }
+                                // if ((typeof array[i][n] !== 'function') && (isAllowed(n))){
+                                csv += array[i][n]+',';
+                                // }
                             }
                             csv += '\n';
                         }
