@@ -35,7 +35,7 @@ angular.module('mean.pages').directive('iocDesc', function() {
     };
 });
 
- angular.module('mean.pages').directive('modalWindow', function() {
+angular.module('mean.pages').directive('modalWindow', function() {
     return {
         // restrict: 'EA',
         link: function($scope, element) {
@@ -365,7 +365,7 @@ angular.module('mean.pages').directive('severityLevels', ['$timeout', function (
     };
 }]);
 
-angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '$rootScope', '$state', '$stateParams', 'Global', 'dateRange', function ($timeout, $location, $rootScope, $state, $stateParams, Global, dateRange) {
+angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '$rootScope', '$state', '$stateParams', 'Global', 'dateRange', 'realTimeCheck', function ($timeout, $location, $rootScope, $state, $stateParams, Global, dateRange, realTimeCheck) {
     return {
         link: function ($scope, element, attrs) {
             $timeout(function () {
