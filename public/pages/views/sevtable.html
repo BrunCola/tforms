@@ -33,6 +33,7 @@
     </tbody>
 </table> -->
 <div id="sTable"> 
+    <button class="ColVis_Button bCsv ColVis_MasterButton printCSVButton" type="button" href="">Print to CSV</button>
     <a ng-click="toggleShow()" class="tableRight" >Hide / show columns</a>
     <div id="showHide" ng-show="show_hide">
         <span class="tableLabel"  ng-repeat="col in tableColumns">
@@ -40,7 +41,7 @@
         </span>
     </div>
     <table id="sevTable">
-        <tr><th ng-repeat="col in tableColumns" class="tableTitles" ng-class=" { 'firstTitle': $first }"><a ng-click="tableData.sortBy(col.mData)" ng-show="col.bVisible">{{col.sTitle}}</a></th></tr>
+        <tr><th ng-repeat="col in tableColumns" class="tableTitles" ng-class="{ 'firstTitle': $first }"><a ng-click="tableData.sortBy(col.mData); saveSortState(col.mData)" ng-show="col.bVisible">{{col.sTitle}}</a></th></tr>
         <tr ng-repeat="row in tableData.collection() | limitTo: pageNumber | limitTo: pageOffset" >
             <td ng-repeat="col in tableColumns">  
                 <section ng-switch="col.mData">

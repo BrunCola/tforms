@@ -35,7 +35,7 @@ angular.module('mean.pages').directive('iocDesc', function() {
     };
 });
 
-angular.module('mean.pages').directive('modalWindow', function() {
+ angular.module('mean.pages').directive('modalWindow', function() {
     return {
         // restrict: 'EA',
         link: function($scope, element) {
@@ -365,7 +365,7 @@ angular.module('mean.pages').directive('severityLevels', ['$timeout', function (
     };
 }]);
 
-angular.module('mean.pages').directive('datePicker', ['$window', '$timeout', '$location', '$rootScope', '$state', '$stateParams', 'Global', 'dateRange', 'realTimeCheck', function ($window, $timeout, $location, $rootScope, $state, $stateParams, Global, dateRange, realTimeCheck) {
+angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '$rootScope', '$state', '$stateParams', 'Global', 'dateRange', function ($timeout, $location, $rootScope, $state, $stateParams, Global, dateRange) {
     return {
         link: function ($scope, element, attrs) {
             $timeout(function () {
@@ -398,7 +398,7 @@ angular.module('mean.pages').directive('datePicker', ['$window', '$timeout', '$l
                     $scope.start = moment.unix(time.start).format('MMMM D, YYYY h:mm A');
                     $scope.end = moment.unix(time.end).format('MMMM D, YYYY h:mm A');
                     if ($scope.daterange) {
-                        $('#daterange').daterangepicker(
+                        $(element).daterangepicker(
                             {
                             ranges: {
                                 'Today': [moment().startOf('day'), moment()],
@@ -424,6 +424,7 @@ angular.module('mean.pages').directive('datePicker', ['$window', '$timeout', '$l
                                 })
                             }
                         );
+
                         $('#daterange').on('apply', function(ev, picker) {
                             $rootScope.$broadcast('spinnerShow');
                             // disable realtime checkbox
@@ -488,7 +489,7 @@ angular.module('mean.pages').directive('makeTable', ['$timeout', '$location', '$
                     '<div class="span12"> '+
                             '<div class="jdash-header">'+data.title+'</div> '+
                             '<div class="box">'+
-                                '<div class="box-content"> <button class="ColVis_Button bCsv ColVis_MasterButton printCSVButton" type="button" href="">Print to CSV</button>'+//<button type="button" class="rndCrnBtn pure-button right" ng-click="insert()">Print to .csv</button>'+
+                                '<div class="box-content"> <button class="ColVis_Button bCsv ColVis_MasterButton printCSVButton" type="button" href="">Print to CSV</button>'+
                                     '<table cellpadding="0" cellspacing="0" border="0" width="100%" class="table table-hover display" id="'+data.div+'" ></table>'+
                                 '</div> '+
                             '</div> '+
@@ -971,7 +972,7 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                         $scope.tableColumns = angular.fromJson($window.sessionStorage[$window.location.pathname.replace("/", '')])
                     }, 100, false);
                 }
-                
+
                 $scope.generateLink = function(data, column) {
                     var searchObj = {};
                     // add url date params to new page if they exist
@@ -1150,6 +1151,150 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 //     // $scope.words.filterBy('word', word, customFilter);
                 //     $scope.word = word;
                 // };
+
+                //////////////////////////////////
+                //////  PRINT TABLE TO CSV  //////
+                //////////////////////////////////
+                var sortCol;
+                var sortDir;
+                var sortIndex;
+                $scope.saveSortState = function(col) {
+                    if(sortCol === col) {
+                        if(sortDir === "asc") {
+                            sortDir = "desc";
+                        } else {
+                            sortDir = "asc";
+                        }
+                    } else {
+                        sortCol = col;
+                        sortDir = "desc";
+                        for(var i in result.params) {
+                            if(result.params[i].mData === col) {
+                                sortIndex = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                //2d array sort for sorting data for csv print
+                function sortFunction(a, b) {
+                    var tableSort;
+                    if(sortIndex) {
+                        tableSort = [[sortIndex, sortDir]];
+                    } else {
+                        tableSort = result.sort[0];//default
+                    }
+
+                    var index = tableSort[0][0];
+                    var direction = tableSort[0][1];
+                    if (a[index] === b[index]) {
+                        return 0;
+                    } else {
+                        if(direction == "asc") {
+                            return (a[index] < b[index]) ? -1 : 1
+                        } else {
+                            return (a[index] > b[index]) ? -1 : 1
+                        }
+                    }
+                }
+                //function for export to csv
+                var csv = "data:text/csv;&charset=utf-8,";
+                function makeCsv(array, heading){
+                    // function isAllowed(word){
+                    //     var notAllowed = ['_typeCast', 'parse', 'id', 'child_id'];
+                    //     if (notAllowed.indexOf(word) !== -1) {
+                    //         return false;
+                    //     }
+                    //     return true;
+                    // }
+                    //title
+                    csv += heading;
+                    // new line 
+                    csv += '\n';
+                    if (array.length > 0) {
+                        // get object 0 length
+                        var objlength = 0, tpos = 0;
+                        for (var i in array[0]) {
+                            objlength++;
+                        }
+                        csv += '\n';
+                        for (var i in array) {
+                            for (var n in array[i]) {
+                                // if ((typeof array[i][n] !== 'function') && (isAllowed(n))){
+                                csv += array[i][n]+',';
+                                // }
+                            }
+                            csv += '\n';
+                        }
+                        csv += '\n\n';
+                    }
+                }
+
+                $('.bCsv').on('click',function(){               
+                    var array = [];
+                    for (var i in result.aaData) {
+                        //need to sort each value set into the order of the columns
+                        var sortedRow = [];
+                        for (var p in result.params){
+                            for (var property in result.aaData[i]) {
+                                if (result.params[p].mData == property) {
+                                    sortedRow.push(result.aaData[i][property]);
+                                } 
+                            }
+                        }
+
+                        array.push(sortedRow);//push each sorted row as an array to the main array
+                    }
+                    //sort array by the sort of the datatable
+                    array.sort(sortFunction);
+                    var headerRow = [];
+                    for (var p in result.params) {
+                        if(result.params[p].sTitle != "") {
+                            headerRow.push(result.params[p].sTitle);
+                        }
+                    }
+                    //add the header row to the start of the array
+                    array.unshift(headerRow);//array[0] will be the array of column headers 
+                    makeCsv(array, result.title);//create the csv
+                    var fileName = $location.url().replace("/", "");
+                    //create the download
+                    download(csv, fileName+"_CSV.csv", "text/csv");
+                    csv = "data:text/csv;charset=utf-8,";
+                });
+
+                function download(strData, strFileName, strMimeType) {
+                    var D = document,
+                        a = D.createElement("a");
+                        strMimeType = strMimeType;
+
+                    if (navigator.msSaveBlob) { // IE10
+                        return navigator.msSaveBlob(new Blob([strData], {type: strMimeType}), strFileName);
+                    } 
+
+                    if ('download' in a) { //html5 A[download]
+                        a.href = "data:" + strMimeType + "," + encodeURIComponent(strData);
+                        a.setAttribute("download", strFileName);
+                        a.innerHTML = "downloading...";
+                        D.body.appendChild(a);
+                        setTimeout(function() {
+                            a.click();
+                            D.body.removeChild(a);
+                        }, 66);
+                        return true;
+                    } 
+
+                    //do iframe dataURL download (old ch+FF):
+                    var f = D.createElement("iframe");
+                    D.body.appendChild(f);
+                    f.src = "data:" +  strMimeType   + "," + encodeURIComponent(strData);
+
+                    setTimeout(function() {
+                        D.body.removeChild(f);
+                    }, 333);
+                    return true;
+                }
+
 
             })
         }

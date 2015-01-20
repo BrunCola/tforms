@@ -20,13 +20,10 @@ module.exports = function(pool) {
                             '`lan_zone`,'+
                             '`lan_user`,'+
                             '`lan_ip`,'+
-                            '`lan_port`,'+
                             '`remote_ip`, ' +
-                            '`remote_port`, '  +
                             '`remote_cc`, ' +
                             '`remote_country`, ' +
-                            '`remote_asn`, ' +
-                            '`remote_asn_name`, ' +
+                            'CONCAT(`remote_asn_name`, \' (\', remote_asn, \')\') AS remote_asn,' +
                             '`user`, ' +
                             '`password`, ' +
                             '`command`, ' +
@@ -63,35 +60,33 @@ module.exports = function(pool) {
                             crumb: false
                         }
                     },
-                       { title: 'Connections', select: 'count' },
-                       { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
-                       { title: 'Zone', select: 'lan_zone' },
-                       { title: 'Local Machine', select: 'lan_machine' },
-                       { title: 'Local User', select: 'lan_user' },
-                       { title: 'Local IP', select: 'lan_ip' },
-                       { title: 'Local Port', select: 'lan_port' },
-                       { title: 'Remote IP', select: 'remote_ip'},
-                       { title: 'Remote Port', select: 'remote_port' },
-                       { title: 'Flag', select: 'remote_cc' },
-                       { title: 'Remote Country', select: 'remote_country' },
-                       { title: 'Remote ASN Name', select: 'remote_asn_name' },
-                       { title: 'User', select: 'user' },
-                       { title: 'Password', select: 'password' },
-                       { title: 'Command', select: 'command' },
-                       { title: 'Arg', select: 'arg' },
-                       { title: 'File Type', select: 'mime_type' },
-                       { title: 'File Size', select: 'file_size' },
-                       { title: 'Reply Code', select: 'reply_code' },
-                       { title: 'Reply Message', select: 'reply_msg' },
-                       // { title: 'DC Passive', select: 'dc_passive' },
-                       { title: 'DC Orig P', select: 'dc_orig_h' },
-                       { title: 'DC Resp H', select: 'dc_resp_h' },
-                       { title: 'DC Resp P', select: 'dc_resp_p' },
-                       { title: 'IOC Type', select: 'ioc_typeIndicator' },
-                       { title: 'IOC Stage', select: 'ioc_typeInfection' },
-                       { title: 'IOC Rule', select: 'ioc_rule' },
-                       { title: 'IOC Severity', select: 'ioc_severity' },
-                       { title: 'IOC Count', select: 'ioc_count' }
+                    { title: 'Connections', select: 'count' },
+                    { title: 'Stealth', select: 'lan_stealth', hide_stealth: [1] },
+                    { title: 'Zone', select: 'lan_zone' },
+                    { title: 'Local Machine', select: 'lan_machine' },
+                    { title: 'Local User', select: 'lan_user' },
+                    { title: 'Local IP', select: 'lan_ip' },
+                    { title: 'Remote IP', select: 'remote_ip'},
+                    { title: 'Flag', select: 'remote_cc' },
+                    { title: 'Remote Country', select: 'remote_country' },
+                    { title: 'Remote ASN', select: 'remote_asn' },
+                    { title: 'User', select: 'user' },
+                    { title: 'Password', select: 'password' },
+                    { title: 'Command', select: 'command' },
+                    { title: 'Arg', select: 'arg' },
+                    { title: 'File Type', select: 'mime_type' },
+                    { title: 'File Size', select: 'file_size' },
+                    { title: 'Reply Code', select: 'reply_code' },
+                    { title: 'Reply Message', select: 'reply_msg' },
+                    { title: 'DC Passive', select: 'dc_passive' },
+                    { title: 'DC Orig P', select: 'dc_orig_h' },
+                    { title: 'DC Resp H', select: 'dc_resp_h' },
+                    { title: 'DC Resp P', select: 'dc_resp_p' },
+                    { title: 'IOC Type', select: 'ioc_typeIndicator' },
+                    { title: 'IOC Stage', select: 'ioc_typeInfection' },
+                    { title: 'IOC Rule', select: 'ioc_rule' },
+                    { title: 'IOC Severity', select: 'ioc_severity' },
+                    { title: 'IOC Count', select: 'ioc_count' }
                 ],
                 settings: {
                     sort: [[1, 'desc']],

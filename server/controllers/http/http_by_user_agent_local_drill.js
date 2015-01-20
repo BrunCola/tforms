@@ -28,8 +28,8 @@ module.exports = function(pool) {
                             '`url`, ' +
                             '`referrer`, ' +
                             '`user_agent`, ' +
-                            '`request_body_len`, ' +
-                            '`response_body_len`, ' +
+                            // '`request_body_len`, ' +
+                            // '`response_body_len`, ' +
                             '`status_code`, ' +
                             '`status_msg`, ' +
                             '`info_code`, ' +
@@ -37,8 +37,8 @@ module.exports = function(pool) {
                             '`filename`, ' +
                             '`tags`, ' +
                             '`proxied`, ' +
-                            '`local_mime_types`, ' +
-                            '`remote_mime_types`, ' +
+                            // '`local_mime_types`, ' +
+                            // '`remote_mime_types`, ' +
                             '`proxy_blocked`, '+
                             '`proxy_rule`, '+
                             '`ioc_count` ' +
@@ -74,8 +74,8 @@ module.exports = function(pool) {
                     { title: 'Flag', select: 'remote_cc' },
                     { title: 'Remote Country', select: 'remote_country' },
                     { title: 'Remote ASN Name', select: 'remote_asn_name' },
-                    //{ title: 'Request Body Length', select: 'request_body_len', dView:false },
-                    //{ title: 'Response Body Length', select: 'response_body_len', dView:false },
+                    // { title: 'Request Body Length', select: 'request_body_len', dView:false },
+                    // { title: 'Response Body Length', select: 'response_body_len', dView:false },
                     { title: 'Status Code', select: 'status_code', dView:false },
                     { title: 'Status Message', select: 'status_msg', dView:false },
                     { title: 'Info Code', select: 'info_code', dView:false },
@@ -83,8 +83,8 @@ module.exports = function(pool) {
                     { title: 'File Name', select: 'filename', dView:false },
                     { title: 'Tags', select: 'tags', dView:false },
                     { title: 'Proxied', select: 'proxied', dView:false },
-                    { title: 'Local File Type', select: 'local_mime_types', dView:false },
-                    { title: 'Remote File Type', select: 'remote_mime_types', dView:false },
+                    // { title: 'Local File Type', select: 'local_mime_types', dView:false },
+                    // { title: 'Remote File Type', select: 'remote_mime_types', dView:false },
                     { title: 'IOC Count', select: 'ioc_count' }
                 ],
                 settings: {

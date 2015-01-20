@@ -112,8 +112,8 @@ angular.module('mean.pages').factory('realTimeCheck', ['$state', '$window', '$ro
     }
 ]);
 
-angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location', '$resource', 'dimensionFilter', 'tableFilter', 'Crossfilter', '$state', 'dateRange',
-    function($rootScope, $http, $location, $resource, dimensionFilter, tableFilter, Crossfilter, $state, dateRange) {
+angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$location', '$resource', 'dimensionFilter', 'tableFilter', 'Crossfilter', '$state', 'dateRange', 'timeFormat',
+    function($rootScope, $http, $location, $resource, dimensionFilter, tableFilter, Crossfilter, $state, dateRange, timeFormat) {
         var runPage = function($scope, data, refreshRate) {
             ////////////////////////////////
             /// Global Variables Defined ///
@@ -491,6 +491,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 }
                                 // add-remove data function call here
                                 params.crossfilterObj.addModels(result.aaData);
+                                result.aaData.map(function(d) { d.time = timeFormat(d.time, 'tables')})
                             }
                         })
                         // filter and delete old data
