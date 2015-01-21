@@ -228,7 +228,7 @@ module.exports = function(pool) {
                     { title: 'Remote IP', select: 'remote_ip' },
                     { title: 'Remote Country', select: 'remote_country' },
                     { title: 'Flag', select: 'remote_cc' },
-                    { title: 'Remote ASN', select: 'remote_asn_name' },
+                    { title: 'Remote ASN', select: 'remote_asn' },
                     { title: 'Bytes to Remote', select: 'in_bytes'},
                     { title: 'Bytes from Remote', select: 'out_bytes'},
                     {
