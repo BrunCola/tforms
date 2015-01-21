@@ -383,11 +383,7 @@ angular.module('mean.pages').directive('severityLevels', ['$timeout', '$rootScop
                         switch(d.key) {
                             case 1:
                                 $scope.levels.guarded.value = d.value;
-<<<<<<< HEAD
-                                if (d.value === 0) {  $scope.levels.guarded.active = false } else if (action) { $scope.levels.guarded.active = true }
-=======
                                 if (d.value === 0) { $scope.levels.guarded.active = false } else if (action){ $scope.levels.guarded.active = true }
->>>>>>> 98d107d68b17ca7763e8859554c042af69eefd3d
                                 break;
                             case 2:
                                 $scope.levels.elevated.value = d.value;
