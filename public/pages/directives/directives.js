@@ -983,7 +983,7 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                 $scope.tableData.collection().map(function(d) {d.time = timeFormat(d.time, 'tables')})
                 $scope.show_hide = false;
 
-                $window.sessionStorage.clear();
+                // $window.sessionStorage.clear();
 
                 if ($window.sessionStorage[$window.location.pathname.replace("/", '')] !== undefined) {
                     $scope.tableColumns = angular.fromJson($window.sessionStorage[$window.location.pathname.replace("/", '')]);
