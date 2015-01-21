@@ -373,28 +373,29 @@ angular.module('mean.pages').directive('severityLevels', ['$timeout', '$rootScop
                         }
                     }
                     ///////////////// TEMPORARY!!!!!!!
+                    var dictionary = {'guarded': 1 , 'elevated': 2, 'high': 3, 'severe': 4 }
                     $rootScope.$broadcast('sevButtons', activeFilters, type);
+                    $scope.$emit('outFilter', params.outgoingFilter, dictionary[type], false)
                 }
                 function update(action) {
-                    console.log(action)
                     var data = group.top(Infinity);
                     data.map(function(d){
                         switch(d.key) {
                             case 1:
                                 $scope.levels.guarded.value = d.value;
-                                if (d.value === 0) { $scope.levels.guarded.active = false } else if (action) { $scope.levels.guarded.active = true }
+                                if (d.value === 0) { $scope.levels.guarded.active = false } else if (action){ $scope.levels.guarded.active = true }
                                 break;
                             case 2:
                                 $scope.levels.elevated.value = d.value;
-                                if (d.value === 0) { $scope.levels.elevated.active = false } else if (action) { $scope.levels.elevated.active = true }
+                                if (d.value === 0) { $scope.levels.elevated.active = false } else if (action){ $scope.levels.elevated.active = true }
                                 break;
                             case 3:
                                 $scope.levels.high.value = d.value;
-                                if (d.value === 0) { $scope.levels.high.active = false } else if (action) { $scope.levels.high.active = true }
+                                if (d.value === 0) { $scope.levels.high.active = false } else if (action){ $scope.levels.high.active = true }
                                 break;
                             case 4:
                                 $scope.levels.severe.value = d.value;
-                                if (d.value === 0) { $scope.levels.severe.active = false } else if (action) { $scope.levels.severe.active = true }
+                                if (d.value === 0) { $scope.levels.severe.active = false } else if (action){ $scope.levels.severe.active = true }
                                 break;
                         }
                     })
@@ -414,13 +415,13 @@ angular.module('mean.pages').directive('severityLevels', ['$timeout', '$rootScop
                 $scope.$on('crossfilter-render', function () {
                     update();
                 });
-                $scope.$on('crossfilter-redraw', function () {
-                    update(true);
+                $scope.$on('crossfilter-redraw', function (event, time, action) {
+                    update(action);
                 });
-                $scope.$on('outFilter', function () {
+                $scope.$on('outFilter', function (event, filter, value, action) {
                     $timeout(function(){
-                        update();
-                    }, 0, false);
+                        update(action);
+                    }, 0, true);
                 });
             })
         }
@@ -1131,14 +1132,14 @@ angular.module('mean.pages').directive('sevTable', ['$timeout', '$filter', '$roo
                         });
                     } else {
                         checkFilter(type, value, function(){
-                            $scope.$apply(function() {
+                            // $scope.$apply(function() {
                                 var filter = activeFilters[type];
                                 if (filter.length === 0) {
                                     $scope.tableData.filterBy(type, filter, $scope.tableData.filters.inArray());
                                 } else {
                                     $scope.tableData.filterBy(type, filter, $scope.tableData.filters.inArray('some'));
                                 }
-                            })
+                            // })
                         })
                     }
                 })
@@ -1657,7 +1658,7 @@ angular.module('mean.pages').directive('makeBarChart', ['$timeout', '$window', '
                     }
                     if (filter == true) {
                         $scope.barChart.on("filtered", function(chart, filter){
-                            $scope.$broadcast('outFilter', params.outgoingFilter, filter)
+                            $scope.$broadcast('outFilter', params.outgoingFilter, filter, true)
                         })
                     }
                     if (($scope.barChartxAxis == null) && ($scope.barChartyAxis == null)) {
@@ -1836,7 +1837,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                     }
                     if (filter == true) {
                         $scope.rowChart.on("filtered", function(chart, filter){
-                                $scope.$broadcast('outFilter', params.outgoingFilter, filter.replace(/[0-9]/,''))
+                                $scope.$broadcast('outFilter', params.outgoingFilter, filter.replace(/[0-9]/,''), true)
                             });
                     }
                     if (count > 0) {
@@ -1998,7 +1999,7 @@ angular.module('mean.pages').directive('makeGeoChart', ['$timeout', '$rootScope'
 
                     if (filter == true) {
                         $scope.geoChart.on("filtered", function(chart, filter){
-                                $scope.$broadcast('outFilter', params.outgoingFilter, filter.replace(/[0-9]/,''))
+                                $scope.$broadcast('outFilter', params.outgoingFilter, filter.replace(/[0-9]/,''), true)
                             });
                     }
                     $scope.$on('crossfilter-redraw', function (event) {
