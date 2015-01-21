@@ -428,7 +428,7 @@ angular.module('mean.pages').directive('severityLevels', ['$timeout', '$rootScop
     };
 }]);
 
-angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '$rootScope', '$state', '$stateParams', 'Global', 'dateRange', 'realTimeCheck', function ($timeout, $location, $rootScope, $state, $stateParams, Global, dateRange, realTimeCheck) {
+angular.module('mean.pages').directive('datePicker', ['$window', '$timeout', '$location', '$rootScope', '$state', '$stateParams', 'Global', 'dateRange', 'realTimeCheck', function ($window, $timeout, $location, $rootScope, $state, $stateParams, Global, dateRange, realTimeCheck) {    
     return {
         link: function ($scope, element, attrs) {
             $timeout(function () {
@@ -461,7 +461,7 @@ angular.module('mean.pages').directive('datePicker', ['$timeout', '$location', '
                     $scope.start = moment.unix(time.start).format('MMMM D, YYYY h:mm A');
                     $scope.end = moment.unix(time.end).format('MMMM D, YYYY h:mm A');
                     if ($scope.daterange) {
-                        $(element).daterangepicker(
+                        $('#daterange').daterangepicker(
                             {
                             ranges: {
                                 'Today': [moment().startOf('day'), moment()],
