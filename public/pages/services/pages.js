@@ -1458,17 +1458,19 @@ angular.module('mean.pages').factory('appIcon', [
                 .attr('xml:space','preserve');
             var tip = d3.tip()
                 .attr('class', 't-tip')
-                .offset([-30, 0])
+                .offset([30, -50])
                 .html(function(d) {
                     return app;
                 });
-            elm.call(tip);
-            elm
-                .on('mouseover', tip.show)
-                .on('mouseout', tip.hide);
 
             var em = elm.append('g');
             var bg = em.append('circle').attr('cx', 21.398).attr('cy', 21.398).attr('r', 21.398);
+            var em2 = elm.append('g');
+            var bg2 = em2.append('circle').attr('cx', 21.398).attr('cy', 21.398).attr('r', 21.398).attr('fill', 'transparent');
+            bg2.call(tip);
+            bg2
+                .on('mouseover', tip.show)
+                .on('mouseout', tip.hide);
 
             if (!app) return appIcon;
             // background color generated here
