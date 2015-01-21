@@ -89,6 +89,18 @@ angular.module('mean.pages').controller('iocLocalController', ['$scope', '$state
                         'table': 'time'
                     }
                 },
+                {
+                    type: 'severityLevels',
+                    dimension: function(cfObj) { return cfObj.dimension(function(d) { return d.ioc_severity; })},
+                    group: function(dimension) { 
+                        return dimension.group().reduceSum(function(d) {
+                            return d.count;
+                        })
+                    },
+                    outgoingFilter: {
+                        'table': 'ioc_severity'
+                    }
+                }
             ]
         },
         /////////////////
