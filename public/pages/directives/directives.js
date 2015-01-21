@@ -2051,7 +2051,7 @@ angular.module('mean.pages').directive('makeRowChart', ['$timeout', '$rootScope'
                                 hHeight = 25+(count*28);
                             }
                             d3.select('#rowchart svg').attr('width', width).attr('height', hHeight);
-                            $(element).height(hHeight);
+                            $('#rowchart').height(hHeight);
                             $scope.rowChart.height(hHeight);
                             $scope.rowChart.render();
                         })
