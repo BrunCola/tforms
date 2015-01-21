@@ -356,7 +356,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                         return filterArr.indexOf(d) > -1;
                                     });
                                 }
-                                $scope.$broadcast('crossfilter-redraw');
+                                $scope.$broadcast('crossfilter-redraw', false, false);
                             })
                         }
                     },
@@ -417,7 +417,7 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                     },
                     searchUpdate_: function(data, term) {
                         // run through called chart types and call their update functions
-                        $scope.$broadcast('crossfilter-redraw');
+                        $scope.$broadcast('crossfilter-redraw', false, true);
                     }
                 },
                 ////////////////////////////
