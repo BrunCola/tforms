@@ -382,7 +382,7 @@ angular.module('mean.pages').directive('severityLevels', ['$timeout', '$rootScop
                         switch(d.key) {
                             case 1:
                                 $scope.levels.guarded.value = d.value;
-                                if (d.value === 0) { $scope.levels.guarded.active = false } else if (action) { $scope.levels.guarded.active = true }
+                                if (d.value === 0) {  $scope.levels.guarded.active = false } else if (action) { $scope.levels.guarded.active = true }
                                 break;
                             case 2:
                                 $scope.levels.elevated.value = d.value;
@@ -414,7 +414,8 @@ angular.module('mean.pages').directive('severityLevels', ['$timeout', '$rootScop
                 $scope.$on('crossfilter-render', function () {
                     update();
                 });
-                $scope.$on('crossfilter-redraw', function () {
+                $scope.$on('crossfilter-redraw', function (e) {
+                    console.log(e)
                     update(true);
                 });
                 $scope.$on('outFilter', function () {
