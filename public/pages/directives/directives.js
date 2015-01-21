@@ -310,7 +310,7 @@ angular.module('mean.system').directive('sidebar', function() {
 //     };
 // }]);
 
-angular.module('mean.pages').directive('severityLevels', ['$timeout', function ($timeout) {
+angular.module('mean.pages').directive('severityLevels', ['$timeout', '$rootScope', function ($timeout, $rootScope) {
     return {
         restrict: 'A',
         scope : {
@@ -372,22 +372,29 @@ angular.module('mean.pages').directive('severityLevels', ['$timeout', function (
                             }
                         }
                     }
+                    ///////////////// TEMPORARY!!!!!!!
+                    $rootScope.$broadcast('sevButtons', activeFilters, type);
                 }
-                function update() {
+                function update(action) {
+                    console.log(action)
                     var data = group.top(Infinity);
                     data.map(function(d){
                         switch(d.key) {
                             case 1:
                                 $scope.levels.guarded.value = d.value;
+                                if (d.value === 0) { $scope.levels.guarded.active = false } else if (action) { $scope.levels.guarded.active = true }
                                 break;
                             case 2:
                                 $scope.levels.elevated.value = d.value;
+                                if (d.value === 0) { $scope.levels.elevated.active = false } else if (action) { $scope.levels.elevated.active = true }
                                 break;
                             case 3:
                                 $scope.levels.high.value = d.value;
+                                if (d.value === 0) { $scope.levels.high.active = false } else if (action) { $scope.levels.high.active = true }
                                 break;
                             case 4:
                                 $scope.levels.severe.value = d.value;
+                                if (d.value === 0) { $scope.levels.severe.active = false } else if (action) { $scope.levels.severe.active = true }
                                 break;
                         }
                     })
@@ -408,12 +415,12 @@ angular.module('mean.pages').directive('severityLevels', ['$timeout', function (
                     update();
                 });
                 $scope.$on('crossfilter-redraw', function () {
-                    update();
+                    update(true);
                 });
                 $scope.$on('outFilter', function () {
                     $timeout(function(){
                         update();
-                    }, 0, true);
+                    }, 0, false);
                 });
             })
         }

@@ -342,6 +342,22 @@ angular.module('mean.pages').factory('runPage', ['$rootScope', '$http', '$locati
                                 group = params.group(dimension);
                             }
                             $scope.$broadcast('severityLevels', dimension, group, params);
+                            //TEMPORARY!!!!!!
+                            $rootScope.$on('sevButtons', function (event, filters, type){
+                                var filterArr = [];
+                                var dictionary = {'guarded': 1 , 'elevated': 2, 'high': 3, 'severe': 4 }
+                                for (var i in filters) {
+                                    filterArr.push(dictionary[i]);
+                                }
+                                if (jQuery.isEmptyObject(filters)) {
+                                    dimension.filterAll();
+                                } else {
+                                    dimension.filter(function(d){
+                                        return filterArr.indexOf(d) > -1;
+                                    });
+                                }
+                                $scope.$broadcast('crossfilter-redraw');
+                            })
                         }
                     },
                     reloadData_: function(params, time, oldData) {
