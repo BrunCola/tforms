@@ -1,52 +1,7 @@
-<section data-ng-controller="headController" data-ng-init="onHeadLoad()">
-    <section ng-show="isNotReport">
-        <div class="row-fluid">
-            <div style="margin-top:30px"  class="pull-right">
-                <div id="head-right"></div>
-            </div>
-            <div class="breadcrumb">
-                <div class="row-fluid">
-                    <div class="span7">
-                        <h3 class="pull-left">{{ title }}</h3><br />
-                    </div>
-                    <div class="span5">
-                        <div date-picker>
-                            Real-time <input type="checkbox" ng-disabled="realtimeElement" ng-model="realtime">
-                            <div ng-show="daterange" id="daterange" class="pull-right dashboard-date-range tooltips no-tooltip-on-touch-device responsive" data-tablet="" data-desktop="tooltips" data-placement="top" data-original-title="Change dashboard date range">
-                                    <i style="color:#fff" class="fa fa-calendar"></i>
-                                    <span>{{start}} - {{end}}</span>
-                                    <i style="color:#fff" class="fa fa-angle-down"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div ng-repeat="sub in subtitle">
-                <div class="pull-left"><strong>{{$first ? '' : '&nbsp;'}}{{ sub.title }}:</strong> {{sub.value}}{{$last ? '' : ', '}} </div>
-            </div>
-            <div class="row-fluid">
-                <div id="severity"></div>
-            </div>
-        </div>
-    </section>
-
-    <section ng-show="isReport">
-        <div class="header navbar navbar-inverse navbar-top">
-            <div class="navbar-inner">
-                <div style="background-color: #000;" class="container-report-fluid">
-                    <a href="#">
-                        <img class="logo" src="public/system/assets/img/logo.png" alt=""/>
-                    </a>
-                    <!-- <div class="nav pull-right" id="dashboard-report-range" style="width:500px;float:right;position:relative;color:#fff !important;margin-top:-20px;margin-right:10px;text-align:right">
-                        <span style="color:#fff !important;margin-left:7px;font-size:12pt;"></span>
-                    </div> -->
-                    <div id="reportrange" style="margin-top:10px !important;margin-right:10px !important" class="pull-right dashboard-date-range tooltips no-tooltip-on-touch-device responsive" data-tablet="" data-desktop="tooltips" data-placement="top" data-original-title="Change dashboard date range">
-                        <span style="color:#fff !important; font-size:12pt">{{start}} - {{end}}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <br />
-    </section>
-
+<section data-ng-controller="headController">
+	<div class="row-fluid">
+		<div class="breadcrumb">
+			<h3 class="pull-left">{{ title }}</h3> <br />
+		</div>
+	</div>
 </section>

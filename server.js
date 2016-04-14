@@ -48,7 +48,7 @@ var options = {
 // Bootstrap Models, Dependencies, Routes and the app as an express app
 var d = new Date();
 var n = d.getFullYear();
-var version = n +' Phirelight Security Solutions - rapidPHIRE version: '+pjson.version;
+var version = n +' tForm - Treatment form for message therapy: '+pjson.version;
 
 // Express settings
 var app = express();
@@ -57,8 +57,8 @@ var httpapp = express(),
 
 http = require('http').createServer(httpapp),
 https = require('https'),
-server = https.createServer(options, app),
-io = require('socket.io').listen(server);
+server = https.createServer(options, app);
+// io = require('socket.io').listen(server);
 
 require(appPath + '/server/config/express')(app, version, db);
 
@@ -76,7 +76,7 @@ httpapp.get('*',function(req, res){
 server.listen(SSLport);
 http.listen(HTTPport);
 
-console.log('rapidPHIRE has started on port '+SSLport);
+console.log("Elisa's Treatment Form has started on port "+SSLport);
 
 // Expose app
 exports = module.exports = app;

@@ -69,7 +69,6 @@ sub {
 img {
     width: auto\9;
     height: auto;
-    max-width: 100%;
     vertical-align: middle;
     border: 0;
     -ms-interpolation-mode: bicubic;
@@ -3363,7 +3362,7 @@ button.btn.btn-mini, input[type="submit"].btn.btn-mini {
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff222222', endColorstr='#ff111111', GradientType=0);
 }
 .navbar-inverse .brand, .navbar-inverse .nav>li>a {
-    color: #999;
+    color: #FFFFFF;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 .navbar-inverse .brand:hover, .navbar-inverse .nav>li>a:hover, .navbar-inverse .brand:focus, .navbar-inverse .nav>li>a:focus {

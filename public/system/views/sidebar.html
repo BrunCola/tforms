@@ -1,13 +1,35 @@
-<ul class="page-sidebar-menu" data-ng-controller="sidebarController" sidebar>
-	<li> <!-- SIDEBAR TOGGLER BUTTON -->
-		<div class="sidebar-toggler hidden-phone"></div>
-		<br />
-	</li>
+<script type="text/ng-template" id="formModal.html">
+	<div class="modal-header">
+		<h3>Choose Form to Complete</h3>
+	</div>
+	<div class="modal-body">
+		 <form name="userForm" class="form-horizontal" ng-submit="submitForm(userForm)" novalidate>
+			<!-- ORGANIZATION LIST -->
+			<div class="control-group">
+				<label class="control-label">Organization</label>
+				<div class="controls">
+					<select ng-model="userForm.org" required>
+					{{organizations}}
+	                <option value="{{org.child_org}}" ng-repeat="org in organizations">{{org.child_org}}</option>
+	            </select>
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<button type="submit" class="pure-button">Submit</button>
+				</div>
+			</div>
+		</form>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-primary" ng-click="ok()">Close</button>
+		</div>
+</script>
+<ul class="page-sidebar-menu" data-ng-controller="sidebarController">
 	<li data-ng-repeat="sidebar in sidebaritems" id="heading" ng-show="display(sidebar.accessLevel)" ng-class="parentClass(sidebar)" >
 		<a  ng-click="select(sidebar.url)" href="">
 			<i class="fa {{sidebar.icon}}"></i>
-			<span class="title">{{sidebar.title === "Stealth" ? "" : sidebar.title}}</span>
-			<span ng-show="{{sidebar.title === 'Stealth'}}" class="title"><img ng-show="{{sidebar.title === 'Stealth'}}" src="/public/system/assets/img/stealth-logo2.png"></span>
+			<span class="title">{{sidebar.title}}</span>
 			<span ng-class="parentClassSelected('{{sidebar.url}}')" id="heading_sub"></span>
 		</a>
 		<ul ng-show="sidebar.children.length > 0" class="sub-menu">

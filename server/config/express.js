@@ -4,7 +4,6 @@
  * Module dependencies.
  */
 var express = require('express'),
-    fs = require('fs'),
     favicon = require('serve-favicon'),
     morgan = require('morgan'),
     compression = require('compression'),
@@ -12,6 +11,7 @@ var express = require('express'),
     methodOverride = require('method-override'),
     expressJwt = require('express-jwt'),
     jwt = require('jsonwebtoken'),
+    // session = require('express-session'),
     multer = require('multer'),
     errorHandler = require('errorhandler'),
     mean = require('./meanio'),
@@ -25,7 +25,6 @@ var express = require('express'),
     assetmanager = require('assetmanager');
 
 module.exports = function(app, version, pool) {
-    // app.param('end', /^[0-9]{1,10}$/);
     app.set('showStackError', true);
 
     // Prettify HTML
@@ -48,62 +47,6 @@ module.exports = function(app, version, pool) {
     } 
 
     app.use('/api', expressJwt({secret: config.sessionSecret}));
-    app.use('/2factor', expressJwt({secret: config.twoAuthSecret}));
-    // IMPORTANT: this automatically sets all the angular url routes in node (by parsing the public/pages/routes file)
-    var index = require('../controllers/index')(version);
-    fs.readFile(appPath + '/public/pages/routes/pages.js', 'utf8', function(err, data) {
-        if (err) {
-            conosle.log('ERROR GENERATING ANGULAR PAGE ROUTES - SERVER RESTART REQUIRED')
-            console.log(err)
-        } else {
-            var routes = [];
-            // push the only route not in the pages file (login)
-            routes.push('/login');
-            // also push 2factor page
-            routes.push('/2step');
-            var urls = data.match(/url:\s?'(\/.*)'/g);
-            for (var i in urls) {
-                routes.push(urls[i].match(/'(.*)'/)[1]);
-            }
-            app.use(routes, index.render)
-        }
-    });
-
-    //
-    // replace in morgan/index.js for slightly more interesting logging
-    //
-
-    // exports.format('dev', function(tokens, req, res){
-
-    //     var console_timestamp = function() {
-    //         return function() {
-    //             var df = require('dateformat');
-    //             return df(new Date(), 'yy-mm-dd HH:MM:ss');
-    //         }
-    //     }
-    //     var timestamp = console_timestamp()
-
-    //   var status = res.statusCode
-    //     , len = parseInt(res.getHeader('Content-Length'), 10)
-    //     , color = 32;
-
-    //   if (status >= 500) color = 31
-    //   else if (status >= 400) color = 33
-    //   else if (status >= 300) color = 36;
-
-    //   len = isNaN(len)
-    //     ? ''
-    //     : len = ' - ' + bytes(len);
-      
-    //   return '[' + timestamp() + '] \x1b[90m' + req.method
-    //     + ' ' + (req.originalUrl || req.url) + ' '
-    //     + '\x1b[' + color + 'm' + res.statusCode
-    //     + ' \x1b[90m'
-    //     + req.ip + ' '
-    //     + (new Date - req._startTime)
-    //     + 'ms' + len
-    //     + '\x1b[0m';
-    // });
 
     // assign the template engine to .html files
     app.engine('html', consolidate[config.templateEngine]);
@@ -117,12 +60,12 @@ module.exports = function(app, version, pool) {
     // Enable jsonp
     app.enable('jsonp callback');
 
+
     // Request body parsing middleware should be above methodOverride
     app.use(expressValidator());
-    // app.use(bodyParser());
-
     app.use(bodyParser());
     app.use(methodOverride());
+    // app.use(cookieParser());
     app.use(multer());
     // app.set('pool', pool);
     // Import your asset file
@@ -169,6 +112,7 @@ module.exports = function(app, version, pool) {
             app.use('/' + name, express.static(config.root + '/' + mean.modules[name].source + '/' + name + '/public'));
         }
 
+        console.log(version)
         function bootstrapRoutes() {
             // Skip the app/routes/middlewares directory as it is meant to be
             // used and shared by routes as further middlewares and is not a
@@ -187,6 +131,9 @@ module.exports = function(app, version, pool) {
         // silly, but valid, you can do whatever you like, set properties,
         // use instanceof etc.
         app.use(function(err, req, res, next) {
+            if (err.name === 'UnauthorizedError') {
+                res.send(401, 'invalid token...');
+            }
             // Treat as 404
             if (~err.message.indexOf('not found')) return next();
 
@@ -213,60 +160,4 @@ module.exports = function(app, version, pool) {
         }
     });
     
-    //----REGEX----
-
-    // any ip address without a port
-    // app.param('ipWithPort', /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\:\d{1,5}$/);
-    // any ip address with a port
-    // app.param('ipWithoutPort', /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/);
-
-    // email address
-    // app.param('email', /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/);
-    
-    // pure text
-    // app.param('pureText', /^[a-zA-Z0-9]*$/); //DOES NOT MATCH SPACES or underscore!
-    
-    // text with spaces
-    // app.param('pureTextWW', /^[a-zA-Z0-9_\s]*$/); //matches whitespace AND underscore
-    
-    // pure numbers
-    // app.param('pureNumbers', /^[0-9]*$/);
-    
-    // pure text containing _
-    // app.param('pureTextWU', /^[a-zA-Z0-9_]*$/); //DOES NOT MATCH SPACES, but matches underscore!
-    
-    // 'start' & 'end' unix times (see any url when date is changed) 
-    // app.param('unixTS', /^\d{10}$/);
-    
-    // lan_zone 
-    // app.param('lanZone', /^[a-zA-Z0-9_\s]*$/); //for now made this the same as pureTextWU because i don't know what all of the possibilities are...
-    
-    // http_host and host
-    // app.param('httpHost', /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/);
-    
-    // status_code 
-    // app.param('httpStatusCode', /^\d{3}$/); 
-    
-    // src_user 
-    // app.param('srcUser', /^[a-zA-Z0-9_\-\.]*$/);
-    
-    // ioc_attrID
-    // app.param('iocAttrID', /^0|\d{6}$/); 
-
-    // ---- The remaining should mostly be checking AGAINST sql escape characters, which i still need to figure out. ----
-    // The following regexes may be possible ones to use: 
-    // ----> /((\%27)|(\'))union/ix 
-    // ----> /((\%27)|(\'))drop/ix 
-    // ----> /\w*((\%27)|(\'))((\%6F)|o|(\%4F))((\%72)|r|(\%52))/ix 
-    
-    // ioc
-    // app.param('ioc', //);
-    // l7_proto 
-    // app.param('knownl7Proto', //);
-    // mime
-    // app.param('mime', //);
-    // email subject
-    // app.param('emailSubject', //);
-    // alert_info 
-    // app.param('alertInfo', //);    
 };

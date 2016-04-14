@@ -1,46 +1,73 @@
 'use strict';
 
-angular.module('mean.system').controller('sidebarController', ['$scope', 'Global', '$location', function ($scope, Global, $location) {
+angular.module('mean.system').controller('sidebarController', ['$scope', 'Global', '$location', '$modal', '$http', function ($scope, Global, $location, $modal, $http) {
     $scope.global = Global;
+
+    var query = '/api/home';
+
+    $http({method: 'GET', url: query}).
+    success(function(data) {
+        if (data === null) {
+            $scope.$broadcast('loadError');
+        } else {
+            $scope.children = data.children;
+        }
+    });
+
+    // User Settings Modal
+    $scope.chooseForm = function () {
+        $scope.modalInstance = $modal.open({
+            templateUrl: 'formModal.html',
+            controller: settingsCtrl,
+            resolve: {
+                data: function() {
+                    if ($scope.global.user.master === 0) {
+                        return {child_org:{child_org:$scope.global.user.parent_org}};
+                    } else {
+                        return $scope.children;
+                    }
+                },
+                user: function() {
+                    return $scope.global.user;
+                }
+            },
+        });
+    };
+
+    var settingsCtrl = function ($scope, $modalInstance, data, user) {
+        $scope.ok = function () {
+            $modalInstance.close();
+        };
+
+        $scope.user = user;
+        $scope.organizations = data;
+        
+        $scope.submitForm = function(form) {
+            $location.path("create").search("child_org="+form.org);
+            $modalInstance.close();
+            location.reload();
+        }
+    };
+
+
+
     $scope.select = function(url){
         if (url !== '') {
-            if ($location.$$search.start && $location.$$search.end) {
-                $location.path(url).search({'start':$location.$$search.start, 'end':$location.$$search.end});
-            } else {
-                $location.path(url);
-            }
+            $location.path(url);
             $.noty.closeAll();
         }
     };
-    // $scope.display = function (accessLevel) {
-    //     console.log(accessLevel)
-    //     if ((accessLevel === undefined) || (accessLevel.length === 0)) {
-    //         return true;
-    //     } else if (accessLevel.length > 0) {
-    //         if ($scope.global.user !== undefined) {
-    //             if (accessLevel.indexOf($scope.global.user.level) !== -1) {
-    //                 return true;
-    //             } else {
-    //                 return false;
-    //             }
-    //         } else {
-    //             return false;
-    //         }            
-    //     } else {
-    //         return false;
-    //     }
-    // };    
     $scope.display = function (accessLevel) {
         if ((accessLevel === undefined) || (accessLevel.length === 0)) {
             return true;
         } else if (accessLevel.length > 0) {
-                if (accessLevel.indexOf(1) !== -1) {
-                    return false;
-                } else {
-                    return true;
-                }          
+            if (accessLevel.indexOf($scope.global.user.level) !== -1) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            return true;
+            return false;
         }
     };
     $scope.parentClass = function (link) {
@@ -86,399 +113,11 @@ angular.module('mean.system').controller('sidebarController', ['$scope', 'Global
         return linkClass;
     };
     $scope.sidebaritems = [
-        { // LIVE CONNECTIONS
-            'title': 'Live Connections',
-            'url': 'live_connections',
-            'icon': 'fa-map-marker',
-            'children': []
-        },
         { // IOC NOTIFICATIONS
-            'title': 'IOC Notifications',
-            'url': '',
-            'icon': 'fa-warning',
-            'children':
-            [
-                {
-                    'title': 'By Event',
-                    'url': 'ioc_events',
-                    'icon': 'fa-warning',
-                    // 'accessLevel': [1], // if you'd like to limit access to a specific child instead
-                    'orphans': ['ioc_drill', 'ioc_events_drilldown']
-                },
-                {
-                    'title': 'By Local IP',
-                    'url': 'ioc_local',
-                    'icon': 'fa-warning',
-                    'orphans': ['ioc_local_drill']
-                },
-                {
-                    'title': 'By Remote IP',
-                    'url': 'ioc_remote',
-                    'icon': 'fa-warning',
-                    'orphans': ['ioc_remote2local']
-                }
-            ]
-        },
-        { // GENERAL NETWORK
-            'title': 'General Network',
-            'url': '',
-            'icon': 'fa-sitemap',
-            'children':
-            [
-                {
-                    'title': 'Local Connections',
-                    'url': 'local',
-                    'icon': 'fa-cloud-download',
-                    'orphans': ['local2remote', 'shared']
-                },
-                {
-                    'title': 'Remote Connections',
-                    'url': 'remote',
-                    'icon': 'fa-cloud-upload',
-                    'orphans': ['remote2local', 'shared']
-                },
-                {
-                    'title': 'DNS by Query Type',
-                    'url': 'dns_by_query_type',
-                    'icon': 'fa-level-down',
-                    'orphans': ['dns_by_query_type_local', 'dns_by_query_type_local_drill']
-                }, 
-                {
-                    'title': 'Local FTP',
-                    'url': 'ftp_local',
-                    'icon': 'fa-file',
-                    'orphans': ['ftp_local2remote', 'ftp_shared']
-                },
-                {
-                    'title': 'Remote FTP',
-                    'url': 'ftp_remote',
-                    'icon': 'fa-file',
-                    'orphans': ['ftp_remote2local', 'ftp_shared']
-                },
-                {
-                    'title': 'SSH Status',
-                    'url': 'ssh_status',
-                    'icon': 'fa-chevron-right',
-                    'orphans': ['ssh_status_local', 'ssh_status_local_drill']
-                },
-                {
-                    'title': 'Local SSH',
-                    'url': 'ssh_local',
-                    'icon': 'fa-chevron-right',
-                    'orphans': ['ssh_local2remote', 'ssh_shared']
-                },
-                {
-                    'title': 'Remote SSH',
-                    'url': 'ssh_remote',
-                    'icon': 'fa-chevron-right',
-                    'orphans': ['ssh_remote2local', 'ssh_shared']
-                },
-                {
-                    'title': 'Local IRC',
-                    'url': 'irc_local',
-                    'icon': 'fa-comment',
-                    'orphans': ['irclocal2remote', 'irc_shared']
-                },
-                {
-                    'title': 'Remote IRC',
-                    'url': 'irc_remote',
-                    'icon': 'fa-comment',
-                    'orphans': ['irc_remote2local', 'irc_shared']
-                }, 
-                {
-                    'title': 'Blocked Threats',
-                    'url': 'firewall',
-                    'icon': 'fa-chevron-right',
-                    'orphans': []
-                },  
-            ]
-        },
-        { // STEALTH
-            'title': 'Stealth',
-            'accessLevel': [$scope.global.user.hide_stealth],
-            'url': '',
-            'icon': 'fa-shield',
-            'children':
-            [
-                {
-                    'title': 'Stealth Deploy Config',
-                    'url': 'stealth_deploy_config',
-                    'icon': 'fa-code-fork',
-                    'orphans': []
-                },
-                {
-                    'title': 'Stealth Ops View',
-                    'url': 'stealth_op_view',
-                    'icon': 'fa-shield',
-                    'orphans': []
-                },
-                {
-                    'title': 'Stealth User Connections',
-                    'url': 'stealth_conn',
-                    'icon': 'fa-user',
-                    'orphans': ['stealth_conn_by_user','stealth_conn_by_userANDremote']
-                },
-                {
-                    'title': 'Stealth Events',
-                    'url': 'stealth_events',
-                    'icon': 'fa-desktop',
-                    'orphans': ['stealth_events_by_type_and_user','stealth_events_full']
-                },
-                {
-                    'title': 'Quarantined Users',
-                    'url': 'stealth_quarantine',
-                    'icon': 'fa-user',
-                    'orphans': []
-                },
-                //{
-                //    'title': 'Stealth COI Connections',
-                //    'url': 'stealth_coi_conn_view',
-                //    'icon': 'fa-shield',
-                //    'orphans': []
-                //},
-            ]
-        },
-        { // LOCAL EVENTS
-            'title': 'Local Events',
-            'url': '',
-            'icon': 'fa-user',
-            'children':
-            [
-                {
-                    'title': 'Endpoint Map',
-                    'url': 'endpoint_map',
-                    'icon': 'fa-user',
-                    'orphans': []
-                },
-                {
-                    'title': 'Endpoint By Type',
-                    'url': 'endpoint_by_type',
-                    'icon': 'fa-desktop',
-                    'orphans': ['endpoint_by_type_and_user','endpoint_full']
-                },
-                {
-                    'title': 'Endpoint By User',
-                    'url': 'endpoint_by_user',
-                    'icon': 'fa-desktop',
-                    'orphans': ['endpoint_by_user_and_type', 'endpoint_full']
-                },
-                {
-                    'title': 'Sharepoint Access',
-                    'url': 'endpoint_events_sharepoint',
-                    'icon': 'fa-desktop',
-                    'orphans': ['endpoint_events_sharepoint_drill', 'endpoint_events_sharepoint_full']
-                }
-            ]
-        },
-        //
-            // {
-            //     'title': 'SSL',
-            //     'url': '',
-            //     'icon': 'fa-lock',
-            //     'children':
-            //     [
-            //         {
-            //             'title': 'SSL Server',
-            //             'url': 'ssl_server',
-            //             'icon': 'fa-lock',
-            //             'orphans': []
-            //         },
-            //         {
-            //             'title': 'Local SSL',
-            //             'url': 'ssl_local',
-            //             'icon': 'fa-lock',
-            //             'orphans': []
-            //         },
-            //         {
-            //             'title': 'Remote SSL',
-            //             'url': 'ssl_remote',
-            //             'icon': 'fa-lock',
-            //             'orphans': []
-            //         }
-            //     ]
-            // },
-        { // APPLICATIONS
-            'title': 'Applications',
-            'url': '',
-            'icon': 'fa-bars',
-            'children':
-            [
-                {
-                    'title': 'By Application',
-                    'url': 'app_by_application',
-                    'icon': 'fa-bars',
-                    'orphans': ['application_drill', 'application_local', 'l7_shared']
-                },
-                {
-                    'title': 'By Local IP',
-                    'url': 'app_by_local_ip',
-                    'icon': 'fa-bars',
-                    'orphans': ['l7_local_app', 'l7_local_drill', 'l7_shared']
-                },
-                {
-                    'title': 'By Remote IP',
-                    'url': 'app_by_remote_ip',
-                    'icon': 'fa-bars',
-                    'orphans': ['l7_remote_app', 'l7_remote_drill', 'l7_shared']
-                }
-            ]
-        },
-        { // HTTP
-            'title': 'HTTP',
-            'url': '',
-            'icon': 'fa-globe',
-            'children':
-            [
-                {
-                    'title': 'By Domain',
-                    'url': 'http_by_domain',
-                    'icon': 'fa-arrows-h',
-                    'orphans': ['http_by_domain_local', 'http_by_domain_local_drill']
-                },
-                {
-                    'title': 'By User Agent',
-                    'url': 'http_by_user_agent',
-                    'icon': 'fa-user',
-                    'orphans': ['http_by_user_agent_local', 'http_by_user_agent_local_drill']
-                },
-                {
-                    'title': 'By Local IP',
-                    'url': 'http_local',
-                    'icon': 'fa-long-arrow-left',
-                    'orphans': ['http_local_by_domain', 'http_by_domain_local_drill']
-                },
-                {
-                    'title': 'By Remote IP',
-                    'url': 'http_remote',
-                    'icon': 'fa-long-arrow-right',
-                    'orphans': ['http_remote2local', 'http_remote2local_drill']
-                },
-                {
-                    'title': 'Blocked HTTP',
-                    'accessLevel': [$scope.global.user.hide_proxy],   
-                    'url': 'http_local_blocked',
-                    'icon': 'fa-times',
-                    'orphans': ['http_local_by_domain_blocked', 'http_by_domain_local_drill_blocked']
-                },
-            ]
-        },
-        { // EMAIL
-            'title': 'Email',
-            'url': '',
-            'icon': 'fa-envelope',
-            'children':
-            [
-                {
-                    'title': 'By Sender',
-                    'url': 'smtp_senders',
-                    'icon': 'fa-mail-forward',
-                    'orphans': ['smtp_sender2receiver','smtp_from_sender']
-                },
-                {
-                    'title': 'By Receiver',
-                    'url': 'smtp_receivers',
-                    'icon': 'fa-mail-reply',
-                    'orphans': ['smtp_receiver2sender','smtp_from_sender']
-                },
-                {
-                    'title': 'By Subject',
-                    'url': 'smtp_subjects',
-                    'icon': 'fa-envelope',
-                    'orphans': ['smtp_subject_sender_receiver_pairs', 'smtp_from_sender_by_subject']
-                }
-            ]
-        },
-        { // EXTRACTED FILES
-            'title': 'Extracted Files',
-            'url': '',
-            'icon': 'fa-folder',
-            'children':
-            [
-                {
-                    'title': 'By File Type',
-                    'url': 'files_by_mime_type',
-                    'icon': 'fa-folder-open',
-                    'orphans': ['files_file_mime_local', 'files_local']
-                },
-                {
-                    'title': 'By Local IP',
-                    'url': 'files_by_local_ip',
-                    'icon': 'fa-folder-open',
-                    'orphans': ['files_by_file_name','files_local']
-                },
-                {
-                    'title': 'By Remote IP',
-                    'url': 'files_by_remote_ip',
-                    'icon': 'fa-folder-open',
-                    'orphans': ['files_by_file_name_remote','files_remote']
-                },
-                {
-                    'title': 'By Domain',
-                    'url': 'files_by_domain',
-                    'icon': 'fa-folder-open',
-                    'orphans': ['files_by_domain_local', 'files_by_domain_local_mime', 'files_by_domain_local_mime_drill']
-                }
-            ]
-        },
-        { // FIRST SEEN
-            'title': 'First Seen',
-            'url': '',
-            'icon': 'fa-asterisk',
-            'children':
-            [
-                {
-                    'title': 'New Remote IPs',
-                    'url': 'new_remote',
-                    'icon': 'fa-exchange',
-                    'orphans': []
-                },
-                {
-                    'title': 'New DNS Queries',
-                    'url': 'new_dns_queries',
-                    'icon': 'fa-info-circle',
-                    'orphans': []
-                },
-                {
-                    'title': 'New HTTP Domains',
-                    'url': 'new_http_domains',
-                    'icon': 'fa-globe',
-                    'orphans': []
-                },
-                {
-                    'title': 'New SSL Hosts',
-                    'url': 'new_ssl_hosts',
-                    'icon': 'fa-lock',
-                    'orphans': []
-                },
-                {
-                    'title': 'New SSH Remote IPs',
-                    'url': 'new_ssh_remote',
-                    'icon': 'fa-lock',
-                    'orphans': []
-                },
-                {
-                    'title': 'New FTP Remote IPs',
-                    'url': 'new_ftp_remote',
-                    'icon': 'fa-lock',
-                    'orphans': []
-                }
-            ]
+            'title': 'Home',
+            'url': 'home',
+            'icon': 'fa-home',
+            'children': []
         }
-        /*,
-        { // HEALTH
-            'title': 'Health',
-            'url': '',
-            'icon': 'fa-plus-square',        
-            'accessLevel': [$s],    
-            'children':
-            [
-                {
-                    'title': 'RapidPHIRE Health',
-                    'url': 'overview',
-                    'icon': 'fa-plus-square',
-                    'orphans': ['health_drill']
-                }
-            ]
-        }*/
     ];
 }]);

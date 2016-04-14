@@ -1,220 +1,59 @@
-<div class="navbar-inner" data-ng-controller="HeaderController">
-    <div style="background-color: #232323;" class="container-fluid">
-        <a ng-click="reload('/')" href="">
-            <img class="logo" src="public/system/assets/img/logo.png" alt=""/>
-        </a>
-        <a href="javascript:;" class="btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
-            <img src="public/system/assets/img/menu-toggler.png" alt=""/>
-        </a>
+<script type="text/ng-template" id="userModal.html">
+	<div class="modal-header">
+		<h3>User settings</h3>
+	</div>
+	<div class="modal-body">
+		 <form name="userForm" class="form-horizontal" ng-submit="submitForm(userForm)" novalidate>
+			<!-- ORGANIZATION LIST -->
+			<div class="control-group">
+				<label class="control-label">Organization</label>
+				<div class="controls">
+					<select ng-model="userForm.org" required>
+	                <option value="{{org.user}}" ng-repeat="org in organizations">{{org.user}}</option>
+	            </select>
+                <p ng-show="nullOrg" style="color:#f00;">Must choose an Organization</p>
+				</div>
+			</div>
 
-        <script type="text/ng-template" id="sessionModal.html">
-            <div class="modal-header">
-                <h3>Your session has expired</h3>
-            </div>
-            <div class="modal-body">
-                <span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-sign-in fa-stack-1x fa-inverse"></i></span> Your session has expired. Please click the button below to sign in again.
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" ng-click="ok()">Sign In</button>
-            </div>
-        </script>
-
-        <script type="text/ng-template" id="userModal.html">
-            <div class="modal-header">
-                <h3>User settings</h3>
-            </div>
-            <div class="modal-body">
-
-
-                <tabset>
-                    <tab>
-                        <tab-heading>
-                            General Settings
-                        </tab-heading>
-                        <form name="userForm" class="form-horizontal" ng-submit="submitForm(userForm)" novalidate>
-                            <!-- EMAIL -->
-                            <div class="control-group" ng-class="{ 'has-error' : userForm.email.$invalid && !userForm.email.$pristine }">
-                                <label class="control-label">Email *</label>
-                                <div class="controls">
-                                    <input type="email" name="email" class="form-control" ng-model="user.email">
-                                    <p ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="help-block">Enter a valid email.</p>
-                                </div>
-                            </div>
-                            <!-- NEW PASSWORD -->
-                            <div class="control-group" ng-class="{ 'has-error' : userForm.password.$invalid }">
-                                <label class="control-label">New Password</label>
-                                <div class="controls">
-                                    <input type="password" name="password" class="form-control" placeholder="Password (optional)" ng-model="user.password" ng-minlength="8" ng-maxlength="100">
-                                    <p ng-show="userForm.password.$error.minlength" class="help-block">Password is too short.</p>
-                                    <p ng-show="userForm.password.$error.maxlength" class="help-block">Password is too long.</p>
-                                </div>
-                            </div>
-                            <div class="control-group" ng-class="{ 'has-error' : userForm.cpassword.$viewValue != userForm.password.$viewValue }">
-                                <label class="control-label">Repeat Password</label>
-                                <div class="controls">
-                                    <input type="password" name="cpassword" class="form-control" placeholder="Repeat password" ng-model="user.cpassword" ng-minlength="8" ng-maxlength="100">
-                                    <p ng-show=" userForm.cpassword.$viewValue != userForm.password.$viewValue" class="help-block">Passwords dont match</p>
-                                </div>
-                            </div>
-
-                            <div class="control-group">
-                                <div class="controls">
-                                    <button type="submit" class="pure-button">Submit</button>
-                                </div>
-                            </div>
-                        </form>
-                    </tab>
-                    <tab>
-                        <tab-heading>
-                            2 Step Authentication
-                        </tab-heading>
-                                <form name="authForm" class="form-horizontal" ng-submit="submit2Auth(authForm)" novalidate>
-                            <div class="control-group" >    
-                                <label class="control-label">Two Step Authentication</label>
-                                <section ng-if="user.prevTwoStepAuth == 1">
-                                    Two-step auth is active. <a ng-click="disable2Auth()">Click here to disable.</a>
-                                </section>
-                                <section ng-if="user.prevTwoStepAuth == 0">
-                                    <div class="controls"><input type="checkbox" ng-model="user.twoStepAuth"/></div>
-                                    <div class="control-group" ng-show="user.twoStepAuth">  
-                                        <text>  Please scan the below QR code</text>  
-                                        <br/>
-                                        <label class="control-label">QR Code</label>
-                                        <div class="controls"><img id="qrImg" ng-src="{{googleSrc()}}" /></div>
-                                    </div>
-                                    <div ng-show="user.twoStepAuth" class="control-group" ng-class="{ 'has-error' : authForm.verify.$invalid }">
-                                        <label class="control-label">Verify 2-step</label>
-                                        <div class="controls">
-                                            <p ng-show="twoFactorError" class="help-block">{{twoFactorError}}</p>
-                                            <input type="verify" required name="verify" class="form-control" placeholder="Confirm 6 digit code" ng-model="user.verify" ng-minlength="6" ng-maxlength="6">
-                                            <p ng-show="authForm.verify.$error.minlength" class="help-block">code is too short.</p>
-                                            <p ng-show="authForm.verify.$error.maxlength" class="help-block">code is too long.</p>
-                                        </div>
-                                    </div>
-                                    <div ng-show="(user.twoStepAuth == 1) && (user.prevTwoStepAuth == 0)" class="control-group">
-                                        <div class="controls">
-                                            <button type="submit" class="pure-button">Submit</button>
-                                        </div>
-                                    </div>
-                                </section>
-                            </div>
-                        </form>
-                    </tab>
-                </tabset>
-
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" ng-click="ok()">Close</button>
-            </div>
-        </script>
-
-        <script type="text/ng-template" id="uploadModal.html">
-            <div class="modal-header">
-                <h3>Upload Local Updates</h3>
-            </div>
-            <div class="modal-body">
-                <div style="width: 70%;margin: 0 auto;">
-                    <div style="width: 70%;margin: 0 auto;">
-                        Upload file(s): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <input type="file" ng-file-select="onFileSelect($files)" multiple onclick="this.value=null">
-                    </div>
-                    <br/>
-                    <div style="width: 70%;margin: 0 auto;">
-                        <div ng-show="dropSupported" class="drop-box" ng-file-drop="onFileSelect($files);" ng-file-drop-available="dropSupported=true">
-                            or drop files here
-                        </div>
-                    </div>
-                    <div ng-show="!dropSupported">HTML5 Drop File is not supported on this browser</div>
-                    <br/>
-                    <div ng-show="progress.length > 0" style="width: 70%;margin: 0 auto;">
-                        <div class="err" ng-show="errorMsg != null">{{errorMsg}}</div>
-                        Progress:
-                        <br/>
-                        <div ng-show="selectedFiles != null">
-                            <div class="sel-file" ng-repeat="f in selectedFiles">
-                                {{($index + 1) + '.'}}
-                                <img ng-show="dataUrls[$index]" ng-src="{{dataUrls[$index]}}">
-                                <button class="button" ng-click="start($index)" ng-show="progress[$index] < 0">Start</button>
-                                <span class="progress" ng-show="progress[$index] >= 0">
-                                    <div style="width:{{progress[$index]}}%">{{progress[$index]}}%</div>
-                                </span>
-                                <button class="button" ng-click="abort($index)" ng-show="hasUploader($index) && progress[$index] < 100">Abort</button>
-                                {{f.name}} - size: {{f.size}}B - type: {{f.type}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" ng-click="ok()">Close</button>
-            </div>
-        </script>
-
-
-        <ul class="nav pull-right">
-            <!-- <li class="no-text-shadow">
-                <div id="reportrange" class="pull-right dashboard-date-range tooltips no-tooltip-on-touch-device responsive" data-tablet="" data-desktop="tooltips" data-placement="top" data-original-title="Change dashboard date range" date-picker>
-                        <i style="color:#fff" class="fa fa-calendar"></i>
-                        <span>{{start}} - {{end}}</span>
-                        <i style="color:#fff" class="fa fa-angle-down"></i>
-                </div>
-            </li> -->
-            <!-- NOTIFICATION DROPDOWN -->
-            <li ng-app="mean.system" style="margin-top:6px;margin-bottom:-8px" class="dropdown" id="header_notification_bar">
-                <input class="span3" name="search" ng-model="search" type="text" placeholder="Search this page..." universal-search>
-            </li>
-            <!-- <button ng-click="retest()"> test</button> -->
-            <!-- <li class="dropdown" id="header_notification_bar">
-                <a ng-click="checkpoint()" style="width:25px" href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <i style="margin-left:5px" class="fa fa-warning"></i>
-                    <span ng-hide="iocCount == 0" class="badge">{{iocCount}}</span>
-                </a> 
-                <ul class="dropdown-menu extended notification">
-                    <li>
-                        <span class="more"></span>
-                    </li>
-                    <div data-ng-repeat="ioc in iocalerts">
-                        <li>
-                            <a class="{{ioc.class}}" href="" newNotification>
-                                <div class="row-fluid">
-                                    <div class="span2">
-                                        <span class="aDrop{{ioc.ioc_severity}} fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa {{ioc.icon}} fa-stack-1x fa-inverse"></i></span>
-                                    </div>
-                                    <div class="span10">
-                                        <div class="row-fluid">
-                                            {{ioc.ioc}}
-                                        </div>
-                                        <span class="time pull-right" data-livestamp="{{ioc.added}}"></span>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                    </div>
-                    <li class="external">
-                        <a>See all notifications</a>
-                    </li>
-                </ul>
-            </li> -->
-            <li class="dropdown" id="header_notification_bar">
-                <a style="width:25px" ng-click="go('/archive')" href="/#archive" class="dropdown-toggle" data-toggle="dropdown">
-                    <i style="margin-left:5px" class="fa fa-trash-o"></i>
-                </a>
-            </li>
-            <li class="navbar-nav nav pull-right"><a href="#" id="welcome" class="dropdown-toggle" data-toggle="dropdown">Welcome, {{global.user.email}} <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li ng-show="global.user.uploads"><a href="" ng-click="uploadOpen()"><i class="fa fa-upload"></i> Upload Updates</a></li>
-                    <li><a href="" ng-click="userSettings()"><i class="fa fa-cog"></i> My Preferences</a></li>
-                    <!-- <li><a href="javascript:void(0);" onclick="javascript:page('null','get_cron', null, null, null);"><i class="icon-envelope"></i> Manage Reports</a></li> -->
-                    <!-- <li><a href="javascript:void(0);" onclick="#"><i class="fa fa-user"></i> Manage Users</a></li> -->
-                    <!-- <li class="divider"></li> -->
-                    <li ng-show="global.user.user_level === 'superadmin' || global.user.user_level === 'admin'"><a ng-click="go('create_user')"><i class="fa fa-user"></i> User Management</a></li>
-                    <li><a ng-click="logout()"><i class="fa fa-power-off"></i> Logout</a></li>
-                </ul>
-            </li>
-        </ul>
-    </div>
+			<!-- NEW PASSWORD -->
+			<div class="control-group" ng-class="{ 'has-error' : userForm.password.$invalid }">
+				<label class="control-label">New Password</label>
+				<div class="controls">
+					<input type="password" name="password" class="form-control" placeholder="Password (optional)" ng-model="user.password" ng-minlength="8" ng-maxlength="100" required>
+					<p ng-show="userForm.password.$error.minlength" class="help-block" style="color:#f00">Password is too short.</p>
+					<p ng-show="userForm.password.$error.maxlength" class="help-block" style="color:#f00">Password is too long.</p>
+				</div>
+			</div>
+			<div class="control-group" ng-class="{ 'has-error' : userForm.cpassword.$viewValue != userForm.password.$viewValue }">
+				<label class="control-label">Repeat Password</label>
+				<div class="controls">
+					<input type="password" name="cpassword" class="form-control" placeholder="Repeat password" ng-model="user.cpassword" ng-minlength="8" ng-maxlength="100" required>
+					<p ng-show=" userForm.cpassword.$viewValue != userForm.password.$viewValue" class="help-block" style="color:#f00">Passwords dont match</p>
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<button type="submit" class="pure-button">Submit</button>
+				</div>
+			</div>
+		</form>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-primary" ng-click="ok()">Close</button>
+		</div>
+</script>
+<div class="navbar-inner" data-ng-controller="headerController">
+	<a ng-click="reload('/')" href="">
+		<img class="logo" src="public/system/assets/img/logo.jpeg" alt=""/>
+	</a>
+	<div style="background-color: #390052;" class="container-fluid">
+		<ul class="nav pull-right">
+			<li class="navbar-nav nav pull-right"><a href="#" id="welcome" class="dropdown-toggle" data-toggle="dropdown">Welcome, {{global.user.username}} <b class="caret"></b></a>
+				<ul class="dropdown-menu">
+					<li><a href="" ng-click="userSettings()"><i class="fa fa-cog"></i> My Preferences</a></li>
+					<li><a ng-click="logout()"><i class="fa fa-power-off"></i> Logout</a></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
 </div>
-
-
-
-

@@ -2,6 +2,6 @@
 
 module.exports = {
 	app: {
-		name: 'rapidPHIRE - Fight Fire With PHIRE'
+		name: 'tForm - Treatment form for message therapy'
 	}
 };

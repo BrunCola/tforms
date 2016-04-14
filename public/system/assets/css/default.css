@@ -5,7 +5,7 @@ Default theme
 Reset and overrides  
 ***/
 body {
-  background-color: #232323;
+  background-color: #294757;
 }
 /***
 Page header
@@ -18,121 +18,62 @@ Page header
 .header .btn-navbar {
   background-color: #000 !important;
 }
-.header .nav .dropdown-toggle:hover,
-.header .nav .dropdown.open .dropdown-toggle {
+.header .nav .dropdown-toggle:hover {
   background-color: #383838 !important;
-}
-.header .nav li.dropdown .dropdown-toggle i {
-  color: #8a8a8a !important;
 }
 /***
 Page sidebar
 ***/
 .page-sidebar {
-  background-color: #232323;
+  background-color: #294757;
   position: fixed;
 }
-
-/*MAIN MENU colors*/
 ul.page-sidebar-menu > li > a {
   border-top: 1px solid #2D323D !important;
-  color: #f5f5f5 !important;
+  color: #ffffff !important;
 }
 ul.page-sidebar-menu > li:last-child > a {
   border-bottom: 1px solid transparent !important;
 }
 ul.page-sidebar-menu > li a i {
-  color: #f5f5f5;
+  color: #FFF;
 }
-
-/* 
-MAIN MENU hover color, it doens't include submenu 
-*/
 ul.page-sidebar-menu > li.open > a,
 ul.page-sidebar-menu > li > a:hover,
 ul.page-sidebar-menu > li:hover > a {
-  background: #424242;
+  background: #2D323D;
 }
-
-/*
-MAIN MENU active colors
-*/
 ul.page-sidebar-menu > li.active > a {
-  background: #f5f5f5 !important;
+  background: #9D00E0 !important;
   border-top-color: transparent !important;
-  color: #424242 !important;
-  font-weight: bold;
+  color: #ffffff;
 }
-
-/*
-MAIN MENU active icon color
-*/
 ul.page-sidebar-menu > li.active > a i {
-  color: #232323;
+  color: #ffffff;
 }
 ul.page-sidebar-menu > li > ul.sub-menu > li:first-child > a {
   border-top: 0px !important;
 }
-
-/* 
-SUBMENU active and hover color
-*/
 ul.page-sidebar-menu > li > ul.sub-menu > li.active > a,
 ul.page-sidebar-menu > li > ul.sub-menu > li > a:hover {
   color: #ffffff !important;
-  background: #424242 !important;
-}
-
-/* 3rd level sub menu */
-ul.page-sidebar-menu > li > ul.sub-menu li > ul.sub-menu > li.active > a,
-ul.page-sidebar-menu > li > ul.sub-menu li > ul.sub-menu > li > a:hover,
-ul.page-sidebar-menu > li > ul.sub-menu li.open > a {
-  color: #ffffff !important;
   background: #2D323D !important;
 }
+ul.page-sidebar-menu > li > ul.sub-menu > li > a:hover {
+  background: #2D323D !important;
+}
+/* 3rd level sub menu */
 /* font color for all sub menu links*/
 ul.page-sidebar-menu li > ul.sub-menu > li > a {
   color: #bdbdbd;
 }
 /* menu arrows */
-ul.page-sidebar-menu > li > a .arrow:before,
-ul.page-sidebar-menu > li > a .arrow.open:before {
-  color: #7d7d7d !important;
-}
-ul.page-sidebar-menu > li > ul.sub-menu a .arrow:before,
-ul.page-sidebar-menu > li > ul.sub-menu a .arrow.open:before {
-  color: #707070 !important;
-}
-ul.page-sidebar-menu > li > a > .arrow.open:before {
-  color: #8a8a8a !important;
-}
-ul.page-sidebar-menu > li.active > a .arrow:before,
-ul.page-sidebar-menu > li.active > a .arrow.open:before {
-  color: #ffffff !important;
-}
 /* sidebar search */
-.page-sidebar .sidebar-search input {
-  background-color: #242424 !important;
-  color: #d6d6d6;
-}
 .page-sidebar .sidebar-search input::-webkit-input-placeholder {
-  color: #d6d6d6 !important;
-}
-.page-sidebar .sidebar-search input:-moz-placeholder {
   color: #d6d6d6 !important;
 }
 .page-sidebar .sidebar-search input:-ms-input-placeholder {
   color: #d6d6d6 !important;
-}
-.page-sidebar .sidebar-search input {
-  background-color: #232323 !important;
-  color: #d6d6d6 !important;
-}
-.page-sidebar .sidebar-search .input-box {
-  border-bottom: 1px solid #7d7d7d !important;
-}
-.page-sidebar .sidebar-search .submit {
-  background-image: url(../../img/search-icon.png);
 }
 /***
 Sidebar toggler
@@ -142,45 +83,13 @@ Sidebar toggler
   background-color: #242424;
 }
 /* search box bg color on expanded */
-.page-sidebar-closed .page-sidebar .sidebar-search.open {
-  background-color: #232323 !important;
-}
-.page-sidebar-closed .page-sidebar .sidebar-search.open .remove {
-  background-image: url("../../img/sidebar-search-close.png");
-}
 /* sub menu bg color on hover menu item */
-.page-sidebar-closed ul.page-sidebar-menu > li:hover .sub-menu {
-  background-color: #232323;
-}
 /***
 Horizontal Menu(new in v1.2)
 ***/
 /*search*/
-.header .hor-menu .hor-menu-search-form-toggler.hide {
-  background: #000000 url(../../img/hor-menu-search-close.png) no-repeat center;
-}
-.header .hor-menu .search-form {
-  background: #000000;
-}
-.header .hor-menu .search-form .btn {
-  color: #d6d6d6;
-  background: #000000 url(../../img/search-icon.png) no-repeat center;
-}
-.header .hor-menu .search-form form input {
-  color: #d6d6d6;
-}
 .header .hor-menu .search-form form input::-webkit-input-placeholder {
   /* WebKit browsers */
-
-  color: #d6d6d6;
-}
-.header .hor-menu .search-form form input:-moz-placeholder {
-  /* Mozilla Firefox 4 to 18 */
-
-  color: #d6d6d6;
-}
-.header .hor-menu .search-form form input::-moz-placeholder {
-  /* Mozilla Firefox 19+ */
 
   color: #d6d6d6;
 }
@@ -209,73 +118,13 @@ Footer
 Footer Layouts (new in v1.3)
 ***/
 /* begin:fixed footer */
-.page-footer-fixed .footer {
-  background-color: #242424;
-}
-.page-footer-fixed .footer .footer-inner {
-  color: #999999;
-}
-.page-footer-fixed .footer .footer-tools .go-top {
-  background-color: #4f4f4f;
-}
-.page-footer-fixed .footer .footer-tools .go-top i {
-  color: #8a8a8a;
-}
 /* end:fixed footer */
 /***
 Gritter Notifications 
 ***/
-.gritter-top {
-  background: url(../../plugins/gritter/images/gritter.png) no-repeat left -30px !important;
-}
-.gritter-bottom {
-  background: url(../../plugins/gritter/images/gritter.png) no-repeat left bottom !important;
-}
-.gritter-item {
-  display: block;
-  background: url(../../plugins/gritter/images/gritter.png) no-repeat left -40px !important;
-}
-.gritter-close {
-  background: url(../../plugins/gritter/images/gritter.png) no-repeat left top !important;
-}
-.gritter-title {
-  text-shadow: none !important;
-  /* Not supported by IE :( */
-
-}
 /* for the light (white) version of the gritter notice */
-.gritter-light .gritter-item,
-.gritter-light .gritter-bottom,
-.gritter-light .gritter-top,
-.gritter-light .gritter-close {
-  background-image: url(../../plugins/gritter/images/gritter-light.png) !important;
-}
-.gritter-item-wrapper a {
-  color: #18a5ed;
-}
-.gritter-item-wrapper a:hover {
-  color: #0b6694;
-}
 /* begin: boxed page */
 @media (min-width: 980px) {
-  .page-boxed {
-    background-color: #2e2e2e !important;
-  }
-  .page-boxed .page-container {
-    background-color: #232323;
-    border-left: 1px solid #5e5e5e;
-    border-bottom: 1px solid #5e5e5e;
-  }
-  .page-boxed.page-sidebar-fixed .page-container {
-    border-left: 0;
-    border-bottom: 0;
-  }
-  .page-boxed.page-sidebar-fixed .page-sidebar {
-    border-left: 1px solid #5e5e5e;
-  }
-  .page-boxed.page-sidebar-fixed.page-footer-fixed .footer {
-    background-color: #2e2e2e !important;
-  }
 }
 /* end: boxed page */
 /***
@@ -286,16 +135,13 @@ Landscape phone to portrait tablet
     page sidebar
     ***/
   .page-sidebar {
-    background-color: #232323 !important;
+    background-color: #294757 !important;
   }
   ul.page-sidebar-menu > li > a {
     border-top: 1px solid #4a4a4a !important;
   }
   ul.page-sidebar-menu > li:last-child > a {
     border-bottom: 0 !important;
-  }
-  .page-sidebar .sidebar-search input {
-    background-color: #232323 !important;
   }
   ul.page-sidebar-menu > li.open > a,
   ul.page-sidebar-menu > li > a:hover,

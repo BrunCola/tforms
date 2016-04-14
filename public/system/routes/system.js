@@ -2,7 +2,7 @@
 
 //Setting up route
 angular.module('mean.system').config(['$stateProvider', '$urlRouterProvider',
-        function($stateProvider, $urlRouterProvider) {
+        function ($stateProvider, $urlRouterProvider) {
             var checkLoggedIn = function($q, $timeout, $http, $location, $window, Global) {
                 // Initialize a new promise
                 var deferred = $q.defer();
@@ -11,11 +11,7 @@ angular.module('mean.system').config(['$stateProvider', '$urlRouterProvider',
                     $http.get('/api/loggedin')
                         .success(function(user) {
                             Global.user = user;
-                            if (user.first_login === 1) {
-                                $location.url('/first_login');
-                            } else {
-                                $timeout(deferred.resolve);
-                            }   
+                            $timeout(deferred.resolve);
                         })
                         .error(function(user) {
                             $timeout(deferred.reject);
@@ -39,7 +35,7 @@ angular.module('mean.system').config(['$stateProvider', '$urlRouterProvider',
                             // if success
                             $timeout(deferred.reject);
                             // go home
-                            $location.url('/ioc_events');
+                            $location.url('/home');
                         })
                         .error(function(user) {
                             $timeout(deferred.resolve);
@@ -51,13 +47,13 @@ angular.module('mean.system').config(['$stateProvider', '$urlRouterProvider',
             };
 
             // For unmatched routes:
-            $urlRouterProvider.otherwise('/ioc_events');
+            $urlRouterProvider.otherwise('/home');
             // states for my app
             $stateProvider
                 .state('auth', {
                     templateUrl: 'public/auth/views/index.html',
                     resolve: {
-                        loggedout: checkLoggedOut
+                        loggedin: checkLoggedOut
                     }
                 })
                 .state('pages', {
@@ -65,23 +61,12 @@ angular.module('mean.system').config(['$stateProvider', '$urlRouterProvider',
                     resolve: {
                         loggedin: checkLoggedIn
                     },
-                })
-                .state('survey', {
-                    url: '/survey',
-                    templateUrl: 'public/pages/views/survey/survey.html',
-                    data: {
-                        title: 'Site Survey',
-                        daterange: false
-                    },
                 });
+
         }
     ])
     .config(['$locationProvider',
         function($locationProvider) {
-            // $locationProvider.hashPrefix('!'); // previous url config
-            $locationProvider.html5Mode({
-                enabled: true,
-                requireBase: false
-            }); // new url config (no #! prepended)
+            $locationProvider.hashPrefix('!');
         }
     ]);

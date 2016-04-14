@@ -4,15 +4,26 @@
 
 module.exports = function(app, version, pool) {
     var auth = require('./middlewares/authorization')();
-    // USERS
-        // USER MANAGEMENT
-            var create_user = require('../controllers/users/create_user')(pool);
-            app.route('/api/users/create_user')
-            .get(auth.permission, create_user.render)
-            .post(auth.permission, create_user.insert); 
-        // FIRST LOGIN
-            var first_login = require('../controllers/users/first_login')(pool);
-            app.route('/api/users/first_login')
-            .get(auth.permission, first_login.render)
-            .post(auth.permission, first_login.insert);
+
+    // HOME PAGE
+        // var home = require('../controllers/home')(pool);
+        // app.route('/api/home/createClient')
+        // .post(auth.permission, home.createClient);
+
+        // var create = require('../controllers/forms/create')(pool);
+        // app.route('/api/forms/create')
+        //     .get(create.render)
+        //     .post(create.provide);
+
+        // var edit = require('../controllers/forms/edit')(pool);
+        // app.route('/api/forms/edit')
+        //     .post(edit.provide);
+
+        // app.route('/api/forms/addLogin')
+        //     .post(edit.newLogin);
+
+        // app.route('/api/forms/changePassword')
+        //     .post(edit.updatePassword);
+
 };
+ 

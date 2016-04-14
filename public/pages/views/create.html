@@ -1,0 +1,128 @@
+<section head></section>
+<section data-ng-controller="nafcHome">
+    <!-- <section id="loading-error" loading-error></section>
+    <section id="loading-spinner" loading-spinner></section> -->
+     <div class="row-fluid">
+        <div class="span8">
+            <div class="row-fluid">
+                <div class="box nafcTable" style="background-color:#FFF;">
+                     <table>
+                        <tr style="font-weight:bold">
+                            <td>Parent Name</td><td>Child Name</td>
+                        </tr>
+                        <tr ng-repeat="child in children">
+                            <td ng-click="childLink('create',child)" style="cursor:pointer"><span>{{child.parent_org}}</span></td>
+                            <td ng-click="childLink('create',child)" style="cursor:pointer"><span>{{child.child_org}}</span></td>
+                            <td><span format="csv" ng-click="openExport(child.child_org)" target="_blank" style="cursor:pointer"><span>[Export]</span></span></td>
+                            <td><button type="button" class="button-error pure-button" ng-click="deleteOrganization(child)">Delete</button></td>                        
+                        </tr>
+                    </table>  
+                </div>
+            </div>
+        </div>
+        <div class="span4">
+            <div ng-show="global.user.master === 2" class="row-fluid">
+                Create New Regional Organization
+                <div class="row-fluid">
+                    <div class="box" style="background-color:#FFF;">
+                        <form name="provForm">
+                            <label class="formLabel">Name of Regional Organization:</label> <input required type="text" ng-model="provForm.org_name">
+                            <br />
+                            <p ng-show="nameOk" style="color:#f00;">Organization name is already taken please rename</p>  
+                            <input type="submit" ng-click="createOrg(provForm,1)" class="pure-button"> 
+                        </form>
+                    </div>
+                </div>
+            <br />
+            </div>
+            <div ng-show="global.user.master === 2" class="row-fluid">
+                Create New Local Organization
+                <div class="row-fluid">
+                    <div class="box" style="background-color:#FFF;">
+                        <form name="orgForm">
+                            <label class="formLabel">List of Regional Organization:</label>    
+                            <select ng-model="orgForm.parent_org" required>
+                                <option value="{{reg.child_org}}" ng-repeat="reg in regional">{{reg.child_org}}</option>
+                            </select><br /> 
+                            <p ng-show="nullRegion" style="color:#f00;">Must choose a region</p>   
+                            <label class="formLabel">Name of Local Organization:</label> <input required type="text" ng-model="orgForm.org_name">
+                            <br />
+                            <p ng-show="nameOk" style="color:#f00;">Organization name is already taken please rename</p>   
+                            <input type="submit" ng-click="createOrg(orgForm,0)" class="pure-button"> 
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div ng-show="global.user.master === 1" class="row-fluid">
+                Create New Local Organization
+                <div class="row-fluid">
+                    <div class="box" style="background-color:#FFF;">
+                        <form name="orgForm">
+                            <label class="formLabel">Regional Organization:</label> <input required type="text" ng-model="global.user.parent_org" disabled="true">  
+                            <label class="formLabel">Name of Local Organization:</label> <input required type="text" ng-model="orgForm.org_name">
+                            <br />
+                            <p ng-show="nameOk" style="color:#f00;">Organization name is already taken please rename</p>  
+                            <input type="submit" ng-click="createOrg(orgForm,0)" class="pure-button"> 
+                        </form>
+                    </div>
+                </div>
+            <br />
+            </div>
+            <div ng-show="global.user.master === 2" class="row-fluid">
+                Create New Login
+                <div class="box" style="background-color:#FFF;">
+                    <form name="login">                        
+                        <label class="formLabel">List of All Organizations:</label>    
+                        <select ng-model="login.org" required>
+                            <option value="{{org}}" ng-repeat="org in all_org">{{org.child_org}}</option>
+                        </select><br /> 
+                        <p ng-show="nullOrg" style="color:#f00;">Must choose an Organization</p>
+                        <label class="formLabel">Login Email:</label> <input required type="email" ng-model="login.email">
+                        <label class="formLabel">Password:</label> <input required type="password" ng-model="login.password">
+                        <br />
+                        <input type="submit" ng-click="createLogin(login)" class="pure-button"> 
+                    </form>
+                </div>
+            </div>
+            <div ng-show="global.user.master === 1" class="row-fluid">
+                Create New Login
+                <div class="box" style="background-color:#FFF;">
+                    <form name="login">                        
+                        <label class="formLabel">List of All Organizations:</label>    
+                        <select ng-model="login.org" required>
+                            <option value="{{org}}" ng-repeat="org in children">{{org.child_org}}</option>
+                        </select><br /> 
+                        <p ng-show="nullOrg" style="color:#f00;">Must choose an Organization</p>
+                        <label class="formLabel">Login Email:</label> <input required type="email" ng-model="login.email">
+                        <label class="formLabel">Password:</label> <input required type="password" ng-model="login.password">
+                        <br />
+                        <input type="submit" ng-click="createLogin(login)" class="pure-button"> 
+                    </form>
+                </div>
+            <br />
+            </div>
+            <div ng-show="(programTypes) && (global.user.master === 2)" class="row-fluid">
+                Edit Program Types
+                <div class="box" style="background-color:#FFF;">
+                    <table>
+                        <tr style="font-weight:bold">
+                            <td>Program Type</td>
+                        </tr>
+                        <tr ng-repeat="(key, value) in programTypes | orderBy:'type'">
+                            <td ><span>{{value.type}}</span></td>
+                            <td><button type="button" class="button-error pure-button" ng-click="programDelete(value.type, $index)">Delete</button></td>                        
+                        </tr>
+                    </table>  
+                    <form name="programForm">
+                         <div class="row-fluid">
+                            <label class="formLabel"></label> 
+                            <input required type="text" ng-model="programForm.type"><br />
+                            <input type="submit" ng-click="programInsert(programForm);" class="pure-button">
+                        </div>
+                    </form>
+                </div>
+            <br />
+            </div>
+        </div>
+    </div>
+</section>

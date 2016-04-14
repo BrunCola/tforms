@@ -1,0 +1,84 @@
+<section head></section>
+<section data-ng-controller="tFormClient">
+    <!-- <section id="loading-error" loading-error></section>
+    <section id="loading-spinner" loading-spinner></section> -->
+    <div class="row-fluid">
+        <div class="span12">
+            <div id="clientBodyParts"  edit-client></div>
+        </div>
+    </div>
+    <div id="tformForm" class="box">
+        <form>
+            <div class="row-fluid">
+                <div class="span4"> <!-- INJURY AREA -->
+                    <h5>Injury Area</h5>
+                    <input type="checkbox" ng-model="clientInfo.area.full_body" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('area', 'full_body')">Full Body</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.area.head" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('area', 'head')">Head</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.area.neck" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('area', 'neck')">Neck</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.area.shoulders" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('area', 'shoulders')">Shoulders</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.area.arms" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('area', 'arms')">Arms</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.area.wrist_hands" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('area', 'wrist_hands')">Wrist/Hands</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.area.chest" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('area', 'chest')">Chest</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.area.upper_back" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('area', 'upper_back')">Upper Back</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.area.lower_back" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('area', 'lower_back')">Lower Back</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.area.hip" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('area', 'hip')">Hip</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.area.legs" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('area', 'legs')">Legs</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.area.knee" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('area', 'knee')">Knee</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.area.feet" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('area', 'feet')">Feet</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.area.other1" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('area', 'other1')">Other 1</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.area.other2" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('area', 'other2')">Other 2</span><br/>
+                </div>
+                <div class="span4"> <!-- INJURY TYPE -->
+                    <h5>Injury Type</h5>
+                    <input type="checkbox" ng-model="clientInfo.type.squeezing" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('type', 'squeezing')">Squeezing</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.type.stroking" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('type', 'stroking')">Stroking</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.type.rocking" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('type', 'rocking')">Rocking</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.type.effleurage" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('type', 'effleurage')">Effleurage</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.type.friction" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('type', 'friction')">Friction</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.type.vibration" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('type', 'vibration')">Vibration</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.type.tapotement" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('type', 'tapotement')">Tapotement</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.type.intra_oral" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('type', 'intra_oral')">Intra-oral</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.type.fascial_techniques" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('type', 'fascial_techniques')">Fascial Techniques</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.type.mtp_release" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('type', 'mtp_release')">MTP Release</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.type.other3" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('type', 'other3')">Other 3</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.type.stretch" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('type', 'stretch')">Stretch</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.type.joint_mobilization" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('type', 'joint_mobilization')">Joint Mobilization</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.type.other4" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('type', 'other4')">Other 4</span><br/>
+                </div>
+                <div class="span4"> <!-- INJURY REPAIR -->
+                    <h5>Injury Repair</h5>
+                    <input type="checkbox" ng-model="clientInfo.repair.c_bowing" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('repair', 'c_bowing')">C-Bowing</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.repair.c_scooping" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('repair', 'c_scooping')">C-Scooping</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.repair.gto" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('repair', 'gto')">GTO</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.repair.ischemic_compressions" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('repair', 'ischemic_compressions')">Ischemic Complressions</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.repair.thumb_stripping" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('repair', 'thumb_stripping')">Thumb Stripping</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.repair.elbow_stripping" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('repair', 'elbow_stripping')">Elbow Stripping</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.repair.kneading" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('repair', 'kneading')">Kneading</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.repair.wringing" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('repair', 'wringing')">Wringing</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.repair.compression" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('repair', 'compression')">Compression</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.repair.art" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('repair', 'art')">ART</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.repair.rom" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('repair', 'rom')">ROM</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.repair.other5" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('repair', 'other5')">Other 5</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.repair.other6" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('repair', 'other6')">Other 6</span><br/>
+                    <input type="checkbox" ng-model="clientInfo.repair.other7" ng-true-value="1" ng-false-value="0"><span class="formText" ng-click="wordClick('repair', 'other7')">Other 7</span><br/>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    S
+                    <textarea ng-model="clientInfo.s"></textarea><br/>
+                    O
+                    <textarea ng-model="clientInfo.o"></textarea><br/>
+                    A
+                    <textarea ng-model="clientInfo.a"></textarea><br/>
+                    P
+                    <textarea ng-model="clientInfo.p"></textarea><br/>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <button type="submit" ng-click="handleSubmit(clientInfo)" class="button-success pure-button">Save Client Info</button>
+            </div> 
+        </form>
+    </div>
+</section>

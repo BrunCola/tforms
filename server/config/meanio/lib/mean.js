@@ -26,7 +26,7 @@ function Meanio() {
 Meanio.prototype.app = function(name, options) {
 	if (this.active) return this;
 	findModules();
-	enableModules();
+	// enableModules();
 	aggregate('js', null);
 
 	this.name = name;
@@ -209,28 +209,28 @@ function findModules() {
 	});
 }
 
-function enableModules() {
-	events.on('modulesFound', function() {
+// function enableModules() {
+// 	// events.on('modulesFound', function() {
 		
-		var database = container.get('database');
+// 	// 	var database = container.get('database');
 		
-		// Load the package module for mongoose
-		require('../modules/package')(database);
+// 	// 	// Load the package module for mongoose
+// 	// 	require('../modules/package')(database);
 
-		modules.forEach(function(module, index) {
-			//add warnings
-			require(process.cwd() + '/node_modules/' + module.name + '/app.js');
-		});
+// 	// 	modules.forEach(function(module, index) {
+// 	// 		//add warnings
+// 	// 		require(process.cwd() + '/node_modules/' + module.name + '/app.js');
+// 	// 	});
 
-		modules.forEach(function(module) {
-			var name = capitaliseFirstLetter(module.name);
-			container.resolve.apply(this, [name]);
-			container.get(name);
-		});
+// 	// 	modules.forEach(function(module) {
+// 	// 		var name = capitaliseFirstLetter(module.name);
+// 	// 		container.resolve.apply(this, [name]);
+// 	// 		container.get(name);
+// 	// 	});
 
-		return modules;
-	});
-}
+// 	// 	return modules;
+// 	// });
+// }
 
 //will do compressiona and mingify/uglify soon
 function aggregate(ext, path) {
