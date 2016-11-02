@@ -1,0 +1,57 @@
+<div>
+    <h2>Client List</h2>
+    <div class="row">
+        <div id="client_list_left">
+            <table id="client_list_table">
+                <tr><th>Name</th><th>Sexe</th><th>DOB</th><th>First Visit</th><th>Last Visit</th><th></th><th></th><th></th></tr>
+                <tr *ngFor="let client of client_list">
+                    <td>{{client.name}}</td>
+                    <td>{{client.sexe}}</td>
+                    <td>{{client.dob}}</td>
+                    <td>{{client.first_visit}}</td>
+                    <td>{{client.last_visit}}</td>
+                    <td (click)="newSession(client.id)">NEW</td>
+                    <td (click)="editSession(client.id)">EDIT</td>
+                    <td (click)="deleteSession(client.id)">DELETE</td>
+                </tr>
+                <!-- <client-list  *ngFor="let client of client_list" [user]="client" (hello)="saidHello($event)"></client-list> -->
+            </table>
+        </div>
+        <div id="client_list_right">
+            <form>
+                <div>
+                    <label>Name</label>
+                    <input type="text" name="name" [(ngModel)]="new_client.name">
+                </div>
+                <div>
+                    <label>Sexe</label>
+                    <select name="sexe" [(ngModel)]="new_client.sexe">
+                        <option value="m">Male</option>
+                        <option value="f">Female</option>
+                        <option value="o">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Day</label>
+                    <select name="dob_day" [(ngModel)]="new_client.dob_day">
+                        <option value="day" *ngFor="let a of this.days; let day = index;">
+                            {{ day }}
+                        </option>
+                    </select>
+                    <label>Month</label>
+                     <select name="dob_month" [(ngModel)]="new_client.dob_month">
+                        <option value="month" *ngFor="let m of this.months; let month = index;">
+                            {{months[month]}} 
+                        </option>
+                    </select>
+                    <label>Year</label>
+                    <select name="dob_year" [(ngModel)]="new_client.dob_year">
+                        <option value="(year+start_year)" *ngFor="let y of this.total_years; let year = index;">
+                            {{year+start_year}} 
+                        </option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

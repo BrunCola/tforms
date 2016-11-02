@@ -1,0 +1,28 @@
+#main {
+    /*padding: 1em;*/
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    margin: 70px auto 50px auto;
+    display: block;
+    overflow: hidden;
+    border:solid 1px #0F0;
+    width: 1000px;
+}
+#header{
+    height:60px;
+    background: #7c01b2;
+    position: fixed;
+    top: 0px;
+    margin: 0px 0px 10px 0px;
+    width: 100%;
+    display: block;
+}
+#footer{
+    height:40px;
+    background: #7c01b2;
+    position: fixed;
+    width: 100%;
+    display: block;
+    bottom: 0px;
+    margin: 40px 0px 0px 0px;
+}

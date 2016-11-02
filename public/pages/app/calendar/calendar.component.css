@@ -1,0 +1,84 @@
+#month {
+    float: left;
+    width: 19%;
+    height: 300px;
+    border: solid 1px #0f0;
+    text-align: top;
+    vertical-align: top;
+}
+#week {
+    float: right;
+    width: 80%;
+    height: 800px;
+    border: solid 1px #00F;
+    text-align: top;
+    vertical-align: top;
+}
+#month .day {
+    float: left;
+    border: solid 1px #Ff0;
+    width: 13%;
+    text-align: middle;
+    vertical-align: top;
+    height: 20px;
+    cursor: pointer;
+}
+#month .current_month{
+    background: #fff;
+}
+#month .current_day{
+    color: #fff;
+    background: #7c01b2;
+}
+#month .not_month{
+    color: #ccc;
+}
+#month .prev {
+    float: left;
+    cursor: pointer;
+}
+#month .next {
+    float: right;
+    cursor: pointer;
+}
+#week .day {
+    float: left;
+    border: solid 1px #Ff0;
+    width: 12%;
+    text-align: top;
+    vertical-align: top;
+    height: 800px;
+}
+#week .current_day{
+    background: #ddd;
+}
+#week .day .hours {
+    border: solid 1px #Ff0;
+    width: 100%;
+    text-align: top;
+    vertical-align: top;
+    height: 750px;
+}
+#week .date {
+    border: solid 1px #Ff0;
+    width: 100%;
+    text-align: top;
+    vertical-align: top;
+    height: 50px;
+    cursor: pointer;
+}
+#time {
+    float: left;
+    width: 7%;
+    text-align: top;
+    vertical-align: top;
+    margin: 0px 0px 0px 0px;
+    height: 750px;
+}
+#week .hour{
+    height: 55px;
+    border: solid 1px #Ff0;
+    width: 100%;
+    text-align: top;
+    vertical-align: top;
+}

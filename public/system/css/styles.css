@@ -1,0 +1,13 @@
+body {
+    background: #fff;
+    color: #000;
+    margin: 0px;
+    padding: 0px;
+    font-size: 1em;
+    font-family: Verdana, Geneva, sans-serif;
+}
+.row{
+    display: block;
+    clear: both;
+    float: none;
+}

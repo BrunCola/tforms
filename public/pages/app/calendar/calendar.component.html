@@ -1,0 +1,65 @@
+<div>
+    <h2>calendar</h2>
+    <div class="row">
+        <div id="month">
+            <div>
+                <span class="prev" (click)="getMonthArray(-1, true)"> << </span>
+                <span class="labels">{{months_names[current_month]}}</span>
+                <span class="next" (click)="getMonthArray(1, true)"> >> </span>
+            </div>
+            <div>
+                <span class="prev" (click)="getYearArray(-1, true)"> << </span>
+                <span class="labels">{{current_year}}</span>
+                <span class="next" (click)="getYearArray(1, true)"> >> </span>
+            </div>
+            <div class="day" *ngFor="let names of day_names">{{names.charAt(0)}}</div>
+            <div (click)="setDate(days)" class="day not_month" *ngFor="let days of rest_of_last_month" (click)="setDate(days)">{{days.getDate()}}</div>
+            <div (click)="setDate(days)" [ngClass]="{'day': true,'current_month': true, 'current_day': checkIfCurrentDay(days)}" *ngFor="let days of current_full_month" >
+                <span>{{days.getDate()}}</span>
+            </div>
+            <div (click)="setDate(days)" class="day not_month" *ngFor="let days of start_of_next_month" (click)="setDate(days)">{{days.getDate()}}</div>
+            <button (click)="getToday()">Today </button>
+        </div>
+        <div id="week">
+            <div id="time">
+                <div class="date" (click)="getWeekArray(-7)"> << </div>
+                <div class="hour">9:00am</div>
+                <div class="hour">10:00am</div>
+                <div class="hour">11:00am</div>
+                <div class="hour">12:00pm</div>
+                <div class="hour">1:00pm</div>
+                <div class="hour">2:00pm</div>
+                <div class="hour">3:00pm</div>
+                <div class="hour">4:00pm</div>
+                <div class="hour">5:00pm</div>
+                <div class="hour">6:00pm</div>
+                <div class="hour">7:00pm</div>
+                <div class="hour">8:00pm</div>
+                <div class="hour">9:00pm</div>
+            </div>
+            <div [ngClass]="{'day': true, 'current_day': checkIfCurrentDay(day)}" *ngFor="let day of days">
+                <div class="date" (click)="setDate(day)">
+                    <div>{{day_names[day.getDay()]}}</div>
+                    <div>{{this.months_names_short[day.getMonth()]}} {{day.getDate()}}, {{day.getFullYear()}}</div>
+                </div>
+                <div class="hours"></div>
+            </div>
+            <div id="time">
+                <div class="date" (click)="getWeekArray(7)"> >> </div>
+                <div class="hour">9:00am</div>
+                <div class="hour">10:00am</div>
+                <div class="hour">11:00am</div>
+                <div class="hour">12:00pm</div>
+                <div class="hour">1:00pm</div>
+                <div class="hour">2:00pm</div>
+                <div class="hour">3:00pm</div>
+                <div class="hour">4:00pm</div>
+                <div class="hour">5:00pm</div>
+                <div class="hour">6:00pm</div>
+                <div class="hour">7:00pm</div>
+                <div class="hour">8:00pm</div>
+                <div class="hour">9:00pm</div>
+            </div>
+        </div>
+    </div>
+</div>

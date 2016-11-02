@@ -1,0 +1,51 @@
+#sessionInfo {
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 0.9em;
+}
+#bodyCanvas {
+    float:left;
+    width:50%;
+    overflow: hidden;
+    position: relative;
+}
+#canvas{
+    cursor: pointer;
+}
+#injuryInfo {
+    float:right;
+    width: 50%;
+    overflow: hidden;
+}
+#sessionInfo{
+    width: 100%;
+    vertical-align: top;
+}
+.session_column {
+    vertical-align: top;
+    display: inline-block;
+    width: 30%;
+    text-align: left;
+}
+.session_row {
+    margin: 0px 0px 1px 0px;
+    cursor: default;
+}
+.checkbox {
+    display: inline-block;
+    width:15%;
+    text-align: top;
+    vertical-align: top;
+}
+.label {
+    display: inline-block;
+    width: 85%;
+    word-break: keep-all;
+    text-align: top;
+    vertical-align: top;
+}
+.overlay {
+    position: absolute;
+    z-index: -1;
+    top:0;
+    left: 0;
+}

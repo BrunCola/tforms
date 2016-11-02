@@ -1,0 +1,8 @@
+{
+  "development": {
+      "api_url": "https://localhost:3000"
+  },
+  "production": {
+      "api_url": "https://10.0.0.10:3000"
+  }
+}

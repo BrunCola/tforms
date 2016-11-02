@@ -1,12 +1,9 @@
 ehthumbs.db
 Thumbs.db
 node_modules/
-bower_components/
-public/system/lib
-public/uploads/*
-test/coverage/
-ssl/*
-temp/*.pdf
+server/node_modules/
+typings/
+server/ssl/*
 npm-debug.log
 ._*
 *~
@@ -17,7 +14,6 @@ npm-debug.log
 .fuse*
 .nodemonignore
 .sass-cache/
-.bower-*/
 .idea/
 .sublime-grunt.cache
 *.sublime-project

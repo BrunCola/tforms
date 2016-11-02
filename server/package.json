@@ -1,0 +1,25 @@
+{
+  "name": "tForm",
+  "description": "tForm - Backend Server - Treatment form for message therapy",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server",
+    "test": "node test"
+  },
+  "dependencies": {
+    "bcrypt": "^0.8.7",
+    "body-parser": "~1.15.0",
+    "compression": "~1.6.1",
+    "express": "^4.14.0",
+    "express-jwt": "^5.1.0",
+    "express-validator": "^2.20.10",
+    "jsonwebtoken": "^7.1.9",
+    "method-override": "^2.3.2",
+    "morgan": "~1.7.0",
+    "lodash": "^2.4.1",
+    "mysql": "^2.11.1"
+  },
+  "devDependencies": {
+  }
+}
