@@ -19,3 +19,7 @@ npm-debug.log
 *.sublime-project
 *.sublime-workspace
 pm2.json
+.travis.yml
+.slugignore
+.jshintrc
+.bowerrc
