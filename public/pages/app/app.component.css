@@ -6,7 +6,7 @@
     display: block;
     overflow: hidden;
     border:solid 1px #0F0;
-    width: 1000px;
+    /*width: 1000px;*/
 }
 #header{
     height:60px;

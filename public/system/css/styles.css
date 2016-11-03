@@ -11,3 +11,31 @@ body {
     clear: both;
     float: none;
 }
+
+
+.appointment{
+    position: absolute;
+    width: 100%;
+    background: #f0f;
+    /*display: block;*/
+    z-index: 999;
+    overflow: hidden;
+}
+.appointment.app-1{
+    height: 20px;
+}
+.appointment.app-2{
+    height: 40px;
+}
+.appointment.app-3{
+    height: 60px;
+}
+.appointment.app-4{
+    height: 80px;
+}
+.appointment.app-5{
+    height: 100px;
+}
+.appointment.app-6{
+    height: 120px;
+}

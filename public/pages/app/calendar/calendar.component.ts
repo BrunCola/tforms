@@ -23,6 +23,8 @@ export class CalendarComponent implements OnInit {
     start_of_next_month: any = [];
     appointments: any = {};
     current_full_year:any;
+    slots: any = [1,2,3,4];
+    time_slots: any = ["5am","6am","7am","8am","9am","10am","11am","12pm","1pm","2pm","3pm","4pm","5pm","6pm","7pm","8pm","9pm","10pm"];
     day_names: any = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     days: any = [];
     months_names_short:any  = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -34,11 +36,18 @@ export class CalendarComponent implements OnInit {
         this.current_month = this.current_date.getMonth();
         this.current_year = this.current_date.getFullYear();
 
-        console.log(this.current_day+"."+this.current_month+"."+this.current_year)
-
-        // this.appointments = {
-        //     "01."
-        // }
+        this.appointments = {
+            "1_10_2016" : {
+                "5am" : {
+                    "start": 2,
+                    "duration" : 6
+                },
+                "7am" : {
+                    "start": 4,
+                    "duration" : 2
+                },
+            }
+        }
 
         // this.getMonthArray(0);
         // this.getWeekArray(0);
@@ -46,6 +55,9 @@ export class CalendarComponent implements OnInit {
         // console.log(this.current_full_week);
         // console.log(this.current_full_month);
         // console.log(this.current_full_year);
+        setTimeout(() => {
+            this.drawAppointments();
+        },0)
     }
     getYearArray(value:number, getrest:boolean){
         let date = cloneDeep(this.current_date);
@@ -150,5 +162,27 @@ export class CalendarComponent implements OnInit {
         this.current_year = this.current_date.getFullYear();
         if (refresh_year) this.getYearArray(0, true);
         if (refresh_month) this.getMonthArray(0, false);
+    }
+    drawAppointments() {
+        let day_element:any;
+        let slot_element:any;
+        let hour_element: any;
+        let div: any;
+        for (let days in this.appointments) {
+            for (let hours in this.appointments[days]) {
+                hour_element = document.getElementById(days+'_'+hours);
+                if (hour_element) {
+                    slot_element = hour_element.getElementsByClassName("slot-"+this.appointments[days][hours].start);
+                    div = document.createElement("div");
+                    div.className = 'appointment app-'+this.appointments[days][hours].duration;
+                    div.innerHTML = "whatever";
+                    slot_element[0].appendChild(div); 
+                }
+            }
+
+            // if () {
+            //     console.log(document.getElementById(a))
+            // }
+        }
     }
 }

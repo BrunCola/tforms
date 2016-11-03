@@ -1,16 +1,22 @@
+div {
+    box-sizing: border-box;
+}
 #month {
     float: left;
-    width: 19%;
+    width: 14%;
     height: 300px;
     border: solid 1px #0f0;
     text-align: top;
     vertical-align: top;
 }
 #week {
+    /*display: -webkit-flex;
+    display: flex;*/
     float: right;
-    width: 80%;
-    height: 800px;
-    border: solid 1px #00F;
+    width: 85%;
+    /*height: 800px;*/
+    overflow-y: auto;
+    /*border: solid 1px #00F;*/
     text-align: top;
     vertical-align: top;
 }
@@ -43,42 +49,74 @@
 }
 #week .day {
     float: left;
-    border: solid 1px #Ff0;
-    width: 12%;
+    border-right: solid 1px #000;
+    width: 13%;
     text-align: top;
     vertical-align: top;
-    height: 800px;
+    /*height: 800px;*/
+    /*overflow-y: auto;*/
 }
 #week .current_day{
     background: #ddd;
 }
-#week .day .hours {
-    border: solid 1px #Ff0;
+#time {
+    float: left;
     width: 100%;
     text-align: top;
     vertical-align: top;
-    height: 750px;
+    margin: 0px 0px 0px 0px;
+    /*height: 750px;*/
+}
+.time_slot {
+    float: left;
+    width: 4%;
+    text-align: right;
+    vertical-align: top;
+    border-left: solid 1px #000;
+    border-right: solid 1px #000;
+    font-size:0.7em;
+}
+.time_slot .slot{
+    padding:0px 2px;
 }
 #week .date {
-    border: solid 1px #Ff0;
+    border-top: solid 2px #000;
     width: 100%;
     text-align: top;
     vertical-align: top;
     height: 50px;
     cursor: pointer;
 }
-#time {
-    float: left;
-    width: 7%;
-    text-align: top;
-    vertical-align: top;
-    margin: 0px 0px 0px 0px;
-    height: 750px;
-}
 #week .hour{
-    height: 55px;
-    border: solid 1px #Ff0;
+    height: 80px;
+    /*border-right: solid 1px #000;*/
     width: 100%;
     text-align: top;
     vertical-align: top;
+    position: relative;
+}
+#week .hour .slot{
+    height: 25%;
+    width: 100%;
+    text-align: top;
+    vertical-align: top;
+    position: relative;
+}
+.appointment.app-6{
+    height: 100%;
+}
+.slot.slot-1 {
+    border-top: solid 2px #000;
+    border-bottom: solid 1px #ccc;
+}
+.slot.slot-2 {
+    border-top:none;
+    border-bottom: solid 1px #000;
+}
+.slot.slot-3 {
+    border-top:none;
+    border-bottom: solid 1px #ccc;
+}
+.slot.slot-4 {
+    border:none;
 }

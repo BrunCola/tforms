@@ -22,43 +22,38 @@
         </div>
         <div id="week">
             <div id="time">
-                <div class="date" (click)="getWeekArray(-7)"> << </div>
-                <div class="hour">9:00am</div>
-                <div class="hour">10:00am</div>
-                <div class="hour">11:00am</div>
-                <div class="hour">12:00pm</div>
-                <div class="hour">1:00pm</div>
-                <div class="hour">2:00pm</div>
-                <div class="hour">3:00pm</div>
-                <div class="hour">4:00pm</div>
-                <div class="hour">5:00pm</div>
-                <div class="hour">6:00pm</div>
-                <div class="hour">7:00pm</div>
-                <div class="hour">8:00pm</div>
-                <div class="hour">9:00pm</div>
-            </div>
-            <div [ngClass]="{'day': true, 'current_day': checkIfCurrentDay(day)}" *ngFor="let day of days">
-                <div class="date" (click)="setDate(day)">
-                    <div>{{day_names[day.getDay()]}}</div>
-                    <div>{{this.months_names_short[day.getMonth()]}} {{day.getDate()}}, {{day.getFullYear()}}</div>
+                <div class="time_slot">
+                    <div class="date" (click)="getWeekArray(-7)"> << </div>
+                    <div class="hour" *ngFor="let time of time_slots">
+                        <div class="slot slot-1">{{time}}</div>
+                        <div class="slot slot-2"></div>
+                        <div class="slot slot-3">:30</div>
+                        <div class="slot slot-4"></div>
+                    </div>
                 </div>
-                <div class="hours"></div>
-            </div>
-            <div id="time">
-                <div class="date" (click)="getWeekArray(7)"> >> </div>
-                <div class="hour">9:00am</div>
-                <div class="hour">10:00am</div>
-                <div class="hour">11:00am</div>
-                <div class="hour">12:00pm</div>
-                <div class="hour">1:00pm</div>
-                <div class="hour">2:00pm</div>
-                <div class="hour">3:00pm</div>
-                <div class="hour">4:00pm</div>
-                <div class="hour">5:00pm</div>
-                <div class="hour">6:00pm</div>
-                <div class="hour">7:00pm</div>
-                <div class="hour">8:00pm</div>
-                <div class="hour">9:00pm</div>
+                <div [ngClass]="{'day': true, 'current_day': checkIfCurrentDay(day)}" *ngFor="let day of days">
+                    <div class="date" (click)="setDate(day)">
+                        <div>{{day_names[day.getDay()]}}</div>
+                        <div>{{this.months_names_short[day.getMonth()]}} {{day.getDate()}}, {{day.getFullYear()}}</div>
+                    </div>
+                    <div>
+                        <div id="{{day.getDate()}}_{{day.getMonth()}}_{{day.getFullYear()}}_{{time}}" class="hour" *ngFor="let time of time_slots">
+                            <div class="slot slot-1"></div>
+                            <div class="slot slot-2"></div>
+                            <div class="slot slot-3"></div>
+                            <div class="slot slot-4"></div>
+                        </div>
+                    </div>
+                </div>      
+                <div class="time_slot">
+                    <div class="date" (click)="getWeekArray(7)"> >> </div>
+                    <div class="hour" *ngFor="let time of time_slots">
+                        <div class="slot slot-1">{{time}}</div>
+                        <div class="slot slot-2"></div>
+                        <div class="slot slot-3">:30</div>
+                        <div class="slot slot-4"></div>
+                    </div>
+                </div>           
             </div>
         </div>
     </div>
