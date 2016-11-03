@@ -1,3 +1,15 @@
+* { padding: 0; margin: 0; }
+
+html, body {
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+}
+
+body > * {
+  flex-shrink: 0;
+}
 body {
     background: #fff;
     color: #000;
@@ -6,36 +18,13 @@ body {
     font-size: 1em;
     font-family: Verdana, Geneva, sans-serif;
 }
+div {
+    /*display: flex;*/
+    /*flex-direction: column;*/
+    box-sizing: border-box;
+}
 .row{
     display: block;
     clear: both;
     float: none;
-}
-
-
-.appointment{
-    position: absolute;
-    width: 100%;
-    background: #f0f;
-    /*display: block;*/
-    z-index: 999;
-    overflow: hidden;
-}
-.appointment.app-1{
-    height: 20px;
-}
-.appointment.app-2{
-    height: 40px;
-}
-.appointment.app-3{
-    height: 60px;
-}
-.appointment.app-4{
-    height: 80px;
-}
-.appointment.app-5{
-    height: 100px;
-}
-.appointment.app-6{
-    height: 120px;
 }

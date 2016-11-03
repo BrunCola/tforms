@@ -1,5 +1,4 @@
 <div>
-    <h2>calendar</h2>
     <div class="row">
         <div id="month">
             <div>
@@ -21,37 +20,48 @@
             <button (click)="getToday()">Today </button>
         </div>
         <div id="week">
-            <div id="time">
-                <div class="time_slot">
+            <div id="time_top">
+                <div class="time_slot-left">
                     <div class="date" (click)="getWeekArray(-7)"> << </div>
-                    <div class="hour" *ngFor="let time of time_slots">
-                        <div class="slot slot-1">{{time}}</div>
-                        <div class="slot slot-2"></div>
-                        <div class="slot slot-3">:30</div>
-                        <div class="slot slot-4"></div>
-                    </div>
                 </div>
                 <div [ngClass]="{'day': true, 'current_day': checkIfCurrentDay(day)}" *ngFor="let day of days">
                     <div class="date" (click)="setDate(day)">
                         <div>{{day_names[day.getDay()]}}</div>
                         <div>{{this.months_names_short[day.getMonth()]}} {{day.getDate()}}, {{day.getFullYear()}}</div>
                     </div>
-                    <div>
-                        <div id="{{day.getDate()}}_{{day.getMonth()}}_{{day.getFullYear()}}_{{time}}" class="hour" *ngFor="let time of time_slots">
-                            <div class="slot slot-1"></div>
-                            <div class="slot slot-2"></div>
-                            <div class="slot slot-3"></div>
-                            <div class="slot slot-4"></div>
-                        </div>
-                    </div>
                 </div>      
-                <div class="time_slot">
+                <div class="time_slot-right">
                     <div class="date" (click)="getWeekArray(7)"> >> </div>
+                </div>           
+            </div>
+            <div id="time">
+                <div class="time_slot-left">
                     <div class="hour" *ngFor="let time of time_slots">
-                        <div class="slot slot-1">{{time}}</div>
-                        <div class="slot slot-2"></div>
-                        <div class="slot slot-3">:30</div>
-                        <div class="slot slot-4"></div>
+                        <div class="slot slot-00">{{time}}</div>
+                        <div class="slot slot-15"></div>
+                        <div class="slot slot-30">:30</div>
+                        <div class="slot slot-45"></div>
+                    </div>
+                </div>
+                <div id="daySlots">
+                    <div [ngClass]="{'day': true, 'current_day': checkIfCurrentDay(day)}" *ngFor="let day of days">
+                        <div>
+                            <div id="{{day.getDate()}}_{{day.getMonth()}}_{{day.getFullYear()}}-{{time}}" class="hour" *ngFor="let time of time_slots">
+                                <div class="slot slot-{{slot}}" *ngFor="let slot of slots">
+                                    <div class="appointment app-{{appointments[day.getDate()+'_'+day.getMonth()+'_'+day.getFullYear()+'-'+time+'_'+slot].duration}}" *ngIf="appointments[day.getDate()+'_'+day.getMonth()+'_'+day.getFullYear()+'-'+time+'_'+slot]">
+                                        {{appointments[day.getDate()+'_'+day.getMonth()+'_'+day.getFullYear()+'-'+time+'_'+slot].duration}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>     
+                </div> 
+                <div class="time_slot-right">
+                    <div class="hour" *ngFor="let time of time_slots">
+                        <div class="slot slot-00">{{time}}</div>
+                        <div class="slot slot-15"></div>
+                        <div class="slot slot-30">:30</div>
+                        <div class="slot slot-45"></div>
                     </div>
                 </div>           
             </div>

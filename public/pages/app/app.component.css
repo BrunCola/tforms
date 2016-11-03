@@ -1,11 +1,14 @@
 #main {
     /*padding: 1em;*/
+    flex-grow: 1;
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;
-    margin: 70px auto 50px auto;
+    margin: 60px auto 50px auto;
+    height: auto;
     display: block;
     overflow: hidden;
-    border:solid 1px #0F0;
+    z-index: 9999;
+    /*border:solid 1px #0F0;*/
     /*width: 1000px;*/
 }
 #header{
@@ -13,9 +16,11 @@
     background: #7c01b2;
     position: fixed;
     top: 0px;
-    margin: 0px 0px 10px 0px;
+    margin: 0px 0px 0px 0px;
     width: 100%;
     display: block;
+    overflow: hidden;
+    z-index: 99999;
 }
 #footer{
     height:40px;
@@ -24,5 +29,7 @@
     width: 100%;
     display: block;
     bottom: 0px;
-    margin: 40px 0px 0px 0px;
+    /*margin: 40px 0px 0px 0px;*/
+    overflow: hidden;
+    z-index: 99999;
 }

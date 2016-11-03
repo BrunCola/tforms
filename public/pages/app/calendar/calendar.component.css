@@ -5,18 +5,15 @@ div {
     float: left;
     width: 14%;
     height: 300px;
-    border: solid 1px #0f0;
     text-align: top;
     vertical-align: top;
+    position: fixed;
+    margin:10px 0px 0px 0px;
 }
 #week {
-    /*display: -webkit-flex;
-    display: flex;*/
-    float: right;
+    float: right;   
     width: 85%;
-    /*height: 800px;*/
-    overflow-y: auto;
-    /*border: solid 1px #00F;*/
+    position: relative;
     text-align: top;
     vertical-align: top;
 }
@@ -59,15 +56,37 @@ div {
 #week .current_day{
     background: #ddd;
 }
+/*::-webkit-scrollbar { 
+    display: none; 
+}*/
 #time {
+    position: relative;
+    height: calc(100vh - 170px);
     float: left;
+    /*height: auto;*/
     width: 100%;
     text-align: top;
     vertical-align: top;
-    margin: 0px 0px 0px 0px;
+    margin: 60px 0px 0px 0px;
+    overflow-y: auto;
+    /*border-bottom: solid 1px #000; */
     /*height: 750px;*/
 }
-.time_slot {
+#time::-webkit-scrollbar { 
+    display: none; 
+}
+#time_top {
+    padding: 10px 0px 0px 0px;
+    display: -webkit-flex;
+    display: flex;
+    position: fixed;
+    height: 60px;
+    width: 85%;
+    overflow: hidden;
+    background: #fff;
+    z-index: 999;
+}
+.time_slot-left {
     float: left;
     width: 4%;
     text-align: right;
@@ -76,11 +95,21 @@ div {
     border-right: solid 1px #000;
     font-size:0.7em;
 }
+.time_slot-right {
+    float: left;
+    width: 4%;
+    text-align: left;
+    vertical-align: top;
+    border-right: solid 1px #000;
+    font-size:0.7em;
+}
 .time_slot .slot{
+    box-sizing: border-box;
     padding:0px 2px;
 }
 #week .date {
     border-top: solid 2px #000;
+    border-bottom: solid 2px #000;
     width: 100%;
     text-align: top;
     vertical-align: top;
@@ -88,7 +117,7 @@ div {
     cursor: pointer;
 }
 #week .hour{
-    height: 80px;
+    height: 100px;
     /*border-right: solid 1px #000;*/
     width: 100%;
     text-align: top;
@@ -102,21 +131,45 @@ div {
     vertical-align: top;
     position: relative;
 }
-.appointment.app-6{
-    height: 100%;
+.slot.slot-00 {
+    border-bottom: solid 1px #eee;
 }
-.slot.slot-1 {
-    border-top: solid 2px #000;
-    border-bottom: solid 1px #ccc;
+.slot.slot-15 {
+    border-bottom: solid 1px #aaa;
 }
-.slot.slot-2 {
-    border-top:none;
+.slot.slot-30 {
+    border-bottom: solid 1px #eee;
+}
+.slot.slot-45 {
     border-bottom: solid 1px #000;
 }
-.slot.slot-3 {
-    border-top:none;
-    border-bottom: solid 1px #ccc;
+
+.appointment{
+    box-sizing: border-box;
+    position: absolute;
+    width: 98%;
+    background: #f0f;
+    /*display: block;*/
+    z-index: 99;
+    overflow: hidden;
+    border-radius: 4px;
+    margin: 1%;
 }
-.slot.slot-4 {
-    border:none;
+.appointment.app-1{
+    height: 86%;
+}
+.appointment.app-2{
+    height: 192%;
+}
+.appointment.app-3{
+    height: 300%;
+}
+.appointment.app-4{
+    height: 403%;
+}
+.appointment.app-5{
+    height: 508%;
+}
+.appointment.app-6{
+    height: 612%;
 }

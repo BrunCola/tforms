@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, HostListener, EventEmitter, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
-// import { cloneDeep } from 'lodash';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/merge';
 import { cloneDeep } from "lodash";
-// var _ = require('lodash');
 
 // import { ClientListService } from './client_list.service';
 
 @Component({
-  templateUrl: './calendar.component.html',
-  styleUrls: ['./calendar.component.css'],
-  providers: [  ]
+    templateUrl: './calendar.component.html',
+    styleUrls: ['./calendar.component.css'],
+    providers: [ 
+        { provide: "Window", useValue: window},
+        { provide: "Document", useValue: document},
+    ]
 })
 export class CalendarComponent implements OnInit {
     calendar_year_days = new Date().getFullYear() % 4 == 0 ? 366 : 365;
@@ -23,13 +26,19 @@ export class CalendarComponent implements OnInit {
     start_of_next_month: any = [];
     appointments: any = {};
     current_full_year:any;
-    slots: any = [1,2,3,4];
+    day_slots_div:any;
+    mouse_event: any = {};
+    slots: any = ["00","15","30","45"];
     time_slots: any = ["5am","6am","7am","8am","9am","10am","11am","12pm","1pm","2pm","3pm","4pm","5pm","6pm","7pm","8pm","9pm","10pm"];
     day_names: any = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     days: any = [];
     months_names_short:any  = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
     months_names:any  = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-    constructor( ) {
+
+    constructor(
+        @Inject('Window') private window:any,
+        @Inject('Document') private document:any
+        ) {
     }
     ngOnInit () {
         this.current_day = this.current_date.getDate();
@@ -37,27 +46,59 @@ export class CalendarComponent implements OnInit {
         this.current_year = this.current_date.getFullYear();
 
         this.appointments = {
-            "1_10_2016" : {
-                "5am" : {
-                    "start": 2,
-                    "duration" : 6
-                },
-                "7am" : {
-                    "start": 4,
-                    "duration" : 2
-                },
-            }
+            "1_10_2016-5am_00" : {
+                "duration" : 2,
+                "obj" : {}
+            },
+            "1_10_2016-5am_30" : {
+                "duration" : 4,
+                "obj" : {}
+            },
+            "31_9_2016-7am_00" : {
+                "duration" : 2,
+                "obj" : {}
+            },
+            "1_10_2016-7am_45": {
+                "duration" : 3,
+                "obj" : {}
+            },
+            "2_10_2016-7am_30": {
+                "duration" : 6,
+                "obj" : {}
+            },
+            "2_10_2016-12pm_30": {
+                "duration" : 6,
+                "obj" : {}
+            },
+            "3_10_2016-6am_15": {
+                "duration" : 1,
+                "obj" : {}
+            },
+            "3_10_2016-6am_45": {
+                "duration" : 5,
+                "obj" : {}
+            },
+            "4_10_2016-5am_15": {
+                "duration" : 1,
+                "obj" : {}
+            },
+            "4_10_2016-5am_45": {
+                "duration" : 5,
+                "obj" : {}
+            },
         }
+
+        this.day_slots_div = this.document.getElementById("daySlots");
+        this.day_slots_div.onmousedown = this.mousedown.bind(this);
+        this.day_slots_div.onmousemove = this.mousemove.bind(this);
+        this.day_slots_div.onmouseup = this.mouseup.bind(this);
+        this.day_slots_div.onmouseout = this.mouseout.bind(this);
 
         // this.getMonthArray(0);
         // this.getWeekArray(0);
         this.getYearArray(0,true);
-        // console.log(this.current_full_week);
-        // console.log(this.current_full_month);
-        // console.log(this.current_full_year);
-        setTimeout(() => {
-            this.drawAppointments();
-        },0)
+
+
     }
     getYearArray(value:number, getrest:boolean){
         let date = cloneDeep(this.current_date);
@@ -163,26 +204,34 @@ export class CalendarComponent implements OnInit {
         if (refresh_year) this.getYearArray(0, true);
         if (refresh_month) this.getMonthArray(0, false);
     }
-    drawAppointments() {
-        let day_element:any;
-        let slot_element:any;
-        let hour_element: any;
-        let div: any;
-        for (let days in this.appointments) {
-            for (let hours in this.appointments[days]) {
-                hour_element = document.getElementById(days+'_'+hours);
-                if (hour_element) {
-                    slot_element = hour_element.getElementsByClassName("slot-"+this.appointments[days][hours].start);
-                    div = document.createElement("div");
-                    div.className = 'appointment app-'+this.appointments[days][hours].duration;
-                    div.innerHTML = "whatever";
-                    slot_element[0].appendChild(div); 
-                }
-            }
+    mousedown(event:any) {
+        this.mouse_event.down = true;
+        this.mouse_event.startY = event.pageY;
+        this.mouse_event.app_name = event.target.offsetParent.id+"_"+event.target.classList[1].split("-")[1];
 
-            // if () {
-            //     console.log(document.getElementById(a))
-            // }
+        if (!this.appointments[this.mouse_event.app_name]) {
+            this.appointments[this.mouse_event.app_name] = {
+                "duration" : 1,
+                "obj" : {}
+            }
         }
+    }
+    mousemove(event:any) {
+        if (this.mouse_event) {
+            if (this.appointments[this.mouse_event.app_name]) {
+                this.appointments[this.mouse_event.app_name].duration = Math.max(1, Math.min(Math.round((event.pageY-this.mouse_event.startY)/this.document.getElementsByClassName("slot")[0].clientHeight)+1, 6));
+            }
+        }
+    }
+    mouseup(event:any) {
+        this.mouse_event.down = false;
+        this.mouse_event.startY = 0;
+        this.mouse_event.app_name = "";
+    }
+    mouseout(event:any) {
+        // if (this.is_mouse_down) {
+        //     console.log(event)
+        //     this.is_mouse_down = false;
+        // }
     }
 }
