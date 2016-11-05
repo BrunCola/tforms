@@ -28,6 +28,8 @@ export class CalendarComponent implements OnInit {
     current_full_year:any;
     day_slots_div:any;
     mouse_event: any = {};
+    new_appointment: any = {};
+    show_popup: boolean = false;
     slots: any = ["00","15","30","45"];
     time_slots: any = ["5am","6am","7am","8am","9am","10am","11am","12pm","1pm","2pm","3pm","4pm","5pm","6pm","7pm","8pm","9pm","10pm"];
     day_names: any = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
@@ -224,6 +226,9 @@ export class CalendarComponent implements OnInit {
         }
     }
     mouseup(event:any) {
+        this.appointments[this.mouse_event.app_name].name = this.mouse_event.app_name;
+        this.new_appointment = this.appointments[this.mouse_event.app_name]
+        this.show_popup = true;
         this.mouse_event.down = false;
         this.mouse_event.startY = 0;
         this.mouse_event.app_name = "";
@@ -233,5 +238,12 @@ export class CalendarComponent implements OnInit {
         //     console.log(event)
         //     this.is_mouse_down = false;
         // }
+    }
+    closePopup (new_app:any) {
+        if (new_app.duration === 0) {
+            delete this.appointments[new_app.name]
+        }
+        this.show_popup = false;
+        this.new_appointment = {};
     }
 }

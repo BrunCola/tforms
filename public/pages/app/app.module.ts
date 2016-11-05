@@ -15,6 +15,7 @@ import { LoggedInGuard } from './logged-in.guard';
 
 
 import { CalendarComponent } from './calendar/calendar.component';
+import { PopupComponent } from './calendar/popup/popup.component';
 
 import { ClientInfoComponent } from './client_info/client_info.component';
 import { ClientInfoService } from './client_info/client_info.service';
@@ -46,6 +47,7 @@ let routes = [
         ClientInfoInfo,
         ClientListComponent,
         ClientList,
+        PopupComponent,
     ],
     imports: [
         BrowserModule,

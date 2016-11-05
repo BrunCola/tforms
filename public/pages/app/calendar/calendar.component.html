@@ -1,4 +1,5 @@
 <div>
+    <calendar-pop-up *ngIf="show_popup" [new_app]="new_appointment" (close_popup)="closePopup($event);"></calendar-pop-up>
     <div class="row">
         <div id="month">
             <div>
