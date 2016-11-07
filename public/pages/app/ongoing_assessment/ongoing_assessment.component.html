@@ -1,0 +1,13 @@
+<div id="sessionInfo">
+    <div class="row">
+        <div>Ongoing Assessment</div>
+    </div>
+    <div class="row">
+        <div id="bodyCanvas">
+            <ongoing-body [session]="client_info" (save_session)="saveInfo($event);"></ongoing-body>
+        </div>
+        <div id="injuryInfo">
+            <ongoing-info [session]="client_info" (save_session)="saveInfo($event);"></ongoing-info>
+        </div>
+    </div>
+</div>

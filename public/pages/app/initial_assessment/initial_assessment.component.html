@@ -1,0 +1,13 @@
+<div id="sessionInfo">
+    <div class="row">
+        <div>Initial Assessment</div>
+    </div>
+    <div class="row">
+        <div id="bodyCanvas">
+            <initial-body [session]="client_info" (save_session)="saveInfo($event);"></initial-body>
+        </div>
+        <div id="injuryInfo">
+            <initial-info [session]="client_info" (save_session)="saveInfo($event);"></initial-info>
+        </div>
+    </div>
+</div>
