@@ -1,9 +1,5 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 
-
-// <input required id="email" type="email" name="email" placeholder="Email" class="m-wrap placeholder-no-fix" ng-model="login.user.email" autofocus="autofocus"/>
-// <input required id="password" type="password" name="password" placeholder="Password" class="m-wrap placeholder-no-fixcommon/auth" ng-model="login.user.password"/>
-
 @Component({
     selector: 'login-form',
     template: `

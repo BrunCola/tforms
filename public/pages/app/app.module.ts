@@ -13,23 +13,33 @@ import { LoginService } from './login/login.service';
 import { Login } from './login/login';
 import { LoggedInGuard } from './logged-in.guard';
 
-
 import { CalendarComponent } from './calendar/calendar.component';
 import { PopupComponent } from './calendar/popup/popup.component';
 
-import { ClientInfoComponent } from './client_info/client_info.component';
-import { ClientInfoService } from './client_info/client_info.service';
-import { ClientInfo } from './client_info/client_info';
-import { ClientInfoInfo } from './client_info/client_info_info';
+import { InitialAssessmentComponent } from './initial_assessment/initial_assessment.component';
+import { InitialAssessmentService } from './initial_assessment/initial_assessment.service';
+import { InitialAssessment } from './initial_assessment/initial_assessment';
+import { InitialAssessmentInfo } from './initial_assessment/initial_assessment_info';
+
+import { OngoingAssessmentComponent } from './ongoing_assessment/ongoing_assessment.component';
+import { OngoingAssessmentService } from './ongoing_assessment/ongoing_assessment.service';
+import { OngoingAssessment } from './ongoing_assessment/ongoing_assessment';
+import { OngoingAssessmentInfo } from './ongoing_assessment/ongoing_assessment_info';
 
 import { ClientListComponent } from './client_list/client_list.component';
 import { ClientListService } from './client_list/client_list.service';
 import { ClientList } from './client_list/client_list';
 
+import { ClientProfileComponent } from './client_profile/client_profile.component';
+import { ClientProfileService } from './client_profile/client_profile.service';
+import { ClientProfile } from './client_profile/client_profile';
+
 let routes = [
     { path: 'login', component: LoginComponent, data: { title: 'Login Page'}  },
     { path: 'client_list', component: ClientListComponent, useAsDefault: true, canActivate: [LoggedInGuard]},
-    { path: 'client_info', component: ClientInfoComponent, canActivate: [LoggedInGuard] },
+    { path: 'client_profile', component: ClientProfileComponent, canActivate: [LoggedInGuard] },
+    { path: 'initial_assessment', component: InitialAssessmentComponent, canActivate: [LoggedInGuard] },
+    { path: 'ongoing_assessment', component: OngoingAssessmentComponent, canActivate: [LoggedInGuard] },
     { path: 'calendar', component: CalendarComponent, canActivate: [LoggedInGuard] },
     {path: '**', component: ClientListComponent, canActivate: [LoggedInGuard]}
 ];
@@ -42,12 +52,17 @@ let routes = [
         HeaderComponent,
         FooterComponent,
         CalendarComponent,
-        ClientInfoComponent,
-        ClientInfo,
-        ClientInfoInfo,
+        InitialAssessmentComponent,
+        InitialAssessment,
+        InitialAssessmentInfo,
+        OngoingAssessmentComponent,
+        OngoingAssessment,
+        OngoingAssessmentInfo,
         ClientListComponent,
         ClientList,
-        PopupComponent,
+        ClientProfileComponent,
+        ClientProfile,
+        PopupComponent
     ],
     imports: [
         BrowserModule,
@@ -55,7 +70,7 @@ let routes = [
         FormsModule,
         RouterModule.forRoot(routes)
     ],
-    providers: [LoginService, ClientListService, ClientInfoService, LoggedInGuard],
+    providers: [LoginService, ClientProfileService, ClientListService, InitialAssessmentService, OngoingAssessmentService, LoggedInGuard],
     bootstrap: [AppComponent]
 })
 export class AppModule {}
