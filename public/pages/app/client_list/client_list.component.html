@@ -5,14 +5,13 @@
             <table id="client_list_table">
                 <tr><th>Name</th><th>Sexe</th><th>DOB</th><th>First Visit</th><th>Last Visit</th><th></th><th></th><th></th></tr>
                 <tr *ngFor="let client of client_list">
-                    <td>{{client.name}}</td>
-                    <td>{{client.sexe}}</td>
-                    <td>{{client.dob}}</td>
-                    <td>{{client.first_visit}}</td>
-                    <td>{{client.last_visit}}</td>
-                    <td (click)="newSession(client.id)">NEW</td>
-                    <td (click)="editSession(client.id)">EDIT</td>
-                    <td (click)="deleteSession(client.id)">DELETE</td>
+                    <td (click)="viewClient(client.id)">{{client.name}}</td>
+                    <td (click)="viewClient(client.id)">{{client.sexe}}</td>
+                    <td (click)="viewClient(client.id)">{{client.dob}}</td>
+                    <td (click)="viewClient(client.id)">{{client.first_visit}}</td>
+                    <td  (click)="viewClient(client.id)">{{client.last_visit}}</td>
+                    <td (click)="newAssessment(client.id)">NEW</td>
+                    <td (click)="viewClient(client.id)">EDIT</td>
                 </tr>
                 <!-- <client-list  *ngFor="let client of client_list" [user]="client" (hello)="saidHello($event)"></client-list> -->
             </table>

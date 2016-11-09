@@ -49,8 +49,10 @@
                         <div>
                             <div id="{{day.getDate()}}_{{day.getMonth()}}_{{day.getFullYear()}}-{{time}}" class="hour" *ngFor="let time of time_slots">
                                 <div class="slot slot-{{slot}}" *ngFor="let slot of slots">
-                                    <div class="appointment app-{{appointments[day.getDate()+'_'+day.getMonth()+'_'+day.getFullYear()+'-'+time+'_'+slot].duration}}" *ngIf="appointments[day.getDate()+'_'+day.getMonth()+'_'+day.getFullYear()+'-'+time+'_'+slot]">
-                                        {{appointments[day.getDate()+'_'+day.getMonth()+'_'+day.getFullYear()+'-'+time+'_'+slot].duration}}
+                                    <div *ngIf="appointments[day.getDate()+'_'+day.getMonth()+'_'+day.getFullYear()]">
+                                        <div class="appointment app-{{appointments[day.getDate()+'_'+day.getMonth()+'_'+day.getFullYear()][time+'_'+slot].duration}}" *ngIf="appointments[day.getDate()+'_'+day.getMonth()+'_'+day.getFullYear()][time+'_'+slot]">
+                                        {{appointments[day.getDate()+'_'+day.getMonth()+'_'+day.getFullYear()][time+'_'+slot].duration}}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

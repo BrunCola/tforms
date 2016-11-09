@@ -32,13 +32,10 @@ export class ClientListComponent implements OnInit {
         this.total_years = new Array(100);
         this.start_year = 1916;
     }
-    newSession(id:any){
-        this.router.navigate(['/client_info', { id: id }]);
+    newAssessment(id:any){
+        this.router.navigate(['/ongoing_assessment', { id: id }]);
     }
-    editSession(id:any){
-        this.router.navigate(['/client_info', { id: id }]);
-    }
-    deleteSession(id:any){
-        this.router.navigate(['/client_info', { id: id }]);
+    viewClient(id:any){
+        this.router.navigate(['/client_profile', { id: id }]);
     }
 }

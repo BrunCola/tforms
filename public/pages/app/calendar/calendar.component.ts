@@ -30,6 +30,13 @@ export class CalendarComponent implements OnInit {
     mouse_event: any = {};
     new_appointment: any = {};
     show_popup: boolean = false;
+    slot_num: number = 0;
+    assessment_durations:any = [
+        {duration: 3, text:"30 mins"},
+        {duration: 4, text:"45 mins"},
+        {duration: 5, text:"60 mins"},
+        {duration: 7, text:"90 mins"}
+    ];
     slots: any = ["00","15","30","45"];
     time_slots: any = ["5am","6am","7am","8am","9am","10am","11am","12pm","1pm","2pm","3pm","4pm","5pm","6pm","7pm","8pm","9pm","10pm"];
     day_names: any = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
@@ -40,53 +47,66 @@ export class CalendarComponent implements OnInit {
     constructor(
         @Inject('Window') private window:any,
         @Inject('Document') private document:any
-        ) {
-    }
+    ){}
     ngOnInit () {
         this.current_day = this.current_date.getDate();
         this.current_month = this.current_date.getMonth();
         this.current_year = this.current_date.getFullYear();
 
         this.appointments = {
-            "1_10_2016-5am_00" : {
-                "duration" : 2,
-                "obj" : {}
+            "7_10_2016": {
+                "5am_00" : {
+                    "duration" : 3,
+                    "obj" : {}
+                },
+                "5am_45" : {
+                    "duration" : 4,
+                    "obj" : {}
+                },
+                "7am_45": {
+                    "duration" : 3,
+                    "obj" : {}
+                }
             },
-            "1_10_2016-5am_30" : {
-                "duration" : 4,
-                "obj" : {}
+            "8_10_2016": {
+                "7am_30": {
+                    "duration" : 7,
+                    "obj" : {}
+                },
             },
-            "31_9_2016-7am_00" : {
-                "duration" : 2,
-                "obj" : {}
+            "9_10_2016":{
+                "6am_30": {
+                    "duration" : 5,
+                    "obj" : {}
+                },
+                "12pm_30": {
+                    "duration" : 5,
+                    "obj" : {}
+                },
             },
-            "1_10_2016-7am_45": {
-                "duration" : 3,
-                "obj" : {}
+            "10_10_2016": {
+                "6am_15": {
+                    "duration" : 3,
+                    "obj" : {}
+                },
+                "7am_00": {
+                    "duration" : 7,
+                    "obj" : {}
+                },
+                "8am_45": {
+                    "duration" : 3,
+                    "obj" : {}
+                },
             },
-            "2_10_2016-7am_30": {
-                "duration" : 6,
-                "obj" : {}
-            },
-            "2_10_2016-12pm_30": {
-                "duration" : 6,
-                "obj" : {}
-            },
-            "3_10_2016-6am_15": {
-                "duration" : 1,
-                "obj" : {}
-            },
-            "3_10_2016-6am_45": {
-                "duration" : 5,
-                "obj" : {}
-            },
-            "4_10_2016-5am_15": {
-                "duration" : 1,
-                "obj" : {}
-            },
-            "4_10_2016-5am_45": {
-                "duration" : 5,
-                "obj" : {}
+            "11_10_2016": {
+                "5am_15": {
+                    "duration" : 3,
+                    "obj" : {}
+                },
+                "6am_45": {
+                    "duration" : 5,
+                    "obj" : {}
+                }
             },
         }
 
@@ -99,7 +119,7 @@ export class CalendarComponent implements OnInit {
         // this.getMonthArray(0);
         // this.getWeekArray(0);
         this.getYearArray(0,true);
-
+        this.resetMouseEvent();
 
     }
     getYearArray(value:number, getrest:boolean){
@@ -206,32 +226,54 @@ export class CalendarComponent implements OnInit {
         if (refresh_year) this.getYearArray(0, true);
         if (refresh_month) this.getMonthArray(0, false);
     }
+    resetMouseEvent() {
+        this.mouse_event = {
+            down : false,
+            startY : 0,
+            date_selected : "",
+            time : "",
+            time_slot : "",
+            min : 3,
+            max : 7,
+        }
+    }
     mousedown(event:any) {
         this.mouse_event.down = true;
         this.mouse_event.startY = event.pageY;
-        this.mouse_event.app_name = event.target.offsetParent.id+"_"+event.target.classList[1].split("-")[1];
-
-        if (!this.appointments[this.mouse_event.app_name]) {
-            this.appointments[this.mouse_event.app_name] = {
-                "duration" : 1,
-                "obj" : {}
+   
+        if (event.target.offsetParent.id) {
+            this.mouse_event.date_selected = event.target.offsetParent.id.split("-")[0];
+            this.mouse_event.time = event.target.offsetParent.id.split("-")[1];
+            this.mouse_event.time_slot = event.target.classList[1].split("-")[1];
+            this.getMinMaxSlot();
+            if (this.mouse_event.min <= 3) {
+                if (!this.appointments[this.mouse_event.date_selected]) {
+                    this.appointments[this.mouse_event.date_selected] = {}
+                }
+                this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot] = {
+                    "duration" : 3,
+                    "obj" : {}
+                }
+            } else {
+                this.mouse_event.down = false;
             }
+        } else {
+            this.mouse_event.down = false;
         }
     }
     mousemove(event:any) {
-        if (this.mouse_event) {
-            if (this.appointments[this.mouse_event.app_name]) {
-                this.appointments[this.mouse_event.app_name].duration = Math.max(1, Math.min(Math.round((event.pageY-this.mouse_event.startY)/this.document.getElementsByClassName("slot")[0].clientHeight)+1, 6));
-            }
+        if (this.mouse_event.down) {
+            this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot].duration = this.getDuration(event);
         }
     }
     mouseup(event:any) {
-        this.appointments[this.mouse_event.app_name].name = this.mouse_event.app_name;
-        this.new_appointment = this.appointments[this.mouse_event.app_name]
-        this.show_popup = true;
-        this.mouse_event.down = false;
-        this.mouse_event.startY = 0;
-        this.mouse_event.app_name = "";
+        if (this.mouse_event.down) {
+            this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot].date_selected = this.mouse_event.date_selected;
+            this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot].time = this.mouse_event.time+"_"+this.mouse_event.time_slot;
+            this.new_appointment = this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot]
+            this.show_popup = true;
+        }
+        this.resetMouseEvent();
     }
     mouseout(event:any) {
         // if (this.is_mouse_down) {
@@ -239,9 +281,43 @@ export class CalendarComponent implements OnInit {
         //     this.is_mouse_down = false;
         // }
     }
+    getMinMaxSlot(){
+        let time_slots_taken: any = [];
+        if (this.appointments[this.mouse_event.date_selected]) {
+            for (let a in this.appointments[this.mouse_event.date_selected]) {
+                time_slots_taken.push(a)
+            }
+        }
+        let t: any, s: any;
+        let count: any = -1;
+        let passed: boolean = false;
+        for (t in this.time_slots) {
+            for (s in this.slots) {
+                if (this.mouse_event.time+"_"+this.mouse_event.time_slot === this.time_slots[t]+"_"+this.slots[s]) {
+                    passed = true;
+                }
+                if (passed) {
+                    count++;
+                    if (time_slots_taken.indexOf(this.time_slots[t]+"_"+this.slots[s]) > -1) {
+                        if (count < 3) {
+                            this.mouse_event.min = count;
+                        }
+                        this.mouse_event.max = Math.min(7,count);
+                        if (this.mouse_event.max === 6) this.mouse_event.max = 5;
+                        return;
+                    }
+                }
+            }
+        }
+    }
+    getDuration(event: any) {
+        let duration = (Math.max(this.mouse_event.min,Math.min(Math.round((event.pageY-this.mouse_event.startY) / this.document.getElementsByClassName("slot")[0].clientHeight)+1,this.mouse_event.max)));
+        if (duration === 6) duration = this.mouse_event.max;
+        return duration
+    }
     closePopup (new_app:any) {
         if (new_app.duration === 0) {
-            delete this.appointments[new_app.name]
+            delete this.appointments[new_app.date_selected][new_app.time]
         }
         this.show_popup = false;
         this.new_appointment = {};
