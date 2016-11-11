@@ -2,7 +2,7 @@ import { Component, Inject, OnInit, HostListener, EventEmitter, ElementRef } fro
 import { Router } from '@angular/router';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/merge';
-import { cloneDeep } from "lodash";
+import { cloneDeep, indexOf } from "lodash";
 
 // import { ClientListService } from './client_list.service';
 
@@ -298,6 +298,7 @@ export class CalendarComponent implements OnInit {
         }
     }
     mousedown(event:any) {
+        event.preventDefault();
         this.mouse_event.down = true;
         this.mouse_event.startY = event.pageY;
    
@@ -318,25 +319,34 @@ export class CalendarComponent implements OnInit {
         }
     }
     mousemove(event:any) {
+        event.preventDefault();
         if (this.mouse_event.down) {
             this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot].duration = (Math.max(this.mouse_event.min,Math.min(Math.round((event.pageY-this.mouse_event.startY) / this.document.getElementsByClassName("slot")[0].clientHeight)+1,this.mouse_event.max)));
             // this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot].duration = Math.round((event.pageY-this.mouse_event.startY) / this.document.getElementsByClassName("slot")[0].clientHeight)+1;
         }
     }
     mouseup(event:any) {
-        // if (this.mouse_event.down) {
-        //     this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot].date_selected = this.mouse_event.date_selected;
-        //     this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot].time = this.mouse_event.time+"_"+this.mouse_event.time_slot;
-        //     this.new_appointment = this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot]
-        //     this.show_popup = true;
-        // }
+        event.preventDefault();
+        if (this.mouse_event.down) {
+            this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot].date_selected = this.mouse_event.date_selected;
+            this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot].time = this.mouse_event.time+"_"+this.mouse_event.time_slot;
+            this.new_appointment = this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot]
+            this.show_popup = true;
+        }
         this.resetMouseEvent();
     }
     mouseout(event:any) {
-        // if (this.is_mouse_down) {
-        //     console.log(event)
-        //     this.is_mouse_down = false;
-        // }
+        event.preventDefault();
+        if (this.mouse_event.down) {
+            if ((indexOf(event.toElement.classList, 'appointment') === -1) && (indexOf(event.toElement.classList, 'slot') === -1) ) {
+                this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot].date_selected = this.mouse_event.date_selected;
+                this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot].time = this.mouse_event.time+"_"+this.mouse_event.time_slot;
+                this.new_appointment = this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot]
+                this.show_popup = true;
+                this.resetMouseEvent();
+
+            }
+        }
     }
     getMinMaxSlot(){
         let time_slots_taken: any = [];
