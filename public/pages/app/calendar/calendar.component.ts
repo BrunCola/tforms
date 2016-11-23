@@ -19,11 +19,17 @@ export class CalendarComponent implements OnInit {
     current_date = new Date();
     current_year: any;
     current_month: any;
+    next_month: any;
     current_day: any;
     current_full_week:any;
     rest_of_last_month: any = [];
     current_full_month:any;
     start_of_next_month: any = [];
+
+    next_rest_of_last_month: any = [];
+    next_full_month:any;
+    next_start_of_next_month: any = [];
+
     appointments: any = {};
     current_full_year:any;
     day_slots_div:any;
@@ -31,12 +37,6 @@ export class CalendarComponent implements OnInit {
     new_appointment: any = {};
     show_popup: boolean = false;
     slot_num: number = 0;
-    assessment_durations:any = [
-        {duration: 3, text:"30 mins"},
-        {duration: 4, text:"45 mins"},
-        {duration: 5, text:"60 mins"},
-        {duration: 7, text:"90 mins"}
-    ];
     slots: any = ["00","15","30","45"];
     time_slots: any = ["5am","6am","7am","8am","9am","10am","11am","12pm","1pm","2pm","3pm","4pm","5pm","6pm","7pm","8pm","9pm","10pm"];
     day_names: any = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
@@ -51,6 +51,7 @@ export class CalendarComponent implements OnInit {
     ngOnInit () {
         this.current_day = this.current_date.getDate();
         this.current_month = this.current_date.getMonth();
+        this.next_month = this.current_date.getMonth()+1;
         this.current_year = this.current_date.getFullYear();
 
         this.appointments = {
@@ -229,6 +230,27 @@ export class CalendarComponent implements OnInit {
         if (getrest) {
             this.getWeekArray(0);
         }
+        this.getNextMonthArray();
+    }
+    getNextMonthArray(){
+        let date = cloneDeep(this.current_date);
+        let month = new Date(date.getFullYear(), date.getMonth()+1);
+        var days_of_month = new Date(month.getFullYear(), month.getMonth()+1, 0).getDate();
+
+        let day = date.getDate();
+        if (day > days_of_month) day = days_of_month;
+        let set_day = cloneDeep(new Date(month.getFullYear(), month.getMonth(), day));
+
+        let full_month:any = [], i:number, temp_date: any;
+        
+        for(i = 1; i <= days_of_month; i++) {
+            temp_date = new Date(month.getFullYear(), month.getMonth(), i);
+            full_month.push(temp_date)
+        }
+        this.next_full_month = full_month;
+        this.next_month = set_day.getMonth();
+        // this.setCurrentDates(set_day);
+        // this.getBeforeAfterMonthArray();
     }
     getWeekArray(value: number){
         let date = cloneDeep(this.current_date);
@@ -260,6 +282,26 @@ export class CalendarComponent implements OnInit {
             s_o_n_m.push(temp_date)
         }
         this.start_of_next_month = s_o_n_m;
+        this.getNextBeforeAfterMonthArray();
+    }
+    getNextBeforeAfterMonthArray() {
+        let date = cloneDeep(this.current_date);
+        let first_day = new Date(date.getFullYear(), date.getMonth()+1);
+        var lastDay = new Date(first_day.getFullYear(), first_day.getMonth()+1, 0);
+
+        let r_o_l_m:any = [], i:number, temp_date:any, prev: number = first_day.getDay();
+        for (i = 0; i < prev; i++) {
+            temp_date = new Date(first_day.setDate((first_day.getDate() - first_day.getDay()) + i));
+            r_o_l_m.push(temp_date)
+        }
+        this.next_rest_of_last_month = r_o_l_m;
+
+        let s_o_n_m:any = [], j:number, start:number = lastDay.getDay()+1;
+        for(j = start; j < 7; j++){
+            temp_date = new Date(lastDay.setDate((lastDay.getDate() - lastDay.getDay()) + j));
+            s_o_n_m.push(temp_date)
+        }
+        this.next_start_of_next_month = s_o_n_m;
     }
     checkIfCurrentDay(date: Date){
         return ((date.getFullYear() === this.current_date.getFullYear()) &&
@@ -282,6 +324,7 @@ export class CalendarComponent implements OnInit {
         if (this.current_month !== date.getMonth()) refresh_month = true;
         this.current_date = cloneDeep(date);
         this.current_month = this.current_date.getMonth();
+        this.next_month = this.current_date.getMonth()+1;
         this.current_year = this.current_date.getFullYear();
         if (refresh_year) this.getYearArray(0, true);
         if (refresh_month) this.getMonthArray(0, false);
@@ -312,7 +355,19 @@ export class CalendarComponent implements OnInit {
             }
             this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot] = {
                 "duration" : 1,
-                "obj" : {}
+                "slot_type": "client",
+                "obj" : {
+                    time_start: "" as any,
+                    time_end: "" as any,
+                    client: "" as any,
+                    note: "" as string,
+                    appointment_type: "massage" as string,
+                    initial: false as boolean,
+                },
+                "repeat" : {
+                    onoff: false as boolean,
+                    end_repeat: "" as any,
+                }
             }
         } else {
             this.mouse_event.down = false;
@@ -330,23 +385,24 @@ export class CalendarComponent implements OnInit {
         if (this.mouse_event.down) {
             this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot].date_selected = this.mouse_event.date_selected;
             this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot].time = this.mouse_event.time+"_"+this.mouse_event.time_slot;
+            this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot].hour = indexOf(this.time_slots, this.mouse_event.time)+5;
             this.new_appointment = this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot]
             this.show_popup = true;
         }
         this.resetMouseEvent();
     }
     mouseout(event:any) {
-        event.preventDefault();
-        if (this.mouse_event.down) {
-            if ((indexOf(event.toElement.classList, 'appointment') === -1) && (indexOf(event.toElement.classList, 'slot') === -1) ) {
-                this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot].date_selected = this.mouse_event.date_selected;
-                this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot].time = this.mouse_event.time+"_"+this.mouse_event.time_slot;
-                this.new_appointment = this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot]
-                this.show_popup = true;
-                this.resetMouseEvent();
+        // event.preventDefault();
+        // if (this.mouse_event.down) {
+        //     if ((indexOf(event.toElement.classList, 'appointment') === -1) && (indexOf(event.toElement.classList, 'slot') === -1) ) {
+        //         this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot].date_selected = this.mouse_event.date_selected;
+        //         this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot].time = this.mouse_event.time+"_"+this.mouse_event.time_slot;
+        //         this.new_appointment = this.appointments[this.mouse_event.date_selected][this.mouse_event.time+"_"+this.mouse_event.time_slot]
+        //         this.show_popup = true;
+        //         this.resetMouseEvent();
 
-            }
-        }
+        //     }
+        // }
     }
     getMinMaxSlot(){
         let time_slots_taken: any = [];
@@ -374,6 +430,7 @@ export class CalendarComponent implements OnInit {
         }
     }
     closePopup (new_app:any) {
+        console.log(new_app)
         if (new_app.duration === 0) {
             delete this.appointments[new_app.date_selected][new_app.time]
         }

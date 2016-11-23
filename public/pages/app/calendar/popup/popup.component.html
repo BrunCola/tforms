@@ -1,6 +1,98 @@
-<div id="calendarPopUp" (click)="cancel()">
+<!-- <div id="calendarPopUp" (click)="cancel()"> -->
+<div id="calendarPopUp" > 
     <div id="appointmentInfo">
-        {{new_app}}
+        <div id="popupform">
+            <form>
+                <input type="radio" [(ngModel)]="new_appointment.slot_type"  name="slot_type" value="client">New Appointment 
+                <input type="radio" [(ngModel)]="new_appointment.slot_type"  name="slot_type" value="blocked">Blocked
+
+                <div *ngIf="(new_appointment.slot_type == 'client')">
+                    <div class="row">
+                        <div class="col form1"><label>Date</label></div>
+                        <div class="col form2">
+                            <div>{{getDate()}}</div>
+                            <div>{{getStartTime()}} to {{getEndTime()}}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col form1"><label>Service</label></div>
+                        <div class="col form2">
+                            <div>
+                                <select name="duration" [(ngModel)]="new_appointment.duration">
+                                    <option value="{{dur.duration}}" *ngFor="let dur of assessment_durations">
+                                        {{dur.text}}
+                                    </option>
+                                </select>
+                                <select name="massage_type" [(ngModel)]="new_appointment.obj.appointment_type">
+                                    <option value="{{at.type}}" *ngFor="let at of appointment_type">
+                                        {{at.text}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div>
+                                {{getPrice()}} or <span>Custom Price</span>
+                                <input type="checkbox" [(ngModel)]="new_appointment.obj.initial"  name="initial" value="true"> Initial Assessment
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col form1"><label>Client</label></div>
+                        <div class="col form2">
+                            <input type="text" name="client" [(ngModel)]="new_appointment.obj.client">
+                            <span>New Client</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col form1"><label>Repeat</label></div>
+                        <div class="col form2">
+                            <input type="checkbox" name="reapeat" [(ngModel)]="new_appointment.repeat.onoff">
+                            <span *ngIf="new_appointment.repeat.onoff">
+                                <select name="repeat" [(ngModel)]="new_appointment.repeat.type">
+                                    <option value="{{rep}}" *ngFor="let rep of repeats">
+                                        {{rep}}
+                                    </option>
+                                </select>
+                                <input type="date" placeholder="End of Repeat" name="end_repeat" [(ngModel)]="new_appointment.repeat.end_repeat">
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col form1"><label>Notes</label></div>
+                        <div class="col form2"><textarea [(ngModel)]='new_appointment.obj.note' [ngModelOptions]="{standalone: true}"></textarea></div>
+                    </div>
+                </div>
+
+    <!-- 
+
+                <div *ngIf="(new_appointment.slot_type == 'blocked')">
+                    <div>
+                        <label>Date:</label>
+                        <input type="date" name="date" [(ngModel)]="new_appointment.obj.date">
+                        <label>All Day:</label>
+                        <input type="checkbox" name="reapeat" [(ngModel)]="new_appointment.obj.allday">
+                    </div>
+                    <div>
+                        <label>Repeat:</label>
+                        <input type="checkbox" name="repeat" [(ngModel)]="new_appointment.repeat.onoff">
+                        <div *ngIf="new_appointment.repeat.onoff">
+                            <select name="repeat" [(ngModel)]="new_appointment.repeat.type">
+                                <option value="rep" *ngFor="let rep of repeats">
+                                    {{rep}}
+                                </option>
+                            </select>
+                            <input type="date" placeholder="End of Repeat" name="end_repeat" [(ngModel)]="new_appointment.repeat.end_repeat">
+                        </div>
+                    </div>
+                    <div>
+                        <label>Notes:</label>
+                        <textarea [(ngModel)]='new_appointment.obj.note' [ngModelOptions]="{standalone: true}"></textarea>
+                    </div>
+                </div> -->
+
+
+                <!-- <button type="submit" (click)="checkUser()">Login</button> -->
+            </form>
+        </div>
         <button (click)="cancel()">cancel</button>
         <button (click)="close($event)">close popup</button>
     </div>

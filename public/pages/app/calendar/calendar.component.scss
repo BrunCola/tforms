@@ -17,6 +17,11 @@ div {
     position: fixed;
     margin:10px 0px 0px 0px;
 
+    .months{
+        clear: both;
+        display: block;
+        float: none;
+    }
     .current_month{
         background: #fff;
     }

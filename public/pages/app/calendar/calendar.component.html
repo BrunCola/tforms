@@ -1,5 +1,5 @@
 <div>
-    <calendar-pop-up *ngIf="show_popup" [new_app]="new_appointment" (close_popup)="closePopup($event);"></calendar-pop-up>
+    <calendar-pop-up *ngIf="show_popup" [new_appointment]="new_appointment" (close_popup)="closePopup($event);"></calendar-pop-up>
     <div class="row">
         <div id="month">
             <div>
@@ -12,12 +12,29 @@
                 <span class="labels">{{current_year}}</span>
                 <span class="next" (click)="getYearArray(1, true)"> >> </span>
             </div>
-            <div class="day" *ngFor="let names of day_names">{{names.charAt(0)}}</div>
-            <div (click)="setDate(days)" class="day not_month" *ngFor="let days of rest_of_last_month" (click)="setDate(days)">{{days.getDate()}}</div>
-            <div (click)="setDate(days)" [ngClass]="{'day': true,'current_month': true, 'current_day': checkIfCurrentDay(days)}" *ngFor="let days of current_full_month" >
-                <span>{{days.getDate()}}</span>
+            <div class="months">
+                <div class="day" *ngFor="let names of day_names">{{names.charAt(0)}}</div>
+                <div (click)="setDate(days)" class="day not_month" *ngFor="let days of rest_of_last_month" (click)="setDate(days)">{{days.getDate()}}</div>
+                <div (click)="setDate(days)" [ngClass]="{'day': true,'current_month': true, 'current_day': checkIfCurrentDay(days)}" *ngFor="let days of current_full_month" >
+                    <span>{{days.getDate()}}</span>
+                </div>
+                <div (click)="setDate(days)" class="day not_month" *ngFor="let days of start_of_next_month" (click)="setDate(days)">{{days.getDate()}}</div>
             </div>
-            <div (click)="setDate(days)" class="day not_month" *ngFor="let days of start_of_next_month" (click)="setDate(days)">{{days.getDate()}}</div>
+
+            <div>
+                <span class="prev" (click)="getMonthArray(-1, true)"> << </span>
+                <span class="labels">{{months_names[next_month]}}</span>
+                <span class="next" (click)="getMonthArray(1, true)"> >> </span>
+            </div>
+            <div class="months">
+                <div class="day" *ngFor="let names of day_names">{{names.charAt(0)}}</div>
+                <div (click)="setDate(days)" class="day not_month" *ngFor="let days of next_rest_of_last_month" (click)="setDate(days)">{{days.getDate()}}</div>
+                <div (click)="setDate(days)" [ngClass]="{'day': true,'current_month': true, 'current_day': checkIfCurrentDay(days)}" *ngFor="let days of next_full_month" >
+                    <span>{{days.getDate()}}</span>
+                </div>
+                <div (click)="setDate(days)" class="day not_month" *ngFor="let days of next_start_of_next_month" (click)="setDate(days)">{{days.getDate()}}</div>
+            </div>
+
             <button (click)="getToday()">Today </button>
         </div>
         <div id="week">
