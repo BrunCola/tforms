@@ -5,7 +5,7 @@ import { InitialAssessmentService } from './initial_assessment.service';
 @Component({
   // selector: 'client-info',
   templateUrl: './initial_assessment.component.html',
-  styleUrls: ['./initial_assessment.component.css'],
+  styleUrls: ['./initial_assessment.component.scss'],
 })
 export class InitialAssessmentComponent implements OnInit{ 
     client_info: any;

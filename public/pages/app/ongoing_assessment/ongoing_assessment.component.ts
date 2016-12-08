@@ -5,7 +5,7 @@ import { OngoingAssessmentService } from './ongoing_assessment.service';
 @Component({
   // selector: 'client-info',
   templateUrl: './ongoing_assessment.component.html',
-  styleUrls: ['./ongoing_assessment.component.css'],
+  styleUrls: ['./ongoing_assessment.component.scss'],
 })
 export class OngoingAssessmentComponent implements OnInit{ 
     client_info: any;

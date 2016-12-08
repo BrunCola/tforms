@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 @Component({
     selector: 'ongoing-info',
     // templateUrl: './client_info.component.html',
-    styleUrls: ['./ongoing_assessment.component.css'],
+    styleUrls: ['./ongoing_assessment.component.scss'],
     template: `
     <div id="sessionInfo">
         <div class="session_column">

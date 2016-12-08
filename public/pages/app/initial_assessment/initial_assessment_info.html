@@ -1,0 +1,96 @@
+<div id="sessionInfo">
+    <div class="row">
+        <div class="session_quarter">Name: John Smith Need Longuer</div>
+        <div class="session_quarter">Date: 11/20/2016</div>
+        <div class="session_quarter">Time: 1:00pm</div>
+        <div class="session_quarter">Duration & fee: 45min - 75$ </div>
+    </div>
+    <div class="row">
+        <div class="session_half">
+            <span>Primary Concern</span>
+            <textarea class="textarea_half" [(ngModel)]='session.primary_concern' rows="7"></textarea>
+        </div>
+        <div class="session_half">
+            <span>Subjective Information</span>
+            <textarea class="textarea_half" [(ngModel)]='session.subjective_information' rows="7"></textarea>
+        </div>
+        <div class="session_three_quarter">
+            <span>Assessment & Findings</span>
+            <textarea class="textarea_full" [(ngModel)]='session.assessment_findings' rows="7"></textarea>
+        </div>
+        <div class="session_quarter">
+            <!-- <div class="session_row" (click)="saveConsentInfo(con)" *ngFor="let con of consent">
+                <div class="checkbox"><input type="checkbox" class="checkbox_style" name="con.title" [(ngModel)]="con.selected"></div><div class="label">{{con.title}}</div>
+            </div> -->
+            <div class="squaredThree" (click)="saveConsentInfo(con)" *ngFor="let con of consent">
+                <div class="checkbox">
+                    <input type="checkbox" name="con.title" [(ngModel)]="con.selected" />
+                    <label for="squaredThree"></label><div class="label">{{con.title}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="session_third">
+            <span>Limitations of ADL's</span>
+            <input type="text" [(ngModel)]='session.limitation_adl'>
+        </div>
+        <div class="session_third">
+            <span>CI's / Risks</span>
+            <input type="text" [(ngModel)]='session.limitation_adl'>
+        </div>
+        <div class="session_third">
+            <span>Client goal / Treatment Goal</span>
+            <input type="text" [(ngModel)]='session.limitation_adl'>
+        </div>
+    </div>
+    <div class="row">
+        <div class="session_quarter">
+            <div class="squaredThree" (click)="save_checkbox_col_1(area)" *ngFor="let area of checkbox_col_1">
+                <div class="checkbox">
+                    <input type="checkbox" class="checkbox_style"  name="area.title" [(ngModel)]="area.selected">
+                    <div class="label">{{area.title}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="session_quarter">
+            <div class="squaredThree" (click)="save_checkbox_col_2(effect)" *ngFor="let effect of checkbox_col_2">
+                <div class="checkbox">
+                    <input type="checkbox" class="checkbox_style" name="effect.title" [(ngModel)]="effect.selected">
+                    <div class="label">{{effect.title}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="session_quarter">
+            <div class="squaredThree" (click)="save_checkbox_col_3(type)" *ngFor="let type of checkbox_col_3">
+                <div class="checkbox">
+                    <input type="checkbox" class="checkbox_style"  name="type.title" [(ngModel)]="type.selected">
+                    <div class="label">{{type.title}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="session_quarter">
+            <div class="squaredThree" (click)="save_checkbox_col_4(type)" *ngFor="let type of checkbox_col_4">
+                <div class="checkbox">
+                    <input type="checkbox" class="checkbox_style"  name="type.title" [(ngModel)]="type.selected">
+                    <div class="label">{{type.title}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="session_third">
+            <span>Clinical Findings / Objective Info</span>
+            <input type="text" [(ngModel)]='session.clinical_findings'>
+        </div>
+        <div class="session_third">
+            <span>Client Reaction / Feedback</span>
+            <input type="text" [(ngModel)]='session.client_reaction'>
+        </div>
+        <div class="session_third">
+            <span>Self-care</span>
+            <input type="text" [(ngModel)]='session.selfcare'>
+        </div>
+    </div>
+    <button (click)="clearValues()">Clear Values</button>
+</div>

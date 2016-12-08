@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, OnInit, OnChanges } from '@angu
 
 @Component({
     selector: 'ongoing-body',
-    styleUrls: ['./ongoing_assessment.component.css'],
+    styleUrls: ['./ongoing_assessment.component.scss'],
     template: `
         <div class="overlay"><img src="`+require("./bodies.jpg")+`" height="{{image_height}}" width="{{image_width}}"></div>
         <canvas id="canvas"></canvas>

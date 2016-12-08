@@ -51,20 +51,26 @@ export class PopupComponent implements OnInit {
     }
     getStartTime() {
       var hours = this.date.getHours();
-      var minutes = this.date.getMinutes();
+      var minutes:any = this.date.getMinutes();
       var ampm = hours >= 12 ? 'pm' : 'am';
       hours = hours % 12;
       hours = hours ? hours : 12; // the hour '0' should be '12'
+      if (minutes == 0) {
+          minutes = "00";
+      }
       var strTime = hours + ':' + minutes + ' ' + ampm;
       return strTime;
     }
     getEndTime() {
       var newDateObj = new Date(this.date.getTime() + ((this.new_appointment.duration*15)*60000));
       var hours = newDateObj.getHours();
-      var minutes = newDateObj.getMinutes();
+      var minutes:any  = newDateObj.getMinutes();
       var ampm = hours >= 12 ? 'pm' : 'am';
       hours = hours % 12;
       hours = hours ? hours : 12; // the hour '0' should be '12'
+      if (minutes == 0) {
+          minutes = "00";
+      }
       var strTime = hours + ':' + minutes + ' ' + ampm;
       return strTime;
     }
